@@ -87,7 +87,7 @@ Capacity/ширина трещин/устойчивость в этом smoke в
   -TimeoutSeconds 120
 ```
 
-Для workflow используется один Macro=modTestRoundedTrapezoidExample.RunExampleWorkflow,
+Для workflow используется один Macro=modTestRoundedTrapezoidExample.TestRunExampleWorkflow,
 MacroArgument1 — абсолютный путь каталога PNG, MacroArgument2=1200 или 1400,
 VerifyResultsReopen включён. Макросы в examples/modTestRoundedTrapezoidExample.bas
 — тестовая оркестрация с пометкой ДЛЯ ТЕСТОВ, не алгоритмические компоненты типа.

@@ -61,7 +61,7 @@ End Function
 ' Форматирует число без региональных запятых, чтобы один и тот же запрос
 ' давал одинаковый ключ при разных настройках Windows/Excel.
 Private Function NumberKey(ByVal value As Double) As String
-    NumberKey = Replace$(Format$(value, "0.###############"), ",", ".")
+    NumberKey = Replace$(Format$(value, "0.###############"), ",", ".") ' Это индекс поиска, а не доказательство равенства чисел; CStateRepository дополнительно сравнивает исходные Double.
 End Function
 
 ' Записывает логическое значение короткой строкой для ключа запроса в хранилище.

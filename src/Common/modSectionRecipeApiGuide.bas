@@ -83,7 +83,9 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       ' мм; 600 — ширина, мм; 1000 — высота, мм.
 '           Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)
 '           facade.Outer "OUTER", path.ID  ' "OUTER" — имя наружной границы бетона; path.ID — замкнутый контур.
-'           Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)  ' "TopAxis" — имя линии; 50 — X начала, мм; 950 — Y начала, мм; 550 — X конца, мм; 950 — Y конца, мм.
+'       ' "TopAxis" — имя линии; 50 — X начала, мм; 950 — Y начала, мм; 550 — X конца, мм; 950 — Y
+'       ' конца, мм.
+'           Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#) ' Осевая линия в 50 мм от верха и торцов бетона; отдельный алгоритм координат стержней не нужен.
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "Top"
 '       ' "Top.Main" — имя нового ряда; path.ID — линия центров стержней; 5 — заданное число
@@ -232,7 +234,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     Это самостоятельная функция; b/h/w и все объекты объявлены внутри. Edge.TR — реальная ненулевая
 '     наклонная грань между точками касания. Армирование учебное, без проверки достаточности.
 '
-'       Private Function BuildAudit02DemoDefinition() As CSectionDefinition
+'       Private Function TestBuildAudit02DemoDefinition() As CSectionDefinition
 '           Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec
 '           Dim shapePath As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
 '           Dim options As CRebarRuleOptions, b As Double, h As Double, w As Double
@@ -262,7 +264,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           facade.Dimension "DIM_SLOPE", "Slope.A", "Slope.B", "L", "Aligned"
 '           facade.HorizontalDistance "DIM_B", "B", -b / 2#, b / 2#, h / 2#, 1#
 '           facade.VerticalExtent "DIM_H", shapePath.ID, "H", -b / 2#, -1#
-'           Set BuildAudit02DemoDefinition = facade.Finish
+'           Set TestBuildAudit02DemoDefinition = facade.Finish
 '       End Function
 '
 '   ПОЛНЫЙ ПРИМЕР: ПРИМИТИВЫ, СМЕЩЕНИЯ И ПРОЕКЦИЯ
@@ -270,7 +272,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     Outer, линии независимые. RowNormal=1 направлен влево от MainAxis; луч проекции (0,1) пересекает
 '     ProjectedAxis. Примеры можно поместить в тот же класс и вызвать вместо прямоугольного описания.
 '
-'       Private Function BuildAudit02OperationsDefinition() As CSectionDefinition
+'       Private Function TestBuildAudit02OperationsDefinition() As CSectionDefinition
 '           Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
 '           Set facade = New CSectionDefinitionBuilder: facade.Initialize "OperationsExample"
 '           Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 1000#, 1000#), Array(1000#, 0#, 200#, 600#)))
@@ -314,7 +316,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           facade.Diameter "Diameter", "Hole", "Hole", 0.5, "D"
 '           facade.Text "Note", "MovedA", "Учебный пример"
 '           facade.RebarRowLabel "Bottom", "Main", 0#, -1#
-'           Set BuildAudit02OperationsDefinition = facade.Finish
+'           Set TestBuildAudit02OperationsDefinition = facade.Finish
 '       End Function
 '
 '

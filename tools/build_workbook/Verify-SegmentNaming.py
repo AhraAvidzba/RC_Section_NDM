@@ -8,9 +8,9 @@ from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
 D = ROOT / 'docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16'
-MATRICES = ['DumpCircleRecipeMatrix', 'DumpRectanglesRecipeMatrix', 'DumpRoundedRecipeMatrix',
-            'DumpHollowRecipeMatrix', 'DumpHollowRecipeEdgeMatrix', 'DumpRecipeRuleContracts']
-PLOTS = ['DumpCircleRecipePreview', 'DumpRectanglesRecipePreview', 'DumpRoundedRecipePreview', 'DumpHollowRecipePreview']
+MATRICES = ['TestDumpCircleRecipeMatrix', 'TestDumpRectanglesRecipeMatrix', 'TestDumpRoundedRecipeMatrix',
+            'TestDumpHollowRecipeMatrix', 'TestDumpHollowRecipeEdgeMatrix', 'TestDumpRecipeRuleContracts']
+PLOTS = ['TestDumpCircleRecipePreview', 'TestDumpRectanglesRecipePreview', 'TestDumpRoundedRecipePreview', 'TestDumpHollowRecipePreview']
 
 
 def data(name):

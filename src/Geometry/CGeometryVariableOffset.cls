@@ -37,24 +37,23 @@ Friend Function Build(ByRef original() As TRegionEdge, ByRef distances() As Doub
             radius = Sqr((original(i).X1 - original(i).CenterX) ^ 2 + (original(i).Y1 - original(i).CenterY) ^ 2)
             If radius - Sgn(original(i).Sweep) * distances(i) <= TOL Then GoTo NextSource
         End If
-        kept = kept + 1: sourceIndex(kept) = i
+        kept = kept + 1: sourceIndex(kept) = i ' После удаления дуг сохраняем номера исходных участков для направлений и адресов ошибок.
         ShiftEdge original(i), distances(i), shifted(kept), sourceReference
 NextSource:
     Next i
     If kept = 0 Then
-        ' Здесь исчезли все дуги; параметры первой поясняют, почему контур построить нельзя.
-        radius = Sqr((original(1).X1 - original(1).CenterX) ^ 2 + (original(1).Y1 - original(1).CenterY) ^ 2)
+        radius = Sqr((original(1).X1 - original(1).CenterX) ^ 2 + (original(1).Y1 - original(1).CenterY) ^ 2) ' Здесь исчезли все дуги; параметры первой поясняют, почему контур построить нельзя.
         Fail "При заданных отступах проверочный контур исчез целиком. " & _
             "Исходный радиус первой дуги: " & CStr(radius) & " мм; полный нормальный отступ внутрь этой дуги: " & _
             CStr(Sgn(original(1).Sweep) * distances(1)) & " мм. Уменьшите отступы рядов.", sourceReference
     End If
     For i = 1 To kept
-        following = i Mod kept + 1
+        following = i Mod kept + 1 ' Следующий сохранившийся участок; последний соединяется с первым.
         If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, sourceIndex(i), sourceIndex(following), sourceIndex(i))
         If shifted(i).Sweep = 0# And shifted(following).Sweep = 0# Then JoinLines shifted(i), shifted(following)
     Next i
     For i = 1 To kept
-        following = i Mod kept + 1
+        following = i Mod kept + 1 ' Следующий сохранившийся участок; последний соединяется с первым.
         If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, _
             sourceIndex((i + kept - 2) Mod kept + 1), sourceIndex(i), sourceIndex(following))
         If shifted(i).Sweep = 0# Then
@@ -117,7 +116,7 @@ Friend Sub ShiftEdge(ByRef original As TRegionEdge, ByVal distance As Double, By
         result.Y1 = original.Y1 + tx * distance: result.Y2 = original.Y2 + tx * distance
     Else
         radius = Sqr((original.X1 - original.CenterX) ^ 2 + (original.Y1 - original.CenterY) ^ 2)
-        radialScale = (radius - Sgn(original.Sweep) * distance) / radius
+        radialScale = (radius - Sgn(original.Sweep) * distance) / radius ' Левая нормаль уменьшает радиус дуги против часовой стрелки и увеличивает радиус обратной дуги.
         If radialScale <= TOL / radius Then Fail "При заданном отступе радиус проверочной дуги становится нулевым или отрицательным. " & _
             "Исходный радиус: " & CStr(radius) & " мм; полный отступ внутрь дуги: " & CStr(Sgn(original.Sweep) * distance) & " мм. " & _
             "Уменьшите отступ дополнительного ряда или увеличьте радиус скругления.", sourceReference
@@ -134,7 +133,7 @@ Private Sub JoinLines(ByRef first As TRegionEdge, ByRef second As TRegionEdge)
     Dim ax As Double, ay As Double, bx As Double, by As Double, cross As Double, parameter As Double
     ax = first.X2 - first.X1: ay = first.Y2 - first.Y1
     bx = second.X2 - second.X1: by = second.Y2 - second.Y1
-    cross = ax * by - ay * bx
+    cross = ax * by - ay * bx ' Определитель направлений; близкий к нулю означает параллельность.
     If Abs(cross) <= GEOM_PARAMETER_TOLERANCE * Sqr((ax * ax + ay * ay) * (bx * bx + by * by)) Then Exit Sub
     parameter = ((second.X1 - first.X1) * by - (second.Y1 - first.Y1) * bx) / cross
     first.X2 = first.X1 + parameter * ax: first.Y2 = first.Y1 + parameter * ay
@@ -147,7 +146,7 @@ Friend Function EdgeArea(ByRef edge As TRegionEdge) As Double
     EdgeArea = (edge.X1 * edge.Y2 - edge.X2 * edge.Y1) / 2#
     If edge.Sweep <> 0# Then
         radiusSquared = (edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2
-        EdgeArea = EdgeArea + radiusSquared * (edge.Sweep - Sin(edge.Sweep)) / 2#
+        EdgeArea = EdgeArea + radiusSquared * (edge.Sweep - Sin(edge.Sweep)) / 2# ' К площади под хордой добавляется знаковая площадь кругового сегмента, мм2.
     End If
 End Function
 

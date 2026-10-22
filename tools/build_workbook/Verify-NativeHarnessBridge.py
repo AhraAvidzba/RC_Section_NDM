@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 PATTERN = r'(?ms)^={100}\r?\nCOMPONENT: ([^\r\n]+)\r?\nTYPE: (\d+)\r?\nLINES: (\d+)\r?\n={100}\r?\n(.*?)(?=^={100}\r?\nCOMPONENT: |\Z)'
-BLOCK = r'(?ms)^Private Sub CheckNativeFullExport\(.*?^End Sub\b'
+BLOCK = r'(?ms)^Private Sub TestCheckNativeFullExport\(.*?^End Sub\b'
 
 
 def digest(path):
@@ -63,17 +63,17 @@ def main():
     callers = []
     for name, (_, body) in after.items():
         for line in body.splitlines():
-            if 'CheckNativeFullExport' in line and not line.startswith('Private Sub '):
+            if 'TestCheckNativeFullExport' in line and not line.startswith('Private Sub '):
                 callers.append({'component': name, 'line': line.strip()})
     if len(callers) != 1 or callers[0]['component'] != 'modTestContourMesh':
         errors.append('Unexpected native-check callers')
     native_entry = re.search(r'(?ms)^Public Function RunNativeContourMeshTests\(.*?^End Function\b', after['modTestContourMesh'][1])
-    if not native_entry or 'CheckNativeFullExport doc, imported' not in native_entry.group():
+    if not native_entry or 'TestCheckNativeFullExport doc, imported' not in native_entry.group():
         errors.append('Caller is not isolated in the native-only entrypoint')
     result = {'status': 'PASS' if not errors else 'FAIL', 'testedWorkbookSHA256': digest(args.before_book),
               'releaseWorkbookSHA256': digest(args.after_book), 'beforeDumpSHA256': digest(args.before_dump),
               'afterDumpSHA256': digest(args.after_dump), 'components': len(after), 'changed': changed,
-              'changedMethod': 'modTestContourMesh.CheckNativeFullExport', 'productionUnchanged': not errors,
+              'changedMethod': 'modTestContourMesh.TestTestCheckNativeFullExport', 'productionUnchanged': not errors,
               'unchangedOtherMethods': not errors, 'callers': callers, 'errors': errors,
               'normalization': 'CRLF, trailing blank lines, identifier case; strings/comments preserved'}
     args.report.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

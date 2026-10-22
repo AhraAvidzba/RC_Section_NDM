@@ -38,7 +38,7 @@ Private mCandidateCount As Long ' Число проверяемых област
 Private mZones() As CConcreteRegion ' Снимки той же геометрии, площадь которой пойдет в формулу.
 Private mRows() As Variant ' Для каждой проверяемой области храним номера включённых арматурных групп и их рядов.
 Private mAnchorGroup() As Long, mStressBar() As Long ' Группа, задающая область, и стержень, задающий расчётное напряжение.
-Private mBetaDiameterSum() As Double ' Сумма β*d по стержням, включённым в проверяемую область, мм.
+Private mBetaDiameterSum() As Double ' Сумма beta*d по стержням, включённым в проверяемую область, мм.
 Private mSideDiameter() As Double, mRowDiameter() As Double ' Диаметры для определения боковых границ и радиуса ряда, мм.
 Private mSideRadius() As Double, mNormalRadius() As Double ' Радиусы взаимодействия вдоль нейтральной линии и по нормали к ней, мм.
 Private mLeftDistance() As Double, mRightDistance() As Double ' Расстояния от центра определяющей группы до левой и правой границ области, мм, до отсечения по бетону.
@@ -116,9 +116,7 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
         mStressBar(1) = MaximumStressBar(0): mAnchorGroup(1) = mBarGroup(mStressBar(1))
         StoreIncludedGroups 1, included, rows, rowCount
     Else
-        ' [NDM] Проверяем область взаимодействия для каждой группы растянутых стержней.
-        ' Так общий расчёт не требует отдельного поиска наружного ряда для каждой формы сечения.
-        For i = 1 To mCandidateCount: PrepareAnchor i, multiplier: Next i
+        For i = 1 To mCandidateCount: PrepareAnchor i, multiplier: Next i ' [NDM] Проверяем область взаимодействия для каждой группы растянутых стержней. Так общий расчёт не требует отдельного поиска наружного ряда для каждой формы сечения.
     End If
 End Sub
 
@@ -147,7 +145,7 @@ Private Sub BuildGroups(ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal 
     Dim count As Long, parent() As Long, i As Long, j As Long, root As Long, otherRoot As Long
     Dim strain As Double, gap As Double, groups As Object, group As Long
     count = mSection.RebarCount
-    ReDim parent(1 To count): ReDim mBarGroup(1 To count): ReDim mBarStress(1 To count)
+    ReDim parent(1 To count): ReDim mBarGroup(1 To count): ReDim mBarStress(1 To count) ' parent хранит дерево связности: 0 исключает стержень, положительный индекс указывает представителя группы.
     ReDim mBarStrain(1 To count): ReDim mBarDiameter(1 To count): ReDim mBarArea(1 To count): ReDim mBarID(1 To count)
     For i = 1 To count
         mBarID(i) = mSection.RebarID(i): mBarDiameter(i) = mSection.RebarDiameter(i): mBarArea(i) = mSection.RebarArea(i)
@@ -168,7 +166,7 @@ Private Sub BuildGroups(ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal 
                         (mSection.RebarDiameter(i) + mSection.RebarDiameter(j)) / 2#
                     If gap <= mGapTolerance + LENGTH_TOL Then
                         root = GroupRoot(parent, i): otherRoot = GroupRoot(parent, j)
-                        If root < otherRoot Then parent(otherRoot) = root Else parent(root) = otherRoot
+                        If root < otherRoot Then parent(otherRoot) = root Else parent(root) = otherRoot ' Объединяем связные группы со стабильным представителем — меньшим индексом элемента модели.
                     End If
                 End If
             Next j
@@ -238,12 +236,11 @@ Private Sub AssignRows(ByRef included() As Boolean, ByRef rows() As Long, ByRef 
         If rowCount = 0 Then
             rowCount = 1: firstN = mGroupN(group)
         ElseIf Not mCentralTension And mGroupN(group) - firstN > mRowTolerance + LENGTH_TOL Then
-            rowCount = rowCount + 1: firstN = mGroupN(group)
+            rowCount = rowCount + 1: firstN = mGroupN(group) ' Новый ряд отсчитывается от первой группы, чтобы цепочка близких соседей не объединила удалённые ряды.
         End If
         rows(group) = rowCount
     Next i
-    ' Меняем только номера, не состав рядов и не выбор физического опорного ряда.
-    For i = 1 To mGroupCount
+    For i = 1 To mGroupCount ' Меняем только номера, не состав рядов и не выбор физического опорного ряда.
         If included(i) Then rows(i) = rowCount + 1 - rows(i)
     Next i
 End Sub
@@ -273,9 +270,7 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double)
     SideDistances anchor, mSideRadius(anchor), left, right
     mLeftDistance(anchor) = left: mRightDistance(anchor) = right
     Set wall = mQuery.ConnectedRegionAtPoint(mDomain, mGroupX(anchor), mGroupY(anchor))
-    ' Сначала задаем боковые границы. Отверстия вычитаются только на своих
-    ' местах; другую стенку исключаем лишь при разрыве материала в полосе.
-    mQuery.ProjectionBounds wall, mNx, mNy, minN, maxN
+    mQuery.ProjectionBounds wall, mNx, mNy, minN, maxN ' Сначала задаем боковые границы. Отверстия вычитаются только на своих местах; другую стенку исключаем лишь при разрыве материала в полосе.
     Set wall = mQuery.ClipWindow(wall, mNx, mNy, minN, maxN, mGroupT(anchor) - left, mGroupT(anchor) + right)
     Set wall = mQuery.ConnectedRegionAtPoint(wall, mGroupX(anchor), mGroupY(anchor))
     ReDim included(1 To mGroupCount)
@@ -285,9 +280,7 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double)
             mQuery.ContainsPoint(wall, mGroupX(i), mGroupY(i)))
     Next i
     AssignRows included, rows, rowCount
-    ' Площадь ряда включает полный состав принятых по центру групп, без beta.
-    ' Это предварительные ряды боковой полосы до внутреннего отсечения.
-    ReDim rowAreas(1 To rowCount): ReDim rowN(1 To rowCount)
+    ReDim rowAreas(1 To rowCount): ReDim rowN(1 To rowCount) ' Площадь ряда включает полный состав принятых по центру групп, без beta. Это предварительные ряды боковой полосы до внутреннего отсечения.
     For i = 1 To mGroupCount
         If included(i) Then
             rowAreas(rows(i)) = rowAreas(rows(i)) + mGroupArea(i)
@@ -309,18 +302,11 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double)
     If lowerN < mNeutralN Then lowerN = mNeutralN
     Set region = mQuery.ClipWindow(wall, mNx, mNy, lowerN, maxN, mGroupT(anchor) - left, mGroupT(anchor) + right)
     Set region = mQuery.ConnectedRegionAtPoint(region, mGroupX(anchor), mGroupY(anchor))
-    ' Группа неделима: центр внутри/на границе принимает весь исходный состав.
-    ' Положение отдельных осей относительно границы участка его не изменяет.
-    For i = 1 To mGroupCount
+    For i = 1 To mGroupCount ' Группа неделима: центр внутри/на границе принимает весь исходный состав. Положение отдельных осей относительно границы участка его не изменяет.
         If included(i) Then included(i) = mQuery.ContainsPoint(region, mGroupX(i), mGroupY(i))
     Next i
-    ' После выбора полного опорного ряда некоторые исходные группы могут оказаться
-    ' вне своей окончательной области взаимодействия. Для такой группы формула
-    ' не вызывается; остальные области продолжают проверяться без ошибки физического НДС.
-    If Not included(anchor) Or region.Area <= LENGTH_TOL Then Exit Sub
-    ' Ряд за окончательной внутренней границей больше не участвует ни в
-    ' знаменателе, ни в нумерации расшифровки сохраненного результата.
-    AssignRows included, rows, rowCount
+    If Not included(anchor) Or region.Area <= LENGTH_TOL Then Exit Sub ' Группа вне своей окончательной области не проверяется формулой; это не ошибка физического НДС других групп.
+    AssignRows included, rows, rowCount ' Ряд за окончательной внутренней границей больше не участвует ни в знаменателе, ни в нумерации расшифровки сохраненного результата.
     mReferenceRow(anchor) = rows(referenceGroup)
     ' Пять базовых пар P/Q сохраняются для проверки происхождения границ.
     ' Между ними область уже обрезана по всем настоящим граням и дугам:
@@ -350,9 +336,7 @@ Private Sub SideDistances(ByVal anchor As Long, ByVal radius As Double, ByRef le
             End If
         End If
     Next i
-    ' Равенство порогу относится к ограниченной ветке, без допуска,
-    ' подменяющего пользовательский коэффициент или геометрический шаг.
-    If leftSpacing > 0# Then
+    If leftSpacing > 0# Then ' Равенство порогу относится к ограниченной ветке, без допуска, подменяющего пользовательский коэффициент или геометрический шаг.
         If leftSpacing / Sqr(leftSquared) >= mNeighborRatioLimit Then left = MinValue(radius, leftSpacing / 2#)
     End If
     If rightSpacing > 0# Then
@@ -640,9 +624,7 @@ End Sub
 ' Геометрия возвращается копией; сведения о стержнях и настройках уже сохранены.
 Friend Sub Freeze()
     mFrozen = True
-    ' Все необходимые данные уже скопированы. Освобождаем ссылки на модель
-    ' и временную общую бетонную область, чтобы результаты отдельных сочетаний их не удерживали.
-    Set mSection = Nothing: Set mQuery = Nothing: Set mDomain = Nothing
+    Set mSection = Nothing: Set mQuery = Nothing: Set mDomain = Nothing ' Все необходимые данные уже скопированы. Освобождаем ссылки на модель и временную общую бетонную область, чтобы результаты отдельных сочетаний их не удерживали.
 End Sub
 
 ' Запрещает изменение подготовленных данных, уже использованных в результате.

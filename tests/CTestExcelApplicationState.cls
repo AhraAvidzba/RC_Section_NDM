@@ -18,81 +18,94 @@ Private mEvents As Boolean ' Текущее подставное значени�
 Private mAlerts As Boolean ' Текущее подставное значение показа предупреждений.
 Private mCalculation As Long ' Текущий подставной режим пересчёта Excel.
 
-' ДЛЯ ТЕСТОВ: задаёт исходный автоматический пересчёт и включённые настройки Excel.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' задаёт исходный автоматический пересчёт и включённые настройки Excel.
 Private Sub Class_Initialize()
     mCancel = 1: mScreen = True: mEvents = True: mAlerts = True
     mCalculation = -4105: FaultNumber = 1004
 End Sub
 
-' ДЛЯ ТЕСТОВ: вызывает заданную ошибку чтения выбранного свойства.
-Private Sub BeforeGet(ByVal name As String)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' вызывает заданную ошибку чтения выбранного свойства.
+Private Sub TestBeforeGet(ByVal name As String)
     If GetterFault = name Then Err.Raise 1004, "CTestExcelApplicationState", "get " & name
 End Sub
 
-' ДЛЯ ТЕСТОВ: вызывает ошибку записи и уменьшает число оставшихся отказов, если оно положительно.
-Private Sub BeforeSet(ByVal name As String)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' вызывает ошибку записи и уменьшает число оставшихся отказов, если оно положительно.
+Private Sub TestBeforeSet(ByVal name As String)
     If FaultProperty = name And FaultsRemaining <> 0 Then
         If FaultsRemaining > 0 Then FaultsRemaining = FaultsRemaining - 1
         Err.Raise FaultNumber, "CTestExcelApplicationState", "set " & name
     End If
 End Sub
 
-' ДЛЯ ТЕСТОВ: возвращает режим прерывания макроса или заданную ошибку чтения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает режим прерывания макроса или заданную ошибку чтения.
 Public Property Get EnableCancelKey() As Long
-    BeforeGet "EnableCancelKey"
+    TestBeforeGet "EnableCancelKey"
     EnableCancelKey = mCancel
 End Property
 
-' ДЛЯ ТЕСТОВ: сохраняет режим прерывания макроса после проверки отказа записи.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сохраняет режим прерывания макроса после проверки отказа записи.
 Public Property Let EnableCancelKey(ByVal value As Long)
-    BeforeSet "EnableCancelKey"
+    TestBeforeSet "EnableCancelKey"
     mCancel = value
 End Property
 
-' ДЛЯ ТЕСТОВ: возвращает состояние обновления экрана или заданную ошибку чтения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает состояние обновления экрана или заданную ошибку чтения.
 Public Property Get ScreenUpdating() As Boolean
-    BeforeGet "ScreenUpdating"
+    TestBeforeGet "ScreenUpdating"
     ScreenUpdating = mScreen
 End Property
 
-' ДЛЯ ТЕСТОВ: сохраняет состояние обновления экрана после проверки отказа записи.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сохраняет состояние обновления экрана после проверки отказа записи.
 Public Property Let ScreenUpdating(ByVal value As Boolean)
-    BeforeSet "ScreenUpdating"
+    TestBeforeSet "ScreenUpdating"
     mScreen = value
 End Property
 
-' ДЛЯ ТЕСТОВ: возвращает состояние обработки событий или заданную ошибку чтения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает состояние обработки событий или заданную ошибку чтения.
 Public Property Get EnableEvents() As Boolean
-    BeforeGet "EnableEvents"
+    TestBeforeGet "EnableEvents"
     EnableEvents = mEvents
 End Property
 
-' ДЛЯ ТЕСТОВ: сохраняет состояние обработки событий после проверки отказа записи.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сохраняет состояние обработки событий после проверки отказа записи.
 Public Property Let EnableEvents(ByVal value As Boolean)
-    BeforeSet "EnableEvents"
+    TestBeforeSet "EnableEvents"
     mEvents = value
 End Property
 
-' ДЛЯ ТЕСТОВ: возвращает состояние предупреждений Excel или заданную ошибку чтения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает состояние предупреждений Excel или заданную ошибку чтения.
 Public Property Get DisplayAlerts() As Boolean
-    BeforeGet "DisplayAlerts"
+    TestBeforeGet "DisplayAlerts"
     DisplayAlerts = mAlerts
 End Property
 
-' ДЛЯ ТЕСТОВ: сохраняет состояние предупреждений Excel после проверки отказа записи.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сохраняет состояние предупреждений Excel после проверки отказа записи.
 Public Property Let DisplayAlerts(ByVal value As Boolean)
-    BeforeSet "DisplayAlerts"
+    TestBeforeSet "DisplayAlerts"
     mAlerts = value
 End Property
 
-' ДЛЯ ТЕСТОВ: возвращает режим пересчёта или заданную ошибку чтения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает режим пересчёта или заданную ошибку чтения.
 Public Property Get Calculation() As Long
-    BeforeGet "Calculation"
+    TestBeforeGet "Calculation"
     Calculation = mCalculation
 End Property
 
-' ДЛЯ ТЕСТОВ: сохраняет режим пересчёта после проверки отказа записи.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сохраняет режим пересчёта после проверки отказа записи.
 Public Property Let Calculation(ByVal value As Long)
-    BeforeSet "Calculation"
+    TestBeforeSet "Calculation"
     mCalculation = value
 End Property

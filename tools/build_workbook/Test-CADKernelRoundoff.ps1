@@ -37,9 +37,9 @@ try{
  foreach($version in @('A','B')){
   $prefix="'"+$books[$version].Name+"'!"
   Write-Output ('PREPARE_RECTANGLE: '+$version)
-  [void]$excel.Run($prefix+'modTestPerformance.PrepareNativeCADRoundoffFixture')
+  [void]$excel.Run($prefix+'modTestPerformance.TestPrepareNativeCADRoundoffFixture')
   $docs[$version]=$acad.Documents.Add();$docs[$version].Activate()
-  $result=[string]$excel.Run($prefix+'modTestPerformance.MeasureNativeCADPerformance',$docs[$version],0)
+  $result=[string]$excel.Run($prefix+'modTestPerformance.TestMeasureNativeCADPerformance',$docs[$version],0)
   $parts=@{};foreach($part in $result -split ([string][char]30)){$pair=$part -split '=',2;if($pair.Count -eq 2){$parts[$pair[0]]=$pair[1]}}
   $parts.signature | Set-Content -LiteralPath (Join-Path $directory ($version+'.geometry.txt')) -Encoding UTF8
   $measurements+=@{Version=$version;ExportSeconds=$parts.export;ImportSeconds=$parts.import;Concrete=$parts.concrete;Rebar=$parts.rebar;Entities=$parts.entities}
@@ -50,7 +50,7 @@ try{
   foreach($version in @('A','B')){
    Write-Output ('CALCULATE_IMPORTED: '+$version+'; extension='+$mode+'; cases=6')
    $watch=[Diagnostics.Stopwatch]::StartNew()
-   $result=[string]$excel.Run($prefix+'modTestPerformance.MeasureCADRoundoffCalculation',$docs[$version],$mode)
+   $result=[string]$excel.Run($prefix+'modTestPerformance.TestMeasureCADRoundoffCalculation',$docs[$version],$mode)
    $watch.Stop()
    $result | Set-Content -LiteralPath (Join-Path $directory ($version+'.'+$mode+'.calc.txt')) -Encoding UTF8
    Write-Output ('CALCULATION_COMPLETE: '+$version+'; extension='+$mode+'; seconds='+$watch.Elapsed.TotalSeconds)

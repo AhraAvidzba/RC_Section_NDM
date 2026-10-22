@@ -27,8 +27,8 @@ Private Sub Class_Initialize()
     RegisterRecipe "HollowRectangle", New CSectionRecipeHollowRectangle, Array("rngHollowRectangleGeometry")
 End Sub
 
-' Пустой массив таблиц допустим для программно заданного рецепта.
-' Массив строк копируется; live Excel-объекты в метаданные не попадают.
+' Регистрирует уникальный TypeID, его рецепт и список именованных входных таблиц.
+' Пустой массив таблиц допустим для программного рецепта без пользовательского ввода.
 Public Sub RegisterRecipe(ByVal typeID As String, ByVal recipe As ISectionRecipe, ByVal tableNames As Variant)
     typeID = Trim$(typeID)
     If Len(typeID) = 0 Or recipe Is Nothing Then SectionRecipeError "CSectionTypeRegistry", "Не заданы тип и рецепт."

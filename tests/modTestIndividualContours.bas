@@ -13,7 +13,8 @@ Private Type TPerformanceBytes
     Value(0 To 7) As Byte ' Восемь исходных байтов Double.
 End Type
 
-' ДЛЯ ТЕСТОВ: отдельный верх, все стороны, нечётные позиции и обращённые линии.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' отдельный верх, все стороны, нечётные позиции и обращённые линии.
 Public Function RunIndividualContourTests() As String
     Dim allSides As Long, reverse As Long, everySecond As Long, location As Long, disabled As Long
     mPassed = 0: mFailed = 0: mReport = ""
@@ -39,12 +40,13 @@ Public Function RunIndividualContourTests() As String
     Next location
     GoTo Finished
 Failed:
-    Check "individual.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "individual.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunIndividualContourTests = mReport & "TOTAL_INDIVIDUAL_CONTOURS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: время всей сборки геометрии и рядов при 100/1000/5000 основных стержней.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' время всей сборки геометрии и рядов при 100/1000/5000 основных стержней.
 ' Измерение заканчивается до проверок и вывода; сетка и поиск НДС сюда не входят.
 Public Function RunIndividualContourPerformanceTests() As String
     Dim n As Variant, repeat As Long, start As Double, seconds As Double, facade As CSectionDefinitionBuilder, path As CGeometryPath
@@ -65,24 +67,24 @@ Public Function RunIndividualContourPerformanceTests() As String
             options.SourceReference = "ContourPerformance[R2]": facade.RebarDependent "R2", "Main", 8#, options
             Set options = New CRebarRuleOptions: options.ValidateRowOffset = True: options.NormalOffset = -200#
             options.SourceReference = "ContourPerformance[R3]": facade.RebarDependent "R3", "Main", 6#, options
-            Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = BuildLayout(definition, executor)
+            Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
             seconds = Timer - start: If seconds < 0# Then seconds = seconds + 86400#
             mReport = mReport & "PERF_ROW: n=" & CStr(n) & "; repeat=" & CStr(repeat) & "; seconds=" & CStr(seconds) & "; physical=" & CStr(layout.Count) & vbCrLf
-            Check "performance.physical.count", layout.Count = 3 * CLng(n)
-            Check "performance.no.merge", executor.MergedPositions = 0
-            Check "performance.no.skip", Not HasOffsetSkip(executor)
+            TestCheck "performance.physical.count", layout.Count = 3 * CLng(n)
+            TestCheck "performance.no.merge", executor.MergedPositions = 0
+            TestCheck "performance.no.skip", Not TestHasOffsetSkip(executor)
             For i = 1 To executor.PositionCount
                 If executor.PositionRuleID(i) <> "Main" Then
                     executor.TestCopyTransfer i, parent, rule: owner = executor.PositionPhysicalOwner(i)
-                    Near "performance.preserved.x", layout.X(owner), parent.X - rule.NormalOffset * parent.TangentY
-                    Near "performance.preserved.y", layout.Y(owner), parent.Y + rule.NormalOffset * parent.TangentX
+                    TestNear "performance.preserved.x", layout.X(owner), parent.X - rule.NormalOffset * parent.TangentY
+                    TestNear "performance.preserved.y", layout.Y(owner), parent.Y + rule.NormalOffset * parent.TangentX
                 End If
             Next i
             If repeat = 1 Then
                 ReDim lines(1 To layout.Count)
                 For i = 1 To layout.Count
-                    lines(i) = "PERF_BITS|" & CStr(n) & "|" & layout.BarID(i) & "|" & PerformanceBits(layout.X(i)) & "|" & _
-                        PerformanceBits(layout.Y(i)) & "|" & PerformanceBits(layout.Diameter(i))
+                    lines(i) = "PERF_BITS|" & CStr(n) & "|" & layout.BarID(i) & "|" & TestPerformanceBits(layout.X(i)) & "|" & _
+                        TestPerformanceBits(layout.Y(i)) & "|" & TestPerformanceBits(layout.Diameter(i))
                 Next i
                 mReport = mReport & Join(lines, vbCrLf) & vbCrLf
             End If
@@ -90,19 +92,21 @@ Public Function RunIndividualContourPerformanceTests() As String
     Next n
     GoTo Finished
 Failed:
-    Check "performance.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "performance.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunIndividualContourPerformanceTests = mReport & "TOTAL_INDIVIDUAL_CONTOUR_PERFORMANCE: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает исходные байты Double, не преобразуя число в округлённую строку.
-Private Function PerformanceBits(ByVal value As Double) As String
+Private Function TestPerformanceBits(ByVal value As Double) As String
     Dim number As TPerformanceReal, bytes As TPerformanceBytes, i As Long
     number.Value = value: LSet bytes = number
-    For i = 0 To 7: PerformanceBits = PerformanceBits & Right$("0" & Hex$(bytes.Value(i)), 2): Next i
+    For i = 0 To 7: TestPerformanceBits = TestPerformanceBits & Right$("0" & Hex$(bytes.Value(i)), 2): Next i
 End Function
 
-' ДЛЯ ТЕСТОВ: объединение соседних рядов сохраняет первого владельца и только фактические подписи.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' объединение соседних рядов сохраняет первого владельца и только фактические подписи.
 Public Function RunOffsetNeighborMergeTests() As String
     Dim kind As Long, reverse As Long, withMain As Long
     mPassed = 0: mFailed = 0: mReport = ""
@@ -117,12 +121,13 @@ Public Function RunOffsetNeighborMergeTests() As String
     TestNonAdjacentRows
     GoTo Finished
 Failed:
-    Check "neighbor.merge.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "neighbor.merge.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunOffsetNeighborMergeTests = mReport & "TOTAL_OFFSET_NEIGHBOR_MERGE: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: пример пользователя 300 x 500, R100, полные отступы сверху 60 и сбоку 20 мм.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' пример пользователя 300 x 500, R100, полные отступы сверху 60 и сбоку 20 мм.
 Public Function RunUserRoundedContourTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -134,12 +139,13 @@ Public Function RunUserRoundedContourTests() As String
     TestCollapsedUserCorners 120#, True
     GoTo Finished
 Failed:
-    Check "user.rounded.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "user.rounded.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunUserRoundedContourTests = mReport & "TOTAL_USER_ROUNDED_CONTOUR: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: недостающие метаданные, неоднозначный as и невозможный замкнутый контур.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' недостающие метаданные, неоднозначный as и невозможный замкнутый контур.
 Public Function RunIndividualContourFailureTests() As String
     Dim kind As Long, facade As CSectionDefinitionBuilder, boundary As CGeometryPath, path As CGeometryPath
     Dim options As CRebarRuleOptions, i As Long, id As String, definition As CSectionDefinition, link As TRebarContourLink
@@ -159,25 +165,26 @@ Public Function RunIndividualContourFailureTests() As String
             Set options = New CRebarRuleOptions: options.SourceReference = "IndividualFailure[Main," & id & "]"
             facade.RebarByCount id & ".Main", path.ID, 3, 10#, options
             If kind > 0 Then facade.RebarContour id & ".Main", "Outer", boundary.ID, IIf(kind = 1, 400#, 50#), id & ".Second", id & ".Third"
-            AddRows facade, id, -1#, IIf(kind = 2, 600#, 40#), IIf(kind = 2, 650#, 70#), False
+            TestAddRows facade, id, -1#, IIf(kind = 2, 600#, 40#), IIf(kind = 2, 650#, 70#), False
         Next i
         Set definition = facade.Finish
         If definition.RebarContourCount > 0 Then
             definition.CopyRebarContour 1, link
             link.MainRuleID = "ChangedCopy"
             definition.CopyRebarContour 1, link
-            Check "individual.metadata.copy.immutable", link.MainRuleID = "Side1.Main"
+            TestCheck "individual.metadata.copy.immutable", link.MainRuleID = "Side1.Main"
         End If
-        ExpectContourFailure definition, Choose(kind + 1, "RebarContour", "однозначно", "контур")
+        TestExpectContourFailure definition, Choose(kind + 1, "RebarContour", "однозначно", "контур")
     Next kind
     GoTo Finished
 Failed:
-    Check "individual.failure.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "individual.failure.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunIndividualContourFailureTests = mReport & "TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: реальные рецепты OneRect, TwoRect, PointedSection, HollowRectangle и Circle.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' реальные рецепты OneRect, TwoRect, PointedSection, HollowRectangle и Circle.
 Public Function RunIndividualContourWorkbookTests() As String
     Dim config As Object, saved As Variant, fixtures As Variant, fixture As String, table As Object, tableName As String
     Dim keyed As CSectionInputReader, keys As Variant, key As Variant, side As Long, scenario As Long, active As Boolean
@@ -186,59 +193,59 @@ Public Function RunIndividualContourWorkbookTests() As String
     Dim source As TRebarPosition, rule As TRebarRule, i As Long, owner As Long, expectedX As Double, expectedY As Double, top2 As Long, top3 As Long
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = "mm"
     fixtures = Array("Rectangle", "Rectangle", "LSection", "RoundedMixed", "HollowOffset", "HollowOffset", "Circle", "HollowOffset")
     For scenario = 0 To UBound(fixtures)
-        fixture = CStr(fixtures(scenario)): modTestShapeArchitecture.ConfigureShapeFixture fixture
+        fixture = CStr(fixtures(scenario)): modTestShapeArchitecture.TestConfigureShapeFixture fixture
         Select Case scenario
             Case 0, 1, 2
                 tableName = "rngRectanglesGeometry"
                 Set table = ThisWorkbook.Names(tableName).RefersToRange
-                FixtureInputCell(table, "General", "Shape").Value2 = IIf(scenario = 2, "TwoRect", "OneRect")
-                FixtureInputCell(table, "General", "B1").Value2 = IIf(scenario = 2, 1400#, 2400#)
-                FixtureInputCell(table, "General", "H1").Value2 = IIf(scenario = 2, 900#, 1800#)
-                FixtureInputCell(table, "General", "B2").Value2 = 2400#: FixtureInputCell(table, "General", "H2").Value2 = 800#
-                FixtureInputCell(table, "General", "XOffset").Value2 = 400#
+                TestFixtureInputCell(table, "General", "Shape").Value2 = IIf(scenario = 2, "TwoRect", "OneRect")
+                TestFixtureInputCell(table, "General", "B1").Value2 = IIf(scenario = 2, 1400#, 2400#)
+                TestFixtureInputCell(table, "General", "H1").Value2 = IIf(scenario = 2, 900#, 1800#)
+                TestFixtureInputCell(table, "General", "B2").Value2 = 2400#: TestFixtureInputCell(table, "General", "H2").Value2 = 800#
+                TestFixtureInputCell(table, "General", "XOffset").Value2 = 400#
             Case 3
                 tableName = "rngPointedSectionGeometry": Set table = ThisWorkbook.Names(tableName).RefersToRange
-                FixtureInputCell(table, "General", "B").Value2 = 2000#: FixtureInputCell(table, "General", "H").Value2 = 2400#
+                TestFixtureInputCell(table, "General", "B").Value2 = 2000#: TestFixtureInputCell(table, "General", "H").Value2 = 2400#
                 For Each key In Array("Left.", "Right.")
-                    FixtureInputCell(table, "General", CStr(key) & "W").Value2 = 400#
-                    FixtureInputCell(table, "General", CStr(key) & "R1").Value2 = 400#
-                    FixtureInputCell(table, "General", CStr(key) & "R2").Value2 = 400#
+                    TestFixtureInputCell(table, "General", CStr(key) & "W").Value2 = 400#
+                    TestFixtureInputCell(table, "General", CStr(key) & "R1").Value2 = 400#
+                    TestFixtureInputCell(table, "General", CStr(key) & "R2").Value2 = 400#
                 Next key
             Case 6
                 tableName = "rngCircleGeometry": Set table = ThisWorkbook.Names(tableName).RefersToRange
-                FixtureInputCell(table, "General", "D").Value2 = 2400#
+                TestFixtureInputCell(table, "General", "D").Value2 = 2400#
             Case Else
                 tableName = "rngHollowRectangleGeometry": Set table = ThisWorkbook.Names(tableName).RefersToRange
-                FixtureInputCell(table, "General", "B").Value2 = 2400#: FixtureInputCell(table, "General", "H").Value2 = 2400#
-                FixtureInputCell(table, "General", "R").Value2 = 300#
-                FixtureInputCell(table, "General", "Bo").Value2 = 800#: FixtureInputCell(table, "General", "Ho").Value2 = 800#
-                FixtureInputCell(table, "General", "Ro").Value2 = IIf(scenario = 4, 150#, 0#)
-                FixtureInputCell(table, "General", "Xo").Value2 = 0#: FixtureInputCell(table, "General", "Yo").Value2 = 0#
+                TestFixtureInputCell(table, "General", "B").Value2 = 2400#: TestFixtureInputCell(table, "General", "H").Value2 = 2400#
+                TestFixtureInputCell(table, "General", "R").Value2 = 300#
+                TestFixtureInputCell(table, "General", "Bo").Value2 = 800#: TestFixtureInputCell(table, "General", "Ho").Value2 = 800#
+                TestFixtureInputCell(table, "General", "Ro").Value2 = IIf(scenario = 4, 150#, 0#)
+                TestFixtureInputCell(table, "General", "Xo").Value2 = 0#: TestFixtureInputCell(table, "General", "Yo").Value2 = 0#
         End Select
-        Set keyed = FixtureInput(table.Value2): keys = keyed.RowKeys("Main"): side = 0
+        Set keyed = TestFixtureInput(table.Value2): keys = keyed.RowKeys("Main"): side = 0
         For Each key In keys
             side = side + 1
-            FixtureInputCell(table, "Main", CStr(key), "as").Value2 = IIf(scenario <= 1, 50#, 50# + 5# * side)
-            FixtureInputCell(table, "Main", CStr(key), "d").Value2 = 20#
-            If Left$(CStr(key), 7) <> "Opening" Then FixtureInputCell(table, "Main", CStr(key), "n").Value2 = IIf(scenario = 6, 12, 5)
-            FixtureInputCell(table, "Main", CStr(key), "s0").Value2 = IIf(scenario = 6, 0#, 150#)
-            FixtureInputCell(table, "Main", CStr(key), "s1").Value2 = IIf(scenario = 6, 0#, 150#)
+            TestFixtureInputCell(table, "Main", CStr(key), "as").Value2 = IIf(scenario <= 1, 50#, 50# + 5# * side)
+            TestFixtureInputCell(table, "Main", CStr(key), "d").Value2 = 20#
+            If Left$(CStr(key), 7) <> "Opening" Then TestFixtureInputCell(table, "Main", CStr(key), "n").Value2 = IIf(scenario = 6, 12, 5)
+            TestFixtureInputCell(table, "Main", CStr(key), "s0").Value2 = IIf(scenario = 6, 0#, 150#)
+            TestFixtureInputCell(table, "Main", CStr(key), "s1").Value2 = IIf(scenario = 6, 0#, 150#)
             active = (scenario <> 0 Or CStr(key) = "R1.Top")
             If scenario = 7 And (CStr(key) = "OpeningLeft" Or CStr(key) = "OpeningRight") Then
-                FixtureInputCell(table, "Main", CStr(key), "d").Value2 = 0#: active = False
+                TestFixtureInputCell(table, "Main", CStr(key), "d").Value2 = 0#: active = False
             End If
-            FixtureInputCell(table, "Extra", CStr(key), "d2").Value2 = IIf(active, 10#, 0#)
-            FixtureInputCell(table, "Extra", CStr(key), "d3").Value2 = IIf(active, 10#, 0#)
-            FixtureInputCell(table, "Extra", CStr(key), "a2").Value2 = IIf(scenario <= 1, 150#, 100#)
-            FixtureInputCell(table, "Extra", CStr(key), "a3").Value2 = 200#
-            FixtureInputCell(table, "Extra", CStr(key), "pos2").Value2 = "Stacked"
-            FixtureInputCell(table, "Extra", CStr(key), "pos3").Value2 = "Stacked"
-            FixtureInputCell(table, "Extra", CStr(key), "bind2").Value2 = "EachBar"
-            FixtureInputCell(table, "Extra", CStr(key), "bind3").Value2 = "EachBar"
+            TestFixtureInputCell(table, "Extra", CStr(key), "d2").Value2 = IIf(active, 10#, 0#)
+            TestFixtureInputCell(table, "Extra", CStr(key), "d3").Value2 = IIf(active, 10#, 0#)
+            TestFixtureInputCell(table, "Extra", CStr(key), "a2").Value2 = IIf(scenario <= 1, 150#, 100#)
+            TestFixtureInputCell(table, "Extra", CStr(key), "a3").Value2 = 200#
+            TestFixtureInputCell(table, "Extra", CStr(key), "pos2").Value2 = "Stacked"
+            TestFixtureInputCell(table, "Extra", CStr(key), "pos3").Value2 = "Stacked"
+            TestFixtureInputCell(table, "Extra", CStr(key), "bind2").Value2 = "EachBar"
+            TestFixtureInputCell(table, "Extra", CStr(key), "bind3").Value2 = "EachBar"
         Next key
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -246,8 +253,8 @@ Public Function RunIndividualContourWorkbookTests() As String
         fixture = settings.GetRequiredString("Geometry.Type")
         Set context = reader.Capture(ThisWorkbook, registry.RecipeTableNames(fixture), units)
         Set definition = registry.CreateDefinition(fixture, context)
-        Set executor = New CRebarRuleExecutor: Set layout = BuildLayout(definition, executor)
-        Check "recipe." & CStr(scenario) & ".created", layout.Count > 0
+        Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
+        TestCheck "recipe." & CStr(scenario) & ".created", layout.Count > 0
         top2 = 0: top3 = 0
         For i = 1 To executor.PositionCount
             definition.CopyRule definition.RuleIndex(executor.PositionRuleID(i)), rule
@@ -255,42 +262,44 @@ Public Function RunIndividualContourWorkbookTests() As String
                 executor.TestCopyTransfer i, source, rule: owner = executor.PositionPhysicalOwner(i)
                 expectedX = source.X + rule.TangentOffset * source.TangentX - rule.NormalOffset * source.TangentY
                 expectedY = source.Y + rule.TangentOffset * source.TangentY + rule.NormalOffset * source.TangentX
-                Near "recipe." & CStr(scenario) & ".preserve.x", layout.X(owner), expectedX
-                Near "recipe." & CStr(scenario) & ".preserve.y", layout.Y(owner), expectedY
+                TestNear "recipe." & CStr(scenario) & ".preserve.x", layout.X(owner), expectedX
+                TestNear "recipe." & CStr(scenario) & ".preserve.y", layout.Y(owner), expectedY
                 If rule.RuleID = "B1.as_1.Row2" Then top2 = top2 + 1
                 If rule.RuleID = "B1.as_1.Row3" Then top3 = top3 + 1
             End If
         Next i
         If scenario <= 1 Then
-            Check "recipe.OneRect.top2", top2 = IIf(scenario = 0, 5, 3)
-            Check "recipe.OneRect.top3", top3 = IIf(scenario = 0, 5, 3)
+            TestCheck "recipe.OneRect.top2", top2 = IIf(scenario = 0, 5, 3)
+            TestCheck "recipe.OneRect.top3", top3 = IIf(scenario = 0, 5, 3)
         End If
         mReport = mReport & "RECIPE_CASE: " & CStr(scenario) & "; " & fixture & "; bars=" & CStr(layout.Count) & vbCrLf & executor.DiagnosticsText
     Next scenario
     GoTo Finished
 Failed:
-    Check "individual.workbook.runtime.case" & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "individual.workbook.runtime.case" & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     RunIndividualContourWorkbookTests = mReport & "TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет причину, фактическую привязку полей и отсутствие маскировки ошибки пропусками.
-Private Sub ExpectContourFailure(ByVal definition As CSectionDefinition, ByVal expected As String)
+Private Sub TestExpectContourFailure(ByVal definition As CSectionDefinition, ByVal expected As String)
     Dim executor As CRebarRuleExecutor, layout As CRebarLayout, reason As String
     Set executor = New CRebarRuleExecutor
     On Error GoTo Rejected
-    Set layout = BuildLayout(definition, executor)
-    Check "individual.failure.must.reject", False
+    Set layout = TestBuildLayout(definition, executor)
+    TestCheck "individual.failure.must.reject", False
     Exit Sub
 Rejected:
     reason = Err.Description
-    Check "individual.failure.reason." & expected, InStr(1, reason, expected, vbTextCompare) > 0
-    Check "individual.failure.source", InStr(reason, "IndividualRectangle[Extra,") > 0 Or InStr(reason, "IndividualFailure[Main,") > 0
-    Check "individual.failure.not.mass.skip", Not HasOffsetSkip(executor)
+    TestCheck "individual.failure.reason." & expected, InStr(1, reason, expected, vbTextCompare) > 0
+    TestCheck "individual.failure.source", InStr(reason, "IndividualRectangle[Extra,") > 0 Or InStr(reason, "IndividualFailure[Main,") > 0
+    TestCheck "individual.failure.not.mass.skip", Not TestHasOffsetSkip(executor)
     mReport = mReport & "REJECTED: " & reason & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Верхние 150/200 мм не переносятся на соседние стороны без дополнительных рядов.
 ' При включении всех сторон крайние позиции проверяются по их собственным отступам.
 Private Sub TestRectangle(ByVal allSides As Boolean, ByVal reverse As Boolean, ByVal everySecond As Boolean)
@@ -319,30 +328,31 @@ Private Sub TestRectangle(ByVal allSides As Boolean, ByVal reverse As Boolean, B
         options.SourceReference = "IndividualRectangle[Main," & CStr(i) & "]"
         facade.RebarByCount ruleID & ".Main", path.ID, 5, 10#, options
         facade.RebarContour ruleID & ".Main", "Outer", boundary.ID, 50#, ruleID & ".Second", ruleID & ".Third"
-        If i = 1 Or allSides Then AddRows facade, ruleID, sign, 150#, 200#, everySecond
+        If i = 1 Or allSides Then TestAddRows facade, ruleID, sign, 150#, 200#, everySecond
     Next i
     Set definition = facade.Finish: Set executor = New CRebarRuleExecutor
-    Set layout = BuildLayout(definition, executor)
+    Set layout = TestBuildLayout(definition, executor)
     For i = 1 To executor.PositionCount
         owner = executor.PositionPhysicalOwner(i)
         If executor.PositionRuleID(i) = "Side1.Second" Then
-            row2 = row2 + 1: Near "rectangle.row2.y", layout.Y(owner), 600#
+            row2 = row2 + 1: TestNear "rectangle.row2.y", layout.Y(owner), 600#
         ElseIf executor.PositionRuleID(i) = "Side1.Third" Then
-            row3 = row3 + 1: Near "rectangle.row3.y", layout.Y(owner), 550#
+            row3 = row3 + 1: TestNear "rectangle.row3.y", layout.Y(owner), 550#
         End If
     Next i
     expected = 5: If allSides Or everySecond Then expected = 3
     If allSides And everySecond Then expected = 1
-    Check "rectangle.top.row2.count", row2 = expected
-    Check "rectangle.top.row3.count", row3 = expected
+    TestCheck "rectangle.top.row2.count", row2 = expected
+    TestCheck "rectangle.top.row3.count", row3 = expected
     If allSides Then
-        Check "rectangle.excluded.ends.diagnostic", HasOffsetSkip(executor)
-        Check "rectangle.excluded.ends.address", InStr(executor.DiagnosticsText, "IndividualRectangle[Extra,") > 0
+        TestCheck "rectangle.excluded.ends.diagnostic", TestHasOffsetSkip(executor)
+        TestCheck "rectangle.excluded.ends.address", InStr(executor.DiagnosticsText, "IndividualRectangle[Extra,") > 0
     Else
-        Check "rectangle.no.false.corner.skip", Not HasOffsetSkip(executor)
+        TestCheck "rectangle.no.false.corner.skip", Not TestHasOffsetSkip(executor)
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Пять позиций верха: оба конца, середины обеих дуг и середина линии.
 ' Верхние дополнительные ряды имеют 40/70 мм, боковые 60/90 мм, as также различны.
 Private Sub TestRoundedCorners(ByVal reverse As Boolean)
@@ -387,9 +397,9 @@ Private Sub TestRoundedCorners(ByVal reverse As Boolean)
             facade.RebarByCount ruleID & ".Main", path.ID, 3, 10#, options
         End If
         facade.RebarContour ruleID & ".Main", "Outer", boundary.ID, CDbl(distances(i - 1)), ruleID & ".Second", ruleID & ".Third"
-        If i = 1 Then AddRows facade, ruleID, sign, 40#, 70#, False Else AddRows facade, ruleID, sign, 60#, 90#, False
+        If i = 1 Then TestAddRows facade, ruleID, sign, 40#, 70#, False Else TestAddRows facade, ruleID, sign, 60#, 90#, False
     Next i
-    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = BuildLayout(definition, executor)
+    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
     For i = 1 To executor.PositionCount
         ruleID = executor.PositionRuleID(i)
         If ruleID = "Face1.Second" Or ruleID = "Face1.Third" Then
@@ -400,21 +410,22 @@ Private Sub TestRoundedCorners(ByVal reverse As Boolean)
             If reverse Then normal = -normal
             expectedX = x - normal * ty: expectedY = y + normal * tx
             owner = executor.PositionPhysicalOwner(i)
-            Near "rounded.retained.x", layout.X(owner), expectedX: Near "rounded.retained.y", layout.Y(owner), expectedY
+            TestNear "rounded.retained.x", layout.X(owner), expectedX: TestNear "rounded.retained.y", layout.Y(owner), expectedY
             executor.TestCopyTransfer i, parent, transfer
-            Check "rounded.owner.Main", parent.RuleIndex = definition.RuleIndex("Face1.Main")
+            TestCheck "rounded.owner.Main", parent.RuleIndex = definition.RuleIndex("Face1.Main")
             path.ResolveAnchor parent.X, parent.Y, segment, parameter
             expectedSegment = "Edge.TR"
             If source < 3 Then expectedSegment = IIf(reverse, "Corner.TL", "Corner.TR")
             If source > 3 Then expectedSegment = IIf(reverse, "Corner.TR", "Corner.TL")
-            Check "rounded.owner.segment", path.SourceSegmentID(path.SegmentIndex(segment)) = expectedSegment
+            TestCheck "rounded.owner.segment", path.SourceSegmentID(path.SegmentIndex(segment)) = expectedSegment
             mReport = mReport & "CORNER: " & CStr(reverse) & "; " & ruleID & "; source=" & CStr(source) & "; segment=" & expectedSegment & "; x=" & CStr(layout.X(owner)) & "; y=" & CStr(layout.Y(owner)) & vbCrLf
         End If
     Next i
-    Check "rounded.row2.all.five", row2 = 5: Check "rounded.row3.all.five", row3 = 5
-    Check "rounded.no.artificial.corner.skip", Not HasOffsetSkip(executor)
+    TestCheck "rounded.row2.all.five", row2 = 5: TestCheck "rounded.row3.all.five", row3 = 5
+    TestCheck "rounded.no.artificial.corner.skip", Not TestHasOffsetSkip(executor)
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' При совпадении Main с серединой сечения исходную сторону однозначно задаёт переданная нормаль.
 Private Sub TestMidplaneMetadata(ByVal sign As Double)
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
@@ -428,16 +439,17 @@ Private Sub TestMidplaneMetadata(ByVal sign As Double)
     Set options = New CRebarRuleOptions: options.NormalOffset = sign * 40#: options.ValidateRowOffset = True
     options.SourceReference = "MidplaneMetadata[Extra,2]"
     facade.RebarDependent "Second", "Main", 10#, options
-    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = BuildLayout(definition, executor)
+    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
     For i = 1 To executor.PositionCount
         If executor.PositionRuleID(i) = "Second" Then
-            count = count + 1: Near "midplane.explicit.normal.y", layout.Y(executor.PositionPhysicalOwner(i)), 400# + sign * 40#
+            count = count + 1: TestNear "midplane.explicit.normal.y", layout.Y(executor.PositionPhysicalOwner(i)), 400# + sign * 40#
         End If
     Next i
-    Check "midplane.explicit.normal.count", count = 3
-    Check "midplane.no.false.skip", Not HasOffsetSkip(executor)
+    TestCheck "midplane.explicit.normal.count", count = 3
+    TestCheck "midplane.no.false.skip", Not TestHasOffsetSkip(executor)
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет отдельные области двух наружных границ, двух отверстий и обоих дополнительных рядов.
 ' У первого отверстия верх смещён дополнительно, у второго остаётся только известный as.
 Private Sub TestIndependentContourDomains()
@@ -486,26 +498,27 @@ Private Sub TestIndependentContourDomains()
     a2 = definition.RuleIndex("Outer1.R2"): a3 = definition.RuleIndex("Outer1.R3")
     b2 = definition.RuleIndex("Outer2.R2"): b3 = definition.RuleIndex("Outer2.R3")
     hole2 = definition.RuleIndex("Opening1.R2"): hole3 = definition.RuleIndex("Opening1.R3")
-    Check "domain.first.outer.boundary", contours.Accepts(a2, 500#, 600#)
-    Check "domain.first.outer.above", Not contours.Accepts(a2, 500#, 650#)
-    Check "domain.second.outer.inside", contours.Accepts(b2, 2500#, 650#)
-    Check "domain.second.outer.above", Not contours.Accepts(b2, 2500#, 750#)
-    Check "domain.first.not.second", Not contours.Accepts(a2, 2500#, 650#)
-    Check "domain.second.not.first", Not contours.Accepts(b2, 500#, 550#)
-    Check "domain.first.opening.center", Not contours.Accepts(a2, 250#, 350#)
-    Check "domain.second.opening.center", Not contours.Accepts(a2, 750#, 350#)
-    Check "domain.first.opening.extra.offset", Not contours.Accepts(a2, 250#, 480#)
-    Check "domain.second.opening.only.as", contours.Accepts(a2, 750#, 480#)
-    Check "domain.opening.shares.outer.limit", Not contours.Accepts(hole2, 500#, 650#)
-    Check "domain.opening.own.boundary", contours.Accepts(hole2, 250#, 500#)
-    Check "domain.opening.sees.other.hole", Not contours.Accepts(hole2, 750#, 350#)
-    Check "domain.first.rows.independent", contours.Accepts(a2, 500#, 575#) And Not contours.Accepts(a3, 500#, 575#)
-    Check "domain.second.rows.independent", contours.Accepts(b2, 2500#, 675#) And Not contours.Accepts(b3, 2500#, 675#)
-    Check "domain.opening.third.boundary", contours.Accepts(hole3, 250#, 530#)
-    Check "domain.opening.rows.independent", contours.Accepts(hole2, 250#, 515#) And Not contours.Accepts(hole3, 250#, 515#)
+    TestCheck "domain.first.outer.boundary", contours.Accepts(a2, 500#, 600#)
+    TestCheck "domain.first.outer.above", Not contours.Accepts(a2, 500#, 650#)
+    TestCheck "domain.second.outer.inside", contours.Accepts(b2, 2500#, 650#)
+    TestCheck "domain.second.outer.above", Not contours.Accepts(b2, 2500#, 750#)
+    TestCheck "domain.first.not.second", Not contours.Accepts(a2, 2500#, 650#)
+    TestCheck "domain.second.not.first", Not contours.Accepts(b2, 500#, 550#)
+    TestCheck "domain.first.opening.center", Not contours.Accepts(a2, 250#, 350#)
+    TestCheck "domain.second.opening.center", Not contours.Accepts(a2, 750#, 350#)
+    TestCheck "domain.first.opening.extra.offset", Not contours.Accepts(a2, 250#, 480#)
+    TestCheck "domain.second.opening.only.as", contours.Accepts(a2, 750#, 480#)
+    TestCheck "domain.opening.shares.outer.limit", Not contours.Accepts(hole2, 500#, 650#)
+    TestCheck "domain.opening.own.boundary", contours.Accepts(hole2, 250#, 500#)
+    TestCheck "domain.opening.sees.other.hole", Not contours.Accepts(hole2, 750#, 350#)
+    TestCheck "domain.first.rows.independent", contours.Accepts(a2, 500#, 575#) And Not contours.Accepts(a3, 500#, 575#)
+    TestCheck "domain.second.rows.independent", contours.Accepts(b2, 2500#, 675#) And Not contours.Accepts(b3, 2500#, 675#)
+    TestCheck "domain.opening.third.boundary", contours.Accepts(hole3, 250#, 530#)
+    TestCheck "domain.opening.rows.independent", contours.Accepts(hole2, 250#, 515#) And Not contours.Accepts(hole3, 250#, 515#)
     mReport = mReport & "DOMAIN_SCOPE: outers=2; openings=2; rows=2,3; independent=True" & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет точные дуги и прямые перемычки, затем сохранение пяти стержней верхнего ряда.
 Private Sub TestUserRoundedContour(ByVal reverse As Boolean)
     Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec, boundary As CGeometryPath, whole As CGeometryPath, path As CGeometryPath
@@ -527,24 +540,24 @@ Private Sub TestUserRoundedContour(ByVal reverse As Boolean)
     Next i
     Set offset = New CGeometryVariableOffset: Set query = New CSectionGeometryQuery
     Set region = offset.Build(edges, distances, count, "UserRounded300x500[Top=60,Sides=20]")
-    Check "user.rounded.closed.one.loop", region.LoopCount = 1
+    TestCheck "user.rounded.closed.one.loop", region.LoopCount = 1
     region.CopyEdges edges, count
     For i = 1 To count
         edge = edges(i)
         If edge.Sweep <> 0# Then
             arcCount = arcCount + 1
             If Abs(edge.CenterY - 400#) < GEOM_BOUNDARY_TOLERANCE Then _
-                Near "user.rounded.upper.radius", Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2), 40#
+                TestNear "user.rounded.upper.radius", Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2), 40#
         ElseIf Abs(edge.Y1 - 400#) < GEOM_BOUNDARY_TOLERANCE And Abs(edge.Y2 - 400#) < GEOM_BOUNDARY_TOLERANCE Then
-            connectorCount = connectorCount + 1: Near "user.rounded.connector.length", Abs(edge.X2 - edge.X1), 40#
+            connectorCount = connectorCount + 1: TestNear "user.rounded.connector.length", Abs(edge.X2 - edge.X1), 40#
             mReport = mReport & "USER_CONNECTOR: (" & CStr(edge.X1) & "," & CStr(edge.Y1) & ") -> (" & CStr(edge.X2) & "," & CStr(edge.Y2) & ")" & vbCrLf
         End If
     Next i
-    Check "user.rounded.four.exact.arcs", arcCount = 4
-    Check "user.rounded.two.connectors", connectorCount = 2
-    Check "user.rounded.corner.inside", query.ContainsPoint(region, 200# + 40# / Sqr(2#), 400# + 40# / Sqr(2#), True)
-    Check "user.rounded.step.inside", query.ContainsPoint(region, 260#, 390#, True)
-    Check "user.rounded.step.outside", Not query.ContainsPoint(region, 260#, 410#, True)
+    TestCheck "user.rounded.four.exact.arcs", arcCount = 4
+    TestCheck "user.rounded.two.connectors", connectorCount = 2
+    TestCheck "user.rounded.corner.inside", query.ContainsPoint(region, 200# + 40# / Sqr(2#), 400# + 40# / Sqr(2#), True)
+    TestCheck "user.rounded.step.inside", query.ContainsPoint(region, 260#, 390#, True)
+    TestCheck "user.rounded.step.outside", Not query.ContainsPoint(region, 260#, 410#, True)
     If reverse Then
         Set boundary = boundary.Reversed.WithID("Boundary.Reverse"): facade.AddPath boundary
     End If
@@ -577,20 +590,21 @@ Private Sub TestUserRoundedContour(ByVal reverse As Boolean)
             facade.RebarContour "Side" & CStr(i), "Outer", boundary.ID, 20#, "", "", normalSign:=sign
         End If
     Next i
-    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = BuildLayout(definition, executor)
+    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
     For i = 1 To executor.PositionCount
         If executor.PositionRuleID(i) = "Top.Second" Then
             rowCount = rowCount + 1: owner = executor.PositionPhysicalOwner(i)
             executor.TestCopyTransfer i, parent, rule
-            Near "user.rounded.preserved.x", layout.X(owner), parent.X - rule.NormalOffset * parent.TangentY
-            Near "user.rounded.preserved.y", layout.Y(owner), parent.Y + rule.NormalOffset * parent.TangentX
+            TestNear "user.rounded.preserved.x", layout.X(owner), parent.X - rule.NormalOffset * parent.TangentY
+            TestNear "user.rounded.preserved.y", layout.Y(owner), parent.Y + rule.NormalOffset * parent.TangentX
         End If
     Next i
-    Check "user.rounded.all.five.retained", rowCount = 5
-    Check "user.rounded.no.false.skip", Not HasOffsetSkip(executor)
+    TestCheck "user.rounded.all.five.retained", rowCount = 5
+    TestCheck "user.rounded.no.false.skip", Not TestHasOffsetSkip(executor)
     mReport = mReport & "USER_CASE: reverse=" & CStr(reverse) & "; top.R2=" & CStr(rowCount) & "; R=40; connectors=40" & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Совпадение, частичное пересечение, касание и разные номера R2/R3 у соседних граней.
 ' Подписи формируются штатным построителем из физического CRebarLayout.
 Private Sub TestOffsetNeighborMerge(ByVal kind As Long, ByVal rightFirst As Boolean, ByVal withMain As Boolean)
@@ -625,41 +639,41 @@ Private Sub TestOffsetNeighborMerge(ByVal kind As Long, ByVal rightFirst As Bool
         options.AnnotationGroup = id: options.SourceReference = "NeighborMerge[Extra," & id & "]"
         facade.RebarDependent ruleID, id & ".Main", diameter, options
     Next item
-    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = BuildLayout(definition, executor)
-    Check "neighbor.actual.bar.count", layout.Count = IIf(kind = 2, 4, 3)
-    Check "neighbor.merged.counter", executor.MergedPositions = IIf(kind = 2, 0, 1)
-    Check "neighbor.actual.overlaps", executor.BarOverlaps = 0
+    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
+    TestCheck "neighbor.actual.bar.count", layout.Count = IIf(kind = 2, 4, 3)
+    TestCheck "neighbor.merged.counter", executor.MergedPositions = IIf(kind = 2, 0, 1)
+    TestCheck "neighbor.actual.overlaps", executor.BarOverlaps = 0
     expectedOwner = IIf(rightFirst, "Right", "Top"): expectedDiameter = IIf(rightFirst, 20#, 16#)
     If kind <> 2 Then
         For i = 1 To executor.PositionCount
             If InStr(executor.PositionRuleID(i), ".Main") = 0 Then
                 If owner = 0 Then owner = executor.PositionPhysicalOwner(i)
-                Check "neighbor.same.physical.owner", executor.PositionPhysicalOwner(i) = owner
+                TestCheck "neighbor.same.physical.owner", executor.PositionPhysicalOwner(i) = owner
             End If
         Next i
-        Near "neighbor.first.diameter", layout.Diameter(owner), expectedDiameter
-        Check "neighbor.first.annotation.group", layout.BarAnnotationGroupName(owner) = expectedOwner
+        TestNear "neighbor.first.diameter", layout.Diameter(owner), expectedDiameter
+        TestCheck "neighbor.first.annotation.group", layout.BarAnnotationGroupName(owner) = expectedOwner
         If rightFirst Then
-            Near "neighbor.first.x", layout.X(owner), 800#: Near "neighbor.first.y", layout.Y(owner), y
+            TestNear "neighbor.first.x", layout.X(owner), 800#: TestNear "neighbor.first.y", layout.Y(owner), y
         Else
-            Near "neighbor.first.x", layout.X(owner), x: Near "neighbor.first.y", layout.Y(owner), 600#
+            TestNear "neighbor.first.x", layout.X(owner), x: TestNear "neighbor.first.y", layout.Y(owner), 600#
         End If
-        Check "neighbor.summary.warning", InStr(executor.DiagnosticsText, "Предупреждение: объединено") > 0
+        TestCheck "neighbor.summary.warning", InStr(executor.DiagnosticsText, "Предупреждение: объединено") > 0
         For i = 1 To executor.DiagnosticCount
             Set diagnostic = executor.DiagnosticAt(i)
             If diagnostic.Code = "OFFSET_NEIGHBOR_MERGED" Then
                 warnings = warnings + 1
-                Check "neighbor.warning.both.rows", InStr(diagnostic.Reason, "Top.Second") > 0 And InStr(diagnostic.Reason, "Right.") > 0
-                Check "neighbor.warning.source", InStr(diagnostic.SourceReference, "NeighborMerge[Extra,") > 0
+                TestCheck "neighbor.warning.both.rows", InStr(diagnostic.Reason, "Top.Second") > 0 And InStr(diagnostic.Reason, "Right.") > 0
+                TestCheck "neighbor.warning.source", InStr(diagnostic.SourceReference, "NeighborMerge[Extra,") > 0
             End If
         Next i
-        Check "neighbor.one.warning", warnings = 1
+        TestCheck "neighbor.one.warning", warnings = 1
     End If
     anchors(1).Name = "Top": anchors(1).EndX = 100#: anchors(1).NormalY = 1#
     anchors(2).Name = "Right": anchors(2).EndY = 100#: anchors(2).NormalX = 1#
     Set labels = New CRebarGroupAnnotationBuilder: Set annotations = New CSectionAnnotations
     labels.AddRebarLabels annotations, layout, anchors, 2
-    Check "neighbor.label.count", annotations.Count = IIf(kind = 2 Or withMain, 2, 1)
+    TestCheck "neighbor.label.count", annotations.Count = IIf(kind = 2 Or withMain, 2, 1)
     For i = 1 To annotations.Count
         If annotations.AnnotationID(i) = "REBAR_Top" Then textTop = annotations.Text(i)
         If annotations.AnnotationID(i) = "REBAR_Right" Then textRight = annotations.Text(i)
@@ -673,21 +687,22 @@ Private Sub TestOffsetNeighborMerge(ByVal kind As Long, ByVal rightFirst As Bool
         If Len(expectedRight) > 0 Then expectedRight = expectedRight & " + "
         expectedRight = expectedRight & "1" & ChrW$(216) & "20"
     End If
-    Check "neighbor.label.top.exact.physical.count", textTop = expectedTop
-    Check "neighbor.label.right.exact.physical.count", textRight = expectedRight
+    TestCheck "neighbor.label.top.exact.physical.count", textTop = expectedTop
+    TestCheck "neighbor.label.right.exact.physical.count", textRight = expectedRight
     For i = 1 To layout.Count: totalArea = totalArea + layout.Area(i): Next i
     expectedArea = GEOM_PI * (2# * 10# ^ 2 + expectedDiameter ^ 2) / 4#
     If kind = 2 Then expectedArea = GEOM_PI * (2# * 10# ^ 2 + 16# ^ 2 + 20# ^ 2) / 4#
-    Near "neighbor.area.only.physical.bars", totalArea, expectedArea
+    TestNear "neighbor.area.only.physical.bars", totalArea, expectedArea
     If kind <> 2 Then
-        Check "neighbor.label.only.kept.diameter", (InStr(textTop & textRight, ChrW$(216) & CStr(expectedDiameter)) > 0)
-        Check "neighbor.label.no.discarded.diameter", InStr(textTop & textRight, ChrW$(216) & CStr(IIf(rightFirst, 16, 20))) = 0
-        If Not withMain Then Check "neighbor.empty.face.no.label", Len(IIf(rightFirst, textTop, textRight)) = 0
+        TestCheck "neighbor.label.only.kept.diameter", (InStr(textTop & textRight, ChrW$(216) & CStr(expectedDiameter)) > 0)
+        TestCheck "neighbor.label.no.discarded.diameter", InStr(textTop & textRight, ChrW$(216) & CStr(IIf(rightFirst, 16, 20))) = 0
+        If Not withMain Then TestCheck "neighbor.empty.face.no.label", Len(IIf(rightFirst, textTop, textRight)) = 0
     End If
     mReport = mReport & "NEIGHBOR_MERGE: kind=" & CStr(kind) & "; rightFirst=" & CStr(rightFirst) & "; mainLabels=" & CStr(withMain) & _
         "; physical=" & CStr(layout.Count) & "; top=" & textTop & "; right=" & textRight & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Противоположные грани не являются соседними: их пересекающиеся ряды по-прежнему отклоняются.
 Private Sub TestNonAdjacentRows()
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
@@ -705,15 +720,16 @@ Private Sub TestNonAdjacentRows()
         options.NormalOffset = -IIf(i = 1, 300#, 390#): options.SourceReference = "NonAdjacentRows[Extra," & id & "]"
         facade.RebarDependent id & ".Second", id & ".Main", IIf(i = 1, 16#, 20#), options
     Next i
-    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = BuildLayout(definition, executor)
-    Check "neighbor.nonadjacent.must.reject", False
+    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
+    TestCheck "neighbor.nonadjacent.must.reject", False
     Exit Sub
 Rejected:
     reason = Err.Description
-    Check "neighbor.nonadjacent.physical.overlap.rejected", InStr(reason, "Поперечные сечения стержней пересекаются") > 0
-    Check "neighbor.nonadjacent.no.merge", executor.MergedPositions = 0
+    TestCheck "neighbor.nonadjacent.physical.overlap.rejected", InStr(reason, "Поперечные сечения стержней пересекаются") > 0
+    TestCheck "neighbor.nonadjacent.no.merge", executor.MergedPositions = 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' При отступе 100/120 мм верхние R100 исчезают, а прямые стыкуются в острых углах.
 Private Sub TestCollapsedUserCorners(ByVal topOffset As Double, ByVal reverse As Boolean)
     Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec, path As CGeometryPath, query As CSectionGeometryQuery
@@ -739,17 +755,18 @@ Private Sub TestCollapsedUserCorners(ByVal topOffset As Double, ByVal reverse As
         If edges(i).Sweep = 0# And Abs(edges(i).Y1 - (500# - topOffset)) < GEOM_BOUNDARY_TOLERANCE And _
                 Abs(edges(i).Y2 - (500# - topOffset)) < GEOM_BOUNDARY_TOLERANCE Then
             upper = upper + 1
-            Near "collapsed.top.intersection.left", GeomMin(edges(i).X1, edges(i).X2), 20#
-            Near "collapsed.top.intersection.right", GeomMax(edges(i).X1, edges(i).X2), 280#
+            TestNear "collapsed.top.intersection.left", GeomMin(edges(i).X1, edges(i).X2), 20#
+            TestNear "collapsed.top.intersection.right", GeomMax(edges(i).X1, edges(i).X2), 280#
         End If
     Next i
-    Check "collapsed.only.bottom.arcs", arcs = 2
-    Check "collapsed.one.top.line", upper = 1
-    Check "collapsed.domain.inside", query.ContainsPoint(region, 150#, 490# - topOffset, True)
-    Check "collapsed.domain.outside", Not query.ContainsPoint(region, 150#, 510# - topOffset, True)
+    TestCheck "collapsed.only.bottom.arcs", arcs = 2
+    TestCheck "collapsed.one.top.line", upper = 1
+    TestCheck "collapsed.domain.inside", query.ContainsPoint(region, 150#, 490# - topOffset, True)
+    TestCheck "collapsed.domain.outside", Not query.ContainsPoint(region, 150#, 510# - topOffset, True)
     mReport = mReport & "COLLAPSED_CORNERS: top=" & CStr(topOffset) & "; reverse=" & CStr(reverse) & "; top=(20," & CStr(500# - topOffset) & ")..(280," & CStr(500# - topOffset) & "); arcs=2" & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет контактные 2,5 мм, отключённый R2 и сдвиг SideBySide после проверки контура.
 Private Sub TestContactVariants(ByVal sideBySide As Boolean, ByVal everySecond As Boolean, ByVal disabledSecond As Boolean)
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions, contact As CRebarContactBuilder
@@ -780,21 +797,22 @@ Private Sub TestContactVariants(ByVal sideBySide As Boolean, ByVal everySecond A
     If Not disabledSecond Then
         If sideBySide Then expectedTangent = -12.5 Else expectedNormal = 52.5
     End If
-    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = BuildLayout(definition, executor)
+    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
     For i = 1 To executor.PositionCount
         If executor.PositionRuleID(i) = "Third" Then
             count = count + 1: owner = executor.PositionPhysicalOwner(i)
             station = count - 1: If everySecond Then station = 2 * station
-            Near "contact.normal.from.Main", layout.Y(owner), 750# - expectedNormal
-            Near "contact.tangent.after.check", layout.X(owner), 50# + 225# * station + expectedTangent
+            TestNear "contact.normal.from.Main", layout.Y(owner), 750# - expectedNormal
+            TestNear "contact.tangent.after.check", layout.X(owner), 50# + 225# * station + expectedTangent
         End If
     Next i
-    Check "contact.selected.count", count = IIf(everySecond, 3, 5)
-    Check "contact.no.false.skip", Not HasOffsetSkip(executor)
+    TestCheck "contact.selected.count", count = IIf(everySecond, 3, 5)
+    TestCheck "contact.no.false.skip", Not TestHasOffsetSkip(executor)
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Объявляет оба ряда от Main с независимыми базовыми отступами и прежним контактом.
-Private Sub AddRows(ByVal facade As CSectionDefinitionBuilder, ByVal id As String, ByVal sign As Double, _
+Private Sub TestAddRows(ByVal facade As CSectionDefinitionBuilder, ByVal id As String, ByVal sign As Double, _
         ByVal a2 As Double, ByVal a3 As Double, ByVal everySecond As Boolean)
     Dim contact As CRebarContactBuilder, options As CRebarRuleOptions, binding As String
     Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
@@ -806,34 +824,38 @@ Private Sub AddRows(ByVal facade As CSectionDefinitionBuilder, ByVal id As Strin
     facade.RebarDependent id & ".Third", id & ".Main", 10#, options
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Собирает только геометрию арматуры; бетонная сетка и расчёт НДС в набор не входят.
-Private Function BuildLayout(ByVal definition As CSectionDefinition, ByVal executor As CRebarRuleExecutor) As CRebarLayout
+Private Function TestBuildLayout(ByVal definition As CSectionDefinition, ByVal executor As CRebarRuleExecutor) As CRebarLayout
     Dim geometry As CGeometryRegion, region As CConcreteRegion
     Set region = definition.ConcreteDomain: Set geometry = New CGeometryRegion
     geometry.Initialize region
-    Set BuildLayout = executor.Build(definition, geometry)
+    Set TestBuildLayout = executor.Build(definition, geometry)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Записывает результат проверки, сохраняя все отказы в итоговом отчёте.
-Private Function HasOffsetSkip(ByVal executor As CRebarRuleExecutor) As Boolean
+Private Function TestHasOffsetSkip(ByVal executor As CRebarRuleExecutor) As Boolean
     Dim i As Long, diagnostic As CGeometryDiagnostic
     For i = 1 To executor.DiagnosticCount
         Set diagnostic = executor.DiagnosticAt(i)
         If diagnostic.Code = "OFFSET_POSITION_SKIPPED" Then
-            HasOffsetSkip = True
+            TestHasOffsetSkip = True
             mReport = mReport & "SKIP: " & diagnostic.EntityID & "; source=" & diagnostic.RelatedEntityID & _
                 "; x=" & CStr(diagnostic.Detail1) & "; y=" & CStr(diagnostic.Detail2) & "; " & diagnostic.Reason & "; " & diagnostic.SourceReference & vbCrLf
         End If
     Next i
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Записывает результат проверки, сохраняя все отказы в итоговом отчёте.
-Private Sub Check(ByVal name As String, ByVal success As Boolean)
+Private Sub TestCheck(ByVal name As String, ByVal success As Boolean)
     If success Then mPassed = mPassed + 1 Else mFailed = mFailed + 1
     If Not success Then mReport = mReport & "FAIL: " & name & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает координаты с допуском границы 0,000001 мм, без округления исходных значений.
-Private Sub Near(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
-    Check name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= GEOM_BOUNDARY_TOLERANCE
+Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
+    TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= GEOM_BOUNDARY_TOLERANCE
 End Sub

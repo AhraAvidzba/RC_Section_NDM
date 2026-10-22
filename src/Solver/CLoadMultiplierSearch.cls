@@ -126,10 +126,9 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             If request.Problem.StoppedTerminally Then Exit Function
             If Not boundaryRefinementAttempted And Not lowSolver Is Nothing Then
                 If lowSolver.Converged Then
-                    ' На плато пробное силовое НДС может не сойтись, хотя по сохранённому
-                    ' состоянию
-                    ' уже можно найти первый предел. Передаём его инженерной задаче
-                    ' для подтверждения равновесия всех усилий на исходном пути нагрузки.
+                    ' На плато силовая проба может не сойтись, хотя сохранённая плоскость
+                    ' уже позволяет найти первый предел. Инженерная задача отдельно
+                    ' подтверждает равновесие всех усилий на исходной траектории нагрузки.
                     boundaryRefinementAttempted = True
                     request.Problem.TryFinalizeAfterSearchFailure request
                     If request.Problem.Converged Or request.Problem.StoppedTerminally Then Exit Function
@@ -156,15 +155,11 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             FindBracket = True
             Exit Function
         ElseIf request.Problem.IsAcceptableState(probeState) Then
-            ' Бюджет относится ко всему построению скобки: успешная проба
-            ' не отменяет прежние неудачи и не разрешает бесконечное recovery.
-            lowLambda = highLambda
+            lowLambda = highLambda ' Бюджет относится ко всему построению скобки: успешная проба не отменяет прежние неудачи и не разрешает бесконечное recovery.
             Set lowSolver = highSolver
             request.Problem.RecordAcceptable loadPath, lowLambda
             If highLambda >= request.Problem.MaxLambda Then Exit Do
-            ' Найденное равновесие используем как более близкий старт. Несошедшаяся нагрузка
-            ' не подтверждает физический предел, поэтому продолжаем поиск границы.
-            If highLambda >= request.Problem.MaxLambda / 2# Then
+            If highLambda >= request.Problem.MaxLambda / 2# Then ' Доходим до самой MaxLambda без переполнения при удвоении и без пропуска конца интервала.
                 highLambda = request.Problem.MaxLambda
             Else
                 highLambda = 2# * highLambda
@@ -206,9 +201,7 @@ Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProbl
     ' сохраняем, поскольку она точнее общего сообщения. Сравнение текста
     ' меняет только вывод, а не код ошибки.
     Dim standardDescription As String
-    ' Error$(n) при активном Err может вернуть явно заданный Description.
-    ' Код и исходный текст уже сохранены аргументами и в журнале.
-    Err.Clear
+    Err.Clear ' Error$(n) при активном Err может вернуть явно заданный Description. Код и исходный текст уже сохранены аргументами и в журнале.
     If errorNumber >= 0 And errorNumber <= 65535 Then standardDescription = Error$(errorNumber)
     If Len(description) > 0 And StrComp(description, standardDescription, vbBinaryCompare) <> 0 Then
         reason = reason & " Причина: " & description
@@ -706,9 +699,7 @@ Private Function EvaluateLimitPoint(ByVal request As CLimitSearchRequest, _
         lambdaValue, functionValue, probeState, solver)
     If EvaluateLimitPoint Then
         If IsNumericalFailureState(request, probeState) Then
-            ' Неудачная проба может вернуть нулевую невязку-заглушку.
-            ' Brent/Secant не должны принимать ее за корень или менять знак скобки.
-            HandleBisectionEvaluationFailure request, lambdaValue
+            HandleBisectionEvaluationFailure request, lambdaValue ' Неудачная проба может вернуть нулевую невязку-заглушку. Brent/Secant не должны принимать ее за корень или менять знак скобки.
             EvaluateLimitPoint = False
         End If
     End If
@@ -738,9 +729,7 @@ Private Function CanFinalizeSecantProbe(ByVal request As CLimitSearchRequest, _
         CanFinalizeSecantProbe = True
     ElseIf IsLimitState(request, probeState) Then
         If solver Is Nothing Then
-            ' Аналитическая контрольная задача может подтвердить критерий без объекта НДС.
-            ' Для реального сечения равновесие и физические пределы проверяет её FinalizeAt.
-            CanFinalizeSecantProbe = True
+            CanFinalizeSecantProbe = True ' Аналитическая контрольная задача может подтвердить критерий без объекта НДС. Для реального сечения равновесие и физические пределы проверяет её FinalizeAt.
         Else
             CanFinalizeSecantProbe = solver.Converged
         End If

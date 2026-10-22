@@ -29,7 +29,7 @@ try {
     }
     $module=$book.VBProject.VBComponents.Item('modTestBatchCalculation').CodeModule
     $body=$module.Lines(1,$module.CountOfLines)
-    if ($body.Contains('RunAudit03SP35TableInvalidReproducer')) { throw 'Test fragment is already present.' }
+    if ($body.Contains('TestRunAudit03SP35TableInvalidReproducer')) { throw 'Test fragment is already present.' }
     $fragment=($fragment -split '\r?\n') -join "`r`n"
     $module.AddFromString("`r`n" + $fragment)
     foreach ($component in $book.VBProject.VBComponents) {

@@ -35,7 +35,7 @@ Public Function Solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Dou
         ByVal a31 As Double, ByVal a32 As Double, ByVal a33 As Double, _
         ByVal b1 As Double, ByVal b2 As Double, ByVal b3 As Double) As Boolean
 
-    Dim a(1 To 3, 1 To 4) As Double
+    Dim a(1 To 3, 1 To 4) As Double ' Расширенная матрица [A|b]; четвёртый столбец — правая часть трёх уравнений.
     a(1, 1) = a11: a(1, 2) = a12: a(1, 3) = a13: a(1, 4) = b1
     a(2, 1) = a21: a(2, 2) = a22: a(2, 3) = a23: a(2, 4) = b2
     a(3, 1) = a31: a(3, 2) = a32: a(3, 3) = a33: a(3, 4) = b3
@@ -50,7 +50,7 @@ Public Function Solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Dou
 
     Dim col As Long
     Dim row As Long
-    Dim pivotRow As Long
+    Dim pivotRow As Long ' Номер строки с наибольшим по модулю ведущим элементом в текущем столбце.
     Dim pivotAbs As Double
     Dim candidateAbs As Double
     Dim tmp As Double
@@ -84,7 +84,7 @@ Public Function Solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Dou
         End If
 
         For row = col + 1 To 3
-            factor = a(row, col) / a(col, col)
+            factor = a(row, col) / a(col, col) ' Множитель исключения неизвестной текущего столбца из нижней строки.
             a(row, col) = 0#
             For j = col + 1 To 4
                 a(row, j) = a(row, j) - factor * a(col, j)
@@ -92,14 +92,14 @@ Public Function Solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Dou
         Next row
     Next col
 
-    mX3 = a(3, 4) / a(3, 3)
+    mX3 = a(3, 4) / a(3, 3) ' Обратная подстановка начинается с последнего уравнения треугольной системы.
     mX2 = (a(2, 4) - a(2, 3) * mX3) / a(2, 2)
     mX1 = (a(1, 4) - a(1, 2) * mX2 - a(1, 3) * mX3) / a(1, 1)
 
     Dim r1 As Double
     Dim r2 As Double
     Dim r3 As Double
-    r1 = a11 * mX1 + a12 * mX2 + a13 * mX3 - b1
+    r1 = a11 * mX1 + a12 * mX2 + a13 * mX3 - b1 ' Проверяем решение по исходной матрице, а не по изменённой матрице исключения.
     r2 = a21 * mX1 + a22 * mX2 + a23 * mX3 - b2
     r3 = a31 * mX1 + a32 * mX2 + a33 * mX3 - b3
     mAbsoluteResidual = Abs(r1) + Abs(r2) + Abs(r3)
@@ -158,11 +158,8 @@ ScaledNorm:
         (Abs(b1) / rhsScale + Abs(b2) / rhsScale + Abs(b3) / rhsScale)
 End Function
 
-' Решение маленькой линейной системы 3x3 Этот класс нужен Newton/Secant-решателям для поправок
-' epsilon0/kappaX/kappaY. Он работает только с числами, не знает о геометрии, материалах и
-' Excel, и возвращает машинную и понятную текстовую причину отказа. Вырождение матрицы
-' отличается от непредставимой арифметики; диагностический масштаб правой части не должен мешать
-' получению корректной поправки.
+' True только после решения системы и успешной проверки относительной невязки.
+' При False компоненты X1/X2/X3 не являются подтверждённым решением.
 Public Property Get Solved() As Boolean
     Solved = mSolved
 End Property
@@ -203,11 +200,12 @@ End Property
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: абсолютная сумма невязок нужна unit-тестам линейного решателя. Рабочая
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' абсолютная сумма невязок нужна unit-тестам линейного решателя. Рабочая
 ' численная логика обычно ориентируется на относительную невязку и StopReason,
 ' потому что абсолютный масштаб правой части может сильно отличаться.
-Public Property Get AbsoluteResidual() As Double
-    AbsoluteResidual = mAbsoluteResidual
+Public Property Get TestAbsoluteResidual() As Double
+    TestAbsoluteResidual = mAbsoluteResidual
 End Property
 
 

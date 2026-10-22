@@ -62,7 +62,7 @@ Public Sub AddArc(ByVal segmentID As String, ByVal centerX As Double, ByVal cent
     edge.CenterX = centerX: edge.CenterY = centerY: edge.Sweep = sweep
     edge.X1 = centerX + radius * Cos(startAngle): edge.Y1 = centerY + radius * Sin(startAngle)
     edge.X2 = centerX + radius * Cos(startAngle + sweep): edge.Y2 = centerY + radius * Sin(startAngle + sweep)
-    If Abs(sweep) = 2# * GEOM_PI Then edge.X2 = edge.X1: edge.Y2 = edge.Y1
+    If Abs(sweep) = 2# * GEOM_PI Then edge.X2 = edge.X1: edge.Y2 = edge.Y1 ' У полного оборота замыкание задаём точно, не по погрешным sin/cos.
     Append segmentID, edge
 End Sub
 
@@ -160,8 +160,7 @@ Public Sub ResolveAnchor(ByVal x As Double, ByVal y As Double, _
         "ANCHOR_NOT_ON_PATH", "", x, y
     If matched > 1 Then PathError "Точка (" & CStr(x) & "; " & CStr(y) & ") принадлежит нескольким сегментам: " & matches & _
         ". Задайте ID нужного сегмента явно или выберите точку внутри него.", "ANCHOR_AMBIGUOUS", matches, x, y
-    ' Выходные аргументы меняются только после успешного однозначного поиска.
-    segmentID = mSegmentIDs(found): parameter = resolved
+    segmentID = mSegmentIDs(found): parameter = resolved ' Выходные аргументы меняются только после успешного однозначного поиска.
 End Sub
 
 ' Создаёт копию завершённой линии с новым ID, сохраняя имена сегментов
@@ -223,7 +222,7 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
     Dim lo As Long, parameter As Double, norm As Double
     lo = SegmentAtDistance(distance, incomingTangentAtJoint)
     parameter = (distance - mStations(lo - 1)) / (mStations(lo) - mStations(lo - 1))
-    parameter = GeomMax(0#, GeomMin(1#, parameter))
+    parameter = GeomMax(0#, GeomMin(1#, parameter)) ' Исправляем только допустимую погрешность параметра у концов сегмента.
     modGeometryPrimitives.EdgePoint mEdges(lo), parameter, x, y
     modGeometryPrimitives.EdgeTangent mEdges(lo), parameter, tangentX, tangentY
     norm = Sqr(tangentX * tangentX + tangentY * tangentY)
@@ -303,7 +302,7 @@ Private Function SegmentAtDistance(ByVal distance As Double, ByVal incomingTange
     Dim lo As Long, hi As Long, middle As Long
     lo = 1: hi = mCount
     Do While lo < hi
-        middle = lo + (hi - lo) \ 2
+        middle = lo + (hi - lo) \ 2 ' Двоичный поиск по накопленным длинам сегментов, без линейного обхода.
         If distance < mStations(middle) Or (incomingTangentAtJoint And distance <= mStations(middle) + GEOM_TOLERANCE) Then
             hi = middle
         Else
@@ -362,8 +361,7 @@ Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double,
     Set part = Slice(first, last)
     For i = 1 To part.SegmentCount
         part.CopySegment i, edge: name = part.SegmentID(i): suffix = 1
-        ' Суффикс не должен занять имя исчезнувшего участка, даже если его привязка копируется позже.
-        Do While result.HasSegmentID(name) Or result.HasCollapsedSegmentID(name) Or HasCollapsedSegmentID(name)
+        Do While result.HasSegmentID(name) Or result.HasCollapsedSegmentID(name) Or HasCollapsedSegmentID(name) ' Суффикс не должен занять имя исчезнувшего участка, даже если его привязка копируется позже.
             suffix = suffix + 1: name = part.SegmentID(i) & ".Part" & CStr(suffix)
         Loop
         result.Append name, edge, part.SourcePathID(i), part.SourceSegmentID(i), part.SourceStartParameter(i), part.SourceEndParameter(i)
@@ -383,7 +381,7 @@ Friend Sub AddCollapsedSegment(ByVal segmentID As String, Optional ByVal station
         If mCollapsedIDs(i) = segmentID Then PathError "Повторный ID привязки '" & segmentID & "'."
     Next i
     If mCount > 0 Then currentLength = mStations(mCount)
-    If station = -1# Then station = currentLength
+    If station = -1# Then station = currentLength ' Служебное -1 означает текущий конец ещё собираемой линии.
     If station < -PATH_TOLERANCE Or station > currentLength + PATH_TOLERANCE Then PathError "Привязка исчезнувшего сегмента вне пути."
     station = GeomMax(0#, GeomMin(currentLength, station))
     mCollapsedCount = mCollapsedCount + 1
@@ -410,7 +408,7 @@ Friend Sub CopyCollapsedAnchors(ByVal result As CGeometryPath, ByVal first As Do
                         End If
                     Next j
                 End If
-                If reverse Then station = last - station Else station = station - first
+                If reverse Then station = last - station Else station = station - first ' Привязка отсчитывается уже от начала нового участка.
                 result.AddCollapsedSegment mCollapsedIDs(i), offset + station
             End If
         End If
@@ -513,7 +511,8 @@ Friend Sub CopySegment(ByVal index As Long, ByRef edge As TRegionEdge)
     LSet edge = mEdges(index)
 End Sub
 
-' Присоединяет сегменты другого пути с проверкой геометрической непрерывности.
+' Добавляет один отрезок или дугу с уникальным именем и проверкой непрерывности.
+' Необязательные source-параметры сохраняют происхождение и интервал исходного сегмента.
 Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge, Optional ByVal sourcePathID As String = "", _
         Optional ByVal sourceSegmentID As String = "", Optional ByVal sourceStart As Double = 0#, Optional ByVal sourceEnd As Double = 1#)
     RequireMutable

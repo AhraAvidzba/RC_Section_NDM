@@ -58,9 +58,7 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
 
     Dim nx As Long
     Dim ny As Long
-    ' Проверяем размер до деления на сверхмалый шаг и преобразования в Long.
-    ' Это ограничение представимости массива, а не изменение точности сетки.
-    If stepX <= (maxX - minX) / 2147483646# Or stepY <= (maxY - minY) / 2147483646# Then
+    If stepX <= (maxX - minX) / 2147483646# Or stepY <= (maxY - minY) / 2147483646# Then ' Проверяем размер до деления на сверхмалый шаг и преобразования в Long. Это ограничение представимости массива, а не изменение точности сетки.
         Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
             "Шаг бетонной сетки слишком мал: число ячеек по одной оси превышает предел счётчика программы (2147483647). Увеличьте Mesh.StepX или Mesh.StepY."
     End If
@@ -89,10 +87,7 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     Dim openingBounds() As Double, openingCount As Long, openingIndex As Long
     Dim contours As CSectionContours, query As CSectionGeometryQuery
     Dim outerEdges() As TRegionEdge, outerEdgeCount As Long
-    ' Даже если четыре угла лежат в бетоне, внутри ячейки может быть отверстие.
-    ' Один раз получаем габариты всех отверстий и уточняем такие ячейки
-    ' проверкой принадлежности точек бетону через ContainsPoint.
-    If boundarySubdivisions > 1 Then
+    If boundarySubdivisions > 1 Then ' Даже если четыре угла лежат в бетоне, внутри ячейки может быть отверстие. Один раз получаем габариты всех отверстий и уточняем такие ячейки проверкой принадлежности точек бетону через ContainsPoint.
         ReDim topLeft(0 To nx - 1): ReDim topRight(0 To nx - 1)
         Set contours = New CSectionContours: geometry.BuildContours contours
         Set query = New CSectionGeometryQuery
@@ -107,15 +102,10 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
         For ix = 0 To nx - 1
             cellMinX = minX + ix * stepX
             x = cellMinX + stepX / 2#
-            ' Центр последней базовой ячейки может быть за габаритом, хотя
-            ' часть ее подъячеек находится в бетоне. Отбор выполняет форма
-            ' по центрам фактических элементов, не по центру базовой ячейки.
-            If boundarySubdivisions = 1 Then
+            If boundarySubdivisions = 1 Then ' Центр последней базовой ячейки может быть за габаритом, хотя часть ее подъячеек находится в бетоне. Отбор выполняет форма по центрам фактических элементов, не по центру базовой ячейки.
                 If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
             Else
-                ' У соседних ячеек общие углы. Повторно используем проверку только
-                ' при точном совпадении координат, без округления и изменения допуска.
-                sameX = (ix > 0 And cellMinX = previousRightX)
+                sameX = (ix > 0 And cellMinX = previousRightX) ' У соседних ячеек общие углы. Повторно используем проверку только при точном совпадении координат, без округления и изменения допуска.
                 If sameY Then
                     lowerLeft = topLeft(ix): lowerRight = topRight(ix)
                 Else
@@ -129,11 +119,8 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
                 allCornersInside = lowerLeft And lowerRight And upperLeft And upperRight
                 If allCornersInside Then
                     For openingIndex = 1 To openingCount
-                        ' Касание габарита без пересечения площади не требует дробления ячейки.
-                        ' Так малая погрешность координат дуги не вызывает лишнее уточнение
-                        ' сетки.
                         If cellMinX < openingBounds(openingIndex, 2) - GEOM_TOLERANCE And cellMinX + stepX > openingBounds(openingIndex, 1) + GEOM_TOLERANCE And _
-                                cellMinY < openingBounds(openingIndex, 4) - GEOM_TOLERANCE And cellMinY + stepY > openingBounds(openingIndex, 3) + GEOM_TOLERANCE Then
+                                cellMinY < openingBounds(openingIndex, 4) - GEOM_TOLERANCE And cellMinY + stepY > openingBounds(openingIndex, 3) + GEOM_TOLERANCE Then ' Касание габарита без пересечения площади не требует дробления ячейки. Так малая погрешность координат дуги не вызывает лишнее уточнение сетки.
                             allCornersInside = False
                             Exit For
                         End If
@@ -287,8 +274,9 @@ End Property
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: возвращает время построения сетки для проверки скорости.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает время построения сетки для проверки скорости.
 ' Рабочий расчёт не использует это время при выборе результата.
-Public Property Get BuildSeconds() As Double
-    BuildSeconds = mBuildSeconds
+Public Property Get TestBuildSeconds() As Double
+    TestBuildSeconds = mBuildSeconds
 End Property

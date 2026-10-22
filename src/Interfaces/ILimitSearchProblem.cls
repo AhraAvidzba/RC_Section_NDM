@@ -215,7 +215,8 @@ Public Function LimitSearchEvaluateUltimateResidual(ByVal section As CSectionMod
         ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
 End Function
 
-' Проверяет допуски критерия и определяет общую меру невязок для подбора шага.
+' Проверяет, достигнуты ли допуски двух уравнений траектории и физического критерия.
+' Это предварительная проверка; окончательно усилия и физические пределы подтверждает FinalizeUltimateResult.
 Public Function LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
 End Function

@@ -1,0 +1,102 @@
+{
+  "Status": "API_PASS",
+  "AuthorApiMembers": 166,
+  "AuthorSections": 9,
+  "AuthorSignatureMismatches": [],
+  "FullCatalogMembers": 325,
+  "FullCatalogCheck": "SOURCE_MANIFEST_DOC_EXAMPLES_MATCH",
+  "CatalogMutationGuards": {
+    "Detected": 3,
+    "Total": 3
+  },
+  "FullCatalogExamples": {
+    "ExactSourceCalls": 325,
+    "MissingCalls": [],
+    "MissingNativeRoots": [],
+    "HistoricalRenamedEntrypoints": 4,
+    "Provenance": "Исторические журналы не изменены. Четыре entrypoint сопоставлены по явной карте; reportedEntryPoint сохраняет имя журнала отдельно от текущего entryPoint. Согласованные исправления рабочего кода и тестов проверяются отдельными направленными запусками root. Эта проверка API не выдает прежний журнал за новый прогон."
+  },
+  "CommentEncoding": {
+    "Files": 167,
+    "CommentLines": 20951,
+    "Cp1251StrictErrors": []
+  },
+  "GeneratorInMemoryReproduction": [
+    {
+      "Path": "src/Common/modSectionRecipeApiGuide.bas",
+      "MatchesInMemoryRegeneration": true
+    },
+    {
+      "Path": "docs/geometry_refactor/SECTION_RECIPE_AUTHOR_MANIFEST.json",
+      "MatchesInMemoryRegeneration": true
+    }
+  ],
+  "GuideModuleTouched": false,
+  "RuntimeSourceTouched": false,
+  "WorksheetGuide": {
+    "Rows": 69,
+    "NonemptyRows": 20,
+    "ModuleReference": "Modules -> modSectionRecipeApiGuide",
+    "ContainsCodeExamples": false,
+    "NextSection": "A621",
+    "Characters": 2387,
+    "SourceHashesVerified": true
+  },
+  "TypeHelp": {
+    "Count": 4,
+    "AllOwnLinksPresent": true,
+    "OwnTitleOccurrences": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "DescriptionDuplicates": [],
+    "CombinedHelpEditsVerified": 257,
+    "WorkbookSHA256": "35AE07F34458F44DA5CFD50D29AE3ABB698147AF0E65EAC654D6FAD7E49552A3"
+  },
+  "ActiveReferences": {
+    "FilesScanned": 285,
+    "StaleReferences": [],
+    "ExcludedHistoricalRecords": [
+      "GEOMETRY_FULL_ACCEPTANCE.json",
+      "GEOMETRY_FULL_VISUAL.json",
+      "NATIVE_GUIDE_EVIDENCE.json",
+      "regression/reports/old journals",
+      "explicit reportedEntryPoint/evidence alias keys"
+    ]
+  },
+  "Changes": [
+    "tools/build_workbook/Build-SectionRecipeApiExamples.py",
+    "docs/geometry_refactor/SECTION_RECIPE_API_MANIFEST.json",
+    "docs/geometry_refactor/SECTION_RECIPE_API_EXAMPLES.json",
+    "docs/geometry_refactor/SECTION_RECIPE_API.md",
+    "docs/geometry_refactor/SECTION_RECIPE_API_EVIDENCE_ALIASES.json",
+    "docs/geometry_refactor/ONE_CLASS_EXAMPLE.md",
+    "docs/geometry_refactor/FINAL_REPORT.md"
+  ],
+  "FileSHA256": {
+    "tools/build_workbook/Build-SectionRecipeApiExamples.py": "0B7AAC576951A177BC82591AAF78919D32418223D96DA8200E6EED5C789FF398",
+    "docs/geometry_refactor/SECTION_RECIPE_API_MANIFEST.json": "B8CA7E759B2C7370591333B9C950CDE98E049C4A4671B9669994432C6CD6504A",
+    "docs/geometry_refactor/SECTION_RECIPE_API_EXAMPLES.json": "1EB800BC6C6249F25629608B8239E3F99FEFE11EB9C67E225427EAD1FC5A03D4",
+    "docs/geometry_refactor/SECTION_RECIPE_API.md": "ADF692DC63E008055E9185DD510B4C0A2DF211E5D0917836F1EB31F78FD415CF",
+    "docs/geometry_refactor/SECTION_RECIPE_API_EVIDENCE_ALIASES.json": "DD19A93F47B91F1453509959BB03AD073ECF0AEA985BFD9F59753615523B3B69",
+    "docs/geometry_refactor/ONE_CLASS_EXAMPLE.md": "060BDE60E6007015AE400EC8FC1A04C37D7DC6254723283A15CA01C8F20D3059",
+    "docs/geometry_refactor/FINAL_REPORT.md": "5489D70AA98982C805374E52E8CD3D02E613C28EBD3C467FB94AB383B8F65EE2",
+    "src/Common/modSectionRecipeApiGuide.bas": "CBCA439945F4B37344F29E9DC95FEF5DF6DA2E4AB5033884D702961C44DA1356",
+    "docs/geometry_refactor/SECTION_RECIPE_AUTHOR_MANIFEST.json": "B91813261305CE61EAE77C5DEAE2ED1D04FC42C861086BD2304C25A82CBC86DF",
+    "docs/geometry_refactor/SECTION_RECIPE_GUIDE_LAYOUT.json": "B84105EB34607794B1A632E031764659C51F028D206D3E26C158618547448CA3",
+    "docs/regression/HelpCommentReview_2026-10-22/FinalTypeHelpReview.json": "14E5690D2149E784BF02DA1C9C22148E51F9980C816D898B77DC0A714BB1B47E"
+  },
+  "GeneralHelpDuplicates": "RESOLVED: 18 соседних аналогичных блоков сокращены с сохранением всех ключей, якорей и числа слотов; 68 пустых позиций оформлены компактно. Служебные общие фразы несмежных разделов сохранены.",
+  "VerificationWithoutExcel": true,
+  "RuntimeTestsExecuted": false,
+  "ApprovedRuntimeFixesProvenance": {
+    "Proof": "docs/regression/HelpCommentReview_2026-10-22/TestRenameScopeProof.json",
+    "SHA256": "D838065AA3EE466EE1459634B2D839CA0AEFDC8B4FCA8E1AFD8932706F3635EF",
+    "ApprovedMethods": 4,
+    "Mismatches": [],
+    "Unresolved": []
+  },
+  "RuntimeSourceTouchedByFinalApiRefresh": false
+}

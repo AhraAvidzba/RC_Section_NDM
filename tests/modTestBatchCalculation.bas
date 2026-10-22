@@ -17,7 +17,8 @@ Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутрен
 Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
 Private mAudit03ResourceTrace As Boolean ' ДЛЯ ТЕСТОВ: отдельный журнал размеров Excel, не влияющий на расчет и assertions.
 
-' ДЛЯ ТЕСТОВ: счетчики всего batch, сброс и независимый сохраненный снимок.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' счетчики всего batch, сброс и независимый сохраненный снимок.
 Public Function RunBatchWorkStatsTests() As String
     Dim stats As TBatchTestStats, batch As CBatchSectionCalculator, section As CSectionModel
     Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CBatchResultWriter
@@ -26,52 +27,53 @@ Public Function RunBatchWorkStatsTests() As String
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     Set system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     oldProfiles = profiles.Formula: oldSystem = system.Formula
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set batch = BuildBatchCalculator(True, section): batch.ApplySettings settings, units
+    Set batch = TestBuildBatchCalculator(True, section): batch.ApplySettings settings, units
     batch.AddCombination "COUNT_1", -100000#, 2000000#, 1000000#, "PR1", "", "Auto"
     batch.AddCombination "COUNT_2", -50000#, -1000000#, 1500000#, "PR1", "", "Auto"
     batch.Execute
     Dim calls As Long, starts As Long, iterations As Long, ultimateIterations As Long
     calls = batch.SolverCallCount: starts = batch.UltimateStrainStartCount
     iterations = batch.SolverIterationCount: ultimateIterations = batch.UltimateStrainIterationCount
-    AssertTrue stats, "batch.workStats.actualCalls", calls = SectionEquilibriumSolveCount() And calls > 0
-    AssertTrue stats, "batch.workStats.actualStarts", starts = modSolverWorkStats.UltimateStrainStartCount() And starts > 0
-    AssertTrue stats, "batch.workStats.actualIterations", iterations = SectionEquilibriumIterationCount() And iterations > 0
-    AssertTrue stats, "batch.workStats.actualUltimateIterations", ultimateIterations = modSolverWorkStats.UltimateStrainIterationCount() And ultimateIterations > 0
+    TestAssertTrue stats, "batch.workStats.actualCalls", calls = SectionEquilibriumSolveCount() And calls > 0
+    TestAssertTrue stats, "batch.workStats.actualStarts", starts = modSolverWorkStats.UltimateStrainStartCount() And starts > 0
+    TestAssertTrue stats, "batch.workStats.actualIterations", iterations = SectionEquilibriumIterationCount() And iterations > 0
+    TestAssertTrue stats, "batch.workStats.actualUltimateIterations", ultimateIterations = modSolverWorkStats.UltimateStrainIterationCount() And ultimateIterations > 0
     ResetSectionEquilibriumSolveCount
-    AssertTrue stats, "batch.workStats.independentSnapshot", batch.SolverCallCount = calls And batch.SolverIterationCount = iterations And _
+    TestAssertTrue stats, "batch.workStats.independentSnapshot", batch.SolverCallCount = calls And batch.SolverIterationCount = iterations And _
         batch.UltimateStrainStartCount = starts And batch.UltimateStrainIterationCount = ultimateIterations
     Set writer = New CBatchResultWriter
     writer.WriteSummary ThisWorkbook, batch, units, section
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
-    AssertClose stats, "batch.workStats.outputCalls", CDbl(anchor.Offset(2, 0).Value2), CDbl(calls), 0#
-    AssertClose stats, "batch.workStats.outputStarts", CDbl(anchor.Offset(0, 6).Value2), CDbl(starts), 0#
-    AssertClose stats, "batch.workStats.outputIterations", CDbl(anchor.Offset(1, 6).Value2), CDbl(iterations), 0#
-    AssertClose stats, "batch.workStats.outputUltimateIterations", CDbl(anchor.Offset(2, 6).Value2), CDbl(ultimateIterations), 0#
-    AssertTrue stats, "batch.workStats.writerNoSolve", SectionEquilibriumSolveCount() = 0 And modSolverWorkStats.UltimateStrainStartCount() = 0
-    AssertTrue stats, "batch.workStats.noWrap", Not CBool(anchor.Offset(0, 6).Resize(3, 7).WrapText)
-    AssertTrue stats, "batch.workStats.labelMerge", anchor.Offset(0, 7).MergeArea.Columns.Count = 6
-    AssertTrue stats, "batch.workStats.rightBorder", anchor.Offset(0, 12).Borders(10).LineStyle <> -4142
+    TestAssertClose stats, "batch.workStats.outputCalls", CDbl(anchor.Offset(2, 0).Value2), CDbl(calls), 0#
+    TestAssertClose stats, "batch.workStats.outputStarts", CDbl(anchor.Offset(0, 6).Value2), CDbl(starts), 0#
+    TestAssertClose stats, "batch.workStats.outputIterations", CDbl(anchor.Offset(1, 6).Value2), CDbl(iterations), 0#
+    TestAssertClose stats, "batch.workStats.outputUltimateIterations", CDbl(anchor.Offset(2, 6).Value2), CDbl(ultimateIterations), 0#
+    TestAssertTrue stats, "batch.workStats.writerNoSolve", SectionEquilibriumSolveCount() = 0 And modSolverWorkStats.UltimateStrainStartCount() = 0
+    TestAssertTrue stats, "batch.workStats.noWrap", Not CBool(anchor.Offset(0, 6).Resize(3, 7).WrapText)
+    TestAssertTrue stats, "batch.workStats.labelMerge", anchor.Offset(0, 7).MergeArea.Columns.Count = 6
+    TestAssertTrue stats, "batch.workStats.rightBorder", anchor.Offset(0, 12).Borders(10).LineStyle <> -4142
     batch.Execute
-    AssertTrue stats, "batch.workStats.newRunNotAccumulated", batch.SolverCallCount = calls And batch.SolverIterationCount = iterations And _
+    TestAssertTrue stats, "batch.workStats.newRunNotAccumulated", batch.SolverCallCount = calls And batch.SolverIterationCount = iterations And _
         batch.UltimateStrainStartCount = starts And batch.UltimateStrainIterationCount = ultimateIterations
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.workStats.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.workStats.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     If IsArray(oldProfiles) Then profiles.Formula = oldProfiles
     If IsArray(oldSystem) Then system.Formula = oldSystem
     RunBatchWorkStatsTests = stats.Report & "TOTAL_BATCH_WORK_STATS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет профили, траектории нагрузки, результаты, повторное использование
 ' НДС и запись таблиц. Отчёт сохраняет причины отказов и число отдельных проверок.
 Public Function RunBatchCalculationTests() As String
@@ -88,257 +90,257 @@ Public Function RunBatchCalculationTests() As String
     ' Общий набор проверяет PR1 без устойчивости и трещин, если конкретный
     ' тест не включает их отдельно. Все пользовательские значения возвращаются.
     ' Пользовательский дефолт книги при этом не меняем: значение возвращается в конце.
-    originalPr1Stability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    originalPr1CrackWidth = GetProfileValue("Calculation.Crack.Width", "PR1")
-    originalCrackCode = GetSystemSetting("SLS.Crack.Code")
+    originalPr1Stability = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    originalPr1CrackWidth = TestGetProfileValue("Calculation.Crack.Width", "PR1")
+    originalCrackCode = TestGetSystemSetting("SLS.Crack.Code")
     hasOriginalPr1Stability = True
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
     ' Формульные регрессии этого набора относятся к СП 63; СП 35 имеет
     ' собственные suites, а пользовательский default возвращается в конце.
-    SetSystemSetting "SLS.Crack.Code", "SP63"
+    TestSetSystemSetting "SLS.Crack.Code", "SP63"
 
-    AppendLine stats, "RUN: TestBatchOneCombination"
+    TestAppendLine stats, "RUN: TestBatchOneCombination"
     TestBatchOneCombination stats
-    AppendLine stats, "RUN: TestProfileIdControlsLimitStateGroup"
+    TestAppendLine stats, "RUN: TestProfileIdControlsLimitStateGroup"
     TestProfileIdControlsLimitStateGroup stats
-    AppendLine stats, "RUN: TestBatchFiveCombinations"
+    TestAppendLine stats, "RUN: TestBatchFiveCombinations"
     TestBatchFiveCombinations stats
-    AppendLine stats, "RUN: TestBatchGoverningUsesLowestSafetyFactor"
+    TestAppendLine stats, "RUN: TestBatchGoverningUsesLowestSafetyFactor"
     TestBatchGoverningUsesLowestSafetyFactor stats
-    AppendLine stats, "RUN: TestBatchGoverningUsesStrengthProfilesOnly"
+    TestAppendLine stats, "RUN: TestBatchGoverningUsesStrengthProfilesOnly"
     TestBatchGoverningUsesStrengthProfilesOnly stats
-    AppendLine stats, "RUN: TestAudit03WorstCriterionConfig"
+    TestAppendLine stats, "RUN: TestAudit03WorstCriterionConfig"
     TestAudit03WorstCriterionConfig stats
-    AppendLine stats, "RUN: TestBatchPureAxialCapacityUsesNult"
+    TestAppendLine stats, "RUN: TestBatchPureAxialCapacityUsesNult"
     TestBatchPureAxialCapacityUsesNult stats
-    AppendLine stats, "RUN: TestBatchEccentricAxialCapacityTriesUltimateStrain"
+    TestAppendLine stats, "RUN: TestBatchEccentricAxialCapacityTriesUltimateStrain"
     TestBatchEccentricAxialCapacityTriesUltimateStrain stats
-    AppendLine stats, "RUN: TestBatchRectanglesN200CapacityPathNDoesNotNumFail"
+    TestAppendLine stats, "RUN: TestBatchRectanglesN200CapacityPathNDoesNotNumFail"
     TestBatchRectanglesN200CapacityPathNDoesNotNumFail stats
-    AppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesMxy"
+    TestAppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesMxy"
     TestBatchExplicitCapacityLoadPathScalesMxy stats
-    AppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesNWithMoments"
+    TestAppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesNWithMoments"
     TestBatchExplicitCapacityLoadPathScalesNWithMoments stats
-    AppendLine stats, "RUN: TestCapacityLoadPathNReportsUltimateAtLoadPoint"
+    TestAppendLine stats, "RUN: TestCapacityLoadPathNReportsUltimateAtLoadPoint"
     TestCapacityLoadPathNReportsUltimateAtLoadPoint stats
-    AppendLine stats, "RUN: TestBatchCapacityLoadPathVariants"
+    TestAppendLine stats, "RUN: TestBatchCapacityLoadPathVariants"
     TestBatchCapacityLoadPathVariants stats
-    AppendLine stats, "RUN: TestBatchCapacityLoadPathAllowsZeroInactiveComponents"
+    TestAppendLine stats, "RUN: TestBatchCapacityLoadPathAllowsZeroInactiveComponents"
     TestBatchCapacityLoadPathAllowsZeroInactiveComponents stats
-    AppendLine stats, "RUN: TestBatchNMxyWithoutMomentsUsesStableForcePath"
+    TestAppendLine stats, "RUN: TestBatchNMxyWithoutMomentsUsesStableForcePath"
     TestBatchNMxyWithoutMomentsUsesStableForcePath stats
-    AppendLine stats, "RUN: TestMomentZeroFilterDefaultThresholds"
+    TestAppendLine stats, "RUN: TestMomentZeroFilterDefaultThresholds"
     TestMomentZeroFilterDefaultThresholds stats
-    AppendLine stats, "RUN: TestCapacityLoadPathFiltersEngineeringSmallMoments"
+    TestAppendLine stats, "RUN: TestCapacityLoadPathFiltersEngineeringSmallMoments"
     TestCapacityLoadPathFiltersEngineeringSmallMoments stats
-    AppendLine stats, "RUN: TestBatchZeroMomentFilterNormalizesCapacityPath"
+    TestAppendLine stats, "RUN: TestBatchZeroMomentFilterNormalizesCapacityPath"
     TestBatchZeroMomentFilterNormalizesCapacityPath stats
-    AppendLine stats, "RUN: TestStabilityZeroMomentFilterUsesZeroMomentSigns"
+    TestAppendLine stats, "RUN: TestStabilityZeroMomentFilterUsesZeroMomentSigns"
     TestStabilityZeroMomentFilterUsesZeroMomentSigns stats
-    AppendLine stats, "RUN: TestBatchInvalidCapacityLoadPathReportsInputErr"
+    TestAppendLine stats, "RUN: TestBatchInvalidCapacityLoadPathReportsInputErr"
     TestBatchInvalidCapacityLoadPathReportsInputErr stats
-    AppendLine stats, "RUN: TestPR2SkipsCapacityByProfile"
+    TestAppendLine stats, "RUN: TestPR2SkipsCapacityByProfile"
     TestPR2SkipsCapacityByProfile stats
-    AppendLine stats, "RUN: TestLoadReferenceTransformsUserMoments"
+    TestAppendLine stats, "RUN: TestLoadReferenceTransformsUserMoments"
     TestLoadReferenceTransformsUserMoments stats
-    AppendLine stats, "RUN: TestSectionLoadStateTransfersMoments"
+    TestAppendLine stats, "RUN: TestSectionLoadStateTransfersMoments"
     TestSectionLoadStateTransfersMoments stats
-    AppendLine stats, "RUN: TestAxialReferenceRemovesPureCompressionEccentricity"
+    TestAppendLine stats, "RUN: TestAxialReferenceRemovesPureCompressionEccentricity"
     TestAxialReferenceRemovesPureCompressionEccentricity stats
-    AppendLine stats, "RUN: TestAxialTensionReferenceAndEccentricity"
+    TestAppendLine stats, "RUN: TestAxialTensionReferenceAndEccentricity"
     TestAxialTensionReferenceAndEccentricity stats
-    AppendLine stats, "RUN: TestDirectStateReportsSectionStatus"
+    TestAppendLine stats, "RUN: TestDirectStateReportsSectionStatus"
     TestDirectStateReportsSectionStatus stats
-    AppendLine stats, "RUN: TestPR1RectanglesSmallTensionMomentDirectStateDoesNotNumFail"
+    TestAppendLine stats, "RUN: TestPR1RectanglesSmallTensionMomentDirectStateDoesNotNumFail"
     TestPR1RectanglesSmallTensionMomentDirectStateDoesNotNumFail stats
-    AppendLine stats, "RUN: TestLongitudinalCrackCheckUsesDirectStateStress"
+    TestAppendLine stats, "RUN: TestLongitudinalCrackCheckUsesDirectStateStress"
     TestLongitudinalCrackCheckUsesDirectStateStress stats
-    AppendLine stats, "RUN: TestLongitudinalCrackSkippedForPR1"
+    TestAppendLine stats, "RUN: TestLongitudinalCrackSkippedForPR1"
     TestLongitudinalCrackSkippedForPR1 stats
-    AppendLine stats, "RUN: TestStabilityProfileEnablesSP63ForCompression"
+    TestAppendLine stats, "RUN: TestStabilityProfileEnablesSP63ForCompression"
     TestStabilityProfileEnablesSP63ForCompression stats
-    AppendLine stats, "RUN: TestStabilitySkippedForTension"
+    TestAppendLine stats, "RUN: TestStabilitySkippedForTension"
     TestStabilitySkippedForTension stats
-    AppendLine stats, "RUN: TestStabilitySP35UsesConfigTableAndProfileValueSet"
+    TestAppendLine stats, "RUN: TestStabilitySP35UsesConfigTableAndProfileValueSet"
     TestStabilitySP35UsesConfigTableAndProfileValueSet stats
-    AppendLine stats, "RUN: TestStabilitySP35TableSeparatesNcrAndNult"
+    TestAppendLine stats, "RUN: TestStabilitySP35TableSeparatesNcrAndNult"
     TestStabilitySP35TableSeparatesNcrAndNult stats
-    AppendLine stats, "RUN: TestStabilitySP35TableIgnoresPhiL2"
+    TestAppendLine stats, "RUN: TestStabilitySP35TableIgnoresPhiL2"
     TestStabilitySP35TableIgnoresPhiL2 stats
-    AppendLine stats, "RUN: TestStabilitySP35TableRebarAreaCorrection"
+    TestAppendLine stats, "RUN: TestStabilitySP35TableRebarAreaCorrection"
     TestStabilitySP35TableRebarAreaCorrection stats
-    AppendLine stats, "RUN: TestStabilitySP35TableInterpolationIntermediate"
+    TestAppendLine stats, "RUN: TestStabilitySP35TableInterpolationIntermediate"
     TestStabilitySP35TableInterpolationIntermediate stats
-    AppendLine stats, "RUN: TestStabilitySP35TableBoundaryReservePasses"
+    TestAppendLine stats, "RUN: TestStabilitySP35TableBoundaryReservePasses"
     TestStabilitySP35TableBoundaryReservePasses stats
-    AppendLine stats, "RUN: TestStabilityFailContinuesDownstream"
+    TestAppendLine stats, "RUN: TestStabilityFailContinuesDownstream"
     TestStabilityFailContinuesDownstream stats
-    AppendLine stats, "RUN: TestStabilitySP63ShortSlendernessEtaIsOne"
+    TestAppendLine stats, "RUN: TestStabilitySP63ShortSlendernessEtaIsOne"
     TestStabilitySP63ShortSlendernessEtaIsOne stats
-    AppendLine stats, "RUN: TestStabilityInvalidMuReportsInputErr"
+    TestAppendLine stats, "RUN: TestStabilityInvalidMuReportsInputErr"
     TestStabilityInvalidMuReportsInputErr stats
-    AppendLine stats, "RUN: TestStabilityInvalidSettingsReportInputErr"
+    TestAppendLine stats, "RUN: TestStabilityInvalidSettingsReportInputErr"
     TestStabilityInvalidSettingsReportInputErr stats
-    AppendLine stats, "RUN: TestStabilitySP35MixedBranchReportsMixed"
+    TestAppendLine stats, "RUN: TestStabilitySP35MixedBranchReportsMixed"
     TestStabilitySP35MixedBranchReportsMixed stats
-    AppendLine stats, "RUN: TestAudit03StabilityComments"
+    TestAppendLine stats, "RUN: TestAudit03StabilityComments"
     TestAudit03StabilityComments stats
-    AppendLine stats, "RUN: TestStabilityCircleMxDoesNotCreateMy"
+    TestAppendLine stats, "RUN: TestStabilityCircleMxDoesNotCreateMy"
     TestStabilityCircleMxDoesNotCreateMy stats
-    AppendLine stats, "RUN: TestStabilityAccidentalBothPlanes"
+    TestAppendLine stats, "RUN: TestStabilityAccidentalBothPlanes"
     TestStabilityAccidentalBothPlanes stats
-    AppendLine stats, "RUN: TestStabilityUsesTransformedCentroidForEccentricity"
+    TestAppendLine stats, "RUN: TestStabilityUsesTransformedCentroidForEccentricity"
     TestStabilityUsesTransformedCentroidForEccentricity stats
-    AppendLine stats, "RUN: TestStabilityAccidentalUsesGeometricLength"
+    TestAppendLine stats, "RUN: TestStabilityAccidentalUsesGeometricLength"
     TestStabilityAccidentalUsesGeometricLength stats
-    AppendLine stats, "RUN: TestStabilityAccidentalUserMode"
+    TestAppendLine stats, "RUN: TestStabilityAccidentalUserMode"
     TestStabilityAccidentalUserMode stats
-    AppendLine stats, "RUN: TestStabilitySP35UsesCoreDistanceNotRadius"
+    TestAppendLine stats, "RUN: TestStabilitySP35UsesCoreDistanceNotRadius"
     TestStabilitySP35UsesCoreDistanceNotRadius stats
-    AppendLine stats, "RUN: TestStabilityDepthUsesConcreteContourOnly"
+    TestAppendLine stats, "RUN: TestStabilityDepthUsesConcreteContourOnly"
     TestStabilityDepthUsesConcreteContourOnly stats
-    AppendLine stats, "RUN: TestStabilityPhiLUsesSignedSustainedMoment"
+    TestAppendLine stats, "RUN: TestStabilityPhiLUsesSignedSustainedMoment"
     TestStabilityPhiLUsesSignedSustainedMoment stats
-    AppendLine stats, "RUN: TestStabilitySustainedNNotClamped"
+    TestAppendLine stats, "RUN: TestStabilitySustainedNNotClamped"
     TestStabilitySustainedNNotClamped stats
-    AppendLine stats, "RUN: TestStabilitySP35OppositeMomentSigns"
+    TestAppendLine stats, "RUN: TestStabilitySP35OppositeMomentSigns"
     TestStabilitySP35OppositeMomentSigns stats
-    AppendLine stats, "RUN: TestBatchSummaryWritesOnlySelectedStabilityCode"
+    TestAppendLine stats, "RUN: TestBatchSummaryWritesOnlySelectedStabilityCode"
     TestBatchSummaryWritesOnlySelectedStabilityCode stats
-    AppendLine stats, "RUN: TestPR1RunsStrengthWithoutCrackWidth"
+    TestAppendLine stats, "RUN: TestPR1RunsStrengthWithoutCrackWidth"
     TestPR1RunsStrengthWithoutCrackWidth stats
-    AppendLine stats, "RUN: TestDirectStateReportsNumericalFailure"
+    TestAppendLine stats, "RUN: TestDirectStateReportsNumericalFailure"
     TestDirectStateReportsNumericalFailure stats
-    AppendLine stats, "RUN: TestPR2PhysicalStateRunsCrackWithExtensionEnabled"
+    TestAppendLine stats, "RUN: TestPR2PhysicalStateRunsCrackWithExtensionEnabled"
     TestPR2PhysicalStateRunsCrackWithExtensionEnabled stats
-    AppendLine stats, "RUN: TestBatchCrackCoverDistanceModeChangesAs"
+    TestAppendLine stats, "RUN: TestBatchCrackCoverDistanceModeChangesAs"
     TestBatchCrackCoverDistanceModeChangesAs stats
-    AppendLine stats, "RUN: TestAudit03CrackConfigBehavior"
+    TestAppendLine stats, "RUN: TestAudit03CrackConfigBehavior"
     TestAudit03CrackConfigBehavior stats
-    AppendLine stats, "RUN: TestPR2AutoCrackStoresPreAndPostCrackStates"
+    TestAppendLine stats, "RUN: TestPR2AutoCrackStoresPreAndPostCrackStates"
     TestPR2AutoCrackStoresPreAndPostCrackStates stats
-    AppendLine stats, "RUN: TestPR2AutoCrackPureBendingStoresMcrcStates"
+    TestAppendLine stats, "RUN: TestPR2AutoCrackPureBendingStoresMcrcStates"
     TestPR2AutoCrackPureBendingStoresMcrcStates stats
-    AppendLine stats, "RUN: TestPR2RectanglesCompressionSmallMomentCrackDoesNotNumFail"
+    TestAppendLine stats, "RUN: TestPR2RectanglesCompressionSmallMomentCrackDoesNotNumFail"
     TestPR2RectanglesCompressionSmallMomentCrackDoesNotNumFail stats
-    AppendLine stats, "RUN: TestCrackInitiationLoadPathsWriteFormationSummary"
+    TestAppendLine stats, "RUN: TestCrackInitiationLoadPathsWriteFormationSummary"
     TestCrackInitiationLoadPathsWriteFormationSummary stats
-    AppendLine stats, "RUN: TestCrackAutoFormationPathSwitchesForRectangles"
+    TestAppendLine stats, "RUN: TestCrackAutoFormationPathSwitchesForRectangles"
     TestCrackAutoFormationPathSwitchesForRectangles stats
-    AppendLine stats, "RUN: TestPR1AxialTensionBeyondPhysicalLimitUsesExtension"
+    TestAppendLine stats, "RUN: TestPR1AxialTensionBeyondPhysicalLimitUsesExtension"
     TestPR1AxialTensionBeyondPhysicalLimitUsesExtension stats
-    AppendLine stats, "RUN: TestPR1AxialTensionNearLimitDoesNotJumpToNumFail"
+    TestAppendLine stats, "RUN: TestPR1AxialTensionNearLimitDoesNotJumpToNumFail"
     TestPR1AxialTensionNearLimitDoesNotJumpToNumFail stats
-    AppendLine stats, "RUN: TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail"
+    TestAppendLine stats, "RUN: TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail"
     TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail stats
-    AppendLine stats, "RUN: TestPR1AxialTensionProgressionAfterLimitIsStableFail"
+    TestAppendLine stats, "RUN: TestPR1AxialTensionProgressionAfterLimitIsStableFail"
     TestPR1AxialTensionProgressionAfterLimitIsStableFail stats
-    AppendLine stats, "RUN: TestPR1AxialCompressionProgressionAfterLimitIsStableFail"
+    TestAppendLine stats, "RUN: TestPR1AxialCompressionProgressionAfterLimitIsStableFail"
     TestPR1AxialCompressionProgressionAfterLimitIsStableFail stats
-    AppendLine stats, "RUN: TestPR2AxialTensionBeyondPhysicalLimitUsesExtension"
+    TestAppendLine stats, "RUN: TestPR2AxialTensionBeyondPhysicalLimitUsesExtension"
     TestPR2AxialTensionBeyondPhysicalLimitUsesExtension stats
-    AppendLine stats, "RUN: TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension"
+    TestAppendLine stats, "RUN: TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension"
     TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension stats
-    AppendLine stats, "RUN: TestPR2BendingBeyondPhysicalLimitUsesExtension"
+    TestAppendLine stats, "RUN: TestPR2BendingBeyondPhysicalLimitUsesExtension"
     TestPR2BendingBeyondPhysicalLimitUsesExtension stats
-    AppendLine stats, "RUN: TestBatchMoreThanTwentyCombinations"
+    TestAppendLine stats, "RUN: TestBatchMoreThanTwentyCombinations"
     TestBatchMoreThanTwentyCombinations stats
-    AppendLine stats, "RUN: TestInvalidCombinationFromNamedRange"
+    TestAppendLine stats, "RUN: TestInvalidCombinationFromNamedRange"
     TestInvalidCombinationFromNamedRange stats
-    AppendLine stats, "RUN: TestBatchSummaryWriter"
+    TestAppendLine stats, "RUN: TestBatchSummaryWriter"
     TestBatchSummaryWriter stats
     TestFormationStatusFormatting stats
-    AppendLine stats, "RUN: TestBatchSummaryPreservesSourceRowGaps"
+    TestAppendLine stats, "RUN: TestBatchSummaryPreservesSourceRowGaps"
     TestBatchSummaryPreservesSourceRowGaps stats
-    AppendLine stats, "RUN: TestBatchSummaryRowsUseAvailableLoadRange"
+    TestAppendLine stats, "RUN: TestBatchSummaryRowsUseAvailableLoadRange"
     TestBatchSummaryRowsUseAvailableLoadRange stats
-    AppendLine stats, "RUN: TestBatchCapacityUsesSystemSettings"
+    TestAppendLine stats, "RUN: TestBatchCapacityUsesSystemSettings"
     TestBatchCapacityUsesSystemSettings stats
-    AppendLine stats, "RUN: TestInvalidModeSettingsAreNotFallbacks"
+    TestAppendLine stats, "RUN: TestInvalidModeSettingsAreNotFallbacks"
     TestInvalidModeSettingsAreNotFallbacks stats
     TestAudit03BatchInputMessages stats
     TestAudit03NotCrackedBatchOutput stats
     TestAudit03NotCrackedInputValidation stats
     TestAudit03FormationReportNarrative stats
     TestAudit03CrackSpacingWarning stats
-    AppendLine stats, "RUN: TestResultMetaStatusDictionary"
+    TestAppendLine stats, "RUN: TestResultMetaStatusDictionary"
     TestResultMetaStatusDictionary stats
-    AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
+    TestAppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
     TestResultMetaAggregateSkipsNotApplicable stats
-    AppendLine stats, "RUN: TestCombinationResultTreeDrivesDisplayFields"
+    TestAppendLine stats, "RUN: TestCombinationResultTreeDrivesDisplayFields"
     TestCombinationResultTreeDrivesDisplayFields stats
-    AppendLine stats, "RUN: TestCrackAggregateIncludesCurrentStateFailure"
+    TestAppendLine stats, "RUN: TestCrackAggregateIncludesCurrentStateFailure"
     TestCrackAggregateIncludesCurrentStateFailure stats
-    AppendLine stats, "RUN: TestFormulaChecksDoNotCreateNumFail"
+    TestAppendLine stats, "RUN: TestFormulaChecksDoNotCreateNumFail"
     TestFormulaChecksDoNotCreateNumFail stats
-    AppendLine stats, "RUN: TestSectionStateResultStoresEquilibriumData"
+    TestAppendLine stats, "RUN: TestSectionStateResultStoresEquilibriumData"
     TestSectionStateResultStoresEquilibriumData stats
-    AppendLine stats, "RUN: TestStateRequestEquivalenceIgnoresSolveOptions"
+    TestAppendLine stats, "RUN: TestStateRequestEquivalenceIgnoresSolveOptions"
     TestStateRequestEquivalenceIgnoresSolveOptions stats
-    AppendLine stats, "RUN: TestStateRepositoryReusesOnlyConvergedStates"
+    TestAppendLine stats, "RUN: TestStateRepositoryReusesOnlyConvergedStates"
     TestStateRepositoryReusesOnlyConvergedStates stats
-    AppendLine stats, "RUN: TestPrePostCrackStateNames"
+    TestAppendLine stats, "RUN: TestPrePostCrackStateNames"
     TestPrePostCrackStateNames stats
-    AppendLine stats, "RUN: TestAudit02CurrentCrackedStateCacheHitCalculatesWidth"
+    TestAppendLine stats, "RUN: TestAudit02CurrentCrackedStateCacheHitCalculatesWidth"
     TestAudit02CurrentCrackedStateCacheHitCalculatesWidth stats
-    AppendLine stats, "RUN: TestAudit02CanonicalResultsAndReset"
+    TestAppendLine stats, "RUN: TestAudit02CanonicalResultsAndReset"
     TestAudit02CanonicalResultsAndReset stats
-    AppendLine stats, "RUN: TestAudit02RepositoryContextAndRetry"
+    TestAppendLine stats, "RUN: TestAudit02RepositoryContextAndRetry"
     TestAudit02RepositoryContextAndRetry stats
-    AppendLine stats, "RUN: TestAudit02OnOffPhysicalResults"
+    TestAppendLine stats, "RUN: TestAudit02OnOffPhysicalResults"
     TestAudit02OnOffPhysicalResults stats
     TestAudit02InitialOffsetOnOffStatuses stats
     TestAudit03ResultLifecycle stats
     TestAudit03LoadPathComments stats
     TestAudit03CommentComposition stats
-    AppendLine stats, "RUN: TestAudit03PublishedResults"
+    TestAppendLine stats, "RUN: TestAudit03PublishedResults"
     TestAudit03PublishedResults stats
 
     Dim searchPassed As Long, searchFailed As Long
-    AppendLine stats, "RUN: RunAudit03SearchConfigTests"
+    TestAppendLine stats, "RUN: RunAudit03SearchConfigTests"
     stats.Report = stats.Report & RunAudit03SearchConfigTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
-    AppendLine stats, "RUN: RunAudit03CapacityNumericConfigTests"
+    TestAppendLine stats, "RUN: RunAudit03CapacityNumericConfigTests"
     stats.Report = stats.Report & RunAudit03CapacityNumericConfigTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
-    AppendLine stats, "RUN: RunAudit03StabilityConfigTests"
+    TestAppendLine stats, "RUN: RunAudit03StabilityConfigTests"
     stats.Report = stats.Report & RunAudit03StabilityConfigTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
-    AppendLine stats, "RUN: RunAudit03UniversalLoadPathTests"
+    TestAppendLine stats, "RUN: RunAudit03UniversalLoadPathTests"
     stats.Report = stats.Report & RunAudit03UniversalLoadPathTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
 
-    AppendLine stats, "RUN: RunAudit03GeneralGeometryConfigTests"
+    TestAppendLine stats, "RUN: RunAudit03GeneralGeometryConfigTests"
     stats.Report = stats.Report & RunAudit03GeneralGeometryConfigTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
 
-    AppendLine stats, "RUN: RunAudit03SP35TableInvalidReproducer"
-    stats.Report = stats.Report & RunAudit03SP35TableInvalidReproducer(searchPassed, searchFailed)
+    TestAppendLine stats, "RUN: RunAudit03SP35TableInvalidReproducer"
+    stats.Report = stats.Report & TestRunAudit03SP35TableInvalidReproducer(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
-    AppendLine stats, "RUN: RunAudit03SP35TableBehaviorTests"
+    TestAppendLine stats, "RUN: RunAudit03SP35TableBehaviorTests"
     stats.Report = stats.Report & RunAudit03SP35TableBehaviorTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
-    AppendLine stats, "RUN: RunAudit03InactiveConfigCellTests"
+    TestAppendLine stats, "RUN: RunAudit03InactiveConfigCellTests"
     stats.Report = stats.Report & RunAudit03InactiveConfigCellTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
-    AppendLine stats, "RUN: RunAudit03SP35TableDiagnosticTests"
+    TestAppendLine stats, "RUN: RunAudit03SP35TableDiagnosticTests"
     stats.Report = stats.Report & RunAudit03SP35TableDiagnosticTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
-    AppendLine stats, "RUN: RunAudit03UserPsiFallbackTests"
+    TestAppendLine stats, "RUN: RunAudit03UserPsiFallbackTests"
     stats.Report = stats.Report & RunAudit03UserPsiFallbackTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
 
     Dim elapsed As Double: elapsed = Timer - t0
     If elapsed < 0# Then elapsed = elapsed + 86400#
-    AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
-        "; elapsedSec=" & FormatNumberInvariant(elapsed)
-    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode, originalPr1CrackWidth
+    TestAppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
+        "; elapsedSec=" & TestFormatNumberInvariant(elapsed)
+    TestRestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode, originalPr1CrackWidth
     RunBatchCalculationTests = stats.Report
     Exit Function
 
@@ -347,12 +349,13 @@ Failed:
     failureNumber = Err.Number
     failureSource = Err.Source
     failureDescription = Err.Description
-    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode, originalPr1CrackWidth
+    TestRestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode, originalPr1CrackWidth
     RunBatchCalculationTests = stats.Report & "RUNTIME ERROR: " & CStr(failureNumber) & _
         "; source=" & failureSource & "; description=" & failureDescription
 End Function
 
-' ДЛЯ ТЕСТОВ: готовый снимок повторно записывается после изменения Config.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' готовый снимок повторно записывается после изменения Config.
 ' Все инженерные поля и диаграммы сохраняются; preview не запускает solve.
 Public Function RunPostAudit03SnapshotRepeatTests() As String
     Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object, unitRange As Object
@@ -365,13 +368,13 @@ Public Function RunPostAudit03SnapshotRepeatTests() As String
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula: savedUnits = unitRange.Formula
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set batch = BuildBatchCalculator(True, section): batch.ApplySettings settings, units
+    Set batch = TestBuildBatchCalculator(True, section): batch.ApplySettings settings, units
     batch.AddCombination "SNAPSHOT", -100000#, 1000000#, 200000#, "PR1", "Повторная запись", "Auto"
     batch.Execute
     Set props = PrepareSectionSnapshot(section, TestMaterialProvider())
@@ -387,35 +390,35 @@ Public Function RunPostAudit03SnapshotRepeatTests() As String
     Set writer = New CNDMResultsWriter: writer.WriteResults fixture, section, props, batch, units
     Set saved = New Collection
     For Each name In names
-        data = PostAudit03ReadSnapshotTable(fixture, CStr(name)): saved.Add data
+        data = TestPostAudit03ReadSnapshotTable(fixture, CStr(name)): saved.Add data
     Next name
-    SetSystemSetting "General.DiagramExtension", "No"
-    SetSystemSetting "Solver.MaxIterations", "1"
+    TestSetSystemSetting "General.DiagramExtension", "No"
+    TestSetSystemSetting "Solver.MaxIterations", "1"
     unitRange.Cells(2, 2).Value2 = "cm": unitRange.Cells(2, 4).Value2 = "m"
     For i = 1 To 2
         writer.WriteResults fixture, section, props, batch, units
         For col = 0 To UBound(names)
-            data = PostAudit03ReadSnapshotTable(fixture, CStr(names(col))): before = saved.Item(col + 1)
-            AssertTrue stats, "postAudit03.repeat.shape." & CStr(i) & "." & CStr(col), _
+            data = TestPostAudit03ReadSnapshotTable(fixture, CStr(names(col))): before = saved.Item(col + 1)
+            TestAssertTrue stats, "postAudit03.repeat.shape." & CStr(i) & "." & CStr(col), _
                 UBound(data, 1) = UBound(before, 1) And UBound(data, 2) = UBound(before, 2)
             Dim columnIndex As Long
             For row = 1 To UBound(before, 1)
                 For columnIndex = 2 To UBound(before, 2)
-                    AssertEquals stats, "postAudit03.repeat.field." & CStr(i) & "." & CStr(col) & "." & CStr(row) & "." & CStr(columnIndex), _
+                    TestAssertEquals stats, "postAudit03.repeat.field." & CStr(i) & "." & CStr(col) & "." & CStr(row) & "." & CStr(columnIndex), _
                         CStr(data(row, columnIndex)), CStr(before(row, columnIndex))
                 Next columnIndex
             Next row
         Next col
     Next i
     writer.WriteGeometryPreview fixture, section, props, units
-    AssertTrue stats, "postAudit03.repeat.previewNoSolve", SectionEquilibriumSolveCount() = solves
-    AssertTrue stats, "postAudit03.repeat.widths", sheet.Columns(1).ColumnWidth = 7# And sheet.Columns(12).ColumnWidth = 13#
+    TestAssertTrue stats, "postAudit03.repeat.previewNoSolve", SectionEquilibriumSolveCount() = solves
+    TestAssertTrue stats, "postAudit03.repeat.widths", sheet.Columns(1).ColumnWidth = 7# And sheet.Columns(12).ColumnWidth = 13#
     writer.ClearResults fixture
-    data = PostAudit03ReadSnapshotTable(fixture, "rngNDMSectionContours")
-    AssertTrue stats, "postAudit03.repeat.clearContourHeader", UBound(data, 1) = 1 And data(1, 1) = "RunID"
+    data = TestPostAudit03ReadSnapshotTable(fixture, "rngNDMSectionContours")
+    TestAssertTrue stats, "postAudit03.repeat.clearContourHeader", UBound(data, 1) = 1 And data(1, 1) = "RunID"
     GoTo Finished
 Failed:
-    AssertTrue stats, "postAudit03.repeat.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "postAudit03.repeat.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -426,7 +429,8 @@ Finished:
     RunPostAudit03SnapshotRepeatTests = stats.Report & "TOTAL_POSTAUDIT03_REPEAT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: Results сохраняет использованные диаграммы, а не новый Config.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Results сохраняет использованные диаграммы, а не новый Config.
 Public Function RunPlateauResultsDiagramTests() As String
     Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
     Dim savedSystem As Variant, savedProfiles As Variant, fixture As Object, sheet As Object
@@ -439,10 +443,10 @@ Public Function RunPlateauResultsDiagramTests() As String
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
         "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
@@ -453,47 +457,47 @@ Public Function RunPlateauResultsDiagramTests() As String
     Set writer = New CNDMResultsWriter
     For Each slopeMode In Array("0", "0.0001", "0.001")
         For Each extensionMode In Array("No", "Yes")
-            SetSystemSetting "General.PlateauSlopeFactor", CStr(slopeMode)
-            SetSystemSetting "General.DiagramExtension", CStr(extensionMode)
+            TestSetSystemSetting "General.PlateauSlopeFactor", CStr(slopeMode)
+            TestSetSystemSetting "General.DiagramExtension", CStr(extensionMode)
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
             Set provider = New CMaterialModelProvider: provider.Initialize settings, units
-            Set batch = BuildBatchCalculator(False, section)
+            Set batch = TestBuildBatchCalculator(False, section)
             batch.Initialize section, provider: Set batch.ProfileCatalog = TestProfileCatalog()
             batch.ApplySettings settings, units
             batch.AddCombination "DIAGRAM", -100000#, 1000000#, 200000#, "PR1", "", "Auto"
             batch.Execute
             prefix = "plateau.results." & CStr(slopeMode) & "." & CStr(extensionMode)
-            AssertTrue stats, prefix & ".stateCount", batch.ResultAt(1).StateRepository.StateCount = 1
+            TestAssertTrue stats, prefix & ".stateCount", batch.ResultAt(1).StateRepository.StateCount = 1
             Set state = batch.ResultAt(1).StateRepository.StateAt(1)
-            AssertTrue stats, prefix & ".materialsSaved", state.HasMaterialSnapshot
+            TestAssertTrue stats, prefix & ".materialsSaved", state.HasMaterialSnapshot
             Set props = PrepareSectionSnapshot(section, provider)
             solves = SectionEquilibriumSolveCount()
             If CStr(slopeMode) = "0.001" Then
-                SetSystemSetting "General.PlateauSlopeFactor", "0"
+                TestSetSystemSetting "General.PlateauSlopeFactor", "0"
             Else
-                SetSystemSetting "General.PlateauSlopeFactor", "0.001"
+                TestSetSystemSetting "General.PlateauSlopeFactor", "0.001"
             End If
             writer.WriteResults fixture, section, props, batch, units
-            data = PostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
-            AssertTrue stats, prefix & ".pointRows", UBound(data, 1) > 1
+            data = TestPostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
+            TestAssertTrue stats, prefix & ".pointRows", UBound(data, 1) > 1
             For row = 2 To UBound(data, 1)
                 If CStr(data(row, 8)) = "Concrete" Then
                     Set diagram = provider.ConcreteMaterialForEquilibriumFromSpec(state.MaterialSpec)
                 Else
-                    AssertEquals stats, prefix & ".material", CStr(data(row, 8)), "Rebar"
+                    TestAssertEquals stats, prefix & ".material", CStr(data(row, 8)), "Rebar"
                     Set diagram = provider.SteelMaterialForEquilibriumFromSpec(state.MaterialSpec)
                 End If
                 point = CLng(data(row, 9))
-                AssertClose stats, prefix & ".strain." & CStr(row), CDbl(data(row, 10)), diagram.PointStrain(point), 0.000000000001
-                AssertClose stats, prefix & ".stress." & CStr(row), units.OutputStressToInternal(CDbl(data(row, 11))), diagram.PointStress(point), 0.00000001
+                TestAssertClose stats, prefix & ".strain." & CStr(row), CDbl(data(row, 10)), diagram.PointStrain(point), 0.000000000001
+                TestAssertClose stats, prefix & ".stress." & CStr(row), units.OutputStressToInternal(CDbl(data(row, 11))), diagram.PointStress(point), 0.00000001
             Next row
-            AssertTrue stats, prefix & ".writerNoSolve", SectionEquilibriumSolveCount() = solves
+            TestAssertTrue stats, prefix & ".writerNoSolve", SectionEquilibriumSolveCount() = solves
         Next extensionMode
     Next slopeMode
     GoTo Finished
 Failed:
-    AssertTrue stats, "plateau.results.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "plateau.results.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -503,7 +507,8 @@ Finished:
     RunPlateauResultsDiagramTests = stats.Report & "TOTAL_PLATEAU_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: вывод общей диаграммы охватывает все найденные НДС, включая
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' вывод общей диаграммы охватывает все найденные НДС, включая
 ' деформации дальше прежних +/-100. Физические узлы и снимки не изменяются.
 Public Function RunUnboundedDiagramResultsTests() As String
     Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
@@ -519,15 +524,15 @@ Public Function RunUnboundedDiagramResultsTests() As String
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set materials = New CMaterialModelProvider: materials.Initialize settings, units
-    Set batch = BuildBatchCalculator(True, section)
+    Set batch = TestBuildBatchCalculator(True, section)
     Set catalog = TestProfileCatalog(): Set spec = catalog.ProfileById("PR1").StrengthSpec
     batch.Initialize section, materials: Set batch.ProfileCatalog = catalog: batch.ApplySettings settings, units
     Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
@@ -540,14 +545,14 @@ Public Function RunUnboundedDiagramResultsTests() As String
     batch.Execute
     For i = 1 To batch.Count
         Set state = batch.ResultAt(i).StateRepository.StateAt(1)
-        AssertTrue stats, "unbounded.results.equilibrium." & CStr(i), state.Converged
-        AssertTrue stats, "unbounded.results.physicalFail." & CStr(i), state.InternalStatus = rsCheckFailed And state.ExtensionUsed
+        TestAssertTrue stats, "unbounded.results.equilibrium." & CStr(i), state.Converged
+        TestAssertTrue stats, "unbounded.results.physicalFail." & CStr(i), state.InternalStatus = rsCheckFailed And state.ExtensionUsed
         If i = 1 Then
             cMin = state.MinConcreteStrain: cMax = state.MaxConcreteStrain
             sMin = state.MinSteelStrain: sMax = state.MaxSteelStrain
         Else
-            cMin = MinDouble(cMin, state.MinConcreteStrain): cMax = MaxDouble(cMax, state.MaxConcreteStrain)
-            sMin = MinDouble(sMin, state.MinSteelStrain): sMax = MaxDouble(sMax, state.MaxSteelStrain)
+            cMin = TestMinDouble(cMin, state.MinConcreteStrain): cMax = TestMaxDouble(cMax, state.MaxConcreteStrain)
+            sMin = TestMinDouble(sMin, state.MinSteelStrain): sMax = TestMaxDouble(sMax, state.MaxSteelStrain)
         End If
     Next i
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
@@ -560,32 +565,32 @@ Public Function RunUnboundedDiagramResultsTests() As String
     Set writer = New CNDMResultsWriter: Set props = PrepareSectionSnapshot(section, materials)
     solves = SectionEquilibriumSolveCount()
     writer.WriteResults fixture, section, props, batch, units
-    AssertTrue stats, "unbounded.results.noNewSolve", SectionEquilibriumSolveCount() = solves
-    data = PostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
-    AssertTrue stats, "unbounded.results.noDuplicateDiagrams", UBound(data, 1) = 1 + concrete.PointCount + steel.PointCount
+    TestAssertTrue stats, "unbounded.results.noNewSolve", SectionEquilibriumSolveCount() = solves
+    data = TestPostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
+    TestAssertTrue stats, "unbounded.results.noDuplicateDiagrams", UBound(data, 1) = 1 + concrete.PointCount + steel.PointCount
     Set unique = CreateObject("Scripting.Dictionary")
     For row = 2 To UBound(data, 1)
         point = CLng(data(row, 9)): key = CStr(data(row, 2)) & "|" & CStr(point)
-        AssertTrue stats, "unbounded.results.unique." & CStr(row), Not unique.Exists(key)
+        TestAssertTrue stats, "unbounded.results.unique." & CStr(row), Not unique.Exists(key)
         unique.Add key, True
         If CStr(data(row, 8)) = "Concrete" Then
             Set diagram = concrete: expected = diagram.PointStrain(point)
-            If point = 1 And diagram.HasCompressionExtension Then expected = MinDouble(expected, cMin)
-            If point = diagram.PointCount And diagram.HasTensionExtension Then expected = MaxDouble(expected, cMax)
+            If point = 1 And diagram.HasCompressionExtension Then expected = TestMinDouble(expected, cMin)
+            If point = diagram.PointCount And diagram.HasTensionExtension Then expected = TestMaxDouble(expected, cMax)
         Else
             Set diagram = steel: expected = diagram.PointStrain(point)
-            If point = 1 And diagram.HasCompressionExtension Then expected = MinDouble(expected, sMin)
-            If point = diagram.PointCount And diagram.HasTensionExtension Then expected = MaxDouble(expected, sMax)
+            If point = 1 And diagram.HasCompressionExtension Then expected = TestMinDouble(expected, sMin)
+            If point = diagram.PointCount And diagram.HasTensionExtension Then expected = TestMaxDouble(expected, sMax)
         End If
-        AssertClose stats, "unbounded.results.strain." & CStr(row), CDbl(data(row, 10)), expected, 0.000000000001
-        AssertClose stats, "unbounded.results.stress." & CStr(row), units.OutputStressToInternal(CDbl(data(row, 11))), diagram.GetStress(expected), 0.000001
+        TestAssertClose stats, "unbounded.results.strain." & CStr(row), CDbl(data(row, 10)), expected, 0.000000000001
+        TestAssertClose stats, "unbounded.results.stress." & CStr(row), units.OutputStressToInternal(CDbl(data(row, 11))), diagram.GetStress(expected), 0.000001
     Next row
-    AssertTrue stats, "unbounded.results.compressionBeyond100", cMin < -100# And sMin < -100#
-    AssertTrue stats, "unbounded.results.tensionBeyond100", sMax > 100#
-    AssertTrue stats, "unbounded.results.originalReferencesRetained", concrete.PointStrain(1) > -2# And steel.PointStrain(steel.PointCount) < 2#
+    TestAssertTrue stats, "unbounded.results.compressionBeyond100", cMin < -100# And sMin < -100#
+    TestAssertTrue stats, "unbounded.results.tensionBeyond100", sMax > 100#
+    TestAssertTrue stats, "unbounded.results.originalReferencesRetained", concrete.PointStrain(1) > -2# And steel.PointStrain(steel.PointCount) < 2#
     GoTo Finished
 Failed:
-    AssertTrue stats, "unbounded.results.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "unbounded.results.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -595,8 +600,9 @@ Finished:
     RunUnboundedDiagramResultsTests = stats.Report & "TOTAL_UNBOUNDED_DIAGRAM_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: читает только непрерывную таблицу под одноячеечным якорем.
-Private Function PostAudit03ReadSnapshotTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' читает только непрерывную таблицу под одноячеечным якорем.
+Private Function TestPostAudit03ReadSnapshotTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
     Dim anchor As Object, rows As Long, columns As Long
     Set anchor = workbook.Names.Item(rangeName).RefersToRange
     rows = 1: columns = 1
@@ -606,25 +612,27 @@ Private Function PostAudit03ReadSnapshotTable(ByVal workbook As Object, ByVal ra
     Do While Len(CStr(anchor.Offset(rows, 0).Value2)) > 0
         rows = rows + 1
     Loop
-    PostAudit03ReadSnapshotTable = anchor.Resize(rows, columns).Value2
+    TestPostAudit03ReadSnapshotTable = anchor.Resize(rows, columns).Value2
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает настройки профиля, временно измененные общим batch-прогоном.
 ' Отдельные stability-тесты внутри набора сами включают устойчивость и восстанавливают
 ' ее к этому временному тестовому базису, поэтому здесь нужен только финальный возврат.
-Private Sub RestoreBatchSuiteProfileDefaults(ByVal originalPr1Stability As String, _
+Private Sub TestRestoreBatchSuiteProfileDefaults(ByVal originalPr1Stability As String, _
                                              ByVal hasOriginalPr1Stability As Boolean, ByVal originalCrackCode As String, _
                                              ByVal originalPr1CrackWidth As String)
     If Not hasOriginalPr1Stability Then Exit Sub
 
     On Error Resume Next
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", originalPr1Stability
-    SetProfileValue "Calculation.Crack.Width", "PR1", originalPr1CrackWidth
-    SetSystemSetting "SLS.Crack.Code", originalCrackCode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", originalPr1Stability
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", originalPr1CrackWidth
+    TestSetSystemSetting "SLS.Crack.Code", originalCrackCode
     On Error GoTo 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: запускает только сверку верхнего batch summary с подробными
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' запускает только сверку верхнего batch summary с подробными
 ' блоками Results. Нужен как быстрый диагностический вход, когда общий набор
 ' batch-тестов слишком долгий и надо проверить именно новый пользовательский
 ' контракт сводки запасов.
@@ -633,15 +641,15 @@ Public Function RunBatchSummaryReserveConsistencyTest() As String
 
     Dim stats As TBatchTestStats
     Dim originalCrackCode As String
-    originalCrackCode = GetSystemSetting("SLS.Crack.Code")
-    SetSystemSetting "SLS.Crack.Code", "SP63"
-    AppendLine stats, "RUN: TestBatchSummaryWriter"
+    originalCrackCode = TestGetSystemSetting("SLS.Crack.Code")
+    TestSetSystemSetting "SLS.Crack.Code", "SP63"
+    TestAppendLine stats, "RUN: TestBatchSummaryWriter"
     TestBatchSummaryWriter stats
-    AppendLine stats, "RUN: TestStabilitySP35TableBoundaryReservePasses"
+    TestAppendLine stats, "RUN: TestStabilitySP35TableBoundaryReservePasses"
     TestStabilitySP35TableBoundaryReservePasses stats
-    AppendLine stats, "TOTAL_BATCH_SUMMARY_RESERVE: passed=" & CStr(stats.Passed) & _
+    TestAppendLine stats, "TOTAL_BATCH_SUMMARY_RESERVE: passed=" & CStr(stats.Passed) & _
         "; failed=" & CStr(stats.Failed)
-    SetSystemSetting "SLS.Crack.Code", originalCrackCode
+    TestSetSystemSetting "SLS.Crack.Code", originalCrackCode
     RunBatchSummaryReserveConsistencyTest = stats.Report
     Exit Function
 
@@ -649,122 +657,127 @@ Failed:
     RunBatchSummaryReserveConsistencyTest = stats.Report & "RUNTIME ERROR: " & _
         CStr(Err.Number) & "; source=" & Err.Source & "; description=" & Err.Description
     On Error Resume Next
-    If Len(originalCrackCode) > 0 Then SetSystemSetting "SLS.Crack.Code", originalCrackCode
+    If Len(originalCrackCode) > 0 Then TestSetSystemSetting "SLS.Crack.Code", originalCrackCode
     On Error GoTo 0
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет полный Execute одного LC: число результатов, определяющее
 ' сочетание, заполнение статусов разделов и неотрицательное время расчета.
 Private Sub TestBatchOneCombination(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "C1", -220000#, -7000000#, -5000000#, "PR1", "single"
     batch.Execute
 
-    AssertTrue stats, "batch.one.count", batch.Count = 1
-    AssertTrue stats, "batch.one.governing", batch.GoverningCombinationID = "C1"
-    AssertTrue stats, "batch.one.capacity.status", Len(batch.ResultAt(1).StrengthResult.Capacity.Status) > 0
-    AssertTrue stats, "batch.one.crack.status", Len(batch.ResultAt(1).NormalCrackStatus) > 0
-    AssertTrue stats, "batch.one.elapsed", batch.ElapsedSeconds >= 0#
+    TestAssertTrue stats, "batch.one.count", batch.Count = 1
+    TestAssertTrue stats, "batch.one.governing", batch.GoverningCombinationID = "C1"
+    TestAssertTrue stats, "batch.one.capacity.status", Len(batch.ResultAt(1).StrengthResult.Capacity.Status) > 0
+    TestAssertTrue stats, "batch.one.crack.status", Len(batch.ResultAt(1).NormalCrackStatus) > 0
+    TestAssertTrue stats, "batch.one.elapsed", batch.ElapsedSeconds >= 0#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Решает одинаковые усилия по Strength- и Crack-профилям: запрошенные
 ' разделы выполняются, остальные остаются неприменимыми, без чужой модели.
 Private Sub TestProfileIdControlsLimitStateGroup(ByRef stats As TBatchTestStats)
     Dim group1 As CBatchSectionCalculator
-    Set group1 = BuildBatchCalculator()
+    Set group1 = TestBuildBatchCalculator()
     group1.AddCombination "G1", -220000#, -7000000#, -5000000#, "PR1", "strength"
     group1.Execute
 
-    AssertTrue stats, "batch.profileId.group1.capacity", group1.ResultAt(1).StrengthResult.Capacity.LambdaCapacity > 0#
-    AssertTrue stats, "batch.profileId.group1.noCrack", group1.ResultAt(1).NormalCrackStatus = "N/A"
+    TestAssertTrue stats, "batch.profileId.group1.capacity", group1.ResultAt(1).StrengthResult.Capacity.LambdaCapacity > 0#
+    TestAssertTrue stats, "batch.profileId.group1.noCrack", group1.ResultAt(1).NormalCrackStatus = "N/A"
 
     Dim group2 As CBatchSectionCalculator
-    Set group2 = BuildBatchCalculator()
+    Set group2 = TestBuildBatchCalculator()
     group2.AddCombination "G2", -220000#, -7000000#, -5000000#, "PR2", "crack"
     group2.Execute
 
-    AssertTrue stats, "batch.profileId.group2.noCapacity", group2.ResultAt(1).StrengthResult.Capacity.Status = "N/A"
-    AssertTrue stats, "batch.profileId.group2.crackedState", _
+    TestAssertTrue stats, "batch.profileId.group2.noCapacity", group2.ResultAt(1).StrengthResult.Capacity.Status = "N/A"
+    TestAssertTrue stats, "batch.profileId.group2.crackedState", _
         Not group2.ResultAt(1).StateRepository.FindState(sstCrackedState) Is Nothing
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Задает LoadMultiplier и малую техническую границу lambda в Config;
 ' batch должен сохранить незавершенный поиск как NumFail без выдуманного запаса.
 ' Исходные настройки восстанавливаются и при ошибке проверки.
 Private Sub TestBatchCapacityUsesSystemSettings(ByRef stats As TBatchTestStats)
     Dim oldStrategy As String
     Dim oldMaxLambda As String
-    oldStrategy = GetSystemSetting("Capacity.SolutionStrategy")
-    oldMaxLambda = GetSystemSetting("Capacity.MaxLambda")
+    oldStrategy = TestGetSystemSetting("Capacity.SolutionStrategy")
+    oldMaxLambda = TestGetSystemSetting("Capacity.MaxLambda")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
-    SetSystemSetting "Capacity.MaxLambda", "0.5"
+    TestSetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+    TestSetSystemSetting "Capacity.MaxLambda", "0.5"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "LIMITED", -220000#, -7000000#, -5000000#, "PR1", "max-lambda"
     batch.Execute
 
-    AssertTrue stats, "batch.settings.capacity.maxLambda", batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail"
-    AssertClose stats, "batch.settings.capacity.maxLambda.noReserve", _
+    TestAssertTrue stats, "batch.settings.capacity.maxLambda", batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail"
+    TestAssertClose stats, "batch.settings.capacity.maxLambda.noReserve", _
         batch.ResultAt(1).StrengthResult.Capacity.ReserveFactor, 0#, 0#
 
 Restore:
-    SetSystemSetting "Capacity.SolutionStrategy", oldStrategy
-    SetSystemSetting "Capacity.MaxLambda", oldMaxLambda
+    TestSetSystemSetting "Capacity.SolutionStrategy", oldStrategy
+    TestSetSystemSetting "Capacity.MaxLambda", oldMaxLambda
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.settings.capacity.maxLambda; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.settings.capacity.maxLambda; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Передает неизвестную Capacity.SolutionStrategy через настоящий reader.
 ' Ожидается InputErr без lambda/reserve, а не fallback на допустимый метод.
 Private Sub TestInvalidModeSettingsAreNotFallbacks(ByRef stats As TBatchTestStats)
     Dim oldCapacitySolutionStrategy As String
-    oldCapacitySolutionStrategy = GetSystemSetting("Capacity.SolutionStrategy")
+    oldCapacitySolutionStrategy = TestGetSystemSetting("Capacity.SolutionStrategy")
 
     On Error GoTo RestoreAndFail
 
-    SetSystemSetting "Capacity.SolutionStrategy", "WrongCapacity"
+    TestSetSystemSetting "Capacity.SolutionStrategy", "WrongCapacity"
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "BAD_CAP", -220000#, -7000000#, -5000000#, "PR1", "wrong capacity"
     batch.Execute
-    AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.status", batch.ResultAt(1).Status = "InputErr"
-    AssertTrue stats, "batch.invalid.CapacitySolutionStrategy.noLambda", batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity = 0#
-    AssertClose stats, "batch.invalid.CapacitySolutionStrategy.noReserve", _
+    TestAssertTrue stats, "batch.invalid.CapacitySolutionStrategy.status", batch.ResultAt(1).Status = "InputErr"
+    TestAssertTrue stats, "batch.invalid.CapacitySolutionStrategy.noLambda", batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity = 0#
+    TestAssertClose stats, "batch.invalid.CapacitySolutionStrategy.noReserve", _
         batch.ResultAt(1).StrengthResult.Capacity.ReserveFactor, 0#, 0#
 
 Restore:
-    SetSystemSetting "Capacity.SolutionStrategy", oldCapacitySolutionStrategy
+    TestSetSystemSetting "Capacity.SolutionStrategy", oldCapacitySolutionStrategy
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.invalid.solutionStrategy; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.invalid.solutionStrategy; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пять различных LC, выбор определяющего индекса в пределах пакета
 ' и наличие диагностической строки последнего сочетания после Execute.
 Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
 
     Dim i As Long
     For i = 1 To 5
@@ -773,66 +786,70 @@ Private Sub TestBatchFiveCombinations(ByRef stats As TBatchTestStats)
     Next i
     batch.Execute
 
-    AssertTrue stats, "batch.five.count", batch.Count = 5
-    AssertTrue stats, "batch.five.governing.index", batch.GoverningCombinationIndex >= 1 And batch.GoverningCombinationIndex <= 5
-    AssertTrue stats, "batch.five.diagnostics", InStr(1, batch.DiagnosticLog, "combination=C5", vbTextCompare) > 0
+    TestAssertTrue stats, "batch.five.count", batch.Count = 5
+    TestAssertTrue stats, "batch.five.governing.index", batch.GoverningCombinationIndex >= 1 And batch.GoverningCombinationIndex <= 5
+    TestAssertTrue stats, "batch.five.diagnostics", InStr(1, batch.DiagnosticLog, "combination=C5", vbTextCompare) > 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает две нагрузки с одинаковой N и разными моментами: governing
 ' выбирается по меньшему lambda-запасу, а не по позиции LC в пакете.
 Private Sub TestBatchGoverningUsesLowestSafetyFactor(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "SAFE", -150000#, -1000000#, -500000#, "PR1", "larger safety"
     batch.AddCombination "GOV", -150000#, -7000000#, -3500000#, "PR1", "smaller safety"
     batch.Execute
 
-    AssertTrue stats, "batch.governing.lambda.order", batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity > 0# And batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity < batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity
-    AssertTrue stats, "batch.governing.lowestSafety", batch.GoverningCombinationID = "GOV"
-    AssertTrue stats, "batch.governing.limitState", Len(batch.ResultAt(2).StrengthResult.Capacity.LimitState) > 0
-    AssertTrue stats, "batch.governing.strength.status", _
+    TestAssertTrue stats, "batch.governing.lambda.order", batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity > 0# And batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity < batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity
+    TestAssertTrue stats, "batch.governing.lowestSafety", batch.GoverningCombinationID = "GOV"
+    TestAssertTrue stats, "batch.governing.limitState", Len(batch.ResultAt(2).StrengthResult.Capacity.LimitState) > 0
+    TestAssertTrue stats, "batch.governing.strength.status", _
         batch.ResultAt(2).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(2).StrengthResult.Capacity.Status = "FAIL" Or batch.ResultAt(2).StrengthResult.Capacity.Status = "NumFail"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что batch для чистой продольной силы автоматически выбирает
 ' траекторию lambda*N. Нулевые пользовательские моменты в этом режиме не
 ' являются ошибкой: до предела масштабируется именно продольная сила.
 Private Sub TestBatchPureAxialCapacityUsesNult(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "N_ONLY", 50000#, 0#, 0#, "PR1", "pure axial"
     batch.Execute
 
-    AssertTrue stats, "batch.nult.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
-    AssertTrue stats, "batch.nult.solutionMethod", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "LoadMultiplier"
-    AppendLine stats, "INFO: batch.nult.status=" & batch.ResultAt(1).StrengthResult.Capacity.Status & _
+    TestAssertTrue stats, "batch.nult.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    TestAssertTrue stats, "batch.nult.solutionMethod", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "LoadMultiplier"
+    TestAppendLine stats, "INFO: batch.nult.status=" & batch.ResultAt(1).StrengthResult.Capacity.Status & _
         "; limitState=" & batch.ResultAt(1).StrengthResult.Capacity.LimitState & _
         "; solutionMethod=" & batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod & _
-        "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity) & _
-        "; Nult=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.NUltimate)
-    AssertTrue stats, "batch.nult.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
-    AssertTrue stats, "batch.nult.axialUltimate", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > Abs(batch.N(1))
-    AssertTrue stats, "batch.nult.noMomentUltimate", Abs(batch.ResultAt(1).StrengthResult.Capacity.MomentUltimate) < 0.000001
-    AssertTrue stats, "batch.nult.governing", batch.GoverningCombinationID = "N_ONLY"
+        "; lambda=" & TestFormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity) & _
+        "; Nult=" & TestFormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.NUltimate)
+    TestAssertTrue stats, "batch.nult.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
+    TestAssertTrue stats, "batch.nult.axialUltimate", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > Abs(batch.N(1))
+    TestAssertTrue stats, "batch.nult.noMomentUltimate", Abs(batch.ResultAt(1).StrengthResult.Capacity.MomentUltimate) < 0.000001
+    TestAssertTrue stats, "batch.nult.governing", batch.GoverningCombinationID = "N_ONLY"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что "только N" не считается чистой осевой траекторией, если
 ' после переноса в центр приведенного сечения остается изгибающий момент.
 ' Путь lambda*N сохраняется, но стратегия Auto может пробовать UltimateStrain.
 Private Sub TestBatchEccentricAxialCapacityTriesUltimateStrain(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplyLoadReference 40#, -25#
     batch.AddCombination "N_ECC", -150000#, 0#, 0#, "PR1", "eccentric axial", ChrW$(&H3BB) & "*N"
     batch.Execute
 
-    AssertTrue stats, "batch.nEcc.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
-    AssertTrue stats, "batch.nEcc.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
-    AssertTrue stats, "batch.nEcc.method", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "UltimateStrain"
-    AssertTrue stats, "batch.nEcc.loadPointMomentsRemainZero", _
+    TestAssertTrue stats, "batch.nEcc.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    TestAssertTrue stats, "batch.nEcc.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
+    TestAssertTrue stats, "batch.nEcc.method", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "UltimateStrain"
+    TestAssertTrue stats, "batch.nEcc.loadPointMomentsRemainZero", _
         Abs(batch.ResultAt(1).StrengthResult.Capacity.MxUltimate) < 100000# And Abs(batch.ResultAt(1).StrengthResult.Capacity.MyUltimate) < 100000#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пользовательский сценарий из книги: Г-сечение, нагрузка
 ' N=-200 тс при принятом знаке +N=Compression, то есть внутреннее растяжение,
 ' и путь LoadPath = lambda*N. Точка приложения проходит через бетонный
@@ -844,39 +861,40 @@ Private Sub TestBatchRectanglesN200CapacityPathNDoesNotNumFail(ByRef stats As TB
     Dim oldScope As String
     Dim oldBaseLoadSteps As String
     Dim oldMaxRetries As String
-    oldMethod = GetSystemSetting("Capacity.SolutionStrategy")
-    oldBaseLoadSteps = GetSystemSetting("Capacity.BaseLoadSteps")
-    oldMaxRetries = GetSystemSetting("Capacity.MaxRetries")
+    oldMethod = TestGetSystemSetting("Capacity.SolutionStrategy")
+    oldBaseLoadSteps = TestGetSystemSetting("Capacity.BaseLoadSteps")
+    oldMaxRetries = TestGetSystemSetting("Capacity.MaxRetries")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Capacity.BaseLoadSteps", "1"
-    SetSystemSetting "Capacity.MaxRetries", "0"
+    TestSetSystemSetting "Capacity.BaseLoadSteps", "1"
+    TestSetSystemSetting "Capacity.MaxRetries", "0"
 
-    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "Auto"
-    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "UltimateStrain"
-    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "LoadMultiplier"
-    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "Auto", True
-    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "UltimateStrain", True
-    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "LoadMultiplier", True
+    TestCheckBatchRectanglesN200CapacitySolutionStrategy stats, "Auto"
+    TestCheckBatchRectanglesN200CapacitySolutionStrategy stats, "UltimateStrain"
+    TestCheckBatchRectanglesN200CapacitySolutionStrategy stats, "LoadMultiplier"
+    TestCheckBatchRectanglesN200CapacitySolutionStrategy stats, "Auto", True
+    TestCheckBatchRectanglesN200CapacitySolutionStrategy stats, "UltimateStrain", True
+    TestCheckBatchRectanglesN200CapacitySolutionStrategy stats, "LoadMultiplier", True
 
 Restore:
-    SetSystemSetting "Capacity.SolutionStrategy", oldMethod
-    SetSystemSetting "Capacity.BaseLoadSteps", oldBaseLoadSteps
-    SetSystemSetting "Capacity.MaxRetries", oldMaxRetries
+    TestSetSystemSetting "Capacity.SolutionStrategy", oldMethod
+    TestSetSystemSetting "Capacity.BaseLoadSteps", oldBaseLoadSteps
+    TestSetSystemSetting "Capacity.MaxRetries", oldMaxRetries
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.rectangles.n200.capacityPathN; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.rectangles.n200.capacityPathN; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' При N=-200 tf пользователя проверяет оба центра приложения силы.
 ' Только приведенный центр означает чисто осевую ветку LoadMultiplier;
 ' относительно бетонного центра арматура создает физический эксцентриситет.
-Private Sub CheckBatchRectanglesN200CapacitySolutionStrategy(ByRef stats As TBatchTestStats, ByVal methodName As String, _
+Private Sub TestCheckBatchRectanglesN200CapacitySolutionStrategy(ByRef stats As TBatchTestStats, ByVal methodName As String, _
         Optional ByVal transformedReference As Boolean = False)
-    SetSystemSetting "Capacity.SolutionStrategy", methodName
+    TestSetSystemSetting "Capacity.SolutionStrategy", methodName
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -893,7 +911,7 @@ Private Sub CheckBatchRectanglesN200CapacitySolutionStrategy(ByRef stats As TBat
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider, transformedReference)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider, transformedReference)
     batch.ApplySettings settings, units
     batch.AddCombination "G1_N200_" & methodName, 200# * 9806.65, 0#, 0#, _
         "PR1", "user N=-200 tf, lambda*N", ChrW$(&H3BB) & "*N"
@@ -904,110 +922,115 @@ Private Sub CheckBatchRectanglesN200CapacitySolutionStrategy(ByRef stats As TBat
     prefix = "batch.rectangles.n200." & methodName
     If transformedReference Then prefix = prefix & ".transformedCenter"
     Set capacity = batch.ResultAt(1).StrengthResult.Capacity
-    AppendLine stats, "INFO: " & prefix & _
+    TestAppendLine stats, "INFO: " & prefix & _
         "; capacityStatus=" & batch.ResultAt(1).StrengthResult.Capacity.Status & _
         "; limitState=" & batch.ResultAt(1).StrengthResult.Capacity.LimitState & _
         "; solutionMethod=" & batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod & _
-        "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity) & _
-        "; Nult=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.NUltimate)
+        "; lambda=" & TestFormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity) & _
+        "; Nult=" & TestFormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.NUltimate)
     If Not capacity.SearchResult.HasLimitPoint Then
-        AppendLine stats, "CAPACITY_REASON: " & prefix & "|code=" & capacity.ResultMeta.ResultCode & _
+        TestAppendLine stats, "CAPACITY_REASON: " & prefix & "|code=" & capacity.ResultMeta.ResultCode & _
             "|comment=" & capacity.ResultMeta.ResultComment
-        AppendLine stats, "CAPACITY_DIAG: " & prefix & vbCrLf & _
+        TestAppendLine stats, "CAPACITY_DIAG: " & prefix & vbCrLf & _
             Right$(batch.ResultAt(1).StrengthResult.Capacity.DiagnosticLog, 12000)
     End If
-    AssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
-    AssertTrue stats, prefix & ".capacityStatus", _
+    TestAssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
+    TestAssertTrue stats, prefix & ".capacityStatus", _
         batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
-    AssertTrue stats, prefix & ".nult", Abs(capacity.NUltimate) > Abs(batch.N(1))
-    AssertTrue stats, prefix & ".axialClassification", capacity.PureAxialForMethod = transformedReference
+    TestAssertTrue stats, prefix & ".nult", Abs(capacity.NUltimate) > Abs(batch.N(1))
+    TestAssertTrue stats, prefix & ".axialClassification", capacity.PureAxialForMethod = transformedReference
     If transformedReference Or methodName = "LoadMultiplier" Then
-        AssertTrue stats, prefix & ".solutionMethod", capacity.SolutionMethod = "LoadMultiplier"
+        TestAssertTrue stats, prefix & ".solutionMethod", capacity.SolutionMethod = "LoadMultiplier"
     Else
-        AssertTrue stats, prefix & ".solutionMethod", capacity.SolutionMethod = "UltimateStrain" Or _
+        TestAssertTrue stats, prefix & ".solutionMethod", capacity.SolutionMethod = "UltimateStrain" Or _
             capacity.SolutionMethod = "LoadMultiplier"
     End If
-    AssertTrue stats, prefix & ".point", capacity.SearchResult.HasLimitPoint And capacity.CapacityStateAvailable
+    TestAssertTrue stats, prefix & ".point", capacity.SearchResult.HasLimitPoint And capacity.CapacityStateAvailable
     If Not capacity.CapacityStateAvailable Then Exit Sub
     Set point = capacity.StateResult
-    AssertTrue stats, prefix & ".converged", point.Converged
-    AssertTrue stats, prefix & ".physical", point.WithinPhysicalRange And Not point.ExtensionUsed
+    TestAssertTrue stats, prefix & ".converged", point.Converged
+    TestAssertTrue stats, prefix & ".physical", point.WithinPhysicalRange And Not point.ExtensionUsed
     Dim toleranceN As Double, toleranceMx As Double, toleranceMy As Double
     toleranceN = Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN", 5#, False)))
     toleranceMx = Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx", 5000#, False)))
     toleranceMy = Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy", 5000#, False)))
-    AssertClose stats, prefix & ".residualN", point.ResidualN, 0#, toleranceN
-    AssertClose stats, prefix & ".residualMx", point.ResidualMx, 0#, toleranceMx
-    AssertClose stats, prefix & ".residualMy", point.ResidualMy, 0#, toleranceMy
-    AssertClose stats, prefix & ".loadPointMx", capacity.MxUltimate, 0#, toleranceMx
-    AssertClose stats, prefix & ".loadPointMy", capacity.MyUltimate, 0#, toleranceMy
+    TestAssertClose stats, prefix & ".residualN", point.ResidualN, 0#, toleranceN
+    TestAssertClose stats, prefix & ".residualMx", point.ResidualMx, 0#, toleranceMx
+    TestAssertClose stats, prefix & ".residualMy", point.ResidualMy, 0#, toleranceMy
+    TestAssertClose stats, prefix & ".loadPointMx", capacity.MxUltimate, 0#, toleranceMx
+    TestAssertClose stats, prefix & ".loadPointMy", capacity.MyUltimate, 0#, toleranceMy
 End Sub
 
-' ДЛЯ ТЕСТОВ: отдельно проверяет осевую классификацию несимметричного сечения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' отдельно проверяет осевую классификацию несимметричного сечения.
 Public Function RunRectanglesAxialMethodTests() As String
     Dim stats As TBatchTestStats
     TestBatchRectanglesN200CapacityPathNDoesNotNumFail stats
-    AppendLine stats, "TOTAL_RECTANGLES_AXIAL_METHOD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_RECTANGLES_AXIAL_METHOD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunRectanglesAxialMethodTests = stats.Report
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что явный выбор lambda*Mxy масштабирует оба пользовательских
 ' момента при постоянной продольной силе. Это основной вариант для общего
 ' изгиба N + Mx + My, когда нужно найти предельный момент при заданной N.
 Private Sub TestBatchExplicitCapacityLoadPathScalesMxy(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "M_BRANCH", -150000#, -3000000#, -3000000#, "PR1", "moment branch", ChrW$(&H3BB) & "*Mxy"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.mxy.value", batch.ResultAt(1).CapacityPathDisplayName = ChrW$(&H3BB) & "*Mxy"
-    AssertTrue stats, "batch.capacityPath.mxy.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaMxy"
-    AssertTrue stats, "batch.capacityPath.mxy.mx", Abs(batch.ResultAt(1).StrengthResult.Capacity.MxUltimate) > 0#
-    AssertTrue stats, "batch.capacityPath.mxy.my", Abs(batch.ResultAt(1).StrengthResult.Capacity.MyUltimate) > 0#
+    TestAssertTrue stats, "batch.capacityPath.mxy.value", batch.ResultAt(1).CapacityPathDisplayName = ChrW$(&H3BB) & "*Mxy"
+    TestAssertTrue stats, "batch.capacityPath.mxy.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaMxy"
+    TestAssertTrue stats, "batch.capacityPath.mxy.mx", Abs(batch.ResultAt(1).StrengthResult.Capacity.MxUltimate) > 0#
+    TestAssertTrue stats, "batch.capacityPath.mxy.my", Abs(batch.ResultAt(1).StrengthResult.Capacity.MyUltimate) > 0#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что явный выбор lambda*N масштабирует продольную силу даже при
 ' наличии пользовательских моментов. Моменты остаются постоянной частью
 ' траектории, а момент от эксцентриситета N масштабируется вместе с N.
 Private Sub TestBatchExplicitCapacityLoadPathScalesNWithMoments(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "N_BRANCH", -150000#, -3000000#, -1000000#, "PR1", "axial branch", ChrW$(&H3BB) & "*N"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.n.value", batch.ResultAt(1).CapacityPathDisplayName = ChrW$(&H3BB) & "*N"
-    AssertTrue stats, "batch.capacityPath.n.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
-    AssertTrue stats, "batch.capacityPath.n.nult", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > 0#
-    AssertTrue stats, "batch.capacityPath.n.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail"
+    TestAssertTrue stats, "batch.capacityPath.n.value", batch.ResultAt(1).CapacityPathDisplayName = ChrW$(&H3BB) & "*N"
+    TestAssertTrue stats, "batch.capacityPath.n.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    TestAssertTrue stats, "batch.capacityPath.n.nult", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > 0#
+    TestAssertTrue stats, "batch.capacityPath.n.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пользовательский вывод для lambda*N: solver внутри масштабирует
 ' момент от эксцентриситета N, но предельные Mx/My в batch должны быть
 ' перенесены обратно в точку приложения нагрузки через CSectionLoadState.
 Private Sub TestCapacityLoadPathNReportsUltimateAtLoadPoint(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "N_REF", -150000#, 3000000#, 0#, "PR1", _
         "lambda n at shifted load point", ChrW$(&H3BB) & "*N"
     batch.ApplyLoadReference 40#, -25#
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.n.ref.status", _
+    TestAssertTrue stats, "batch.capacityPath.n.ref.status", _
         batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
-    AssertClose stats, "batch.capacityPath.n.ref.mxAtLoadPoint", _
+    TestAssertClose stats, "batch.capacityPath.n.ref.mxAtLoadPoint", _
         batch.ResultAt(1).StrengthResult.Capacity.MxUltimate, batch.UserMx(1), 100000#
-    AssertClose stats, "batch.capacityPath.n.ref.myAtLoadPoint", _
+    TestAssertClose stats, "batch.capacityPath.n.ref.myAtLoadPoint", _
         batch.ResultAt(1).StrengthResult.Capacity.MyUltimate, batch.UserMy(1), 100000#
-    AssertTrue stats, "batch.capacityPath.n.ref.internalDiffers", _
+    TestAssertTrue stats, "batch.capacityPath.n.ref.internalDiffers", _
         Abs(batch.ResultAt(1).StrengthResult.Capacity.CapacityStateMy - batch.ResultAt(1).StrengthResult.Capacity.MyUltimate) > 100000#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет все пользовательские варианты LoadPath. Тест не
 ' привязывается к конкретной величине запаса: здесь важно, что batch
 ' корректно распознает путь и не подменяет выбранную пользователем траекторию.
 Private Sub TestBatchCapacityLoadPathVariants(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "PATH_MX", -150000#, -3000000#, 0#, "PR1", "lambda mx", ChrW$(&H3BB) & "*Mx"
     batch.AddCombination "PATH_MY", -150000#, 0#, -3000000#, "PR1", "lambda my", ChrW$(&H3BB) & "*My"
     batch.AddCombination "PATH_MXY", -150000#, -3000000#, -1000000#, "PR1", "lambda mxy", ChrW$(&H3BB) & "*Mxy"
@@ -1015,24 +1038,25 @@ Private Sub TestBatchCapacityLoadPathVariants(ByRef stats As TBatchTestStats)
     batch.AddCombination "PATH_ALL", -150000#, -3000000#, -1000000#, "PR1", "lambda all", ChrW$(&H3BB) & "*NMxy"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.mx.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaMx"
-    AssertTrue stats, "batch.capacityPath.my.key", batch.ResultAt(2).StrengthResult.Capacity.PathResolved = "LambdaMy"
-    AssertTrue stats, "batch.capacityPath.mxy.key", batch.ResultAt(3).StrengthResult.Capacity.PathResolved = "LambdaMxy"
-    AssertTrue stats, "batch.capacityPath.n.key", batch.ResultAt(4).StrengthResult.Capacity.PathResolved = "LambdaN"
-    AssertTrue stats, "batch.capacityPath.all.key", batch.ResultAt(5).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
-    AssertTrue stats, "batch.capacityPath.noInputErr", _
+    TestAssertTrue stats, "batch.capacityPath.mx.key", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaMx"
+    TestAssertTrue stats, "batch.capacityPath.my.key", batch.ResultAt(2).StrengthResult.Capacity.PathResolved = "LambdaMy"
+    TestAssertTrue stats, "batch.capacityPath.mxy.key", batch.ResultAt(3).StrengthResult.Capacity.PathResolved = "LambdaMxy"
+    TestAssertTrue stats, "batch.capacityPath.n.key", batch.ResultAt(4).StrengthResult.Capacity.PathResolved = "LambdaN"
+    TestAssertTrue stats, "batch.capacityPath.all.key", batch.ResultAt(5).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
+    TestAssertTrue stats, "batch.capacityPath.noInputErr", _
         batch.ResultAt(1).StrengthResult.Capacity.Status <> "InputErr" And batch.ResultAt(2).StrengthResult.Capacity.Status <> "InputErr" And _
         batch.ResultAt(3).StrengthResult.Capacity.Status <> "InputErr" And batch.ResultAt(4).StrengthResult.Capacity.Status <> "InputErr" And _
         batch.ResultAt(5).StrengthResult.Capacity.Status <> "InputErr"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пользовательский контракт таблицы сочетаний: неучаствующие
 ' компоненты нагрузки могут быть пустыми/нулевыми. Ошибкой является только
 ' полностью нулевой масштабируемый Base-вектор, потому что тогда lambda не
 ' имеет расчетного смысла.
 Private Sub TestBatchCapacityLoadPathAllowsZeroInactiveComponents(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "MX_NO_N", 0#, -3000000#, 0#, "PR1", "lambda mx without N", ChrW$(&H3BB) & "*Mx"
     batch.AddCombination "MY_NO_N", 0#, 0#, -3000000#, "PR1", "lambda my without N", ChrW$(&H3BB) & "*My"
     batch.AddCombination "MXY_ONLY_MX", 0#, -3000000#, 0#, "PR1", "lambda mxy with only Mx", ChrW$(&H3BB) & "*Mxy"
@@ -1043,19 +1067,20 @@ Private Sub TestBatchCapacityLoadPathAllowsZeroInactiveComponents(ByRef stats As
     batch.AddCombination "NMXY_EMPTY", 0#, 0#, 0#, "PR1", "lambda nmxy empty", ChrW$(&H3BB) & "*NMxy"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.zero.mx.noInputErr", batch.ResultAt(1).StrengthResult.Capacity.Status <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.my.noInputErr", batch.ResultAt(2).StrengthResult.Capacity.Status <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.mxyMx.noInputErr", batch.ResultAt(3).StrengthResult.Capacity.Status <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.mxyMy.noInputErr", batch.ResultAt(4).StrengthResult.Capacity.Status <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyN.noInputErr", batch.ResultAt(5).StrengthResult.Capacity.Status <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyMx.noInputErr", batch.ResultAt(6).StrengthResult.Capacity.Status <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyMy.noInputErr", batch.ResultAt(7).StrengthResult.Capacity.Status <> "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyEmpty.inputErr", batch.ResultAt(8).StrengthResult.Capacity.Status = "InputErr"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyN.pathKept", batch.ResultAt(5).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyMx.pathKept", batch.ResultAt(6).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
-    AssertTrue stats, "batch.capacityPath.zero.nmxyMy.pathKept", batch.ResultAt(7).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
+    TestAssertTrue stats, "batch.capacityPath.zero.mx.noInputErr", batch.ResultAt(1).StrengthResult.Capacity.Status <> "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.zero.my.noInputErr", batch.ResultAt(2).StrengthResult.Capacity.Status <> "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.zero.mxyMx.noInputErr", batch.ResultAt(3).StrengthResult.Capacity.Status <> "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.zero.mxyMy.noInputErr", batch.ResultAt(4).StrengthResult.Capacity.Status <> "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.zero.nmxyN.noInputErr", batch.ResultAt(5).StrengthResult.Capacity.Status <> "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.zero.nmxyMx.noInputErr", batch.ResultAt(6).StrengthResult.Capacity.Status <> "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.zero.nmxyMy.noInputErr", batch.ResultAt(7).StrengthResult.Capacity.Status <> "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.zero.nmxyEmpty.inputErr", batch.ResultAt(8).StrengthResult.Capacity.Status = "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.zero.nmxyN.pathKept", batch.ResultAt(5).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
+    TestAssertTrue stats, "batch.capacityPath.zero.nmxyMx.pathKept", batch.ResultAt(6).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
+    TestAssertTrue stats, "batch.capacityPath.zero.nmxyMy.pathKept", batch.ResultAt(7).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет вырожденный пользовательский случай: выбран lambda*NMxy, но в строке
 ' сочетания Mx=0 и My=0. Это не ошибка ввода и не особая геометрия; по
 ' фактическим нагрузкам пользователь масштабирует только продольную силу, а
@@ -1063,10 +1088,10 @@ End Sub
 Private Sub TestBatchNMxyWithoutMomentsUsesStableForcePath(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldMethod As String
-    oldMethod = GetSystemSetting("Capacity.SolutionStrategy")
+    oldMethod = TestGetSystemSetting("Capacity.SolutionStrategy")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
+    TestSetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1083,28 +1108,29 @@ Private Sub TestBatchNMxyWithoutMomentsUsesStableForcePath(ByRef stats As TBatch
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "NMXY_ZERO_M", 100# * 9806.65, 0#, 0#, _
         "PR1", "lambda NMxy with zero moments", ChrW$(&H3BB) & "*NMxy"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.nmxyZeroM.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
-    AssertTrue stats, "batch.capacityPath.nmxyZeroM.solutionMethod", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "LoadMultiplier"
-    AssertTrue stats, "batch.capacityPath.nmxyZeroM.notNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
-    AssertTrue stats, "batch.capacityPath.nmxyZeroM.nult", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > Abs(batch.N(1))
+    TestAssertTrue stats, "batch.capacityPath.nmxyZeroM.path", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaNMxy"
+    TestAssertTrue stats, "batch.capacityPath.nmxyZeroM.solutionMethod", batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "LoadMultiplier"
+    TestAssertTrue stats, "batch.capacityPath.nmxyZeroM.notNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
+    TestAssertTrue stats, "batch.capacityPath.nmxyZeroM.nult", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > Abs(batch.N(1))
 
 Restore:
-    SetSystemSetting "Capacity.SolutionStrategy", oldMethod
+    TestSetSystemSetting "Capacity.SolutionStrategy", oldMethod
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.capacityPath.nmxyZeroM; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.capacityPath.nmxyZeroM; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет сам инженерный фильтр практически нулевого момента без solver-а.
 ' Порог растет линейно с бетонным габаритом h: Mtol = value*h.
 Private Sub TestMomentZeroFilterDefaultThresholds(ByRef stats As TBatchTestStats)
@@ -1112,14 +1138,15 @@ Private Sub TestMomentZeroFilterDefaultThresholds(ByRef stats As TBatchTestStats
     Set filter = New CMomentZeroFilter
     filter.Initialize TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH
 
-    AssertClose stats, "batch.zeroMoment.tinyResidual", filter.NormalizeMoment(2.42E-16, 1000#), 0#, 0#
-    AssertClose stats, "batch.zeroMoment.h1m.threshold", filter.NormalizeMoment(0.5 * TEST_TF_M_IN_NMM, 1000#), 0#, 0#
-    AssertTrue stats, "batch.zeroMoment.h1m.above", _
+    TestAssertClose stats, "batch.zeroMoment.tinyResidual", filter.NormalizeMoment(2.42E-16, 1000#), 0#, 0#
+    TestAssertClose stats, "batch.zeroMoment.h1m.threshold", filter.NormalizeMoment(0.5 * TEST_TF_M_IN_NMM, 1000#), 0#, 0#
+    TestAssertTrue stats, "batch.zeroMoment.h1m.above", _
         Abs(filter.NormalizeMoment(0.5002 * TEST_TF_M_IN_NMM, 1000#)) > 0#
-    AssertClose stats, "batch.zeroMoment.h02m.threshold", filter.NormalizeMoment(0.1 * TEST_TF_M_IN_NMM, 200#), 0#, 0#
-    AssertClose stats, "batch.zeroMoment.h3m.threshold", filter.NormalizeMoment(1.5 * TEST_TF_M_IN_NMM, 3000#), 0#, 0#
+    TestAssertClose stats, "batch.zeroMoment.h02m.threshold", filter.NormalizeMoment(0.1 * TEST_TF_M_IN_NMM, 200#), 0#, 0#
+    TestAssertClose stats, "batch.zeroMoment.h3m.threshold", filter.NormalizeMoment(1.5 * TEST_TF_M_IN_NMM, 3000#), 0#, 0#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что LoadPath не пропускает в solver момент, который уже
 ' меньше инженерного порога Calculation.ZeroMomentPerDepth * h.
 Private Sub TestCapacityLoadPathFiltersEngineeringSmallMoments(ByRef stats As TBatchTestStats)
@@ -1135,8 +1162,8 @@ Private Sub TestCapacityLoadPathFiltersEngineeringSmallMoments(ByRef stats As TB
     Set pathMxy = New CLoadPathDescriptor
     pathMxy.InitializeFromLoadState ChrW$(&H3BB) & "*Mxy", loadMxy
 
-    AssertTrue stats, "batch.zeroMoment.pathMxy.noScaledMoment", Not pathMxy.HasScaledLoad
-    AssertClose stats, "batch.zeroMoment.pathMxy.myBase", pathMxy.MyBase, 0#, 0#
+    TestAssertTrue stats, "batch.zeroMoment.pathMxy.noScaledMoment", Not pathMxy.HasScaledLoad
+    TestAssertClose stats, "batch.zeroMoment.pathMxy.myBase", pathMxy.MyBase, 0#, 0#
 
     Dim pathNMxy As CLoadPathDescriptor
     Dim loadNMxy As CSectionLoadState
@@ -1146,10 +1173,11 @@ Private Sub TestCapacityLoadPathFiltersEngineeringSmallMoments(ByRef stats As TB
     Set pathNMxy = New CLoadPathDescriptor
     pathNMxy.InitializeFromLoadState ChrW$(&H3BB) & "*NMxy", loadNMxy
 
-    AssertTrue stats, "batch.zeroMoment.pathNMxy.forceOnly", pathNMxy.ForceOnly
-    AssertClose stats, "batch.zeroMoment.pathNMxy.myBase", pathNMxy.MyBase, 0#, 0#
+    TestAssertTrue stats, "batch.zeroMoment.pathNMxy.forceOnly", pathNMxy.ForceOnly
+    TestAssertClose stats, "batch.zeroMoment.pathNMxy.myBase", pathNMxy.MyBase, 0#, 0#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что малый момент после чтения настроек и единиц не заставляет
 ' capacity выбирать моментную lambda-траекторию вместо осевой.
 Private Sub TestBatchZeroMomentFilterNormalizesCapacityPath(ByRef stats As TBatchTestStats)
@@ -1162,16 +1190,17 @@ Private Sub TestBatchZeroMomentFilterNormalizesCapacityPath(ByRef stats As TBatc
     units.LoadFromSettings settings
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings, units
     batch.AddCombination "M_TINY", -200000#, 2.42E-16, 0#, "PR1", "tiny residual moment"
     batch.Execute
 
-    AssertTrue stats, "batch.zeroMoment.capacityPath.axialDefault", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
-    AssertTrue stats, "batch.zeroMoment.capacityPath.notInputErr", batch.ResultAt(1).StrengthResult.Capacity.Status <> "InputErr"
-    AssertClose stats, "batch.zeroMoment.capacityPath.mx", batch.UserMx(1), 0#, 0#
+    TestAssertTrue stats, "batch.zeroMoment.capacityPath.axialDefault", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    TestAssertTrue stats, "batch.zeroMoment.capacityPath.notInputErr", batch.ResultAt(1).StrengthResult.Capacity.Status <> "InputErr"
+    TestAssertClose stats, "batch.zeroMoment.capacityPath.mx", batch.UserMx(1), 0#, 0#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что Stability в режиме OnlyMomentPlane считает отфильтрованный
 ' микромомент нулевым и берет направление из ZeroMomentEccentricitySign1/2.
 Private Sub TestStabilityZeroMomentFilterUsesZeroMomentSigns(ByRef stats As TBatchTestStats)
@@ -1184,26 +1213,26 @@ Private Sub TestStabilityZeroMomentFilterUsesZeroMomentSigns(ByRef stats As TBat
     Dim oldSign2 As String
     Dim oldAccUser1 As String
     Dim oldAccUser2 As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
-    oldSign1 = GetSystemSetting("Stability.ZeroMomentEccentricitySign1")
-    oldSign2 = GetSystemSetting("Stability.ZeroMomentEccentricitySign2")
-    oldAccUser1 = GetSystemSetting("Stability.AccidentalEccentricityUser1")
-    oldAccUser2 = GetSystemSetting("Stability.AccidentalEccentricityUser2")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldSign1 = TestGetSystemSetting("Stability.ZeroMomentEccentricitySign1")
+    oldSign2 = TestGetSystemSetting("Stability.ZeroMomentEccentricitySign2")
+    oldAccUser1 = TestGetSystemSetting("Stability.AccidentalEccentricityUser1")
+    oldAccUser2 = TestGetSystemSetting("Stability.AccidentalEccentricityUser2")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
-    SetSystemSetting "Stability.ZeroMomentEccentricitySign1", "-1"
-    SetSystemSetting "Stability.ZeroMomentEccentricitySign2", "-1"
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", "1"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    TestSetSystemSetting "Stability.ZeroMomentEccentricitySign1", "-1"
+    TestSetSystemSetting "Stability.ZeroMomentEccentricitySign2", "-1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1214,55 +1243,57 @@ Private Sub TestStabilityZeroMomentFilterUsesZeroMomentSigns(ByRef stats As TBat
     units.LoadFromSettings settings
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings, units
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "STAB_TINY_M", -120000#, 2.42E-16, 0#, "PR1", "tiny stability moment"
     batch.Execute
 
-    AssertTrue stats, "batch.zeroMoment.stability.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    AssertTrue stats, "batch.zeroMoment.stability.sign1", batch.ResultAt(1).StabilityResult.AccidentalEcc1 < 0#
-    AssertTrue stats, "batch.zeroMoment.stability.sign2", batch.ResultAt(1).StabilityResult.AccidentalEcc2 < 0#
-    AssertClose stats, "batch.zeroMoment.stability.finalUserMx", batch.UserMx(1), 0#, 0#
-    AssertClose stats, "batch.zeroMoment.stability.finalUserMy", batch.UserMy(1), 0#, 0#
-    AssertTrue stats, "batch.zeroMoment.stability.finalSummaryMxIncludesAccidental", _
+    TestAssertTrue stats, "batch.zeroMoment.stability.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    TestAssertTrue stats, "batch.zeroMoment.stability.sign1", batch.ResultAt(1).StabilityResult.AccidentalEcc1 < 0#
+    TestAssertTrue stats, "batch.zeroMoment.stability.sign2", batch.ResultAt(1).StabilityResult.AccidentalEcc2 < 0#
+    TestAssertClose stats, "batch.zeroMoment.stability.finalUserMx", batch.UserMx(1), 0#, 0#
+    TestAssertClose stats, "batch.zeroMoment.stability.finalUserMy", batch.UserMy(1), 0#, 0#
+    TestAssertTrue stats, "batch.zeroMoment.stability.finalSummaryMxIncludesAccidental", _
         Abs(batch.ResultAt(1).StabilityResult.DesignMx) > 0#
-    AssertTrue stats, "batch.zeroMoment.stability.finalSummaryMyIncludesAccidental", _
+    TestAssertTrue stats, "batch.zeroMoment.stability.finalSummaryMyIncludesAccidental", _
         Abs(batch.ResultAt(1).StabilityResult.DesignMy) > 0#
-    AssertTrue stats, "batch.zeroMoment.stability.capacityPath", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
-    AssertTrue stats, "batch.zeroMoment.stability.capacityNotNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
+    TestAssertTrue stats, "batch.zeroMoment.stability.capacityPath", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
+    TestAssertTrue stats, "batch.zeroMoment.stability.capacityNotNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
-    SetSystemSetting "Stability.ZeroMomentEccentricitySign1", oldSign1
-    SetSystemSetting "Stability.ZeroMomentEccentricitySign2", oldSign2
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetSystemSetting "Stability.ZeroMomentEccentricitySign1", oldSign1
+    TestSetSystemSetting "Stability.ZeroMomentEccentricitySign2", oldSign2
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.zeroMoment.stability; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.zeroMoment.stability; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что ошибочный текст LoadPath не заменяется молча
 ' авто-выбором. Пользователь должен сразу увидеть ошибку в строке LC.
 Private Sub TestBatchInvalidCapacityLoadPathReportsInputErr(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "BAD_CONST", -150000#, -3000000#, 0#, "PR1", "bad branch", "WrongPath"
     batch.Execute
 
-    AssertTrue stats, "batch.capacityPath.invalid.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "InputErr"
-    AssertTrue stats, "batch.capacityPath.invalid.overall", batch.ResultAt(1).Status = "InputErr"
-    AssertTrue stats, "batch.capacityPath.invalid.noPath", Len(batch.ResultAt(1).StrengthResult.Capacity.PathResolved) = 0
+    TestAssertTrue stats, "batch.capacityPath.invalid.status", batch.ResultAt(1).StrengthResult.Capacity.Status = "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.invalid.overall", batch.ResultAt(1).Status = "InputErr"
+    TestAssertTrue stats, "batch.capacityPath.invalid.noPath", Len(batch.ResultAt(1).StrengthResult.Capacity.PathResolved) = 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что физическое плато нормативной диаграммы не считается
 ' numerical extension. Extension начинается только после eps_ult; иначе
 ' нормальное состояние с запасом по capacity ошибочно получит FAIL.
@@ -1270,17 +1301,17 @@ Private Sub TestPR2PhysicalStateRunsCrackWithExtensionEnabled(ByRef stats As TBa
     Dim oldMode As String
     Dim oldCrackEnabled As String
     Dim oldExtension As String
-    oldExtension = GetSystemSetting("General.DiagramExtension")
+    oldExtension = TestGetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "G2_PHYS", -220000#, -7000000#, -5000000#, "PR2", "physical state"
     batch.Execute
@@ -1288,28 +1319,29 @@ Private Sub TestPR2PhysicalStateRunsCrackWithExtensionEnabled(ByRef stats As TBa
     Dim crackedState As CSectionStateResult
     Set crackedState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
 
-    AssertTrue stats, "batch.group2.physical.noExtension", Not batch.ResultAt(1).ExtensionUsed
+    TestAssertTrue stats, "batch.group2.physical.noExtension", Not batch.ResultAt(1).ExtensionUsed
     Dim stateOK As Boolean, statePhysical As Boolean
     If Not crackedState Is Nothing Then
         stateOK = (crackedState.Status = "OK")
         statePhysical = Not crackedState.ExtensionUsed
     End If
-    AssertTrue stats, "batch.group2.physical.crackedStateOK", stateOK
-    AssertTrue stats, "batch.group2.physical.crackBranchRuns", _
+    TestAssertTrue stats, "batch.group2.physical.crackedStateOK", stateOK
+    TestAssertTrue stats, "batch.group2.physical.crackBranchRuns", _
         batch.ResultAt(1).CrackResult.Longitudinal.Status <> "N/A" Or Not crackedState Is Nothing
-    AssertTrue stats, "batch.group2.physical.crackedStatePhysical", _
+    TestAssertTrue stats, "batch.group2.physical.crackedStatePhysical", _
         statePhysical
 
 Restore:
-    SetSystemSetting "General.DiagramExtension", oldExtension
+    TestSetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group2.physical; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group2.physical; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что настройка SLS.Crack.CoverDistanceMode проходит через полный
 ' batch-конвейер до CCrackWidthCalculator. Ступенчатый бетонный контур выбран
 ' специально: расстояние до ближайшего локального выхода и до дальней общей
@@ -1318,99 +1350,101 @@ Private Sub TestBatchCrackCoverDistanceModeChangesAs(ByRef stats As TBatchTestSt
     Dim oldCoverMode As String
     Dim oldPsiMode As String
     Dim oldZoneMode As String
-    oldCoverMode = GetSystemSetting("SLS.Crack.CoverDistanceMode")
-    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
-    oldZoneMode = GetSystemSetting("SLS.Crack.TensionZoneMode")
+    oldCoverMode = TestGetSystemSetting("SLS.Crack.CoverDistanceMode")
+    oldPsiMode = TestGetSystemSetting("SLS.Crack.PsiMode")
+    oldZoneMode = TestGetSystemSetting("SLS.Crack.TensionZoneMode")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "SLS.Crack.PsiMode", "User"
-    SetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "User"
+    TestSetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
 
     Dim localStatus As String
-    localStatus = BatchSteppedCrackCoverStatus("NearestContour")
+    localStatus = TestBatchSteppedCrackCoverStatus("NearestContour")
 
     Dim globalStatus As String
-    globalStatus = BatchSteppedCrackCoverStatus("GlobalExtreme")
+    globalStatus = TestBatchSteppedCrackCoverStatus("GlobalExtreme")
 
-    AppendLine stats, "INFO: batch.crack.coverDistanceMode localStatus=" & localStatus & _
+    TestAppendLine stats, "INFO: batch.crack.coverDistanceMode localStatus=" & localStatus & _
         "; globalStatus=" & globalStatus
-    AssertTrue stats, "batch.crack.coverMode.localAccepted", localStatus <> "InputErr"
-    AssertTrue stats, "batch.crack.coverMode.globalAccepted", globalStatus <> "InputErr"
+    TestAssertTrue stats, "batch.crack.coverMode.localAccepted", localStatus <> "InputErr"
+    TestAssertTrue stats, "batch.crack.coverMode.globalAccepted", globalStatus <> "InputErr"
 
 Restore:
-    SetSystemSetting "SLS.Crack.CoverDistanceMode", oldCoverMode
-    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
-    SetSystemSetting "SLS.Crack.TensionZoneMode", oldZoneMode
+    TestSetSystemSetting "SLS.Crack.CoverDistanceMode", oldCoverMode
+    TestSetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    TestSetSystemSetting "SLS.Crack.TensionZoneMode", oldZoneMode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.crack.coverDistanceMode; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.crack.coverDistanceMode; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что Auto-ветка трещин сохраняет оба состояния около Mcrc.
 ' PreCrackState нужен для контроля состояния с работающим растянутым бетоном,
 ' PostCrackState - для ручной проверки sigma_s,crc после раскрытия трещины.
 Private Sub TestPR2AutoCrackStoresPreAndPostCrackStates(ByRef stats As TBatchTestStats)
     Dim oldPsiMode As String
     Dim oldAllowable As String
-    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
-    oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
+    oldPsiMode = TestGetSystemSetting("SLS.Crack.PsiMode")
+    oldAllowable = TestGetSystemSetting("SLS.Crack.Allowable")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
-    SetSystemSetting "SLS.Crack.Allowable", "0.0001"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    TestSetSystemSetting "SLS.Crack.Allowable", "0.0001"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "G2_AUTO_MCRC", -20000#, -15000000#, 0#, "PR2", "auto mcrc states"
     batch.Execute
 
-    AssertTrue stats, "batch.group2.autoMcrc.crackCalculated", _
+    TestAssertTrue stats, "batch.group2.autoMcrc.crackCalculated", _
         batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
-    AssertTrue stats, "batch.group2.autoMcrc.beforeState", _
+    TestAssertTrue stats, "batch.group2.autoMcrc.beforeState", _
         Not batch.ResultAt(1).StateRepository.FindState(sstPreCrackState) Is Nothing
-    AssertTrue stats, "batch.group2.autoMcrc.afterState", _
+    TestAssertTrue stats, "batch.group2.autoMcrc.afterState", _
         Not batch.ResultAt(1).StateRepository.FindState(sstPostCrackState) Is Nothing
-    AssertTrue stats, "batch.group2.autoMcrc.afterRole", _
+    TestAssertTrue stats, "batch.group2.autoMcrc.afterRole", _
         batch.ResultAt(1).StateRepository.FindState(sstPostCrackState).MaterialModelRoleText = "CrackedState"
 
 Restore:
-    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
-    SetSystemSetting "SLS.Crack.Allowable", oldAllowable
+    TestSetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    TestSetSystemSetting "SLS.Crack.Allowable", oldAllowable
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group2.autoMcrc.states; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group2.autoMcrc.states; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет чистый изгиб N=0 в полном batch-конвейере: исходное CrackedState
 ' находит CStateSolutionRunner, а Auto-ветка трещин затем сохраняет состояния
 ' до и после Mcrc без отдельной подстановки продольной силы.
 Private Sub TestPR2AutoCrackPureBendingStoresMcrcStates(ByRef stats As TBatchTestStats)
     Dim oldPsiMode As String
     Dim oldAllowable As String
-    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
-    oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
+    oldPsiMode = TestGetSystemSetting("SLS.Crack.PsiMode")
+    oldAllowable = TestGetSystemSetting("SLS.Crack.Allowable")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
-    SetSystemSetting "SLS.Crack.Allowable", "0.0001"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    TestSetSystemSetting "SLS.Crack.Allowable", "0.0001"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "G2_AUTO_PURE_MX", 0#, -15000000#, 0#, "PR2", "auto pure bending"
     batch.Execute
@@ -1419,35 +1453,36 @@ Private Sub TestPR2AutoCrackPureBendingStoresMcrcStates(ByRef stats As TBatchTes
     Set crackedState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
     Dim stateOK As Boolean
     If Not crackedState Is Nothing Then stateOK = (crackedState.Status = "OK")
-    AssertTrue stats, "batch.group2.autoMcrcPure.crackedStateOK", _
+    TestAssertTrue stats, "batch.group2.autoMcrcPure.crackedStateOK", _
         stateOK
-    AssertTrue stats, "batch.group2.autoMcrcPure.crackCalculated", _
+    TestAssertTrue stats, "batch.group2.autoMcrcPure.crackCalculated", _
         batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
-    AssertTrue stats, "batch.group2.autoMcrcPure.beforeState", _
+    TestAssertTrue stats, "batch.group2.autoMcrcPure.beforeState", _
         Not batch.ResultAt(1).StateRepository.FindState(sstPreCrackState) Is Nothing
-    AssertTrue stats, "batch.group2.autoMcrcPure.afterState", _
+    TestAssertTrue stats, "batch.group2.autoMcrcPure.afterState", _
         Not batch.ResultAt(1).StateRepository.FindState(sstPostCrackState) Is Nothing
 
 Restore:
-    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
-    SetSystemSetting "SLS.Crack.Allowable", oldAllowable
+    TestSetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    TestSetSystemSetting "SLS.Crack.Allowable", oldAllowable
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group2.autoMcrcPure.states; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group2.autoMcrcPure.states; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пользовательский случай Г-сечения: при сжатии 100 тс и сравнительно
 ' небольшом моменте Mx поиск стадии образования трещины должен завершаться
 ' расчетным статусом, а не падать в NumFail из-за неудачного стартового НДС.
 Private Sub TestPR2RectanglesCompressionSmallMomentCrackDoesNotNumFail(ByRef stats As TBatchTestStats)
     Dim oldPsiMode As String
-    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
+    oldPsiMode = TestGetSystemSetting("SLS.Crack.PsiMode")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "Auto"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1456,29 +1491,30 @@ Private Sub TestPR2RectanglesCompressionSmallMomentCrackDoesNotNumFail(ByRef sta
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     batch.AddCombination "G2_L_SMALL_M", -100# * 9806.65, 30# * TEST_TF_M_IN_NMM, 0#, _
         "PR2", "rectangles compression small moment crack"
     batch.Execute
 
-    AppendLine stats, "INFO: batch.group2.rectanglesSmallMoment crack=" & batch.ResultAt(1).NormalCrackStatus & _
-        "; formed=" & CStr(batch.ResultAt(1).CrackResult.Formation.CrackFormed) & "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc)
-    AssertTrue stats, "batch.group2.rectanglesSmallMoment.notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
-    AssertTrue stats, "batch.group2.rectanglesSmallMoment.finished", _
+    TestAppendLine stats, "INFO: batch.group2.rectanglesSmallMoment crack=" & batch.ResultAt(1).NormalCrackStatus & _
+        "; formed=" & CStr(batch.ResultAt(1).CrackResult.Formation.CrackFormed) & "; lambda=" & TestFormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc)
+    TestAssertTrue stats, "batch.group2.rectanglesSmallMoment.notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
+    TestAssertTrue stats, "batch.group2.rectanglesSmallMoment.finished", _
         batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
-    AssertTrue stats, "batch.group2.rectanglesSmallMoment.solverCallsIncludeCrack", batch.SolverCallCount > 1
+    TestAssertTrue stats, "batch.group2.rectanglesSmallMoment.solverCallsIncludeCrack", batch.SolverCallCount > 1
 
 Restore:
-    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    TestSetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group2.rectanglesSmallMoment; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group2.rectanglesSmallMoment; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет полный путь batch + Results writer для траекторий
 ' трещинообразования lambda*N и lambda*NMxy. Найденные Ncrc/Mxy,crc должны
 ' присутствовать в подробной таблице независимо от последующего результата
@@ -1488,37 +1524,38 @@ Private Sub TestCrackInitiationLoadPathsWriteFormationSummary(ByRef stats As TBa
     Dim oldStrategy As String
     Dim oldPsiMode As String
     Dim oldAllowable As String
-    oldStrategy = GetSystemSetting("SLS.Crack.InitiationSolutionStrategy")
-    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
-    oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
+    oldStrategy = TestGetSystemSetting("SLS.Crack.InitiationSolutionStrategy")
+    oldPsiMode = TestGetSystemSetting("SLS.Crack.PsiMode")
+    oldAllowable = TestGetSystemSetting("SLS.Crack.Allowable")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
-    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
-    SetSystemSetting "SLS.Crack.Allowable", "0.0001"
+    TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    TestSetSystemSetting "SLS.Crack.Allowable", "0.0001"
 
-    CheckCrackFormationSummaryForPath stats, "Auto", _
+    TestCheckCrackFormationSummaryForPath stats, "Auto", _
         "batch.crack.pathAuto.summary", 20# * 9806.65, _
         0#, 0#, True, False
-    CheckCrackFormationSummaryForPath stats, "lambda*N", _
+    TestCheckCrackFormationSummaryForPath stats, "lambda*N", _
         "batch.crack.pathN.summary", 20# * 9806.65, _
         0#, 0#, True, False
-    CheckCrackFormationSummaryForPath stats, "lambda*NMxy", _
+    TestCheckCrackFormationSummaryForPath stats, "lambda*NMxy", _
         "batch.crack.pathNMxy.summary", 100# * 9806.65, _
         50# * TEST_TF_M_IN_NMM, 0#, True, True
 
 Restore:
-    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", oldStrategy
-    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
-    SetSystemSetting "SLS.Crack.Allowable", oldAllowable
+    TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", oldStrategy
+    TestSetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    TestSetSystemSetting "SLS.Crack.Allowable", oldAllowable
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.crack.path.summary; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.crack.path.summary; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Жестко проверяет Auto-переключение пути образования трещины на пользовательском
 ' Г-сечении: чистая N должна выбрать lambda*N, чистый момент - lambda*Mxy,
 ' а сочетание, где N и M по отдельности уже дают трещину, должно дойти до
@@ -1528,37 +1565,38 @@ Private Sub TestCrackAutoFormationPathSwitchesForRectangles(ByRef stats As TBatc
     Dim oldStrategy As String
     Dim oldPsiMode As String
     Dim oldAllowable As String
-    oldStrategy = GetSystemSetting("SLS.Crack.InitiationSolutionStrategy")
-    oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
-    oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
+    oldStrategy = TestGetSystemSetting("SLS.Crack.InitiationSolutionStrategy")
+    oldPsiMode = TestGetSystemSetting("SLS.Crack.PsiMode")
+    oldAllowable = TestGetSystemSetting("SLS.Crack.Allowable")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
-    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
-    SetSystemSetting "SLS.Crack.Allowable", "0.0001"
+    TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    TestSetSystemSetting "SLS.Crack.Allowable", "0.0001"
 
-    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.nOnly", _
+    TestCheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.nOnly", _
         100# * 9806.65, 0#, 0#, ChrW$(&H3BB) & "*N", True, False
-    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.mOnly", _
+    TestCheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.mOnly", _
         0#, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*Mx", False, True
-    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.nAndM", _
+    TestCheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.nAndM", _
         100# * 9806.65, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*NMxy", True, True
 
 Restore:
-    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", oldStrategy
-    SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
-    SetSystemSetting "SLS.Crack.Allowable", oldAllowable
+    TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", oldStrategy
+    TestSetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
+    TestSetSystemSetting "SLS.Crack.Allowable", oldAllowable
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.crack.auto.rectangles; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.crack.auto.rectangles; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет один Auto-сценарий Mcrc/Ncrc на Г-сечении и проверяет, что
 ' фактически принятый путь совпал с ожидаемым физическим случаем.
-Private Sub CheckCrackAutoFormationCase(ByRef stats As TBatchTestStats, _
+Private Sub TestCheckCrackAutoFormationCase(ByRef stats As TBatchTestStats, _
         ByVal prefix As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal expectedMethod As String, _
         ByVal expectNcrc As Boolean, ByVal expectMcrc As Boolean)
@@ -1569,33 +1607,34 @@ Private Sub CheckCrackAutoFormationCase(ByRef stats As TBatchTestStats, _
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.AddCombination UCase$(Replace$(Replace$(expectedMethod, ChrW$(&H3BB) & "*", vbNullString), "*", vbNullString)), _
         nValue, mxValue, myValue, "PR2", "auto crack formation"
     batch.Execute
 
-    AppendLine stats, "INFO: " & prefix & "; status=" & batch.ResultAt(1).NormalCrackStatus & _
+    TestAppendLine stats, "INFO: " & prefix & "; status=" & batch.ResultAt(1).NormalCrackStatus & _
         "; method=" & batch.ResultAt(1).CrackResult.Formation.FormationMethod & _
-        "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc) & _
-        "; Ncrc=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) & _
-        "; MxyCrc=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Mcrc)
+        "; lambda=" & TestFormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc) & _
+        "; Ncrc=" & TestFormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) & _
+        "; MxyCrc=" & TestFormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Mcrc)
     If batch.ResultAt(1).CrackResult.Formation.FormationMethod <> expectedMethod Or batch.ResultAt(1).NormalCrackStatus = "NumFail" Then _
-        AppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
+        TestAppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
 
-    AssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
-    AssertTrue stats, prefix & ".method", batch.ResultAt(1).CrackResult.Formation.FormationMethod = expectedMethod
-    AssertTrue stats, prefix & ".lambda", batch.ResultAt(1).CrackResult.Formation.LambdaCrc > 0# And batch.ResultAt(1).CrackResult.Formation.LambdaCrc <= 1#
+    TestAssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
+    TestAssertTrue stats, prefix & ".method", batch.ResultAt(1).CrackResult.Formation.FormationMethod = expectedMethod
+    TestAssertTrue stats, prefix & ".lambda", batch.ResultAt(1).CrackResult.Formation.LambdaCrc > 0# And batch.ResultAt(1).CrackResult.Formation.LambdaCrc <= 1#
     If expectNcrc Then _
-        AssertTrue stats, prefix & ".ncrc", Abs(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) > 0#
+        TestAssertTrue stats, prefix & ".ncrc", Abs(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) > 0#
     If expectMcrc Then _
-        AssertTrue stats, prefix & ".mcrc", batch.ResultAt(1).CrackResult.Formation.Mcrc > 0#
+        TestAssertTrue stats, prefix & ".mcrc", batch.ResultAt(1).CrackResult.Formation.Mcrc > 0#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет один сценарий трещинообразования и проверяет, что найденная точка
 ' записана как в объект batch, так и в отдельный блок rngCrackSummaryAnchor.
-Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
+Private Sub TestCheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
         ByVal pathText As String, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal expectNcrc As Boolean, ByVal expectMcrc As Boolean)
@@ -1607,7 +1646,7 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     batch.AddCombination UCase$(Replace$(Replace$(pathText, "lambda*", vbNullString), "*", vbNullString)), _
         nValue, mxValue, myValue, "PR2", "crack formation path", pathText
@@ -1617,34 +1656,34 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Set batch.ExecutionReport = executionReport
     batch.Execute
 
-    AppendLine stats, "INFO: " & prefix & "; status=" & batch.ResultAt(1).NormalCrackStatus & _
-        "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc) & _
+    TestAppendLine stats, "INFO: " & prefix & "; status=" & batch.ResultAt(1).NormalCrackStatus & _
+        "; lambda=" & TestFormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc) & _
         "; method=" & batch.ResultAt(1).CrackResult.Formation.FormationMethod & _
         "; central=" & CStr(batch.ResultAt(1).CrackResult.Width.CentralTensionBranch) & _
-        "; NcrcCentral=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Ncrc) & _
-        "; Ncrc=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) & _
-        "; MxyCrc=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Mcrc)
+        "; NcrcCentral=" & TestFormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Ncrc) & _
+        "; Ncrc=" & TestFormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.FormationNcrc) & _
+        "; MxyCrc=" & TestFormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.Mcrc)
     If batch.ResultAt(1).NormalCrackStatus = "NumFail" Or _
             (expectNcrc And batch.ResultAt(1).CrackResult.Formation.FormationNcrc = 0#) Or _
             (expectMcrc And batch.ResultAt(1).CrackResult.Formation.Mcrc = 0#) Then
-        AppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
-        AppendLine stats, "DIAG_META: " & prefix & "; formation=" & _
-            MetaDebugText(batch.ResultAt(1).CrackFormationMeta) & "; current=" & _
-            MetaDebugText(batch.ResultAt(1).CrackCurrentStateMeta) & "; width=" & _
-            MetaDebugText(batch.ResultAt(1).CrackWidthMeta) & "; longitudinal=" & _
-            MetaDebugText(batch.ResultAt(1).LongitudinalCrackMeta)
+        TestAppendLine stats, "DIAG: " & prefix & vbCrLf & batch.DiagnosticLog
+        TestAppendLine stats, "DIAG_META: " & prefix & "; formation=" & _
+            TestMetaDebugText(batch.ResultAt(1).CrackFormationMeta) & "; current=" & _
+            TestMetaDebugText(batch.ResultAt(1).CrackCurrentStateMeta) & "; width=" & _
+            TestMetaDebugText(batch.ResultAt(1).CrackWidthMeta) & "; longitudinal=" & _
+            TestMetaDebugText(batch.ResultAt(1).LongitudinalCrackMeta)
         Dim currentState As CSectionStateResult
         Set currentState = batch.ResultAt(1).StateRepository.FindState(sstCrackedState)
         If Not currentState Is Nothing Then
-            AppendLine stats, "CURRENT_STATE_DIAG: " & prefix & _
-                "; extensionSetting=" & GetSystemSetting("General.DiagramExtension") & _
-                "; eps0=" & FormatNumberInvariant(currentState.Epsilon0) & _
-                "; residualN=" & FormatNumberInvariant(currentState.ResidualN) & _
-                "; residualMx=" & FormatNumberInvariant(currentState.ResidualMx) & _
-                "; residualMy=" & FormatNumberInvariant(currentState.ResidualMy) & vbCrLf & currentState.DiagnosticLog
+            TestAppendLine stats, "CURRENT_STATE_DIAG: " & prefix & _
+                "; extensionSetting=" & TestGetSystemSetting("General.DiagramExtension") & _
+                "; eps0=" & TestFormatNumberInvariant(currentState.Epsilon0) & _
+                "; residualN=" & TestFormatNumberInvariant(currentState.ResidualN) & _
+                "; residualMx=" & TestFormatNumberInvariant(currentState.ResidualMx) & _
+                "; residualMy=" & TestFormatNumberInvariant(currentState.ResidualMy) & vbCrLf & currentState.DiagnosticLog
         End If
     End If
-    AssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
+    TestAssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
 
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
@@ -1655,8 +1694,8 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     Dim detailRow As Long
-    detailRow = DetailedRowByCombination(resultsSheet, "rngCrackSummaryAnchor", batch.CombinationID(1))
-    AssertTrue stats, prefix & ".sheetRow", detailRow > 0
+    detailRow = TestDetailedRowByCombination(resultsSheet, "rngCrackSummaryAnchor", batch.CombinationID(1))
+    TestAssertTrue stats, prefix & ".sheetRow", detailRow > 0
     If detailRow <= 0 Then Exit Sub
 
     Dim baseColumn As Long
@@ -1664,18 +1703,18 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Dim isCentralAxial As Boolean
     isCentralAxial = batch.ResultAt(1).CrackResult.Width.CentralTensionBranch
     If Not isCentralAxial Then _
-        AssertTrue stats, prefix & ".sheetMethod", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + 15 - 1).Value2)
+        TestAssertTrue stats, prefix & ".sheetMethod", _
+            TestCellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + 15 - 1).Value2)
     If expectNcrc Then
-        AssertTrue stats, prefix & ".sheetNcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + IIf(isCentralAxial, 13, 16) - 1).Value2)
+        TestAssertTrue stats, prefix & ".sheetNcrc", _
+            TestCellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + IIf(isCentralAxial, 13, 16) - 1).Value2)
     End If
     If expectMcrc Then
-        AssertTrue stats, prefix & ".sheetMcrc", _
-            CellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + 17 - 1).Value2)
+        TestAssertTrue stats, prefix & ".sheetMcrc", _
+            TestCellHasDisplayedResult(resultsSheet.Cells.Item(detailRow, baseColumn + 17 - 1).Value2)
     End If
     If isCentralAxial Then
-        AssertTrue stats, prefix & ".centralDepthsBlank", _
+        TestAssertTrue stats, prefix & ".centralDepthsBlank", _
             Len(CStr(resultsSheet.Cells.Item(detailRow, baseColumn + 24 - 1).Value2)) = 0 And _
             Len(CStr(resultsSheet.Cells.Item(detailRow, baseColumn + 25 - 1).Value2)) = 0 And _
             Len(CStr(resultsSheet.Cells.Item(detailRow, baseColumn + 26 - 1).Value2)) = 0 And _
@@ -1683,24 +1722,27 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Отличает реально выведенную величину от пустой ячейки и статуса N/A.
-Private Function CellHasDisplayedResult(ByVal value As Variant) As Boolean
+Private Function TestCellHasDisplayedResult(ByVal value As Variant) As Boolean
     Dim text As String
     text = Trim$(CStr(value))
-    CellHasDisplayedResult = Len(text) > 0 And StrComp(text, "N/A", vbTextCompare) <> 0
+    TestCellHasDisplayedResult = Len(text) > 0 And StrComp(text, "N/A", vbTextCompare) <> 0
 End Function
 
-' ДЛЯ ТЕСТОВ: кратко перечисляет статусы вложенных результатов,
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' кратко перечисляет статусы вложенных результатов,
 ' чтобы при разборе ошибки был виден определяющий этап расчёта.
-Private Function MetaDebugText(ByVal meta As CResultMeta) As String
+Private Function TestMetaDebugText(ByVal meta As CResultMeta) As String
     If meta Is Nothing Then
-        MetaDebugText = "<nothing>"
+        TestMetaDebugText = "<nothing>"
     Else
-        MetaDebugText = ResultInternalStatusToText(meta.InternalStatus) & "/" & _
+        TestMetaDebugText = ResultInternalStatusToText(meta.InternalStatus) & "/" & _
             ResultCodeToText(meta.ResultCode) & "/" & meta.ResultComment
     End If
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет сценарий второй группы с большим осевым растяжением: расчет
 ' трещин не должен брать technical extension из настройки прямого НДС прочности.
 Private Sub TestPR2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As TBatchTestStats)
@@ -1709,14 +1751,14 @@ Private Sub TestPR2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     Dim oldMaxIterations As String
     Dim oldLoadSteps As String
     Dim oldExtension As String
-    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
-    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("General.DiagramExtension")
+    oldMaxIterations = TestGetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = TestGetSystemSetting("Solver.LoadSteps")
+    oldExtension = TestGetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetSystemSetting "Solver.MaxIterations", "80"
-    SetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "Solver.MaxIterations", "80"
+    TestSetSystemSetting "Solver.LoadSteps", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1733,28 +1775,29 @@ Private Sub TestPR2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G2_TENSION_EXT", 900# * 9806.65, 0#, 0#, "PR2", "tension over SLS yield"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.group2.extension.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
-    AssertTrue stats, "batch.group2.extension.used", batch.ResultAt(1).ExtensionUsed
-    AssertTrue stats, "batch.group2.extension.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
+    TestAssertTrue stats, "batch.group2.extension.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
+    TestAssertTrue stats, "batch.group2.extension.used", batch.ResultAt(1).ExtensionUsed
+    TestAssertTrue stats, "batch.group2.extension.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
 
 Restore:
-    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
-    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "General.DiagramExtension", oldExtension
+    TestSetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    TestSetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    TestSetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group2.extension.tension; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group2.extension.tension; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пользовательский сценарий PR1: растянутый бетон в прочности не
 ' работает, перегрузка должна распознаваться через extension арматуры, а не
 ' превращаться в рассинхрон DirectStateStatus=FAIL при ExtensionUsed=False.
@@ -1764,14 +1807,14 @@ Private Sub TestPR1AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     Dim oldMaxIterations As String
     Dim oldLoadSteps As String
     Dim oldExtension As String
-    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
-    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("General.DiagramExtension")
+    oldMaxIterations = TestGetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = TestGetSystemSetting("Solver.LoadSteps")
+    oldExtension = TestGetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetSystemSetting "Solver.MaxIterations", "100"
-    SetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "Solver.MaxIterations", "100"
+    TestSetSystemSetting "Solver.LoadSteps", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1788,29 +1831,30 @@ Private Sub TestPR1AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G1_TENSION_EXT", 900# * 9806.65, 0#, 0#, "PR1", "tension over ULS diagram"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.group1.extension.directFail", batch.ResultAt(1).StrengthResult.DirectState.Status = "FAIL"
-    AssertTrue stats, "batch.group1.extension.used", batch.ResultAt(1).ExtensionUsed
-    AssertTrue stats, "batch.group1.extension.noCrack", batch.ResultAt(1).NormalCrackStatus = "N/A"
-    AssertTrue stats, "batch.group1.extension.overall", batch.ResultAt(1).Status = "FAIL"
+    TestAssertTrue stats, "batch.group1.extension.directFail", batch.ResultAt(1).StrengthResult.DirectState.Status = "FAIL"
+    TestAssertTrue stats, "batch.group1.extension.used", batch.ResultAt(1).ExtensionUsed
+    TestAssertTrue stats, "batch.group1.extension.noCrack", batch.ResultAt(1).NormalCrackStatus = "N/A"
+    TestAssertTrue stats, "batch.group1.extension.overall", batch.ResultAt(1).Status = "FAIL"
 
 Restore:
-    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
-    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "General.DiagramExtension", oldExtension
+    TestSetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    TestSetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    TestSetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group1.extension.tension; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group1.extension.tension; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет ряд почти соседних осевых растягивающих нагрузок возле физического
 ' предела. Неудачная warm-start подсказка должна запускать следующие старты,
 ' а не давать NumFail между соседними физическими FAIL, когда равновесие
@@ -1821,14 +1865,14 @@ Private Sub TestPR1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBat
     Dim oldMaxIterations As String
     Dim oldLoadSteps As String
     Dim oldExtension As String
-    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
-    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("General.DiagramExtension")
+    oldMaxIterations = TestGetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = TestGetSystemSetting("Solver.LoadSteps")
+    oldExtension = TestGetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetSystemSetting "Solver.MaxIterations", "100"
-    SetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "Solver.MaxIterations", "100"
+    TestSetSystemSetting "Solver.LoadSteps", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1845,7 +1889,7 @@ Private Sub TestPR1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBat
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
 
     Dim loads As Variant
@@ -1860,32 +1904,33 @@ Private Sub TestPR1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBat
     batch.Execute
 
     For i = 1 To UBound(loads) - LBound(loads) + 1
-        AppendLine stats, "INFO: batch.group1.nearLimit." & batch.CombinationID(i) & _
+        TestAppendLine stats, "INFO: batch.group1.nearLimit." & batch.CombinationID(i) & _
             " direct=" & batch.ResultAt(i).StrengthResult.DirectState.Status & _
             "; extensionUsed=" & CStr(batch.ResultAt(i).ExtensionUsed) & _
-            "; epsSmax=" & FormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MaxSteelStrain)
+            "; epsSmax=" & TestFormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MaxSteelStrain)
         If batch.ResultAt(i).StrengthResult.DirectState.Status = "NumFail" Then
-            AppendLine stats, "DIAG: batch.group1.nearLimit." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
+            TestAppendLine stats, "DIAG: batch.group1.nearLimit." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
         End If
-        AssertTrue stats, "batch.group1.nearLimit.noNumFail." & batch.CombinationID(i), _
+        TestAssertTrue stats, "batch.group1.nearLimit.noNumFail." & batch.CombinationID(i), _
             batch.ResultAt(i).StrengthResult.DirectState.Status = "OK" Or batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL"
         If batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL" Then
-            AssertTrue stats, "batch.group1.nearLimit.failUsesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
+            TestAssertTrue stats, "batch.group1.nearLimit.failUsesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
         End If
     Next i
 
 Restore:
-    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
-    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "General.DiagramExtension", oldExtension
+    TestSetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    TestSetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    TestSetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group1.nearLimit; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group1.nearLimit; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет соседние значения осевого сжатия около предела сечения.
 ' Регрессия защищает от численной дырки, когда одно значение N между двумя
 ' корректными FAIL ошибочно превращается в NumFail из-за неудачного старта
@@ -1896,14 +1941,14 @@ Private Sub TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail(ByRef stats As 
     Dim oldMaxIterations As String
     Dim oldLoadSteps As String
     Dim oldExtension As String
-    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
-    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("General.DiagramExtension")
+    oldMaxIterations = TestGetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = TestGetSystemSetting("Solver.LoadSteps")
+    oldExtension = TestGetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetSystemSetting "Solver.MaxIterations", "100"
-    SetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "Solver.MaxIterations", "100"
+    TestSetSystemSetting "Solver.LoadSteps", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -1920,7 +1965,7 @@ Private Sub TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail(ByRef stats As 
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
 
     Dim loads As Variant
@@ -1935,32 +1980,33 @@ Private Sub TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail(ByRef stats As 
     batch.Execute
 
     For i = 1 To UBound(loads) - LBound(loads) + 1
-        AppendLine stats, "INFO: batch.group1.compressionNearLimit." & batch.CombinationID(i) & _
+        TestAppendLine stats, "INFO: batch.group1.compressionNearLimit." & batch.CombinationID(i) & _
             " direct=" & batch.ResultAt(i).StrengthResult.DirectState.Status & _
             "; extensionUsed=" & CStr(batch.ResultAt(i).ExtensionUsed) & _
-            "; epsCmin=" & FormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MinConcreteStrain)
+            "; epsCmin=" & TestFormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MinConcreteStrain)
         If batch.ResultAt(i).StrengthResult.DirectState.Status = "NumFail" Then
-            AppendLine stats, "DIAG: batch.group1.compressionNearLimit." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
+            TestAppendLine stats, "DIAG: batch.group1.compressionNearLimit." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
         End If
-        AssertTrue stats, "batch.group1.compressionNearLimit.noNumFail." & batch.CombinationID(i), _
+        TestAssertTrue stats, "batch.group1.compressionNearLimit.noNumFail." & batch.CombinationID(i), _
             batch.ResultAt(i).StrengthResult.DirectState.Status = "OK" Or batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL"
         If batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL" Then
-            AssertTrue stats, "batch.group1.compressionNearLimit.failUsesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
+            TestAssertTrue stats, "batch.group1.compressionNearLimit.failUsesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
         End If
     Next i
 
 Restore:
-    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
-    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "General.DiagramExtension", oldExtension
+    TestSetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    TestSetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    TestSetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group1.compressionNearLimit; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group1.compressionNearLimit; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет длинный растянутый ряд после последнего физически проходящего
 ' состояния. Набор нагрузок намеренно неровный: сначала шаг 1 т, затем скачок,
 ' затем снова малый шаг на более высокой нагрузке. Так тест ловит не только
@@ -1969,9 +2015,10 @@ Private Sub TestPR1AxialTensionProgressionAfterLimitIsStableFail(ByRef stats As 
     Dim loads As Variant
     loads = Array(750#, 796#, 797#, 798#, 799#, 800#, 801#, 805#, 810#, 811#, 812#, _
         820#, 830#, 850#, 900#, 925#, 930#, 950#, 1000#, 1200#)
-    RunAxialProgressionAfterLimit stats, "batch.group1.tensionProgression", loads, True, 1
+    TestRunAxialProgressionAfterLimit stats, "batch.group1.tensionProgression", loads, True, 1
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет аналогичный ряд для сжатия. Это защищает от ситуации, когда при
 ' росте N одно сочетание внутри перегруженной области внезапно получает NumFail,
 ' хотя соседние нагрузки уже корректно сходятся в extension и дают FAIL.
@@ -1979,27 +2026,28 @@ Private Sub TestPR1AxialCompressionProgressionAfterLimitIsStableFail(ByRef stats
     Dim loads As Variant
     loads = Array(1200#, 1221#, 1222#, 1223#, 1224#, 1225#, 1226#, 1230#, 1231#, 1240#, 1250#, _
         1275#, 1300#, 1350#, 1400#, 1500#, 1600#, 1700#, 1800#, 2000#)
-    RunAxialProgressionAfterLimit stats, "batch.group1.compressionProgression", loads, False, 1
+    TestRunAxialProgressionAfterLimit stats, "batch.group1.compressionProgression", loads, False, 1
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Общая проверка длинного осевого ряда. firstOkIndex указывает строку, которая
 ' должна еще оставаться физически допустимой; все последующие строки обязаны
 ' сходиться как FAIL с ExtensionUsed=True, а не как NumFail.
-Private Sub RunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal testPrefix As String, _
+Private Sub TestRunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal testPrefix As String, _
         ByVal loads As Variant, ByVal isTension As Boolean, ByVal firstOkIndex As Long)
     Dim oldMode As String
     Dim oldCrackEnabled As String
     Dim oldMaxIterations As String
     Dim oldLoadSteps As String
     Dim oldExtension As String
-    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
-    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("General.DiagramExtension")
+    oldMaxIterations = TestGetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = TestGetSystemSetting("Solver.LoadSteps")
+    oldExtension = TestGetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetSystemSetting "Solver.MaxIterations", "100"
-    SetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "Solver.MaxIterations", "100"
+    TestSetSystemSetting "Solver.LoadSteps", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -2016,7 +2064,7 @@ Private Sub RunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal 
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
 
     Dim i As Long
@@ -2027,53 +2075,55 @@ Private Sub RunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal 
         Else
             signedN = -CDbl(loads(i)) * 9806.65
         End If
-        batch.AddCombination ProgressionCombinationID(isTension, CDbl(loads(i))), signedN, 0#, 0#, _
+        batch.AddCombination TestProgressionCombinationID(isTension, CDbl(loads(i))), signedN, 0#, 0#, _
             "PR1", "axial progression after physical limit"
     Next i
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
     For i = 1 To UBound(loads) - LBound(loads) + 1
-        AppendLine stats, "INFO: " & testPrefix & "." & batch.CombinationID(i) & _
+        TestAppendLine stats, "INFO: " & testPrefix & "." & batch.CombinationID(i) & _
             " direct=" & batch.ResultAt(i).StrengthResult.DirectState.Status & _
             "; extensionUsed=" & CStr(batch.ResultAt(i).ExtensionUsed) & _
-            "; epsCmin=" & FormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MinConcreteStrain) & _
-            "; epsSmax=" & FormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MaxSteelStrain)
+            "; epsCmin=" & TestFormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MinConcreteStrain) & _
+            "; epsSmax=" & TestFormatNumberInvariant(batch.ResultAt(i).StrengthResult.DirectState.StateResult.MaxSteelStrain)
         If i = firstOkIndex Then
-            AssertTrue stats, testPrefix & ".lastPhysicalOK." & batch.CombinationID(i), _
+            TestAssertTrue stats, testPrefix & ".lastPhysicalOK." & batch.CombinationID(i), _
                 batch.ResultAt(i).StrengthResult.DirectState.Status = "OK" And Not batch.ResultAt(i).ExtensionUsed
         Else
             If batch.ResultAt(i).StrengthResult.DirectState.Status = "NumFail" Then
-                AppendLine stats, "DIAG: " & testPrefix & "." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
+                TestAppendLine stats, "DIAG: " & testPrefix & "." & batch.CombinationID(i) & vbCrLf & batch.DiagnosticLog
             End If
-            AssertTrue stats, testPrefix & ".stableFail." & batch.CombinationID(i), _
+            TestAssertTrue stats, testPrefix & ".stableFail." & batch.CombinationID(i), _
                 batch.ResultAt(i).StrengthResult.DirectState.Status = "FAIL"
-            AssertTrue stats, testPrefix & ".usesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
+            TestAssertTrue stats, testPrefix & ".usesExtension." & batch.CombinationID(i), batch.ResultAt(i).ExtensionUsed
         End If
     Next i
 
 Restore:
-    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
-    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "General.DiagramExtension", oldExtension
+    TestSetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    TestSetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    TestSetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: " & testPrefix & "; " & Err.Description
+    TestAppendLine stats, "FAIL: " & testPrefix & "; " & Err.Description
     Resume Restore
 End Sub
 
-' ДЛЯ ТЕСТОВ: кодирует знак осевой нагрузки и ее уровень в ID прогрессии.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' кодирует знак осевой нагрузки и ее уровень в ID прогрессии.
 ' Это позволяет сопоставлять строки повторных запусков независимо от порядка LC.
-Private Function ProgressionCombinationID(ByVal isTension As Boolean, ByVal loadTf As Double) As String
+Private Function TestProgressionCombinationID(ByVal isTension As Boolean, ByVal loadTf As Double) As String
     If isTension Then
-        ProgressionCombinationID = "G1_TP" & CStr(CLng(loadTf))
+        TestProgressionCombinationID = "G1_TP" & CStr(CLng(loadTf))
     Else
-        ProgressionCombinationID = "G1_CP" & CStr(CLng(loadTf))
+        TestProgressionCombinationID = "G1_CP" & CStr(CLng(loadTf))
     End If
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет симметричный для сжатия сценарий второй группы: текущее
 ' CrackedState может искать равновесие через extension, но после этого
 ' crack-ветка должна остановиться со статусом FAIL.
@@ -2083,14 +2133,14 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     Dim oldMaxIterations As String
     Dim oldLoadSteps As String
     Dim oldExtension As String
-    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
-    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("General.DiagramExtension")
+    oldMaxIterations = TestGetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = TestGetSystemSetting("Solver.LoadSteps")
+    oldExtension = TestGetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetSystemSetting "Solver.MaxIterations", "80"
-    SetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "Solver.MaxIterations", "80"
+    TestSetSystemSetting "Solver.LoadSteps", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -2107,41 +2157,42 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G2_COMPRESSION_EXT", -2000# * 9806.65, 0#, 0#, "PR2", "compression over SLS diagram"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.group2.extension.compression.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
-    AssertTrue stats, "batch.group2.extension.compression.used", batch.ResultAt(1).ExtensionUsed
-    AssertTrue stats, "batch.group2.extension.compression.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
+    TestAssertTrue stats, "batch.group2.extension.compression.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
+    TestAssertTrue stats, "batch.group2.extension.compression.used", batch.ResultAt(1).ExtensionUsed
+    TestAssertTrue stats, "batch.group2.extension.compression.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
     Dim formation As CCrackFormationResult
     Set formation = batch.ResultAt(1).CrackResult.Formation
-    AssertTrue stats, "audit02.formation.physicalBlock.exists", Not formation Is Nothing
+    TestAssertTrue stats, "audit02.formation.physicalBlock.exists", Not formation Is Nothing
     If Not formation Is Nothing Then
         If formation.ResultMeta.InternalStatus <> rsCheckFailed Then _
-            AppendLine stats, "DIAGNOSTIC physicalBlock: status=" & CStr(formation.ResultMeta.InternalStatus) & _
+            TestAppendLine stats, "DIAGNOSTIC physicalBlock: status=" & CStr(formation.ResultMeta.InternalStatus) & _
                 "; code=" & CStr(formation.ResultMeta.ResultCode) & "; reason=" & formation.ResultMeta.ResultComment & _
                 vbCrLf & formation.DiagnosticLog & vbCrLf & batch.DiagnosticLog
-        AssertTrue stats, "audit02.formation.physicalBlock.status", formation.ResultMeta.InternalStatus = rsCheckFailed
-        AssertTrue stats, "audit02.formation.physicalBlock.code", formation.ResultMeta.ResultCode = rcPhysicalLimitExceeded
-        AssertTrue stats, "audit02.formation.physicalBlock.noPoint", Not formation.HasLimitPoint
-        AssertTrue stats, "audit02.formation.physicalBlock.noPreState", formation.PreCrackState Is Nothing
+        TestAssertTrue stats, "audit02.formation.physicalBlock.status", formation.ResultMeta.InternalStatus = rsCheckFailed
+        TestAssertTrue stats, "audit02.formation.physicalBlock.code", formation.ResultMeta.ResultCode = rcPhysicalLimitExceeded
+        TestAssertTrue stats, "audit02.formation.physicalBlock.noPoint", Not formation.HasLimitPoint
+        TestAssertTrue stats, "audit02.formation.physicalBlock.noPreState", formation.PreCrackState Is Nothing
     End If
 
 Restore:
-    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
-    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "General.DiagramExtension", oldExtension
+    TestSetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    TestSetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    TestSetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group2.extension.compression; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group2.extension.compression; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет неосевую перегрузку второй группы. При N + Mx + My текущее
 ' CrackedState может получить равновесие через extension, но расчет ширины
 ' трещины после такого состояния не продолжается.
@@ -2151,14 +2202,14 @@ Private Sub TestPR2BendingBeyondPhysicalLimitUsesExtension(ByRef stats As TBatch
     Dim oldMaxIterations As String
     Dim oldLoadSteps As String
     Dim oldExtension As String
-    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
-    oldLoadSteps = GetSystemSetting("Solver.LoadSteps")
-    oldExtension = GetSystemSetting("General.DiagramExtension")
+    oldMaxIterations = TestGetSystemSetting("Solver.MaxIterations")
+    oldLoadSteps = TestGetSystemSetting("Solver.LoadSteps")
+    oldExtension = TestGetSystemSetting("General.DiagramExtension")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetSystemSetting "Solver.MaxIterations", "100"
-    SetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "Solver.MaxIterations", "100"
+    TestSetSystemSetting "Solver.LoadSteps", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -2175,46 +2226,48 @@ Private Sub TestPR2BendingBeyondPhysicalLimitUsesExtension(ByRef stats As TBatch
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G2_BENDING_EXT", -120# * 9806.65, 420# * 9806.65 * 1000#, _
         -180# * 9806.65 * 1000#, "PR2", "bending over SLS diagram"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AssertTrue stats, "batch.group2.extension.bending.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
-    AssertTrue stats, "batch.group2.extension.bending.used", batch.ResultAt(1).ExtensionUsed
-    AssertTrue stats, "batch.group2.extension.bending.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
+    TestAssertTrue stats, "batch.group2.extension.bending.directPhysical", batch.ResultAt(1).StrengthResult.DirectState.Status <> "FAIL"
+    TestAssertTrue stats, "batch.group2.extension.bending.used", batch.ResultAt(1).ExtensionUsed
+    TestAssertTrue stats, "batch.group2.extension.bending.crackFail", batch.ResultAt(1).NormalCrackStatus = "FAIL"
 
 Restore:
-    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
-    SetSystemSetting "Solver.LoadSteps", oldLoadSteps
-    SetSystemSetting "General.DiagramExtension", oldExtension
+    TestSetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    TestSetSystemSetting "Solver.LoadSteps", oldLoadSteps
+    TestSetSystemSetting "General.DiagramExtension", oldExtension
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group2.extension.bending; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group2.extension.bending; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Определяющее сочетание прочности выбирается только среди профилей,
 ' которые запрашивают несущую способность. Обычный профиль трещин PR2
 ' не участвует в этом выборе.
 Private Sub TestBatchGoverningUsesStrengthProfilesOnly(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "SAFE", -120000#, -1200000#, -600000#, "PR1", "larger safety"
     batch.AddCombination "GOV", -120000#, -5200000#, -2600000#, "PR1", "smaller safety"
     batch.AddCombination "CRACK", -120000#, -9000000#, -4500000#, "PR2", "crack-only profile"
     batch.Execute
 
-    AssertTrue stats, "batch.governing.profiles.capacity.order", _
+    TestAssertTrue stats, "batch.governing.profiles.capacity.order", _
         batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity > 0# And batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity < batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity
-    AssertTrue stats, "batch.governing.profiles.pr2Skipped", batch.ResultAt(3).StrengthResult.Capacity.Status = "N/A"
-    AssertTrue stats, "batch.governing.profiles.id", batch.GoverningCombinationID = "GOV"
+    TestAssertTrue stats, "batch.governing.profiles.pr2Skipped", batch.ResultAt(3).StrengthResult.Capacity.Status = "N/A"
+    TestAssertTrue stats, "batch.governing.profiles.id", batch.GoverningCombinationID = "GOV"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Отключение поиска несущей способности задаётся выбранным профилем.
 Private Sub TestPR2SkipsCapacityByProfile(ByRef stats As TBatchTestStats)
     On Error GoTo RestoreAndFail
@@ -2224,49 +2277,51 @@ Private Sub TestPR2SkipsCapacityByProfile(ByRef stats As TBatchTestStats)
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "STRENGTH", -120000#, -1200000#, -600000#, "PR1", "strength profile"
     batch.AddCombination "CRACK", -120000#, -5200000#, -2600000#, "PR2", "crack profile"
     batch.Execute
 
-    AssertTrue stats, "batch.profile.capacity.pr1.runs", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
-    AssertTrue stats, "batch.profile.capacity.pr2.skipped", batch.ResultAt(2).StrengthResult.Capacity.Status = "N/A"
+    TestAssertTrue stats, "batch.profile.capacity.pr1.runs", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
+    TestAssertTrue stats, "batch.profile.capacity.pr2.skipped", batch.ResultAt(2).StrengthResult.Capacity.Status = "N/A"
 
 Restore:
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.profile.capacity; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.profile.capacity; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет добавление N*offset к внутренним моментам при сохранении исходных
 ' пользовательских Mx/My; отдельно сверяет offsets относительно сдвинутого центра.
 Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "REF", -1000#, 3000000#, -3000000#, "PR1", "reference"
     batch.ApplyLoadReference 40#, -25#
 
-    AssertClose stats, "batch.reference.userMx", batch.UserMx(1), 3000000#, 0.000001
-    AssertClose stats, "batch.reference.userMy", batch.UserMy(1), -3000000#, 0.000001
-    AssertClose stats, "batch.reference.internalMx", batch.Mx(1), 3025000#, 0.000001
-    AssertClose stats, "batch.reference.internalMy", batch.My(1), -3040000#, 0.000001
-    AssertClose stats, "batch.reference.x", batch.LoadReferenceX, 40#, 0.000001
-    AssertClose stats, "batch.reference.y", batch.LoadReferenceY, -25#, 0.000001
-    AssertClose stats, "batch.reference.offsetX.defaultBase", batch.LoadReferenceOffsetX, 40#, 0.000001
-    AssertClose stats, "batch.reference.offsetY.defaultBase", batch.LoadReferenceOffsetY, -25#, 0.000001
+    TestAssertClose stats, "batch.reference.userMx", batch.UserMx(1), 3000000#, 0.000001
+    TestAssertClose stats, "batch.reference.userMy", batch.UserMy(1), -3000000#, 0.000001
+    TestAssertClose stats, "batch.reference.internalMx", batch.Mx(1), 3025000#, 0.000001
+    TestAssertClose stats, "batch.reference.internalMy", batch.My(1), -3040000#, 0.000001
+    TestAssertClose stats, "batch.reference.x", batch.LoadReferenceX, 40#, 0.000001
+    TestAssertClose stats, "batch.reference.y", batch.LoadReferenceY, -25#, 0.000001
+    TestAssertClose stats, "batch.reference.offsetX.defaultBase", batch.LoadReferenceOffsetX, 40#, 0.000001
+    TestAssertClose stats, "batch.reference.offsetY.defaultBase", batch.LoadReferenceOffsetY, -25#, 0.000001
 
     Dim shiftedBatch As CBatchSectionCalculator
-    Set shiftedBatch = BuildBatchCalculator()
+    Set shiftedBatch = TestBuildBatchCalculator()
     shiftedBatch.AddCombination "REF2", -1000#, 20000#, -30000#, "PR1", "reference shifted"
     shiftedBatch.ApplyLoadReference 140#, 75#, 100#, 100#
-    AssertClose stats, "batch.reference.offsetX.centroidBase", shiftedBatch.LoadReferenceOffsetX, 40#, 0.000001
-    AssertClose stats, "batch.reference.offsetY.centroidBase", shiftedBatch.LoadReferenceOffsetY, -25#, 0.000001
+    TestAssertClose stats, "batch.reference.offsetX.centroidBase", shiftedBatch.LoadReferenceOffsetX, 40#, 0.000001
+    TestAssertClose stats, "batch.reference.offsetY.centroidBase", shiftedBatch.LoadReferenceOffsetY, -25#, 0.000001
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет единый объект нагрузки: он хранит Mx/My в пользовательской точке,
 ' умеет переносить их к произвольному центру и обратно восстанавливает
 ' пользовательские моменты из усилий, возвращенных stability-фильтром.
@@ -2275,73 +2330,76 @@ Private Sub TestSectionLoadStateTransfersMoments(ByRef stats As TBatchTestStats)
     Set loadState = New CSectionLoadState
     loadState.Initialize -1000#, 3000000#, -3000000#, 40#, -25#
 
-    AssertClose stats, "batch.loadState.loadMx", loadState.LoadPointMx, 3000000#, 0.000001
-    AssertClose stats, "batch.loadState.loadMy", loadState.LoadPointMy, -3000000#, 0.000001
-    AssertClose stats, "batch.loadState.internalMx", loadState.InternalMx, 3025000#, 0.000001
-    AssertClose stats, "batch.loadState.internalMy", loadState.InternalMy, -3040000#, 0.000001
-    AssertClose stats, "batch.loadState.mxAboutShifted", loadState.MxAboutPoint(75#), 3100000#, 0.000001
-    AssertClose stats, "batch.loadState.myAboutShifted", loadState.MyAboutPoint(10#), -3030000#, 0.000001
-    AssertClose stats, "batch.loadState.axialMx", loadState.AxialMxAboutPoint(0#), 25000#, 0.000001
-    AssertClose stats, "batch.loadState.axialMy", loadState.AxialMyAboutPoint(0#), -40000#, 0.000001
-    AssertTrue stats, "batch.loadState.compression", loadState.IsCompression(0.000001)
-    AssertClose stats, "batch.loadState.compressionMagnitude", loadState.CompressionMagnitude(0.000001), 1000#, 0.000001
-    AssertClose stats, "batch.loadState.signedCompression", loadState.SignedCompression, 1000#, 0.000001
+    TestAssertClose stats, "batch.loadState.loadMx", loadState.LoadPointMx, 3000000#, 0.000001
+    TestAssertClose stats, "batch.loadState.loadMy", loadState.LoadPointMy, -3000000#, 0.000001
+    TestAssertClose stats, "batch.loadState.internalMx", loadState.InternalMx, 3025000#, 0.000001
+    TestAssertClose stats, "batch.loadState.internalMy", loadState.InternalMy, -3040000#, 0.000001
+    TestAssertClose stats, "batch.loadState.mxAboutShifted", loadState.MxAboutPoint(75#), 3100000#, 0.000001
+    TestAssertClose stats, "batch.loadState.myAboutShifted", loadState.MyAboutPoint(10#), -3030000#, 0.000001
+    TestAssertClose stats, "batch.loadState.axialMx", loadState.AxialMxAboutPoint(0#), 25000#, 0.000001
+    TestAssertClose stats, "batch.loadState.axialMy", loadState.AxialMyAboutPoint(0#), -40000#, 0.000001
+    TestAssertTrue stats, "batch.loadState.compression", loadState.IsCompression(0.000001)
+    TestAssertClose stats, "batch.loadState.compressionMagnitude", loadState.CompressionMagnitude(0.000001), 1000#, 0.000001
+    TestAssertClose stats, "batch.loadState.signedCompression", loadState.SignedCompression, 1000#, 0.000001
 
     Dim fromPoint As CSectionLoadState
     Set fromPoint = New CSectionLoadState
     fromPoint.InitializeFromPointMoments -1000#, -12000#, 5000#, 10#, 20#, 40#, -25#
-    AssertClose stats, "batch.loadState.restoreMx", fromPoint.MxAboutPoint(20#), -12000#, 0.000001
-    AssertClose stats, "batch.loadState.restoreMy", fromPoint.MyAboutPoint(10#), 5000#, 0.000001
+    TestAssertClose stats, "batch.loadState.restoreMx", fromPoint.MxAboutPoint(20#), -12000#, 0.000001
+    TestAssertClose stats, "batch.loadState.restoreMy", fromPoint.MyAboutPoint(10#), 5000#, 0.000001
 
     Dim central As CSectionLoadState
     Set central = New CSectionLoadState
     central.Initialize 200000#, 0#, 0#, 40#, -25#
-    AssertTrue stats, "batch.loadState.tension", central.IsTension(0.000001)
-    AssertClose stats, "batch.loadState.tensionSignedCompression", central.SignedCompression, -200000#, 0.000001
-    AssertTrue stats, "batch.loadState.centralAtLoadPoint", _
+    TestAssertTrue stats, "batch.loadState.tension", central.IsTension(0.000001)
+    TestAssertClose stats, "batch.loadState.tensionSignedCompression", central.SignedCompression, -200000#, 0.000001
+    TestAssertTrue stats, "batch.loadState.centralAtLoadPoint", _
         central.IsCentralTensionAbout(40#, -25#, 0.000001, 1#, 1#)
-    AssertTrue stats, "batch.loadState.eccentricAtShiftedPoint", _
+    TestAssertTrue stats, "batch.loadState.eccentricAtShiftedPoint", _
         Not central.IsCentralTensionAbout(50#, -25#, 0.000001, 1#, 1#)
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет осевое сжатие через бетонный центр тяжести.
 ' Для симметричных сечений это состояние не должно создавать кривизну. Для
 ' Г-сечения с несимметричной арматурой отдельная проверка ниже фиксирует именно
 ' выбор бетонного центра, а не нулевую кривизну как физическое требование.
 Private Sub TestAxialReferenceRemovesPureCompressionEccentricity(ByRef stats As TBatchTestStats)
-    CheckPureCompressionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
-        CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
-    CheckPureCompressionReference stats, "rounded", PointedSectionGeometry(360#, 240#), _
-        RectangleRebars(PointedSectionGeometry(360#, 240#)), 30#, 0.00000001
-    CheckRectanglesReferenceUsesConcreteCentroid stats
+    TestCheckPureCompressionReference stats, "circle", TestCircleGeometry(300#, 125#, -75#), _
+        TestCircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
+    TestCheckPureCompressionReference stats, "rounded", TestPointedSectionGeometry(360#, 240#), _
+        TestRectangleRebars(TestPointedSectionGeometry(360#, 240#)), 30#, 0.00000001
+    TestCheckRectanglesReferenceUsesConcreteCentroid stats
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет осевое растяжение как отдельный физический сценарий:
 ' при приложении N через бетонный центр симметричного сечения кривизны должны
 ' быть нулевыми, а при смещении той же силы появляется изгиб. Этот контроль
 ' остается в тестах, чтобы рабочий алгоритм трещин не использовал кривизны как
 ' fallback-критерий.
 Private Sub TestAxialTensionReferenceAndEccentricity(ByRef stats As TBatchTestStats)
-    CheckPureTensionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
-        CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
-    CheckPureTensionReference stats, "rounded", PointedSectionGeometry(360#, 240#), _
-        RectangleRebars(PointedSectionGeometry(360#, 240#)), 30#, 0.00000001
+    TestCheckPureTensionReference stats, "circle", TestCircleGeometry(300#, 125#, -75#), _
+        TestCircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
+    TestCheckPureTensionReference stats, "rounded", TestPointedSectionGeometry(360#, 240#), _
+        TestRectangleRebars(TestPointedSectionGeometry(360#, 240#)), 30#, 0.00000001
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Прикладывает сжатие через бетонный центр симметричного fixture и проверяет нулевые кривизны.
 ' Перенос усилий делает обычный CSectionLoadState, поэтому проверяется и точка нагрузки.
-Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
+Private Sub TestCheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
         ByVal geom As CGeometryRegion, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double)
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, meshStep, meshStep, 1, 1
 
     Dim concrete As CMaterialDiagram
-    Set concrete = ProvisionalConcrete()
+    Set concrete = TestProvisionalConcrete()
     Dim steel As CMaterialDiagram
-    Set steel = ProvisionalSteel()
+    Set steel = TestProvisionalSteel()
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Set section = TestBuildGeneratedSectionModel(mesh, rebars)
 
     Dim refX As Double
     Dim refY As Double
@@ -2358,22 +2416,23 @@ Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal 
     loadState.Initialize nValue, 0#, 0#, refX, refY
     solver.Solve section, concrete, steel, loadState.N, loadState.InternalMx, loadState.InternalMy
 
-    AssertTrue stats, "batch.reference." & caseName & ".converged", solver.Converged
-    AssertClose stats, "batch.reference." & caseName & ".kappaX", solver.KappaX, 0#, tolerance
-    AssertClose stats, "batch.reference." & caseName & ".kappaY", solver.KappaY, 0#, tolerance
+    TestAssertTrue stats, "batch.reference." & caseName & ".converged", solver.Converged
+    TestAssertClose stats, "batch.reference." & caseName & ".kappaX", solver.KappaX, 0#, tolerance
+    TestAssertClose stats, "batch.reference." & caseName & ".kappaY", solver.KappaY, 0#, tolerance
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что для несимметричного Г-сечения reference point берется
 ' от бетонной части. Это важнее, чем требовать нулевую кривизну: при
 ' несимметричной арматуре бетонный и приведенный центры могут не совпадать.
-Private Sub CheckRectanglesReferenceUsesConcreteCentroid(ByRef stats As TBatchTestStats)
+Private Sub TestCheckRectanglesReferenceUsesConcreteCentroid(ByRef stats As TBatchTestStats)
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh RectanglesGeometry(250#, 550#, 600#, 250#), 50#, 50#, 1, 1
+    mesh.BuildMesh TestRectanglesGeometry(250#, 550#, 600#, 250#), 50#, 50#, 1, 1
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, _
-        RectanglesRebars(250#, 550#, 600#, 250#, 40#, 50, 32#))
+    Set section = TestBuildGeneratedSectionModel(mesh, _
+        TestRectanglesRebars(250#, 550#, 600#, 250#, 40#, 50, 32#))
 
     Dim concreteX As Double
     Dim concreteY As Double
@@ -2381,16 +2440,17 @@ Private Sub CheckRectanglesReferenceUsesConcreteCentroid(ByRef stats As TBatchTe
 
     Dim transformedX As Double
     Dim transformedY As Double
-    CalculateTransformedSectionCentroid section, ProvisionalConcrete(), ProvisionalSteel(), transformedX, transformedY
+    CalculateTransformedSectionCentroid section, TestProvisionalConcrete(), TestProvisionalSteel(), transformedX, transformedY
 
-    AssertTrue stats, "batch.reference.rectangles.concreteCenter.exists", Abs(concreteX) + Abs(concreteY) > 0.000001
-    AssertTrue stats, "batch.reference.rectangles.centerDifference", _
+    TestAssertTrue stats, "batch.reference.rectangles.concreteCenter.exists", Abs(concreteX) + Abs(concreteY) > 0.000001
+    TestAssertTrue stats, "batch.reference.rectangles.centerDifference", _
         Abs(concreteX - transformedX) > 0.000001 Or Abs(concreteY - transformedY) > 0.000001
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает центральное и эксцентричное растяжение одной симметричной модели.
 ' Ожидает нулевые кривизны в центре и ненулевой изгиб после заданного смещения силы.
-Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
+Private Sub TestCheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
         ByVal geom As CGeometryRegion, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double, _
         Optional ByVal eccentricOffsetX As Double = -25#, Optional ByVal eccentricOffsetY As Double = 40#)
     Dim mesh As CFiberMeshBuilder
@@ -2398,11 +2458,11 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
     mesh.BuildMesh geom, meshStep, meshStep, 1, 1
 
     Dim concrete As CMaterialDiagram
-    Set concrete = ProvisionalConcrete()
+    Set concrete = TestProvisionalConcrete()
     Dim steel As CMaterialDiagram
-    Set steel = ProvisionalSteel()
+    Set steel = TestProvisionalSteel()
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Set section = TestBuildGeneratedSectionModel(mesh, rebars)
 
     Dim refX As Double
     Dim refY As Double
@@ -2420,9 +2480,9 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
     axialLoad.Initialize nValue, 0#, 0#, refX, refY
     axialSolver.Solve section, concrete, steel, axialLoad.N, axialLoad.InternalMx, axialLoad.InternalMy
 
-    AssertTrue stats, "batch.tension." & caseName & ".central.converged", axialSolver.Converged
-    AssertClose stats, "batch.tension." & caseName & ".central.kappaX", axialSolver.KappaX, 0#, tolerance
-    AssertClose stats, "batch.tension." & caseName & ".central.kappaY", axialSolver.KappaY, 0#, tolerance
+    TestAssertTrue stats, "batch.tension." & caseName & ".central.converged", axialSolver.Converged
+    TestAssertClose stats, "batch.tension." & caseName & ".central.kappaX", axialSolver.KappaX, 0#, tolerance
+    TestAssertClose stats, "batch.tension." & caseName & ".central.kappaY", axialSolver.KappaY, 0#, tolerance
 
     Dim eccentricSolver As CSectionSolver
     Set eccentricSolver = New CSectionSolver
@@ -2433,11 +2493,12 @@ Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal case
     eccentricLoad.Initialize nValue, 0#, 0#, refX + eccentricOffsetX, refY + eccentricOffsetY
     eccentricSolver.Solve section, concrete, steel, eccentricLoad.N, eccentricLoad.InternalMx, eccentricLoad.InternalMy
 
-    AssertTrue stats, "batch.tension." & caseName & ".eccentric.converged", eccentricSolver.Converged
-    AssertTrue stats, "batch.tension." & caseName & ".eccentric.kappa", _
+    TestAssertTrue stats, "batch.tension." & caseName & ".eccentric.converged", eccentricSolver.Converged
+    TestAssertTrue stats, "batch.tension." & caseName & ".eccentric.kappa", _
         Abs(eccentricSolver.KappaX) > tolerance Or Abs(eccentricSolver.KappaY) > tolerance
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет профиль PR1 после отказа от пользовательского запаса по деформациям.
 ' В этом профиле выполняются и прямое НДС по прочности, и поиск capacity.
 Private Sub TestDirectStateReportsSectionStatus(ByRef stats As TBatchTestStats)
@@ -2451,27 +2512,28 @@ Private Sub TestDirectStateReportsSectionStatus(ByRef stats As TBatchTestStats)
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "DS_SAFE", -120000#, -1500000#, -800000#, "PR1", "smaller strain"
     batch.AddCombination "DS_GOV", -120000#, -4500000#, -2400000#, "PR1", "larger strain"
     batch.Execute
 
-    AssertTrue stats, "batch.direct.lambda.positive", batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity > 0# And batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity > 0#
-    AssertTrue stats, "batch.direct.capacity.ok", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" And batch.ResultAt(2).StrengthResult.Capacity.Status = "OK"
-    AssertTrue stats, "batch.direct.crack.na", StrComp(batch.ResultAt(1).NormalCrackStatus, "N/A", vbTextCompare) = 0
-    AssertTrue stats, "batch.direct.state.status", Len(batch.ResultAt(1).StrengthResult.DirectState.Status) > 0 And Len(batch.ResultAt(2).StrengthResult.DirectState.Status) > 0
-    AssertTrue stats, "batch.direct.governing.present", Len(batch.GoverningCombinationID) > 0
+    TestAssertTrue stats, "batch.direct.lambda.positive", batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity > 0# And batch.ResultAt(2).StrengthResult.Capacity.LambdaCapacity > 0#
+    TestAssertTrue stats, "batch.direct.capacity.ok", batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" And batch.ResultAt(2).StrengthResult.Capacity.Status = "OK"
+    TestAssertTrue stats, "batch.direct.crack.na", StrComp(batch.ResultAt(1).NormalCrackStatus, "N/A", vbTextCompare) = 0
+    TestAssertTrue stats, "batch.direct.state.status", Len(batch.ResultAt(1).StrengthResult.DirectState.Status) > 0 And Len(batch.ResultAt(2).StrengthResult.DirectState.Status) > 0
+    TestAssertTrue stats, "batch.direct.governing.present", Len(batch.GoverningCombinationID) > 0
 
 Restore:
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.direct.sectionStatus; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.direct.sectionStatus; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет внецентренное растяжение стандартного Г-сечения. Этот случай
 ' регрессирует численную дырку прямого StrengthState: при N=-9 тс и Mx=50 тс*м
 ' capacity находил предельное состояние, а прямой solve от заданных усилий мог
@@ -2481,16 +2543,16 @@ Private Sub TestPR1RectanglesSmallTensionMomentDirectStateDoesNotNumFail(ByRef s
     Dim oldCapacity As String
     Dim oldCrack As String
     Dim oldStability As String
-    oldDirect = GetProfileValue("Calculation.Strength.DirectState", "PR1")
-    oldCapacity = GetProfileValue("Calculation.Strength.Capacity", "PR1")
-    oldCrack = GetProfileValue("Calculation.Crack.Width", "PR1")
-    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldDirect = TestGetProfileValue("Calculation.Strength.DirectState", "PR1")
+    oldCapacity = TestGetProfileValue("Calculation.Strength.Capacity", "PR1")
+    oldCrack = TestGetProfileValue("Calculation.Crack.Width", "PR1")
+    oldStability = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -2507,38 +2569,39 @@ Private Sub TestPR1RectanglesSmallTensionMomentDirectStateDoesNotNumFail(ByRef s
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G1_T9_MX50", 9# * 9806.65, 50# * TEST_TF_M_IN_NMM, 0#, _
         "PR1", "user N=-9 tf and Mx=50 tf*m"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AppendLine stats, "INFO: batch.group1.tensionMoment.direct=" & batch.ResultAt(1).StrengthResult.DirectState.Status & _
+    TestAppendLine stats, "INFO: batch.group1.tensionMoment.direct=" & batch.ResultAt(1).StrengthResult.DirectState.Status & _
         "; capacity=" & batch.ResultAt(1).StrengthResult.Capacity.Status & _
-        "; epsCmin=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.DirectState.StateResult.MinConcreteStrain) & _
-        "; epsSmax=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.DirectState.StateResult.MaxSteelStrain)
+        "; epsCmin=" & TestFormatNumberInvariant(batch.ResultAt(1).StrengthResult.DirectState.StateResult.MinConcreteStrain) & _
+        "; epsSmax=" & TestFormatNumberInvariant(batch.ResultAt(1).StrengthResult.DirectState.StateResult.MaxSteelStrain)
     If batch.ResultAt(1).StrengthResult.DirectState.Status = "NumFail" Then
-        AppendLine stats, "DIAG: batch.group1.tensionMoment" & vbCrLf & batch.DiagnosticLog
+        TestAppendLine stats, "DIAG: batch.group1.tensionMoment" & vbCrLf & batch.DiagnosticLog
     End If
-    AssertTrue stats, "batch.group1.tensionMoment.directNotNumFail", _
+    TestAssertTrue stats, "batch.group1.tensionMoment.directNotNumFail", _
         batch.ResultAt(1).StrengthResult.DirectState.Status = "OK" Or batch.ResultAt(1).StrengthResult.DirectState.Status = "FAIL"
-    AssertTrue stats, "batch.group1.tensionMoment.capacityNotNumFail", _
+    TestAssertTrue stats, "batch.group1.tensionMoment.capacityNotNumFail", _
         batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
 
 Restore:
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
-    SetProfileValue "Calculation.Crack.Width", "PR1", oldCrack
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", oldCrack
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group1.tensionMoment; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.group1.tensionMoment; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет базовый профиль PR1: прочностное НДС и capacity выполняются, а
 ' расчет раскрытия трещин не запускается.
 Private Sub TestPR1RunsStrengthWithoutCrackWidth(ByRef stats As TBatchTestStats)
@@ -2549,91 +2612,95 @@ Private Sub TestPR1RunsStrengthWithoutCrackWidth(ByRef stats As TBatchTestStats)
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "PR1_STRENGTH", -150000#, -3000000#, 0#, "PR1", "strength profile"
     batch.Execute
 
-    AssertTrue stats, "batch.pr1.capacityRuns", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
-    AssertTrue stats, "batch.pr1.directRuns", batch.ResultAt(1).StrengthResult.DirectState.Status <> "N/A"
-    AssertTrue stats, "batch.pr1.crackNA", batch.ResultAt(1).NormalCrackStatus = "N/A"
-    AssertTrue stats, "batch.pr1.hasState", batch.ResultAt(1).StrengthResult.DirectState.StateAvailable And batch.StateAvailableCount > 0
+    TestAssertTrue stats, "batch.pr1.capacityRuns", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
+    TestAssertTrue stats, "batch.pr1.directRuns", batch.ResultAt(1).StrengthResult.DirectState.Status <> "N/A"
+    TestAssertTrue stats, "batch.pr1.crackNA", batch.ResultAt(1).NormalCrackStatus = "N/A"
+    TestAssertTrue stats, "batch.pr1.hasState", batch.ResultAt(1).StrengthResult.DirectState.StateAvailable And batch.StateAvailableCount > 0
 
 Restore:
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.pr1.strengthWithoutCrack; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.pr1.strengthWithoutCrack; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что численная несходимость прямого НДС превращается в короткий
 ' пользовательский статус NumFail и не порождает расчет трещин.
 Private Sub TestDirectStateReportsNumericalFailure(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldCrackEnabled As String
     Dim oldMaxIterations As String
-    oldMaxIterations = GetSystemSetting("Solver.MaxIterations")
+    oldMaxIterations = TestGetSystemSetting("Solver.MaxIterations")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "Solver.MaxIterations", "1"
+    TestSetSystemSetting "Solver.MaxIterations", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "DS_FAIL", -120000#, -12000000#, -7000000#, "PR1", "forced non-convergence"
     batch.Execute
 
-    AssertTrue stats, "batch.direct.failure.status", batch.ResultAt(1).Status = "NumFail" Or batch.ResultAt(1).Status = "FAIL"
-    AssertTrue stats, "batch.direct.failure.directStatus", batch.ResultAt(1).StrengthResult.DirectState.Status = "NumFail" Or batch.ResultAt(1).StrengthResult.DirectState.Status = "FAIL"
-    AssertTrue stats, "batch.direct.failure.crack", batch.ResultAt(1).NormalCrackStatus = "N/A"
+    TestAssertTrue stats, "batch.direct.failure.status", batch.ResultAt(1).Status = "NumFail" Or batch.ResultAt(1).Status = "FAIL"
+    TestAssertTrue stats, "batch.direct.failure.directStatus", batch.ResultAt(1).StrengthResult.DirectState.Status = "NumFail" Or batch.ResultAt(1).StrengthResult.DirectState.Status = "FAIL"
+    TestAssertTrue stats, "batch.direct.failure.crack", batch.ResultAt(1).NormalCrackStatus = "N/A"
 
 Restore:
-    SetSystemSetting "Solver.MaxIterations", oldMaxIterations
+    TestSetSystemSetting "Solver.MaxIterations", oldMaxIterations
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.direct.failure.status; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.direct.failure.status; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет проверку продольных трещин: она должна брать максимальное
 ' сжимающее напряжение бетона из уже найденного прямого НДС PR2 и не
 ' требовать отдельного расчетного purpose или повторного запуска solver-а.
 Private Sub TestLongitudinalCrackCheckUsesDirectStateStress(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "LONG", -90000#, 0#, 0#, "PR2", "longitudinal"
     batch.Execute
 
-    AssertTrue stats, "batch.longCrack.status.finished", _
+    TestAssertTrue stats, "batch.longCrack.status.finished", _
         batch.ResultAt(1).CrackResult.Longitudinal.Status = "OK" Or batch.ResultAt(1).CrackResult.Longitudinal.Status = "FAIL"
-    AssertTrue stats, "batch.longCrack.sigma", batch.ResultAt(1).CrackResult.Longitudinal.MaxCompressionStress > 0#
-    AssertClose stats, "batch.longCrack.rbMc2", batch.ResultAt(1).CrackResult.Longitudinal.RbMc2, 14.6, 0.000000001
-    AssertClose stats, "batch.longCrack.util", batch.ResultAt(1).CrackResult.Longitudinal.Utilization, _
+    TestAssertTrue stats, "batch.longCrack.sigma", batch.ResultAt(1).CrackResult.Longitudinal.MaxCompressionStress > 0#
+    TestAssertClose stats, "batch.longCrack.rbMc2", batch.ResultAt(1).CrackResult.Longitudinal.RbMc2, 14.6, 0.000000001
+    TestAssertClose stats, "batch.longCrack.util", batch.ResultAt(1).CrackResult.Longitudinal.Utilization, _
         batch.ResultAt(1).CrackResult.Longitudinal.MaxCompressionStress / batch.ResultAt(1).CrackResult.Longitudinal.RbMc2, 0.000000001
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет нормативную область применения: продольные трещины являются
 ' проверкой трещиностойкости по PR2, поэтому для PR1 этот блок остается
 ' N/A и не влияет на прочностной результат.
 Private Sub TestLongitudinalCrackSkippedForPR1(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "LONG_G1", -90000#, 0#, 0#, "PR1", "longitudinal group1"
     batch.Execute
 
-    AssertTrue stats, "batch.longCrack.group1.na", batch.ResultAt(1).CrackResult.Longitudinal.Status = "N/A"
-    AssertClose stats, "batch.longCrack.group1.noRbMc2", batch.ResultAt(1).CrackResult.Longitudinal.RbMc2, 0#, 0.000000001
-    AssertClose stats, "batch.longCrack.group1.noUtil", batch.ResultAt(1).CrackResult.Longitudinal.Utilization, 0#, 0.000000001
+    TestAssertTrue stats, "batch.longCrack.group1.na", batch.ResultAt(1).CrackResult.Longitudinal.Status = "N/A"
+    TestAssertClose stats, "batch.longCrack.group1.noRbMc2", batch.ResultAt(1).CrackResult.Longitudinal.RbMc2, 0#, 0.000000001
+    TestAssertClose stats, "batch.longCrack.group1.noUtil", batch.ResultAt(1).CrackResult.Longitudinal.Utilization, 0#, 0.000000001
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что профильный флаг включает расчет устойчивости как отдельный
 ' фильтр перед НДМ: при сжатии SP63 должен дать применимый статус и расчетные
 ' величины Ncr/eta, а не оставаться в N/A.
@@ -2642,85 +2709,87 @@ Private Sub TestStabilityProfileEnablesSP63ForCompression(ByRef stats As TBatchT
     Dim oldValueSet As String
     Dim oldCode As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "STAB_SP63", -120000#, 1000000#, 0#, "PR1", "stability sp63"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.sp63.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    AssertTrue stats, "batch.stability.sp63.ncr", batch.ResultAt(1).StabilityResult.CriticalForce > 0#
-    AssertTrue stats, "batch.stability.sp63.eta", batch.ResultAt(1).StabilityResult.Eta1 > 0# Or batch.ResultAt(1).StabilityResult.Eta2 > 0#
+    TestAssertTrue stats, "batch.stability.sp63.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    TestAssertTrue stats, "batch.stability.sp63.ncr", batch.ResultAt(1).StabilityResult.CriticalForce > 0#
+    TestAssertTrue stats, "batch.stability.sp63.eta", batch.ResultAt(1).StabilityResult.Eta1 > 0# Or batch.ResultAt(1).StabilityResult.Eta2 > 0#
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp63; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp63; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет область применения фильтра устойчивости: при растяжении сжатой
 ' продольной силы нет, поэтому проверка становится N/A и не ухудшает OverallStatus.
 Private Sub TestStabilitySkippedForTension(ByRef stats As TBatchTestStats)
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "STAB_TENSION", 50000#, 0#, 0#, "PR1", "stability tension"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.tension.na", batch.ResultAt(1).StabilityResult.Status = "N/A"
-    AssertClose stats, "batch.stability.tension.noNcr", batch.ResultAt(1).StabilityResult.CriticalForce, 0#, 0.000000001
-    AssertTrue stats, "batch.stability.tension.overall", batch.ResultAt(1).Status <> "InputErr"
+    TestAssertTrue stats, "batch.stability.tension.na", batch.ResultAt(1).StabilityResult.Status = "N/A"
+    TestAssertClose stats, "batch.stability.tension.noNcr", batch.ResultAt(1).StabilityResult.CriticalForce, 0#, 0.000000001
+    TestAssertTrue stats, "batch.stability.tension.overall", batch.ResultAt(1).Status <> "InputErr"
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.tension; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.tension; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет две договоренности по СП 35: табличные коэффициенты приходят из
 ' rngSP35Table721, а материал устойчивости выбирается отдельной строкой профиля.
 ' При SLS(II) в тестовом наборе Rb/Rsc больше, поэтому расчетная сила должна
@@ -2732,44 +2801,45 @@ Private Sub TestStabilitySP35UsesConfigTableAndProfileValueSet(ByRef stats As TB
     Dim oldLength As String
     Dim oldMu1 As String
     Dim oldMu2 As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
 
     Dim ncrULS As Double
     Dim ncrSLS As Double
-    ncrULS = StabilitySP35CriticalForceForValueSet("ULS(I)")
-    ncrSLS = StabilitySP35CriticalForceForValueSet("SLS(II)")
+    ncrULS = TestStabilitySP35CriticalForceForValueSet("ULS(I)")
+    ncrSLS = TestStabilitySP35CriticalForceForValueSet("SLS(II)")
 
-    AssertTrue stats, "batch.stability.sp35.uls.ncr", ncrULS > 0#
-    AssertTrue stats, "batch.stability.sp35.sls.ncr", ncrSLS > 0#
-    AssertTrue stats, "batch.stability.sp35.valueSet.affectsResult", ncrSLS > ncrULS * 1.05
+    TestAssertTrue stats, "batch.stability.sp35.uls.ncr", ncrULS > 0#
+    TestAssertTrue stats, "batch.stability.sp35.sls.ncr", ncrSLS > 0#
+    TestAssertTrue stats, "batch.stability.sp35.valueSet.affectsResult", ncrSLS > ncrULS * 1.05
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что табличная ветвь СП 35 хранит предельную силу отдельно от Ncr.
 ' В этой ветви критическая сила по формуле Ncr не считается, поэтому Ncr остается 0,
 ' а запас берется по Nult,stab.
@@ -2780,54 +2850,55 @@ Private Sub TestStabilitySP35TableSeparatesNcrAndNult(ByRef stats As TBatchTestS
     Dim oldLength As String
     Dim oldMu1 As String
     Dim oldMu2 As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "STAB_SP35_TABLE", -120000#, 0#, 0#, "PR1", "sp35 table"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.sp35.table.status", _
+    TestAssertTrue stats, "batch.stability.sp35.table.status", _
         batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    AssertClose stats, "batch.stability.sp35.table.ncr1.na", batch.ResultAt(1).StabilityResult.Ncr1, 0#, 0.000000001
-    AssertClose stats, "batch.stability.sp35.table.ncr2.na", batch.ResultAt(1).StabilityResult.Ncr2, 0#, 0.000000001
-    AssertTrue stats, "batch.stability.sp35.table.nult1", batch.ResultAt(1).StabilityResult.Nultimate1 > 0#
-    AssertTrue stats, "batch.stability.sp35.table.nult2", batch.ResultAt(1).StabilityResult.Nultimate2 > 0#
+    TestAssertClose stats, "batch.stability.sp35.table.ncr1.na", batch.ResultAt(1).StabilityResult.Ncr1, 0#, 0.000000001
+    TestAssertClose stats, "batch.stability.sp35.table.ncr2.na", batch.ResultAt(1).StabilityResult.Ncr2, 0#, 0.000000001
+    TestAssertTrue stats, "batch.stability.sp35.table.nult1", batch.ResultAt(1).StabilityResult.Nultimate1 > 0#
+    TestAssertTrue stats, "batch.stability.sp35.table.nult2", batch.ResultAt(1).StabilityResult.Nultimate2 > 0#
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35.tableNult; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35.tableNult; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет СП 35: в табличной ветви ec/r <= 1 коэффициент phi_l всегда
 ' берется из таблицы 7.21. Режим PhiL2 не должен подменять это табличное
 ' значение на 2, потому что он относится к ветвям с расчетом длительности.
@@ -2840,59 +2911,60 @@ Private Sub TestStabilitySP35TableIgnoresPhiL2(ByRef stats As TBatchTestStats)
     Dim oldMu2 As String
     Dim oldPhiMode As String
     Dim oldAccMode As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
-    oldPhiMode = GetSystemSetting("Stability.PhiLMode")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
+    oldPhiMode = TestGetSystemSetting("Stability.PhiLMode")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.PhiLMode", "PhiL2"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.PhiLMode", "PhiL2"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "SP35_TABLE_PHIL", -120000#, 0#, 0#, "PR1", "sp35 table phi_l"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.sp35.tablePhi.branch", _
+    TestAssertTrue stats, "batch.stability.sp35.tablePhi.branch", _
         batch.ResultAt(1).StabilityResult.PlaneBranch1 = "SP35-table" Or batch.ResultAt(1).StabilityResult.PlaneBranch2 = "SP35-table"
-    AssertClose stats, "batch.stability.sp35.tablePhi.phiL1", _
+    TestAssertClose stats, "batch.stability.sp35.tablePhi.phiL1", _
         batch.ResultAt(1).StabilityResult.PhiL1, batch.ResultAt(1).StabilityResult.PhiLTable1, 0.000000001
-    AssertTrue stats, "batch.stability.sp35.tablePhi.notTwo", batch.ResultAt(1).StabilityResult.PhiL1 < 1.99
+    TestAssertTrue stats, "batch.stability.sp35.tablePhi.notTwo", batch.ResultAt(1).StabilityResult.PhiL1 < 1.99
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
-    SetSystemSetting "Stability.PhiLMode", oldPhiMode
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
+    TestSetSystemSetting "Stability.PhiLMode", oldPhiMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35.tablePhiL; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35.tablePhiL; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет табличную ветвь СП 35: если As/Ab больше 3%, бетонный вклад в
 ' Nult уменьшается на As. Это не заменяет приведенное сечение (n - 1)As,
 ' которое отвечает только за центр тяжести, оси и ядровое расстояние.
@@ -2907,63 +2979,64 @@ Private Sub TestStabilitySP35TableRebarAreaCorrection(ByRef stats As TBatchTestS
     Dim oldMu2 As String
     Dim oldAccMode As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldDirect = GetProfileValue("Calculation.Strength.DirectState", "PR1")
-    oldCapacity = GetProfileValue("Calculation.Strength.Capacity", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldDirect = TestGetProfileValue("Calculation.Strength.DirectState", "PR1")
+    oldCapacity = TestGetProfileValue("Calculation.Strength.Capacity", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
 
     Dim concreteArea As Double
     Dim steelArea As Double
     Dim phiValue As Double
     Dim nUltimate As Double
 
-    nUltimate = SP35TableNultForCircle(500#, 4, 12#, concreteArea, steelArea, phiValue)
-    AssertTrue stats, "batch.stability.sp35.rebarRatio.low", steelArea / concreteArea < 0.03
-    AssertClose stats, "batch.stability.sp35.rebarRatio.lowNult", nUltimate, _
+    nUltimate = TestSP35TableNultForCircle(500#, 4, 12#, concreteArea, steelArea, phiValue)
+    TestAssertTrue stats, "batch.stability.sp35.rebarRatio.low", steelArea / concreteArea < 0.03
+    TestAssertClose stats, "batch.stability.sp35.rebarRatio.lowNult", nUltimate, _
         phiValue * (15.5 * concreteArea + 350# * steelArea), nUltimate * 0.0000001
 
-    nUltimate = SP35TableNultForCircle(500#, 18, 25#, concreteArea, steelArea, phiValue)
-    AssertTrue stats, "batch.stability.sp35.rebarRatio.high", steelArea / concreteArea > 0.03
-    AssertClose stats, "batch.stability.sp35.rebarRatio.highNult", nUltimate, _
+    nUltimate = TestSP35TableNultForCircle(500#, 18, 25#, concreteArea, steelArea, phiValue)
+    TestAssertTrue stats, "batch.stability.sp35.rebarRatio.high", steelArea / concreteArea > 0.03
+    TestAssertClose stats, "batch.stability.sp35.rebarRatio.highNult", nUltimate, _
         phiValue * (15.5 * (concreteArea - steelArea) + 350# * steelArea), nUltimate * 0.0000001
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35.rebarAreaCorrection; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35.rebarAreaCorrection; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что таблица 7.21 СП 35 интерполируется в два шага: сначала по
 ' ec/r между столбцами q=0, 0.25, 0.50, 1.00, затем между строками по l0/i.
 Private Sub TestStabilitySP35TableInterpolationIntermediate(ByRef stats As TBatchTestStats)
@@ -2979,58 +3052,59 @@ Private Sub TestStabilitySP35TableInterpolationIntermediate(ByRef stats As TBatc
     Dim oldAccPlanes As String
     Dim oldAccUser1 As String
     Dim oldAccUser2 As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldDirect = GetProfileValue("Calculation.Strength.DirectState", "PR1")
-    oldCapacity = GetProfileValue("Calculation.Strength.Capacity", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
-    oldAccUser1 = GetSystemSetting("Stability.AccidentalEccentricityUser1")
-    oldAccUser2 = GetSystemSetting("Stability.AccidentalEccentricityUser2")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldDirect = TestGetProfileValue("Calculation.Strength.DirectState", "PR1")
+    oldCapacity = TestGetProfileValue("Calculation.Strength.Capacity", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldAccUser1 = TestGetSystemSetting("Stability.AccidentalEccentricityUser1")
+    oldAccUser2 = TestGetSystemSetting("Stability.AccidentalEccentricityUser2")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
 
-    AssertClose stats, "batch.stability.sp35.interp.q0125", _
-        SP35InterpolatedPhiM(0.125), 6.5, 0.000001
-    AssertClose stats, "batch.stability.sp35.interp.q0375", _
-        SP35InterpolatedPhiM(0.375), 7.5, 0.000001
-    AssertClose stats, "batch.stability.sp35.interp.q0750", _
-        SP35InterpolatedPhiM(0.75), 9#, 0.000001
+    TestAssertClose stats, "batch.stability.sp35.interp.q0125", _
+        TestSP35InterpolatedPhiM(0.125), 6.5, 0.000001
+    TestAssertClose stats, "batch.stability.sp35.interp.q0375", _
+        TestSP35InterpolatedPhiM(0.375), 7.5, 0.000001
+    TestAssertClose stats, "batch.stability.sp35.interp.q0750", _
+        TestSP35InterpolatedPhiM(0.75), 9#, 0.000001
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35.tableInterpolation; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35.tableInterpolation; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет граничное условие табличной ветви СП 35: N <= Nult, поэтому
 ' коэффициент запаса ровно 1.0 считается прохождением проверки.
 Private Sub TestStabilitySP35TableBoundaryReservePasses(ByRef stats As TBatchTestStats)
@@ -3044,37 +3118,37 @@ Private Sub TestStabilitySP35TableBoundaryReservePasses(ByRef stats As TBatchTes
     Dim oldMu2 As String
     Dim oldAccMode As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldDirect = GetProfileValue("Calculation.Strength.DirectState", "PR1")
-    oldCapacity = GetProfileValue("Calculation.Strength.Capacity", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldDirect = TestGetProfileValue("Calculation.Strength.DirectState", "PR1")
+    oldCapacity = TestGetProfileValue("Calculation.Strength.Capacity", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
 
     Dim concreteArea As Double
     Dim steelArea As Double
     Dim phiValue As Double
     Dim nUltimate As Double
-    nUltimate = SP35TableNultForCircle(500#, 4, 12#, concreteArea, steelArea, phiValue)
+    nUltimate = TestSP35TableNultForCircle(500#, 4, 12#, concreteArea, steelArea, phiValue)
 
     Dim section As CSectionModel
-    Set section = BuildCircleStabilitySection(500#, 4, 12#)
+    Set section = TestBuildCircleStabilitySection(500#, 4, 12#)
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -3089,33 +3163,34 @@ Private Sub TestStabilitySP35TableBoundaryReservePasses(ByRef stats As TBatchTes
     batch.AddCombination "SP35_BOUNDARY", -nUltimate, 0#, 0#, "PR1", "sp35 boundary"
     batch.Execute
 
-    AssertClose stats, "batch.stability.sp35.boundary.reserve", batch.ResultAt(1).StabilityResult.ReserveFactor, 1#, 0.0000001
-    AssertTrue stats, "batch.stability.sp35.boundary.status", batch.ResultAt(1).StabilityResult.Status = "OK"
+    TestAssertClose stats, "batch.stability.sp35.boundary.reserve", batch.ResultAt(1).StabilityResult.ReserveFactor, 1#, 0.0000001
+    TestAssertTrue stats, "batch.stability.sp35.boundary.status", batch.ResultAt(1).StabilityResult.Status = "OK"
     Dim writer As CBatchResultWriter
     Set writer = New CBatchResultWriter
     writer.WriteSummary ThisWorkbook, batch
-    AssertBatchSummaryReservesMatchDetailed stats, ThisWorkbook.Worksheets.Item("Results"), _
+    TestAssertBatchSummaryReservesMatchDetailed stats, ThisWorkbook.Worksheets.Item("Results"), _
         "SP35_BOUNDARY", False, False, True
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", oldDirect
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", oldCapacity
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35.boundaryReserve; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35.boundaryReserve; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет orchestrator: если устойчивость дала FAIL, остальные запрошенные
 ' расчеты все равно выполняются, чтобы пользователь видел полную картину LC.
 Private Sub TestStabilityFailContinuesDownstream(ByRef stats As TBatchTestStats)
@@ -3128,29 +3203,29 @@ Private Sub TestStabilityFailContinuesDownstream(ByRef stats As TBatchTestStats)
     Dim oldMu2 As String
     Dim oldAccMode As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldCrack = GetProfileValue("Calculation.Crack.Width", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldCrack = TestGetProfileValue("Calculation.Crack.Width", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "100000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "100000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
@@ -3159,30 +3234,31 @@ Private Sub TestStabilityFailContinuesDownstream(ByRef stats As TBatchTestStats)
     batch.AddCombination "SP35_CONTINUE", -1000000#, 0#, 0#, "PR1", "stability fail but continue"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.continue.stabilityFail", batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    AssertTrue stats, "batch.stability.continue.overallFail", batch.ResultAt(1).Status = "FAIL"
-    AssertTrue stats, "batch.stability.continue.directCalculated", batch.ResultAt(1).StrengthResult.DirectState.Status <> "N/A"
-    AssertTrue stats, "batch.stability.continue.capacityCalculated", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
-    AssertTrue stats, "batch.stability.continue.longitudinalCalculated", batch.ResultAt(1).CrackResult.Longitudinal.Status <> "N/A"
+    TestAssertTrue stats, "batch.stability.continue.stabilityFail", batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    TestAssertTrue stats, "batch.stability.continue.overallFail", batch.ResultAt(1).Status = "FAIL"
+    TestAssertTrue stats, "batch.stability.continue.directCalculated", batch.ResultAt(1).StrengthResult.DirectState.Status <> "N/A"
+    TestAssertTrue stats, "batch.stability.continue.capacityCalculated", batch.ResultAt(1).StrengthResult.Capacity.Status <> "N/A"
+    TestAssertTrue stats, "batch.stability.continue.longitudinalCalculated", batch.ResultAt(1).CrackResult.Longitudinal.Status <> "N/A"
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "Calculation.Crack.Width", "PR1", oldCrack
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", oldCrack
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.continueDownstream; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.continueDownstream; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет СП 63: при гибкости l0/i <= 14 коэффициент eta не применяется и
 ' принимается равным 1, но критическая сила Ncr все равно считается для справки.
 Private Sub TestStabilitySP63ShortSlendernessEtaIsOne(ByRef stats As TBatchTestStats)
@@ -3192,53 +3268,54 @@ Private Sub TestStabilitySP63ShortSlendernessEtaIsOne(ByRef stats As TBatchTestS
     Dim oldLength As String
     Dim oldMu1 As String
     Dim oldMu2 As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.ElementLength", "500"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.ElementLength", "500"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "SP63_SHORT", -120000#, 1000000#, 0#, "PR1", "short slenderness"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.sp63.short.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    AssertTrue stats, "batch.stability.sp63.short.slenderness1", batch.ResultAt(1).StabilityResult.Slenderness1 > 0# And batch.ResultAt(1).StabilityResult.Slenderness1 <= 14#
-    AssertTrue stats, "batch.stability.sp63.short.slenderness2", batch.ResultAt(1).StabilityResult.Slenderness2 > 0# And batch.ResultAt(1).StabilityResult.Slenderness2 <= 14#
-    AssertClose stats, "batch.stability.sp63.short.eta1", batch.ResultAt(1).StabilityResult.Eta1, 1#, 0.000000001
-    AssertClose stats, "batch.stability.sp63.short.eta2", batch.ResultAt(1).StabilityResult.Eta2, 1#, 0.000000001
-    AssertTrue stats, "batch.stability.sp63.short.ncr", batch.ResultAt(1).StabilityResult.Ncr1 > 0# And batch.ResultAt(1).StabilityResult.Ncr2 > 0#
+    TestAssertTrue stats, "batch.stability.sp63.short.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    TestAssertTrue stats, "batch.stability.sp63.short.slenderness1", batch.ResultAt(1).StabilityResult.Slenderness1 > 0# And batch.ResultAt(1).StabilityResult.Slenderness1 <= 14#
+    TestAssertTrue stats, "batch.stability.sp63.short.slenderness2", batch.ResultAt(1).StabilityResult.Slenderness2 > 0# And batch.ResultAt(1).StabilityResult.Slenderness2 <= 14#
+    TestAssertClose stats, "batch.stability.sp63.short.eta1", batch.ResultAt(1).StabilityResult.Eta1, 1#, 0.000000001
+    TestAssertClose stats, "batch.stability.sp63.short.eta2", batch.ResultAt(1).StabilityResult.Eta2, 1#, 0.000000001
+    TestAssertTrue stats, "batch.stability.sp63.short.ncr", batch.ResultAt(1).StabilityResult.Ncr1 > 0# And batch.ResultAt(1).StabilityResult.Ncr2 > 0#
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp63.shortSlenderness; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp63.shortSlenderness; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что расчет устойчивости не заменяет некорректные mu1/mu2 на 1.
 ' При включенной устойчивости оба коэффициента расчетной длины должны быть
 ' заданы положительными числами, иначе пользователь получает InputErr.
@@ -3248,47 +3325,48 @@ Private Sub TestStabilityInvalidMuReportsInputErr(ByRef stats As TBatchTestStats
     Dim oldCode As String
     Dim oldMu1 As String
     Dim oldMu2 As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.Mu1", "0"
-    SetSystemSetting "Stability.Mu2", "1"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.Mu1", "0"
+    TestSetSystemSetting "Stability.Mu2", "1"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddCombination "BAD_MU", -120000#, 1000000#, 0#, "PR1", "bad mu"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.mu.inputErr", batch.ResultAt(1).StabilityResult.Status = "InputErr"
-    AssertTrue stats, "batch.stability.mu.messageConfig", InStr(1, batch.ResultAt(1).StabilityMeta.ResultComment, "Config", vbTextCompare) > 0
-    AssertTrue stats, "batch.stability.mu.messageAction", InStr(1, batch.ResultAt(1).StabilityMeta.ResultComment, "задайте", vbTextCompare) > 0
+    TestAssertTrue stats, "batch.stability.mu.inputErr", batch.ResultAt(1).StabilityResult.Status = "InputErr"
+    TestAssertTrue stats, "batch.stability.mu.messageConfig", InStr(1, batch.ResultAt(1).StabilityMeta.ResultComment, "Config", vbTextCompare) > 0
+    TestAssertTrue stats, "batch.stability.mu.messageAction", InStr(1, batch.ResultAt(1).StabilityMeta.ResultComment, "задайте", vbTextCompare) > 0
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.invalidMu; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.invalidMu; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Обязательные настройки включённой устойчивости не заменяются скрытыми
 ' значениями по умолчанию. Пустое или ошибочное значение должно давать ошибку ввода.
 Private Sub TestStabilityInvalidSettingsReportInputErr(ByRef stats As TBatchTestStats)
@@ -3301,71 +3379,72 @@ Private Sub TestStabilityInvalidSettingsReportInputErr(ByRef stats As TBatchTest
     Dim oldPhiMode As String
     Dim oldAccMode As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldKs = GetSystemSetting("Stability.SP63.Ks")
-    oldPhiP = GetSystemSetting("Stability.SP35.PhiP")
-    oldLimit = GetSystemSetting("Stability.SP35.NOverNcrLimit")
-    oldPhiMode = GetSystemSetting("Stability.PhiLMode")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldKs = TestGetSystemSetting("Stability.SP63.Ks")
+    oldPhiP = TestGetSystemSetting("Stability.SP35.PhiP")
+    oldLimit = TestGetSystemSetting("Stability.SP35.NOverNcrLimit")
+    oldPhiMode = TestGetSystemSetting("Stability.PhiLMode")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
 
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.SP63.Ks", ""
-    AssertTrue stats, "batch.stability.invalidSettings.ks", _
-        StabilityStatusForCurrentSettings() = "InputErr"
-    AssertTrue stats, "batch.stability.invalidSettings.ksMessage", _
-        InStr(1, StabilityFirstInvalidMessageForCurrentSettings(), "Stability.SP63.Ks", vbTextCompare) > 0
-    SetSystemSetting "Stability.SP63.Ks", oldKs
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.SP63.Ks", ""
+    TestAssertTrue stats, "batch.stability.invalidSettings.ks", _
+        TestStabilityStatusForCurrentSettings() = "InputErr"
+    TestAssertTrue stats, "batch.stability.invalidSettings.ksMessage", _
+        InStr(1, TestStabilityFirstInvalidMessageForCurrentSettings(), "Stability.SP63.Ks", vbTextCompare) > 0
+    TestSetSystemSetting "Stability.SP63.Ks", oldKs
 
-    SetSystemSetting "Stability.PhiLMode", "WrongPhi"
-    AssertTrue stats, "batch.stability.invalidSettings.phiMode", _
-        StabilityStatusForCurrentSettings() = "InputErr"
-    SetSystemSetting "Stability.PhiLMode", oldPhiMode
+    TestSetSystemSetting "Stability.PhiLMode", "WrongPhi"
+    TestAssertTrue stats, "batch.stability.invalidSettings.phiMode", _
+        TestStabilityStatusForCurrentSettings() = "InputErr"
+    TestSetSystemSetting "Stability.PhiLMode", oldPhiMode
 
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "WrongAccidental"
-    AssertTrue stats, "batch.stability.invalidSettings.accMode", _
-        StabilityStatusForCurrentSettings() = "InputErr"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "WrongAccidental"
+    TestAssertTrue stats, "batch.stability.invalidSettings.accMode", _
+        TestStabilityStatusForCurrentSettings() = "InputErr"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
 
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "WrongPlanes"
-    AssertTrue stats, "batch.stability.invalidSettings.accPlanes", _
-        StabilityStatusForCurrentSettings() = "InputErr"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "WrongPlanes"
+    TestAssertTrue stats, "batch.stability.invalidSettings.accPlanes", _
+        TestStabilityStatusForCurrentSettings() = "InputErr"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
 
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.SP35.PhiP", "0"
-    AssertTrue stats, "batch.stability.invalidSettings.phiP", _
-        StabilityStatusForCurrentSettings() = "InputErr"
-    SetSystemSetting "Stability.SP35.PhiP", oldPhiP
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.SP35.PhiP", "0"
+    TestAssertTrue stats, "batch.stability.invalidSettings.phiP", _
+        TestStabilityStatusForCurrentSettings() = "InputErr"
+    TestSetSystemSetting "Stability.SP35.PhiP", oldPhiP
 
-    SetSystemSetting "Stability.SP35.NOverNcrLimit", "0"
-    AssertTrue stats, "batch.stability.invalidSettings.nOverNcr", _
-        StabilityStatusForCurrentSettings() = "InputErr"
+    TestSetSystemSetting "Stability.SP35.NOverNcrLimit", "0"
+    TestAssertTrue stats, "batch.stability.invalidSettings.nOverNcr", _
+        TestStabilityStatusForCurrentSettings() = "InputErr"
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.SP63.Ks", oldKs
-    SetSystemSetting "Stability.SP35.PhiP", oldPhiP
-    SetSystemSetting "Stability.SP35.NOverNcrLimit", oldLimit
-    SetSystemSetting "Stability.PhiLMode", oldPhiMode
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.SP63.Ks", oldKs
+    TestSetSystemSetting "Stability.SP35.PhiP", oldPhiP
+    TestSetSystemSetting "Stability.SP35.NOverNcrLimit", oldLimit
+    TestSetSystemSetting "Stability.PhiLMode", oldPhiMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.invalidSettings; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.invalidSettings; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет общий диагностический Branch для СП 35. Если первая и вторая
 ' главные плоскости попали в разные ветви, общий Branch должен быть mixed,
 ' а точная детализация остается в PlaneBranch1/2.
@@ -3380,65 +3459,66 @@ Private Sub TestStabilitySP35MixedBranchReportsMixed(ByRef stats As TBatchTestSt
     Dim oldAccPlanes As String
     Dim oldAccUser1 As String
     Dim oldAccUser2 As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
-    oldAccUser1 = GetSystemSetting("Stability.AccidentalEccentricityUser1")
-    oldAccUser2 = GetSystemSetting("Stability.AccidentalEccentricityUser2")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldAccUser1 = TestGetSystemSetting("Stability.AccidentalEccentricityUser1")
+    oldAccUser2 = TestGetSystemSetting("Stability.AccidentalEccentricityUser2")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "3000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", "10"
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", "200"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "3000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", "10"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", "200"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "SP35_MIXED", -120000#, 0#, 0#, "PR1", "sp35 mixed branch"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.sp35Mixed.status", _
+    TestAssertTrue stats, "batch.stability.sp35Mixed.status", _
         batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    AssertTrue stats, "batch.stability.sp35Mixed.planeBranches", _
+    TestAssertTrue stats, "batch.stability.sp35Mixed.planeBranches", _
         StrComp(batch.ResultAt(1).StabilityResult.PlaneBranch1, batch.ResultAt(1).StabilityResult.PlaneBranch2, vbTextCompare) <> 0
-    AssertTrue stats, "batch.stability.sp35Mixed.branch", batch.ResultAt(1).StabilityResult.Branch = "SP35-mixed"
+    TestAssertTrue stats, "batch.stability.sp35Mixed.branch", batch.ResultAt(1).StabilityResult.Branch = "SP35-mixed"
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35MixedBranch; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35MixedBranch; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет круговое сечение с моментом только в глобальной плоскости X.
 ' Для почти изотропной геометрии главные оси фиксируются по X/Y, а случайный
 ' эксцентриситет не должен создавать расчетный момент в пустой второй плоскости.
@@ -3447,26 +3527,26 @@ Private Sub TestStabilityCircleMxDoesNotCreateMy(ByRef stats As TBatchTestStats)
     Dim oldValueSet As String
     Dim oldCode As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
 
     Dim geom As CGeometryRegion
-    Set geom = CircleGeometry(500#, 0#, 0#)
+    Set geom = TestCircleGeometry(500#, 0#, 0#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 20#, 20#, 1
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, CircleRebars(500#, 0#, 0#, 40#, 12, 20#), "CircleStability")
+    Set section = TestBuildGeneratedSectionModel(mesh, TestCircleRebars(500#, 0#, 0#, 40#, 12, 20#), "CircleStability")
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -3480,23 +3560,24 @@ Private Sub TestStabilityCircleMxDoesNotCreateMy(ByRef stats As TBatchTestStats)
     batch.AddCombination "CIRCLE_MX", -120000#, 1000000#, 0#, "PR1", "stability circle mx"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.circleMx.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    AssertTrue stats, "batch.stability.circleMx.designMx", Abs(batch.ResultAt(1).StabilityResult.DesignMx) > 0#
-    AssertClose stats, "batch.stability.circleMx.noDesignMy", batch.ResultAt(1).StabilityResult.DesignMy, 0#, 1#
+    TestAssertTrue stats, "batch.stability.circleMx.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    TestAssertTrue stats, "batch.stability.circleMx.designMx", Abs(batch.ResultAt(1).StabilityResult.DesignMx) > 0#
+    TestAssertClose stats, "batch.stability.circleMx.noDesignMy", batch.ResultAt(1).StabilityResult.DesignMy, 0#, 1#
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.circleMx; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.circleMx; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет новую настройку плоскостей случайного эксцентриситета. В режиме
 ' BothPlanes случайный эксцентриситет добавляется и во вторую главную плоскость,
 ' даже если исходный момент был задан только в одной плоскости.
@@ -3509,52 +3590,53 @@ Private Sub TestStabilityAccidentalBothPlanes(ByRef stats As TBatchTestStats)
     Dim oldMu2 As String
     Dim oldAccMode As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.ElementLength", "12000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.ElementLength", "12000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
 
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
     Dim onlyMomentPlane As Double
-    onlyMomentPlane = StabilityAccidentalForSingleMoment()
+    onlyMomentPlane = TestStabilityAccidentalForSingleMoment()
 
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
     Dim bothPlanes As Double
-    bothPlanes = StabilityAccidentalForSingleMoment()
+    bothPlanes = TestStabilityAccidentalForSingleMoment()
 
-    AssertTrue stats, "batch.stability.accidentalPlanes.onlyPositive", onlyMomentPlane > 0#
-    AssertTrue stats, "batch.stability.accidentalPlanes.bothLarger", bothPlanes > onlyMomentPlane * 1.5
+    TestAssertTrue stats, "batch.stability.accidentalPlanes.onlyPositive", onlyMomentPlane > 0#
+    TestAssertTrue stats, "batch.stability.accidentalPlanes.bothLarger", bothPlanes > onlyMomentPlane * 1.5
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.accidentalBothPlanes; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.accidentalBothPlanes; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что эксцентриситет устойчивости считается относительно центра
 ' тяжести приведенного сечения. Пользовательская точка нагрузки остается в
 ' бетонном центре, поэтому несимметричная арматура должна дать реальный
@@ -3563,17 +3645,17 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
 
     Dim geom As CGeometryRegion
-    Set geom = RectanglesGeometry(250#, 550#, 600#, 250#)
+    Set geom = TestRectanglesGeometry(250#, 550#, 600#, 250#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -3585,7 +3667,7 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     rebars.AddBar "RSHIFT2", 560#, 150#, 120#, 0#, "A400", "shift transformed centroid", geom
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars, "RectanglesStabilityCentroid")
+    Set section = TestBuildGeneratedSectionModel(mesh, rebars, "RectanglesStabilityCentroid")
 
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = New CSectionPropertiesCalculator
@@ -3598,7 +3680,7 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     Dim centroidGap As Double
     centroidGap = Sqr((transformedProps.CentroidX - concreteProps.CentroidX) ^ 2 + _
         (transformedProps.CentroidY - concreteProps.CentroidY) ^ 2)
-    AssertTrue stats, "batch.stability.centroid.transformedShift", centroidGap > 25#
+    TestAssertTrue stats, "batch.stability.centroid.transformedShift", centroidGap > 25#
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -3613,26 +3695,27 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     batch.ApplyLoadReference concreteProps.CentroidX, concreteProps.CentroidY, concreteProps.CentroidX, concreteProps.CentroidY
     batch.Execute
 
-    AssertTrue stats, "batch.stability.centroid.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    AssertTrue stats, "batch.stability.centroid.eFromTransformedCenter", _
+    TestAssertTrue stats, "batch.stability.centroid.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
+    TestAssertTrue stats, "batch.stability.centroid.eFromTransformedCenter", _
         Sqr(batch.ResultAt(1).StabilityResult.Eccentricity1 ^ 2 + batch.ResultAt(1).StabilityResult.Eccentricity2 ^ 2) > centroidGap * 0.8
-    AssertClose stats, "batch.stability.centroid.loadPointMxIsUserMx", _
+    TestAssertClose stats, "batch.stability.centroid.loadPointMxIsUserMx", _
         batch.StabilityLoadPointMx(1), batch.UserMx(1), 0.000001
-    AssertClose stats, "batch.stability.centroid.loadPointMyIsUserMy", _
+    TestAssertClose stats, "batch.stability.centroid.loadPointMyIsUserMy", _
         batch.StabilityLoadPointMy(1), batch.UserMy(1), 0.000001
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.centroid; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.centroid; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что нормативный AutoWithL для случайного эксцентриситета берет
 ' геометрическую длину L, а не расчетную длину l0 = mu*L. Режим AutoWithMuL
 ' остается явной проверочной опцией и должен давать другое значение.
@@ -3645,52 +3728,53 @@ Private Sub TestStabilityAccidentalUsesGeometricLength(ByRef stats As TBatchTest
     Dim oldMu2 As String
     Dim oldAccMode As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.ElementLength", "12000"
-    SetSystemSetting "Stability.Mu1", "2"
-    SetSystemSetting "Stability.Mu2", "2"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.ElementLength", "12000"
+    TestSetSystemSetting "Stability.Mu1", "2"
+    TestSetSystemSetting "Stability.Mu2", "2"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
 
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithL"
     Dim byGeometricLength As Double
-    byGeometricLength = StabilityAccidentalForSingleMoment()
+    byGeometricLength = TestStabilityAccidentalForSingleMoment()
 
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithMuL"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "AutoWithMuL"
     Dim byEffectiveLength As Double
-    byEffectiveLength = StabilityAccidentalForSingleMoment()
+    byEffectiveLength = TestStabilityAccidentalForSingleMoment()
 
-    AssertClose stats, "batch.stability.accidental.L", byGeometricLength, 20#, 0.000001
-    AssertClose stats, "batch.stability.accidental.muL", byEffectiveLength, 40#, 0.000001
+    TestAssertClose stats, "batch.stability.accidental.L", byGeometricLength, 20#, 0.000001
+    TestAssertClose stats, "batch.stability.accidental.muL", byEffectiveLength, 40#, 0.000001
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.accidentalLength; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.accidentalLength; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пользовательский режим случайного эксцентриситета: пользователь
 ' задает только модуль, а знак по-прежнему выбирается по направлению момента
 ' или настройкам для нулевого момента.
@@ -3702,44 +3786,45 @@ Private Sub TestStabilityAccidentalUserMode(ByRef stats As TBatchTestStats)
     Dim oldAccUser1 As String
     Dim oldAccUser2 As String
     Dim oldAccPlanes As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldAccMode = GetSystemSetting("Stability.AccidentalEccentricityMode")
-    oldAccUser1 = GetSystemSetting("Stability.AccidentalEccentricityUser1")
-    oldAccUser2 = GetSystemSetting("Stability.AccidentalEccentricityUser2")
-    oldAccPlanes = GetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
+    oldAccUser1 = TestGetSystemSetting("Stability.AccidentalEccentricityUser1")
+    oldAccUser2 = TestGetSystemSetting("Stability.AccidentalEccentricityUser2")
+    oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", "25"
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", "40"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", "25"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", "40"
 
-    AssertClose stats, "batch.stability.accidental.user", StabilityAccidentalForSingleMoment(), 40#, 0.000001
+    TestAssertClose stats, "batch.stability.accidental.user", TestStabilityAccidentalForSingleMoment(), 40#, 0.000001
 
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
-    AssertClose stats, "batch.stability.accidental.userBoth", StabilityAccidentalForSingleMoment(), 65#, 0.000001
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestAssertClose stats, "batch.stability.accidental.userBoth", TestStabilityAccidentalForSingleMoment(), 65#, 0.000001
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", oldAccUser2
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.accidentalUser; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.accidentalUser; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет исправление СП 35: выбор ветви идет по ядровому расстоянию r, а
 ' не по радиусу инерции i. Для круга D=500 мм ядровое расстояние примерно
 ' равно половине радиуса инерции, поэтому перепутать эти величины легко.
@@ -3750,30 +3835,30 @@ Private Sub TestStabilitySP35UsesCoreDistanceNotRadius(ByRef stats As TBatchTest
     Dim oldLength As String
     Dim oldMu1 As String
     Dim oldMu2 As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldLength = GetSystemSetting("Stability.ElementLength")
-    oldMu1 = GetSystemSetting("Stability.Mu1")
-    oldMu2 = GetSystemSetting("Stability.Mu2")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
+    oldMu1 = TestGetSystemSetting("Stability.Mu1")
+    oldMu2 = TestGetSystemSetting("Stability.Mu2")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "3000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "3000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
 
     Dim geom As CGeometryRegion
-    Set geom = CircleGeometry(500#, 0#, 0#)
+    Set geom = TestCircleGeometry(500#, 0#, 0#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 20#, 20#, 1
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, CircleRebars(500#, 0#, 0#, 40#, 12, 20#), "CircleCore")
+    Set section = TestBuildGeneratedSectionModel(mesh, TestCircleRebars(500#, 0#, 0#, 40#, 12, 20#), "CircleCore")
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -3790,26 +3875,27 @@ Private Sub TestStabilitySP35UsesCoreDistanceNotRadius(ByRef stats As TBatchTest
 
     Dim coreDistance As Double
     Dim radiusValue As Double
-    coreDistance = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.CoreDistance1, batch.ResultAt(1).StabilityResult.CoreDistance2)
-    radiusValue = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.Radius1, batch.ResultAt(1).StabilityResult.Radius2)
-    AssertTrue stats, "batch.stability.sp35.core.positive", coreDistance > 0# And radiusValue > 0#
-    AssertTrue stats, "batch.stability.sp35.core.notRadius", coreDistance < radiusValue * 0.75
+    coreDistance = TestActiveStabilityValue(batch.ResultAt(1).StabilityResult.CoreDistance1, batch.ResultAt(1).StabilityResult.CoreDistance2)
+    radiusValue = TestActiveStabilityValue(batch.ResultAt(1).StabilityResult.Radius1, batch.ResultAt(1).StabilityResult.Radius2)
+    TestAssertTrue stats, "batch.stability.sp35.core.positive", coreDistance > 0# And radiusValue > 0#
+    TestAssertTrue stats, "batch.stability.sp35.core.notRadius", coreDistance < radiusValue * 0.75
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.ElementLength", oldLength
-    SetSystemSetting "Stability.Mu1", oldMu1
-    SetSystemSetting "Stability.Mu2", oldMu2
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.ElementLength", oldLength
+    TestSetSystemSetting "Stability.Mu1", oldMu1
+    TestSetSystemSetting "Stability.Mu2", oldMu2
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35.coreDistance; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35.coreDistance; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что h для случайного эксцентриситета и delta_e берется по
 ' бетонному контуру. Даже если в модели есть очень крупный стержень, он
 ' участвует в приведенных характеристиках, но не расширяет внешний габарит h.
@@ -3817,17 +3903,17 @@ Private Sub TestStabilityDepthUsesConcreteContourOnly(ByRef stats As TBatchTestS
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
 
     Dim geom As CGeometryRegion
-    Set geom = PointedSectionGeometry(300#, 200#)
+    Set geom = TestPointedSectionGeometry(300#, 200#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -3838,7 +3924,7 @@ Private Sub TestStabilityDepthUsesConcreteContourOnly(ByRef stats As TBatchTestS
     rebars.AddBar "RBIG", 0#, 90#, 160#, 0#, "A400", "large test bar", geom
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars, "ConcreteDepth")
+    Set section = TestBuildGeneratedSectionModel(mesh, rebars, "ConcreteDepth")
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -3852,23 +3938,24 @@ Private Sub TestStabilityDepthUsesConcreteContourOnly(ByRef stats As TBatchTestS
     batch.AddCombination "DEPTH_CONCRETE", -120000#, 1000000#, 0#, "PR1", "depth concrete"
     batch.Execute
 
-    AssertTrue stats, "batch.stability.depth.concreteOnly1", _
+    TestAssertTrue stats, "batch.stability.depth.concreteOnly1", _
         batch.ResultAt(1).StabilityResult.Depth1 > 190# And batch.ResultAt(1).StabilityResult.Depth1 < 310#
-    AssertTrue stats, "batch.stability.depth.concreteOnly2", _
+    TestAssertTrue stats, "batch.stability.depth.concreteOnly2", _
         batch.ResultAt(1).StabilityResult.Depth2 > 190# And batch.ResultAt(1).StabilityResult.Depth2 < 310#
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.depthConcrete; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.depthConcrete; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет СП 63: phi_l считается как 1 + Ml1/M1 со знаком, а не по
 ' модулю отношения. Длительный момент противоположного знака не должен
 ' увеличивать phi_l сверх 1.
@@ -3877,39 +3964,40 @@ Private Sub TestStabilityPhiLUsesSignedSustainedMoment(ByRef stats As TBatchTest
     Dim oldValueSet As String
     Dim oldCode As String
     Dim oldPhiMode As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldPhiMode = GetSystemSetting("Stability.PhiLMode")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldPhiMode = TestGetSystemSetting("Stability.PhiLMode")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.PhiLMode", "Auto"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.PhiLMode", "Auto"
 
     Dim phiSameSign As Double
-    phiSameSign = StabilityPhiLForDurationLoad("PHIL_SAME", -120000#, 1000000#, 0#, -60000#, 500000#, 0#)
+    phiSameSign = TestStabilityPhiLForDurationLoad("PHIL_SAME", -120000#, 1000000#, 0#, -60000#, 500000#, 0#)
 
     Dim phiOppositeSign As Double
-    phiOppositeSign = StabilityPhiLForDurationLoad("PHIL_OPP", -120000#, 1000000#, 0#, -60000#, -10000000#, 0#)
+    phiOppositeSign = TestStabilityPhiLForDurationLoad("PHIL_OPP", -120000#, 1000000#, 0#, -60000#, -10000000#, 0#)
 
-    AssertTrue stats, "batch.stability.phil.sameSign", phiSameSign > 1.05
-    AssertClose stats, "batch.stability.phil.oppositeSign", phiOppositeSign, 1#, 0.000001
+    TestAssertTrue stats, "batch.stability.phil.sameSign", phiSameSign > 1.05
+    TestAssertClose stats, "batch.stability.phil.oppositeSign", phiOppositeSign, 1#, 0.000001
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.PhiLMode", oldPhiMode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.PhiLMode", oldPhiMode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.phiLSp63; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.phiLSp63; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что постоянная/длительная продольная сила не обрезается к диапазону
 ' 0...N. Пользовательское значение передается в расчет как есть: сжатие
 ' хранится положительным, растяжение отрицательным в формулах устойчивости.
@@ -3917,40 +4005,41 @@ Private Sub TestStabilitySustainedNNotClamped(ByRef stats As TBatchTestStats)
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.AddStabilityDurationLoad "SUSTAINED_FREE", -240000#, 500000#, 0#
     batch.AddCombination "SUSTAINED_FREE", -120000#, 1000000#, 0#, "PR1", "sustained not clamped"
     batch.Execute
 
-    AssertClose stats, "batch.stability.sustainedN.notClamped", batch.ResultAt(1).StabilityResult.SustainedN, 240000#, 0.000001
+    TestAssertClose stats, "batch.stability.sustainedN.notClamped", batch.ResultAt(1).StabilityResult.SustainedN, 240000#, 0.000001
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sustainedNNotClamped; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sustainedNNotClamped; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет специальную ветвь СП 35 для противоположных знаков полного и
 ' длительного моментов: Auto не должен превращать ее в Abs-отношение.
 Private Sub TestStabilitySP35OppositeMomentSigns(ByRef stats As TBatchTestStats)
@@ -3958,35 +4047,36 @@ Private Sub TestStabilitySP35OppositeMomentSigns(ByRef stats As TBatchTestStats)
     Dim oldValueSet As String
     Dim oldCode As String
     Dim oldPhiMode As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
-    oldPhiMode = GetSystemSetting("Stability.PhiLMode")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
+    oldPhiMode = TestGetSystemSetting("Stability.PhiLMode")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.PhiLMode", "Auto"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.PhiLMode", "Auto"
 
     Dim phiValue As Double
-    phiValue = StabilityPhiLForDurationLoad("SP35_OPP", -120000#, 10000000#, 0#, -60000#, -10000000#, 0#)
+    phiValue = TestStabilityPhiLForDurationLoad("SP35_OPP", -120000#, 10000000#, 0#, -60000#, -10000000#, 0#)
 
-    AssertTrue stats, "batch.stability.sp35.opposite.phi", phiValue = 1# Or phiValue = 1.05
+    TestAssertTrue stats, "batch.stability.sp35.opposite.phi", phiValue = 1# Or phiValue = 1.05
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
-    SetSystemSetting "Stability.PhiLMode", oldPhiMode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
+    TestSetSystemSetting "Stability.PhiLMode", oldPhiMode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.stability.sp35.oppositePhiL; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.stability.sp35.oppositePhiL; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что Summary заполняет значения только для выбранной методики
 ' устойчивости. Заголовки СП 35 и СП 63 остаются всегда, но строка LC не должна
 ' одновременно содержать расчетные значения двух нормативных блоков.
@@ -3994,17 +4084,17 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
-    oldEnabled = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldValueSet = GetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
-    oldCode = GetSystemSetting("Stability.Code")
+    oldEnabled = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldValueSet = TestGetProfileValue("MaterialModel.Stability.ValueSet", "PR1")
+    oldCode = TestGetSystemSetting("Stability.Code")
 
     On Error GoTo RestoreAndFail
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.Code", "SP63"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.Code", "SP63"
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
@@ -4020,41 +4110,42 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
-    AssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 122 And stabilityAnchor.Column = 1
-    AssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 29).Value2)) = 0 And _
+    TestAssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 122 And stabilityAnchor.Column = 1
+    TestAssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 29).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 30).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 45).Value2)) = 0
-    AssertTrue stats, "batch.writer.stability.sp35.naStatus", _
+    TestAssertTrue stats, "batch.writer.stability.sp35.naStatus", _
         CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 38).Value2) = "N/A" And _
         CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 44).Value2) = "N/A" And _
         CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 53).Value2) = "N/A" And _
         CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 59).Value2) = "N/A" And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 38) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44)
-    AssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 61).Value2)) > 0 Or _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 38) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44)
+    TestAssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 61).Value2)) > 0 Or _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 72).Value2)) > 0
-    AssertTrue stats, "batch.writer.stability.sp63.statusColor", _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 72) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 84) And _
-        CellHasNoFill(resultsSheet, stabilityAnchor.Row, 61)
+    TestAssertTrue stats, "batch.writer.stability.sp63.statusColor", _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 72) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 84) And _
+        TestCellHasNoFill(resultsSheet, stabilityAnchor.Row, 61)
 
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
-    SetSystemSetting "Stability.Code", oldCode
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", oldValueSet
+    TestSetSystemSetting "Stability.Code", oldCode
     Exit Sub
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.writer.stability.selectedCode; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.writer.stability.selectedCode; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет 24 LC, проверяя динамический размер массива результатов,
 ' доступность последнего статуса и governing вне прежних малых пакетов.
 Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
 
     Dim i As Long
     For i = 1 To 24
@@ -4063,16 +4154,17 @@ Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
     Next i
     batch.Execute
 
-    AssertTrue stats, "batch.dynamic.count", batch.Count = 24
-    AssertTrue stats, "batch.dynamic.governing.index", batch.GoverningCombinationIndex >= 1 And batch.GoverningCombinationIndex <= 24
-    AssertTrue stats, "batch.dynamic.last.status", Len(batch.ResultAt(24).Status) > 0
+    TestAssertTrue stats, "batch.dynamic.count", batch.Count = 24
+    TestAssertTrue stats, "batch.dynamic.governing.index", batch.GoverningCombinationIndex >= 1 And batch.GoverningCombinationIndex <= 24
+    TestAssertTrue stats, "batch.dynamic.last.status", Len(batch.ResultAt(24).Status) > 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Читает строку настоящего rngLoadCombinations с нечисловой N.
 ' Строка сохраняется в пакете как InputErr, а не теряется или становится нулевой.
 Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -4095,10 +4187,11 @@ Private Sub TestInvalidCombinationFromNamedRange(ByRef stats As TBatchTestStats)
     reader.LoadFromWorkbook ThisWorkbook, batch
     batch.Execute
 
-    AssertTrue stats, "batch.invalid.reader.count", batch.Count = 1
-    AssertTrue stats, "batch.invalid.reader.status", batch.ResultAt(1).Status = "InputErr"
+    TestAssertTrue stats, "batch.invalid.reader.count", batch.Count = 1
+    TestAssertTrue stats, "batch.invalid.reader.status", batch.ResultAt(1).Status = "InputErr"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что высота верхней сводки берется не только по заполненным LC,
 ' но и по доступным строкам rngLoadCombinations. Иначе пользователь видит
 ' неполную сетку при ручном расширении таблицы сочетаний.
@@ -4131,9 +4224,9 @@ Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestS
 
     Dim writer As CBatchResultWriter
     Set writer = New CBatchResultWriter
-    AssertTrue stats, "batch.writer.availableRows.dataRows31", _
+    TestAssertTrue stats, "batch.writer.availableRows.dataRows31", _
         writer.RequiredDataRowsForWorkbook(ThisWorkbook, 1) = 31
-    AssertTrue stats, "batch.writer.availableRows.summaryRows43", _
+    TestAssertTrue stats, "batch.writer.availableRows.summaryRows43", _
         writer.RequiredSummaryOutputRowsForWorkbook(ThisWorkbook, 1) = 43
 
 CleanUp:
@@ -4146,19 +4239,20 @@ CleanUp:
     app.DisplayAlerts = oldDisplayAlerts
     On Error GoTo 0
     If Not app Is Nothing Then
-        AssertTrue stats, "batch.writer.availableRows.activeSheetRestored", app.ActiveSheet Is originalSheet
-        AssertEquals stats, "batch.writer.availableRows.nameRestored", ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo, originalRefersTo
-        AssertTrue stats, "batch.writer.availableRows.sheetCountRestored", ThisWorkbook.Worksheets.Count = originalSheetCount
-        AssertTrue stats, "batch.writer.availableRows.alertsRestored", app.DisplayAlerts = oldDisplayAlerts
+        TestAssertTrue stats, "batch.writer.availableRows.activeSheetRestored", app.ActiveSheet Is originalSheet
+        TestAssertEquals stats, "batch.writer.availableRows.nameRestored", ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo, originalRefersTo
+        TestAssertTrue stats, "batch.writer.availableRows.sheetCountRestored", ThisWorkbook.Worksheets.Count = originalSheetCount
+        TestAssertTrue stats, "batch.writer.availableRows.alertsRestored", app.DisplayAlerts = oldDisplayAlerts
     End If
     Exit Sub
 
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.writer.availableRows; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.writer.availableRows; " & Err.Description
     Resume CleanUp
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Записывает Strength/Crack/осевое LC настоящим writer-ом и проверяет шапки,
 ' объединения, позиции блоков, единицы, статусы и отсутствие перекрытия Results.
 Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
@@ -4167,7 +4261,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Dim stage As String
     stage = "BuildBatchCalculator"
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     stage = "AddCombination"
     batch.AddCombination "W1", -180000#, -3500000#, -2500000#, "PR1", "writer"
     batch.AddCombination "W2", -90000#, 0#, 0#, "PR2", "crack writer"
@@ -4178,227 +4272,227 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     stage = "WriteSummary"
     Dim writer As CBatchResultWriter
     Set writer = New CBatchResultWriter
-    ' Проверяем сохранность входного оформления, а не runtime-сброс к шаблону.
-    Dim resultsSheet As Object, widthColumns As Variant, widthsBefore(0 To 3) As Double, widthIndex As Long
+    Dim resultsSheet As Object, widthColumns As Variant, widthsBefore(0 To 3) As Double, widthIndex As Long ' Проверяем сохранность входного оформления, а не runtime-сброс к шаблону.
     Dim pointWidthsBefore(0 To 3) As Double ' Физическая ширина не зависит от единицы ColumnWidth.
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     widthColumns = Array(1, 14, 32, 81)
     For widthIndex = 0 To 3
         widthsBefore(widthIndex) = CDbl(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).ColumnWidth)
         pointWidthsBefore(widthIndex) = CDbl(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).Width)
-        AppendLine stats, "WIDTH_BEFORE: column=" & CStr(widthColumns(widthIndex)) & _
+        TestAppendLine stats, "WIDTH_BEFORE: column=" & CStr(widthColumns(widthIndex)) & _
             "; chars=" & CStr(widthsBefore(widthIndex)) & _
             "; points=" & CStr(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).Width)
     Next widthIndex
     writer.WriteSummary ThisWorkbook, batch
     For widthIndex = 0 To 3
-        AppendLine stats, "WIDTH_AFTER: column=" & CStr(widthColumns(widthIndex)) & _
+        TestAppendLine stats, "WIDTH_AFTER: column=" & CStr(widthColumns(widthIndex)) & _
             "; chars=" & CStr(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).ColumnWidth) & _
             "; points=" & CStr(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).Width)
     Next widthIndex
 
     stage = "Asserts"
     Dim summaryRow As Long
-    summaryRow = BatchSummaryStartRow()
-    AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
-    AssertTrue stats, "batch.writer.noResultOverlap", summaryRow + writer.RequiredSummaryOutputRowsForWorkbook(ThisWorkbook, batch.Count) - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
-    AssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 1 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 1
-    AssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 49
-    AssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85
-    AssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And _
+    summaryRow = TestBatchSummaryStartRow()
+    TestAssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
+    TestAssertTrue stats, "batch.writer.noResultOverlap", summaryRow + writer.RequiredSummaryOutputRowsForWorkbook(ThisWorkbook, batch.Count) - 1 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
+    TestAssertTrue stats, "batch.writer.rangeSize", ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Rows.Count = 1 And ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Columns.Count = 1
+    TestAssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 49
+    TestAssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85
+    TestAssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And _
         ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 156
-    AssertTrue stats, "batch.writer.meta.worstLabel", CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2) = "Определяющее сочетание"
-    AssertTrue stats, "batch.writer.meta.worstValue", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = batch.WorstCombinationID
-    AssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 2).Value2) = "Количество решений НДС"
-    AssertTrue stats, "batch.writer.meta.valuesCentered", resultsSheet.Cells.Item(summaryRow, 1).HorizontalAlignment = -4108 And _
+    TestAssertTrue stats, "batch.writer.meta.worstLabel", CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2) = "Определяющее сочетание"
+    TestAssertTrue stats, "batch.writer.meta.worstValue", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = batch.WorstCombinationID
+    TestAssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 2).Value2) = "Количество решений НДС"
+    TestAssertTrue stats, "batch.writer.meta.valuesCentered", resultsSheet.Cells.Item(summaryRow, 1).HorizontalAlignment = -4108 And _
         resultsSheet.Cells.Item(summaryRow + 3, 1).HorizontalAlignment = -4108
-    AssertTrue stats, "batch.writer.header.statusGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 6).Value2) = "статус проверки"
-    AssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 17).Value2) = "минимальные коэффициенты запаса"
-    AssertTrue stats, "batch.writer.header.statusStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 6).Value2) = "прочность"
-    AssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 17).Value2) = "прочность"
-    AssertTrue stats, "batch.writer.header.centered", resultsSheet.Cells.Item(summaryRow + 5, 6).HorizontalAlignment = -4108 And _
+    TestAssertTrue stats, "batch.writer.header.statusGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 6).Value2) = "статус проверки"
+    TestAssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 17).Value2) = "минимальные коэффициенты запаса"
+    TestAssertTrue stats, "batch.writer.header.statusStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 6).Value2) = "прочность"
+    TestAssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 17).Value2) = "прочность"
+    TestAssertTrue stats, "batch.writer.header.centered", resultsSheet.Cells.Item(summaryRow + 5, 6).HorizontalAlignment = -4108 And _
         resultsSheet.Cells.Item(summaryRow + 7, 17).HorizontalAlignment = -4108
-    AssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 17).HorizontalAlignment = -4131
-    AssertTrue stats, "batch.writer.header.epsilon", CStr(resultsSheet.Cells.Item(summaryRow + 7, 6).Value2) = _
+    TestAssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 17).HorizontalAlignment = -4131
+    TestAssertTrue stats, "batch.writer.header.epsilon", CStr(resultsSheet.Cells.Item(summaryRow + 7, 6).Value2) = _
         "по деформациям " & ChrW$(&H3B5)
-    AssertTrue stats, "batch.writer.header.sp63StatusPlaneMerge", _
+    TestAssertTrue stats, "batch.writer.header.sp63StatusPlaneMerge", _
         CStr(resultsSheet.Cells.Item(summaryRow + 7, 14).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
         resultsSheet.Cells.Item(summaryRow + 7, 14).MergeArea.Rows.Count = 2 And _
         resultsSheet.Cells.Item(summaryRow + 7, 14).MergeArea.Columns.Count = 1 And _
         CStr(resultsSheet.Cells.Item(summaryRow + 9, 14).Value2) = "Ncr/N" And _
         Not resultsSheet.Cells.Item(summaryRow + 9, 14).MergeCells
-    AssertTrue stats, "batch.writer.header.sp63ReservePlaneMerge", _
+    TestAssertTrue stats, "batch.writer.header.sp63ReservePlaneMerge", _
         CStr(resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
         resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Rows.Count = 2 And _
         resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Columns.Count = 1 And _
         CStr(resultsSheet.Cells.Item(summaryRow + 9, 25).Value2) = "Ncr/N" And _
         Not resultsSheet.Cells.Item(summaryRow + 9, 25).MergeCells
-    AssertTrue stats, "batch.writer.header.id", _
+    TestAssertTrue stats, "batch.writer.header.id", _
         CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Cells.Item(1, 1).Value2) = "Combination ID"
-    AssertTrue stats, "batch.writer.header.idMergeRows", resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Rows.Count = 5
-    AssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 17).Value2), "деформациям", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.worst.label", CStr(resultsSheet.Cells.Item(summaryRow + 11, 1).Value2) = "worst LC"
-    AssertTrue stats, "batch.writer.worst.commentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 2).Value2) = "-"
-    AssertTrue stats, "batch.writer.worst.resultCommentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 3).Value2) = "-"
-    AssertTrue stats, "batch.writer.worst.overallDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 4).Value2) = "-"
-    AssertTrue stats, "batch.writer.worst.noNa", Not BatchSummaryWorstRowContainsText(resultsSheet, "N/A")
-    AssertTrue stats, "batch.writer.worst.bold", resultsSheet.Cells.Item(summaryRow + 11, 1).Font.Bold And _
+    TestAssertTrue stats, "batch.writer.header.idMergeRows", resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Rows.Count = 5
+    TestAssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 17).Value2), "деформациям", vbTextCompare) > 0
+    TestAssertTrue stats, "batch.writer.worst.label", CStr(resultsSheet.Cells.Item(summaryRow + 11, 1).Value2) = "worst LC"
+    TestAssertTrue stats, "batch.writer.worst.commentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 2).Value2) = "-"
+    TestAssertTrue stats, "batch.writer.worst.resultCommentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 3).Value2) = "-"
+    TestAssertTrue stats, "batch.writer.worst.overallDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 4).Value2) = "-"
+    TestAssertTrue stats, "batch.writer.worst.noNa", Not TestBatchSummaryWorstRowContainsText(resultsSheet, "N/A")
+    TestAssertTrue stats, "batch.writer.worst.bold", resultsSheet.Cells.Item(summaryRow + 11, 1).Font.Bold And _
         resultsSheet.Cells.Item(summaryRow + 11, 17).Font.Bold
-    AssertTrue stats, "batch.writer.statusLegend.title", BatchSummaryCellText(resultsSheet, summaryRow + 5, 28) = "Расшифровка статусов"
-    AssertTrue stats, "batch.writer.statusLegend.header", _
-        BatchSummaryCellText(resultsSheet, summaryRow + 6, 28) = "Статус" And _
-        BatchSummaryCellText(resultsSheet, summaryRow + 6, 29) = "Описание"
-    AssertTrue stats, "batch.writer.statusLegend.values", _
-        BatchSummaryCellText(resultsSheet, summaryRow + 7, 28) = "OK" And _
-        BatchSummaryCellText(resultsSheet, summaryRow + 9, 28) = "BaseFail" And _
-        BatchSummaryCellText(resultsSheet, summaryRow + 11, 28) = "InputErr" And _
-        BatchSummaryCellText(resultsSheet, summaryRow + 12, 28) = "CalcErr"
-    AssertTrue stats, "batch.writer.statusLegend.mergeOnlyTitle", _
+    TestAssertTrue stats, "batch.writer.statusLegend.title", TestBatchSummaryCellText(resultsSheet, summaryRow + 5, 28) = "Расшифровка статусов"
+    TestAssertTrue stats, "batch.writer.statusLegend.header", _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 28) = "Статус" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 29) = "Описание"
+    TestAssertTrue stats, "batch.writer.statusLegend.values", _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 7, 28) = "OK" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 9, 28) = "BaseFail" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 11, 28) = "InputErr" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 12, 28) = "CalcErr"
+    TestAssertTrue stats, "batch.writer.statusLegend.mergeOnlyTitle", _
         resultsSheet.Cells.Item(summaryRow + 5, 28).MergeArea.Columns.Count = 2 And _
         Not resultsSheet.Cells.Item(summaryRow + 6, 28).MergeCells And _
         Not resultsSheet.Cells.Item(summaryRow + 7, 29).MergeCells
-    AssertTrue stats, "batch.writer.statusLegend.noWrap", _
+    TestAssertTrue stats, "batch.writer.statusLegend.noWrap", _
         Not resultsSheet.Cells.Item(summaryRow + 7, 29).WrapText
-    AssertTrue stats, "batch.writer.statusLegend.italicValues", _
+    TestAssertTrue stats, "batch.writer.statusLegend.italicValues", _
         resultsSheet.Cells.Item(summaryRow + 7, 28).Font.Italic And _
         resultsSheet.Cells.Item(summaryRow + 13, 29).Font.Italic
-    AssertTrue stats, "batch.writer.statusLegend.colors", _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 28) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 28) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 28) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 28) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 28) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 28) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 13, 28)
-    AssertTrue stats, "batch.writer.reserve.dataNotHeaderFill", _
+    TestAssertTrue stats, "batch.writer.statusLegend.colors", _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 28) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 28) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 28) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 28) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 28) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 28) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 13, 28)
+    TestAssertTrue stats, "batch.writer.reserve.dataNotHeaderFill", _
         resultsSheet.Cells.Item(summaryRow + 12, 17).Interior.ColorIndex = -4142
-    AssertWorstSummaryRowMatchesData stats, resultsSheet
-    AssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "W1"
-    AssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 12, 7).Value2)) > 0
-    AssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 12, 18).Value2)
-    AssertTrue stats, "batch.writer.data.statusColors", _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 4) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 6) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 7) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 8) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 9) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 10) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 11) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 12) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 13) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 14) And _
-        StatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 15)
+    TestAssertWorstSummaryRowMatchesData stats, resultsSheet
+    TestAssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "W1"
+    TestAssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 12, 7).Value2)) > 0
+    TestAssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 12, 18).Value2)
+    TestAssertTrue stats, "batch.writer.data.statusColors", _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 4) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 6) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 7) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 8) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 9) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 10) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 11) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 12) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 13) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 14) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 15)
     Dim strengthAnchor As Object
     Set strengthAnchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
-    AssertTrue stats, "batch.writer.strength.statusColors", _
-        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 3) And _
-        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 30) And _
-        StatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 49) And _
-        CellHasNoFill(resultsSheet, strengthAnchor.Row, 1) And _
-        CellHasNoFill(resultsSheet, strengthAnchor.Row, 10) And _
-        CellHasNoFill(resultsSheet, strengthAnchor.Row, 31)
-    AssertTrue stats, "batch.writer.strength.absentZonesBlank", _
+    TestAssertTrue stats, "batch.writer.strength.statusColors", _
+        TestStatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 3) And _
+        TestStatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 30) And _
+        TestStatusCellHasExpectedFill(resultsSheet, strengthAnchor.Row, 49) And _
+        TestCellHasNoFill(resultsSheet, strengthAnchor.Row, 1) And _
+        TestCellHasNoFill(resultsSheet, strengthAnchor.Row, 10) And _
+        TestCellHasNoFill(resultsSheet, strengthAnchor.Row, 31)
+    TestAssertTrue stats, "batch.writer.strength.absentZonesBlank", _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 18).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 19).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 20).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 22).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 23).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 24).Value2)) = 0
-    AssertTrue stats, "batch.writer.strength.presentTensionKept", _
+    TestAssertTrue stats, "batch.writer.strength.presentTensionKept", _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 21).Value2)) > 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 25).Value2)) > 0
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    AssertTrue stats, "batch.writer.crack.statusColors", _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 3) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 21) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 24) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 29) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 67) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 72) And _
-        CellHasNoFill(resultsSheet, crackAnchor.Row, 1) And _
-        CellHasNoFill(resultsSheet, crackAnchor.Row, 10) And _
-        CellHasNoFill(resultsSheet, crackAnchor.Row, 68)
-    AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 11).Value2) = "Начало трещинообразования"
-    AssertTrue stats, "batch.writer.crack.header.crackedStateTitle", _
+    TestAssertTrue stats, "batch.writer.crack.statusColors", _
+        TestStatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 3) And _
+        TestStatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 21) And _
+        TestStatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 24) And _
+        TestStatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 29) And _
+        TestStatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 67) And _
+        TestStatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 72) And _
+        TestCellHasNoFill(resultsSheet, crackAnchor.Row, 1) And _
+        TestCellHasNoFill(resultsSheet, crackAnchor.Row, 10) And _
+        TestCellHasNoFill(resultsSheet, crackAnchor.Row, 68)
+    TestAssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 11).Value2) = "Начало трещинообразования"
+    TestAssertTrue stats, "batch.writer.crack.header.crackedStateTitle", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 26).Value2) = "равновесное состояние при заданных нагрузках"
-    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 46).Value2) = "нормальные трещины по СП 63"
-    AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 17).Value2), "моментного вектора", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.crack.header.formationStatus", _
+    TestAssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 46).Value2) = "нормальные трещины по СП 63"
+    TestAssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 17).Value2), "моментного вектора", vbTextCompare) > 0
+    TestAssertTrue stats, "batch.writer.crack.header.formationStatus", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 19).Value2) = "PreCrackState (до трещины)" And _
         resultsSheet.Cells.Item(crackAnchor.Row - 3, 19).MergeArea.Columns.Count = 3
-    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 25).Value2) = "state"
-    AssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 29).Value2) = "статус"
-    AssertTrue stats, "batch.writer.crack.header.es", _
+    TestAssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 25).Value2) = "state"
+    TestAssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 29).Value2) = "статус"
+    TestAssertTrue stats, "batch.writer.crack.header.es", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 63).Value2) = "Es, MPa"
-    AssertTrue stats, "batch.writer.crack.header.widthTitle", _
+    TestAssertTrue stats, "batch.writer.crack.header.widthTitle", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 64).Value2) = "ширина раскрытия нормальных трещин"
-    AssertTrue stats, "batch.writer.crack.header.widthMerge", _
+    TestAssertTrue stats, "batch.writer.crack.header.widthMerge", _
         resultsSheet.Cells.Item(crackAnchor.Row - 3, 64).MergeArea.Column = 64 And _
         resultsSheet.Cells.Item(crackAnchor.Row - 3, 64).MergeArea.Columns.Count = 4 And _
         resultsSheet.Cells.Item(crackAnchor.Row - 3, 64).MergeArea.Rows.Count = 1
-    AssertTrue stats, "batch.writer.crack.header.normalStatusRu", _
+    TestAssertTrue stats, "batch.writer.crack.header.normalStatusRu", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 67).Value2) = "статус"
-    AssertTrue stats, "batch.writer.crack.header.longStatusRu", _
+    TestAssertTrue stats, "batch.writer.crack.header.longStatusRu", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 72).Value2) = "статус"
-    AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Font.Bold And _
+    TestAssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Font.Bold And _
         resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).HorizontalAlignment = -4131
-    AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Interior.Color) = RGB(217, 217, 217)
-    AssertTrue stats, "batch.writer.crack.availableRowsBorder", _
+    TestAssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Interior.Color) = RGB(217, 217, 217)
+    TestAssertTrue stats, "batch.writer.crack.availableRowsBorder", _
         Len(CStr(resultsSheet.Cells.Item(crackAnchor.Row + 19, 1).Value2)) = 0 And _
         resultsSheet.Cells.Item(crackAnchor.Row + 19, 1).Borders(9).LineStyle <> -4142
     Dim stabilityAnchor As Object
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
-    AssertTrue stats, "batch.writer.stability.statusColor", _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 3) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 38) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 53) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 59) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 72) And _
-        StatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 84) And _
-        CellHasNoFill(resultsSheet, stabilityAnchor.Row, 1)
-    AssertTrue stats, "batch.writer.stability.header.summary", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 1).Value2) = _
+    TestAssertTrue stats, "batch.writer.stability.statusColor", _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 3) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 38) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 53) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 59) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 72) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 84) And _
+        TestCellHasNoFill(resultsSheet, stabilityAnchor.Row, 1)
+    TestAssertTrue stats, "batch.writer.stability.header.summary", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 1).Value2) = _
         "Итог по расчету (с учетом " & ChrW$(&H3B7) & ")"
-    AssertTrue stats, "batch.writer.stability.header.statusWidth", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 3).MergeArea.Columns.Count = 1
-    AssertTrue stats, "batch.writer.stability.header.mainAxes", InStr(1, CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 4).Value2), _
+    TestAssertTrue stats, "batch.writer.stability.header.statusWidth", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 3).MergeArea.Columns.Count = 1
+    TestAssertTrue stats, "batch.writer.stability.header.mainAxes", InStr(1, CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 4).Value2), _
         "главных центральных осей", vbTextCompare) > 0
-    AssertTrue stats, "batch.writer.stability.header.noExtraTier", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 4).Value2)) = 0 And _
+    TestAssertTrue stats, "batch.writer.stability.header.noExtraTier", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 4).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 6).Value2)) = 0
-    AssertTrue stats, "batch.writer.stability.header.sp35", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 29).Value2) = "Расчет по СП 35"
-    AssertTrue stats, "batch.writer.stability.header.sp63", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 61).Value2) = "Расчет по СП 63"
-    AssertTrue stats, "batch.writer.stability.header.notes", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Value2)) > 0 And _
+    TestAssertTrue stats, "batch.writer.stability.header.sp35", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 29).Value2) = "Расчет по СП 35"
+    TestAssertTrue stats, "batch.writer.stability.header.sp63", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 61).Value2) = "Расчет по СП 63"
+    TestAssertTrue stats, "batch.writer.stability.header.notes", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Value2)) > 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 61).Value2)) > 0
-    AssertTrue stats, "batch.writer.stability.header.notesPlain", Not resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Font.Bold And _
+    TestAssertTrue stats, "batch.writer.stability.header.notesPlain", Not resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Font.Bold And _
         resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).HorizontalAlignment = -4131
-    AssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Interior.Color) = RGB(217, 217, 217)
-    AssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 33).Value2) = "при ec > r"
-    AssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 61).MergeArea.Rows.Count = 2
-    AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 37).Value2) = "0.7*Ncr/N"
-    AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), widthsBefore(0), 0#
-    AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), widthsBefore(1), 0#
-    AssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), widthsBefore(2), 0#
-    AssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), widthsBefore(3), 0#
+    TestAssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Interior.Color) = RGB(217, 217, 217)
+    TestAssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 33).Value2) = "при ec > r"
+    TestAssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 61).MergeArea.Rows.Count = 2
+    TestAssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 37).Value2) = "0.7*Ncr/N"
+    TestAssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), widthsBefore(0), 0#
+    TestAssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), widthsBefore(1), 0#
+    TestAssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), widthsBefore(2), 0#
+    TestAssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), widthsBefore(3), 0#
     For widthIndex = 0 To 3
-        AssertClose stats, "batch.writer.columnPoints." & CStr(widthColumns(widthIndex)), _
+        TestAssertClose stats, "batch.writer.columnPoints." & CStr(widthColumns(widthIndex)), _
             CDbl(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).Width), pointWidthsBefore(widthIndex), 0#
     Next widthIndex
-    AssertTrue stats, "batch.writer.stability.availableRowsBorder", _
+    TestAssertTrue stats, "batch.writer.stability.availableRowsBorder", _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Value2)) = 0 And _
         resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Borders(9).LineStyle <> -4142
-    AssertTrue stats, "batch.writer.stability.lowerRanges", stabilityAnchor.Row + 20 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
+    TestAssertTrue stats, "batch.writer.stability.lowerRanges", stabilityAnchor.Row + 20 < ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row
     stage = "ReserveConsistency"
-    AssertBatchSummaryReservesMatchDetailed stats, resultsSheet, "W1"
-    AssertBatchSummaryReservesMatchDetailed stats, resultsSheet, "W2"
-    AssertBatchSummaryReservesMatchDetailed stats, resultsSheet, "WT"
+    TestAssertBatchSummaryReservesMatchDetailed stats, resultsSheet, "W1"
+    TestAssertBatchSummaryReservesMatchDetailed stats, resultsSheet, "W2"
+    TestAssertBatchSummaryReservesMatchDetailed stats, resultsSheet, "WT"
     Exit Sub
 
 Failed:
-    AppendLine stats, "FAIL-TRACE: TestBatchSummaryWriter." & stage & _
+    TestAppendLine stats, "FAIL-TRACE: TestBatchSummaryWriter." & stage & _
         "; err=" & CStr(Err.Number) & "; " & Err.Description
     Err.Raise Err.Number, Err.Source, "TestBatchSummaryWriter." & stage & ": " & Err.Description
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что Results сохраняет пустые строки из rngLoadCombinations:
 ' LC с source-offset 1 и 4 должны попасть в первую и четвертую строки данных,
 ' а промежуточные строки остаются пустыми без N/A и статусной заливки.
@@ -4406,7 +4500,7 @@ Private Sub TestBatchSummaryPreservesSourceRowGaps(ByRef stats As TBatchTestStat
     On Error GoTo Failed
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "GAP1", -150000#, -2000000#, -1000000#, "PR1", "first source row", vbNullString, 1
     batch.AddCombination "GAP4", -90000#, 0#, 0#, "PR2", "fourth source row", vbNullString, 4
     batch.Execute
@@ -4418,19 +4512,19 @@ Private Sub TestBatchSummaryPreservesSourceRowGaps(ByRef stats As TBatchTestStat
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim summaryRow As Long
-    summaryRow = BatchSummaryStartRow()
+    summaryRow = TestBatchSummaryStartRow()
 
-    AssertTrue stats, "batch.writer.gaps.summary.first", _
+    TestAssertTrue stats, "batch.writer.gaps.summary.first", _
         CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "GAP1"
-    AssertTrue stats, "batch.writer.gaps.summary.blank2", _
+    TestAssertTrue stats, "batch.writer.gaps.summary.blank2", _
         Len(CStr(resultsSheet.Cells.Item(summaryRow + 13, 1).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(summaryRow + 13, 4).Value2)) = 0 And _
-        CellHasNoFill(resultsSheet, summaryRow + 13, 4)
-    AssertTrue stats, "batch.writer.gaps.summary.blank3", _
+        TestCellHasNoFill(resultsSheet, summaryRow + 13, 4)
+    TestAssertTrue stats, "batch.writer.gaps.summary.blank3", _
         Len(CStr(resultsSheet.Cells.Item(summaryRow + 14, 1).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(summaryRow + 14, 4).Value2)) = 0 And _
-        CellHasNoFill(resultsSheet, summaryRow + 14, 4)
-    AssertTrue stats, "batch.writer.gaps.summary.fourth", _
+        TestCellHasNoFill(resultsSheet, summaryRow + 14, 4)
+    TestAssertTrue stats, "batch.writer.gaps.summary.fourth", _
         CStr(resultsSheet.Cells.Item(summaryRow + 15, 1).Value2) = "GAP4"
 
     Dim strengthAnchor As Object
@@ -4440,17 +4534,17 @@ Private Sub TestBatchSummaryPreservesSourceRowGaps(ByRef stats As TBatchTestStat
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
 
-    AssertTrue stats, "batch.writer.gaps.strength", _
+    TestAssertTrue stats, "batch.writer.gaps.strength", _
         CStr(resultsSheet.Cells.Item(strengthAnchor.Row, 1).Value2) = "GAP1" And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 1, 1).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 2, 1).Value2)) = 0 And _
         CStr(resultsSheet.Cells.Item(strengthAnchor.Row + 3, 1).Value2) = "GAP4"
-    AssertTrue stats, "batch.writer.gaps.crack", _
+    TestAssertTrue stats, "batch.writer.gaps.crack", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row, 1).Value2) = "GAP1" And _
         Len(CStr(resultsSheet.Cells.Item(crackAnchor.Row + 1, 1).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(crackAnchor.Row + 2, 1).Value2)) = 0 And _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row + 3, 1).Value2) = "GAP4"
-    AssertTrue stats, "batch.writer.gaps.stability", _
+    TestAssertTrue stats, "batch.writer.gaps.stability", _
         CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 1).Value2) = "GAP1" And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 1, 1).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 2, 1).Value2)) = 0 And _
@@ -4459,162 +4553,173 @@ Private Sub TestBatchSummaryPreservesSourceRowGaps(ByRef stats As TBatchTestStat
 
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.writer.gaps; " & Err.Description
+    TestAppendLine stats, "FAIL: batch.writer.gaps; " & Err.Description
 End Sub
 
-Private Function BatchSummaryStartRow() As Long
-    BatchSummaryStartRow = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Row
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Находит начало кратких результатов по именованному диапазону, не предполагая постоянного номера строки.
+Private Function TestBatchSummaryStartRow() As Long
+    TestBatchSummaryStartRow = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Row
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сверяет одну строку компактной сводки с подробными таблицами Results.
-Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestStats, _
+Private Sub TestAssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestStats, _
         ByVal resultsSheet As Object, ByVal combinationID As String, _
         Optional ByVal checkStrength As Boolean = True, _
         Optional ByVal checkCrack As Boolean = True, _
         Optional ByVal checkStability As Boolean = True)
     Dim summaryRow As Long
-    summaryRow = SummaryRowByCombination(resultsSheet, combinationID)
+    summaryRow = TestSummaryRowByCombination(resultsSheet, combinationID)
     Dim strengthRow As Long
     Dim crackRow As Long
     Dim stabilityRow As Long
-    If checkStrength Then strengthRow = DetailedRowByCombination(resultsSheet, "rngStrengthSummaryAnchor", combinationID)
-    If checkCrack Then crackRow = DetailedRowByCombination(resultsSheet, "rngCrackSummaryAnchor", combinationID)
-    If checkStability Then stabilityRow = DetailedRowByCombination(resultsSheet, "rngStabilitySummaryAnchor", combinationID)
+    If checkStrength Then strengthRow = TestDetailedRowByCombination(resultsSheet, "rngStrengthSummaryAnchor", combinationID)
+    If checkCrack Then crackRow = TestDetailedRowByCombination(resultsSheet, "rngCrackSummaryAnchor", combinationID)
+    If checkStability Then stabilityRow = TestDetailedRowByCombination(resultsSheet, "rngStabilitySummaryAnchor", combinationID)
 
-    AssertTrue stats, "batch.writer.reserve." & combinationID & ".summaryRow", summaryRow > 0
-    If checkStrength Then AssertTrue stats, "batch.writer.reserve." & combinationID & ".strengthRow", strengthRow > 0
-    If checkCrack Then AssertTrue stats, "batch.writer.reserve." & combinationID & ".crackRow", crackRow > 0
-    If checkStability Then AssertTrue stats, "batch.writer.reserve." & combinationID & ".stabilityRow", stabilityRow > 0
+    TestAssertTrue stats, "batch.writer.reserve." & combinationID & ".summaryRow", summaryRow > 0
+    If checkStrength Then TestAssertTrue stats, "batch.writer.reserve." & combinationID & ".strengthRow", strengthRow > 0
+    If checkCrack Then TestAssertTrue stats, "batch.writer.reserve." & combinationID & ".crackRow", crackRow > 0
+    If checkStability Then TestAssertTrue stats, "batch.writer.reserve." & combinationID & ".stabilityRow", stabilityRow > 0
     If summaryRow = 0 Then Exit Sub
 
     If checkStrength And strengthRow > 0 Then
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".strain", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".strain", _
             resultsSheet.Cells.Item(summaryRow, 17).Value2, _
             resultsSheet.Cells.Item(strengthRow, 29).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".capacity", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".capacity", _
             resultsSheet.Cells.Item(summaryRow, 18).Value2, _
             resultsSheet.Cells.Item(strengthRow, 48).Value2
     End If
     If checkCrack And crackRow > 0 Then
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _
             resultsSheet.Cells.Item(summaryRow, 19).Value2, _
             resultsSheet.Cells.Item(crackRow, 66).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
             resultsSheet.Cells.Item(summaryRow, 20).Value2, _
             resultsSheet.Cells.Item(crackRow, 71).Value2
     End If
     If checkStability And stabilityRow > 0 Then
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _
             resultsSheet.Cells.Item(summaryRow, 21).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 37).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1table", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1table", _
             resultsSheet.Cells.Item(summaryRow, 22).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 43).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2eta", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2eta", _
             resultsSheet.Cells.Item(summaryRow, 23).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 52).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2table", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2table", _
             resultsSheet.Cells.Item(summaryRow, 24).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 58).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p1", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p1", _
             resultsSheet.Cells.Item(summaryRow, 25).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 71).Value2
-        AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p2", _
+        TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p2", _
             resultsSheet.Cells.Item(summaryRow, 26).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 83).Value2
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Находит сочетание по номеру в компактной сводке с учётом пропущенных входных
 ' строк. Возвращает ноль, если сочетание не было записано в проверяемый диапазон.
-Private Function SummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
+Private Function TestSummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
     Dim anchorRow As Long
-    anchorRow = BatchSummaryStartRow()
+    anchorRow = TestBatchSummaryStartRow()
     Dim rowIndex As Long
     For rowIndex = anchorRow + 12 To anchorRow + 200
         If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2), combinationID, vbTextCompare) = 0 Then
-            SummaryRowByCombination = rowIndex
+            TestSummaryRowByCombination = rowIndex
             Exit Function
         End If
     Next rowIndex
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Находит сочетание по номеру в выбранной подробной таблице независимо
 ' от номера входной строки. Соседние таблицы не используются.
-Private Function DetailedRowByCombination(ByVal resultsSheet As Object, ByVal anchorName As String, _
+Private Function TestDetailedRowByCombination(ByVal resultsSheet As Object, ByVal anchorName As String, _
         ByVal combinationID As String) As Long
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item(anchorName).RefersToRange
     Dim rowIndex As Long
     For rowIndex = anchor.Row To anchor.Row + 200
         If StrComp(CStr(resultsSheet.Cells.Item(rowIndex, anchor.Column).Value2), combinationID, vbTextCompare) = 0 Then
-            DetailedRowByCombination = rowIndex
+            TestDetailedRowByCombination = rowIndex
             Exit Function
         End If
     Next rowIndex
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет строку worst LC: в статусном блоке должен стоять номер LC,
 ' а в блоке запасов - коэффициент из той же строки LC и того же столбца проверки.
-Private Sub AssertWorstSummaryRowMatchesData(ByRef stats As TBatchTestStats, ByVal resultsSheet As Object)
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "strain", 6, 17
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "capacity", 7, 18
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "crack", 8, 19
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "longCrack", 9, 20
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1eta", 10, 21
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1table", 11, 22
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2eta", 12, 23
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2table", 13, 24
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p1", 14, 25
-    AssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p2", 15, 26
+Private Sub TestAssertWorstSummaryRowMatchesData(ByRef stats As TBatchTestStats, ByVal resultsSheet As Object)
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "strain", 6, 17
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "capacity", 7, 18
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "crack", 8, 19
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "longCrack", 9, 20
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1eta", 10, 21
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1table", 11, 22
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2eta", 12, 23
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2table", 13, 24
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p1", 14, 25
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p2", 15, 26
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет строку worst LC по расчетным столбцам compact summary.
-Private Function BatchSummaryWorstRowContainsText(ByVal resultsSheet As Object, ByVal textValue As String) As Boolean
+Private Function TestBatchSummaryWorstRowContainsText(ByVal resultsSheet As Object, ByVal textValue As String) As Boolean
     Dim anchorRow As Long
-    anchorRow = BatchSummaryStartRow()
+    anchorRow = TestBatchSummaryStartRow()
 
     Dim columnIndex As Long
     For columnIndex = 6 To 26
         If StrComp(Trim$(CStr(resultsSheet.Cells.Item(anchorRow + 11, columnIndex).Value2)), _
                 textValue, vbTextCompare) = 0 Then
-            BatchSummaryWorstRowContainsText = True
+            TestBatchSummaryWorstRowContainsText = True
             Exit Function
         End If
     Next columnIndex
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Читает отображаемое значение ячейки summary, корректно работая с объединенными
 ' областями шапки и правого словаря статусов.
-Private Function BatchSummaryCellText(ByVal resultsSheet As Object, ByVal rowIndex As Long, ByVal columnIndex As Long) As String
+Private Function TestBatchSummaryCellText(ByVal resultsSheet As Object, ByVal rowIndex As Long, ByVal columnIndex As Long) As String
     Dim cell As Object
     Set cell = resultsSheet.Cells.Item(rowIndex, columnIndex)
     If cell.MergeCells Then Set cell = cell.MergeArea.Cells.Item(1, 1)
-    BatchSummaryCellText = Trim$(CStr(cell.Value2))
+    TestBatchSummaryCellText = Trim$(CStr(cell.Value2))
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет исходную и реально отображаемую заливку статусной ячейки.
 ' DisplayFormat учитывает conditional formatting: совпадение только Interior
 ' недостаточно, если другая Excel-rule скрывает утвержденный цвет.
-Private Function StatusCellHasExpectedFill(ByVal resultsSheet As Object, _
+Private Function TestStatusCellHasExpectedFill(ByVal resultsSheet As Object, _
         ByVal rowIndex As Long, ByVal columnIndex As Long) As Boolean
     Dim statusText As String
     statusText = CStr(resultsSheet.Cells.Item(rowIndex, columnIndex).Value2)
-    StatusCellHasExpectedFill = (CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).Interior.Color) = StatusFillColor(statusText) And _
+    TestStatusCellHasExpectedFill = (CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).Interior.Color) = StatusFillColor(statusText) And _
         CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).DisplayFormat.Interior.Color) = StatusFillColor(statusText))
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что расчетная ячейка рядом со статусом не получила статусную заливку всего блока.
-Private Function CellHasNoFill(ByVal resultsSheet As Object, ByVal rowIndex As Long, ByVal columnIndex As Long) As Boolean
-    CellHasNoFill = (CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).Interior.ColorIndex) = -4142)
+Private Function TestCellHasNoFill(ByVal resultsSheet As Object, ByVal rowIndex As Long, ByVal columnIndex As Long) As Boolean
+    TestCellHasNoFill = (CLng(resultsSheet.Cells.Item(rowIndex, columnIndex).Interior.ColorIndex) = -4142)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сверяет одну пару столбцов worst LC: номер сочетания и соответствующий запас.
-Private Sub AssertWorstSummaryColumnMatchesData(ByRef stats As TBatchTestStats, _
+Private Sub TestAssertWorstSummaryColumnMatchesData(ByRef stats As TBatchTestStats, _
         ByVal resultsSheet As Object, ByVal name As String, _
         ByVal statusColumn As Long, ByVal reserveColumn As Long)
     Dim anchorRow As Long
-    anchorRow = BatchSummaryStartRow()
+    anchorRow = TestBatchSummaryStartRow()
     Dim worstRow As Long
     worstRow = anchorRow + 11
     Dim worstCombination As String
@@ -4622,24 +4727,25 @@ Private Sub AssertWorstSummaryColumnMatchesData(ByRef stats As TBatchTestStats, 
     If Len(worstCombination) = 0 Or StrComp(worstCombination, "N/A", vbTextCompare) = 0 Then
         Dim reserveText As String
         reserveText = Trim$(CStr(resultsSheet.Cells.Item(worstRow, reserveColumn).Value2))
-        AssertTrue stats, "batch.writer.worst." & name & ".notApplicable", _
+        TestAssertTrue stats, "batch.writer.worst." & name & ".notApplicable", _
             Len(reserveText) = 0 Or Not IsNumeric(reserveText)
         Exit Sub
     End If
 
     Dim dataRow As Long
-    dataRow = SummaryRowByCombination(resultsSheet, worstCombination)
-    AssertTrue stats, "batch.writer.worst." & name & ".combinationFound", dataRow > 0
+    dataRow = TestSummaryRowByCombination(resultsSheet, worstCombination)
+    TestAssertTrue stats, "batch.writer.worst." & name & ".combinationFound", dataRow > 0
     If dataRow > 0 Then
-        AssertOptionalReserve stats, "batch.writer.worst." & name & ".reserve", _
+        TestAssertOptionalReserve stats, "batch.writer.worst." & name & ".reserve", _
             resultsSheet.Cells.Item(worstRow, reserveColumn).Value2, _
             resultsSheet.Cells.Item(dataRow, reserveColumn).Value2
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сверяет запас compact/detail: обе пустые ячейки допустимы для неприменимой проверки.
 ' Численный результат только в одном блоке считается несогласованным выводом.
-Private Sub AssertOptionalReserve(ByRef stats As TBatchTestStats, ByVal name As String, _
+Private Sub TestAssertOptionalReserve(ByRef stats As TBatchTestStats, ByVal name As String, _
         ByVal summaryValue As Variant, ByVal detailedValue As Variant)
     Dim hasSummary As Boolean
     Dim hasDetailed As Boolean
@@ -4647,30 +4753,34 @@ Private Sub AssertOptionalReserve(ByRef stats As TBatchTestStats, ByVal name As 
     hasDetailed = IsNumeric(detailedValue)
     If Not hasSummary And Not hasDetailed Then
         stats.Passed = stats.Passed + 1
-        AppendLine stats, "PASS: " & name & "; both empty"
+        TestAppendLine stats, "PASS: " & name & "; both empty"
         Exit Sub
     End If
-    AssertTrue stats, name & ".bothNumeric", hasSummary And hasDetailed
+    TestAssertTrue stats, name & ".bothNumeric", hasSummary And hasDetailed
     If hasSummary And hasDetailed Then _
-        AssertClose stats, name, CDbl(summaryValue), CDbl(detailedValue), MaxDouble(0.0000001, Abs(CDbl(detailedValue)) * 0.0000001)
+        TestAssertClose stats, name, CDbl(summaryValue), CDbl(detailedValue), TestMaxDouble(0.0000001, Abs(CDbl(detailedValue)) * 0.0000001)
 End Sub
 
-Private Function MaxDouble(ByVal firstValue As Double, ByVal secondValue As Double) As Double
-    If firstValue > secondValue Then MaxDouble = firstValue Else MaxDouble = secondValue
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает большее из двух контрольных чисел без обращения к Excel.
+Private Function TestMaxDouble(ByVal firstValue As Double, ByVal secondValue As Double) As Double
+    If firstValue > secondValue Then TestMaxDouble = firstValue Else TestMaxDouble = secondValue
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает меньшую границу диапазона деформаций нескольких тестовых НДС.
-Private Function MinDouble(ByVal firstValue As Double, ByVal secondValue As Double) As Double
-    If firstValue < secondValue Then MinDouble = firstValue Else MinDouble = secondValue
+Private Function TestMinDouble(ByVal firstValue As Double, ByVal secondValue As Double) As Double
+    If firstValue < secondValue Then TestMinDouble = firstValue Else TestMinDouble = secondValue
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Собирает независимый армированный прямоугольник 300x200 и профильный batch.
 ' Effective Extension задается явно для теста; готовая модель при необходимости
 ' возвращается для дополнительных проверок состояний без повторной геометрии.
-Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As Boolean = True, _
+Private Function TestBuildBatchCalculator(Optional ByVal diagramExtensionEnabled As Boolean = True, _
         Optional ByRef preparedSection As CSectionModel = Nothing) As CBatchSectionCalculator
     Dim geom As CGeometryRegion
-    Set geom = FixtureBox(300#, 200#)
+    Set geom = TestFixtureBox(300#, 200#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -4684,22 +4794,23 @@ Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As 
     rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars, "TestBatch")
+    Set section = TestBuildGeneratedSectionModel(mesh, rebars, "TestBatch")
     Set preparedSection = section
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, TestMaterialProvider(diagramExtensionEnabled)
     Set batch.ProfileCatalog = TestProfileCatalog()
-    Set BuildBatchCalculator = batch
+    Set TestBuildBatchCalculator = batch
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Собирает ступенчатую тестовую модель, где локальный и глобальный варианты
 ' a_s дают разные расстояния. Это regression именно на передачу настройки из
 ' batch в расчет трещин, а не на сам геометрический ray-cast.
-Private Function BuildSteppedCrackCoverBatch() As CBatchSectionCalculator
+Private Function TestBuildSteppedCrackCoverBatch() As CBatchSectionCalculator
     Dim geom As CGeometryRegion
-    Set geom = FixtureBox(300#, 200#)
+    Set geom = TestFixtureBox(300#, 200#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -4713,7 +4824,7 @@ Private Function BuildSteppedCrackCoverBatch() As CBatchSectionCalculator
     rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars, "SteppedCoverTest")
+    Set section = TestBuildGeneratedSectionModel(mesh, rebars, "SteppedCoverTest")
     section.SourceType = "SteppedCoverTest"
     ' Узкий малоплощадный выступ почти не меняет равновесие, но сдвигает
     ' дальнюю растянутую опорную линию. Так batch-тест ловит именно передачу
@@ -4724,46 +4835,48 @@ Private Function BuildSteppedCrackCoverBatch() As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, TestMaterialProvider()
     Set batch.ProfileCatalog = TestProfileCatalog()
-    Set BuildSteppedCrackCoverBatch = batch
+    Set TestBuildSteppedCrackCoverBatch = batch
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает статус полного batch-расчета для указанного режима расстояния.
 ' Численное отличие NearestContour/GlobalExtreme проверяется в прямых crack-тестах;
 ' здесь важно, что настройка проходит через batch и не превращается в InputErr.
-Private Function BatchSteppedCrackCoverStatus(ByVal coverMode As String) As String
-    SetSystemSetting "SLS.Crack.CoverDistanceMode", coverMode
+Private Function TestBatchSteppedCrackCoverStatus(ByVal coverMode As String) As String
+    TestSetSystemSetting "SLS.Crack.CoverDistanceMode", coverMode
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildSteppedCrackCoverBatch()
+    Set batch = TestBuildSteppedCrackCoverBatch()
     batch.ApplySettings settings
     batch.AddCombination "COVER_" & coverMode, -20000#, -32000000#, 0#, "PR2", "cover distance mode"
     batch.Execute
 
-    BatchSteppedCrackCoverStatus = batch.ResultAt(1).NormalCrackStatus
+    TestBatchSteppedCrackCoverStatus = batch.ResultAt(1).NormalCrackStatus
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Собирает Г-сечение из пользовательского примера: H1/B1/H2/B2 = 550/250/250/600,
 ' арматура диаметром 32 мм по всем внешним и внутренним граням. Этот сценарий нужен именно
 ' для проверки StateSolution при почти предельном осевом растяжении PR2.
-Private Function BuildUserRectanglesTensionBatch(ByRef referenceX As Double, ByRef referenceY As Double, _
+Private Function TestBuildUserRectanglesTensionBatch(ByRef referenceX As Double, ByRef referenceY As Double, _
         Optional ByVal providerOverride As CMaterialModelProvider = Nothing, _
         Optional ByVal transformedReference As Boolean = False) As CBatchSectionCalculator
     Dim geom As CGeometryRegion
-    Set geom = RectanglesGeometry(250#, 550#, 600#, 250#)
+    Set geom = TestRectanglesGeometry(250#, 550#, 600#, 250#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 50#, 50#, 1
 
     Dim rebars As CRebarLayout
-    Set rebars = UserRectanglesTensionRebars()
+    Set rebars = TestUserRectanglesTensionRebars()
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars, "UserRectanglesTension")
+    Set section = TestBuildGeneratedSectionModel(mesh, rebars, "UserRectanglesTension")
 
     Dim provider As CMaterialModelProvider
     If providerOverride Is Nothing Then
@@ -4787,13 +4900,14 @@ Private Function BuildUserRectanglesTensionBatch(ByRef referenceX As Double, ByR
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, provider
     Set batch.ProfileCatalog = profiles
-    Set BuildUserRectanglesTensionBatch = batch
+    Set TestBuildUserRectanglesTensionBatch = batch
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Создает арматуру воспроизводимого Rectangles из принятого пользовательского примера.
 ' Восемь прямых рядов заданы явно; дополнительные ряды отключены.
-Private Function UserRectanglesTensionRebars() As CRebarLayout
-    Set UserRectanglesTensionRebars = FixtureStraightRows(Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)), _
+Private Function TestUserRectanglesTensionRebars() As CRebarLayout
+    Set TestUserRectanglesTensionRebars = TestFixtureStraightRows(Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)), _
         Array(Array("H1.as_1", 40#, 250#, 40#, 800#, 5, 32#, 80#, 80#), _
               Array("H1.as_2", 210#, 800#, 210#, 250#, 5, 32#, 80#, 80#), _
               Array("B1.as_1", 0#, 760#, 250#, 760#, 2, 32#, 80#, 80#), _
@@ -4804,24 +4918,26 @@ Private Function UserRectanglesTensionRebars() As CRebarLayout
               Array("B2.as_2", 600#, 40#, 0#, 40#, 5, 32#, 80#, 80#)))
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Читает значение тестового параметра по ключу для последующего восстановления.
 ' Отсутствующий ключ означает ошибку подготовки теста.
-Private Function GetSystemSetting(ByVal key As String) As String
+Private Function TestGetSystemSetting(ByVal key As String) As String
     Dim settings As Object
     Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Dim rowIndex As Long
     For rowIndex = 2 To settings.Rows.Count
         If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), key, vbTextCompare) = 0 Then
-            GetSystemSetting = CStr(settings.Cells.Item(rowIndex, 2).Value2)
+            TestGetSystemSetting = CStr(settings.Cells.Item(rowIndex, 2).Value2)
             Exit Function
         End If
     Next rowIndex
     Err.Raise vbObjectError + 3930, "modTestBatchCalculation", "System setting not found: " & key
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Меняет существующую настройку отдельной тестовой копии.
 ' Новый ключ не добавляет; исходные пользовательские данные не меняет.
-Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
+Private Sub TestSetSystemSetting(ByVal key As String, ByVal value As String)
     Dim settings As Object
     Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Dim rowIndex As Long
@@ -4834,46 +4950,50 @@ Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
     Err.Raise vbObjectError + 3931, "modTestBatchCalculation", "System setting not found: " & key
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает значение конкретной строки профиля из rngCalculationProfiles.
 ' Тесты используют это для временного включения веток без изменения шаблона книги.
-Private Function GetProfileValue(ByVal key As String, ByVal profileId As String) As String
+Private Function TestGetProfileValue(ByVal key As String, ByVal profileId As String) As String
     Dim profiles As Object
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
 
     Dim rowIndex As Long
-    rowIndex = ProfileKeyRow(profiles, key)
-    GetProfileValue = CStr(profiles.Cells.Item(rowIndex, ProfileColumn(profiles, profileId)).Value2)
+    rowIndex = TestProfileKeyRow(profiles, key)
+    TestGetProfileValue = CStr(profiles.Cells.Item(rowIndex, TestProfileColumn(profiles, profileId)).Value2)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Записывает значение в один профильный столбец. Восстановление старого
 ' значения остается на вызывающем тесте, чтобы сценарии были изолированными.
-Private Sub SetProfileValue(ByVal key As String, ByVal profileId As String, ByVal value As String)
+Private Sub TestSetProfileValue(ByVal key As String, ByVal profileId As String, ByVal value As String)
     Dim profiles As Object
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
 
-    profiles.Cells.Item(ProfileKeyRow(profiles, key), ProfileColumn(profiles, profileId)).Value2 = value
+    profiles.Cells.Item(TestProfileKeyRow(profiles, key), TestProfileColumn(profiles, profileId)).Value2 = value
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Находит строку параметра в вертикальной таблице профилей.
-Private Function ProfileKeyRow(ByVal profiles As Object, ByVal key As String) As Long
+Private Function TestProfileKeyRow(ByVal profiles As Object, ByVal key As String) As Long
     Dim rowIndex As Long
     For rowIndex = 1 To profiles.Rows.Count
         If StrComp(CStr(profiles.Cells.Item(rowIndex, 2).Value2), key, vbTextCompare) = 0 Then
-            ProfileKeyRow = rowIndex
+            TestProfileKeyRow = rowIndex
             Exit Function
         End If
     Next rowIndex
     Err.Raise vbObjectError + 3932, "modTestBatchCalculation", "Profile key not found: " & key
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Находит столбец PR1/PR2/... независимо от фактической ширины таблицы.
-Private Function ProfileColumn(ByVal profiles As Object, ByVal profileId As String) As Long
+Private Function TestProfileColumn(ByVal profiles As Object, ByVal profileId As String) As Long
     Dim rowIndex As Long
     Dim colIndex As Long
     For rowIndex = 1 To profiles.Rows.Count
         For colIndex = 3 To profiles.Columns.Count
             If StrComp(CStr(profiles.Cells.Item(rowIndex, colIndex).Value2), profileId, vbTextCompare) = 0 Then
-                ProfileColumn = colIndex
+                TestProfileColumn = colIndex
                 Exit Function
             End If
         Next colIndex
@@ -4881,17 +5001,18 @@ Private Function ProfileColumn(ByVal profiles As Object, ByVal profileId As Stri
     Err.Raise vbObjectError + 3933, "modTestBatchCalculation", "Profile column not found: " & profileId
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Запускает короткий SP35-сценарий и возвращает предельную/критическую силу,
 ' чтобы тест мог сравнить влияние выбранного MaterialModel.Stability.ValueSet.
-Private Function StabilitySP35CriticalForceForValueSet(ByVal valueSetText As String) As Double
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", valueSetText
+Private Function TestStabilitySP35CriticalForceForValueSet(ByVal valueSetText As String) As Double
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", valueSetText
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "STAB_SP35_" & Replace$(valueSetText, "(", ""), -120000#, 0#, 0#, "PR1", "stability sp35"
@@ -4901,66 +5022,70 @@ Private Function StabilitySP35CriticalForceForValueSet(ByVal valueSetText As Str
         Err.Raise vbObjectError + 3934, "modTestBatchCalculation", _
             "SP35 stability status is not applicable: " & batch.ResultAt(1).StabilityResult.Status
     End If
-    StabilitySP35CriticalForceForValueSet = batch.ResultAt(1).StabilityResult.CriticalForce
+    TestStabilitySP35CriticalForceForValueSet = batch.ResultAt(1).StabilityResult.CriticalForce
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет короткий расчет устойчивости с одним изгибающим моментом и
 ' возвращает модуль фактически добавленного случайного эксцентриситета.
-Private Function StabilityAccidentalForSingleMoment() As Double
+Private Function TestStabilityAccidentalForSingleMoment() As Double
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "ACC_E", -120000#, 1000000#, 0#, "PR1", "accidental eccentricity"
     batch.Execute
 
-    StabilityAccidentalForSingleMoment = Abs(batch.ResultAt(1).StabilityResult.AccidentalEcc1) + _
+    TestStabilityAccidentalForSingleMoment = Abs(batch.ResultAt(1).StabilityResult.AccidentalEcc1) + _
         Abs(batch.ResultAt(1).StabilityResult.AccidentalEcc2)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Запускает минимальный LC устойчивости с текущими настройками Config.
 ' Нужен тестам валидации: они временно меняют одну настройку и проверяют,
 ' что ошибка доходит до пользовательского StabilityStatus.
-Private Function StabilityStatusForCurrentSettings() As String
+Private Function TestStabilityStatusForCurrentSettings() As String
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "STAB_BAD_SETTING", -120000#, 1000000#, 0#, "PR1", "bad stability setting"
     batch.Execute
 
-    StabilityStatusForCurrentSettings = batch.ResultAt(1).StabilityResult.Status
+    TestStabilityStatusForCurrentSettings = batch.ResultAt(1).StabilityResult.Status
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает детальную причину первой ошибки при текущих настройках Config.
 ' Это защищает пользовательское сообщение: короткий статус остается InputErr,
 ' но popup должен показывать конкретную настройку или расчетную причину.
-Private Function StabilityFirstInvalidMessageForCurrentSettings() As String
+Private Function TestStabilityFirstInvalidMessageForCurrentSettings() As String
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "STAB_BAD_SETTING", -120000#, 1000000#, 0#, "PR1", "bad stability setting"
     batch.Execute
 
-    StabilityFirstInvalidMessageForCurrentSettings = batch.FirstInvalidInputMessage
+    TestStabilityFirstInvalidMessageForCurrentSettings = batch.FirstInvalidInputMessage
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Запускает устойчивость с заданной длительной частью нагрузки и возвращает
 ' phi_l активной главной плоскости. Метод нужен тестам знаковой логики Ml/M.
-Private Function StabilityPhiLForDurationLoad(ByVal combinationID As String, _
+Private Function TestStabilityPhiLForDurationLoad(ByVal combinationID As String, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal sustainedN As Double, ByVal sustainedMx As Double, ByVal sustainedMy As Double) As Double
     Dim settings As CSystemSettingsReader
@@ -4968,59 +5093,65 @@ Private Function StabilityPhiLForDurationLoad(ByVal combinationID As String, _
     settings.LoadFromWorkbook ThisWorkbook
 
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddStabilityDurationLoad combinationID, sustainedN, sustainedMx, sustainedMy
     batch.AddCombination combinationID, nValue, mxValue, myValue, "PR1", "phi_l"
     batch.Execute
 
-    StabilityPhiLForDurationLoad = ActiveMomentPlaneValue(batch, batch.ResultAt(1).StabilityResult.PhiL1, batch.ResultAt(1).StabilityResult.PhiL2)
+    TestStabilityPhiLForDurationLoad = TestActiveMomentPlaneValue(batch, batch.ResultAt(1).StabilityResult.PhiL1, batch.ResultAt(1).StabilityResult.PhiL2)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает значение из той плоскости, где фактически есть больший главный
 ' изгибающий момент. После явного соглашения "ось 1 = I1" у широкого
 ' прямоугольника глобальный Mx попадает во вторую главную плоскость, поэтому
 ' выбирать просто первое ненулевое значение нельзя.
-Private Function ActiveMomentPlaneValue(ByVal batch As CBatchSectionCalculator, _
+Private Function TestActiveMomentPlaneValue(ByVal batch As CBatchSectionCalculator, _
         ByVal firstValue As Double, ByVal secondValue As Double) As Double
     If Abs(batch.ResultAt(1).StabilityResult.Moment1) >= Abs(batch.ResultAt(1).StabilityResult.Moment2) Then
-        ActiveMomentPlaneValue = firstValue
+        TestActiveMomentPlaneValue = firstValue
     Else
-        ActiveMomentPlaneValue = secondValue
+        TestActiveMomentPlaneValue = secondValue
     End If
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает ненулевое значение активной плоскости. В тестах используется для
 ' сценариев, где нагрузка задана только в одной главной плоскости.
-Private Function ActiveStabilityValue(ByVal firstValue As Double, ByVal secondValue As Double) As Double
+Private Function TestActiveStabilityValue(ByVal firstValue As Double, ByVal secondValue As Double) As Double
     If Abs(firstValue) > 0.000000001 Then
-        ActiveStabilityValue = Abs(firstValue)
+        TestActiveStabilityValue = Abs(firstValue)
     Else
-        ActiveStabilityValue = Abs(secondValue)
+        TestActiveStabilityValue = Abs(secondValue)
     End If
 End Function
 
-' ДЛЯ ТЕСТОВ: создает круг в заданном центре через штатный geometry-интерфейс.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' создает круг в заданном центре через штатный geometry-интерфейс.
 ' Явное смещение нужно регрессиям переноса нагрузки и осей сечения.
-Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double) As CGeometryRegion
-    Set CircleGeometry = FixtureDisk(diameter, centerX, centerY)
+Private Function TestCircleGeometry(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double) As CGeometryRegion
+    Set TestCircleGeometry = TestFixtureDisk(diameter, centerX, centerY)
 End Function
 
-' ДЛЯ ТЕСТОВ: прямоугольная область через общее ядро точных контуров.
-Private Function PointedSectionGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
-    Set PointedSectionGeometry = FixtureBox(width, height)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' прямоугольная область через общее ядро точных контуров.
+Private Function TestPointedSectionGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
+    Set TestPointedSectionGeometry = TestFixtureBox(width, height)
 End Function
 
-' ДЛЯ ТЕСТОВ: собирает два прямоугольника с общей левой гранью и без смещения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' собирает два прямоугольника с общей левой гранью и без смещения.
 ' Размеры заданы явно; функция не читает и не меняет Config.
-Private Function RectanglesGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double) As CGeometryRegion
-    Set RectanglesGeometry = FixtureBoxes(Array(Array(0#, 0#, b2, h2), Array(0#, h2, b1, h1)))
+Private Function TestRectanglesGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double) As CGeometryRegion
+    Set TestRectanglesGeometry = TestFixtureBoxes(Array(Array(0#, 0#, b2, h2), Array(0#, h2, b1, h1)))
 End Function
 
-' ДЛЯ ТЕСТОВ: создает один круговой ряд A400 с заданным осевым отступом.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' создает один круговой ряд A400 с заданным осевым отступом.
 ' Координаты совпадают с переданной геометрией, в том числе при переносе центра.
-Private Function CircleRebars(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
+Private Function TestCircleRebars(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double) As CRebarLayout
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim radius As Double, layout As CRebarLayout
@@ -5032,16 +5163,17 @@ Private Function CircleRebars(ByVal diameter As Double, ByVal centerX As Double,
     options.SourcePrefix = "B": options.Publication = PublishPerSourcePosition
     options.AnnotationGroup = "Circle": options.Comment = "Круг: основной ряд арматуры"
     facade.RebarByCount "CircleRow", path.ID, barCount, barDiameter, options, "A400"
-    Set layout = FixtureLayout(facade.Finish)
-    Set CircleRebars = layout
+    Set layout = TestFixtureLayout(facade.Finish)
+    Set TestCircleRebars = layout
 End Function
 
-' ДЛЯ ТЕСТОВ: воспроизводит фиксированную многогранную раскладку Rectangles.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' воспроизводит фиксированную многогранную раскладку Rectangles.
 ' Отступ и диаметр варьируются, числа стержней граней заданы самой fixture.
-Private Function RectanglesRebars(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double, _
+Private Function TestRectanglesRebars(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double) As CRebarLayout
     Dim a As Double, d As Double: a = axisDistance: d = barDiameter
-    Set RectanglesRebars = FixtureStraightRows(Array(Array(0#, 0#, b2, h2), Array(0#, h2, b1, h1)), _
+    Set TestRectanglesRebars = TestFixtureStraightRows(Array(Array(0#, 0#, b2, h2), Array(0#, h2, b1, h1)), _
         Array(Array("H1.as_1", a, h2, a, h2 + h1, 13, d, a, a), _
               Array("H1.as_2", b1 - a, h2 + h1, b1 - a, h2, 12, d, a, a), _
               Array("B1.as_1", 0#, h2 + h1 - a, b1, h2 + h1 - a, 6, d, a, a), _
@@ -5052,6 +5184,7 @@ Private Function RectanglesRebars(ByVal b1 As Double, ByVal h1 As Double, ByVal 
               Array("B2.as_2", b2, a, 0#, a, 12, d, a, a)))
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет утвержденный словарь ResultMeta -> внешний статус.
 ' Capacity с INITIAL_STATE_BEYOND_LIMIT
 ' выводится как BaseFail, а не как NumFail.
@@ -5063,24 +5196,25 @@ Private Sub TestResultMetaStatusDictionary(ByRef stats As TBatchTestStats)
     Set meta = New CResultMeta
 
     meta.SetResult rsSuccess, rcCheckPassed, rkGeneric, vbNullString
-    AssertEquals stats, "resultMeta.ok", policy.ExternalStatus(meta), "OK"
+    TestAssertEquals stats, "resultMeta.ok", policy.ExternalStatus(meta), "OK"
 
     meta.SetResult rsCheckFailed, rcCheckFailed, rkGeneric, vbNullString
-    AssertEquals stats, "resultMeta.fail", policy.ExternalStatus(meta), "FAIL"
+    TestAssertEquals stats, "resultMeta.fail", policy.ExternalStatus(meta), "FAIL"
 
     meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, vbNullString
-    AssertEquals stats, "resultMeta.numFail", policy.ExternalStatus(meta), "NumFail"
+    TestAssertEquals stats, "resultMeta.numFail", policy.ExternalStatus(meta), "NumFail"
 
     meta.SetResult rsInvalidInput, rcInvalidInput, rkGeneric, vbNullString
-    AssertEquals stats, "resultMeta.inputErr", policy.ExternalStatus(meta), "InputErr"
+    TestAssertEquals stats, "resultMeta.inputErr", policy.ExternalStatus(meta), "InputErr"
 
     meta.SetResult rsInternalError, rcInternalError, rkGeneric, vbNullString
-    AssertEquals stats, "resultMeta.calcErr", policy.ExternalStatus(meta), "CalcErr"
+    TestAssertEquals stats, "resultMeta.calcErr", policy.ExternalStatus(meta), "CalcErr"
 
     meta.SetResult rsCheckFailed, rcInitialStateBeyondLimit, rkCapacity, vbNullString
-    AssertEquals stats, "resultMeta.baseFail", policy.ExternalStatus(meta), "BaseFail"
+    TestAssertEquals stats, "resultMeta.baseFail", policy.ExternalStatus(meta), "BaseFail"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что неприменимые ветви не ухудшают итоговый статус LC.
 ' Это защищает batch summary от ситуации, когда незапрошенный расчет перебивает
 ' реально выполненные OK/FAIL-ветки.
@@ -5102,13 +5236,14 @@ Private Sub TestResultMetaAggregateSkipsNotApplicable(ByRef stats As TBatchTestS
 
     Dim aggregate As CResultMeta
     Set aggregate = policy.WorstResultMeta(rkGeneric, directMeta, skippedMeta, Nothing)
-    AssertEquals stats, "resultMeta.aggregate.okWithNA", policy.ExternalStatus(aggregate), "OK"
+    TestAssertEquals stats, "resultMeta.aggregate.okWithNA", policy.ExternalStatus(aggregate), "OK"
     Set aggregate = policy.WorstResultMeta(rkGeneric, directMeta, skippedMeta, failedMeta)
-    AssertEquals stats, "resultMeta.aggregate.failWithNA", policy.ExternalStatus(aggregate), "FAIL"
+    TestAssertEquals stats, "resultMeta.aggregate.failWithNA", policy.ExternalStatus(aggregate), "FAIL"
     Set aggregate = policy.WorstResultMeta(rkGeneric, skippedMeta, Nothing, Nothing)
-    AssertEquals stats, "resultMeta.aggregate.onlyNA", policy.ExternalStatus(aggregate), "N/A"
+    TestAssertEquals stats, "resultMeta.aggregate.onlyNA", policy.ExternalStatus(aggregate), "N/A"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет готовые вложенные результаты. Внешний статус должен следовать
 ' из кода результата, а сводные пояснения — из соответствующего этапа расчёта.
 Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTestStats)
@@ -5123,8 +5258,8 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
     Set okMeta = New CResultMeta
     okMeta.SetResult rsSuccess, rcCheckPassed, rkDirectState, vbNullString
     result.SetDirectStateMeta okMeta
-    AssertEquals stats, "combinationTree.direct.flat", result.StrengthResult.DirectState.Status, "OK"
-    AssertEquals stats, "combinationTree.direct.meta", _
+    TestAssertEquals stats, "combinationTree.direct.flat", result.StrengthResult.DirectState.Status, "OK"
+    TestAssertEquals stats, "combinationTree.direct.meta", _
         policy.ExternalStatus(result.DirectStateMeta), "OK"
 
     Dim warningResult As CCombinationResult
@@ -5137,43 +5272,43 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
     warningResult.SetDirectStateMeta warningMeta
     Dim warningOverall As CResultMeta
     Set warningOverall = warningResult.OverallMeta
-    AssertEquals stats, "combinationTree.warning.externalOk", _
+    TestAssertEquals stats, "combinationTree.warning.externalOk", _
         policy.ExternalStatus(warningOverall), "OK"
-    AssertTrue stats, "combinationTree.warning.commentKept", _
+    TestAssertTrue stats, "combinationTree.warning.commentKept", _
         InStr(1, warningOverall.ResultComment, "Равновесие найдено через резервный старт", vbTextCompare) > 0
     Dim warningAfterSuccess As CResultMeta
     Set warningAfterSuccess = policy.WorstResultMeta(rkGeneric, okMeta, warningMeta)
-    AssertTrue stats, "audit03.aggregate.warningAfterSuccess", warningAfterSuccess.InternalStatus = rsSuccessWithWarning
+    TestAssertTrue stats, "audit03.aggregate.warningAfterSuccess", warningAfterSuccess.InternalStatus = rsSuccessWithWarning
 
     Dim failMeta As CResultMeta
     Set failMeta = New CResultMeta
     failMeta.SetResult rsCheckFailed, rcCheckFailed, rkDirectState, "Проверка не проходит."
     result.MergeDirectStateMeta failMeta
-    AssertEquals stats, "combinationTree.direct.merge.flat", result.StrengthResult.DirectState.Status, "FAIL"
-    AssertEquals stats, "combinationTree.direct.merge.meta", _
+    TestAssertEquals stats, "combinationTree.direct.merge.flat", result.StrengthResult.DirectState.Status, "FAIL"
+    TestAssertEquals stats, "combinationTree.direct.merge.meta", _
         policy.ExternalStatus(result.StrengthResult.DirectMeta), "FAIL"
 
     Dim capacity As CCapacityResult
     Set capacity = New CCapacityResult
     capacity.InitializeSkipped "capacity не запрошена", "None"
     result.StoreCapacityResult capacity
-    AssertTrue stats, "combinationTree.capacity.exists", Not result.StrengthResult.Capacity Is Nothing
-    AssertEquals stats, "combinationTree.capacity.meta", _
+    TestAssertTrue stats, "combinationTree.capacity.exists", Not result.StrengthResult.Capacity Is Nothing
+    TestAssertEquals stats, "combinationTree.capacity.meta", _
         policy.ExternalStatus(result.CapacityMeta), "N/A"
 
     Dim stabilityMeta As CResultMeta
     Set stabilityMeta = New CResultMeta
     stabilityMeta.SetResult rsInvalidInput, rcInvalidInput, rkStability, "ошибка настройки устойчивости"
     result.SetStabilityMeta stabilityMeta, "ошибка настройки устойчивости"
-    AssertEquals stats, "combinationTree.stability.flat", result.StabilityResult.Status, "InputErr"
-    AssertEquals stats, "combinationTree.stability.meta", _
+    TestAssertEquals stats, "combinationTree.stability.flat", result.StabilityResult.Status, "InputErr"
+    TestAssertEquals stats, "combinationTree.stability.meta", _
         policy.ExternalStatus(result.StabilityMeta), "InputErr"
 
     Dim overall As CResultMeta
     Set overall = result.OverallMeta
-    AssertTrue stats, "combinationTree.overallComment.direct", _
+    TestAssertTrue stats, "combinationTree.overallComment.direct", _
         InStr(1, overall.ResultComment, "НДС:", vbTextCompare) > 0
-    AssertTrue stats, "combinationTree.overallComment.stability", _
+    TestAssertTrue stats, "combinationTree.overallComment.stability", _
         InStr(1, overall.ResultComment, "Устойчивость: ошибка настройки устойчивости", vbTextCompare) > 0
 
     Dim baseResult As CCombinationResult
@@ -5184,14 +5319,15 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
     Set baseCapacity = New CCapacityResult
     baseCapacity.InitializeBaseFail "Начальное состояние при lambda = 0 не проходит физический критерий: ConcreteStrainLimit."
     baseResult.StoreCapacityResult baseCapacity
-    AssertEquals stats, "combinationTree.strength.baseFail.meta", _
+    TestAssertEquals stats, "combinationTree.strength.baseFail.meta", _
         policy.ExternalStatus(baseResult.StrengthMeta), "BaseFail"
-    AssertTrue stats, "combinationTree.strength.baseFail.comment", _
+    TestAssertTrue stats, "combinationTree.strength.baseFail.comment", _
         InStr(1, baseResult.StrengthMeta.ResultComment, "НДС: Проверка не проходит.", vbTextCompare) > 0 And _
         InStr(1, baseResult.StrengthMeta.ResultComment, _
             "Несущая способность: Несущая способность не проходит уже для исходной части выбранного пути", vbTextCompare) > 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что общий статус detailed-блока трещин не скрывает ошибку
 ' обязательного CurrentCrackedState. Формульные проверки при такой ошибке
 ' остаются N/A/blocked, но сводный crack-meta обязан сохранить NumFail/InputErr/CalcErr.
@@ -5213,13 +5349,13 @@ Private Sub TestCrackAggregateIncludesCurrentStateFailure(ByRef stats As TBatchT
     result.Clear "LambdaMxy"
     result.StoreCrackAggregateResult crackTree
 
-    AssertEquals stats, "combinationTree.crack.currentState.meta", _
+    TestAssertEquals stats, "combinationTree.crack.currentState.meta", _
         policy.ExternalStatus(result.CrackCurrentStateMeta), "NumFail"
-    AssertEquals stats, "combinationTree.crack.aggregate.currentStateFailure", _
+    TestAssertEquals stats, "combinationTree.crack.aggregate.currentStateFailure", _
         policy.ExternalStatus(result.CrackMeta), "NumFail"
-    AssertEquals stats, "combinationTree.crack.flat.currentStateFailure", _
+    TestAssertEquals stats, "combinationTree.crack.flat.currentStateFailure", _
         result.NormalCrackStatus, "NumFail"
-    AssertTrue stats, "combinationTree.crack.comment.currentStateFailure", _
+    TestAssertTrue stats, "combinationTree.crack.comment.currentStateFailure", _
         InStr(1, result.CrackMeta.ResultComment, "CrackedState от заданного сочетания", vbTextCompare) > 0
 
     Dim longitudinalMeta As CResultMeta
@@ -5240,14 +5376,15 @@ Private Sub TestCrackAggregateIncludesCurrentStateFailure(ByRef stats As TBatchT
     summaryResult.Clear "LambdaMxy"
     summaryResult.StoreCrackAggregateResult summaryTree
 
-    AssertEquals stats, "combinationTree.crack.normalOnly.na", _
+    TestAssertEquals stats, "combinationTree.crack.normalOnly.na", _
         policy.ExternalStatus(summaryResult.CrackMeta), "N/A"
-    AssertEquals stats, "combinationTree.crack.summary.longitudinalFail", _
+    TestAssertEquals stats, "combinationTree.crack.summary.longitudinalFail", _
         policy.ExternalStatus(summaryResult.CrackSummaryMeta), "FAIL"
-    AssertTrue stats, "combinationTree.crack.summary.comment", _
+    TestAssertTrue stats, "combinationTree.crack.summary.comment", _
         InStr(1, summaryResult.CrackSummaryMeta.ResultComment, "Продольные трещины", vbTextCompare) > 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что проверки без поиска равновесия не создают NumFail.
 ' Продольные трещины и устойчивость являются инженерскими проверками готовых
 ' величин; их отрицательный результат должен быть FAIL/InputErr/N/A, но не NumFail.
@@ -5257,47 +5394,49 @@ Private Sub TestFormulaChecksDoNotCreateNumFail(ByRef stats As TBatchTestStats)
 
     Dim longitudinal As CLongitudinalCrackCalculator
     Set longitudinal = New CLongitudinalCrackCalculator
-    AssertEquals stats, "status.longitudinal.pass", _
+    TestAssertEquals stats, "status.longitudinal.pass", _
         policy.ExternalStatus(longitudinal.CalculateFromStress(10#, 14.6).ResultMeta), "OK"
-    AssertEquals stats, "status.longitudinal.fail", _
+    TestAssertEquals stats, "status.longitudinal.fail", _
         policy.ExternalStatus(longitudinal.CalculateFromStress(20#, 14.6).ResultMeta), "FAIL"
-    AssertEquals stats, "status.longitudinal.na", _
+    TestAssertEquals stats, "status.longitudinal.na", _
         policy.ExternalStatus(longitudinal.CalculateFromStress(0#, 14.6).ResultMeta), "N/A"
-    AssertEquals stats, "status.longitudinal.input", _
+    TestAssertEquals stats, "status.longitudinal.input", _
         policy.ExternalStatus(longitudinal.CalculateFromStress(10#, 0#).ResultMeta), "InputErr"
 
-    AssertTrue stats, "status.longitudinal.noNumFail", _
+    TestAssertTrue stats, "status.longitudinal.noNumFail", _
         policy.ExternalStatus(longitudinal.CalculateFromStress(20#, 14.6).ResultMeta) <> "NumFail"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохранённое НДС должно содержать не только поле деформаций,
 ' но и заданные и внутренние усилия, невязки и диагностику решателя.
 Private Sub TestSectionStateResultStoresEquilibriumData(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "STATE_META", -100000#, 12000000#, 3000000#, "PR1", "state metadata"
     batch.Execute
 
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.ResultAt(1).StateRepository.FindState(sstStrengthState)
 
-    AssertTrue stats, "stateMeta.exists", Not stateResult Is Nothing
+    TestAssertTrue stats, "stateMeta.exists", Not stateResult Is Nothing
     If stateResult Is Nothing Then Exit Sub
 
-    AssertClose stats, "stateMeta.epsilon0", stateResult.Epsilon0, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Epsilon0, 0.000000000001
-    AssertClose stats, "stateMeta.kappaX", stateResult.KappaX, batch.ResultAt(1).StrengthResult.DirectState.StateResult.KappaX, 0.000000000001
-    AssertClose stats, "stateMeta.kappaY", stateResult.KappaY, batch.ResultAt(1).StrengthResult.DirectState.StateResult.KappaY, 0.000000000001
-    AssertClose stats, "stateMeta.targetN", stateResult.TargetN, batch.N(1), 0.001
-    AssertClose stats, "stateMeta.targetMx", stateResult.TargetMx, batch.Mx(1), 0.001
-    AssertClose stats, "stateMeta.targetMy", stateResult.TargetMy, batch.My(1), 0.001
-    AssertClose stats, "stateMeta.nint", stateResult.Nint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Nint, 0.001
-    AssertClose stats, "stateMeta.mxint", stateResult.Mxint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Mxint, 0.001
-    AssertClose stats, "stateMeta.myint", stateResult.Myint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Myint, 0.001
-    AssertTrue stats, "stateMeta.solverCalls", stateResult.SolverCallCount >= 1
-    AssertTrue stats, "stateMeta.iterations", stateResult.IterationCount >= 0
-    AssertTrue stats, "stateMeta.resultMeta", Not stateResult.ResultMeta Is Nothing
+    TestAssertClose stats, "stateMeta.epsilon0", stateResult.Epsilon0, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Epsilon0, 0.000000000001
+    TestAssertClose stats, "stateMeta.kappaX", stateResult.KappaX, batch.ResultAt(1).StrengthResult.DirectState.StateResult.KappaX, 0.000000000001
+    TestAssertClose stats, "stateMeta.kappaY", stateResult.KappaY, batch.ResultAt(1).StrengthResult.DirectState.StateResult.KappaY, 0.000000000001
+    TestAssertClose stats, "stateMeta.targetN", stateResult.TargetN, batch.N(1), 0.001
+    TestAssertClose stats, "stateMeta.targetMx", stateResult.TargetMx, batch.Mx(1), 0.001
+    TestAssertClose stats, "stateMeta.targetMy", stateResult.TargetMy, batch.My(1), 0.001
+    TestAssertClose stats, "stateMeta.nint", stateResult.Nint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Nint, 0.001
+    TestAssertClose stats, "stateMeta.mxint", stateResult.Mxint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Mxint, 0.001
+    TestAssertClose stats, "stateMeta.myint", stateResult.Myint, batch.ResultAt(1).StrengthResult.DirectState.StateResult.Myint, 0.001
+    TestAssertTrue stats, "stateMeta.solverCalls", stateResult.SolverCallCount >= 1
+    TestAssertTrue stats, "stateMeta.iterations", stateResult.IterationCount >= 0
+    TestAssertTrue stats, "stateMeta.resultMeta", Not stateResult.ResultMeta Is Nothing
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Параметры численных попыток не входят в ключ совпадения сохранённого НДС,
 ' если они не меняют физический результат.
 Private Sub TestStateRequestEquivalenceIgnoresSolveOptions(ByRef stats As TBatchTestStats)
@@ -5317,23 +5456,24 @@ Private Sub TestStateRequestEquivalenceIgnoresSolveOptions(ByRef stats As TBatch
     Set requestDifferent = New CStateRequest
     requestDifferent.Initialize sstStrengthState, cpStrength, spec, 1000#, 2500#, 3000#, True, False
 
-    AssertEquals stats, "stateRequest.key.solveOptionsIgnored", _
+    TestAssertEquals stats, "stateRequest.key.solveOptionsIgnored", _
         requestA.EquivalenceKey, requestB.EquivalenceKey
-    AssertTrue stats, "stateRequest.key.loadsMatter", _
+    TestAssertTrue stats, "stateRequest.key.loadsMatter", _
         requestA.EquivalenceKey <> requestDifferent.EquivalenceKey
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Повторно использовать можно только подтверждённое физическое НДС.
 ' Неудача сохраняется для пояснения, но не запрещает последующие попытки решения.
 Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "STATE_REUSE", -100000#, 12000000#, 3000000#, "PR1", "state repository"
     batch.Execute
 
     Dim successfulState As CSectionStateResult
     Set successfulState = batch.ResultAt(1).StateRepository.FindState(sstStrengthState)
-    AssertTrue stats, "stateRepository.successSource", Not successfulState Is Nothing
+    TestAssertTrue stats, "stateRepository.successSource", Not successfulState Is Nothing
     If successfulState Is Nothing Then Exit Sub
 
     Dim successfulRequest As CStateRequest
@@ -5346,7 +5486,7 @@ Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTe
     Set successfulRepository = New CStateRepository
     successfulRepository.StoreForRequest successfulRequest, successfulState
 
-    AssertTrue stats, "stateRepository.successReusable", _
+    TestAssertTrue stats, "stateRepository.successReusable", _
         successfulRepository.FindEquivalent(successfulRequest) Is successfulState
 
     Dim retryRepository As CStateRepository
@@ -5360,33 +5500,36 @@ Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTe
     failedState.InitializeFromSolver sstStrengthState, cpStrength, successfulState.MaterialSpec, failedSolver, False
     retryRepository.StoreForRequest successfulRequest, failedState
 
-    AssertTrue stats, "stateRepository.failedNotReusable", retryRepository.FindEquivalent(successfulRequest) Is Nothing
-    AssertTrue stats, "stateRepository.failedStillInSnapshot", retryRepository.StateCount = 1
+    TestAssertTrue stats, "stateRepository.failedNotReusable", retryRepository.FindEquivalent(successfulRequest) Is Nothing
+    TestAssertTrue stats, "stateRepository.failedStillInSnapshot", retryRepository.StateCount = 1
 
     retryRepository.StoreForRequest successfulRequest, successfulState
-    AssertTrue stats, "stateRepository.retrySuccessReusable", _
+    TestAssertTrue stats, "stateRepository.retrySuccessReusable", _
         retryRepository.FindEquivalent(successfulRequest) Is successfulState
-    AssertTrue stats, "stateRepository.retrySuccessSnapshot", _
+    TestAssertTrue stats, "stateRepository.retrySuccessSnapshot", _
         retryRepository.FindState(sstStrengthState) Is successfulState
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Принимаются имена PreCrackState и PostCrackState.
 ' Устаревшие имена BeforeMcrc и AfterMcrc не должны незаметно подменяться.
 Private Sub TestPrePostCrackStateNames(ByRef stats As TBatchTestStats)
-    AssertTrue stats, "stateName.preCanonical", _
+    TestAssertTrue stats, "stateName.preCanonical", _
         SectionStateTypeFromText("PreCrackState") = sstPreCrackState
-    AssertTrue stats, "stateName.postCanonical", _
+    TestAssertTrue stats, "stateName.postCanonical", _
         SectionStateTypeFromText("PostCrackState") = sstPostCrackState
-    AssertEquals stats, "stateName.preText", SectionStateTypeToText(sstPreCrackState), "PreCrackState"
-    AssertEquals stats, "stateName.postText", SectionStateTypeToText(sstPostCrackState), "PostCrackState"
+    TestAssertEquals stats, "stateName.preText", SectionStateTypeToText(sstPreCrackState), "PreCrackState"
+    TestAssertEquals stats, "stateName.postText", SectionStateTypeToText(sstPostCrackState), "PostCrackState"
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ AUDIT02 ==============================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Повторно читает сводные статус и пояснение без решателя и записи Excel.
 ' Возвращает время и последнее пояснение для разбора расхода строк;
 ' физические значения результата не меняет.
-Public Function RunAudit02ResultMetaStress() As String
+Public Function TestRunAudit02ResultMetaStress() As String
     Dim result As CCombinationResult
     Set result = New CCombinationResult
     Dim meta As CResultMeta
@@ -5404,13 +5547,14 @@ Public Function RunAudit02ResultMetaStress() As String
         statusText = result.Status
         commentText = result.OverallMeta.ResultComment
     Next i
-    RunAudit02ResultMetaStress = "INFO: metaStress; reads=5000; elapsedSec=" & _
-        FormatNumberInvariant(Timer - started) & "; status=" & statusText & "; comment=" & commentText
+    TestRunAudit02ResultMetaStress = "INFO: metaStress; reads=5000; elapsedSec=" & _
+        TestFormatNumberInvariant(Timer - started) & "; status=" & statusText & "; comment=" & commentText
 End Function
 
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ: PSI ПРИ НЕУДАЧЕ FORMATION ==============================
-' ДЛЯ ТЕСТОВ: воспроизводит отсутствие точки Formation при допустимом текущем
+' воспроизводит отсутствие точки Formation при допустимом текущем
 ' НДС. Нулевая масштабируемая компонента дает typed InputErr выбранного пути,
 ' но не блокирует Width/Longitudinal. Действующий контракт при недоступной
 ' точке принимает единицу во всех режимах; дополнительный путь Auto проверяет
@@ -5426,22 +5570,22 @@ Public Function RunAudit03UserPsiFallbackTests(Optional ByRef passed As Long = 0
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
-    SetSystemSetting "General.DiagramExtension", "No"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "SLS.Crack.PsiS", "0.25"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetSystemSetting "General.DiagramExtension", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "SLS.Crack.PsiS", "0.25"
     Set policy = New CResultStatusPolicy
     Set writer = New CBatchResultWriter
     For Each mode In Array("User", "Auto", "AlwaysCalc")
-        SetSystemSetting "SLS.Crack.PsiMode", CStr(mode)
+        TestSetSystemSetting "SLS.Crack.PsiMode", CStr(mode)
         Set settings = New CSystemSettingsReader
         settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem
         units.LoadFromSettings settings
-        Set batch = BuildBatchCalculator(False)
+        Set batch = TestBuildBatchCalculator(False)
         batch.ApplySettings settings, units
         For Each path In Array("Mx", "My", "Mxy")
             batch.AddCombination "PSI_" & CStr(mode) & "_" & CStr(path), 200000#, 0#, 0#, _
@@ -5456,94 +5600,97 @@ Public Function RunAudit03UserPsiFallbackTests(Optional ByRef passed As Long = 0
             Set width = result.CrackResult.Width
             prefix = "audit03.userPsiFallback." & batch.CombinationID(index)
             If index <= 3 Then
-                AssertTrue stats, prefix & ".formationInvalidInput", result.CrackFormationMeta.InternalStatus = rsInvalidInput
-                AssertTrue stats, prefix & ".noPoint", Not result.CrackResult.Formation.HasLimitPoint
+                TestAssertTrue stats, prefix & ".formationInvalidInput", result.CrackFormationMeta.InternalStatus = rsInvalidInput
+                TestAssertTrue stats, prefix & ".noPoint", Not result.CrackResult.Formation.HasLimitPoint
             Else
-                AssertTrue stats, prefix & ".hasUsableFormation", Audit03HasUsableFormationData(result)
+                TestAssertTrue stats, prefix & ".hasUsableFormation", TestAudit03HasUsableFormationData(result)
             End If
-            AssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
-            AssertTrue stats, prefix & ".widthCalculated", result.CrackWidthMeta.Calculated
-            AssertTrue stats, prefix & ".longitudinalIndependent", result.LongitudinalCrackMeta.InternalStatus = rsNotApplicable
+            TestAssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
+            TestAssertTrue stats, prefix & ".widthCalculated", result.CrackWidthMeta.Calculated
+            TestAssertTrue stats, prefix & ".longitudinalIndependent", result.LongitudinalCrackMeta.InternalStatus = rsNotApplicable
             If index <= 3 Or CStr(mode) = "User" Then
                 If index = 4 Then expectedPsi = 0.25 Else expectedPsi = 1#
-                AssertClose stats, prefix & ".psi", width.PsiS, expectedPsi, 0#
+                TestAssertClose stats, prefix & ".psi", width.PsiS, expectedPsi, 0#
             Else
                 expectedPsi = width.PsiS
-                AssertTrue stats, prefix & ".automaticPsiRange", expectedPsi >= 0# And expectedPsi <= 1#
+                TestAssertTrue stats, prefix & ".automaticPsiRange", expectedPsi >= 0# And expectedPsi <= 1#
             End If
-            AssertClose stats, prefix & ".formula", width.CrackWidth, _
+            TestAssertClose stats, prefix & ".formula", width.CrackWidth, _
                 width.Phi1 * width.Phi2 * width.Phi3 * expectedPsi * width.SigmaS / width.SteelEs * width.CrackSpacing, 0.000000000001
-            Audit03CheckAppliedPsiMode stats, result, settings, prefix
-            Audit03CheckResultComments stats, batch, index
-            AppendLine stats, "USER_PSI_FALLBACK: " & prefix & "|psi=" & FormatNumberInvariant(width.PsiS) & _
+            TestAudit03CheckAppliedPsiMode stats, result, settings, prefix
+            TestAudit03CheckResultComments stats, batch, index
+            TestAppendLine stats, "USER_PSI_FALLBACK: " & prefix & "|psi=" & TestFormatNumberInvariant(width.PsiS) & _
                 "|formation=" & result.CrackFormationMeta.ResultComment & "|width=" & result.CrackWidthMeta.ResultComment
         Next index
     Next mode
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.userPsiFallback.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.userPsiFallback.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
     If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
 Finish:
-    AppendLine stats, "TOTAL_AUDIT03_USER_PSI_FALLBACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_USER_PSI_FALLBACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03UserPsiFallbackTests = stats.Report
     Exit Function
 RestoreFailed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.userPsiFallback.restore; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.userPsiFallback.restore; " & CStr(Err.Number) & "; " & Err.Description
     Resume Finish
 End Function
 
 
-' ДЛЯ ТЕСТОВ: проверяет пояснения и четыре таблицы готового расчёта.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет пояснения и четыре таблицы готового расчёта.
 ' Позволяет проверкам Config использовать те же проверки вложенных результатов
 ' без повторного тяжёлого расчёта.
-Public Function Audit03ValidateConfigBatchResults(ByVal batch As CBatchSectionCalculator, _
+Public Function TestAudit03ValidateConfigBatchResults(ByVal batch As CBatchSectionCalculator, _
         ByVal units As CUnitSystem, ByRef passed As Long, ByRef failed As Long) As String
     Dim stats As TBatchTestStats, writer As CBatchResultWriter, i As Long
     Set writer = New CBatchResultWriter
     writer.WriteSummary ThisWorkbook, batch, units
     For i = 1 To batch.Count
-        Audit03CheckResultComments stats, batch, i
+        TestAudit03CheckResultComments stats, batch, i
     Next i
     passed = stats.Passed
     failed = stats.Failed
-    Audit03ValidateConfigBatchResults = stats.Report
+    TestAudit03ValidateConfigBatchResults = stats.Report
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Повторяет реальный batch-маршрут после сохранения Pre/Post/current states.
 ' Центральное растяжение не требует поисковых проб, поэтому при cache-hit
 ' можно точно доказать отсутствие любого нового equilibrium solve.
 Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "AUDIT02_CURRENT_CACHE", 200000#, 0#, 0#, "PR2", "current state cache"
     batch.Execute
     Dim countBefore As Long
     countBefore = SectionEquilibriumSolveCount()
     Dim first As CCrackResult
     Set first = batch.TestRepeatCrackCalculation(1)
-    AssertTrue stats, "audit02.currentCache.firstExists", Not first Is Nothing
+    TestAssertTrue stats, "audit02.currentCache.firstExists", Not first Is Nothing
     If first Is Nothing Then Exit Sub
-    AssertTrue stats, "audit02.currentCache.crackFormed", first.Formation.CrackFormed
-    AssertTrue stats, "audit02.currentCache.firstWidth", first.Width.CrackWidth > 0#
+    TestAssertTrue stats, "audit02.currentCache.crackFormed", first.Formation.CrackFormed
+    TestAssertTrue stats, "audit02.currentCache.firstWidth", first.Width.CrackWidth > 0#
     Dim second As CCrackResult
     Set second = batch.ResultAt(1).CrackResult
-    AssertTrue stats, "audit02.currentCache.secondExists", Not second Is Nothing
+    TestAssertTrue stats, "audit02.currentCache.secondExists", Not second Is Nothing
     If second Is Nothing Then Exit Sub
-    AssertTrue stats, "audit02.currentCache.noHeavySolve", SectionEquilibriumSolveCount() = countBefore
-    AssertClose stats, "audit02.currentCache.width", second.Width.CrackWidth, first.Width.CrackWidth, 0.000000001
-    AssertClose stats, "audit02.currentCache.sigma", second.Width.SigmaS, first.Width.SigmaS, 0.000000001
-    AssertClose stats, "audit02.currentCache.sigmaCrc", second.Width.SigmaSCrc, first.Width.SigmaSCrc, 0.000000001
-    AssertClose stats, "audit02.currentCache.psi", second.Width.PsiS, first.Width.PsiS, 0.000000001
-    AssertTrue stats, "audit02.currentCache.stateOK", second.CurrentStateMeta.InternalStatus = rsSuccess
+    TestAssertTrue stats, "audit02.currentCache.noHeavySolve", SectionEquilibriumSolveCount() = countBefore
+    TestAssertClose stats, "audit02.currentCache.width", second.Width.CrackWidth, first.Width.CrackWidth, 0.000000001
+    TestAssertClose stats, "audit02.currentCache.sigma", second.Width.SigmaS, first.Width.SigmaS, 0.000000001
+    TestAssertClose stats, "audit02.currentCache.sigmaCrc", second.Width.SigmaSCrc, first.Width.SigmaSCrc, 0.000000001
+    TestAssertClose stats, "audit02.currentCache.psi", second.Width.PsiS, first.Width.PsiS, 0.000000001
+    TestAssertTrue stats, "audit02.currentCache.stateOK", second.CurrentStateMeta.InternalStatus = rsSuccess
 End Sub
 
-' ДЛЯ ТЕСТОВ: осевой предел на сохраненной геометрии без записи в Results.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' осевой предел на сохраненной геометрии без записи в Results.
 Public Function RunSavedAxialCapacityTests(Optional ByVal requireResolved As Boolean = True) As String
     Dim stats As TBatchTestStats, settings As CSystemSettingsReader, units As CUnitSystem
     Dim materials As CMaterialModelProvider, section As CSectionModel, profiles As CCalculationProfileCatalog
@@ -5566,32 +5713,33 @@ Public Function RunSavedAxialCapacityTests(Optional ByVal requireResolved As Boo
     For i = 1 To batch.Count
         Set result = batch.ResultAt(i)
         prefix = batch.CombinationID(i)
-        AppendLine stats, prefix & "|capacity=" & result.StrengthResult.Capacity.Status & _
-            "|lambda=" & FormatNumberInvariant(result.StrengthResult.Capacity.LambdaCapacity) & _
+        TestAppendLine stats, prefix & "|capacity=" & result.StrengthResult.Capacity.Status & _
+            "|lambda=" & TestFormatNumberInvariant(result.StrengthResult.Capacity.LambdaCapacity) & _
             "|reason=" & result.CapacityMeta.ResultComment
-        AppendLine stats, result.StrengthResult.Capacity.DiagnosticLog
+        TestAppendLine stats, result.StrengthResult.Capacity.DiagnosticLog
         If requireResolved Then
-            AssertEquals stats, prefix & ".capacity", result.StrengthResult.Capacity.Status, "OK"
+            TestAssertEquals stats, prefix & ".capacity", result.StrengthResult.Capacity.Status, "OK"
             Set state = result.StateRepository.FindState(sstCapacityState)
-            AssertTrue stats, prefix & ".state", Not state Is Nothing
+            TestAssertTrue stats, prefix & ".state", Not state Is Nothing
             If Not state Is Nothing Then
-                AssertTrue stats, prefix & ".equilibriumN", Abs(state.ResidualN) <= Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))
-                AssertTrue stats, prefix & ".equilibriumMx", Abs(state.ResidualMx) <= Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))
-                AssertTrue stats, prefix & ".equilibriumMy", Abs(state.ResidualMy) <= Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))
-                AssertTrue stats, prefix & ".physical", state.WithinPhysicalRange
-                AppendLine stats, prefix & "|NultTf=" & FormatNumberInvariant(-state.Nint / 9806.65) & _
-                    "|minConcreteStrain=" & FormatNumberInvariant(state.MinConcreteStrain)
+                TestAssertTrue stats, prefix & ".equilibriumN", Abs(state.ResidualN) <= Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))
+                TestAssertTrue stats, prefix & ".equilibriumMx", Abs(state.ResidualMx) <= Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))
+                TestAssertTrue stats, prefix & ".equilibriumMy", Abs(state.ResidualMy) <= Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))
+                TestAssertTrue stats, prefix & ".physical", state.WithinPhysicalRange
+                TestAppendLine stats, prefix & "|NultTf=" & TestFormatNumberInvariant(-state.Nint / 9806.65) & _
+                    "|minConcreteStrain=" & TestFormatNumberInvariant(state.MinConcreteStrain)
             End If
         End If
     Next i
-    AppendLine stats, "TOTAL_SAVED_AXIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_SAVED_AXIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunSavedAxialCapacityTests = stats.Report
     Exit Function
 Failed:
     RunSavedAxialCapacityTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: допуск lambda не должен создавать NumFail на плато или менять
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' допуск lambda не должен создавать NumFail на плато или менять
 ' физические статусы. Нагрузки получены из известных плоскостей сохраненной
 ' модели; проверяются сжатие и совместное действие N/Mx/My, без записи Results.
 Public Function RunSavedCrackLambdaToleranceTests() As String
@@ -5608,15 +5756,15 @@ Public Function RunSavedCrackLambdaToleranceTests() As String
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    Set section = Audit03LoadMatrixSection("SavedWorkbook")
-    SetSystemSetting "Load.ReferenceOffsetX", "0": SetSystemSetting "Load.ReferenceOffsetY", "0"
-    SetSystemSetting "SLS.Crack.Code", "SP35"
-    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
-    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "LoadMultiplier"
-    SetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
+    Set section = TestAudit03LoadMatrixSection("SavedWorkbook")
+    TestSetSystemSetting "Load.ReferenceOffsetX", "0": TestSetSystemSetting "Load.ReferenceOffsetY", "0"
+    TestSetSystemSetting "SLS.Crack.Code", "SP35"
+    TestSetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+    TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "LoadMultiplier"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set materials = New CMaterialModelProvider: materials.Initialize settings, units
@@ -5638,7 +5786,7 @@ Public Function RunSavedCrackLambdaToleranceTests() As String
         loads(i, 3) = frame.CenterMy(evaluator.Nint, evaluator.Myint)
     Next i
     For Each tolerance In Array("0.000001", "0.01", "0.02", "0.05")
-        SetSystemSetting "SLS.Crack.ToleranceLambda", CStr(tolerance)
+        TestSetSystemSetting "SLS.Crack.ToleranceLambda", CStr(tolerance)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set batch = New CBatchSectionCalculator: batch.Initialize section, materials
         Set batch.ProfileCatalog = profiles: batch.ApplySettings settings, units
@@ -5650,48 +5798,49 @@ Public Function RunSavedCrackLambdaToleranceTests() As String
         For i = 1 To 2
             Set result = batch.ResultAt(i): Set formation = result.CrackResult.Formation
             prefix = "savedCrackLambda." & CStr(tolerance) & "." & CStr(i)
-            AssertTrue stats, prefix & ".formationNoNumericalFailure", formation.ResultMeta.InternalStatus <> rsNumericalFailure
-            AssertTrue stats, prefix & ".noInputError", result.Status <> "InputErr" And result.Status <> "CalcErr"
+            TestAssertTrue stats, prefix & ".formationNoNumericalFailure", formation.ResultMeta.InternalStatus <> rsNumericalFailure
+            TestAssertTrue stats, prefix & ".noInputError", result.Status <> "InputErr" And result.Status <> "CalcErr"
             If CStr(tolerance) = "0.000001" Then
                 baseline(i, 1) = result.Status: baseline(i, 2) = formation.ResultMeta.InternalStatus
                 baseline(i, 3) = formation.ResultMeta.ResultCode
                 baseline(i, 4) = result.StrengthResult.Capacity.LambdaCapacity
                 baseline(i, 5) = formation.FormationNcrc: baseline(i, 6) = formation.Mcrc
             Else
-                AssertEquals stats, prefix & ".status", result.Status, CStr(baseline(i, 1))
-                AssertTrue stats, prefix & ".formationStatus", formation.ResultMeta.InternalStatus = baseline(i, 2)
-                AssertTrue stats, prefix & ".formationCode", formation.ResultMeta.ResultCode = baseline(i, 3)
-                AssertClose stats, prefix & ".capacityUnchanged", result.StrengthResult.Capacity.LambdaCapacity, CDbl(baseline(i, 4)), 0#
-                AssertClose stats, prefix & ".Ncrc", formation.FormationNcrc, CDbl(baseline(i, 5)), MaxDouble(0.000001, Abs(CDbl(baseline(i, 5))) * 0.02)
-                AssertClose stats, prefix & ".Mcrc", formation.Mcrc, CDbl(baseline(i, 6)), MaxDouble(0.000001, Abs(CDbl(baseline(i, 6))) * 0.02)
+                TestAssertEquals stats, prefix & ".status", result.Status, CStr(baseline(i, 1))
+                TestAssertTrue stats, prefix & ".formationStatus", formation.ResultMeta.InternalStatus = baseline(i, 2)
+                TestAssertTrue stats, prefix & ".formationCode", formation.ResultMeta.ResultCode = baseline(i, 3)
+                TestAssertClose stats, prefix & ".capacityUnchanged", result.StrengthResult.Capacity.LambdaCapacity, CDbl(baseline(i, 4)), 0#
+                TestAssertClose stats, prefix & ".Ncrc", formation.FormationNcrc, CDbl(baseline(i, 5)), TestMaxDouble(0.000001, Abs(CDbl(baseline(i, 5))) * 0.02)
+                TestAssertClose stats, prefix & ".Mcrc", formation.Mcrc, CDbl(baseline(i, 6)), TestMaxDouble(0.000001, Abs(CDbl(baseline(i, 6))) * 0.02)
             End If
             If formation.HasLimitPoint Then
                 Set point = formation.PreCrackState
-                AssertTrue stats, prefix & ".physicalPoint", point.Converged And point.WithinPhysicalRange And Not point.ExtensionUsed
-                AssertClose stats, prefix & ".rN", point.ResidualN, 0#, Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))
-                AssertClose stats, prefix & ".rMx", point.ResidualMx, 0#, Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))
-                AssertClose stats, prefix & ".rMy", point.ResidualMy, 0#, Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))
+                TestAssertTrue stats, prefix & ".physicalPoint", point.Converged And point.WithinPhysicalRange And Not point.ExtensionUsed
+                TestAssertClose stats, prefix & ".rN", point.ResidualN, 0#, Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))
+                TestAssertClose stats, prefix & ".rMx", point.ResidualMx, 0#, Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))
+                TestAssertClose stats, prefix & ".rMy", point.ResidualMy, 0#, Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))
             End If
-            AppendLine stats, prefix & "|status=" & result.Status & "|formationCode=" & CStr(formation.ResultMeta.ResultCode) & _
-                "|Mcrc=" & FormatNumberInvariant(formation.Mcrc) & "|comment=" & formation.ResultMeta.ResultComment
+            TestAppendLine stats, prefix & "|status=" & result.Status & "|formationCode=" & CStr(formation.ResultMeta.ResultCode) & _
+                "|Mcrc=" & TestFormatNumberInvariant(formation.Mcrc) & "|comment=" & formation.ResultMeta.ResultComment
         Next i
     Next tolerance
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: savedCrackLambda.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: savedCrackLambda.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
     If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
-    AppendLine stats, "TOTAL_SAVED_CRACK_LAMBDA: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_SAVED_CRACK_LAMBDA: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunSavedCrackLambdaToleranceTests = stats.Report
     Exit Function
 RestoreFailed:
     RunSavedCrackLambdaToleranceTests = stats.Report & "RESTORE ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: сравнивает чистое сжатие с той же силой и малым моментом
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сравнивает чистое сжатие с той же силой и малым моментом
 ' на сохраненной пользовательской геометрии. Записывает машинные причины
 ' и деформации текущего НДС; перегрузка не подменяется успешным статусом.
 Public Function RunCrackCompressionParityTests() As String
@@ -5704,8 +5853,8 @@ Public Function RunCrackCompressionParityTests() As String
     On Error GoTo Failed
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     savedSystem = systemRange.Formula
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set materials = New CMaterialModelProvider: materials.Initialize settings, units
@@ -5721,7 +5870,7 @@ Public Function RunCrackCompressionParityTests() As String
     For Each load In Array(10#, 100#, 2000#)
         For Each moment In Array(0#, 0.001, 1#)
             For Each path In Array("Auto", "LambdaN", "LambdaNMxy")
-                prefix = "COMP_" & FormatNumberInvariant(CDbl(load)) & "_" & FormatNumberInvariant(CDbl(moment)) & "_" & CStr(path)
+                prefix = "COMP_" & TestFormatNumberInvariant(CDbl(load)) & "_" & TestFormatNumberInvariant(CDbl(moment)) & "_" & CStr(path)
                 batch.AddCombination prefix, -CDbl(load) * 9806.65, CDbl(moment) * TEST_TF_M_IN_NMM, 0#, _
                     "PR2", "Парное сравнение чистого сжатия и малого момента", CStr(path)
             Next path
@@ -5732,7 +5881,7 @@ Public Function RunCrackCompressionParityTests() As String
         Set result = batch.ResultAt(i)
         Set state = result.StateRepository.FindState(sstCrackedState)
         prefix = batch.CombinationID(i)
-        AppendLine stats, "COMPRESSION_PARITY: " & prefix & "|overall=" & policy.ExternalStatus(result.OverallMeta) & _
+        TestAppendLine stats, "COMPRESSION_PARITY: " & prefix & "|overall=" & policy.ExternalStatus(result.OverallMeta) & _
             "|current=" & policy.ExternalStatus(result.CrackCurrentStateMeta) & _
             "|internal=" & CStr(result.CrackCurrentStateMeta.InternalStatus) & _
             "|code=" & CStr(result.CrackCurrentStateMeta.ResultCode) & _
@@ -5740,13 +5889,13 @@ Public Function RunCrackCompressionParityTests() As String
             "|notCracked=" & CStr(result.CrackResult.Formation.ConfirmedNotCracked) & _
             "|reason=" & result.CrackCurrentStateMeta.ResultComment
         If Not state Is Nothing Then
-            AppendLine stats, "COMPRESSION_STATE: " & prefix & "|converged=" & CStr(state.Converged) & _
+            TestAppendLine stats, "COMPRESSION_STATE: " & prefix & "|converged=" & CStr(state.Converged) & _
                 "|physical=" & CStr(state.WithinPhysicalRange) & "|extension=" & CStr(state.ExtensionUsed) & _
-                "|eps0=" & FormatNumberInvariant(state.Epsilon0) & _
-                "|minConcrete=" & FormatNumberInvariant(state.MinConcreteStrain) & _
-                "|maxConcrete=" & FormatNumberInvariant(state.MaxConcreteStrain)
+                "|eps0=" & TestFormatNumberInvariant(state.Epsilon0) & _
+                "|minConcrete=" & TestFormatNumberInvariant(state.MinConcreteStrain) & _
+                "|maxConcrete=" & TestFormatNumberInvariant(state.MaxConcreteStrain)
         End If
-        AssertTrue stats, "compressionParity.statePresent." & prefix, Not state Is Nothing
+        TestAssertTrue stats, "compressionParity.statePresent." & prefix, Not state Is Nothing
     Next i
     Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch, units, section
     For i = 1 To batch.Count
@@ -5754,44 +5903,44 @@ Public Function RunCrackCompressionParityTests() As String
         Set state = result.StateRepository.FindState(sstCrackedState)
         prefix = batch.CombinationID(i)
         If state Is Nothing Then
-            AssertTrue stats, prefix & ".missingStateNumericalFailure", result.CrackCurrentStateMeta.InternalStatus = rsNumericalFailure
-            AssertTrue stats, prefix & ".missingStateWidthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
-            AssertTrue stats, prefix & ".missingStateLongitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
-            AssertEquals stats, prefix & ".missingStateOverall", policy.ExternalStatus(result.OverallMeta), "NumFail"
+            TestAssertTrue stats, prefix & ".missingStateNumericalFailure", result.CrackCurrentStateMeta.InternalStatus = rsNumericalFailure
+            TestAssertTrue stats, prefix & ".missingStateWidthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
+            TestAssertTrue stats, prefix & ".missingStateLongitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
+            TestAssertEquals stats, prefix & ".missingStateOverall", policy.ExternalStatus(result.OverallMeta), "NumFail"
             GoTo CheckComments
         End If
         If state.Converged And state.WithinPhysicalRange Then
-            AssertTrue stats, prefix & ".currentSuccess", result.CrackCurrentStateMeta.InternalStatus = rsSuccess
-            AssertTrue stats, prefix & ".notCracked", result.CrackResult.Formation.ConfirmedNotCracked
-            AssertTrue stats, prefix & ".widthNotApplicable", result.CrackWidthMeta.InternalStatus = rsNotApplicable
-            AssertTrue stats, prefix & ".noWidthFormula", Not result.CrackWidthMeta.Calculated
-            AssertTrue stats, prefix & ".noPsiFallbackWarning", InStr(1, result.CrackWidthMeta.ResultComment, "psi_s принят равным 1", vbTextCompare) = 0
+            TestAssertTrue stats, prefix & ".currentSuccess", result.CrackCurrentStateMeta.InternalStatus = rsSuccess
+            TestAssertTrue stats, prefix & ".notCracked", result.CrackResult.Formation.ConfirmedNotCracked
+            TestAssertTrue stats, prefix & ".widthNotApplicable", result.CrackWidthMeta.InternalStatus = rsNotApplicable
+            TestAssertTrue stats, prefix & ".noWidthFormula", Not result.CrackWidthMeta.Calculated
+            TestAssertTrue stats, prefix & ".noPsiFallbackWarning", InStr(1, result.CrackWidthMeta.ResultComment, "psi_s принят равным 1", vbTextCompare) = 0
             If Abs(state.TargetN) <= 100# * 9806.65 Then
-                AssertEquals stats, prefix & ".overallOK", policy.ExternalStatus(result.OverallMeta), "OK"
+                TestAssertEquals stats, prefix & ".overallOK", policy.ExternalStatus(result.OverallMeta), "OK"
             End If
         Else
             If state.Converged Then
-                AssertTrue stats, prefix & ".physicalFailureRetained", result.CrackCurrentStateMeta.InternalStatus = rsCheckFailed
-                AssertEquals stats, prefix & ".overallFail", policy.ExternalStatus(result.OverallMeta), "FAIL"
+                TestAssertTrue stats, prefix & ".physicalFailureRetained", result.CrackCurrentStateMeta.InternalStatus = rsCheckFailed
+                TestAssertEquals stats, prefix & ".overallFail", policy.ExternalStatus(result.OverallMeta), "FAIL"
             Else
-                AssertTrue stats, prefix & ".numericalFailureRetained", result.CrackCurrentStateMeta.InternalStatus = rsNumericalFailure
-                AssertEquals stats, prefix & ".overallNumFail", policy.ExternalStatus(result.OverallMeta), "NumFail"
+                TestAssertTrue stats, prefix & ".numericalFailureRetained", result.CrackCurrentStateMeta.InternalStatus = rsNumericalFailure
+                TestAssertEquals stats, prefix & ".overallNumFail", policy.ExternalStatus(result.OverallMeta), "NumFail"
             End If
-            AssertTrue stats, prefix & ".widthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
-            AssertTrue stats, prefix & ".longitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
+            TestAssertTrue stats, prefix & ".widthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
+            TestAssertTrue stats, prefix & ".longitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
         End If
 CheckComments:
-        Audit03CheckResultComments stats, batch, i
+        TestAudit03CheckResultComments stats, batch, i
         Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-        AssertEquals stats, prefix & ".currentOutput", CStr(anchor.Offset(i - 1, 28).Value2), policy.ExternalStatus(result.CrackCurrentStateMeta)
-        AssertEquals stats, prefix & ".widthOutput", CStr(anchor.Offset(i - 1, 66).Value2), policy.ExternalStatus(result.CrackWidthMeta)
-        AssertEquals stats, prefix & ".overallOutput", CStr(anchor.Offset(i - 1, 2).Value2), policy.ExternalStatus(result.CrackSummaryMeta)
+        TestAssertEquals stats, prefix & ".currentOutput", CStr(anchor.Offset(i - 1, 28).Value2), policy.ExternalStatus(result.CrackCurrentStateMeta)
+        TestAssertEquals stats, prefix & ".widthOutput", CStr(anchor.Offset(i - 1, 66).Value2), policy.ExternalStatus(result.CrackWidthMeta)
+        TestAssertEquals stats, prefix & ".overallOutput", CStr(anchor.Offset(i - 1, 2).Value2), policy.ExternalStatus(result.CrackSummaryMeta)
         If prefix = "COMP_100._0._Auto" Then _
-            AppendLine stats, "COMPRESSION_DIAGNOSTIC: " & prefix & vbCrLf & result.CrackResult.Formation.DiagnosticLog
+            TestAppendLine stats, "COMPRESSION_DIAGNOSTIC: " & prefix & vbCrLf & result.CrackResult.Formation.DiagnosticLog
     Next i
     GoTo Finished
 Failed:
-    AssertTrue stats, "compressionParity.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "compressionParity.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -5799,7 +5948,8 @@ Finished:
     RunCrackCompressionParityTests = stats.Report & "TOTAL_CRACK_COMPRESSION_PARITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: запускает существующую проверку полного вывода отдельно от
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' запускает существующую проверку полного вывода отдельно от
 ' остальных suites, чтобы отличить изменение ширины от накопленного контекста Excel.
 Public Function RunAudit03BatchSummaryWidthDiagnosticTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
@@ -5808,49 +5958,50 @@ Public Function RunAudit03BatchSummaryWidthDiagnosticTests(Optional ByRef passed
     TestBatchSummaryWriter stats
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    AppendLine stats, "TOTAL_AUDIT03_BATCH_WIDTH_DIAGNOSTIC: passed=" & CStr(passed) & "; failed=" & CStr(failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_BATCH_WIDTH_DIAGNOSTIC: passed=" & CStr(passed) & "; failed=" & CStr(failed)
     RunAudit03BatchSummaryWidthDiagnosticTests = stats.Report
     Exit Function
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.batchWidth.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.batchWidth.runtime; " & CStr(Err.Number) & "; " & Err.Description
     Resume Finish
 End Function
 
 
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет канонический результат реального расчета и повторное использование
 ' контейнеров: State не копируется в direct-result, meta не меняется снаружи,
 ' а нейтральная повторная инициализация не оставляет чисел прошлого сочетания.
 Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Dim section As CSectionModel
-    Set batch = BuildBatchCalculator(True, section)
+    Set batch = TestBuildBatchCalculator(True, section)
     batch.AddCombination "AUDIT02_CANONICAL", 200000#, 0#, 0#, "PR2", "canonical result"
     batch.Execute
     Dim calculated As CCombinationResult
     Set calculated = batch.ResultAt(1)
     Dim current As CSectionStateResult
     Set current = calculated.StateRepository.FindState(sstCrackedState)
-    AssertTrue stats, "audit02.canonical.currentExists", Not current Is Nothing
+    TestAssertTrue stats, "audit02.canonical.currentExists", Not current Is Nothing
     If current Is Nothing Then Exit Sub
 
     Dim result As CCombinationResult
     Set result = New CCombinationResult
     result.StoreSectionStateResult current
     result.AddState current
-    AssertTrue stats, "audit02.canonical.directIdentity", result.StrengthResult.DirectState.StateResult Is current
-    AssertTrue stats, "audit02.canonical.repositoryIdentity", result.StateRepository.FindState(sstCrackedState) Is current
-    AssertClose stats, "audit02.canonical.directN", result.StrengthResult.DirectState.StateResult.Nint, current.Nint, 0#
+    TestAssertTrue stats, "audit02.canonical.directIdentity", result.StrengthResult.DirectState.StateResult Is current
+    TestAssertTrue stats, "audit02.canonical.repositoryIdentity", result.StateRepository.FindState(sstCrackedState) Is current
+    TestAssertClose stats, "audit02.canonical.directN", result.StrengthResult.DirectState.StateResult.Nint, current.Nint, 0#
     Dim detached As CResultMeta
     Set detached = result.DirectStateMeta
     detached.SetResult rsInternalError, rcInternalError, rkDirectState, "Изменение внешней копии."
-    AssertEquals stats, "audit02.canonical.directMetaIsolated", result.StrengthResult.DirectState.Status, "OK"
+    TestAssertEquals stats, "audit02.canonical.directMetaIsolated", result.StrengthResult.DirectState.Status, "OK"
 
     result.StoreCrackAggregateResult calculated.CrackResult
-    AssertTrue stats, "audit02.canonical.crackIdentity", result.CrackResult Is calculated.CrackResult
-    AssertTrue stats, "audit02.canonical.widthIdentity", result.CrackResult.Width Is calculated.CrackResult.Width
-    AssertTrue stats, "audit02.canonical.noDirectOverwrite", result.StrengthResult.DirectState.StateResult Is current
+    TestAssertTrue stats, "audit02.canonical.crackIdentity", result.CrackResult Is calculated.CrackResult
+    TestAssertTrue stats, "audit02.canonical.widthIdentity", result.CrackResult.Width Is calculated.CrackResult.Width
+    TestAssertTrue stats, "audit02.canonical.noDirectOverwrite", result.StrengthResult.DirectState.StateResult Is current
 
     Dim width As CCrackWidthResult
     Set width = New CCrackWidthResult
@@ -5863,17 +6014,17 @@ Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
         TestProfileCatalog().ProfileById("PR2").CrackedStateSpec, _
         calculated.CrackResult.Formation, classificationLoad
     width.InitializeFromCalculator widthCalculator, widthCalculator.ResultMeta
-    AssertTrue stats, "audit02.canonical.widthPopulated", width.CrackWidth > 0#
+    TestAssertTrue stats, "audit02.canonical.widthPopulated", width.CrackWidth > 0#
     Dim neutral As CResultMeta
     Set neutral = New CResultMeta
     neutral.SetNotApplicable rkCrackWidth
     width.InitializeFromCalculator Nothing, neutral
-    AssertClose stats, "audit02.canonical.widthReset", width.CrackWidth, 0#, 0#
-    AssertClose stats, "audit02.canonical.sigmaReset", width.SigmaS, 0#, 0#
-    AssertClose stats, "audit02.canonical.spacingReset", width.CrackSpacing, 0#, 0#
-    AssertEquals stats, "audit02.canonical.rebarsReset", width.TensionRebarIds, vbNullString
-    AssertTrue stats, "audit02.canonical.widthMetaReset", width.ResultMeta.InternalStatus = rsNotApplicable
-    AssertTrue stats, "audit02.canonical.publishedWidthRetained", calculated.CrackResult.Width.CrackWidth > 0#
+    TestAssertClose stats, "audit02.canonical.widthReset", width.CrackWidth, 0#, 0#
+    TestAssertClose stats, "audit02.canonical.sigmaReset", width.SigmaS, 0#, 0#
+    TestAssertClose stats, "audit02.canonical.spacingReset", width.CrackSpacing, 0#, 0#
+    TestAssertEquals stats, "audit02.canonical.rebarsReset", width.TensionRebarIds, vbNullString
+    TestAssertTrue stats, "audit02.canonical.widthMetaReset", width.ResultMeta.InternalStatus = rsNotApplicable
+    TestAssertTrue stats, "audit02.canonical.publishedWidthRetained", calculated.CrackResult.Width.CrackWidth > 0#
 
     Dim stability As CStabilityResult
     Set stability = New CStabilityResult
@@ -5884,61 +6035,64 @@ Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
         1000#, 1#, 1#, "Determinate", 1#, 1#, "Auto", "AutoWithL", "BothPlanes", _
         0#, 0#, 0.7, 0.15, 1.5, 1#, 0.7, Empty
     stability.InitializeFromCalculator stabilityCalculator.ResultMeta, stabilityCalculator, 0#, 0#
-    AssertEquals stats, "audit02.canonical.stabilityFixtureStatus", stability.Status, "OK"
-    AppendLine stats, "COMMENT: audit02.canonical.stabilityFixture; " & stability.Meta.ResultComment
-    AssertTrue stats, "audit02.canonical.stabilityNcrPopulated", stability.Ncr2 > 0#
-    AssertTrue stats, "audit02.canonical.stabilityDPopulated", stability.StiffnessD2 > 0#
-    AssertTrue stats, "audit02.canonical.stabilityBranchPopulated", Len(stability.PlaneBranch2) > 0
-    AssertTrue stats, "audit02.canonical.stabilityFlagsPopulated", stability.PlaneApplicable2 And stability.PlanePassed2
+    TestAssertEquals stats, "audit02.canonical.stabilityFixtureStatus", stability.Status, "OK"
+    TestAppendLine stats, "COMMENT: audit02.canonical.stabilityFixture; " & stability.Meta.ResultComment
+    TestAssertTrue stats, "audit02.canonical.stabilityNcrPopulated", stability.Ncr2 > 0#
+    TestAssertTrue stats, "audit02.canonical.stabilityDPopulated", stability.StiffnessD2 > 0#
+    TestAssertTrue stats, "audit02.canonical.stabilityBranchPopulated", Len(stability.PlaneBranch2) > 0
+    TestAssertTrue stats, "audit02.canonical.stabilityFlagsPopulated", stability.PlaneApplicable2 And stability.PlanePassed2
     stability.Clear
-    AssertClose stats, "audit02.canonical.stabilityNcrReset", stability.Ncr2, 0#, 0#
-    AssertClose stats, "audit02.canonical.stabilityPhiReset", stability.PhiValue1, 0#, 0#
-    AssertClose stats, "audit02.canonical.stabilityDReset", stability.StiffnessD2, 0#, 0#
-    AssertEquals stats, "audit02.canonical.stabilityBranchReset", stability.PlaneBranch2, vbNullString
-    AssertTrue stats, "audit02.canonical.stabilityFlagsReset", Not stability.PlaneApplicable2 And Not stability.PlanePassed2
-    AssertEquals stats, "audit02.canonical.stabilityStatusReset", stability.Status, "N/A"
+    TestAssertClose stats, "audit02.canonical.stabilityNcrReset", stability.Ncr2, 0#, 0#
+    TestAssertClose stats, "audit02.canonical.stabilityPhiReset", stability.PhiValue1, 0#, 0#
+    TestAssertClose stats, "audit02.canonical.stabilityDReset", stability.StiffnessD2, 0#, 0#
+    TestAssertEquals stats, "audit02.canonical.stabilityBranchReset", stability.PlaneBranch2, vbNullString
+    TestAssertTrue stats, "audit02.canonical.stabilityFlagsReset", Not stability.PlaneApplicable2 And Not stability.PlanePassed2
+    TestAssertEquals stats, "audit02.canonical.stabilityStatusReset", stability.Status, "N/A"
     Set detached = stability.Meta
     detached.SetResult rsInternalError, rcInternalError, rkStability, "Изменение внешней копии."
-    AssertEquals stats, "audit02.canonical.stabilityMetaIsolated", stability.Status, "N/A"
+    TestAssertEquals stats, "audit02.canonical.stabilityMetaIsolated", stability.Status, "N/A"
 
     stabilityCalculator.Calculate section, TestMaterialProvider(), mvsULS, "SP35", _
         -100000#, 0#, 0#, -50000#, 0#, 0#, 1000#, 1#, 1#, "Determinate", _
         1#, 1#, "Auto", "AutoWithL", "BothPlanes", 0#, 0#, 0.7, 0.15, 1.5, _
         1#, 0.7, ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     stability.InitializeFromCalculator stabilityCalculator.ResultMeta, stabilityCalculator, 0#, 0#
-    AssertTrue stats, "audit02.canonical.stabilityPhiPopulated", stability.PhiValue1 > 0#
+    TestAssertTrue stats, "audit02.canonical.stabilityPhiPopulated", stability.PhiValue1 > 0#
     stability.Clear
-    AssertClose stats, "audit02.canonical.stabilityPopulatedPhiReset", stability.PhiValue1, 0#, 0#
+    TestAssertClose stats, "audit02.canonical.stabilityPopulatedPhiReset", stability.PhiValue1, 0#, 0#
 
     result.Clear "LambdaN"
-    AssertTrue stats, "audit02.canonical.clearNoState", result.StrengthResult.DirectState.StateResult Is Nothing
-    AssertTrue stats, "audit02.canonical.clearRepository", result.StateRepository.StateCount = 0
-    AssertClose stats, "audit02.canonical.clearWidth", result.CrackResult.Width.CrackWidth, 0#, 0#
-    AssertEquals stats, "audit02.canonical.clearStatus", result.Status, "N/A"
+    TestAssertTrue stats, "audit02.canonical.clearNoState", result.StrengthResult.DirectState.StateResult Is Nothing
+    TestAssertTrue stats, "audit02.canonical.clearRepository", result.StateRepository.StateCount = 0
+    TestAssertClose stats, "audit02.canonical.clearWidth", result.CrackResult.Width.CrackWidth, 0#, 0#
+    TestAssertEquals stats, "audit02.canonical.clearStatus", result.Status, "N/A"
 End Sub
 
-' ДЛЯ ТЕСТОВ: четыре одинаковых угловых стержня задают симметричный oracle.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' четыре одинаковых угловых стержня задают симметричный oracle.
 ' Штатный AddBar сохраняет проверку попадания каждого стержня в бетон.
-Private Function RectangleRebars(ByVal geom As CGeometryRegion) As CRebarLayout
+Private Function TestRectangleRebars(ByVal geom As CGeometryRegion) As CRebarLayout
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
     layout.AddBar "R1", -140#, -80#, 20#, 0#, "A400", "test", geom
     layout.AddBar "R2", 140#, -80#, 20#, 0#, "A400", "test", geom
     layout.AddBar "R3", 140#, 80#, 20#, 0#, "A400", "test", geom
     layout.AddBar "R4", -140#, 80#, 20#, 0#, "A400", "test", geom
-    Set RectangleRebars = layout
+    Set TestRectangleRebars = layout
 End Function
 
-' ДЛЯ ТЕСТОВ: явная двухлинейная сжатая диаграмма без растянутой ветви.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' явная двухлинейная сжатая диаграмма без растянутой ветви.
 ' Используется только там, где не требуется выбор материала через профиль.
-Private Function ProvisionalConcrete() As CMaterialDiagram
+Private Function TestProvisionalConcrete() As CMaterialDiagram
     Dim concrete As CMaterialDiagram
     Set concrete = New CMaterialDiagram
-    concrete.Initialize -0.0015, -15.5, -0.0035, -15.5
-    Set ProvisionalConcrete = concrete
+    concrete.TestInitialize -0.0015, -15.5, -0.0035, -15.5
+    Set TestProvisionalConcrete = concrete
 End Function
 
-' ДЛЯ ТЕСТОВ: создает фиксированные ULS/SLS параметры бетона и арматуры.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' создает фиксированные ULS/SLS параметры бетона и арматуры.
 ' Extension задается явно, поэтому fixture не зависит от пользовательского Config.
 Private Function TestMaterialProvider(Optional ByVal diagramExtensionEnabled As Boolean = True) As CMaterialModelProvider
     Dim concreteParameters As CConcreteMaterialParameters
@@ -5951,10 +6105,11 @@ Private Function TestMaterialProvider(Optional ByVal diagramExtensionEnabled As 
 
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
-    provider.InitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=diagramExtensionEnabled
+    provider.TestInitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=diagramExtensionEnabled
     Set TestMaterialProvider = provider
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Загружает профильный каталог из текущей книги для тестов batch-слоя.
 ' Это сохраняет тот же frontend-контракт PR1/PR2, который использует пользовательский сценарий.
 Private Function TestProfileCatalog() As CCalculationProfileCatalog
@@ -5964,27 +6119,29 @@ Private Function TestProfileCatalog() As CCalculationProfileCatalog
     Set TestProfileCatalog = profiles
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Собирает круглое сечение для тестов устойчивости СП 35.
-Private Function BuildCircleStabilitySection(ByVal diameter As Double, ByVal barCount As Long, _
+Private Function TestBuildCircleStabilitySection(ByVal diameter As Double, ByVal barCount As Long, _
         ByVal barDiameter As Double) As CSectionModel
     Dim geom As CGeometryRegion
-    Set geom = CircleGeometry(diameter, 0#, 0#)
+    Set geom = TestCircleGeometry(diameter, 0#, 0#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 20#, 20#, 1
 
-    Set BuildCircleStabilitySection = BuildGeneratedSectionModel(mesh, _
-        CircleRebars(diameter, 0#, 0#, 40#, barCount, barDiameter), "CircleSP35Table")
+    Set TestBuildCircleStabilitySection = TestBuildGeneratedSectionModel(mesh, _
+        TestCircleRebars(diameter, 0#, 0#, 40#, barCount, barDiameter), "CircleSP35Table")
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает Nult табличной ветви СП 35 и одновременно отдает площади,
 ' чтобы тест мог проверить нормативную поправку при As/Ab больше 3%.
-Private Function SP35TableNultForCircle(ByVal diameter As Double, ByVal barCount As Long, _
+Private Function TestSP35TableNultForCircle(ByVal diameter As Double, ByVal barCount As Long, _
         ByVal barDiameter As Double, ByRef concreteArea As Double, ByRef steelArea As Double, _
         ByRef phiValue As Double) As Double
     Dim section As CSectionModel
-    Set section = BuildCircleStabilitySection(diameter, barCount, barDiameter)
+    Set section = TestBuildCircleStabilitySection(diameter, barCount, barDiameter)
 
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = New CSectionPropertiesCalculator
@@ -6009,15 +6166,16 @@ Private Function SP35TableNultForCircle(ByVal diameter As Double, ByVal barCount
     batch.AddCombination "SP35_NULT_AREA", -100000#, 0#, 0#, "PR1", "sp35 nult area"
     batch.Execute
 
-    phiValue = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.PhiValue1, batch.ResultAt(1).StabilityResult.PhiValue2)
-    SP35TableNultForCircle = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.Nultimate1, batch.ResultAt(1).StabilityResult.Nultimate2)
+    phiValue = TestActiveStabilityValue(batch.ResultAt(1).StabilityResult.PhiValue1, batch.ResultAt(1).StabilityResult.PhiValue2)
+    TestSP35TableNultForCircle = TestActiveStabilityValue(batch.ResultAt(1).StabilityResult.Nultimate1, batch.ResultAt(1).StabilityResult.Nultimate2)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Запускает расчет по искусственной таблице 7.21 и возвращает phi_m.
 ' Таблица выбрана линейной, чтобы промежуточные значения проверялись точно.
-Private Function SP35InterpolatedPhiM(ByVal q As Double) As Double
+Private Function TestSP35InterpolatedPhiM(ByVal q As Double) As Double
     Dim section As CSectionModel
-    Set section = BuildCircleStabilitySection(500#, 4, 12#)
+    Set section = TestBuildCircleStabilitySection(500#, 4, 12#)
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -6025,9 +6183,9 @@ Private Function SP35InterpolatedPhiM(ByVal q As Double) As Double
 
     Dim coreDistance As Double
     coreDistance = props.CoreDistanceAlong(section, 0#, 1#, False)
-    SetSystemSetting "Stability.ElementLength", FormatNumberInvariant(15# * props.PrincipalRadius1)
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", FormatNumberInvariant(q * coreDistance)
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", FormatNumberInvariant(q * coreDistance)
+    TestSetSystemSetting "Stability.ElementLength", TestFormatNumberInvariant(15# * props.PrincipalRadius1)
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", TestFormatNumberInvariant(q * coreDistance)
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", TestFormatNumberInvariant(q * coreDistance)
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -6038,15 +6196,16 @@ Private Function SP35InterpolatedPhiM(ByVal q As Double) As Double
     batch.Initialize section, TestMaterialProvider()
     Set batch.ProfileCatalog = TestProfileCatalog()
     batch.ApplySettings settings
-    batch.SetSP35Table721 SP35InterpolationTable()
+    batch.SetSP35Table721 TestSP35InterpolationTable()
     batch.AddCombination "SP35_INTERP", -100000#, 0#, 0#, "PR1", "sp35 interpolation"
     batch.Execute
 
-    SP35InterpolatedPhiM = ActiveStabilityValue(batch.ResultAt(1).StabilityResult.PhiM1, batch.ResultAt(1).StabilityResult.PhiM2)
+    TestSP35InterpolatedPhiM = TestActiveStabilityValue(batch.ResultAt(1).StabilityResult.PhiM1, batch.ResultAt(1).StabilityResult.PhiM2)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Искусственная таблица 7.21 с двумя строками по l0/i = 10 и 20.
-Private Function SP35InterpolationTable() As Variant
+Private Function TestSP35InterpolationTable() As Variant
     Dim tableData(1 To 3, 1 To 8) As Variant
     tableData(1, 1) = "l0/b": tableData(1, 2) = "l0/d": tableData(1, 3) = "l0/i"
     tableData(1, 4) = "phi_m q=0": tableData(1, 5) = "phi_m q=0.25"
@@ -6056,73 +6215,82 @@ Private Function SP35InterpolationTable() As Variant
     tableData(2, 6) = 3#: tableData(2, 7) = 5#: tableData(2, 8) = 1.1
     tableData(3, 3) = 20#: tableData(3, 4) = 11#: tableData(3, 5) = 12#
     tableData(3, 6) = 13#: tableData(3, 7) = 15#: tableData(3, 8) = 1.3
-    SP35InterpolationTable = tableData
+    TestSP35InterpolationTable = tableData
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает фиксированную физическую диаграмму арматуры без расширения.
-Private Function ProvisionalSteel() As CMaterialDiagram
+Private Function TestProvisionalSteel() As CMaterialDiagram
     Dim steel As CMaterialDiagram
     Set steel = New CMaterialDiagram
-    steel.Initialize 0.00175, 350#, 0.025
-    Set ProvisionalSteel = steel
+    steel.TestInitialize 0.00175, 350#, 0.025
+    Set TestProvisionalSteel = steel
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Группа assertions сохраняет счет и фактическое условие каждого контрольного случая.
 ' Численные допуски ниже передаются тестом, а не подбираются под текущий результат.
-Private Sub AssertTrue(ByRef stats As TBatchTestStats, ByVal name As String, ByVal condition As Boolean)
+Private Sub TestAssertTrue(ByRef stats As TBatchTestStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
-        AppendLine stats, "OK: " & name
+        TestAppendLine stats, "OK: " & name
     Else
         stats.Failed = stats.Failed + 1
-        AppendLine stats, "FAIL: " & name
+        TestAppendLine stats, "FAIL: " & name
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает строки точно, включая регистр и состав комментария;
 ' при расхождении сохраняет actual/expected, не нормализуя результат.
-Private Sub AssertEquals(ByRef stats As TBatchTestStats, ByVal name As String, _
+Private Sub TestAssertEquals(ByRef stats As TBatchTestStats, ByVal name As String, _
         ByVal actual As String, ByVal expected As String)
     If actual = expected Then
         stats.Passed = stats.Passed + 1
-        AppendLine stats, "OK: " & name
+        TestAppendLine stats, "OK: " & name
     Else
         stats.Failed = stats.Failed + 1
-        AppendLine stats, "FAIL: " & name & "; actual=" & actual & "; expected=" & expected
+        TestAppendLine stats, "FAIL: " & name & "; actual=" & actual & "; expected=" & expected
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет абсолютное отклонение и записывает обе сравниваемые величины.
-Private Sub AssertClose(ByRef stats As TBatchTestStats, ByVal name As String, ByVal actual As Double, _
+Private Sub TestAssertClose(ByRef stats As TBatchTestStats, ByVal name As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
     If Abs(actual - expected) <= tolerance Then
         stats.Passed = stats.Passed + 1
-        AppendLine stats, "OK: " & name & "; actual=" & FormatNumberInvariant(actual) & _
-            "; expected=" & FormatNumberInvariant(expected)
+        TestAppendLine stats, "OK: " & name & "; actual=" & TestFormatNumberInvariant(actual) & _
+            "; expected=" & TestFormatNumberInvariant(expected)
     Else
         stats.Failed = stats.Failed + 1
-        AppendLine stats, "FAIL: " & name & "; actual=" & FormatNumberInvariant(actual) & _
-            "; expected=" & FormatNumberInvariant(expected)
+        TestAppendLine stats, "FAIL: " & name & "; actual=" & TestFormatNumberInvariant(actual) & _
+            "; expected=" & TestFormatNumberInvariant(expected)
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Дополняет протокол; числовые поля ниже форматируются одинаково при любой локали.
-Private Sub AppendLine(ByRef stats As TBatchTestStats, ByVal text As String)
+Private Sub TestAppendLine(ByRef stats As TBatchTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
     If mAudit03ResourceTrace And Left$(text, 5) = "RUN: " Then _
-        Audit03TraceExcelContext text & "; reportChars=" & CStr(Len(stats.Report))
+        TestAudit03TraceExcelContext text & "; reportChars=" & CStr(Len(stats.Report))
 End Sub
 
-Private Function FormatNumberInvariant(ByVal value As Double) As String
-    FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Форматирует число для текстового протокола с десятичной точкой; исходные расчётные значения не меняются.
+Private Function TestFormatNumberInvariant(ByVal value As Double) As String
+    TestFormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ ==============================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Воспроизводит осевой Rectangles-маршрут Off с полным численным журналом.
 ' Возвращает диагностику без изменения ожидаемых значений штатных тестов;
 ' все временные настройки восстанавливаются до выхода, в том числе при ошибке.
-Public Function RunAudit02OffAxialDiagnostic() As String
+Public Function TestRunAudit02OffAxialDiagnostic() As String
     On Error GoTo Failed
     Dim keys As Variant
     keys = Array("General.DiagramExtension", "General.ExecutionReportEnabled", _
@@ -6130,13 +6298,13 @@ Public Function RunAudit02OffAxialDiagnostic() As String
     Dim previous(0 To 4) As String
     Dim i As Long
     For i = 0 To 4
-        previous(i) = GetSystemSetting(CStr(keys(i)))
+        previous(i) = TestGetSystemSetting(CStr(keys(i)))
     Next i
-    SetSystemSetting "General.DiagramExtension", "No"
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
-    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
-    SetSystemSetting "Capacity.BaseLoadSteps", "1"
-    SetSystemSetting "Capacity.MaxRetries", "0"
+    TestSetSystemSetting "General.DiagramExtension", "No"
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    TestSetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+    TestSetSystemSetting "Capacity.BaseLoadSteps", "1"
+    TestSetSystemSetting "Capacity.MaxRetries", "0"
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
@@ -6149,7 +6317,7 @@ Public Function RunAudit02OffAxialDiagnostic() As String
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     Dim report As CExecutionReport
     Set report = New CExecutionReport
@@ -6159,34 +6327,35 @@ Public Function RunAudit02OffAxialDiagnostic() As String
         "PR1", "Off axial diagnostic", ChrW$(&H3BB) & "*N"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
-    RunAudit02OffAxialDiagnostic = "STATUS: " & batch.ResultAt(1).StrengthResult.Capacity.Status & vbCrLf & _
+    TestRunAudit02OffAxialDiagnostic = "STATUS: " & batch.ResultAt(1).StrengthResult.Capacity.Status & vbCrLf & _
         batch.ResultAt(1).StrengthResult.Capacity.ResultMeta.ResultComment & vbCrLf & _
         batch.ResultAt(1).StrengthResult.Capacity.DiagnosticLog
 Restore:
     For i = 0 To 4
-        SetSystemSetting CStr(keys(i)), previous(i)
+        TestSetSystemSetting CStr(keys(i)), previous(i)
     Next i
     Exit Function
 Failed:
-    RunAudit02OffAxialDiagnostic = "RUNTIME ERROR: " & Err.Description
+    TestRunAudit02OffAxialDiagnostic = "RUNTIME ERROR: " & Err.Description
     Resume Restore
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Воспроизводит formation-маршрут пакетного Г-сечения с полным журналом
 ' общего Search. Использует тот же материал и ту же нагрузку, что regression;
 ' временно включается только отчет, физические настройки не подменяются.
-Public Function RunAudit02FormationDiagnostic() As String
+Public Function TestRunAudit02FormationDiagnostic() As String
     On Error GoTo Failed
     Dim oldReport As String
-    oldReport = GetSystemSetting("General.ExecutionReportEnabled")
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    oldReport = TestGetSystemSetting("General.ExecutionReportEnabled")
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY)
+    Set batch = TestBuildUserRectanglesTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     Dim report As CExecutionReport
     Set report = New CExecutionReport
@@ -6194,37 +6363,40 @@ Public Function RunAudit02FormationDiagnostic() As String
     Set batch.ExecutionReport = report
     batch.AddCombination "AUDIT02_FORMATION", 20# * 9806.65, 0#, 0#, "PR2", "Formation diagnostic"
     batch.Execute
-    RunAudit02FormationDiagnostic = "STATUS: " & batch.ResultAt(1).NormalCrackStatus & vbCrLf & _
-        MetaDebugText(batch.ResultAt(1).CrackFormationMeta) & vbCrLf & _
+    TestRunAudit02FormationDiagnostic = "STATUS: " & batch.ResultAt(1).NormalCrackStatus & vbCrLf & _
+        TestMetaDebugText(batch.ResultAt(1).CrackFormationMeta) & vbCrLf & _
         batch.ResultAt(1).CrackResult.Formation.DiagnosticLog
 Restore:
-    SetSystemSetting "General.ExecutionReportEnabled", oldReport
+    TestSetSystemSetting "General.ExecutionReportEnabled", oldReport
     Exit Function
 Failed:
-    RunAudit02FormationDiagnostic = "RUNTIME ERROR: " & Err.Description
+    TestRunAudit02FormationDiagnostic = "RUNTIME ERROR: " & Err.Description
     Resume Restore
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ AUDIT02 CACHE ==============================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Отдельно проверяет хранилище НДС без записи таблиц Excel: новые решения,
 ' повторное использование готового состояния, смену исходных данных и повтор после неудачи.
 Public Function RunAudit02RepositoryContextTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
     TestAudit02RepositoryContextAndRetry stats
-    AppendLine stats, "TOTAL_AUDIT02_CACHE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT02_CACHE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit02RepositoryContextTests = stats.Report
     Exit Function
 Failed:
     RunAudit02RepositoryContextTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Повторное использование зависит от физической модели и точности приёмки,
 ' а не от числа повторов или начального приближения. Новое решение не меняет ранее выданное НДС.
 Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     Dim section As CSectionModel
-    Set section = BuildCircleStabilitySection(300#, 8, 16#)
+    Set section = TestBuildCircleStabilitySection(300#, 8, 16#)
     Dim concrete As CConcreteMaterialParameters
     Set concrete = New CConcreteMaterialParameters
     concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
@@ -6233,7 +6405,7 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
     Dim materials As CMaterialModelProvider
     Set materials = New CMaterialModelProvider
-    materials.InitializeFromParameters concrete, steel
+    materials.TestInitializeFromParameters concrete, steel
     Dim repository As CStateRepository
     Set repository = New CStateRepository
     Dim provider As CStateProvider
@@ -6247,8 +6419,8 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     request.Initialize sstStrengthState, cpStrength, spec, -100000#, 4000000#, 3000000#, True, False
     Dim first As CSectionStateResult
     Set first = provider.GetOrSolve(request)
-    AssertTrue stats, "audit02.cache.initial.converged", first.Converged
-    AssertTrue stats, "audit02.cache.initial.runner", Not provider.LastRunner Is Nothing
+    TestAssertTrue stats, "audit02.cache.initial.converged", first.Converged
+    TestAssertTrue stats, "audit02.cache.initial.runner", Not provider.LastRunner Is Nothing
     Dim firstEps As Double
     firstEps = first.Epsilon0
     Dim firstMetaCode As EResultCode
@@ -6263,113 +6435,115 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     provider.DiagnosticsEnabled = False
     Dim state As CSectionStateResult
     Set state = provider.GetOrSolve(retryRequest, provider.SolverSnapshot(first))
-    AssertTrue stats, "audit02.cache.options.sameState", state Is first
-    AssertTrue stats, "audit02.cache.options.reused", provider.LastStateWasReused
-    AssertTrue stats, "audit02.cache.options.noSolve", provider.LastRunner Is Nothing
+    TestAssertTrue stats, "audit02.cache.options.sameState", state Is first
+    TestAssertTrue stats, "audit02.cache.options.reused", provider.LastStateWasReused
+    TestAssertTrue stats, "audit02.cache.options.noSolve", provider.LastRunner Is Nothing
 
-    materials.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
+    materials.TestInitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
     Set state = provider.GetOrSolve(request)
-    AssertTrue stats, "audit02.cache.mode.invalidated", Not provider.LastStateWasReused
-    AssertTrue stats, "audit02.cache.mode.newState", Not state Is first
-    AssertTrue stats, "audit02.cache.mode.physical", state.Converged And state.WithinPhysicalRange
-    AssertTrue stats, "audit02.cache.mode.noExtension", Not state.ExtensionUsed
-    AssertClose stats, "audit02.cache.mode.epsilon", state.Epsilon0, firstEps, 0.00000000001
+    TestAssertTrue stats, "audit02.cache.mode.invalidated", Not provider.LastStateWasReused
+    TestAssertTrue stats, "audit02.cache.mode.newState", Not state Is first
+    TestAssertTrue stats, "audit02.cache.mode.physical", state.Converged And state.WithinPhysicalRange
+    TestAssertTrue stats, "audit02.cache.mode.noExtension", Not state.ExtensionUsed
+    TestAssertClose stats, "audit02.cache.mode.epsilon", state.Epsilon0, firstEps, 0.00000000001
 
     Dim materialState As CSectionStateResult
     Set materialState = state
     concrete.Initialize 15.5, 1.1, 22#, 1.8, 27000#, 27000#, rbMc2:=14.6
-    AssertClose stats, "audit02.cache.material.ownedInput", materials.ConcreteParameters.Eb, 32500#, 0#
+    TestAssertClose stats, "audit02.cache.material.ownedInput", materials.ConcreteParameters.Eb, 32500#, 0#
     Dim detached As CConcreteMaterialParameters
     Set detached = materials.ConcreteParameters
     detached.Initialize 15.5, 1.1, 22#, 1.8, 25000#, 25000#, rbMc2:=14.6
-    AssertClose stats, "audit02.cache.material.detachedGetter", materials.ConcreteParameters.Eb, 32500#, 0#
-    materials.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
+    TestAssertClose stats, "audit02.cache.material.detachedGetter", materials.ConcreteParameters.Eb, 32500#, 0#
+    materials.TestInitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
     Set state = provider.GetOrSolve(request)
-    AssertTrue stats, "audit02.cache.material.invalidated", Not provider.LastStateWasReused
-    AssertTrue stats, "audit02.cache.material.changedPlane", Abs(state.Epsilon0 - materialState.Epsilon0) > 0.000000001
-    AssertClose stats, "audit02.cache.material.targetN", state.Nint, request.TargetN, 5#
-    AssertClose stats, "audit02.cache.material.targetMx", state.Mxint, request.TargetMx, 5000#
-    AssertClose stats, "audit02.cache.material.targetMy", state.Myint, request.TargetMy, 5000#
+    TestAssertTrue stats, "audit02.cache.material.invalidated", Not provider.LastStateWasReused
+    TestAssertTrue stats, "audit02.cache.material.changedPlane", Abs(state.Epsilon0 - materialState.Epsilon0) > 0.000000001
+    TestAssertClose stats, "audit02.cache.material.targetN", state.Nint, request.TargetN, 5#
+    TestAssertClose stats, "audit02.cache.material.targetMx", state.Mxint, request.TargetMx, 5000#
+    TestAssertClose stats, "audit02.cache.material.targetMy", state.Myint, request.TargetMy, 5000#
 
     Dim revision As Long
     revision = section.Revision
     section.SourceType = "Changed presentation label"
-    AssertTrue stats, "audit02.cache.geometry.labelNotPhysical", section.Revision = revision
+    TestAssertTrue stats, "audit02.cache.geometry.labelNotPhysical", section.Revision = revision
     section.AddRebarElement 0#, 0#, 20#, 0#, "A400"
-    AssertTrue stats, "audit02.cache.geometry.revision", section.Revision > revision
+    TestAssertTrue stats, "audit02.cache.geometry.revision", section.Revision > revision
     Dim beforeGeometry As CSectionStateResult
     Set beforeGeometry = state
     Set state = provider.GetOrSolve(request)
-    AssertTrue stats, "audit02.cache.geometry.invalidated", Not provider.LastStateWasReused
-    AssertTrue stats, "audit02.cache.geometry.changedPlane", Abs(state.Epsilon0 - beforeGeometry.Epsilon0) > 0.0000000001
+    TestAssertTrue stats, "audit02.cache.geometry.invalidated", Not provider.LastStateWasReused
+    TestAssertTrue stats, "audit02.cache.geometry.changedPlane", Abs(state.Epsilon0 - beforeGeometry.Epsilon0) > 0.0000000001
 
     provider.ToleranceN = 0.01
     provider.ToleranceMx = 1#
     provider.ToleranceMy = 1#
     Set state = provider.GetOrSolve(request)
-    AssertTrue stats, "audit02.cache.tolerance.invalidated", Not provider.LastStateWasReused
-    AssertClose stats, "audit02.cache.tolerance.N", state.Nint, request.TargetN, 0.01
-    AssertClose stats, "audit02.cache.tolerance.Mx", state.Mxint, request.TargetMx, 1#
-    AssertClose stats, "audit02.cache.tolerance.My", state.Myint, request.TargetMy, 1#
+    TestAssertTrue stats, "audit02.cache.tolerance.invalidated", Not provider.LastStateWasReused
+    TestAssertClose stats, "audit02.cache.tolerance.N", state.Nint, request.TargetN, 0.01
+    TestAssertClose stats, "audit02.cache.tolerance.Mx", state.Mxint, request.TargetMx, 1#
+    TestAssertClose stats, "audit02.cache.tolerance.My", state.Myint, request.TargetMy, 1#
     Dim stricterState As CSectionStateResult
     Set stricterState = state
     Dim otherRequest As CStateRequest
     Set otherRequest = New CStateRequest
     otherRequest.Initialize sstStrengthState, cpStrength, spec, -150000#, 2000000#, 1000000#, True, True
     Set state = provider.GetOrSolve(otherRequest)
-    AssertTrue stats, "audit02.cache.named.latestSolve", repository.FindState(sstStrengthState) Is state
+    TestAssertTrue stats, "audit02.cache.named.latestSolve", repository.FindState(sstStrengthState) Is state
     Set state = provider.GetOrSolve(request)
-    AssertTrue stats, "audit02.cache.named.oldLoadReusable", state Is stricterState
-    AssertTrue stats, "audit02.cache.named.latestCacheHit", repository.FindState(sstStrengthState) Is state
-    AssertTrue stats, "audit02.cache.named.singleSlot", repository.StateCount = 1
+    TestAssertTrue stats, "audit02.cache.named.oldLoadReusable", state Is stricterState
+    TestAssertTrue stats, "audit02.cache.named.latestCacheHit", repository.FindState(sstStrengthState) Is state
+    TestAssertTrue stats, "audit02.cache.named.singleSlot", repository.StateCount = 1
 
     Dim slsSpec As CMaterialModelSpec
     Set slsSpec = New CMaterialModelSpec
     slsSpec.Initialize "SLS(II)", "ThreeLine", "UseDiagram", "TwoLine"
     otherRequest.Initialize sstPreCrackState, cpMcrc, slsSpec, -100000#, 4000000#, 3000000#, True, True
     Set state = provider.GetOrSolve(otherRequest)
-    AssertTrue stats, "audit02.cache.role.notMixed", Not provider.LastStateWasReused
-    AssertEquals stats, "audit02.cache.role.spec", state.MaterialSpec.SpecKey, slsSpec.SpecKey
+    TestAssertTrue stats, "audit02.cache.role.notMixed", Not provider.LastStateWasReused
+    TestAssertEquals stats, "audit02.cache.role.spec", state.MaterialSpec.SpecKey, slsSpec.SpecKey
     Set state = provider.GetOrSolve(otherRequest)
-    AssertTrue stats, "audit02.cache.pre.reused", provider.LastStateWasReused
-    AssertTrue stats, "audit02.cache.pre.noRunner", provider.LastRunner Is Nothing
-    AssertTrue stats, "audit02.cache.pre.restored", Not provider.SolverSnapshot(state) Is Nothing
+    TestAssertTrue stats, "audit02.cache.pre.reused", provider.LastStateWasReused
+    TestAssertTrue stats, "audit02.cache.pre.noRunner", provider.LastRunner Is Nothing
+    TestAssertTrue stats, "audit02.cache.pre.restored", Not provider.SolverSnapshot(state) Is Nothing
 
     Dim postSpec As CMaterialModelSpec
     Set postSpec = New CMaterialModelSpec
     postSpec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
     otherRequest.Initialize sstPostCrackState, cpCrackedNDS, postSpec, -100000#, 4000000#, 3000000#, True, True
     Set state = provider.GetOrSolve(otherRequest)
-    AssertTrue stats, "audit02.cache.post.physical", state.Converged And state.WithinPhysicalRange
+    TestAssertTrue stats, "audit02.cache.post.physical", state.Converged And state.WithinPhysicalRange
     Dim solvesBeforePostReuse As Long
     solvesBeforePostReuse = SectionEquilibriumSolveCount()
     Set state = provider.GetOrSolve(otherRequest)
-    AssertTrue stats, "audit02.cache.post.reused", provider.LastStateWasReused
-    AssertTrue stats, "audit02.cache.post.noRunner", provider.LastRunner Is Nothing
-    AssertTrue stats, "audit02.cache.post.restored", Not provider.SolverSnapshot(state) Is Nothing
-    AssertTrue stats, "audit02.cache.post.noSolve", SectionEquilibriumSolveCount() = solvesBeforePostReuse
+    TestAssertTrue stats, "audit02.cache.post.reused", provider.LastStateWasReused
+    TestAssertTrue stats, "audit02.cache.post.noRunner", provider.LastRunner Is Nothing
+    TestAssertTrue stats, "audit02.cache.post.restored", Not provider.SolverSnapshot(state) Is Nothing
+    TestAssertTrue stats, "audit02.cache.post.noSolve", SectionEquilibriumSolveCount() = solvesBeforePostReuse
 
     repository.Clear
     provider.LoadSteps = 1
     provider.MaxIterations = 1
     Set state = provider.GetOrSolve(request)
-    AssertTrue stats, "audit02.cache.retry.firstFailed", Not state.Converged
-    AssertTrue stats, "audit02.cache.retry.notReusable", repository.FindEquivalent(request) Is Nothing
+    TestAssertTrue stats, "audit02.cache.retry.firstFailed", Not state.Converged
+    TestAssertTrue stats, "audit02.cache.retry.notReusable", repository.FindEquivalent(request) Is Nothing
     provider.LoadSteps = 8
     provider.MaxIterations = 80
     Set state = provider.GetOrSolve(retryRequest)
-    AssertTrue stats, "audit02.cache.retry.newSolve", Not provider.LastStateWasReused
-    AssertTrue stats, "audit02.cache.retry.success", state.Converged
-    AssertTrue stats, "audit02.cache.retry.latestNamed", repository.FindState(sstStrengthState) Is state
+    TestAssertTrue stats, "audit02.cache.retry.newSolve", Not provider.LastStateWasReused
+    TestAssertTrue stats, "audit02.cache.retry.success", state.Converged
+    TestAssertTrue stats, "audit02.cache.retry.latestNamed", repository.FindState(sstStrengthState) Is state
     Set state = provider.GetOrSolve(request)
-    AssertTrue stats, "audit02.cache.retry.reusedAfterSuccess", provider.LastStateWasReused
-    AssertClose stats, "audit02.cache.snapshot.epsilonUnchanged", first.Epsilon0, firstEps, 0#
-    AssertTrue stats, "audit02.cache.snapshot.codeUnchanged", first.ResultCode = firstMetaCode
-    AssertEquals stats, "audit02.cache.snapshot.logUnchanged", first.DiagnosticLog, firstLog
+    TestAssertTrue stats, "audit02.cache.retry.reusedAfterSuccess", provider.LastStateWasReused
+    TestAssertClose stats, "audit02.cache.snapshot.epsilonUnchanged", first.Epsilon0, firstEps, 0#
+    TestAssertTrue stats, "audit02.cache.snapshot.codeUnchanged", first.ResultCode = firstMetaCode
+    TestAssertEquals stats, "audit02.cache.snapshot.logUnchanged", first.DiagnosticLog, firstLog
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ AUDIT02 ON/OFF ==============================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает полный численный отчет парного сравнения физических сценариев.
 ' Переключатель меняет только provider диаграмм, а не усилия, профили или допуски.
 Public Function RunAudit02OnOffComparisonTests() As String
@@ -6377,38 +6551,39 @@ Public Function RunAudit02OnOffComparisonTests() As String
     Dim stats As TBatchTestStats
     TestAudit02OnOffPhysicalResults stats
     TestAudit02InitialOffsetOnOffStatuses stats
-    AppendLine stats, "TOTAL_AUDIT02_PAIR: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT02_PAIR: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit02OnOffComparisonTests = stats.Report
     Exit Function
 Failed:
     RunAudit02OnOffComparisonTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает одноосные, двухосные и осевые LC двух material roles. Второй
 ' проход включает устойчивость; ее формулы не получают численного Extension.
 ' Все изменения тестового Config восстанавливаются и при runtime-ошибке.
 Private Sub TestAudit02OnOffPhysicalResults(ByRef stats As TBatchTestStats)
     On Error GoTo Failed
     Dim oldStability As String
-    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldStability = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
     Dim oldLength As String
-    oldLength = GetSystemSetting("Stability.ElementLength")
+    oldLength = TestGetSystemSetting("Stability.ElementLength")
     ' Небольшое сечение с L=8000 может не иметь допустимого текущего LC после
     ' учета устойчивости. Эта матрица сравнивает именно физические решения.
-    SetSystemSetting "Stability.ElementLength", 1000#
+    TestSetSystemSetting "Stability.ElementLength", 1000#
     Dim maxima As Object
     Set maxima = CreateObject("Scripting.Dictionary")
     Dim phase As Long
     For phase = 0 To 1
         If phase = 0 Then
-            SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+            TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
         Else
-            SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+            TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
         End If
         Dim offBatch As CBatchSectionCalculator
         Dim onBatch As CBatchSectionCalculator
-        Set offBatch = BuildAudit02PairBatch(False)
-        Set onBatch = BuildAudit02PairBatch(True)
+        Set offBatch = TestBuildAudit02PairBatch(False)
+        Set onBatch = TestBuildAudit02PairBatch(True)
         Dim scenario As Variant
         For Each scenario In Array( _
                 Array("ULS_BIAX", -100000#, 8000000#, 3000000#, "PR1"), _
@@ -6433,60 +6608,61 @@ Private Sub TestAudit02OnOffPhysicalResults(ByRef stats As TBatchTestStats)
             Dim onResult As CCombinationResult
             Set offResult = offBatch.ResultAt(i)
             Set onResult = onBatch.ResultAt(i)
-            AppendLine stats, "PAIR_STATUS|" & prefix & "|Off=" & offResult.Status & "|On=" & onResult.Status & _
+            TestAppendLine stats, "PAIR_STATUS|" & prefix & "|Off=" & offResult.Status & "|On=" & onResult.Status & _
                 "|OffComment=" & offResult.OverallMeta.ResultComment & "|OnComment=" & onResult.OverallMeta.ResultComment
-            AssertEquals stats, prefix & ".overall", onResult.Status, offResult.Status
-            AssertTrue stats, prefix & ".offNoNumericalFailure", _
+            TestAssertEquals stats, prefix & ".overall", onResult.Status, offResult.Status
+            TestAssertTrue stats, prefix & ".offNoNumericalFailure", _
                 offResult.Status <> "NumFail" And offResult.Status <> "CalcErr" And offResult.Status <> "InputErr"
-            AssertEquals stats, prefix & ".direct", onResult.StrengthResult.DirectState.Status, offResult.StrengthResult.DirectState.Status
-            AssertEquals stats, prefix & ".capacity", onResult.StrengthResult.Capacity.Status, offResult.StrengthResult.Capacity.Status
-            AssertEquals stats, prefix & ".criterion", onResult.StrengthResult.Capacity.LimitState, offResult.StrengthResult.Capacity.LimitState
-            AssertEquals stats, prefix & ".normal", onResult.NormalCrackStatus, offResult.NormalCrackStatus
-            AssertEquals stats, prefix & ".longitudinal", onResult.CrackResult.Longitudinal.Status, offResult.CrackResult.Longitudinal.Status
-            AssertEquals stats, prefix & ".stability", onResult.StabilityResult.Status, offResult.StabilityResult.Status
-            AssertTrue stats, prefix & ".crackAvailability", onResult.CrackResult.Formation.CrackFormed = offResult.CrackResult.Formation.CrackFormed
-            AssertTrue stats, prefix & ".pointAvailability", onResult.CrackResult.Formation.HasLimitPoint = offResult.CrackResult.Formation.HasLimitPoint
-            AssertTrue stats, prefix & ".stateCount", onResult.StateRepository.StateCount = offResult.StateRepository.StateCount
+            TestAssertEquals stats, prefix & ".direct", onResult.StrengthResult.DirectState.Status, offResult.StrengthResult.DirectState.Status
+            TestAssertEquals stats, prefix & ".capacity", onResult.StrengthResult.Capacity.Status, offResult.StrengthResult.Capacity.Status
+            TestAssertEquals stats, prefix & ".criterion", onResult.StrengthResult.Capacity.LimitState, offResult.StrengthResult.Capacity.LimitState
+            TestAssertEquals stats, prefix & ".normal", onResult.NormalCrackStatus, offResult.NormalCrackStatus
+            TestAssertEquals stats, prefix & ".longitudinal", onResult.CrackResult.Longitudinal.Status, offResult.CrackResult.Longitudinal.Status
+            TestAssertEquals stats, prefix & ".stability", onResult.StabilityResult.Status, offResult.StabilityResult.Status
+            TestAssertTrue stats, prefix & ".crackAvailability", onResult.CrackResult.Formation.CrackFormed = offResult.CrackResult.Formation.CrackFormed
+            TestAssertTrue stats, prefix & ".pointAvailability", onResult.CrackResult.Formation.HasLimitPoint = offResult.CrackResult.Formation.HasLimitPoint
+            TestAssertTrue stats, prefix & ".stateCount", onResult.StateRepository.StateCount = offResult.StateRepository.StateCount
 
             Dim stateType As Variant
             For Each stateType In Array(sstStrengthState, sstCapacityState, sstPreCrackState, sstPostCrackState, sstCrackedState)
-                Audit02ComparePairState stats, maxima, prefix, _
+                TestAudit02ComparePairState stats, maxima, prefix, _
                     offResult.StateRepository.FindState(CLng(stateType)), onResult.StateRepository.FindState(CLng(stateType))
             Next stateType
             Dim offNumbers As Variant
             Dim onNumbers As Variant
-            offNumbers = Audit02PairResultNumbers(offResult)
-            onNumbers = Audit02PairResultNumbers(onResult)
+            offNumbers = TestAudit02PairResultNumbers(offResult)
+            onNumbers = TestAudit02PairResultNumbers(onResult)
             Dim metric As Long
             For metric = LBound(offNumbers) To UBound(offNumbers)
-                Audit02AssertPair stats, maxima, prefix, CStr(offNumbers(metric)(0)), _
+                TestAudit02AssertPair stats, maxima, prefix, CStr(offNumbers(metric)(0)), _
                     CDbl(onNumbers(metric)(1)), CDbl(offNumbers(metric)(1)), CDbl(offNumbers(metric)(2))
             Next metric
-            Audit02AssertPair stats, maxima, prefix, "Reference.N", onBatch.StrengthReferenceN(i), offBatch.StrengthReferenceN(i), 0.001
-            Audit02AssertPair stats, maxima, prefix, "Reference.Mx", onBatch.StrengthReferenceMx(i), offBatch.StrengthReferenceMx(i), 0.001
-            Audit02AssertPair stats, maxima, prefix, "Reference.My", onBatch.StrengthReferenceMy(i), offBatch.StrengthReferenceMy(i), 0.001
+            TestAudit02AssertPair stats, maxima, prefix, "Reference.N", onBatch.StrengthReferenceN(i), offBatch.StrengthReferenceN(i), 0.001
+            TestAudit02AssertPair stats, maxima, prefix, "Reference.Mx", onBatch.StrengthReferenceMx(i), offBatch.StrengthReferenceMx(i), 0.001
+            TestAudit02AssertPair stats, maxima, prefix, "Reference.My", onBatch.StrengthReferenceMy(i), offBatch.StrengthReferenceMy(i), 0.001
         Next i
     Next phase
     Dim key As Variant
     For Each key In maxima.Keys
-        AppendLine stats, "MAXDIFF|" & CStr(key) & "|abs=" & FormatNumberInvariant(CDbl(maxima(key)))
+        TestAppendLine stats, "MAXDIFF|" & CStr(key) & "|abs=" & TestFormatNumberInvariant(CDbl(maxima(key)))
     Next key
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
-    SetSystemSetting "Stability.ElementLength", oldLength
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    TestSetSystemSetting "Stability.ElementLength", oldLength
     Exit Sub
 Failed:
     Dim reason As String
     reason = Err.Description
-    AssertTrue stats, "audit02.pair.runtime: " & reason, False
+    TestAssertTrue stats, "audit02.pair.runtime: " & reason, False
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Строит одинаковую геометрию и физические параметры, явно выбирая On/Off.
 ' Настройки прочих алгоритмов и профили читаются одинаково для обеих половин пары.
-Private Function BuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBatchSectionCalculator
+Private Function TestBuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBatchSectionCalculator
     Dim geom As CGeometryRegion
-    Set geom = FixtureBox(300#, 200#)
+    Set geom = TestFixtureBox(300#, 200#)
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 30#, 20#, 1
@@ -6500,11 +6676,11 @@ Private Function BuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBa
     Set materials = New CMaterialModelProvider
     Dim parameters As CMaterialModelProvider
     Set parameters = TestMaterialProvider()
-    materials.InitializeFromParameters parameters.ConcreteParameters, parameters.SteelParameters, _
+    materials.TestInitializeFromParameters parameters.ConcreteParameters, parameters.SteelParameters, _
         diagramExtensionEnabled:=extensionEnabled
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
-    batch.Initialize BuildGeneratedSectionModel(mesh, rebars, "Audit02PairedRectangle"), materials
+    batch.Initialize TestBuildGeneratedSectionModel(mesh, rebars, "Audit02PairedRectangle"), materials
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
@@ -6512,9 +6688,10 @@ Private Function BuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBa
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     Set batch.ProfileCatalog = TestProfileCatalog()
     batch.ApplyLoadReference 0#, 0#
-    Set BuildAudit02PairBatch = batch
+    Set TestBuildAudit02PairBatch = batch
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ДЛЯ ТЕСТОВ
 ' При постоянной сжимающей N за физической несущей обычные диаграммы не
 ' дают равновесия, а продолжение позволяет подтвердить недопустимый старт.
@@ -6523,12 +6700,12 @@ End Function
 Private Sub TestAudit02InitialOffsetOnOffStatuses(ByRef stats As TBatchTestStats)
     On Error GoTo Failed
     Dim oldStability As String
-    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    oldStability = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
     Dim offBatch As CBatchSectionCalculator
     Dim onBatch As CBatchSectionCalculator
-    Set offBatch = BuildAudit02PairBatch(False)
-    Set onBatch = BuildAudit02PairBatch(True)
+    Set offBatch = TestBuildAudit02PairBatch(False)
+    Set onBatch = TestBuildAudit02PairBatch(True)
     offBatch.AddCombination "OFFSET_2MN", -2000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
     offBatch.AddCombination "OFFSET_3MN", -3000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
     onBatch.AddCombination "OFFSET_2MN", -2000000#, 8000000#, 0#, "PR1", "Постоянная N выше физического предела", "lambda*Mxy"
@@ -6543,22 +6720,22 @@ Private Sub TestAudit02InitialOffsetOnOffStatuses(ByRef stats As TBatchTestStats
         Set onResult = onBatch.ResultAt(i).StrengthResult.Capacity
         Dim prefix As String
         prefix = "audit02.offsetPair." & offBatch.CombinationID(i)
-        AppendLine stats, "OFFSET_PAIR|" & offBatch.CombinationID(i) & "|Off=" & offResult.Status & _
+        TestAppendLine stats, "OFFSET_PAIR|" & offBatch.CombinationID(i) & "|Off=" & offResult.Status & _
             "|OffCode=" & CStr(offResult.ResultMeta.ResultCode) & "|On=" & onResult.Status & _
             "|OnCode=" & CStr(onResult.ResultMeta.ResultCode) & "|OffComment=" & offResult.ResultMeta.ResultComment & _
             "|OnComment=" & onResult.ResultMeta.ResultComment
-        AssertEquals stats, prefix & ".offStatus", offResult.Status, "NumFail"
-        AssertEquals stats, prefix & ".onStatus", onResult.Status, "BaseFail"
+        TestAssertEquals stats, prefix & ".offStatus", offResult.Status, "NumFail"
+        TestAssertEquals stats, prefix & ".onStatus", onResult.Status, "BaseFail"
         ' Audit03 F03: сохраняется точная причина касательной системы; внешний
         ' NumFail, физические усилия и expected/tolerance парного теста прежние.
-        AssertTrue stats, prefix & ".offCode", offResult.ResultMeta.ResultCode = rcSingularTangent
-        AssertTrue stats, prefix & ".onCode", onResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
-        AssertTrue stats, prefix & ".offNoPoint", Not offResult.SearchResult.HasLimitPoint
-        AssertTrue stats, prefix & ".onNoPoint", Not onResult.SearchResult.HasLimitPoint
-        AssertTrue stats, prefix & ".onAuxiliary", onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.Converged
-        AssertTrue stats, prefix & ".onExtended", onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.ExtensionUsed
-        AssertTrue stats, prefix & ".onNotPhysical", Not onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.WithinPhysicalRange
-        AssertTrue stats, prefix & ".comments", Len(offResult.ResultMeta.ResultComment) > 0 And Len(onResult.ResultMeta.ResultComment) > 0
+        TestAssertTrue stats, prefix & ".offCode", offResult.ResultMeta.ResultCode = rcSingularTangent
+        TestAssertTrue stats, prefix & ".onCode", onResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
+        TestAssertTrue stats, prefix & ".offNoPoint", Not offResult.SearchResult.HasLimitPoint
+        TestAssertTrue stats, prefix & ".onNoPoint", Not onResult.SearchResult.HasLimitPoint
+        TestAssertTrue stats, prefix & ".onAuxiliary", onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.Converged
+        TestAssertTrue stats, prefix & ".onExtended", onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.ExtensionUsed
+        TestAssertTrue stats, prefix & ".onNotPhysical", Not onBatch.ResultAt(i).StrengthResult.DirectState.StateResult.WithinPhysicalRange
+        TestAssertTrue stats, prefix & ".comments", Len(offResult.ResultMeta.ResultComment) > 0 And Len(onResult.ResultMeta.ResultComment) > 0
     Next i
     Dim mode As Long
     For mode = 0 To 1
@@ -6571,58 +6748,60 @@ Private Sub TestAudit02InitialOffsetOnOffStatuses(ByRef stats As TBatchTestStats
         Set sheet = ThisWorkbook.Worksheets.Item("Results")
         For i = 1 To 2
             Dim summaryRow As Long, detailedRow As Long
-            summaryRow = SummaryRowByCombination(sheet, batch.CombinationID(i))
-            detailedRow = DetailedRowByCombination(sheet, "rngStrengthSummaryAnchor", batch.CombinationID(i))
+            summaryRow = TestSummaryRowByCombination(sheet, batch.CombinationID(i))
+            detailedRow = TestDetailedRowByCombination(sheet, "rngStrengthSummaryAnchor", batch.CombinationID(i))
             prefix = "audit02.offsetPair.sheet." & CStr(mode) & "." & CStr(i)
-            AssertEquals stats, prefix & ".summary", CStr(sheet.Cells.Item(summaryRow, 7).Value2), _
+            TestAssertEquals stats, prefix & ".summary", CStr(sheet.Cells.Item(summaryRow, 7).Value2), _
                 batch.ResultAt(i).StrengthResult.Capacity.Status
-            AssertEquals stats, prefix & ".detailed", CStr(sheet.Cells.Item(detailedRow, 49).Value2), _
+            TestAssertEquals stats, prefix & ".detailed", CStr(sheet.Cells.Item(detailedRow, 49).Value2), _
                 batch.ResultAt(i).StrengthResult.Capacity.Status
-            AssertEquals stats, prefix & ".overall", CStr(sheet.Cells.Item(summaryRow, 4).Value2), batch.ResultAt(i).Status
-            AssertTrue stats, prefix & ".colorSummary", StatusCellHasExpectedFill(sheet, summaryRow, 7)
-            AssertTrue stats, prefix & ".colorDetailed", StatusCellHasExpectedFill(sheet, detailedRow, 49)
+            TestAssertEquals stats, prefix & ".overall", CStr(sheet.Cells.Item(summaryRow, 4).Value2), batch.ResultAt(i).Status
+            TestAssertTrue stats, prefix & ".colorSummary", TestStatusCellHasExpectedFill(sheet, summaryRow, 7)
+            TestAssertTrue stats, prefix & ".colorDetailed", TestStatusCellHasExpectedFill(sheet, detailedRow, 49)
         Next i
     Next mode
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
     Exit Sub
 Failed:
     Dim reason As String
     reason = CStr(Err.Number) & "; " & Err.Description
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
-    AssertTrue stats, "audit02.offsetPair.runtime." & reason, False
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    TestAssertTrue stats, "audit02.offsetPair.runtime." & reason, False
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает наличие и все инженерные величины сохранённых НДС.
 ' Время, итерации и журнал исключены: они не определяют физическое совпадение.
-Private Sub Audit02ComparePairState(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
+Private Sub TestAudit02ComparePairState(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
         ByVal prefix As String, ByVal offState As CSectionStateResult, ByVal onState As CSectionStateResult)
     If offState Is Nothing Then
-        AssertTrue stats, prefix & ".missingStateMatched", onState Is Nothing
+        TestAssertTrue stats, prefix & ".missingStateMatched", onState Is Nothing
         Exit Sub
     End If
     Dim key As String
     key = offState.StateTypeText
-    AssertTrue stats, prefix & "." & key & ".exists", Not onState Is Nothing
+    TestAssertTrue stats, prefix & "." & key & ".exists", Not onState Is Nothing
     If onState Is Nothing Then Exit Sub
-    AssertEquals stats, prefix & "." & key & ".status", onState.Status, offState.Status
-    AssertTrue stats, prefix & "." & key & ".converged", onState.Converged And offState.Converged
-    AssertTrue stats, prefix & "." & key & ".physical", onState.WithinPhysicalRange And offState.WithinPhysicalRange
-    AssertTrue stats, prefix & "." & key & ".noFinalExtension", Not onState.ExtensionUsed And Not offState.ExtensionUsed
+    TestAssertEquals stats, prefix & "." & key & ".status", onState.Status, offState.Status
+    TestAssertTrue stats, prefix & "." & key & ".converged", onState.Converged And offState.Converged
+    TestAssertTrue stats, prefix & "." & key & ".physical", onState.WithinPhysicalRange And offState.WithinPhysicalRange
+    TestAssertTrue stats, prefix & "." & key & ".noFinalExtension", Not onState.ExtensionUsed And Not offState.ExtensionUsed
     Dim first As Variant
     Dim second As Variant
-    first = Audit02PairStateNumbers(offState)
-    second = Audit02PairStateNumbers(onState)
+    first = TestAudit02PairStateNumbers(offState)
+    second = TestAudit02PairStateNumbers(onState)
     Dim i As Long
     For i = LBound(first) To UBound(first)
-        Audit02AssertPair stats, maxima, prefix, key & "." & CStr(first(i)(0)), _
+        TestAudit02AssertPair stats, maxima, prefix, key & "." & CStr(first(i)(0)), _
             CDbl(second(i)(1)), CDbl(first(i)(1)), CDbl(first(i)(2))
     Next i
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Подготавливает числовые поля НДС с прежними допусками проверок решателя
 ' и деформаций. Служебные различия стратегий поиска не учитываются.
-Private Function Audit02PairStateNumbers(ByVal state As CSectionStateResult) As Variant
-    Audit02PairStateNumbers = Array( _
+Private Function TestAudit02PairStateNumbers(ByVal state As CSectionStateResult) As Variant
+    TestAudit02PairStateNumbers = Array( _
         Array("TargetN", state.TargetN, 5#), Array("TargetMx", state.TargetMx, 5000#), Array("TargetMy", state.TargetMy, 5000#), _
         Array("Nint", state.Nint, 5#), Array("Mxint", state.Mxint, 5000#), Array("Myint", state.Myint, 5000#), _
         Array("epsilon0", state.Epsilon0, 0.000001), Array("kappaX", state.KappaX, 0.00000000001), Array("kappaY", state.KappaY, 0.00000000001), _
@@ -6633,9 +6812,10 @@ Private Function Audit02PairStateNumbers(ByVal state As CSectionStateResult) As 
         Array("ResidualN", state.ResidualN, 5#), Array("ResidualMx", state.ResidualMx, 5000#), Array("ResidualMy", state.ResidualMy, 5000#))
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Подготавливает инженерные величины всех расчётных проверок для сравнения.
 ' Наличие неприменимых проверок и их статусы сопоставляются отдельно.
-Private Function Audit02PairResultNumbers(ByVal result As CCombinationResult) As Variant
+Private Function TestAudit02PairResultNumbers(ByVal result As CCombinationResult) As Variant
     Dim capacity As CCapacityResult
     Set capacity = result.StrengthResult.Capacity
     Dim formation As CCrackFormationResult
@@ -6644,7 +6824,7 @@ Private Function Audit02PairResultNumbers(ByVal result As CCombinationResult) As
     Set width = result.CrackResult.Width
     Dim stability As CStabilityResult
     Set stability = result.StabilityResult
-    Audit02PairResultNumbers = Array( _
+    TestAudit02PairResultNumbers = Array( _
         Array("Capacity.lambda", capacity.LambdaCapacity, 0.01), Array("Capacity.N", capacity.NUltimate, 5#), _
         Array("Capacity.Mx", capacity.MxUltimate, 5000#), Array("Capacity.My", capacity.MyUltimate, 5000#), _
         Array("Capacity.util", capacity.UtilCapacity, 0.000001), Array("Formation.lambda", formation.LambdaCrc, 0.001), _
@@ -6663,35 +6843,39 @@ Private Function Audit02PairResultNumbers(ByVal result As CCombinationResult) As
         Array("Stability.Ncr2", stability.Ncr2, 0.001), Array("Stability.reserve", stability.SummaryReserve, 0.000000001))
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Фиксирует отклонение каждой применимой величины и максимальное абсолютное
 ' отклонение по метрике во всех сценариях; существующие expected не меняются.
-Private Sub Audit02AssertPair(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
+Private Sub TestAudit02AssertPair(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
         ByVal prefix As String, ByVal metric As String, ByVal actual As Double, _
         ByVal expected As Double, ByVal tolerance As Double)
-    AssertClose stats, prefix & "." & metric, actual, expected, tolerance
+    TestAssertClose stats, prefix & "." & metric, actual, expected, tolerance
     Dim difference As Double
     difference = Abs(actual - expected)
     If Not maxima.Exists(metric) Then maxima.Add metric, 0#
     If difference > CDbl(maxima(metric)) Then maxima(metric) = difference
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ===========================================================================
 ' ДЛЯ ТЕСТОВ: AUDIT03 - ЖИЗНЕННЫЙ ЦИКЛ МЕТАДАННЫХ
 ' ===========================================================================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет признаки состояния, копирование, очистку и ранние результаты отказа.
 ' Отдельный запуск воспроизводит F04 без полного набора расчёта сочетаний.
 Public Function RunAudit03LifecycleTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
     TestAudit03ResultLifecycle stats
-    AppendLine stats, "TOTAL_AUDIT03_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03LifecycleTests = stats.Report
     Exit Function
 Failed:
     RunAudit03LifecycleTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет каждый внутренний исход: зависимая/выключенная ветка не объявляет
 ' собственный расчет выполненным, а реальная численная попытка сохраняется.
 ' Повторное заполнение и независимый clone не переносят флаги прошлого LC.
@@ -6716,65 +6900,67 @@ Private Sub TestAudit03ResultLifecycle(ByRef stats As TBatchTestStats)
             prefix = "audit03.lifecycle." & CStr(value) & "." & CStr(attempted)
             meta.SetResult CLng(value), rcCheckPassed, rkCrackWidth, "Текущий результат.", _
                 "Текущая диагностика.", True, CBool(attempted)
-            AssertTrue stats, prefix & ".applies", meta.Applies = expectedApplies
-            AssertTrue stats, prefix & ".calculated", meta.Calculated = expectedCalculated
+            TestAssertTrue stats, prefix & ".applies", meta.Applies = expectedApplies
+            TestAssertTrue stats, prefix & ".calculated", meta.Calculated = expectedCalculated
             Set snapshot = meta.Clone
             meta.Clear
-            AssertTrue stats, prefix & ".cloneStatus", snapshot.InternalStatus = value
-            AssertTrue stats, prefix & ".cloneApplies", snapshot.Applies = expectedApplies
-            AssertTrue stats, prefix & ".cloneCalculated", snapshot.Calculated = expectedCalculated
-            AssertTrue stats, prefix & ".clearCalculated", Not meta.Calculated
-            AssertTrue stats, prefix & ".clearCode", meta.ResultCode = rcNone
-            AssertEquals stats, prefix & ".clearComment", meta.ResultComment, vbNullString
+            TestAssertTrue stats, prefix & ".cloneStatus", snapshot.InternalStatus = value
+            TestAssertTrue stats, prefix & ".cloneApplies", snapshot.Applies = expectedApplies
+            TestAssertTrue stats, prefix & ".cloneCalculated", snapshot.Calculated = expectedCalculated
+            TestAssertTrue stats, prefix & ".clearCalculated", Not meta.Calculated
+            TestAssertTrue stats, prefix & ".clearCode", meta.ResultCode = rcNone
+            TestAssertEquals stats, prefix & ".clearComment", meta.ResultComment, vbNullString
         Next attempted
     Next value
 
     Dim capacity As CCapacityResult
     Set capacity = New CCapacityResult
     capacity.InitializeBaseFail "Исходная часть нагрузки уже не проходит проверку."
-    AssertTrue stats, "audit03.lifecycle.capacity.baseCalculated", capacity.ResultMeta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.capacity.baseCalculated", capacity.ResultMeta.Calculated
     capacity.InitializeCalcError "Не получен результат поиска."
-    AssertTrue stats, "audit03.lifecycle.capacity.earlyInternal", Not capacity.ResultMeta.Calculated
-    AssertTrue stats, "audit03.lifecycle.capacity.earlyApplies", capacity.ResultMeta.Applies
+    TestAssertTrue stats, "audit03.lifecycle.capacity.earlyInternal", Not capacity.ResultMeta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.capacity.earlyApplies", capacity.ResultMeta.Applies
 
     Dim state As CSectionStateResult, direct As CDirectStateResult
     Set state = New CSectionStateResult
-    AssertTrue stats, "audit03.lifecycle.state.empty", Not state.ResultMeta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.state.empty", Not state.ResultMeta.Calculated
     Set direct = New CDirectStateResult
     direct.SetMeta Nothing
-    AssertTrue stats, "audit03.lifecycle.direct.missing", Not direct.Meta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.direct.missing", Not direct.Meta.Calculated
 
     Dim formation As CCrackFormationResult, width As CCrackWidthResult
     Set formation = New CCrackFormationResult
     formation.InitializeFromCalculator Nothing, Nothing
-    AssertTrue stats, "audit03.lifecycle.formation.missing", Not formation.ResultMeta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.formation.missing", Not formation.ResultMeta.Calculated
     Set width = New CCrackWidthResult
     width.InitializeFromCalculator Nothing, Nothing
-    AssertTrue stats, "audit03.lifecycle.width.missing", Not width.ResultMeta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.width.missing", Not width.ResultMeta.Calculated
 
     Dim longitudinal As CLongitudinalCrackResult, stability As CStabilityResult
     Set longitudinal = New CLongitudinalCrackResult
     longitudinal.Initialize Nothing, 0#, 0#, 0#
-    AssertTrue stats, "audit03.lifecycle.longitudinal.missing", Not longitudinal.ResultMeta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.longitudinal.missing", Not longitudinal.ResultMeta.Calculated
     Set stability = New CStabilityResult
     stability.SetMeta Nothing
-    AssertTrue stats, "audit03.lifecycle.stability.missing", Not stability.Meta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.stability.missing", Not stability.Meta.Calculated
 
     Dim search As CLimitSearchResult
     Set search = New CLimitSearchResult
-    AssertTrue stats, "audit03.lifecycle.search.empty", Not search.Meta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.search.empty", Not search.Meta.Calculated
     search.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, _
         vbNullString, vbNullString, vbNullString, False
-    AssertTrue stats, "audit03.lifecycle.search.notStarted", Not search.Meta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.search.notStarted", Not search.Meta.Calculated
     search.Initialize Nothing, "Auto", "LoadMultiplier", False, 0#, 0#, 0#, 0#, Nothing, _
         vbNullString, vbNullString, vbNullString, True
-    AssertTrue stats, "audit03.lifecycle.search.actualAttempt", search.Meta.Calculated
+    TestAssertTrue stats, "audit03.lifecycle.search.actualAttempt", search.Meta.Calculated
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ===========================================================================
 ' ДЛЯ ТЕСТОВ: AUDIT03 - ВСЕ ПУТИ НАГРУЗКИ И КОММЕНТАРИИ RESULTS
 ' ===========================================================================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет обычные расчёты несущей способности и образования трещины
 ' для всех пользовательских траекторий. Сохраняет параметры, коды причин
 ' и полные пояснения каждого результата.
@@ -6782,13 +6968,14 @@ Public Function RunAudit03LoadPathCommentTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
     TestAudit03LoadPathComments stats
-    AppendLine stats, "TOTAL_AUDIT03_PATH_COMMENTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_PATH_COMMENTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03LoadPathCommentTests = stats.Report
     Exit Function
 Failed:
     RunAudit03LoadPathCommentTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохраняет настройки книги и последовательно проверяет 15 capacity и 12
 ' formation случаев. Устойчивость выключена только в этом направленном наборе,
 ' чтобы момент от ее усиления не менял проверяемую lambda-траекторию.
@@ -6796,14 +6983,14 @@ End Function
 ' независимое сравнение компонент проверяло именно выбранный load path.
 Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
     Dim oldPr1Stability As String, oldPr2Stability As String, oldZeroMoment As String
-    oldPr1Stability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
-    oldPr2Stability = GetProfileValue("Calculation.Stability.Enabled", "PR2")
-    oldZeroMoment = GetSystemSetting("Calculation.ZeroMomentPerDepth")
+    oldPr1Stability = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldPr2Stability = TestGetProfileValue("Calculation.Stability.Enabled", "PR2")
+    oldZeroMoment = TestGetSystemSetting("Calculation.ZeroMomentPerDepth")
     On Error GoTo Failed
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    AppendLine stats, "SETUP: ZeroMomentPerDepth=0; stability=No; offsetX=10 mm; offsetY=-7 mm"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestAppendLine stats, "SETUP: ZeroMomentPerDepth=0; stability=No; offsetX=10 mm; offsetY=-7 mm"
 
     Dim loads As Variant, capacityPaths As Variant, formationPaths As Variant
     loads = Array(Array(-150000#, -6000000#, -3000000#), _
@@ -6819,8 +7006,8 @@ Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
     Set writer = New CBatchResultWriter
     Dim extensionEnabled As Boolean
     extensionEnabled = settings.GetBoolean("General.DiagramExtension")
-    AppendLine stats, "SETUP: effective DiagramExtension=" & CStr(extensionEnabled)
-    Set batch = BuildBatchCalculator(extensionEnabled)
+    TestAppendLine stats, "SETUP: effective DiagramExtension=" & CStr(extensionEnabled)
+    Set batch = TestBuildBatchCalculator(extensionEnabled)
     batch.ApplySettings settings, units
     Dim pathIndex As Long, loadIndex As Long, index As Long, path As String
     For pathIndex = 0 To 4
@@ -6837,9 +7024,9 @@ Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
     For index = 1 To batch.Count
         pathIndex = (index - 1) \ 3
         loadIndex = (index - 1) Mod 3
-        Audit03CheckCapacityPath stats, batch.ResultAt(index).StrengthResult.Capacity, _
+        TestAudit03CheckCapacityPath stats, batch.ResultAt(index).StrengthResult.Capacity, _
             "audit03.paths." & batch.CombinationID(index), CStr(capacityPaths(pathIndex)), loads(loadIndex)
-        Audit03CheckResultComments stats, batch, index
+        TestAudit03CheckResultComments stats, batch, index
     Next index
 
     For pathIndex = LBound(formationPaths) To UBound(formationPaths)
@@ -6847,7 +7034,7 @@ Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
         If path <> "Auto" Then path = ChrW$(&H3BB) & "*" & path
         settings.LoadFromWorkbook ThisWorkbook
         units.LoadFromSettings settings
-        Set batch = BuildBatchCalculator(extensionEnabled)
+        Set batch = TestBuildBatchCalculator(extensionEnabled)
         batch.ApplySettings settings, units
         For loadIndex = 0 To 2
             batch.AddCombination "A03_F_" & CStr(pathIndex) & "_" & CStr(loadIndex), _
@@ -6858,26 +7045,27 @@ Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
         batch.Execute
         writer.WriteSummary ThisWorkbook, batch, units
         For index = 1 To batch.Count
-            Audit03CheckFormationPath stats, batch.ResultAt(index).CrackResult.Formation, _
+            TestAudit03CheckFormationPath stats, batch.ResultAt(index).CrackResult.Formation, _
                 "audit03.paths." & batch.CombinationID(index), path, loads(index - 1)
-            Audit03CheckResultComments stats, batch, index
+            TestAudit03CheckResultComments stats, batch, index
         Next index
     Next pathIndex
 Restore:
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", oldZeroMoment
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldPr1Stability
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", oldPr2Stability
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", oldZeroMoment
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldPr1Stability
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", oldPr2Stability
     Exit Sub
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.paths.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.paths.runtime; " & CStr(Err.Number) & "; " & Err.Description
     Resume Restore
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимо проверяет компоненты конечной lambda-нагрузки. NU/пользовательские
 ' моменты относятся к точке нагрузки; State-моменты включают N*offset.
 ' Отсутствие предельной точки не маскируется фиктивным численным сравнением.
-Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capacity As CCapacityResult, _
+Private Sub TestAudit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capacity As CCapacityResult, _
         ByVal prefix As String, ByVal component As String, ByVal load As Variant, _
         Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#, _
         Optional ByVal includeUnscaledPath As Boolean = False)
@@ -6901,32 +7089,32 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
             Dim firstMomentPath As String, resolvedComponent As String
             firstMomentPath = component
             resolvedComponent = Mid$(capacity.PathResolved, 7)
-            AssertTrue stats, prefix & ".autoAllowedPath", resolvedComponent = firstMomentPath Or _
+            TestAssertTrue stats, prefix & ".autoAllowedPath", resolvedComponent = firstMomentPath Or _
                 resolvedComponent = "N" Or resolvedComponent = "NMxy"
             If resolvedComponent = "N" Or resolvedComponent = "NMxy" Then
-                AssertTrue stats, prefix & ".autoMomentReason", _
+                TestAssertTrue stats, prefix & ".autoMomentReason", _
                     InStr(1, capacity.ResultMeta.ResultComment, "Путь " & ChrW$(&H3BB) & "*" & firstMomentPath, vbBinaryCompare) > 0
             End If
-            If resolvedComponent = "NMxy" Then AssertTrue stats, prefix & ".autoNReason", _
+            If resolvedComponent = "NMxy" Then TestAssertTrue stats, prefix & ".autoNReason", _
                 InStr(1, capacity.ResultMeta.ResultComment, "Путь " & ChrW$(&H3BB) & "*N", vbBinaryCompare) > 0
             If Len(resolvedComponent) > 0 Then component = resolvedComponent
         End If
     End If
-    AppendLine stats, "CASE: " & prefix & "|N=" & CStr(load(0)) & "|Mx=" & CStr(load(1)) & _
+    TestAppendLine stats, "CASE: " & prefix & "|N=" & CStr(load(0)) & "|Mx=" & CStr(load(1)) & _
         "|My=" & CStr(load(2)) & "|offsetX=10|offsetY=-7|path=" & component & _
         "|selection=" & selection & _
-        "|lambda=" & FormatNumberInvariant(capacity.LambdaCapacity) & "|method=" & capacity.SolutionMethod & _
+        "|lambda=" & TestFormatNumberInvariant(capacity.LambdaCapacity) & "|method=" & capacity.SolutionMethod & _
         "|limit=" & capacity.LimitState & "|status=" & capacity.Status
     If component = "None" Then
-        AssertTrue stats, prefix & ".autoNoLoad", capacity.ResultMeta.InternalStatus = rsNotApplicable And _
+        TestAssertTrue stats, prefix & ".autoNoLoad", capacity.ResultMeta.InternalStatus = rsNotApplicable And _
             capacity.ResultMeta.ResultCode = rcNotApplicable And Not capacity.ResultMeta.Calculated
-        AssertEquals stats, prefix & ".autoNoPath", capacity.PathResolved, "None"
-        AssertTrue stats, prefix & ".autoNoSearch", capacity.SearchResult Is Nothing
-        AssertTrue stats, prefix & ".autoNoPoint", capacity.StateResult Is Nothing
+        TestAssertEquals stats, prefix & ".autoNoPath", capacity.PathResolved, "None"
+        TestAssertTrue stats, prefix & ".autoNoSearch", capacity.SearchResult Is Nothing
+        TestAssertTrue stats, prefix & ".autoNoPoint", capacity.StateResult Is Nothing
         Exit Sub
     End If
     If includeUnscaledPath Then
-        ' Явная траектория без изменяемой составляющей не определяет λ.
+        ' Явная траектория без изменяемой составляющей не определяет lambda.
         ' Такой ввод должен давать InputErr, а не фиктивную предельную точку.
         Dim hasScaledLoad As Boolean, nInput As Double, mxInput As Double, myInput As Double
         nInput = CDbl(load(0)): mxInput = CDbl(load(1)): myInput = CDbl(load(2))
@@ -6938,16 +7126,16 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
             Case "NMxy", "Auto": hasScaledLoad = (nInput <> 0# Or mxInput <> 0# Or myInput <> 0#)
         End Select
         If Not hasScaledLoad Then
-            AssertTrue stats, prefix & ".unscaledInput", capacity.ResultMeta.InternalStatus = rsInvalidInput And _
+            TestAssertTrue stats, prefix & ".unscaledInput", capacity.ResultMeta.InternalStatus = rsInvalidInput And _
                 capacity.ResultMeta.ResultCode = rcInvalidInput And Not capacity.ResultMeta.Calculated
-            AssertEquals stats, prefix & ".unscaledNotExecuted", capacity.PathResolved, vbNullString
-            AssertTrue stats, prefix & ".unscaledNoSearch", capacity.SearchResult Is Nothing
-            AssertTrue stats, prefix & ".unscaledNoPoint", capacity.StateResult Is Nothing
+            TestAssertEquals stats, prefix & ".unscaledNotExecuted", capacity.PathResolved, vbNullString
+            TestAssertTrue stats, prefix & ".unscaledNoSearch", capacity.SearchResult Is Nothing
+            TestAssertTrue stats, prefix & ".unscaledNoPoint", capacity.StateResult Is Nothing
             Exit Sub
         End If
     End If
-    AssertEquals stats, prefix & ".path", capacity.PathResolved, "Lambda" & component
-    AssertTrue stats, prefix & ".validInput", capacity.Status <> "InputErr" And capacity.Status <> "CalcErr"
+    TestAssertEquals stats, prefix & ".path", capacity.PathResolved, "Lambda" & component
+    TestAssertTrue stats, prefix & ".validInput", capacity.Status <> "InputErr" And capacity.Status <> "CalcErr"
     If capacity.SearchResult Is Nothing Then Exit Sub
     If Not capacity.SearchResult.HasLimitPoint Then Exit Sub
     Dim n As Double, mx As Double, my As Double, lambda As Double
@@ -6956,23 +7144,24 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
     If component = "N" Or component = "NMxy" Then n = lambda * n
     If component = "Mx" Or component = "Mxy" Or component = "NMxy" Then mx = lambda * mx
     If component = "My" Or component = "Mxy" Or component = "NMxy" Then my = lambda * my
-    AssertClose stats, prefix & ".NU", capacity.NUltimate, n, 5#
-    AssertClose stats, prefix & ".MxU", capacity.MxUltimate, mx, 5000#
-    AssertClose stats, prefix & ".MyU", capacity.MyUltimate, my, 5000#
-    AssertClose stats, prefix & ".stateMx", capacity.CapacityStateMx, mx + (referenceY - 7#) * n, 5000#
-    AssertClose stats, prefix & ".stateMy", capacity.CapacityStateMy, my + (referenceX + 10#) * n, 5000#
-    AssertTrue stats, prefix & ".physicalCriterion", Len(capacity.LimitState) > 0
-    AssertTrue stats, prefix & ".finalPhysical", capacity.StateResult.WithinPhysicalRange
+    TestAssertClose stats, prefix & ".NU", capacity.NUltimate, n, 5#
+    TestAssertClose stats, prefix & ".MxU", capacity.MxUltimate, mx, 5000#
+    TestAssertClose stats, prefix & ".MyU", capacity.MyUltimate, my, 5000#
+    TestAssertClose stats, prefix & ".stateMx", capacity.CapacityStateMx, mx + (referenceY - 7#) * n, 5000#
+    TestAssertClose stats, prefix & ".stateMy", capacity.CapacityStateMy, my + (referenceX + 10#) * n, 5000#
+    TestAssertTrue stats, prefix & ".physicalCriterion", Len(capacity.LimitState) > 0
+    TestAssertTrue stats, prefix & ".finalPhysical", capacity.StateResult.WithinPhysicalRange
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет фактический путь, конечность и отсутствие extended-физической
 ' точки у formation. Auto допускает общий выбор Mx/My/Mxy/N/NMxy; fixed path
 ' не должен незаметно стать другим. В журнал попадают и честные неуспехи.
-Private Sub Audit03CheckFormationPath(ByRef stats As TBatchTestStats, ByVal formation As CCrackFormationResult, _
+Private Sub TestAudit03CheckFormationPath(ByRef stats As TBatchTestStats, ByVal formation As CCrackFormationResult, _
         ByVal prefix As String, ByVal requestedPath As String, Optional ByVal load As Variant)
-    AppendLine stats, "CASE: " & prefix & "|requested=" & requestedPath & "|resolved=" & formation.FormationMethod & _
-        "|lambda=" & FormatNumberInvariant(formation.LambdaCrc) & "|Ncrc=" & FormatNumberInvariant(formation.FormationNcrc) & _
-        "|Mcrc=" & FormatNumberInvariant(formation.Mcrc) & "|point=" & CStr(formation.HasLimitPoint) & _
+    TestAppendLine stats, "CASE: " & prefix & "|requested=" & requestedPath & "|resolved=" & formation.FormationMethod & _
+        "|lambda=" & TestFormatNumberInvariant(formation.LambdaCrc) & "|Ncrc=" & TestFormatNumberInvariant(formation.FormationNcrc) & _
+        "|Mcrc=" & TestFormatNumberInvariant(formation.Mcrc) & "|point=" & CStr(formation.HasLimitPoint) & _
         "|formed=" & CStr(formation.CrackFormed)
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
@@ -6988,60 +7177,61 @@ Private Sub Audit03CheckFormationPath(ByRef stats As TBatchTestStats, ByVal form
         End Select
         If Not hasScaledLoad Then
             If requestedPath = "Auto" Then
-                AssertTrue stats, prefix & ".zeroAutoNotApplicable", formation.ResultMeta.InternalStatus = rsNotApplicable
+                TestAssertTrue stats, prefix & ".zeroAutoNotApplicable", formation.ResultMeta.InternalStatus = rsNotApplicable
             Else
-                AssertTrue stats, prefix & ".unscaledInput", formation.ResultMeta.InternalStatus = rsInvalidInput And _
+                TestAssertTrue stats, prefix & ".unscaledInput", formation.ResultMeta.InternalStatus = rsInvalidInput And _
                     formation.ResultMeta.ResultCode = rcInvalidInput
             End If
-            AssertTrue stats, prefix & ".unscaledNoPoint", Not formation.HasLimitPoint
-            AssertTrue stats, prefix & ".unscaledNoStates", formation.PreCrackState Is Nothing And formation.PostCrackState Is Nothing
+            TestAssertTrue stats, prefix & ".unscaledNoPoint", Not formation.HasLimitPoint
+            TestAssertTrue stats, prefix & ".unscaledNoStates", formation.PreCrackState Is Nothing And formation.PostCrackState Is Nothing
             Exit Sub
         End If
     End If
-    AssertTrue stats, prefix & ".validInput", policy.ExternalStatus(formation.ResultMeta) <> "InputErr" And _
+    TestAssertTrue stats, prefix & ".validInput", policy.ExternalStatus(formation.ResultMeta) <> "InputErr" And _
         policy.ExternalStatus(formation.ResultMeta) <> "CalcErr"
     If Len(formation.FormationMethod) > 0 Then
         If requestedPath = "Auto" Then
-            AssertTrue stats, prefix & ".autoPath", formation.FormationMethod = ChrW$(&H3BB) & "*Mxy" Or _
+            TestAssertTrue stats, prefix & ".autoPath", formation.FormationMethod = ChrW$(&H3BB) & "*Mxy" Or _
                 formation.FormationMethod = ChrW$(&H3BB) & "*Mx" Or formation.FormationMethod = ChrW$(&H3BB) & "*My" Or _
                 formation.FormationMethod = ChrW$(&H3BB) & "*N" Or formation.FormationMethod = ChrW$(&H3BB) & "*NMxy"
         Else
-            AssertEquals stats, prefix & ".fixedPath", formation.FormationMethod, requestedPath
+            TestAssertEquals stats, prefix & ".fixedPath", formation.FormationMethod, requestedPath
         End If
     End If
     If Not formation.PreCrackState Is Nothing Then
         If formation.HasLimitPoint Then
-            AssertTrue stats, prefix & ".preConverged", formation.PreCrackState.Converged
-            AssertTrue stats, prefix & ".prePhysical", formation.PreCrackState.WithinPhysicalRange
-            AssertTrue stats, prefix & ".preNotExtended", Not formation.PreCrackState.ExtensionUsed
+            TestAssertTrue stats, prefix & ".preConverged", formation.PreCrackState.Converged
+            TestAssertTrue stats, prefix & ".prePhysical", formation.PreCrackState.WithinPhysicalRange
+            TestAssertTrue stats, prefix & ".preNotExtended", Not formation.PreCrackState.ExtensionUsed
         Else
             ' Непринятая точка поиска сохраняет точную причину отказа НДС.
             ' Она не выдаётся за физическую точку образования трещины или успешный поиск.
-            AssertTrue stats, prefix & ".preFailureTyped", Audit03RequiresComment(formation.PreCrackState.ResultMeta)
-            AssertTrue stats, prefix & ".preFailureNoPoint", Not formation.SearchResult.HasLimitPoint
-            AssertTrue stats, prefix & ".preFailureFormationCause", _
+            TestAssertTrue stats, prefix & ".preFailureTyped", TestAudit03RequiresComment(formation.PreCrackState.ResultMeta)
+            TestAssertTrue stats, prefix & ".preFailureNoPoint", Not formation.SearchResult.HasLimitPoint
+            TestAssertTrue stats, prefix & ".preFailureFormationCause", _
                 formation.ResultMeta.InternalStatus = formation.PreCrackState.ResultMeta.InternalStatus And _
                 formation.ResultMeta.ResultCode = formation.PreCrackState.ResultMeta.ResultCode
         End If
     End If
     If Not formation.PostCrackState Is Nothing Then
         If formation.PostCrackState.ResultMeta.InternalStatus = rsSuccess Then
-            AssertTrue stats, prefix & ".postConverged", formation.PostCrackState.Converged
-            AssertTrue stats, prefix & ".postPhysical", formation.PostCrackState.WithinPhysicalRange
-            AssertTrue stats, prefix & ".postNotExtended", Not formation.PostCrackState.ExtensionUsed
+            TestAssertTrue stats, prefix & ".postConverged", formation.PostCrackState.Converged
+            TestAssertTrue stats, prefix & ".postPhysical", formation.PostCrackState.WithinPhysicalRange
+            TestAssertTrue stats, prefix & ".postNotExtended", Not formation.PostCrackState.ExtensionUsed
         Else
-            AssertTrue stats, prefix & ".postFailureTyped", Audit03RequiresComment(formation.PostCrackState.ResultMeta)
-            AssertTrue stats, prefix & ".postFailureFormationCause", _
+            TestAssertTrue stats, prefix & ".postFailureTyped", TestAudit03RequiresComment(formation.PostCrackState.ResultMeta)
+            TestAssertTrue stats, prefix & ".postFailureFormationCause", _
                 formation.ResultMeta.InternalStatus = formation.PostCrackState.ResultMeta.InternalStatus And _
                 formation.ResultMeta.ResultCode = formation.PostCrackState.ResultMeta.ResultCode
         End If
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сверяет все leaf причины с итогами владельцев и четырьмя реальными output
 ' блоками. Проверка не назначает статусы по тексту: текст лишь проверяется
 ' на полноту/читаемость, а статус и code записываются отдельно.
-Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal batch As CBatchSectionCalculator, _
+Private Sub TestAudit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long)
     Dim result As CCombinationResult, prefix As String
     Set result = batch.ResultAt(index)
@@ -7049,47 +7239,47 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
     Dim commonInputReason As String
     If result.WorkflowMeta.InternalStatus = rsInvalidInput Or result.WorkflowMeta.InternalStatus = rsInvalidConfiguration Then _
         commonInputReason = result.WorkflowMeta.ResultComment
-    Audit03CheckMetaComment stats, prefix & ".direct", result.DirectStateMeta, result.StrengthMeta, commonInputReason:=commonInputReason
-    Audit03CheckMetaComment stats, prefix & ".capacity", result.CapacityMeta, result.StrengthMeta, commonInputReason:=commonInputReason
-    Audit03CheckMetaComment stats, prefix & ".formation", result.CrackFormationMeta, result.CrackSummaryMeta, commonInputReason:=commonInputReason
-    Audit03CheckMetaComment stats, prefix & ".current", result.CrackCurrentStateMeta, result.CrackSummaryMeta, commonInputReason:=commonInputReason
+    TestAudit03CheckMetaComment stats, prefix & ".direct", result.DirectStateMeta, result.StrengthMeta, commonInputReason:=commonInputReason
+    TestAudit03CheckMetaComment stats, prefix & ".capacity", result.CapacityMeta, result.StrengthMeta, commonInputReason:=commonInputReason
+    TestAudit03CheckMetaComment stats, prefix & ".formation", result.CrackFormationMeta, result.CrackSummaryMeta, commonInputReason:=commonInputReason
+    TestAudit03CheckMetaComment stats, prefix & ".current", result.CrackCurrentStateMeta, result.CrackSummaryMeta, commonInputReason:=commonInputReason
     Dim independentOccurrences As Long
-    independentOccurrences = 1 + Audit03TextOccurrences(result.CrackFormationMeta.ResultComment, _
+    independentOccurrences = 1 + TestAudit03TextOccurrences(result.CrackFormationMeta.ResultComment, _
         result.CrackCurrentStateMeta.ResultComment)
-    Audit03CheckMetaComment stats, prefix & ".width", result.CrackWidthMeta, result.CrackSummaryMeta, _
+    TestAudit03CheckMetaComment stats, prefix & ".width", result.CrackWidthMeta, result.CrackSummaryMeta, _
         result.CrackCurrentStateMeta.ResultComment, independentOccurrences, commonInputReason
-    Audit03CheckMetaComment stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, result.CrackSummaryMeta, _
+    TestAudit03CheckMetaComment stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, result.CrackSummaryMeta, _
         result.CrackCurrentStateMeta.ResultComment, independentOccurrences, commonInputReason
-    Audit03CheckMetaComment stats, prefix & ".stability", result.StabilityMeta, result.OverallMeta, commonInputReason:=commonInputReason
+    TestAudit03CheckMetaComment stats, prefix & ".stability", result.StabilityMeta, result.OverallMeta, commonInputReason:=commonInputReason
     If result.CrackWidthMeta.InternalStatus = rsBlockedByDependency Then
-        If Audit03RequiresComment(result.CrackCurrentStateMeta) Then
-            AssertTrue stats, prefix & ".widthBlockActualReason", _
+        If TestAudit03RequiresComment(result.CrackCurrentStateMeta) Then
+            TestAssertTrue stats, prefix & ".widthBlockActualReason", _
                 InStr(1, result.CrackWidthMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
         Else
-            AssertTrue stats, prefix & ".widthCannotBeBlockedByFormation", False
+            TestAssertTrue stats, prefix & ".widthCannotBeBlockedByFormation", False
         End If
     End If
     If result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency Then
-        AssertTrue stats, prefix & ".longitudinalBlockActualReason", _
+        TestAssertTrue stats, prefix & ".longitudinalBlockActualReason", _
             InStr(1, result.LongitudinalCrackMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
     End If
     If result.CrackResult.Width.StandardCode = "SP63" And Not result.CrackResult.Formation.HasLimitPoint And result.CrackWidthMeta.Calculated Then
-        AssertClose stats, prefix & ".formationUnavailablePsi1", result.CrackResult.Width.PsiS, 1#, 0#
-        AssertTrue stats, prefix & ".formationUnavailableWarning", _
+        TestAssertClose stats, prefix & ".formationUnavailablePsi1", result.CrackResult.Width.PsiS, 1#, 0#
+        TestAssertTrue stats, prefix & ".formationUnavailableWarning", _
             InStr(1, result.CrackWidthMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
-        AssertTrue stats, prefix & ".formationUnavailableLongitudinalIndependent", _
+        TestAssertTrue stats, prefix & ".formationUnavailableLongitudinalIndependent", _
             result.LongitudinalCrackMeta.InternalStatus <> rsBlockedByDependency
     End If
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
-    AssertTrue stats, prefix & ".formulaNoNumFail", result.CrackWidthMeta.InternalStatus <> rsNumericalFailure And _
+    TestAssertTrue stats, prefix & ".formulaNoNumFail", result.CrackWidthMeta.InternalStatus <> rsNumericalFailure And _
         result.LongitudinalCrackMeta.InternalStatus <> rsNumericalFailure And result.StabilityMeta.InternalStatus <> rsNumericalFailure
     If result.CrackFormationMeta.InternalStatus = rsSuccessWithWarning And policy.ExternalStatus(result.CrackMeta) = "OK" Then
-        AssertTrue stats, prefix & ".formationWarningPreserved", result.CrackMeta.InternalStatus = rsSuccessWithWarning
+        TestAssertTrue stats, prefix & ".formationWarningPreserved", result.CrackMeta.InternalStatus = rsSuccessWithWarning
     End If
-    AssertTrue stats, prefix & ".strengthNoCrack", InStr(1, result.StrengthMeta.ResultComment, "Трещинообразование:") = 0 And _
+    TestAssertTrue stats, prefix & ".strengthNoCrack", InStr(1, result.StrengthMeta.ResultComment, "Трещинообразование:") = 0 And _
         InStr(1, result.StrengthMeta.ResultComment, "Продольные трещины:") = 0
-    AssertTrue stats, prefix & ".crackNoCapacity", InStr(1, result.CrackSummaryMeta.ResultComment, "Несущая способность:") = 0 And _
+    TestAssertTrue stats, prefix & ".crackNoCapacity", InStr(1, result.CrackSummaryMeta.ResultComment, "Несущая способность:") = 0 And _
         InStr(1, result.CrackSummaryMeta.ResultComment, "Устойчивость:") = 0
     Dim expectedOverall As String, part As Variant
     For Each part In Array(result.StrengthMeta.ResultComment, result.CrackSummaryMeta.ResultComment)
@@ -7098,48 +7288,49 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
             expectedOverall = expectedOverall & CStr(part)
         End If
     Next part
-    If Audit03RequiresComment(result.StabilityMeta) Then
+    If TestAudit03RequiresComment(result.StabilityMeta) Then
         If Len(expectedOverall) > 0 Then expectedOverall = expectedOverall & "; "
         expectedOverall = expectedOverall & "Устойчивость: " & result.StabilityMeta.ResultComment
     End If
     If Len(commonInputReason) > 0 Then expectedOverall = commonInputReason
-    AssertEquals stats, prefix & ".overallComposition", result.OverallMeta.ResultComment, expectedOverall
+    TestAssertEquals stats, prefix & ".overallComposition", result.OverallMeta.ResultComment, expectedOverall
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
-    AssertEquals stats, prefix & ".batchOutput", CStr(anchor.Offset(11 + index, 2).Value2), CalculationResultMessage(batch, index, result.OverallMeta)
+    TestAssertEquals stats, prefix & ".batchOutput", CStr(anchor.Offset(11 + index, 2).Value2), CalculationResultMessage(batch, index, result.OverallMeta)
     Set anchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
-    AssertEquals stats, prefix & ".strengthOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.StrengthMeta)
+    TestAssertEquals stats, prefix & ".strengthOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.StrengthMeta)
     Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    AssertEquals stats, prefix & ".crackOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.CrackSummaryMeta)
+    TestAssertEquals stats, prefix & ".crackOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.CrackSummaryMeta)
     Set anchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
-    AssertEquals stats, prefix & ".stabilityOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.StabilityMeta)
-    AppendLine stats, "OUTPUT: " & prefix & "|strength=" & result.StrengthMeta.ResultComment & _
+    TestAssertEquals stats, prefix & ".stabilityOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.StabilityMeta)
+    TestAppendLine stats, "OUTPUT: " & prefix & "|strength=" & result.StrengthMeta.ResultComment & _
         "|crack=" & result.CrackSummaryMeta.ResultComment & "|stability=" & result.StabilityMeta.ResultComment & _
         "|batch=" & result.OverallMeta.ResultComment
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет читаемость каждого непустого комментария, в том числе успешного.
 ' Для отказа/warning дополнительно требует причину и ее сохранность в своем
 ' subtree. Машинные коды не должны подменять пользовательское объяснение.
-Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix As String, _
+Private Sub TestAudit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix As String, _
         ByVal meta As CResultMeta, ByVal aggregate As CResultMeta, _
         Optional ByVal sharedDependencyReason As String = vbNullString, _
         Optional ByVal independentReasonOccurrences As Long = 1, _
         Optional ByVal commonInputReason As String = vbNullString)
-    AppendLine stats, "META: " & prefix & "|status=" & ResultInternalStatusToText(meta.InternalStatus) & _
+    TestAppendLine stats, "META: " & prefix & "|status=" & ResultInternalStatusToText(meta.InternalStatus) & _
         "|code=" & ResultCodeToText(meta.ResultCode) & "|applies=" & CStr(meta.Applies) & _
         "|calculated=" & CStr(meta.Calculated) & "|comment=" & meta.ResultComment
     Dim requiresComment As Boolean
-    requiresComment = Audit03RequiresComment(meta)
-    If requiresComment Then AssertTrue stats, prefix & ".reasonPresent", Len(Trim$(meta.ResultComment)) > 0
+    requiresComment = TestAudit03RequiresComment(meta)
+    If requiresComment Then TestAssertTrue stats, prefix & ".reasonPresent", Len(Trim$(meta.ResultComment)) > 0
     If Len(Trim$(meta.ResultComment)) = 0 Then Exit Sub
     Dim i As Long, hasRussian As Boolean, charCode As Long
     For i = 1 To Len(meta.ResultComment)
         charCode = AscW(Mid$(meta.ResultComment, i, 1))
         If charCode >= &H410 And charCode <= &H44F Then hasRussian = True
     Next i
-    AssertTrue stats, prefix & ".russianReason", hasRussian
-    AssertTrue stats, prefix & ".readable", InStr(1, meta.ResultComment, "..") = 0 And _
+    TestAssertTrue stats, prefix & ".russianReason", hasRussian
+    TestAssertTrue stats, prefix & ".readable", InStr(1, meta.ResultComment, "..") = 0 And _
         InStr(1, meta.ResultComment, ".,") = 0 And InStr(1, meta.ResultComment, "?") = 0 And _
         InStr(1, meta.ResultComment, "SP35-mixed") = 0
     Dim machinePrefix As Variant, hasMachinePrefix As Boolean
@@ -7147,13 +7338,13 @@ Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix
         If StrComp(Left$(Trim$(meta.ResultComment), Len(CStr(machinePrefix))), CStr(machinePrefix), vbTextCompare) = 0 Then _
             hasMachinePrefix = True
     Next machinePrefix
-    AssertTrue stats, prefix & ".noMachinePrefix", Not hasMachinePrefix
+    TestAssertTrue stats, prefix & ".noMachinePrefix", Not hasMachinePrefix
     If Not requiresComment Then Exit Sub
     If Len(commonInputReason) > 0 Then
         ' Все leaves сохраняют точную причину; общий отказ валидации выводится
         ' один раз в своем блоке, без повторов через неисполнявшиеся зависимости.
-        AssertTrue stats, prefix & ".commonInputLeaf", InStr(1, meta.ResultComment, commonInputReason, vbBinaryCompare) > 0
-        AssertTrue stats, prefix & ".commonInputSubtreeOnce", Audit03TextOccurrences(aggregate.ResultComment, commonInputReason) = 1
+        TestAssertTrue stats, prefix & ".commonInputLeaf", InStr(1, meta.ResultComment, commonInputReason, vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".commonInputSubtreeOnce", TestAudit03TextOccurrences(aggregate.ResultComment, commonInputReason) = 1
         Exit Sub
     End If
     Dim dependencyAt As Long, ownExplanation As String
@@ -7161,50 +7352,53 @@ Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix
         dependencyAt = InStr(1, meta.ResultComment, sharedDependencyReason, vbBinaryCompare)
     If dependencyAt > 0 Then
         ownExplanation = Trim$(Left$(meta.ResultComment, dependencyAt - 1))
-        AssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, ownExplanation, vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, ownExplanation, vbBinaryCompare) > 0
         ' Поиск образования трещины и текущее НДС могут независимо иметь одинаковую
         ' причину. Оба этапа сохраняются; зависимые заблокированные проверки
         ' не должны добавлять ту же причину повторно.
-        AssertTrue stats, prefix & ".dependencyOncePerIndependentStage", _
-            Audit03TextOccurrences(aggregate.ResultComment, sharedDependencyReason) = independentReasonOccurrences
+        TestAssertTrue stats, prefix & ".dependencyOncePerIndependentStage", _
+            TestAudit03TextOccurrences(aggregate.ResultComment, sharedDependencyReason) = independentReasonOccurrences
     Else
-        AssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, meta.ResultComment, vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, meta.ResultComment, vbBinaryCompare) > 0
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Задаёт только требование наличия причины. Статусы программы
 ' и инженерный вывод из текста пояснения тест не вычисляет.
-Private Function Audit03RequiresComment(ByVal meta As CResultMeta) As Boolean
+Private Function TestAudit03RequiresComment(ByVal meta As CResultMeta) As Boolean
     Select Case meta.InternalStatus
         Case rsCheckFailed, rsNumericalFailure, rsInvalidInput, rsInvalidConfiguration, _
                 rsInternalError, rsBlockedByDependency, rsSuccessWithWarning
-            Audit03RequiresComment = True
+            TestAudit03RequiresComment = True
     End Select
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет неизменность готовых результатов сочетаний.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет неизменность готовых результатов сочетаний.
 ' Отдельный запуск воспроизводит тот же пример до и после исправления.
 Public Function RunAudit03PublishedResultTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
     TestAudit03PublishedResults stats
-    AppendLine stats, "TOTAL_AUDIT03_PUBLISHED_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_PUBLISHED_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03PublishedResultTests = stats.Report
     Exit Function
 Failed:
     RunAudit03PublishedResultTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: каждый mutation-case получает свежий расчет, поэтому ошибочная
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' каждый mutation-case получает свежий расчет, поэтому ошибочная
 ' мутация baseline не скрывает следующие дефекты. Повтор Execute обязан создать
 ' новый LC-снимок, сохранив ранее выданные ссылки, числа, meta и nested identity.
 Private Sub TestAudit03PublishedResults(ByRef stats As TBatchTestStats)
     Dim oldStability As String
-    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldStability = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
     On Error GoTo Failed
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildBatchCalculator(True)
+    Set batch = TestBuildBatchCalculator(True)
     batch.AddCombination "FROZEN_PR1", -150000#, -6000000#, -3000000#, "PR1", vbNullString, ChrW$(&H3BB) & "*Mxy"
     batch.AddCombination "FROZEN_PR2", 200000#, 9000000#, -3000000#, "PR2", vbNullString
     Dim i As Long, result As CCombinationResult, state As CSectionStateResult
@@ -7220,26 +7414,26 @@ Private Sub TestAudit03PublishedResults(ByRef stats As TBatchTestStats)
         designN = result.StabilityResult.DesignN
         extensionEnabled = result.DiagramExtensionEnabled
         prefix = "audit03.published." & CStr(i)
-        errorNumber = Audit03AttemptPublishedMutation(result, i)
-        AppendLine stats, "MUTATION: " & prefix & "; error=" & CStr(errorNumber)
+        errorNumber = TestAudit03AttemptPublishedMutation(result, i)
+        TestAppendLine stats, "MUTATION: " & prefix & "; error=" & CStr(errorNumber)
         If i = 2 Or i = 3 Or i = 12 Then
-            AssertTrue stats, prefix & ".noPublicField", errorNumber = 438 Or errorNumber = 451
+            TestAssertTrue stats, prefix & ".noPublicField", errorNumber = 438 Or errorNumber = 451
         Else
-            AssertTrue stats, prefix & ".explicitContractError", errorNumber = vbObjectError + 4220
+            TestAssertTrue stats, prefix & ".explicitContractError", errorNumber = vbObjectError + 4220
         End If
-        AssertEquals stats, prefix & ".statusUnchanged", result.Status, status
-        AssertEquals stats, prefix & ".commentUnchanged", result.OverallMeta.ResultComment, comment
-        AssertTrue stats, prefix & ".statesUnchanged", result.StateRepository.StateCount = stateCount
-        AssertEquals stats, prefix & ".stabilityCodeUnchanged", result.StabilityResult.Code, stabilityCode
-        AssertClose stats, prefix & ".designNUnchanged", result.StabilityResult.DesignN, designN, 0#
-        AssertTrue stats, prefix & ".extensionUnchanged", result.DiagramExtensionEnabled = extensionEnabled
-        AssertEquals stats, prefix & ".profileUnchanged", result.ProfileId, batch.InputProfileId(1 + Abs(i >= 8 And i <= 11))
+        TestAssertEquals stats, prefix & ".statusUnchanged", result.Status, status
+        TestAssertEquals stats, prefix & ".commentUnchanged", result.OverallMeta.ResultComment, comment
+        TestAssertTrue stats, prefix & ".statesUnchanged", result.StateRepository.StateCount = stateCount
+        TestAssertEquals stats, prefix & ".stabilityCodeUnchanged", result.StabilityResult.Code, stabilityCode
+        TestAssertClose stats, prefix & ".designNUnchanged", result.StabilityResult.DesignN, designN, 0#
+        TestAssertTrue stats, prefix & ".extensionUnchanged", result.DiagramExtensionEnabled = extensionEnabled
+        TestAssertEquals stats, prefix & ".profileUnchanged", result.ProfileId, batch.InputProfileId(1 + Abs(i >= 8 And i <= 11))
     Next i
 
     batch.Execute
     Set result = batch.ResultAt(1)
     Set state = result.StrengthResult.DirectState.StateResult
-    AssertTrue stats, "audit03.published.realState", Not state Is Nothing
+    TestAssertTrue stats, "audit03.published.realState", Not state Is Nothing
     Dim oldN As Double, oldMx As Double, oldProfile As String
     oldN = state.TargetN: oldMx = state.TargetMx: oldProfile = result.ProfileId
     status = result.Status: comment = result.OverallMeta.ResultComment
@@ -7248,35 +7442,36 @@ Private Sub TestAudit03PublishedResults(ByRef stats As TBatchTestStats)
     meta.SetResult rsInternalError, rcInternalError, rkDirectState, "Внешняя тестовая мутация."
     Set spec = state.MaterialSpec
     spec.Initialize "SLS(II)", "TwoLine", "UseDiagram", "ThreeLine"
-    AssertEquals stats, "audit03.published.metaClone", result.Status, status
-    AssertTrue stats, "audit03.published.specClone", state.MaterialSpec.SpecKey <> spec.SpecKey
+    TestAssertEquals stats, "audit03.published.metaClone", result.Status, status
+    TestAssertTrue stats, "audit03.published.specClone", state.MaterialSpec.SpecKey <> spec.SpecKey
 
     batch.ApplyLoadReference 25#, -15#, 0#, 0#
     batch.Execute
     Dim repeated As CCombinationResult
     Set repeated = batch.ResultAt(1)
-    AssertTrue stats, "audit03.published.newResultIdentity", Not repeated Is result
-    AssertTrue stats, "audit03.published.oldStateIdentity", result.StrengthResult.DirectState.StateResult Is state
-    AssertClose stats, "audit03.published.oldN", state.TargetN, oldN, 0#
-    AssertClose stats, "audit03.published.oldMx", state.TargetMx, oldMx, 0#
-    AssertEquals stats, "audit03.published.oldStatus", result.Status, status
-    AssertEquals stats, "audit03.published.oldComment", result.OverallMeta.ResultComment, comment
-    AssertEquals stats, "audit03.published.oldProfile", result.ProfileId, oldProfile
-    AssertTrue stats, "audit03.published.newLoad", repeated.StrengthResult.DirectState.StateResult.TargetMx <> oldMx
+    TestAssertTrue stats, "audit03.published.newResultIdentity", Not repeated Is result
+    TestAssertTrue stats, "audit03.published.oldStateIdentity", result.StrengthResult.DirectState.StateResult Is state
+    TestAssertClose stats, "audit03.published.oldN", state.TargetN, oldN, 0#
+    TestAssertClose stats, "audit03.published.oldMx", state.TargetMx, oldMx, 0#
+    TestAssertEquals stats, "audit03.published.oldStatus", result.Status, status
+    TestAssertEquals stats, "audit03.published.oldComment", result.OverallMeta.ResultComment, comment
+    TestAssertEquals stats, "audit03.published.oldProfile", result.ProfileId, oldProfile
+    TestAssertTrue stats, "audit03.published.newLoad", repeated.StrengthResult.DirectState.StateResult.TargetMx <> oldMx
 Restore:
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
     Exit Sub
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.published.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.published.runtime; " & CStr(Err.Number) & "; " & Err.Description
     Resume Restore
 End Sub
 
-' ДЛЯ ТЕСТОВ: использует действующие типизированные fill/reset API. Только
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' использует действующие типизированные fill/reset API. Только
 ' отсутствие публичного setter-а проверяется через позднее связывание.
 ' До правки они существуют и изменяют опубликованный объект; после правки
 ' тот же вызов обязан вернуть явную ошибку контракта, не изменяя snapshot.
-Private Function Audit03AttemptPublishedMutation(ByVal result As CCombinationResult, ByVal scenario As Long) As Long
+Private Function TestAudit03AttemptPublishedMutation(ByVal result As CCombinationResult, ByVal scenario As Long) As Long
     On Error GoTo Rejected
     Dim target As Object, meta As CResultMeta, request As CStateRequest
     Dim formation As CCrackFormationCalculator, width As CCrackWidthCalculator
@@ -7318,12 +7513,14 @@ Private Function Audit03AttemptPublishedMutation(ByVal result As CCombinationRes
     End Select
     Exit Function
 Rejected:
-    Audit03AttemptPublishedMutation = Err.Number
+    TestAudit03AttemptPublishedMutation = Err.Number
     Err.Clear
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ========================== ДЛЯ ТЕСТОВ: AUDIT03 LOAD MATRIX ==========================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет одну воспроизводимую форму и семейство во всех путях. Входы
 ' передает внешний watchdog; полный набор не входит в быстрый suite. Config
 ' восстанавливается, результаты остаются в копии для save/reopen проверки.
@@ -7340,12 +7537,11 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
-    ' Эта историческая матрица проверяет формулы СП 63; значение возвращается.
-    SetSystemSetting "SLS.Crack.Code", "SP63"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    TestSetSystemSetting "SLS.Crack.Code", "SP63" ' Эта историческая матрица проверяет формулы СП 63; значение возвращается.
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem
@@ -7356,13 +7552,13 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
         Set provider = New CMaterialModelProvider
         provider.Initialize settings, units
     End If
-    Set section = Audit03LoadMatrixSection(shapeName)
+    Set section = TestAudit03LoadMatrixSection(shapeName)
     CalculateConcreteSectionCentroid section, referenceX, referenceY
-    Set loads = Audit03NormalizedLoads(section, family)
-    AppendLine stats, "MATRIX_SETUP: shape=" & shapeName & "|family=" & family & "|loads=" & CStr(loads.Count) & _
+    Set loads = TestAudit03NormalizedLoads(section, family)
+    TestAppendLine stats, "MATRIX_SETUP: shape=" & shapeName & "|family=" & family & "|loads=" & CStr(loads.Count) & _
         "|extension=" & CStr(extensionEnabled) & "|fibers=" & CStr(section.ConcreteCount) & _
-        "|rebars=" & CStr(section.RebarCount) & "|referenceX=" & FormatNumberInvariant(referenceX) & _
-        "|referenceY=" & FormatNumberInvariant(referenceY) & "|offsetX=10|offsetY=-7|zeroMoment=0|stability=No"
+        "|rebars=" & CStr(section.RebarCount) & "|referenceX=" & TestFormatNumberInvariant(referenceX) & _
+        "|referenceY=" & TestFormatNumberInvariant(referenceY) & "|offsetX=10|offsetY=-7|zeroMoment=0|stability=No"
     Set writer = New CBatchResultWriter
     paths = Array("Mx", "My", "Mxy", "N", "NMxy", "Auto", "Auto", "Mx", "My", "Mxy", "N", "NMxy")
     For pathIndex = LBound(paths) To UBound(paths)
@@ -7380,7 +7576,7 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
             report.Initialize ThisWorkbook, settings
             Set batch.ExecutionReport = report
             batch.ApplySettings settings, units
-            For index = first To Audit03MinLong(first + 19, loads.Count)
+            For index = first To TestAudit03MinLong(first + 19, loads.Count)
                 item = loads(index)
                 batch.AddCombination "M_" & CStr(pathIndex) & "_" & CStr(index), _
                     CDbl(item(1)), CDbl(item(2)), CDbl(item(3)), profileId, _
@@ -7390,68 +7586,69 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
             ' от бетонного центра. Оба эксцентриситета проверяются отдельно,
             ' чтобы ненулевой центр не скрыл неверный перенос нагрузки.
             batch.ApplyLoadReference referenceX + 10#, referenceY - 7#, referenceX, referenceY
-            AssertClose stats, "audit03.matrix.reference.offsetX", batch.LoadReferenceOffsetX, 10#, 0.000000001
-            AssertClose stats, "audit03.matrix.reference.offsetY", batch.LoadReferenceOffsetY, -7#, 0.000000001
+            TestAssertClose stats, "audit03.matrix.reference.offsetX", batch.LoadReferenceOffsetX, 10#, 0.000000001
+            TestAssertClose stats, "audit03.matrix.reference.offsetY", batch.LoadReferenceOffsetY, -7#, 0.000000001
             batch.Execute
             writer.WriteSummary ThisWorkbook, batch, units, section
             report.Save "Нагрузочная проверка Audit03: " & shapeName & ", " & family & ", " & path
-            reportText = Audit03ReadUnicodeFile(report.FilePath)
+            reportText = TestAudit03ReadUnicodeFile(report.FilePath)
             For localIndex = 1 To batch.Count
                 index = first + localIndex - 1
                 item = loads(index)
-                AppendLine stats, "MATRIX_CASE: shape=" & shapeName & "|family=" & family & _
+                TestAppendLine stats, "MATRIX_CASE: shape=" & shapeName & "|family=" & family & _
                     "|id=" & batch.CombinationID(localIndex) & "|load=" & CStr(item(0)) & _
-                    "|N=" & FormatNumberInvariant(CDbl(item(1))) & "|Mx=" & FormatNumberInvariant(CDbl(item(2))) & _
-                    "|My=" & FormatNumberInvariant(CDbl(item(3))) & "|profile=" & profileId & "|path=" & path
+                    "|N=" & TestFormatNumberInvariant(CDbl(item(1))) & "|Mx=" & TestFormatNumberInvariant(CDbl(item(2))) & _
+                    "|My=" & TestFormatNumberInvariant(CDbl(item(3))) & "|profile=" & profileId & "|path=" & path
                 If pathIndex < CAPACITY_VARIANT_COUNT Then
-                    Audit03CheckCapacityPath stats, batch.ResultAt(localIndex).StrengthResult.Capacity, _
+                    TestAudit03CheckCapacityPath stats, batch.ResultAt(localIndex).StrengthResult.Capacity, _
                         "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), _
                         CStr(paths(pathIndex)), Array(item(1), item(2), item(3)), referenceX, referenceY, True
                     If shapeName = "SavedWorkbook" Then
                         If family = "Light" Or path = "Auto" Or CStr(paths(pathIndex)) = "NMxy" Then
                             Dim capacityMeta As CResultMeta
                             Set capacityMeta = batch.ResultAt(localIndex).CapacityMeta
-                            AssertTrue stats, "audit03.matrix.saved.resolved." & batch.CombinationID(localIndex), _
+                            TestAssertTrue stats, "audit03.matrix.saved.resolved." & batch.CombinationID(localIndex), _
                                 capacityMeta.InternalStatus <> rsNumericalFailure Or capacityMeta.ResultCode = rcSearchBoundReached
                         End If
                     End If
                 Else
-                    Audit03CheckFormationPath stats, batch.ResultAt(localIndex).CrackResult.Formation, _
+                    TestAudit03CheckFormationPath stats, batch.ResultAt(localIndex).CrackResult.Formation, _
                         "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), path, Array(item(1), item(2), item(3))
                 End If
-                Audit03CheckResultComments stats, batch, localIndex
-                Audit03CheckMatrixStates stats, batch.ResultAt(localIndex), settings, units, extensionEnabled, _
+                TestAudit03CheckResultComments stats, batch, localIndex
+                TestAudit03CheckMatrixStates stats, batch.ResultAt(localIndex), settings, units, extensionEnabled, _
                     "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), reportText
                 independentCases = independentCases + 1
             Next localIndex
-            Audit03SaveMatrixProgress stats.Report
+            TestAudit03SaveMatrixProgress stats.Report
         Next first
     Next pathIndex
-    AssertTrue stats, "audit03.matrix.allRequestedPaths", independentCases = loads.Count * (UBound(paths) - LBound(paths) + 1)
+    TestAssertTrue stats, "audit03.matrix.allRequestedPaths", independentCases = loads.Count * (UBound(paths) - LBound(paths) + 1)
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.matrix.runtime; shape=" & shapeName & "; family=" & family & _
+    TestAppendLine stats, "FAIL: audit03.matrix.runtime; shape=" & shapeName & "; family=" & family & _
         "; pathIndex=" & CStr(pathIndex) & "; first=" & CStr(first) & "; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
     If IsArray(oldSystem) Then systemRange.Formula = oldSystem
     If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles
 Finish:
-    AppendLine stats, "TOTAL_AUDIT03_LOAD_MATRIX: shape=" & shapeName & "; family=" & family & _
+    TestAppendLine stats, "TOTAL_AUDIT03_LOAD_MATRIX: shape=" & shapeName & "; family=" & family & _
         "; independentCases=" & CStr(independentCases) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03BroadLoadMatrixTests = stats.Report
     Exit Function
 RestoreFailed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.matrix.restore; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.matrix.restore; " & CStr(Err.Number) & "; " & Err.Description
     Resume Finish
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Создает поддерживаемые формы с разным армированием. ImportedFixture -
 ' фиксированная модель Region с реальными A/I, а не проверка живого AutoCAD.
 ' Сетка строится один раз и переиспользуется во всех LC этой формы.
-Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
+Private Function TestAudit03LoadMatrixSection(ByVal shapeName As String, _
         Optional ByRef preparedMesh As CFiberMeshBuilder = Nothing, Optional ByRef preparedRebars As CRebarLayout = Nothing) As CSectionModel
     Dim filletPolygon As CPolygonSpec
     Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
@@ -7467,10 +7664,10 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
             Set savedUnits = New CUnitSystem: savedUnits.LoadFromSettings savedSettings
             If savedSettings.GetRequiredString("Geometry.Source") <> "AutoCAD" Then _
                 Err.Raise vbObjectError + 4498, "Audit03LoadMatrixSection", "Для SavedWorkbook требуется сохраненная импортированная геометрия."
-            Set Audit03LoadMatrixSection = BuildWorkbookSectionModel(ThisWorkbook, savedSettings, savedUnits)
+            Set TestAudit03LoadMatrixSection = BuildWorkbookSectionModel(ThisWorkbook, savedSettings, savedUnits)
             Exit Function
         Case "CircleSym", "CircleUneven"
-            Set geometry = FixtureDisk(300#)
+            Set geometry = TestFixtureDisk(300#)
             For i = 0 To 11
                 If shapeName = "CircleSym" Or (i <> 1 And i <> 2) Then
                     x = 120# * Cos(i * 2# * GEOM_PI / 12#): y = 120# * Sin(i * 2# * GEOM_PI / 12#)
@@ -7479,10 +7676,10 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
             Next i
         Case "RectRectangle", "RectL", "RectTwoLeft", "RectTwoRight"
             Select Case shapeName
-                Case "RectRectangle": Set geometry = FixtureBox(300#, 200#, 150#, 100#)
-                Case "RectL": Set geometry = FixtureBoxes(Array(Array(0#, 0#, 450#, 150#), Array(0#, 150#, 250#, 300#)))
-                Case "RectTwoLeft": Set geometry = FixtureBoxes(Array(Array(0#, 0#, 450#, 150#), Array(-60#, 150#, 250#, 300#)))
-                Case "RectTwoRight": Set geometry = FixtureBoxes(Array(Array(0#, 0#, 450#, 150#), Array(60#, 150#, 250#, 300#)))
+                Case "RectRectangle": Set geometry = TestFixtureBox(300#, 200#, 150#, 100#)
+                Case "RectL": Set geometry = TestFixtureBoxes(Array(Array(0#, 0#, 450#, 150#), Array(0#, 150#, 250#, 300#)))
+                Case "RectTwoLeft": Set geometry = TestFixtureBoxes(Array(Array(0#, 0#, 450#, 150#), Array(-60#, 150#, 250#, 300#)))
+                Case "RectTwoRight": Set geometry = TestFixtureBoxes(Array(Array(0#, 0#, 450#, 150#), Array(60#, 150#, 250#, 300#)))
             End Select
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed"
             Select Case shapeName
@@ -7493,7 +7690,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
                     filletPolygon.AddVertex "2", 150#, -100#, 20#
                     filletPolygon.AddVertex "3", -150#, -100#, 20#
                     filletPolygon.Seal
-                    Set geometry = FixtureFillets(filletPolygon)
+                    Set geometry = TestFixtureFillets(filletPolygon)
                 Case "RoundedTapered"
                     Set filletPolygon = New CPolygonSpec
                     filletPolygon.AddVertex "0", -150#, 90#, 20#
@@ -7503,7 +7700,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
                     filletPolygon.AddVertex "4", -150#, -90#, 20#
                     filletPolygon.AddVertex "5", -230#, 0#, 35#
                     filletPolygon.Seal
-                    Set geometry = FixtureFillets(filletPolygon)
+                    Set geometry = TestFixtureFillets(filletPolygon)
                 Case "RoundedMixed"
                     Set filletPolygon = New CPolygonSpec
                     filletPolygon.AddVertex "0", -150#, 90#, 20#
@@ -7512,7 +7709,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
                     filletPolygon.AddVertex "3", 150#, -90#, 30#
                     filletPolygon.AddVertex "4", -150#, -90#, 20#
                     filletPolygon.Seal
-                    Set geometry = FixtureFillets(filletPolygon)
+                    Set geometry = TestFixtureFillets(filletPolygon)
             End Select
         Case "HollowCentered", "HollowOffset", "HollowThin"
             Set facade = New CSectionDefinitionBuilder: facade.Initialize shapeName
@@ -7541,7 +7738,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
                 Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
             End If
             facade.Opening "VOID", path.ID, "OUTER": Set definition = facade.Finish
-            Set geometry = FixtureGeometry(definition.ConcreteDomain)
+            Set geometry = TestFixtureGeometry(definition.ConcreteDomain)
         Case "ImportedFixture"
             Set section = New CSectionModel
             section.SourceType = "AutoCADImportFixture"
@@ -7554,7 +7751,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
                 x = -100# + 200# * (i Mod 2): y = -60# + 120# * (i \ 2)
                 section.AddRebarElement x, y, 20#, GEOM_PI * 20# * 20# / 4#, "A400"
             Next i
-            Set Audit03LoadMatrixSection = section
+            Set TestAudit03LoadMatrixSection = section
             Exit Function
         Case Else
             Err.Raise vbObjectError + 4498, "Audit03LoadMatrixSection", "Неизвестная тестовая форма: " & shapeName
@@ -7577,26 +7774,28 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geometry, (geometry.MaxX - geometry.MinX) / 12#, (geometry.MaxY - geometry.MinY) / 12#, 1, 2
     Set preparedMesh = mesh: Set preparedRebars = rebars
-    Set Audit03LoadMatrixSection = BuildGeneratedSectionModel(mesh, rebars, shapeName)
+    Set TestAudit03LoadMatrixSection = TestBuildGeneratedSectionModel(mesh, rebars, shapeName)
 End Function
 
-' ДЛЯ ТЕСТОВ: поэлементный снимок численных fixtures до и после переноса.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' поэлементный снимок численных fixtures до и после переноса.
 ' Использует ровно ту же prepared-сборку, что и расчетная матрица нагрузок.
-Public Function DumpLoadMatrixGeometrySnapshot() As String
+Public Function TestDumpLoadMatrixGeometrySnapshot() As String
     Dim shape As Variant, model As CSectionModel, mesh As CFiberMeshBuilder, bars As CRebarLayout
     Dim result As String
     For Each shape In Array("CircleSym", "CircleUneven", "RectRectangle", "RectL", "RectTwoLeft", "RectTwoRight", _
             "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset", "HollowThin")
-        Set model = Audit03LoadMatrixSection(CStr(shape), mesh, bars)
-        result = result & PreparedShapeSnapshot(CStr(shape), model, mesh, bars)
+        Set model = TestAudit03LoadMatrixSection(CStr(shape), mesh, bars)
+        result = result & TestPreparedShapeSnapshot(CStr(shape), model, mesh, bars)
     Next shape
-    DumpLoadMatrixGeometrySnapshot = result
+    TestDumpLoadMatrixGeometrySnapshot = result
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Силы нормируются по независимой сумме сопротивлений и площадей, моменты -
 ' отдельно по своей глубине. Это верхняя силовая оценка, не capacity от Search;
 ' при эксцентриситете она не объявляется точным физическим пределом.
-Private Function Audit03NormalizedLoads(ByVal section As CSectionModel, ByVal family As String) As Collection
+Private Function TestAudit03NormalizedLoads(ByVal section As CSectionModel, ByVal family As String) As Collection
     Dim result As New Collection, ac As Double, steelArea As Double, i As Long
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double, halfX As Double, halfY As Double
     For i = 1 To section.ConcreteCount
@@ -7653,13 +7852,14 @@ Private Function Audit03NormalizedLoads(ByVal section As CSectionModel, ByVal fa
     Else
         Err.Raise vbObjectError + 4498, "Audit03NormalizedLoads", "Неизвестное нагрузочное семейство: " & family
     End If
-    Set Audit03NormalizedLoads = result
+    Set TestAudit03NormalizedLoads = result
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет saved states и downstream-контракты независимо от display-строки.
 ' Невязки сравниваются с компонентными допусками, обязательные причины -
 ' также с настоящим execution report, подготовленным владельцами результатов.
-Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
+Private Sub TestAudit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal extensionEnabled As Boolean, _
         ByVal prefix As String, ByVal reportText As String)
     Dim state As CSectionStateResult, i As Long, meta As CResultMeta, comment As Variant
@@ -7669,36 +7869,36 @@ Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal resul
     toleranceMy = Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))
     For i = 1 To result.StateRepository.StateCount
         Set state = result.StateRepository.StateAt(i)
-        AppendLine stats, "MATRIX_STATE: " & prefix & "|type=" & SectionStateTypeToText(state.StateType) & _
-            "|spec=" & state.MaterialSpec.SpecKey & "|N=" & FormatNumberInvariant(state.TargetN) & _
-            "|Mx=" & FormatNumberInvariant(state.TargetMx) & "|My=" & FormatNumberInvariant(state.TargetMy) & _
-            "|rN=" & FormatNumberInvariant(state.ResidualN) & "|rMx=" & FormatNumberInvariant(state.ResidualMx) & _
-            "|rMy=" & FormatNumberInvariant(state.ResidualMy) & "|converged=" & CStr(state.Converged) & _
+        TestAppendLine stats, "MATRIX_STATE: " & prefix & "|type=" & SectionStateTypeToText(state.StateType) & _
+            "|spec=" & state.MaterialSpec.SpecKey & "|N=" & TestFormatNumberInvariant(state.TargetN) & _
+            "|Mx=" & TestFormatNumberInvariant(state.TargetMx) & "|My=" & TestFormatNumberInvariant(state.TargetMy) & _
+            "|rN=" & TestFormatNumberInvariant(state.ResidualN) & "|rMx=" & TestFormatNumberInvariant(state.ResidualMx) & _
+            "|rMy=" & TestFormatNumberInvariant(state.ResidualMy) & "|converged=" & CStr(state.Converged) & _
             "|physical=" & CStr(state.WithinPhysicalRange) & "|extension=" & CStr(state.ExtensionUsed)
-        AppendLine stats, "MATRIX_STRAINS: " & prefix & "|type=" & SectionStateTypeToText(state.StateType) & _
-            "|concreteMin=" & FormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & FormatNumberInvariant(state.MaxConcreteStrain) & _
-            "|steelMin=" & FormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & FormatNumberInvariant(state.MaxSteelStrain)
+        TestAppendLine stats, "MATRIX_STRAINS: " & prefix & "|type=" & SectionStateTypeToText(state.StateType) & _
+            "|concreteMin=" & TestFormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & TestFormatNumberInvariant(state.MaxConcreteStrain) & _
+            "|steelMin=" & TestFormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & TestFormatNumberInvariant(state.MaxSteelStrain)
         If state.Converged Then
-            AssertClose stats, prefix & ".state.rN." & CStr(i), state.ResidualN, 0#, toleranceN
-            AssertClose stats, prefix & ".state.rMx." & CStr(i), state.ResidualMx, 0#, toleranceMx
-            AssertClose stats, prefix & ".state.rMy." & CStr(i), state.ResidualMy, 0#, toleranceMy
+            TestAssertClose stats, prefix & ".state.rN." & CStr(i), state.ResidualN, 0#, toleranceN
+            TestAssertClose stats, prefix & ".state.rMx." & CStr(i), state.ResidualMx, 0#, toleranceMx
+            TestAssertClose stats, prefix & ".state.rMy." & CStr(i), state.ResidualMy, 0#, toleranceMy
         Else
             ' Repository может хранить диагностическую попытку без reusable key.
             ' Она не считается найденным физическим State и не получает OK.
-            AssertTrue stats, prefix & ".state.failureTyped." & CStr(i), _
+            TestAssertTrue stats, prefix & ".state.failureTyped." & CStr(i), _
                 state.ResultMeta.InternalStatus = rsNumericalFailure Or state.ResultMeta.InternalStatus = rsInvalidInput Or _
                 state.ResultMeta.InternalStatus = rsInvalidConfiguration Or state.ResultMeta.InternalStatus = rsInternalError
-            AssertTrue stats, prefix & ".state.failureNotPhysical." & CStr(i), Not state.WithinPhysicalRange
+            TestAssertTrue stats, prefix & ".state.failureNotPhysical." & CStr(i), Not state.WithinPhysicalRange
         End If
-        If Not extensionEnabled Then AssertTrue stats, prefix & ".state.noHiddenExtension." & CStr(i), Not state.ExtensionUsed
+        If Not extensionEnabled Then TestAssertTrue stats, prefix & ".state.noHiddenExtension." & CStr(i), Not state.ExtensionUsed
         If state.StateType = sstCapacityState Or state.StateType = sstPreCrackState Or state.StateType = sstPostCrackState Then
             If state.ResultMeta.InternalStatus = rsSuccess Then
-                AssertTrue stats, prefix & ".state.finalPhysical." & CStr(i), state.Converged And state.WithinPhysicalRange And Not state.ExtensionUsed
+                TestAssertTrue stats, prefix & ".state.finalPhysical." & CStr(i), state.Converged And state.WithinPhysicalRange And Not state.ExtensionUsed
             Else
-                AssertTrue stats, prefix & ".state.finalFailureTyped." & CStr(i), Audit03RequiresComment(state.ResultMeta)
+                TestAssertTrue stats, prefix & ".state.finalFailureTyped." & CStr(i), TestAudit03RequiresComment(state.ResultMeta)
                 If state.StateType = sstPreCrackState Then
-                    AssertTrue stats, prefix & ".state.failedPreNoPoint." & CStr(i), Not result.CrackResult.Formation.HasLimitPoint
-                    AssertTrue stats, prefix & ".state.failedPreCause." & CStr(i), _
+                    TestAssertTrue stats, prefix & ".state.failedPreNoPoint." & CStr(i), Not result.CrackResult.Formation.HasLimitPoint
+                    TestAssertTrue stats, prefix & ".state.failedPreCause." & CStr(i), _
                         result.CrackFormationMeta.InternalStatus = state.ResultMeta.InternalStatus And _
                         result.CrackFormationMeta.ResultCode = state.ResultMeta.ResultCode
                 End If
@@ -7708,49 +7908,51 @@ Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal resul
     For Each comment In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
             result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
         Set meta = comment
-        AssertTrue stats, prefix & ".noInternalFailure." & CStr(meta.ResultKind), meta.InternalStatus <> rsInternalError
-        If Audit03RequiresComment(meta) Then AssertTrue stats, prefix & ".reportComment." & CStr(meta.ResultKind), _
+        TestAssertTrue stats, prefix & ".noInternalFailure." & CStr(meta.ResultKind), meta.InternalStatus <> rsInternalError
+        If TestAudit03RequiresComment(meta) Then TestAssertTrue stats, prefix & ".reportComment." & CStr(meta.ResultKind), _
             InStr(1, reportText, meta.ResultComment, vbBinaryCompare) > 0
     Next comment
     Dim width As CCrackWidthResult
     Set width = result.CrackResult.Width
-    AppendLine stats, "MATRIX_CRACK_DATA: " & prefix & "|calculated=" & CStr(width.ResultMeta.Calculated) & _
-        "|formationDataAvailable=" & CStr(Audit03HasUsableFormationData(result)) & _
-        "|sigmaS=" & FormatNumberInvariant(width.SigmaS) & "|sigmaSCrc=" & FormatNumberInvariant(width.SigmaSCrc) & _
-        "|psi=" & FormatNumberInvariant(width.PsiS) & "|Abt=" & FormatNumberInvariant(width.Abt) & _
-        "|As=" & FormatNumberInvariant(width.AsTension) & "|ds=" & FormatNumberInvariant(width.DsEquivalent) & _
-        "|ls=" & FormatNumberInvariant(width.CrackSpacing) & "|acrc=" & FormatNumberInvariant(width.CrackWidth) & _
+    TestAppendLine stats, "MATRIX_CRACK_DATA: " & prefix & "|calculated=" & CStr(width.ResultMeta.Calculated) & _
+        "|formationDataAvailable=" & CStr(TestAudit03HasUsableFormationData(result)) & _
+        "|sigmaS=" & TestFormatNumberInvariant(width.SigmaS) & "|sigmaSCrc=" & TestFormatNumberInvariant(width.SigmaSCrc) & _
+        "|psi=" & TestFormatNumberInvariant(width.PsiS) & "|Abt=" & TestFormatNumberInvariant(width.Abt) & _
+        "|As=" & TestFormatNumberInvariant(width.AsTension) & "|ds=" & TestFormatNumberInvariant(width.DsEquivalent) & _
+        "|ls=" & TestFormatNumberInvariant(width.CrackSpacing) & "|acrc=" & TestFormatNumberInvariant(width.CrackWidth) & _
         "|bars=" & width.TensionRebarIds
     If width.ResultMeta.Calculated Then
-        AssertTrue stats, prefix & ".psiUpperBound", result.CrackResult.Width.PsiS <= 1#
-        AssertTrue stats, prefix & ".widthNonnegative", result.CrackResult.Width.CrackWidth >= 0#
-        Audit03CheckAppliedPsiMode stats, result, settings, prefix
+        TestAssertTrue stats, prefix & ".psiUpperBound", result.CrackResult.Width.PsiS <= 1#
+        TestAssertTrue stats, prefix & ".widthNonnegative", result.CrackResult.Width.CrackWidth >= 0#
+        TestAudit03CheckAppliedPsiMode stats, result, settings, prefix
     End If
 End Sub
 
-' ДЛЯ ТЕСТОВ: проверяет фактически использованный psi, а не только успех
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет фактически использованный psi, а не только успех
 ' формулы. При пригодной точке User сохраняет ввод; недоступная Formation/Post
 ' дает принятый консервативный fallback. NotCracked сюда не попадает: формула
 ' не вызывается, и отдельные тесты проверяют сохранность исходного PsiS.
-Private Sub Audit03CheckAppliedPsiMode(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
+Private Sub TestAudit03CheckAppliedPsiMode(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
         ByVal settings As CSystemSettingsReader, ByVal prefix As String)
     If result.CrackResult.Width.StandardCode <> "SP63" Or Not result.CrackWidthMeta.Calculated Then Exit Sub
-    If Not Audit03HasUsableFormationData(result) Then
-        AssertClose stats, prefix & ".formationUnavailablePsi1", result.CrackResult.Width.PsiS, 1#, 0#
-        AssertTrue stats, prefix & ".formationUnavailableWarning", _
+    If Not TestAudit03HasUsableFormationData(result) Then
+        TestAssertClose stats, prefix & ".formationUnavailablePsi1", result.CrackResult.Width.PsiS, 1#, 0#
+        TestAssertTrue stats, prefix & ".formationUnavailableWarning", _
             InStr(1, result.CrackWidthMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
     ElseIf StrComp(settings.GetRequiredString("SLS.Crack.PsiMode"), "User", vbTextCompare) = 0 Then
-        AssertClose stats, prefix & ".userPsiPreserved", result.CrackResult.Width.PsiS, _
+        TestAssertClose stats, prefix & ".userPsiPreserved", result.CrackResult.Width.PsiS, _
             settings.GetRequiredDouble("SLS.Crack.PsiS"), 0#
-        AssertTrue stats, prefix & ".userNoFallbackWarning", _
+        TestAssertTrue stats, prefix & ".userNoFallbackWarning", _
             InStr(1, result.CrackWidthMeta.ResultComment, "psi_s принят равным 1", vbTextCompare) = 0
     End If
 End Sub
 
-' ДЛЯ ТЕСТОВ: устанавливает доступность численных данных по typed результату
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' устанавливает доступность численных данных по typed результату
 ' и физическому Post, без чтения текста комментария или назначения статуса.
 ' Это независимый oracle входных условий для проверки фактически примененного psi.
-Private Function Audit03HasUsableFormationData(ByVal result As CCombinationResult) As Boolean
+Private Function TestAudit03HasUsableFormationData(ByVal result As CCombinationResult) As Boolean
     Dim formation As CCrackFormationResult, postState As CSectionStateResult
     Set formation = result.CrackResult.Formation
     If Not formation.HasLimitPoint Then Exit Function
@@ -7760,21 +7962,23 @@ Private Function Audit03HasUsableFormationData(ByVal result As CCombinationResul
         If postState Is Nothing Then Exit Function
         If Not postState.Converged Or Not postState.WithinPhysicalRange Then Exit Function
     End If
-    Audit03HasUsableFormationData = True
+    TestAudit03HasUsableFormationData = True
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Читает UTF-16 отчет настоящего report-owner, не подменяя его текст тестовым.
-Private Function Audit03ReadUnicodeFile(ByVal path As String) As String
+Private Function TestAudit03ReadUnicodeFile(ByVal path As String) As String
     Dim fso As Object, stream As Object
     Set fso = CreateObject("Scripting.FileSystemObject")
     Set stream = fso.OpenTextFile(path, 1, False, -1)
-    Audit03ReadUnicodeFile = stream.ReadAll
+    TestAudit03ReadUnicodeFile = stream.ReadAll
     stream.Close
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохраняет завершенный chunk перед следующими расчетами. После watchdog
 ' timeout этот файл остается диагностикой, а не доказательством PASS.
-Private Sub Audit03SaveMatrixProgress(ByVal text As String)
+Private Sub TestAudit03SaveMatrixProgress(ByVal text As String)
     Dim fso As Object, stream As Object
     Set fso = CreateObject("Scripting.FileSystemObject")
     Set stream = fso.CreateTextFile(ThisWorkbook.Path & "\Audit03_Search_Progress.txt", True, True)
@@ -7782,11 +7986,13 @@ Private Sub Audit03SaveMatrixProgress(ByVal text As String)
     stream.Close
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Ограничивает последний chunk фактическим числом независимых нагрузок.
-Private Function Audit03MinLong(ByVal a As Long, ByVal b As Long) As Long
-    If a < b Then Audit03MinLong = a Else Audit03MinLong = b
+Private Function TestAudit03MinLong(ByVal a As Long, ByVal b As Long) As Long
+    If a < b Then TestAudit03MinLong = a Else TestAudit03MinLong = b
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ДЛЯ ТЕСТОВ
 ' Проверяет семь цветов в настоящей легенде/writer-ах, нормализацию и очистку.
 ' Дополнительный лист создается только в изолированной книге для save/reopen;
@@ -7796,7 +8002,7 @@ Public Function RunAudit03StatusPaletteTests() As String
     Dim stats As TBatchTestStats
     TestFormationStatusFormatting stats
     TestBatchSummaryWriter stats
-    Audit03CheckWriterPalette stats, 3, False
+    TestAudit03CheckWriterPalette stats, 3, False
 
     Dim palette As Object, cell As Object, statuses As Variant, status As Variant, colors As Variant, i As Long
     Set palette = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets.Item(ThisWorkbook.Worksheets.Count))
@@ -7808,26 +8014,26 @@ Public Function RunAudit03StatusPaletteTests() As String
         Set cell = palette.Cells(i + 1, 1)
         cell.Value2 = statuses(i)
         ApplyStatusFill cell, "  " & LCase$(CStr(statuses(i))) & "  "
-        AssertTrue stats, "audit03.palette.canonical." & CStr(statuses(i)), CLng(cell.Interior.Color) = CLng(colors(i))
-        AssertTrue stats, "audit03.palette.display." & CStr(statuses(i)), CLng(cell.DisplayFormat.Interior.Color) = CLng(colors(i))
-        AppendLine stats, "PALETTE_CELL: " & CStr(statuses(i)) & "|fill=" & CStr(cell.Interior.Color) & _
+        TestAssertTrue stats, "audit03.palette.canonical." & CStr(statuses(i)), CLng(cell.Interior.Color) = CLng(colors(i))
+        TestAssertTrue stats, "audit03.palette.display." & CStr(statuses(i)), CLng(cell.DisplayFormat.Interior.Color) = CLng(colors(i))
+        TestAppendLine stats, "PALETTE_CELL: " & CStr(statuses(i)) & "|fill=" & CStr(cell.Interior.Color) & _
             "|display=" & CStr(cell.DisplayFormat.Interior.Color) & "|cf=" & CStr(cell.FormatConditions.Count)
     Next i
 
     Set cell = palette.Cells(9, 1)
     cell.Value2 = "UnknownExternalStatus"
     ApplyStatusFill cell, CStr(cell.Value2)
-    AssertTrue stats, "audit03.palette.unknownCalcErr", CLng(cell.DisplayFormat.Interior.Color) = RGB(255, 71, 71)
+    TestAssertTrue stats, "audit03.palette.unknownCalcErr", CLng(cell.DisplayFormat.Interior.Color) = RGB(255, 71, 71)
     Set cell = palette.Cells(10, 1)
     ApplyStatusFill cell, vbNullString
-    AssertTrue stats, "audit03.palette.emptyPolicy", CLng(cell.DisplayFormat.Interior.Color) = RGB(237, 237, 237)
+    TestAssertTrue stats, "audit03.palette.emptyPolicy", CLng(cell.DisplayFormat.Interior.Color) = RGB(237, 237, 237)
     cell.Clear
-    AssertTrue stats, "audit03.palette.clearedCell", cell.Interior.ColorIndex = -4142 And cell.DisplayFormat.Interior.ColorIndex = -4142
+    TestAssertTrue stats, "audit03.palette.clearedCell", cell.Interior.ColorIndex = -4142 And cell.DisplayFormat.Interior.ColorIndex = -4142
     Set cell = palette.Cells(11, 1)
     For Each status In Array("FAIL", "OK", "N/A")
         cell.Value2 = CStr(status)
         ApplyStatusFill cell, CStr(status)
-        AssertTrue stats, "audit03.palette.transition." & CStr(status), StatusCellHasExpectedFill(palette, 11, 1)
+        TestAssertTrue stats, "audit03.palette.transition." & CStr(status), TestStatusCellHasExpectedFill(palette, 11, 1)
     Next status
 
     ' Доказываем чувствительность проверки к чужому CF, затем удаляем только
@@ -7839,30 +8045,31 @@ Public Function RunAudit03StatusPaletteTests() As String
     Set rule = cell.FormatConditions.Add(1, 3, "=""FAIL""")
     rule.Interior.Color = RGB(188, 222, 158)
     ThisWorkbook.Application.CalculateFull
-    AssertTrue stats, "audit03.palette.detectsConditionalOverride", Not StatusCellHasExpectedFill(palette, 12, 1)
+    TestAssertTrue stats, "audit03.palette.detectsConditionalOverride", Not TestStatusCellHasExpectedFill(palette, 12, 1)
     cell.FormatConditions.Delete
-    AssertTrue stats, "audit03.palette.overrideRemoved", StatusCellHasExpectedFill(palette, 12, 1)
+    TestAssertTrue stats, "audit03.palette.overrideRemoved", TestStatusCellHasExpectedFill(palette, 12, 1)
 
     Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "PALETTE_ONE", -180000#, -3500000#, -2500000#, "PR1", "palette reduction"
     batch.Execute
     Set writer = New CBatchResultWriter
     writer.WriteSummary ThisWorkbook, batch
-    Audit03CheckWriterPalette stats, 1, False
-    Audit03CheckWriterPalette stats, 3, True
-    AppendLine stats, "TOTAL_AUDIT03_PALETTE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAudit03CheckWriterPalette stats, 1, False
+    TestAudit03CheckWriterPalette stats, 3, True
+    TestAppendLine stats, "TOTAL_AUDIT03_PALETTE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03StatusPaletteTests = stats.Report
     Exit Function
 Failed:
     RunAudit03StatusPaletteTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ДЛЯ ТЕСТОВ
 ' Сверяет каждую статусную колонку четырех output-блоков и реальную легенду.
 ' При сокращении пакета проверяет отсутствие предыдущей заливки во второй
 ' и третьей строке; неприменимые пустые placeholders не считаются новым расчетом.
-Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows As Long, ByVal clearedRows As Boolean)
+Private Sub TestAudit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows As Long, ByVal clearedRows As Boolean)
     Dim blocks As Variant, block As Variant, columns As Variant, column As Variant
     Dim anchor As Object, rowIndex As Long, firstRow As Long, cell As Object, statusText As String
     blocks = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
@@ -7881,12 +8088,12 @@ Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows
                     Set cell = anchor.Worksheet.Cells(firstRow + rowIndex - 1, anchor.Column + CLng(column) - 1)
                     statusText = CStr(cell.Value2)
                     If clearedRows Then
-                        AssertTrue stats, "audit03.palette.clear." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
+                        TestAssertTrue stats, "audit03.palette.clear." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
                             cell.Interior.ColorIndex = -4142 And cell.DisplayFormat.Interior.ColorIndex = -4142
                     ElseIf Len(statusText) > 0 And statusText <> "Cracked" And statusText <> "NotCracked" Then
-                        AssertTrue stats, "audit03.palette.writer." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
-                            StatusCellHasExpectedFill(anchor.Worksheet, cell.Row, cell.Column)
-                        AppendLine stats, "PALETTE_WRITER: " & CStr(block) & "|cell=" & cell.Address(False, False) & _
+                        TestAssertTrue stats, "audit03.palette.writer." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
+                            TestStatusCellHasExpectedFill(anchor.Worksheet, cell.Row, cell.Column)
+                        TestAppendLine stats, "PALETTE_WRITER: " & CStr(block) & "|cell=" & cell.Address(False, False) & _
                             "|status=" & statusText & "|cf=" & CStr(cell.FormatConditions.Count)
                     End If
                 Next column
@@ -7896,15 +8103,16 @@ Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows
     If Not clearedRows Then
         Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
         For rowIndex = 7 To 13
-            AssertTrue stats, "audit03.palette.legend." & CStr(rowIndex), _
-                StatusCellHasExpectedFill(anchor.Worksheet, anchor.Row + rowIndex, anchor.Column + 27)
+            TestAssertTrue stats, "audit03.palette.legend." & CStr(rowIndex), _
+                TestStatusCellHasExpectedFill(anchor.Worksheet, anchor.Row + rowIndex, anchor.Column + 27)
         Next rowIndex
     End If
 End Sub
 
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ======================================================================
-' ДЛЯ ТЕСТОВ: AUDIT03 RESULT COMMENT COMPOSITION
+' AUDIT03 RESULT COMMENT COMPOSITION
 ' ======================================================================
 ' Проверяет сборку готовых typed leaf без запуска НДС и без изменения статусов.
 ' Тот же тест на baseline должен обнаружить повтор причины зависимости.
@@ -7912,13 +8120,14 @@ Public Function RunAudit03CommentCompositionTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
     TestAudit03CommentComposition stats
-    AppendLine stats, "TOTAL_AUDIT03_COMMENT_COMPOSITION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_COMMENT_COMPOSITION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03CommentCompositionTests = stats.Report
     Exit Function
 Failed:
     RunAudit03CommentCompositionTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Причина текущего НДС представлена один раз в aggregate, но полностью
 ' сохранена в Width/Longitudinal leaf. Отдельная причина не должна удаляться.
 Private Sub TestAudit03CommentComposition(ByRef stats As TBatchTestStats)
@@ -7948,53 +8157,56 @@ Private Sub TestAudit03CommentComposition(ByRef stats As TBatchTestStats)
         Set result = New CCrackResult
         result.Initialize Nothing, current, width, longitudinal
         comment = result.ResultMeta.ResultComment
-        AppendLine stats, "COMMENT_COMPOSITION: " & prefix & "|comment=" & comment
-        AssertTrue stats, prefix & ".reasonOnce", Audit03TextOccurrences(comment, reason) = 1
-        AssertTrue stats, prefix & ".widthMentioned", InStr(1, comment, "Ширина трещин: Расчет не выполнен:", vbBinaryCompare) > 0
-        AssertTrue stats, prefix & ".longitudinalMentioned", InStr(1, comment, "Продольные трещины: Расчет не выполнен:", vbBinaryCompare) > 0
-        AssertTrue stats, prefix & ".currentStatus", result.ResultMeta.InternalStatus = status
-        AssertTrue stats, prefix & ".currentCode", result.ResultMeta.ResultCode = code
-        AssertEquals stats, prefix & ".widthLeafUnchanged", width.ResultMeta.ResultComment, widthMeta.ResultComment
-        AssertEquals stats, prefix & ".longitudinalLeafUnchanged", longitudinal.ResultMeta.ResultComment, longitudinalMeta.ResultComment
+        TestAppendLine stats, "COMMENT_COMPOSITION: " & prefix & "|comment=" & comment
+        TestAssertTrue stats, prefix & ".reasonOnce", TestAudit03TextOccurrences(comment, reason) = 1
+        TestAssertTrue stats, prefix & ".widthMentioned", InStr(1, comment, "Ширина трещин: Расчет не выполнен:", vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".longitudinalMentioned", InStr(1, comment, "Продольные трещины: Расчет не выполнен:", vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".currentStatus", result.ResultMeta.InternalStatus = status
+        TestAssertTrue stats, prefix & ".currentCode", result.ResultMeta.ResultCode = code
+        TestAssertEquals stats, prefix & ".widthLeafUnchanged", width.ResultMeta.ResultComment, widthMeta.ResultComment
+        TestAssertEquals stats, prefix & ".longitudinalLeafUnchanged", longitudinal.ResultMeta.ResultComment, longitudinalMeta.ResultComment
 
         longitudinalMeta.SetBlockedByDependency rkLongitudinalCrack, "CurrentCrackedState", "Отдельная причина другой зависимости."
         longitudinal.Initialize longitudinalMeta, 0#, 0#, 0#
         result.Initialize Nothing, current, width, longitudinal
-        AssertTrue stats, prefix & ".differentReasonKept", _
+        TestAssertTrue stats, prefix & ".differentReasonKept", _
             InStr(1, result.ResultMeta.ResultComment, "Отдельная причина другой зависимости.", vbBinaryCompare) > 0
     Next i
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Считает точные вхождения известной причины только для assertions читаемости.
 ' Ни internal status, ни machine code не определяются по тексту.
-Private Function Audit03TextOccurrences(ByVal text As String, ByVal fragment As String) As Long
+Private Function TestAudit03TextOccurrences(ByVal text As String, ByVal fragment As String) As Long
     If Len(fragment) = 0 Then Exit Function
-    Audit03TextOccurrences = (Len(text) - Len(Replace$(text, fragment, vbNullString, 1, -1, vbBinaryCompare))) / Len(fragment)
+    TestAudit03TextOccurrences = (Len(text) - Len(Replace$(text, fragment, vbNullString, 1, -1, vbBinaryCompare))) / Len(fragment)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ====================== ДЛЯ ТЕСТОВ: AUDIT03 EXTENDED OVERLOAD EQUILIBRIUM ======================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет перегрузки с известным равновесием, в том числе далеко за
 ' прежними границами продолжения. Нагрузки получаются по заданной плоскости,
 ' а решатель начинает поиск самостоятельно, без передачи этой плоскости.
 Public Function RunAudit03ExtendedOverloadEquilibriumTests(ByVal shapeName As String) As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats, section As CSectionModel
-    Set section = Audit03LoadMatrixSection(shapeName)
+    Set section = TestAudit03LoadMatrixSection(shapeName)
     Dim method As Variant, role As Variant, magnitude As Variant, mode As Long, cases As Long
     For Each method In Array("Newton", "Secant")
         For Each role In Array(cpStrength, cpCrackedNDS)
             For Each magnitude In Array(0.05, 0.5, 5#, 9.5, 15#, 50#, 95#, 500#)
                 For mode = 1 To 3
-                    Audit03KnownExtendedStateCase stats, section, shapeName, CStr(method), _
+                    TestAudit03KnownExtendedStateCase stats, section, shapeName, CStr(method), _
                         CLng(role), CDbl(magnitude), mode
                     cases = cases + 1
                 Next mode
             Next magnitude
         Next role
     Next method
-    Audit03BeyondExtensionReferenceCases stats, section, shapeName
-    AppendLine stats, "TOTAL_AUDIT03_EXTENDED_OVERLOAD: shape=" & shapeName & "; knownStates=" & CStr(cases) & _
+    TestAudit03BeyondExtensionReferenceCases stats, section, shapeName
+    TestAppendLine stats, "TOTAL_AUDIT03_EXTENDED_OVERLOAD: shape=" & shapeName & "; knownStates=" & CStr(cases) & _
         "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03ExtendedOverloadEquilibriumTests = stats.Report
     Exit Function
@@ -8002,17 +8214,18 @@ Failed:
     RunAudit03ExtendedOverloadEquilibriumTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: три ранее подтвержденных равновесия импортированного сечения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' три ранее подтвержденных равновесия импортированного сечения.
 ' Нагрузки задаются независимо от стартовой плоскости; результат нельзя принять
 ' как NumFail или оправдать сертификатом отсутствия решения.
 Public Function RunSavedConfirmedEquilibriumTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats, section As CSectionModel, materials As CMaterialModelProvider
     Dim spec As CMaterialModelSpec, loads As Collection, index As Variant, method As Variant
-    Set section = Audit03LoadMatrixSection("SavedWorkbook")
+    Set section = TestAudit03LoadMatrixSection("SavedWorkbook")
     Set materials = TestMaterialProvider(True)
-    Set spec = Audit03OverloadSpec(cpStrength)
-    Set loads = Audit03NormalizedLoads(section, "Stress")
+    Set spec = TestAudit03OverloadSpec(cpStrength)
+    Set loads = TestAudit03NormalizedLoads(section, "Stress")
     Dim x As Double, y As Double
     CalculateConcreteSectionCentroid section, x, y
     For Each method In Array("Newton", "Secant")
@@ -8029,33 +8242,34 @@ Public Function RunSavedConfirmedEquilibriumTests() As String
             load.Initialize CDbl(item(1)), CDbl(item(2)), CDbl(item(3)), x + 10#, y - 7#
             Set request = New CStateRequest
             request.Initialize sstStrengthState, cpStrength, spec, load.N, load.InternalMx, load.InternalMy, True, True
-            Set provider = Audit03OverloadStateProvider(section, materials, CStr(method))
+            Set provider = TestAudit03OverloadStateProvider(section, materials, CStr(method))
             Set state = provider.GetOrSolve(request)
             prefix = "confirmed.saved." & CStr(method) & "." & CStr(item(0))
-            AssertTrue stats, prefix & ".converged", state.Converged
-            AssertTrue stats, prefix & ".physicalFail", state.InternalStatus = rsCheckFailed And Not state.WithinPhysicalRange
+            TestAssertTrue stats, prefix & ".converged", state.Converged
+            TestAssertTrue stats, prefix & ".physicalFail", state.InternalStatus = rsCheckFailed And Not state.WithinPhysicalRange
             If state.Converged Then
-                AssertClose stats, prefix & ".N", state.ResidualN, 0#, 1#
-                AssertClose stats, prefix & ".Mx", state.ResidualMx, 0#, 1000#
-                AssertClose stats, prefix & ".My", state.ResidualMy, 0#, 1000#
+                TestAssertClose stats, prefix & ".N", state.ResidualN, 0#, 1#
+                TestAssertClose stats, prefix & ".Mx", state.ResidualMx, 0#, 1000#
+                TestAssertClose stats, prefix & ".My", state.ResidualMy, 0#, 1000#
             End If
-            AppendLine stats, "CONFIRMED_SAVED: " & prefix & "|converged=" & CStr(state.Converged) & _
-                "|eps0=" & FormatNumberInvariant(state.Epsilon0) & "|kx=" & FormatNumberInvariant(state.KappaX) & _
-                "|ky=" & FormatNumberInvariant(state.KappaY) & "|solves=" & CStr(state.SolverCallCount) & _
+            TestAppendLine stats, "CONFIRMED_SAVED: " & prefix & "|converged=" & CStr(state.Converged) & _
+                "|eps0=" & TestFormatNumberInvariant(state.Epsilon0) & "|kx=" & TestFormatNumberInvariant(state.KappaX) & _
+                "|ky=" & TestFormatNumberInvariant(state.KappaY) & "|solves=" & CStr(state.SolverCallCount) & _
                 "|reason=" & state.ResultComment
-            If Not state.Converged Then AppendLine stats, state.DiagnosticLog
+            If Not state.Converged Then TestAppendLine stats, state.DiagnosticLog
         Next index
     Next method
-    AppendLine stats, "TOTAL_CONFIRMED_SAVED: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_CONFIRMED_SAVED: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunSavedConfirmedEquilibriumTests = stats.Report
     Exit Function
 Failed:
     RunSavedConfirmedEquilibriumTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Создает спецификацию текущего strength/cracked state, не Formation/Capacity.
 ' Physical и equilibrium diagrams проверяются отдельно, без изменения eps_ult.
-Private Function Audit03OverloadSpec(ByVal role As ECalculationPurpose) As CMaterialModelSpec
+Private Function TestAudit03OverloadSpec(ByVal role As ECalculationPurpose) As CMaterialModelSpec
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
     If role = cpStrength Then
@@ -8063,12 +8277,13 @@ Private Function Audit03OverloadSpec(ByVal role As ECalculationPurpose) As CMate
     Else
         spec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
     End If
-    Set Audit03OverloadSpec = spec
+    Set TestAudit03OverloadSpec = spec
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Настраивает общий provider обычным бюджетом 80 итераций и разрешенными
 ' retries. Допуски фиксированы во внутренних единицах, а не увеличены по нагрузке.
-Private Function Audit03OverloadStateProvider(ByVal section As CSectionModel, _
+Private Function TestAudit03OverloadStateProvider(ByVal section As CSectionModel, _
         ByVal materials As CMaterialModelProvider, ByVal method As String) As CStateProvider
     Dim provider As CStateProvider
     Set provider = New CStateProvider
@@ -8079,12 +8294,13 @@ Private Function Audit03OverloadStateProvider(ByVal section As CSectionModel, _
     provider.ToleranceN = 1#
     provider.ToleranceMx = 1000#
     provider.ToleranceMy = 1000#
-    Set Audit03OverloadStateProvider = provider
+    Set TestAudit03OverloadStateProvider = provider
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Нормирует наклон по фактическим координатам волокон и стержней. Известная
 ' косая плоскость не выходит за |epsilon| <= magnitude даже у смещенной формы.
-Private Sub Audit03OverloadPlane(ByVal section As CSectionModel, ByVal magnitude As Double, _
+Private Sub TestAudit03OverloadPlane(ByVal section As CSectionModel, ByVal magnitude As Double, _
         ByVal mode As Long, ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
     eps0 = 0#: kx = 0#: ky = 0#
     If mode = 1 Then eps0 = -magnitude: Exit Sub
@@ -8104,24 +8320,25 @@ Private Sub Audit03OverloadPlane(ByVal section As CSectionModel, ByVal magnitude
     eps0 = -kx * cy - ky * cx
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет известный feasible overload и typed physical FAIL после найденного
 ' равновесия. Повтор с Off на осевом overload должен остаться численным отказом,
 ' а не получить фиктивную physical solution. Ни одна стартовая плоскость не передается.
-Private Sub Audit03KnownExtendedStateCase(ByRef stats As TBatchTestStats, ByVal section As CSectionModel, _
+Private Sub TestAudit03KnownExtendedStateCase(ByRef stats As TBatchTestStats, ByVal section As CSectionModel, _
         ByVal shapeName As String, ByVal method As String, ByVal role As ECalculationPurpose, _
         ByVal magnitude As Double, ByVal mode As Long)
     Dim prefix As String
     prefix = "audit03.extended." & shapeName & "." & method & "." & CStr(role) & "." & CStr(magnitude) & "." & CStr(mode)
     Dim materials As CMaterialModelProvider, spec As CMaterialModelSpec
     Set materials = TestMaterialProvider(True)
-    Set spec = Audit03OverloadSpec(role)
+    Set spec = TestAudit03OverloadSpec(role)
     Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
     Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
     Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
-    AssertTrue stats, prefix & ".compressionReference", concrete.PointStrain(1) < concrete.PhysicalCompressionStrain
-    AssertTrue stats, prefix & ".steelReference", steel.PointStrain(steel.PointCount) > steel.PhysicalTensionStrain
+    TestAssertTrue stats, prefix & ".compressionReference", concrete.PointStrain(1) < concrete.PhysicalCompressionStrain
+    TestAssertTrue stats, prefix & ".steelReference", steel.PointStrain(steel.PointCount) > steel.PhysicalTensionStrain
     Dim eps0 As Double, kx As Double, ky As Double
-    Audit03OverloadPlane section, magnitude, mode, eps0, kx, ky
+    TestAudit03OverloadPlane section, magnitude, mode, eps0, kx, ky
     Dim oracle As CSectionSolver
     Set oracle = New CSectionSolver
     oracle.EvaluateStrainPlane section, concrete, steel, eps0, kx, ky
@@ -8130,47 +8347,48 @@ Private Sub Audit03KnownExtendedStateCase(ByRef stats As TBatchTestStats, ByVal 
     Set request = New CStateRequest
     request.Initialize stateType, role, spec, oracle.Nint, oracle.Mxint, oracle.Myint, True, True
     Dim provider As CStateProvider, state As CSectionStateResult, policy As CResultStatusPolicy
-    Set provider = Audit03OverloadStateProvider(section, materials, method)
+    Set provider = TestAudit03OverloadStateProvider(section, materials, method)
     Set state = provider.GetOrSolve(request)
     Set policy = New CResultStatusPolicy
-    AppendLine stats, "EXTENDED_OVERLOAD: " & prefix & "|N=" & FormatNumberInvariant(oracle.Nint) & _
-        "|Mx=" & FormatNumberInvariant(oracle.Mxint) & "|My=" & FormatNumberInvariant(oracle.Myint) & _
+    TestAppendLine stats, "EXTENDED_OVERLOAD: " & prefix & "|N=" & TestFormatNumberInvariant(oracle.Nint) & _
+        "|Mx=" & TestFormatNumberInvariant(oracle.Mxint) & "|My=" & TestFormatNumberInvariant(oracle.Myint) & _
         "|converged=" & CStr(state.Converged) & "|status=" & ResultInternalStatusToText(state.InternalStatus) & _
         "|code=" & ResultCodeToText(state.ResultCode) & "|extension=" & CStr(state.ExtensionUsed) & _
         "|physical=" & CStr(state.WithinPhysicalRange) & "|solves=" & CStr(state.SolverCallCount) & _
-        "|concreteMin=" & FormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & FormatNumberInvariant(state.MaxConcreteStrain) & _
-        "|steelMin=" & FormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & FormatNumberInvariant(state.MaxSteelStrain) & _
+        "|concreteMin=" & TestFormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & TestFormatNumberInvariant(state.MaxConcreteStrain) & _
+        "|steelMin=" & TestFormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & TestFormatNumberInvariant(state.MaxSteelStrain) & _
         "|comment=" & state.ResultComment
-    AssertTrue stats, prefix & ".equilibrium", state.Converged
-    If Not state.Converged Then AppendLine stats, "EXTENDED_FAILURE_DIAGNOSTIC: " & prefix & vbCrLf & state.DiagnosticLog
+    TestAssertTrue stats, prefix & ".equilibrium", state.Converged
+    If Not state.Converged Then TestAppendLine stats, "EXTENDED_FAILURE_DIAGNOSTIC: " & prefix & vbCrLf & state.DiagnosticLog
     If state.Converged Then
-        AssertClose stats, prefix & ".rN", state.ResidualN, 0#, 1#
-        AssertClose stats, prefix & ".rMx", state.ResidualMx, 0#, 1000#
-        AssertClose stats, prefix & ".rMy", state.ResidualMy, 0#, 1000#
-        AssertTrue stats, prefix & ".extensionUsed", state.ExtensionUsed
-        If magnitude >= 500# Then AssertTrue stats, prefix & ".beyondFormerLimits", _
+        TestAssertClose stats, prefix & ".rN", state.ResidualN, 0#, 1#
+        TestAssertClose stats, prefix & ".rMx", state.ResidualMx, 0#, 1000#
+        TestAssertClose stats, prefix & ".rMy", state.ResidualMy, 0#, 1000#
+        TestAssertTrue stats, prefix & ".extensionUsed", state.ExtensionUsed
+        If magnitude >= 500# Then TestAssertTrue stats, prefix & ".beyondFormerLimits", _
             state.MinConcreteStrain < -100# Or state.MaxConcreteStrain > 100# Or _
             state.MinSteelStrain < -100# Or state.MaxSteelStrain > 100#
-        AssertTrue stats, prefix & ".physicalFail", Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
-        AssertTrue stats, prefix & ".displayFail", policy.ExternalStatus(state.ResultMeta) = policy.Fail
+        TestAssertTrue stats, prefix & ".physicalFail", Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
+        TestAssertTrue stats, prefix & ".displayFail", policy.ExternalStatus(state.ResultMeta) = policy.Fail
     End If
     If mode <= 2 And magnitude = 0.5 Then
         Set materials = TestMaterialProvider(False)
-        Set provider = Audit03OverloadStateProvider(section, materials, method)
+        Set provider = TestAudit03OverloadStateProvider(section, materials, method)
         request.Initialize stateType, role, spec, oracle.Nint, oracle.Mxint, oracle.Myint, False, True
         Set state = provider.GetOrSolve(request)
-        AssertTrue stats, prefix & ".offNoEquilibrium", Not state.Converged
-        AssertTrue stats, prefix & ".offNumericalCause", state.InternalStatus = rsNumericalFailure
+        TestAssertTrue stats, prefix & ".offNoEquilibrium", Not state.Converged
+        TestAssertTrue stats, prefix & ".offNumericalCause", state.InternalStatus = rsNumericalFailure
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Опорная точка не ограничивает усилие. Ещё большая осевая нагрузка должна
 ' иметь численное равновесие с физическим FAIL, а не прежний отказ из-за обрезки.
-Private Sub Audit03BeyondExtensionReferenceCases(ByRef stats As TBatchTestStats, _
+Private Sub TestAudit03BeyondExtensionReferenceCases(ByRef stats As TBatchTestStats, _
         ByVal section As CSectionModel, ByVal shapeName As String)
     Dim sign As Variant, materials As CMaterialModelProvider, spec As CMaterialModelSpec
     Set materials = TestMaterialProvider(True)
-    Set spec = Audit03OverloadSpec(cpStrength)
+    Set spec = TestAudit03OverloadSpec(cpStrength)
     For Each sign In Array(-1#, 1#)
         Dim oracle As CSectionSolver
         Set oracle = New CSectionSolver
@@ -8180,19 +8398,20 @@ Private Sub Audit03BeyondExtensionReferenceCases(ByRef stats As TBatchTestStats,
         Set request = New CStateRequest
         request.Initialize sstStrengthState, cpStrength, spec, 1.05 * oracle.Nint, _
             1.05 * oracle.Mxint, 1.05 * oracle.Myint, True, True
-        Set provider = Audit03OverloadStateProvider(section, materials, "Newton")
+        Set provider = TestAudit03OverloadStateProvider(section, materials, "Newton")
         Set state = provider.GetOrSolve(request)
-        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".equilibrium", state.Converged
-        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".physicalFail", _
+        TestAssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".equilibrium", state.Converged
+        TestAssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".physicalFail", _
             state.InternalStatus = rsCheckFailed And Not state.WithinPhysicalRange And state.ExtensionUsed
-        AssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rN", state.ResidualN, 0#, 1#
-        AssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rMx", state.ResidualMx, 0#, 1000#
-        AssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rMy", state.ResidualMy, 0#, 1000#
-        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".reason", Len(state.ResultComment) > 0
+        TestAssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rN", state.ResidualN, 0#, 1#
+        TestAssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rMx", state.ResidualMx, 0#, 1000#
+        TestAssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rMy", state.ResidualMy, 0#, 1000#
+        TestAssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".reason", Len(state.ResultComment) > 0
     Next sign
 End Sub
 
-' ДЛЯ ТЕСТОВ: проверяет большие нагрузки на армированных сечениях с линейным
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет большие нагрузки на армированных сечениях с линейным
 ' продолжением. Конечные опорные точки не ограничивают воспринимаемые усилия;
 ' каждый случай должен найти равновесие и отдельно проверить физические пределы.
 Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As String, _
@@ -8212,14 +8431,14 @@ Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As Stri
         Case "Newton500": maxIterations = 500
         Case Else: Err.Raise vbObjectError + 4498, "RunAudit03ExtendedStressFeasibilityTests", "Неизвестный диагностический вариант solve."
     End Select
-    Set section = Audit03LoadMatrixSection(shapeName)
+    Set section = TestAudit03LoadMatrixSection(shapeName)
     Set materials = TestMaterialProvider(True)
     Dim loads As Collection, item As Variant, role As Variant, spec As CMaterialModelSpec
-    Set loads = Audit03NormalizedLoads(section, "Stress")
+    Set loads = TestAudit03NormalizedLoads(section, "Stress")
     Dim referenceX As Double, referenceY As Double, cases As Long
     CalculateConcreteSectionCentroid section, referenceX, referenceY
     For Each role In Array(cpStrength, cpCrackedNDS)
-        Set spec = Audit03OverloadSpec(CLng(role))
+        Set spec = TestAudit03OverloadSpec(CLng(role))
         Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
         Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
         Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
@@ -8232,7 +8451,7 @@ Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As Stri
             Set request = New CStateRequest
             request.Initialize stateType, CLng(role), spec, load.N, load.InternalMx, load.InternalMy, True, True
             Dim provider As CStateProvider, state As CSectionStateResult
-            Set provider = Audit03OverloadStateProvider(section, materials, method)
+            Set provider = TestAudit03OverloadStateProvider(section, materials, method)
             provider.LoadSteps = loadSteps
             provider.MaxIterations = maxIterations
             provider.SecantMaxRestarts = maxRestarts
@@ -8240,34 +8459,34 @@ Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As Stri
             cases = cases + 1
             Dim prefix As String
             prefix = "audit03.extendedStress." & shapeName & "." & solveVariant & "." & CStr(role) & "." & CStr(item(0))
-            AssertTrue stats, prefix & ".notInternalError", state.InternalStatus <> rsInternalError
-            AssertTrue stats, prefix & ".equilibrium", state.Converged
+            TestAssertTrue stats, prefix & ".notInternalError", state.InternalStatus <> rsInternalError
+            TestAssertTrue stats, prefix & ".equilibrium", state.Converged
             If Not state.Converged Then
-                AppendLine stats, "EXTENDED_STRESS_UNEXPLAINED: " & prefix & vbCrLf & state.DiagnosticLog
-                Audit03InspectStressFailure stats, section, concrete, steel, load, state, prefix
+                TestAppendLine stats, "EXTENDED_STRESS_UNEXPLAINED: " & prefix & vbCrLf & state.DiagnosticLog
+                TestAudit03InspectStressFailure stats, section, concrete, steel, load, state, prefix
             Else
-                AssertClose stats, prefix & ".rN", state.ResidualN, 0#, 1#
-                AssertClose stats, prefix & ".rMx", state.ResidualMx, 0#, 1000#
-                AssertClose stats, prefix & ".rMy", state.ResidualMy, 0#, 1000#
+                TestAssertClose stats, prefix & ".rN", state.ResidualN, 0#, 1#
+                TestAssertClose stats, prefix & ".rMx", state.ResidualMx, 0#, 1000#
+                TestAssertClose stats, prefix & ".rMy", state.ResidualMy, 0#, 1000#
                 If state.ExtensionUsed Then
-                    AssertTrue stats, prefix & ".extendedPhysicalFail", Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
+                    TestAssertTrue stats, prefix & ".extendedPhysicalFail", Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
                 Else
-                    AssertTrue stats, prefix & ".physicalState", state.WithinPhysicalRange And state.InternalStatus = rsSuccess
+                    TestAssertTrue stats, prefix & ".physicalState", state.WithinPhysicalRange And state.InternalStatus = rsSuccess
                 End If
             End If
-            AppendLine stats, "EXTENDED_STRESS: " & prefix & "|N=" & FormatNumberInvariant(load.N) & _
-                "|Mx=" & FormatNumberInvariant(load.InternalMx) & "|My=" & FormatNumberInvariant(load.InternalMy) & _
+            TestAppendLine stats, "EXTENDED_STRESS: " & prefix & "|N=" & TestFormatNumberInvariant(load.N) & _
+                "|Mx=" & TestFormatNumberInvariant(load.InternalMx) & "|My=" & TestFormatNumberInvariant(load.InternalMy) & _
                 "|converged=" & CStr(state.Converged) & "|status=" & ResultInternalStatusToText(state.InternalStatus) & _
                 "|extensionUsed=" & CStr(state.ExtensionUsed) & "|physical=" & CStr(state.WithinPhysicalRange) & _
-                "|eps0=" & FormatNumberInvariant(state.Epsilon0) & "|kx=" & FormatNumberInvariant(state.KappaX) & _
-                "|ky=" & FormatNumberInvariant(state.KappaY) & _
-                "|concreteMin=" & FormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & FormatNumberInvariant(state.MaxConcreteStrain) & _
-                "|steelMin=" & FormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & FormatNumberInvariant(state.MaxSteelStrain) & _
+                "|eps0=" & TestFormatNumberInvariant(state.Epsilon0) & "|kx=" & TestFormatNumberInvariant(state.KappaX) & _
+                "|ky=" & TestFormatNumberInvariant(state.KappaY) & _
+                "|concreteMin=" & TestFormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & TestFormatNumberInvariant(state.MaxConcreteStrain) & _
+                "|steelMin=" & TestFormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & TestFormatNumberInvariant(state.MaxSteelStrain) & _
                 "|reason=" & state.ResultComment
         Next item
     Next role
-    AssertTrue stats, "audit03.extendedStress." & shapeName & ".allRequestedCases", cases = 2 * loads.Count
-    AppendLine stats, "TOTAL_AUDIT03_EXTENDED_STRESS: shape=" & shapeName & "; variant=" & solveVariant & "; cases=" & CStr(cases) & _
+    TestAssertTrue stats, "audit03.extendedStress." & shapeName & ".allRequestedCases", cases = 2 * loads.Count
+    TestAppendLine stats, "TOTAL_AUDIT03_EXTENDED_STRESS: shape=" & shapeName & "; variant=" & solveVariant & "; cases=" & CStr(cases) & _
         "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03ExtendedStressFeasibilityTests = stats.Report
     Exit Function
@@ -8275,31 +8494,32 @@ Failed:
     RunAudit03ExtendedStressFeasibilityTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: сохраняет фактическую касательную и деформации стержней отказа.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сохраняет фактическую касательную и деформации стержней отказа.
 ' Дополнительные холодные старты служат только диагностикой существующего
 ' Newton; они не меняют результат проверяемого pipeline или его допуски.
-Private Sub Audit03InspectStressFailure(ByRef stats As TBatchTestStats, _
+Private Sub TestAudit03InspectStressFailure(ByRef stats As TBatchTestStats, _
         ByVal section As CSectionModel, ByVal concrete As CMaterialDiagram, _
         ByVal steel As CMaterialDiagram, ByVal load As CSectionLoadState, _
         ByVal state As CSectionStateResult, ByVal prefix As String)
     Dim probe As CSectionSolver, i As Long, j As Long, strain As Double
     Set probe = New CSectionSolver
     probe.EvaluateStrainPlane section, concrete, steel, state.Epsilon0, state.KappaX, state.KappaY
-    AppendLine stats, "STRESS_FAILURE_PLANE: " & prefix & "|eps0=" & FormatNumberInvariant(state.Epsilon0) & _
-        "|kx=" & FormatNumberInvariant(state.KappaX) & "|ky=" & FormatNumberInvariant(state.KappaY)
+    TestAppendLine stats, "STRESS_FAILURE_PLANE: " & prefix & "|eps0=" & TestFormatNumberInvariant(state.Epsilon0) & _
+        "|kx=" & TestFormatNumberInvariant(state.KappaX) & "|ky=" & TestFormatNumberInvariant(state.KappaY)
     For i = 1 To 3
         Dim rowText As String
         rowText = "STRESS_FAILURE_TANGENT: row=" & CStr(i)
         For j = 1 To 3
-            rowText = rowText & "|" & FormatNumberInvariant(probe.Tangent(i, j))
+            rowText = rowText & "|" & TestFormatNumberInvariant(probe.Tangent(i, j))
         Next j
-        AppendLine stats, rowText
+        TestAppendLine stats, rowText
     Next i
     For i = 1 To section.RebarCount
         strain = state.Epsilon0 + state.KappaX * section.RebarY(i) + state.KappaY * section.RebarX(i)
-        AppendLine stats, "STRESS_FAILURE_REBAR: " & CStr(i) & "|x=" & FormatNumberInvariant(section.RebarX(i)) & _
-            "|y=" & FormatNumberInvariant(section.RebarY(i)) & "|A=" & FormatNumberInvariant(section.RebarArea(i)) & _
-            "|strain=" & FormatNumberInvariant(strain) & "|tangent=" & FormatNumberInvariant(steel.GetTangentModulus(strain))
+        TestAppendLine stats, "STRESS_FAILURE_REBAR: " & CStr(i) & "|x=" & TestFormatNumberInvariant(section.RebarX(i)) & _
+            "|y=" & TestFormatNumberInvariant(section.RebarY(i)) & "|A=" & TestFormatNumberInvariant(section.RebarArea(i)) & _
+            "|strain=" & TestFormatNumberInvariant(strain) & "|tangent=" & TestFormatNumberInvariant(steel.GetTangentModulus(strain))
     Next i
     Dim builder As CStateGuessBuilder, guessEps As Double, guessKx As Double, guessKy As Double
     Set builder = New CStateGuessBuilder
@@ -8309,11 +8529,11 @@ Private Sub Audit03InspectStressFailure(ByRef stats As TBatchTestStats, _
             Dim guessed As CSectionSolver
             Set guessed = New CSectionSolver
             guessed.EvaluateStrainPlane section, concrete, steel, guessEps, guessKx, guessKy
-            AppendLine stats, "STRESS_DIAGNOSTIC_GUESS: " & prefix & "|attempt=" & CStr(i) & _
-                "|eps0=" & FormatNumberInvariant(guessEps) & "|kx=" & FormatNumberInvariant(guessKx) & _
-                "|ky=" & FormatNumberInvariant(guessKy) & "|rN=" & FormatNumberInvariant(guessed.Nint - load.N) & _
-                "|rMx=" & FormatNumberInvariant(guessed.Mxint - load.InternalMx) & _
-                "|rMy=" & FormatNumberInvariant(guessed.Myint - load.InternalMy)
+            TestAppendLine stats, "STRESS_DIAGNOSTIC_GUESS: " & prefix & "|attempt=" & CStr(i) & _
+                "|eps0=" & TestFormatNumberInvariant(guessEps) & "|kx=" & TestFormatNumberInvariant(guessKx) & _
+                "|ky=" & TestFormatNumberInvariant(guessKy) & "|rN=" & TestFormatNumberInvariant(guessed.Nint - load.N) & _
+                "|rMx=" & TestFormatNumberInvariant(guessed.Mxint - load.InternalMx) & _
+                "|rMy=" & TestFormatNumberInvariant(guessed.Myint - load.InternalMy)
         End If
     Next i
     Dim initialStrain As Variant, diagnosticMethod As Variant
@@ -8325,11 +8545,11 @@ Private Sub Audit03InspectStressFailure(ByRef stats As TBatchTestStats, _
         probe.ToleranceN = 1#: probe.ToleranceMx = 1000#: probe.ToleranceMy = 1000#
         probe.SetInitialState CDbl(initialStrain), 0#, 0#
         probe.Solve section, concrete, steel, load.N, load.InternalMx, load.InternalMy
-        AppendLine stats, "STRESS_DIAGNOSTIC_START: " & prefix & "|method=" & CStr(diagnosticMethod) & "|initial=" & CStr(initialStrain) & _
-            "|converged=" & CStr(probe.Converged) & "|eps0=" & FormatNumberInvariant(probe.Epsilon0) & _
-            "|kx=" & FormatNumberInvariant(probe.KappaX) & "|ky=" & FormatNumberInvariant(probe.KappaY) & _
-            "|rN=" & FormatNumberInvariant(probe.ResidualN) & "|rMx=" & FormatNumberInvariant(probe.ResidualMx) & _
-            "|rMy=" & FormatNumberInvariant(probe.ResidualMy) & "|reason=" & probe.StopReason
+        TestAppendLine stats, "STRESS_DIAGNOSTIC_START: " & prefix & "|method=" & CStr(diagnosticMethod) & "|initial=" & CStr(initialStrain) & _
+            "|converged=" & CStr(probe.Converged) & "|eps0=" & TestFormatNumberInvariant(probe.Epsilon0) & _
+            "|kx=" & TestFormatNumberInvariant(probe.KappaX) & "|ky=" & TestFormatNumberInvariant(probe.KappaY) & _
+            "|rN=" & TestFormatNumberInvariant(probe.ResidualN) & "|rMx=" & TestFormatNumberInvariant(probe.ResidualMx) & _
+            "|rMy=" & TestFormatNumberInvariant(probe.ResidualMy) & "|reason=" & probe.StopReason
     Next initialStrain
     Next diagnosticMethod
 End Sub
@@ -8337,16 +8557,18 @@ End Sub
 
 
 
-' ДЛЯ ТЕСТОВ: отдельный runtime gate чтения и действия критерия Worst.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' отдельный runtime gate чтения и действия критерия Worst.
 ' Использует реальные таблицы Config и writer; исходные настройки восстанавливает.
 Public Function RunAudit03WorstCriterionConfigTests() As String
     Dim stats As TBatchTestStats
     TestAudit03WorstCriterionConfig stats
-    AppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03WorstCriterionConfigTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: каждый допустимый критерий выбирает минимум своего положительного
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' каждый допустимый критерий выбирает минимум своего положительного
 ' запаса среди реальных PR1/PR2 результатов. Ошибочное значение запрещает solve,
 ' а следующая корректная ApplySettings восстанавливает работу того же batch.
 Private Sub TestAudit03WorstCriterionConfig(ByRef stats As TBatchTestStats)
@@ -8371,14 +8593,14 @@ Private Sub TestAudit03WorstCriterionConfig(ByRef stats As TBatchTestStats)
     Next row
     If criterionCell Is Nothing Then Err.Raise vbObjectError + 3971, _
         "TestAudit03WorstCriterionConfig", "В Config не найден General.WorstCombinationCriterion."
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "Stability.Code", "SP63"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1"
-    SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.PhiLMode", "PhiL2"
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "Stability.Code", "SP63"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1"
+    TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.PhiLMode", "PhiL2"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
     Set writer = New CBatchResultWriter
     For Each mode In Array("StrengthStrain", "StrengthCapacity", "Cracks", "Stability")
         criterionCell.Value2 = CStr(mode)
@@ -8386,7 +8608,7 @@ Private Sub TestAudit03WorstCriterionConfig(ByRef stats As TBatchTestStats)
         settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem
         units.LoadFromSettings settings
-        Set batch = BuildBatchCalculator()
+        Set batch = TestBuildBatchCalculator()
         batch.ApplySettings settings, units
         batch.AddCombination "S1", -100000#, 1500000#, 500000#, "PR1", "малые усилия", "LambdaNMxy"
         batch.AddCombination "S2", -250000#, 7000000#, 3000000#, "PR1", "большие усилия", "LambdaNMxy"
@@ -8396,25 +8618,25 @@ Private Sub TestAudit03WorstCriterionConfig(ByRef stats As TBatchTestStats)
         expectedIndex = 0: minimum = 0#
         prefix = "audit03.worst." & CStr(mode)
         For i = 1 To batch.Count
-            reserve = Audit03WorstExpectedReserve(batch.ResultAt(i), CStr(mode))
+            reserve = TestAudit03WorstExpectedReserve(batch.ResultAt(i), CStr(mode))
             If reserve > 0# Then
                 If expectedIndex = 0 Or reserve < minimum Then
                     expectedIndex = i: minimum = reserve
                 End If
             End If
         Next i
-        AssertTrue stats, prefix & ".active", expectedIndex > 0
-        AssertTrue stats, prefix & ".selection", batch.WorstCombinationIndex = expectedIndex
-        AssertEquals stats, prefix & ".key", batch.WorstCombinationCriterion, CStr(mode)
+        TestAssertTrue stats, prefix & ".active", expectedIndex > 0
+        TestAssertTrue stats, prefix & ".selection", batch.WorstCombinationIndex = expectedIndex
+        TestAssertEquals stats, prefix & ".key", batch.WorstCombinationCriterion, CStr(mode)
         writer.WriteSummary ThisWorkbook, batch, units
-        AssertEquals stats, prefix & ".written", _
+        TestAssertEquals stats, prefix & ".written", _
             CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2), batch.WorstCombinationID
         If Len(firstChoice) = 0 Then firstChoice = batch.WorstCombinationID
         If batch.WorstCombinationID <> firstChoice Then sawDifferentChoice = True
         chosenIds = chosenIds & CStr(mode) & "=" & batch.WorstCombinationID & "; "
     Next mode
-    AssertTrue stats, "audit03.worst.distinctChoices", sawDifferentChoice
-    AppendLine stats, "WORST_CHOICES: " & chosenIds
+    TestAssertTrue stats, "audit03.worst.distinctChoices", sawDifferentChoice
+    TestAppendLine stats, "WORST_CHOICES: " & chosenIds
     For Each invalid In Array("WrongCriterion", "", " ", "TODO", "0", "=1/0")
         prefix = "audit03.worst.invalid." & Replace$(CStr(invalid), "=", "formula")
         criterionCell.Formula = invalid
@@ -8425,35 +8647,35 @@ Private Sub TestAudit03WorstCriterionConfig(ByRef stats As TBatchTestStats)
         Err.Clear
         On Error GoTo Failed
         If readError <> 0 Then
-            AssertTrue stats, prefix & ".readerError", readError = vbObjectError + 4309
-            AssertTrue stats, prefix & ".readerReason", _
+            TestAssertTrue stats, prefix & ".readerError", readError = vbObjectError + 4309
+            TestAssertTrue stats, prefix & ".readerReason", _
                 InStr(1, readReason, "General.WorstCombinationCriterion", vbTextCompare) > 0
-            AssertTrue stats, prefix & ".readerLocation", _
+            TestAssertTrue stats, prefix & ".readerLocation", _
                 InStr(1, readReason, criterionCell.Address(False, False), vbTextCompare) > 0
         Else
             batch.ApplySettings settings, units
             batch.Execute
             For i = 1 To batch.Count
-                AssertEquals stats, prefix & ".status." & CStr(i), batch.ResultAt(i).Status, "InputErr"
-                AssertTrue stats, prefix & ".reason." & CStr(i), _
+                TestAssertEquals stats, prefix & ".status." & CStr(i), batch.ResultAt(i).Status, "InputErr"
+                TestAssertTrue stats, prefix & ".reason." & CStr(i), _
                     InStr(1, batch.ResultAt(i).OverallMeta.ResultComment, "General.WorstCombinationCriterion", vbTextCompare) > 0
-                AssertTrue stats, prefix & ".location." & CStr(i), _
+                TestAssertTrue stats, prefix & ".location." & CStr(i), _
                     InStr(1, batch.ResultAt(i).OverallMeta.ResultComment, criterionCell.Address(False, False), vbTextCompare) > 0
             Next i
-            AssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
+            TestAssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
         End If
         criterionCell.Value2 = "StrengthCapacity"
         Set settings = New CSystemSettingsReader
         settings.LoadFromWorkbook ThisWorkbook
         batch.ApplySettings settings, units
         batch.Execute
-        AssertTrue stats, prefix & ".recovery", batch.SolverCallCount > 0 And batch.ResultAt(1).Status <> "InputErr"
+        TestAssertTrue stats, prefix & ".recovery", batch.SolverCallCount > 0 And batch.ResultAt(1).Status <> "InputErr"
     Next invalid
     GoTo Restore
 Failed:
     failureNumber = Err.Number: failureDescription = Err.Description
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.worst.runtime; " & CStr(failureNumber) & "; " & failureDescription
+    TestAppendLine stats, "FAIL: audit03.worst.runtime; " & CStr(failureNumber) & "; " & failureDescription
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -8461,37 +8683,40 @@ Restore:
     On Error GoTo 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: независимое чтение численных запасов typed leaves, без вызова
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' независимое чтение численных запасов typed leaves, без вызова
 ' production-селектора ReserveForCriterion и без повторного решения НДС.
-Private Function Audit03WorstExpectedReserve(ByVal result As CCombinationResult, ByVal mode As String) As Double
+Private Function TestAudit03WorstExpectedReserve(ByVal result As CCombinationResult, ByVal mode As String) As Double
     Dim first As Double, second As Double
     Select Case mode
-        Case "StrengthStrain": Audit03WorstExpectedReserve = result.StrengthResult.DirectState.StrainReserve
-        Case "StrengthCapacity": Audit03WorstExpectedReserve = result.StrengthResult.Capacity.ReserveFactor
-        Case "Stability": Audit03WorstExpectedReserve = result.StabilityResult.SummaryReserve
+        Case "StrengthStrain": TestAudit03WorstExpectedReserve = result.StrengthResult.DirectState.StrainReserve
+        Case "StrengthCapacity": TestAudit03WorstExpectedReserve = result.StrengthResult.Capacity.ReserveFactor
+        Case "Stability": TestAudit03WorstExpectedReserve = result.StabilityResult.SummaryReserve
         Case "Cracks"
             first = result.CrackResult.Width.ReserveFactor
             second = result.CrackResult.Longitudinal.ReserveFactor
             If first > 0# And second > 0# Then
-                If first < second Then Audit03WorstExpectedReserve = first Else Audit03WorstExpectedReserve = second
+                If first < second Then TestAudit03WorstExpectedReserve = first Else TestAudit03WorstExpectedReserve = second
             ElseIf first > 0# Then
-                Audit03WorstExpectedReserve = first
+                TestAudit03WorstExpectedReserve = first
             ElseIf second > 0# Then
-                Audit03WorstExpectedReserve = second
+                TestAudit03WorstExpectedReserve = second
             End If
     End Select
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет комментарии устойчивости без запуска остальных стадий.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет комментарии устойчивости без запуска остальных стадий.
 ' Отдельный entrypoint сохраняет одинаковый воспроизводящий тест до и после правки.
 Public Function RunAudit03StabilityCommentTests() As String
     Dim stats As TBatchTestStats
     TestAudit03StabilityComments stats
-    AppendLine stats, "TOTAL_AUDIT03_STABILITY_COMMENTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_STABILITY_COMMENTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03StabilityCommentTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: четыре нормативные ветви, успешная/перегруженная сжатая нагрузка
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' четыре нормативные ветви, успешная/перегруженная сжатая нагрузка
 ' и растяжение. Проверяет реальный calculator через batch, комментарии своего
 ' subtree, сводку и writer. Машинные имена ветвей остаются отдельными данными.
 Private Sub TestAudit03StabilityComments(ByRef stats As TBatchTestStats)
@@ -8502,23 +8727,23 @@ Private Sub TestAudit03StabilityComments(ByRef stats As TBatchTestStats)
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1": SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1": TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     For Each mode In Array("SP63", "SP35-table", "SP35-eta", "SP35-mixed")
-        SetSystemSetting "Stability.Code", IIf(CStr(mode) = "SP63", "SP63", "SP35")
-        SetSystemSetting "Stability.AccidentalEccentricityUser1", IIf(CStr(mode) = "SP35-eta", "200", "5")
-        SetSystemSetting "Stability.AccidentalEccentricityUser2", IIf(CStr(mode) = "SP35-table" Or CStr(mode) = "SP63", "5", "200")
+        TestSetSystemSetting "Stability.Code", IIf(CStr(mode) = "SP63", "SP63", "SP35")
+        TestSetSystemSetting "Stability.AccidentalEccentricityUser1", IIf(CStr(mode) = "SP35-eta", "200", "5")
+        TestSetSystemSetting "Stability.AccidentalEccentricityUser2", IIf(CStr(mode) = "SP35-table" Or CStr(mode) = "SP63", "5", "200")
         Set settings = New CSystemSettingsReader
         settings.LoadFromWorkbook ThisWorkbook
-        Set batch = BuildBatchCalculator()
+        Set batch = TestBuildBatchCalculator()
         batch.ApplySettings settings
         batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
         batch.AddCombination "STAB_OK", -120000#, 0#, 0#, "PR1", vbNullString
@@ -8531,27 +8756,27 @@ Private Sub TestAudit03StabilityComments(ByRef stats As TBatchTestStats)
             Set result = batch.ResultAt(i)
             prefix = "audit03.stabilityComments." & CStr(mode) & "." & CStr(i)
             If i = 1 Then
-                AssertEquals stats, prefix & ".branch", result.StabilityResult.Branch, CStr(mode)
-                AssertEquals stats, prefix & ".status", result.StabilityResult.Status, "OK"
+                TestAssertEquals stats, prefix & ".branch", result.StabilityResult.Branch, CStr(mode)
+                TestAssertEquals stats, prefix & ".status", result.StabilityResult.Status, "OK"
             ElseIf i = 2 Then
-                AssertEquals stats, prefix & ".status", result.StabilityResult.Status, "FAIL"
+                TestAssertEquals stats, prefix & ".status", result.StabilityResult.Status, "FAIL"
             Else
-                AssertEquals stats, prefix & ".status", result.StabilityResult.Status, "N/A"
+                TestAssertEquals stats, prefix & ".status", result.StabilityResult.Status, "N/A"
             End If
-            AssertTrue stats, prefix & ".commentPresent", Len(Trim$(result.StabilityMeta.ResultComment)) > 0
-            Audit03CheckMetaComment stats, prefix, result.StabilityMeta, result.OverallMeta
-            AssertEquals stats, prefix & ".writer", _
+            TestAssertTrue stats, prefix & ".commentPresent", Len(Trim$(result.StabilityMeta.ResultComment)) > 0
+            TestAudit03CheckMetaComment stats, prefix, result.StabilityMeta, result.OverallMeta
+            TestAssertEquals stats, prefix & ".writer", _
                 CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(i - 1, 1).Value2), CalculationResultMessage(batch, i, result.StabilityMeta)
-            AssertEquals stats, prefix & ".batchWriter", _
+            TestAssertEquals stats, prefix & ".batchWriter", _
                 CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(11 + i, 2).Value2), CalculationResultMessage(batch, i, result.OverallMeta)
-            AppendLine stats, "STABILITY_COMMENT: " & prefix & "; " & result.StabilityMeta.ResultComment
+            TestAppendLine stats, "STABILITY_COMMENT: " & prefix & "; " & result.StabilityMeta.ResultComment
         Next i
-        AssertTrue stats, "audit03.stabilityComments." & CStr(mode) & ".noStateSolve", batch.SolverCallCount = 0
+        TestAssertTrue stats, "audit03.stabilityComments." & CStr(mode) & ".noStateSolve", batch.SolverCallCount = 0
     Next mode
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.stabilityComments.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.stabilityComments.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -8559,18 +8784,21 @@ Restore:
     On Error GoTo 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ====================== ДЛЯ ТЕСТОВ: AUDIT03 CRACK CONFIG ======================
 
-' ДЛЯ ТЕСТОВ: отдельный gate реальных настроек трещин. Выполняет batch и
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' отдельный gate реальных настроек трещин. Выполняет batch и
 ' writers, а не только чтение getter-ов; полный набор включает тот же тест.
 Public Function RunAudit03CrackConfigBehaviorTests() As String
     Dim stats As TBatchTestStats
     TestAudit03CrackConfigBehavior stats
-    AppendLine stats, "TOTAL_AUDIT03_CRACK_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_CRACK_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03CrackConfigBehaviorTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: коэффициенты проверяются независимой формулой и отношениями
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' коэффициенты проверяются независимой формулой и отношениями
 ' ширины, неактивные User-поля - неизменностью Auto-результата. Все 12 ключей
 ' проходят invalid/missing/recovery; измененные таблицы восстанавливаются.
 Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
@@ -8582,112 +8810,112 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
     ' В действующей таблице первая строка данных - длина, INPUT/OUTPUT
     ' занимают столбцы 2/4, а столбец 3 содержит неизменные INTERNAL.
     unitRange.Cells(2, 2).Value2 = "mm": unitRange.Cells(2, 4).Value2 = "mm"
-    SetSystemSetting "SLS.Crack.Code", "SP63"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
-    SetSystemSetting "SLS.Crack.Allowable", "1"
-    SetSystemSetting "SLS.Crack.Phi1", "1.4"
-    SetSystemSetting "SLS.Crack.Phi2", "0.5"
-    SetSystemSetting "SLS.Crack.Phi3Mode", "User"
-    SetSystemSetting "SLS.Crack.Phi3", "1"
-    SetSystemSetting "SLS.Crack.PsiMode", "User"
-    SetSystemSetting "SLS.Crack.PsiS", "1"
-    SetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "AllSelected"
-    SetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
-    SetSystemSetting "SLS.Crack.CoverDistanceMode", "GlobalExtreme"
+    TestSetSystemSetting "SLS.Crack.Code", "SP63"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    TestSetSystemSetting "SLS.Crack.Allowable", "1"
+    TestSetSystemSetting "SLS.Crack.Phi1", "1.4"
+    TestSetSystemSetting "SLS.Crack.Phi2", "0.5"
+    TestSetSystemSetting "SLS.Crack.Phi3Mode", "User"
+    TestSetSystemSetting "SLS.Crack.Phi3", "1"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "User"
+    TestSetSystemSetting "SLS.Crack.PsiS", "1"
+    TestSetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "AllSelected"
+    TestSetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
+    TestSetSystemSetting "SLS.Crack.CoverDistanceMode", "GlobalExtreme"
 
     Dim baseline As CBatchSectionCalculator, changed As CBatchSectionCalculator
     Dim baseWidth As CCrackWidthResult, value As CCrackWidthResult
-    Set baseline = Audit03CrackConfigBatch(stats, "baseline", 200000#, 0#, 0#)
+    Set baseline = TestAudit03CrackConfigBatch(stats, "baseline", 200000#, 0#, 0#)
     Set baseWidth = baseline.ResultAt(1).CrackResult.Width
-    AssertTrue stats, "audit03.crackConfig.baseline.calculated", baseWidth.ResultMeta.Calculated
-    AssertTrue stats, "audit03.crackConfig.baseline.positive", baseWidth.CrackWidth > 0# And baseWidth.SigmaS > 0#
+    TestAssertTrue stats, "audit03.crackConfig.baseline.calculated", baseWidth.ResultMeta.Calculated
+    TestAssertTrue stats, "audit03.crackConfig.baseline.positive", baseWidth.CrackWidth > 0# And baseWidth.SigmaS > 0#
     Dim keys As Variant, newValues As Variant, factors As Variant, i As Long, prefix As String
     keys = Array("SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3", "SLS.Crack.PsiS", "SLS.Crack.Allowable")
     newValues = Array("2.1", "0.75", "1.5", "0.5", "0.5")
     factors = Array(1.5, 1.5, 1.5, 0.5, 1#)
     For i = 0 To UBound(keys)
         Dim previous As String
-        previous = GetSystemSetting(CStr(keys(i)))
-        SetSystemSetting CStr(keys(i)), CStr(newValues(i))
+        previous = TestGetSystemSetting(CStr(keys(i)))
+        TestSetSystemSetting CStr(keys(i)), CStr(newValues(i))
         prefix = "active." & CStr(i)
-        Set changed = Audit03CrackConfigBatch(stats, prefix, 200000#, 0#, 0#)
+        Set changed = TestAudit03CrackConfigBatch(stats, prefix, 200000#, 0#, 0#)
         Set value = changed.ResultAt(1).CrackResult.Width
-        AssertClose stats, "audit03.crackConfig." & prefix & ".widthFactor", value.CrackWidth, _
+        TestAssertClose stats, "audit03.crackConfig." & prefix & ".widthFactor", value.CrackWidth, _
             baseWidth.CrackWidth * CDbl(factors(i)), 0.0000000001
         Dim expectedUtilization As Double
         expectedUtilization = value.CrackWidth / CDbl(newValues(i))
         If i <> 4 Then expectedUtilization = value.CrackWidth / baseWidth.AllowableCrackWidth
-        AssertClose stats, "audit03.crackConfig." & prefix & ".utilization", value.Utilization, expectedUtilization, 0.0000000001
-        AssertClose stats, "audit03.crackConfig." & prefix & ".sigmaInvariant", value.SigmaS, baseWidth.SigmaS, 0.000000001
-        AssertClose stats, "audit03.crackConfig." & prefix & ".spacingInvariant", value.CrackSpacing, baseWidth.CrackSpacing, 0.000000001
-        AssertTrue stats, "audit03.crackConfig." & prefix & ".solveCountInvariant", changed.SolverCallCount = baseline.SolverCallCount
-        SetSystemSetting CStr(keys(i)), previous
+        TestAssertClose stats, "audit03.crackConfig." & prefix & ".utilization", value.Utilization, expectedUtilization, 0.0000000001
+        TestAssertClose stats, "audit03.crackConfig." & prefix & ".sigmaInvariant", value.SigmaS, baseWidth.SigmaS, 0.000000001
+        TestAssertClose stats, "audit03.crackConfig." & prefix & ".spacingInvariant", value.CrackSpacing, baseWidth.CrackSpacing, 0.000000001
+        TestAssertTrue stats, "audit03.crackConfig." & prefix & ".solveCountInvariant", changed.SolverCallCount = baseline.SolverCallCount
+        TestSetSystemSetting CStr(keys(i)), previous
     Next i
-    SetSystemSetting "SLS.Crack.Allowable", FormatNumberInvariant(baseWidth.CrackWidth / 2#)
-    Set changed = Audit03CrackConfigBatch(stats, "allowableFail", 200000#, 0#, 0#)
-    AssertEquals stats, "audit03.crackConfig.allowableFail.status", changed.ResultAt(1).NormalCrackStatus, "FAIL"
-    AssertClose stats, "audit03.crackConfig.allowableFail.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, baseWidth.CrackWidth, 0.0000000001
-    SetSystemSetting "SLS.Crack.Allowable", "1"
-    SetSystemSetting "SLS.Crack.Phi3Mode", "Auto"
-    Set changed = Audit03CrackConfigBatch(stats, "phi3Auto", 200000#, 0#, 0#)
+    TestSetSystemSetting "SLS.Crack.Allowable", TestFormatNumberInvariant(baseWidth.CrackWidth / 2#)
+    Set changed = TestAudit03CrackConfigBatch(stats, "allowableFail", 200000#, 0#, 0#)
+    TestAssertEquals stats, "audit03.crackConfig.allowableFail.status", changed.ResultAt(1).NormalCrackStatus, "FAIL"
+    TestAssertClose stats, "audit03.crackConfig.allowableFail.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, baseWidth.CrackWidth, 0.0000000001
+    TestSetSystemSetting "SLS.Crack.Allowable", "1"
+    TestSetSystemSetting "SLS.Crack.Phi3Mode", "Auto"
+    Set changed = TestAudit03CrackConfigBatch(stats, "phi3Auto", 200000#, 0#, 0#)
     Set value = changed.ResultAt(1).CrackResult.Width
-    AssertClose stats, "audit03.crackConfig.phi3Auto.tension", value.Phi3, 1.2, 0#
-    SetSystemSetting "SLS.Crack.Phi3", "2.5"
-    Set changed = Audit03CrackConfigBatch(stats, "phi3Inactive", 200000#, 0#, 0#)
-    AssertClose stats, "audit03.crackConfig.phi3Inactive.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, value.CrackWidth, 0.0000000001
-    SetSystemSetting "SLS.Crack.Phi3", "1"
-    SetSystemSetting "SLS.Crack.Phi3Mode", "User"
+    TestAssertClose stats, "audit03.crackConfig.phi3Auto.tension", value.Phi3, 1.2, 0#
+    TestSetSystemSetting "SLS.Crack.Phi3", "2.5"
+    Set changed = TestAudit03CrackConfigBatch(stats, "phi3Inactive", 200000#, 0#, 0#)
+    TestAssertClose stats, "audit03.crackConfig.phi3Inactive.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, value.CrackWidth, 0.0000000001
+    TestSetSystemSetting "SLS.Crack.Phi3", "1"
+    TestSetSystemSetting "SLS.Crack.Phi3Mode", "User"
 
-    SetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
-    Set changed = Audit03CrackConfigBatch(stats, "psiAlways", 200000#, 0#, 0#)
+    TestSetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
+    Set changed = TestAudit03CrackConfigBatch(stats, "psiAlways", 200000#, 0#, 0#)
     Set value = changed.ResultAt(1).CrackResult.Width
     Dim expectedPsi As Double
     expectedPsi = 1# - 0.8 * value.SigmaSCrc / value.SigmaS
     If expectedPsi < 0# Then expectedPsi = 0#
     If expectedPsi > 1# Then expectedPsi = 1#
-    AssertTrue stats, "audit03.crackConfig.psiAlways.positiveCrc", value.SigmaSCrc > 0#
-    AssertClose stats, "audit03.crackConfig.psiAlways.formula", value.PsiS, expectedPsi, 0.000000000001
-    AssertTrue stats, "audit03.crackConfig.psiAlways.differsUser", value.CrackWidth < baseWidth.CrackWidth
-    SetSystemSetting "SLS.Crack.PsiS", "0.25"
-    Set changed = Audit03CrackConfigBatch(stats, "psiInactive", 200000#, 0#, 0#)
-    AssertClose stats, "audit03.crackConfig.psiInactive.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, value.CrackWidth, 0.0000000001
-    SetSystemSetting "SLS.Crack.PsiS", "1"
-    SetSystemSetting "SLS.Crack.PsiMode", "Auto"
-    Set changed = Audit03CrackConfigBatch(stats, "psiAutoPass", 200000#, 0#, 0#)
-    AssertClose stats, "audit03.crackConfig.psiAutoPass.unity", changed.ResultAt(1).CrackResult.Width.PsiS, 1#, 0#
-    SetSystemSetting "SLS.Crack.Allowable", "0.00000001"
-    Set changed = Audit03CrackConfigBatch(stats, "psiAutoFail", 200000#, 0#, 0#)
-    AssertClose stats, "audit03.crackConfig.psiAutoFail.refined", changed.ResultAt(1).CrackResult.Width.PsiS, expectedPsi, 0.000000000001
-    SetSystemSetting "SLS.Crack.Allowable", "1"
-    SetSystemSetting "SLS.Crack.PsiMode", "User"
+    TestAssertTrue stats, "audit03.crackConfig.psiAlways.positiveCrc", value.SigmaSCrc > 0#
+    TestAssertClose stats, "audit03.crackConfig.psiAlways.formula", value.PsiS, expectedPsi, 0.000000000001
+    TestAssertTrue stats, "audit03.crackConfig.psiAlways.differsUser", value.CrackWidth < baseWidth.CrackWidth
+    TestSetSystemSetting "SLS.Crack.PsiS", "0.25"
+    Set changed = TestAudit03CrackConfigBatch(stats, "psiInactive", 200000#, 0#, 0#)
+    TestAssertClose stats, "audit03.crackConfig.psiInactive.widthSame", changed.ResultAt(1).CrackResult.Width.CrackWidth, value.CrackWidth, 0.0000000001
+    TestSetSystemSetting "SLS.Crack.PsiS", "1"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "Auto"
+    Set changed = TestAudit03CrackConfigBatch(stats, "psiAutoPass", 200000#, 0#, 0#)
+    TestAssertClose stats, "audit03.crackConfig.psiAutoPass.unity", changed.ResultAt(1).CrackResult.Width.PsiS, 1#, 0#
+    TestSetSystemSetting "SLS.Crack.Allowable", "0.00000001"
+    Set changed = TestAudit03CrackConfigBatch(stats, "psiAutoFail", 200000#, 0#, 0#)
+    TestAssertClose stats, "audit03.crackConfig.psiAutoFail.refined", changed.ResultAt(1).CrackResult.Width.PsiS, expectedPsi, 0.000000000001
+    TestSetSystemSetting "SLS.Crack.Allowable", "1"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "User"
 
     ' У этой сжатой нагрузки выбранная по текущему НДС арматура еще сжата
     ' в PostCrackState. Режим меняет только справочное sigma_s,crc, не As/sigma_s.
-    SetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
-    Set baseline = Audit03CrackConfigBatch(stats, "averagingSigned", -528000#, 30800000#, 0#)
+    TestSetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
+    Set baseline = TestAudit03CrackConfigBatch(stats, "averagingSigned", -528000#, 30800000#, 0#)
     Set value = baseline.ResultAt(1).CrackResult.Width
-    SetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "TensionOnly"
-    Set changed = Audit03CrackConfigBatch(stats, "averagingPositive", -528000#, 30800000#, 0#)
-    AssertTrue stats, "audit03.crackConfig.averaging.signedNegative", value.SigmaSCrc < 0#
-    AssertClose stats, "audit03.crackConfig.averaging.compressionZero", changed.ResultAt(1).CrackResult.Width.SigmaSCrc, 0#, 0.000000001
-    AssertClose stats, "audit03.crackConfig.averaging.sigmaUnchanged", changed.ResultAt(1).CrackResult.Width.SigmaS, value.SigmaS, 0.000000001
-    AssertEquals stats, "audit03.crackConfig.averaging.selectionUnchanged", changed.ResultAt(1).CrackResult.Width.TensionRebarIds, value.TensionRebarIds
-    SetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "AllSelected"
-    SetSystemSetting "SLS.Crack.PsiMode", "User"
-    Set baseline = Audit03CrackConfigBatch(stats, "zoneEffective", -528000#, 30800000#, 0#)
+    TestSetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "TensionOnly"
+    Set changed = TestAudit03CrackConfigBatch(stats, "averagingPositive", -528000#, 30800000#, 0#)
+    TestAssertTrue stats, "audit03.crackConfig.averaging.signedNegative", value.SigmaSCrc < 0#
+    TestAssertClose stats, "audit03.crackConfig.averaging.compressionZero", changed.ResultAt(1).CrackResult.Width.SigmaSCrc, 0#, 0.000000001
+    TestAssertClose stats, "audit03.crackConfig.averaging.sigmaUnchanged", changed.ResultAt(1).CrackResult.Width.SigmaS, value.SigmaS, 0.000000001
+    TestAssertEquals stats, "audit03.crackConfig.averaging.selectionUnchanged", changed.ResultAt(1).CrackResult.Width.TensionRebarIds, value.TensionRebarIds
+    TestSetSystemSetting "SLS.Crack.SigmaSCrcAveragingMode", "AllSelected"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "User"
+    Set baseline = TestAudit03CrackConfigBatch(stats, "zoneEffective", -528000#, 30800000#, 0#)
     Set value = baseline.ResultAt(1).CrackResult.Width
-    SetSystemSetting "SLS.Crack.TensionZoneMode", "FullTension"
-    Set changed = Audit03CrackConfigBatch(stats, "zoneFull", -528000#, 30800000#, 0#)
-    AssertTrue stats, "audit03.crackConfig.zone.differsAbt", Abs(changed.ResultAt(1).CrackResult.Width.Abt - value.Abt) > 1#
-    AssertTrue stats, "audit03.crackConfig.zone.differsDepth", Abs(changed.ResultAt(1).CrackResult.Width.EffectiveZoneDepth - value.EffectiveZoneDepth) > 0.001
-    SetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
-    SetSystemSetting "SLS.Crack.CoverDistanceMode", "NearestContour"
-    Set baseline = Audit03CrackConfigBatch(stats, "coverNearest", -20000#, -32000000#, 0#, True)
+    TestSetSystemSetting "SLS.Crack.TensionZoneMode", "FullTension"
+    Set changed = TestAudit03CrackConfigBatch(stats, "zoneFull", -528000#, 30800000#, 0#)
+    TestAssertTrue stats, "audit03.crackConfig.zone.differsAbt", Abs(changed.ResultAt(1).CrackResult.Width.Abt - value.Abt) > 1#
+    TestAssertTrue stats, "audit03.crackConfig.zone.differsDepth", Abs(changed.ResultAt(1).CrackResult.Width.EffectiveZoneDepth - value.EffectiveZoneDepth) > 0.001
+    TestSetSystemSetting "SLS.Crack.TensionZoneMode", "Effective"
+    TestSetSystemSetting "SLS.Crack.CoverDistanceMode", "NearestContour"
+    Set baseline = TestAudit03CrackConfigBatch(stats, "coverNearest", -20000#, -32000000#, 0#, True)
     Set value = baseline.ResultAt(1).CrackResult.Width
-    SetSystemSetting "SLS.Crack.CoverDistanceMode", "GlobalExtreme"
-    Set changed = Audit03CrackConfigBatch(stats, "coverGlobal", -20000#, -32000000#, 0#, True)
-    AssertTrue stats, "audit03.crackConfig.cover.differsDistance", Abs(changed.ResultAt(1).CrackResult.Width.CoverA - value.CoverA) > 1#
+    TestSetSystemSetting "SLS.Crack.CoverDistanceMode", "GlobalExtreme"
+    Set changed = TestAudit03CrackConfigBatch(stats, "coverGlobal", -20000#, -32000000#, 0#, True)
+    TestAssertTrue stats, "audit03.crackConfig.cover.differsDistance", Abs(changed.ResultAt(1).CrackResult.Width.CoverA - value.CoverA) > 1#
 
     keys = Array("SLS.Crack.Allowable", "SLS.Crack.InitiationSolutionStrategy", _
         "SLS.Crack.TensionZoneMode", "SLS.Crack.CoverDistanceMode", "SLS.Crack.Phi1", "SLS.Crack.Phi2", _
@@ -8704,15 +8932,15 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
         previous = CStr(cell.Value2)
         For Each invalidValue In Array("", "TODO", "abc", CVErr(2015))
             cell.Value2 = invalidValue
-            prefix = "invalid." & CStr(i) & "." & CStr(VarType(invalidValue)) & "." & CStr(LenSafeAudit03(invalidValue))
-            Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
-            AssertEquals stats, "audit03.crackConfig." & prefix & ".inputErr", changed.ResultAt(1).Status, "InputErr"
-            AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonKey", InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, CStr(keys(i)), vbTextCompare) > 0
-            AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonConfig", InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, "Config", vbTextCompare) > 0
+            prefix = "invalid." & CStr(i) & "." & CStr(VarType(invalidValue)) & "." & CStr(TestLenSafeAudit03(invalidValue))
+            Set changed = TestAudit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
+            TestAssertEquals stats, "audit03.crackConfig." & prefix & ".inputErr", changed.ResultAt(1).Status, "InputErr"
+            TestAssertTrue stats, "audit03.crackConfig." & prefix & ".reasonKey", InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, CStr(keys(i)), vbTextCompare) > 0
+            TestAssertTrue stats, "audit03.crackConfig." & prefix & ".reasonConfig", InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, "Config", vbTextCompare) > 0
             invalidText = vbNullString
             If Not IsError(invalidValue) Then invalidText = CStr(invalidValue)
             If Len(invalidText) = 0 Or invalidText = "TODO" Then
-                AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonAddress", _
+                TestAssertTrue stats, "audit03.crackConfig." & prefix & ".reasonAddress", _
                     InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, cell.Address(False, False), vbTextCompare) > 0
             End If
             cell.Value2 = previous
@@ -8722,47 +8950,49 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
                 CStr(keys(i)) = "SLS.Crack.PsiS" Then
             For Each invalidValue In Array("0", "-1", "1e309")
                 cell.Value2 = invalidValue
-                Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
-                AssertEquals stats, "audit03.crackConfig.numericInvalid." & CStr(i) & "." & CStr(invalidValue), changed.ResultAt(1).Status, "InputErr"
-                AssertTrue stats, "audit03.crackConfig.numericInvalid." & CStr(i) & ".action", _
+                Set changed = TestAudit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
+                TestAssertEquals stats, "audit03.crackConfig.numericInvalid." & CStr(i) & "." & CStr(invalidValue), changed.ResultAt(1).Status, "InputErr"
+                TestAssertTrue stats, "audit03.crackConfig.numericInvalid." & CStr(i) & ".action", _
                     InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, "Введите", vbTextCompare) > 0
                 cell.Value2 = previous
             Next invalidValue
         End If
         originalKey = keyCell.Value2: keyCell.Value2 = CStr(originalKey) & ".REMOVED"
-        Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
-        AssertEquals stats, "audit03.crackConfig.missing." & CStr(i), changed.ResultAt(1).Status, "InputErr"
-        AssertTrue stats, "audit03.crackConfig.missing." & CStr(i) & ".restoreAction", _
+        Set changed = TestAudit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
+        TestAssertEquals stats, "audit03.crackConfig.missing." & CStr(i), changed.ResultAt(1).Status, "InputErr"
+        TestAssertTrue stats, "audit03.crackConfig.missing." & CStr(i) & ".restoreAction", _
             InStr(1, changed.ResultAt(1).OverallMeta.ResultComment, "Восстановите строку", vbTextCompare) > 0
         keyCell.Value2 = originalKey
-        Set changed = Audit03CrackConfigBatch(stats, "recovery." & CStr(i), 200000#, 0#, 0#)
-        AssertClose stats, "audit03.crackConfig.recovery." & CStr(i) & ".width", changed.ResultAt(1).CrackResult.Width.CrackWidth, baseWidth.CrackWidth, 0.0000000001
+        Set changed = TestAudit03CrackConfigBatch(stats, "recovery." & CStr(i), 200000#, 0#, 0#)
+        TestAssertClose stats, "audit03.crackConfig.recovery." & CStr(i) & ".width", changed.ResultAt(1).CrackResult.Width.CrackWidth, baseWidth.CrackWidth, 0.0000000001
     Next i
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.crackConfig.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.crackConfig.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     systemRange.Formula = savedSystem: unitRange.Formula = savedUnits
 End Sub
 
-' ДЛЯ ТЕСТОВ: не преобразует Excel-error в CStr при создании имени случая.
-Private Function LenSafeAudit03(ByVal value As Variant) As Long
-    If Not IsError(value) Then LenSafeAudit03 = Len(CStr(value))
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' не преобразует Excel-error в CStr при создании имени случая.
+Private Function TestLenSafeAudit03(ByVal value As Variant) As Long
+    If Not IsError(value) Then TestLenSafeAudit03 = Len(CStr(value))
 End Function
 
-' ДЛЯ ТЕСТОВ: валидный Config проходит адаптер единиц, профильный batch и все
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' валидный Config проходит адаптер единиц, профильный batch и все
 ' четыре writer-а. Проверяет готовую формулу, статусы и сборку ResultComment.
-Private Function Audit03CrackConfigBatch(ByRef stats As TBatchTestStats, ByVal caseName As String, _
+Private Function TestAudit03CrackConfigBatch(ByRef stats As TBatchTestStats, ByVal caseName As String, _
         ByVal n As Double, ByVal mx As Double, ByVal my As Double, _
         Optional ByVal stepped As Boolean = False) As CBatchSectionCalculator
     Dim settings As CSystemSettingsReader, units As CUnitSystem, batch As CBatchSectionCalculator
-    AppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".read"
-    Audit03SaveMatrixProgress stats.Report
+    TestAppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".read"
+    TestAudit03SaveMatrixProgress stats.Report
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Dim preparedSection As CSectionModel
-    Set batch = BuildBatchCalculator(True, preparedSection)
+    Set batch = TestBuildBatchCalculator(True, preparedSection)
     If stepped Then
         ' Выступ меняет дальний контур на 60 мм, но не исключает основные
         ' стержни из полосы h/2. Его малая площадь почти не меняет равновесие.
@@ -8771,36 +9001,37 @@ Private Function Audit03CrackConfigBatch(ByRef stats As TBatchTestStats, ByVal c
     End If
     batch.ApplySettings settings, units
     batch.AddCombination "CRACK_CONFIG_" & caseName, n, mx, my, "PR2", "Проверка настроек трещин"
-    AppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".execute"
-    Audit03SaveMatrixProgress stats.Report
+    TestAppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".execute"
+    TestAudit03SaveMatrixProgress stats.Report
     batch.Execute
     Dim writer As CBatchResultWriter, width As CCrackWidthResult
     Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch, units
-    AppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".comments"
-    Audit03SaveMatrixProgress stats.Report
-    Audit03CheckResultComments stats, batch, 1
+    TestAppendLine stats, "CRACK_CONFIG_STAGE: " & caseName & ".comments"
+    TestAudit03SaveMatrixProgress stats.Report
+    TestAudit03CheckResultComments stats, batch, 1
     Set width = batch.ResultAt(1).CrackResult.Width
     Dim prefix As String: prefix = "audit03.crackConfig." & caseName
-    AssertTrue stats, prefix & ".widthCalculated", width.ResultMeta.Calculated
-    AssertClose stats, prefix & ".independentFormula", width.CrackWidth, _
+    TestAssertTrue stats, prefix & ".widthCalculated", width.ResultMeta.Calculated
+    TestAssertClose stats, prefix & ".independentFormula", width.CrackWidth, _
         width.Phi1 * width.Phi2 * width.Phi3 * width.PsiS * width.SigmaS / width.SteelEs * width.CrackSpacing, 0.0000000001
     Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    AssertClose stats, prefix & ".writerWidth", CDbl(anchor.Offset(0, 63).Value2), width.CrackWidth, 0.0000000001
-    AppendLine stats, "CRACK_CONFIG: " & prefix & "|width=" & FormatNumberInvariant(width.CrackWidth) & _
-        "|psi=" & FormatNumberInvariant(width.PsiS) & "|sigmaSCrc=" & FormatNumberInvariant(width.SigmaSCrc) & _
+    TestAssertClose stats, prefix & ".writerWidth", CDbl(anchor.Offset(0, 63).Value2), width.CrackWidth, 0.0000000001
+    TestAppendLine stats, "CRACK_CONFIG: " & prefix & "|width=" & TestFormatNumberInvariant(width.CrackWidth) & _
+        "|psi=" & TestFormatNumberInvariant(width.PsiS) & "|sigmaSCrc=" & TestFormatNumberInvariant(width.SigmaSCrc) & _
         "|status=" & batch.ResultAt(1).NormalCrackStatus & "|solverCalls=" & CStr(batch.SolverCallCount)
-    Set Audit03CrackConfigBatch = batch
+    Set TestAudit03CrackConfigBatch = batch
 End Function
 
-' ДЛЯ ТЕСТОВ: ошибки reader-а и ошибки ApplySettings получают один реальный
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ошибки reader-а и ошибки ApplySettings получают один реальный
 ' batch InputErr. Текст исключения не используется для назначения статуса.
-Private Function Audit03CrackConfigInvalidBatch(ByRef stats As TBatchTestStats, ByVal key As String, _
+Private Function TestAudit03CrackConfigInvalidBatch(ByRef stats As TBatchTestStats, ByVal key As String, _
         Optional ByVal targetN As Double = 200000#) As CBatchSectionCalculator
     Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, reason As String
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     Set settings = New CSystemSettingsReader
-    AppendLine stats, "CRACK_CONFIG_INVALID_STAGE: " & key & ".read"
-    Audit03SaveMatrixProgress stats.Report
+    TestAppendLine stats, "CRACK_CONFIG_INVALID_STAGE: " & key & ".read"
+    TestAudit03SaveMatrixProgress stats.Report
     On Error GoTo InvalidRead
     settings.LoadFromWorkbook ThisWorkbook
     batch.ApplySettings settings
@@ -8813,21 +9044,23 @@ InvalidRead:
     batch.AddInvalidCombination "CRACK_CONFIG_INVALID", "PR2", "Ошибочный Config", reason
     batch.Execute
 Publish:
-    AppendLine stats, "CRACK_CONFIG_INVALID_STAGE: " & key & ".publish"
-    Audit03SaveMatrixProgress stats.Report
+    TestAppendLine stats, "CRACK_CONFIG_INVALID_STAGE: " & key & ".publish"
+    TestAudit03SaveMatrixProgress stats.Report
     Dim writer As CBatchResultWriter
     Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch
-    Audit03CheckResultComments stats, batch, 1
-    AppendLine stats, "INPUT_MESSAGE: " & key & "|" & batch.ResultAt(1).OverallMeta.ResultComment
-    Set Audit03CrackConfigInvalidBatch = batch
+    TestAudit03CheckResultComments stats, batch, 1
+    TestAppendLine stats, "INPUT_MESSAGE: " & key & "|" & batch.ResultAt(1).OverallMeta.ResultComment
+    Set TestAudit03CrackConfigInvalidBatch = batch
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ ==============================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Изолирует настройки Excel.Application при диагностике роста памяти в batch.
 ' Выполняет неизменный полный набор assertions; режим не подменяет результаты
 ' и не является заменой штатного full gate. Исходные настройки восстанавливаются.
-Public Function RunAudit03BatchApplicationDiagnostics(ByVal mode As String) As String
+Public Function TestRunAudit03BatchApplicationDiagnostics(ByVal mode As String) As String
     Dim oldEvents As Boolean, oldScreen As Boolean, oldCalculation As Variant
     Dim oldTrace As Boolean
     Dim guard As CExcelAppStateGuard, report As String, failureNumber As Long, failureText As String
@@ -8837,7 +9070,7 @@ Public Function RunAudit03BatchApplicationDiagnostics(ByVal mode As String) As S
     oldTrace = mAudit03ResourceTrace
     On Error GoTo FailedRun
     mAudit03ResourceTrace = True
-    Audit03TraceExcelContext "BEGIN: " & mode, True
+    TestAudit03TraceExcelContext "BEGIN: " & mode, True
     Select Case mode
         Case "Observe"
         Case "EventsOff": Application.EnableEvents = False
@@ -8847,10 +9080,10 @@ Public Function RunAudit03BatchApplicationDiagnostics(ByVal mode As String) As S
             Set guard = New CExcelAppStateGuard
             guard.Enter Application
         Case Else
-            Err.Raise vbObjectError + 4498, "RunAudit03BatchApplicationDiagnostics", "Неизвестный диагностический режим Excel.Application."
+            Err.Raise vbObjectError + 4498, "TestRunAudit03BatchApplicationDiagnostics", "Неизвестный диагностический режим Excel.Application."
     End Select
     report = RunBatchCalculationTests()
-    Audit03SaveMatrixProgress "APPLICATION_DIAGNOSTIC_COMPLETED: " & mode & vbCrLf & report
+    TestAudit03SaveMatrixProgress "APPLICATION_DIAGNOSTIC_COMPLETED: " & mode & vbCrLf & report
     GoTo Restore
 FailedRun:
     failureNumber = Err.Number
@@ -8862,19 +9095,20 @@ Restore:
     Application.Calculation = oldCalculation
     Application.EnableEvents = oldEvents
     Application.ScreenUpdating = oldScreen
-    If failureNumber <> 0 Then Err.Raise failureNumber, "RunAudit03BatchApplicationDiagnostics", failureText
+    If failureNumber <> 0 Then Err.Raise failureNumber, "TestRunAudit03BatchApplicationDiagnostics", failureText
     If Application.EnableEvents <> oldEvents Or Application.Calculation <> oldCalculation Or _
             Application.ScreenUpdating <> oldScreen Then
-        Err.Raise vbObjectError + 4497, "RunAudit03BatchApplicationDiagnostics", "Не удалось восстановить настройки Excel.Application после диагностики."
+        Err.Raise vbObjectError + 4497, "TestRunAudit03BatchApplicationDiagnostics", "Не удалось восстановить настройки Excel.Application после диагностики."
     End If
-    RunAudit03BatchApplicationDiagnostics = "APPLICATION_DIAGNOSTIC: mode=" & mode & _
+    TestRunAudit03BatchApplicationDiagnostics = "APPLICATION_DIAGNOSTIC: mode=" & mode & _
         "; eventsRestored=True; calculationRestored=True; screenRestored=True" & vbCrLf & report
 End Function
 
-' ДЛЯ ТЕСТОВ: сохраняет границы таблиц и число форматов без чтения значений
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сохраняет границы таблиц и число форматов без чтения значений
 ' большой UsedRange. Журнал помогает локализовать накопление объектов Excel;
 ' он не участвует в выборе статуса и не входит в resultComment.
-Private Sub Audit03TraceExcelContext(ByVal stage As String, Optional ByVal resetLog As Boolean = False)
+Private Sub TestAudit03TraceExcelContext(ByVal stage As String, Optional ByVal resetLog As Boolean = False)
     Dim fileNumber As Integer, sheet As Object, name As Variant
     fileNumber = FreeFile
     If resetLog Then
@@ -8910,6 +9144,7 @@ Private Sub Audit03TraceExcelContext(ByVal stage As String, Optional ByVal reset
     Close #fileNumber
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ: ВВОД ПРИ NOTCRACKED ==============================
 ' Проверяет обязательные Width-настройки на реальном сжатом сочетании.
 ' Подтвержденный NotCracked исключает формулу, но не делает ошибочный Config
@@ -8920,7 +9155,8 @@ Public Function RunAudit03NotCrackedInputTests() As String
     RunAudit03NotCrackedInputTests = stats.Report & "TOTAL_AUDIT03_NOT_CRACKED_INPUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: меняет по одному пять селекторов и пять числовых коэффициентов.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' меняет по одному пять селекторов и пять числовых коэффициентов.
 ' Каждое повреждение проходит штатные reader/batch/writer, затем значение
 ' восстанавливается и валидное сочетание снова подтверждает отсутствие трещины.
 Private Sub TestAudit03NotCrackedInputValidation(ByRef stats As TBatchTestStats)
@@ -8932,12 +9168,12 @@ Private Sub TestAudit03NotCrackedInputValidation(ByRef stats As TBatchTestStats)
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
-    SetSystemSetting "General.DiagramExtension", "No"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetSystemSetting "General.DiagramExtension", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     keys = Array("SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", _
         "SLS.Crack.TensionZoneMode", "SLS.Crack.CoverDistanceMode", "SLS.Crack.Phi3Mode", _
         "SLS.Crack.Allowable", "SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3", "SLS.Crack.PsiS")
@@ -8960,32 +9196,32 @@ Private Sub TestAudit03NotCrackedInputValidation(ByRef stats As TBatchTestStats)
         For Each invalidValue In invalidValues
             cell.Value2 = invalidValue
             prefix = "audit03.notCrackedInput." & CStr(i) & "." & CStr(index)
-            Set batch = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)), -90000#)
+            Set batch = TestAudit03CrackConfigInvalidBatch(stats, CStr(keys(i)), -90000#)
             Set result = batch.ResultAt(1)
-            AssertEquals stats, prefix & ".status", result.Status, "InputErr"
-            AssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
-            AssertTrue stats, prefix & ".key", InStr(1, result.OverallMeta.ResultComment, CStr(keys(i)), vbBinaryCompare) > 0
-            AssertTrue stats, prefix & ".sheet", InStr(1, result.OverallMeta.ResultComment, "Config", vbBinaryCompare) > 0
-            AssertTrue stats, prefix & ".address", InStr(1, result.OverallMeta.ResultComment, cell.Address(False, False), vbBinaryCompare) > 0
-            AssertTrue stats, prefix & ".inputMessage", InStr(1, batch.FirstInvalidInputMessage, result.DirectStateMeta.ResultComment, vbBinaryCompare) > 0
+            TestAssertEquals stats, prefix & ".status", result.Status, "InputErr"
+            TestAssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
+            TestAssertTrue stats, prefix & ".key", InStr(1, result.OverallMeta.ResultComment, CStr(keys(i)), vbBinaryCompare) > 0
+            TestAssertTrue stats, prefix & ".sheet", InStr(1, result.OverallMeta.ResultComment, "Config", vbBinaryCompare) > 0
+            TestAssertTrue stats, prefix & ".address", InStr(1, result.OverallMeta.ResultComment, cell.Address(False, False), vbBinaryCompare) > 0
+            TestAssertTrue stats, prefix & ".inputMessage", InStr(1, batch.FirstInvalidInputMessage, result.DirectStateMeta.ResultComment, vbBinaryCompare) > 0
             cell.Formula = originalValue
             index = index + 1
         Next invalidValue
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-        Set batch = BuildBatchCalculator(False): batch.ApplySettings settings
+        Set batch = TestBuildBatchCalculator(False): batch.ApplySettings settings
         batch.AddCombination "NOT_CRACKED_RECOVERY", -90000#, 0#, 0#, "PR2", "Восстановленный Config", "Auto"
         batch.Execute
         Set result = batch.ResultAt(1)
         prefix = "audit03.notCrackedInput.recovery." & CStr(i)
-        AssertEquals stats, prefix & ".status", result.Status, "OK"
-        AssertTrue stats, prefix & ".formation", result.CrackResult.Formation.ConfirmedNotCracked
-        AssertTrue stats, prefix & ".noFormula", Not result.CrackWidthMeta.Calculated
-        AssertTrue stats, prefix & ".longitudinal", result.LongitudinalCrackMeta.Calculated
+        TestAssertEquals stats, prefix & ".status", result.Status, "OK"
+        TestAssertTrue stats, prefix & ".formation", result.CrackResult.Formation.ConfirmedNotCracked
+        TestAssertTrue stats, prefix & ".noFormula", Not result.CrackWidthMeta.Calculated
+        TestAssertTrue stats, prefix & ".longitudinal", result.LongitudinalCrackMeta.Calculated
     Next i
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.notCrackedInput.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.notCrackedInput.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -8993,78 +9229,82 @@ Restore:
     On Error GoTo 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: многократно пишет один готовый batch, не запускает Search/State
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' многократно пишет один готовый batch, не запускает Search/State
 ' в цикле и не меняет ожидаемые инженерные результаты. Это отдельный
 ' диагностический маршрут writer-ов, не замена штатным regression gates.
-Public Function RunAudit03RepeatedWriterDiagnostics() As String
+Public Function TestRunAudit03RepeatedWriterDiagnostics() As String
     Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter, i As Long
-    Set batch = BuildBatchCalculator()
+    Set batch = TestBuildBatchCalculator()
     batch.AddCombination "RESOURCE_WRITER", 200000#, 0#, 0#, "PR2", "Диагностика повторной записи", "Auto"
     batch.Execute
     Set writer = New CBatchResultWriter
-    Audit03TraceExcelContext "BEGIN: repeated writer", True
+    TestAudit03TraceExcelContext "BEGIN: repeated writer", True
     For i = 1 To 75
-        Audit03TraceExcelContext "BEFORE: writer " & CStr(i)
+        TestAudit03TraceExcelContext "BEFORE: writer " & CStr(i)
         writer.WriteSummary ThisWorkbook, batch
-        Audit03TraceExcelContext "AFTER: writer " & CStr(i)
+        TestAudit03TraceExcelContext "AFTER: writer " & CStr(i)
     Next i
-    RunAudit03RepeatedWriterDiagnostics = "WRITER_DIAGNOSTIC: writes=75; solves=" & CStr(batch.SolverCallCount)
+    TestRunAudit03RepeatedWriterDiagnostics = "WRITER_DIAGNOSTIC: writes=75; solves=" & CStr(batch.SolverCallCount)
 End Function
 
-' ДЛЯ ТЕСТОВ: воспроизводит On/Off pair перед Search Config отдельно от
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' воспроизводит On/Off pair перед Search Config отдельно от
 ' остальных batch-тестов. Это сохраняет исходные assertions и дает сопоставимый
 ' снимок настроек для поиска межтестовой мутации, а не новый инженерный oracle.
-Public Function RunAudit03PhysicalPairResourceDiagnostics(Optional ByVal prefixLength As Long = 0) As String
+Public Function TestRunAudit03PhysicalPairResourceDiagnostics(Optional ByVal prefixLength As Long = 0) As String
     Dim stats As TBatchTestStats, passed As Long, failed As Long, report As String
-    If prefixLength < 0 Then Err.Raise vbObjectError + 4495, "RunAudit03PhysicalPairResourceDiagnostics", "Размер тестового префикса не может быть отрицательным."
+    If prefixLength < 0 Then Err.Raise vbObjectError + 4495, "TestRunAudit03PhysicalPairResourceDiagnostics", "Размер тестового префикса не может быть отрицательным."
     stats.Report = String$(prefixLength, "x")
-    Audit03TraceExcelContext "BEGIN: isolated physical pair", True
+    TestAudit03TraceExcelContext "BEGIN: isolated physical pair", True
     TestAudit02OnOffPhysicalResults stats
-    Audit03TraceExcelContext "AFTER: isolated physical pair"
+    TestAudit03TraceExcelContext "AFTER: isolated physical pair"
     report = RunAudit03SearchConfigTests(passed, failed)
     stats.Report = stats.Report & report
-    Audit03TraceExcelContext "AFTER: Search Config"
-    RunAudit03PhysicalPairResourceDiagnostics = Mid$(stats.Report, prefixLength + 1) & "TOTAL_PAIR_RESOURCE: passed=" & _
+    TestAudit03TraceExcelContext "AFTER: Search Config"
+    TestRunAudit03PhysicalPairResourceDiagnostics = Mid$(stats.Report, prefixLength + 1) & "TOTAL_PAIR_RESOURCE: passed=" & _
         CStr(stats.Passed + passed) & "; failed=" & CStr(stats.Failed + failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: изолирует накопление строк в существующем stats без решателей,
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' изолирует накопление строк в существующем stats без решателей,
 ' State, writer-ов и изменений Config. Начальный размер равен порядку отчета
 ' перед On/Off pair; возвращается только счет, а не искусственный префикс.
-Public Function RunAudit03BatchReportGrowthDiagnostics() As String
+Public Function TestRunAudit03BatchReportGrowthDiagnostics() As String
     Dim stats As TBatchTestStats, i As Long
     stats.Report = String$(500000, "x")
-    Audit03TraceExcelContext "BEGIN: report-only growth", True
+    TestAudit03TraceExcelContext "BEGIN: report-only growth", True
     For i = 1 To 3000
-        AppendLine stats, "RESOURCE_REPORT: " & CStr(i)
+        TestAppendLine stats, "RESOURCE_REPORT: " & CStr(i)
     Next i
-    Audit03TraceExcelContext "END: report-only growth; chars=" & CStr(Len(stats.Report))
-    RunAudit03BatchReportGrowthDiagnostics = "REPORT_GROWTH_DIAGNOSTIC: lines=3000; chars=" & CStr(Len(stats.Report))
+    TestAudit03TraceExcelContext "END: report-only growth; chars=" & CStr(Len(stats.Report))
+    TestRunAudit03BatchReportGrowthDiagnostics = "REPORT_GROWTH_DIAGNOSTIC: lines=3000; chars=" & CStr(Len(stats.Report))
 End Function
 
-' ДЛЯ ТЕСТОВ: воспроизводит заключительную группу до On/Off pair в исходном
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' воспроизводит заключительную группу до On/Off pair в исходном
 ' порядке. Набор предназначен для локализации межтестового эффекта; не меняет
 ' assertions и не считается заменой полного batch-набора.
-Public Function RunAudit03LateBatchResourceDiagnostics(Optional ByVal groupName As String = "All", _
+Public Function TestRunAudit03LateBatchResourceDiagnostics(Optional ByVal groupName As String = "All", _
         Optional ByVal applicationMode As String = "Observe") As String
     Dim stats As TBatchTestStats, passed As Long, failed As Long, report As String
     Dim oldStability As String, oldTrace As Boolean, oldScreenUpdating As Boolean
-    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldStability = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
     oldTrace = mAudit03ResourceTrace
     oldScreenUpdating = Application.ScreenUpdating
     On Error GoTo FailedRun
     Select Case applicationMode
         Case "Observe"
         Case "ScreenOff": Application.ScreenUpdating = False
-        Case Else: Err.Raise vbObjectError + 4493, "RunAudit03LateBatchResourceDiagnostics", "Неизвестный режим экранного обновления диагностического набора."
+        Case Else: Err.Raise vbObjectError + 4493, "TestRunAudit03LateBatchResourceDiagnostics", "Неизвестный режим экранного обновления диагностического набора."
     End Select
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
     mAudit03ResourceTrace = True
-    Audit03TraceExcelContext "BEGIN: late batch group " & groupName & "; application=" & applicationMode, True
+    TestAudit03TraceExcelContext "BEGIN: late batch group " & groupName & "; application=" & applicationMode, True
     If groupName <> "All" And groupName <> "Writers" And groupName <> "Meta" And groupName <> "Repository" And groupName <> "None" And _
         groupName <> "Summary" And groupName <> "Gaps" And groupName <> "Rows" And groupName <> "Settings" And groupName <> "Invalid" And _
         groupName <> "Summaries" And groupName <> "OtherWriters" And groupName <> "SummaryRows" And groupName <> "WritersNoRows" Then _
-        Err.Raise vbObjectError + 4494, "RunAudit03LateBatchResourceDiagnostics", "Неизвестная группа диагностического набора."
+        Err.Raise vbObjectError + 4494, "TestRunAudit03LateBatchResourceDiagnostics", "Неизвестная группа диагностического набора."
     If groupName = "All" Or groupName = "Writers" Or groupName = "Summary" Or groupName = "Summaries" Or _
         groupName = "SummaryRows" Or groupName = "WritersNoRows" Then TestBatchSummaryWriter stats
     If groupName = "All" Or groupName = "Writers" Or groupName = "Gaps" Or groupName = "Summaries" Or _
@@ -9078,7 +9318,7 @@ Public Function RunAudit03LateBatchResourceDiagnostics(Optional ByVal groupName 
     If groupName = "All" Or groupName = "Writers" Or groupName = "Summary" Or groupName = "Gaps" Or groupName = "Rows" Or _
         groupName = "Settings" Or groupName = "Invalid" Or groupName = "Summaries" Or groupName = "OtherWriters" Or _
         groupName = "SummaryRows" Or groupName = "WritersNoRows" Then
-        Audit03TraceExcelContext "AFTER: Writers group"
+        TestAudit03TraceExcelContext "AFTER: Writers group"
     End If
     If groupName = "All" Or groupName = "Meta" Then
         TestResultMetaStatusDictionary stats
@@ -9087,7 +9327,7 @@ Public Function RunAudit03LateBatchResourceDiagnostics(Optional ByVal groupName 
         TestCrackAggregateIncludesCurrentStateFailure stats
         TestFormulaChecksDoNotCreateNumFail stats
         TestSectionStateResultStoresEquilibriumData stats
-        Audit03TraceExcelContext "AFTER: Meta group"
+        TestAudit03TraceExcelContext "AFTER: Meta group"
     End If
     If groupName = "All" Or groupName = "Repository" Then
         TestStateRequestEquivalenceIgnoresSolveOptions stats
@@ -9096,33 +9336,34 @@ Public Function RunAudit03LateBatchResourceDiagnostics(Optional ByVal groupName 
         TestAudit02CurrentCrackedStateCacheHitCalculatesWidth stats
         TestAudit02CanonicalResultsAndReset stats
         TestAudit02RepositoryContextAndRetry stats
-        Audit03TraceExcelContext "AFTER: Repository group"
+        TestAudit03TraceExcelContext "AFTER: Repository group"
     End If
-    Audit03TraceExcelContext "BEFORE: late group physical pair"
+    TestAudit03TraceExcelContext "BEFORE: late group physical pair"
     TestAudit02OnOffPhysicalResults stats
-    Audit03TraceExcelContext "AFTER: late group physical pair"
+    TestAudit03TraceExcelContext "AFTER: late group physical pair"
     report = RunAudit03SearchConfigTests(passed, failed)
     stats.Report = stats.Report & report
     GoTo Restore
 FailedRun:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: lateBatchResource.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: lateBatchResource.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo 0
     Application.ScreenUpdating = oldScreenUpdating
     mAudit03ResourceTrace = oldTrace
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
-    RunAudit03LateBatchResourceDiagnostics = stats.Report & "TOTAL_LATE_RESOURCE: passed=" & _
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    TestRunAudit03LateBatchResourceDiagnostics = stats.Report & "TOTAL_LATE_RESOURCE: passed=" & _
         CStr(stats.Passed + passed) & "; failed=" & CStr(stats.Failed + failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: сравнивает два способа вызова одного Search Config-набора.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сравнивает два способа вызова одного Search Config-набора.
 ' Все assertions, Config и расчеты одинаковы; различается только накопление
 ' возвращенного текстового отчета в вызывающем VBA-кадре.
-Public Function RunAudit03SearchExpressionDiagnostics(ByVal mode As String) As String
+Public Function TestRunAudit03SearchExpressionDiagnostics(ByVal mode As String) As String
     Dim stats As TBatchTestStats, passed As Long, failed As Long, searchReport As String
     stats.Report = "SEARCH_EXPRESSION_DIAGNOSTIC: " & mode & vbCrLf
-    Audit03TraceExcelContext "BEGIN: Search expression " & mode, True
+    TestAudit03TraceExcelContext "BEGIN: Search expression " & mode, True
     Select Case mode
         Case "Concatenated"
             stats.Report = stats.Report & RunAudit03SearchConfigTests(passed, failed)
@@ -9130,16 +9371,17 @@ Public Function RunAudit03SearchExpressionDiagnostics(ByVal mode As String) As S
             searchReport = RunAudit03SearchConfigTests(passed, failed)
             stats.Report = stats.Report & searchReport
         Case Else
-            Err.Raise vbObjectError + 4496, "RunAudit03SearchExpressionDiagnostics", "Неизвестный режим накопления отчета."
+            Err.Raise vbObjectError + 4496, "TestRunAudit03SearchExpressionDiagnostics", "Неизвестный режим накопления отчета."
     End Select
-    Audit03TraceExcelContext "END: Search expression " & mode
-    RunAudit03SearchExpressionDiagnostics = stats.Report
+    TestAudit03TraceExcelContext "END: Search expression " & mode
+    TestRunAudit03SearchExpressionDiagnostics = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: временное переназначение LC не должно оставлять другой лист
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' временное переназначение LC не должно оставлять другой лист
 ' активным, лишний лист, измененное имя диапазона или DisplayAlerts.
 ' Проверяет реальный существующий setup и его cleanup без численного solve.
-Public Function RunAudit03TemporaryLoadRangeIsolation() As String
+Public Function TestRunAudit03TemporaryLoadRangeIsolation() As String
     Dim stats As TBatchTestStats, originalSheet As Object, originalName As String
     Dim sheetCount As Long, originalAlerts As Boolean
     Set originalSheet = Application.ActiveSheet
@@ -9147,16 +9389,18 @@ Public Function RunAudit03TemporaryLoadRangeIsolation() As String
     sheetCount = ThisWorkbook.Worksheets.Count
     originalAlerts = Application.DisplayAlerts
     TestBatchSummaryRowsUseAvailableLoadRange stats
-    AssertTrue stats, "audit03.temporaryLoadRange.activeSheetRestored", Application.ActiveSheet Is originalSheet
-    AssertEquals stats, "audit03.temporaryLoadRange.nameRestored", ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo, originalName
-    AssertTrue stats, "audit03.temporaryLoadRange.sheetCountRestored", ThisWorkbook.Worksheets.Count = sheetCount
-    AssertTrue stats, "audit03.temporaryLoadRange.alertsRestored", Application.DisplayAlerts = originalAlerts
-    RunAudit03TemporaryLoadRangeIsolation = stats.Report & "TOTAL_TEMPORARY_RANGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAssertTrue stats, "audit03.temporaryLoadRange.activeSheetRestored", Application.ActiveSheet Is originalSheet
+    TestAssertEquals stats, "audit03.temporaryLoadRange.nameRestored", ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo, originalName
+    TestAssertTrue stats, "audit03.temporaryLoadRange.sheetCountRestored", ThisWorkbook.Worksheets.Count = sheetCount
+    TestAssertTrue stats, "audit03.temporaryLoadRange.alertsRestored", Application.DisplayAlerts = originalAlerts
+    TestRunAudit03TemporaryLoadRangeIsolation = stats.Report & "TOTAL_TEMPORARY_RANGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ====================== ДЛЯ ТЕСТОВ: ИТОГОВАЯ ОШИБКА ВВОДА ======================
 
-' ДЛЯ ТЕСТОВ: popup пакетного расчета должен сохранять русскую причину
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' popup пакетного расчета должен сохранять русскую причину
 ' результата нужного блока. Не допускает замены сообщения коротким статусом
 ' или машинным LimitState; настройки восстанавливаются после каждого gate.
 Public Function RunAudit03BatchInputMessageTests() As String
@@ -9165,7 +9409,8 @@ Public Function RunAudit03BatchInputMessageTests() As String
     RunAudit03BatchInputMessageTests = stats.Report & "TOTAL_BATCH_INPUT_MESSAGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: ошибочная численная настройка доходит до реального solver
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ошибочная численная настройка доходит до реального solver
 ' через Batch для DirectState, Capacity и текущего НДС расчета трещин.
 ' Каждый профиль включает только проверяемую ветвь и не меняет physical oracle.
 Private Sub TestAudit03BatchInputMessages(ByRef stats As TBatchTestStats)
@@ -9180,25 +9425,25 @@ Private Sub TestAudit03BatchInputMessages(ByRef stats As TBatchTestStats)
         systemRange.Formula = savedSystem: profileRange.Formula = savedProfiles
         profileId = "PR1"
         If CStr(mode) = "CrackCurrentState" Then profileId = "PR2"
-        SetProfileValue "Calculation.Stability.Enabled", profileId, "No"
-        SetProfileValue "Calculation.Strength.DirectState", profileId, "No"
-        SetProfileValue "Calculation.Strength.Capacity", profileId, "No"
-        SetProfileValue "Calculation.Crack.Width", profileId, "No"
-        SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+        TestSetProfileValue "Calculation.Stability.Enabled", profileId, "No"
+        TestSetProfileValue "Calculation.Strength.DirectState", profileId, "No"
+        TestSetProfileValue "Calculation.Strength.Capacity", profileId, "No"
+        TestSetProfileValue "Calculation.Crack.Width", profileId, "No"
+        TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
         Select Case CStr(mode)
             Case "DirectState"
-                SetProfileValue "Calculation.Strength.DirectState", profileId, "Yes"
-                SetSystemSetting "Solver.MaxIterations", "0"
+                TestSetProfileValue "Calculation.Strength.DirectState", profileId, "Yes"
+                TestSetSystemSetting "Solver.MaxIterations", "0"
             Case "Capacity"
-                SetProfileValue "Calculation.Strength.Capacity", profileId, "Yes"
-                SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
-                SetSystemSetting "Capacity.ToleranceLambda", "0"
+                TestSetProfileValue "Calculation.Strength.Capacity", profileId, "Yes"
+                TestSetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+                TestSetSystemSetting "Capacity.ToleranceLambda", "0"
             Case "CrackCurrentState"
-                SetProfileValue "Calculation.Crack.Width", profileId, "Yes"
-                SetSystemSetting "Solver.MaxIterations", "0"
+                TestSetProfileValue "Calculation.Crack.Width", profileId, "Yes"
+                TestSetSystemSetting "Solver.MaxIterations", "0"
         End Select
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-        Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+        Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
         batch.AddCombination "INPUT_" & CStr(mode), 200000#, 1000000#, 0#, profileId, vbNullString, "LambdaNMxy"
         batch.Execute
         Set result = batch.ResultAt(1)
@@ -9208,21 +9453,21 @@ Private Sub TestAudit03BatchInputMessages(ByRef stats As TBatchTestStats)
             Case "CrackCurrentState": Set owner = result.CrackCurrentStateMeta
         End Select
         prefix = "audit03.batchInputMessage." & CStr(mode)
-        AssertEquals stats, prefix & ".ownerStatus", result.Status, "InputErr"
-        AssertTrue stats, prefix & ".ownerReason", Len(Trim$(owner.ResultComment)) > 0
+        TestAssertEquals stats, prefix & ".ownerStatus", result.Status, "InputErr"
+        TestAssertTrue stats, prefix & ".ownerReason", Len(Trim$(owner.ResultComment)) > 0
         message = batch.FirstInvalidInputMessage
-        AssertTrue stats, prefix & ".includesReason", InStr(1, message, owner.ResultComment, vbBinaryCompare) > 0
-        AssertTrue stats, prefix & ".includesLC", InStr(1, message, "INPUT_" & CStr(mode), vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".includesReason", InStr(1, message, owner.ResultComment, vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".includesLC", InStr(1, message, "INPUT_" & CStr(mode), vbBinaryCompare) > 0
         If CStr(mode) = "Capacity" Then
-            AssertTrue stats, prefix & ".configSheet", InStr(1, owner.ResultComment, "Config", vbBinaryCompare) > 0
-            AssertTrue stats, prefix & ".configKey", InStr(1, owner.ResultComment, "Capacity.ToleranceLambda", vbBinaryCompare) > 0
+            TestAssertTrue stats, prefix & ".configSheet", InStr(1, owner.ResultComment, "Config", vbBinaryCompare) > 0
+            TestAssertTrue stats, prefix & ".configKey", InStr(1, owner.ResultComment, "Capacity.ToleranceLambda", vbBinaryCompare) > 0
         End If
-        AppendLine stats, "INPUT_MESSAGE: " & prefix & "|owner=" & owner.ResultComment & "|popup=" & message
+        TestAppendLine stats, "INPUT_MESSAGE: " & prefix & "|owner=" & owner.ResultComment & "|popup=" & message
     Next mode
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.batchInputMessage.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.batchInputMessage.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -9230,11 +9475,12 @@ Restore:
     On Error GoTo 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ AUDIT03 ==============================
 ' Выполняется только на специально fault-injected копии книги: producer
 ' намеренно не возвращает solver либо named-state. Проверяется настоящий
 ' Batch -> typed result -> writers, а не вручную созданная ошибка meta.
-Public Function RunAudit03MissingStateContracts() As String
+Public Function TestRunAudit03MissingStateContracts() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats, profileRange As Object, savedProfiles As Variant
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
@@ -9243,14 +9489,14 @@ Public Function RunAudit03MissingStateContracts() As String
     For Each profile In Array("PR1", "PR2")
         For Each key In Array("Calculation.Stability.Enabled", "Calculation.Strength.DirectState", _
                 "Calculation.Strength.Capacity", "Calculation.Crack.Width")
-            SetProfileValue CStr(key), CStr(profile), "No"
+            TestSetProfileValue CStr(key), CStr(profile), "No"
         Next key
     Next profile
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
     Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, result As CCombinationResult
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    Set batch = BuildBatchCalculator(False): batch.ApplySettings settings
+    Set batch = TestBuildBatchCalculator(False): batch.ApplySettings settings
     batch.AddCombination "MISSING_STRENGTH", -100000#, -4000000#, -2000000#, "PR1", ""
     batch.AddCombination "MISSING_CRACK", -20000#, -15000000#, 0#, "PR2", ""
     batch.Execute
@@ -9263,36 +9509,37 @@ Public Function RunAudit03MissingStateContracts() As String
         Set result = batch.ResultAt(index)
         prefix = "audit03.missingState." & CStr(index)
         If index = 1 Then Set meta = result.DirectStateMeta Else Set meta = result.CrackCurrentStateMeta
-        AssertTrue stats, prefix & ".internal", meta.InternalStatus = rsInternalError
-        AssertTrue stats, prefix & ".code", meta.ResultCode = rcSolverDidNotReturnState
-        AssertTrue stats, prefix & ".notCalculated", Not meta.Calculated
-        AssertEquals stats, prefix & ".overallDisplay", result.Status, "CalcErr"
-        AssertTrue stats, prefix & ".reason", Len(Trim$(meta.ResultComment)) > 0
-        AssertTrue stats, prefix & ".notNumerical", InStr(1, meta.ResultComment, "не сош", vbTextCompare) = 0
-        AssertTrue stats, prefix & ".noFalseSuccessComment", InStr(1, meta.ResultComment, "Равновесие найдено", vbTextCompare) = 0
-        Audit03CheckResultComments stats, batch, index
-        AppendLine stats, "MISSING_STATE_COMMENT: " & prefix & "; " & meta.ResultComment
+        TestAssertTrue stats, prefix & ".internal", meta.InternalStatus = rsInternalError
+        TestAssertTrue stats, prefix & ".code", meta.ResultCode = rcSolverDidNotReturnState
+        TestAssertTrue stats, prefix & ".notCalculated", Not meta.Calculated
+        TestAssertEquals stats, prefix & ".overallDisplay", result.Status, "CalcErr"
+        TestAssertTrue stats, prefix & ".reason", Len(Trim$(meta.ResultComment)) > 0
+        TestAssertTrue stats, prefix & ".notNumerical", InStr(1, meta.ResultComment, "не сош", vbTextCompare) = 0
+        TestAssertTrue stats, prefix & ".noFalseSuccessComment", InStr(1, meta.ResultComment, "Равновесие найдено", vbTextCompare) = 0
+        TestAudit03CheckResultComments stats, batch, index
+        TestAppendLine stats, "MISSING_STATE_COMMENT: " & prefix & "; " & meta.ResultComment
         If index = 2 Then
-            AssertTrue stats, prefix & ".widthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
-            AssertTrue stats, prefix & ".longitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
-            AssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.Calculated
-            AssertTrue stats, prefix & ".longitudinalNotCalculated", Not result.LongitudinalCrackMeta.Calculated
-            AssertEquals stats, prefix & ".widthDisplay", policy.ExternalStatus(result.CrackWidthMeta), "N/A"
-            AssertEquals stats, prefix & ".longitudinalDisplay", policy.ExternalStatus(result.LongitudinalCrackMeta), "N/A"
+            TestAssertTrue stats, prefix & ".widthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
+            TestAssertTrue stats, prefix & ".longitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
+            TestAssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.Calculated
+            TestAssertTrue stats, prefix & ".longitudinalNotCalculated", Not result.LongitudinalCrackMeta.Calculated
+            TestAssertEquals stats, prefix & ".widthDisplay", policy.ExternalStatus(result.CrackWidthMeta), "N/A"
+            TestAssertEquals stats, prefix & ".longitudinalDisplay", policy.ExternalStatus(result.LongitudinalCrackMeta), "N/A"
         End If
     Next index
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.missingState.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.missingState.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
     On Error GoTo 0
-    AppendLine stats, "TOTAL_AUDIT03_MISSING_STATE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
-    RunAudit03MissingStateContracts = stats.Report
+    TestAppendLine stats, "TOTAL_AUDIT03_MISSING_STATE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestRunAudit03MissingStateContracts = stats.Report
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ: NOTCRACKED ==============================
 ' Проверяет общий результат Formation -> Width -> фактический вывод Results.
 ' Численный solve остается только у текущего НДС; повторное открытие проверяет
@@ -9303,7 +9550,8 @@ Public Function RunAudit03NotCrackedBatchTests() As String
     RunAudit03NotCrackedBatchTests = stats.Report & "TOTAL_AUDIT03_NOT_CRACKED_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: достоверное отсутствие нормальных трещин при осевом сжатии
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' достоверное отсутствие нормальных трещин при осевом сжатии
 ' исключает Width, но не проверку продольных трещин. Общий gate не зависит от
 ' выбора СП 35/СП 63 для устойчивости; отдельной нормативной ветки Width этот
 ' тест не придумывает. Две нагрузки дают независимые OK/FAIL по сжатому бетону.
@@ -9318,20 +9566,20 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
-    SetSystemSetting "General.DiagramExtension", "No"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "SLS.Crack.PsiS", "0.25"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetSystemSetting "General.DiagramExtension", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "SLS.Crack.PsiS", "0.25"
     For Each standard In Array("SP35", "SP63")
-        SetSystemSetting "Stability.Code", CStr(standard)
+        TestSetSystemSetting "Stability.Code", CStr(standard)
         For Each mode In Array("User", "Auto", "AlwaysCalc")
-            SetSystemSetting "SLS.Crack.PsiMode", CStr(mode)
+            TestSetSystemSetting "SLS.Crack.PsiMode", CStr(mode)
             Set settings = New CSystemSettingsReader
             settings.LoadFromWorkbook ThisWorkbook
-            Set batch = BuildBatchCalculator(False)
+            Set batch = TestBuildBatchCalculator(False)
             batch.ApplySettings settings
             batch.AddCombination "NO_CRACK_LONG_OK", -90000#, 0#, 0#, "PR2", "Проверка продольных трещин проходит.", "Auto"
             batch.AddCombination "NO_CRACK_LONG_FAIL", -1200000#, 0#, 0#, "PR2", "Проверка продольных трещин не проходит.", "Auto"
@@ -9344,30 +9592,30 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
                 Set result = batch.ResultAt(i)
                 prefix = "audit03.notCrackedBatch." & CStr(standard) & "." & CStr(mode) & "." & CStr(i)
                 If i = 1 Then expectedLongitudinal = "OK" Else expectedLongitudinal = "FAIL"
-                AssertTrue stats, prefix & ".formationConfirmed", result.CrackResult.Formation.ConfirmedNotCracked
-                AssertTrue stats, prefix & ".formationNoPoint", Not result.CrackResult.Formation.HasLimitPoint
-                AssertTrue stats, prefix & ".noPre", result.CrackResult.Formation.PreCrackState Is Nothing
-                AssertTrue stats, prefix & ".noPost", result.CrackResult.Formation.PostCrackState Is Nothing
-                AssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
-                AssertEquals stats, prefix & ".width", policy.ExternalStatus(result.CrackWidthMeta), "N/A"
-                AssertEquals stats, prefix & ".normalAggregate", result.NormalCrackStatus, "OK"
-                AssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.Calculated
-                AssertTrue stats, prefix & ".widthNotBlocked", result.CrackWidthMeta.InternalStatus = rsNotApplicable
-                AssertClose stats, prefix & ".psiPreserved", result.CrackResult.Width.PsiS, 0.25, 0#
-                AssertTrue stats, prefix & ".noPsiWarning", InStr(1, result.CrackWidthMeta.ResultComment, "psi", vbTextCompare) = 0 And _
+                TestAssertTrue stats, prefix & ".formationConfirmed", result.CrackResult.Formation.ConfirmedNotCracked
+                TestAssertTrue stats, prefix & ".formationNoPoint", Not result.CrackResult.Formation.HasLimitPoint
+                TestAssertTrue stats, prefix & ".noPre", result.CrackResult.Formation.PreCrackState Is Nothing
+                TestAssertTrue stats, prefix & ".noPost", result.CrackResult.Formation.PostCrackState Is Nothing
+                TestAssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
+                TestAssertEquals stats, prefix & ".width", policy.ExternalStatus(result.CrackWidthMeta), "N/A"
+                TestAssertEquals stats, prefix & ".normalAggregate", result.NormalCrackStatus, "OK"
+                TestAssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.Calculated
+                TestAssertTrue stats, prefix & ".widthNotBlocked", result.CrackWidthMeta.InternalStatus = rsNotApplicable
+                TestAssertClose stats, prefix & ".psiPreserved", result.CrackResult.Width.PsiS, 0.25, 0#
+                TestAssertTrue stats, prefix & ".noPsiWarning", InStr(1, result.CrackWidthMeta.ResultComment, "psi", vbTextCompare) = 0 And _
                     InStr(1, result.CrackWidthMeta.ResultComment, ChrW$(&H3C8), vbBinaryCompare) = 0
-                AssertTrue stats, prefix & ".noSummaryPsiWarning", InStr(1, result.CrackSummaryMeta.ResultComment, "psi", vbTextCompare) = 0 And _
+                TestAssertTrue stats, prefix & ".noSummaryPsiWarning", InStr(1, result.CrackSummaryMeta.ResultComment, "psi", vbTextCompare) = 0 And _
                     InStr(1, result.CrackSummaryMeta.ResultComment, ChrW$(&H3C8), vbBinaryCompare) = 0
-                AssertEquals stats, prefix & ".longitudinal", result.CrackResult.Longitudinal.Status, expectedLongitudinal
-                AssertTrue stats, prefix & ".longitudinalCalculated", result.LongitudinalCrackMeta.Calculated
-                outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", batch.CombinationID(i))
-                AssertEquals stats, prefix & ".writerState", CStr(sheet.Cells.Item(outputRow, anchor.Column + 24).Value2), "NotCracked"
-                AssertEquals stats, prefix & ".writerWidth", CStr(sheet.Cells.Item(outputRow, anchor.Column + 66).Value2), "N/A"
-                AssertEquals stats, prefix & ".writerPsiBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 57).Value2), vbNullString
-                AssertEquals stats, prefix & ".writerWidthBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 63).Value2), vbNullString
-                AssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.Item(outputRow, anchor.Column + 71).Value2), expectedLongitudinal
-                AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), CalculationResultMessage(batch, i, result.CrackSummaryMeta)
-                AppendLine stats, "NOT_CRACKED_OUTPUT: " & prefix & "|formation=" & result.CrackFormationMeta.ResultComment & _
+                TestAssertEquals stats, prefix & ".longitudinal", result.CrackResult.Longitudinal.Status, expectedLongitudinal
+                TestAssertTrue stats, prefix & ".longitudinalCalculated", result.LongitudinalCrackMeta.Calculated
+                outputRow = TestDetailedRowByCombination(sheet, "rngCrackSummaryAnchor", batch.CombinationID(i))
+                TestAssertEquals stats, prefix & ".writerState", CStr(sheet.Cells.Item(outputRow, anchor.Column + 24).Value2), "NotCracked"
+                TestAssertEquals stats, prefix & ".writerWidth", CStr(sheet.Cells.Item(outputRow, anchor.Column + 66).Value2), "N/A"
+                TestAssertEquals stats, prefix & ".writerPsiBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 57).Value2), vbNullString
+                TestAssertEquals stats, prefix & ".writerWidthBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 63).Value2), vbNullString
+                TestAssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.Item(outputRow, anchor.Column + 71).Value2), expectedLongitudinal
+                TestAssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), CalculationResultMessage(batch, i, result.CrackSummaryMeta)
+                TestAppendLine stats, "NOT_CRACKED_OUTPUT: " & prefix & "|formation=" & result.CrackFormationMeta.ResultComment & _
                     "|width=" & result.CrackWidthMeta.ResultComment & "|longitudinal=" & result.LongitudinalCrackMeta.ResultComment & _
                     "|summary=" & result.CrackSummaryMeta.ResultComment
             Next i
@@ -9376,7 +9624,7 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.notCrackedBatch.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.notCrackedBatch.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -9384,7 +9632,8 @@ Restore:
     On Error GoTo 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: проверяет конфликт 10d_s > 400 мм на обычном физически допустимом
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет конфликт 10d_s > 400 мм на обычном физически допустимом
 ' НДС. Предупреждение принадлежит Width и должно попасть в Results независимо
 ' от технического журнала, но не переноситься на следующий LC без конфликта.
 Public Function RunAudit03CrackSpacingWarningTests() As String
@@ -9393,7 +9642,8 @@ Public Function RunAudit03CrackSpacingWarningTests() As String
     RunAudit03CrackSpacingWarningTests = stats.Report & "TOTAL_AUDIT03_SPACING_WARNING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: диаметры 20/40/50 мм проверяют обычный интервал, совпадение
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' диаметры 20/40/50 мм проверяют обычный интервал, совпадение
 ' границ и настоящий конфликт. Нагрузка соответствует напряжению 100 МПа;
 ' после растяжения тот же batch считает сжатие без вызова формулы Width.
 Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
@@ -9410,22 +9660,22 @@ Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
-    SetSystemSetting "General.DiagramExtension", "No"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "SLS.Crack.PsiMode", "User"
-    SetSystemSetting "SLS.Crack.PsiS", "1"
-    SetSystemSetting "SLS.Crack.Allowable", "0.3"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetSystemSetting "General.DiagramExtension", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "User"
+    TestSetSystemSetting "SLS.Crack.PsiS", "1"
+    TestSetSystemSetting "SLS.Crack.Allowable", "0.3"
     warningText = "ограничения расстояния между трещинами противоречат друг другу"
     Set policy = New CResultStatusPolicy
     For Each reportMode In Array("No", "Yes")
-        SetSystemSetting "General.ExecutionReportEnabled", CStr(reportMode)
+        TestSetSystemSetting "General.ExecutionReportEnabled", CStr(reportMode)
         Set calculator = New CCrackWidthCalculator
         For Each barDiameter In Array(20#, 40#, 50#)
-            Set section = BuildCircleStabilitySection(300#, 8, CDbl(barDiameter))
+            Set section = TestBuildCircleStabilitySection(300#, 8, CDbl(barDiameter))
             steelArea = 0#
             For i = 1 To section.RebarCount
                 steelArea = steelArea + section.RebarArea(i)
@@ -9448,66 +9698,66 @@ Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
             If CDbl(barDiameter) = 20# Then
                 Set firstSection = section: Set firstResult = result
             End If
-            prefix = "audit03.spacingWarning." & CStr(reportMode) & "." & FormatNumberInvariant(CDbl(barDiameter))
-            AssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
-            AssertTrue stats, prefix & ".formationPoint", result.CrackResult.Formation.HasLimitPoint
-            AssertTrue stats, prefix & ".calculated", result.CrackWidthMeta.Calculated
-            AssertEquals stats, prefix & ".widthStatus", policy.ExternalStatus(result.CrackWidthMeta), "OK"
-            AssertClose stats, prefix & ".diameter", width.DsEquivalent, CDbl(barDiameter), 0.000000001
-            lower = MaxDouble(10# * CDbl(barDiameter), 100#): upper = 400#
-            expectedSpacing = MaxDouble(width.CrackSpacingRaw, lower)
+            prefix = "audit03.spacingWarning." & CStr(reportMode) & "." & TestFormatNumberInvariant(CDbl(barDiameter))
+            TestAssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
+            TestAssertTrue stats, prefix & ".formationPoint", result.CrackResult.Formation.HasLimitPoint
+            TestAssertTrue stats, prefix & ".calculated", result.CrackWidthMeta.Calculated
+            TestAssertEquals stats, prefix & ".widthStatus", policy.ExternalStatus(result.CrackWidthMeta), "OK"
+            TestAssertClose stats, prefix & ".diameter", width.DsEquivalent, CDbl(barDiameter), 0.000000001
+            lower = TestMaxDouble(10# * CDbl(barDiameter), 100#): upper = 400#
+            expectedSpacing = TestMaxDouble(width.CrackSpacingRaw, lower)
             If expectedSpacing > upper Then expectedSpacing = upper
-            AssertClose stats, prefix & ".spacing", width.CrackSpacing, expectedSpacing, 0.000000001
-            AssertClose stats, prefix & ".formula", width.CrackWidth, width.Phi1 * width.Phi2 * width.Phi3 * _
+            TestAssertClose stats, prefix & ".spacing", width.CrackSpacing, expectedSpacing, 0.000000001
+            TestAssertClose stats, prefix & ".formula", width.CrackWidth, width.Phi1 * width.Phi2 * width.Phi3 * _
                 width.PsiS * width.SigmaS / width.SteelEs * expectedSpacing, 0.000000000001
             Set currentState = result.StateRepository.FindState(sstCrackedState)
             Set loadState = New CSectionLoadState: loadState.Initialize 100# * steelArea, 0#, 0#, 0#, 0#
             calculator.ApplySettings settings
             solveCount = SectionEquilibriumSolveCount()
             calculator.Calculate currentState, section, materials, currentState.MaterialSpec, result.CrackResult.Formation, loadState
-            AssertEquals stats, prefix & ".reusedCalculatorComment", calculator.ResultMeta.ResultComment, result.CrackWidthMeta.ResultComment
-            AssertTrue stats, prefix & ".formulaNoSolve", SectionEquilibriumSolveCount() = solveCount
+            TestAssertEquals stats, prefix & ".reusedCalculatorComment", calculator.ResultMeta.ResultComment, result.CrackWidthMeta.ResultComment
+            TestAssertTrue stats, prefix & ".formulaNoSolve", SectionEquilibriumSolveCount() = solveCount
             If lower > upper Then
-                AssertTrue stats, prefix & ".warningTyped", result.CrackWidthMeta.InternalStatus = rsSuccessWithWarning
-                AssertTrue stats, prefix & ".warningComment", InStr(1, result.CrackWidthMeta.ResultComment, warningText, vbTextCompare) > 0
-                AssertTrue stats, prefix & ".warningOnce", Audit03TextOccurrences(result.CrackWidthMeta.ResultComment, warningText) = 1
-                AssertTrue stats, prefix & ".summaryWarningOnce", Audit03TextOccurrences(result.OverallMeta.ResultComment, warningText) = 1
-                AssertTrue stats, prefix & ".boundExplanation", InStr(1, result.CrackWidthMeta.ResultComment, "500", vbBinaryCompare) > 0 And _
+                TestAssertTrue stats, prefix & ".warningTyped", result.CrackWidthMeta.InternalStatus = rsSuccessWithWarning
+                TestAssertTrue stats, prefix & ".warningComment", InStr(1, result.CrackWidthMeta.ResultComment, warningText, vbTextCompare) > 0
+                TestAssertTrue stats, prefix & ".warningOnce", TestAudit03TextOccurrences(result.CrackWidthMeta.ResultComment, warningText) = 1
+                TestAssertTrue stats, prefix & ".summaryWarningOnce", TestAudit03TextOccurrences(result.OverallMeta.ResultComment, warningText) = 1
+                TestAssertTrue stats, prefix & ".boundExplanation", InStr(1, result.CrackWidthMeta.ResultComment, "500", vbBinaryCompare) > 0 And _
                     InStr(1, result.CrackWidthMeta.ResultComment, "400", vbBinaryCompare) > 0
-                AssertTrue stats, prefix & ".numberFormatting", InStr(1, result.CrackWidthMeta.ResultComment, ". мм", vbBinaryCompare) = 0
+                TestAssertTrue stats, prefix & ".numberFormatting", InStr(1, result.CrackWidthMeta.ResultComment, ". мм", vbBinaryCompare) = 0
                 calculator.AllowableCrackWidth = 0.01
                 calculator.Calculate currentState, section, materials, currentState.MaterialSpec, result.CrackResult.Formation, loadState
-                AssertEquals stats, prefix & ".failedCheck", policy.ExternalStatus(calculator.ResultMeta), "FAIL"
-                AssertTrue stats, prefix & ".failedCheckCode", calculator.ResultMeta.ResultCode = rcCrackWidthExceeded
-                AssertTrue stats, prefix & ".failedCheckWarningOnce", Audit03TextOccurrences(calculator.ResultMeta.ResultComment, warningText) = 1
-                AssertClose stats, prefix & ".failedCheckSameWidth", calculator.CrackWidth, width.CrackWidth, 0.000000000001
+                TestAssertEquals stats, prefix & ".failedCheck", policy.ExternalStatus(calculator.ResultMeta), "FAIL"
+                TestAssertTrue stats, prefix & ".failedCheckCode", calculator.ResultMeta.ResultCode = rcCrackWidthExceeded
+                TestAssertTrue stats, prefix & ".failedCheckWarningOnce", TestAudit03TextOccurrences(calculator.ResultMeta.ResultComment, warningText) = 1
+                TestAssertClose stats, prefix & ".failedCheckSameWidth", calculator.CrackWidth, width.CrackWidth, 0.000000000001
                 calculator.AllowableCrackWidth = width.AllowableCrackWidth
             Else
-                AssertTrue stats, prefix & ".noWarning", InStr(1, result.CrackWidthMeta.ResultComment, warningText, vbTextCompare) = 0
-                AssertTrue stats, prefix & ".success", result.CrackWidthMeta.InternalStatus = rsSuccess
+                TestAssertTrue stats, prefix & ".noWarning", InStr(1, result.CrackWidthMeta.ResultComment, warningText, vbTextCompare) = 0
+                TestAssertTrue stats, prefix & ".success", result.CrackWidthMeta.InternalStatus = rsSuccess
             End If
-            outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", "SPACING_TENSION")
-            AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), CalculationResultMessage(batch, 1, result.CrackSummaryMeta)
-            Audit03CheckResultComments stats, batch, 1
-            AppendLine stats, "SPACING_WARNING: " & prefix & "|ls=" & FormatNumberInvariant(width.CrackSpacing) & _
+            outputRow = TestDetailedRowByCombination(sheet, "rngCrackSummaryAnchor", "SPACING_TENSION")
+            TestAssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), CalculationResultMessage(batch, 1, result.CrackSummaryMeta)
+            TestAudit03CheckResultComments stats, batch, 1
+            TestAppendLine stats, "SPACING_WARNING: " & prefix & "|ls=" & TestFormatNumberInvariant(width.CrackSpacing) & _
                 "|width=" & result.CrackWidthMeta.ResultComment & "|summary=" & result.OverallMeta.ResultComment
             Set result = batch.ResultAt(2)
-            AssertTrue stats, prefix & ".compressionNotCracked", result.CrackResult.Formation.ConfirmedNotCracked
-            AssertTrue stats, prefix & ".compressionNoFormula", Not result.CrackWidthMeta.Calculated
-            AssertTrue stats, prefix & ".compressionNoWarning", InStr(1, result.OverallMeta.ResultComment, warningText, vbTextCompare) = 0
+            TestAssertTrue stats, prefix & ".compressionNotCracked", result.CrackResult.Formation.ConfirmedNotCracked
+            TestAssertTrue stats, prefix & ".compressionNoFormula", Not result.CrackWidthMeta.Calculated
+            TestAssertTrue stats, prefix & ".compressionNoWarning", InStr(1, result.OverallMeta.ResultComment, warningText, vbTextCompare) = 0
             calculator.InitializeForFormation result.CrackResult.Formation
-            AssertTrue stats, prefix & ".resetNoWarning", InStr(1, calculator.ResultMeta.ResultComment, warningText, vbTextCompare) = 0
+            TestAssertTrue stats, prefix & ".resetNoWarning", InStr(1, calculator.ResultMeta.ResultComment, warningText, vbTextCompare) = 0
         Next barDiameter
         Set currentState = firstResult.StateRepository.FindState(sstCrackedState)
         Set loadState = New CSectionLoadState: loadState.Initialize currentState.TargetN, 0#, 0#, 0#, 0#
         calculator.Calculate currentState, firstSection, materials, currentState.MaterialSpec, firstResult.CrackResult.Formation, loadState
-        AssertTrue stats, "audit03.spacingWarning." & CStr(reportMode) & ".recoveryAfterConflict", _
+        TestAssertTrue stats, "audit03.spacingWarning." & CStr(reportMode) & ".recoveryAfterConflict", _
             calculator.ResultMeta.InternalStatus = rsSuccess And InStr(1, calculator.ResultMeta.ResultComment, warningText, vbTextCompare) = 0
     Next reportMode
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.spacingWarning.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.spacingWarning.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -9515,12 +9765,14 @@ Restore:
     On Error GoTo 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ========================== ДЛЯ ТЕСТОВ: AUDIT03 SP35 TABLE ==========================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет реальные 18 строк таблицы Config во всех расчетных колонках.
 ' Варианты выполняются в существующем test module и возвращают исходные
 ' формулы таблицы; нормативные defaults не подменяются результатами теста.
-Public Function RunAudit03SP35TableInvalidReproducer(Optional ByRef passed As Long = 0, _
+Public Function TestRunAudit03SP35TableInvalidReproducer(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim stats As TBatchTestStats, tableRange As Object, saved As Variant
     Dim section As CSectionModel, provider As CMaterialModelProvider
@@ -9531,12 +9783,12 @@ Public Function RunAudit03SP35TableInvalidReproducer(Optional ByRef passed As Lo
     On Error GoTo Failed
     Set tableRange = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange
     saved = tableRange.Formula
-    Set section = BuildCircleStabilitySection(500#, 4, 12#)
+    Set section = TestBuildCircleStabilitySection(500#, 4, 12#)
     Set provider = TestMaterialProvider()
     Set policy = New CResultStatusPolicy
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli section, 32500#, 200000#
-    AssertTrue stats, "audit03.table.shape", tableRange.Rows.Count = 19 And tableRange.Columns.Count = 8
+    TestAssertTrue stats, "audit03.table.shape", tableRange.Rows.Count = 19 And tableRange.Columns.Count = 8
     For row = 2 To tableRange.Rows.Count
         For column = 3 To 8
             For invalidIndex = 0 To 4
@@ -9559,12 +9811,12 @@ Public Function RunAudit03SP35TableInvalidReproducer(Optional ByRef passed As Lo
                 End Select
                 tableRange.Cells(row, column).Value2 = value
                 data = tableRange.Value2
-                Set calc = Audit03SP35TableProbe(section, provider, props, data, slenderness, q)
+                Set calc = TestAudit03SP35TableProbe(section, provider, props, data, slenderness, q)
                 prefix = "audit03.table.invalid." & CStr(row) & "." & CStr(column) & "." & CStr(invalidIndex)
-                AssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
-                AssertTrue stats, prefix & ".notNumFail", calc.ResultMeta.InternalStatus <> rsNumericalFailure
-                AssertTrue stats, prefix & ".comment", Len(calc.ResultMeta.ResultComment) > 0
-                AppendLine stats, "SP35_INVALID: " & prefix & "|cell=" & tableRange.Cells(row, column).Address(False, False) & _
+                TestAssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
+                TestAssertTrue stats, prefix & ".notNumFail", calc.ResultMeta.InternalStatus <> rsNumericalFailure
+                TestAssertTrue stats, prefix & ".comment", Len(calc.ResultMeta.ResultComment) > 0
+                TestAppendLine stats, "SP35_INVALID: " & prefix & "|cell=" & tableRange.Cells(row, column).Address(False, False) & _
                     "|status=" & policy.ExternalStatus(calc.ResultMeta) & "|comment=" & calc.ResultMeta.ResultComment
             Next invalidIndex
         Next column
@@ -9572,21 +9824,22 @@ Public Function RunAudit03SP35TableInvalidReproducer(Optional ByRef passed As Lo
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.table.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.table.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
     If IsArray(saved) Then tableRange.Formula = saved
 Finish:
-    AppendLine stats, "TOTAL_AUDIT03_SP35_INVALID: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_SP35_INVALID: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
-    RunAudit03SP35TableInvalidReproducer = stats.Report
+    TestRunAudit03SP35TableInvalidReproducer = stats.Report
     Exit Function
 RestoreFailed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.table.restore; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.table.restore; " & CStr(Err.Number) & "; " & Err.Description
     Resume Finish
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет наблюдаемый смысл каждой из 144 ячеек. Узлы и коэффициенты
 ' проверяются раздельно: по точным табличным значениям и независимым весам
 ' интерполяции; две справочные колонки не должны вмешиваться в расчет.
@@ -9602,7 +9855,7 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
     On Error GoTo Failed
     Set tableRange = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange
     saved = tableRange.Formula: original = tableRange.Value2
-    Set section = BuildCircleStabilitySection(500#, 4, 12#)
+    Set section = TestBuildCircleStabilitySection(500#, 4, 12#)
     Set provider = TestMaterialProvider()
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli section, 32500#, 200000#
@@ -9634,8 +9887,8 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
                     shift = 0.25 * GeomMin(node - previous, nextNode - node)
                     query = node + 0.25 * (nextNode - node)
                     expected = CDbl(data(row, 4)) + 0.25 * 0.01
-                    Set baseline = Audit03SP35TableProbe(section, provider, props, data, query, q)
-                    AssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
+                    Set baseline = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
+                    TestAssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
                     data(row, 3) = node - shift
                     expected = CDbl(data(row, 4)) + (query - (node - shift)) / (nextNode - (node - shift)) * 0.01
                 Else
@@ -9643,85 +9896,87 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
                     shift = 0.25 * (node - previous)
                     query = previous + 0.75 * (node - previous)
                     expected = CDbl(data(row - 1, 4)) + 0.75 * 0.01
-                    Set baseline = Audit03SP35TableProbe(section, provider, props, data, query, q)
-                    AssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
+                    Set baseline = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
+                    TestAssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
                     data(row, 3) = node + shift
                     expected = CDbl(data(row - 1, 4)) + (query - previous) / (node + shift - previous) * 0.01
                 End If
                 tableRange.Cells(row, column).Value2 = data(row, column)
-                Set calc = Audit03SP35TableProbe(section, provider, props, data, query, q)
-                AssertTrue stats, prefix & ".inputValid", calc.InputValid
-                AssertClose stats, prefix & ".changedWeight", calc.PhiM1, expected, 0.00000001
-                AssertTrue stats, prefix & ".active", Abs(calc.PhiM1 - baseline.PhiM1) > 0.000000001
+                Set calc = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
+                TestAssertTrue stats, prefix & ".inputValid", calc.InputValid
+                TestAssertClose stats, prefix & ".changedWeight", calc.PhiM1, expected, 0.00000001
+                TestAssertTrue stats, prefix & ".active", Abs(calc.PhiM1 - baseline.PhiM1) > 0.000000001
             Else
-                Set baseline = Audit03SP35TableProbe(section, provider, props, original, node, q)
-                expectedM = Audit03TableNodePhiM(original, row, q)
+                Set baseline = TestAudit03SP35TableProbe(section, provider, props, original, node, q)
+                expectedM = TestAudit03TableNodePhiM(original, row, q)
                 expectedL = CDbl(original(row, 8))
-                AssertTrue stats, prefix & ".baselineValid", baseline.InputValid
-                AssertClose stats, prefix & ".baselineM", baseline.PhiM1, expectedM, 0.00000001
-                AssertClose stats, prefix & ".baselineL", baseline.PhiLTable1, expectedL, 0.00000001
+                TestAssertTrue stats, prefix & ".baselineValid", baseline.InputValid
+                TestAssertClose stats, prefix & ".baselineM", baseline.PhiM1, expectedM, 0.00000001
+                TestAssertClose stats, prefix & ".baselineL", baseline.PhiLTable1, expectedL, 0.00000001
                 If column < 3 Then
                     tableRange.Cells(row, column).Value2 = CDbl(original(row, column)) * 1.25
                 Else
                     tableRange.Cells(row, column).Value2 = CDbl(original(row, column)) + delta
                 End If
                 data = tableRange.Value2
-                Set calc = Audit03SP35TableProbe(section, provider, props, data, node, q)
+                Set calc = TestAudit03SP35TableProbe(section, provider, props, data, node, q)
                 If column < 3 Then
-                    AssertClose stats, prefix & ".referenceM", calc.PhiM1, expectedM, 0.00000001
-                    AssertClose stats, prefix & ".referenceL", calc.PhiLTable1, expectedL, 0.00000001
-                    AssertClose stats, prefix & ".referenceNult", calc.Nultimate1, baseline.Nultimate1, 0.000001
+                    TestAssertClose stats, prefix & ".referenceM", calc.PhiM1, expectedM, 0.00000001
+                    TestAssertClose stats, prefix & ".referenceL", calc.PhiLTable1, expectedL, 0.00000001
+                    TestAssertClose stats, prefix & ".referenceNult", calc.Nultimate1, baseline.Nultimate1, 0.000001
                 ElseIf column = 8 Then
-                    AssertClose stats, prefix & ".activeL", calc.PhiLTable1, expectedL + delta, 0.00000001
-                    AssertClose stats, prefix & ".unaffectedM", calc.PhiM1, expectedM, 0.00000001
-                    AssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
+                    TestAssertClose stats, prefix & ".activeL", calc.PhiLTable1, expectedL + delta, 0.00000001
+                    TestAssertClose stats, prefix & ".unaffectedM", calc.PhiM1, expectedM, 0.00000001
+                    TestAssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
                 Else
-                    AssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + weight * delta, 0.00000001
-                    AssertClose stats, prefix & ".unaffectedL", calc.PhiLTable1, expectedL, 0.00000001
-                    AssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
+                    TestAssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + weight * delta, 0.00000001
+                    TestAssertClose stats, prefix & ".unaffectedL", calc.PhiLTable1, expectedL, 0.00000001
+                    TestAssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
                 End If
             End If
-            AppendLine stats, "SP35_BEHAVIOR: " & prefix & "|cell=" & tableRange.Cells(row, column).Address(False, False) & _
-                "|reference=" & CStr(column < 3) & "|phiM=" & FormatNumberInvariant(calc.PhiM1) & _
-                "|phiL=" & FormatNumberInvariant(calc.PhiLTable1)
+            TestAppendLine stats, "SP35_BEHAVIOR: " & prefix & "|cell=" & tableRange.Cells(row, column).Address(False, False) & _
+                "|reference=" & CStr(column < 3) & "|phiM=" & TestFormatNumberInvariant(calc.PhiM1) & _
+                "|phiL=" & TestFormatNumberInvariant(calc.PhiLTable1)
             covered = covered + 1
         Next column
     Next row
-    AssertTrue stats, "audit03.table.all144", covered = 144
+    TestAssertTrue stats, "audit03.table.all144", covered = 144
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.table.behavior.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.table.behavior.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
     If IsArray(saved) Then tableRange.Formula = saved
 Finish:
-    AppendLine stats, "TOTAL_AUDIT03_SP35_BEHAVIOR: fields=" & CStr(covered) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_SP35_BEHAVIOR: fields=" & CStr(covered) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03SP35TableBehaviorTests = stats.Report
     Exit Function
 RestoreFailed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.table.behavior.restore; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.table.behavior.restore; " & CStr(Err.Number) & "; " & Err.Description
     Resume Finish
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимый oracle в конкретном узле l0/i: простые веса между четырьмя
 ' заданными q. Он не читает actual из calculator и не вызывает Search/State.
-Private Function Audit03TableNodePhiM(ByVal data As Variant, ByVal row As Long, ByVal q As Double) As Double
+Private Function TestAudit03TableNodePhiM(ByVal data As Variant, ByVal row As Long, ByVal q As Double) As Double
     If q = 0.125 Then
-        Audit03TableNodePhiM = 0.5 * (CDbl(data(row, 4)) + CDbl(data(row, 5)))
+        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 4)) + CDbl(data(row, 5)))
     ElseIf q = 0.25 Then
-        Audit03TableNodePhiM = CDbl(data(row, 5))
+        TestAudit03TableNodePhiM = CDbl(data(row, 5))
     ElseIf q = 0.5 Then
-        Audit03TableNodePhiM = CDbl(data(row, 6))
+        TestAudit03TableNodePhiM = CDbl(data(row, 6))
     ElseIf q = 0.75 Then
-        Audit03TableNodePhiM = 0.5 * (CDbl(data(row, 6)) + CDbl(data(row, 7)))
+        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 6)) + CDbl(data(row, 7)))
     Else
         Err.Raise vbObjectError + 4498, "Audit03TableNodePhiM", "Не задан независимый тестовый oracle для q."
     End If
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет десять явно неприменимых клеток Config через настоящий reader.
 ' Адреса ищутся внутри именованных таблиц по применимым колонкам и маркеру,
 ' а не по координатам шаблона. Изменение подписи не должно создавать новый
@@ -9733,8 +9988,8 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
     Dim errorText As String, saved As Variant, invalidIndex As Long, prefix As String
     Dim hasSavedCell As Boolean, config As Object, savedConfig As Variant
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(config)
-    modTestShapeArchitecture.ConfigureShapeFixture "HollowCentered"
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(config)
+    modTestShapeArchitecture.TestConfigureShapeFixture "HollowCentered"
     For Each name In Array("rngConcreteMaterialParameters", "rngPlotAnnotationSettings")
         Set range = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To range.Rows.Count
@@ -9751,10 +10006,10 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
     Next name
     Set range = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     For Each name In Array("OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
-        fields.Add FixtureInputCell(range, "Main", CStr(name), "n")
+        fields.Add TestFixtureInputCell(range, "Main", CStr(name), "n")
     Next name
-    AssertTrue stats, "audit03.inactive.count", fields.Count = 10
-    AssertTrue stats, "audit03.inactive.baseline", Audit03TryConfigPayload(baseline, errorText)
+    TestAssertTrue stats, "audit03.inactive.count", fields.Count = 10
+    TestAssertTrue stats, "audit03.inactive.baseline", TestAudit03TryConfigPayload(baseline, errorText)
     For Each cell In fields
         saved = cell.Formula: hasSavedCell = True
         For invalidIndex = 0 To 4
@@ -9766,9 +10021,9 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
                 Case 4: cell.Formula = "=NA()"
             End Select
             prefix = "audit03.inactive." & cell.Address(False, False) & "." & CStr(invalidIndex)
-            AssertTrue stats, prefix & ".accepted", Audit03TryConfigPayload(actual, errorText)
-            AssertEquals stats, prefix & ".samePayload", actual, baseline
-            AppendLine stats, "INACTIVE_CONFIG: " & prefix & "|error=" & errorText
+            TestAssertTrue stats, prefix & ".accepted", TestAudit03TryConfigPayload(actual, errorText)
+            TestAssertEquals stats, prefix & ".samePayload", actual, baseline
+            TestAppendLine stats, "INACTIVE_CONFIG: " & prefix & "|error=" & errorText
             cell.Formula = saved
         Next invalidIndex
         hasSavedCell = False
@@ -9776,19 +10031,20 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
     GoTo Finish
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.inactive.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.inactive.runtime; " & CStr(Err.Number) & "; " & Err.Description
     If hasSavedCell Then cell.Formula = saved
 Finish:
-    If Not config Is Nothing And IsArray(savedConfig) Then FixtureRestoreInputs config, savedConfig
-    AppendLine stats, "TOTAL_AUDIT03_INACTIVE_CONFIG: fields=" & CStr(fields.Count) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    If Not config Is Nothing And IsArray(savedConfig) Then TestFixtureRestoreInputs config, savedConfig
+    TestAppendLine stats, "TOTAL_AUDIT03_INACTIVE_CONFIG: fields=" & CStr(fields.Count) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03InactiveConfigCellTests = stats.Report
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Читает actual Config и возвращает все нормализованные ключи/значения.
 ' Отдельная ошибка возвращается без потери исходной причины. Состояния НДС
 ' не решаются: неизменность полного reader payload проверяет неактивность.
-Private Function Audit03TryConfigPayload(ByRef payload As String, ByRef errorText As String) As Boolean
+Private Function TestAudit03TryConfigPayload(ByRef payload As String, ByRef errorText As String) As Boolean
     Dim settings As CSystemSettingsReader, index As Long, key As String
     payload = vbNullString: errorText = vbNullString
     On Error GoTo Failed
@@ -9800,21 +10056,22 @@ Private Function Audit03TryConfigPayload(ByRef payload As String, ByRef errorTex
     Next index
     Dim units As CUnitSystem, bars As CRebarLayout
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set bars = FixtureLayout(ReadWorkbookSectionDefinition(ThisWorkbook, settings, units))
+    Set bars = TestFixtureLayout(ReadWorkbookSectionDefinition(ThisWorkbook, settings, units))
     For index = 1 To bars.Count
         payload = payload & CStr(bars.X(index)) & ";" & CStr(bars.Y(index)) & ";" & CStr(bars.Diameter(index)) & vbLf
     Next index
-    Audit03TryConfigPayload = True
+    TestAudit03TryConfigPayload = True
     Exit Function
 Failed:
     errorText = CStr(Err.Number) & ": " & Err.Description
     payload = vbNullString
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Создает инженерную проверку на заданном узле гибкости. Обе главные
 ' плоскости имеют одинаковые l0/i и ec/r; доля постоянной силы 0.5 делает
 ' табличный phi_l активным. Только готовая геометрия и массив идут в core.
-Private Function Audit03SP35TableProbe(ByVal section As CSectionModel, _
+Private Function TestAudit03SP35TableProbe(ByVal section As CSectionModel, _
         ByVal provider As CMaterialModelProvider, ByVal props As CSectionPropertiesCalculator, _
         ByVal table As Variant, ByVal slenderness As Double, ByVal q As Double, _
         Optional ByVal tableInputError As String = vbNullString, Optional ByVal code As String = "SP35", _
@@ -9827,9 +10084,10 @@ Private Function Audit03SP35TableProbe(ByVal section As CSectionModel, _
         slenderness * props.PrincipalRadius1, 1#, props.PrincipalRadius2 / props.PrincipalRadius1, _
         "Determinate", 1#, 1#, "Auto", "User", "BothPlanes", q * core1, q * core2, _
         0.7, 0.15, 1.5, 1#, 0.7, table, Nothing, tableInputError
-    Set Audit03SP35TableProbe = calc
+    Set TestAudit03SP35TableProbe = calc
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет порядок узлов, неактивные ветви и адресную диагностику реального
 ' named range до и после переноса. Ошибка проходит calculator -> typed result
 ' -> подробный writer и batch summary без изменения текста в writer-е.
@@ -9850,36 +10108,36 @@ Public Function RunAudit03SP35TableDiagnosticTests(Optional ByRef passed As Long
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
     Set validator = New CStabilityCalculator: Set policy = New CResultStatusPolicy
-    Set section = BuildCircleStabilitySection(500#, 4, 12#): Set provider = TestMaterialProvider()
+    Set section = TestBuildCircleStabilitySection(500#, 4, 12#): Set provider = TestMaterialProvider()
     Set props = New CSectionPropertiesCalculator: props.CalculateTransformedByModuli section, 32500#, 200000#
 
     For row = 3 To original.Rows.Count
         data = original.Value2: data(row, 3) = data(row - 1, 3)
-        AssertTrue stats, "audit03.table.order.duplicate." & CStr(row), _
+        TestAssertTrue stats, "audit03.table.order.duplicate." & CStr(row), _
             Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
-        AssertTrue stats, "audit03.table.order.duplicateLocation." & CStr(row), badRow = row And badColumn = 3
+        TestAssertTrue stats, "audit03.table.order.duplicateLocation." & CStr(row), badRow = row And badColumn = 3
         data(row, 3) = 0.5 * CDbl(data(row - 1, 3))
-        AssertTrue stats, "audit03.table.order.descending." & CStr(row), _
+        TestAssertTrue stats, "audit03.table.order.descending." & CStr(row), _
             Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
     Next row
     For row = 2 To original.Rows.Count
         data = original.Value2: data(row, 1) = CVErr(2015): data(row, 2) = Empty
-        AssertTrue stats, "audit03.table.referenceIgnored." & CStr(row), _
+        TestAssertTrue stats, "audit03.table.referenceIgnored." & CStr(row), _
             validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
     Next row
 
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
-    SetSystemSetting "Stability.Code", "SP35"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1": SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", "5"
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", "5"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetSystemSetting "Stability.Code", "SP35"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1": TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", "5"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", "5"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     For position = 0 To 1
         original.Formula = savedTable
         If position = 0 Then
@@ -9893,46 +10151,46 @@ Public Function RunAudit03SP35TableDiagnosticTests(Optional ByRef passed As Long
         data = ReadSP35Table721FromWorkbook(ThisWorkbook, reason)
         prefix = "audit03.table.diagnostic." & CStr(position)
         expectedCell = target.Worksheet.Name & "!" & target.Cells(5, 6).Address(False, False)
-        AssertTrue stats, prefix & ".address", InStr(1, reason, expectedCell, vbBinaryCompare) > 0
-        AssertTrue stats, prefix & ".correction", InStr(1, reason, "Заполните ячейку", vbBinaryCompare) > 0
-        Set calc = Audit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason)
-        AssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
-        AssertEquals stats, prefix & ".exactComment", calc.ResultMeta.ResultComment, reason
-        Set calc = Audit03SP35TableProbe(section, provider, props, data, 35#, 2#, reason)
-        AssertTrue stats, prefix & ".etaIgnoresTable", calc.InputValid
-        Set calc = Audit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason, "SP63")
-        AssertTrue stats, prefix & ".sp63IgnoresTable", calc.InputValid
-        Set calc = Audit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason, "SP35", 100000#)
-        AssertEquals stats, prefix & ".tensionIgnoresTable", policy.ExternalStatus(calc.ResultMeta), "N/A"
+        TestAssertTrue stats, prefix & ".address", InStr(1, reason, expectedCell, vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".correction", InStr(1, reason, "Заполните ячейку", vbBinaryCompare) > 0
+        Set calc = TestAudit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason)
+        TestAssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
+        TestAssertEquals stats, prefix & ".exactComment", calc.ResultMeta.ResultComment, reason
+        Set calc = TestAudit03SP35TableProbe(section, provider, props, data, 35#, 2#, reason)
+        TestAssertTrue stats, prefix & ".etaIgnoresTable", calc.InputValid
+        Set calc = TestAudit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason, "SP63")
+        TestAssertTrue stats, prefix & ".sp63IgnoresTable", calc.InputValid
+        Set calc = TestAudit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason, "SP35", 100000#)
+        TestAssertEquals stats, prefix & ".tensionIgnoresTable", policy.ExternalStatus(calc.ResultMeta), "N/A"
 
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-        Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+        Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
         batch.SetSP35Table721 data, reason
         batch.AddCombination "TABLE_INVALID", -120000#, 0#, 0#, "PR1", vbNullString
         batch.Execute: Set result = batch.ResultAt(1)
-        AssertEquals stats, prefix & ".batchStatus", result.StabilityResult.Status, "InputErr"
-        AssertEquals stats, prefix & ".batchExactComment", result.StabilityMeta.ResultComment, reason
+        TestAssertEquals stats, prefix & ".batchStatus", result.StabilityResult.Status, "InputErr"
+        TestAssertEquals stats, prefix & ".batchExactComment", result.StabilityMeta.ResultComment, reason
         Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch
-        AssertEquals stats, prefix & ".writer", _
+        TestAssertEquals stats, prefix & ".writer", _
             CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(0, 1).Value2), CalculationResultMessage(batch, 1, result.StabilityMeta)
-        AssertEquals stats, prefix & ".summaryWriter", _
+        TestAssertEquals stats, prefix & ".summaryWriter", _
             CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 2).Value2), CalculationResultMessage(batch, 1, result.OverallMeta)
-        Audit03CheckMetaComment stats, prefix, result.StabilityMeta, result.OverallMeta
-        AssertTrue stats, prefix & ".noStateSolve", batch.SolverCallCount = 0
-        AppendLine stats, "SP35_DIAGNOSTIC: " & prefix & "|cell=" & expectedCell & "|comment=" & reason
+        TestAudit03CheckMetaComment stats, prefix, result.StabilityMeta, result.OverallMeta
+        TestAssertTrue stats, prefix & ".noStateSolve", batch.SolverCallCount = 0
+        TestAppendLine stats, "SP35_DIAGNOSTIC: " & prefix & "|cell=" & expectedCell & "|comment=" & reason
     Next position
     tableName.Delete: Set tableName = Nothing
     data = ReadSP35Table721FromWorkbook(ThisWorkbook, reason)
-    AssertTrue stats, "audit03.table.missingName", IsEmpty(data) And InStr(1, reason, "rngSP35Table721", vbBinaryCompare) > 0
+    TestAssertTrue stats, "audit03.table.missingName", IsEmpty(data) And InStr(1, reason, "rngSP35Table721", vbBinaryCompare) > 0
     ThisWorkbook.Names.Add "rngSP35Table721", savedName
     Set tableName = ThisWorkbook.Names.Item("rngSP35Table721")
     original.Formula = savedTable
     data = ReadSP35Table721FromWorkbook(ThisWorkbook, reason)
-    AssertEquals stats, "audit03.table.recovery", reason, vbNullString
+    TestAssertEquals stats, "audit03.table.recovery", reason, vbNullString
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.table.diagnostic.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.table.diagnostic.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
     If Len(savedName) > 0 Then
@@ -9944,18 +10202,20 @@ Restore:
     If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
     If Not relocated Is Nothing Then relocated.Clear
 Finish:
-    AppendLine stats, "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestAppendLine stats, "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03SP35TableDiagnosticTests = stats.Report
     Exit Function
 RestoreFailed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.table.diagnostic.restore; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.table.diagnostic.restore; " & CStr(Err.Number) & "; " & Err.Description
     Resume Finish
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ================== ДЛЯ ТЕСТОВ: ПОЯСНЕНИЯ FORMATION В ОТЧЕТЕ ==================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет реальный Batch -> Formation -> execution report для отсутствия
 ' трещины, найденной точки и непригодного фиксированного пути. Отчет не должен
 ' обещать psi=1 до результата Width или описывать прежний выбор Auto.
@@ -9965,6 +10225,7 @@ Public Function RunAudit03FormationReportTests() As String
     RunAudit03FormationReportTests = stats.Report & "TOTAL_AUDIT03_FORMATION_REPORT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Восстанавливает Config после четырех сценариев. Результат и исходный
 ' комментарий Formation сравниваются с фактически сохраненным txt-файлом;
 ' проверка чтения отчета не вызывает дополнительный solve.
@@ -9977,16 +10238,16 @@ Private Sub TestAudit03FormationReportNarrative(ByRef stats As TBatchTestStats)
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
-    SetSystemSetting "General.DiagramExtension", "No"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "SLS.Crack.PsiMode", "User"
-    SetSystemSetting "SLS.Crack.PsiS", "0.25"
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
-    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
-    Set section = BuildCircleStabilitySection(300#, 8, 20#)
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    TestSetSystemSetting "General.DiagramExtension", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "User"
+    TestSetSystemSetting "SLS.Crack.PsiS", "0.25"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    Set section = TestBuildCircleStabilitySection(300#, 8, 20#)
     loads = Array(-90000#, 1000#, 200000#, 100000#)
     paths = Array("Auto", "Auto", "Auto", "LambdaMx")
     For i = LBound(loads) To UBound(loads)
@@ -10001,36 +10262,36 @@ Private Sub TestAudit03FormationReportNarrative(ByRef stats As TBatchTestStats)
         Set result = batch.ResultAt(1): Set formation = result.CrackResult.Formation
         solves = SectionEquilibriumSolveCount()
         report.Save "Проверка пояснений результата Formation"
-        body = Audit03ReadUnicodeFile(report.FilePath)
+        body = TestAudit03ReadUnicodeFile(report.FilePath)
         prefix = "audit03.formationReport." & CStr(i)
-        AssertTrue stats, prefix & ".noAdditionalSolve", SectionEquilibriumSolveCount() = solves
-        AssertTrue stats, prefix & ".originalReason", InStr(1, body, formation.ResultMeta.ResultComment, vbBinaryCompare) > 0
-        AssertTrue stats, prefix & ".noPrematurePsi", InStr(1, body, "для ширины используется", vbTextCompare) = 0
-        AssertTrue stats, prefix & ".noObsoleteAuto", InStr(1, body, "Если путь дает только резервный результат", vbTextCompare) = 0
+        TestAssertTrue stats, prefix & ".noAdditionalSolve", SectionEquilibriumSolveCount() = solves
+        TestAssertTrue stats, prefix & ".originalReason", InStr(1, body, formation.ResultMeta.ResultComment, vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".noPrematurePsi", InStr(1, body, "для ширины используется", vbTextCompare) = 0
+        TestAssertTrue stats, prefix & ".noObsoleteAuto", InStr(1, body, "Если путь дает только резервный результат", vbTextCompare) = 0
         If CStr(paths(i)) = "Auto" Then
-            AssertTrue stats, prefix & ".singleComponentAuto", InStr(1, body, "При одной составляющей нагрузки", vbTextCompare) > 0
+            TestAssertTrue stats, prefix & ".singleComponentAuto", InStr(1, body, "При одной составляющей нагрузки", vbTextCompare) > 0
         End If
         If i = 0 Then
-            AssertTrue stats, prefix & ".confirmedWithoutPoint", formation.ConfirmedNotCracked And Not formation.HasLimitPoint
-            AssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
-            AssertTrue stats, prefix & ".absenceExplanation", InStr(1, body, "проверка ширины не выполняется", vbTextCompare) > 0
+            TestAssertTrue stats, prefix & ".confirmedWithoutPoint", formation.ConfirmedNotCracked And Not formation.HasLimitPoint
+            TestAssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
+            TestAssertTrue stats, prefix & ".absenceExplanation", InStr(1, body, "проверка ширины не выполняется", vbTextCompare) > 0
         ElseIf i = 1 Then
-            AssertTrue stats, prefix & ".confirmedWithPoint", formation.ConfirmedNotCracked And formation.HasLimitPoint
-            AssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
+            TestAssertTrue stats, prefix & ".confirmedWithPoint", formation.ConfirmedNotCracked And formation.HasLimitPoint
+            TestAssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
         ElseIf i = 2 Then
-            AssertTrue stats, prefix & ".foundPoint", formation.HasLimitPoint And formation.CrackFormed
-            AssertTrue stats, prefix & ".pointExplanation", InStr(1, body, "принята точка по пути", vbTextCompare) > 0
+            TestAssertTrue stats, prefix & ".foundPoint", formation.HasLimitPoint And formation.CrackFormed
+            TestAssertTrue stats, prefix & ".pointExplanation", InStr(1, body, "принята точка по пути", vbTextCompare) > 0
         Else
-            AssertTrue stats, prefix & ".unavailable", Not formation.HasLimitPoint And Not formation.ConfirmedNotCracked
-            AssertTrue stats, prefix & ".separateResults", InStr(1, body, "приведены в отдельных результатах трещин", vbTextCompare) > 0
+            TestAssertTrue stats, prefix & ".unavailable", Not formation.HasLimitPoint And Not formation.ConfirmedNotCracked
+            TestAssertTrue stats, prefix & ".separateResults", InStr(1, body, "приведены в отдельных результатах трещин", vbTextCompare) > 0
         End If
-        AppendLine stats, "FORMATION_REPORT: " & prefix & "|confirmedNotCracked=" & CStr(formation.ConfirmedNotCracked) & _
+        TestAppendLine stats, "FORMATION_REPORT: " & prefix & "|confirmedNotCracked=" & CStr(formation.ConfirmedNotCracked) & _
             "|point=" & CStr(formation.HasLimitPoint) & "|comment=" & formation.ResultMeta.ResultComment
     Next i
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.formationReport.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.formationReport.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -10038,11 +10299,13 @@ Restore:
     Exit Sub
 RestoreFailed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.formationReport.restore; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: audit03.formationReport.restore; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ================== ДЛЯ ТЕСТОВ: ОКРАСКА ИСХОДА FORMATION ==================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Запускает настоящий writer для BaseFail и двух признаков образования
 ' трещины. Внешний статус получает общую палитру, а Cracked/NotCracked
 ' остаются без заливки ошибки. Численные статусы и текст не меняются.
@@ -10053,6 +10316,7 @@ Public Function RunFormationStatusFormattingTests() As String
         CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает Config после трех нагрузок; цикл записи одного batch не
 ' запускает повторно равновесие и проверяет отсутствие старой заливки.
 Private Sub TestFormationStatusFormatting(ByRef stats As TBatchTestStats)
@@ -10063,14 +10327,14 @@ Private Sub TestFormationStatusFormatting(ByRef stats As TBatchTestStats)
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
-    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
-    SetSystemSetting "General.DiagramExtension", "Yes"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    TestSetSystemSetting "General.DiagramExtension", "Yes"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
     batch.AddCombination "FORMATION_BASE", 100000#, 10000000#, 0#, "PR2", "Постоянный момент уже образует трещину", "LambdaN"
     batch.AddCombination "FORMATION_CRACKED", 200000#, 0#, 0#, "PR2", "Образовавшаяся трещина", "Auto"
     batch.AddCombination "FORMATION_NOT_CRACKED", -90000#, 0#, 0#, "PR2", "Нет нормальной трещины", "Auto"
@@ -10084,20 +10348,20 @@ Private Sub TestFormationStatusFormatting(ByRef stats As TBatchTestStats)
         Dim row As Long
         For row = 1 To 3
             Set cell = anchor.Offset(row - 1, 24)
-            AssertEquals stats, "formation.format.status." & CStr(row), CStr(cell.Value2), CStr(statuses(row - 1))
+            TestAssertEquals stats, "formation.format.status." & CStr(row), CStr(cell.Value2), CStr(statuses(row - 1))
             If row = 1 Then
-                AssertTrue stats, "formation.format.baseFail.fill." & CStr(index), _
-                    StatusCellHasExpectedFill(cell.Worksheet, cell.Row, cell.Column)
+                TestAssertTrue stats, "formation.format.baseFail.fill." & CStr(index), _
+                    TestStatusCellHasExpectedFill(cell.Worksheet, cell.Row, cell.Column)
             Else
-                AssertTrue stats, "formation.format.domainLabel.neutral." & CStr(row) & "." & CStr(index), _
+                TestAssertTrue stats, "formation.format.domainLabel.neutral." & CStr(row) & "." & CStr(index), _
                     cell.Interior.ColorIndex = xlColorIndexNone And cell.DisplayFormat.Interior.ColorIndex = xlColorIndexNone
             End If
         Next row
     Next index
-    AssertTrue stats, "formation.format.noExtraSolve", batch.SolverCallCount = solveCount
+    TestAssertTrue stats, "formation.format.noExtraSolve", batch.SolverCallCount = solveCount
     GoTo Restore
 Failed:
-    AssertTrue stats, "formation.format.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "formation.format.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -10105,8 +10369,10 @@ Restore:
     On Error GoTo 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ================== ДЛЯ ТЕСТОВ: ЖИЗНЕННЫЙ ЦИКЛ POSTAUDIT03 ==================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет один живой Batch против свежего объекта после повторного запуска,
 ' смены профиля/порога/точки приложения. Использует реальные State/устойчивость;
 ' Config и пользовательский расчетный снимок в книге-источнике не изменяются.
@@ -10117,23 +10383,23 @@ Public Function RunPostAudit03LifecycleTests() As String
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
-    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
-    SetSystemSetting "Stability.ElementLength", "1000"
-    SetSystemSetting "Stability.Mu1", "1": SetSystemSetting "Stability.Mu2", "1"
-    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
-    SetSystemSetting "Stability.AccidentalEccentricityUser1", "10"
-    SetSystemSetting "Stability.AccidentalEccentricityUser2", "10"
-    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    TestSetSystemSetting "Stability.ElementLength", "1000"
+    TestSetSystemSetting "Stability.Mu1", "1": TestSetSystemSetting "Stability.Mu2", "1"
+    TestSetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser1", "10"
+    TestSetSystemSetting "Stability.AccidentalEccentricityUser2", "10"
+    TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
     For Each code In Array("SP63", "SP35")
         TestPostAudit03Lifecycle stats, CStr(code)
     Next code
     TestPostAudit03ModelMaterialLifecycle stats
     GoTo Restore
 Failed:
-    AssertTrue stats, "postAudit03.lifecycle.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "postAudit03.lifecycle.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -10143,14 +10409,15 @@ Restore:
         CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Смена модели и поставщика на том же объекте не переиспользует старые центры
 ' и состояния. Ранее выданный result сохраняет числа и прежние диаграммы.
 Private Sub TestPostAudit03ModelMaterialLifecycle(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator, fresh As CBatchSectionCalculator, section As CSectionModel
     Dim provider As CMaterialModelProvider, concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
     Dim settings As CSystemSettingsReader, retained As CCombinationResult, oldEps As Double, stepIndex As Long
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     For stepIndex = 1 To 3
         Set section = New CSectionModel
@@ -10160,7 +10427,7 @@ Private Sub TestPostAudit03ModelMaterialLifecycle(ByRef stats As TBatchTestStats
         section.AddRebarElement 90# + 20# * stepIndex, 60#, 20#, 0#, "A400"
         Set concrete = New CConcreteMaterialParameters: concrete.Initialize 15.5, 1.1, 22#, 1.8, 30000# + 1000# * stepIndex, 30000# + 1000# * stepIndex, rbMc2:=14.6
         Set steel = New CSteelMaterialParameters: steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
-        Set provider = New CMaterialModelProvider: provider.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
+        Set provider = New CMaterialModelProvider: provider.TestInitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
         If stepIndex = 1 Then Set batch = New CBatchSectionCalculator
         batch.Initialize section, provider: Set batch.ProfileCatalog = TestProfileCatalog(): batch.ApplySettings settings
         If stepIndex = 1 Then batch.AddCombination "REINIT", -100000#, 1000000#, 200000#, "PR1", "Исходные нагрузки", "Auto"
@@ -10168,15 +10435,16 @@ Private Sub TestPostAudit03ModelMaterialLifecycle(ByRef stats As TBatchTestStats
         Set fresh = New CBatchSectionCalculator: fresh.Initialize section, provider
         Set fresh.ProfileCatalog = TestProfileCatalog(): fresh.ApplySettings settings
         fresh.AddCombination "REINIT", -100000#, 1000000#, 200000#, "PR1", "Исходные нагрузки", "Auto": fresh.Execute
-        AssertPostAudit03BatchEqual stats, "postAudit03.lifecycle.reinitialize." & CStr(stepIndex), batch, fresh
+        TestAssertPostAudit03BatchEqual stats, "postAudit03.lifecycle.reinitialize." & CStr(stepIndex), batch, fresh
         If stepIndex = 1 Then
             Set retained = batch.ResultAt(1): oldEps = retained.StrengthResult.DirectState.StateResult.Epsilon0
         Else
-            AssertClose stats, "postAudit03.lifecycle.reinitialize.retained." & CStr(stepIndex), retained.StrengthResult.DirectState.StateResult.Epsilon0, oldEps, 0#
+            TestAssertClose stats, "postAudit03.lifecycle.reinitialize.retained." & CStr(stepIndex), retained.StrengthResult.DirectState.StateResult.Epsilon0, oldEps, 0#
         End If
     Next stepIndex
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Создает повторяемую нагрузку; единственные различия - запрошенное изменение
 ' настроек. Прежняя опубликованная ссылка обязана остаться неизменной.
 Private Sub TestPostAudit03Lifecycle(ByRef stats As TBatchTestStats, ByVal code As String)
@@ -10184,25 +10452,25 @@ Private Sub TestPostAudit03Lifecycle(ByRef stats As TBatchTestStats, ByVal code 
     Dim settings As CSystemSettingsReader, retained As CCombinationResult
     Dim oldMx As Double, oldEps As Double, oldStatus As String, stepIndex As Long, prefix As String
     prefix = "postAudit03.lifecycle." & code
-    SetSystemSetting "Stability.Code", code
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    TestSetSystemSetting "Stability.Code", code
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination "REPEAT", -120000#, 10000000#, 2000000#, "PR1", "Повторный запуск", "Auto"
     batch.Execute
-    AssertEquals stats, prefix & ".initial.stability", batch.ResultAt(1).StabilityResult.Status, "OK"
+    TestAssertEquals stats, prefix & ".initial.stability", batch.ResultAt(1).StabilityResult.Status, "OK"
     Set retained = batch.ResultAt(1)
     oldMx = retained.StabilityResult.DesignMx
     oldEps = retained.StrengthResult.DirectState.StateResult.Epsilon0
     oldStatus = retained.Status
     For stepIndex = 1 To 7
         Select Case stepIndex
-            Case 2: SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-            Case 3: SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
-            Case 4: SetSystemSetting "Calculation.ZeroMomentPerDepth", "100000"
-            Case 5: SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+            Case 2: TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+            Case 3: TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+            Case 4: TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "100000"
+            Case 5: TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
             Case 6: batch.ApplyLoadReference 33#, -41#
             Case 7: batch.ApplyLoadReference 0#, 0#
         End Select
@@ -10210,45 +10478,47 @@ Private Sub TestPostAudit03Lifecycle(ByRef stats As TBatchTestStats, ByVal code 
         Set batch.ProfileCatalog = TestProfileCatalog()
         batch.ApplySettings settings
         batch.Execute
-        Set fresh = BuildBatchCalculator(): fresh.ApplySettings settings
+        Set fresh = TestBuildBatchCalculator(): fresh.ApplySettings settings
         fresh.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
         fresh.AddCombination "REPEAT", -120000#, 10000000#, 2000000#, "PR1", "Повторный запуск", "Auto"
         If stepIndex = 6 Then fresh.ApplyLoadReference 33#, -41#
         fresh.Execute
-        AssertPostAudit03BatchEqual stats, prefix & ".step" & CStr(stepIndex), batch, fresh
-        AssertEquals stats, prefix & ".retained.status." & CStr(stepIndex), retained.Status, oldStatus
-        AssertClose stats, prefix & ".retained.mx." & CStr(stepIndex), retained.StabilityResult.DesignMx, oldMx, 0#
-        AssertClose stats, prefix & ".retained.eps." & CStr(stepIndex), retained.StrengthResult.DirectState.StateResult.Epsilon0, oldEps, 0#
+        TestAssertPostAudit03BatchEqual stats, prefix & ".step" & CStr(stepIndex), batch, fresh
+        TestAssertEquals stats, prefix & ".retained.status." & CStr(stepIndex), retained.Status, oldStatus
+        TestAssertClose stats, prefix & ".retained.mx." & CStr(stepIndex), retained.StabilityResult.DesignMx, oldMx, 0#
+        TestAssertClose stats, prefix & ".retained.eps." & CStr(stepIndex), retained.StrengthResult.DirectState.StateResult.Epsilon0, oldEps, 0#
     Next stepIndex
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сверяет рабочие нагрузки, метаданные и плоскость НДС с независимым новым
 ' Batch при тех же исходных числах. Допуски - штатные абсолютные solver tolerances.
-Private Sub AssertPostAudit03BatchEqual(ByRef stats As TBatchTestStats, ByVal prefix As String, _
+Private Sub TestAssertPostAudit03BatchEqual(ByRef stats As TBatchTestStats, ByVal prefix As String, _
         ByVal actual As CBatchSectionCalculator, ByVal expected As CBatchSectionCalculator)
-    AssertClose stats, prefix & ".N", actual.N(1), expected.N(1), 0#
-    AssertClose stats, prefix & ".Mx", actual.Mx(1), expected.Mx(1), 0.000001
-    AssertClose stats, prefix & ".My", actual.My(1), expected.My(1), 0.000001
-    AssertClose stats, prefix & ".loadPointMx", actual.UserMx(1), expected.UserMx(1), 0.000001
-    AssertClose stats, prefix & ".loadPointMy", actual.UserMy(1), expected.UserMy(1), 0.000001
-    AssertEquals stats, prefix & ".status", actual.ResultAt(1).Status, expected.ResultAt(1).Status
-    AssertTrue stats, prefix & ".internalStatus", actual.ResultAt(1).OverallMeta.InternalStatus = expected.ResultAt(1).OverallMeta.InternalStatus
-    AssertTrue stats, prefix & ".resultCode", actual.ResultAt(1).OverallMeta.ResultCode = expected.ResultAt(1).OverallMeta.ResultCode
+    TestAssertClose stats, prefix & ".N", actual.N(1), expected.N(1), 0#
+    TestAssertClose stats, prefix & ".Mx", actual.Mx(1), expected.Mx(1), 0.000001
+    TestAssertClose stats, prefix & ".My", actual.My(1), expected.My(1), 0.000001
+    TestAssertClose stats, prefix & ".loadPointMx", actual.UserMx(1), expected.UserMx(1), 0.000001
+    TestAssertClose stats, prefix & ".loadPointMy", actual.UserMy(1), expected.UserMy(1), 0.000001
+    TestAssertEquals stats, prefix & ".status", actual.ResultAt(1).Status, expected.ResultAt(1).Status
+    TestAssertTrue stats, prefix & ".internalStatus", actual.ResultAt(1).OverallMeta.InternalStatus = expected.ResultAt(1).OverallMeta.InternalStatus
+    TestAssertTrue stats, prefix & ".resultCode", actual.ResultAt(1).OverallMeta.ResultCode = expected.ResultAt(1).OverallMeta.ResultCode
     Dim a As CSectionStateResult, e As CSectionStateResult
     Set a = actual.ResultAt(1).StrengthResult.DirectState.StateResult
     Set e = expected.ResultAt(1).StrengthResult.DirectState.StateResult
-    AssertTrue stats, prefix & ".statesPresent", Not a Is Nothing And Not e Is Nothing
+    TestAssertTrue stats, prefix & ".statesPresent", Not a Is Nothing And Not e Is Nothing
     If a Is Nothing Then Exit Sub
     If e Is Nothing Then Exit Sub
-    AssertClose stats, prefix & ".eps", a.Epsilon0, e.Epsilon0, 0.000000000001
-    AssertClose stats, prefix & ".kx", a.KappaX, e.KappaX, 0.000000000001
-    AssertClose stats, prefix & ".ky", a.KappaY, e.KappaY, 0.000000000001
-    AssertClose stats, prefix & ".Nint", a.Nint, e.Nint, 5#
-    AssertClose stats, prefix & ".Mxint", a.Mxint, e.Mxint, 5000#
-    AssertClose stats, prefix & ".Myint", a.Myint, e.Myint, 5000#
+    TestAssertClose stats, prefix & ".eps", a.Epsilon0, e.Epsilon0, 0.000000000001
+    TestAssertClose stats, prefix & ".kx", a.KappaX, e.KappaX, 0.000000000001
+    TestAssertClose stats, prefix & ".ky", a.KappaY, e.KappaY, 0.000000000001
+    TestAssertClose stats, prefix & ".Nint", a.Nint, e.Nint, 5#
+    TestAssertClose stats, prefix & ".Mxint", a.Mxint, e.Mxint, 5000#
+    TestAssertClose stats, prefix & ".Myint", a.Myint, e.Myint, 5000#
 End Sub
 
-' ДЛЯ ТЕСТОВ: настоящие отказы Pre/Post и подтвержденные исходы Formation.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' настоящие отказы Pre/Post и подтвержденные исходы Formation.
 ' Writer проверяется в отдельном листе; исходные таблицы и якорь восстанавливаются.
 Public Function RunPostAudit03FormationTests() As String
     Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
@@ -10265,46 +10535,46 @@ Public Function RunPostAudit03FormationTests() As String
     Set sheet = ThisWorkbook.Worksheets.Add
     ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersTo = "='" & sheet.Name & "'!$C$20"
     Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
-    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
-    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
-    SetProfileValue "Calculation.Crack.Width", "PR1", "Yes"
-    SetProfileValue "MaterialModel.CrackedState.ValueSet", "PR1", "SLS(II)"
-    SetProfileValue "MaterialModel.CrackedState.ConcreteDiagram", "PR1", "TwoLine"
-    SetProfileValue "MaterialModel.CrackedState.ConcreteTension", "PR1", "Ignore"
-    SetProfileValue "MaterialModel.CrackedState.SteelDiagram", "PR1", "TwoLine"
-    SetProfileValue "MaterialModel.CrackInitiation.ValueSet", "PR1", "SLS(II)"
-    SetProfileValue "MaterialModel.CrackInitiation.ConcreteDiagram", "PR1", "ThreeLine"
-    SetProfileValue "MaterialModel.CrackInitiation.ConcreteTension", "PR1", "UseDiagram"
-    SetProfileValue "MaterialModel.CrackInitiation.SteelDiagram", "PR1", "TwoLine"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "SLS.Crack.Code", "SP63"
-    SetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
-    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "Yes"
+    TestSetProfileValue "MaterialModel.CrackedState.ValueSet", "PR1", "SLS(II)"
+    TestSetProfileValue "MaterialModel.CrackedState.ConcreteDiagram", "PR1", "TwoLine"
+    TestSetProfileValue "MaterialModel.CrackedState.ConcreteTension", "PR1", "Ignore"
+    TestSetProfileValue "MaterialModel.CrackedState.SteelDiagram", "PR1", "TwoLine"
+    TestSetProfileValue "MaterialModel.CrackInitiation.ValueSet", "PR1", "SLS(II)"
+    TestSetProfileValue "MaterialModel.CrackInitiation.ConcreteDiagram", "PR1", "ThreeLine"
+    TestSetProfileValue "MaterialModel.CrackInitiation.ConcreteTension", "PR1", "UseDiagram"
+    TestSetProfileValue "MaterialModel.CrackInitiation.SteelDiagram", "PR1", "TwoLine"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "SLS.Crack.Code", "SP63"
+    TestSetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
+    TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
     Set policy = New CResultStatusPolicy
     Set writer = New CCrackSummaryWriter
     For Each scenario In Array("preFailure", "postFailure", "cracked", "notCracked", "compression", "searchBound", "nonstandardLimits")
         prefix = "postAudit03.formation." & CStr(scenario)
         diameter = 20#: nValue = 200000#: mxValue = 0#: pathValue = "Auto"
-        SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
-        SetSystemSetting "Solver.MaxIterations", "100"
-        If scenario = "preFailure" Then SetSystemSetting "Solver.MaxIterations", "1"
+        TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+        TestSetSystemSetting "Solver.MaxIterations", "100"
+        If scenario = "preFailure" Then TestSetSystemSetting "Solver.MaxIterations", "1"
         If scenario = "postFailure" Then diameter = 2#
         If scenario = "notCracked" Then nValue = 1000#
         If scenario = "compression" Then nValue = -100000#
         Set provider = TestMaterialProvider(False)
         If scenario = "searchBound" Then
             nValue = -20000#: mxValue = -1#: pathValue = "lambda*Mxy"
-            SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "LoadMultiplier"
+            TestSetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "LoadMultiplier"
         End If
         If scenario = "nonstandardLimits" Then
             nValue = 2000000#
             Dim cp As CConcreteMaterialParameters, sp As CSteelMaterialParameters
             Set cp = New CConcreteMaterialParameters: cp.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
             Set sp = New CSteelMaterialParameters: sp.Initialize 350#, 350#, 390#, 390#, 10000000#, 10000000#, twoLineEs2:=0.00005
-            Set provider = New CMaterialModelProvider: provider.InitializeFromParameters cp, sp, diagramExtensionEnabled:=True
+            Set provider = New CMaterialModelProvider: provider.TestInitializeFromParameters cp, sp, diagramExtensionEnabled:=True
         End If
-        Set batch = BuildPostAudit03FormationBatch(diameter, provider)
+        Set batch = TestBuildPostAudit03FormationBatch(diameter, provider)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         batch.ApplySettings settings
         batch.AddCombination "FORMATION", nValue, mxValue, 0#, "PR1", CStr(scenario), pathValue
@@ -10312,52 +10582,52 @@ Public Function RunPostAudit03FormationTests() As String
         Set result = batch.ResultAt(1): Set formation = result.CrackResult.Formation
         solves = batch.SolverCallCount
         writer.WriteSummary ThisWorkbook, batch
-        AssertTrue stats, prefix & ".noWriterSolve", batch.SolverCallCount = solves
-        AssertEquals stats, prefix & ".comment", CStr(anchor.Offset(0, 1).Value2), CalculationResultMessage(batch, 1, result.CrackSummaryMeta)
-        If Not formation.PreCrackState Is Nothing Then AssertEquals stats, prefix & ".preDisplay", _
+        TestAssertTrue stats, prefix & ".noWriterSolve", batch.SolverCallCount = solves
+        TestAssertEquals stats, prefix & ".comment", CStr(anchor.Offset(0, 1).Value2), CalculationResultMessage(batch, 1, result.CrackSummaryMeta)
+        If Not formation.PreCrackState Is Nothing Then TestAssertEquals stats, prefix & ".preDisplay", _
             CStr(anchor.Offset(0, 20).Value2), policy.ExternalStatus(formation.PreCrackState.ResultMeta)
-        If Not formation.PostCrackState Is Nothing Then AssertEquals stats, prefix & ".postDisplay", _
+        If Not formation.PostCrackState Is Nothing Then TestAssertEquals stats, prefix & ".postDisplay", _
             CStr(anchor.Offset(0, 23).Value2), policy.ExternalStatus(formation.PostCrackState.ResultMeta)
         Select Case CStr(scenario)
             Case "preFailure"
-                AssertTrue stats, prefix & ".analyticNumberPrepared", formation.Ncrc > 0#
-                AssertTrue stats, prefix & ".preFailed", Not formation.PreCrackState.Converged
-                AssertTrue stats, prefix & ".noPoint", Not formation.HasLimitPoint
-                AssertTrue stats, prefix & ".unknownFact", Not formation.ConfirmedNotCracked And Not formation.ConfirmedCracked
-                AssertEquals stats, prefix & ".noFalseNotCracked", CStr(anchor.Offset(0, 24).Value2), policy.ExternalStatus(formation.ResultMeta)
-                AssertEquals stats, prefix & ".noFalseNcrc", CStr(anchor.Offset(0, 12).Value2), policy.NotApplicable
+                TestAssertTrue stats, prefix & ".analyticNumberPrepared", formation.Ncrc > 0#
+                TestAssertTrue stats, prefix & ".preFailed", Not formation.PreCrackState.Converged
+                TestAssertTrue stats, prefix & ".noPoint", Not formation.HasLimitPoint
+                TestAssertTrue stats, prefix & ".unknownFact", Not formation.ConfirmedNotCracked And Not formation.ConfirmedCracked
+                TestAssertEquals stats, prefix & ".noFalseNotCracked", CStr(anchor.Offset(0, 24).Value2), policy.ExternalStatus(formation.ResultMeta)
+                TestAssertEquals stats, prefix & ".noFalseNcrc", CStr(anchor.Offset(0, 12).Value2), policy.NotApplicable
             Case "postFailure"
-                AssertTrue stats, prefix & ".acceptedPre", formation.PreCrackState.Converged And formation.PreCrackState.WithinPhysicalRange
-                AssertTrue stats, prefix & ".postFailed", Not formation.PostCrackState.Converged Or Not formation.PostCrackState.WithinPhysicalRange
-                AssertTrue stats, prefix & ".pointPreserved", formation.HasLimitPoint
-                AssertTrue stats, prefix & ".factPreserved", formation.ConfirmedCracked And Not formation.ConfirmedNotCracked
-                AssertEquals stats, prefix & ".displayCracked", CStr(anchor.Offset(0, 24).Value2), "Cracked"
-                AssertClose stats, prefix & ".centralNcrcWithoutWidth", CDbl(anchor.Offset(0, 12).Value2), formation.Ncrc, 0#
-                AssertTrue stats, prefix & ".widthUnavailable", Not result.CrackWidthMeta.Calculated
+                TestAssertTrue stats, prefix & ".acceptedPre", formation.PreCrackState.Converged And formation.PreCrackState.WithinPhysicalRange
+                TestAssertTrue stats, prefix & ".postFailed", Not formation.PostCrackState.Converged Or Not formation.PostCrackState.WithinPhysicalRange
+                TestAssertTrue stats, prefix & ".pointPreserved", formation.HasLimitPoint
+                TestAssertTrue stats, prefix & ".factPreserved", formation.ConfirmedCracked And Not formation.ConfirmedNotCracked
+                TestAssertEquals stats, prefix & ".displayCracked", CStr(anchor.Offset(0, 24).Value2), "Cracked"
+                TestAssertClose stats, prefix & ".centralNcrcWithoutWidth", CDbl(anchor.Offset(0, 12).Value2), formation.Ncrc, 0#
+                TestAssertTrue stats, prefix & ".widthUnavailable", Not result.CrackWidthMeta.Calculated
             Case "cracked"
-                AssertTrue stats, prefix & ".acceptedPoint", formation.HasLimitPoint And formation.ConfirmedCracked
-                AssertEquals stats, prefix & ".display", CStr(anchor.Offset(0, 24).Value2), "Cracked"
-                AssertTrue stats, prefix & ".widthCalculated", result.CrackWidthMeta.Calculated
+                TestAssertTrue stats, prefix & ".acceptedPoint", formation.HasLimitPoint And formation.ConfirmedCracked
+                TestAssertEquals stats, prefix & ".display", CStr(anchor.Offset(0, 24).Value2), "Cracked"
+                TestAssertTrue stats, prefix & ".widthCalculated", result.CrackWidthMeta.Calculated
             Case "notCracked", "compression"
-                AssertTrue stats, prefix & ".confirmedNoCrack", formation.ConfirmedNotCracked
-                AssertEquals stats, prefix & ".display", CStr(anchor.Offset(0, 24).Value2), "NotCracked"
-                AssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
+                TestAssertTrue stats, prefix & ".confirmedNoCrack", formation.ConfirmedNotCracked
+                TestAssertEquals stats, prefix & ".display", CStr(anchor.Offset(0, 24).Value2), "NotCracked"
+                TestAssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
             Case "searchBound"
-                AssertTrue stats, prefix & ".technicalCode", formation.ResultMeta.ResultCode = rcSearchBoundReached
-                AssertTrue stats, prefix & ".noPointNoFact", Not formation.HasLimitPoint And Not formation.ConfirmedNotCracked And Not formation.ConfirmedCracked
-                AssertEquals stats, prefix & ".displayActualFailure", CStr(anchor.Offset(0, 24).Value2), policy.ExternalStatus(formation.ResultMeta)
+                TestAssertTrue stats, prefix & ".technicalCode", formation.ResultMeta.ResultCode = rcSearchBoundReached
+                TestAssertTrue stats, prefix & ".noPointNoFact", Not formation.HasLimitPoint And Not formation.ConfirmedNotCracked And Not formation.ConfirmedCracked
+                TestAssertEquals stats, prefix & ".displayActualFailure", CStr(anchor.Offset(0, 24).Value2), policy.ExternalStatus(formation.ResultMeta)
             Case "nonstandardLimits"
-                AssertTrue stats, prefix & ".validDifferentOrder", provider.SteelTensionLimitFromSpec(formation.PreCrackState.MaterialSpec) < provider.ConcreteTensionLimitFromSpec(formation.PreCrackState.MaterialSpec)
-                AssertTrue stats, prefix & ".physicalPreFail", formation.PreCrackState.Converged And Not formation.PreCrackState.WithinPhysicalRange
-                AssertEquals stats, prefix & ".physicalDisplay", CStr(anchor.Offset(0, 20).Value2), "FAIL"
-                AssertTrue stats, prefix & ".noFalseNotCracked", Not formation.ConfirmedNotCracked
+                TestAssertTrue stats, prefix & ".validDifferentOrder", provider.SteelTensionLimitFromSpec(formation.PreCrackState.MaterialSpec) < provider.ConcreteTensionLimitFromSpec(formation.PreCrackState.MaterialSpec)
+                TestAssertTrue stats, prefix & ".physicalPreFail", formation.PreCrackState.Converged And Not formation.PreCrackState.WithinPhysicalRange
+                TestAssertEquals stats, prefix & ".physicalDisplay", CStr(anchor.Offset(0, 20).Value2), "FAIL"
+                TestAssertTrue stats, prefix & ".noFalseNotCracked", Not formation.ConfirmedNotCracked
         End Select
-        AppendLine stats, prefix & "; status=" & policy.ExternalStatus(formation.ResultMeta) & _
+        TestAppendLine stats, prefix & "; status=" & policy.ExternalStatus(formation.ResultMeta) & _
             "; point=" & CStr(formation.HasLimitPoint) & "; comment=" & formation.ResultMeta.ResultComment
     Next scenario
     GoTo Restore
 Failed:
-    AssertTrue stats, "postAudit03.formation.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "postAudit03.formation.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem
@@ -10369,8 +10639,9 @@ Restore:
     RunPostAudit03FormationTests = stats.Report & "TOTAL_POSTAUDIT03_FORMATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' ДЛЯ ТЕСТОВ: симметричная модель с изменяемой арматурой, без искусственной meta.
-Private Function BuildPostAudit03FormationBatch(ByVal diameter As Double, ByVal provider As CMaterialModelProvider) As CBatchSectionCalculator
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' симметричная модель с изменяемой арматурой, без искусственной meta.
+Private Function TestBuildPostAudit03FormationBatch(ByVal diameter As Double, ByVal provider As CMaterialModelProvider) As CBatchSectionCalculator
     Dim section As CSectionModel, x As Variant, y As Variant, batch As CBatchSectionCalculator
     Set section = New CSectionModel
     For Each x In Array(-75#, 75#)
@@ -10385,10 +10656,11 @@ Private Function BuildPostAudit03FormationBatch(ByVal diameter As Double, ByVal 
     Next x
     Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
     Set batch.ProfileCatalog = TestProfileCatalog()
-    Set BuildPostAudit03FormationBatch = batch
+    Set TestBuildPostAudit03FormationBatch = batch
 End Function
 
-' ДЛЯ ТЕСТОВ: владельцы готовят физический/extended-снимок по фактическим
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' владельцы готовят физический/extended-снимок по фактическим
 ' материалам. Последующая замена исходных диаграмм не меняет опубликованный state.
 Public Function RunPostAudit03SnapshotOwnerTests() As String
     Dim stats As TBatchTestStats, section As CSectionModel, concrete As CMaterialDiagram, steel As CMaterialDiagram
@@ -10415,12 +10687,12 @@ Public Function RunPostAudit03SnapshotOwnerTests() As String
         eps = -0.001: If mode = 1 Then eps = -0.01
         Set solver = New CSectionSolver
         solver.EvaluateStrainPlane section, concrete, steel, eps, 0.000001, -0.0000005
-        AssertTrue stats, "postAudit03.snapshot.confirm." & CStr(mode), solver.ConfirmEquilibrium(solver.Nint, solver.Mxint, solver.Myint)
+        TestAssertTrue stats, "postAudit03.snapshot.confirm." & CStr(mode), solver.ConfirmEquilibrium(solver.Nint, solver.Mxint, solver.Myint)
         Set state = New CSectionStateResult
         state.InitializeFromSolver sstStrengthState, cpStrength, spec, solver, mode = 1, mode = 0
         data = state.PrepareElementSnapshot(section)
-        AssertTrue stats, "postAudit03.snapshot.materials." & CStr(mode), state.HasMaterialSnapshot
-        AssertTrue stats, "postAudit03.snapshot.points." & CStr(mode), state.ConcreteDiagramSnapshot.PointCount = concrete.PointCount
+        TestAssertTrue stats, "postAudit03.snapshot.materials." & CStr(mode), state.HasMaterialSnapshot
+        TestAssertTrue stats, "postAudit03.snapshot.points." & CStr(mode), state.ConcreteDiagramSnapshot.PointCount = concrete.PointCount
         For i = 1 To 4
             If i <= 2 Then
                 actualStrain = eps + 0.000001 * section.ConcreteY(i) - 0.0000005 * section.ConcreteX(i)
@@ -10430,41 +10702,41 @@ Public Function RunPostAudit03SnapshotOwnerTests() As String
                 Set physical = steel.Clone(mode = 0)
             End If
             expectedStress = physical.GetStress(actualStrain)
-            AssertClose stats, "postAudit03.snapshot.strain." & CStr(mode) & "." & CStr(i), CDbl(data(i, 3)), actualStrain, 0#
-            AssertClose stats, "postAudit03.snapshot.stress." & CStr(mode) & "." & CStr(i), CDbl(data(i, 4)), expectedStress, 0.000000001
+            TestAssertClose stats, "postAudit03.snapshot.strain." & CStr(mode) & "." & CStr(i), CDbl(data(i, 3)), actualStrain, 0#
+            TestAssertClose stats, "postAudit03.snapshot.stress." & CStr(mode) & "." & CStr(i), CDbl(data(i, 4)), expectedStress, 0.000000001
         Next i
         For i = 1 To 5: stresses(i) = stresses(i) * 2#: Next i
         concrete.InitializeFromArrays strains, stresses, 5
         steel.InitializeFromArrays strains, stresses, 5
         again = state.PrepareElementSnapshot(section)
         For i = 1 To 4
-            AssertClose stats, "postAudit03.snapshot.retained." & CStr(mode) & "." & CStr(i), CDbl(again(i, 4)), CDbl(data(i, 4)), 0#
+            TestAssertClose stats, "postAudit03.snapshot.retained." & CStr(mode) & "." & CStr(i), CDbl(again(i, 4)), CDbl(data(i, 4)), 0#
         Next i
         On Error Resume Next
         state.ConcreteDiagramSnapshot.InitializeFromArrays strains, stresses, 5
         number = Err.Number: Err.Clear
         On Error GoTo Failed
-        AssertTrue stats, "postAudit03.snapshot.frozen." & CStr(mode), number = vbObjectError + 3114
+        TestAssertTrue stats, "postAudit03.snapshot.frozen." & CStr(mode), number = vbObjectError + 3114
     Next mode
     Set provider = TestMaterialProvider()
     Set properties = PrepareSectionSnapshot(section, provider)
     Set baseline = New CSectionPropertiesCalculator: baseline.CalculateConcrete section
-    AssertClose stats, "postAudit03.snapshot.area", properties.Area, baseline.Area, 0#
-    AssertClose stats, "postAudit03.snapshot.Ix", properties.Ixc, baseline.Ixc, 0#
-    AssertClose stats, "postAudit03.snapshot.Iy", properties.Iyc, baseline.Iyc, 0#
-    AssertTrue stats, "postAudit03.snapshot.noSolve", SectionEquilibriumSolveCount() = solves
+    TestAssertClose stats, "postAudit03.snapshot.area", properties.Area, baseline.Area, 0#
+    TestAssertClose stats, "postAudit03.snapshot.Ix", properties.Ixc, baseline.Ixc, 0#
+    TestAssertClose stats, "postAudit03.snapshot.Iy", properties.Iyc, baseline.Iyc, 0#
+    TestAssertTrue stats, "postAudit03.snapshot.noSolve", SectionEquilibriumSolveCount() = solves
     section.AddRebarElement 0#, 0#, 10#, 0#, "A400"
     On Error Resume Next
     again = state.PrepareElementSnapshot(section): number = Err.Number: Err.Clear
     On Error GoTo Failed
-    AssertTrue stats, "postAudit03.snapshot.modelRevisionRejected", number = vbObjectError + 3974
+    TestAssertTrue stats, "postAudit03.snapshot.modelRevisionRejected", number = vbObjectError + 3974
     On Error Resume Next
     properties.ValidateSnapshot section: number = Err.Number: Err.Clear
     On Error GoTo Failed
-    AssertTrue stats, "postAudit03.snapshot.propertiesRevisionRejected", number = vbObjectError + 2215
+    TestAssertTrue stats, "postAudit03.snapshot.propertiesRevisionRejected", number = vbObjectError + 2215
     GoTo Finished
 Failed:
-    AssertTrue stats, "postAudit03.snapshot.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "postAudit03.snapshot.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     RunPostAudit03SnapshotOwnerTests = stats.Report & "TOTAL_POSTAUDIT03_SNAPSHOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function

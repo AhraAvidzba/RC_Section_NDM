@@ -99,9 +99,7 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
             If edges(i).Sweep = 0# Then
                 If (edges(i).X2 - edges(i).X1) * (original.X2 - original.X1) + (edges(i).Y2 - edges(i).Y1) * (original.Y2 - original.Y1) <= QUERY_TOLERANCE Then _
                     GeometryError "После смещения у прямого участка не осталось положительной длины. Уменьшите расстояние смещения или увеличьте размеры исходного контура.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), distance
-                ' После соединения продолжений длина отрезка может измениться. Сохраняем
-                ' соответствие новых концов параметрам исходного отрезка для правильных привязок.
-                tx = original.X2 - original.X1: ty = original.Y2 - original.Y1
+                tx = original.X2 - original.X1: ty = original.Y2 - original.Y1 ' После соединения продолжений длина отрезка может измениться. Сохраняем соответствие новых концов параметрам исходного отрезка для правильных привязок.
                 lengthSquared = tx * tx + ty * ty: span = sourceLast - sourceFirst
                 sourceLast = sourceFirst + span * ((edges(i).X2 - original.X1) * tx + (edges(i).Y2 - original.Y1) * ty) / lengthSquared
                 sourceFirst = sourceFirst + span * ((edges(i).X1 - original.X1) * tx + (edges(i).Y1 - original.Y1) * ty) / lengthSquared
@@ -117,10 +115,8 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
         If Not boundary Is Nothing Then result.SetOffsetBoundary OffsetPath(pathID & ".Boundary", boundary, distance * source.BoundaryDirection), source.BoundaryDirection
     End If
     result.Seal source.IsClosed
-    ' Проверяем замкнутость и отсутствие недопустимых пересечений всего контура.
-    ' Выбирать только один длинный участок вместо исправления ошибки нельзя.
     Dim region As CConcreteRegion
-    If result.IsClosed Then Set region = RegionFromPath(result)
+    If result.IsClosed Then Set region = RegionFromPath(result) ' Проверяем весь замкнутый контур; выбор одного подходящего участка не должен скрыть самопересечение.
     Set OffsetPath = result
 End Function
 
@@ -146,9 +142,19 @@ Private Sub RequireOffsetCorner(ByVal pathID As String, ByVal source As CGeometr
     If Not SameOffsetTangent(ax, ay, bx, by) Then GoTo NoCorner
     Exit Sub
 NoCorner:
-    If source.IsClosed And source.SegmentCount = 1 Then source.ValidateNormalTransfer 0#, distance
+    If source.IsClosed And source.SegmentCount = 1 Then
+        On Error GoTo TransferFailed
+        source.ValidateNormalTransfer 0#, distance
+        On Error GoTo 0
+    End If
     GeometryError "После смещения дуга исчезла, а соседних касательных прямых для образования угла нет. Уменьшите расстояние смещения.", _
         "OFFSET_DISAPPEARED", pathID, source.SegmentID(index), radius, distance
+    Exit Sub
+TransferFailed:
+    Dim failureNumber As Long, failureSource As String, failureDescription As String
+    failureNumber = Err.Number: failureSource = Err.Source: failureDescription = Err.Description ' Чтение диагностики не должно изменить исходное исключение проверки полного круга.
+    Set mDiagnostic = source.LastDiagnostic ' Сохраняем причину и ID исходной линии для LastGeometryDiagnostic фасада, включая привязку к введённому радиусу.
+    Err.Raise failureNumber, failureSource, failureDescription
 End Sub
 
 ' Сравнивает направления касательных без зависимости от длины исходных отрезков.
@@ -194,9 +200,7 @@ Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryP
     endParameter = source.SourceStartParameter(1) + (source.SourceEndParameter(1) - source.SourceStartParameter(1)) * last / length
     edge.X2 = edge.X1 + last * tx: edge.Y2 = edge.Y1 + last * ty
     edge.X1 = edge.X1 + first * tx: edge.Y1 = edge.Y1 + first * ty
-    ' Координатные ограничения задают координату точно, без потери разрядов
-    ' на вычитании и повторном сложении большого смещения начала линии.
-    If startNY = 0# Then edge.X1 = startBound / startNX
+    If startNY = 0# Then edge.X1 = startBound / startNX ' Координатные ограничения задают координату точно, без потери разрядов на вычитании и повторном сложении большого смещения начала линии.
     If startNX = 0# Then edge.Y1 = startBound / startNY
     If endNY = 0# Then edge.X2 = endBound / endNX
     If endNX = 0# Then edge.Y2 = endBound / endNY
@@ -331,17 +335,14 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
                 Exit For
             End If
         Next i
-        depth = 0
+        depth = 0 ' Чётная вложенность означает наружный материал, нечётная — отверстие.
         For otherLoop = 1 To loops
             If otherLoop <> loopID Then
                 Erase oneLoop: oneCount = 0
                 For j = 1 To count
                     If ordered(j).LoopID = otherLoop Then AppendEdge oneLoop, oneCount, ordered(j)
                 Next j
-                ' Для внутренней проверки временно направляем обход контура против часовой
-                ' стрелки.
-                ' Исходное направление объекта на результат проверки не влияет.
-                If SignedLoopArea(ordered, count, otherLoop) < 0# Then
+                If SignedLoopArea(ordered, count, otherLoop) < 0# Then ' Для внутренней проверки временно направляем обход контура против часовой стрелки. Исходное направление объекта на результат проверки не влияет.
                     For j = 1 To oneCount: modGeometryPrimitives.ReverseEdge oneLoop(j): Next j
                 End If
                 If ContainsRaw(oneLoop, oneCount, x, y, False) Then depth = depth + 1
@@ -380,9 +381,7 @@ Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As 
                 If Not adjacent Or (cuts(k) > PARAM_TOLERANCE And cuts(k) < 1# - PARAM_TOLERANCE) Then _
                     GeometryError "Заданная геометрия содержит пересечение, касание независимых замкнутых контуров или дублирующее ребро."
             Next k
-            ' Полностью совпадающие сегменты могут иметь только концевые
-            ' пересечения. Проверяем их середины без аппроксимации дуг.
-            modGeometryPrimitives.EdgePoint edges(i), 0.5, x, y
+            modGeometryPrimitives.EdgePoint edges(i), 0.5, x, y ' Полностью совпадающие сегменты могут иметь только концевые пересечения. Проверяем их середины без аппроксимации дуг.
             If modGeometryPrimitives.PointParameter(edges(j), x, y, u) Then
                 If u > PARAM_TOLERANCE And u < 1# - PARAM_TOLERANCE Then _
                     GeometryError "Заданный контур содержит совпадающие граничные сегменты."
@@ -617,9 +616,7 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
     End If
     Dim minimum As Double, maximum As Double, roundoff As Double
     ProjectionBounds region, nx, ny, minimum, maximum
-    ' Не разбиваем область при касании ее крайней точки. Здесь учитывается
-    ' только ошибка Double при переносе координат, не геометрический допуск.
-    roundoff = 3.5527136788005E-15 * (Abs(minimum) + Abs(maximum) + Abs(bound) + 1#)
+    roundoff = 3.5527136788005E-15 * (Abs(minimum) + Abs(maximum) + Abs(bound) + 1#) ' Не разбиваем область при касании ее крайней точки. Здесь учитывается только ошибка Double при переносе координат, не геометрический допуск.
     If bound <= minimum + roundoff Then
         Set ClipHalfPlane = region.Clone
         Exit Function
@@ -645,22 +642,17 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
         Next j
         For j = 1 To cutCount - 1
             modGeometryPrimitives.EdgePoint raw(i), 0.5 * (cuts(j) + cuts(j + 1)), x, y
-            ' Короткая поддуга возле касания может целиком лежать внутри,
-            ' но ближе допуска к прямой. Ее удаление разрывает контур.
-            If nx * x + ny * y > bound Then
+            If nx * x + ny * y > bound Then ' Короткая поддуга возле касания может целиком лежать внутри, но ближе допуска к прямой. Ее удаление разрывает контур.
                 modGeometryPrimitives.SubEdge raw(i), cuts(j), cuts(j + 1), piece
-                ' Совпадающий с прямой отрезок создается ниже один раз.
                 If Abs(piece.Sweep) > PARAM_TOLERANCE Or _
                         Abs(nx * piece.X1 + ny * piece.Y1 - bound) > QUERY_TOLERANCE Or _
                         Abs(nx * piece.X2 + ny * piece.Y2 - bound) > QUERY_TOLERANCE Then _
-                    AppendEdge output, outputCount, piece
+                    AppendEdge output, outputCount, piece ' Совпадающий с прямой отрезок создается ниже один раз.
             End If
         Next j
     Next i
 
-    ' Между соседними пересечениями принадлежность постоянна. Проверяем
-    ' саму середину: фиксированное смещение может перескочить узкий сегмент.
-    SortScalars lineCuts, lineCount
+    SortScalars lineCuts, lineCount ' Между соседними пересечениями принадлежность постоянна. Проверяем саму середину: фиксированное смещение может перескочить узкий сегмент.
     Dim s1 As Double, s2 As Double, mid As Double
     For i = 1 To lineCount - 1
         s1 = lineCuts(i): s2 = lineCuts(i + 1): mid = 0.5 * (s1 + s2)
@@ -729,10 +721,7 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
     Dim piece As TRegionEdge, tangentX As Double, tangentY As Double, length As Double
     Dim leftInside As Boolean, rightInside As Boolean, seen As Object
     Set seen = CreateObject("Scripting.Dictionary")
-    ' Выбранный бетонный участок может измениться только у вершин, крайних точек дуг
-    ' и пересечений с опорной линией. Поэтому проверяем эти положения,
-    ' сохраняя сами дуги точными при вычислении границ и площади.
-    For i = 1 To rawCount
+    For i = 1 To rawCount ' Выбранный бетонный участок может измениться только у вершин, крайних точек дуг и пересечений с опорной линией. Поэтому проверяем эти положения, сохраняя сами дуги точными при вычислении границ и площади.
         Erase cuts: cutCount = 0
         modGeometryPrimitives.AddScalar cuts, cutCount, 0#: modGeometryPrimitives.AddScalar cuts, cutCount, 1#
         For j = 1 To transverseCount
@@ -756,9 +745,7 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
             End If
         Next j
     Next i
-    ' Добавляем границы, за которыми отверстие прерывает связь с опорной линией.
-    ' Эти отрезки отделяют доступную стенку от дальнего бетона за пустотой.
-    Dim intervals As Variant, nCuts() As Double, nCount As Long, n1 As Double, n2 As Double, t As Double
+    Dim intervals As Variant, nCuts() As Double, nCount As Long, n1 As Double, n2 As Double, t As Double ' Добавляем границы, за которыми отверстие прерывает связь с опорной линией. Эти отрезки отделяют доступную стенку от дальнего бетона за пустотой.
     For i = 1 To transverseCount
         t = transverseCuts(i)
         intervals = LineIntervals(region, -ny * t, nx * t, nx, ny)
@@ -767,10 +754,7 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
             For j = LBound(intervals, 1) To UBound(intervals, 1)
                 modGeometryPrimitives.AddScalar nCuts, nCount, intervals(j, 1): modGeometryPrimitives.AddScalar nCuts, nCount, intervals(j, 2)
             Next j
-            ' Если опорная линия совпала с гранью отверстия, сохраняем также реальные точки
-            ' их пересечения. Иначе замыкающий отрезок можно ошибочно продлить за край
-            ' отверстия.
-            For k = 1 To rawCount
+            For k = 1 To rawCount ' Если опорная линия совпала с гранью отверстия, сохраняем также реальные точки их пересечения. Иначе замыкающий отрезок можно ошибочно продлить за край отверстия.
                 Erase cuts: cutCount = 0
                 modGeometryPrimitives.HalfPlaneCuts raw(k), -ny, nx, t, cuts, cutCount
                 modGeometryPrimitives.AddScalar cuts, cutCount, 0#: modGeometryPrimitives.AddScalar cuts, cutCount, 1#
@@ -803,9 +787,7 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
         End If
     Next i
     Dim normalized() As TRegionEdge, normalizedCount As Long
-    ' Новая граница выбранной стенки может совпасть с частью исходной грани.
-    ' Разделяем наложенные участки и оставляем одну общую границу.
-    NormalizeBoundary boundary, boundaryCount, normalized, normalizedCount
+    NormalizeBoundary boundary, boundaryCount, normalized, normalizedCount ' Новая граница выбранной стенки может совпасть с частью исходной грани. Разделяем наложенные участки и оставляем одну общую границу.
     Set MaterialRegionThroughPlane = MakeRegion(normalized, normalizedCount, region.Source, region.SectionRevision)
     MaterialRegionThroughPlane.SetOwner region.OwnerID, region.Standard, region.AnchorID
 End Function
@@ -815,7 +797,7 @@ End Function
 Private Function InMaterialIntervalThroughPlane(ByVal region As CConcreteRegion, ByVal nx As Double, _
         ByVal ny As Double, ByVal seedPlane As Double, ByVal x As Double, ByVal y As Double) As Boolean
     Dim t As Double, n As Double, intervals As Variant, i As Long
-    t = -ny * x + nx * y: n = nx * x + ny * y - seedPlane
+    t = -ny * x + nx * y: n = nx * x + ny * y - seedPlane ' Координаты вдоль поперечного направления и вдоль нормали от опорной линии.
     intervals = LineIntervals(region, nx * seedPlane - ny * t, ny * seedPlane + nx * t, nx, ny)
     If IsEmpty(intervals) Then Exit Function
     For i = LBound(intervals, 1) To UBound(intervals, 1)
@@ -850,7 +832,7 @@ Private Sub AppendUniqueBoundary(ByRef edges() As TRegionEdge, ByRef count As Lo
     AppendEdge edges, count, edge
 End Sub
 
-' Проверяет, принадлежит ли точка бетонной области. При Boundary = True
+' Проверяет, принадлежит ли точка бетонной области. При includeBoundary = True
 ' точки на наружном контуре и контуре отверстия считаются принадлежащими области.
 ' Точки внутри отверстия всегда отклоняются.
 Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double, _
@@ -933,8 +915,9 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygon
     Set RoundedPolygon = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs, edgeIDs, cornerIDs)
 End Function
 
-' Преобразует вершины CPolygonSpec во внутренние массивы координат, радиусов и имён.
-' Размеры массивов должны совпадать; рецепты сечения напрямую эти массивы не задают.
+' Строит точные касательные отрезки и дуги по согласованным массивам вершин, радиусов и имён.
+' Проверяет исходный многоугольник, размещение соседних скруглений и весь готовый контур;
+' исчезнувшие прямые и нулевые скругления сохраняет как именованные точки привязки.
 Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
         ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal edgeIDs As Variant, ByVal cornerIDs As Variant) As CGeometryPath
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
@@ -955,7 +938,7 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
         directions(i).Y = (raw(i).Y2 - raw(i).Y1) / lengths(i)
     Next i
     Dim original As CConcreteRegion
-    Set original = BoundaryRegion(raw, count)
+    Set original = BoundaryRegion(raw, count) ' Проверяем исходные прямые на замкнутость и самопересечения до построения скруглений.
     Dim cross As Double, dot As Double, side As Double
     For i = 1 To count
         previous = (i + count - 2) Mod count + 1
@@ -965,10 +948,9 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
         If radius(i) > 0# Then
             If Abs(turns(i)) <= PARAM_TOLERANCE Or Abs(Abs(turns(i)) - GEOM_PI) <= PARAM_TOLERANCE Then _
                 GeometryError "Скругление у вершины '" & names(i) & "' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу. Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.", "FILLET_ANGLE", pathID, CStr(cornerIDs(i - 1))
-            distances(i) = radius(i) * Tan(Abs(turns(i)) / 2#)
-            ' Концы очень короткой дуги нельзя надёжно различить с точностью геометрического ядра.
+            distances(i) = radius(i) * Tan(Abs(turns(i)) / 2#) ' Расстояние от исходной вершины до касания скругления вдоль каждой соседней прямой, мм.
             If 2# * radius(i) * Abs(Sin(turns(i) / 2#)) <= QUERY_TOLERANCE Then _
-                GeometryError "Скругление у вершины '" & names(i) & "' слишком мало для надёжного построения: концы дуги практически совпадают. Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.", "FILLET_TOO_SHORT", pathID, CStr(cornerIDs(i - 1))
+                GeometryError "Скругление у вершины '" & names(i) & "' слишком мало для надёжного построения: концы дуги практически совпадают. Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.", "FILLET_TOO_SHORT", pathID, CStr(cornerIDs(i - 1)) ' Концы очень короткой дуги нельзя надёжно различить с точностью геометрического ядра.
         End If
         first(i).X = points(i).X - directions(previous).X * distances(i)
         first(i).Y = points(i).Y - directions(previous).Y * distances(i)
@@ -1004,9 +986,7 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
         End If
     Next i
     result.Seal True
-    ' Проверяем весь готовый контур, чтобы обнаружить пересечения скруглений
-    ' не только у соседних вершин.
-    Dim prepared As CConcreteRegion
+    Dim prepared As CConcreteRegion ' Проверяем весь готовый контур, чтобы обнаружить пересечения скруглений не только у соседних вершин.
     Set prepared = RegionFromPath(result)
     Set RoundedPolygonKernel = result
 End Function
@@ -1043,7 +1023,7 @@ Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertic
         signedArea = signedArea + (points(i).X - points(1).X) * (points(following).Y - points(1).Y) - _
             (points(following).X - points(1).X) * (points(i).Y - points(1).Y)
     Next i
-    orientation = Sgn(signedArea)
+    orientation = Sgn(signedArea) ' Знак исходного обхода отделяет внутреннее смещение от левой нормали готовой линии.
     Dim cross As Double, dot As Double, beforeX As Double, beforeY As Double, afterX As Double, afterY As Double, parameter As Double
     Dim shiftedVertices() As Variant, shiftedRadii() As Variant
     ReDim shiftedVertices(0 To count - 1): ReDim shiftedRadii(0 To count - 1)
@@ -1065,7 +1045,7 @@ Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertic
         End If
         shiftedVertices(i - 1) = Array(shifted(i).X, shifted(i).Y)
         If radius(i) > 0# Then
-            shiftedRadii(i - 1) = GeomMax(0#, radius(i) - distance * orientation * Sgn(cross))
+            shiftedRadii(i - 1) = GeomMax(0#, radius(i) - distance * orientation * Sgn(cross)) ' У выпуклого угла радиус уменьшается внутрь; исчезнувшая дуга становится острым стыком.
         Else
             shiftedRadii(i - 1) = 0#
         End If
@@ -1076,8 +1056,7 @@ Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertic
             directions(i).Y * (shifted(following).Y - shifted(i).Y)
         If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": после смещения прямой участок '" & edgeIDs(i - 1) & "' исчез или изменил направление. Уменьшите расстояние смещения или увеличьте размеры исходного контура.", "OFFSET_DISAPPEARED", pathID, CStr(edgeIDs(i - 1)), distance, dot
     Next i
-    ' Проверяем радиусы и самопересечения общими средствами проверки контура.
-    Set OffsetRoundedPolygonKernel = RoundedPolygonKernel(pathID, shiftedVertices, shiftedRadii, vertexIDs, edgeIDs, cornerIDs)
+    Set OffsetRoundedPolygonKernel = RoundedPolygonKernel(pathID, shiftedVertices, shiftedRadii, vertexIDs, edgeIDs, cornerIDs) ' Проверяем радиусы и самопересечения общими средствами проверки контура.
 End Function
 
 ' Копирует исходные вершины и радиусы из описания во внутренние массивы
@@ -1149,7 +1128,8 @@ Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As V
     Set AdjacentRectangles = result
 End Function
 
-' Разбирает компактную запись координат, переданную программно, без чтения Excel.
+' Проверяет согласованность массивов координат, радиусов и уникальных имён вершин.
+' Исходные индексы могут начинаться с любого числа; рабочие массивы переводятся к диапазону 1..count.
 Private Sub ReadPolygonInput(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, _
         ByVal vertexIDs As Variant, ByRef points() As TPoint2D, ByRef radius() As Double, ByRef names() As String, ByRef count As Long)
     On Error GoTo Invalid
@@ -1210,8 +1190,8 @@ Friend Function ContainsMeshPoint(ByVal region As CConcreteRegion, ByRef edges()
     ContainsMeshPoint = ContainsRaw(edges, count, x, y, False)
 End Function
 
-' Проверяет, не проходит ли узкий вырез через ячейку с четырьмя углами внутри бетона.
-' Генератор сетки получает точные границы один раз и не зависит от типа сечения.
+' Копирует точные наружные отрезки и дуги один раз для последующих проверок пересечения ячеек.
+' Отверстия в этот массив не входят: генератор отдельно проверяет их габариты.
 Friend Sub CopyMeshOuterEdges(ByVal contours As CSectionContours, ByRef edges() As TRegionEdge, ByRef count As Long)
     Dim holes() As TRegionEdge, holeCount As Long
     Erase edges: count = 0
@@ -1395,9 +1375,7 @@ Private Sub EnsureDomain()
     End If
     Dim raw() As TRegionEdge, count As Long, i As Long
     If outerCount > 0 Then
-        ' Известный наружный контур задает всю область. Учитываем только
-        ' заданные отверстия; неизвестные пустоты по сетке не добавляются.
-        OrientLoops outer, outerCount, False
+        OrientLoops outer, outerCount, False ' Известный наружный контур задает всю область. Учитываем только заданные отверстия; неизвестные пустоты по сетке не добавляются.
         For i = 1 To outerCount
             AppendEdge raw, count, outer(i)
         Next i
@@ -1544,8 +1522,8 @@ Public Sub RegionCentroid(ByVal region As CConcreteRegion, ByRef x As Double, By
         edge.CenterX = edge.CenterX - originX: edge.CenterY = edge.CenterY - originY
         area = area + EdgeSignedArea(edge)
         If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
-            momentX = momentX + (edge.Y2 - edge.Y1) * (edge.X1 ^ 2 + edge.X1 * edge.X2 + edge.X2 ^ 2) / 6#
-            momentY = momentY - (edge.X2 - edge.X1) * (edge.Y1 ^ 2 + edge.Y1 * edge.Y2 + edge.Y2 ^ 2) / 6#
+            momentX = momentX + (edge.Y2 - edge.Y1) * (edge.X1 ^ 2 + edge.X1 * edge.X2 + edge.X2 ^ 2) / 6# ' Интеграл x dA по формуле Грина; момент относительно оси Y, мм3.
+            momentY = momentY - (edge.X2 - edge.X1) * (edge.Y1 ^ 2 + edge.Y1 * edge.Y2 + edge.Y2 ^ 2) / 6# ' Интеграл y dA по формуле Грина; момент относительно оси X, мм3.
         Else
             radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
             a = modGeometryPrimitives.AngleOf(edge.X1 - edge.CenterX, edge.Y1 - edge.CenterY): b = a + edge.Sweep
@@ -1608,7 +1586,7 @@ Private Sub NormalizeBoundary(ByRef raw() As TRegionEdge, ByVal rawCount As Long
                 leftInside = ContainsRaw(raw, rawCount, x - ty / length * QUERY_TOLERANCE * 8#, y + tx / length * QUERY_TOLERANCE * 8#, False)
                 rightInside = ContainsRaw(raw, rawCount, x + ty / length * QUERY_TOLERANCE * 8#, y - tx / length * QUERY_TOLERANCE * 8#, False)
                 If leftInside <> rightInside Then
-                    If rightInside Then modGeometryPrimitives.ReverseEdge part
+                    If rightInside Then modGeometryPrimitives.ReverseEdge part ' Итоговая граница всегда ориентирована так, чтобы бетон оставался слева.
                     key = PointKey(part.X1, part.Y1) & "/" & PointKey(part.X2, part.Y2) & "/" & Format$(part.Sweep, "0.0000000000")
                     If Not seen.Exists(key) Then
                         AppendEdge boundary, boundaryCount, part
@@ -1736,11 +1714,9 @@ Private Function EdgeSignedArea(ByRef edge As TRegionEdge, Optional ByVal origin
     If Abs(edge.Sweep) > PARAM_TOLERANCE Then
         Dim radiusSquared As Double, segmentAngle As Double, square As Double
         radiusSquared = (edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2
-        ' Площадь между хордой и дугой без вычитания больших глобальных
-        ' координат; ряд сохраняет точность при почти касательном отсечении.
-        If Abs(edge.Sweep) < 0.01 Then
+        If Abs(edge.Sweep) < 0.01 Then ' Площадь между хордой и дугой без вычитания больших глобальных координат; ряд сохраняет точность при почти касательном отсечении.
             square = edge.Sweep * edge.Sweep
-            segmentAngle = edge.Sweep * square * (1# / 6# - square / 120# + square * square / 5040#)
+            segmentAngle = edge.Sweep * square * (1# / 6# - square / 120# + square * square / 5040#) ' Ряд для sweep - sin(sweep) избегает потери значащих разрядов у малых дуг.
         Else
             segmentAngle = edge.Sweep - Sin(edge.Sweep)
         End If
@@ -1760,10 +1736,7 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
             If modGeometryPrimitives.PointParameter(edges(i), x, y, u) Then ContainsRaw = True: Exit Function
         End If
         If Abs(edges(i).Sweep) <= PARAM_TOLERANCE Then
-            ' На стыке дуги с отрезком считаем общий конец одной вершиной.
-            ' Малую погрешность sin/cos учитываем тем же линейным допуском,
-            ' который применяется в остальных проверках дуг.
-            f1 = edges(i).Y1 - y: f2 = edges(i).Y2 - y
+            f1 = edges(i).Y1 - y: f2 = edges(i).Y2 - y ' На стыке дуги с отрезком считаем общий конец одной вершиной. Малую погрешность sin/cos учитываем тем же линейным допуском, который применяется в остальных проверках дуг.
             If Abs(f1) <= QUERY_TOLERANCE Then f1 = 0#
             If Abs(f2) <= QUERY_TOLERANCE Then f2 = 0#
             If (f1 <= 0# And f2 > 0#) Or (f2 <= 0# And f1 > 0#) Then
@@ -1773,17 +1746,13 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
         Else
             Erase cuts: cutCount = 0
             modGeometryPrimitives.HalfPlaneCuts edges(i), 0#, 1#, y, cuts, cutCount
-            ' Угловой параметр может выйти за [0,1] при луче в пределах
-            ' линейного допуска от конца дуги. Сохраняем саму общую вершину.
-            If Abs(edges(i).Y1 - y) <= QUERY_TOLERANCE Then modGeometryPrimitives.AddScalar cuts, cutCount, 0#
+            If Abs(edges(i).Y1 - y) <= QUERY_TOLERANCE Then modGeometryPrimitives.AddScalar cuts, cutCount, 0# ' Угловой параметр может выйти за [0,1] при луче в пределах линейного допуска от конца дуги. Сохраняем саму общую вершину.
             If Abs(edges(i).Y2 - y) <= QUERY_TOLERANCE Then modGeometryPrimitives.AddScalar cuts, cutCount, 1#
             countedStart = False: countedEnd = False
             For j = 1 To cutCount
                 u = cuts(j)
                 If u >= 0# And u <= 1# Then
-                    ' Если точка близка к общей вершине дуги и отрезка, проверяем её
-                    ' по тому же линейному допуску, а не по отдельному угловому допуску.
-                    If u * modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 0#
+                    If u * modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 0# ' Если точка близка к общей вершине дуги и отрезка, проверяем её по тому же линейному допуску, а не по отдельному угловому допуску.
                     If (1# - u) * modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 1#
                     If u = 0# Then
                         If countedStart Then GoTo NextCrossing
@@ -1795,10 +1764,7 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
                     modGeometryPrimitives.EdgePoint edges(i), u, px, py
                     modGeometryPrimitives.EdgeTangent edges(i), u, tx, ty
                     dy = ty
-                    ' Как у отрезков, учитываем нижний конец и исключаем
-                    ' верхний. Просто [0,1) для дуги неверно при стыке с
-                    ' направленным вниз отрезком и может заполнить пустоту.
-                    If px > x And Abs(dy) > QUERY_TOLERANCE Then
+                    If px > x And Abs(dy) > QUERY_TOLERANCE Then ' Как у отрезков, учитываем нижний конец и исключаем верхний. Просто [0,1) для дуги неверно при стыке с направленным вниз отрезком и может заполнить пустоту.
                         If (u > PARAM_TOLERANCE And u < 1# - PARAM_TOLERANCE) Or _
                                 (u <= PARAM_TOLERANCE And dy > 0#) Or _
                                 (u >= 1# - PARAM_TOLERANCE And dy < 0#) Then winding = winding + Sgn(dy)
@@ -1915,7 +1881,8 @@ End Sub
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: возвращает число фактических построений области, без учёта выдачи готовых копий.
-Friend Property Get DomainBuildCount() As Long
-    DomainBuildCount = mDomainBuildCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает число фактических построений области, без учёта выдачи готовых копий.
+Friend Property Get TestDomainBuildCount() As Long
+    TestDomainBuildCount = mDomainBuildCount
 End Property

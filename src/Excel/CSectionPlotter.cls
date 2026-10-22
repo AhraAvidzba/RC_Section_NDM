@@ -13,7 +13,7 @@ Option Explicit
 ' Отрисовка расчётного сечения на диаграмме Excel
 ' ==========================================================================
 ' Рисует схему по сохранённым данным Results, прочитанным CSectionPlotDataReader.
-' Из Config получает оформление; геометрия и нагрузки относятся к последнему расчёту.
+' Из Config получает оформление; геометрию и нагрузки берёт из сохранённого снимка Results.
 ' На обычных и средних сетках выводит элементы через Chart.Shapes с сохранением
 ' их размеров. Для очень больших сеток применяет ряды диаграммы с группировкой
 ' по цвету, чтобы ограничить объём отрисовки.
@@ -133,7 +133,7 @@ Private Sub Class_Initialize()
     Set mUnits = New CUnitSystem
 End Sub
 
-' Перестраивает схему по данным последнего расчета.
+' Перестраивает схему по данным сохранённого сечения.
 ' Метод управляет порядком операций: подготовка chart, равный масштаб X/Y,
 ' расчетные элементы, Shape-аннотации и верхний служебный Shape-оверлей.
 Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
@@ -141,8 +141,7 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     If data Is Nothing Then Err.Raise vbObjectError + 4801, "CSectionPlotter", "Данные схемы не переданы."
     If settings Is Nothing Then Err.Raise vbObjectError + 4802, "CSectionPlotter", "Настройки Config не переданы."
 
-    ' Проверяем активное оформление до очистки существующей схемы.
-    Set mAnnotationLayout = New CPlotAnnotationLayout
+    Set mAnnotationLayout = New CPlotAnnotationLayout ' Проверяем активное оформление до очистки существующей схемы.
     mAnnotationLayout.ConfigureFromSettings settings
     If mAnnotationLayout.DimensionsEnabled Then
         mDimensionArrowType = settings.GetRequiredChoice("Plot.Dimensions.ArrowType", Array("Triangle", "Stealth", "Diamond", "Oval", "Open"))
@@ -239,10 +238,7 @@ Private Function EnsureChart(ByVal sheet As Object) As Object
         Set chartObject = sheet.ChartObjects.Add(anchor.Left, anchor.Top, 820, 540)
         chartObject.Name = CHART_NAME
     End If
-    ' Существующая XY-схема уже имеет две числовые оси. Повторное присвоение
-    ' ChartType заполненной Shape-схеме сбивает подсветку ссылок Excel.
-    ' Новый контейнер или вручную изменённый иной тип переводим в XY один раз.
-    Select Case chartObject.Chart.ChartType
+    Select Case chartObject.Chart.ChartType ' Существующая XY-схема уже имеет две числовые оси. Повторное присвоение ChartType заполненной Shape-схеме сбивает подсветку ссылок Excel. Новый контейнер или вручную изменённый иной тип переводим в XY один раз.
         Case XL_XY_SCATTER, XL_XY_SCATTER_SMOOTH, XL_XY_SCATTER_SMOOTH_NO_MARKERS, _
                 XL_XY_SCATTER_LINES, XL_XY_SCATTER_LINES_NO_MARKERS
         Case Else
@@ -501,9 +497,7 @@ Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     buckets.CompareMode = vbTextCompare
 
     Dim i As Long
-    ' Объединяем одинаково оформленные элементы в одну Chart series;
-    ' координаты и расчетные значения отдельных элементов не меняются.
-    For i = 1 To data.Count
+    For i = 1 To data.Count ' Объединяем одинаково оформленные элементы в одну Chart series; координаты и расчетные значения отдельных элементов не меняются.
         Dim key As String
         key = ElementBucketKey(data, i)
         Dim indexList As Collection
@@ -562,10 +556,8 @@ Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
         End If
     Next itemIndex
 
-    ' Координаты и порядок фигур индивидуальны; одинаковое оформление
-    ' применяем сразу ко всему набору, сокращая обращения к Excel.
     Dim groupKey As Variant, lineColor As Long, weight As Double
-    For Each groupKey In groups.Keys
+    For Each groupKey In groups.Keys ' Координаты и порядок фигур индивидуальны; одинаковое оформление применяем сразу ко всему набору, сокращая обращения к Excel.
         colorValue = CLng(Mid$(CStr(groupKey), 3))
         If Left$(CStr(groupKey), 1) = "R" Then
             lineColor = RGB(0, 0, 0): weight = 0.55
@@ -817,10 +809,8 @@ Private Sub DrawAnalysisOverlay(ByVal data As CSectionPlotDataReader)
     If mLoadPointEnabled Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), MSO_SHAPE_DIAMOND, "LoadPoint"
 End Sub
 
-' Добавляет к geometry-only схеме только те ориентиры, которые не требуют
-' найденной плоскости деформаций. Этот режим используется для preview после
-' AutoCAD-import: можно показать геометрию, главные оси и точку нагрузки,
-' но нельзя рисовать нейтральную линию, легенду и подписи Stress/Strain.
+' Рисует доступные справочные оси и точку нагрузки при просмотре геометрии
+' без НДС. Координаты берёт из сохранённых свойств, оформление — из настроек схемы.
 Private Sub DrawGeometryReferenceOverlay(ByVal data As CSectionPlotDataReader)
     If Not data.GeometryReferenceItemsEnabled Then Exit Sub
     If PrincipalAxesModeDraws(mPrincipalAxesMode) Then DrawPrincipalAxes data, mPrincipalAxesMode
@@ -960,8 +950,9 @@ Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
     Next i
 End Sub
 
-' Рисует дугу одним открытым Freeform с прежними точками хорд через 5 градусов.
-' Незамкнутый путь и выключенная заливка не добавляют хорду между концами дуги.
+' Рисует сохранённую аналитическую дугу ломаной для Excel Chart.
+' Шаг не превышает 5 градусов, число отрезков не меньше шести;
+' дискретизация влияет только на рисунок, а не на расчётную геометрию.
 Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
         ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
         ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double)
@@ -1009,13 +1000,13 @@ End Sub
 ' определяет границы по бетонным элементам.
 Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
     Dim a As Double, b As Double, c As Double
-    a = data.KappaY
+    a = data.KappaY ' Нулевая деформация записана как a*x + b*y + c = 0; коэффициенты переставлены относительно kappaX/kappaY.
     b = data.KappaX
     c = data.Epsilon0
     If Abs(a) + Abs(b) < 0.000000000001 Then Exit Sub
 
     Dim dx As Double, dy As Double
-    dx = -b
+    dx = -b ' Касательная к нейтральной линии перпендикулярна нормали (a, b).
     dy = a
     Dim norm As Double
     norm = Sqr(dx * dx + dy * dy)
@@ -1056,7 +1047,7 @@ Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
 End Sub
 
 ' Находит пересечения нейтральной линии с сохранённым контуром сечения.
-' Для Generated-сечений это основной и наиболее точный путь обрезки линии.
+' Использует точные исходные границы независимо от способа формирования сечения.
 Private Sub CollectContourIntersections(ByVal data As CSectionPlotDataReader, ByVal a As Double, _
         ByVal b As Double, ByVal c As Double, ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByRef values() As Double, ByRef count As Long)
@@ -1134,10 +1125,10 @@ Private Sub AddCircleLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
     Dim vx As Double, vy As Double, tCenter As Double, d2 As Double, halfChord As Double
     vx = centerX - x0
     vy = centerY - y0
-    tCenter = vx * dirX + vy * dirY
-    d2 = vx * vx + vy * vy - tCenter * tCenter
+    tCenter = vx * dirX + vy * dirY ' Проекция центра на единичное направление линии, мм.
+    d2 = vx * vx + vy * vy - tCenter * tCenter ' Квадрат расстояния от центра окружности до линии, мм2.
     If d2 > radius * radius + 0.0000001 Then Exit Sub
-    If d2 < 0# Then d2 = 0#
+    If d2 < 0# Then d2 = 0# ' Отрицательный остаток возможен из-за округления разности почти равных квадратов.
     halfChord = Sqr(MaxDouble(radius * radius - d2, 0#))
     AddUniqueLineT tCenter - halfChord, values, count
     AddUniqueLineT tCenter + halfChord, values, count
@@ -1145,7 +1136,7 @@ End Sub
 
 ' Добавляет пересечения расчетной линии с дуговым сегментом контура.
 ' Сначала решается пересечение с полной окружностью, затем точки фильтруются
-' по signed sweep дуги от ее начальной точки.
+' по знаковому углу обхода дуги от её начальной точки.
 Private Sub AddArcLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal centerX As Double, _
         ByVal centerY As Double, ByVal arcStartX As Double, ByVal arcStartY As Double, _
@@ -1157,10 +1148,10 @@ Private Sub AddArcLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
     Dim vx As Double, vy As Double, tCenter As Double, d2 As Double, halfChord As Double
     vx = centerX - x0
     vy = centerY - y0
-    tCenter = vx * dirX + vy * dirY
-    d2 = vx * vx + vy * vy - tCenter * tCenter
+    tCenter = vx * dirX + vy * dirY ' Проекция центра на единичное направление линии, мм.
+    d2 = vx * vx + vy * vy - tCenter * tCenter ' Квадрат расстояния от центра окружности до линии, мм2.
     If d2 > radius * radius + 0.0000001 Then Exit Sub
-    If d2 < 0# Then d2 = 0#
+    If d2 < 0# Then d2 = 0# ' Отрицательный остаток возможен из-за округления разности почти равных квадратов.
     halfChord = Sqr(MaxDouble(radius * radius - d2, 0#))
     AddArcIntersectionCandidate x0, y0, dirX, dirY, centerX, centerY, arcStartX, arcStartY, _
         sweepAngle, tCenter - halfChord, values, count
@@ -1379,16 +1370,11 @@ Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing
     Dim bestDistanceByCell As Object
     Set bestDistanceByCell = CreateObject("Scripting.Dictionary")
 
-    ' Пространственные подписи выбираются не по ElementID, а по расчетной сетке ячеек.
-    ' Для каждой ячейки оставляем ближайшее бетонное волокно к ее центру, поэтому подписи
-    ' распределяются по площади сечения равномернее и не зависят от порядка записи элементов.
     Dim i As Long
-    For i = 1 To data.Count
+    For i = 1 To data.Count ' Пространственные подписи выбираются не по ElementID, а по расчетной сетке ячеек. Для каждой ячейки оставляем ближайшее бетонное волокно к ее центру, поэтому подписи распределяются по площади сечения равномернее и не зависят от порядка записи элементов.
         If StrComp(data.MaterialType(i), "Concrete", vbTextCompare) = 0 And _
                 StrComp(data.PhysicalState(i), "InactiveTensionConcrete", vbTextCompare) <> 0 Then
-            ' Номера ячеек выбора подписей могут быть больше диапазона Long.
-            ' Мелкий положительный шаг оформления допустим и не меняет расчётные Results.
-            Dim cellX As Double
+            Dim cellX As Double ' Номера ячеек выбора подписей могут быть больше диапазона Long. Мелкий положительный шаг оформления допустим и не меняет расчётные Results.
             Dim cellY As Double
             cellX = Int((data.X(i) - mMinX) / spacing)
             cellY = Int((data.Y(i) - mMinY) / spacing)
@@ -1432,9 +1418,7 @@ Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)
     barW = 18
     barH = 96
 
-    ' Легенда использует те же диапазоны, что и цвет элементов. В режиме Separate бетон и
-    ' арматура получают независимые шкалы, поэтому их экстремумы не смешиваются визуально.
-    If IsCommonLegendMode() Then
+    If IsCommonLegendMode() Then ' Легенда использует те же диапазоны, что и цвет элементов. В режиме Separate бетон и арматура получают независимые шкалы, поэтому их экстремумы не смешиваются визуально.
         DrawChartLegendScale data, leftPos, topPos, barW, barH, "Rebar", _
             mHasCompression, mCompressionValueAtMaxAbs, mHasTension, mTensionValueAtMaxAbs
     Else
@@ -1792,8 +1776,7 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
     Dim orientation As Long
     orientation = MSO_TEXT_ORIENTATION_HORIZONTAL
     If useNativeVerticalText And Abs(rotation) = 90# Then
-        ' Знак вертикального угла задаёт направление чтения, не меняя рамку подписи.
-        If rotation < 0# Then orientation = MSO_TEXT_ORIENTATION_DOWNWARD Else orientation = MSO_TEXT_ORIENTATION_UPWARD
+        If rotation < 0# Then orientation = MSO_TEXT_ORIENTATION_DOWNWARD Else orientation = MSO_TEXT_ORIENTATION_UPWARD ' Знак вертикального угла задаёт направление чтения, не меняя рамку подписи.
     End If
 
     Dim textShape As Object
@@ -1817,9 +1800,7 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
     textShape.Fill.Visible = False
     If rotation <> 0# And orientation = MSO_TEXT_ORIENTATION_HORIZONTAL Then
         textShape.Rotation = rotation
-        ' После поворота текста Excel меняет его внешнюю рамку.
-        ' Возвращаем центр надписи в вычисленную точку, сохраняя заданный TextGap.
-        textShape.Left = centerX - textShape.Width / 2#
+        textShape.Left = centerX - textShape.Width / 2# ' После поворота текста Excel меняет его внешнюю рамку. Возвращаем центр надписи в вычисленную точку, сохраняя заданный TextGap.
         textShape.Top = centerY - textShape.Height / 2#
     End If
     Set AddChartText = textShape
@@ -1861,18 +1842,12 @@ End Function
 ' использовать один и тот же снимок размеров.
 Private Sub CapturePlotAreaMetrics()
     If mElementShapeLayerEnabled Then
-        ' В Shape-режиме все расчетные элементы и служебные линии живут в
-        ' нашей собственной рамке Chart. Это защищает схему от небольших
-        ' автоматических смещений Excel PlotArea между первым и повторным
-        ' построением одного и того же графика.
-        mPlotLeft = PLOT_FRAME_LEFT
+        mPlotLeft = PLOT_FRAME_LEFT ' В Shape-режиме все расчетные элементы и служебные линии живут в нашей собственной рамке Chart. Это защищает схему от небольших автоматических смещений Excel PlotArea между первым и повторным построением одного и того же графика.
         mPlotTop = PLOT_FRAME_TOP
         mPlotWidth = StablePlotFrameWidth()
         mPlotHeight = StablePlotFrameHeight()
     Else
-        ' При групповой отрисовке маркерами XY-диаграммы привязываем
-        ' контуры и подписи к фактической области построения этих рядов.
-        mPlotLeft = mChart.PlotArea.InsideLeft
+        mPlotLeft = mChart.PlotArea.InsideLeft ' При групповой отрисовке маркерами XY-диаграммы привязываем контуры и подписи к фактической области построения этих рядов.
         mPlotTop = mChart.PlotArea.InsideTop
         mPlotWidth = mChart.PlotArea.InsideWidth
         mPlotHeight = mChart.PlotArea.InsideHeight
@@ -2010,7 +1985,8 @@ Private Function IsEquivalentAreaFallbackElement(ByVal data As CSectionPlotDataR
         (data.Width(index) <= 0# Or data.Height(index) <= 0#)
 End Function
 
-' Локальный atan2 для среднего угла визуальной сетки.
+' Возвращает угол atan2(y, x) в радианах для ориентации элементов
+' и граничных дуг, включая все квадранты и осевые направления.
 Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     If Abs(x) <= 0.000000000001 Then
         If y > 0# Then

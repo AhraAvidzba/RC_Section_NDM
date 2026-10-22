@@ -78,7 +78,7 @@ try {
     $modified.Add('modPlateauSlopeProbe')
     if ($FixAxialAssertions) {
         $body=Get-Body 'modTestBatchCalculation'
-        $body=Transform-Method $body 'Audit03CheckCapacityPath' {
+        $body=Transform-Method $body 'TestAudit03CheckCapacityPath' {
             param($method)
             $method=Replace-Exact $method 'Optional ByVal includeUnscaledPath As Boolean = False)' 'Optional ByVal includeUnscaledPath As Boolean = False, Optional ByVal offsetX As Double = 10#, Optional ByVal offsetY As Double = -7#)'
             $method=Replace-Exact $method '(referenceY - 7#)' '(referenceY + offsetY)'
@@ -99,11 +99,11 @@ try {
             }
         }
         if ($FixSP35Assertions) {
-            $body=Transform-Method $body 'Audit03CheckResultComments' {
+            $body=Transform-Method $body 'TestAudit03CheckResultComments' {
                 param($method)
                 Replace-Exact $method 'If Not result.CrackResult.Formation.HasLimitPoint And result.CrackWidthMeta.Calculated Then' 'If result.CrackResult.Width.StandardCode = "SP63" And Not result.CrackResult.Formation.HasLimitPoint And result.CrackWidthMeta.Calculated Then'
             }
-            $body=Transform-Method $body 'Audit03CheckAppliedPsiMode' {
+            $body=Transform-Method $body 'TestAudit03CheckAppliedPsiMode' {
                 param($method)
                 Replace-Exact $method '    If Not result.CrackWidthMeta.Calculated Then Exit Sub' '    If result.CrackResult.Width.StandardCode <> "SP63" Or Not result.CrackWidthMeta.Calculated Then Exit Sub'
             }

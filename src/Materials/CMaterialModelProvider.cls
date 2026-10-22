@@ -237,10 +237,10 @@ Private Function BuildSteelThreeLine(ByVal limitStateGroup As String) As CMateri
 
     epsSc0 = rsc / mSteelParameters.Esc + 0.002
     epsSc1 = 0.9 * rsc / mSteelParameters.Esc
-    epsScPl = 2# * epsSc0 - epsSc1
+    epsScPl = 2# * epsSc0 - epsSc1 ' Абсцисса достижения 1,1 Rsc при продолжении наклона между точками 0,9 Rsc и Rsc.
     epsS0 = rs / mSteelParameters.Es + 0.002
     epsS1 = 0.9 * rs / mSteelParameters.Es
-    epsSPl = 2# * epsS0 - epsS1
+    epsSPl = 2# * epsS0 - epsS1 ' Аналогичная точка 1,1 Rs для растянутой ветви; характеристики сжатия и растяжения независимы.
 
     Dim eps(1 To 9) As Double
     Dim sig(1 To 9) As Double
@@ -273,7 +273,7 @@ End Function
 ' Отключённая нулевая ветвь, физические пределы и отдельное продолжение диаграммы не меняются.
 Private Sub ApplyPlateauSlope(ByRef strains() As Double, ByRef stresses() As Double, ByVal count As Long, _
         ByVal compressionE As Double, ByVal tensionE As Double)
-    Dim zero As Long, i As Long, previous As Double, original As Double, offset As Double
+    Dim zero As Long, i As Long, previous As Double, original As Double, offset As Double ' previous — исходное напряжение соседнего узла; offset накапливает поправку наклона для непрерывности следующих участков.
     For i = 1 To count
         If strains(i) = 0# And stresses(i) = 0# Then zero = i: Exit For
     Next i
@@ -876,9 +876,10 @@ End Sub
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: позволяет задать материалы программно для проверок диаграмм и расчётных случаев
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' позволяет задать материалы программно для проверок диаграмм и расчётных случаев
 ' без чтения Config. Обычный запуск книги использует Initialize(settings, units).
-Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMaterialParameters, _
+Public Sub TestInitializeFromParameters(ByVal concreteParameters As CConcreteMaterialParameters, _
         ByVal steelParameters As CSteelMaterialParameters, _
         Optional ByVal strengthConcreteDiagram As String = "TwoLine", _
         Optional ByVal strengthConcreteTension As String = "Ignore", _

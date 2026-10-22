@@ -13,9 +13,10 @@ Private mSnapshotReadTables As Object ' Таблицы одной операци
 Private mSnapshotReadWorkbook As Object ' Книга, которой принадлежат временно прочитанные таблицы.
 Private mSnapshotTableReadCount As Long ' ДЛЯ ТЕСТОВ: число загрузок целых таблиц; чтения при поиске границ сюда не входят.
 
-' Восстанавливает CSectionModel из Results во внутренних единицах.
-' Площадь и моменты инерции импортированных элементов сохраняются отдельно
-' от их изображения. Если сохранённой геометрии нет, выдаёт ошибку.
+' Восстанавливает расчётную модель из обязательных координат, площадей,
+' инерций и исходных контуров Results в мм, мм2 и мм4. При includeOptionalData=True
+' дополнительно читает JSON происхождения и RecipeTrace; для расчёта они не требуются.
+' Восстановлением аннотаций управляет вызывающий ReadFormedSectionFromResults.
 Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results", _
         Optional ByVal includeOptionalData As Boolean = False) As CSectionModel
     Dim anchor As Object: Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
@@ -73,8 +74,6 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
                 If Abs(localIxy) / Sqr(localIx) / Sqr(localIy) >= 1# Then Err.Raise vbObjectError + 4355, _
                     "ReadSectionGeometryFromResults", "Несогласованные собственные моменты инерции бетонного элемента: " & _
                     anchor.Parent.Name & "!" & anchor.Offset(row - 1, colLocalIxy - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
-                ' Это готовая расчётная граница ячейки. Угол уже определён при
-                ' формировании; повторное усреднение направлений не требуется.
                 model.AddConcreteElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX), lengthUnit), _
                     OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY), lengthUnit), _
                     OutputAreaToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colArea), areaUnit), materialID, sourceName, handle, _
@@ -84,7 +83,7 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
                     ReadGeometryNumber(data, anchor, row, colRotation), comment, _
                     OutputFourthPowerLengthToInternalByUnit(localIx, fourthUnit), _
                     OutputFourthPowerLengthToInternalByUnit(localIy, fourthUnit), _
-                    OutputFourthPowerLengthToInternalByUnit(localIxy, fourthUnit), True
+                    OutputFourthPowerLengthToInternalByUnit(localIxy, fourthUnit), True ' Это готовая расчётная граница ячейки. Угол уже определён при формировании; повторное усреднение направлений не требуется.
                 If model.ConcreteID(model.ConcreteCount) <> id Then GoTo InvalidElementID
             ElseIf StrComp(kind, "Rebar", vbTextCompare) = 0 Then
                 model.AddRebarElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX), lengthUnit), _
@@ -197,8 +196,7 @@ Public Function ReadSavedSectionContours(ByVal workbook As Object, _
                 cy = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 12), unitText)
                 sweep = ReadSavedContourArcSweep(data, anchor, row, 14)
                 radius = Sqr((x1 - cx) ^ 2 + (y1 - cy) ^ 2)
-                ' Поворот вектора начала однозначно восстанавливает конец, включая большие и отрицательные дуги.
-                x2 = cx + (x1 - cx) * Cos(sweep) - (y1 - cy) * Sin(sweep)
+                x2 = cx + (x1 - cx) * Cos(sweep) - (y1 - cy) * Sin(sweep) ' Поворот вектора начала однозначно восстанавливает конец, включая большие и отрицательные дуги.
                 y2 = cy + (x1 - cx) * Sin(sweep) + (y1 - cy) * Cos(sweep)
                 restored.AddContourArc id, x1, y1, x2, y2, cx, cy, radius, sweep, comment, loopID, role, source
             Case Else
@@ -259,9 +257,8 @@ InvalidSweep:
         anchor.Parent.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False))
 End Function
 
-' Читает источник сохранённой геометрии из rngNDMSectionProperties.
-' При выборе Geometry.Source = AutoCAD позволяет отличить импортированное сечение от
-' параметрического.
+' Возвращает источник уже сформированного сечения из свойств Results.
+' Текущий выбор Geometry.Source не меняет происхождение сохранённого снимка.
 Public Function ResultsGeometrySource(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -460,7 +457,7 @@ Public Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal uni
     OutputCurvatureToInternalByUnit = value / mSnapshotUnits.InternalCurvatureToOutput(1#, unitText)
 End Function
 
-' Безопасно читает текст из ячейки Results.
+' Преобразует значение в текст через CStr; для ошибки Excel возвращает пустую строку.
 Public Function SafeText(ByVal value As Variant) As String
     If IsError(value) Then Exit Function
     SafeText = CStr(value)
@@ -521,7 +518,7 @@ End Sub
 ' аннотации добавляются только по запросу; генератор и AutoCAD не вызываются.
 Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional ByVal includeOptionalData As Boolean = False) As CSectionModel
     On Error GoTo Failed
-    BeginSectionSnapshotRead workbook
+    BeginSectionSnapshotRead workbook ' Общие таблицы читаются один раз за операцию; кэш освобождается и при ошибке.
     Dim source As String: source = ResultsGeometrySource(workbook)
     If Len(source) = 0 Then Err.Raise vbObjectError + 4380, "ReadFormedSectionFromResults", _
         "В Results нет сформированного сечения. Сначала нажмите «Сформировать сечение»."
@@ -573,9 +570,12 @@ Private Sub RestoreModelAnnotations(ByVal workbook As Object, ByVal model As CSe
     Next row
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ==========================================================================
 ' ДЛЯ ТЕСТОВ
+' ==========================================================================
 ' Показывает число блочных чтений и освобождение таблиц после операции.
-Public Function SectionSnapshotReadDiagnostics() As String
-    SectionSnapshotReadDiagnostics = "tables=" & CStr(mSnapshotTableReadCount) & ";released=" & _
+Public Function TestSectionSnapshotReadDiagnostics() As String
+    TestSectionSnapshotReadDiagnostics = "tables=" & CStr(mSnapshotTableReadCount) & ";released=" & _
         CStr(mSnapshotReadTables Is Nothing And mSnapshotReadWorkbook Is Nothing)
 End Function

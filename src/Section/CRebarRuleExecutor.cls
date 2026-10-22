@@ -178,9 +178,7 @@ End Function
 Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion) As CRebarLayout
     If mReadOnly Then SectionRecipeError "CRebarRuleExecutor", "Опубликованные правила нельзя выполнять заново в том же объекте. Создайте новый исполнитель."
     mBuilt = False
-    ' Даже отказ до подготовки начинает новый отчет, без счетчиков и ID
-    ' предыдущего успешного запуска того же исполнителя.
-    Set mDefinition = Nothing
+    Set mDefinition = Nothing ' Даже отказ до подготовки начинает новый отчет, без счетчиков и ID предыдущего успешного запуска того же исполнителя.
     mPositionCount = 0: mCapacity = 0: mSkippedProjections = 0: mSkippedOffsets = 0: Erase mPositions
     mMergedOffsetNeighbors = 0
     Erase mTotalNormalOffset
@@ -206,7 +204,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     EnableRowOffsetChecks
     mBarBinSize = 1#
     For i = 1 To ruleCount
-        If mRules(i).Enabled Then mBarBinSize = GeomMax(mBarBinSize, mRules(i).Diameter)
+        If mRules(i).Enabled Then mBarBinSize = GeomMax(mBarBinSize, mRules(i).Diameter) ' Ячейка не меньше любого диаметра: для пересечений достаточно своей и восьми соседних ячеек.
     Next i
     Preflight
     For i = 1 To ruleCount
@@ -306,8 +304,9 @@ Private Function OffsetNeighborOwner(ByVal index As Long, ByRef position As TReb
     Next dx
 End Function
 
-' Сохраняет только первого владельца: площадь, материал, диаметр и группа подписи не увеличиваются.
-' Связь второй позиции остаётся в трассировке; пользователь получает предупреждение с обоими рядами.
+' Сохраняет координаты, площадь, материал, диаметр и основную группу подписи первого стержня.
+' Дополнительная принадлежность второй группе остаётся в связях без повторного подсчёта площади
+' и стержня в подписи; пользователь получает предупреждение с обоими рядами.
 Private Sub MergeOffsetNeighbor(ByVal index As Long, ByVal owner As Long, ByVal positionIndex As Long, ByVal result As CRebarLayout)
     Dim firstRule As Long, reason As String
     firstRule = mPhysicalRule(owner)
@@ -442,7 +441,7 @@ End Sub
 Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef counts() As Double)
     If state(index) = 2 Then Exit Sub
     If state(index) = 1 Then RuleError index, "Зависимости рядов арматуры образуют замкнутую цепочку. Уберите циклическую ссылку между правилами."
-    state(index) = 1
+    state(index) = 1 ' Состояния предварительного обхода: 0 — не посещено, 1 — в цепочке, 2 — оценено.
     If mRules(index).Enabled Then
         ValidateOptions index
         Dim source As Long, ids As Variant, id As Variant, path As CGeometryPath
@@ -451,9 +450,7 @@ Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef count
             EstimateRule source, state, counts
             counts(index) = counts(source)
             If mRules(index).EverySecond And mRules(source).Mode <= ExplicitPositions And counts(source) > 0# Then
-                ' В режиме PerPath выбираем позиции 1, 3, ... заново на каждой линии.
-                ' Так независимые ряды с нечётным числом стержней не теряют последний стержень.
-                counts(index) = 0#
+                counts(index) = 0# ' В режиме PerPath выбираем позиции 1, 3, ... заново на каждой линии. Так независимые ряды с нечётным числом стержней не теряют последний стержень.
                 ids = mDefinition.TargetPaths(mRules(source).Target)
                 For Each id In ids
                     Set path = mDefinition.Path(CStr(id))
@@ -512,15 +509,14 @@ Private Sub PrepareRule(ByVal index As Long)
     On Error GoTo InvalidGeometry
     If mState(index) = 2 Then Exit Sub
     If mState(index) = 1 Then RuleError index, "Зависимости рядов арматуры образуют замкнутую цепочку. Уберите циклическую ссылку между правилами."
-    mState(index) = 1
+    mState(index) = 1 ' Состояния обхода зависимостей: 0 — не посещено, 1 — выполняется, 2 — завершено.
     If Not mRules(index).Enabled Then mState(index) = 2: Exit Sub
-    ' Общее число стержней и параметры всех правил уже проверены до расчёта координат.
-    Dim source As Long
+    Dim source As Long ' Номер исходного правила для зависимости или проекции.
     If mRules(index).Mode = DependentOffset Or mRules(index).Mode = ProjectFrom Then
         source = mDefinition.RuleIndex(mRules(index).SourceRuleID)
         PrepareRule source
     End If
-    mStart(index) = mPositionCount + 1
+    mStart(index) = mPositionCount + 1 ' Каждое правило хранит свой непрерывный интервал подготовленных позиций.
     Select Case mRules(index).Mode
         Case ByCount, ByMaxStep, ByFixedStep, ExplicitPositions
             PrepareIndependent index
@@ -531,7 +527,7 @@ Private Sub PrepareRule(ByVal index As Long)
         Case Else
             RuleError index, "Не распознан способ размещения арматуры. Проверьте правило задания количества, шага или проекции."
     End Select
-    mCount(index) = mPositionCount - mStart(index) + 1
+    mCount(index) = mPositionCount - mStart(index) + 1 ' Пропущенные проекции/смещения не занимают места в массиве позиций.
     mState(index) = 2
     Exit Sub
 InvalidGeometry:
@@ -553,11 +549,9 @@ Private Sub PrepareIndependent(ByVal index As Long)
                 ordinal = ordinal + 1
                 path.AtDistance CDbl(stations(i)), position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = CDbl(stations(i)): position.RuleIndex = index
-                position.SourcePositionIndex = 0: position.IncomingTangentAtJoint = mRules(index).IncomingTangentAtJoint
+                position.SourcePositionIndex = 0: position.IncomingTangentAtJoint = mRules(index).IncomingTangentAtJoint ' У независимого ряда нет родительской позиции; сохраняется только выбор касательной на стыке.
                 position.RootRuleIndex = index: position.RootOrdinal = ordinal
-                ' Сохраняем общий порядок добавления стержней; выбор позиций для зависимого ряда
-                ' определяется отдельно по исходным номерам на каждой линии.
-                position.SourceOrdinal = i - LBound(stations) + 1
+                position.SourceOrdinal = i - LBound(stations) + 1 ' Сохраняем общий порядок добавления стержней; выбор позиций для зависимого ряда определяется отдельно по исходным номерам на каждой линии.
                 position.RootPublicationRank = ordinal
                 position.PathID = CStr(id)
                 position.SourcePositionID = PositionID(index, ordinal, "")
@@ -579,7 +573,8 @@ Private Sub RankFromMiddle(ByVal first As Long, ByVal last As Long, ByVal length
     For i = first To last: mPositions(order(i)).RootPublicationRank = base + i - first + 1: Next i
 End Sub
 
-' Упорядочивает внутренние позиции ряда, сохраняя заданный порядок его конечных стержней.
+' Стабильно сортирует номера позиций по расстоянию от середины линии.
+' При равных расстояниях сохраняет исходный порядок; координаты и исходные номера не меняет.
 Private Sub SortMiddle(ByRef order() As Long, ByRef scratch() As Long, ByVal first As Long, ByVal last As Long, ByVal middleStation As Double)
     If first >= last Then Exit Sub
     Dim middle As Long, a As Long, b As Long, out As Long, takeA As Boolean
@@ -647,10 +642,8 @@ Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
     On Error GoTo InvalidTransfer
     Dim i As Long, ordinal As Long, position As TRebarPosition, paths As Object, offset As CGeometryPath
     Dim path As CGeometryPath, boundary As CGeometryPath, query As CSectionGeometryQuery, x As Double, y As Double, tx As Double, ty As Double
-    ' Для нормального смещения проверяем весь контур. Контактную добавку вдоль
-    ' касательной применяем после этой проверки, как и у исходного связанного ряда.
-    Set paths = CreateObject("Scripting.Dictionary"): Set query = New CSectionGeometryQuery
-    mTotalNormalOffset(index) = mTotalNormalOffset(source) + mRules(index).NormalOffset
+    Set paths = CreateObject("Scripting.Dictionary"): Set query = New CSectionGeometryQuery ' Подготовленная смещённая линия используется повторно для всех стержней на том же пути.
+    mTotalNormalOffset(index) = mTotalNormalOffset(source) + mRules(index).NormalOffset ' На цепочке зависимостей нормальный перенос проверяется относительно исходной линии.
     For i = mStart(source) To mStart(source) + mCount(source) - 1
         ordinal = ordinal + 1
         position = mPositions(i)
@@ -688,10 +681,10 @@ Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
                     End If
                 End If
             End If
-            position.X = position.X + mRules(index).TangentOffset * position.TangentX - mRules(index).NormalOffset * position.TangentY
+            position.X = position.X + mRules(index).TangentOffset * position.TangentX - mRules(index).NormalOffset * position.TangentY ' Касательная контактная добавка применяется после проверки положения по нормали к полному контуру.
             position.Y = position.Y + mRules(index).TangentOffset * position.TangentY + mRules(index).NormalOffset * position.TangentX
             position.RuleIndex = index
-            position.SourcePositionIndex = i
+            position.SourcePositionIndex = i ' Связь с непосредственной исходной позицией сохраняет всю цепочку переноса.
             position.SourcePositionID = PositionID(index, ordinal, mPositions(i).SourcePositionID)
             AppendPosition position
         End If
@@ -747,11 +740,8 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 Set path = mDefinition.Path(bestID)
                 path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = bestStation: position.PathID = bestID: position.RuleIndex = index
-                position.SourcePositionIndex = 0: position.IncomingTangentAtJoint = mRules(index).IncomingTangentAtJoint
-                ' Обычная проекция сохраняет исходные номера позиций отдельно на каждой линии,
-                ' даже при пропусках. Для рядов у отверстия можно отдельно включить нумерацию
-                ' только успешно полученных проекций.
-                successful = successful + 1
+                position.SourcePositionIndex = 0: position.IncomingTangentAtJoint = mRules(index).IncomingTangentAtJoint ' Проекция становится новой геометрической основой для зависимых рядов.
+                successful = successful + 1 ' Обычная проекция сохраняет исходные номера позиций отдельно на каждой линии, даже при пропусках. Для рядов у отверстия можно отдельно включить нумерацию только успешно полученных проекций.
                 If mRules(index).SuccessfulProjectionOrdinal Then position.SourceOrdinal = successful
                 If mRules(index).NewPublicationRoot Then
                     position.RootRuleIndex = index: position.RootOrdinal = successful: position.RootPublicationRank = successful
@@ -875,14 +865,13 @@ Private Sub ValidateOptions(ByVal index As Long)
     End With
 End Sub
 
-' Проверяет ненулевой рабочий интервал после концевых отступов.
+' Проверяет рабочий интервал после концевых отступов и совместимость с замкнутым обходом.
+' Нулевой интервал допустим только для одного стержня ByCount или явно заданных позиций.
 Private Sub ValidateWorkInterval(ByVal index As Long, ByVal path As CGeometryPath)
     Dim remaining As Double, pointPlacement As Boolean
     remaining = path.Length - mRules(index).StartSetback - mRules(index).EndSetback
     pointPlacement = (mRules(index).Mode = ByCount And mRules(index).Count = 1) Or mRules(index).Mode = ExplicitPositions
-    ' Один стержень по количеству или явно заданная позиция допускают точечный
-    ' участок. Допустимость каждой явной позиции проверяется в StationsFor.
-    If remaining < -GEOM_TOLERANCE Or (remaining <= GEOM_TOLERANCE And Not pointPlacement) Then
+    If remaining < -GEOM_TOLERANCE Or (remaining <= GEOM_TOLERANCE And Not pointPlacement) Then ' Один стержень по количеству или явно заданная позиция допускают точечный участок. Допустимость каждой явной позиции проверяется в StationsFor.
         RuleError index, "После концевых отступов не осталось участка для размещения арматуры. " & _
             "Длина линии — " & CStr(path.Length) & " мм; отступ от начала — " & CStr(mRules(index).StartSetback) & _
             " мм; отступ от конца — " & CStr(mRules(index).EndSetback) & _
@@ -954,7 +943,7 @@ Private Function BeforePosition(ByVal a As Long, ByVal b As Long) As Boolean
     If keyA <> keyB Then BeforePosition = (keyA < keyB): Exit Function
     If ordinalA <> ordinalB Then BeforePosition = (ordinalA < ordinalB): Exit Function
     If mPositions(a).RuleIndex <> mPositions(b).RuleIndex Then BeforePosition = (mPositions(a).RuleIndex < mPositions(b).RuleIndex): Exit Function
-    BeforePosition = (a <= b)
+    BeforePosition = (a <= b) ' При равных ключах стабильный порядок исходных позиций определяет первого владельца.
 End Function
 
 ' Сохраняет диагностическую запись; подробные образцы ограничены по памяти, итоговые счётчики
@@ -998,6 +987,7 @@ Public Property Get IsReadOnly() As Boolean
     IsReadOnly = mReadOnly
 End Property
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================

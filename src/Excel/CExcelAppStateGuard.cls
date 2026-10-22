@@ -27,14 +27,10 @@ Public Sub Enter(ByVal excelApplication As Object)
     For i = 0 To 4
         mValues(i) = ReadProperty(i)
     Next i
-    ' xlErrorHandler = 2; xlCalculationManual = -4135.
-    fastValues = Array(2, False, False, False, -4135)
+    fastValues = Array(2, False, False, False, -4135) ' xlErrorHandler = 2; xlCalculationManual = -4135.
     mActive = True
     For i = 0 To 4
-        ' Без открытых книг Excel может вернуть ошибку вместо режима пересчёта.
-        ' Такое значение нельзя восстановить присваиванием; сохраняем
-        ' фактическую причину ошибки записи свойства.
-        mPending(i) = Not IsError(mValues(i))
+        mPending(i) = Not IsError(mValues(i)) ' Без открытых книг Excel может вернуть ошибку вместо режима пересчёта. Такое значение нельзя восстановить присваиванием; сохраняем фактическую причину ошибки записи свойства.
         WriteProperty i, fastValues(i)
     Next i
     Exit Sub
@@ -55,9 +51,7 @@ Public Sub Restore(Optional ByVal raiseOnFailure As Boolean = False)
     For attempt = 1 To 2
         failure = vbNullString
         On Error Resume Next
-        ' Пересчёт возвращаем до событий, обновление экрана — после событий,
-        ' исходный режим прерывания — последним.
-        For i = 4 To 0 Step -1
+        For i = 4 To 0 Step -1 ' Пересчёт возвращаем до событий, обновление экрана — после событий, исходный режим прерывания — последним.
             If mPending(i) Then
                 Err.Clear
                 WriteProperty i, mValues(i)

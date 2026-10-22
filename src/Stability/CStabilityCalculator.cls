@@ -58,10 +58,10 @@ Private Type TPlaneResult
     Eccentricity As Double ' Принятый расчётный эксцентриситет, мм.
     CoreDistance As Double ' Ядровое расстояние со стороны рассматриваемого эксцентриситета, мм.
     PhiL As Double ' Коэффициент влияния длительности нагрузки.
-    PhiLTable As Double ' Табличный коэффициент φl по СП 35.
-    PhiM As Double ' Табличный коэффициент φm по СП 35.
-    PhiValue As Double ' Итоговый коэффициент φ табличной проверки СП 35.
-    PhiP As Double ' Коэффициент φp по СП 35.
+    PhiLTable As Double ' Табличный коэффициент phil по СП 35.
+    PhiM As Double ' Табличный коэффициент phim по СП 35.
+    PhiValue As Double ' Итоговый коэффициент phi табличной проверки СП 35.
+    PhiP As Double ' Коэффициент phip по СП 35.
     DeltaValue As Double ' Принятое относительное значение эксцентриситета для выбранной нормативной ветви.
     Kb As Double ' Коэффициент вклада бетона в жёсткость по СП 63.
     Ks As Double ' Коэффициент вклада арматуры в жёсткость по СП 63.
@@ -225,9 +225,7 @@ Private Sub ValidateEffectiveLengthRange(ByVal elementLength As Double, ByVal mu
     effectiveLength = elementLength * mu
     reason = "Квадрат расчетной длины l0 = mu·L выходит за допустимый диапазон арифметики."
     squaredLength = effectiveLength * effectiveLength
-    ' Excel может оставить бесконечность без VBA-ошибки; проверяем значение,
-    ' а не полагаемся только на обработчик переполнения.
-    If squaredLength <> squaredLength Or squaredLength > 1.797693134862315E+308 Then GoTo RangeFailed
+    If squaredLength <> squaredLength Or squaredLength > 1.797693134862315E+308 Then GoTo RangeFailed ' Excel может оставить бесконечность без VBA-ошибки; проверяем значение, а не полагаемся только на обработчик переполнения.
     If squaredLength <= 0# Then
         reason = "Расчетная длина l0 = mu·L слишком мала: ее квадрат округляется до нуля в арифметике программы."
         correction = "Увеличьте длину L или коэффициент " & muKey & "; проверьте INPUT-единицу длины."
@@ -461,9 +459,9 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     plane1.Applicable = True
     plane2.Applicable = True
 
-    ' Если момент уже задан в одной из главных плоскостей, случайный
-    ' эксцентриситет добавляется только к действующему направлению момента.
-    ' Для чистого сжатия без моментов остаются пользовательские направления +1/-1.
+    ' В режиме OnlyMomentPlane случайный эксцентриситет добавляется только
+    ' к плоскостям с моментом; BothPlanes разрешает его в обеих плоскостях.
+    ' При чистом сжатии без моментов в обоих режимах применяются направления +1/-1.
     Dim hasMomentVector As Boolean
     Dim applyBothPlanes As Boolean
     hasMomentVector = (Abs(plane1.Moment) > SMALL_VALUE Or Abs(plane2.Moment) > SMALL_VALUE)
@@ -731,7 +729,7 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
     plane.CoreDistance = coreDistance
 
     Dim q As Double
-    q = Abs(plane.Eccentricity) / coreDistance
+    q = Abs(plane.Eccentricity) / coreDistance ' Безразмерное ec/r выбирает табличную ветвь или расчёт через критическую силу.
     If q <= 1# Then
         CalculateSP35TablePlane concreteArea, totalSteelArea, nCompression, sustainedCompression, rb, rsc, table721, q, plane
     Else
@@ -853,13 +851,13 @@ Private Function PhiForSustainedCompression(ByVal phiM As Double, ByVal phiL As 
     End If
 
     Dim sustainedRatio As Double
-    sustainedRatio = sustainedCompression / nCompression
+    sustainedRatio = sustainedCompression / nCompression ' Доля длительного сжатия в полном; используется только в табличной ветви СП 35.
 
     Dim shortRatio As Double
     shortRatio = 1# - sustainedRatio
 
     Dim denominator As Double
-    denominator = sustainedRatio * (phiM / phiL) + shortRatio
+    denominator = sustainedRatio * (phiM / phiL) + shortRatio ' Смешиваем кратковременное и длительное влияние по долям силы, а не линейно по самим коэффициентам phi.
     If denominator > SMALL_VALUE Then
         PhiForSustainedCompression = phiM / denominator
     Else

@@ -44,7 +44,7 @@ def main():
     result = {'status': 'PASS' if not errors else 'FAIL', 'beforeWorkbookSHA256': native.digest(args.before_book),
               'afterWorkbookSHA256': native.digest(args.after_book), 'beforeDumpSHA256': native.digest(args.before_dump),
               'afterDumpSHA256': native.digest(args.after_dump), 'changed': changed,
-              'changedMethod': 'modTestProfileConfig.CheckVisualizationValues', 'productionUnchanged': not errors,
+              'changedMethod': 'modTestProfileConfig.TestCheckVisualizationValues', 'productionUnchanged': not errors,
               'unchangedOtherCode': not errors, 'tolerancesUnchanged': True, 'errors': errors,
               'exactAllowedPatch': {'before': OLD, 'after': NEW},
               'reason': 'The retained state diagrams are authoritative; ExtensionUsed indicates out-of-physical-range use, not which diagram was captured. Independent plane/diagram computation and1e-12 tolerance preserved.'}

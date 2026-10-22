@@ -95,9 +95,9 @@ Friend Sub Initialize(ByVal definition As CSectionDefinition, ByRef rules() As T
         For j = 1 To source.SegmentCount
             source.CopySegment j, edge: area = area + mOffset.EdgeArea(edge)
         Next j
-        inward = Sgn(area) * mLinks(i).AxisDistance
+        inward = Sgn(area) * mLinks(i).AxisDistance ' Знак обхода переводит положительный as в смещение по левой нормали исходного контура.
         j = LoopIndex(mLinks(i).LoopID)
-        If mLoops(j).Role = LoopOpening Then inward = -inward
+        If mLoops(j).Role = LoopOpening Then inward = -inward ' У отверстия as откладывается из пустоты в бетон.
         If main = 0 Then
             If Not IsArray(mLinks(i).SourceSegments) Then Fail "Для базового ограничения явно укажите исходные участки.", reference
             For j = 1 To source.SegmentCount
@@ -135,7 +135,7 @@ Friend Function Accepts(ByVal ruleIndex As Long, ByVal x As Double, ByVal y As D
     Dim link As Long, outer As Long, key As String, region As CConcreteRegion, index As Long
     link = mRuleLink(ruleIndex): outer = LoopIndex(mLinks(link).LoopID)
     If mLoops(outer).Role = LoopOpening Then outer = LoopIndex(mLoops(outer).ParentID)
-    key = CStr(mRuleRow(ruleIndex)) & ":" & CStr(outer)
+    key = CStr(mRuleRow(ruleIndex)) & ":" & CStr(outer) ' Одна подготовленная область на ряд 2/3 и наружную границу, включая все её отверстия.
     If Not mRegions.Exists(key) Then
         Set region = BuildDomain(mRuleRow(ruleIndex), outer)
         mPreparedCount = mPreparedCount + 1
@@ -246,9 +246,7 @@ NextSource:
         mParts(mPartCount).Edge = original: mParts(mPartCount).LinkIndex = link
         mParts(mPartCount).Distance = distance: mParts(mPartCount).Direction = foundDirection
     Next i
-    ' Исчезнувшая при as дуга сохраняет явную привязку исходного сегмента.
-    ' Она нужна для удаления скругления из общего контура, даже если Main уже не содержит дуги.
-    For j = 1 To source.SegmentCount
+    For j = 1 To source.SegmentCount ' Исчезнувшая при as дуга сохраняет явную привязку исходного сегмента. Она нужна для удаления скругления из общего контура, даже если Main уже не содержит дуги.
         source.CopySegment j, original
         If original.Sweep <> 0# And axis.HasCollapsedSegmentID(source.SegmentID(j)) Then
             If SelectedSource(link, source.SegmentID(j)) Then
@@ -282,10 +280,8 @@ Private Function BuildDomain(ByVal row As Long, ByVal outer As Long) As CConcret
     Exit Function
 InvalidDomain:
     reason = Err.Description
-    ' Построитель уже указал адреса конкретных участков; общая обёртка
-    ' со всеми семействами повторяла их и скрывала место ошибки.
     If Err.Source = "CGeometryVariableOffset" Then Err.Raise Err.Number, Err.Source, _
-        "Не удалось построить допустимый контур для " & CStr(row) & "-го ряда арматуры." & vbCrLf & vbCrLf & reason
+        "Не удалось построить допустимый контур для " & CStr(row) & "-го ряда арматуры." & vbCrLf & vbCrLf & reason ' Построитель уже указал адреса конкретных участков; общая обёртка со всеми семействами повторяла их и скрывала место ошибки.
     Fail "Не удалось построить допустимый контур для " & CStr(row) & "-го ряда арматуры: " & reason, mReferences
 End Function
 
@@ -341,7 +337,7 @@ Private Function PartDistance(ByRef edge As TRegionEdge, ByVal row As Long, ByVa
                     rule = mRowRules(link, row)
                     If rule > 0 Then
                         If mRules(rule).Enabled Then
-                            value = value + mRules(rule).NormalOffset * mParts(i).Direction
+                            value = value + mRules(rule).NormalOffset * mParts(i).Direction ' Направление Main относительно исходного участка определяет знак дополнительного отступа.
                             sourceReference = sourceReference & mRules(rule).SourceReference & "; "
                         End If
                     End If
@@ -365,7 +361,7 @@ Private Function PartDistance(ByRef edge As TRegionEdge, ByVal row As Long, ByVa
             End If
         End If
     Next i
-    If Not found And hasBaseline Then PartDistance = baseline
+    If Not found And hasBaseline Then PartDistance = baseline ' Отключённый ряд не отменяет явно заданный геометрический ограничитель.
 End Function
 
 ' Проверяет совпадение несущей прямой либо окружности, без выбора ближайшей стороны.
@@ -384,7 +380,7 @@ Private Function SameSupport(ByRef first As TRegionEdge, ByRef second As TRegion
     End If
 End Function
 
-' Проверяет перекрытие фактических участков, чтобы соосные раздельные линии не смешивались.
+' Проверяет, лежит ли середина первого участка на втором, а не только на общей несущей прямой/окружности.
 Private Function MidpointOn(ByRef first As TRegionEdge, ByRef second As TRegionEdge) As Boolean
     Dim x As Double, y As Double, parameter As Double
     modGeometryPrimitives.EdgePoint first, 0.5, x, y
@@ -404,7 +400,8 @@ Private Sub AddCut(ByRef values() As Double, ByRef count As Long, ByVal value As
     values(i) = value
 End Sub
 
-' Применяет только явно переданный список исходных участков; пустой список не выдумывает соответствие.
+' При заданном массиве выбирает только перечисленные исходные участки.
+' Если список не передан (Empty), допускает все сегменты; точное соответствие затем проверяет RegisterAxis.
 Private Function SelectedSource(ByVal link As Long, ByVal segmentID As String) As Boolean
     Dim names As Variant, name As Variant
     names = mLinks(link).SourceSegments

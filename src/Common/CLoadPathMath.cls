@@ -40,8 +40,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Проверяет, является ли заданное изменение нагрузки осевым относительно выбранной точки.
-' Учитывает только погрешность переноса усилий Double; способ поиска
-' и инженерный порог малых моментов этим методом не задаются.
+' Требует ненулевую масштабируемую N и численно нулевую постоянную N.
+' При переносе моментов учитывает погрешность Double; инженерный фильтр малых моментов применяется отдельно.
 Public Function IsPureAxialLoadPath(ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, ByVal myOffset As Double, ByVal myBase As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
@@ -52,12 +52,12 @@ Public Function IsPureAxialLoadPath(ByVal nOffset As Double, ByVal nBase As Doub
         IsZeroMomentAboutPoint(nBase, myBase, referenceX)
 End Function
 
-' Проверяет оба момента относительно заданной точки приложения с численным масштабом задачи.
+' Проверяет нулевой момент одной плоскости относительно выбранной точки.
+' Учитывает погрешность произведения N*coordinate и последующего вычитания.
 Private Function IsZeroMomentAboutPoint(ByVal n As Double, ByVal moment As Double, ByVal coordinate As Double) As Boolean
     Dim transfer As Double, roundoff As Double
     transfer = n * coordinate
-    ' Восемь машинных epsilon Double для произведения и разности моментов.
-    roundoff = 0.000000001 + 0.00000000000000177635683940025 * (Abs(moment) + Abs(transfer))
+    roundoff = 0.000000001 + 0.00000000000000177635683940025 * (Abs(moment) + Abs(transfer)) ' Восемь машинных epsilon Double для произведения и разности моментов.
     IsZeroMomentAboutPoint = Abs(moment - transfer) <= roundoff
 End Function
 
@@ -82,7 +82,6 @@ End Sub
 Friend Sub PrepareNumericalPath(ByVal section As CSectionModel, ByVal loadPath As CLoadPathVector, _
         ByVal toleranceN As Double, ByVal toleranceMx As Double, ByVal toleranceMy As Double, _
         Optional ByVal commonForceScale As Boolean = False)
-    ' Технический журнал сохраняет стандартный текст VBA; потребитель дает понятное пояснение.
     If section Is Nothing Or loadPath Is Nothing Then Err.Raise 91, "CLoadPathMath", "Не удалось подготовить изменение нагрузки: не передана модель сечения или описание изменения N, Mx и My."
     If NumericalPathMatches(section, loadPath, toleranceN, toleranceMx, toleranceMy, commonForceScale) Then Exit Sub
     mNumericalReady = False
@@ -110,8 +109,8 @@ Friend Sub PrepareNumericalPath(ByVal section As CSectionModel, ByVal loadPath A
     mCommonNumericalScale = commonForceScale: mNumericalReady = True
 End Sub
 
-' Проверяет принадлежность состояния заданной нагрузочной траектории в нормированной системе
-' координат.
+' Проверяет точное совпадение подготовленной численной траектории с текущим запросом.
+' Сравнивает модель, её ревизию, все части нагрузки, допуски и режим нормирования; само НДС не проверяет.
 Private Function NumericalPathMatches(ByVal section As CSectionModel, ByVal loadPath As CLoadPathVector, _
         ByVal toleranceN As Double, ByVal toleranceMx As Double, ByVal toleranceMy As Double, _
         ByVal commonForceScale As Boolean) As Boolean

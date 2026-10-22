@@ -71,8 +71,7 @@ Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars
                 anchors(i).StartX, anchors(i).StartY, _
                 anchors(i).EndX, anchors(i).EndY, _
                 anchors(i).NormalX, anchors(i).NormalY, CStr(labels(groupName))
-            ' Несколько привязок одной группы не создают повторную подпись.
-            labels.Remove groupName
+            labels.Remove groupName ' Несколько привязок одной группы не создают повторную подпись.
         End If
     Next i
 End Sub

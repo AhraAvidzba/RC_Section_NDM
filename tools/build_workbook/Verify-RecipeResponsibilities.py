@@ -13,11 +13,11 @@ from zipfile import ZipFile, ZIP_DEFLATED
 ROOT = Path(__file__).resolve().parents[2]
 D = ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/RecipeResponsibilities_2026-10-16'
 RECIPES = ['CSectionRecipe'+x for x in ('Circle','Rectangles','PointedSection','HollowRectangle')]
-MATRICES = ['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in
+MATRICES = ['modTestSectionRecipes.TestDump'+x+'Recipe'+suffix for x,suffix in
             [('Circle','Matrix'),('Rectangles','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
-CONTRACTS = ['modTestAudit02Snapshots.DumpRecipeRuleContracts','modTestAudit02Api.DumpAudit02CloseoutInputContract']
-STATES = ['modTestSectionRecipes.Dump'+x+'RecipeCalculations' for x in ('Circle','Rectangles','Rounded','Hollow')]
-PATHS = 'modTestAudit02Snapshots.DumpRecipePathContracts'
+CONTRACTS = ['modTestAudit02Snapshots.TestDumpRecipeRuleContracts','modTestAudit02Api.TestDumpAudit02CloseoutInputContract']
+STATES = ['modTestSectionRecipes.TestDump'+x+'RecipeCalculations' for x in ('Circle','Rectangles','Rounded','Hollow')]
+PATHS = 'modTestAudit02Snapshots.TestDumpRecipePathContracts'
 spec = importlib.util.spec_from_file_location('guide', Path(__file__).with_name('Verify-SectionRecipeGuide.py'))
 guide = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(guide)

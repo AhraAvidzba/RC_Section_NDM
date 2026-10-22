@@ -88,7 +88,7 @@ End Function
 ' Читает весь текст угла обхода дуги со знаком. Принимает точку, запятую
 ' и запись с E, но не извлекает численный префикс из произвольного текста.
 ' Угол меньше полного оборота; для окружности используется CONTOUR_CIRCLE.
-' Нулевой угол означает вырожденный отрезок. Место ввода передаёт
+' Нулевой угол задаёт прямой участок без дуги. Место ввода передаёт
 ' вызывающий класс; листы Excel здесь не читаются.
 Public Function ReadContourArcSweep(ByVal value As Variant, ByVal inputLocation As String) As Double
     On Error GoTo InvalidValue
@@ -113,13 +113,18 @@ InvalidValue:
         "Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка."
 End Function
 
-' Создаёт CSectionModel для коротких тестов и расчётных примеров.
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' создаёт CSectionModel для коротких тестов и контрольных примеров.
 ' Обычный запуск книги использует CSectionModelBuilder напрямую
 ' как общее место сборки расчётной модели.
-Public Function BuildGeneratedSectionModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, Optional ByVal sourceType As String = "Generated") As CSectionModel
+Public Function TestBuildGeneratedSectionModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, Optional ByVal sourceType As String = "Generated") As CSectionModel
     Dim builder As CSectionModelBuilder
     Set builder = New CSectionModelBuilder
-    Set BuildGeneratedSectionModel = builder.BuildFromGenerated(mesh, rebars, sourceType)
+    Set TestBuildGeneratedSectionModel = builder.BuildFromGenerated(mesh, rebars, sourceType)
 End Function
 
 

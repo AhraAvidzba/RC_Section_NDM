@@ -15,7 +15,7 @@ Public Function ResultHeaderMatches(ByVal target As Object, ByRef expected As Va
     If lastRow = 0 Then lastRow = UBound(expected, 1)
     Dim actual As Variant
     actual = target.Offset(firstRow - 1, 0).Resize(lastRow - firstRow + 1, UBound(expected, 2)).Value2
-    Dim normalized As Variant: normalized = expected
+    Dim normalized As Variant: normalized = expected ' Копия массива нужна, чтобы объединённые заголовки не меняли входной шаблон.
     If Not merges Is Nothing Then NormalizeMergedHeader normalized, merges, firstRow, lastRow
     Dim row As Long, column As Long
     For row = firstRow To lastRow
@@ -32,7 +32,7 @@ End Function
 Private Sub NormalizeMergedHeader(ByRef data As Variant, ByVal blocks As Collection, _
         ByVal firstRow As Long, ByVal lastRow As Long)
     Dim block As Variant, row As Long, column As Long, value As Variant
-    For Each block In blocks
+    For Each block In blocks ' Четвёрка: первая/последняя строка, первый/последний столбец объединения; индексы массива 0..3.
         If CLng(block(0)) >= firstRow And CLng(block(1)) <= lastRow Then
             value = Empty
             For row = CLng(block(0)) To CLng(block(1))

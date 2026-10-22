@@ -45,7 +45,7 @@ Public Function IsMomentEffectivelyZero(ByVal momentValue As Double, ByVal concr
     End If
 End Function
 
-' Зануляет момент, если он меньше инженерного порога для данной плоскости.
+' Зануляет момент, модуль которого не превышает инженерный порог для данной плоскости.
 Public Function NormalizeMoment(ByVal momentValue As Double, ByVal concreteDepth As Double) As Double
     If IsMomentEffectivelyZero(momentValue, concreteDepth) Then
         NormalizeMoment = 0#

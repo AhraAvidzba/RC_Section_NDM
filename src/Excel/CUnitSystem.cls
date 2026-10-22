@@ -38,7 +38,7 @@ Private mSignN As String ' Пользовательский знак продо�
 Private mSignMx As String ' Пользовательский знак Mx; внутри задаёт растяжение по +Y.
 Private mSignMy As String ' Пользовательский знак My; внутри задаёт растяжение по +X.
 
-' Устанавливает внутренние defaults, используемые до чтения Config или в автономных тестах.
+' Устанавливает начальные настройки единиц, используемые до чтения Config или в автономных тестах.
 Public Sub InitializeDefaults()
     RequireMutable
     mInputLength = "mm": mOutputLength = "m"

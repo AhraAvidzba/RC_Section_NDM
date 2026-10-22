@@ -46,9 +46,9 @@ Private Const COL_LIM_EBC As Long = 11 ' Столбец таблицы: пред
 Private Const COL_LIM_EBT As Long = 12 ' Столбец таблицы: предельная деформация растянутого бетона.
 Private Const COL_LIM_ESC As Long = 13 ' Столбец таблицы: предельная деформация сжатой арматуры.
 Private Const COL_LIM_EST As Long = 14 ' Столбец таблицы: предельная деформация растянутой арматуры.
-Private Const COL_STATE_EPS0 As Long = 15 ' Столбец таблицы: текущее НДС: деформация ε0.
-Private Const COL_STATE_KX As Long = 16 ' Столбец таблицы: текущее НДС: кривизна κx.
-Private Const COL_STATE_KY As Long = 17 ' Столбец таблицы: текущее НДС: кривизна κy.
+Private Const COL_STATE_EPS0 As Long = 15 ' Столбец таблицы: текущее НДС: деформация epsilon0.
+Private Const COL_STATE_KX As Long = 16 ' Столбец таблицы: текущее НДС: кривизна kappax.
+Private Const COL_STATE_KY As Long = 17 ' Столбец таблицы: текущее НДС: кривизна kappay.
 Private Const COL_STATE_EBC As Long = 18 ' Столбец таблицы: текущее НДС: наибольшая деформация сжатия бетона.
 Private Const COL_STATE_EBT As Long = 19 ' Столбец таблицы: текущее НДС: наибольшая деформация растяжения бетона.
 Private Const COL_STATE_ESC As Long = 20 ' Столбец таблицы: текущее НДС: наибольшая деформация сжатия арматуры.
@@ -63,9 +63,9 @@ Private Const COL_STATE_DIAGEXT As Long = 28 ' Столбец таблицы: т
 Private Const COL_STATE_RESERVE As Long = 29 ' Столбец таблицы: текущее НДС: коэффициент запаса.
 Private Const COL_STATE_STATUS As Long = 30 ' Столбец таблицы: текущее НДС: статус расчёта.
 
-Private Const COL_CAP_EPS0 As Long = 32 ' Столбец таблицы: предельное НДС: деформация ε0.
-Private Const COL_CAP_KX As Long = 33 ' Столбец таблицы: предельное НДС: кривизна κx.
-Private Const COL_CAP_KY As Long = 34 ' Столбец таблицы: предельное НДС: кривизна κy.
+Private Const COL_CAP_EPS0 As Long = 32 ' Столбец таблицы: предельное НДС: деформация epsilon0.
+Private Const COL_CAP_KX As Long = 33 ' Столбец таблицы: предельное НДС: кривизна kappax.
+Private Const COL_CAP_KY As Long = 34 ' Столбец таблицы: предельное НДС: кривизна kappay.
 Private Const COL_CAP_LIMIT_STATE As Long = 35 ' Столбец таблицы: предельное НДС: определяющий предел деформаций.
 Private Const COL_CAP_LOAD_PATH As Long = 36 ' Столбец таблицы: предельное НДС: траектория изменения нагрузки.
 Private Const COL_CAP_METHOD As Long = 37 ' Столбец таблицы: предельное НДС: способ поиска предела.
@@ -150,7 +150,8 @@ Failed:
     Err.Raise Err.Number, "CStrengthSummaryWriter.WriteSummary", Err.Description
 End Sub
 
-' Очищает старый detailed-блок прочности вместе с объединениями и форматами.
+' Очищает прежние данные подробной таблицы прочности. При fullFormatting=True
+' удаляет также шапку, объединения и форматы; иначе сохраняет готовое оформление.
 Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
     mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 3998, "CStrengthSummaryWriter", "Книга Excel не передана."
@@ -197,7 +198,8 @@ UseDefaultHeight:
     Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.Column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
-' Снимает старые объединения и очищает значения/форматы перед новой записью.
+' Готовит область к записи: при полном оформлении очищает её целиком.
+' В минимальном режиме оставляет шапку и форматы, удаляя данные и прежнюю заливку статусов.
 Private Sub PrepareTarget(ByVal target As Object)
     If mMinimalFormatting Then
         If target.Rows.Count > HEADER_ROWS Then
@@ -213,7 +215,7 @@ Private Sub PrepareTarget(ByVal target As Object)
     target.Clear
 End Sub
 
-' Записывает отдельную строку-название над detailed-блоком, не вмешиваясь в многоуровневую шапку таблицы.
+' Записывает отдельную строку-название над подробным блоком, не вмешиваясь в многоуровневую шапку таблицы.
 Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     If target.Row <= 1 Then Exit Sub
     If mMinimalFormatting Then
@@ -243,7 +245,8 @@ Private Sub ClearBlockTitleRow(ByVal target As Object)
     target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
 End Sub
 
-' Формирует многоуровневую шапку таблицы.
+' Собирает многоуровневую шапку с актуальными единицами. В минимальном
+' режиме сохраняет совпадающую шапку; при отличии возвращается к полному оформлению.
 Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     Dim headers() As Variant
     ReDim headers(1 To HEADER_ROWS, 1 To TOTAL_COLUMNS)
@@ -425,7 +428,7 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
 
-' Заполняет одну строку detailed-блока прочности.
+' Заполняет одну строку подробного блока прочности.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel)
@@ -593,7 +596,8 @@ Private Sub PutStateGeometry(ByRef data() As Variant, ByVal rowIndex As Long, _
     If compressedDepth >= 0# Then data(rowIndex, colX) = OutputLength(compressedDepth, units)
 End Sub
 
-' Оформляет шапку, рамки, число и подсветку статусов.
+' Оформляет подробную таблицу прочности: шапку, рамки, числа и статусы.
+' В минимальном режиме обновляет только подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If mMinimalFormatting Then
         ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS
@@ -752,7 +756,7 @@ Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel
 
     Dim nx As Double
     Dim ny As Double
-    nx = kappaY / normValue
+    nx = kappaY / normValue ' Нормаль поля epsilon = eps0 + kappaX*y + kappaY*x направлена к росту деформации.
     ny = kappaX / normValue
 
     Dim minS As Double
@@ -765,7 +769,7 @@ Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel
     If depthH <= 0# Then Exit Sub
 
     Dim neutralS As Double
-    neutralS = -eps0 / normValue
+    neutralS = -eps0 / normValue ' Координата нулевой деформации по единичной нормали, мм.
 
     If eps0 + normValue * minS < 0# And eps0 + normValue * maxS < 0# Then
         compressedDepth = depthH
@@ -776,8 +780,8 @@ Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel
     End If
 End Sub
 
-' Ниже переводятся величины таблицы прочности во внутренне согласованные
-' выходные единицы и знаки, выбранные пользователем для Results.
+' Переводит длину из внутренних мм в выходную единицу пользователя.
+' Если CUnitSystem не передан, возвращает исходное значение в мм.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function

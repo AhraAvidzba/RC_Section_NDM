@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "purpose": "Исторические native-журналы сохраняют имена до механического Test-переименования. Карта связывает их с текущими именами тех же процедур; reportedEntryPoint сохраняет точное имя журнала отдельно от entryPoint. Отдельные согласованные исправления перечислены в строгом proof и проверяются направленными запусками; сама карта не утверждает новый прогон.",
+  "proof": "docs/regression/HelpCommentReview_2026-10-22/TestRenameScopeProof.json",
+  "proofSHA256": "D838065AA3EE466EE1459634B2D839CA0AEFDC8B4FCA8E1AFD8932706F3635EF",
+  "proofVbaFiles": 167,
+  "aliases": {
+    "modTestRecipeApiCatalogue.RunAdvancedGuideExamples": "modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples",
+    "modTestRecipeApiCatalogue.RunApiGeometryReadExamples": "modTestRecipeApiCatalogue.TestRunApiGeometryReadExamples",
+    "modTestRecipeApiCatalogue.RunApiInputAndDataExamples": "modTestRecipeApiCatalogue.TestRunApiInputAndDataExamples",
+    "modTestRecipeApiCatalogue.RunApiUnitExamples": "modTestRecipeApiCatalogue.TestRunApiUnitExamples"
+  }
+}

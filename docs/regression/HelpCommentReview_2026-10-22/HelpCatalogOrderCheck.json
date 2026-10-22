@@ -1,0 +1,2392 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "C31FDAE8B6649BE4DECF7A7362CA462FF986563F93F6BD32EDF21ED8D293513E",
+  "CatalogBlocks": 148,
+  "ExactUniqueHeadingsMatched": 148,
+  "AllHeadingsInActualOrder": true,
+  "OrderMismatches": [],
+  "FinalCanonicalKey": "General.ReformatResultsEnabled",
+  "FinalCanonicalTitle": "General.ReformatResultsEnabled — повторное оформление Results",
+  "FinalHeaderRow": 1716,
+  "AllLineContentsAndSlotCountsUnchanged": true,
+  "OnlySourceTitleChange": {
+    "Key": "General.ReformatResultsEnabled",
+    "Before": "General.ReformatResultsEnabled",
+    "After": "General.ReformatResultsEnabled — повторное оформление Results"
+  },
+  "SourceOnlyCanonicalRuleVerified": true,
+  "SourceSHA256": "AFB1DDE626BBA6C08C03B3E85DC74A334323D43F0EFE47F63081D016A1DC4DF0",
+  "CurrentBookChanged": false,
+  "Order": [
+    {
+      "Key": "Units",
+      "HeaderRow": 637,
+      "Title": "Единицы измерения",
+      "SourceSlots": 9,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 638,
+      "CurrentBodyLastRow": 646,
+      "CurrentBodyTextCells": [
+        "B638",
+        "B639",
+        "B640",
+        "B641",
+        "B642",
+        "B643",
+        "B644",
+        "B645",
+        "B646"
+      ]
+    },
+    {
+      "Key": "SignConvention",
+      "HeaderRow": 648,
+      "Title": "Система знаков",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 649,
+      "CurrentBodyLastRow": 654,
+      "CurrentBodyTextCells": [
+        "B649",
+        "B650",
+        "B651",
+        "B652",
+        "B653",
+        "B654"
+      ]
+    },
+    {
+      "Key": "LoadCombinations",
+      "HeaderRow": 656,
+      "Title": "Сочетания нагрузок",
+      "SourceSlots": 13,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 657,
+      "CurrentBodyLastRow": 678,
+      "CurrentBodyTextCells": [
+        "B657",
+        "B658",
+        "B659",
+        "B660",
+        "B661",
+        "B662",
+        "B663",
+        "B664",
+        "B665",
+        "B666",
+        "B667",
+        "B668",
+        "B670",
+        "B671",
+        "B672",
+        "B673",
+        "B674",
+        "B675",
+        "B676",
+        "B677"
+      ]
+    },
+    {
+      "Key": "StabilityLoads",
+      "HeaderRow": 680,
+      "Title": "Нагрузки для устойчивости",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 681,
+      "CurrentBodyLastRow": 685,
+      "CurrentBodyTextCells": [
+        "B681",
+        "B682",
+        "B683",
+        "B684",
+        "B685"
+      ]
+    },
+    {
+      "Key": "SP35Table721",
+      "HeaderRow": 687,
+      "Title": "Таблица 7.21 СП 35",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 688,
+      "CurrentBodyLastRow": 693,
+      "CurrentBodyTextCells": [
+        "B688",
+        "B689",
+        "B690",
+        "B691",
+        "B692",
+        "B693"
+      ]
+    },
+    {
+      "Key": "ConcreteMaterialParameters",
+      "HeaderRow": 695,
+      "Title": "Параметры бетона",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 696,
+      "CurrentBodyLastRow": 702,
+      "CurrentBodyTextCells": [
+        "B696",
+        "B697",
+        "B698",
+        "B699",
+        "B700",
+        "B701",
+        "B702"
+      ]
+    },
+    {
+      "Key": "SteelMaterialParameters",
+      "HeaderRow": 704,
+      "Title": "Параметры арматуры",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 705,
+      "CurrentBodyLastRow": 710,
+      "CurrentBodyTextCells": [
+        "B705",
+        "B706",
+        "B707",
+        "B708",
+        "B709",
+        "B710"
+      ]
+    },
+    {
+      "Key": "CalculationProfiles",
+      "HeaderRow": 712,
+      "Title": "Настройка расчетных профилей",
+      "SourceSlots": 12,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 713,
+      "CurrentBodyLastRow": 724,
+      "CurrentBodyTextCells": [
+        "B713",
+        "B714",
+        "B715",
+        "B716",
+        "B717",
+        "B718",
+        "B719",
+        "B720",
+        "B721",
+        "B722",
+        "B723",
+        "B724"
+      ]
+    },
+    {
+      "Key": "MaterialDiagramControlTables",
+      "HeaderRow": 726,
+      "Title": "Контрольные точки диаграмм",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 727,
+      "CurrentBodyLastRow": 730,
+      "CurrentBodyTextCells": [
+        "B727",
+        "B728",
+        "B729",
+        "B730"
+      ]
+    },
+    {
+      "Key": "PlotAnnotationSettings",
+      "HeaderRow": 732,
+      "Title": "Настройки оформления схемы",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 733,
+      "CurrentBodyLastRow": 739,
+      "CurrentBodyTextCells": [
+        "B733",
+        "B734",
+        "B735",
+        "B736",
+        "B737",
+        "B738",
+        "B739"
+      ]
+    },
+    {
+      "Key": "DependentRebarRows",
+      "HeaderRow": 741,
+      "Title": "Как задать сечение и армирование",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 742,
+      "CurrentBodyLastRow": 749,
+      "CurrentBodyTextCells": [
+        "B742",
+        "B743",
+        "B744",
+        "B745",
+        "B746",
+        "B747",
+        "B748",
+        "B749"
+      ]
+    },
+    {
+      "Key": "CircleGeometry",
+      "HeaderRow": 751,
+      "Title": "Круглое сечение",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 752,
+      "CurrentBodyLastRow": 757,
+      "CurrentBodyTextCells": [
+        "B752",
+        "B753",
+        "B754",
+        "B755",
+        "B756",
+        "B757"
+      ]
+    },
+    {
+      "Key": "PointedSectionGeometry",
+      "HeaderRow": 759,
+      "Title": "Клиновидное сечение",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 760,
+      "CurrentBodyLastRow": 764,
+      "CurrentBodyTextCells": [
+        "B760",
+        "B761",
+        "B762",
+        "B763",
+        "B764"
+      ]
+    },
+    {
+      "Key": "HollowRectangleGeometry",
+      "HeaderRow": 766,
+      "Title": "Пустотелый прямоугольник",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 767,
+      "CurrentBodyLastRow": 771,
+      "CurrentBodyTextCells": [
+        "B767",
+        "B768",
+        "B769",
+        "B770",
+        "B771"
+      ]
+    },
+    {
+      "Key": "RectanglesGeometry",
+      "HeaderRow": 773,
+      "Title": "Набор прямоугольников (Г-сечение)",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 774,
+      "CurrentBodyLastRow": 779,
+      "CurrentBodyTextCells": [
+        "B774",
+        "B775",
+        "B776",
+        "B777",
+        "B778",
+        "B779"
+      ]
+    },
+    {
+      "Key": "General.ExecutionReportEnabled",
+      "HeaderRow": 781,
+      "Title": "General.ExecutionReportEnabled",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 782,
+      "CurrentBodyLastRow": 788,
+      "CurrentBodyTextCells": [
+        "B782",
+        "B783",
+        "B784",
+        "B785",
+        "B786",
+        "B787",
+        "B788"
+      ]
+    },
+    {
+      "Key": "General.NonCriticalMessagesEnabled",
+      "HeaderRow": 790,
+      "Title": "General.NonCriticalMessagesEnabled",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 791,
+      "CurrentBodyLastRow": 795,
+      "CurrentBodyTextCells": [
+        "B791",
+        "B792",
+        "B793",
+        "B794",
+        "B795"
+      ]
+    },
+    {
+      "Key": "General.WorstCombinationCriterion",
+      "HeaderRow": 797,
+      "Title": "General.WorstCombinationCriterion",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 798,
+      "CurrentBodyLastRow": 805,
+      "CurrentBodyTextCells": [
+        "B798",
+        "B799",
+        "B800",
+        "B801",
+        "B802",
+        "B803",
+        "B804",
+        "B805"
+      ]
+    },
+    {
+      "Key": "General.PlateauSlopeFactor",
+      "HeaderRow": 807,
+      "Title": "General.PlateauSlopeFactor",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 808,
+      "CurrentBodyLastRow": 813,
+      "CurrentBodyTextCells": [
+        "B808",
+        "B809",
+        "B810",
+        "B811",
+        "B812",
+        "B813"
+      ]
+    },
+    {
+      "Key": "General.DiagramExtension",
+      "HeaderRow": 815,
+      "Title": "General.DiagramExtension",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 816,
+      "CurrentBodyLastRow": 820,
+      "CurrentBodyTextCells": [
+        "B816",
+        "B817",
+        "B818",
+        "B819",
+        "B820"
+      ]
+    },
+    {
+      "Key": "Calculation.ZeroMomentPerDepth",
+      "HeaderRow": 822,
+      "Title": "Calculation.ZeroMomentPerDepth",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 823,
+      "CurrentBodyLastRow": 830,
+      "CurrentBodyTextCells": [
+        "B823",
+        "B824",
+        "B825",
+        "B826",
+        "B827",
+        "B828",
+        "B829",
+        "B830"
+      ]
+    },
+    {
+      "Key": "Geometry.Source",
+      "HeaderRow": 832,
+      "Title": "Geometry.Source",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 833,
+      "CurrentBodyLastRow": 839,
+      "CurrentBodyTextCells": [
+        "B833",
+        "B834",
+        "B835",
+        "B836",
+        "B837",
+        "B838",
+        "B839"
+      ]
+    },
+    {
+      "Key": "Geometry.Type",
+      "HeaderRow": 841,
+      "Title": "Geometry.Type",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 842,
+      "CurrentBodyLastRow": 846,
+      "CurrentBodyTextCells": [
+        "B842",
+        "B843",
+        "B844",
+        "B845",
+        "B846"
+      ]
+    },
+    {
+      "Key": "Mesh.StepX",
+      "HeaderRow": 848,
+      "Title": "Mesh.StepX",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 849,
+      "CurrentBodyLastRow": 856,
+      "CurrentBodyTextCells": [
+        "B849",
+        "B850",
+        "B851",
+        "B852",
+        "B853",
+        "B854",
+        "B855",
+        "B856"
+      ]
+    },
+    {
+      "Key": "Mesh.StepY",
+      "HeaderRow": 858,
+      "Title": "Mesh.StepY",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 859,
+      "CurrentBodyLastRow": 866,
+      "CurrentBodyTextCells": [
+        "B859",
+        "B860"
+      ]
+    },
+    {
+      "Key": "Mesh.BoundarySubdivisions",
+      "HeaderRow": 868,
+      "Title": "Mesh.BoundarySubdivisions",
+      "SourceSlots": 9,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 869,
+      "CurrentBodyLastRow": 877,
+      "CurrentBodyTextCells": [
+        "B869",
+        "B870",
+        "B871",
+        "B872",
+        "B873",
+        "B874",
+        "B875",
+        "B876",
+        "B877"
+      ]
+    },
+    {
+      "Key": "Load.ReferenceOffsetX",
+      "HeaderRow": 879,
+      "Title": "Load.ReferenceOffsetX",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 880,
+      "CurrentBodyLastRow": 886,
+      "CurrentBodyTextCells": [
+        "B880",
+        "B881",
+        "B882",
+        "B883",
+        "B884",
+        "B885",
+        "B886"
+      ]
+    },
+    {
+      "Key": "Load.ReferenceOffsetY",
+      "HeaderRow": 888,
+      "Title": "Load.ReferenceOffsetY",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 889,
+      "CurrentBodyLastRow": 895,
+      "CurrentBodyTextCells": [
+        "B889",
+        "B890"
+      ]
+    },
+    {
+      "Key": "Solver.Method",
+      "HeaderRow": 897,
+      "Title": "Solver.Method",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 898,
+      "CurrentBodyLastRow": 902,
+      "CurrentBodyTextCells": [
+        "B898",
+        "B899",
+        "B900",
+        "B901",
+        "B902"
+      ]
+    },
+    {
+      "Key": "Solver.MaxIterations",
+      "HeaderRow": 904,
+      "Title": "Solver.MaxIterations",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 905,
+      "CurrentBodyLastRow": 909,
+      "CurrentBodyTextCells": [
+        "B905",
+        "B906",
+        "B907",
+        "B908",
+        "B909"
+      ]
+    },
+    {
+      "Key": "Solver.LoadSteps",
+      "HeaderRow": 911,
+      "Title": "Solver.LoadSteps",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 912,
+      "CurrentBodyLastRow": 915,
+      "CurrentBodyTextCells": [
+        "B912",
+        "B913",
+        "B914",
+        "B915"
+      ]
+    },
+    {
+      "Key": "Solver.ToleranceN",
+      "HeaderRow": 917,
+      "Title": "Solver.ToleranceN",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 918,
+      "CurrentBodyLastRow": 921,
+      "CurrentBodyTextCells": [
+        "B918",
+        "B919",
+        "B920",
+        "B921"
+      ]
+    },
+    {
+      "Key": "Solver.ToleranceMx",
+      "HeaderRow": 923,
+      "Title": "Solver.ToleranceMx",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 924,
+      "CurrentBodyLastRow": 927,
+      "CurrentBodyTextCells": [
+        "B924",
+        "B925",
+        "B926",
+        "B927"
+      ]
+    },
+    {
+      "Key": "Solver.ToleranceMy",
+      "HeaderRow": 929,
+      "Title": "Solver.ToleranceMy",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 930,
+      "CurrentBodyLastRow": 933,
+      "CurrentBodyTextCells": [
+        "B930",
+        "B931",
+        "B932",
+        "B933"
+      ]
+    },
+    {
+      "Key": "Solver.SecantMaxRestarts",
+      "HeaderRow": 935,
+      "Title": "Solver.SecantMaxRestarts",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 936,
+      "CurrentBodyLastRow": 939,
+      "CurrentBodyTextCells": [
+        "B936",
+        "B937",
+        "B938",
+        "B939"
+      ]
+    },
+    {
+      "Key": "Capacity.SolutionStrategy",
+      "HeaderRow": 941,
+      "Title": "Capacity.SolutionStrategy",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 942,
+      "CurrentBodyLastRow": 947,
+      "CurrentBodyTextCells": [
+        "B942",
+        "B943",
+        "B944",
+        "B945",
+        "B946",
+        "B947"
+      ]
+    },
+    {
+      "Key": "Capacity.SolverMaxIterations",
+      "HeaderRow": 949,
+      "Title": "Capacity.SolverMaxIterations",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 950,
+      "CurrentBodyLastRow": 957,
+      "CurrentBodyTextCells": [
+        "B950",
+        "B951",
+        "B952",
+        "B953",
+        "B954",
+        "B955",
+        "B956",
+        "B957"
+      ]
+    },
+    {
+      "Key": "Capacity.ToleranceStrain",
+      "HeaderRow": 959,
+      "Title": "Capacity.ToleranceStrain",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 960,
+      "CurrentBodyLastRow": 965,
+      "CurrentBodyTextCells": [
+        "B960",
+        "B961",
+        "B962",
+        "B963",
+        "B964",
+        "B965"
+      ]
+    },
+    {
+      "Key": "Capacity.MaxLambda",
+      "HeaderRow": 967,
+      "Title": "Capacity.MaxLambda",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 968,
+      "CurrentBodyLastRow": 973,
+      "CurrentBodyTextCells": [
+        "B968",
+        "B969",
+        "B970",
+        "B971",
+        "B972",
+        "B973"
+      ]
+    },
+    {
+      "Key": "Capacity.SearchMethod",
+      "HeaderRow": 975,
+      "Title": "Capacity.SearchMethod",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 976,
+      "CurrentBodyLastRow": 980,
+      "CurrentBodyTextCells": [
+        "B976",
+        "B977",
+        "B978",
+        "B979",
+        "B980"
+      ]
+    },
+    {
+      "Key": "Capacity.InitialLambda",
+      "HeaderRow": 982,
+      "Title": "Capacity.InitialLambda",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 983,
+      "CurrentBodyLastRow": 988,
+      "CurrentBodyTextCells": [
+        "B983",
+        "B984",
+        "B985",
+        "B986",
+        "B987",
+        "B988"
+      ]
+    },
+    {
+      "Key": "Capacity.ToleranceLambda",
+      "HeaderRow": 990,
+      "Title": "Capacity.ToleranceLambda",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 991,
+      "CurrentBodyLastRow": 996,
+      "CurrentBodyTextCells": [
+        "B991",
+        "B992",
+        "B993",
+        "B994",
+        "B995",
+        "B996"
+      ]
+    },
+    {
+      "Key": "Capacity.MaxRetries",
+      "HeaderRow": 998,
+      "Title": "Capacity.MaxRetries",
+      "SourceSlots": 10,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 999,
+      "CurrentBodyLastRow": 1008,
+      "CurrentBodyTextCells": [
+        "B999",
+        "B1000",
+        "B1001",
+        "B1002",
+        "B1003",
+        "B1004",
+        "B1005",
+        "B1006",
+        "B1007",
+        "B1008"
+      ]
+    },
+    {
+      "Key": "Capacity.BaseLoadSteps",
+      "HeaderRow": 1010,
+      "Title": "Capacity.BaseLoadSteps",
+      "SourceSlots": 10,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1011,
+      "CurrentBodyLastRow": 1020,
+      "CurrentBodyTextCells": [
+        "B1011",
+        "B1012",
+        "B1013",
+        "B1014",
+        "B1015",
+        "B1016",
+        "B1017",
+        "B1018",
+        "B1019",
+        "B1020"
+      ]
+    },
+    {
+      "Key": "Stability.Code",
+      "HeaderRow": 1022,
+      "Title": "Stability.Code",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1023,
+      "CurrentBodyLastRow": 1028,
+      "CurrentBodyTextCells": [
+        "B1023",
+        "B1024",
+        "B1025",
+        "B1026",
+        "B1027",
+        "B1028"
+      ]
+    },
+    {
+      "Key": "Stability.ElementLength",
+      "HeaderRow": 1030,
+      "Title": "Stability.ElementLength",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1031,
+      "CurrentBodyLastRow": 1037,
+      "CurrentBodyTextCells": [
+        "B1031",
+        "B1032",
+        "B1033",
+        "B1034",
+        "B1035",
+        "B1036",
+        "B1037"
+      ]
+    },
+    {
+      "Key": "Stability.Mu1",
+      "HeaderRow": 1039,
+      "Title": "Stability.Mu1",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1040,
+      "CurrentBodyLastRow": 1047,
+      "CurrentBodyTextCells": [
+        "B1040",
+        "B1041",
+        "B1042",
+        "B1043",
+        "B1044",
+        "B1045",
+        "B1046",
+        "B1047"
+      ]
+    },
+    {
+      "Key": "Stability.Mu2",
+      "HeaderRow": 1049,
+      "Title": "Stability.Mu2",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1050,
+      "CurrentBodyLastRow": 1057,
+      "CurrentBodyTextCells": [
+        "B1050",
+        "B1051"
+      ]
+    },
+    {
+      "Key": "Stability.SystemType",
+      "HeaderRow": 1059,
+      "Title": "Stability.SystemType",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1060,
+      "CurrentBodyLastRow": 1065,
+      "CurrentBodyTextCells": [
+        "B1060",
+        "B1061",
+        "B1062",
+        "B1063",
+        "B1064",
+        "B1065"
+      ]
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign1",
+      "HeaderRow": 1067,
+      "Title": "Stability.ZeroMomentEccentricitySign1",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1068,
+      "CurrentBodyLastRow": 1074,
+      "CurrentBodyTextCells": [
+        "B1068",
+        "B1069",
+        "B1070",
+        "B1071",
+        "B1072",
+        "B1073",
+        "B1074"
+      ]
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign2",
+      "HeaderRow": 1076,
+      "Title": "Stability.ZeroMomentEccentricitySign2",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1077,
+      "CurrentBodyLastRow": 1083,
+      "CurrentBodyTextCells": [
+        "B1077",
+        "B1078"
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityMode",
+      "HeaderRow": 1085,
+      "Title": "Stability.AccidentalEccentricityMode",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1086,
+      "CurrentBodyLastRow": 1091,
+      "CurrentBodyTextCells": [
+        "B1086",
+        "B1087",
+        "B1088",
+        "B1089",
+        "B1090",
+        "B1091"
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser1",
+      "HeaderRow": 1093,
+      "Title": "Stability.AccidentalEccentricityUser1",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1094,
+      "CurrentBodyLastRow": 1101,
+      "CurrentBodyTextCells": [
+        "B1094",
+        "B1095",
+        "B1096",
+        "B1097",
+        "B1098",
+        "B1099",
+        "B1100",
+        "B1101"
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser2",
+      "HeaderRow": 1103,
+      "Title": "Stability.AccidentalEccentricityUser2",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1104,
+      "CurrentBodyLastRow": 1111,
+      "CurrentBodyTextCells": [
+        "B1104",
+        "B1105"
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityPlanes",
+      "HeaderRow": 1113,
+      "Title": "Stability.AccidentalEccentricityPlanes",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1114,
+      "CurrentBodyLastRow": 1118,
+      "CurrentBodyTextCells": [
+        "B1114",
+        "B1115",
+        "B1116",
+        "B1117",
+        "B1118"
+      ]
+    },
+    {
+      "Key": "Stability.PhiLMode",
+      "HeaderRow": 1120,
+      "Title": "Stability.PhiLMode",
+      "SourceSlots": 9,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1121,
+      "CurrentBodyLastRow": 1129,
+      "CurrentBodyTextCells": [
+        "B1121",
+        "B1122",
+        "B1123",
+        "B1124",
+        "B1125",
+        "B1126",
+        "B1127",
+        "B1128",
+        "B1129"
+      ]
+    },
+    {
+      "Key": "Stability.SP63.Ks",
+      "HeaderRow": 1131,
+      "Title": "Stability.SP63.Ks",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1132,
+      "CurrentBodyLastRow": 1134,
+      "CurrentBodyTextCells": [
+        "B1132",
+        "B1133",
+        "B1134"
+      ]
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMin",
+      "HeaderRow": 1136,
+      "Title": "Stability.SP63.DeltaEMin",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1137,
+      "CurrentBodyLastRow": 1139,
+      "CurrentBodyTextCells": [
+        "B1137",
+        "B1138",
+        "B1139"
+      ]
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMax",
+      "HeaderRow": 1141,
+      "Title": "Stability.SP63.DeltaEMax",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1142,
+      "CurrentBodyLastRow": 1144,
+      "CurrentBodyTextCells": [
+        "B1142",
+        "B1143",
+        "B1144"
+      ]
+    },
+    {
+      "Key": "Stability.SP35.PhiP",
+      "HeaderRow": 1146,
+      "Title": "Stability.SP35.PhiP",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1147,
+      "CurrentBodyLastRow": 1149,
+      "CurrentBodyTextCells": [
+        "B1147",
+        "B1148",
+        "B1149"
+      ]
+    },
+    {
+      "Key": "Stability.SP35.NOverNcrLimit",
+      "HeaderRow": 1151,
+      "Title": "Stability.SP35.NOverNcrLimit",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1152,
+      "CurrentBodyLastRow": 1154,
+      "CurrentBodyTextCells": [
+        "B1152",
+        "B1153",
+        "B1154"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Code",
+      "HeaderRow": 1156,
+      "Title": "SLS.Crack.Code",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1157,
+      "CurrentBodyLastRow": 1159,
+      "CurrentBodyTextCells": [
+        "B1157",
+        "B1158",
+        "B1159"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Allowable",
+      "HeaderRow": 1161,
+      "Title": "SLS.Crack.Allowable",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1162,
+      "CurrentBodyLastRow": 1168,
+      "CurrentBodyTextCells": [
+        "B1162",
+        "B1163",
+        "B1164",
+        "B1165",
+        "B1166",
+        "B1167",
+        "B1168"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.InitiationSolutionStrategy",
+      "HeaderRow": 1170,
+      "Title": "SLS.Crack.InitiationSolutionStrategy",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1171,
+      "CurrentBodyLastRow": 1175,
+      "CurrentBodyTextCells": [
+        "B1171",
+        "B1172",
+        "B1173",
+        "B1174",
+        "B1175"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.ToleranceLambda",
+      "HeaderRow": 1177,
+      "Title": "SLS.Crack.ToleranceLambda",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1178,
+      "CurrentBodyLastRow": 1181,
+      "CurrentBodyTextCells": [
+        "B1178",
+        "B1179",
+        "B1180",
+        "B1181"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.TensionZoneMode",
+      "HeaderRow": 1183,
+      "Title": "SLS.Crack.TensionZoneMode",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1184,
+      "CurrentBodyLastRow": 1189,
+      "CurrentBodyTextCells": [
+        "B1184",
+        "B1185",
+        "B1186",
+        "B1187",
+        "B1188",
+        "B1189"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.CoverDistanceMode",
+      "HeaderRow": 1191,
+      "Title": "SLS.Crack.CoverDistanceMode",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1192,
+      "CurrentBodyLastRow": 1195,
+      "CurrentBodyTextCells": [
+        "B1192",
+        "B1193",
+        "B1194",
+        "B1195"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Phi1",
+      "HeaderRow": 1197,
+      "Title": "SLS.Crack.Phi1",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1198,
+      "CurrentBodyLastRow": 1200,
+      "CurrentBodyTextCells": [
+        "B1198",
+        "B1199",
+        "B1200"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Phi2",
+      "HeaderRow": 1202,
+      "Title": "SLS.Crack.Phi2",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1203,
+      "CurrentBodyLastRow": 1205,
+      "CurrentBodyTextCells": [
+        "B1203",
+        "B1204",
+        "B1205"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Phi3Mode",
+      "HeaderRow": 1207,
+      "Title": "SLS.Crack.Phi3Mode",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1208,
+      "CurrentBodyLastRow": 1211,
+      "CurrentBodyTextCells": [
+        "B1208",
+        "B1209",
+        "B1210",
+        "B1211"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Phi3",
+      "HeaderRow": 1213,
+      "Title": "SLS.Crack.Phi3",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1214,
+      "CurrentBodyLastRow": 1216,
+      "CurrentBodyTextCells": [
+        "B1214",
+        "B1215",
+        "B1216"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.PsiMode",
+      "HeaderRow": 1218,
+      "Title": "SLS.Crack.PsiMode",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1219,
+      "CurrentBodyLastRow": 1224,
+      "CurrentBodyTextCells": [
+        "B1219",
+        "B1220",
+        "B1221",
+        "B1222",
+        "B1223",
+        "B1224"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SigmaSCrcAveragingMode",
+      "HeaderRow": 1226,
+      "Title": "SLS.Crack.SigmaSCrcAveragingMode",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1227,
+      "CurrentBodyLastRow": 1230,
+      "CurrentBodyTextCells": [
+        "B1227",
+        "B1228",
+        "B1229",
+        "B1230"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.PsiS",
+      "HeaderRow": 1232,
+      "Title": "SLS.Crack.PsiS",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1233,
+      "CurrentBodyLastRow": 1236,
+      "CurrentBodyTextCells": [
+        "B1233",
+        "B1234",
+        "B1235",
+        "B1236"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.GroupGapTolerance",
+      "HeaderRow": 1238,
+      "Title": "SLS.Crack.SP35.GroupGapTolerance",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1239,
+      "CurrentBodyLastRow": 1241,
+      "CurrentBodyTextCells": [
+        "B1239",
+        "B1240",
+        "B1241"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.RowTolerance",
+      "HeaderRow": 1243,
+      "Title": "SLS.Crack.SP35.RowTolerance",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1244,
+      "CurrentBodyLastRow": 1246,
+      "CurrentBodyTextCells": [
+        "B1244",
+        "B1245",
+        "B1246"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.NeighborRatioLimit",
+      "HeaderRow": 1248,
+      "Title": "SLS.Crack.SP35.NeighborRatioLimit",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1249,
+      "CurrentBodyLastRow": 1251,
+      "CurrentBodyTextCells": [
+        "B1249",
+        "B1250",
+        "B1251"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.RadiusDiameterMode",
+      "HeaderRow": 1253,
+      "Title": "SLS.Crack.SP35.RadiusDiameterMode",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1254,
+      "CurrentBodyLastRow": 1256,
+      "CurrentBodyTextCells": [
+        "B1254",
+        "B1255",
+        "B1256"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.InteractionRadiusMode",
+      "HeaderRow": 1258,
+      "Title": "SLS.Crack.SP35.InteractionRadiusMode",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1259,
+      "CurrentBodyLastRow": 1261,
+      "CurrentBodyTextCells": [
+        "B1259",
+        "B1260",
+        "B1261"
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.RebarProfile",
+      "HeaderRow": 1263,
+      "Title": "SLS.Crack.SP35.RebarProfile",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1264,
+      "CurrentBodyLastRow": 1266,
+      "CurrentBodyTextCells": [
+        "B1264",
+        "B1265",
+        "B1266"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Common.ConcreteLayer",
+      "HeaderRow": 1268,
+      "Title": "AutoCAD.Common.ConcreteLayer",
+      "SourceSlots": 8,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1269,
+      "CurrentBodyLastRow": 1276,
+      "CurrentBodyTextCells": [
+        "B1269",
+        "B1270",
+        "B1271",
+        "B1272",
+        "B1273",
+        "B1274",
+        "B1275",
+        "B1276"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Common.RebarLayer",
+      "HeaderRow": 1278,
+      "Title": "AutoCAD.Common.RebarLayer",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1279,
+      "CurrentBodyLastRow": 1282,
+      "CurrentBodyTextCells": [
+        "B1279",
+        "B1280",
+        "B1281",
+        "B1282"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Common.SectionContourLayer",
+      "HeaderRow": 1284,
+      "Title": "AutoCAD.Common.SectionContourLayer",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1285,
+      "CurrentBodyLastRow": 1288,
+      "CurrentBodyTextCells": [
+        "B1285",
+        "B1286",
+        "B1287",
+        "B1288"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Common.OpeningContourLayer",
+      "HeaderRow": 1290,
+      "Title": "AutoCAD.Common.OpeningContourLayer",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1291,
+      "CurrentBodyLastRow": 1294,
+      "CurrentBodyTextCells": [
+        "B1291",
+        "B1292",
+        "B1293",
+        "B1294"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Import.MinArea",
+      "HeaderRow": 1296,
+      "Title": "AutoCAD.Import.MinArea",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1297,
+      "CurrentBodyLastRow": 1303,
+      "CurrentBodyTextCells": [
+        "B1297",
+        "B1298",
+        "B1299",
+        "B1300",
+        "B1301",
+        "B1302",
+        "B1303"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.CombinationID",
+      "HeaderRow": 1305,
+      "Title": "AutoCAD.Export.CombinationID",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1306,
+      "CurrentBodyLastRow": 1312,
+      "CurrentBodyTextCells": [
+        "B1306",
+        "B1307",
+        "B1308",
+        "B1309",
+        "B1310",
+        "B1311",
+        "B1312"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.NeutralLineEnabled",
+      "HeaderRow": 1314,
+      "Title": "AutoCAD.Export.NeutralLineEnabled",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1315,
+      "CurrentBodyLastRow": 1319,
+      "CurrentBodyTextCells": [
+        "B1315",
+        "B1316",
+        "B1317",
+        "B1318",
+        "B1319"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.PrincipalAxesMode",
+      "HeaderRow": 1321,
+      "Title": "AutoCAD.Export.PrincipalAxesMode",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1322,
+      "CurrentBodyLastRow": 1327,
+      "CurrentBodyTextCells": [
+        "B1322",
+        "B1323",
+        "B1324",
+        "B1325",
+        "B1326",
+        "B1327"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.LoadPointEnabled",
+      "HeaderRow": 1329,
+      "Title": "AutoCAD.Export.LoadPointEnabled",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1330,
+      "CurrentBodyLastRow": 1334,
+      "CurrentBodyTextCells": [
+        "B1330",
+        "B1331",
+        "B1332",
+        "B1333",
+        "B1334"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.ContourEnabled",
+      "HeaderRow": 1336,
+      "Title": "AutoCAD.Export.ContourEnabled",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1337,
+      "CurrentBodyLastRow": 1342,
+      "CurrentBodyTextCells": [
+        "B1337",
+        "B1338",
+        "B1339",
+        "B1340",
+        "B1341",
+        "B1342"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.ContourFormat",
+      "HeaderRow": 1344,
+      "Title": "AutoCAD.Export.ContourFormat",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1345,
+      "CurrentBodyLastRow": 1349,
+      "CurrentBodyTextCells": [
+        "B1345",
+        "B1346",
+        "B1347",
+        "B1348",
+        "B1349"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.ExportCrackInteractionContour",
+      "HeaderRow": 1351,
+      "Title": "AutoCAD.Export.ExportCrackInteractionContour",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1352,
+      "CurrentBodyLastRow": 1356,
+      "CurrentBodyTextCells": [
+        "B1352",
+        "B1353",
+        "B1354",
+        "B1355",
+        "B1356"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.LabelMode",
+      "HeaderRow": 1358,
+      "Title": "AutoCAD.Export.LabelMode",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1359,
+      "CurrentBodyLastRow": 1363,
+      "CurrentBodyTextCells": [
+        "B1359",
+        "B1360",
+        "B1361",
+        "B1362",
+        "B1363"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.CrackInteractionLayer",
+      "HeaderRow": 1365,
+      "Title": "AutoCAD.Export.CrackInteractionLayer",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1366,
+      "CurrentBodyLastRow": 1368,
+      "CurrentBodyTextCells": [
+        "B1366",
+        "B1367",
+        "B1368"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteTension",
+      "HeaderRow": 1370,
+      "Title": "AutoCAD.Layer.ConcreteTension",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1371,
+      "CurrentBodyLastRow": 1377,
+      "CurrentBodyTextCells": [
+        "B1371",
+        "B1372",
+        "B1373",
+        "B1374",
+        "B1375",
+        "B1376",
+        "B1377"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteCompression",
+      "HeaderRow": 1379,
+      "Title": "AutoCAD.Layer.ConcreteCompression",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1380,
+      "CurrentBodyLastRow": 1386,
+      "CurrentBodyTextCells": [
+        "B1380",
+        "B1381"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarTension",
+      "HeaderRow": 1388,
+      "Title": "AutoCAD.Layer.RebarTension",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1389,
+      "CurrentBodyLastRow": 1395,
+      "CurrentBodyTextCells": [
+        "B1389",
+        "B1390"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarCompression",
+      "HeaderRow": 1397,
+      "Title": "AutoCAD.Layer.RebarCompression",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1398,
+      "CurrentBodyLastRow": 1404,
+      "CurrentBodyTextCells": [
+        "B1398",
+        "B1399"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteTension",
+      "HeaderRow": 1406,
+      "Title": "AutoCAD.Color.ConcreteTension",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1407,
+      "CurrentBodyLastRow": 1410,
+      "CurrentBodyTextCells": [
+        "B1407",
+        "B1408",
+        "B1409",
+        "B1410"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteCompression",
+      "HeaderRow": 1412,
+      "Title": "AutoCAD.Color.ConcreteCompression",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1413,
+      "CurrentBodyLastRow": 1416,
+      "CurrentBodyTextCells": [
+        "B1413",
+        "B1414"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.RebarTension",
+      "HeaderRow": 1418,
+      "Title": "AutoCAD.Color.RebarTension",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1419,
+      "CurrentBodyLastRow": 1422,
+      "CurrentBodyTextCells": [
+        "B1419",
+        "B1420"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.RebarCompression",
+      "HeaderRow": 1424,
+      "Title": "AutoCAD.Color.RebarCompression",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1425,
+      "CurrentBodyLastRow": 1428,
+      "CurrentBodyTextCells": [
+        "B1425",
+        "B1426"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.Neutral",
+      "HeaderRow": 1430,
+      "Title": "AutoCAD.Color.Neutral",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1431,
+      "CurrentBodyLastRow": 1434,
+      "CurrentBodyTextCells": [
+        "B1431",
+        "B1432"
+      ]
+    },
+    {
+      "Key": "Plot.Enabled",
+      "HeaderRow": 1436,
+      "Title": "Plot.Enabled",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1437,
+      "CurrentBodyLastRow": 1440,
+      "CurrentBodyTextCells": [
+        "B1437",
+        "B1438",
+        "B1439",
+        "B1440"
+      ]
+    },
+    {
+      "Key": "Plot.AutoUpdateAfterCalculation",
+      "HeaderRow": 1442,
+      "Title": "Plot.AutoUpdateAfterCalculation",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1443,
+      "CurrentBodyLastRow": 1448,
+      "CurrentBodyTextCells": [
+        "B1443",
+        "B1444",
+        "B1445",
+        "B1446",
+        "B1447",
+        "B1448"
+      ]
+    },
+    {
+      "Key": "Plot.LoadCase",
+      "HeaderRow": 1450,
+      "Title": "Plot.LoadCase",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1451,
+      "CurrentBodyLastRow": 1455,
+      "CurrentBodyTextCells": [
+        "B1451",
+        "B1452",
+        "B1453",
+        "B1454",
+        "B1455"
+      ]
+    },
+    {
+      "Key": "Plot.ResultGradient",
+      "HeaderRow": 1457,
+      "Title": "Plot.ResultGradient",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1458,
+      "CurrentBodyLastRow": 1461,
+      "CurrentBodyTextCells": [
+        "B1458",
+        "B1459",
+        "B1460",
+        "B1461"
+      ]
+    },
+    {
+      "Key": "Plot.ResultLabelsEnabled",
+      "HeaderRow": 1463,
+      "Title": "Plot.ResultLabelsEnabled",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1464,
+      "CurrentBodyLastRow": 1468,
+      "CurrentBodyTextCells": [
+        "B1464",
+        "B1465",
+        "B1466",
+        "B1467",
+        "B1468"
+      ]
+    },
+    {
+      "Key": "Plot.ResultLabelSpacing",
+      "HeaderRow": 1470,
+      "Title": "Plot.ResultLabelSpacing",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1471,
+      "CurrentBodyLastRow": 1475,
+      "CurrentBodyTextCells": [
+        "B1471",
+        "B1472",
+        "B1473",
+        "B1474",
+        "B1475"
+      ]
+    },
+    {
+      "Key": "Plot.NeutralLineEnabled",
+      "HeaderRow": 1477,
+      "Title": "Plot.NeutralLineEnabled",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1478,
+      "CurrentBodyLastRow": 1482,
+      "CurrentBodyTextCells": [
+        "B1478",
+        "B1479",
+        "B1480",
+        "B1481",
+        "B1482"
+      ]
+    },
+    {
+      "Key": "Plot.PrincipalAxesMode",
+      "HeaderRow": 1484,
+      "Title": "Plot.PrincipalAxesMode",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1485,
+      "CurrentBodyLastRow": 1490,
+      "CurrentBodyTextCells": [
+        "B1485",
+        "B1486",
+        "B1487",
+        "B1488",
+        "B1489",
+        "B1490"
+      ]
+    },
+    {
+      "Key": "Plot.LoadApplicationPointEnabled",
+      "HeaderRow": 1492,
+      "Title": "Plot.LoadApplicationPointEnabled",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1493,
+      "CurrentBodyLastRow": 1497,
+      "CurrentBodyTextCells": [
+        "B1493",
+        "B1494",
+        "B1495",
+        "B1496",
+        "B1497"
+      ]
+    },
+    {
+      "Key": "Plot.AxisLabelsEnabled",
+      "HeaderRow": 1499,
+      "Title": "Plot.AxisLabelsEnabled",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1500,
+      "CurrentBodyLastRow": 1503,
+      "CurrentBodyTextCells": [
+        "B1500",
+        "B1501",
+        "B1502",
+        "B1503"
+      ]
+    },
+    {
+      "Key": "Plot.AxisLabelsFontSize",
+      "HeaderRow": 1505,
+      "Title": "Plot.AxisLabelsFontSize",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1506,
+      "CurrentBodyLastRow": 1509,
+      "CurrentBodyTextCells": [
+        "B1506",
+        "B1507",
+        "B1508",
+        "B1509"
+      ]
+    },
+    {
+      "Key": "Plot.ContourEnabled",
+      "HeaderRow": 1511,
+      "Title": "Plot.ContourEnabled",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1512,
+      "CurrentBodyLastRow": 1515,
+      "CurrentBodyTextCells": [
+        "B1512",
+        "B1513",
+        "B1514",
+        "B1515"
+      ]
+    },
+    {
+      "Key": "Plot.LegendEnabled",
+      "HeaderRow": 1517,
+      "Title": "Plot.LegendEnabled",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1518,
+      "CurrentBodyLastRow": 1522,
+      "CurrentBodyTextCells": [
+        "B1518",
+        "B1519",
+        "B1520",
+        "B1521",
+        "B1522"
+      ]
+    },
+    {
+      "Key": "Plot.LegendMode",
+      "HeaderRow": 1524,
+      "Title": "Plot.LegendMode",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1525,
+      "CurrentBodyLastRow": 1528,
+      "CurrentBodyTextCells": [
+        "B1525",
+        "B1526",
+        "B1527",
+        "B1528"
+      ]
+    },
+    {
+      "Key": "Plot.Color.RebarCompression",
+      "HeaderRow": 1530,
+      "Title": "Plot.Color.RebarCompression",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1531,
+      "CurrentBodyLastRow": 1535,
+      "CurrentBodyTextCells": [
+        "B1531",
+        "B1532",
+        "B1533",
+        "B1534",
+        "B1535"
+      ]
+    },
+    {
+      "Key": "Plot.Color.RebarTension",
+      "HeaderRow": 1537,
+      "Title": "Plot.Color.RebarTension",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1538,
+      "CurrentBodyLastRow": 1542,
+      "CurrentBodyTextCells": [
+        "B1538",
+        "B1539"
+      ]
+    },
+    {
+      "Key": "Plot.Color.ConcreteCompression",
+      "HeaderRow": 1544,
+      "Title": "Plot.Color.ConcreteCompression",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1545,
+      "CurrentBodyLastRow": 1549,
+      "CurrentBodyTextCells": [
+        "B1545",
+        "B1546"
+      ]
+    },
+    {
+      "Key": "Plot.Color.ConcreteTension",
+      "HeaderRow": 1551,
+      "Title": "Plot.Color.ConcreteTension",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1552,
+      "CurrentBodyLastRow": 1556,
+      "CurrentBodyTextCells": [
+        "B1552",
+        "B1553"
+      ]
+    },
+    {
+      "Key": "Enabled",
+      "HeaderRow": 1558,
+      "Title": "Настройки оформления схемы: Enabled",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1559,
+      "CurrentBodyLastRow": 1561,
+      "CurrentBodyTextCells": [
+        "B1559",
+        "B1560",
+        "B1561"
+      ]
+    },
+    {
+      "Key": "Placement",
+      "HeaderRow": 1563,
+      "Title": "Настройки оформления схемы: Placement",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1564,
+      "CurrentBodyLastRow": 1566,
+      "CurrentBodyTextCells": [
+        "B1564",
+        "B1565",
+        "B1566"
+      ]
+    },
+    {
+      "Key": "Offset",
+      "HeaderRow": 1568,
+      "Title": "Настройки оформления схемы: Offset",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1569,
+      "CurrentBodyLastRow": 1575,
+      "CurrentBodyTextCells": [
+        "B1569",
+        "B1570",
+        "B1571",
+        "B1572",
+        "B1573",
+        "B1574",
+        "B1575"
+      ]
+    },
+    {
+      "Key": "LineEnabled",
+      "HeaderRow": 1577,
+      "Title": "Настройки оформления схемы: LineEnabled",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1578,
+      "CurrentBodyLastRow": 1580,
+      "CurrentBodyTextCells": [
+        "B1578",
+        "B1579",
+        "B1580"
+      ]
+    },
+    {
+      "Key": "LineWeight",
+      "HeaderRow": 1582,
+      "Title": "Настройки оформления схемы: LineWeight",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1583,
+      "CurrentBodyLastRow": 1585,
+      "CurrentBodyTextCells": [
+        "B1583",
+        "B1584",
+        "B1585"
+      ]
+    },
+    {
+      "Key": "ExtensionLineWeight",
+      "HeaderRow": 1587,
+      "Title": "Настройки оформления схемы: ExtensionLineWeight",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1588,
+      "CurrentBodyLastRow": 1590,
+      "CurrentBodyTextCells": [
+        "B1588",
+        "B1589",
+        "B1590"
+      ]
+    },
+    {
+      "Key": "TextUnits",
+      "HeaderRow": 1592,
+      "Title": "Настройки оформления схемы: TextUnits",
+      "SourceSlots": 7,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1593,
+      "CurrentBodyLastRow": 1599,
+      "CurrentBodyTextCells": [
+        "B1593",
+        "B1594",
+        "B1595",
+        "B1596",
+        "B1597",
+        "B1598",
+        "B1599"
+      ]
+    },
+    {
+      "Key": "TextHeight",
+      "HeaderRow": 1601,
+      "Title": "Настройки оформления схемы: TextHeight",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1602,
+      "CurrentBodyLastRow": 1607,
+      "CurrentBodyTextCells": [
+        "B1602",
+        "B1603",
+        "B1604",
+        "B1605",
+        "B1606",
+        "B1607"
+      ]
+    },
+    {
+      "Key": "TextGap",
+      "HeaderRow": 1609,
+      "Title": "Настройки оформления схемы: TextGap",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1610,
+      "CurrentBodyLastRow": 1614,
+      "CurrentBodyTextCells": [
+        "B1610",
+        "B1611",
+        "B1612",
+        "B1613",
+        "B1614"
+      ]
+    },
+    {
+      "Key": "ArrowType",
+      "HeaderRow": 1616,
+      "Title": "Настройки оформления схемы: ArrowType",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1617,
+      "CurrentBodyLastRow": 1619,
+      "CurrentBodyTextCells": [
+        "B1617",
+        "B1618",
+        "B1619"
+      ]
+    },
+    {
+      "Key": "ArrowSize",
+      "HeaderRow": 1621,
+      "Title": "Настройки оформления схемы: ArrowSize",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1622,
+      "CurrentBodyLastRow": 1624,
+      "CurrentBodyTextCells": [
+        "B1622",
+        "B1623",
+        "B1624"
+      ]
+    },
+    {
+      "Key": "Color",
+      "HeaderRow": 1626,
+      "Title": "Настройки оформления схемы: Color",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1627,
+      "CurrentBodyLastRow": 1629,
+      "CurrentBodyTextCells": [
+        "B1627",
+        "B1628",
+        "B1629"
+      ]
+    },
+    {
+      "Key": "ExtensionLineColor",
+      "HeaderRow": 1631,
+      "Title": "Настройки оформления схемы: ExtensionLineColor",
+      "SourceSlots": 3,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1632,
+      "CurrentBodyLastRow": 1634,
+      "CurrentBodyTextCells": [
+        "B1632",
+        "B1633",
+        "B1634"
+      ]
+    },
+    {
+      "Key": "ContourLineWeight",
+      "HeaderRow": 1636,
+      "Title": "Настройки оформления схемы: ContourLineWeight",
+      "SourceSlots": 2,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1637,
+      "CurrentBodyLastRow": 1638,
+      "CurrentBodyTextCells": [
+        "B1637",
+        "B1638"
+      ]
+    },
+    {
+      "Key": "Concrete.R.ULS(I)",
+      "HeaderRow": 1640,
+      "Title": "Concrete.R.ULS(I)",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1641,
+      "CurrentBodyLastRow": 1644,
+      "CurrentBodyTextCells": [
+        "B1641",
+        "B1642",
+        "B1643",
+        "B1644"
+      ]
+    },
+    {
+      "Key": "Concrete.R.SLS(II)",
+      "HeaderRow": 1646,
+      "Title": "Concrete.R.SLS(II)",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1647,
+      "CurrentBodyLastRow": 1650,
+      "CurrentBodyTextCells": [
+        "B1647",
+        "B1648",
+        "B1649",
+        "B1650"
+      ]
+    },
+    {
+      "Key": "Concrete.Rb.mc2",
+      "HeaderRow": 1652,
+      "Title": "Concrete.Rb.mc2",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1653,
+      "CurrentBodyLastRow": 1657,
+      "CurrentBodyTextCells": [
+        "B1653",
+        "B1654",
+        "B1655",
+        "B1656",
+        "B1657"
+      ]
+    },
+    {
+      "Key": "Concrete.E",
+      "HeaderRow": 1659,
+      "Title": "Concrete.E",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1660,
+      "CurrentBodyLastRow": 1663,
+      "CurrentBodyTextCells": [
+        "B1660",
+        "B1661",
+        "B1662",
+        "B1663"
+      ]
+    },
+    {
+      "Key": "Concrete.TwoLine.Eb1Red",
+      "HeaderRow": 1665,
+      "Title": "Concrete.TwoLine.Eb1Red",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1666,
+      "CurrentBodyLastRow": 1670,
+      "CurrentBodyTextCells": [
+        "B1666",
+        "B1667",
+        "B1668",
+        "B1669",
+        "B1670"
+      ]
+    },
+    {
+      "Key": "Concrete.ThreeLine.Eb0",
+      "HeaderRow": 1672,
+      "Title": "Concrete.ThreeLine.Eb0",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1673,
+      "CurrentBodyLastRow": 1677,
+      "CurrentBodyTextCells": [
+        "B1673",
+        "B1674"
+      ]
+    },
+    {
+      "Key": "Concrete.TwoThreeLine.Eb2",
+      "HeaderRow": 1679,
+      "Title": "Concrete.TwoThreeLine.Eb2",
+      "SourceSlots": 5,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1680,
+      "CurrentBodyLastRow": 1684,
+      "CurrentBodyTextCells": [
+        "B1680",
+        "B1681"
+      ]
+    },
+    {
+      "Key": "Steel.R.ULS(I)",
+      "HeaderRow": 1686,
+      "Title": "Steel.R.ULS(I)",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1687,
+      "CurrentBodyLastRow": 1690,
+      "CurrentBodyTextCells": [
+        "B1687",
+        "B1688",
+        "B1689",
+        "B1690"
+      ]
+    },
+    {
+      "Key": "Steel.R.SLS(II)",
+      "HeaderRow": 1692,
+      "Title": "Steel.R.SLS(II)",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1693,
+      "CurrentBodyLastRow": 1696,
+      "CurrentBodyTextCells": [
+        "B1693",
+        "B1694",
+        "B1695",
+        "B1696"
+      ]
+    },
+    {
+      "Key": "Steel.E",
+      "HeaderRow": 1698,
+      "Title": "Steel.E",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1699,
+      "CurrentBodyLastRow": 1702,
+      "CurrentBodyTextCells": [
+        "B1699",
+        "B1700",
+        "B1701",
+        "B1702"
+      ]
+    },
+    {
+      "Key": "Steel.TwoLine.Es2",
+      "HeaderRow": 1704,
+      "Title": "Steel.TwoLine.Es2",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1705,
+      "CurrentBodyLastRow": 1708,
+      "CurrentBodyTextCells": [
+        "B1705",
+        "B1706",
+        "B1707",
+        "B1708"
+      ]
+    },
+    {
+      "Key": "Steel.ThreeLine.Es2",
+      "HeaderRow": 1710,
+      "Title": "Steel.ThreeLine.Es2",
+      "SourceSlots": 4,
+      "SavedParagraphAddresses": null,
+      "CurrentBodyFirstRow": 1711,
+      "CurrentBodyLastRow": 1714,
+      "CurrentBodyTextCells": [
+        "B1711",
+        "B1712"
+      ]
+    },
+    {
+      "Key": "General.ReformatResultsEnabled",
+      "HeaderRow": 1716,
+      "Title": "General.ReformatResultsEnabled — повторное оформление Results",
+      "SourceSlots": 6,
+      "SavedParagraphAddresses": [
+        [
+          "A1717"
+        ],
+        [
+          "A1718"
+        ],
+        [
+          "A1719"
+        ],
+        [
+          "A1720",
+          "A1721"
+        ],
+        [
+          "A1722"
+        ],
+        [
+          "A1723"
+        ]
+      ],
+      "CurrentBodyFirstRow": 1717,
+      "CurrentBodyLastRow": 1723,
+      "CurrentBodyTextCells": [
+        "A1717",
+        "A1718",
+        "A1719",
+        "A1720",
+        "A1721",
+        "A1722",
+        "A1723"
+      ]
+    }
+  ]
+}

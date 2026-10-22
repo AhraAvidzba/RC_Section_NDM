@@ -43,11 +43,11 @@ if ($acceptance.status -ne 'PASS' -or $full.status -ne 'PASS' -or $full.reports.
     $standalone.status -ne 'STANDALONE_HELP_PASS' -or $standalone.apiMembers -ne 275 -or
     $help.Status -ne 'DIRECTED_REVIEW_HELP_PASS' -or -not $help.Idempotent -or -not $help.ReopenText -or
     $bridge.status -ne 'PASS' -or -not $bridge.productionUnchanged -or -not $bridge.unchangedOtherMethods -or
-    ($bridge.changed -join ',') -ne 'modTestContourMesh' -or $bridge.changedMethod -ne 'modTestContourMesh.CheckNativeFullExport' -or
+    ($bridge.changed -join ',') -ne 'modTestContourMesh' -or $bridge.changedMethod -ne 'modTestContourMesh.TestCheckNativeFullExport' -or
     $lambdaBridge.status -ne 'PASS' -or -not $lambdaBridge.productionUnchanged -or -not $lambdaBridge.unchangedOtherCode -or
-    ($lambdaBridge.changed -join ',') -ne 'modTestConfiguration' -or $lambdaBridge.changedMethod -ne 'modTestConfiguration.CheckCapacityNumericEffects' -or
+    ($lambdaBridge.changed -join ',') -ne 'modTestConfiguration' -or $lambdaBridge.changedMethod -ne 'modTestConfiguration.TestCheckCapacityNumericEffects' -or
     $profileBridge.status -ne 'PASS' -or -not $profileBridge.productionUnchanged -or -not $profileBridge.unchangedOtherCode -or -not $profileBridge.tolerancesUnchanged -or
-    ($profileBridge.changed -join ',') -ne 'modTestProfileConfig' -or $profileBridge.changedMethod -ne 'modTestProfileConfig.CheckVisualizationValues' -or
+    ($profileBridge.changed -join ',') -ne 'modTestProfileConfig' -or $profileBridge.changedMethod -ne 'modTestProfileConfig.TestCheckVisualizationValues' -or
     $structure.Count -ne 27 -or @($structure | Where-Object {-not $_.Passed}).Count) {throw 'Full publication gates are incomplete.'}
 if ($acceptance.sourceSHA256 -ne $bookHash -or $full.sourceSHA256 -ne $bridge.testedWorkbookSHA256 -or
     $bridge.testedWorkbookSHA256 -ne (Hash (Join-Path $release 'FinalReady.xlsm')) -or

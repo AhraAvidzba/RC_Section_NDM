@@ -66,7 +66,7 @@ Public Function AppendRow(ByVal diameter As Double, ByVal location As String, By
         If Abs(mGroups(i).Offset - baseOffset) <= GEOM_TOLERANCE Then group = i: Exit For
     Next i
     groupOffset = baseOffset
-    If group > 0 Then groupOffset = mGroups(group).Offset: anchor = mGroups(group).Diameter
+    If group > 0 Then groupOffset = mGroups(group).Offset: anchor = mGroups(group).Diameter ' Контакт отсчитывается от первого стержня группы с тем же базовым отступом.
     Select Case location
         Case "Stacked"
             axis = RowNormal: directionSign = mNormalSign
@@ -85,14 +85,13 @@ Public Function AppendRow(ByVal diameter As Double, ByVal location As String, By
     options.SourceReference = sourceReference ' Адрес активного ряда имеет приоритет над адресом общих настроек.
     If group > 0 Then
         options.ConfigureDependentContact anchor, diameter, axis, directionSign, everySecond, intermediate + PROFILE_GAP_MM
-        nextSum = intermediate + diameter + PROFILE_GAP_MM
+        nextSum = intermediate + diameter + PROFILE_GAP_MM ' Следующий ряд учитывает полный диаметр уже добавляемого стержня и зазор 2,5 мм.
     Else
         options.NormalOffset = 0#: options.TangentOffset = 0#: options.EverySecond = everySecond
     End If
-    options.NormalOffset = options.NormalOffset + mNormalSign * groupOffset
+    options.NormalOffset = options.NormalOffset + mNormalSign * groupOffset ' Базовый отступ от Main добавляется к контактной поправке только по нормали.
     options.ValidateRowOffset = (baseOffset > 0#)
-    ' Сначала завершаем все вычисления и проверки. Только затем меняем накопители.
-    If group = 0 Then
+    If group = 0 Then ' Сначала завершаем все вычисления и проверки. Только затем меняем накопители.
         ReDim Preserve mGroups(1 To mGroupCount + 1)
         mGroupCount = mGroupCount + 1: group = mGroupCount
         mGroups(group).Offset = groupOffset: mGroups(group).Diameter = diameter

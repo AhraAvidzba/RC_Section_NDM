@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 METHOD = re.compile(r"^\s*(?:(Public|Private|Friend)\s+)?(?:Static\s+)?(Sub|Function|Property\s+(?:Get|Let|Set))\s+(\w+)", re.I)
 RUSSIAN = re.compile(r"[А-Яа-яЁё]")
-TEST_LABEL = re.compile(r"^\s*'\s*ДЛЯ ТЕСТОВ(?::|\s*$)", re.I)
+TEST_LABEL = re.compile(r"^\s*'\s*(?:[-=]{2,}\s*)?ДЛЯ ТЕСТОВ(?::|\s*(?:[-=]{2,})?\s*$)", re.I)
 
 def method_spans(lines):
     """Выделяет процедуры целиком, чтобы сравнение допускало только их перестановку."""

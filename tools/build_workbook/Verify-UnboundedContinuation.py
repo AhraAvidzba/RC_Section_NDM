@@ -84,7 +84,7 @@ def fixture_equivalence():
     assert 'phase=Saved; passed=105; failures=9' in text
     assert 'phase=Normalized; passed=114; failures=0' in text
     return dict(Passed=True, RuntimeComponentsUnchanged=True,
-                OnlyChangedTestProcedures=['RunBatchCalculationTests', 'RestoreBatchSuiteProfileDefaults'])
+                OnlyChangedTestProcedures=['RunBatchCalculationTests', 'TestRestoreBatchSuiteProfileDefaults'])
 
 
 def help_replacements(book):

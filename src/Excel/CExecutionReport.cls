@@ -19,7 +19,7 @@ Option Explicit
 '
 ' Отчет накапливается в памяти и записывается одним действием в txt-файл рядом
 ' с книгой. Такой подход не замедляет горячие расчетные циклы и не размазывает
-' работу с файловой системой по solver-ам.
+' работу с файловой системой по решателям.
 
 Private Const REPORT_FILE_NAME As String = "RC_Section_NDM_execution_report.txt" ' Фиксированное имя последнего отчета рядом с книгой.
 
@@ -212,7 +212,7 @@ Public Function FormatArea(ByVal value As Double) As String
     End If
 End Function
 
-' Форматирует обычную знаковую продольную силу N с учетом Output.SignConvention.N.
+' Форматирует обычную знаковую продольную силу N с учетом Sign.N.User.
 Public Function FormatForce(ByVal value As Double) As String
     If mUnits Is Nothing Then
         FormatForce = FormatNumberInvariant(value) & " Н"
@@ -244,7 +244,7 @@ Public Function FormatSignedCompressionForce(ByVal signedCompression As Double) 
     End If
 End Function
 
-' Форматирует Mx с пользовательским знаком Output.SignConvention.Mx.
+' Форматирует Mx с пользовательским знаком Sign.Mx.User.
 Public Function FormatMx(ByVal value As Double) As String
     If mUnits Is Nothing Then
         FormatMx = FormatNumberInvariant(value) & " Н*мм"
@@ -253,7 +253,7 @@ Public Function FormatMx(ByVal value As Double) As String
     End If
 End Function
 
-' Форматирует My с пользовательским знаком Output.SignConvention.My.
+' Форматирует My с пользовательским знаком Sign.My.User.
 Public Function FormatMy(ByVal value As Double) As String
     If mUnits Is Nothing Then
         FormatMy = FormatNumberInvariant(value) & " Н*мм"
@@ -378,8 +378,7 @@ Private Function CompactCrackDiagnosticText(ByVal body As String) As String
     For i = LBound(lines) To UBound(lines)
         Dim lineText As String
         lineText = Trim$(lines(i))
-        If Len(lineText) = 0 Then
-            ' Пустые строки внутри diagnostic-блока не несут смысла.
+        If Len(lineText) = 0 Then ' Пустые строки внутри diagnostic-блока не несут смысла.
         ElseIf lineText = "initialGuess=warmStartSolver" Then
             warmStartCount = warmStartCount + 1
         Else
@@ -407,8 +406,7 @@ Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As Str
     For i = LBound(lines) To UBound(lines)
         Dim lineText As String
         lineText = Trim$(lines(i))
-        If Len(lineText) = 0 Then
-            ' Пропускаем.
+        If Len(lineText) = 0 Then ' Пропускаем.
         ElseIf lineText = "initialGuess=warmStartSolver" Then
             warmStartCount = warmStartCount + 1
         ElseIf lineText = "initialGuess=directStateActiveSet" Then
@@ -439,8 +437,7 @@ Private Function CompactCapacityDiagnosticText(ByVal body As String) As String
     For i = LBound(lines) To UBound(lines)
         Dim lineText As String
         lineText = Trim$(lines(i))
-        If Len(lineText) = 0 Then
-            ' Пропускаем.
+        If Len(lineText) = 0 Then ' Пропускаем.
         Else
             AppendReportPart parts, partCount, lineText
         End If
@@ -666,7 +663,8 @@ Private Sub AppendReportPart(ByRef parts() As String, ByRef count As Long, ByVal
     count = count + 1
 End Sub
 
-' Собирает части диагностического отчёта в исходном порядке, пропуская пустые части.
+' Собирает заполненную часть массива строк в исходном порядке.
+' Пустые части отбрасываются раньше, при добавлении через AppendReportPart.
 Private Function JoinReportParts(ByRef parts() As String, ByVal count As Long) As String
     If count = 0 Then Exit Function
     ReDim Preserve parts(0 To count - 1)

@@ -101,9 +101,7 @@ Public Property Get ResultMeta() As CResultMeta
     Set capacity = CapacityMeta
     If direct.InternalStatus = rsInvalidInput And capacity.InternalStatus = rsInvalidInput And _
             StrComp(direct.ResultComment, capacity.ResultComment, vbBinaryCompare) = 0 Then
-        ' При общей ошибке ввода ни НДС, ни несущая способность не рассчитывались.
-        ' Общее пояснение относится ко всему блоку, а статусы отдельных проверок сохраняются.
-        comment = "Прочность: " & direct.ResultComment
+        comment = "Прочность: " & direct.ResultComment ' При общей ошибке ввода ни НДС, ни несущая способность не рассчитывались. Общее пояснение относится ко всему блоку, а статусы отдельных проверок сохраняются.
     Else
         direct.AppendCommentTo comment
         capacity.AppendCommentTo comment

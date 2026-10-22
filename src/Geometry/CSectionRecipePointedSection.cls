@@ -34,7 +34,7 @@ End Type
 
 Private Type TRoundedFace
     ID As String ' Имя стороны для привязки линий арматуры и подписей.
-    Caption As String ' Единственное название стороны в утверждённой таблице Config.
+    Caption As String ' Единственное название стороны в утверждённой таблице на листе «Сечения».
     Count As Long ' Число стержней основного ряда.
     Diameter As Double ' Диаметр стержней основного ряда, мм.
     AxisDistance As Double ' Расстояние от края бетона до осей основного ряда, мм.
@@ -86,7 +86,7 @@ Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes 
     Next side
 End Sub
 
-' Читает четыре стороны по коротким ключам Config и готовит параметры армирования.
+' Читает четыре стороны по коротким ключам таблицы сечения и готовит параметры армирования.
 ' Выключенная сторона не требует as, отступов и дополнительных рядов.
 Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() As TRoundedFace)
     Dim ids As Variant, captions As Variant, keys As Variant, key As String, i As Long, rowNumber As Long, suffix As String
@@ -95,8 +95,8 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
     captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая")
     For i = 1 To 4
         With faces(i)
-            .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
-            key = CStr(keys(i - 1))
+            .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1)) ' Номер структуры начинается с 1, массивы соответствий Array — с 0; это не номер ячейки.
+            key = CStr(keys(i - 1)) ' Короткий ключ строки Main/Extra выбирается из фиксированного списка сторон.
             .Count = reader.Count("Main", key, "n"): .Diameter = reader.OptionalDiameter("Main", key, "d")
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
             .AxisDistance = reader.Length("Main", key, "as")
@@ -134,12 +134,10 @@ Private Function DescribePolygon(ByRef sizes As TRoundedInput) As CPolygonSpec
     Set polygon = New CPolygonSpec
     polygon.AddVertex "TL", -sizes.B / 2#, sizes.H / 2#, sizes.R1(1), sizes.GeometrySource, outgoingEdgeID:="Edge.TL" ' Верхний левый угол; Edge.TL — верхняя грань, размеры в мм.
     polygon.AddVertex "TR", sizes.B / 2#, sizes.H / 2#, sizes.R1(2), sizes.GeometrySource ' Верхний правый угол до скругления; координаты и радиус в мм.
-    ' Вершина правого выступа до скругления; координаты и радиус в мм.
-    If sizes.Widths(2) > 0# Then polygon.AddVertex "RightNose", sizes.B / 2# + sizes.Widths(2), 0#, sizes.R2(2), sizes.GeometrySource
+    If sizes.Widths(2) > 0# Then polygon.AddVertex "RightNose", sizes.B / 2# + sizes.Widths(2), 0#, sizes.R2(2), sizes.GeometrySource ' Вершина правого выступа до скругления; координаты и радиус в мм.
     polygon.AddVertex "BR", sizes.B / 2#, -sizes.H / 2#, sizes.R1(2), sizes.GeometrySource, outgoingEdgeID:="Edge.BR" ' Нижний правый угол; Edge.BR — нижняя грань, размеры в мм.
     polygon.AddVertex "BL", -sizes.B / 2#, -sizes.H / 2#, sizes.R1(1), sizes.GeometrySource, outgoingEdgeID:="Edge.BL" ' Нижний левый угол; Edge.BL — участок к следующей вершине, размеры в мм.
-    ' Вершина левого выступа до скругления; координаты и радиус в мм.
-    If sizes.Widths(1) > 0# Then polygon.AddVertex "LeftNose", -sizes.B / 2# - sizes.Widths(1), 0#, sizes.R2(1), sizes.GeometrySource, outgoingEdgeID:="Edge.LeftNose"
+    If sizes.Widths(1) > 0# Then polygon.AddVertex "LeftNose", -sizes.B / 2# - sizes.Widths(1), 0#, sizes.R2(1), sizes.GeometrySource, outgoingEdgeID:="Edge.LeftNose" ' Вершина левого выступа до скругления; координаты и радиус в мм.
     polygon.Seal ' Проверяем вершины и завершаем их описание.
     Set DescribePolygon = polygon ' Возвращаем подготовленный многоугольник.
 End Function
@@ -150,8 +148,7 @@ Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef si
     On Error GoTo InvalidGeometry
     Dim outer As CGeometryPath
     Set outer = facade.RoundedPolygon("Boundary", polygon) ' Создаём готовый замкнутый контур по исходным вершинам и радиусам.
-    ' Назначаем эту замкнутую линию наружной границей бетона.
-    facade.Outer "OUTER", outer.ID, "Прямой участок контура клиновидного сечения.", arcComment:="Дуга контура клиновидного сечения.", namingPolicy:=SequentialByKind
+    facade.Outer "OUTER", outer.ID, "Прямой участок контура клиновидного сечения.", arcComment:="Дуга контура клиновидного сечения.", namingPolicy:=SequentialByKind ' Назначаем эту замкнутую линию наружной границей бетона.
     Set AddGeometry = outer
     Exit Function
 InvalidGeometry:
@@ -238,11 +235,8 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
         End With
     Next i
     outer.ProjectionBounds 1#, 0#, minX, maxX
-    ' Ширина основы B до скругления углов; размер сверху.
-    facade.HorizontalDistance "DIM_B", "B", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, "Размер горизонтальной базы PointedSection между левым и правым торцом."
+    facade.HorizontalDistance "DIM_B", "B", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, "Размер горизонтальной базы PointedSection между левым и правым торцом." ' Ширина основы B до скругления углов; размер сверху.
     facade.VerticalExtent "DIM_H", outer.ID, "H", minX, -1#, "Полная высота PointedSection." ' Полная высота сечения H; размер вынесен влево.
-    ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
-    If sizes.Widths(1) > 0# And -sizes.B / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.B / 2#, sizes.H / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1#
-    ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
-    If sizes.Widths(2) > 0# And maxX - sizes.B / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_RIGHT", "W'", sizes.B / 2#, maxX, sizes.H / 2#, 1#, "Фактический вынос правого края бетона относительно правого торца базы B.", 1#
+    If sizes.Widths(1) > 0# And -sizes.B / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.B / 2#, sizes.H / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1# ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
+    If sizes.Widths(2) > 0# And maxX - sizes.B / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_RIGHT", "W'", sizes.B / 2#, maxX, sizes.H / 2#, 1#, "Фактический вынос правого края бетона относительно правого торца базы B.", 1# ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
 End Sub

@@ -14,7 +14,7 @@ Public Function NonlinearStepImproves(ByVal baseNorm As Double, ByVal trialNorm 
         ByVal alpha As Double) As Boolean
     Dim reduction As Double
     reduction = ARMIJO_FACTOR * alpha
-    If reduction < SIGNIFICANT_REDUCTION Then reduction = SIGNIFICANT_REDUCTION
+    If reduction < SIGNIFICANT_REDUCTION Then reduction = SIGNIFICANT_REDUCTION ' Снижение должно различаться в Double даже при малой alpha; это критерий шага, а не допуска равновесия.
     NonlinearStepImproves = trialNorm < baseNorm And _
         trialNorm <= baseNorm * (1# - reduction)
 End Function

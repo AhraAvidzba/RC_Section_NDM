@@ -38,7 +38,7 @@ Private mSnapshotAreaUnit As String ' Исходная OUTPUT-единица п�
 Private mStressUnit As String ' Единица напряжений, сохраненная при последнем расчете.
 Private mCurvatureUnit As String ' Единица кривизны после чтения Results; в данных схемы всегда 1/мм.
 Private mSnapshotCurvatureUnit As String ' Исходная OUTPUT-единица кривизн, сохраненная в Results.
-Private mCount As Long ' Количество элементов, у которых есть геометрия и результат выбранного LC.
+Private mCount As Long ' Число прочитанных элементов; в режиме НДС — только имеющих результат выбранного LC.
 Private mElementCapacity As Long ' Закрытый резерв одного Load; публичный Count не включает хвост.
 Private mReadTables As Object ' Временные массивы значений таблиц для одного Load; освобождаются до передачи готовых данных построителю схемы.
 Private mElementID() As String ' ID элемента для связи геометрии, результатов и подписей.
@@ -46,39 +46,39 @@ Private mMaterialType() As String ' Concrete/Rebar; Plotter использует
 Private mX() As Double ' Координата X центра элемента, переведённая из Results во внутренние мм.
 Private mY() As Double ' Координата Y центра элемента, переведённая из Results во внутренние мм.
 Private mArea() As Double ' Площадь элемента, переведённая из Results во внутренние мм2.
-Private mDiameter() As Double ' Диаметр арматуры; для бетона обычно 0.
+Private mDiameter() As Double ' Диаметр арматуры в мм; для бетона обычно 0.
 Private mShapeType() As String ' Статус интерпретации оболочки: Rectangle, Equivalent rectangle, Equivalent square.
-Private mWidth() As Double ' Ширина бетонного элемента, если она сохранена в Results.
-Private mHeight() As Double ' Высота бетонного элемента, если она сохранена в Results.
+Private mWidth() As Double ' Ширина бетонного элемента в мм, если она сохранена в Results.
+Private mHeight() As Double ' Высота бетонного элемента в мм, если она сохранена в Results.
 Private mRotation() As Double ' Угол прямоугольного бетонного элемента, рад; для эквивалентного квадрата может быть принят средний угол сетки.
 Private mResultValue() As Double ' Значение Stress или Strain для выбранного LC.
 Private mPhysicalState() As String ' Физическое состояние: сжатие, растяжение, неработающий растянутый бетон или почти нулевое напряжение.
-Private mMinX As Double ' Левая граница бетонной расчетной модели.
-Private mMaxX As Double ' Правая граница бетонной расчетной модели.
-Private mMinY As Double ' Нижняя граница бетонной расчетной модели.
-Private mMaxY As Double ' Верхняя граница бетонной расчетной модели.
-Private mCentroidX As Double ' X центра тяжести приведенного сечения.
-Private mCentroidY As Double ' Y центра тяжести приведенного сечения.
+Private mMinX As Double ' Левая граница бетонной расчётной модели в мм.
+Private mMaxX As Double ' Правая граница бетонной расчётной модели в мм.
+Private mMinY As Double ' Нижняя граница бетонной расчётной модели в мм.
+Private mMaxY As Double ' Верхняя граница бетонной расчётной модели в мм.
+Private mCentroidX As Double ' X центра тяжести приведённого сечения в мм.
+Private mCentroidY As Double ' Y центра тяжести приведённого сечения в мм.
 Private mPrincipalAngle As Double ' Угол от +X к главной оси 1 приведенного сечения, рад.
-Private mConcreteCentroidX As Double ' X центра тяжести бетонного сечения из Results.
-Private mConcreteCentroidY As Double ' Y центра тяжести бетонного сечения из Results.
-Private mConcretePrincipalAngle As Double ' Угол главной оси 1 бетонного сечения из Results.
+Private mConcreteCentroidX As Double ' X центра тяжести бетонного сечения из Results, мм.
+Private mConcreteCentroidY As Double ' Y центра тяжести бетонного сечения из Results, мм.
+Private mConcretePrincipalAngle As Double ' Угол главной оси 1 бетонного сечения из Results, рад.
 Private mEpsilon0 As Double ' Свободный член сохраненной плоскости деформаций LC.
-Private mKappaX As Double ' Кривизна при y в сохраненной плоскости деформаций.
-Private mKappaY As Double ' Кривизна при x в сохраненной плоскости деформаций.
+Private mKappaX As Double ' Коэффициент при y в плоскости деформаций, 1/мм.
+Private mKappaY As Double ' Коэффициент при x в плоскости деформаций, 1/мм.
 Private mLoadReferenceX As Double ' Координата X общей точки приложения нагрузки, сохранённая в Results.
 Private mLoadReferenceY As Double ' Координата Y общей точки приложения нагрузки, сохранённая в Results.
 Private mExtensionUsed As Boolean ' Признак использования численного продолжения диаграмм в выбранном НДС.
 Private mStateStatus As String ' Статус выбранного сохранённого расчётного состояния.
-Private mAnnotationCount As Long ' Количество размеров, подписей и расчётных областей, прочитанных из Results.
-Private mAnnotationType() As String ' Dimension, RebarLabel, Outline и другие типы оформления.
+Private mAnnotationCount As Long ' Число размеров, подписей и исходных контуров для схемы; расчётные области трещин сюда не включаются.
+Private mAnnotationType() As String ' Тип аннотации: DIMENSION, REBAR_ANNOTATION, REBAR_GLOBAL_ANNOTATION, TEXT_ANNOTATION или CONTOUR_*.
 Private mLabelContours As CSectionContours, mLabelBoundary As CConcreteRegion ' Сохранённые контуры и бетонная область для отсчёта отступов подписей.
 Private mAnnotationStartX() As Double ' Начало линии/размера в координатах модели.
 Private mAnnotationStartY() As Double ' Начало линии/размера в координатах модели.
 Private mAnnotationEndX() As Double ' Конец линии/размера в координатах модели.
 Private mAnnotationEndY() As Double ' Конец линии/размера в координатах модели.
-Private mAnnotationNormalX() As Double ' Заданная компонента направления выноса аннотации.
-Private mAnnotationNormalY() As Double ' Заданная компонента направления выноса аннотации.
+Private mAnnotationNormalX() As Double ' Компонента безразмерной нормали; для CONTOUR_ARC — координата центра дуги в мм.
+Private mAnnotationNormalY() As Double ' Компонента безразмерной нормали; для CONTOUR_ARC — координата центра дуги в мм.
 Private mAnnotationText() As String ' Готовый текст подписи или размера.
 Private mAnnotationSweepAngle() As Double ' Проверенный signed sweep CONTOUR_ARC, рад; для остальных типов 0.
 Private mUnits As CUnitSystem ' Общий перевод единиц, сохранённых с результатами; текущие единицы Config на эти значения не влияют.
@@ -114,10 +114,9 @@ Failed:
     Err.Raise errorNumber, errorSource, description
 End Sub
 
-' Загружает геометрию последнего AutoCAD import для визуального контроля.
-' Расчетные результаты и нейтральная линия не читаются, но сохраненные
-' габаритные аннотации по Bounds можно показать сразу после импорта.
-' Неуспешное чтение не оставляет доступной часть предыдущего или нового снимка.
+' Загружает последнее сформированное или импортированное сечение из Results
+' для визуального контроля до расчёта. Читает геометрию и аннотации без НДС
+' и нейтральной линии. При ошибке не оставляет частично прочитанный снимок.
 Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
@@ -285,7 +284,7 @@ End Function
 
 ' Возвращает первое сочетание с результатами элементов, если Worst нельзя
 ' получить из запаса прочности, например при одном НДС без поиска предела.
-' Предварительный просмотр импортированной геометрии этим способом не выбирается.
+' Предварительный просмотр сформированного сечения этим способом не выбирается.
 Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
@@ -362,9 +361,7 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
 
     Dim rowIndex As Long
     Dim parameter As String, loadCase As String
-    ' Сначала читаем единицы результата, чтобы порядок строк свойств
-    ' не влиял на перевод величин без отдельно указанной единицы.
-    For rowIndex = 2 To UBound(data, 1)
+    For rowIndex = 2 To UBound(data, 1) ' Сначала читаем единицы результата, чтобы порядок строк свойств не влиял на перевод величин без отдельно указанной единицы.
         parameter = Trim$(ReadSnapshotText(data(rowIndex, colParameter), anchor, rowIndex, colParameter, "Parameter"))
         loadCase = Trim$(ReadSnapshotText(data(rowIndex, colLoadCase), anchor, rowIndex, colLoadCase, "LoadCase"))
         If StrComp(loadCase, "ALL", vbTextCompare) = 0 Or Len(loadCase) = 0 Then
@@ -377,9 +374,7 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
             End Select
         End If
     Next rowIndex
-    ' Берём общие строки ALL и строки выбранного сочетания mLoadCase.
-    ' Результаты других сочетаний в эту схему не включаем.
-    For rowIndex = 2 To UBound(data, 1)
+    For rowIndex = 2 To UBound(data, 1) ' Берём общие строки ALL и строки выбранного сочетания mLoadCase. Результаты других сочетаний в эту схему не включаем.
         parameter = Trim$(ReadSnapshotText(data(rowIndex, colParameter), anchor, rowIndex, colParameter, "Parameter"))
         loadCase = Trim$(ReadSnapshotText(data(rowIndex, colLoadCase), anchor, rowIndex, colLoadCase, "LoadCase"))
         If Len(parameter) > 0 Then
@@ -409,8 +404,9 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
     End If
 End Sub
 
-' Сохраняет общие свойства Results одинаково для созданной программой
-' и импортированной из AutoCAD геометрии.
+' Читает общие свойства ALL из Results независимо от способа формирования:
+' габариты и центры переводит в мм, углы оставляет в радианах.
+' Здесь же читается единая точка приложения нагрузки сохранённого запуска.
 Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant, _
         ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal unitColumn As Long)
     Select Case LCase$(parameter)
@@ -447,9 +443,8 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
     End Select
 End Sub
 
-' Сохраняет поле деформаций и признаки допустимости выбранного НДС.
-' Точку приложения нагрузки читает из общего блока ALL:
-' она одна для всего сохранённого запуска.
+' Читает поле деформаций и признаки допустимости только выбранного НДС
+' из свойств State.<StateType>.*; данные других состояний не подмешиваются.
 Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant, _
         ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal unitColumn As Long)
     Dim key As String
@@ -500,9 +495,7 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim colState As Long: colState = ResultColumn(results, "PhysicalState")
 
     Dim rowIndex As Long
-    ' Собирает напряжения и деформации выбранного сочетания по ElementID.
-    ' Они хранятся отдельно от геометрии и затем связываются с нужными элементами.
-    For rowIndex = 2 To UBound(results, 1)
+    For rowIndex = 2 To UBound(results, 1) ' Собирает напряжения и деформации выбранного сочетания по ElementID. Они хранятся отдельно от геометрии и затем связываются с нужными элементами.
         If StrComp(Trim$(SafeText(results(rowIndex, colResLC))), mLoadCase, vbTextCompare) = 0 And _
                 StrComp(Trim$(SafeText(results(rowIndex, colResStateType))), mStateType, vbTextCompare) = 0 Then
             resultMap(CStr(results(rowIndex, colResID))) = Array( _
@@ -529,9 +522,7 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim lengthUnit As String: lengthUnit = ResultHeaderUnit(geom, colX, mSnapshotLengthUnit)
     Dim areaUnit As String: areaUnit = ResultHeaderUnit(geom, colArea, mSnapshotAreaUnit)
 
-    ' Соединяет сохранённую геометрию с прочитанным НДС по элементам.
-    ' Построитель схемы получает готовые данные без нового чтения Results.
-    For rowIndex = 2 To UBound(geom, 1)
+    For rowIndex = 2 To UBound(geom, 1) ' Соединяет сохранённую геометрию с прочитанным НДС по элементам. Построитель схемы получает готовые данные без нового чтения Results.
         Dim elementID As String
         elementID = Trim$(CStr(geom(rowIndex, colID)))
         If Len(elementID) > 0 And resultMap.Exists(elementID) And _
@@ -573,7 +564,7 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     Dim areaUnit As String: areaUnit = ResultHeaderUnit(geom, colArea, mSnapshotAreaUnit)
 
     Dim neutralResult As Variant
-    neutralResult = Array(0#, 0#, "NearZero")
+    neutralResult = Array(0#, 0#, "NearZero") ' Предварительная схема не утверждает нулевое НДС: это только нейтральная окраска.
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(geom, 1)
@@ -630,9 +621,7 @@ Private Sub AppendElement(ByVal elementID As String, ByVal materialType As Strin
         ByVal yCoord As Double, ByVal area As Double, ByVal diameter As Double, _
         ByVal shapeType As String, ByVal width As Double, ByVal height As Double, _
         ByVal rotation As Double, ByVal resultData As Variant)
-    ' Сохраняем только элементы, у которых есть и геометрия, и результат
-    ' выбранного LC. Так схема не рисует “пустые” элементы после ошибочного LC.
-    EnsureElementCapacity mCount + 1
+    EnsureElementCapacity mCount + 1 ' Резерв растёт сразу для всех полей элемента; предварительная схема передаёт нейтральный resultData.
     mCount = mCount + 1
 
     mElementID(mCount) = elementID
@@ -680,13 +669,12 @@ Private Sub EnsureElementCapacity(ByVal required As Long)
 End Sub
 
 ' Читает сохранённые размеры, подписи и другие аннотации схемы.
-' Если таблица отсутствует или пуста, схема все равно строится: для AutoCAD
-' import это нормальный сценарий, потому что характерные грани могут быть неизвестны.
+' Если таблица отсутствует или пуста, схема всё равно строится:
+' это допустимо при отсутствии необязательного оформления; исходные контуры читаются отдельно.
 Private Sub ReadAnnotations(ByVal workbook As Object)
     ReadMaterialContours workbook
-    ' Отсутствие необязательного Name отличается от повреждения его данных.
     Dim tableName As Object, anchor As Object
-    On Error Resume Next
+    On Error Resume Next ' Отсутствие необязательного Name отличается от повреждения его данных.
     Set tableName = workbook.Names.Item("rngNDMSectionAnnotations")
     On Error GoTo 0
     If tableName Is Nothing Then Exit Sub
@@ -777,19 +765,17 @@ Private Sub ReadMaterialContours(ByVal workbook As Object)
         mAnnotationStartY(mAnnotationCount) = contours.StartY(i)
         mAnnotationEndX(mAnnotationCount) = contours.EndX(i)
         mAnnotationEndY(mAnnotationCount) = contours.EndY(i)
-        mAnnotationNormalX(mAnnotationCount) = contours.CenterX(i)
+        mAnnotationNormalX(mAnnotationCount) = contours.CenterX(i) ' Для дуги поля NormalX/NormalY несут центр в мм, а не направление выноски.
         mAnnotationNormalY(mAnnotationCount) = contours.CenterY(i)
         mAnnotationSweepAngle(mAnnotationCount) = contours.SweepAngle(i)
     Next i
-    ' Границы представления включают наружные линии и дуги без перестройки расчётной области.
-    ' Нулевой sweep остаётся прямым отрезком, как в поддерживаемом формате отрисовки.
     Dim edge As TRegionEdge
-    For i = 1 To contours.Count
+    For i = 1 To contours.Count ' Границы представления включают наружные линии и дуги без перестройки расчётной области. Нулевой sweep остаётся прямым отрезком, как в поддерживаемом формате отрисовки.
         If StrComp(contours.LoopRole(i), "Outer", vbTextCompare) = 0 Then
             edge.X1 = contours.StartX(i): edge.Y1 = contours.StartY(i)
             edge.X2 = contours.EndX(i): edge.Y2 = contours.EndY(i)
             edge.CenterX = contours.CenterX(i): edge.CenterY = contours.CenterY(i): edge.Sweep = contours.SweepAngle(i)
-            If contours.SegmentType(i) = "CONTOUR_CIRCLE" Then
+            If contours.SegmentType(i) = "CONTOUR_CIRCLE" Then ' Окружность разворачивается в полную дугу для точного габарита, без дискретизации.
                 edge.X1 = edge.CenterX + contours.Radius(i): edge.Y1 = edge.CenterY
                 edge.X2 = edge.X1: edge.Y2 = edge.Y1: edge.Sweep = 2# * GEOM_PI
             End If
@@ -1124,11 +1110,11 @@ End Function
 ' Переводит кривизну из единицы Results во внутренние 1/мм, чтобы нейтральная
 ' линия строилась в той же системе, что и координаты схемы.
 Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
-    ' Деление сохраняет прежний порядок операций для 1/m, без нового округления.
-    OutputCurvatureToInternalByUnit = value / mUnits.InternalCurvatureToOutput(1#, unitText)
+    OutputCurvatureToInternalByUnit = value / mUnits.InternalCurvatureToOutput(1#, unitText) ' Деление сохраняет прежний порядок операций для 1/m, без нового округления.
 End Function
 
-' Количество элементов, у которых есть геометрия и результат выбранного LC.
+' Возвращает число прочитанных элементов. Для схемы НДС учитывает только
+' элементы с результатом выбранного состояния; для предварительной схемы — всю геометрию.
 Public Property Get Count() As Long: Count = mCount: End Property
 ' ID элемента для связи геометрии, результатов и подписей.
 Public Property Get ElementID(ByVal index As Long) As String: ElementID = mElementID(index): End Property
@@ -1140,13 +1126,13 @@ Public Property Get X(ByVal index As Long) As Double: X = mX(index): End Propert
 Public Property Get Y(ByVal index As Long) As Double: Y = mY(index): End Property
 ' Площадь элемента, переведённая из Results во внутренние мм2.
 Public Property Get Area(ByVal index As Long) As Double: Area = mArea(index): End Property
-' Диаметр арматуры; для бетона обычно 0.
+' Диаметр арматуры в мм; для бетона обычно 0.
 Public Property Get Diameter(ByVal index As Long) As Double: Diameter = mDiameter(index): End Property
 ' Статус интерпретации оболочки: Rectangle, Equivalent rectangle, Equivalent square.
 Public Property Get ShapeType(ByVal index As Long) As String: ShapeType = mShapeType(index): End Property
-' Ширина бетонного элемента, если она сохранена в Results.
+' Ширина бетонного элемента в мм, если она сохранена в Results.
 Public Property Get Width(ByVal index As Long) As Double: Width = mWidth(index): End Property
-' Высота бетонного элемента, если она сохранена в Results.
+' Высота бетонного элемента в мм, если она сохранена в Results.
 Public Property Get Height(ByVal index As Long) As Double: Height = mHeight(index): End Property
 ' Возвращает угол прямоугольного элемента, рад; для эквивалентного квадрата
 ' может быть сохранён средний угол сетки.
@@ -1183,17 +1169,17 @@ Public Property Get ResultPrecision() As Long: ResultPrecision = mResultPrecisio
 Public Property Get LengthUnit() As String: LengthUnit = mLengthUnit: End Property
 ' Возвращает единицу площади подготовленной схемы — мм2.
 Public Property Get AreaUnit() As String: AreaUnit = mAreaUnit: End Property
-' Левая граница бетонной расчетной модели.
+' Левая граница бетонной расчётной модели в мм.
 Public Property Get MinX() As Double: MinX = mMinX: End Property
-' Правая граница бетонной расчетной модели.
+' Правая граница бетонной расчётной модели в мм.
 Public Property Get MaxX() As Double: MaxX = mMaxX: End Property
-' Нижняя граница бетонной расчетной модели.
+' Нижняя граница бетонной расчётной модели в мм.
 Public Property Get MinY() As Double: MinY = mMinY: End Property
-' Верхняя граница бетонной расчетной модели.
+' Верхняя граница бетонной расчётной модели в мм.
 Public Property Get MaxY() As Double: MaxY = mMaxY: End Property
-' X центра тяжести приведенного сечения.
+' X центра тяжести приведённого сечения в мм.
 Public Property Get CentroidX() As Double: CentroidX = mCentroidX: End Property
-' Y центра тяжести приведенного сечения.
+' Y центра тяжести приведённого сечения в мм.
 Public Property Get CentroidY() As Double: CentroidY = mCentroidY: End Property
 ' Угол от +X к главной оси 1 приведенного сечения, рад.
 Public Property Get PrincipalAngle() As Double: PrincipalAngle = mPrincipalAngle: End Property
@@ -1227,9 +1213,9 @@ Public Function PrincipalAxesAngle(ByVal axesMode As String) As Double
 End Function
 ' Свободный член сохраненной плоскости деформаций LC.
 Public Property Get Epsilon0() As Double: Epsilon0 = mEpsilon0: End Property
-' Кривизна при y в сохраненной плоскости деформаций.
+' Коэффициент при y в плоскости деформаций, 1/мм.
 Public Property Get KappaX() As Double: KappaX = mKappaX: End Property
-' Кривизна при x в сохраненной плоскости деформаций.
+' Коэффициент при x в плоскости деформаций, 1/мм.
 Public Property Get KappaY() As Double: KappaY = mKappaY: End Property
 ' Координата X общей точки приложения нагрузки, сохранённая в Results.
 Public Property Get LoadReferenceX() As Double: LoadReferenceX = mLoadReferenceX: End Property
@@ -1247,16 +1233,14 @@ Public Property Get PhysicalDiagramWarningRequired() As Boolean
     Set policy = New CResultStatusPolicy
     PhysicalDiagramWarningRequired = (mExtensionUsed Or policy.ToUserStatus(mStateStatus) = policy.Fail)
 End Property
-' Количество размеров, подписей и расчётных областей, прочитанных из Results.
+' Число размеров, подписей и исходных контуров для схемы; расчётные области трещин сюда не включаются.
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 
 ' Отсчёт отступа подписи от сохранённого бетонного контура. На прямой грани
 ' это добавляет as; на дуге определяется действительное расстояние по нормали.
 ' Старые Results также читаются без нового расчёта или обращения к геометрии Config.
 Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double
-    ' Общая подпись уже привязана к крайней точке бетона. Пересечение
-    ' по нормали в середине повёрнутого сечения опустило бы её на контур.
-    If mAnnotationType(index) = "REBAR_GLOBAL_ANNOTATION" Then Exit Function
+    If mAnnotationType(index) = "REBAR_GLOBAL_ANNOTATION" Then Exit Function ' Общая подпись уже привязана к крайней точке бетона. Пересечение по нормали в середине повёрнутого сечения опустило бы её на контур.
     If mLabelContours Is Nothing Then Exit Function
     Dim query As CSectionGeometryQuery, i As Long, hasOuter As Boolean
     Dim nx As Double, ny As Double, norm As Double, distance As Double
@@ -1264,8 +1248,7 @@ Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double
         For i = 1 To mLabelContours.Count
             If StrComp(mLabelContours.LoopRole(i), "Outer", vbTextCompare) = 0 Then hasOuter = True: Exit For
         Next i
-        ' Импорт без достоверного Outer сохраняет приблизительную опорную линию.
-        If Not hasOuter Then Exit Function
+        If Not hasOuter Then Exit Function ' Импорт без достоверного Outer сохраняет приблизительную опорную линию.
         Set query = New CSectionGeometryQuery: Set mLabelBoundary = query.RegionFromContours(mLabelContours)
     End If
     Set query = New CSectionGeometryQuery
@@ -1279,7 +1262,7 @@ Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double
     If query.LabelBoundaryDistance(mLabelBoundary, 0.5 * (mAnnotationStartX(index) + mAnnotationEndX(index)), _
             0.5 * (mAnnotationStartY(index) + mAnnotationEndY(index)), nx, ny, distance) Then AnnotationBoundaryDistance = distance
 End Function
-' Dimension, RebarLabel, Outline и другие типы оформления.
+' Тип аннотации: DIMENSION, REBAR_ANNOTATION, REBAR_GLOBAL_ANNOTATION, TEXT_ANNOTATION или CONTOUR_*.
 Public Property Get AnnotationType(ByVal index As Long) As String: AnnotationType = mAnnotationType(index): End Property
 ' Начало линии/размера в координатах модели.
 Public Property Get AnnotationStartX(ByVal index As Long) As Double: AnnotationStartX = mAnnotationStartX(index): End Property
@@ -1289,9 +1272,9 @@ Public Property Get AnnotationStartY(ByVal index As Long) As Double: AnnotationS
 Public Property Get AnnotationEndX(ByVal index As Long) As Double: AnnotationEndX = mAnnotationEndX(index): End Property
 ' Конец линии/размера в координатах модели.
 Public Property Get AnnotationEndY(ByVal index As Long) As Double: AnnotationEndY = mAnnotationEndY(index): End Property
-' Заданная компонента направления выноса аннотации.
+' Компонента безразмерной нормали; для CONTOUR_ARC — координата центра дуги в мм.
 Public Property Get AnnotationNormalX(ByVal index As Long) As Double: AnnotationNormalX = mAnnotationNormalX(index): End Property
-' Заданная компонента направления выноса аннотации.
+' Компонента безразмерной нормали; для CONTOUR_ARC — координата центра дуги в мм.
 Public Property Get AnnotationNormalY(ByVal index As Long) As Double: AnnotationNormalY = mAnnotationNormalY(index): End Property
 ' Готовый текст подписи или размера.
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property

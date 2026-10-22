@@ -129,7 +129,7 @@ Private Function JsonReadString(ByVal text As String, ByRef position As Long) As
                         If InStr(1, "0123456789abcdef", Mid$(digits, i, 1), vbTextCompare) = 0 Then Err.Raise 5
                     Next i
                     code = CLng("&H" & digits)
-                    If code > 32767 Then code = code - 65536
+                    If code > 32767 Then code = code - 65536 ' ChrW принимает знаковое 16-битное число; кодовая единица Unicode сохраняется без изменения.
                     result = result & ChrW$(code): position = position + 4
                 Case Else: Err.Raise 5
             End Select

@@ -17,7 +17,7 @@ DIRECT = {
                     'RunCommonStrainLimitTests', 'RunAsymmetricSteelStrengthTests',
                     'RunTangentClipRegressionTests', 'RunSolverWorkStatsTests',
                     'RunBatchWorkStatsTests'), 'Extras'),
-    **dict.fromkeys(('RunAudit03UltimateContracts', 'RunCapacityMomentMeritTests',
+    **dict.fromkeys(('TestRunAudit03UltimateContracts', 'RunCapacityMomentMeritTests',
                     'RunLimitGuessScalingTests', 'RunBracketFinalizationRecoveryTests',
                     'RunSavedCrackLambdaToleranceTests', 'RunAudit03LambdaSettingsTests',
                     'RunExecutionReportFormattingTests'), 'ValidationPlan'),
@@ -28,7 +28,7 @@ ALIASES = {
     'RunNumericalPathPreparationTests': 'RunCapacitySolverTests',
     'RunProjectedLimitRecoveryTests': 'RunCapacitySolverTests',
     'RunUltimateStepScaleRegressionTests': 'RunCapacitySolverTests',
-    'RunAudit03UltimateStagnation': 'RunAudit03UltimateContracts',
+    'TestRunAudit03UltimateStagnation': 'TestRunAudit03UltimateContracts',
 }
 NATIVE = ('RunRealAutoCADContourMeshTests', 'RunRealAutoCADFarOriginTests', 'RunRealAutoCADFarCapacityTests')
 

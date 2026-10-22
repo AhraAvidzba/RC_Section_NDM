@@ -146,8 +146,8 @@ Private Sub BuildOffsetBase(ByVal loadState As CSectionLoadState, ByVal userMxVa
     Dim mxFromN As Double
     Dim myFromN As Double
     nValue = loadState.N
-    mxFromN = loadState.AxialMxAboutPoint(0#)
-    myFromN = loadState.AxialMyAboutPoint(0#)
+    mxFromN = loadState.AxialMxAboutPoint(0#) ' Момент от эксцентриситета N относительно исходного начала модели, Н*мм.
+    myFromN = loadState.AxialMyAboutPoint(0#) ' Вторая компонента того же переноса N; остаётся связанной с масштабированием силы.
 
     Select Case mKey
         Case KEY_MX

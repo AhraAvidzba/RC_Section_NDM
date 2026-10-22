@@ -73,22 +73,22 @@ try {
                 $book = $books.Open($paths[$version])
                 $excel.Calculation = -4135
                 if ($Group -eq 'Batch' -or $Group -eq 'Export') {
-                    if(-not $KeepInputs) {[void]$excel.Run("'$($book.Name)'!modTestPerformance.ConfigurePerformanceFixture",[string]$Family,[int]$case.Count,[string]$Method,[string]$Shape,[string]$Order,[string]$Extension)}
+                    if(-not $KeepInputs) {[void]$excel.Run("'$($book.Name)'!modTestPerformance.TestConfigurePerformanceFixture",[string]$Family,[int]$case.Count,[string]$Method,[string]$Shape,[string]$Order,[string]$Extension)}
                     if ($repeat -eq 1) {
                         $inputs=@{}; foreach($name in @('rngSystemSettings','rngCalculationProfiles','rngLoadCombinations','rngStabilityDurationLoads')) {
                             $inputs[$name]=$book.Names.Item($name).RefersToRange.Value2
                         }
                         $inputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $directoryPath "$($case.Name)-$version-input.json") -Encoding UTF8
                     }
-                    if($Group -eq 'Export') {[void]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceBatch",'Full')}
+                    if($Group -eq 'Export') {[void]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceBatch",'Full')}
                 }
                 for ($run=1; $run -le $RunsPerOpen; $run++) {
                 $before = Get-Memory $excelProcessId
-                if ($case.Name -eq 'model') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceModel", [int]$case.Count) }
-                elseif ($case.Name -eq 'extent') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceExtent", [bool]($version -eq 'B'), [int]$case.Count) }
-                elseif ($Group -eq 'Solver') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceSolver", [string]$case.Method, [int]$SolverDivisions, [int]$case.Count) }
-                elseif ($Group -eq 'Export') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceExport",10) }
-                else { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceBatch", [string]$case.Mode) }
+                if ($case.Name -eq 'model') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceModel", [int]$case.Count) }
+                elseif ($case.Name -eq 'extent') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceExtent", [bool]($version -eq 'B'), [int]$case.Count) }
+                elseif ($Group -eq 'Solver') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceSolver", [string]$case.Method, [int]$SolverDivisions, [int]$case.Count) }
+                elseif ($Group -eq 'Export') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceExport",10) }
+                else { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceBatch", [string]$case.Mode) }
                 $after = Get-Memory $excelProcessId
                 $delimiter = ';'; if ($Group -ne 'Storage') { $delimiter = [string][char]30 }
                 $fields = @{}; foreach ($part in $result -split $delimiter) { $pair = $part.Trim() -split '=',2; if($pair.Count -eq 2){$fields[$pair[0]]=$pair[1]} }
@@ -108,7 +108,7 @@ try {
                 $records | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $directoryPath 'Raw.json') -Encoding UTF8
                 Write-Output ($record | ConvertTo-Json -Depth 5 -Compress)
                 if($Group -eq 'Batch' -and $MeasureOverhead) {
-                    $overhead=[string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceOverhead")
+                    $overhead=[string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceOverhead")
                     $overhead | Set-Content -LiteralPath (Join-Path $directoryPath "$($case.Name)-$version-$repeat-$run-overhead.txt") -Encoding UTF8
                 }
                 if($Group -eq 'Batch' -and $case.Mode -eq 'Full') {

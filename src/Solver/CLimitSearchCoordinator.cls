@@ -135,9 +135,7 @@ Private Function ExecuteLoadPaths(ByVal request As CLimitSearchRequest) As CLimi
             attemptComment = "Путь " & request.SelectedLoadPath.DisplayName & ": " & Trim$(meta.ResultComment)
             If Len(history) > 0 Then history = history & " "
             history = history & attemptComment
-            ' Сохраняем журналы предыдущих путей независимо от того, очищает ли их
-            ' подготовка следующей задачи. Уже накопленный текст не добавляется повторно.
-            attemptDiagnostics = result.DiagnosticLog
+            attemptDiagnostics = result.DiagnosticLog ' Сохраняем журналы предыдущих путей независимо от того, очищает ли их подготовка следующей задачи. Уже накопленный текст не добавляется повторно.
             If Len(attemptDiagnostics) > 0 Then
                 If Len(diagnosticHistory) = 0 Then
                     diagnosticHistory = attemptDiagnostics
@@ -172,9 +170,7 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
 
     Dim firstResult As CLimitSearchResult
     Set firstResult = ultimate.ExecuteCapacity(request)
-    ' Подтвержденный физический отказ при lambda=0 не требует другого
-    ' численного метода. Выбор следующего Auto-пути остается прежним.
-    If firstResult.Meta.ResultCode = rcInitialStateBeyondLimit Then
+    If firstResult.Meta.ResultCode = rcInitialStateBeyondLimit Then ' Подтвержденный физический отказ при lambda=0 не требует другого численного метода. Выбор следующего Auto-пути остается прежним.
         Set ExecuteAutoCapacity = firstResult
         Exit Function
     End If

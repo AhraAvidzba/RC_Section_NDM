@@ -439,7 +439,7 @@ Hollow-стержней; структура, подписи и остальны�
 `Build-Workbook.ps1` восстанавливает книгу из src/tests, штатно устанавливает
 новую Справку последней. `Run-Audit03Watchdog.ps1` создаёт изолированную копию,
 проверяет source hash и владеет только своим Excel PID. Небольшой итоговый
-harness в `examples/modFinalGeometryChecks.bas` импортируется отдельно через
+harness в `examples/modTestFinalGeometryChecks.bas` импортируется отдельно через
 `Update-PrivateWorkbookCode.ps1 -ExampleFiles ...`; в production его нет.
 
 `Summarize-GeometryFinal.py` проверяет фактические PASS/records/hashes и

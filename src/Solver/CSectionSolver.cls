@@ -104,8 +104,8 @@ Private mStrainExtremaPlane(1 To 3) As Double ' Экстремумы прина�
 ' ------------------------------
 ' Настройки по умолчанию
 ' ------------------------------
-' Значения достаточно устойчивы для тестовой книги. Excel-слой может заменить
-' их через ApplySettings перед запуском расчета.
+' Задаёт начальные настройки для автономного программного вызова.
+' Запуск из книги передаёт обязательные численные настройки через ApplySettings.
 Private Sub Class_Initialize()
     mMaxIterations = 80
     mLoadSteps = 5
@@ -138,9 +138,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     End If
     mSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSecantMaxRestarts, False)
     If Not units Is Nothing Then
-        ' Знак нагрузки не относится к допуску; неверный отрицательный ввод
-        ' сохраняем для адресной проверки конфигурации до начала solve.
-        mToleranceN = Sgn(mToleranceN) * Abs(units.InputForceToInternal(mToleranceN))
+        mToleranceN = Sgn(mToleranceN) * Abs(units.InputForceToInternal(mToleranceN)) ' Знак нагрузки не относится к допуску; неверный отрицательный ввод сохраняем для адресной проверки конфигурации до начала solve.
         mToleranceMx = Sgn(mToleranceMx) * Abs(units.InputMomentMxToInternal(mToleranceMx))
         mToleranceMy = Sgn(mToleranceMy) * Abs(units.InputMomentMyToInternal(mToleranceMy))
     End If
@@ -186,9 +184,7 @@ Public Sub Solve(ByVal section As CSectionModel, _
         startMy = mInitialTargetMy
     End If
 
-    ' Нагрузка прикладывается ступенями, чтобы для нелинейной диаграммы материал не требовал
-    ' от Newton/Secant сразу найти равновесие на полном векторе усилий из далекого начального состояния.
-    For stepIndex = 1 To mLoadSteps
+    For stepIndex = 1 To mLoadSteps ' Нагрузка прикладывается ступенями, чтобы для нелинейной диаграммы материал не требовал от Newton/Secant сразу найти равновесие на полном векторе усилий из далекого начального состояния.
         stepN = startN + (targetN - startN) * stepIndex / mLoadSteps
         stepMx = startMx + (targetMx - startMx) * stepIndex / mLoadSteps
         stepMy = startMy + (targetMy - startMy) * stepIndex / mLoadSteps
@@ -198,11 +194,8 @@ Public Sub Solve(ByVal section As CSectionModel, _
         End If
         mLoadStepsCompleted = stepIndex
     Next stepIndex
-
-    ' Финальная проверка выполняется уже на полной нагрузке: промежуточная сходимость ступеней
-    ' сама по себе еще не гарантирует, что итоговые невязки попали в пользовательские допуски.
     EvaluateState section, concreteMaterial, steelMaterial, mCenterEpsilon, mKappaX, mKappaY, True, False, True
-    SetResiduals targetN, targetMx, targetMy
+    SetResiduals targetN, targetMx, targetMy ' Подтверждаем все три невязки на полной нагрузке: сходимости промежуточных ступеней для этого недостаточно.
     mConverged = IsConverged(targetN, targetMx, targetMy)
     If mConverged Then
         mStopReason = "Равновесие найдено методом " & mSolverMethod & " со ступенчатым приложением нагрузки."
@@ -217,9 +210,7 @@ Finished:
     Exit Sub
 Failed:
     mConverged = False
-    ' Численный предел арифметики не является ошибкой структуры программы.
-    ' Индексы/объекты и другие неожиданные runtime-ошибки сохраняют InternalError.
-    Select Case Err.Number
+    Select Case Err.Number ' Численный предел арифметики не является ошибкой структуры программы. Индексы/объекты и другие неожиданные runtime-ошибки сохраняют InternalError.
         Case 6
             mFailureCode = sfcNumericalFailure
             mStopReason = "Равновесие не найдено: при численном расчете произошло переполнение диапазона Double."
@@ -357,11 +348,8 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
             SolveNewtonLoadStep = True
             Exit Function
         End If
-
-        ' Решаем линейную поправку Newton. Правая часть равна минус невязке,
-        ' потому что хотим сдвинуть состояние в сторону уменьшения R.
         Dim system As CLinearSystem3x3
-        Set system = New CLinearSystem3x3
+        Set system = New CLinearSystem3x3 ' В системе J*delta = -R правая часть меняет знак невязки для её уменьшения следующим шагом Newton.
         Dim length As Double
         length = mFrame.LengthScale
         If Not system.Solve(mCenterK(1, 1), mCenterK(1, 2) / length, mCenterK(1, 3) / length, _
@@ -386,10 +374,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         deltaEps = system.X1
         deltaKx = system.X2 / length
         deltaKy = system.X3 / length
-
-        ' Полный центрированный шаг допускается сразу. Обратный поиск ниже
-        ' автоматически уменьшает его по фактическому снижению невязки.
-        mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy)
+        mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy) ' Подбор начинает с полного центрированного шага и уменьшает его по фактическому снижению невязки.
         AppendDiagnostics stepIndex, iter, mLastAlpha, targetN, targetMx, targetMy, "итерация"
         If mLastAlpha <= 0# Then
             If TryRegularizedStep(section, concreteMaterial, steelMaterial, mCenterK, targetN, targetMx, targetMy) Then
@@ -424,7 +409,7 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal stepIndex As Long, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
 
-    Dim b(1 To 3, 1 To 3) As Double
+    Dim b(1 To 3, 1 To 3) As Double ' Приближённый Якобиан центрированных усилий по деформации и двум кривизнам, обновляемый по Бройдену.
     Dim scaleKx As Double, scaleKy As Double ' Плечи для приведения кривизн к деформациям.
     SecantCoordinateScales section, scaleKx, scaleKy
     EvaluateSecantResidual section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
@@ -566,7 +551,7 @@ Private Function TryRegularizedStep(ByVal section As CSectionModel, ByVal concre
     Next i
     Dim system As CLinearSystem3x3, shift As Double, attempt As Long
     Set system = New CLinearSystem3x3
-    shift = 0.000000000001
+    shift = 0.000000000001 ' Начальная безразмерная регуляризация уже нормированной матрицы; напряжения и физические пределы не меняются.
     For attempt = 1 To 15
         If system.Solve(a(1, 1) + shift, a(1, 2), a(1, 3), a(2, 1), a(2, 2) + shift, a(2, 3), _
                 a(3, 1), a(3, 2), a(3, 3) + shift, -mResidualN / matrixScale, _
@@ -814,9 +799,7 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
     mLineSearchIterations = 0
     mLineSearchUsed = False
 
-    ' 52 деления соответствуют точности мантиссы Double. Дополнительно
-    ' проверяется фактическая представимость каждой пробной плоскости.
-    Do While mLineSearchIterations < NONLINEAR_MAX_BACKTRACKS
+    Do While mLineSearchIterations < NONLINEAR_MAX_BACKTRACKS ' Лимит включает исходную пробу и деления шага по точности мантиссы Double; каждая плоскость дополнительно проверяется на представимость.
         mLineSearchIterations = mLineSearchIterations + 1
         Dim trialEps As Double
         Dim trialKx As Double
@@ -885,7 +868,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     Dim physical As Boolean, reusable As Boolean, revision As Long
     mFrame.Initialize section
     If Not centeredInput Then eps0 = mFrame.CenterStrain(eps0, kx, ky)
-    physical = buildTangent Or collectPhysical
+    physical = buildTangent Or collectPhysical ' Полный сбор напряжений и экстремумов; это не признак соблюдения физических пределов диаграмм.
     If mEvaluationReuseEnabled Then
         reusable = section Is mSnapshotSection And concreteMaterial Is mSnapshotConcrete And steelMaterial Is mSnapshotSteel
         If reusable Then
@@ -1039,21 +1022,19 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             Else
                 concreteStress = concreteDiagram.StressAtStrain(strain)
             End If
-            stress = steelStress - concreteStress
+            stress = steelStress - concreteStress ' Бетонная сетка включает площадь стержня, поэтому сталь заменяет этот бетон, а не добавляется поверх него.
             force = stress * area
             nInt = nInt + force
             mxInt = mxInt + force * yCoord
             myInt = myInt + force * xCoord
             If buildTangent Then
-                tangent = steelTangent - concreteTangent
+                tangent = steelTangent - concreteTangent ' Та же замена бетона выполняется для производной усилия; знак разности сохраняется.
                 AddTangent tangent * area, xCoord, yCoord
             End If
         Next i
     End If
     If physical Then
-        ' Если сжатой или растянутой зоны нет, её экстремум не сохраняем.
-        ' Служебные начальные границы поиска не должны выдаваться за физическое напряжение.
-        If Not mHasConcreteCompression Then mMinConcreteStress = 0#
+        If Not mHasConcreteCompression Then mMinConcreteStress = 0# ' Если сжатой или растянутой зоны нет, её экстремум не сохраняем. Служебные начальные границы поиска не должны выдаваться за физическое напряжение.
         If Not mHasConcreteTension Then mMaxConcreteStress = 0#
         If Not mHasSteelCompression Then mMinSteelStress = 0#
         If Not mHasSteelTension Then mMaxSteelStress = 0#
@@ -1096,7 +1077,7 @@ End Sub
 ' умножение на координаты по правилу моментов.
 Private Sub AddTangent(ByVal axialStiffness As Double, ByVal xCoord As Double, ByVal yCoord As Double)
     mCenterK(1, 1) = mCenterK(1, 1) + axialStiffness
-    mCenterK(1, 2) = mCenterK(1, 2) + axialStiffness * yCoord
+    mCenterK(1, 2) = mCenterK(1, 2) + axialStiffness * yCoord ' Порядок неизвестных: epsilon0, kappaX, kappaY; первая кривизна умножается на y, вторая — на x.
     mCenterK(1, 3) = mCenterK(1, 3) + axialStiffness * xCoord
     mCenterK(2, 1) = mCenterK(2, 1) + axialStiffness * yCoord
     mCenterK(2, 2) = mCenterK(2, 2) + axialStiffness * yCoord * yCoord
@@ -1134,7 +1115,8 @@ Private Sub SetResiduals(ByVal targetN As Double, ByVal targetMx As Double, ByVa
     mRelativeResidualMy = RelativeResidual(mResidualMy, targetMy)
 End Sub
 
-' Проверяет равновесие N, Mx и My отдельно по их абсолютным допускам.
+' Проверяет N и оба момента по абсолютным допускам. Моменты должны пройти
+' проверку и в исходных, и в центрированных координатах, чтобы перенос больших чисел не скрыл невязку.
 Private Function IsConverged(ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
     IsConverged = Abs(mResidualN) <= mToleranceN And _
         Abs(mResidualMx) <= mToleranceMx And _
@@ -1659,35 +1641,41 @@ End Property
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: эти свойства и настройки раскрывают внутренний ход Newton/Secant. Они нужны
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' эти свойства и настройки раскрывают внутренний ход Newton/Secant. Они нужны
 ' unit- и regression-тестам, чтобы отличать ветки алгоритма, считать пробные
 ' пересчеты усилий и проверять рестарты матрицы. Пользовательский расчет
 ' использует сходимость, найденные деформации, внутренние усилия и DiagnosticLog.
-Public Property Get LoadStepsCompleted() As Long
-    LoadStepsCompleted = mLoadStepsCompleted
+Public Property Get TestLoadStepsCompleted() As Long
+    TestLoadStepsCompleted = mLoadStepsCompleted
 End Property
 
-' ДЛЯ ТЕСТОВ: сколько раз пересчитывались внутренние усилия.
-Public Property Get InternalForceEvaluationCount() As Long
-    InternalForceEvaluationCount = mInternalForceEvaluationCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сколько раз пересчитывались внутренние усилия.
+Public Property Get TestInternalForceEvaluationCount() As Long
+    TestInternalForceEvaluationCount = mInternalForceEvaluationCount
 End Property
 
-' ДЛЯ ТЕСТОВ: фактическая сборка K и устраненные точные повторы одного Solve.
-Friend Property Get TangentBuildCount() As Long
-    TangentBuildCount = mTangentBuildCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' фактическая сборка K и устраненные точные повторы одного Solve.
+Friend Property Get TestTangentBuildCount() As Long
+    TestTangentBuildCount = mTangentBuildCount
 End Property
 
-' ДЛЯ ТЕСТОВ: технические счетчики фактической работы, не инженерные результаты.
-Friend Property Get EvaluationReuseCount() As Long
-    EvaluationReuseCount = mEvaluationReuseCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' технические счетчики фактической работы, не инженерные результаты.
+Friend Property Get TestEvaluationReuseCount() As Long
+    TestEvaluationReuseCount = mEvaluationReuseCount
 End Property
 
-' ДЛЯ ТЕСТОВ: сколько раз запускалась ветка Newton на ступени нагрузки.
-Public Property Get InternalNewtonCallCount() As Long
-    InternalNewtonCallCount = mInternalNewtonCallCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сколько раз запускалась ветка Newton на ступени нагрузки.
+Public Property Get TestInternalNewtonCallCount() As Long
+    TestInternalNewtonCallCount = mInternalNewtonCallCount
 End Property
 
-' ДЛЯ ТЕСТОВ: сколько раз Secant перезапускал матрицу чувствительности.
-Public Property Get MatrixRestartCount() As Long
-    MatrixRestartCount = mMatrixRestartCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сколько раз Secant перезапускал матрицу чувствительности.
+Public Property Get TestMatrixRestartCount() As Long
+    TestMatrixRestartCount = mMatrixRestartCount
 End Property

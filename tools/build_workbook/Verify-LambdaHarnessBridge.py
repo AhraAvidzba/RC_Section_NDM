@@ -44,7 +44,7 @@ def main():
     result = {'status': 'PASS' if not errors else 'FAIL', 'beforeWorkbookSHA256': native.digest(args.before_book),
               'afterWorkbookSHA256': native.digest(args.after_book), 'beforeDumpSHA256': native.digest(args.before_dump),
               'afterDumpSHA256': native.digest(args.after_dump), 'changed': changed,
-              'changedMethod': 'modTestConfiguration.CheckCapacityNumericEffects',
+              'changedMethod': 'modTestConfiguration.TestCheckCapacityNumericEffects',
               'productionUnchanged': not errors, 'unchangedOtherCode': not errors, 'errors': errors,
               'exactAllowedPatch': {'before': OLD, 'after': NEW},
               'engineeringReason': 'Absolute coarse lambda error is bounded by the selected 0.02 tolerance plus baseline1e-6; equilibrium/physical checks and linear-fixture0.002 remain unchanged'}

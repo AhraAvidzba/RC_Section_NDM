@@ -12,8 +12,8 @@ Option Explicit
 ' ==========================================================================
 ' Чтение таблицы сочетаний нагрузок
 ' ==========================================================================
-' Reader переносит строки rngLoadCombinations в CBatchSectionCalculator. Пустой
-' Mx или My считается нулем, полностью нулевая строка нагрузок пропускается,
+' Переносит строки rngLoadCombinations в CBatchSectionCalculator. Пустые
+' компоненты N, Mx и My считаются нулём; полностью нулевая нагрузка пропускается,
 ' а неполные/некорректные строки сохраняются как InvalidInput, чтобы пользователь
 ' увидел их в отчете.
 '
@@ -41,10 +41,8 @@ Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCal
     data = source.Value2
 
     Dim rowIndex As Long
-    ' Пустые строки оставляем пользователю для ввода, а не превращаем в ошибки.
-    For rowIndex = 2 To UBound(data, 1)
-        If IsEmptyCombinationRow(data, rowIndex) Then
-            ' Строка свободна для будущего ввода LC.
+    For rowIndex = 2 To UBound(data, 1) ' Пустые строки оставляем пользователю для ввода, а не превращаем в ошибки.
+        If IsEmptyCombinationRow(data, rowIndex) Then ' Строка свободна для будущего ввода LC.
         Else
             AddRow data, batch, rowIndex, units, source
         End If
@@ -88,9 +86,7 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText)
     myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText)
 
-    ' Пропускаем только точно нулевые нагрузки. Силы и моменты имеют разные единицы;
-    ' порог практически нулевого момента применяется позже в расчётном классе.
-    If Len(errorText) = 0 Then
+    If Len(errorText) = 0 Then ' Пропускаем только точно нулевые нагрузки. Силы и моменты имеют разные единицы; порог практически нулевого момента применяется позже в расчётном классе.
         ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, source, rowIndex
         If Len(errorText) = 0 Then
             If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub

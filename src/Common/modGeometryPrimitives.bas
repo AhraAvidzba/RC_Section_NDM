@@ -40,7 +40,7 @@ Public Function EdgeRayHit(ByRef edge As TRegionEdge, ByVal x As Double, ByVal y
         EdgeRayHit = True
         Exit Function
     End If
-    HalfPlaneCuts edge, -dy, dx, -dy * x + dx * y, cuts, count
+    HalfPlaneCuts edge, -dy, dx, -dy * x + dx * y, cuts, count ' Прямая луча задаётся нормалью (-dy, dx); отрицательные расстояния отсеиваются ниже.
     For i = 1 To count
         EdgePoint edge, cuts(i), px, py
         candidate = (px - x) * dx + (py - y) * dy
@@ -76,9 +76,7 @@ Public Sub HalfPlaneCuts(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal ny
         roundoff = 3.5527136788005E-15 * _
             ((Abs(bound) + Abs(nx * edge.CenterX) + Abs(ny * edge.CenterY)) / norm + radius + 1#)
         If Abs(Abs(distance) - radius) <= roundoff Then distance = Sgn(distance) * radius
-        ' Допуск допускает касание снаружи, но не схлопывает настоящую
-        ' секущую изнутри: даже малая глубина дает два разных конца дуги.
-        If Abs(distance) > radius Then distance = Sgn(distance) * radius
+        If Abs(distance) > radius Then distance = Sgn(distance) * radius ' Допуск допускает касание снаружи, но не схлопывает настоящую секущую изнутри: даже малая глубина дает два разных конца дуги.
         bx = edge.CenterX + nx / norm * distance: by = edge.CenterY + ny / norm * distance
         offset = Sqr(GeomMax((radius - Abs(distance)) * (radius + Abs(distance)), 0#))
         If PointParameter(edge, bx - ny / norm * offset, by + nx / norm * offset, u) Then AddScalar cuts, count, u
@@ -121,8 +119,8 @@ Public Sub EdgeIntersectionCuts(ByRef a As TRegionEdge, ByRef b As TRegionEdge, 
         dx = b.CenterX - a.CenterX: dy = b.CenterY - a.CenterY: distance = Sqr(dx * dx + dy * dy)
         If distance <= QUERY_TOLERANCE Then Exit Sub
         If distance > r1 + r2 + QUERY_TOLERANCE Or distance < Abs(r1 - r2) - QUERY_TOLERANCE Then Exit Sub
-        along = (r1 * r1 - r2 * r2 + distance * distance) / (2# * distance)
-        height = Sqr(GeomMax(r1 * r1 - along * along, 0#))
+        along = (r1 * r1 - r2 * r2 + distance * distance) / (2# * distance) ' Расстояние от центра первой окружности до основания их общей хорды, мм.
+        height = Sqr(GeomMax(r1 * r1 - along * along, 0#)) ' Половина длины общей хорды; отрицательный остаток округления при касании обнуляется.
         bx = a.CenterX + along * dx / distance: by = a.CenterY + along * dy / distance
         x = bx - height * dy / distance: y = by + height * dx / distance
         If PointParameter(a, x, y, u) And PointParameter(b, x, y, v) Then AddScalar cuts, count, u
@@ -149,7 +147,7 @@ Public Function PointParameter(ByRef edge As TRegionEdge, ByVal x As Double, ByV
         If Abs(radius - pointRadius) > QUERY_TOLERANCE Then Exit Function
         startAngle = AngleOf(edge.X1 - edge.CenterX, edge.Y1 - edge.CenterY)
         pointAngle = AngleOf(x - edge.CenterX, y - edge.CenterY)
-        delta = pointAngle - startAngle
+        delta = pointAngle - startAngle ' Угол от начала дуги затем приводится к направлению её знакового угла Sweep.
         If edge.Sweep > 0# Then
             Do While delta < -PARAM_TOLERANCE: delta = delta + 2# * GEOM_PI: Loop
         Else
@@ -190,7 +188,7 @@ Public Sub SubEdge(ByRef original As TRegionEdge, ByVal u1 As Double, ByVal u2 A
     LSet result = original
     EdgePoint original, u1, result.X1, result.Y1
     EdgePoint original, u2, result.X2, result.Y2
-    result.Sweep = original.Sweep * (u2 - u1): result.LoopID = 0
+    result.Sweep = original.Sweep * (u2 - u1): result.LoopID = 0 ' Новый участок сохраняет дугу, но ещё не принадлежит собранному замкнутому контуру.
 End Sub
 
 ' Обращает сегмент вместе со знаком дуги, сохраняя ту же физическую границу.
@@ -233,8 +231,8 @@ Public Function EdgeLength(ByRef edge As TRegionEdge) As Double
 End Function
 
 ' Добавляет численный параметр в список, если такого значения ещё нет.
-' Здесь учитывает относительную точность Double; размерный допуск
-' задаёт вызывающая операция пересечения.
+' Значения сравниваются по абсолютному допуску параметра сегмента;
+' размерный допуск координат проверяет вызывающая операция пересечения.
 Public Sub AddScalar(ByRef values() As Double, ByRef count As Long, ByVal value As Double)
     Dim i As Long
     For i = 1 To count

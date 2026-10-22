@@ -8,6 +8,8 @@ Option Explicit
 ' и передаёт их CFiberMeshBuilder. Одни настройки используются
 ' для параметрических сечений и точных контуров AutoCAD.
 
+' Строит бетонную сетку по готовой области с едиными настройками Mesh.
+' Шаги переводятся в мм один раз до передачи общему построителю сетки.
 Public Function BuildConfiguredConcreteMesh(ByVal geometry As CGeometryRegion, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CFiberMeshBuilder
     Dim options As TSectionMeshOptions, mesh As CFiberMeshBuilder
@@ -17,7 +19,8 @@ Public Function BuildConfiguredConcreteMesh(ByVal geometry As CGeometryRegion, _
     Set BuildConfiguredConcreteMesh = mesh
 End Function
 
-' Один нормализованный набор используется Generated-builder и CAD-сеткой.
+' Читает положительные шаги и целое разбиение границы; возвращает размеры в мм
+' и адреса исходных настроек для ошибок параметрического построения и импорта.
 Public Function ReadSectionMeshOptions(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As TSectionMeshOptions
     If settings Is Nothing Or units Is Nothing Then Err.Raise vbObjectError + 4139, _
         "modMeshConfiguration", "Настройки и единицы бетонной сетки не переданы."
@@ -31,6 +34,8 @@ Public Function ReadSectionMeshOptions(ByVal settings As CSystemSettingsReader, 
     ReadSectionMeshOptions = options
 End Function
 
+' Читает обязательный положительный шаг и переводит INPUT-длину в мм.
+' При переполнении преобразования сообщает исходную настройку и способ исправления.
 Private Function ReadMeshStep(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal key As String) As Double
     Dim value As Double
     value = settings.GetRequiredDouble(key)
@@ -47,6 +52,8 @@ InvalidConversion:
             "Уменьшите число и проверьте INPUT-единицу длины.")
 End Function
 
+' Читает обязательное целое число подъячеек по каждой оси граничной ячейки.
+' Пустое значение и число меньше 1 отклоняются с адресом настройки Mesh.
 Public Function ReadMeshBoundarySubdivisions(ByVal settings As CSystemSettingsReader) As Long
     If settings Is Nothing Then Err.Raise vbObjectError + 4139, "modMeshConfiguration", "Настройки разбиения бетонной сетки не переданы."
     If settings.HasKey("Mesh.BoundarySubdivisions") Then

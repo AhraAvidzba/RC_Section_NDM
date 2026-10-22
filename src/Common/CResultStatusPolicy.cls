@@ -145,9 +145,7 @@ Public Function WorstResultMeta(ByVal fallbackKind As EResultKind, _
             ElseIf StatusPriority(ExternalStatus(candidate)) > StatusPriority(ExternalStatus(selected)) Then
                 Set selected = candidate
             ElseIf candidate.InternalStatus = rsSuccessWithWarning And selected.InternalStatus = rsSuccess Then
-                ' Оба исхода отображаются OK, но значимое предупреждение и его
-                ' машинный код не должны теряться из-за порядка дочерних ветвей.
-                Set selected = candidate
+                Set selected = candidate ' Оба исхода отображаются OK, но значимое предупреждение и его машинный код не должны теряться из-за порядка дочерних ветвей.
             End If
         End If
     Next i

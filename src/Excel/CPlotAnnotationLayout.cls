@@ -15,7 +15,8 @@ Option Explicit
 ' Получает готовые аннотации в координатах сечения, переводит их
 ' в координаты диаграммы Excel и применяет отступы, размеры текста и стрелок.
 ' Состав арматуры и перечень нужных размеров определены до этого этапа;
-' данный класс отвечает за их размещение и оформление.
+' данный класс отвечает за их размещение и оформление. Координаты внутри Chart,
+' размеры шрифта и толщины линий заданы в пунктах Excel (pt), а не в пикселях.
 
 Private Const ITEM_LINE As String = "LINE" ' Обозначение графического элемента «линия» для последующего создания Chart.Shape.
 Private Const ITEM_TEXT As String = "TEXT" ' Обозначение графического элемента «текст» для последующего создания Chart.Shape.
@@ -92,7 +93,7 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Читает только визуальные параметры схемы. Смысл аннотаций уже должен быть
-' сформирован выше. Обязательные активные значения проверяются без defaults;
+' сформирован выше. Обязательные активные значения проверяются без подстановок;
 ' выключенная группа не читает свои параметры, в том числе ошибочные формулы.
 Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)
     If settings Is Nothing Then Err.Raise vbObjectError + 4810, "CPlotAnnotationLayout", "Настройки оформления схемы не переданы."
@@ -244,9 +245,7 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
     dirY = endY - startY
-    ' Для одиночного стержня направление линии подписи определяем
-    ' по заданной нормали. Обычный выбор горизонтальной или вертикальной подписи сохраняется.
-    If Abs(dirX) + Abs(dirY) <= GEOM_TOLERANCE And Abs(normalX) > GEOM_TOLERANCE And Abs(normalY) > GEOM_TOLERANCE Then
+    If Abs(dirX) + Abs(dirY) <= GEOM_TOLERANCE And Abs(normalX) > GEOM_TOLERANCE And Abs(normalY) > GEOM_TOLERANCE Then ' Для одиночного стержня направление линии подписи определяем по заданной нормали. Обычный выбор горизонтальной или вертикальной подписи сохраняется.
         dirX = normalY: dirY = -normalX
     End If
     NormalizeModelVector dirX, dirY, 1#, 0#
@@ -272,9 +271,7 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
 
     Dim rotation As Double
     rotation = AnnotationRotation(dirX, dirY)
-    ' Правая вертикальная выноска читается сверху вниз, левая — снизу вверх.
-    ' Сторону определяет фактическая нормаль после применения Inside/Outside.
-    If rotation = 90# And normalPxX > 0# Then rotation = -90#
+    If rotation = 90# And normalPxX > 0# Then rotation = -90# ' Правая вертикальная выноска читается сверху вниз, левая — снизу вверх. Сторону определяет фактическая нормаль после применения Inside/Outside.
 
     Dim textLeft As Double, textTop As Double, textWidth As Double, textHeight As Double
     RebarTextBox anchorPxX, anchorPxY, normalPxX, normalPxY, rotation, textValue, textLeft, textTop, textWidth, textHeight
@@ -331,12 +328,10 @@ Private Sub PositionTextBox(ByVal anchorX As Double, ByVal anchorY As Double, By
     If Abs(rotation) = 90# Then
         swap = widthValue: widthValue = heightValue: heightValue = swap
     ElseIf rotation <> 0# Then
-        ' Наклонной подписи не нужна широкая пустая рамка: длина следует тексту.
-        widthValue = MaxDouble(fontSize * 2#, Len(textValue) * fontSize * 0.62)
+        widthValue = MaxDouble(fontSize * 2#, Len(textValue) * fontSize * 0.62) ' Наклонной подписи не нужна широкая пустая рамка: длина следует тексту.
         angle = rotation * GEOM_PI / 180#
-        normalProjection = Abs(-Sin(angle) * normalX + Cos(angle) * normalY)
-        ' Для корректной нормали проекция ненулевая; защитный минимум не допускает деления на ноль.
-        gap = gap / MaxDouble(normalProjection, 0.000001)
+        normalProjection = Abs(-Sin(angle) * normalX + Cos(angle) * normalY) ' Проекция экранной нормали на перпендикуляр к повёрнутой строке текста задаёт фактический зазор.
+        gap = gap / MaxDouble(normalProjection, 0.000001) ' Для корректной нормали проекция ненулевая; защитный минимум не допускает деления на ноль.
     End If
     leftPos = anchorX + normalX * gap - widthValue / 2#
     topPos = anchorY + normalY * gap - heightValue / 2#
@@ -486,21 +481,18 @@ Private Function ClampDouble(ByVal value As Double, ByVal minValue As Double, By
     End If
 End Function
 
-' Небольшая локальная функция, чтобы не тянуть WorksheetFunction в горячий слой.
+' Возвращает большее из двух чисел при расчёте размеров оформления.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
-' Небольшая локальная функция, чтобы не тянуть WorksheetFunction в горячий слой.
+' Возвращает меньшее из двух чисел при выборе масштаба и габарита текста.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
-' ------------------------------
-' Подготовленные линии и подписи
-' ------------------------------
-' Возвращает рассчитанное размещение. CSectionPlotter создаёт по этим данным
-' Chart.Shapes с нужными координатами, цветами и стрелками.
+' Возвращает число подготовленных линий и текстов. CSectionPlotter
+' создаёт по этим данным Chart.Shapes с заданным оформлением.
 Public Property Get Count() As Long: Count = mCount: End Property
 ' Возвращает вид подготовленного графического элемента: линия или текст.
 Public Property Get ItemKind(ByVal index As Long) As String: ItemKind = mKind(index): End Property

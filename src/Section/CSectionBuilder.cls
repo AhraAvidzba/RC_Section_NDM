@@ -35,8 +35,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout, rules As CRebarRuleExecutor
     Dim modelBuilder As CSectionModelBuilder, annotationBuilder As CSectionAnnotationBuilder, model As CSectionModel
     Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
-    ' Сначала проверяем арматуру общим исполнителем правил, затем строим бетонную сетку.
-    Set rules = New CRebarRuleExecutor: Set rebars = rules.Build(definition, geometry)
+    Set rules = New CRebarRuleExecutor: Set rebars = rules.Build(definition, geometry) ' Сначала проверяем арматуру общим исполнителем правил, затем строим бетонную сетку.
     If rebars.Count = 0 Then SectionRecipeError "CSectionBuilder", "После построения сечения не получен ни один стержень. Проверьте количества и диаметры в исходной таблице выбранного сечения."
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geometry, meshOptions.StepX, meshOptions.StepY, meshOptions.MaterialID, meshOptions.BoundarySubdivisions, meshOptions.SourceReference

@@ -91,7 +91,7 @@ $recipes=@(
     'modTestRecipeOperations.RunRecipeDiagnosticTests',
     'modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests',
     'modTestAudit02Api.RunAudit02CloseoutContactTests',
-    'modTestRecipeApiCatalogue.RunAdvancedGuideExamples',
+    'modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples',
     'modTestSectionInputReader.RunSectionInputReaderTests',
     'modTestAudit02Api.RunIndependentRowOffsetBuilderTests',
     'modTestAudit02Api.RunIndependentRowOffsetGeometryTests',

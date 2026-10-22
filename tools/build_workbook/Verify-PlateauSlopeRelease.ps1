@@ -87,18 +87,18 @@ try {
     $inputs=InputSnapshot $book
     $reference=''
     for ($run=1;$run -le 3;$run++) {
-        $result=[string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceBatch",'Full')
+        $result=[string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceBatch",'Full')
         $parts=@{};foreach ($field in $result -split ([string][char]30)) {$pair=$field -split '=',2;if ($pair.Count -eq 2) {$parts[$pair[0]]=$pair[1]}}
         if ($run -eq 1) {$reference=$parts.fingerprint} elseif ($parts.fingerprint -cne $reference) {throw 'Repeated calculation changed engineering results.'}
         if ((InputSnapshot $book) -cne $inputs) {throw 'Calculation changed inputs or column widths.'}
         $records += [ordered]@{Run=$run;Seconds=[double]::Parse($parts.seconds,[Globalization.CultureInfo]::InvariantCulture);ExactResults=$true;InputsPreserved=$true}
         Write-Output ('USER_CALCULATION: run='+$run+'; seconds='+$parts.seconds)
     }
-    $fingerprint=[string]$excel.Run("'$($book.Name)'!modTestPerformance.PerformanceResultsFingerprint")
+    $fingerprint=[string]$excel.Run("'$($book.Name)'!modTestPerformance.TestPerformanceResultsFingerprint")
     $book.Save();$book.Close($false);$book=$null
     Restore-WorkbookPrintAreas $target $printAreas
     $book=$excel.Workbooks.Open($target,0,$true)
-    if (([string]$excel.Run("'$($book.Name)'!modTestPerformance.PerformanceResultsFingerprint")) -cne $fingerprint -or (InputSnapshot $book) -cne $inputs) {throw 'Save/reopen changed data.'}
+    if (([string]$excel.Run("'$($book.Name)'!modTestPerformance.TestPerformanceResultsFingerprint")) -cne $fingerprint -or (InputSnapshot $book) -cne $inputs) {throw 'Save/reopen changed data.'}
     $before=[string]$excel.Run("'$($book.Name)'!modAutoCADStressExport.Audit02ReadExportSnapshotForTests",$book)
     [void]$excel.Run("'$($book.Name)'!modSolverWorkStats.ResetSectionEquilibriumSolveCount")
     [void]$excel.Run("'$($book.Name)'!modWorkbookCalculation.UpdateSectionPlotForWorkbook",$book)

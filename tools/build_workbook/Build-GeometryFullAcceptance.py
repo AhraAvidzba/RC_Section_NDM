@@ -57,7 +57,7 @@ def main():
                 path = artifact(value[path_key])
                 if not path or logs.sha(path) != value[hash_key]:
                     errors.append('Auxiliary proof input changed: ' + value[path_key])
-            if value.get('components') != 150 or value.get('changed') or value.get('added') != ['modFinalGeometryChecks'] or not value.get('helperEqual'):
+            if value.get('components') != 150 or value.get('changed') or value.get('added') != ['modTestFinalGeometryChecks'] or not value.get('helperEqual'):
                 errors.append('Auxiliary contains unverified code changes')
     full = read('FinalFullEvidence.json')
     for name, prefix, count in (('Full8', 'Full', 8), ('Geometry14', 'Supplement', 14), ('ValidationExtras9', 'Extras', 9)):

@@ -14,7 +14,7 @@ D=ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/ContactResponsibilities_2026-
 SHAPES=('Circle','Rectangles','PointedSection','HollowRectangle')
 RECIPES={'src/Geometry/CSectionRecipe'+x+'.cls' for x in SHAPES}
 SNAPSHOTS=['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in [('Circle','Matrix'),('Rectangles','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
-SNAPSHOTS+=['modTestAudit02Snapshots.DumpRecipeRuleContracts','modTestAudit02Snapshots.DumpRecipePathContracts','modTestAudit02Api.DumpAudit02CloseoutInputContract']
+SNAPSHOTS+=['modTestAudit02Snapshots.TestDumpRecipeRuleContracts','modTestAudit02Snapshots.TestDumpRecipePathContracts','modTestAudit02Api.TestDumpAudit02CloseoutInputContract']
 spec=importlib.util.spec_from_file_location('previous',Path(__file__).with_name('Verify-RebarContactBuilder.py'))
 previous=importlib.util.module_from_spec(spec);spec.loader.exec_module(previous)
 guide=previous.guide
@@ -71,7 +71,7 @@ def tests():
         name=macro+'.txt';a,b=data('BaselineMatrices/'+name),data('CandidateMatrices/'+name)
         assert a==b,macro
         comparisons.append({'Macro':macro,'Bytes':len(b),'SHA256':hashlib.sha256(b).hexdigest().upper()})
-    assert text('CandidateMatrices/modTestAudit02Snapshots.DumpRecipeRuleContracts.txt').count('CASE|')==60
+    assert text('CandidateMatrices/modTestAudit02Snapshots.TestDumpRecipeRuleContracts.txt').count('CASE|')==60
     assertions=0
     for item in receipt('Directed/Run.json')['Runs']:
         totals=re.findall(r'(?m)^TOTAL[^\n]*passed=(\d+); failed=0\b',text('Directed/'+item['Macro']+'.txt'))

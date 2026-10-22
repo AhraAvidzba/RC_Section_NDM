@@ -16,7 +16,7 @@ Option Explicit
 ' сжатие бетона, активное растяжение бетона и оба знака деформаций арматуры.
 ' Сохраняет наибольшее использование предела и соответствующий элемент.
 
-Private mConcreteCompression As Double, mConcreteTension As Double ' Предельные деформации сжатия и растяжения бетона по модулю.
+Private mConcreteCompression As Double, mConcreteTension As Double ' Предельные деформации бетона: сжатие со знаком минус, растяжение со знаком плюс.
 Private mSteelCompression As Double, mSteelTension As Double ' Предельные деформации сжатия и растяжения арматуры по модулю.
 Private mTensionEnabled As Boolean ' Учитывается ли предел растяжения бетона.
 Private mUtilization As Double, mStrain As Double ' Наибольшее отношение деформации к пределу и определяющая деформация.
@@ -46,9 +46,7 @@ Public Sub Evaluate(ByVal section As CSectionModel, ByVal solver As CSectionSolv
     Dim cMinIndex As Long, cMaxIndex As Long, sMinIndex As Long, sMaxIndex As Long
     If Not solver.TryGetStrainExtrema(section, cMin, cMax, cMinIndex, cMaxIndex, _
             sMin, sMax, sMinIndex, sMaxIndex) Then
-        ' Измененная модель или еще не оцененная плоскость требует обычного
-        ' обхода. Чужие и устаревшие экстремумы никогда не используются.
-        solver.NumericalStrainPlane epsilon, kx, ky, originX, originY
+        solver.NumericalStrainPlane epsilon, kx, ky, originX, originY ' Измененная модель или еще не оцененная плоскость требует обычного обхода. Чужие и устаревшие экстремумы никогда не используются.
         For i = 1 To section.ConcreteCount
             section.ConcreteElementForSolver i, x, y, area
             strain = epsilon + kx * (y - originY) + ky * (x - originX)
@@ -61,9 +59,7 @@ Public Sub Evaluate(ByVal section As CSectionModel, ByVal solver As CSectionSolv
         Next i
         Exit Sub
     End If
-    ' При равных отношениях действует прежний порядок элементов, а не
-    ' приоритет сжатия или растяжения; бетон по-прежнему предшествует стали.
-    If cMinIndex <= cMaxIndex Then
+    If cMinIndex <= cMaxIndex Then ' При равных отношениях действует прежний порядок элементов, а не приоритет сжатия или растяжения; бетон по-прежнему предшествует стали.
         EvaluateConcrete section, cMinIndex, cMin
         EvaluateConcrete section, cMaxIndex, cMax
     Else

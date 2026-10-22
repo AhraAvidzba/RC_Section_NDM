@@ -35,13 +35,11 @@ Public Function ReadRegion(ByVal entity As Object) As CConcreteRegion
     Select Case kind
         Case "AcDbRegion", "AcDbPolyline", "AcDb2dPolyline"
             ValidatePlaneNormal entity
-            ' AutoCAD разрешает Copy/Explode на locked-слое, но запрещает Delete.
-            ' Проверяем до первой копии, чтобы не оставить временные объекты.
             Set document = entity.Document
             If Not document Is Nothing Then
                 If CBool(document.Layers.Item(CStr(entity.Layer)).Lock) Then _
                     Err.Raise vbObjectError + 4410, "CAutoCADContourReader", _
-                        "Слой контура заблокирован. Разблокируйте этот слой в AutoCAD и повторите импорт."
+                        "Слой контура заблокирован. Разблокируйте этот слой в AutoCAD и повторите импорт." ' AutoCAD разрешает Copy/Explode на locked-слое, но запрещает Delete. Проверяем до первой копии, чтобы не оставить временные объекты.
             End If
             If kind <> "AcDbRegion" Then
                 If Abs(CDbl(entity.Elevation)) > PLANE_TOLERANCE Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Контур должен лежать в расчетной плоскости WCS XY (Z = 0)."
@@ -50,9 +48,7 @@ Public Function ReadRegion(ByVal entity As Object) As CConcreteRegion
             pieces = temporary.Explode
             If Not IsArray(pieces) Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "AutoCAD не вернул граничные кривые объекта."
             For i = LBound(pieces) To UBound(pieces)
-                ' Флаг Closed не заменяет проверку фактических концов. Повтор
-                ' первой вершины допустим; его пустое прямое ребро не является границей.
-                AppendCurve pieces(i), edges, count, (kind <> "AcDbRegion")
+                AppendCurve pieces(i), edges, count, (kind <> "AcDbRegion") ' Флаг Closed не заменяет проверку фактических концов. Повтор первой вершины допустим; его пустое прямое ребро не является границей.
             Next i
         Case "AcDbCircle"
             AppendCurve entity, edges, count
@@ -125,7 +121,7 @@ Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByR
             normal = curve.Normal
             sweep = CDbl(curve.TotalAngle)
             If sweep <= 0# Or sweep > 2# * GEOM_PI Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Круговая дуга имеет недопустимый угол."
-            edge.Sweep = sweep * Sgn(CDbl(normal(LBound(normal) + 2)))
+            edge.Sweep = sweep * Sgn(CDbl(normal(LBound(normal) + 2))) ' Нормаль -Z меняет направление обхода дуги в мировой XY.
             AppendEdge edges, count, edge
         Case "AcDbCircle"
             ValidatePlaneNormal curve
@@ -133,9 +129,7 @@ Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByR
             edge.CenterX = CDbl(point(LBound(point))): edge.CenterY = CDbl(point(LBound(point) + 1))
             radius = CDbl(curve.Radius)
             If radius <= PLANE_TOLERANCE Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Окружность контура имеет нулевой радиус."
-            ' Четыре точные дуги сохраняют полную окружность без неоднозначного
-            ' совпадения начала/конца одного сегмента.
-            For i = 0 To 3
+            For i = 0 To 3 ' Четыре точные дуги сохраняют полную окружность без неоднозначного совпадения начала/конца одного сегмента.
                 angle = CDbl(i) * GEOM_PI / 2#
                 edge.X1 = edge.CenterX + radius * Cos(angle): edge.Y1 = edge.CenterY + radius * Sin(angle)
                 edge.X2 = edge.CenterX + radius * Cos(angle + GEOM_PI / 2#)
@@ -149,9 +143,9 @@ Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByR
     End Select
 End Sub
 
-' Требует плоскую геометрию в расчетной WCS XY. Обратная нормаль допустима:
-' направление обхода нормализует topology, а отрицательная нормаль дуги
-' учитывается при чтении signed sweep.
+' Проверяет параллельность плоскости контура мировой плоскости XY:
+' нормаль должна быть направлена вдоль +Z или -Z. Высота Z и направление
+' отдельных дуг проверяются отдельно при чтении соответствующих объектов.
 Private Sub ValidatePlaneNormal(ByVal entity As Object)
     Dim normal As Variant
     normal = entity.Normal

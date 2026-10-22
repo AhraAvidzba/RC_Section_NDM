@@ -110,7 +110,7 @@ Private Sub AddSegment(ByVal kind As String, ByVal contourID As String, ByVal x1
     mRevision = mRevision + 1
 End Sub
 
-' Чтение сохраненных геометрических полей не изменяет контейнер или его версию.
+' Возвращает число записей границы: отрезков, дуг и целых окружностей.
 Public Property Get Count() As Long
     Count = mCount
 End Property
@@ -126,19 +126,19 @@ End Property
 Public Property Get ContourID(ByVal index As Long) As String
     CheckIndex index: ContourID = mContourID(index)
 End Property
-' Координата X начала выбранной геометрической записи, мм.
+' Координата X начала отрезка/дуги либо центра целой окружности, мм.
 Public Property Get StartX(ByVal index As Long) As Double
     CheckIndex index: StartX = mEdge(index).X1
 End Property
-' Координата Y начала выбранной геометрической записи, мм.
+' Координата Y начала отрезка/дуги либо центра целой окружности, мм.
 Public Property Get StartY(ByVal index As Long) As Double
     CheckIndex index: StartY = mEdge(index).Y1
 End Property
-' Координата X конца выбранной геометрической записи, мм.
+' Координата X конца отрезка/дуги, мм; у целой окружности здесь хранится радиус.
 Public Property Get EndX(ByVal index As Long) As Double
     CheckIndex index: EndX = mEdge(index).X2
 End Property
-' Координата Y конца выбранной геометрической записи, мм.
+' Координата Y конца отрезка/дуги, мм; у целой окружности это служебный ноль.
 Public Property Get EndY(ByVal index As Long) As Double
     CheckIndex index: EndY = mEdge(index).Y2
 End Property
@@ -150,11 +150,11 @@ End Property
 Public Property Get CenterY(ByVal index As Long) As Double
     CheckIndex index: CenterY = mEdge(index).CenterY
 End Property
-' Радиус выбранной аналитической дуги, мм.
+' Радиус дуги или целой окружности, мм; у прямого отрезка равен нулю.
 Public Property Get Radius(ByVal index As Long) As Double
     CheckIndex index: Radius = mRadius(index)
 End Property
-' Знаковый угол обхода аналитической дуги, радианы.
+' Знаковый угол обхода дуги, радианы; у записи целой окружности и прямого отрезка хранится ноль.
 Public Property Get SweepAngle(ByVal index As Long) As Double
     CheckIndex index: SweepAngle = mEdge(index).Sweep
 End Property

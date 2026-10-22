@@ -97,7 +97,9 @@ Public Sub AddDimension(ByVal annotationID As String, ByVal startX As Double, By
     AddAnnotation "DIMENSION", annotationID, startX, startY, endX, endY, normalX, normalY, labelText, numericValue, "Length", commentValue
 End Sub
 
-' Добавляет групповую подпись арматуры; пустой текст означает, что подпись выводить не нужно.
+' Добавляет групповую подпись арматуры; пустой текст пропускается.
+' boundaryIsGlobal отмечает общую подпись над глобальной границей бетона,
+' чтобы отрисовка не переносила её к локальной ближайшей грани.
 Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
         ByVal labelText As String, Optional ByVal commentValue As String = "Подпись общего количества и диаметров арматуры у выбранного участка контура.", _

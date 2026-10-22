@@ -24,9 +24,9 @@ Private mRepository As CStateRepository ' Хранилище расчётных 
 Private mSolverMethod As String ' Newton или Secant.
 Private mLoadSteps As Long ' Число ступеней приложения нагрузки.
 Private mMaxIterations As Long ' Максимальное число итераций решения равновесия.
-Private mToleranceN As Double ' Допуск по N.
-Private mToleranceMx As Double ' Допуск по Mx.
-Private mToleranceMy As Double ' Допуск по My.
+Private mToleranceN As Double ' Абсолютный допуск равновесия по N, Н.
+Private mToleranceMx As Double ' Абсолютный допуск равновесия по Mx, Н*мм.
+Private mToleranceMy As Double ' Абсолютный допуск равновесия по My, Н*мм.
 Private mSecantMaxRestarts As Long ' Допустимое число обновлений матрицы секущих модулей.
 Private mDiagnosticsEnabled As Boolean ' Нужно ли копить диагностический журнал.
 
@@ -221,27 +221,27 @@ Public Property Let LoadSteps(ByVal value As Long)
     mLoadSteps = value
 End Property
 
-' Возвращает максимальное число итераций решения равновесия.
+' Задаёт максимум итераций решения равновесия на одной ступени приложения нагрузки.
 Public Property Let MaxIterations(ByVal value As Long)
     mMaxIterations = value
 End Property
 
-' Допуск по N.
+' Абсолютный допуск равновесия по N, Н.
 Public Property Let ToleranceN(ByVal value As Double)
     mToleranceN = value
 End Property
 
-' Допуск по Mx.
+' Абсолютный допуск равновесия по Mx, Н*мм.
 Public Property Let ToleranceMx(ByVal value As Double)
     mToleranceMx = value
 End Property
 
-' Допуск по My.
+' Абсолютный допуск равновесия по My, Н*мм.
 Public Property Let ToleranceMy(ByVal value As Double)
     mToleranceMy = value
 End Property
 
-' Возвращает допустимое число обновлений матрицы секущих модулей.
+' Задаёт допустимое число перезапусков приближённой матрицы чувствительности в методе Secant.
 Public Property Let SecantMaxRestarts(ByVal value As Long)
     mSecantMaxRestarts = value
 End Property

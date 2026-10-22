@@ -31,7 +31,7 @@ EXPECTED = [
     'modTestDeclarativeGeometry.RunCoreGeometryTests',
     'modTestPolygonSpec.RunPolygonSpecTests',
     'modTestSectionRecipes.RunRecipeRuleTests',
-    'modTestZeroContourParity.DumpZeroContourParity',
+    'modTestZeroContourParity.TestDumpZeroContourParity',
 ]
 SAVED = ['modTestRecipeOperations.RunSavedPointedOffsetTests',
          'modTestRecipeOperations.RunSavedOffsetCalculationTests']

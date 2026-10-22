@@ -96,9 +96,7 @@ Private Function BuildCenteredDirectState(ByVal section As CSectionModel, _
     BuildCenteredDirectState = TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, _
         targetN, targetMx, targetMy, trialEps0, trialKx, trialKy, eps0, kx, ky, False)
     If Not BuildCenteredDirectState Then
-        ' Если уточнение работающих участков дало вырожденную систему, сохраняем
-        ' ранее полученную упругую оценку как старт. Равновесие проверит основной решатель.
-        eps0 = trialEps0
+        eps0 = trialEps0 ' Если уточнение работающих участков дало вырожденную систему, сохраняем ранее полученную упругую оценку как старт. Равновесие проверит основной решатель.
         kx = trialKx
         ky = trialKy
         BuildCenteredDirectState = True
@@ -243,10 +241,7 @@ Private Function TrySolveLinearizedTrialPlane(ByVal section As CSectionModel, _
     Dim i As Long
     Dim strain As Double
 
-    ' Проходим по бетону полностью. В сжатой зоне может работать extension,
-    ' на физическом плато будет только постоянное усилие, а растянутый бетон
-    ' с Ignore даст нулевой вклад сам через диаграмму.
-    For i = 1 To section.ConcreteCount
+    For i = 1 To section.ConcreteCount ' Проходим по бетону полностью. В сжатой зоне может работать extension, на физическом плато будет только постоянное усилие, а растянутый бетон с Ignore даст нулевой вклад сам через диаграмму.
         strain = PlaneStrain(trialEps0, trialKx, trialKy, section.ConcreteX(i), section.ConcreteY(i))
         AccumulateMaterialElement concreteMaterial, strain, section.ConcreteArea(i), _
             section.ConcreteX(i), section.ConcreteY(i), activeCount, _
@@ -476,9 +471,7 @@ Private Sub AccumulateLinearElement(ByVal tangent As Double, ByVal stress As Dou
     ea = tangent * area
     force0 = intercept * area
 
-    ' Замещение бетона арматурой может дать отрицательный вклад касательной.
-    ' Он должен остаться в матрице, как при интегрировании CSectionSolver.
-    If tangent <> 0# Then
+    If tangent <> 0# Then ' Замещение бетона арматурой может дать отрицательный вклад касательной. Он должен остаться в матрице, как при интегрировании CSectionSolver.
         k11 = k11 + ea
         k12 = k12 + ea * y
         k13 = k13 + ea * x

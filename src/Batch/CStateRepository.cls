@@ -61,9 +61,7 @@ Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMater
             (mMaterialRevision <> materials.Revision) Or (mAcceptanceKey <> acceptanceKey)
         If changed Then Clear
     Else
-        ' Без заданных условий расчёта нельзя подтвердить пригодность вручную сохранённого НДС
-        ' для нового запроса.
-        Set mReusableByKey = CreateObject("Scripting.Dictionary")
+        Set mReusableByKey = CreateObject("Scripting.Dictionary") ' Без заданных условий расчёта нельзя подтвердить пригодность вручную сохранённого НДС для нового запроса.
     End If
     Set mContextSection = section
     Set mContextMaterials = materials
@@ -117,10 +115,8 @@ Public Function FindEquivalent(ByVal request As CStateRequest) As CSectionStateR
     Dim cached As CSectionStateResult
     Set cached = mReusableByKey.Item(key)
     If Not IsReusablePhysicalState(cached) Then Exit Function
-    ' Дополнительно сравниваем исходные усилия: одинаковая текстовая запись ключа
-    ' не должна объединять разные значения Double.
     If cached.TargetN <> request.TargetN Or cached.TargetMx <> request.TargetMx Or _
-            cached.TargetMy <> request.TargetMy Then Exit Function
+            cached.TargetMy <> request.TargetMy Then Exit Function ' Совпадение текстового ключа недостаточно: все исходные значения Double должны точно совпасть.
     Set FindEquivalent = cached
 End Function
 
@@ -165,7 +161,7 @@ End Function
 ' Заменяет состояние в коллекции, сохраняя его порядковый номер для вывода в Results.
 Private Sub ReplaceStateAt(ByVal index As Long, ByVal stateResult As CSectionStateResult)
     mStates.Add stateResult, , index
-    mStates.Remove index + 1
+    mStates.Remove index + 1 ' Новая запись уже вставлена перед старой; после вставки прежняя запись сдвинулась на один индекс.
 End Sub
 
 ' Проверяет, можно ли использовать НДС повторно. Состояние с физическим FAIL

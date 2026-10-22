@@ -1,8 +1,6 @@
 Attribute VB_Name = "modWorkbookMessages"
 Option Explicit
 
-Public Const CONTOUR_MESH_GENERATION_NOTICE As String = "БЕТОННАЯ СЕТКА АВТОМАТИЧЕСКИ СГЕНЕРИРОВАНА ПО КОНТУРАМ AUTOCAD."
-
 ' ==========================================================================
 ' Unicode-сообщения пользовательских сценариев Excel
 ' ==========================================================================
@@ -11,6 +9,8 @@ Public Const CONTOUR_MESH_GENERATION_NOTICE As String = "БЕТОННАЯ СЕТ
 ' независимо от системной кодовой страницы. Причины, статусы и коды результата
 ' определяют расчётные классы; оформление сообщений на их выбор не влияет.
 ' Все сообщения кнопок Excel и AutoCAD-export используют этот общий вывод.
+
+Public Const CONTOUR_MESH_GENERATION_NOTICE As String = "БЕТОННАЯ СЕТКА АВТОМАТИЧЕСКИ СГЕНЕРИРОВАНА ПО КОНТУРАМ AUTOCAD." ' Только сообщение формирования сечения по контурам AutoCAD.
 
 #If VBA7 Then
     Private Declare PtrSafe Function MessageBoxUnicode Lib "user32" Alias "MessageBoxW" ( _

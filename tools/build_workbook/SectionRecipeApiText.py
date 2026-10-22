@@ -282,7 +282,7 @@ METHODS = {
         "GeomMax": "Максимум двух чисел одной размерности, без преобразования единиц.",
         "GeomMin": "Минимум двух чисел одной размерности.",
         "ReadContourArcSweep": "Читает согласованный signed sweep точной контурной дуги, не выбирая произвольные несовместимые входы.",
-        "BuildGeneratedSectionModel": "Общий тонкий adapter mesh/layout→CSectionModel; автор рецепта использует CSectionBuilder, а не отдельный генератор типа.",
+        "TestBuildGeneratedSectionModel": "Общий тонкий adapter mesh/layout→CSectionModel; автор рецепта использует CSectionBuilder, а не отдельный генератор типа.",
     },
 }
 

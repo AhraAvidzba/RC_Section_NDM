@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CFakeAcadDocument"
+Attribute VB_Name = "CTestFakeAcadDocument"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -23,52 +23,60 @@ Private mVariableReads As Long ' Число обращений к перемен
 Private mCleanupLayers As Object ' Подставная таблица слоёв для проверки раннего выхода очистки.
 Private mModelSpaceReads As Long ' Отдельный счётчик обращений к объектам чертежа.
 
-' ДЛЯ ТЕСТОВ: задает ответ машинного признака и сбрасывает счетчики чтений.
-Public Sub Initialize(ByVal worldUCS As Variant, Optional ByVal readFails As Boolean = False)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' задает ответ машинного признака и сбрасывает счетчики чтений.
+Public Sub TestInitialize(ByVal worldUCS As Variant, Optional ByVal readFails As Boolean = False)
     mWorldUCS = worldUCS: mReadFails = readFails
     mGeometryReads = 0: mVariableReads = 0: mModelSpaceReads = 0
     Set mCleanupLayers = Nothing
 End Sub
 
-' ДЛЯ ТЕСТОВ: запрос другого системного параметра выявляет неверный вызов проверки мировой
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' запрос другого системного параметра выявляет неверный вызов проверки мировой
 ' системы координат.
 Public Function GetVariable(ByVal name As String) As Variant
     mVariableReads = mVariableReads + 1
-    If name <> "WORLDUCS" Or mReadFails Then Err.Raise vbObjectError + 9105, "CFakeAcadDocument", "Variable unavailable."
+    If name <> "WORLDUCS" Or mReadFails Then Err.Raise vbObjectError + 9105, "CTestFakeAcadDocument", "Variable unavailable."
     GetVariable = mWorldUCS
 End Function
 
-' ДЛЯ ТЕСТОВ: импорт не должен доходить сюда при локальной ПСК.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' импорт не должен доходить сюда при локальной ПСК.
 Public Property Get ModelSpace() As Object
     mModelSpaceReads = mModelSpaceReads + 1
     mGeometryReads = mGeometryReads + 1
-    Err.Raise vbObjectError + 9106, "CFakeAcadDocument", "ModelSpace accessed."
+    Err.Raise vbObjectError + 9106, "CTestFakeAcadDocument", "ModelSpace accessed."
 End Property
 
-' ДЛЯ ТЕСТОВ: даже чтение слоев запрещено до успешной проверки МСК.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' даже чтение слоев запрещено до успешной проверки МСК.
 Public Property Get Layers() As Object
     mGeometryReads = mGeometryReads + 1
     If Not mCleanupLayers Is Nothing Then Set Layers = mCleanupLayers: Exit Property
-    Err.Raise vbObjectError + 9106, "CFakeAcadDocument", "Layers accessed."
+    Err.Raise vbObjectError + 9106, "CTestFakeAcadDocument", "Layers accessed."
 End Property
 
-' ДЛЯ ТЕСТОВ: разрешает чтение только заданных слоёв; ModelSpace остаётся запрещённым.
-Public Sub InitializeCleanupLayers(ByVal layers As Object)
-    Initialize True
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' разрешает чтение только заданных слоёв; ModelSpace остаётся запрещённым.
+Public Sub TestInitializeCleanupLayers(ByVal layers As Object)
+    TestInitialize True
     Set mCleanupLayers = layers
 End Sub
 
-' ДЛЯ ТЕСТОВ: отсутствие ModelSpace-чтений доказывает ранний выход очистки.
-Public Property Get ModelSpaceReads() As Long
-    ModelSpaceReads = mModelSpaceReads
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' отсутствие ModelSpace-чтений доказывает ранний выход очистки.
+Public Property Get TestModelSpaceReads() As Long
+    TestModelSpaceReads = mModelSpaceReads
 End Property
 
-' ДЛЯ ТЕСТОВ: счетчики отделяют отказ проверки от отказа чтения геометрии.
-Public Property Get GeometryReads() As Long
-    GeometryReads = mGeometryReads
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' счетчики отделяют отказ проверки от отказа чтения геометрии.
+Public Property Get TestGeometryReads() As Long
+    TestGeometryReads = mGeometryReads
 End Property
 
-' ДЛЯ ТЕСТОВ: число чтений системных переменных имитируемого документа.
-Public Property Get VariableReads() As Long
-    VariableReads = mVariableReads
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' число чтений системных переменных имитируемого документа.
+Public Property Get TestVariableReads() As Long
+    TestVariableReads = mVariableReads
 End Property

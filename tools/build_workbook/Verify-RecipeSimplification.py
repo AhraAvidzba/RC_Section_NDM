@@ -51,21 +51,21 @@ def verify(published=False):
                 assert re.search(r'(?m)^TOTAL[^\r\n]*failed=0\b', body), stage
         runs[stage] = record
 
-    matrices = ['modTestSectionRecipes.Dump'+name+'Recipe'+suffix for name, suffix in
+    matrices = ['modTestSectionRecipes.TestDump'+name+'Recipe'+suffix for name, suffix in
                 [('Circle', 'Matrix'), ('Rectangles', 'Matrix'), ('Rounded', 'Matrix'),
                  ('Hollow', 'Matrix'), ('Hollow', 'EdgeMatrix')]]
-    contract = 'modTestAudit02Api.DumpAudit02CloseoutInputContract'
-    rules = 'modTestAudit02Snapshots.DumpRecipeRuleContracts'
-    calculations = 'modTestAudit02Snapshots.DumpAudit02Calculations'
-    plots = ['modTestSectionRecipes.Dump'+name+'RecipePreview' for name in ('Circle', 'Rectangles', 'Rounded', 'Hollow')]
-    states = ['modTestSectionRecipes.Dump'+name+'RecipeCalculations' for name in ('Circle', 'Rectangles', 'Rounded', 'Hollow')]
+    contract = 'modTestAudit02Api.TestDumpAudit02CloseoutInputContract'
+    rules = 'modTestAudit02Snapshots.TestDumpRecipeRuleContracts'
+    calculations = 'modTestAudit02Snapshots.TestDumpAudit02Calculations'
+    plots = ['modTestSectionRecipes.TestDump'+name+'RecipePreview' for name in ('Circle', 'Rectangles', 'Rounded', 'Hollow')]
+    states = ['modTestSectionRecipes.TestDump'+name+'RecipeCalculations' for name in ('Circle', 'Rectangles', 'Rounded', 'Hollow')]
     directed = ['modTestSectionRecipes.'+name for name in ('RunWorkbookRecipeInputTests', 'RunRecipeDefinitionTests',
                 'RunCircleRecipeInputTests', 'RunRoundedRecipeInputTests', 'RunHollowRecipeInputTests',
                 'RunCircleBindingTests', 'RunCircleBindingWorkbookTests', 'RunRecipeAnnotationCountTests', 'RunRecipeRuleTests')]
     directed += ['modTestRecipeSetbacks.RunRecipeSetbackUnitTests', 'modTestRecipeSetbacks.RunRecipeSetbackInputTests',
                  'modTestRecipeOperations.RunRecipeOperationTests', 'modTestRecipeOperations.RunRecipeDiagnosticTests',
                  'modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests', 'modTestAudit02Api.RunAudit02CloseoutContactTests',
-                 'modTestAudit02Api.RunRecipeContactOptionsContract', 'modTestRecipeApiCatalogue.RunAdvancedGuideExamples']
+                 'modTestAudit02Api.RunRecipeContactOptionsContract', 'modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples']
     run('BaselineMatricesNative', matrices+[contract])
     run('CandidateMatrices', matrices+[contract, rules])
     run('AcceptedMatrices', matrices+[contract, rules])
@@ -129,7 +129,7 @@ def verify(published=False):
                            for part in re.findall(r'"(?:[^"\n]|"")*"|\x27[^\n]*|[^"\x27]+', source)
                            if not part.startswith("'"))
         new_methods = {'tests/modTestAudit02Api.bas': ['RunRecipeContactOptionsContract'],
-                       'tests/modTestAudit02Snapshots.bas': ['DumpRecipeRuleContracts', 'ConfigureCircleRuleContract', 'RecipeRuleFields']}
+                       'tests/modTestAudit02Snapshots.bas': ['TestDumpRecipeRuleContracts', 'TestConfigureCircleRuleContract', 'TestRecipeRuleFields']}
         for name in (name for name in archive.namelist() if name.startswith('tests/') and name.endswith(('.bas', '.cls'))):
             current = (ROOT/name).read_text(encoding='utf-8-sig')
             for method in new_methods.get(name, []):

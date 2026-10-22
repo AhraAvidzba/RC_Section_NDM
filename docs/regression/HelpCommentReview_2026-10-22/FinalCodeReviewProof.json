@@ -1,0 +1,112 @@
+{
+  "Passed": true,
+  "Scope": "Final static code, approved fixes, owner inference and compiled native equality; runtime reruns are tracked separately.",
+  "CheckedAtUTC": "2026-10-22T18:59:57.940602+00:00",
+  "Baseline": "be0a27f195370bdf3069af1ba320f2681d5327b4",
+  "SourceVbaFiles": 167,
+  "SourceNamesAndContentSHA256": "82DA452055342F08198D5978CD6D221198F4D7819F1050604AB01D7C1621122A",
+  "CodeTokenProof": {
+    "Files": 167,
+    "Procedures": 5712,
+    "BaselineProcedures": 5711,
+    "WorkbookEventProcedures": 5,
+    "TotalProceduresIncludingWorkbookEvents": 5717,
+    "RenamedIdentifiers": 18904,
+    "CorrespondingStringChanges": 41,
+    "UnexpectedExecutableChanges": 0,
+    "UnresolvedMemberReferences": 0,
+    "WorkingNumericalAlgorithmsAndInputsUnchanged": true,
+    "MechanicalRenamesOnlyExceptApprovedMethods": true,
+    "DocumentedChangedExistingMethods": 3,
+    "DocumentedAddedTargetedRunner": 1,
+    "TestFixtureInputsExplicitlySelectedAndRestored": [
+      "Geometry.Type=Rectangles",
+      "Geometry.Source=Generated"
+    ]
+  },
+  "OwnerAndCallProof": {
+    "VbaFiles": 167,
+    "Mismatches": 0,
+    "Unresolved": 0
+  },
+  "Native": {
+    "Components": 169,
+    "SourceModulesChecked": 163,
+    "WorkbookEventsChecked": true,
+    "CommentUnicodeExact": true,
+    "StringLiteralsExact": true,
+    "AllCodeSHA256": "3F89B1B2C049AC88C8CD28023CDFF64FC7B310AD84D7C47457406E6B0AEA29D8",
+    "RetiredComponentCount": 7
+  },
+  "ApprovedFixes": [
+    {
+      "File": "tests/modTestCapacitySolver.bas",
+      "Method": "TestLoadMultiplierWithWorkbookTfDefaults",
+      "AddedProcedure": false,
+      "Reason": "Fixture isolation: temporary Rectangles/Generated selection, exact Formula restoration, two new restoration assertions.",
+      "BeforeExecutableTokensSHA256": "DD7A4CD1D4231C264098D0DF823FB63720DD4290ABD5D605C88BF97F83FF9476",
+      "AfterExecutableTokensSHA256": "E611EF50571A092E1274A6E51604273F3C9411FB82BEA417218ECE74904E3832",
+      "BeforeTokenCount": 399,
+      "AfterTokenCount": 652,
+      "OriginalTokensAllPreserved": true
+    },
+    {
+      "File": "src/Section/CSectionGeometryQuery.cls",
+      "Method": "RequireOffsetCorner",
+      "AddedProcedure": false,
+      "Reason": "Diagnostic propagation only: preserve source.LastDiagnostic and rethrow identical Err.Number/Source/Description for collapsed full-circle offset.",
+      "BeforeExecutableTokensSHA256": "EFDF0AF3B4BBB5234915C70FCAACE7DCDC03CB25B46F3DCAF055D8A199D7813A",
+      "AfterExecutableTokensSHA256": "853155BED698055DC6C39346FA2792E3256F04B05D5FD35B796D60A90B90238B",
+      "BeforeTokenCount": 292,
+      "AfterTokenCount": 349,
+      "OriginalTokensAllPreserved": true
+    },
+    {
+      "File": "tests/modTestRecipeApiCatalogue.bas",
+      "Method": "TestRunApiGeometryReadExamples",
+      "AddedProcedure": false,
+      "Reason": "Keep existing diagnostic/Reason assertions; guard Nothing and add five checks of code/entity/source/distance/radius.",
+      "BeforeExecutableTokensSHA256": "0C13F6761A9824E44D5BDDCB7E92FD69AED93A7559B9296F6E40BFB641D86788",
+      "AfterExecutableTokensSHA256": "3077A655ABE96F53E8C4EAD4B279F86BD5A359252B4258139499156BA8798E02",
+      "BeforeTokenCount": 1027,
+      "AfterTokenCount": 1079,
+      "OriginalTokensAllPreserved": true
+    },
+    {
+      "File": "tests/modTestCapacitySolver.bas",
+      "Method": "RunWorkbookTfFixtureTests",
+      "AddedProcedure": true,
+      "Reason": "New targeted runner invokes only the existing workbook tf fixture, reports explicit runtime failure and totals.",
+      "BeforeExecutableTokensSHA256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "AfterExecutableTokensSHA256": "63405EB7C052E7F2531055FB4C3E5428954948102C7D49C9B73D0979E75AEA9D",
+      "BeforeTokenCount": 0,
+      "AfterTokenCount": 99,
+      "OriginalTokensAllPreserved": true
+    }
+  ],
+  "ApprovedFixNegativeControlsPassed": true,
+  "FourPreviouslyAuthorizedDisplayedUnitDescriptionsChanged": true,
+  "NumericCanonicalization": {
+    "ProvenContextRules": 7,
+    "ExactDecimalSpellingChanges": 3,
+    "PreviouslyExistingMaxDoubleSpellings": 4,
+    "NoGeneralRoundingTolerance": true
+  },
+  "TargetedRuntimeReruns": [
+    "modTestCapacitySolver.RunWorkbookTfFixtureTests",
+    "modTestAutoCADContours.RunAutoCADContourTests",
+    "modTestRecipeApiCatalogue.TestRunApiGeometryReadExamples"
+  ],
+  "RuntimeRerunsOwnedByRoot": true,
+  "EvidenceSHA256": {
+    "TestRenameTokenProof.json": "A4A19A134710F117DA4D288482CA454D714206C4CCC20F930297F24A329C472F",
+    "TestRenameScopeProof.json": "D838065AA3EE466EE1459634B2D839CA0AEFDC8B4FCA8E1AFD8932706F3635EF",
+    "NativeSourceEquality.json": "5F922960771C866E3F6410350C5402563DC25700A441A407124971947A840D84",
+    "VbeNumericCanonicalization.json": "CB0078834C7494750ECF6F6D4601AA4015DDC4A4B2ADB936A36FB5D7976B7F6E",
+    "ApprovedMethodFixes.json": "D5F62B68D8FEE28B470B12675F5C036338D7BCB3E6ABEE458D515FEC2332C139",
+    "ApprovedMethodFixesNegativeControls.json": "C033CF4BAD2EF5DC339CEDB16C99FBF0CC6907D458E4CAAAF664959D646C7C63",
+    "CapacityTfDefaultsFixturePatch.json": "00F4E31AD724882A77207988EA3CA251E77B6BD616B9B44F8B932A8AA463256D"
+  },
+  "ExcelOpenedByThisVerification": false,
+  "SourceOrWorkbookChangedByThisVerification": false
+}

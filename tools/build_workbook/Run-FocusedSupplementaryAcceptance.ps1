@@ -63,11 +63,11 @@ try {
         $macros=if ($mode -eq 'No') {
             @('RunLimitGuessScalingTests','RunConcreteMeshCenterTests','RunCenteredNumericalTests','RunCommonStrainLimitTests',
               'RunAsymmetricSteelStrengthTests','RunAxialCapacityRegressionTests','RunForcePathPlateauTests',
-              'RunAudit03CapacityContracts','RunAudit03MultiplierTypedFaults','RunAudit03CapacityLifecycle',
-              'RunAudit03FormationContracts','RunAudit03FormationLifecycle','RunFormationOutcomeTests',
+              'TestRunAudit03CapacityContracts','TestRunAudit03MultiplierTypedFaults','TestRunAudit03CapacityLifecycle',
+              'TestRunAudit03FormationContracts','TestRunAudit03FormationLifecycle','RunFormationOutcomeTests',
               'RunAudit03ExtremeFormationTests','RunAudit03UnitSignConsumerTests','RunConfigPresentationTests','RunCapacityOutputContractTests')
         } else {
-            @('RunCapacityOutputContractTests','RunAudit03FormationContracts','RunAudit03ExtremeFormationTests',
+            @('RunCapacityOutputContractTests','TestRunAudit03FormationContracts','RunAudit03ExtremeFormationTests',
               'RunFormationOutcomeTests','RunAsymmetricSteelStrengthTests')
         }
         foreach ($macro in $macros) { Invoke-SelectedGate $candidate $macro $mode }

@@ -25,18 +25,18 @@ def verify():
                      "ComparedBytes": len(baseline), "BeforeSHA256": digest(baseline), "AfterSHA256": digest(actual)})
         if not equal: errors.append("Geometry differs: " + path.name)
     if len(rows) != 6: errors.append("Expected six complete geometry snapshots")
-    for name in ("DumpSolidPhysicalBits", "DumpSolidDirectNdsBits"):
+    for name in ("TestDumpSolidPhysicalBits", "TestDumpSolidDirectNdsBits"):
         file = "modTestGeometrySolidSnapshots." + name + ".txt"
         before = (S / "BaselineBits" / file).read_bytes()
         after = (S / "SolidBits" / file).read_bytes()
         equal = before == after
         bits.append({"File": file, "Passed": equal, "Bytes": len(before), "BeforeSHA256": digest(before), "AfterSHA256": digest(after)})
         if not equal: errors.append("Bitwise values differ: " + name)
-        if name == "DumpSolidDirectNdsBits":
+        if name == "TestDumpSolidDirectNdsBits":
             lines = after.decode("utf-8-sig").splitlines()
             if len(lines) != 120 or any(line.split("|")[3] != "True" for line in lines):
                 errors.append("Expected 120 converged NDM solutions")
-    file = "modTestShapeArchitecture.DumpShapePreviewSnapshot.txt"
+    file = "modTestShapeArchitecture.TestDumpShapePreviewSnapshot.txt"
     a, b = (S / "BaselinePreview" / file).read_bytes(), (S / "SolidPreview" / file).read_bytes()
     if a != b: errors.append("Excel chart/shape coordinates or labels differ")
     for path in sorted((S / "BaselinePreview").glob("*.png")):

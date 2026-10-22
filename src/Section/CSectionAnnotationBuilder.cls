@@ -117,8 +117,8 @@ Private Sub LabelDirections(ByVal normalX As Double, ByVal normalY As Double, By
     Dim norm As Double
     norm = Sqr(normalX ^ 2 + normalY ^ 2)
     If norm <= GEOM_TOLERANCE Then nx = 0#: ny = 1# Else nx = normalX / norm: ny = normalY / norm
-    tx = ny: ty = -nx
-    If tx < 0# Or (tx = 0# And ty < 0#) Then tx = -tx: ty = -ty
+    tx = ny: ty = -nx ' Касательная перпендикулярна единичной нормали выноса подписи.
+    If tx < 0# Or (tx = 0# And ty < 0#) Then tx = -tx: ty = -ty ' Единый порядок концов не позволяет развернуть подпись при смене стороны выноса.
 End Sub
 
 ' Переводит проекционные границы в две точки опорной линии подписи.
@@ -177,7 +177,8 @@ Private Sub ArcDimension(ByVal definition As CSectionDefinition, ByRef value As 
     annotations.AddDimension value.AnnotationID, value.StartX, value.StartY, value.EndX, value.EndY, tx, ty, value.Name, value.Value, value.Comment
 End Sub
 
-' Строит точечную привязку подписи по аналитическому пути и заданному направлению.
+' Добавляет текст в именованной точке либо подпись суммарной длины выбранных линий.
+' Текстовая привязка задана StartAnchorID; направление здесь не вычисляется.
 Private Sub PointLabel(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)
     definition.AnchorCoordinates value.StartAnchorID, value.StartX, value.StartY
     If value.Kind = "Text" Then
@@ -268,7 +269,7 @@ Public Sub PrepareImportedSection(ByVal section As CSectionModel, ByVal bounds A
         labelText = AutoCADRebarSummaryText(section)
         If Len(labelText) > 0 Then
             Dim labelY As Double
-            labelY = maxY
+            labelY = maxY ' Общая подпись импортированной арматуры опирается на верхний габарит всего бетона, в том числе после поворота.
             annotations.AddRebarLabel "REBAR_AUTO_ALL", minX, labelY, maxX, labelY, 0#, 1#, _
                 labelText, "Сводная подпись всей арматуры над крайней верхней точкой импортированного бетона.", True
         End If

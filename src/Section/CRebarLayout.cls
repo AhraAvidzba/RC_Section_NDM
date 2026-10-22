@@ -14,7 +14,7 @@ Option Explicit
 ' ==========================================================================
 ' CRebarLayout хранит координаты, диаметры и диагностические подписи стержней,
 ' сформированных раскладчиком. Затем CSectionModelBuilder переносит эти данные
-' в единую расчетную модель и присваивает расчетные имена R1/R2/....
+' в единую расчётную модель; расчётные имена R1/R2/... назначает сама CSectionModel.
 
 Private mBarID() As String ' Имена источника физических стержней; расчётные R1/R2 назначает CSectionModel.
 Private mX() As Double ' Координаты центров стержней X, мм.
@@ -52,7 +52,9 @@ Public Sub Clear()
 
 End Sub
 
-' Добавляет стержень в промежуточную раскладку с проверкой ID, площади, диаметра и положения в бетоне.
+' Добавляет стержень с уникальными ID и координатами; проверяет диаметр и площадь.
+' Если передана geometry, дополнительно проверяет принадлежность центра бетону;
+' проверку полного диска стержня при необходимости выполняет CRebarRuleExecutor.
 Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal area As Double, ByVal steelClass As String, _
         Optional ByVal comment As String = vbNullString, Optional ByVal geometry As CGeometryRegion = Nothing, _
@@ -61,10 +63,8 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
 
     If Len(Trim$(barName)) = 0 Then Err.Raise vbObjectError + 3100, "CRebarLayout", "ID стержня не заполнен."
     If diameter <= 0# Then Err.Raise vbObjectError + 3101, "CRebarLayout", "Диаметр арматуры должен быть положительным."
-    ' Ограничиваем фактическое число стержней при любом способе создания, включая импорт
-    ' и проекцию на контур отверстия. Построители заранее проверяют и запрошенное количество.
     If CDbl(mCount) >= GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3108, "CRebarLayout", _
-        "Количество стержней превышает диапазон счетчиков программы. Уменьшите активную раскладку в Config или число импортируемых элементов."
+        "Количество стержней превышает диапазон счетчиков программы. Уменьшите активную раскладку в Config или число импортируемых элементов." ' Ограничиваем фактическое число стержней при любом способе создания, включая импорт и проекцию на контур отверстия. Построители заранее проверяют и запрошенное количество.
 
     Dim actualArea As Double
     If area <= 0# Then

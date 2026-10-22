@@ -1,0 +1,111 @@
+{
+  "PowerShellParsed": true,
+  "NonStringTokensUnchangedOutsideApprovedCases": true,
+  "ApprovedNewCases": [
+    "Enabled",
+    "Placement",
+    "LineEnabled",
+    "Mesh.StepY",
+    "Load.ReferenceOffsetY",
+    "Stability.Mu2",
+    "Stability.ZeroMomentEccentricitySign2",
+    "Stability.AccidentalEccentricityUser2",
+    "AutoCAD.Layer.ConcreteCompression",
+    "AutoCAD.Layer.RebarTension",
+    "AutoCAD.Layer.RebarCompression",
+    "AutoCAD.Color.ConcreteCompression",
+    "AutoCAD.Color.RebarTension",
+    "AutoCAD.Color.RebarCompression",
+    "AutoCAD.Color.Neutral",
+    "Plot.Color.RebarTension",
+    "Plot.Color.ConcreteCompression",
+    "Plot.Color.ConcreteTension",
+    "Concrete.ThreeLine.Eb0",
+    "Concrete.TwoThreeLine.Eb2",
+    "Steel.ThreeLine.Es2"
+  ],
+  "Tokens": 36908,
+  "CatalogCount": 148,
+  "ApprovedBuilderExceptions": [
+    "Preserve row address, clear A:B, white A:F, restore2.5pt after AutoFit; skip paragraph numbering."
+  ],
+  "DedupVerification": "HelpDedupSourceVerification.json",
+  "CurrentSourceSHA256": "AFB1DDE626BBA6C08C03B3E85DC74A334323D43F0EFE47F63081D016A1DC4DF0",
+  "ApprovedMethodologyBuilderException": {
+    "Helper": "Split-GuideParagraphRows",
+    "Parameter": "Add-GuideParagraph.RowCount(default0)",
+    "Purpose": "For eight edited methodology paragraphs preserve their existing1/2cell slots using the same word balancing as BuildHelpEdits; default0 retains original200character splitter.",
+    "Cases": [
+      {
+        "Cells": [
+          "A111"
+        ],
+        "RowCount": 1
+      },
+      {
+        "Cells": [
+          "A146",
+          "A147"
+        ],
+        "RowCount": 2
+      },
+      {
+        "Cells": [
+          "A250",
+          "A251"
+        ],
+        "RowCount": 2
+      },
+      {
+        "Cells": [
+          "A296"
+        ],
+        "RowCount": 1
+      },
+      {
+        "Cells": [
+          "A404"
+        ],
+        "RowCount": 1
+      },
+      {
+        "Cells": [
+          "A496"
+        ],
+        "RowCount": 1
+      },
+      {
+        "Cells": [
+          "A522",
+          "A523"
+        ],
+        "RowCount": 2
+      },
+      {
+        "Cells": [
+          "A547"
+        ],
+        "RowCount": 1
+      }
+    ],
+    "SourceVerified": "MethodologyRowCountSourceVerification.json"
+  },
+  "ApprovedCatalogOrderException": {
+    "Status": "PASS",
+    "CatalogBlocks": 148,
+    "ExactUniqueHeadingsMatched": 148,
+    "AllHeadingsInActualOrder": true,
+    "OrderMismatches": [],
+    "FinalCanonicalKey": "General.ReformatResultsEnabled",
+    "FinalCanonicalTitle": "General.ReformatResultsEnabled — повторное оформление Results",
+    "FinalHeaderRow": 1716,
+    "AllLineContentsAndSlotCountsUnchanged": true,
+    "OnlySourceTitleChange": {
+      "Key": "General.ReformatResultsEnabled",
+      "Before": "General.ReformatResultsEnabled",
+      "After": "General.ReformatResultsEnabled — повторное оформление Results"
+    },
+    "SourceOnlyCanonicalRuleVerified": true,
+    "CurrentBookChanged": false
+  }
+}

@@ -177,7 +177,8 @@ Public Sub AppendRebarRecipeTrace(ByVal index As Long, ByVal ruleID As String, B
         "|PathId=" & TraceToken(pathID) & "|SourcePositionId=" & TraceToken(sourcePositionID)
 End Sub
 
-' Происхождение всех позиций физического стержня; metadata, не геометрия.
+' Возвращает служебные связи всех исходных позиций физического стержня.
+' Эти сведения не заменяют его координаты, площадь или материал.
 Public Property Get RebarRecipeTrace(ByVal index As Long) As String
     CheckRebarIndex index
     RebarRecipeTrace = mRebarRecipeTrace(index)
@@ -211,12 +212,10 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
         Optional ByVal localIxy As Double = 0#, Optional ByVal rotationKnown As Boolean = False)
     If area <= 0# Then Err.Raise vbObjectError + 5200, "CSectionModel", "Площадь бетонного элемента должна быть положительной."
 
-    ' Массивы хранятся параллельно, чтобы горячие расчетные циклы работали без
-    ' коллекций и COM-объектов на каждом элементе.
-    EnsureConcreteCapacity mConcreteCount + 1
+    EnsureConcreteCapacity mConcreteCount + 1 ' Массивы хранятся параллельно, чтобы горячие расчетные циклы работали без коллекций и COM-объектов на каждом элементе.
     mConcreteCount = mConcreteCount + 1
 
-    mConcreteID(mConcreteCount) = "C" & CStr(mConcreteCount)
+    mConcreteID(mConcreteCount) = "C" & CStr(mConcreteCount) ' Единое расчётное имя создаётся здесь независимо от генератора или AutoCAD.
     mConcreteSourceName(mConcreteCount) = sourceName
     mConcreteSourceHandle(mConcreteCount) = sourceHandle
     mConcreteX(mConcreteCount) = xCoord
@@ -235,13 +234,10 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     If Not IsPositiveDefiniteInertia(mConcreteLocalIx(mConcreteCount), _
             mConcreteLocalIy(mConcreteCount), mConcreteLocalIxy(mConcreteCount)) Then
         If HasExplicitRectangleGeometry(mConcreteCount) Then
-            ' Если генератор передал реальные размеры прямоугольной ячейки,
-            ' рассчитываем её собственные моменты инерции по этим размерам.
-            ' При импорте AutoCAD отсутствующие размеры здесь не угадываются.
             RectangleLocalInertiaComponents area, width, height, rotation, _
                 mConcreteLocalIx(mConcreteCount), _
                 mConcreteLocalIy(mConcreteCount), _
-                mConcreteLocalIxy(mConcreteCount)
+                mConcreteLocalIxy(mConcreteCount) ' Если генератор передал реальные размеры прямоугольной ячейки, рассчитываем её собственные моменты инерции по этим размерам. При импорте AutoCAD отсутствующие размеры здесь не угадываются.
         End If
     End If
     mConcreteComment(mConcreteCount) = comment
@@ -357,7 +353,7 @@ Public Sub ConcreteMeshCentroid(ByRef centerX As Double, ByRef centerY As Double
     centerX = mConcreteCenterX: centerY = mConcreteCenterY: totalArea = mConcreteCenterArea
 End Sub
 
-' Находит наибольшее расстояние элемента от центра бетонной сетки.
+' Находит наибольшее расстояние центра бетонного элемента или стержня от центра бетонной сетки.
 ' Результат сохраняется для текущей версии геометрии и используется
 ' во всех пробных полях деформаций без повторного обхода элементов.
 Friend Function MaximumElementRadiusFromConcreteCenter() As Double
@@ -420,7 +416,7 @@ Public Function AverageKnownConcreteElementRotation() As Double
         InterpretConcreteBoundary i, statusText, widthValue, heightValue, rotationValue
 
         If ElementContributesToAverageRotation(i, statusText, widthValue, heightValue) Then
-            sumCos = sumCos + Cos(2# * rotationValue)
+            sumCos = sumCos + Cos(2# * rotationValue) ' Удвоенный угол учитывает беззнаковую ось: направления, отличающиеся на pi, равнозначны.
             sumSin = sumSin + Sin(2# * rotationValue)
             count = count + 1
         End If
@@ -619,7 +615,7 @@ Private Function TryInterpretAnisotropicBoundary(ByVal areaValue As Double, _
 
     Dim rectangleWidth As Double
     Dim rectangleHeight As Double
-    rectangleWidth = Sqr(12# * i2 / areaValue)
+    rectangleWidth = Sqr(12# * i2 / areaValue) ' В главных осях Iy = A*B^2/12; эта сторона соответствует меньшей инерции i2.
     rectangleHeight = Sqr(12# * i1 / areaValue)
 
     If rectangleWidth > GEOM_TOLERANCE And rectangleHeight > GEOM_TOLERANCE Then
@@ -635,7 +631,7 @@ Private Function TryInterpretAnisotropicBoundary(ByVal areaValue As Double, _
     End If
 
     statusText = "Equivalent rectangle"
-    heightValue = Sqr(areaValue) * (i1 / i2) ^ 0.25
+    heightValue = Sqr(areaValue) * (i1 / i2) ^ 0.25 ' Эквивалентный прямоугольник сохраняет площадь и отношение главных инерций, а не их абсолютные значения.
     widthValue = Sqr(areaValue) * (i2 / i1) ^ 0.25
     rotationValue = NormalizeAnglePi(angle1)
     TryInterpretAnisotropicBoundary = (widthValue > GEOM_TOLERANCE And heightValue > GEOM_TOLERANCE)
@@ -737,7 +733,7 @@ Private Function LocalInertiaIsNumericallyIsotropic(ByVal localIx As Double, _
         Abs(localIxy) / scaleValue <= LOCAL_INERTIA_SQUARE_REL_TOLERANCE
 End Function
 
-' Нормализует угол беззнаковой оси в диапазон примерно [-pi/2; pi/2].
+' Нормализует угол беззнаковой оси в диапазон (-pi/2; pi/2], радианы.
 Private Function NormalizeAnglePi(ByVal angleValue As Double) As Double
     Do While angleValue > GEOM_PI / 2#
         angleValue = angleValue - GEOM_PI
@@ -765,12 +761,10 @@ Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
     End If
     If actualArea <= 0# Then Err.Raise vbObjectError + 5211, "CSectionModel", "Площадь арматурного элемента должна быть положительной."
 
-    ' Нумерация R1/R2/... создается здесь, чтобы у всех источников геометрии
-    ' был одинаковый формат расчетных имен.
-    EnsureRebarCapacity mRebarCount + 1
+    EnsureRebarCapacity mRebarCount + 1 ' Нумерация R1/R2/... создается здесь, чтобы у всех источников геометрии был одинаковый формат расчетных имен.
     mRebarCount = mRebarCount + 1
 
-    mRebarID(mRebarCount) = "R" & CStr(mRebarCount)
+    mRebarID(mRebarCount) = "R" & CStr(mRebarCount) ' Единое расчётное имя создаётся здесь; имя источника хранится отдельным полем.
     mRebarSourceName(mRebarCount) = sourceName
     mRebarSourceHandle(mRebarCount) = sourceHandle
     mRebarX(mRebarCount) = xCoord
@@ -1014,7 +1008,7 @@ Private Sub CheckRebarIndex(ByVal index As Long)
 End Sub
 
 ' Возвращает atan2(y, x) без зависимости от внешних модулей.
-' Нужен только для усреднения ориентаций импортированных прямоугольных ячеек.
+' Используется для главных локальных осей элемента и усреднения направлений импортированной сетки.
 Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     If Abs(x) <= GEOM_TOLERANCE Then
         If y > 0# Then
@@ -1036,19 +1030,14 @@ Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
-' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
-
-' ДЛЯ ТЕСТОВ: возвращает исходные имена и группы стержней для проверки их переноса
-' в CSectionModel при генерации и импорте AutoCAD. Обычный расчёт использует
-' рабочие координаты, площадь, диаметр, материал и пояснение стержня.
+' Возвращает исходное имя стержня для сохранения происхождения в Results.
+' Расчётное имя R1/R2/... хранится отдельно; исходное имя не влияет на равновесие.
 Public Property Get RebarSourceName(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSourceName = mRebarSourceName(index)
 End Property
 
-' ДЛЯ ТЕСТОВ: возвращает название материала, переданное при добавлении стержня.
+' Возвращает название материала, переданное при добавлении стержня и сохраняемое в Results.
 Public Property Get RebarSteelClass(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSteelClass = mRebarSteelClass(index)

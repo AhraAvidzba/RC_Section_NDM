@@ -209,8 +209,7 @@ Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y
         Set result = New CGeometryPath: result.Initialize pathID
         For i = 1 To original.SegmentCount
             original.CopySegment i, edge
-            ' Сопоставляем имя с координатами стороны, а не с номером после нормализации.
-            assigned = ""
+            assigned = "" ' Сопоставляем имя с координатами стороны, а не с номером после нормализации.
             If edge.Y1 = y And edge.Y2 = y Then assigned = bottomEdgeID
             If edge.X1 = x + width And edge.X2 = x + width Then assigned = rightEdgeID
             If edge.Y1 = y + height And edge.Y2 = y + height Then assigned = topEdgeID
@@ -322,7 +321,8 @@ Public Sub RebarContour(ByVal mainRuleID As String, ByVal loopID As String, ByVa
 End Sub
 
 ' Сохраняет явно заданный as ограничителя, используемого также при выключенном ряде.
-' Не создаёт арматуру; активный Main на том же участке добавит свой NormalOffset поверх этого as.
+' Не создаёт арматуру. У активного семейства этот as должен совпадать с as Main;
+' полное нормальное смещение дополнительного ряда учитывается поверх него один раз.
 Public Sub RebarContourBaseline(ByVal loopID As String, ByVal sourcePathID As String, ByVal sourceSegments As Variant, _
         ByVal axisDistance As Double, ByVal sourceReference As String)
     RequireOpen

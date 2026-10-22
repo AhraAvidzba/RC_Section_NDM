@@ -133,8 +133,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts, False)
 
     If Not units Is Nothing Then
-        ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
-        mSolverToleranceN = Sgn(mSolverToleranceN) * Abs(units.InputForceToInternal(mSolverToleranceN))
+        mSolverToleranceN = Sgn(mSolverToleranceN) * Abs(units.InputForceToInternal(mSolverToleranceN)) ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
         mSolverToleranceMx = Sgn(mSolverToleranceMx) * Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
         mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
     End If
@@ -371,10 +370,7 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
     StoreFormationLoad targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc
     mResolvedCrackFormationPath = activePath
     If Not BuildPreCrackState(section, materialProvider, targetN, targetMx, targetMy) Then Exit Sub
-    ' Подтверждённая пороговая нагрузка означает образование трещины даже при неудаче
-    ' состояния после неё. Его отказ сохраняется для диагностики и выбора psi_s
-    ' и не отменяет уже найденный порог.
-    mCrackFormed = HasLimitPoint
+    mCrackFormed = HasLimitPoint ' Подтверждённая пороговая нагрузка означает образование трещины даже при неудаче состояния после неё. Его отказ сохраняется для диагностики и выбора psi_s и не отменяет уже найденный порог.
     If Not EnsurePostCrackState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 
     mConverged = True
@@ -728,9 +724,7 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
-    ' Общий Newton уже проверил свои настройки; подготовка старта является
-    ' частью реально начатой попытки, даже если ее арифметика завершится отказом.
-    mSearchExecuted = True
+    mSearchExecuted = True ' Общий Newton уже проверил свои настройки; подготовка старта является частью реально начатой попытки, даже если ее арифметика завершится отказом.
     Dim guessN As Double
     Dim guessMx As Double
     Dim guessMy As Double
@@ -857,9 +851,8 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
-    ' Прямой критерий не должен обходить настройки общего решателя равновесия.
     Dim validation As CSectionSolver
-    Set validation = New CSectionSolver
+    Set validation = New CSectionSolver ' Общие настройки равновесия проверяются и перед прямым поиском по деформациям, без пробного решения НДС.
     validation.SolverMethod = mSolverMethod: validation.MaxIterations = mSolverMaxIterations
     validation.LoadSteps = mSolverLoadSteps: validation.SecantMaxRestarts = mSolverSecantMaxRestarts
     validation.ToleranceN = mSolverToleranceN: validation.ToleranceMx = mSolverToleranceMx
@@ -892,13 +885,9 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
     mStopReason = vbNullString
     mFormationInternalStatus = rsUnset
     mFormationResultCode = rcNone
-
-    ' Страховочный старт от полного состояния нужен только если быстрый старт
-    ' не сработал. Это сохраняет производительность и одновременно помогает
-    ' сложным сочетаниям, где уже найденная плоскость НДС дает лучший initial.
     Dim formationStart As CSectionSolver
     mSearchExecuted = True
-    Set formationStart = SolveState(section, concreteMaterial, steelMaterial, Nothing, targetN, targetMx, targetMy)
+    Set formationStart = SolveState(section, concreteMaterial, steelMaterial, Nothing, targetN, targetMx, targetMy) ' Более дорогой старт от НДС полной нагрузки нужен только после неудачи быстрого начального приближения.
     If formationStart Is Nothing Then
         SetFormationResult rsInternalError, rcInternalError, "Не получен рабочий решатель стартового состояния трещинообразования."
         Exit Function
@@ -967,14 +956,11 @@ Private Sub InitializeCrcLoadPathGuess(ByVal section As CSectionModel, _
     Set guessBuilder = New CStateGuessBuilder
     If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
             targetN, targetMx, targetMy, eps0, kx, ky) Then
-        ' При сильной перегрузке начальное поле может выйти за все физические пределы.
-        ' Уменьшаем его величину, сохраняя форму, чтобы начать поиск первого предела
-        ' изнутри допустимой области. Найденную точку проверяет общий поиск.
         Dim guessSolver As CSectionSolver, residual As Double, limitState As String
         Set guessSolver = New CSectionSolver
         guessSolver.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
         If FirstFormationLimitResidual(section, guessSolver, concreteMaterial, steelMaterial, residual, limitState) Then
-            If residual > 0# Then guessBuilder.ScaleToPhysicalLimit section, residual + 1#, eps0, kx, ky
+            If residual > 0# Then guessBuilder.ScaleToPhysicalLimit section, residual + 1#, eps0, kx, ky ' Уменьшаем лишь масштаб начального поля до первого предела; принятую точку затем проверяет общий поиск.
         End If
         Exit Sub
     End If
@@ -1320,12 +1306,8 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
     Dim probeMx As Double
     Dim probeMy As Double
     loadPath.Target lambdaValue, probeN, probeMx, probeMy
-
-    ' Нулевое НДС при lambda = 0 не используем как заданный старт. Иначе
-    ' CStateSolutionRunner не построит своё начальное приближение для сложного N + M.
-    ' Ненулевые состояния соседних нагрузок сохраняем: они ускоряют уточнение предела.
     Dim effectiveStart As CSectionSolver
-    Set effectiveStart = EffectiveLoadScalingWarmStart(startSolver)
+    Set effectiveStart = EffectiveLoadScalingWarmStart(startSolver) ' Нулевая плоскость не подавляет собственный старт решателя; ненулевое НДС соседней нагрузки помогает уточнять предел.
     If effectiveStart Is Nothing Then
         Set effectiveStart = LoadScalingProbeGuess(section, concreteMaterial, steelMaterial, _
             probeN, probeMx, probeMy)
@@ -1347,10 +1329,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         End If
     End If
 
-    ' Общий запуск НДС уже проверил самостоятельное начальное приближение
-    ' и разрешённые старты с продолжением диаграмм. Повторять ту же нагрузку
-    ' с теми же начальными полями здесь не требуется.
-    CaptureFormationSolverFailure solver
+    CaptureFormationSolverFailure solver ' Общий запуск НДС уже проверил самостоятельное начальное приближение и разрешённые старты с продолжением диаграмм. Повторять ту же нагрузку с теми же начальными полями здесь не требуется.
     AppendLoadScalingProbeDiagnostic lambdaValue, 0#, False
 End Function
 
@@ -1591,10 +1570,8 @@ End Sub
 
 ' Помечает именно численную неудачу поиска состояния/предела.
 Private Sub SetFormationNumericalFailure(ByVal reason As String)
-    ' Последующая неудачная проба не отменяет уже подтвержденный физический
-    ' отказ на этом пути. Новая Auto-попытка очищает статус самостоятельно.
     If mFormationInternalStatus = rsCheckFailed Or mFormationInternalStatus = rsInvalidInput Or _
-            mFormationInternalStatus = rsInvalidConfiguration Or mFormationInternalStatus = rsInternalError Then Exit Sub
+            mFormationInternalStatus = rsInvalidConfiguration Or mFormationInternalStatus = rsInternalError Then Exit Sub ' Численная неудача новой пробы не подменяет подтверждённый физический отказ или ошибку данных на этом пути.
     If mFormationInternalStatus = rsNumericalFailure And mFormationResultCode = rcSingularTangent Then
         AppendDiagnostic reason
         Exit Sub

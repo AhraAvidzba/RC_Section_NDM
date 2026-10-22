@@ -1,0 +1,617 @@
+[
+  {
+    "Module": "CTestLinearConcreteMaterial",
+    "Method": "GetStress",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLinearConcreteMaterial",
+    "Method": "GetTangentModulus",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLinearConcreteMaterial",
+    "Method": "GetSecantModulus",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLinearSteelMaterial",
+    "Method": "GetStress",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLinearSteelMaterial",
+    "Method": "GetTangentModulus",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLinearSteelMaterial",
+    "Method": "GetSecantModulus",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Document",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "GetXData",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "ObjectName",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Layer",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Handle",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Closed",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Elevation",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Normal",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "StartPoint",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "EndPoint",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Center",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Radius",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "TotalAngle",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Copy",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Explode",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContour",
+    "Method": "Delete",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Class_Initialize",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "AddLightWeightPolyline",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "AddRegion",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Area",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "ObjectName",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Count",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Item",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Layer",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Layer",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Color",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Color",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Closed",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Closed",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Coordinates",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "SetBulge",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Update",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Delete",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Document",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "RegisteredApplications",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "SetXData",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "GetXData",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadDocument",
+    "Method": "GetVariable",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadDocument",
+    "Method": "ModelSpace",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadDocument",
+    "Method": "Layers",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadLine",
+    "Method": "ObjectName",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadLine",
+    "Method": "StartPoint",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadLine",
+    "Method": "EndPoint",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadLine",
+    "Method": "Delete",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadLine",
+    "Method": "Layer",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "ObjectName",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Layer",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Handle",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Area",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Centroid",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "MomentOfInertia",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "ProductOfInertia",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Copy",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Explode",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Delete",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "Class_Initialize",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "EnableCancelKey",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "EnableCancelKey",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "ScreenUpdating",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "ScreenUpdating",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "EnableEvents",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "EnableEvents",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "DisplayAlerts",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "DisplayAlerts",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "Calculation",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "Calculation",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_ResultKind",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_InitialLambdaStep",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_MaxLambda",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LambdaTolerance",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_MaxIterations",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_BisectionMaxIterations",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_SearchMethod",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_Converged",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitState",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_DiagnosticLog",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_BeginLoadPath",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_FinishLoadPath",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_AcceptInitialPoint",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_Prepare",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_PrepareUltimate",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_RunUltimateAttempts",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_CompleteUltimate",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitSearchInitializeUltimateGuess",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitSearchEvaluateUltimateResidual",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitSearchUltimateResidualReached",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitSearchUltimateResidualNorm",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitSearchUseJacobianMeritScaling",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitSearchFinalizeUltimateResult",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_LimitSearchUltimateMaxIterations",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_BuildLoadPath",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_EvaluatePoint",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_IsAcceptableState",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_IsLimitState",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_IsNumericalFailureState",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_IsInvalidInputState",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_ReduceLambdaAfterNumericalFailure",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_RecordAcceptable",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_HandleInitialFailure",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_HandleBracketNotFound",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_HandleBracketNumericalFailure",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_HandleIterationLimit",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_HandleUnexpectedState",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_SetInvalidInput",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_SetNumericalFailure",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_AppendDiagnostic",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_FinalizeAt",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_FinalizeBracket",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_TryFinalizeAfterSearchFailure",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_BuildResult",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_StoppedTerminally",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_StopReason",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_ClearStopReason",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_SetStopReasonIfEmpty",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_MergeFallback",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestLimitSearchProblem",
+    "Method": "ILimitSearchProblem_SetFailure",
+    "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  }
+]

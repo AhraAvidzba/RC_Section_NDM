@@ -48,8 +48,7 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
     If mFrozen Then Err.Raise vbObjectError + 3114, "CMaterialDiagram.InitializeFromArrays", _
         "Опубликованная диаграмма материала не может быть изменена. Для другой модели создайте новую диаграмму через CMaterialModelProvider."
     On Error GoTo Failed
-    ' Ошибочная повторная загрузка не оставляет доступным прежний материал.
-    mInitialized = False
+    mInitialized = False ' Ошибочная повторная загрузка не оставляет доступным прежний материал.
     mPointCount = 0
     If pointCount < 2 Then Err.Raise vbObjectError + 3100, "CMaterialDiagram", "Диаграмма материала должна содержать не менее двух точек."
     ValidateInputArray strains, pointCount, "деформаций"
@@ -302,10 +301,7 @@ Private Sub BuildSegmentCache()
     ReDim mSegmentTangent(1 To mPointCount - 1)
     ReDim mSegmentIntercept(1 To mPointCount - 1)
 
-    ' Для каждого участка диаграммы заранее вычисляем наклон и свободный член.
-    ' При многократной проверке бетонных элементов и стержней
-    ' решатель использует эти значения без повторного вычисления.
-    For i = 1 To mPointCount - 1
+    For i = 1 To mPointCount - 1 ' Для каждого участка диаграммы заранее вычисляем наклон и свободный член. При многократной проверке бетонных элементов и стержней решатель использует эти значения без повторного вычисления.
         mSegmentTangent(i) = (mStresses(i + 1) - mStresses(i)) / (mStrains(i + 1) - mStrains(i))
         mSegmentIntercept(i) = mStresses(i) - mSegmentTangent(i) * mStrains(i)
     Next i
@@ -318,7 +314,7 @@ Private Sub BuildSegmentCache()
         If i < mPointCount Then rightSlope = mSegmentTangent(i)
         If i = 1 And mHasCompressionExtension Then leftSlope = rightSlope
         If i = mPointCount And mHasTensionExtension Then rightSlope = leftSlope
-        If leftSlope <> rightSlope Then
+        If leftSlope <> rightSlope Then ' Продолжение с тем же наклоном не создаёт нового перехода между участками диаграммы.
             mTransitionCount = mTransitionCount + 1
             mTransitionStrains(mTransitionCount) = mStrains(i)
         End If
@@ -334,7 +330,7 @@ Friend Sub CollectStrainTransitions(ByVal strain As Double, ByVal delta As Doubl
     If delta = 0# Then Exit Sub
     Dim i As Long, distance As Double
     For i = 1 To mTransitionCount
-        distance = (mTransitionStrains(i) - strain) / delta
+        distance = (mTransitionStrains(i) - strain) / delta ' Безразмерная доля заданного приращения, на которой поле достигнет перелома диаграммы.
         If distance > 0# And strain + distance * delta <> strain Then
             If first = 0# Or distance < first Then
                 second = first: first = distance
@@ -350,9 +346,7 @@ Private Function FindSegmentIndex(ByVal strain As Double) As Long
     Dim i As Long
     For i = 1 To mPointCount - 1
         If strain >= mStrains(i) And strain <= mStrains(i + 1) Then
-            ' В исходном первом физическом узле действовал правый участок.
-            ' Новая техническая точка слева не меняет этот выбор касательной.
-            If mHasCompressionExtension And strain = mCompressionExtensionStartStrain Then
+            If mHasCompressionExtension And strain = mCompressionExtensionStartStrain Then ' В исходном первом физическом узле действовал правый участок. Новая техническая точка слева не меняет этот выбор касательной.
                 If strain = mStrains(i + 1) And i + 1 < mPointCount Then
                     FindSegmentIndex = i + 1
                     Exit Function
@@ -450,9 +444,10 @@ End Function
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: короткие способы задания диаграммы для проверок интерполяции без Excel и Config.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' короткие способы задания диаграммы для проверок интерполяции без Excel и Config.
 ' В рабочем расчёте CMaterialModelProvider создаёт диаграмму через InitializeFromArrays.
-Public Sub InitializeFromTwoCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
+Public Sub TestInitializeFromTwoCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
     Dim strains(1 To 3) As Double
     Dim stresses(1 To 3) As Double
@@ -466,8 +461,9 @@ Public Sub InitializeFromTwoCompressionPoints(ByVal eps1 As Double, ByVal stress
     InitializeFromArrays strains, stresses, 3
 End Sub
 
-' ДЛЯ ТЕСТОВ: создает сжатую трехучастковую диаграмму с нулевой точкой.
-Public Sub InitializeFromThreeCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' создает сжатую трехучастковую диаграмму с нулевой точкой.
+Public Sub TestInitializeFromThreeCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double, ByVal eps3 As Double, ByVal stress3 As Double)
     Dim strains(1 To 4) As Double
     Dim stresses(1 To 4) As Double
@@ -482,8 +478,9 @@ Public Sub InitializeFromThreeCompressionPoints(ByVal eps1 As Double, ByVal stre
     InitializeFromArrays strains, stresses, 4
 End Sub
 
-' ДЛЯ ТЕСТОВ: создает симметричную растянутую двухточечную диаграмму.
-Public Sub InitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' создает симметричную растянутую двухточечную диаграмму.
+Public Sub TestInitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
     Dim strains(1 To 5) As Double
     Dim stresses(1 To 5) As Double
@@ -499,8 +496,9 @@ Public Sub InitializeFromTwoTensionPoints(ByVal eps1 As Double, ByVal stress1 As
     InitializeFromArrays strains, stresses, 5
 End Sub
 
-' ДЛЯ ТЕСТОВ: создает симметричную растянутую трехточечную диаграмму.
-Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' создает симметричную растянутую трехточечную диаграмму.
+Public Sub TestInitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double, ByVal eps3 As Double, ByVal stress3 As Double)
     Dim strains(1 To 7) As Double
     Dim stresses(1 To 7) As Double
@@ -518,13 +516,14 @@ Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 
     InitializeFromArrays strains, stresses, 7
 End Sub
 
-' ДЛЯ ТЕСТОВ: задаёт простую диаграмму сжатия или растяжения.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' задаёт простую диаграмму сжатия или растяжения.
 ' Если передано stress2, строится сжатая ветвь. Иначе stress1 задаёт плато растяжения.
-Public Sub Initialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal eps2 As Double, _
+Public Sub TestInitialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal eps2 As Double, _
         Optional ByVal stress2 As Variant)
     If IsMissing(stress2) Then
-        InitializeFromTwoTensionPoints eps1, stress1, eps2, stress1
+        TestInitializeFromTwoTensionPoints eps1, stress1, eps2, stress1
     Else
-        InitializeFromTwoCompressionPoints eps1, stress1, eps2, CDbl(stress2)
+        TestInitializeFromTwoCompressionPoints eps1, stress1, eps2, CDbl(stress2)
     End If
 End Sub

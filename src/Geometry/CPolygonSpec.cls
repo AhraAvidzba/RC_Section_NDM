@@ -153,8 +153,8 @@ End Sub
 ' NaN и бесконечность отклоняются без арифметических операций и геометрических допусков.
 Private Function Finite(ByVal value As Double) As Boolean
     Dim number As TDoubleValue, words As TDoubleWords
-    number.Value = value: LSet words = number
-    Finite = ((words.High And &H7FF00000) <> &H7FF00000)
+    number.Value = value: LSet words = number ' LSet переносит те же 64 бита Double, не выполняя числового преобразования.
+    Finite = ((words.High And &H7FF00000) <> &H7FF00000) ' Все единицы в поле экспоненты IEEE754 означают NaN либо бесконечность.
 End Function
 ' Сообщает об ошибке ввода вершины с адресом именно того параметра, который добавлялся.
 Private Sub SpecError(ByVal reason As String, Optional ByVal sourceReference As String = "")

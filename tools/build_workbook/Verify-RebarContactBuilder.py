@@ -14,7 +14,7 @@ D=ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-1
 RECIPES={'src/Geometry/CSectionRecipe'+x+'.cls' for x in ('Circle','Rectangles','PointedSection','HollowRectangle')}
 NEW='src/Section/CRebarContactBuilder.cls';RETIRED='src/Geometry/modSectionRecipeRows.bas'
 MATRICES=['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in [('Circle','Matrix'),('Rectangles','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
-SNAPSHOTS=MATRICES+['modTestAudit02Snapshots.DumpRecipeRuleContracts','modTestAudit02Snapshots.DumpRecipePathContracts','modTestAudit02Api.DumpAudit02CloseoutInputContract']
+SNAPSHOTS=MATRICES+['modTestAudit02Snapshots.TestDumpRecipeRuleContracts','modTestAudit02Snapshots.TestDumpRecipePathContracts','modTestAudit02Api.TestDumpAudit02CloseoutInputContract']
 spec=importlib.util.spec_from_file_location('guide',Path(__file__).with_name('Verify-SectionRecipeGuide.py'))
 guide=importlib.util.module_from_spec(spec);spec.loader.exec_module(guide)
 
@@ -99,7 +99,7 @@ def tests():
     unit=text('CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt')
     assert 'TOTAL REBAR CONTACT BUILDER: passed=97; failed=0' in unit
     assert all('PASS: contactBuilder.'+name in unit for name in ('example.first','example.second','example.third','example.nominal','snapshot.setbacks','snapshot.endMode','snapshot.names','snapshot.source','rows.independent','rows.firstRetained','uninitialized','reject.location','reject.binding','reject.zero','reject.negative','reject.reinitialize','overflow.recover.0','overflow.recover.1'))
-    assert text('CandidateMatrices/modTestAudit02Snapshots.DumpRecipeRuleContracts.txt').count('CASE|')==60
+    assert text('CandidateMatrices/modTestAudit02Snapshots.TestDumpRecipeRuleContracts.txt').count('CASE|')==60
     measurements=text('Directed/modTestSectionRecipes.RunRecipeRuleTests.txt')
     for name in ('round.positive','round.negative','round.exact','coordinates.unchanged'):
         assert 'PASS: measurements.'+name+';' in measurements

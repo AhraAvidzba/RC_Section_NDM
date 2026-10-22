@@ -149,9 +149,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     RecordUltimateStrainStart
     context.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
         loadPath, startSolver, eps0, kx, ky
-    ' Изменяем деформацию в центре сечения, уменьшая влияние удалённого начала чертежа.
-    ' Задаче передаём то же физическое поле в исходных координатах модели.
-    eps0 = mFrame.CenterStrain(eps0, kx, ky)
+    eps0 = mFrame.CenterStrain(eps0, kx, ky) ' Изменяем деформацию в центре сечения, уменьшая влияние удалённого начала чертежа. Задаче передаём то же физическое поле в исходных координатах модели.
     If Not IsFiniteNumber(eps0) Or Not IsFiniteNumber(kx) Or Not IsFiniteNumber(ky) Then
         context.SetFailure sfcNumericalFailure, "Стартовая плоскость UltimateStrain содержит нечисловое или бесконечное значение."
         Exit Function
@@ -191,10 +189,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
             End If
         End If
 
-        ' Теплый старт на противоположном луче не уточняет требуемую ветвь.
-        ' Проверяем общий расчетный старт до дорогих проб Якобиана; отрицательная
-        ' lambda сама по себе не объявляется физическим отсутствием решения.
-        If lambdaValue < 0# Then
+        If lambdaValue < 0# Then ' Теплый старт на противоположном луче не уточняет требуемую ветвь. Проверяем общий расчетный старт до дорогих проб Якобиана; отрицательная lambda сама по себе не объявляется физическим отсутствием решения.
             If TryRestartWarmGuess(context, section, concreteMaterial, steelMaterial, loadPath, _
                     eps0, kx, ky, iter, warmRestartAvailable) Then
                 acceptedEvaluation = False
@@ -222,9 +217,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
                     context.SetFailure sfcInternalError, "Неизвестный исход приемки предельной точки UltimateStrain."
                     Exit Function
             End Select
-            If context.StoppedTerminally Then Exit Function
-            ' Достижение внутренних residual-допусков не отменяет финальную
-            ' проверку усилий: продолжаем уточнение той же физической точки.
+            If context.StoppedTerminally Then Exit Function ' Если окончательная проверка усилий не приняла точку, продолжаем уточнение; окончательная ошибка запрещает продолжение.
         End If
 
         context.AppendDiagnostic "ultimateNewton step=" & CStr(iter)
@@ -238,10 +231,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
             End If
             Exit Function
         End If
-        ' Принятая точка уже имеет свои невязки, НДС и критерий. Пробы Якобиана
-        ' её не подменяют; физическая пригодность и равновесие
-        ' подтверждаются отдельно при принятии результата.
-        acceptedEvaluation = immutableMaterials
+        acceptedEvaluation = immutableMaterials ' Принятая точка уже имеет свои невязки, НДС и критерий. Пробы Якобиана её не подменяют; физическая пригодность и равновесие подтверждаются отдельно при принятии результата.
         If acceptedEvaluation Then
             acceptedRevision = section.Revision
             acceptedPath(1) = loadPath.NOffset: acceptedPath(2) = loadPath.NBase
@@ -451,9 +441,7 @@ Private Function TryUltimateProjectedStep(ByVal context As ILimitSearchProblem, 
     If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
             q(1), q(2) / mFrame.LengthScale, q(3) / mFrame.LengthScale, _
             trial, p1, p2, p3, trialLambda, trialState) Then Exit Function
-    ' Нормальная поправка сама может достигнуть предела на плато.
-    ' Ее принимают только реальные невязки задачи, не локальная модель шага.
-    If context.LimitSearchUltimateResidualReached(p1, p2, p3) Then
+    If context.LimitSearchUltimateResidualReached(p1, p2, p3) Then ' Нормальная поправка сама может достигнуть предела на плато. Ее принимают только реальные невязки задачи, не локальная модель шага.
         eps0 = q(1): kx = q(2) / mFrame.LengthScale: ky = q(3) / mFrame.LengthScale
         rPath1 = p1: rPath2 = p2: rLimit = p3
         Set solver = trial: lambdaValue = trialLambda: state = trialState
@@ -470,9 +458,7 @@ Private Function TryUltimateProjectedStep(ByVal context As ILimitSearchProblem, 
         matrixMagnitude = MaxDouble(matrixMagnitude, MaxDouble(Abs(a(i, 1)), Abs(a(i, 2))))
     Next i
     If matrixMagnitude = 0# Then Exit Function
-    ' Общий масштаб сохраняет веса невязок. Независимое нормирование строк
-    ' изменило бы минимум резервного least-squares шага на вырожденной матрице.
-    For i = 1 To 2
+    For i = 1 To 2 ' Общий масштаб сохраняет веса невязок. Независимое нормирование строк изменило бы минимум резервного least-squares шага на вырожденной матрице.
         a(i, 1) = a(i, 1) / matrixMagnitude: a(i, 2) = a(i, 2) / matrixMagnitude
         b(i) = b(i) / matrixMagnitude
     Next i
@@ -575,9 +561,8 @@ Private Function TryProjectedTrustRegion(ByVal context As ILimitSearchProblem, B
         Dim trialLambda As Double, trialState As String, rho As Double, actual As Double
         If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
                 trialE, trialX, trialY, trial, t1, t2, t3, trialLambda, trialState) Then Exit Function
-        ' Разность квадратов без вычитания двух огромных близких норм.
         actual = (b(1) - t1 / matrixMagnitude) * (b(1) + t1 / matrixMagnitude) + _
-            (b(2) - t2 / matrixMagnitude) * (b(2) + t2 / matrixMagnitude)
+            (b(2) - t2 / matrixMagnitude) * (b(2) + t2 / matrixMagnitude) ' Фактическое снижение суммы квадратов считаем как (a-b)*(a+b), чтобы не вычитать две огромные близкие нормы.
         rho = actual / predicted
         alpha = 1#
         If fullLength > stepLength Then alpha = stepLength / fullLength
@@ -629,7 +614,8 @@ Private Function ProjectedVectorNorm(ByVal x As Double, ByVal y As Double) As Do
     If magnitude > 0# Then ProjectedVectorNorm = magnitude * Sqr((x / magnitude) ^ 2 + (y / magnitude) ^ 2)
 End Function
 
-' Строит допустимый шаг поиска по dogleg с проекцией в ограничения задачи.
+' Выбирает двумерный шаг внутри доверительного радиуса: Newton, градиентный шаг
+' или точку между ними на границе круга. Проекцию в плоскость предела задаёт вызывающий метод.
 Private Sub ProjectedDogleg(ByVal gradient1 As Double, ByVal gradient2 As Double, _
         ByVal c1 As Double, ByVal c2 As Double, ByVal cLength As Double, _
         ByVal hasNewton As Boolean, ByVal n1 As Double, ByVal n2 As Double, ByVal nLength As Double, _
@@ -649,7 +635,7 @@ Private Sub ProjectedDogleg(ByVal gradient1 As Double, ByVal gradient2 As Double
         End If
         dot = (c1 / size) * d1 + (c2 / size) * d2
         gap = (radius / size) ^ 2 - (cLength / size) ^ 2
-        tau = (-dot + Sqr(dot * dot + aa * gap)) / aa
+        tau = (-dot + Sqr(dot * dot + aa * gap)) / aa ' Параметр пересечения отрезка Cauchy—Newton с границей доверительного круга.
         s1 = c1 + tau * (n1 - c1): s2 = c2 + tau * (n2 - c2)
     Else
         s1 = c1: s2 = c2
@@ -697,7 +683,7 @@ Private Function PrepareUltimateFace(ByVal eps0 As Double, ByVal kx As Double, B
         If Abs(g(i)) > Abs(g(pivot)) Then pivot = i
     Next i
     If g(pivot) = 0# Then Exit Function
-    correction(pivot) = -residual / g(pivot)
+    correction(pivot) = -residual / g(pivot) ' Нормальная поправка меняет наиболее чувствительную координату и доводит линейный активный критерий до нуля.
     q(1) = eps0 + correction(1)
     q(2) = kx * mFrame.LengthScale + correction(2)
     q(3) = ky * mFrame.LengthScale + correction(3)
@@ -834,10 +820,7 @@ Private Function TryUltimateDirection(ByVal context As ILimitSearchProblem, ByVa
                 TryUltimateDirection = True
                 Exit Function
             End If
-            ' Между неудачной пробой вне плато и пробой на плато может
-            ' лежать узкий допустимый шаг, который деление alpha пополам
-            ' пропускает. Уточняем именно этот интервал по настоящим невязкам.
-            If trialR1 = rPath1 And trialR2 = rPath2 Then
+            If trialR1 = rPath1 And trialR2 = rPath2 Then ' Между неудачной пробой вне плато и пробой на плато может лежать узкий допустимый шаг, который деление alpha пополам пропускает. Уточняем именно этот интервал по настоящим невязкам.
                 If changingAlpha > alpha Then
                     If TryUltimatePlateauBracket(context, section, concreteMaterial, steelMaterial, loadPath, _
                             eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
@@ -982,15 +965,11 @@ Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProbl
         failureCode = sfcInternalError
         reason = stage & ": внутренняя ошибка вычислений. Подробности сохранены в диагностическом журнале."
     End If
-    ' Стандартная ошибка уже пояснена по-русски. Подробную причину задачи
-    ' сохраняем без замены; её текст влияет только на вывод, а не на статус.
     Dim standardDescription As String
-    ' При активном Err функция Error$(n) может вернуть custom Description.
-    ' Номер и исходная причина уже сохранены аргументами и журналом.
-    Err.Clear
+    Err.Clear ' При активном Err функция Error$(n) может вернуть custom Description. Номер и исходная причина уже сохранены аргументами и журналом.
     If errorNumber >= 0 And errorNumber <= 65535 Then standardDescription = Error$(errorNumber)
     If Len(description) > 0 And StrComp(description, standardDescription, vbBinaryCompare) <> 0 Then
-        reason = reason & " Причина: " & description
+        reason = reason & " Причина: " & description ' Сохраняем более точную причину задачи; сравнение текста влияет только на пояснение, не на машинный код ошибки.
     End If
     context.SetFailure failureCode, reason
 End Sub
@@ -1017,7 +996,8 @@ Private Sub ConfigureStepResidualScales(ByVal scale1 As Double, ByVal scale2 As 
     mMeritScalingReady = (mMeritWeight1 > 0# And mMeritWeight2 > 0# And mMeritWeight3 > 0#)
 End Sub
 
-' Оценивает норму линейного прогнозного остатка после предложенного шага поиска.
+' Вычисляет взвешенную норму переданных невязок для сравнения пробных шагов.
+' Обычно передаются фактические невязки; линейный прогноз использует те же веса.
 Private Function StepResidualNorm(ByVal context As ILimitSearchProblem, _
         ByVal r1 As Double, ByVal r2 As Double, ByVal r3 As Double) As Double
     If mMeritScalingReady Then

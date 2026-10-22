@@ -2,7 +2,8 @@
 ALIASES = {'²': '^2', '³': '^3', '⁴': '^4', '×': 'x', '→': ' -> ', '←': ' <- ',
            '≤': '<=', '≥': '>=', 'μ': 'mu', 'λ': 'lambda', 'π': 'pi', 'σ': 'sigma',
            'ε': 'epsilon', 'κ': 'kappa', 'φ': 'phi', 'ψ': 'psi', 'β': 'beta',
-           'Δ': 'Delta', 'Σ': 'sum', '∑': 'sum', '√': 'sqrt', '∞': 'inf'}
+           'Δ': 'Delta', 'Σ': 'sum', '∑': 'sum', '√': 'sqrt', '∞': 'inf',
+           '−': '-', '⁻': '^-', '⁹': '9'}
 
 def readable(text):
     for symbol, replacement in ALIASES.items(): text = text.replace(symbol, replacement)

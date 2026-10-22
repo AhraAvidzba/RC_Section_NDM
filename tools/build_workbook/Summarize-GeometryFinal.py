@@ -132,7 +132,7 @@ def main():
     runtime_ids = {
         "G": "modTestGeometry.RunGeometryTests; modTestDeclarativeGeometry.RunCoreGeometryTests; modTestRecipeOperations.RunRecipeOperationTests",
         "R": "modTestSectionRecipes.RunRecipeRuleTests; ConfigSetback native reports; family oracle comparisons",
-        "A": "modTestRecipeOperations.RunRecipeMeasurementTests; modTestPlotConfig.RunAudit03GeneralPlotTests; modFinalGeometryChecks.RunDirectedPlotModes",
+        "A": "modTestRecipeOperations.RunRecipeMeasurementTests; modTestPlotConfig.RunAudit03GeneralPlotTests; modTestFinalGeometryChecks.TestRunDirectedPlotModes",
         "I": "modTestWorkbookInterface.RunAudit03ReadLifecycleTests; modTestSectionSolver.RunCenteredNumericalTests; saved snapshot native reports",
         "E": "modTestRoundedTrapezoidExample.RunExampleBuildTests; modTestRoundedTrapezoidExample.RunExampleInputTests; modTestRecipeApiCatalogue native examples; guide native updater",
         "D": "FinalAcceptance runtime reports, source/native comparisons and publication guards"}

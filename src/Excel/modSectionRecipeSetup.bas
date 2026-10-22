@@ -1,6 +1,12 @@
 Attribute VB_Name = "modSectionRecipeSetup"
 Option Explicit
 
+' ==========================================================================
+' Обновление списка зарегистрированных типов параметрических сечений
+' ==========================================================================
+' Меняет только список выбора Geometry.Type по общему реестру; размеры,
+' таблицы ввода и оформление существующей книги не перестраивает.
+
 ' Обновляет только список Geometry.Type по реестру; структура готовой книги уже актуальна.
 Public Sub UpdateSectionRecipeTypes()
     Dim table As Object, list As Object, target As Object, cell As Object, ids As Variant, values() As Variant
@@ -25,8 +31,7 @@ Public Sub UpdateSectionRecipeTypes()
     Set cell = table.Cells(row, 2)
     ids = RegisteredSectionRecipeTypes: count = UBound(ids) - LBound(ids) + 1
     Set target = list.Cells(1, 1).Resize(count, 1)
-    ' Новый тип занимает только свободное продолжение служебного списка; чужие данные не заменяются.
-    For i = list.Rows.Count + 1 To count
+    For i = list.Rows.Count + 1 To count ' Новый тип занимает только свободное продолжение служебного списка; чужие данные не заменяются.
         If Len(CStr(target.Cells(i, 1).Formula)) > 0 Then _
             SectionRecipeError "modSectionRecipeSetup", "Продолжение списка типов занято: " & target.Worksheet.Name & "!" & target.Cells(i, 1).Address(False, False) & ". Освободите ячейку или перенесите именованный список."
     Next i

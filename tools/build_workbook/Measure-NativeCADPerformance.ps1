@@ -62,10 +62,10 @@ try {
                 Write-Output "RUN: scenario=$scenario; run=$run; version=$version"
                 if((Get-FileHash -LiteralPath $sources[$version]).Hash -cne $hashes[$version]) {throw 'Measurement source changed.'}
                 $book=$excel.Workbooks.Open($sources[$version],0,$true)
-                [void]$excel.Run("'$($book.Name)'!modTestPerformance.PrepareNativeCADPerformance",($scenario -eq 'Rotated'))
+                [void]$excel.Run("'$($book.Name)'!modTestPerformance.TestPrepareNativeCADPerformance",($scenario -eq 'Rotated'))
                 $doc=$acad.Documents.Add()
                 $noise=0;if($scenario -eq 'GridWithOtherEntities') {$noise=2000}
-                $result=[string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasureNativeCADPerformance",$doc,$noise)
+                $result=[string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasureNativeCADPerformance",$doc,$noise)
                 $parts=@{};foreach($part in $result -split ([string][char]30)) {$pair=$part -split '=',2;if($pair.Count -eq 2) {$parts[$pair[0]]=$pair[1]}}
                 $signature=$parts.signature
                 $name="$scenario-$run-$version"

@@ -36,8 +36,7 @@ Friend Sub Initialize(ByVal section As CSectionModel)
     Dim sumArea As Double
     section.ConcreteMeshCentroid mOriginX, mOriginY, sumArea
     mLength = section.MaximumElementRadiusFromConcreteCenter
-    ' Вырожденная геометрия остается вырожденной; масштаб не добавляет жесткости.
-    If mLength <= 0# Then mLength = 1#
+    If mLength <= 0# Then mLength = 1# ' Вырожденная геометрия остается вырожденной; масштаб не добавляет жесткости.
     mConcreteArea = sumArea: mSupportChecked = False
     Set mSection = section: mRevision = section.Revision
 End Sub
@@ -47,7 +46,7 @@ End Sub
 Friend Function HasFullPlaneSupport() As Boolean
     If mSection Is Nothing Then Exit Function
     If Not mSupportChecked Then
-        Dim g(1 To 3, 1 To 3) As Double, i As Long, x As Double, y As Double, area As Double
+        Dim g(1 To 3, 1 To 3) As Double, i As Long, x As Double, y As Double, area As Double ' g — матрица Грама полей 1, y/L и x/L; её ранг проверяет независимость параметров плоскости.
         For i = 1 To mSection.ConcreteCount + mSection.RebarCount
             If i <= mSection.ConcreteCount Then
                 mSection.ConcreteElementForSolver i, x, y, area

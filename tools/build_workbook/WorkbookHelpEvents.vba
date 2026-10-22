@@ -5,7 +5,7 @@ Option Explicit
 ' ==========================================================================
 ' Обработчики управляют только просмотром; ввод и расчётные снимки не меняются.
 
-' При открытии раскрыт только последний раздел Config; остальные свернуты.
+' При открытии раскрывает раздел настроек Config и листа «Сечения», остальные сворачивает.
 Private Sub Workbook_Open()
     ApplyHelpDefaults
 End Sub
@@ -15,8 +15,7 @@ Private Sub ApplyHelpDefaults()
     On Error GoTo SafeExit
     Dim helpSheet As Worksheet, found As Range
     Set helpSheet = ThisWorkbook.Worksheets("Справка")
-    ' Заголовок объединён A:F; поиск в одном столбце не гарантирует его нахождение.
-    Set found = helpSheet.Cells.Find("Справка по настройкам Config и листа «Сечения»", LookIn:=xlValues, LookAt:=xlWhole, SearchOrder:=xlByRows, SearchDirection:=xlNext)
+    Set found = helpSheet.Cells.Find("Справка по настройкам Config и листа «Сечения»", LookIn:=xlValues, LookAt:=xlWhole, SearchOrder:=xlByRows, SearchDirection:=xlNext) ' Ищем на всём листе: заголовок объединён A:F.
     If found Is Nothing Then Exit Sub
     helpSheet.Outline.ShowLevels 1
     helpSheet.Rows(found.Row).ShowDetail = True

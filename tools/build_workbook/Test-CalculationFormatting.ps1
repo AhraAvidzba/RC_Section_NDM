@@ -24,8 +24,8 @@ try{
  $book=$app.Workbooks.Open($private,0,$false)
  if($book.ReadOnly){throw 'Private workbook is read-only.'}
  $prefix="'"+$book.Name+"'!"
- [void]$app.Run($prefix+'modTestShapeArchitecture.ConfigureShapeFixture','Circle')
- [void]$app.Run($prefix+'modTestPerformance.ConfigurePerformanceFixture','DIRECT',1,'Newton','Saved','Normal','No')
+ [void]$app.Run($prefix+'modTestShapeArchitecture.TestConfigureShapeFixture','Circle')
+ [void]$app.Run($prefix+'modTestPerformance.TestConfigurePerformanceFixture','DIRECT',1,'Newton','Saved','Normal','No')
  $settings=$book.Names.Item('rngSystemSettings').RefersToRange
  foreach($key in @('Plot.Enabled','General.NonCriticalMessagesEnabled')){
   for($r=2;$r -le $settings.Rows.Count;$r++){if([string]$settings.Cells.Item($r,1).Value2 -eq $key){$settings.Cells.Item($r,2).Value2=if($key -eq 'Plot.Enabled'){'Yes'}else{'No'}}}

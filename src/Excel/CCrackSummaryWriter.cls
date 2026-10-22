@@ -59,11 +59,11 @@ Private Const COL_CRACK_STATE_DIAGEXT As Long = COL_CURRENT_EBT + 1 ' Столб
 Private Const COL_CRACK_STATE_STATUS As Long = COL_CRACK_STATE_DIAGEXT + 1 ' Столбец таблицы: статус НДС с трещинами.
 Private Const COL_FORMATION_SEPARATOR As Long = COL_CRACK_STATE_STATUS + 1 ' Столбец таблицы: пустой столбец после образования трещины.
 Private Const COL_SP35_AR As Long = COL_FORMATION_SEPARATOR + 1 ' Столбец таблицы: площадь взаимодействия бетона с арматурой по СП 35.
-Private Const COL_SP35_BETA As Long = COL_SP35_AR + 1 ' Столбец таблицы: коэффициент β профиля арматуры по СП 35.
+Private Const COL_SP35_BETA As Long = COL_SP35_AR + 1 ' Столбец таблицы: коэффициент beta профиля арматуры по СП 35.
 Private Const COL_SP35_N As Long = COL_SP35_BETA + 1 ' Столбец таблицы: число стержней в определяющей области СП 35.
 Private Const COL_SP35_D As Long = COL_SP35_N + 1 ' Столбец таблицы: расчётный диаметр арматуры по СП 35.
 Private Const COL_SP35_RR As Long = COL_SP35_D + 1 ' Столбец таблицы: радиус армирования по СП 35.
-Private Const COL_SP35_PSI As Long = COL_SP35_RR + 1 ' Столбец таблицы: коэффициент ψ по СП 35.
+Private Const COL_SP35_PSI As Long = COL_SP35_RR + 1 ' Столбец таблицы: коэффициент psi по СП 35.
 Private Const COL_SP35_REBARS As Long = COL_SP35_PSI + 1 ' Столбец таблицы: имена стержней определяющей области СП 35.
 Private Const COL_SP35_NREBARS As Long = COL_SP35_REBARS + 1 ' Столбец таблицы: число стержней определяющей области СП 35.
 Private Const COL_SP35_SIGMA As Long = COL_SP35_NREBARS + 1 ' Столбец таблицы: расчётное напряжение арматуры по СП 35.
@@ -82,10 +82,10 @@ Private Const COL_AS As Long = COL_ABT + 1 ' Столбец таблицы: пл
 Private Const COL_DS_EQ As Long = COL_AS + 1 ' Столбец таблицы: эквивалентный диаметр арматуры.
 Private Const COL_LS0 As Long = COL_DS_EQ + 1 ' Столбец таблицы: исходное расстояние между трещинами.
 Private Const COL_LS As Long = COL_LS0 + 1 ' Столбец таблицы: принятое расстояние между трещинами.
-Private Const COL_PHI1 As Long = COL_LS + 1 ' Столбец таблицы: коэффициент φ1 формулы ширины трещины СП 63.
-Private Const COL_PHI2 As Long = COL_PHI1 + 1 ' Столбец таблицы: коэффициент φ2 формулы ширины трещины СП 63.
-Private Const COL_PHI3 As Long = COL_PHI2 + 1 ' Столбец таблицы: коэффициент φ3 формулы ширины трещины СП 63.
-Private Const COL_PSI_S As Long = COL_PHI3 + 1 ' Столбец таблицы: коэффициент ψs по СП 63.
+Private Const COL_PHI1 As Long = COL_LS + 1 ' Столбец таблицы: коэффициент phi1 формулы ширины трещины СП 63.
+Private Const COL_PHI2 As Long = COL_PHI1 + 1 ' Столбец таблицы: коэффициент phi2 формулы ширины трещины СП 63.
+Private Const COL_PHI3 As Long = COL_PHI2 + 1 ' Столбец таблицы: коэффициент phi3 формулы ширины трещины СП 63.
+Private Const COL_PSI_S As Long = COL_PHI3 + 1 ' Столбец таблицы: коэффициент psis по СП 63.
 Private Const COL_REBARS As Long = COL_PSI_S + 1 ' Столбец таблицы: имена стержней определяющей области СП 63.
 Private Const COL_NREBARS As Long = COL_REBARS + 1 ' Столбец таблицы: число стержней определяющей области СП 63.
 Private Const COL_SIGMA_S_CRC As Long = COL_NREBARS + 1 ' Столбец таблицы: напряжение арматуры при образовании трещины.
@@ -169,7 +169,8 @@ Failed:
     Err.Raise Err.Number, "CCrackSummaryWriter.WriteSummary", Err.Description
 End Sub
 
-' Полностью очищает старый блок трещин вместе с объединениями и форматами.
+' Очищает прежние данные подробной таблицы трещин. При fullFormatting=True
+' удаляет также шапку, объединения и форматы; иначе сохраняет готовое оформление.
 Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
     mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 3990, "CCrackSummaryWriter", "Книга Excel не передана."
@@ -216,7 +217,8 @@ UseDefaultHeight:
     Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.Column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
-' Снимает старые объединения и очищает значения/форматы перед новой записью.
+' Готовит область к записи: при полном оформлении очищает её целиком.
+' В минимальном режиме оставляет шапку и форматы, удаляя данные и прежнюю заливку статусов.
 Private Sub PrepareTarget(ByVal target As Object)
     If mMinimalFormatting Then
         If target.Rows.Count > HEADER_ROWS Then
@@ -232,7 +234,7 @@ Private Sub PrepareTarget(ByVal target As Object)
     target.Clear
 End Sub
 
-' Записывает отдельную строку-название над detailed-блоком трещин.
+' Записывает отдельную строку-название над подробным блоком трещин.
 Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     If target.Row <= 1 Then Exit Sub
     If mMinimalFormatting Then
@@ -262,7 +264,8 @@ Private Sub ClearBlockTitleRow(ByVal target As Object)
     target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
 End Sub
 
-' Записывает многоуровневую шапку таблицы.
+' Собирает многоуровневую шапку с актуальными единицами. В минимальном
+' режиме сохраняет совпадающую шапку; при отличии возвращается к полному оформлению.
 Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
     Dim headers() As Variant
     ReDim headers(1 To HEADER_ROWS, 1 To TOTAL_COLUMNS)
@@ -722,7 +725,8 @@ Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long,
     data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
 End Sub
 
-' Оформляет шапки, границы, числовые форматы и подсветку статусов.
+' Оформляет подробную таблицу трещин: шапку, рамки, числа и статусы.
+' В минимальном режиме обновляет только подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     If mMinimalFormatting Then
         ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS
@@ -752,10 +756,8 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.Rows(HEADER_NOTES_ROW).WrapText = False
     target.Rows(HEADER_LABEL_ROW).WrapText = False
     target.Cells(HEADER_LABEL_ROW, COL_RBT_SER).WrapText = False
-    ' Вертикально объединенные заголовки остаются многострочными, как в ТЗ.
-    ' Пояснения и обозначения остальных столбцов не получают перенос.
     Dim headerColumn As Variant
-    For Each headerColumn In Array(COL_ID, COL_RESULT_COMMENT, COL_STATUS)
+    For Each headerColumn In Array(COL_ID, COL_RESULT_COMMENT, COL_STATUS) ' Вертикально объединенные заголовки остаются многострочными, как в ТЗ. Пояснения и обозначения остальных столбцов не получают перенос.
         target.Cells(1, CLng(headerColumn)).WrapText = True
     Next headerColumn
 
@@ -782,10 +784,8 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         target.Offset(HEADER_ROWS, COL_CRACK_STATE_DIAGEXT - 1).Resize(dataRows, 2).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_ACRC_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_LONG_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        ' Сохраняем одинаковую физическую точность 0.001 мм: ширина в метрах
-        ' не должна выглядеть нулевой из-за общего трехзначного формата таблицы.
         Dim widthFormat As String
-        widthFormat = CrackWidthNumberFormat(units)
+        widthFormat = CrackWidthNumberFormat(units) ' Сохраняем одинаковую физическую точность 0.001 мм: ширина в метрах не должна выглядеть нулевой из-за общего трехзначного формата таблицы.
         target.Offset(HEADER_ROWS, COL_SP35_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
         target.Offset(HEADER_ROWS, COL_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
         ApplyStatusCells target, batch, dataRows
@@ -1018,8 +1018,8 @@ Private Sub MergeRange(ByVal target As Object, ByVal firstRow As Long, ByVal fir
     target.Worksheet.Range(target.Cells(firstRow, firstCol), target.Cells(lastRow, lastCol)).Merge
 End Sub
 
-' Ниже переводятся величины таблицы трещин в пользовательские выходные единицы.
-' Если CUnitSystem не передан, значения остаются во внутренних единицах.
+' Переводит длину из внутренних мм в выходную единицу пользователя.
+' Если CUnitSystem не передан, возвращает исходное значение в мм.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function

@@ -98,9 +98,7 @@ End Sub
 Public Sub InitializeInvalidInput(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
     AssertWritable
-    ' При ошибке разбора пути он не выбран; служебный None не является
-    ' фактически выполненной траекторией и не должен подменять пустое поле.
-    If StrComp(pathKey, CAPACITY_PATH_NONE, vbTextCompare) = 0 Then pathKey = vbNullString
+    If StrComp(pathKey, CAPACITY_PATH_NONE, vbTextCompare) = 0 Then pathKey = vbNullString ' При ошибке разбора пути он не выбран; служебный None не является фактически выполненной траекторией и не должен подменять пустое поле.
     InitializeEarlyResult rsInvalidInput, rcInvalidInput, reason, pathKey
 End Sub
 

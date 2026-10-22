@@ -35,8 +35,9 @@ Public Property Get ImportComment() As String
     ImportComment = mImportComment
 End Property
 
-' Формирует краткий итог импорта: элементы и замкнутые контуры, затем предупреждения.
-' Сегменты одного контура считаются один раз; подробности геометрии сюда не попадают.
+' Формирует итог этапа формирования сечения: количество принятых элементов
+' и предупреждение об автоматически построенной сетке. Расчёт и экспорт
+' не используют это сообщение; происхождение сетки хранится отдельно в модели.
 Public Function ResultMessage(ByVal model As CSectionModel) As String
     If model Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "Импортированная модель не передана."
     Dim loops As Object, i As Long, key As String, outerCount As Long, openingCount As Long
@@ -137,11 +138,8 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     On Error GoTo InvalidMinimumArea
     minArea = importUnits.InputAreaToInternal(minArea)
     On Error GoTo 0
-    ' Точные наружные контуры и отверстия необязательны при наличии готовой сетки.
-    ' Заданное имя слоя проверяется; пустой существующий слой
-    ' не превращает необязательный контур в требование.
     Dim contourLayer As String, openingLayer As String
-    contourLayer = OptionalContourLayer(settings, "AutoCAD.Common.SectionContourLayer")
+    contourLayer = OptionalContourLayer(settings, "AutoCAD.Common.SectionContourLayer") ' Точные наружные контуры и отверстия необязательны при наличии готовой сетки. Заданное имя слоя проверяется; пустой существующий слой не превращает необязательный контур в требование.
     openingLayer = OptionalContourLayer(settings, "AutoCAD.Common.OpeningContourLayer")
     Set ImportConfiguredModelSpace = ImportFromModelSpace(modelSpace, _
         concreteLayer, rebarLayer, REBAR_STEEL_CLASS, minArea, importUnits, contourLayer, openingLayer, drawingLayers, settings)
@@ -177,9 +175,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Set materialEntities = New Collection: Set materialLayers = New Collection
     Set outerEntities = New Collection: Set openingEntities = New Collection
     mEdgeProbeCount = 0
-    ' Читаем слой один раз и сохраняем только ссылки этой операции. Последующее
-    ' Copy/Explode уже не меняет коллекцию во время ее COM-обхода.
-    For Each entity In modelSpace
+    For Each entity In modelSpace ' Читаем слой один раз и сохраняем только ссылки этой операции. Последующее Copy/Explode уже не меняет коллекцию во время ее COM-обхода.
         entityLayer = CStr(entity.Layer)
         If SameLayer(entityLayer, concreteLayer) Then concreteObjectCount = concreteObjectCount + 1
         If SameLayer(entityLayer, concreteLayer) Or SameLayer(entityLayer, rebarLayer) Then
@@ -199,9 +195,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
         End If
     Next i
 
-    ' Непригодные или отфильтрованные объекты не равны пустому слою:
-    ' ошибки существующей сетки не подменяются новой геометрией.
-    If model.ConcreteCount = 0 And concreteObjectCount > 0 Then ValidateImportedModel model, meshSettings
+    If model.ConcreteCount = 0 And concreteObjectCount > 0 Then ValidateImportedModel model, meshSettings ' Непригодные или отфильтрованные объекты не равны пустому слою: ошибки существующей сетки не подменяются новой геометрией.
     model.ApplyAverageRotationToEquivalentAreaFallbacks
     Dim domain As CConcreteRegion
     Set domain = ImportMaterialContours(model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities, meshSettings)
@@ -214,8 +208,9 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Set ImportFromModelSpace = model
 End Function
 
-' Готовая точная область задает форму; прежний mesher и общий builder
-' создают прямоугольные волокна, не меняя импортированную арматуру и контуры.
+' Строит бетонную сетку по достоверному наружному контуру и всем отверстиям
+' через общий построитель CFiberMeshBuilder. Вызывается только при действительно
+' пустом бетонном слое; ошибочные или отфильтрованные объекты этим путём не заменяются.
 Private Sub GenerateConcreteFromContour(ByVal model As CSectionModel, ByVal domain As CConcreteRegion, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
     If settings Is Nothing Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
@@ -291,10 +286,7 @@ Private Function ImportMaterialContours(ByVal model As CSectionModel, ByVal mode
                 If query.LoopIsOpening(opening, j) Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
                     "Внутри Region отверстия есть отдельная бетонная часть, но наружный контур не задан. На AutoCAD.Common.SectionContourLayer разместите наружный Region с вырезанным отверстием и отдельный Region этой бетонной части."
             Next j
-            ' Проверяем совместимость заданных отверстий. Общая геометрия затем
-            ' восстанавливает наружную границу по сетке и учитывает именно эти отверстия,
-            ' не добавляя неизвестные внутренние пустоты сетки.
-            openings.Add opening
+            openings.Add opening ' Проверяем совместимость заданных отверстий. Общая геометрия затем восстанавливает наружную границу по сетке и учитывает именно эти отверстия, не добавляя неизвестные внутренние пустоты сетки.
             Set validatedOpenings = query.MergeDisjointRegions(openings)
         Next entity
     End If
@@ -310,9 +302,7 @@ Private Function ImportMaterialContours(ByVal model As CSectionModel, ByVal mode
     If outerEntities.Count > 0 Then
         model.Contours.AddMaterialRegion domain, "MATERIAL", commentText
     Else
-        ' Заданные отверстия сами по себе не подтверждают точность наружной границы сетки.
-        ' Это учитывается при выборе областей взаимодействия с арматурой по СП 35.
-        For i = 1 To openings.Count
+        For i = 1 To openings.Count ' Заданные отверстия сами по себе не подтверждают точность наружной границы сетки. Это учитывается при выборе областей взаимодействия с арматурой по СП 35.
             model.Contours.AddMaterialRegion openings(i), "OPENING_SOURCE_" & CStr(i), commentText, True
         Next i
         query.Initialize model
@@ -422,9 +412,7 @@ Private Function ReadMaterialContours(ByVal outers As Collection, ByVal openings
     On Error GoTo InvalidBoundary
     location = "Контуры AutoCAD: " & allLocations
     Set domain = query.BoundaryRegion(raw, count, "ValidatedAutoCADMaterialContours")
-    ' Вложенность не должна превращать ошибочно расположенное opening
-    ' в новый бетонный участок или наружную границу в отверстие.
-    For i = 1 To sourceRegions.Count
+    For i = 1 To sourceRegions.Count ' Вложенность не должна превращать ошибочно расположенное opening в новый бетонный участок или наружную границу в отверстие.
         location = "Контур AutoCAD: " & CStr(sourceLocations(i))
         Set region = sourceRegions(i)
         For loopID = 1 To region.LoopCount
@@ -537,10 +525,7 @@ Private Sub AddConcreteRegion(ByVal model As CSectionModel, ByVal area As Double
     shapeHint = "Region"
     rotationHint = realRotation
     If HasExplicitRectangleGeometry(area, realWidth, realHeight) Then
-        ' Этот путь нужен только для тестовых/подготовленных массивов и
-        ' встроенных адаптеров, которые уже знают реальные стороны. Живой
-        ' AutoCAD importer Width/Height не вычисляет.
-        shapeHint = "Rectangle"
+        shapeHint = "Rectangle" ' Этот путь нужен только для тестовых/подготовленных массивов и встроенных адаптеров, которые уже знают реальные стороны. Живой AutoCAD importer Width/Height не вычисляет.
         widthHint = realWidth
         heightHint = realHeight
         commentText = "Для бетонного элемента передана прямоугольная граница; площадь и моменты инерции сохранены в модели сечения."
@@ -783,24 +768,19 @@ End Function
 ' Возвращает длину AutoCAD в мм. Параметр units сохранён для общего вида вызовов;
 ' геометрия чертежа по принятому правилу уже задана в мм.
 Private Function InputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    ' Не масштабируем координаты чертежа по Units.Length.Input: одна единица
-    ' AutoCAD равна одному мм, независимо от настроек пользовательского ввода.
-    InputLength = value
+    InputLength = value ' Не масштабируем координаты чертежа по Units.Length.Input: одна единица AutoCAD равна одному мм, независимо от настроек пользовательского ввода.
 End Function
 
 ' Возвращает AutoCAD-площадь во внутренних мм2. Пользовательские Input-единицы
 ' не должны масштабировать геометрию, считанную из чертежа.
 Private Function InputArea(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    ' Площадь AutoCAD Region уже задана в мм2 и не требует масштабирования по единицам ввода.
-    InputArea = value
+    InputArea = value ' Площадь AutoCAD Region уже задана в мм2 и не требует масштабирования по единицам ввода.
 End Function
 
 ' Возвращает AutoCAD-момент инерции во внутренних мм4. Это сохраняет
 ' координатную совместимость импорта и обратного AutoCAD export.
 Private Function InputFourthPowerLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    ' Инерции AutoCAD Region уже заданы в мм4. Пользовательские единицы ввода
-    ' не должны менять геометрию и характеристики импортированного чертежа.
-    InputFourthPowerLength = value
+    InputFourthPowerLength = value ' Инерции AutoCAD Region уже заданы в мм4. Пользовательские единицы ввода не должны менять геометрию и характеристики импортированного чертежа.
 End Function
 
 ' Локальная реализация atan2 для VBA. Нужна, чтобы получить устойчивый угол
@@ -826,14 +806,14 @@ Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-
-' ДЛЯ ТЕСТОВ: создаёт бетонные элементы из подготовленного массива свойств Region.
+' Создаёт бетонные элементы из подготовленного массива свойств Region.
 ' Применяет те же проверки, что импорт из AutoCAD, без запуска самого AutoCAD.
-Private Sub AddConcreteRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, ByVal minArea As Double)
-    If Not HasArrayRows(regions) Then Exit Sub
+Private Sub TestAddConcreteRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, ByVal minArea As Double)
+    If Not TestHasArrayRows(regions) Then Exit Sub
 
     Dim rowIndex As Long
     For rowIndex = LBound(regions, 1) To UBound(regions, 1)
@@ -841,19 +821,23 @@ Private Sub AddConcreteRegionArray(ByVal model As CSectionModel, ByVal regions A
         area = CDbl(regions(rowIndex, 1))
         If area >= minArea Then
             AddConcreteRegion model, area, CDbl(regions(rowIndex, 2)), CDbl(regions(rowIndex, 3)), _
-                OptionalRegionDouble(regions, rowIndex, 4), OptionalRegionDouble(regions, rowIndex, 5), _
-                OptionalRegionDouble(regions, rowIndex, 6), OptionalRegionDouble(regions, rowIndex, 8), _
-                OptionalRegionDouble(regions, rowIndex, 9), OptionalRegionDouble(regions, rowIndex, 10), _
-                "Concrete", OptionalRegionString(regions, rowIndex, 7)
+                TestOptionalRegionDouble(regions, rowIndex, 4), TestOptionalRegionDouble(regions, rowIndex, 5), _
+                TestOptionalRegionDouble(regions, rowIndex, 6), TestOptionalRegionDouble(regions, rowIndex, 8), _
+                TestOptionalRegionDouble(regions, rowIndex, 9), TestOptionalRegionDouble(regions, rowIndex, 10), _
+                "Concrete", TestOptionalRegionString(regions, rowIndex, 7)
         End If
     Next rowIndex
 End Sub
 
-' ДЛЯ ТЕСТОВ: создаёт арматуру из подготовленного массива свойств Region
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Создаёт арматуру из подготовленного массива свойств Region
 ' для проверки чтения сохранённых геометрических данных без AutoCAD.
-Private Sub AddRebarRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, _
+Private Sub TestAddRebarRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, _
         ByVal steelClass As String, ByVal minArea As Double)
-    If Not HasArrayRows(regions) Then Exit Sub
+    If Not TestHasArrayRows(regions) Then Exit Sub
 
     Dim rowIndex As Long
     For rowIndex = LBound(regions, 1) To UBound(regions, 1)
@@ -861,55 +845,68 @@ Private Sub AddRebarRegionArray(ByVal model As CSectionModel, ByVal regions As V
         area = CDbl(regions(rowIndex, 1))
         If area >= minArea Then
             AddRebarRegion model, area, CDbl(regions(rowIndex, 2)), CDbl(regions(rowIndex, 3)), _
-                steelClass, "Reinf", OptionalRegionString(regions, rowIndex, 4)
+                steelClass, "Reinf", TestOptionalRegionString(regions, rowIndex, 4)
         End If
     Next rowIndex
 End Sub
 
-' ДЛЯ ТЕСТОВ: проверяет, что двумерный Variant действительно содержит хотя бы одну строку.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Проверяет наличие хотя бы одной строки в массиве Variant; число столбцов проверяют потребители.
 ' Нужен тестовому импорту из массивов, где пустой массив не должен падать на
 ' LBound/UBound до валидации модели.
-Private Function HasArrayRows(ByVal values As Variant) As Boolean
+Private Function TestHasArrayRows(ByVal values As Variant) As Boolean
     On Error GoTo NoRows
     Dim firstRow As Long
     firstRow = LBound(values, 1)
-    HasArrayRows = (UBound(values, 1) >= firstRow)
+    TestHasArrayRows = (UBound(values, 1) >= firstRow)
     Exit Function
 NoRows:
-    HasArrayRows = False
+    TestHasArrayRows = False
 End Function
 
-' ДЛЯ ТЕСТОВ: безопасно читает числовую ячейку подготовленного массива Region.
-' Отсутствующая, пустая или выходящая за границы колонка трактуется как 0,
-' чтобы тестовые массивы могли задавать только нужные поля.
-Private Function OptionalRegionDouble(ByVal values As Variant, ByVal rowIndex As Long, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Читает необязательное число подготовленного массива. Для отсутствующего,
+' пустого или непреобразуемого поля возвращает ноль; живые объекты AutoCAD здесь не читаются.
+Private Function TestOptionalRegionDouble(ByVal values As Variant, ByVal rowIndex As Long, _
         ByVal colIndex As Long) As Double
     On Error GoTo MissingValue
     If colIndex > UBound(values, 2) Then GoTo MissingValue
     If Len(Trim$(CStr(values(rowIndex, colIndex)))) = 0 Then GoTo MissingValue
-    OptionalRegionDouble = CDbl(values(rowIndex, colIndex))
+    TestOptionalRegionDouble = CDbl(values(rowIndex, colIndex))
     Exit Function
 MissingValue:
-    OptionalRegionDouble = 0#
+    TestOptionalRegionDouble = 0#
 End Function
 
-' ДЛЯ ТЕСТОВ: читает текстовое поле из подготовленного массива Region.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Читает текстовое поле из подготовленного массива Region.
 ' Отсутствующее поле, например не требуемый тестом handle, даёт пустую строку.
-Private Function OptionalRegionString(ByVal values As Variant, ByVal rowIndex As Long, _
+Private Function TestOptionalRegionString(ByVal values As Variant, ByVal rowIndex As Long, _
         ByVal colIndex As Long) As String
     On Error GoTo MissingValue
     If colIndex > UBound(values, 2) Then GoTo MissingValue
-    OptionalRegionString = CStr(values(rowIndex, colIndex))
+    TestOptionalRegionString = CStr(values(rowIndex, colIndex))
     Exit Function
 MissingValue:
-    OptionalRegionString = vbNullString
+    TestOptionalRegionString = vbNullString
 End Function
 
-' ДЛЯ ТЕСТОВ: проверка фильтрации и заполнения модели по массивам без запуска AutoCAD.
-
-' ДЛЯ ТЕСТОВ: создаёт импортированную модель из двух массивов свойств Region.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Создаёт импортированную модель из двух массивов свойств Region.
 ' Применяет те же проверки, что обычный импорт объектов ModelSpace.
-Public Function BuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal rebarRegions As Variant, _
+Public Function TestBuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal rebarRegions As Variant, _
         ByVal steelClass As String, Optional ByVal minArea As Double = 0.000001) As CSectionModel
     Dim model As CSectionModel
     Set model = New CSectionModel
@@ -917,16 +914,20 @@ Public Function BuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal re
     model.ConcreteMeshSource = "AutoCADRegions"
     mEdgeProbeCount = 0
 
-    AddConcreteRegionArray model, concreteRegions, minArea
-    AddRebarRegionArray model, rebarRegions, steelClass, minArea
+    TestAddConcreteRegionArray model, concreteRegions, minArea
+    TestAddRebarRegionArray model, rebarRegions, steelClass, minArea
     model.ApplyAverageRotationToEquivalentAreaFallbacks
     ValidateImportedModel model
 
-    Set BuildFromRegionArrays = model
+    Set TestBuildFromRegionArrays = model
 End Function
 
-' ДЛЯ ТЕСТОВ: возвращает число обращений к Explode за направлением простой грани.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' возвращает число обращений к Explode за направлением простой грани.
 ' Производственный расчет это значение не использует.
-Public Property Get DebugEdgeProbeCount() As Long
-    DebugEdgeProbeCount = mEdgeProbeCount
+Public Property Get TestDebugEdgeProbeCount() As Long
+    TestDebugEdgeProbeCount = mEdgeProbeCount
 End Property

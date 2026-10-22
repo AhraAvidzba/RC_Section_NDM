@@ -38,7 +38,7 @@ function Input-Fingerprint($book) {
     $data=[ordered]@{Address=$range.Address();Rows=$range.Rows.Count;Columns=$range.Columns.Count;Formulas=$values;Names=@($names | Sort-Object);ResultWidths=$widths}
     return Hash-Text ($data | ConvertTo-Json -Depth 6 -Compress)
 }
-function Result-Fingerprint($excel,$book) {return [string]$excel.Run("'$($book.Name)'!modTestPerformance.PerformanceResultsFingerprint")}
+function Result-Fingerprint($excel,$book) {return [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestPerformanceResultsFingerprint")}
 $excel=$null;$book=$null;$records=@()
 try {
     $excel=New-Object -ComObject Excel.Application
@@ -55,7 +55,7 @@ try {
     $reference=''
     for($run=1;$run -le 10;$run++) {
         $before=(Get-Process -Id $ownedPID).PrivateMemorySize64
-        $result=[string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceBatch",'Full')
+        $result=[string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceBatch",'Full')
         $parts=@{};foreach($part in $result -split ([string][char]30)) {$pair=$part -split '=',2;if($pair.Count -eq 2){$parts[$pair[0]]=$pair[1]}}
         $fingerprint=$parts['fingerprint']
         if($run -eq 1) {$reference=$fingerprint}

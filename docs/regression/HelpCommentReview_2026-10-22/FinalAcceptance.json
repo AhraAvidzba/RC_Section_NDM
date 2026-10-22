@@ -1,0 +1,84 @@
+{
+  "Status": "COMPLETE_DIRECTED_REVIEW",
+  "WorkbookSHA256": "C31FDAE8B6649BE4DECF7A7362CA462FF986563F93F6BD32EDF21ED8D293513E",
+  "VbaProjectSHA256": "FE8445AA66C1B5B96F48B593464B520ED2B0AD6A130FEAB7E2B5797C007BCEA0",
+  "AllCodeSHA256": "3F89B1B2C049AC88C8CD28023CDFF64FC7B310AD84D7C47457406E6B0AEA29D8",
+  "Modules": 168,
+  "Methods": 5717,
+  "HelpCells": 257,
+  "NativeHyperlinks": 151,
+  "NativeFollows": 302,
+  "NativeOutlineSections": 8,
+  "StructuralChecks": 27,
+  "CorrectedGroupReruns": {
+    "No": {
+      "Groups": 3,
+      "Passed": 675,
+      "Failed": 0
+    },
+    "Yes": {
+      "Groups": 3,
+      "Passed": 675,
+      "Failed": 0
+    }
+  },
+  "FullAcceptanceExecuted": false,
+  "CodeProof": {
+    "Files": 167,
+    "Procedures": 5712,
+    "BaselineProcedures": 5711,
+    "WorkbookEventProcedures": 5,
+    "TotalProceduresIncludingWorkbookEvents": 5717,
+    "RenamedIdentifiers": 18904,
+    "CorrespondingStringChanges": 41,
+    "UnexpectedExecutableChanges": 0,
+    "UnresolvedMemberReferences": 0,
+    "WorkingNumericalAlgorithmsAndInputsUnchanged": true,
+    "MechanicalRenamesOnlyExceptApprovedMethods": true,
+    "DocumentedChangedExistingMethods": 3,
+    "DocumentedAddedTargetedRunner": 1,
+    "TestFixtureInputsExplicitlySelectedAndRestored": [
+      "Geometry.Type=Rectangles",
+      "Geometry.Source=Generated"
+    ]
+  },
+  "DataPreservation": {
+    "Passed": true,
+    "WorkbookSHA256": "C31FDAE8B6649BE4DECF7A7362CA462FF986563F93F6BD32EDF21ED8D293513E",
+    "BaselineSHA256": "3A9E57548CDB35E14ED49DB4E2609F9C31B6ABE1923D5D0C97D6D3ECA186DE57",
+    "ChangedParts": [
+      "xl/worksheets/sheet3.xml",
+      "xl/vbaProject.bin",
+      "xl/styles.xml"
+    ],
+    "UnchangedParts": 109,
+    "ChangedHelpCells": 257,
+    "AllUserInputsResultsExistingStylesGraphicsAndHyperlinksPreserved": true,
+    "BlankHelpRowsWhitened": 117,
+    "AppendedStyleVariants": {
+      "91": 157,
+      "90": 158,
+      "93": 159,
+      "46": 160,
+      "51": 161
+    },
+    "ChangedHelpRowHeights": 222,
+    "RepairedOutlineRows": [
+      1715,
+      1716,
+      1717,
+      1718,
+      1719,
+      1720,
+      1721,
+      1722,
+      1723
+    ],
+    "ConfigHelpBody": [
+      622,
+      1723
+    ],
+    "CompiledVbaSHA256": "FE8445AA66C1B5B96F48B593464B520ED2B0AD6A130FEAB7E2B5797C007BCEA0"
+  },
+  "SettingsCatalogSHA256": "AFB1DDE626BBA6C08C03B3E85DC74A334323D43F0EFE47F63081D016A1DC4DF0"
+}

@@ -15,6 +15,7 @@ Private Type TGeometryConfigStats
     Report As String
 End Type
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет представимость количества до размещения и выделения массивов.
 ' Только два max-Long случая имеют корректный отступ и воспроизводят Overflow;
 ' остальные намеренно используют неверный отступ, чтобы старый код завершался
@@ -22,7 +23,7 @@ End Type
 Public Function RunAudit03RebarCounterTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats, shapeName As Variant, scenario As Long
     Dim bars As CRebarLayout, number As Long, description As String, expected As Long
     For Each shapeName In Array("Rectangles", "PointedSection", "HollowRectangle")
@@ -30,41 +31,42 @@ Public Function RunAudit03RebarCounterTests(Optional ByRef passed As Long = 0, _
         For scenario = 0 To 2
             Set bars = Nothing: number = 0: description = vbNullString
             On Error Resume Next
-            Set bars = CounterFixture(CStr(shapeName), scenario)
+            Set bars = TestCounterFixture(CStr(shapeName), scenario)
             number = Err.Number: description = Err.Description
             Err.Clear
             On Error GoTo 0
-            Check stats, "rebarCounter." & CStr(shapeName) & "." & CStr(scenario) & ".typed", number = expected
-            Check stats, "rebarCounter." & CStr(shapeName) & "." & CStr(scenario) & ".message", _
+            TestCheck stats, "rebarCounter." & CStr(shapeName) & "." & CStr(scenario) & ".typed", number = expected
+            TestCheck stats, "rebarCounter." & CStr(shapeName) & "." & CStr(scenario) & ".message", _
                 InStr(1, description, ThisWorkbook.Names("rng" & CStr(shapeName) & "Geometry").RefersToRange.Worksheet.Name, vbTextCompare) > 0 And InStr(1, Replace(description, "ё", "е"), "счетчик", vbTextCompare) > 0
             stats.Report = stats.Report & "REBAR_COUNTER_FAILURE: shape=" & CStr(shapeName) & "; scenario=" & CStr(scenario) & _
                 "; error=" & CStr(number) & "; comment=" & description & vbCrLf
         Next scenario
         On Error GoTo FailedRun
-        Set bars = CounterFixture(CStr(shapeName), 3)
-        Check stats, "rebarCounter." & CStr(shapeName) & ".disabled", bars.Count = 0
-        Set bars = CounterFixture(CStr(shapeName), 4)
-        Check stats, "rebarCounter." & CStr(shapeName) & ".recovery", bars.Count = 3
+        Set bars = TestCounterFixture(CStr(shapeName), 3)
+        TestCheck stats, "rebarCounter." & CStr(shapeName) & ".disabled", bars.Count = 0
+        Set bars = TestCounterFixture(CStr(shapeName), 4)
+        TestCheck stats, "rebarCounter." & CStr(shapeName) & ".recovery", bars.Count = 3
     Next shapeName
-    Set bars = CounterFixture("Rectangles", 5)
-    Check stats, "rebarCounter.Rectangles.inactiveLower", bars.Count = 0
-    CheckRuleCounterBinding stats, 5, 16#, True, 11, False
-    CheckRuleCounterBinding stats, 6, 16#, False, 15, False
-    CheckRuleCounterBinding stats, 2147483647, 16#, True, 0, True
-    CheckRuleCounterBinding stats, 2147483647, 0#, True, 0, False
+    Set bars = TestCounterFixture("Rectangles", 5)
+    TestCheck stats, "rebarCounter.Rectangles.inactiveLower", bars.Count = 0
+    TestCheckRuleCounterBinding stats, 5, 16#, True, 11, False
+    TestCheckRuleCounterBinding stats, 6, 16#, False, 15, False
+    TestCheckRuleCounterBinding stats, 2147483647, 16#, True, 0, True
+    TestCheckRuleCounterBinding stats, 2147483647, 0#, True, 0, False
     GoTo Finish
 FailedRun:
     stats.Failed = stats.Failed + 1
     stats.Report = stats.Report & "FAIL: rebarCounter.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    FixtureRestoreInputs allConfig, savedConfig
+    TestFixtureRestoreInputs allConfig, savedConfig
     RunAudit03RebarCounterTests = stats.Report & "TOTAL_REBAR_COUNTER: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет нечётное количество, отключённые ряды и переполнение обычным
 ' исполнителем правил. Недопустимо большое количество отклоняется до выделения позиций.
-Private Sub CheckRuleCounterBinding(ByRef stats As TGeometryConfigStats, ByVal count As Long, _
+Private Sub TestCheckRuleCounterBinding(ByRef stats As TGeometryConfigStats, ByVal count As Long, _
         ByVal diameter As Double, ByVal thirdEverySecond As Boolean, ByVal expected As Long, ByVal overflow As Boolean)
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim definition As CSectionDefinition, geometry As CGeometryRegion, executor As CRebarRuleExecutor
@@ -85,17 +87,18 @@ Private Sub CheckRuleCounterBinding(ByRef stats As TGeometryConfigStats, ByVal c
     On Error GoTo 0
     label = "rebarCounter.binding." & CStr(count) & ".d" & CStr(diameter)
     If overflow Then
-        Check stats, label & ".typed", number = vbObjectError + 5530
-        Check stats, label & ".beforeAllocation", executor.PositionCount = 0 And InStr(Replace(reason, "ё", "е"), "счетчик") > 0
+        TestCheck stats, label & ".typed", number = vbObjectError + 5530
+        TestCheck stats, label & ".beforeAllocation", executor.PositionCount = 0 And InStr(Replace(reason, "ё", "е"), "счетчик") > 0
     Else
-        Check stats, label & ".success", number = 0
-        If Not bars Is Nothing Then Check stats, label & ".physical", bars.Count = expected
+        TestCheck stats, label & ".success", number = 0
+        If Not bars Is Nothing Then TestCheck stats, label & ".physical", bars.Count = expected
     End If
 End Sub
 
-' ДЛЯ ТЕСТОВ: общая защита счетчиков через реальный рецепт и named-ввод.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' общая защита счетчиков через реальный рецепт и named-ввод.
 ' Сценарии не размещают миллиарды позиций: preflight обязан отказать до массива.
-Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Long) As CRebarLayout
+Private Function TestCounterFixture(ByVal shapeName As String, ByVal scenario As Long) As CRebarLayout
     Dim config As Object, saved As Variant, events As Boolean, fixture As String, root As Object, names As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
     Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, table As CSectionInputTable
@@ -105,13 +108,13 @@ Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Lon
     Dim number As Long, source As String, reason As String
     On Error GoTo Failed
     events = Application.EnableEvents: Application.EnableEvents = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     Select Case shapeName
         Case "Rectangles": fixture = "Rectangle"
         Case "PointedSection": fixture = "RoundedSimple"
         Case "HollowRectangle": fixture = "HollowCentered"
     End Select
-    modTestShapeArchitecture.ConfigureShapeFixture fixture
+    modTestShapeArchitecture.TestConfigureShapeFixture fixture
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     Set registry = New CSectionTypeRegistry: names = registry.RecipeTableNames(shapeName)
@@ -144,24 +147,25 @@ Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Lon
     End If
     Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
     Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
-    Set executor = New CRebarRuleExecutor: Set CounterFixture = executor.Build(definition, geometry)
+    Set executor = New CRebarRuleExecutor: Set TestCounterFixture = executor.Build(definition, geometry)
     GoTo Finished
 Failed:
     number = Err.Number: source = Err.Source: reason = Err.Description
 Finished:
     On Error Resume Next
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.EnableEvents = events
     On Error GoTo 0
     If number <> 0 Then Err.Raise number, source, reason
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет активные/неактивные варианты восьми параметров круга, границы
 ' и восстановление после ошибочного ввода. Счетчики доступны полному UI-suite.
 Public Function RunAudit03CircleConfigTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats
     Dim systemRange As Object, circleRange As Object, unitRange As Object
     Dim savedSystem As Variant, savedCircle As Variant, savedUnits As Variant
@@ -170,12 +174,12 @@ Public Function RunAudit03CircleConfigTests(Optional ByRef passed As Long = 0, _
     Set circleRange = ThisWorkbook.Names.Item("rngCircleGeometry").RefersToRange
     Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
     savedSystem = systemRange.Formula: savedCircle = circleRange.Formula: savedUnits = unitRange.Formula
-    SetKey systemRange, "Geometry.Type", "Circle"
+    TestSetKey systemRange, "Geometry.Type", "Circle"
     unitRange.Cells(2, 2).Value2 = "mm"
-    ConfigureCircle circleRange
-    CheckCircleEffects stats, circleRange
-    CheckCircleBoundaries stats, circleRange
-    CheckCircleInactive stats, systemRange, circleRange
+    TestConfigureCircle circleRange
+    TestCheckCircleEffects stats, circleRange
+    TestCheckCircleBoundaries stats, circleRange
+    TestCheckCircleInactive stats, systemRange, circleRange
     GoTo Restore
 FailedRun:
     stats.Failed = stats.Failed + 1
@@ -185,26 +189,27 @@ Restore:
     If Not systemRange Is Nothing Then systemRange.Formula = savedSystem
     If Not circleRange Is Nothing Then circleRange.Formula = savedCircle
     If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
-    If Not systemRange Is Nothing Then Check stats, "circleConfig.restore.system", SameFormula(systemRange.Formula, savedSystem)
-    If Not circleRange Is Nothing Then Check stats, "circleConfig.restore.circle", SameFormula(circleRange.Formula, savedCircle)
-    If Not unitRange Is Nothing Then Check stats, "circleConfig.restore.units", SameFormula(unitRange.Formula, savedUnits)
+    If Not systemRange Is Nothing Then TestCheck stats, "circleConfig.restore.system", TestSameFormula(systemRange.Formula, savedSystem)
+    If Not circleRange Is Nothing Then TestCheck stats, "circleConfig.restore.circle", TestSameFormula(circleRange.Formula, savedCircle)
+    If Not unitRange Is Nothing Then TestCheck stats, "circleConfig.restore.units", TestSameFormula(unitRange.Formula, savedUnits)
     GoTo Finish
 FailedRestore:
     stats.Failed = stats.Failed + 1
     stats.Report = stats.Report & "FAIL: circleConfig.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    FixtureRestoreInputs allConfig, savedConfig
+    TestFixtureRestoreInputs allConfig, savedConfig
     RunAudit03CircleConfigTests = stats.Report & "TOTAL_CIRCLE_CONFIG: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет размеры и режимы трех некруглых форм через реальные ячейки,
 ' включая переключение единиц, неактивные поля и неверные количества арматуры.
 ' Все измененные таблицы восстанавливаются, чтобы тест не менял рабочий ввод.
 Public Function RunAudit03ShapeConfigTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats
     Dim systemRange As Object, unitRange As Object, circleRange As Object
     Dim target As Object, rangeName As Variant, shapeName As String, shapeNames As Variant
@@ -221,20 +226,20 @@ Public Function RunAudit03ShapeConfigTests(Optional ByRef passed As Long = 0, _
         index = index + 1
     Next rangeName
     unitRange.Cells(2, 2).Value2 = "mm"
-    ConfigureCircle circleRange
+    TestConfigureCircle circleRange
     shapeNames = Array("Rectangles", "PointedSection", "HollowRectangle")
     For index = 0 To 2
         Set target = shapeRanges(index)
         shapeName = CStr(shapeNames(index))
-        SetKey systemRange, "Geometry.Type", shapeName
-        CheckShapeEffects stats, target, shapeName
-        CheckShapeInactiveModes stats, target, shapeName
-        CheckShapeUnits stats, target, unitRange, shapeName
-        SetKey systemRange, "Geometry.Type", "Circle"
-        CheckShapeInactive stats, target, shapeName
+        TestSetKey systemRange, "Geometry.Type", shapeName
+        TestCheckShapeEffects stats, target, shapeName
+        TestCheckShapeInactiveModes stats, target, shapeName
+        TestCheckShapeUnits stats, target, unitRange, shapeName
+        TestSetKey systemRange, "Geometry.Type", "Circle"
+        TestCheckShapeInactive stats, target, shapeName
     Next index
-    SetKey systemRange, "Geometry.Type", "HollowRectangle"
-    CheckHollowCounts stats, shapeRanges(2)
+    TestSetKey systemRange, "Geometry.Type", "HollowRectangle"
+    TestCheckHollowCounts stats, shapeRanges(2)
     GoTo Restore
 FailedRun:
     stats.Failed = stats.Failed + 1
@@ -244,39 +249,40 @@ Restore:
     For index = 0 To 2
         If Not shapeRanges(index) Is Nothing Then
             shapeRanges(index).Formula = savedShapes(index)
-            Check stats, "shapeConfig.restore." & CStr(index), SameFormula(shapeRanges(index).Formula, savedShapes(index))
+            TestCheck stats, "shapeConfig.restore." & CStr(index), TestSameFormula(shapeRanges(index).Formula, savedShapes(index))
         End If
     Next index
     If Not systemRange Is Nothing Then systemRange.Formula = savedSystem
     If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
     If Not circleRange Is Nothing Then circleRange.Formula = savedCircle
-    If Not systemRange Is Nothing Then Check stats, "shapeConfig.restore.system", SameFormula(systemRange.Formula, savedSystem)
-    If Not unitRange Is Nothing Then Check stats, "shapeConfig.restore.units", SameFormula(unitRange.Formula, savedUnits)
-    If Not circleRange Is Nothing Then Check stats, "shapeConfig.restore.circle", SameFormula(circleRange.Formula, savedCircle)
+    If Not systemRange Is Nothing Then TestCheck stats, "shapeConfig.restore.system", TestSameFormula(systemRange.Formula, savedSystem)
+    If Not unitRange Is Nothing Then TestCheck stats, "shapeConfig.restore.units", TestSameFormula(unitRange.Formula, savedUnits)
+    If Not circleRange Is Nothing Then TestCheck stats, "shapeConfig.restore.circle", TestSameFormula(circleRange.Formula, savedCircle)
     GoTo Finish
 FailedRestore:
     stats.Failed = stats.Failed + 1
     stats.Report = stats.Report & "FAIL: shapeConfig.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    FixtureRestoreInputs allConfig, savedConfig
+    TestFixtureRestoreInputs allConfig, savedConfig
     RunAudit03ShapeConfigTests = stats.Report & "TOTAL_SHAPE_CONFIG: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
-' Описывает фактические позиции размеров в трех таблицах Config, а не поиск
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Описывает фактические поля трёх таблиц листа «Сечения», а не поиск
 ' строк с искусственными ключами. Поля: ключ, строка, колонка, база, изменение,
 ' недопустимое значение. Эти позиции проверены по действующему reader-у.
-Private Function ShapeFields(ByVal shapeName As String) As Variant
+Private Function TestShapeFields(ByVal shapeName As String) As Variant
     Select Case shapeName
         Case "Rectangles"
-            ShapeFields = Array(Array("Rectangles.H1", 5, 3, 300#, 350#, -1#), _
+            TestShapeFields = Array(Array("Rectangles.H1", 5, 3, 300#, 350#, -1#), _
                 Array("Rectangles.B1", 6, 3, 200#, 240#, -1#), _
                 Array("Rectangles.H2", 7, 3, 250#, 300#, -1#), _
                 Array("Rectangles.B2", 8, 3, 600#, 650#, -1#), _
                 Array("Rectangles.UpperOffsetX", 9, 3, -50#, -70#, 10000#), _
                 Array("Rectangles.SectionType", 4, 3, "TwoRect", "OneRect", "Unknown"))
         Case "PointedSection"
-            ShapeFields = Array(Array("PointedSection.B", 4, 3, 600#, 650#, -1#), _
+            TestShapeFields = Array(Array("PointedSection.B", 4, 3, 600#, 650#, -1#), _
                 Array("PointedSection.H", 5, 3, 400#, 450#, -1#), _
                 Array("PointedSection.Left.W", 6, 3, 100#, 130#, -1#), _
                 Array("PointedSection.Right.W", 9, 3, 100#, 130#, -1#), _
@@ -285,7 +291,7 @@ Private Function ShapeFields(ByVal shapeName As String) As Variant
                 Array("PointedSection.Left.R2", 8, 3, 20#, 35#, -1#), _
                 Array("PointedSection.Right.R2", 11, 3, 20#, 35#, -1#))
         Case "HollowRectangle"
-            ShapeFields = Array(Array("HollowRectangle.H", 5, 3, 1200#, 1300#, -1#), _
+            TestShapeFields = Array(Array("HollowRectangle.H", 5, 3, 1200#, 1300#, -1#), _
                 Array("HollowRectangle.B", 4, 3, 1000#, 1100#, -1#), _
                 Array("HollowRectangle.R", 6, 3, 60#, 80#, -1#), _
                 Array("HollowRectangle.OpeningH", 8, 3, 500#, 550#, -1#), _
@@ -298,21 +304,23 @@ Private Function ShapeFields(ByVal shapeName As String) As Variant
     End Select
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Задает физически допустимую форму. Множитель переводит только длины,
 ' поэтому mm и cm fixtures описывают одно сечение, а enum не изменяются.
-Private Sub ConfigureShape(ByVal target As Object, ByVal shapeName As String, Optional ByVal lengthScale As Double = 1#)
+Private Sub TestConfigureShape(ByVal target As Object, ByVal shapeName As String, Optional ByVal lengthScale As Double = 1#)
     Dim item As Variant, value As Variant
-    For Each item In ShapeFields(shapeName)
+    For Each item In TestShapeFields(shapeName)
         value = item(3)
         If IsNumeric(value) Then value = CDbl(value) * lengthScale
         target.Cells(CLng(item(1)), CLng(item(2))).Value2 = value
     Next item
-    FixtureResetReinforcement shapeName
-    ConfigureRequiredGeometryRebars target, shapeName, lengthScale
+    TestFixtureResetReinforcement shapeName
+    TestConfigureRequiredGeometryRebars target, shapeName, lengthScale
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: ОБЯЗАТЕЛЬНЫЙ И УСЛОВНО НЕАКТИВНЫЙ ВВОД АРМАТУРЫ КРУГА
+' ОБЯЗАТЕЛЬНЫЙ И УСЛОВНО НЕАКТИВНЫЙ ВВОД АРМАТУРЫ КРУГА
 ' ==========================================================================
 ' Проверяет реальные ячейки круга, отсутствие обязательных строк и ошибки
 ' формул. Отдельно проверяет отключенные ряды и невыбранную форму: их значения
@@ -320,7 +328,7 @@ End Sub
 Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats, ranges(0 To 3) As Object, saved(0 To 3) As Variant
     Dim names As Variant, keys As Variant, key As Variant, bad As Variant, badValues As Variant
     Dim i As Long, cases As Long, cell As Object, savedKey As Variant, label As Object
@@ -333,13 +341,13 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
         Set ranges(i) = ThisWorkbook.Names.Item(CStr(names(i))).RefersToRange
         saved(i) = ranges(i).Formula
     Next i
-    SetKey ranges(0), "Geometry.Source", "Generated"
-    SetKey ranges(0), "Geometry.Type", "Circle"
+    TestSetKey ranges(0), "Geometry.Source", "Generated"
+    TestSetKey ranges(0), "Geometry.Type", "Circle"
     ranges(1).Cells(2, 2).Value2 = "mm"
-    ConfigureCircle ranges(2)
-    baseline = RequiredGeometryRouteSnapshot("Circle", "Rebars")
+    TestConfigureCircle ranges(2)
+    baseline = TestRequiredGeometryRouteSnapshot("Circle", "Rebars")
     For Each key In keys
-        ConfigureCircle ranges(2)
+        TestConfigureCircle ranges(2)
         If InStr(1, CStr(key), "Loc", vbBinaryCompare) > 0 Then
             badValues = Array(vbNullString, "Wrong", CVErr(2015))
         ElseIf CStr(key) = "Rebar.Count" Then
@@ -351,11 +359,11 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
         Else
             badValues = Array(-1#, "abc", CVErr(2015))
         End If
-        Set cell = CircleInputCell(ranges(2), CStr(key))
+        Set cell = TestCircleInputCell(ranges(2), CStr(key))
         i = 0
         For Each bad In badValues
             i = i + 1
-            CheckCircleInputAttempt stats, cell, bad, "circleRebar.active." & CStr(key) & "." & CStr(i), _
+            TestCheckCircleInputAttempt stats, cell, bad, "circleRebar.active." & CStr(key) & "." & CStr(i), _
                 "Circle", baseline, True, cases
         Next bad
 
@@ -368,16 +376,16 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
         End If
         savedKey = label.Formula
         label.Value2 = "Audit03.AbsentCircleField"
-        CheckCircleMissingInput stats, CStr(key), cases, CStr(savedKey)
+        TestCheckCircleMissingInput stats, CStr(key), cases, CStr(savedKey)
         label.Formula = savedKey
-        Check stats, "circleRebar.missing." & CStr(key) & ".recovery", _
-            SameGeometryRouteSnapshot(baseline, RequiredGeometryRouteSnapshot("Circle", "Rebars"))
+        TestCheck stats, "circleRebar.missing." & CStr(key) & ".recovery", _
+            TestSameGeometryRouteSnapshot(baseline, TestRequiredGeometryRouteSnapshot("Circle", "Rebars"))
     Next key
 
     For Each offKey In Array("Rebar.Count", "Rebar.Diameter", "Rebar.Diameter2", "Rebar.Diameter3")
         For Each offValue In Array(vbNullString, 0#)
-            ConfigureCircle ranges(2): SetKey ranges(2), CStr(offKey), offValue
-            baseline = RequiredGeometryRouteSnapshot("Circle", "Rebars")
+            TestConfigureCircle ranges(2): TestSetKey ranges(2), CStr(offKey), offValue
+            baseline = TestRequiredGeometryRouteSnapshot("Circle", "Rebars")
             If CStr(offKey) = "Rebar.Count" Or CStr(offKey) = "Rebar.Diameter" Then
                 ignored = Array("Rebar.AxisDistance", "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
             ElseIf CStr(offKey) = "Rebar.Diameter2" Then
@@ -386,25 +394,25 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
                 ignored = Array("Rebar.Loc3row")
             End If
             For Each key In ignored
-                Set cell = CircleInputCell(ranges(2), CStr(key)): i = 0
+                Set cell = TestCircleInputCell(ranges(2), CStr(key)): i = 0
                 For Each bad In Array(vbNullString, "abc", CVErr(2015), -1#)
                     i = i + 1
                     prefix = "circleRebar.inactive." & CStr(offKey) & "." & CStr(offValue) & "." & CStr(key) & "." & CStr(i)
-                    CheckCircleInputAttempt stats, cell, bad, prefix, "Circle", baseline, False, cases
+                    TestCheckCircleInputAttempt stats, cell, bad, prefix, "Circle", baseline, False, cases
                 Next bad
             Next key
         Next offValue
     Next offKey
 
-    ConfigureRebarFieldFixture ranges(3), "Rectangles", True
-    SetKey ranges(0), "Geometry.Type", "Rectangles"
-    baseline = RequiredGeometryRouteSnapshot("Rectangles", "Rebars")
-    ' В общей таблице армирование относится к выбранному типу. Неактивен только диаметр другой геометрии.
+    TestConfigureRebarFieldFixture ranges(3), "Rectangles", True
+    TestSetKey ranges(0), "Geometry.Type", "Rectangles"
+    baseline = TestRequiredGeometryRouteSnapshot("Rectangles", "Rebars")
+    ' Выбран рецепт Rectangles; повреждённые поля отдельной таблицы Circle не должны влиять на его сборку.
     For Each key In Array("Circle.Diameter")
-        Set cell = CircleInputCell(ranges(2), CStr(key)): i = 0
+        Set cell = TestCircleInputCell(ranges(2), CStr(key)): i = 0
         For Each bad In Array(vbNullString, "abc", CVErr(2015))
             i = i + 1
-            CheckCircleInputAttempt stats, cell, bad, "circleRebar.otherShape." & CStr(key) & "." & CStr(i), _
+            TestCheckCircleInputAttempt stats, cell, bad, "circleRebar.otherShape." & CStr(key) & "." & CStr(i), _
                 "Rectangles", baseline, False, cases
         Next bad
     Next key
@@ -417,7 +425,7 @@ Restore:
     For i = 0 To 3
         If Not ranges(i) Is Nothing Then
             ranges(i).Formula = saved(i)
-            Check stats, "circleRebar.restore." & CStr(names(i)), SameFormula(ranges(i).Formula, saved(i))
+            TestCheck stats, "circleRebar.restore." & CStr(names(i)), TestSameFormula(ranges(i).Formula, saved(i))
         End If
     Next i
     GoTo Finish
@@ -426,391 +434,409 @@ FailedRestore:
     stats.Report = stats.Report & "FAIL: circleRebar.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    FixtureRestoreInputs allConfig, savedConfig
+    TestFixtureRestoreInputs allConfig, savedConfig
     RunAudit03CircleRebarInputTests = stats.Report & "TOTAL_CIRCLE_REBAR_INPUT: passed=" & CStr(passed) & _
         "; failed=" & CStr(failed) & "; cases=" & CStr(cases) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Находит фактическую ячейку значения по ключу, без типовых адресов Config.
 ' Это позволяет проверить адресную диагностику после перемещения таблицы.
-Private Function CircleInputCell(ByVal target As Object, ByVal key As String) As Object
-    Set CircleInputCell = FixtureCircleFieldCell(target.Worksheet.Parent, key, target)
+Private Function TestCircleInputCell(ByVal target As Object, ByVal key As String) As Object
+    Set TestCircleInputCell = TestFixtureCircleFieldCell(target.Worksheet.Parent, key, target)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет один ввод через полный production-маршрут. Ошибка активного поля
 ' должна иметь адрес и инструкцию исправления; неактивное поле обязано оставить
 ' весь снимок неизменным. Затем проверяется восстановление исходной формулы.
-Private Sub CheckCircleInputAttempt(ByRef stats As TGeometryConfigStats, ByVal cell As Object, _
+Private Sub TestCheckCircleInputAttempt(ByRef stats As TGeometryConfigStats, ByVal cell As Object, _
         ByVal value As Variant, ByVal prefix As String, ByVal shape As String, ByVal baseline As Variant, _
         ByVal mustReject As Boolean, ByRef cases As Long)
     Dim savedValue As Variant, number As Long, description As String, actual As Variant
     savedValue = cell.Formula: cell.Value2 = value: cases = cases + 1
-    RequiredGeometryProgress prefix, stats.Report
+    TestRequiredGeometryProgress prefix, stats.Report
     On Error Resume Next
-    actual = RequiredGeometryRouteSnapshot(shape, "Rebars")
+    actual = TestRequiredGeometryRouteSnapshot(shape, "Rebars")
     number = Err.Number: description = Err.Description
     Err.Clear: On Error GoTo 0
     If mustReject Then
-        Check stats, prefix & ".reject", number <> 0
-        Check stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
-        Check stats, prefix & ".repair", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
+        TestCheck stats, prefix & ".reject", number <> 0
+        TestCheck stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
+        TestCheck stats, prefix & ".repair", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
             InStr(1, description, "Выберите", vbTextCompare) > 0 Or InStr(1, description, "Исправ", vbTextCompare) > 0
     Else
-        Check stats, prefix & ".noInterference", number = 0
-        If number = 0 Then Check stats, prefix & ".snapshot", SameGeometryRouteSnapshot(baseline, actual)
+        TestCheck stats, prefix & ".noInterference", number = 0
+        If number = 0 Then TestCheck stats, prefix & ".snapshot", TestSameGeometryRouteSnapshot(baseline, actual)
     End If
     stats.Report = stats.Report & "CIRCLE_REBAR_INPUT: " & prefix & "; error=" & CStr(number) & "; " & description & vbCrLf
     cell.Formula = savedValue
-    Check stats, prefix & ".recovery", SameGeometryRouteSnapshot(baseline, RequiredGeometryRouteSnapshot(shape, "Rebars"))
+    TestCheck stats, prefix & ".recovery", TestSameGeometryRouteSnapshot(baseline, TestRequiredGeometryRouteSnapshot(shape, "Rebars"))
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет структурно отсутствующий активный параметр отдельно от пустой
 ' ячейки. Сообщение должно назвать ключ и способ восстановить ввод, а не default.
-Private Sub CheckCircleMissingInput(ByRef stats As TGeometryConfigStats, ByVal key As String, ByRef cases As Long, ByVal expectedCaption As String)
+Private Sub TestCheckCircleMissingInput(ByRef stats As TGeometryConfigStats, ByVal key As String, ByRef cases As Long, ByVal expectedCaption As String)
     Dim actual As Variant, number As Long, description As String
-    cases = cases + 1: RequiredGeometryProgress "circleRebar.missing." & key, stats.Report
+    cases = cases + 1: TestRequiredGeometryProgress "circleRebar.missing." & key, stats.Report
     On Error Resume Next
-    actual = RequiredGeometryRouteSnapshot("Circle", "Rebars")
+    actual = TestRequiredGeometryRouteSnapshot("Circle", "Rebars")
     number = Err.Number: description = Err.Description
     Err.Clear: On Error GoTo 0
-    Check stats, "circleRebar.missing." & key & ".reject", number <> 0
-    Check stats, "circleRebar.missing." & key & ".key", InStr(1, description, expectedCaption, vbBinaryCompare) > 0
-    Check stats, "circleRebar.missing." & key & ".repair", InStr(1, description, "Восстанов", vbTextCompare) > 0 Or _
+    TestCheck stats, "circleRebar.missing." & key & ".reject", number <> 0
+    TestCheck stats, "circleRebar.missing." & key & ".key", InStr(1, description, expectedCaption, vbBinaryCompare) > 0
+    TestCheck stats, "circleRebar.missing." & key & ".repair", InStr(1, description, "Восстанов", vbTextCompare) > 0 Or _
         InStr(1, description, "Введите", vbTextCompare) > 0 Or InStr(1, description, "Выберите", vbTextCompare) > 0
     stats.Report = stats.Report & "CIRCLE_MISSING_INPUT: " & key & "; error=" & CStr(number) & "; " & description & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет бетонную область общего описания сечения без размещения стержней.
-Private Function ReadShape() As CGeometryRegion
+Private Function TestReadShape() As CGeometryRegion
     Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
-    Set ReadShape = New CGeometryRegion: ReadShape.Initialize definition.ConcreteDomain
+    Set TestReadShape = New CGeometryRegion: TestReadShape.Initialize definition.ConcreteDomain
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохраняет вычисленные площадь, центр и габариты. Непригодная геометрия — ошибка
 ' подготовки теста; исходные размеры формы не подставляются вместо её характеристик.
-Private Function ShapeSnapshot(ByVal geom As CGeometryRegion) As Variant
+Private Function TestShapeSnapshot(ByVal geom As CGeometryRegion) As Variant
     Dim message As String, available As Boolean, area As Double, X As Double, Y As Double
     If Not geom.IsValid(message) Then Err.Raise vbObjectError + 5962, "modTestGeometryConfig", message
     area = geom.AnalyticalArea(available)
     If Not available Then Err.Raise vbObjectError + 5963, "modTestGeometryConfig", "Нет аналитической площади fixture."
     geom.AnalyticalCentroid available, X, Y
     If Not available Then Err.Raise vbObjectError + 5964, "modTestGeometryConfig", "Нет центра тяжести fixture."
-    ShapeSnapshot = Array(area, X, Y, geom.MinX, geom.MaxX, geom.MinY, geom.MaxY)
+    TestShapeSnapshot = Array(area, X, Y, geom.MinX, geom.MaxX, geom.MinY, geom.MaxY)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает все численные характеристики в фиксированном абсолютном допуске.
 ' Локальный допуск теста не меняет точность mesh/solver пользовательского расчета.
-Private Function SameShape(ByVal first As Variant, ByVal second As Variant) As Boolean
+Private Function TestSameShape(ByVal first As Variant, ByVal second As Variant) As Boolean
     Dim index As Long
     For index = 0 To 6
         If Abs(CDbl(first(index)) - CDbl(second(index))) > 0.000001 Then Exit Function
     Next index
-    SameShape = True
+    TestSameShape = True
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Для каждого поля проверяет изменение готовой формы, отклонение неверного
 ' значения и повторный нормальный ввод. Числа журналируются для последующей сверки.
-Private Sub CheckShapeEffects(ByRef stats As TGeometryConfigStats, ByVal target As Object, ByVal shapeName As String)
+Private Sub TestCheckShapeEffects(ByRef stats As TGeometryConfigStats, ByVal target As Object, ByVal shapeName As String)
     Dim item As Variant, baseline As Variant, changed As Variant, geom As CGeometryRegion
     Dim errorNumber As Long, description As String, valid As Boolean, prefix As String
-    ConfigureShape target, shapeName
-    baseline = ShapeSnapshot(ReadShape())
-    CheckShapeBaseline stats, shapeName, baseline
-    For Each item In ShapeFields(shapeName)
+    TestConfigureShape target, shapeName
+    baseline = TestShapeSnapshot(TestReadShape())
+    TestCheckShapeBaseline stats, shapeName, baseline
+    For Each item In TestShapeFields(shapeName)
         prefix = "shapeConfig." & CStr(item(0))
-        ConfigureShape target, shapeName
+        TestConfigureShape target, shapeName
         target.Cells(CLng(item(1)), CLng(item(2))).Value2 = item(4)
-        changed = ShapeSnapshot(ReadShape())
-        Check stats, prefix & ".effect", Not SameShape(baseline, changed)
+        changed = TestShapeSnapshot(TestReadShape())
+        TestCheck stats, prefix & ".effect", Not TestSameShape(baseline, changed)
         stats.Report = stats.Report & "SHAPE_CONFIG_EFFECT: key=" & CStr(item(0)) & "; area=" & CStr(changed(0)) & _
             "; cx=" & CStr(changed(1)) & "; cy=" & CStr(changed(2)) & vbCrLf
         target.Cells(CLng(item(1)), CLng(item(2))).Value2 = item(5)
         errorNumber = 0: description = vbNullString: valid = False
         On Error Resume Next
-        Set geom = ReadShape()
+        Set geom = TestReadShape()
         errorNumber = Err.Number: description = Err.Description
         If errorNumber = 0 Then valid = geom.IsValid(description)
         Err.Clear
         On Error GoTo 0
-        Check stats, prefix & ".invalid", Not valid And Len(description) > 0
-        ConfigureShape target, shapeName
-        Check stats, prefix & ".recovery", SameShape(baseline, ShapeSnapshot(ReadShape()))
+        TestCheck stats, prefix & ".invalid", Not valid And Len(description) > 0
+        TestConfigureShape target, shapeName
+        TestCheck stats, prefix & ".recovery", TestSameShape(baseline, TestShapeSnapshot(TestReadShape()))
     Next item
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимо проверяет площадь и центр. Скругления представлены точными
 ' дугами: потеря площади четырех углов равна (4 - pi) * R^2.
-Private Sub CheckShapeBaseline(ByRef stats As TGeometryConfigStats, ByVal shapeName As String, ByVal actual As Variant)
+Private Sub TestCheckShapeBaseline(ByRef stats As TGeometryConfigStats, ByVal shapeName As String, ByVal actual As Variant)
     Dim area As Double, openingArea As Double, cornerLoss As Double
     If shapeName = "Rectangles" Then
         area = 200# * 300# + 600# * 250#
-        Near stats, "shapeConfig.Rectangles.oracle.area", CDbl(actual(0)), area
-        Near stats, "shapeConfig.Rectangles.oracle.cx", CDbl(actual(1)), (600# * 250# * 300# + 200# * 300# * 50#) / area
-        Near stats, "shapeConfig.Rectangles.oracle.cy", CDbl(actual(2)), (600# * 250# * 125# + 200# * 300# * 400#) / area
+        TestNear stats, "shapeConfig.Rectangles.oracle.area", CDbl(actual(0)), area
+        TestNear stats, "shapeConfig.Rectangles.oracle.cx", CDbl(actual(1)), (600# * 250# * 300# + 200# * 300# * 50#) / area
+        TestNear stats, "shapeConfig.Rectangles.oracle.cy", CDbl(actual(2)), (600# * 250# * 125# + 200# * 300# * 400#) / area
     ElseIf shapeName = "HollowRectangle" Then
         cornerLoss = 4# - GEOM_PI
         openingArea = 400# * 500# - cornerLoss * 30# ^ 2
         area = 1000# * 1200# - cornerLoss * 60# ^ 2 - openingArea
-        Near stats, "shapeConfig.HollowRectangle.oracle.area", CDbl(actual(0)), area
-        Near stats, "shapeConfig.HollowRectangle.oracle.cx", CDbl(actual(1)), -openingArea * 40# / area
-        Near stats, "shapeConfig.HollowRectangle.oracle.cy", CDbl(actual(2)), -openingArea * 50# / area
+        TestNear stats, "shapeConfig.HollowRectangle.oracle.area", CDbl(actual(0)), area
+        TestNear stats, "shapeConfig.HollowRectangle.oracle.cx", CDbl(actual(1)), -openingArea * 40# / area
+        TestNear stats, "shapeConfig.HollowRectangle.oracle.cy", CDbl(actual(2)), -openingArea * 50# / area
     Else
-        Near stats, "shapeConfig.PointedSection.oracle.cx", CDbl(actual(1)), 0#
-        Near stats, "shapeConfig.PointedSection.oracle.cy", CDbl(actual(2)), 0#
+        TestNear stats, "shapeConfig.PointedSection.oracle.cx", CDbl(actual(1)), 0#
+        TestNear stats, "shapeConfig.PointedSection.oracle.cy", CDbl(actual(2)), 0#
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет именно условно выключенные поля формы: нижний прямоугольник и
 ' смещение, а также W/R2 простых боковых граней не меняют активную геометрию.
-Private Sub CheckShapeInactiveModes(ByRef stats As TGeometryConfigStats, ByVal target As Object, ByVal shapeName As String)
+Private Sub TestCheckShapeInactiveModes(ByRef stats As TGeometryConfigStats, ByVal target As Object, ByVal shapeName As String)
     Dim baseline As Variant, item As Variant
-    ConfigureShape target, shapeName
+    TestConfigureShape target, shapeName
     If shapeName = "Rectangles" Then
         target.Cells(4, 3).Value2 = "OneRect"
-        baseline = ShapeSnapshot(ReadShape())
+        baseline = TestShapeSnapshot(TestReadShape())
         For Each item In Array(Array(7, 3), Array(8, 3), Array(9, 3))
             target.Cells(CLng(item(0)), CLng(item(1))).Value2 = 100#
-            Check stats, "shapeConfig.Rectangles.Rectangle.inactive." & CStr(item(0)) & "." & CStr(item(1)), _
-                SameShape(baseline, ShapeSnapshot(ReadShape()))
+            TestCheck stats, "shapeConfig.Rectangles.Rectangle.inactive." & CStr(item(0)) & "." & CStr(item(1)), _
+                TestSameShape(baseline, TestShapeSnapshot(TestReadShape()))
         Next item
-        ConfigureShape target, shapeName
+        TestConfigureShape target, shapeName
         target.Cells(4, 3).Value2 = "TwoRect"
-        baseline = ShapeSnapshot(ReadShape())
+        baseline = TestShapeSnapshot(TestReadShape())
         target.Cells(9, 3).Value2 = 100#
-        Check stats, "shapeConfig.Rectangles.TwoRect.active.offset", Not SameShape(baseline, ShapeSnapshot(ReadShape()))
+        TestCheck stats, "shapeConfig.Rectangles.TwoRect.active.offset", Not TestSameShape(baseline, TestShapeSnapshot(TestReadShape()))
     ElseIf shapeName = "PointedSection" Then
         target.Cells(6, 3).Value2 = 0#: target.Cells(9, 3).Value2 = 0#
-        baseline = ShapeSnapshot(ReadShape())
+        baseline = TestShapeSnapshot(TestReadShape())
         For Each item In Array(Array(8, 3), Array(11, 3))
             target.Cells(CLng(item(0)), CLng(item(1))).Value2 = 70#
-            Check stats, "shapeConfig.PointedSection.W0.inactive." & CStr(item(0)) & "." & CStr(item(1)), _
-                SameShape(baseline, ShapeSnapshot(ReadShape()))
+            TestCheck stats, "shapeConfig.PointedSection.W0.inactive." & CStr(item(0)) & "." & CStr(item(1)), _
+                TestSameShape(baseline, TestShapeSnapshot(TestReadShape()))
         Next item
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Смена INPUT mm на cm с явным переводом всех длин обязана сохранять
 ' внутреннюю форму. Это не меняет контракт импорта AutoCAD и его миллиметры.
-Private Sub CheckShapeUnits(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
+Private Sub TestCheckShapeUnits(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal unitRange As Object, ByVal shapeName As String)
     Dim baseline As Variant, baselineBars As Variant
     unitRange.Cells(2, 2).Value2 = "mm"
-    ConfigureShape target, shapeName
-    baseline = ShapeSnapshot(ReadShape())
-    baselineBars = RequiredGeometryRouteSnapshot(shapeName, "Rebars")
+    TestConfigureShape target, shapeName
+    baseline = TestShapeSnapshot(TestReadShape())
+    baselineBars = TestRequiredGeometryRouteSnapshot(shapeName, "Rebars")
     unitRange.Cells(2, 2).Value2 = "cm"
-    ConfigureShape target, shapeName, 0.1
-    Check stats, "shapeConfig." & shapeName & ".units.cm", SameShape(baseline, ShapeSnapshot(ReadShape()))
-    Check stats, "shapeConfig." & shapeName & ".units.cm.rebars", SameGeometryRouteSnapshot(baselineBars, RequiredGeometryRouteSnapshot(shapeName, "Rebars"))
+    TestConfigureShape target, shapeName, 0.1
+    TestCheck stats, "shapeConfig." & shapeName & ".units.cm", TestSameShape(baseline, TestShapeSnapshot(TestReadShape()))
+    TestCheck stats, "shapeConfig." & shapeName & ".units.cm.rebars", TestSameGeometryRouteSnapshot(baselineBars, TestRequiredGeometryRouteSnapshot(shapeName, "Rebars"))
     unitRange.Cells(2, 2).Value2 = "mm"
-    ConfigureShape target, shapeName
+    TestConfigureShape target, shapeName
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Рецепт публикует пути армирования: переводим отступы/диаметры вместе с B/H/R.
 
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' В другом Geometry.Type корректные изменения невыбранной таблицы не должны
 ' влиять на расчетную форму Circle. Неверные значения здесь не маскируются.
-Private Sub CheckShapeInactive(ByRef stats As TGeometryConfigStats, ByVal target As Object, ByVal shapeName As String)
+Private Sub TestCheckShapeInactive(ByRef stats As TGeometryConfigStats, ByVal target As Object, ByVal shapeName As String)
     Dim item As Variant, baseline As Variant
-    ConfigureShape target, shapeName
-    ConfigureCircle ThisWorkbook.Names("rngCircleGeometry").RefersToRange
-    baseline = ShapeSnapshot(ReadShape())
-    For Each item In ShapeFields(shapeName)
-        ConfigureShape target, shapeName
-        ConfigureCircle ThisWorkbook.Names("rngCircleGeometry").RefersToRange
+    TestConfigureShape target, shapeName
+    TestConfigureCircle ThisWorkbook.Names("rngCircleGeometry").RefersToRange
+    baseline = TestShapeSnapshot(TestReadShape())
+    For Each item In TestShapeFields(shapeName)
+        TestConfigureShape target, shapeName
+        TestConfigureCircle ThisWorkbook.Names("rngCircleGeometry").RefersToRange
         target.Cells(CLng(item(1)), CLng(item(2))).Value2 = item(4)
-        Check stats, "shapeConfig." & CStr(item(0)) & ".inactive.type", SameShape(baseline, ShapeSnapshot(ReadShape()))
+        TestCheck stats, "shapeConfig." & CStr(item(0)) & ".inactive.type", TestSameShape(baseline, TestShapeSnapshot(TestReadShape()))
     Next item
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет все четыре пользовательских счетчика наружной арматуры. Текст,
 ' дробь, отрицательное/непредставимое число и ошибка Excel не выключают грань
 ' молча; сообщение должно назвать Config, фактическую ячейку и настройку.
 ' Служебные количества внутренних граней не являются пользовательским вводом.
-Private Sub CheckHollowCounts(ByRef stats As TGeometryConfigStats, ByVal target As Object)
+Private Sub TestCheckHollowCounts(ByRef stats As TGeometryConfigStats, ByVal target As Object)
     Dim rowIndex As Long, index As Long, bad As Variant, geom As CGeometryRegion, bars As CRebarLayout
     Dim errorNumber As Long, description As String, face As String, prefix As String, faceNames As Variant
     faceNames = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
-    ConfigureRebarFieldFixture target, "HollowRectangle", False
+    TestConfigureRebarFieldFixture target, "HollowRectangle", False
     Dim sides As Variant, cell As Object
     sides = Array("Top", "Bottom", "Left", "Right")
-    For rowIndex = 0 To 3: FixtureInputCell(target, "Main", CStr(sides(rowIndex)), "n").Value2 = 3: Next rowIndex
+    For rowIndex = 0 To 3: TestFixtureInputCell(target, "Main", CStr(sides(rowIndex)), "n").Value2 = 3: Next rowIndex
     For rowIndex = 0 To 3
-        Set cell = FixtureInputCell(target, "Main", CStr(sides(rowIndex)), "n")
+        Set cell = TestFixtureInputCell(target, "Main", CStr(sides(rowIndex)), "n")
         face = CStr(faceNames(rowIndex))
         cell.Value2 = 4
-        ReadGeometry geom, bars
-        Check stats, "shapeConfig.hollowCount." & face & ".effect", FaceBarCount(bars, face) = 4
+        TestReadGeometry geom, bars
+        TestCheck stats, "shapeConfig.hollowCount." & face & ".effect", TestFaceBarCount(bars, face) = 4
         cell.Value2 = 3
         For Each bad In Array("abc", -1#, 0.5, CVErr(2015), 2147483648#)
             index = index + 1
             cell.Value2 = bad
             errorNumber = 0: description = vbNullString
             On Error Resume Next
-            ReadGeometry geom, bars
+            TestReadGeometry geom, bars
             errorNumber = Err.Number: description = Err.Description
             Err.Clear
             On Error GoTo 0
             prefix = "shapeConfig.hollowCount." & face & "." & CStr(index)
-            Check stats, prefix & ".reject", errorNumber <> 0
-            Check stats, prefix & ".location", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0 And _
+            TestCheck stats, prefix & ".reject", errorNumber <> 0
+            TestCheck stats, prefix & ".location", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0 And _
                 InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
-            Check stats, prefix & ".parameter", InStr(1, description, CStr(sides(rowIndex)), vbBinaryCompare) > 0 And _
+            TestCheck stats, prefix & ".parameter", InStr(1, description, CStr(sides(rowIndex)), vbBinaryCompare) > 0 And _
                 (InStr(1, description, "Число стержней", vbBinaryCompare) > 0 Or InStr(1, description, "число", vbBinaryCompare) > 0 Or InStr(1, description, "Excel", vbBinaryCompare) > 0)
             stats.Report = stats.Report & "HOLLOW_COUNT_ERROR: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
             cell.Value2 = 3
-            ReadGeometry geom, bars
-            Check stats, prefix & ".recovery", FaceBarCount(bars, face) = 3
+            TestReadGeometry geom, bars
+            TestCheck stats, prefix & ".recovery", TestFaceBarCount(bars, face) = 3
         Next bad
         cell.Value2 = vbNullString
-        ReadGeometry geom, bars
-        Check stats, "shapeConfig.hollowCount." & face & ".blank.off", FaceBarCount(bars, face) = 0
+        TestReadGeometry geom, bars
+        TestCheck stats, "shapeConfig.hollowCount." & face & ".blank.off", TestFaceBarCount(bars, face) = 0
         cell.Value2 = 0
-        ReadGeometry geom, bars
-        Check stats, "shapeConfig.hollowCount." & face & ".zero.off", FaceBarCount(bars, face) = 0
+        TestReadGeometry geom, bars
+        TestCheck stats, "shapeConfig.hollowCount." & face & ".zero.off", TestFaceBarCount(bars, face) = 0
         cell.Value2 = 3
     Next rowIndex
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Считает стержни только выбранной стороны, исключая проекции на отверстие
 ' и соседние стороны. Наличие арматуры в других местах не доказывает действие настройки
 ' количества.
-Private Function FaceBarCount(ByVal bars As CRebarLayout, ByVal face As String) As Long
+Private Function TestFaceBarCount(ByVal bars As CRebarLayout, ByVal face As String) As Long
     Dim index As Long
     For index = 1 To bars.Count
-        If StrComp(bars.BarAnnotationGroupName(index), face, vbBinaryCompare) = 0 Then FaceBarCount = FaceBarCount + 1
+        If StrComp(bars.BarAnnotationGroupName(index), face, vbBinaryCompare) = 0 Then TestFaceBarCount = TestFaceBarCount + 1
     Next index
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Задает достаточное защитное расстояние и три активных ряда. Каждая следующая
 ' проверка меняет только одно поле относительно этого физически допустимого набора.
-Private Sub ConfigureCircle(ByVal target As Object)
-    SetKey target, "Circle.Diameter", 1000#
-    SetKey target, "Rebar.AxisDistance", 50#
-    SetKey target, "Rebar.Count", 8
-    SetKey target, "Rebar.Diameter", 16#
-    SetKey target, "Rebar.Diameter2", 12#
-    SetKey target, "Rebar.Diameter3", 10#
-    SetKey target, "Rebar.Loc2row", "Stacked"
-    SetKey target, "Rebar.Loc3row", "Stacked"
-    SetKey target, "Rebar.Bind2row", "EachBar"
-    SetKey target, "Rebar.Bind3row", "EachBar"
-    SetKey target, "Rebar.AxisOffset2", 0#: SetKey target, "Rebar.AxisOffset3", 0#
-    SetKey target, "Rebar.StartSetback", 0#: SetKey target, "Rebar.EndSetback", 0#
+Private Sub TestConfigureCircle(ByVal target As Object)
+    TestSetKey target, "Circle.Diameter", 1000#
+    TestSetKey target, "Rebar.AxisDistance", 50#
+    TestSetKey target, "Rebar.Count", 8
+    TestSetKey target, "Rebar.Diameter", 16#
+    TestSetKey target, "Rebar.Diameter2", 12#
+    TestSetKey target, "Rebar.Diameter3", 10#
+    TestSetKey target, "Rebar.Loc2row", "Stacked"
+    TestSetKey target, "Rebar.Loc3row", "Stacked"
+    TestSetKey target, "Rebar.Bind2row", "EachBar"
+    TestSetKey target, "Rebar.Bind3row", "EachBar"
+    TestSetKey target, "Rebar.AxisOffset2", 0#: TestSetKey target, "Rebar.AxisOffset3", 0#
+    TestSetKey target, "Rebar.StartSetback", 0#: TestSetKey target, "Rebar.EndSetback", 0#
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Первая позиция находится над центром, обход идёт по часовой стрелке.
 ' Контактное расстояние включает сумму радиусов и 2,5 мм на каждую соседнюю пару.
-Private Sub CheckCircleEffects(ByRef stats As TGeometryConfigStats, ByVal target As Object)
+Private Sub TestCheckCircleEffects(ByRef stats As TGeometryConfigStats, ByVal target As Object)
     Dim key As Variant, geom As CGeometryRegion, bars As CRebarLayout
     For Each key In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
             "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
-        ConfigureCircle target
+        TestConfigureCircle target
         Select Case CStr(key)
-            Case "Circle.Diameter": SetKey target, CStr(key), 1100#
-            Case "Rebar.AxisDistance": SetKey target, CStr(key), 60#
-            Case "Rebar.Count": SetKey target, CStr(key), 10
-            Case "Rebar.Diameter": SetKey target, CStr(key), 20#
-            Case "Rebar.Diameter2": SetKey target, CStr(key), 20#
-            Case "Rebar.Diameter3": SetKey target, CStr(key), 14#
-            Case Else: SetKey target, CStr(key), "SideBySide"
+            Case "Circle.Diameter": TestSetKey target, CStr(key), 1100#
+            Case "Rebar.AxisDistance": TestSetKey target, CStr(key), 60#
+            Case "Rebar.Count": TestSetKey target, CStr(key), 10
+            Case "Rebar.Diameter": TestSetKey target, CStr(key), 20#
+            Case "Rebar.Diameter2": TestSetKey target, CStr(key), 20#
+            Case "Rebar.Diameter3": TestSetKey target, CStr(key), 14#
+            Case Else: TestSetKey target, CStr(key), "SideBySide"
         End Select
-        ReadGeometry geom, bars
+        TestReadGeometry geom, bars
         Dim prefix As String
         prefix = "circleConfig.effect." & CStr(key)
         Select Case CStr(key)
             Case "Circle.Diameter"
-                Near stats, prefix & ".concreteExtent", geom.MaxX, 550#
-                Near stats, prefix & ".barAxis", bars.Y(1), 500#
+                TestNear stats, prefix & ".concreteExtent", geom.MaxX, 550#
+                TestNear stats, prefix & ".barAxis", bars.Y(1), 500#
             Case "Rebar.AxisDistance"
-                Near stats, prefix & ".barAxis", bars.Y(1), 440#
-                Near stats, prefix & ".row2Axis", bars.Y(2), 423.5
+                TestNear stats, prefix & ".barAxis", bars.Y(1), 440#
+                TestNear stats, prefix & ".row2Axis", bars.Y(2), 423.5
             Case "Rebar.Count"
-                Check stats, prefix & ".allRows", bars.Count = 30
-                Near stats, prefix & ".secondAngleX", bars.X(4), 450# * Sin(2# * GEOM_PI / 10#)
+                TestCheck stats, prefix & ".allRows", bars.Count = 30
+                TestNear stats, prefix & ".secondAngleX", bars.X(4), 450# * Sin(2# * GEOM_PI / 10#)
             Case "Rebar.Diameter"
-                Near stats, prefix & ".diameter", bars.Diameter(1), 20#
-                Near stats, prefix & ".row2Axis", bars.Y(2), 431.5
+                TestNear stats, prefix & ".diameter", bars.Diameter(1), 20#
+                TestNear stats, prefix & ".row2Axis", bars.Y(2), 431.5
             Case "Rebar.Diameter2"
-                Near stats, prefix & ".diameter", bars.Diameter(2), 20#
-                Near stats, prefix & ".row3Skip", bars.Y(3), 412#
+                TestNear stats, prefix & ".diameter", bars.Diameter(2), 20#
+                TestNear stats, prefix & ".row3Skip", bars.Y(3), 412#
             Case "Rebar.Diameter3"
-                Near stats, prefix & ".diameter", bars.Diameter(3), 14#
-                Near stats, prefix & ".row3Axis", bars.Y(3), 418#
+                TestNear stats, prefix & ".diameter", bars.Diameter(3), 14#
+                TestNear stats, prefix & ".row3Axis", bars.Y(3), 418#
             Case "Rebar.Loc2row"
-                Near stats, prefix & ".radialY", bars.Y(2), 450#
-                Near stats, prefix & ".clockwiseX", bars.X(2), 16.5
-                Near stats, prefix & ".row3NoSkip", bars.Y(3), 434.5
+                TestNear stats, prefix & ".radialY", bars.Y(2), 450#
+                TestNear stats, prefix & ".clockwiseX", bars.X(2), 16.5
+                TestNear stats, prefix & ".row3NoSkip", bars.Y(3), 434.5
             Case "Rebar.Loc3row"
-                Near stats, prefix & ".radialY", bars.Y(3), 450#
-                Near stats, prefix & ".clockwiseX", bars.X(3), 15.5
-                Near stats, prefix & ".row2Unchanged", bars.Y(2), 433.5
+                TestNear stats, prefix & ".radialY", bars.Y(3), 450#
+                TestNear stats, prefix & ".clockwiseX", bars.X(3), 15.5
+                TestNear stats, prefix & ".row2Unchanged", bars.Y(2), 433.5
         End Select
         stats.Report = stats.Report & "CIRCLE_CONFIG_EFFECT: key=" & CStr(key) & "; bars=" & CStr(bars.Count) & vbCrLf
     Next key
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет ошибочные численные/enum значения на том же reader/registry-маршруте,
 ' затем обычную раскладку. Пустые/нулевые диаметры сохраняют утвержденное выключение ряда.
-Private Sub CheckCircleBoundaries(ByRef stats As TGeometryConfigStats, ByVal target As Object)
+Private Sub TestCheckCircleBoundaries(ByRef stats As TGeometryConfigStats, ByVal target As Object)
     Dim key As Variant, value As Variant, errorNumber As Long, description As String
     Dim geom As CGeometryRegion, bars As CRebarLayout
     For Each key In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
             "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
-        ConfigureCircle target
+        TestConfigureCircle target
         If InStr(1, CStr(key), "Loc", vbBinaryCompare) > 0 Then value = "Unknown" Else value = -1
-        SetKey target, CStr(key), value
+        TestSetKey target, CStr(key), value
         errorNumber = 0: description = vbNullString
         On Error Resume Next
-        ReadGeometry geom, bars
+        TestReadGeometry geom, bars
         errorNumber = Err.Number: description = Err.Description
         Err.Clear
         On Error GoTo 0
-        Check stats, "circleConfig.invalid." & CStr(key), errorNumber <> 0 And Len(description) > 0
-        ConfigureCircle target
-        ReadGeometry geom, bars
-        Check stats, "circleConfig.recovery." & CStr(key), bars.Count = 24
+        TestCheck stats, "circleConfig.invalid." & CStr(key), errorNumber <> 0 And Len(description) > 0
+        TestConfigureCircle target
+        TestReadGeometry geom, bars
+        TestCheck stats, "circleConfig.recovery." & CStr(key), bars.Count = 24
     Next key
     For Each key In Array("Rebar.Diameter", "Rebar.Diameter2", "Rebar.Diameter3")
         For Each value In Array(vbNullString, 0#)
-            ConfigureCircle target
-            SetKey target, CStr(key), value
-            ReadGeometry geom, bars
+            TestConfigureCircle target
+            TestSetKey target, CStr(key), value
+            TestReadGeometry geom, bars
             If CStr(key) = "Rebar.Diameter" Then
-                Check stats, "circleConfig.optional." & CStr(key) & "." & CStr(value), bars.Count = 0
+                TestCheck stats, "circleConfig.optional." & CStr(key) & "." & CStr(value), bars.Count = 0
             Else
-                Check stats, "circleConfig.optional." & CStr(key) & "." & CStr(value), bars.Count = 16
+                TestCheck stats, "circleConfig.optional." & CStr(key) & "." & CStr(value), bars.Count = 16
             End If
         Next value
     Next key
-    ConfigureCircle target
-    SetKey target, "Rebar.Count", 0
-    ReadGeometry geom, bars
-    Check stats, "circleConfig.count.zero", bars.Count = 0
-    SetKey target, "Rebar.Count", 2
-    ReadGeometry geom, bars
-    Check stats, "circleConfig.count.minimum", bars.Count = 6
+    TestConfigureCircle target
+    TestSetKey target, "Rebar.Count", 0
+    TestReadGeometry geom, bars
+    TestCheck stats, "circleConfig.count.zero", bars.Count = 0
+    TestSetKey target, "Rebar.Count", 2
+    TestReadGeometry geom, bars
+    TestCheck stats, "circleConfig.count.minimum", bars.Count = 6
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' При выбранном Rectangles диаметр бетонного круга не влияет на его форму и арматуру.
 ' Общие параметры армирования принадлежат выбранному типу и здесь не считаются неактивными.
-Private Sub CheckCircleInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal target As Object)
-    ConfigureRebarFieldFixture ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange, "Rectangles", True
-    SetKey systemRange, "Geometry.Type", "Rectangles"
+Private Sub TestCheckCircleInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal target As Object)
+    TestConfigureRebarFieldFixture ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange, "Rectangles", True
+    TestSetKey systemRange, "Geometry.Type", "Rectangles"
     Dim originalGeom As CGeometryRegion, originalBars As CRebarLayout
     Dim geom As CGeometryRegion, bars As CRebarLayout, key As Variant, index As Long, equal As Boolean
-    ReadGeometry originalGeom, originalBars
+    TestReadGeometry originalGeom, originalBars
     For Each key In Array("Circle.Diameter")
         If InStr(1, CStr(key), "Loc", vbBinaryCompare) > 0 Then
-            SetKey target, CStr(key), "SideBySide"
+            TestSetKey target, CStr(key), "SideBySide"
         Else
-            SetKey target, CStr(key), 30#
+            TestSetKey target, CStr(key), 30#
         End If
-        ReadGeometry geom, bars
+        TestReadGeometry geom, bars
         equal = geom.MinX = originalGeom.MinX And geom.MaxX = originalGeom.MaxX And _
             geom.MinY = originalGeom.MinY And geom.MaxY = originalGeom.MaxY And bars.Count = originalBars.Count
         If bars.Count = originalBars.Count Then
@@ -819,13 +845,14 @@ Private Sub CheckCircleInactive(ByRef stats As TGeometryConfigStats, ByVal syste
                         bars.Diameter(index) <> originalBars.Diameter(index) Then equal = False
             Next index
         End If
-        Check stats, "circleConfig.inactive." & CStr(key), equal
+        TestCheck stats, "circleConfig.inactive." & CStr(key), equal
     Next key
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Читает текущие ячейки заново и использует штатные единицы/registry;
 ' прямые вызовы чистого Build здесь не могли бы обнаружить обрыв Config-передачи.
-Private Sub ReadGeometry(ByRef geom As CGeometryRegion, ByRef bars As CRebarLayout)
+Private Sub TestReadGeometry(ByRef geom As CGeometryRegion, ByRef bars As CRebarLayout)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition, executor As CRebarRuleExecutor
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -834,12 +861,13 @@ Private Sub ReadGeometry(ByRef geom As CGeometryRegion, ByRef bars As CRebarLayo
     Set executor = New CRebarRuleExecutor: Set bars = executor.Build(definition, geom)
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Меняет существующую ячейку по ключу таблицы. Отсутствующий ключ означает
 ' ошибку подготовки теста; новая настройка вместо него не создаётся.
-Private Sub SetKey(ByVal target As Object, ByVal key As String, ByVal value As Variant)
+Private Sub TestSetKey(ByVal target As Object, ByVal key As String, ByVal value As Variant)
     If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
         Dim circleCell As Object
-        Set circleCell = FixtureCircleFieldCell(target.Worksheet.Parent, key, target): circleCell.Value2 = value: Exit Sub
+        Set circleCell = TestFixtureCircleFieldCell(target.Worksheet.Parent, key, target): circleCell.Value2 = value: Exit Sub
     End If
     Dim rowIndex As Long
     For rowIndex = 2 To target.Rows.Count
@@ -851,27 +879,30 @@ Private Sub SetKey(ByVal target As Object, ByVal key As String, ByVal value As V
     Err.Raise vbObjectError + 5960, "modTestGeometryConfig", "Не найдена строка fixture: " & key
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает восстановленные двумерные Formula-массивы без округления,
 ' включая пустые значения; формы исходных диапазонов не изменяются тестом.
-Private Function SameFormula(ByVal actual As Variant, ByVal expected As Variant) As Boolean
+Private Function TestSameFormula(ByVal actual As Variant, ByVal expected As Variant) As Boolean
     Dim rowIndex As Long, columnIndex As Long
     For rowIndex = LBound(expected, 1) To UBound(expected, 1)
         For columnIndex = LBound(expected, 2) To UBound(expected, 2)
             If CStr(actual(rowIndex, columnIndex)) <> CStr(expected(rowIndex, columnIndex)) Then Exit Function
         Next columnIndex
     Next rowIndex
-    SameFormula = True
+    TestSameFormula = True
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Записывает абсолютный допуск 1e-6 мм и оба сравниваемых значения.
 ' Локальный допуск теста не изменяет настройки рабочего решателя.
-Private Sub Near(ByRef stats As TGeometryConfigStats, ByVal name As String, ByVal actual As Double, ByVal expected As Double)
-    Check stats, name, Abs(actual - expected) <= 0.000001
+Private Sub TestNear(ByRef stats As TGeometryConfigStats, ByVal name As String, ByVal actual As Double, ByVal expected As Double)
+    TestCheck stats, name, Abs(actual - expected) <= 0.000001
     stats.Report = stats.Report & "CIRCLE_CONFIG_NUMBER: " & name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected) & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохраняет счет и строку каждого assertion, не останавливая набор при несовпадении.
-Private Sub Check(ByRef stats As TGeometryConfigStats, ByVal name As String, ByVal condition As Boolean)
+Private Sub TestCheck(ByRef stats As TGeometryConfigStats, ByVal name As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
         stats.Report = stats.Report & "OK: " & name & vbCrLf
@@ -881,17 +912,19 @@ Private Sub Check(ByRef stats As TGeometryConfigStats, ByVal name As String, ByV
     End If
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ======================================================================
 ' ДЛЯ ТЕСТОВ: ОБЯЗАТЕЛЬНЫЙ ВВОД АКТИВНОЙ ГЕОМЕТРИИ
 ' ======================================================================
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет бетонную область и арматуру общего описания четырёх форм.
 ' Пропущенные пользовательские значения не подставляются. После серии,
 ' в том числе после ошибки, восстанавливаются все исходные формулы таблиц.
 Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats, ranges(0 To 5) As Object, saved(0 To 5) As Variant
     Dim names As Variant, shapes As Variant, shape As String, fields As Variant
     Dim i As Long, j As Long, item As Variant, route As Variant, bad As Variant
@@ -908,18 +941,18 @@ Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Lo
     ranges(1).Cells(2, 2).Value2 = "mm"
     For i = 0 To 3
         shape = CStr(shapes(i))
-        SetKey ranges(0), "Geometry.Type", shape
+        TestSetKey ranges(0), "Geometry.Type", shape
         If shape = "Circle" Then
-            ConfigureCircle ranges(i + 2)
-            Set cell = RequiredGeometryKeyCell(ranges(i + 2), "Circle.Diameter")
+            TestConfigureCircle ranges(i + 2)
+            Set cell = TestRequiredGeometryKeyCell(ranges(i + 2), "Circle.Diameter")
             fields = Array(Array("Circle.Diameter", cell.Row - ranges(i + 2).Row + 1, cell.Column - ranges(i + 2).Column + 1, CDbl(cell.Value2)))
         Else
-            ConfigureShape ranges(i + 2), shape
-            fields = ShapeFields(shape)
-            ConfigureRequiredGeometryRebars ranges(i + 2), shape
+            TestConfigureShape ranges(i + 2), shape
+            fields = TestShapeFields(shape)
+            TestConfigureRequiredGeometryRebars ranges(i + 2), shape
         End If
         For Each route In Array("Geometry", "Rebars")
-            baseline = RequiredGeometryRouteSnapshot(shape, CStr(route))
+            baseline = TestRequiredGeometryRouteSnapshot(shape, CStr(route))
             For Each item In fields
                 Set cell = ranges(i + 2).Cells(CLng(item(1)), CLng(item(2)))
                 caseIndex = 0
@@ -927,28 +960,28 @@ Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Lo
                     caseIndex = caseIndex + 1
                     cell.Value2 = bad
                     prefix = "requiredGeometry." & CStr(item(0)) & "." & CStr(route) & "." & CStr(caseIndex)
-                    RequiredGeometryProgress prefix, stats.Report
+                    TestRequiredGeometryProgress prefix, stats.Report
                     errorNumber = 0: description = vbNullString
                     On Error Resume Next
-                    current = RequiredGeometryRouteSnapshot(shape, CStr(route))
+                    current = TestRequiredGeometryRouteSnapshot(shape, CStr(route))
                     errorNumber = Err.Number: description = Err.Description
                     Err.Clear
                     On Error GoTo FailedRun
-                    Check stats, prefix & ".reject", errorNumber <> 0
-                    Check stats, prefix & ".namedRange", InStr(1, description, CStr(names(i + 2)), vbBinaryCompare) > 0
-                    Check stats, prefix & ".address", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0 And _
+                    TestCheck stats, prefix & ".reject", errorNumber <> 0
+                    TestCheck stats, prefix & ".namedRange", InStr(1, description, CStr(names(i + 2)), vbBinaryCompare) > 0
+                    TestCheck stats, prefix & ".address", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0 And _
                         InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
                     stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & _
                         CStr(errorNumber) & "; " & description & vbCrLf
                     cell.Value2 = item(3)
-                    current = RequiredGeometryRouteSnapshot(shape, CStr(route))
-                    Check stats, prefix & ".recovery", SameGeometryRouteSnapshot(baseline, current)
+                    current = TestRequiredGeometryRouteSnapshot(shape, CStr(route))
+                    TestCheck stats, prefix & ".recovery", TestSameGeometryRouteSnapshot(baseline, current)
                 Next bad
             Next item
         Next route
     Next i
-    CheckRequiredGeometryInactive stats, ranges(0), ranges(3), ranges(4)
-    CheckRequiredGeometryCommon stats, ranges(0), ranges(2)
+    TestCheckRequiredGeometryInactive stats, ranges(0), ranges(3), ranges(4)
+    TestCheckRequiredGeometryCommon stats, ranges(0), ranges(2)
     GoTo Restore
 FailedRun:
     stats.Failed = stats.Failed + 1
@@ -958,7 +991,7 @@ Restore:
     For j = 0 To 5
         If Not ranges(j) Is Nothing Then
             ranges(j).Formula = saved(j)
-            Check stats, "requiredGeometry.restore." & CStr(names(j)), SameFormula(ranges(j).Formula, saved(j))
+            TestCheck stats, "requiredGeometry.restore." & CStr(names(j)), TestSameFormula(ranges(j).Formula, saved(j))
         End If
     Next j
     GoTo Finish
@@ -967,35 +1000,37 @@ FailedRestore:
     stats.Report = stats.Report & "FAIL: requiredGeometry.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    FixtureRestoreInputs allConfig, savedConfig
+    TestFixtureRestoreInputs allConfig, savedConfig
     RunAudit03RequiredGeometryInputTests = stats.Report & "TOTAL_REQUIRED_GEOMETRY: passed=" & _
         CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Настраивает допустимые стержни для измененных размеров fixture. Не меняет
 ' тестируемые геометрические поля и не зависит от исходного армирования книги.
-Private Sub ConfigureRequiredGeometryRebars(ByVal target As Object, ByVal shape As String, Optional ByVal lengthScale As Double = 1#)
+Private Sub TestConfigureRequiredGeometryRebars(ByVal target As Object, ByVal shape As String, Optional ByVal lengthScale As Double = 1#)
     Dim keyed As CSectionInputReader, key As Variant
-    Set keyed = FixtureInput(target.Value2)
+    Set keyed = TestFixtureInput(target.Value2)
     For Each key In keyed.RowKeys("Main")
-        FixtureInputCell(target, "Main", CStr(key), "as").Value2 = IIf(shape = "Rectangles", 20#, 40#) * lengthScale
-        FixtureInputCell(target, "Main", CStr(key), "d").Value2 = 16# * lengthScale
-        If Left$(CStr(key), 7) <> "Opening" Then FixtureInputCell(target, "Main", CStr(key), "n").Value2 = 3
+        TestFixtureInputCell(target, "Main", CStr(key), "as").Value2 = IIf(shape = "Rectangles", 20#, 40#) * lengthScale
+        TestFixtureInputCell(target, "Main", CStr(key), "d").Value2 = 16# * lengthScale
+        If Left$(CStr(key), 7) <> "Opening" Then TestFixtureInputCell(target, "Main", CStr(key), "n").Value2 = 3
         If shape = "Rectangles" Then
-            FixtureInputCell(target, "Main", CStr(key), "s0").Value2 = 20# * lengthScale: FixtureInputCell(target, "Main", CStr(key), "s1").Value2 = 20# * lengthScale
+            TestFixtureInputCell(target, "Main", CStr(key), "s0").Value2 = 20# * lengthScale: TestFixtureInputCell(target, "Main", CStr(key), "s1").Value2 = 20# * lengthScale
         End If
-        FixtureInputCell(target, "Extra", CStr(key), "d2").Value2 = 0#: FixtureInputCell(target, "Extra", CStr(key), "d3").Value2 = 0#
+        TestFixtureInputCell(target, "Extra", CStr(key), "d2").Value2 = 0#: TestFixtureInputCell(target, "Extra", CStr(key), "d3").Value2 = 0#
     Next key
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Читает полный Config и выбранный производственный вход, не вызывая фабрику
 ' формы перед builder-ом: так тест обнаруживает его собственные defaults.
 ' Снимок арматуры содержит все координаты/диаметры, а не только общий count.
-Private Function RequiredGeometryRouteSnapshot(ByVal shape As String, ByVal route As String) As Variant
+Private Function TestRequiredGeometryRouteSnapshot(ByVal shape As String, ByVal route As String) As Variant
     Dim geom As CGeometryRegion, bars As CRebarLayout
-    ReadGeometry geom, bars
+    TestReadGeometry geom, bars
     If route = "Geometry" Then
-        RequiredGeometryRouteSnapshot = ShapeSnapshot(geom)
+        TestRequiredGeometryRouteSnapshot = TestShapeSnapshot(geom)
         Exit Function
     End If
     Dim values() As Double, i As Long
@@ -1004,84 +1039,87 @@ Private Function RequiredGeometryRouteSnapshot(ByVal shape As String, ByVal rout
     For i = 1 To bars.Count
         values(i * 3 - 2) = bars.X(i): values(i * 3 - 1) = bars.Y(i): values(i * 3) = bars.Diameter(i)
     Next i
-    RequiredGeometryRouteSnapshot = values
+    TestRequiredGeometryRouteSnapshot = values
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает расчетные snapshots в том же абсолютном геометрическом допуске,
 ' что и shape-tests; неодинаковый размер массива означает различие раскладки.
-Private Function SameGeometryRouteSnapshot(ByVal first As Variant, ByVal second As Variant) As Boolean
+Private Function TestSameGeometryRouteSnapshot(ByVal first As Variant, ByVal second As Variant) As Boolean
     If UBound(first) <> UBound(second) Then Exit Function
     Dim i As Long
     For i = LBound(first) To UBound(first)
         If Abs(CDbl(first(i)) - CDbl(second(i))) > 0.000001 Then Exit Function
     Next i
-    SameGeometryRouteSnapshot = True
+    TestSameGeometryRouteSnapshot = True
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Находит фактическую ячейку параметра в таблице. Отсутствующая строка —
 ' ошибка теста; значение по умолчанию не подставляется.
-Private Function RequiredGeometryKeyCell(ByVal target As Object, ByVal key As String) As Object
+Private Function TestRequiredGeometryKeyCell(ByVal target As Object, ByVal key As String) As Object
     If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
-        Set RequiredGeometryKeyCell = FixtureCircleFieldCell(target.Worksheet.Parent, key, target): Exit Function
+        Set TestRequiredGeometryKeyCell = TestFixtureCircleFieldCell(target.Worksheet.Parent, key, target): Exit Function
     End If
     Dim item As Variant, shape As String, rowIndex As Long
     shape = Split(key, ".")(0)
     If shape <> "Rectangles" And shape <> "PointedSection" And shape <> "HollowRectangle" Then
         For rowIndex = 2 To target.Rows.Count
-            If CStr(target.Cells(rowIndex, 1).Value2) = key Then Set RequiredGeometryKeyCell = target.Cells(rowIndex, 2): Exit Function
+            If CStr(target.Cells(rowIndex, 1).Value2) = key Then Set TestRequiredGeometryKeyCell = target.Cells(rowIndex, 2): Exit Function
         Next rowIndex
         Err.Raise vbObjectError + 5965, , "Не найдено контрольное поле " & key
     End If
-    For Each item In ShapeFields(shape)
-        If CStr(item(0)) = key Then Set RequiredGeometryKeyCell = target.Cells(CLng(item(1)), CLng(item(2))): Exit Function
+    For Each item In TestShapeFields(shape)
+        If CStr(item(0)) = key Then Set TestRequiredGeometryKeyCell = target.Cells(CLng(item(1)), CLng(item(2))): Exit Function
     Next item
     Err.Raise vbObjectError + 5965, , "Не найдено контрольное поле " & key
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет неактивные размеры Rectangle и радиусы R2 сторон без выступа. Эти значения
 ' не участвуют в форме/раскладке, поэтому не должны требовать числового ввода.
 ' Ошибки формул Excel здесь не подменяются пустым значением reader-а.
-Private Sub CheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, _
+Private Sub TestCheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, _
         ByVal rectRange As Object, ByVal roundedRange As Object)
     Dim route As Variant, item As Variant, value As Variant, baseline As Variant, current As Variant
     Dim description As String, errorNumber As Long, prefix As String
-    SetKey systemRange, "Geometry.Type", "Rectangles"
-    ConfigureShape rectRange, "Rectangles": ConfigureRequiredGeometryRebars rectRange, "Rectangles"
+    TestSetKey systemRange, "Geometry.Type", "Rectangles"
+    TestConfigureShape rectRange, "Rectangles": TestConfigureRequiredGeometryRebars rectRange, "Rectangles"
     rectRange.Cells(4, 3).Value2 = "OneRect"
     For Each route In Array("Geometry", "Rebars")
-        baseline = RequiredGeometryRouteSnapshot("Rectangles", CStr(route))
+        baseline = TestRequiredGeometryRouteSnapshot("Rectangles", CStr(route))
         For Each item In Array(Array(7, 3), Array(8, 3), Array(9, 3))
             For Each value In Array(vbNullString, "TODO", "abc")
                 rectRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = value
                 errorNumber = 0: description = vbNullString
                 On Error Resume Next
-                current = RequiredGeometryRouteSnapshot("Rectangles", CStr(route))
+                current = TestRequiredGeometryRouteSnapshot("Rectangles", CStr(route))
                 errorNumber = Err.Number: description = Err.Description
                 Err.Clear: On Error GoTo 0
                 prefix = "requiredGeometry.inactive.Rectangle." & CStr(route) & "." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(value)
-                Check stats, prefix, errorNumber = 0
-                If errorNumber = 0 Then Check stats, prefix & ".snapshot", SameGeometryRouteSnapshot(baseline, current)
+                TestCheck stats, prefix, errorNumber = 0
+                If errorNumber = 0 Then TestCheck stats, prefix & ".snapshot", TestSameGeometryRouteSnapshot(baseline, current)
                 stats.Report = stats.Report & "INACTIVE_GEOMETRY: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
             Next value
             rectRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = 100#
         Next item
     Next route
-    SetKey systemRange, "Geometry.Type", "PointedSection"
-    ConfigureShape roundedRange, "PointedSection": ConfigureRequiredGeometryRebars roundedRange, "PointedSection"
+    TestSetKey systemRange, "Geometry.Type", "PointedSection"
+    TestConfigureShape roundedRange, "PointedSection": TestConfigureRequiredGeometryRebars roundedRange, "PointedSection"
     roundedRange.Cells(6, 3).Value2 = 0#: roundedRange.Cells(9, 3).Value2 = 0#
     For Each route In Array("Geometry", "Rebars")
-        baseline = RequiredGeometryRouteSnapshot("PointedSection", CStr(route))
+        baseline = TestRequiredGeometryRouteSnapshot("PointedSection", CStr(route))
         For Each item In Array(Array(8, 3), Array(11, 3))
             For Each value In Array(vbNullString, "TODO", "abc")
                 roundedRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = value
                 errorNumber = 0: description = vbNullString
                 On Error Resume Next
-                current = RequiredGeometryRouteSnapshot("PointedSection", CStr(route))
+                current = TestRequiredGeometryRouteSnapshot("PointedSection", CStr(route))
                 errorNumber = Err.Number: description = Err.Description
                 Err.Clear: On Error GoTo 0
                 prefix = "requiredGeometry.inactive.W0." & CStr(route) & "." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(value)
-                Check stats, prefix, errorNumber = 0
-                If errorNumber = 0 Then Check stats, prefix & ".snapshot", SameGeometryRouteSnapshot(baseline, current)
+                TestCheck stats, prefix, errorNumber = 0
+                If errorNumber = 0 Then TestCheck stats, prefix & ".snapshot", TestSameGeometryRouteSnapshot(baseline, current)
                 stats.Report = stats.Report & "INACTIVE_GEOMETRY: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
             Next value
             roundedRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = 0#
@@ -1089,17 +1127,18 @@ Private Sub CheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStats, B
     Next route
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Обязательные общие Geometry/mesh поля проверяет штатная сборка модели.
 ' В missing-варианте временно меняется ключ, а не удаляются пользовательские
 ' строки; recovery восстанавливает его до следующего сценария.
-Private Sub CheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal circleRange As Object)
+Private Sub TestCheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal circleRange As Object)
     Dim key As Variant, bad As Variant, cell As Object, savedValue As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel
     Dim errorNumber As Long, description As String, prefix As String, caseIndex As Long
-    SetKey systemRange, "Geometry.Type", "Circle": SetKey systemRange, "Geometry.Source", "Generated"
-    ConfigureCircle circleRange
+    TestSetKey systemRange, "Geometry.Type", "Circle": TestSetKey systemRange, "Geometry.Source", "Generated"
+    TestConfigureCircle circleRange
     For Each key In Array("Geometry.Type", "Geometry.Source", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions")
-        Set cell = RequiredGeometryKeyCell(systemRange, CStr(key))
+        Set cell = TestRequiredGeometryKeyCell(systemRange, CStr(key))
         savedValue = cell.Formula: caseIndex = 0
         For Each bad In Array(vbNullString, "TODO", "abc", CVErr(2015), "__MISSING_KEY__")
             caseIndex = caseIndex + 1
@@ -1109,42 +1148,43 @@ Private Sub CheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats, ByV
                 cell.Value2 = bad
             End If
             errorNumber = 0: description = vbNullString
-            RequiredGeometryProgress "requiredGeometry.common." & CStr(key) & "." & CStr(caseIndex), stats.Report
+            TestRequiredGeometryProgress "requiredGeometry.common." & CStr(key) & "." & CStr(caseIndex), stats.Report
             On Error Resume Next
-            Set model = RequiredGeometryModelFromWorkbook()
+            Set model = TestRequiredGeometryModelFromWorkbook()
             errorNumber = Err.Number: description = Err.Description
             Err.Clear: On Error GoTo 0
             prefix = "requiredGeometry.common." & CStr(key) & "." & CStr(caseIndex)
-            Check stats, prefix & ".reject", errorNumber <> 0
-            Check stats, prefix & ".key", InStr(1, description, CStr(key), vbBinaryCompare) > 0
-            ' Reader общих настроек называет лист и ячейку словами; reader геометрии использует Sheet!Cell.
-            Check stats, prefix & ".location", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0 Or _
-                InStr(1, description, "лист " & cell.Worksheet.Name, vbTextCompare) > 0
-            If caseIndex < 5 Then Check stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
+            TestCheck stats, prefix & ".reject", errorNumber <> 0
+            TestCheck stats, prefix & ".key", InStr(1, description, CStr(key), vbBinaryCompare) > 0
+            TestCheck stats, prefix & ".location", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0 Or _
+                InStr(1, description, "лист " & cell.Worksheet.Name, vbTextCompare) > 0 ' Reader общих настроек называет лист и ячейку словами; reader геометрии использует Sheet!Cell.
+            If caseIndex < 5 Then TestCheck stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
             stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
             cell.Offset(0, -1).Value2 = key: cell.Formula = savedValue
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
             Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
-            Check stats, prefix & ".recovery", model.ConcreteCount > 0 And model.RebarCount = 24
+            TestCheck stats, prefix & ".recovery", model.ConcreteCount > 0 And model.RebarCount = 24
         Next bad
     Next key
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет обычное чтение, преобразование единиц и построение без подавления
 ' ошибок между шагами. После первой ошибки последующие шаги не выполняются;
 ' вызывающий тест сохраняет причину отказа всего вызова.
-Private Function RequiredGeometryModelFromWorkbook() As CSectionModel
+Private Function TestRequiredGeometryModelFromWorkbook() As CSectionModel
     Dim settings As CSystemSettingsReader, units As CUnitSystem
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set RequiredGeometryModelFromWorkbook = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    Set TestRequiredGeometryModelFromWorkbook = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохраняет уже выполненные assertions и следующий сценарий рядом с временной
 ' книгой. Watchdog забирает этот журнал при timeout; отметка START не считается
 ' успешной проверкой. Ошибка записи диагностики не изменяет результат теста.
-Private Sub RequiredGeometryProgress(ByVal nextCase As String, ByVal report As String)
+Private Sub TestRequiredGeometryProgress(ByVal nextCase As String, ByVal report As String)
     On Error Resume Next
     Dim fso As Object, stream As Object
     Set fso = CreateObject("Scripting.FileSystemObject")
@@ -1154,8 +1194,9 @@ Private Sub RequiredGeometryProgress(ByVal nextCase As String, ByVal report As S
     On Error GoTo 0
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: ПОАДРЕСНЫЕ ПАРАМЕТРЫ ГРАНЕЙ И ДОПОЛНИТЕЛЬНЫХ РЯДОВ
+' ПОАДРЕСНЫЕ ПАРАМЕТРЫ ГРАНЕЙ И ДОПОЛНИТЕЛЬНЫХ РЯДОВ
 ' ==========================================================================
 ' Читает каждую физическую грань через настоящий Config/registry pipeline.
 ' Прямоугольные контуры дают независимый oracle нормали, диаметра и количества;
@@ -1164,7 +1205,7 @@ End Sub
 Public Function RunAudit03RebarFieldConfigTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats, ranges(0 To 5) As Object, saved(0 To 5) As Variant
     Dim names As Variant, shapes As Variant, shape As String, face As Variant, field As Variant
     Dim i As Long, cases As Long, target As Object
@@ -1177,19 +1218,19 @@ Public Function RunAudit03RebarFieldConfigTests(Optional ByRef passed As Long = 
         saved(i) = ranges(i).Formula
     Next i
     ranges(1).Cells(2, 2).Value2 = "mm"
-    SetKey ranges(0), "Geometry.Source", "Generated"
+    TestSetKey ranges(0), "Geometry.Source", "Generated"
     For i = 0 To 2
         shape = CStr(shapes(i)): Set target = ranges(i + 2)
-        SetKey ranges(0), "Geometry.Type", shape
-        For Each face In RebarFieldFaces(shape)
-            For Each field In RebarFaceFields(shape, face)
-                ConfigureRebarFieldFixture target, shape, CBool(field(3))
-                CheckRebarFieldEffect stats, target, shape, face, field, cases
-                CheckRebarFieldInvalid stats, target, shape, face, field, cases
+        TestSetKey ranges(0), "Geometry.Type", shape
+        For Each face In TestRebarFieldFaces(shape)
+            For Each field In TestRebarFaceFields(shape, face)
+                TestConfigureRebarFieldFixture target, shape, CBool(field(3))
+                TestCheckRebarFieldEffect stats, target, shape, face, field, cases
+                TestCheckRebarFieldInvalid stats, target, shape, face, field, cases
             Next field
         Next face
     Next i
-    CheckInactiveRebarFields stats, ranges(0), ranges(5), ranges(2), ranges(3), ranges(4), cases
+    TestCheckInactiveRebarFields stats, ranges(0), ranges(5), ranges(2), ranges(3), ranges(4), cases
     GoTo Restore
 FailedRun:
     stats.Failed = stats.Failed + 1
@@ -1199,7 +1240,7 @@ Restore:
     For i = 0 To 5
         If Not ranges(i) Is Nothing Then
             ranges(i).Formula = saved(i)
-            Check stats, "rebarFields.restore." & CStr(names(i)), SameFormula(ranges(i).Formula, saved(i))
+            TestCheck stats, "rebarFields.restore." & CStr(names(i)), TestSameFormula(ranges(i).Formula, saved(i))
         End If
     Next i
     GoTo Finish
@@ -1208,17 +1249,18 @@ FailedRestore:
     stats.Report = stats.Report & "FAIL: rebarFields.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    FixtureRestoreInputs allConfig, savedConfig
+    TestFixtureRestoreInputs allConfig, savedConfig
     RunAudit03RebarFieldConfigTests = stats.Report & "TOTAL_REBAR_FIELD_CONFIG: passed=" & CStr(passed) & _
         "; failed=" & CStr(failed) & "; cases=" & CStr(cases) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет неактивность на настоящем workbook-маршруте, а не только в Build.
 ' Общие loc/bind Rectangles не считаются неактивными, пока активна вторая сторона;
 ' для этого сценария выключаются оба первых ряда соответствующей пары граней.
 ' as/отступы отсутствующего ряда здесь не объявляются неактивными автоматически:
 ' например cover Opening может ограничивать проекции соседних стержней.
-Private Sub CheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, _
+Private Sub TestCheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, _
         ByVal circleRange As Object, ByVal rectRange As Object, ByVal roundedRange As Object, _
         ByVal hollowRange As Object, ByRef cases As Long)
     Dim shape As Variant, face As Variant, field As Variant, mode As Variant, target As Object
@@ -1229,13 +1271,13 @@ Private Sub CheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, ByVal 
             Case "PointedSection": Set target = roundedRange
             Case "HollowRectangle": Set target = hollowRange
         End Select
-        SetKey systemRange, "Geometry.Type", CStr(shape)
-        For Each face In RebarFieldFaces(CStr(shape))
-            For Each field In RebarFaceFields(CStr(shape), face)
+        TestSetKey systemRange, "Geometry.Type", CStr(shape)
+        For Each face In TestRebarFieldFaces(CStr(shape))
+            For Each field In TestRebarFaceFields(CStr(shape), face)
                 kind = CStr(field(0))
                 If Left$(kind, 3) = "loc" Or Left$(kind, 4) = "bind" Then
-                    ConfigureRebarFieldFixture target, CStr(shape), False
-                    CheckInactiveRebarCell stats, target, CStr(shape), face, field, "extraRowsOff", cases
+                    TestConfigureRebarFieldFixture target, CStr(shape), False
+                    TestCheckInactiveRebarCell stats, target, CStr(shape), face, field, "extraRowsOff", cases
                 End If
                 ' Отступы отключенной наружной линии не нужны. Исключение:
                 ' as Opening ограничивает продолжение соседних проекций.
@@ -1245,77 +1287,78 @@ Private Sub CheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, ByVal 
                 If kind = "d2" Or kind = "d3" Or Left$(kind, 3) = "loc" Or Left$(kind, 4) = "bind" Or inactiveOffset Then
                     For Each mode In Array("diameterOff", "countOff")
                         If CStr(mode) <> "countOff" Or Left$(CStr(face(0)), 8) <> "Opening." Then
-                            ConfigureRebarFieldFixture target, CStr(shape), True
+                            TestConfigureRebarFieldFixture target, CStr(shape), True
                             rowIndex = CLng(face(1))
                             If CStr(mode) = "countOff" Then
-                                RebarFieldCell(target, rowIndex, 5).Value2 = 0
+                                TestRebarFieldCell(target, rowIndex, 5).Value2 = 0
                             Else
-                                RebarFieldCell(target, rowIndex, 4).Value2 = 0#
+                                TestRebarFieldCell(target, rowIndex, 4).Value2 = 0#
                             End If
                             If CStr(shape) = "Rectangles" Then
                                 pairRow = rowIndex + 1
                                 If (rowIndex - 5) Mod 2 <> 0 Then pairRow = rowIndex - 1
                                 If CStr(mode) = "countOff" Then
-                                    RebarFieldCell(target, pairRow, 5).Value2 = 0
+                                    TestRebarFieldCell(target, pairRow, 5).Value2 = 0
                                 Else
-                                    RebarFieldCell(target, pairRow, 4).Value2 = 0#
+                                    TestRebarFieldCell(target, pairRow, 4).Value2 = 0#
                                 End If
                             End If
-                            CheckInactiveRebarCell stats, target, CStr(shape), face, field, CStr(mode), cases
+                            TestCheckInactiveRebarCell stats, target, CStr(shape), face, field, CStr(mode), cases
                         End If
                     Next mode
                 End If
                 If CStr(shape) = "Rectangles" And CLng(face(1)) >= 9 Then
-                    ConfigureRebarFieldFixture target, "Rectangles", True
-                    FixtureInputCell(target, "General", "Shape").Value2 = "OneRect"
-                    CheckInactiveRebarCell stats, target, "Rectangles", face, field, "lowerRectangleOff", cases
+                    TestConfigureRebarFieldFixture target, "Rectangles", True
+                    TestFixtureInputCell(target, "General", "Shape").Value2 = "OneRect"
+                    TestCheckInactiveRebarCell stats, target, "Rectangles", face, field, "lowerRectangleOff", cases
                 End If
             Next field
         Next face
-        ' Ошибка в армировании невыбранного типа не влияет на круг.
-        modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-        face = RebarFieldFaces(CStr(shape))(0)
-        field = RebarFaceFields(CStr(shape), face)(0)
-        CheckInactiveRebarCell stats, target, "Circle", face, field, "otherType", cases
+        modTestShapeArchitecture.TestConfigureShapeFixture "Circle" ' Ошибка в армировании невыбранного типа не влияет на круг.
+        face = TestRebarFieldFaces(CStr(shape))(0)
+        field = TestRebarFaceFields(CStr(shape), face)(0)
+        TestCheckInactiveRebarCell stats, target, "Circle", face, field, "otherType", cases
     Next shape
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Меняет только одну неиспользуемую ячейку и сравнивает полный расчетный layout
 ' с независимым снимком до мутации. Ошибка формулы проверяется отдельно от текста;
 ' после каждой попытки исходная Formula восстанавливается до следующего чтения.
-Private Sub CheckInactiveRebarCell(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
+Private Sub TestCheckInactiveRebarCell(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal activeShape As String, ByVal face As Variant, ByVal field As Variant, _
         ByVal mode As String, ByRef cases As Long)
     Dim cell As Object, savedValue As Variant, bad As Variant, baseline As Variant, current As Variant
     Dim prefix As String, number As Long, description As String, index As Long
-    Set cell = RebarFieldCell(target, CLng(field(1)), CLng(field(2)))
+    Set cell = TestRebarFieldCell(target, CLng(field(1)), CLng(field(2)))
     savedValue = cell.Formula
-    baseline = RequiredGeometryRouteSnapshot(activeShape, "Rebars")
+    baseline = TestRequiredGeometryRouteSnapshot(activeShape, "Rebars")
     For Each bad In Array(vbNullString, "abc", CVErr(2015))
         index = index + 1: cases = cases + 1
         prefix = "rebarFields.inactive." & mode & "." & CStr(face(0)) & "." & CStr(field(0)) & "." & CStr(index)
         cell.Value2 = bad: number = 0: description = vbNullString
-        RequiredGeometryProgress prefix, stats.Report
+        TestRequiredGeometryProgress prefix, stats.Report
         On Error Resume Next
-        current = RequiredGeometryRouteSnapshot(activeShape, "Rebars")
+        current = TestRequiredGeometryRouteSnapshot(activeShape, "Rebars")
         number = Err.Number: description = Err.Description
         Err.Clear: On Error GoTo 0
-        Check stats, prefix & ".noInterference", number = 0
-        If number = 0 Then Check stats, prefix & ".snapshot", SameGeometryRouteSnapshot(baseline, current)
+        TestCheck stats, prefix & ".noInterference", number = 0
+        If number = 0 Then TestCheck stats, prefix & ".snapshot", TestSameGeometryRouteSnapshot(baseline, current)
         stats.Report = stats.Report & "INACTIVE_REBAR_FIELD: " & prefix & "; error=" & CStr(number) & "; " & description & vbCrLf
         cell.Formula = savedValue
-        current = RequiredGeometryRouteSnapshot(activeShape, "Rebars")
-        Check stats, prefix & ".recovery", SameGeometryRouteSnapshot(baseline, current)
+        current = TestRequiredGeometryRouteSnapshot(activeShape, "Rebars")
+        TestCheck stats, prefix & ".recovery", TestSameGeometryRouteSnapshot(baseline, current)
     Next bad
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Описывает физические грани: имя layout-группы, строка первого/дополнительных
 ' рядов, нормаль внутрь бетона и касательная обхода. Это независимые сведения
 ' прямоугольного fixture, а не вызов production-функции смещения ряда.
-Private Function RebarFieldFaces(ByVal shape As String) As Variant
+Private Function TestRebarFieldFaces(ByVal shape As String) As Variant
     Select Case shape
         Case "Rectangles"
-            RebarFieldFaces = Array(Array("H1.as_1", 7, 20, 1#, 0#, 0#, 1#), _
+            TestRebarFieldFaces = Array(Array("H1.as_1", 7, 20, 1#, 0#, 0#, 1#), _
                 Array("H1.as_2", 8, 21, -1#, 0#, 0#, -1#), _
                 Array("B1.as_1", 5, 18, 0#, -1#, 1#, 0#), _
                 Array("B1.as_2", 6, 19, 0#, 1#, -1#, 0#), _
@@ -1324,12 +1367,12 @@ Private Function RebarFieldFaces(ByVal shape As String) As Variant
                 Array("B2.as_1", 9, 22, 0#, -1#, 1#, 0#), _
                 Array("B2.as_2", 10, 23, 0#, 1#, -1#, 0#))
         Case "PointedSection"
-            RebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, 1#), _
+            TestRebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, 1#), _
                 Array("H.Right", 8, 21, -1#, 0#, 0#, -1#), _
                 Array("B.Top", 5, 18, 0#, -1#, 1#, 0#), _
                 Array("B.Bottom", 6, 19, 0#, 1#, -1#, 0#))
         Case "HollowRectangle"
-            RebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, 1#), _
+            TestRebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, 1#), _
                 Array("H.Right", 8, 21, -1#, 0#, 0#, -1#), _
                 Array("B.Top", 5, 18, 0#, -1#, 1#, 0#), _
                 Array("B.Bottom", 6, 19, 0#, 1#, -1#, 0#), _
@@ -1342,85 +1385,88 @@ Private Function RebarFieldFaces(ByVal shape As String) As Variant
     End Select
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Перечисляет настоящие input-ячейки одной грани: тип поля, относительная
 ' строка/колонка и необходимость активных дополнительных рядов. Количество
 ' Opening отсутствует по контракту и не превращается в искусственный ввод.
-Private Function RebarFaceFields(ByVal shape As String, ByVal face As Variant) As Variant
+Private Function TestRebarFaceFields(ByVal shape As String, ByVal face As Variant) As Variant
     Dim mainRow As Long, extraRow As Long
     mainRow = CLng(face(1)): extraRow = CLng(face(2))
     If shape = "Rectangles" Then
-        RebarFaceFields = Array(Array("as", mainRow, 3, False), Array("d", mainRow, 4, False), _
+        TestRebarFaceFields = Array(Array("as", mainRow, 3, False), Array("d", mainRow, 4, False), _
             Array("n", mainRow, 5, False), Array("start", mainRow, 6, False), Array("end", mainRow, 7, False), _
             Array("d2", extraRow, 3, True), Array("loc2", extraRow, 6, True), Array("bind2", extraRow, 5, True), _
             Array("d3", extraRow, 7, True), Array("loc3", extraRow, 10, True), Array("bind3", extraRow, 9, True))
     ElseIf Left$(CStr(face(0)), 8) = "Opening." Then
-        RebarFaceFields = Array(Array("as", mainRow, 3, False), Array("d", mainRow, 4, False), _
+        TestRebarFaceFields = Array(Array("as", mainRow, 3, False), Array("d", mainRow, 4, False), _
             Array("d2", extraRow, 3, True), Array("loc2", extraRow, 6, True), Array("bind2", extraRow, 5, True), _
             Array("d3", extraRow, 7, True), Array("loc3", extraRow, 10, True), Array("bind3", extraRow, 9, True))
     Else
-        RebarFaceFields = Array(Array("as", mainRow, 3, False), Array("d", mainRow, 4, False), Array("n", mainRow, 5, False), _
+        TestRebarFaceFields = Array(Array("as", mainRow, 3, False), Array("d", mainRow, 4, False), Array("n", mainRow, 5, False), _
             Array("d2", extraRow, 3, True), Array("loc2", extraRow, 6, True), Array("bind2", extraRow, 5, True), _
             Array("d3", extraRow, 7, True), Array("loc3", extraRow, 10, True), Array("bind3", extraRow, 9, True))
     End If
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Задает достаточно просторные прямые контуры и пять базовых стержней каждой
 ' грани. Дополнительные ряды при необходимости имеют разные диаметры 12/10.
 ' Концевые отступы 100 мм оставляют запас для контактного смещения до 35 мм:
 ' здесь проверяем поля ввода, а пропуски у углов — в RunFullBoundaryOffsetTests.
-Private Sub ConfigureRebarFieldFixture(ByVal target As Object, ByVal shape As String, ByVal extras As Boolean)
-    FixtureSelectRecipeType ThisWorkbook, shape
-    ConfigureShape target, shape
+Private Sub TestConfigureRebarFieldFixture(ByVal target As Object, ByVal shape As String, ByVal extras As Boolean)
+    TestFixtureSelectRecipeType ThisWorkbook, shape
+    TestConfigureShape target, shape
     Dim face As Variant, mainRow As Long, extraRow As Long, column As Variant
     Select Case shape
         Case "Rectangles"
-            target.Cells(4, 3).Value2 = "TwoRect": FixtureInputCell(target, "General", "XOffset").Value2 = 0#
-            For Each column In Array("H1", "B1", "H2", "B2"): FixtureInputCell(target, "General", CStr(column)).Value2 = 800#: Next column
+            target.Cells(4, 3).Value2 = "TwoRect": TestFixtureInputCell(target, "General", "XOffset").Value2 = 0#
+            For Each column In Array("H1", "B1", "H2", "B2"): TestFixtureInputCell(target, "General", CStr(column)).Value2 = 800#: Next column
         Case "PointedSection"
             target.Cells(4, 3).Value2 = 800#: target.Cells(5, 3).Value2 = 800#
             For column = 2 To 3
-                FixtureInputCell(target, "Detail", "W", IIf(column = 2, "left", "right")).Value2 = 0#
-                FixtureInputCell(target, "Detail", "R1", IIf(column = 2, "left", "right")).Value2 = 0#: FixtureInputCell(target, "Detail", "R2", IIf(column = 2, "left", "right")).Value2 = 0#
+                TestFixtureInputCell(target, "Detail", "W", IIf(column = 2, "left", "right")).Value2 = 0#
+                TestFixtureInputCell(target, "Detail", "R1", IIf(column = 2, "left", "right")).Value2 = 0#: TestFixtureInputCell(target, "Detail", "R2", IIf(column = 2, "left", "right")).Value2 = 0#
             Next column
         Case "HollowRectangle"
-            FixtureInputCell(target, "General", "Xo").Value2 = 0#: FixtureInputCell(target, "General", "Yo").Value2 = 0#
-            FixtureInputCell(target, "General", "H").Value2 = 1600#: FixtureInputCell(target, "General", "B").Value2 = 1600#
-            FixtureInputCell(target, "General", "R").Value2 = 0#: FixtureInputCell(target, "General", "Ro").Value2 = 0#
-            FixtureInputCell(target, "General", "Ho").Value2 = 1000#: FixtureInputCell(target, "General", "Bo").Value2 = 1000#
+            TestFixtureInputCell(target, "General", "Xo").Value2 = 0#: TestFixtureInputCell(target, "General", "Yo").Value2 = 0#
+            TestFixtureInputCell(target, "General", "H").Value2 = 1600#: TestFixtureInputCell(target, "General", "B").Value2 = 1600#
+            TestFixtureInputCell(target, "General", "R").Value2 = 0#: TestFixtureInputCell(target, "General", "Ro").Value2 = 0#
+            TestFixtureInputCell(target, "General", "Ho").Value2 = 1000#: TestFixtureInputCell(target, "General", "Bo").Value2 = 1000#
     End Select
-    For Each face In RebarFieldFaces(shape)
+    For Each face In TestRebarFieldFaces(shape)
         mainRow = CLng(face(1)): extraRow = CLng(face(2))
-        RebarFieldCell(target, extraRow, 4).Value2 = 0#: RebarFieldCell(target, extraRow, 8).Value2 = 0#
-        RebarFieldCell(target, mainRow, 3).Value2 = 50#: RebarFieldCell(target, mainRow, 4).Value2 = 16#
+        TestRebarFieldCell(target, extraRow, 4).Value2 = 0#: TestRebarFieldCell(target, extraRow, 8).Value2 = 0#
+        TestRebarFieldCell(target, mainRow, 3).Value2 = 50#: TestRebarFieldCell(target, mainRow, 4).Value2 = 16#
         If Left$(CStr(face(0)), 8) <> "Opening." Then
-            RebarFieldCell(target, mainRow, 5).Value2 = 5
-            RebarFieldCell(target, mainRow, 6).Value2 = 100#: RebarFieldCell(target, mainRow, 7).Value2 = 100#
+            TestRebarFieldCell(target, mainRow, 5).Value2 = 5
+            TestRebarFieldCell(target, mainRow, 6).Value2 = 100#: TestRebarFieldCell(target, mainRow, 7).Value2 = 100#
         End If
         If extras Then
-            RebarFieldCell(target, extraRow, 3).Value2 = 12#: RebarFieldCell(target, extraRow, 7).Value2 = 10#
+            TestRebarFieldCell(target, extraRow, 3).Value2 = 12#: TestRebarFieldCell(target, extraRow, 7).Value2 = 10#
         Else
-            RebarFieldCell(target, extraRow, 3).Value2 = 0#: RebarFieldCell(target, extraRow, 7).Value2 = 0#
+            TestRebarFieldCell(target, extraRow, 3).Value2 = 0#: TestRebarFieldCell(target, extraRow, 7).Value2 = 0#
         End If
-        RebarFieldCell(target, extraRow, 6).Value2 = "Stacked"
-        RebarFieldCell(target, extraRow, 10).Value2 = "Stacked"
-        RebarFieldCell(target, extraRow, 5).Value2 = "EachBar"
-        RebarFieldCell(target, extraRow, 9).Value2 = "EachBar"
+        TestRebarFieldCell(target, extraRow, 6).Value2 = "Stacked"
+        TestRebarFieldCell(target, extraRow, 10).Value2 = "Stacked"
+        TestRebarFieldCell(target, extraRow, 5).Value2 = "EachBar"
+        TestRebarFieldCell(target, extraRow, 9).Value2 = "EachBar"
     Next face
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Меняет одно поле и проверяет предсказуемый физический эффект. Для as/t
 ' проверяется подписанное перемещение, для d/n независимые diameter/count,
 ' для loc/bind положение и число дополнительных стержней относительно первого.
-Private Sub CheckRebarFieldEffect(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
+Private Sub TestCheckRebarFieldEffect(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal shape As String, ByVal face As Variant, ByVal field As Variant, ByRef cases As Long)
     Dim geom As CGeometryRegion, baseline As CRebarLayout, bars As CRebarLayout, cell As Object
     Dim before As Variant, after As Variant, kind As String, prefix As String, value As Variant
     Dim rowNumber As Long, expectedCount As Long, expectedDistance As Double
-    kind = CStr(field(0)): Set cell = RebarFieldCell(target, CLng(field(1)), CLng(field(2)))
+    kind = CStr(field(0)): Set cell = TestRebarFieldCell(target, CLng(field(1)), CLng(field(2)))
     prefix = "rebarFields." & shape & "." & CStr(face(0)) & "." & kind
-    ReadGeometry geom, baseline
-    before = RebarFieldRowSummary(baseline, CStr(face(0)), 1)
-    Check stats, prefix & ".activeBaseline", CLng(before(0)) > 1
+    TestReadGeometry geom, baseline
+    before = TestRebarFieldRowSummary(baseline, CStr(face(0)), 1)
+    TestCheck stats, prefix & ".activeBaseline", CLng(before(0)) > 1
     Select Case kind
         Case "as": value = 60#
         Case "d": value = 20#
@@ -1432,69 +1478,69 @@ Private Sub CheckRebarFieldEffect(ByRef stats As TGeometryConfigStats, ByVal tar
         Case "bind2", "bind3": value = "EverySecondBar"
     End Select
     cell.Value2 = value: cases = cases + 1
-    RequiredGeometryProgress prefix & ".effect", stats.Report
-    ReadGeometry geom, bars
-    after = RebarFieldRowSummary(bars, CStr(face(0)), 1)
+    TestRequiredGeometryProgress prefix & ".effect", stats.Report
+    TestReadGeometry geom, bars
+    after = TestRebarFieldRowSummary(bars, CStr(face(0)), 1)
     Select Case kind
         Case "as"
-            Near stats, prefix & ".normalX", CDbl(after(2)) - CDbl(before(2)), 10# * CDbl(face(3))
-            Near stats, prefix & ".normalY", CDbl(after(3)) - CDbl(before(3)), 10# * CDbl(face(4))
-            Near stats, prefix & ".count", CDbl(after(0)), CDbl(before(0))
+            TestNear stats, prefix & ".normalX", CDbl(after(2)) - CDbl(before(2)), 10# * CDbl(face(3))
+            TestNear stats, prefix & ".normalY", CDbl(after(3)) - CDbl(before(3)), 10# * CDbl(face(4))
+            TestNear stats, prefix & ".count", CDbl(after(0)), CDbl(before(0))
         Case "d"
-            Near stats, prefix & ".diameter", CDbl(after(1)), 20#
-            Near stats, prefix & ".count", CDbl(after(0)), CDbl(before(0))
-            Near stats, prefix & ".xUnchanged", CDbl(after(2)), CDbl(before(2))
-            Near stats, prefix & ".yUnchanged", CDbl(after(3)), CDbl(before(3))
+            TestNear stats, prefix & ".diameter", CDbl(after(1)), 20#
+            TestNear stats, prefix & ".count", CDbl(after(0)), CDbl(before(0))
+            TestNear stats, prefix & ".xUnchanged", CDbl(after(2)), CDbl(before(2))
+            TestNear stats, prefix & ".yUnchanged", CDbl(after(3)), CDbl(before(3))
         Case "n"
-            Near stats, prefix & ".count", CDbl(after(0)), 7#
+            TestNear stats, prefix & ".count", CDbl(after(0)), 7#
         Case "start", "end"
             expectedDistance = 10#: If kind = "end" Then expectedDistance = -10#
-            Near stats, prefix & ".tangentX", CDbl(after(2)) - CDbl(before(2)), expectedDistance * CDbl(face(5))
-            Near stats, prefix & ".tangentY", CDbl(after(3)) - CDbl(before(3)), expectedDistance * CDbl(face(6))
-            Near stats, prefix & ".count", CDbl(after(0)), CDbl(before(0))
+            TestNear stats, prefix & ".tangentX", CDbl(after(2)) - CDbl(before(2)), expectedDistance * CDbl(face(5))
+            TestNear stats, prefix & ".tangentY", CDbl(after(3)) - CDbl(before(3)), expectedDistance * CDbl(face(6))
+            TestNear stats, prefix & ".count", CDbl(after(0)), CDbl(before(0))
         Case Else
             rowNumber = 2: If Right$(kind, 1) = "3" Then rowNumber = 3
-            after = RebarFieldRowSummary(bars, CStr(face(0)), rowNumber)
+            after = TestRebarFieldRowSummary(bars, CStr(face(0)), rowNumber)
             expectedCount = CLng(before(0))
             If Left$(kind, 4) = "bind" Then expectedCount = (expectedCount + 1) \ 2
-            Near stats, prefix & ".count", CDbl(after(0)), CDbl(expectedCount)
-            ' В каждой приставленной паре к сумме радиусов добавлено 2,5 мм.
-            expectedDistance = 16.5: If rowNumber = 3 Then expectedDistance = 30#
+            TestNear stats, prefix & ".count", CDbl(after(0)), CDbl(expectedCount)
+            expectedDistance = 16.5: If rowNumber = 3 Then expectedDistance = 30# ' В каждой приставленной паре к сумме радиусов добавлено 2,5 мм.
             If kind = "d2" Then expectedDistance = 19.5
             If kind = "d3" Then expectedDistance = 35#
             If Left$(kind, 3) = "loc" Then
                 expectedDistance = 15.5
                 If rowNumber = 2 Then expectedDistance = 16.5
             End If
-            If kind = "d2" Or kind = "d3" Then Near stats, prefix & ".diameter", CDbl(after(1)), CDbl(value)
-            CheckRebarRowOffsets stats, prefix, bars, CStr(face(0)), rowNumber, face, _
+            If kind = "d2" Or kind = "d3" Then TestNear stats, prefix & ".diameter", CDbl(after(1)), CDbl(value)
+            TestCheckRebarRowOffsets stats, prefix, bars, CStr(face(0)), rowNumber, face, _
                 expectedDistance, Left$(kind, 3) <> "loc"
     End Select
     If kind = "d" Or kind = "n" Or kind = "d2" Or kind = "d3" Then
         cell.ClearContents: cases = cases + 1
-        ReadGeometry geom, bars
+        TestReadGeometry geom, bars
         rowNumber = 1: If kind = "d2" Then rowNumber = 2
         If kind = "d3" Then rowNumber = 3
-        after = RebarFieldRowSummary(bars, CStr(face(0)), rowNumber)
-        Near stats, prefix & ".blankDisables", CDbl(after(0)), 0#
+        after = TestRebarFieldRowSummary(bars, CStr(face(0)), rowNumber)
+        TestNear stats, prefix & ".blankDisables", CDbl(after(0)), 0#
         cell.Value2 = 0#: cases = cases + 1
-        ReadGeometry geom, bars
-        after = RebarFieldRowSummary(bars, CStr(face(0)), rowNumber)
-        Near stats, prefix & ".zeroDisables", CDbl(after(0)), 0#
+        TestReadGeometry geom, bars
+        after = TestRebarFieldRowSummary(bars, CStr(face(0)), rowNumber)
+        TestNear stats, prefix & ".zeroDisables", CDbl(after(0)), 0#
     End If
-    ConfigureRebarFieldFixture target, shape, CBool(field(3))
+    TestConfigureRebarFieldFixture target, shape, CBool(field(3))
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет активный ошибочный ввод и восстановление того же reader/builder
 ' маршрута. Допустимая пустота d/n уже проверена отдельно; для обязательных
 ' as/t/активных loc/bind пустота не должна незаметно выбирать размер/режим.
-Private Sub CheckRebarFieldInvalid(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
+Private Sub TestCheckRebarFieldInvalid(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal shape As String, ByVal face As Variant, ByVal field As Variant, ByRef cases As Long)
     Dim bad As Variant, badValues As Variant, kind As String, prefix As String, cell As Object
     Dim savedValue As Variant, geom As CGeometryRegion, bars As CRebarLayout, baseline As Variant, current As Variant
     Dim number As Long, description As String, index As Long
-    kind = CStr(field(0)): Set cell = RebarFieldCell(target, CLng(field(1)), CLng(field(2)))
-    savedValue = cell.Formula: baseline = RequiredGeometryRouteSnapshot(shape, "Rebars")
+    kind = CStr(field(0)): Set cell = TestRebarFieldCell(target, CLng(field(1)), CLng(field(2)))
+    savedValue = cell.Formula: baseline = TestRequiredGeometryRouteSnapshot(shape, "Rebars")
     If Left$(kind, 3) = "loc" Or Left$(kind, 4) = "bind" Then
         badValues = Array(vbNullString, "Wrong", CVErr(2015))
     ElseIf kind = "as" Or kind = "start" Or kind = "end" Then
@@ -1506,30 +1552,31 @@ Private Sub CheckRebarFieldInvalid(ByRef stats As TGeometryConfigStats, ByVal ta
         index = index + 1: cases = cases + 1
         prefix = "rebarFields." & shape & "." & CStr(face(0)) & "." & kind & ".invalid" & CStr(index)
         cell.Value2 = bad: number = 0: description = vbNullString
-        RequiredGeometryProgress prefix, stats.Report
+        TestRequiredGeometryProgress prefix, stats.Report
         On Error Resume Next
-        ReadGeometry geom, bars
+        TestReadGeometry geom, bars
         number = Err.Number: description = Err.Description
         Err.Clear: On Error GoTo 0
-        Check stats, prefix & ".reject", number <> 0
-        Check stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
-        Check stats, prefix & ".repair", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
+        TestCheck stats, prefix & ".reject", number <> 0
+        TestCheck stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
+        TestCheck stats, prefix & ".repair", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
             InStr(1, description, "Выберите", vbTextCompare) > 0 Or InStr(1, description, "Исправ", vbTextCompare) > 0
         stats.Report = stats.Report & "REBAR_FIELD_ERROR: " & prefix & "; error=" & CStr(number) & "; " & description & vbCrLf
         cell.Formula = savedValue
-        current = RequiredGeometryRouteSnapshot(shape, "Rebars")
-        Check stats, prefix & ".recovery", SameGeometryRouteSnapshot(baseline, current)
+        current = TestRequiredGeometryRouteSnapshot(shape, "Rebars")
+        TestCheck stats, prefix & ".recovery", TestSameGeometryRouteSnapshot(baseline, current)
     Next bad
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Находит поле по ключам; номера в контрольных наборах обозначают стороны,
 ' а не физические строки текущего листа. Размеры General здесь не изменяются.
-Private Function RebarFieldCell(ByVal target As Object, ByVal rowIndex As Long, ByVal column As Long) As Object
+Private Function TestRebarFieldCell(ByVal target As Object, ByVal rowIndex As Long, ByVal column As Long) As Object
     Dim shape As String, face As Variant, group As String, key As String, block As String, fields As Variant
     shape = CStr(target.Name.Name)
     shape = Mid$(shape, InStrRev(shape, "!") + 1)
     shape = Mid$(shape, 4, Len(shape) - 11)
-    For Each face In RebarFieldFaces(shape)
+    For Each face In TestRebarFieldFaces(shape)
         block = ""
         If rowIndex = CLng(face(1)) Then block = "Main"
         If rowIndex = CLng(face(2)) Then block = "Extra"
@@ -1551,44 +1598,47 @@ Private Function RebarFieldCell(ByVal target As Object, ByVal rowIndex As Long, 
             Else
                 fields = Array("key", "name", "d2", "a2", "bind2", "pos2", "d3", "a3", "bind3", "pos3", "note")
             End If
-            Set RebarFieldCell = FixtureInputCell(target, block, key, CStr(fields(column - 1)))
+            Set TestRebarFieldCell = TestFixtureInputCell(target, block, key, CStr(fields(column - 1)))
             Exit Function
         End If
     Next face
     Err.Raise 5, , "Неизвестная сторона контрольного набора: " & CStr(rowIndex)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает количество, средний диаметр и средние координаты стержней заданного
 ' ряда выбранной стороны. Имя row_N нужно только для группировки арматуры,
 ' а не для определения статусов или разбора ошибки.
-Private Function RebarFieldRowSummary(ByVal bars As CRebarLayout, ByVal group As String, ByVal rowNumber As Long) As Variant
+Private Function TestRebarFieldRowSummary(ByVal bars As CRebarLayout, ByVal group As String, ByVal rowNumber As Long) As Variant
     Dim count As Long, diameter As Double, X As Double, Y As Double, i As Long
     For i = 1 To bars.Count
         If bars.BarAnnotationGroupName(i) = group Then
-            If RebarFieldBelongsToRow(bars.BarID(i), group, rowNumber) Then
+            If TestRebarFieldBelongsToRow(bars.BarID(i), group, rowNumber) Then
                 count = count + 1: diameter = diameter + bars.Diameter(i)
                 X = X + bars.X(i): Y = Y + bars.Y(i)
             End If
         End If
     Next i
     If count > 0 Then diameter = diameter / count: X = X / count: Y = Y / count
-    RebarFieldRowSummary = Array(count, diameter, X, Y)
+    TestRebarFieldRowSummary = Array(count, diameter, X, Y)
 End Function
 
-' ДЛЯ ТЕСТОВ: ряд определяется по ID декларативного правила, а не по
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' ряд определяется по ID декларативного правила, а не по
 ' удалённому формату имён legacy-раскладчика. Расчётные R1/R2 здесь не используются.
-Private Function RebarFieldBelongsToRow(ByVal barID As String, ByVal group As String, ByVal rowNumber As Long) As Boolean
+Private Function TestRebarFieldBelongsToRow(ByVal barID As String, ByVal group As String, ByVal rowNumber As Long) As Boolean
     Dim prefix As String
     prefix = group & ".Row" & CStr(rowNumber) & "."
     If rowNumber = 1 Then prefix = group & ".Main."
-    RebarFieldBelongsToRow = (Left$(barID, Len(prefix)) = prefix)
+    TestRebarFieldBelongsToRow = (Left$(barID, Len(prefix)) = prefix)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Находит для каждого дополнительного стержня ближайший базовый стержень
 ' своей грани. Просторный fixture исключает неоднозначность: шаг первого ряда
 ' больше любого смещения. Проверяются расстояние и компонента нормали, включая
 ' противоположное направление у Opening; production offset helper не вызывается.
-Private Sub CheckRebarRowOffsets(ByRef stats As TGeometryConfigStats, ByVal prefix As String, _
+Private Sub TestCheckRebarRowOffsets(ByRef stats As TGeometryConfigStats, ByVal prefix As String, _
         ByVal bars As CRebarLayout, ByVal group As String, ByVal rowNumber As Long, ByVal face As Variant, _
         ByVal expectedDistance As Double, ByVal stacked As Boolean)
     Dim i As Long, j As Long, closest As Long, distance As Double, minimum As Double, ordinal As Long
@@ -1596,10 +1646,10 @@ Private Sub CheckRebarRowOffsets(ByRef stats As TGeometryConfigStats, ByVal pref
     If stacked Then expectedNormal = expectedDistance
     For i = 1 To bars.Count
         If bars.BarAnnotationGroupName(i) = group And _
-                RebarFieldBelongsToRow(bars.BarID(i), group, rowNumber) Then
+                TestRebarFieldBelongsToRow(bars.BarID(i), group, rowNumber) Then
             closest = 0
             For j = 1 To bars.Count
-                If bars.BarAnnotationGroupName(j) = group And RebarFieldBelongsToRow(bars.BarID(j), group, 1) Then
+                If bars.BarAnnotationGroupName(j) = group And TestRebarFieldBelongsToRow(bars.BarID(j), group, 1) Then
                     distance = Sqr((bars.X(i) - bars.X(j)) ^ 2 + (bars.Y(i) - bars.Y(j)) ^ 2)
                     If closest = 0 Then
                         closest = j: minimum = distance
@@ -1609,50 +1659,51 @@ Private Sub CheckRebarRowOffsets(ByRef stats As TGeometryConfigStats, ByVal pref
                 End If
             Next j
             ordinal = ordinal + 1
-            Check stats, prefix & ".base" & CStr(ordinal), closest > 0
+            TestCheck stats, prefix & ".base" & CStr(ordinal), closest > 0
             If closest > 0 Then
                 dx = bars.X(i) - bars.X(closest): dy = bars.Y(i) - bars.Y(closest)
-                Near stats, prefix & ".distance" & CStr(ordinal), minimum, expectedDistance
-                Near stats, prefix & ".normal" & CStr(ordinal), dx * CDbl(face(3)) + dy * CDbl(face(4)), expectedNormal
+                TestNear stats, prefix & ".distance" & CStr(ordinal), minimum, expectedDistance
+                TestNear stats, prefix & ".normal" & CStr(ordinal), dx * CDbl(face(3)) + dy * CDbl(face(4)), expectedNormal
             End If
         End If
     Next i
-    Check stats, prefix & ".offsetsObserved", ordinal > 0
+    TestCheck stats, prefix & ".offsetsObserved", ordinal > 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: короткая проверка адресов и действия полей после перестройки таблиц.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' короткая проверка адресов и действия полей после перестройки таблиц.
 ' Проверяет основное и дополнительное армирование, отверстие и невыбранный тип;
 ' полный перебор всех сторон остаётся в RunAudit03RebarFieldConfigTests.
 Public Function RunSectionRebarInputSmokeTests() As String
     Dim stats As TGeometryConfigStats, config As Object, saved As Variant, target As Object
     Dim shape As Variant, face As Variant, field As Variant, cases As Long, group As String
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = "mm"
     For Each shape In Array("Rectangles", "PointedSection", "HollowRectangle")
         Set target = ThisWorkbook.Names("rng" & CStr(shape) & "Geometry").RefersToRange
-        For Each face In RebarFieldFaces(CStr(shape))
+        For Each face In TestRebarFieldFaces(CStr(shape))
             group = CStr(face(0))
             If group = "H1.as_1" Or group = "H.Left" Or group = "Opening.H.Left" Then
-                For Each field In RebarFaceFields(CStr(shape), face)
+                For Each field In TestRebarFaceFields(CStr(shape), face)
                     Select Case CStr(field(0))
                         Case "as", "n", "d2", "bind3"
-                            ConfigureRebarFieldFixture target, CStr(shape), CBool(field(3))
-                            CheckRebarFieldEffect stats, target, CStr(shape), face, field, cases
-                            CheckRebarFieldInvalid stats, target, CStr(shape), face, field, cases
+                            TestConfigureRebarFieldFixture target, CStr(shape), CBool(field(3))
+                            TestCheckRebarFieldEffect stats, target, CStr(shape), face, field, cases
+                            TestCheckRebarFieldInvalid stats, target, CStr(shape), face, field, cases
                     End Select
                 Next field
             End If
         Next face
-        modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-        face = RebarFieldFaces(CStr(shape))(0)
-        field = RebarFaceFields(CStr(shape), face)(0)
-        CheckInactiveRebarCell stats, target, "Circle", face, field, "otherType", cases
+        modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+        face = TestRebarFieldFaces(CStr(shape))(0)
+        field = TestRebarFaceFields(CStr(shape), face)(0)
+        TestCheckInactiveRebarCell stats, target, "Circle", face, field, "otherType", cases
     Next shape
     GoTo Finished
 Failed:
-    Check stats, "sectionInput.smoke.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck stats, "sectionInput.smoke.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And IsArray(saved) Then TestFixtureRestoreInputs config, saved
     RunSectionRebarInputSmokeTests = stats.Report & "TOTAL_SECTION_REBAR_INPUT_SMOKE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & "; cases=" & CStr(cases) & vbCrLf
 End Function

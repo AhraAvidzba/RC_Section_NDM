@@ -314,7 +314,7 @@ Public Property Get InternalStatus() As EResultInternalStatus
     InternalStatus = ResultMeta.InternalStatus
 End Property
 
-' Публичный код состояния результата, определённый общей политикой статусов.
+' Возвращает машинный код причины, сохранённый расчётом; внешнее обозначение статуса формируется отдельно.
 Public Property Get ResultCode() As EResultCode
     ResultCode = ResultMeta.ResultCode
 End Property

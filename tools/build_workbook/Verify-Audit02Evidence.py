@@ -30,7 +30,7 @@ def compare():
     (S/'RegressionEquality.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     def times(folder):
         result = {}
-        p = S/folder/'modTestAudit02Snapshots.DumpAudit02BuildPerformance.txt'
+        p = S/folder/'modTestAudit02Snapshots.TestDumpAudit02BuildPerformance.txt'
         for row in p.read_text(encoding='utf-8-sig').splitlines():
             fixture, repeat, seconds, concrete, rebar = row.split('|')
             result.setdefault(fixture,[]).append(float(seconds.replace(',','.')))

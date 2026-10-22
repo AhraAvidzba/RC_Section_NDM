@@ -19,8 +19,8 @@ Option Explicit
 
 Private mKeys() As String ' Имена настроек Config: Solver.Method, Capacity.SolutionStrategy и т.п.
 Private mValues() As String ' Значения, которые ввел пользователь или подставили формулы таблицы.
-Private mValueErrors() As String ' Отложенные ошибки геометрии/оформления: выдаются при чтении активного параметра, не заменяются default.
-Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
+Private mValueErrors() As String ' Отложенные ошибки оформления: выдаются при запросе активного параметра без подстановки значения.
+Private mDefaults() As String ' Сопутствующий текст, переданный при AppendSetting; сам по себе не заменяет пустое значение настройки.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
 Private mLocations() As String ' Лист, адрес и видимый столбец прочитанного значения; только диагностика ввода.
 Private mLoadingSheet As String ' Имя листа текущей входной таблицы для диагностики.
@@ -28,10 +28,9 @@ Private mLoadingRow As Long ' Первая строка таблицы; счит
 Private mLoadingColumn As Long ' Первый столбец таблицы для вычисления абсолютного адреса значения.
 Private mCount As Long ' Количество загруженных ключей.
 
-' Загружает все настройки книги, нужные расчету и выводу.
-' Метод объединяет разные именованные диапазоны Config в один внутренний
-' словарь. Новые таблицы материалов имеют человекочитаемую форму, поэтому
-' перед попаданием в словарь разворачиваются в ключи Concrete.* / Steel.*.
+' Загружает настройки расчёта и вывода из именованных таблиц Config
+' в общие массивы ключей, значений и адресов. Таблицы материалов
+' разворачивает в ключи Concrete.* и Steel.* без обращения ядра к Excel.
 Public Sub LoadFromWorkbook(ByVal workbook As Object)
     Clear
     AppendRequiredNamedSettingsRange workbook, "rngUnitSettings", "Единицы измерения"
@@ -108,7 +107,7 @@ Public Sub LoadFromRange(ByVal settingsRange As Object)
 End Sub
 
 ' Проверяет текущий переключатель без преобразования структуры и переименования ключей.
-' Неполный автономный LoadFromRange сохраняет свой default; полной книге строка обязательна.
+' Для неполного автономного LoadFromRange добавляет Yes; в полной книге строка обязательна.
 Private Sub ValidateDiagramExtensionSetting(Optional ByVal requireWorkbookValue As Boolean = False)
     Const key As String = "General.DiagramExtension"
     Dim index As Long
@@ -163,10 +162,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
     Dim columnCount As Long
     columnCount = UBound(data, 2)
 
-    ' Имя известных таблиц сохраняет их смысл при повреждении шапки.
-    ' Сначала называем конкретную ячейку структуры, затем читаем значения;
-    ' такой дефект не должен выглядеть как исчезновение обязательных ключей.
-    Select Case LCase$(rangeName)
+    Select Case LCase$(rangeName) ' Имя известных таблиц сохраняет их смысл при повреждении шапки. Сначала называем конкретную ячейку структуры, затем читаем значения; такой дефект не должен выглядеть как исчезновение обязательных ключей.
         Case "rngunitsettings"
             RequireSettingsHeaders data, "Единицы измерения", Array("Quantity", "INPUT", "INTERNAL", "OUTPUT"), 4
             AppendUnitSettings data
@@ -185,10 +181,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
             Exit Sub
     End Select
 
-    ' Тип именованной таблицы сохраняется даже при удалении строки параметра.
-    ' Например, отсутствие Placement не должно превратить остальные поля
-    ' таблицы оформления в обычную таблицу пар ключ/значение.
-    If StrComp(rangeName, "rngPlotAnnotationSettings", vbTextCompare) = 0 Then
+    If StrComp(rangeName, "rngPlotAnnotationSettings", vbTextCompare) = 0 Then ' Тип именованной таблицы сохраняется даже при удалении строки параметра. Например, отсутствие Placement не должно превратить остальные поля таблицы оформления в обычную таблицу пар ключ/значение.
         If columnCount < 5 Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
             "Таблица аннотаций схемы на листе " & mLoadingSheet & " имеет неполную структуру. Восстановите колонки параметров, арматуры, размеров, единиц и комментария."
         AppendPlotAnnotationSettings data
@@ -216,9 +209,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
         Exit Sub
     End If
     Dim rowIndex As Long
-    ' Обычные таблицы читаются как ключ/значение. Строки с заголовками секций
-    ' в квадратных скобках пропускаются.
-    For rowIndex = 2 To UBound(data, 1)
+    For rowIndex = 2 To UBound(data, 1) ' Обычные таблицы читаются как ключ/значение. Строки с заголовками секций в квадратных скобках пропускаются.
         Dim keyValue As String
         keyValue = ConfigCellText(data(rowIndex, 1), "ключ настройки", rowIndex, vbNullString, False, 1)
         If Len(keyValue) > 0 And Left$(keyValue, 1) <> "[" Then
@@ -303,10 +294,8 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
         Dim commentValue As String
         compressionValue = ConfigCellText(data(rowIndex, 2), "Сжатие", rowIndex, rowKey, False, 2)
         tensionValue = vbNullString
-        ' Rb,mc2 относится только к сжатию; неприменимая клетка растяжения
-        ' не является входным параметром, даже если в ней ошибочная формула.
         If StrComp(rowKey, "Concrete.Rb.mc2", vbTextCompare) <> 0 Then _
-            tensionValue = ConfigCellText(data(rowIndex, 3), "Растяжение", rowIndex, rowKey, False, 3)
+            tensionValue = ConfigCellText(data(rowIndex, 3), "Растяжение", rowIndex, rowKey, False, 3) ' Rb,mc2 относится только к сжатию; неприменимая клетка растяжения не является входным параметром, даже если в ней ошибочная формула.
         If UBound(data, 2) >= 5 Then commentValue = ConfigCellText(data(rowIndex, 5), "комментарий", rowIndex, rowKey, True, 5)
 
         Select Case LCase$(rowKey)
@@ -449,7 +438,7 @@ Private Sub AppendPlotAnnotationValue(ByRef data As Variant, ByVal keyValue As S
         ConfigCellText(data(rowIndex, 5), "комментарий", rowIndex, keyValue, True, 5)
 End Sub
 
-' Загружает INPUT/INTERNAL/OUTPUT единицы в общий словарь настроек.
+' Разворачивает таблицу INPUT/INTERNAL/OUTPUT в общие массивы ключей Units.*.
 Private Sub AppendUnitSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -504,10 +493,9 @@ Private Function SignQuantityKey(ByVal caption As String) As String
     End Select
 End Function
 
-' Сохраняет значение геометрии или оформления вместе с фактическим адресом.
-' Ошибка формулы выдается при обращении активного потребителя: чужая форма,
-' выключенный ряд или группа аннотаций не мешают основному расчету, но чтение
-' ошибочного параметра никогда не возвращает пустоту или default.
+' Сохраняет значение оформления вместе с возможной ошибкой ячейки.
+' Ошибка выдаётся при запросе активного параметра; выключенная группа
+' аннотаций не требует чтения своих неиспользуемых полей.
 Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String, _
         ByVal rowIndex As Long, ByVal columnIndex As Long, Optional ByVal source As String = vbNullString)
     Dim value As String, valueError As String
@@ -607,7 +595,8 @@ Private Function InputSettingsSection(ByVal key As String) As String
     InputSettingsSection = "лист Config, раздел """ & sectionName & """"
 End Function
 
-' Сбрасывает все прочитанные настройки и точки диаграмм.
+' Сбрасывает прочитанные ключи, значения, адреса и отложенные ошибки ввода.
+' Следующее чтение начинается с пустого набора настроек.
 Public Sub Clear()
     Erase mKeys
     Erase mValues
@@ -771,8 +760,9 @@ Private Function CheckedLong(ByVal key As String, ByVal value As Double) As Long
     CheckedLong = CLng(value)
 End Function
 
-' Читает Yes/No и утвержденные aliases. Default допустим только для отсутствующего
-' optional key; явное пустое/невалидное значение не превращается в False/default.
+' Читает переключатель Yes/No и поддерживаемые варианты True/False, 1/0, да/нет.
+' Значение по умолчанию допустимо только при отсутствии ключа; пустой
+' или неверный явный ввод остаётся ошибкой.
 Public Function GetBoolean(ByVal key As String, Optional ByVal defaultValue As Boolean = False) As Boolean
     If Not HasKey(key) Then
         GetBoolean = defaultValue
@@ -789,8 +779,8 @@ Public Function GetBoolean(ByVal key As String, Optional ByVal defaultValue As B
     End Select
 End Function
 
-' Требует присутствующее значение переключателя и сохраняет утвержденные
-' aliases Yes/No. Потерянная строка и пустая ячейка не выбирают default.
+' Читает обязательный переключатель с теми же вариантами, что GetBoolean.
+' Отсутствующий ключ и пустая ячейка не заменяются значением по умолчанию.
 Public Function GetRequiredBoolean(ByVal key As String) As Boolean
     Call GetRequiredString(key)
     GetRequiredBoolean = GetBoolean(key)
@@ -860,8 +850,8 @@ Public Function DuplicateCount() As Long
     DuplicateCount = duplicates
 End Function
 
-' Ищет ключ линейным проходом по небольшому массиву настроек.
-' Для текущего размера Config словарь не нужен, зато порядок и дубликаты легко тестировать.
+' Ищет первый ключ без учёта регистра и возвращает его индекс.
+' Ноль означает отсутствие; повторы отдельно учитывает DuplicateCount.
 Private Function FindKey(ByVal key As String) As Long
     Dim i As Long
     For i = 1 To mCount
@@ -873,17 +863,14 @@ Private Function FindKey(ByVal key As String) As Long
     FindKey = 0
 End Function
 
-' Возвращает десятичный разделитель текущего Excel.
-' Это позволяет читать точки диаграмм и настройки с точкой или запятой в разных локалях.
+' Возвращает десятичный разделитель числового преобразования VBA
+' в текущей локали для разбора пользовательского числа.
 Private Function ApplicationDecimalSeparator() As String
     ApplicationDecimalSeparator = Mid$(CStr(1.1), 2, 1)
 End Function
 
-' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
-
-' ДЛЯ ТЕСТОВ: возвращает имя ключа по порядковому номеру для проверок дубликатов и тестов.
+' Возвращает ключ по порядковому номеру 1..KeyCount. Рабочий пакетный
+' расчёт использует его для переноса адресов настроек в результаты ошибок.
 Public Function KeyAt(ByVal index As Long) As String
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, "CSystemSettingsReader", "Индекс настройки вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
     KeyAt = mKeys(index)

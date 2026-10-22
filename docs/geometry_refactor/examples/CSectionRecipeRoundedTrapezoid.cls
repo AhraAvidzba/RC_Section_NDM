@@ -51,7 +51,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         table.SourceReference(table.RowByKey("TopWidth"), 2) & "; " & table.SourceReference(table.RowByKey("Height"), 2) & "; " & _
         table.SourceReference(table.RowByKey("CornerRadius"), 2) & "; " & table.SourceReference(table.RowByKey("OpeningRadius"), 2) & "; " & _
         table.SourceReference(table.RowByKey("OuterAxisDistance"), 2) & "; " & table.SourceReference(table.RowByKey("InnerAxisDistance"), 2)
-    Set ISectionRecipe_CreateDefinition = Describe(parameters, table)  ' parameters — размеры, радиусы, диаметры и число стержней; table — таблица адресов исходных ячеек; Nothing при программном вводе.
+    Set ISectionRecipe_CreateDefinition = Describe(parameters, table) ' Таблица уточняет адреса ошибок; геометрия и армирование описываются общим методом.
 End Function
 
 ' Задаёт рецепт программно: размеры и радиусы передаются в мм, параметры арматуры заданы внутри метода.
@@ -64,7 +64,7 @@ Public Function ProgramDefinition(Optional ByVal bottomWidth As Double = 1200#, 
     parameters.OuterAxisDistance = 50#: parameters.InnerAxisDistance = 45#
     parameters.OuterCount = 24: parameters.InnerCount = 16: parameters.OuterDiameter = 20#: parameters.InnerDiameter = 16#
     parameters.Source = "ProgramInputs.BottomWidth/TopWidth/Height/CornerRadius/OpeningRadius"
-    Set ProgramDefinition = Describe(parameters, Nothing)  ' parameters — размеры, радиусы, диаметры и число стержней; Nothing — программный ввод без таблицы адресов.
+    Set ProgramDefinition = Describe(parameters, Nothing) ' Nothing означает программный ввод без адресов ячеек Excel.
 End Function
 
 ' Читает положительный размер из снимка таблицы и переводит его в мм через CUnitSystem.
@@ -79,78 +79,42 @@ Private Function Describe(ByRef parameters As TInputs, ByVal table As CSectionIn
     On Error GoTo InvalidGeometry
     If parameters.BottomWidth <= 0# Or parameters.TopWidth <= 0# Or parameters.Height <= 0# Or parameters.CornerRadius <= 0# Or parameters.OpeningRadius <= 0# Then _
         SectionRecipeError "CSectionRecipeRoundedTrapezoid", "Размеры и радиусы должны быть положительными.", parameters.Source
-    Dim facade As CSectionDefinitionBuilder, boundary As CGeometryPath, openingPath As CGeometryPath, axis As CGeometryPath  ' Объявляем сборщик и линии границы бетона, отверстия и центров арматуры.
-    Dim polygon As CPolygonSpec, options As CRebarRuleOptions  ' Объявляем описание вершин и условия размещения арматуры.
-    Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedTrapezoid"  ' "RoundedTrapezoid" — имя типа сечения.
-    ' Один набор вершин и радиусов используется для границы бетона и линии наружной арматуры.
-    Set polygon = New CPolygonSpec
+    Dim facade As CSectionDefinitionBuilder, boundary As CGeometryPath, openingPath As CGeometryPath, axis As CGeometryPath ' boundary — наружный бетонный контур; openingPath — отверстие; axis — линия центров стержней.
+    Dim polygon As CPolygonSpec, options As CRebarRuleOptions
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedTrapezoid"
+    Set polygon = New CPolygonSpec ' Один описатель вершин служит для бетонной границы и её смещённой арматурной линии.
     polygon.AddVertex "BottomLeft", -parameters.BottomWidth / 2#, -parameters.Height / 2#, parameters.CornerRadius, parameters.Source
     polygon.AddVertex "BottomRight", parameters.BottomWidth / 2#, -parameters.Height / 2#, parameters.CornerRadius, parameters.Source
     polygon.AddVertex "TopRight", parameters.TopWidth / 2#, parameters.Height / 2#, parameters.CornerRadius, parameters.Source
     polygon.AddVertex "TopLeft", -parameters.TopWidth / 2#, parameters.Height / 2#, parameters.CornerRadius, parameters.Source
     polygon.Seal
-    facade.Source "Boundary", parameters.Source  ' "Boundary" — имя геометрии или ряда; parameters.Source — адреса исходных ячеек для сообщений об ошибках.
-    Set boundary = facade.RoundedPolygon("Boundary", polygon)  ' "Boundary" — имя контура; polygon — завершённое описание исходных вершин и радиусов, мм.
-    facade.Outer "Concrete", boundary.ID, "Наружная граница скругленной трапеции."  ' "Concrete" — имя наружной границы бетона; boundary.ID — замкнутый контур; comment — пояснение к границе.
-    Set openingPath = facade.CirclePath("Opening.Circle", 0#, 0#, parameters.OpeningRadius)  ' "Opening.Circle" — имя новой окружности; 0 — X центра, мм; 0 — Y центра, мм; parameters.OpeningRadius — радиус, мм.
-    ' "Opening" — имя отверстия; openingPath.ID — замкнутый контур отверстия; "Concrete" — наружная
-    ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия.
-    facade.Opening "Opening", openingPath.ID, "Concrete", "Круглое отверстие."
-    ' "Outer.Axis" — имя линии центров стержней; polygon — то же завершённое описание исходных вершин;
-    ' parameters.OuterAxisDistance — смещение, мм: положительное внутрь, отрицательное наружу.
-    Set axis = facade.OffsetRoundedPolygon("Outer.Axis", polygon, parameters.OuterAxisDistance)
-    Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
-    ' EndMode — ClosedUniform распределяет стержни по замкнутой линии без повторного конца;
-    ' PlacementCheck — CheckFullDisk проверяет нахождение всего стержня в бетоне; OverlapPolicy —
-    ' RejectOverlap запрещает пересечение стержней.
-    options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
-    options.AnnotationGroup = "OuterBars": options.SourcePrefix = "Outer."  ' AnnotationGroup — имя общей подписи для всех рядов этой группы; SourcePrefix — начало имён стержней.
-    options.SourceReference = parameters.Source  ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
-    ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
-    If Not table Is Nothing Then options.SourceReference = table.SourceReference(table.RowByKey("OuterAxisDistance"), 2) & "; " & table.SourceReference(table.RowByKey("OuterCount"), 2)
-    ' "OuterBars" — имя нового ряда; axis.ID — линия центров стержней; parameters.OuterCount —
-    ' заданное число стержней; parameters.OuterDiameter — диаметр стержня, мм; options — отступы,
-    ' нумерация и условия размещения.
-    facade.RebarByCount "OuterBars", axis.ID, parameters.OuterCount, parameters.OuterDiameter, options
-    ' Окружность отверстия идёт против часовой стрелки; отрицательное смещение направлено из отверстия в бетон.
-    ' "Inner.Axis" — имя новой линии; openingPath.ID — исходная линия; -parameters.InnerAxisDistance —
-    ' смещение влево от обхода, мм; минус означает вправо.
-    Set axis = facade.Offset("Inner.Axis", openingPath.ID, -parameters.InnerAxisDistance)
-    Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
-    ' EndMode — ClosedUniform распределяет стержни по замкнутой линии без повторного конца;
-    ' PlacementCheck — CheckFullDisk проверяет нахождение всего стержня в бетоне; OverlapPolicy —
-    ' RejectOverlap запрещает пересечение стержней.
-    options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
-    options.AnnotationGroup = "InnerBars": options.SourcePrefix = "Inner."  ' AnnotationGroup — имя общей подписи для всех рядов этой группы; SourcePrefix — начало имён стержней.
-    options.SourceReference = parameters.Source  ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
-    ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
-    If Not table Is Nothing Then options.SourceReference = table.SourceReference(table.RowByKey("InnerAxisDistance"), 2) & "; " & table.SourceReference(table.RowByKey("InnerCount"), 2)
-    ' "InnerBars" — имя нового ряда; axis.ID — линия центров стержней; parameters.InnerCount —
-    ' заданное число стержней; parameters.InnerDiameter — диаметр стержня, мм; options — отступы,
-    ' нумерация и условия размещения.
-    facade.RebarByCount "InnerBars", axis.ID, parameters.InnerCount, parameters.InnerDiameter, options
-    ' "Height" — имя размера; boundary.ID — контур, по которому измеряется высота; "H" — обозначение
-    ' на схеме; -parameters.BottomWidth / 2 — положение исходной размерной линии X, мм; -1 — вынос
-    ' размера влево.
-    facade.VerticalExtent "Height", boundary.ID, "H", -parameters.BottomWidth / 2#, -1#
-    ' "Width" — имя размера; boundary.ID — контур, по которому измеряется ширина; "B" — обозначение на
-    ' схеме; -parameters.Height / 2 — положение исходной размерной линии Y, мм; -1 — вынос размера
-    ' вниз.
-    facade.HorizontalExtent "Width", boundary.ID, "B", -parameters.Height / 2#, -1#
-    ' "OpeningRadius" — имя размера радиуса; openingPath.ID — контур окружности; openingPath.ID — имя
-    ' дуги внутри контура; 0.25 — относительная точка дуги от 0 до 1; "Ro" — обозначение радиуса.
-    facade.Radius "OpeningRadius", openingPath.ID, openingPath.ID, 0.25, "Ro"
-    facade.Anchor "Caption", -parameters.TopWidth / 4#, parameters.Height / 5#  ' "Caption" — имя точки привязки; -parameters.TopWidth / 4 — X точки, мм; parameters.Height / 5 — Y точки, мм.
-    facade.Text "FormName", "Caption", "Скругленная трапеция"  ' "FormName" — имя аннотации; "Caption" — точка размещения текста; "Скругленная трапеция" — текст на схеме.
-    ' "OuterBars" — группа общей подписи всех её рядов; "Outer.Axis" — линия, по габаритам которой
-    ' привязывается подпись; 0 — X-компонента направления подписи; 1 — Y-компонента направления
-    ' подписи.
-    facade.RebarLabel "OuterBars", "Outer.Axis", 0#, 1#
-    ' "InnerBars" — группа общей подписи всех её рядов; "Inner.Axis" — линия, по габаритам которой
-    ' привязывается подпись; 0 — X-компонента направления подписи; -1 — Y-компонента направления
-    ' подписи.
-    facade.RebarLabel "InnerBars", "Inner.Axis", 0#, -1#
-    Set Describe = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
+    facade.Source "Boundary", parameters.Source ' Источник ошибки границы связывается с переданными параметрами.
+    Set boundary = facade.RoundedPolygon("Boundary", polygon) ' Скругления строятся по завершённому описателю polygon; исходные размеры заданы в мм.
+    facade.Outer "Concrete", boundary.ID, "Наружная граница скругленной трапеции." ' Concrete — имя бетонной области; boundary.ID — её замкнутая наружная граница.
+    Set openingPath = facade.CirclePath("Opening.Circle", 0#, 0#, parameters.OpeningRadius) ' Окружность отверстия с центром в начале координат; радиус задан в мм.
+    facade.Opening "Opening", openingPath.ID, "Concrete", "Круглое отверстие." ' Opening — имя отверстия, которое вычитается из области Concrete.
+    Set axis = facade.OffsetRoundedPolygon("Outer.Axis", polygon, parameters.OuterAxisDistance) ' Положительное смещение направлено внутрь трапеции; стержни располагаются по центрам на этой линии.
+    Set options = New CRebarRuleOptions
+    options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap ' Замкнутая раскладка без повторения конца; весь диск каждого стержня должен лежать в бетоне и не пересекать другие.
+    options.AnnotationGroup = "OuterBars": options.SourcePrefix = "Outer." ' Группа общей подписи и префикс исходных имён наружных стержней.
+    options.SourceReference = parameters.Source ' Общий источник для программного ввода; при наличии таблицы ниже выбираются конкретные связанные поля.
+    If Not table Is Nothing Then options.SourceReference = table.SourceReference(table.RowByKey("OuterAxisDistance"), 2) & "; " & table.SourceReference(table.RowByKey("OuterCount"), 2) ' Ошибка наружного ряда укажет его отступ и количество в реальной таблице.
+    facade.RebarByCount "OuterBars", axis.ID, parameters.OuterCount, parameters.OuterDiameter, options ' Количество и диаметр относятся к наружному ряду; параметры размещения копируются из options.
+    Set axis = facade.Offset("Inner.Axis", openingPath.ID, -parameters.InnerAxisDistance) ' Окружность идёт против часовой стрелки; отрицательное левое смещение направлено вправо от обхода, из отверстия в бетон.
+    Set options = New CRebarRuleOptions
+    options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap ' Замкнутая раскладка без повторения конца; весь диск каждого стержня должен лежать в бетоне и не пересекать другие.
+    options.AnnotationGroup = "InnerBars": options.SourcePrefix = "Inner." ' Внутренние стержни получают отдельные группу подписи и префикс имён.
+    options.SourceReference = parameters.Source ' Общий источник для программного ввода; при наличии таблицы ниже выбираются конкретные связанные поля.
+    If Not table Is Nothing Then options.SourceReference = table.SourceReference(table.RowByKey("InnerAxisDistance"), 2) & "; " & table.SourceReference(table.RowByKey("InnerCount"), 2) ' Ошибка внутреннего ряда укажет его отступ и количество в реальной таблице.
+    facade.RebarByCount "InnerBars", axis.ID, parameters.InnerCount, parameters.InnerDiameter, options ' Внутренний ряд имеет собственные количество, диаметр и условия размещения.
+    facade.VerticalExtent "Height", boundary.ID, "H", -parameters.BottomWidth / 2#, -1# ' Высота бетонного контура; исходная размерная линия у левого края, знак -1 выносит её влево.
+    facade.HorizontalExtent "Width", boundary.ID, "B", -parameters.Height / 2#, -1# ' Ширина бетонного контура; исходная размерная линия у нижнего края, знак -1 выносит её вниз.
+    facade.Radius "OpeningRadius", openingPath.ID, openingPath.ID, 0.25, "Ro" ' Оба ID относятся к окружности и её сегменту; 0.25 задаёт точку на четверти обхода для размера Ro.
+    facade.Anchor "Caption", -parameters.TopWidth / 4#, parameters.Height / 5# ' Программная точка размещения поясняющего текста, мм.
+    facade.Text "FormName", "Caption", "Скругленная трапеция"
+    facade.RebarLabel "OuterBars", "Outer.Axis", 0#, 1# ' Подпись наружной группы привязана к её осевому контуру и направлена вверх.
+    facade.RebarLabel "InnerBars", "Inner.Axis", 0#, -1# ' Подпись внутренней группы привязана к её осевому контуру и направлена вниз.
+    Set Describe = facade.Finish ' Общий фасад проверяет согласованность и возвращает неизменяемое описание.
     Exit Function
 InvalidGeometry:
     SectionRecipeGeometryError "CSectionRecipeRoundedTrapezoid", parameters.Source

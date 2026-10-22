@@ -27,23 +27,23 @@ Option Explicit
 ' бетонному центру; перенос к приведенному центру выполняет вызывающий код.
 
 Private mArea As Double ' Площадь текущего представления: бетонная или приведенная к бетону, мм2.
-Private mStaticMomentX As Double ' Статический момент относительно оси X: сумма A*y.
-Private mStaticMomentY As Double ' Статический момент относительно оси Y: сумма A*x.
-Private mCentroidX As Double ' X центра тяжести текущего представления сечения.
-Private mCentroidY As Double ' Y центра тяжести текущего представления сечения.
-Private mIx As Double ' Момент инерции относительно исходной оси X.
-Private mIy As Double ' Момент инерции относительно исходной оси Y.
-Private mIxy As Double ' Центробежный момент инерции относительно исходных осей.
-Private mIxc As Double ' Центральный момент инерции относительно оси X через центр тяжести.
-Private mIyc As Double ' Центральный момент инерции относительно оси Y через центр тяжести.
-Private mIxyc As Double ' Центральный центробежный момент инерции.
-Private mPrincipalI1 As Double ' Больший главный центральный момент инерции.
-Private mPrincipalI2 As Double ' Меньший главный центральный момент инерции.
-Private mPrincipalAngleRad As Double ' Угол от +X к физической главной оси 1, для которой момент инерции равен I1.
-Private mRadiusX As Double ' Радиус инерции относительно центральной оси X.
-Private mRadiusY As Double ' Радиус инерции относительно центральной оси Y.
-Private mPrincipalRadius1 As Double ' Радиус инерции по главной оси I1.
-Private mPrincipalRadius2 As Double ' Радиус инерции по главной оси I2.
+Private mStaticMomentX As Double ' Статический момент относительно оси X: сумма A*y, мм3.
+Private mStaticMomentY As Double ' Статический момент относительно оси Y: сумма A*x, мм3.
+Private mCentroidX As Double ' X центра тяжести текущего представления сечения, мм.
+Private mCentroidY As Double ' Y центра тяжести текущего представления сечения, мм.
+Private mIx As Double ' Момент инерции относительно исходной оси X, мм4.
+Private mIy As Double ' Момент инерции относительно исходной оси Y, мм4.
+Private mIxy As Double ' Центробежный момент инерции относительно исходных осей, мм4.
+Private mIxc As Double ' Центральный момент инерции относительно оси X через центр тяжести, мм4.
+Private mIyc As Double ' Центральный момент инерции относительно оси Y через центр тяжести, мм4.
+Private mIxyc As Double ' Центральный центробежный момент инерции, мм4.
+Private mPrincipalI1 As Double ' Больший главный центральный момент инерции, мм4.
+Private mPrincipalI2 As Double ' Меньший главный центральный момент инерции, мм4.
+Private mPrincipalAngleRad As Double ' Угол от +X к физической главной оси 1, для которой момент инерции равен I1; угол в радианах.
+Private mRadiusX As Double ' Радиус инерции относительно центральной оси X, мм.
+Private mRadiusY As Double ' Радиус инерции относительно центральной оси Y, мм.
+Private mPrincipalRadius1 As Double ' Радиус инерции по главной оси I1, мм.
+Private mPrincipalRadius2 As Double ' Радиус инерции по главной оси I2, мм.
 Private mLastCalculationSeconds As Double ' Время последнего расчета свойств для диагностики производительности.
 Private mSnapshotSection As CSectionModel ' Модель, для которой заранее подготовлены свойства записи Results.
 Private mSnapshotRevision As Long ' Ревизия подготовленной геометрии.
@@ -178,7 +178,7 @@ Public Sub CalculateTransformedByModuli(ByVal section As CSectionModel, _
         Dim replacementAreaFactor As Double ' Добавочная площадь арматуры в бетонном приведении: n - 1.
         Dim rebarWeight As Double
         Dim rebarLocalI As Double
-        replacementAreaFactor = steelModularRatio - 1#
+        replacementAreaFactor = steelModularRatio - 1# ' Сетка уже включает бетон в месте стержня, поэтому добавляется (Es/Eb - 1)*As.
         For i = 1 To section.RebarCount
             rebarWeight = replacementAreaFactor * section.RebarArea(i)
             rebarLocalI = replacementAreaFactor * RebarCircleInertia(section.RebarArea(i))
@@ -214,7 +214,7 @@ Private Sub StorePreparationContext(ByVal section As CSectionModel, ByVal kind A
     mPreparationBuildCount = mPreparationBuildCount + 1
 End Sub
 
-' Точная проверка identity/revision/представления и исходных модулей.
+' Проверяет тождество объекта модели, её версию, вид представления и исходные Eb/Es без округления.
 Private Function PreparationMatches(ByVal section As CSectionModel, ByVal kind As Long, ByVal eb As Double, ByVal es As Double) As Boolean
     If section Is Nothing Then Exit Function
     If Not section Is mPreparedSection Then Exit Function
@@ -377,7 +377,7 @@ Public Function ConcreteInertiaAboutAxis(ByVal section As CSectionModel, ByVal a
         Dim localIy As Double
         Dim localIxy As Double
         section.ConcreteLocalInertiaComponents i, localIx, localIy, localIxy
-        localInertia = ny * ny * localIy + nx * nx * localIx - 2# * nx * ny * localIxy
+        localInertia = ny * ny * localIy + nx * nx * localIx - 2# * nx * ny * localIxy ' Собственная инерция относительно заданной физической оси с учётом знака Ixy.
         ConcreteInertiaAboutAxis = ConcreteInertiaAboutAxis + _
             localInertia + section.ConcreteArea(i) * distanceToAxis * distanceToAxis
     Next i
@@ -470,7 +470,7 @@ Public Sub PrincipalPlaneNormalDirection(ByVal planeIndex As Long, ByRef normalX
     End If
 End Sub
 
-' Считает габарит бетонного контура по нормали выбранной главной плоскости.
+' Считает габарит оболочек бетонных элементов по нормали выбранной главной плоскости.
 ' Это единая точка для устойчивости и справочного вывода: арматура не
 ' расширяет внешний бетонный контур, если вызывающий код передает False.
 Public Function PrincipalPlaneDepth(ByVal section As CSectionModel, ByVal planeIndex As Long, _
@@ -544,7 +544,7 @@ Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directio
     Dim centroidProjection As Double
     Dim criticalShapeValue As Double
     centroidProjection = kyPerEccentricity * mCentroidX + kxPerEccentricity * mCentroidY
-    criticalShapeValue = minProjection - centroidProjection
+    criticalShapeValue = minProjection - centroidProjection ' Критическое крайнее волокно относительно текущего центра даёт первое обнуление линейной деформации.
     If criticalShapeValue >= -GEOM_TOLERANCE Then Exit Function
 
     CoreDistanceAlong = -1# / (mArea * criticalShapeValue)
@@ -622,7 +622,7 @@ Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCen
         mCentroidY = mStaticMomentX / mArea
     End If
 
-    mIxc = mIx - mArea * mCentroidY * mCentroidY
+    mIxc = mIx - mArea * mCentroidY * mCentroidY ' Перенос к центру тяжести по теореме Гюйгенса — Штейнера, мм4.
     mIyc = mIy - mArea * mCentroidX * mCentroidX
     mIxyc = mIxy - mArea * mCentroidX * mCentroidY
 
@@ -636,11 +636,8 @@ Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCen
     Dim inertiaRef As Double
     inertiaRef = GeomMax(GeomMax(Abs(mIxc), Abs(mIyc)), 1#)
 
-    ' Для круга и почти изотропных сечений направление главных осей
-    ' математически неопределено. Малый численный Ixy от дискретной сетки не
-    ' должен поворачивать оси и раскладывать чистый Mx/My на две плоскости.
     If Abs(mIxyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE And _
-            Abs(mIxc - mIyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE Then
+            Abs(mIxc - mIyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE Then ' Для круга и почти изотропных сечений направление главных осей математически неопределено. Малый численный Ixy от дискретной сетки не должен поворачивать оси и раскладывать чистый Mx/My на две плоскости.
         mPrincipalAngleRad = 0#
     Else
         mPrincipalAngleRad = 0.5 * Atn2(-2# * mIxyc, mIxc - mIyc)
@@ -692,87 +689,87 @@ Public Property Get Area() As Double
     Area = mArea
 End Property
 
-' Статический момент относительно оси X: сумма A*y.
+' Статический момент относительно оси X: сумма A*y, мм3.
 Public Property Get StaticMomentX() As Double
     StaticMomentX = mStaticMomentX
 End Property
 
-' Статический момент относительно оси Y: сумма A*x.
+' Статический момент относительно оси Y: сумма A*x, мм3.
 Public Property Get StaticMomentY() As Double
     StaticMomentY = mStaticMomentY
 End Property
 
-' X центра тяжести текущего представления сечения.
+' X центра тяжести текущего представления сечения, мм.
 Public Property Get CentroidX() As Double
     CentroidX = mCentroidX
 End Property
 
-' Y центра тяжести текущего представления сечения.
+' Y центра тяжести текущего представления сечения, мм.
 Public Property Get CentroidY() As Double
     CentroidY = mCentroidY
 End Property
 
-' Момент инерции относительно исходной оси X.
+' Момент инерции относительно исходной оси X, мм4.
 Public Property Get Ix() As Double
     Ix = mIx
 End Property
 
-' Момент инерции относительно исходной оси Y.
+' Момент инерции относительно исходной оси Y, мм4.
 Public Property Get Iy() As Double
     Iy = mIy
 End Property
 
-' Центробежный момент инерции относительно исходных осей.
+' Центробежный момент инерции относительно исходных осей, мм4.
 Public Property Get Ixy() As Double
     Ixy = mIxy
 End Property
 
-' Центральный момент инерции относительно оси X через центр тяжести.
+' Центральный момент инерции относительно оси X через центр тяжести, мм4.
 Public Property Get Ixc() As Double
     Ixc = mIxc
 End Property
 
-' Центральный момент инерции относительно оси Y через центр тяжести.
+' Центральный момент инерции относительно оси Y через центр тяжести, мм4.
 Public Property Get Iyc() As Double
     Iyc = mIyc
 End Property
 
-' Центральный центробежный момент инерции.
+' Центральный центробежный момент инерции, мм4.
 Public Property Get Ixyc() As Double
     Ixyc = mIxyc
 End Property
 
-' Больший главный центральный момент инерции.
+' Больший главный центральный момент инерции, мм4.
 Public Property Get PrincipalI1() As Double
     PrincipalI1 = mPrincipalI1
 End Property
 
-' Меньший главный центральный момент инерции.
+' Меньший главный центральный момент инерции, мм4.
 Public Property Get PrincipalI2() As Double
     PrincipalI2 = mPrincipalI2
 End Property
 
-' Угол от +X к физической главной оси 1, для которой момент инерции равен I1.
+' Угол от +X к физической главной оси 1, для которой момент инерции равен I1; угол в радианах.
 Public Property Get PrincipalAngleRad() As Double
     PrincipalAngleRad = mPrincipalAngleRad
 End Property
 
-' Радиус инерции относительно центральной оси X.
+' Радиус инерции относительно центральной оси X, мм.
 Public Property Get RadiusX() As Double
     RadiusX = mRadiusX
 End Property
 
-' Радиус инерции относительно центральной оси Y.
+' Радиус инерции относительно центральной оси Y, мм.
 Public Property Get RadiusY() As Double
     RadiusY = mRadiusY
 End Property
 
-' Радиус инерции по главной оси I1.
+' Радиус инерции по главной оси I1, мм.
 Public Property Get PrincipalRadius1() As Double
     PrincipalRadius1 = mPrincipalRadius1
 End Property
 
-' Радиус инерции по главной оси I2.
+' Радиус инерции по главной оси I2, мм.
 Public Property Get PrincipalRadius2() As Double
     PrincipalRadius2 = mPrincipalRadius2
 End Property
@@ -802,14 +799,16 @@ End Function
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: количество фактических расчетов механических характеристик.
-Friend Property Get PreparationBuildCount() As Long
-    PreparationBuildCount = mPreparationBuildCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' количество фактических расчетов механических характеристик.
+Friend Property Get TestPreparationBuildCount() As Long
+    TestPreparationBuildCount = mPreparationBuildCount
 End Property
 
-' ДЛЯ ТЕСТОВ: время последнего расчета свойств для диагностики производительности.
-Public Property Get LastCalculationSeconds() As Double
-    LastCalculationSeconds = mLastCalculationSeconds
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' время последнего расчета свойств для диагностики производительности.
+Public Property Get TestLastCalculationSeconds() As Double
+    TestLastCalculationSeconds = mLastCalculationSeconds
 End Property
 
 

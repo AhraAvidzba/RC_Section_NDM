@@ -288,7 +288,7 @@ Friend Sub Seal()
             If Not outerByID.Exists(mLoops(i).ParentID) Then DefinitionError "Не найден Outer отверстия '" & mLoops(i).LoopID & "'."
             Set one = query.RegionFromContours(LoopContours(i, True))
             ValidateOneLoop query, one
-            Set parent = outerByID(mLoops(i).ParentID)
+            Set parent = outerByID(mLoops(i).ParentID) ' Отверстие проверяется внутри своего Outer, а не произвольно выбранной внешней границы.
             query.ValidateContainedRegion parent, one
             Set region = query.SubtractContainedRegion(region, one)
         End If
@@ -299,10 +299,7 @@ Friend Sub Seal()
         For i = 1 To mRuleCount: ValidateRuleGraph i, visiting: Next i
     End If
     For i = 1 To mAnnotationCount: ValidateAnnotation mAnnotations(i): Next i
-    ' Подготавливаем и упорядочиваем точные границы общими геометрическими операциями.
-    ' Характеристики бетонной сетки при этом не подменяются характеристиками точного контура.
-    ' Готовая область сохраняется и при Build повторно не строится.
-    Set mRegion = query.RegionFromContours(MaterialContours())
+    Set mRegion = query.RegionFromContours(MaterialContours()) ' Подготавливаем и упорядочиваем точные границы общими геометрическими операциями. Характеристики бетонной сетки при этом не подменяются характеристиками точного контура. Готовая область сохраняется и при Build повторно не строится.
     mSealed = True
 End Sub
 
@@ -345,7 +342,7 @@ End Sub
 Private Sub ValidateRuleGraph(ByVal index As Long, ByRef visiting() As Long)
     If visiting(index) = 2 Then Exit Sub
     If visiting(index) = 1 Then DefinitionError "Циклическая зависимость ряда '" & mRules(index).RuleID & "'."
-    visiting(index) = 1
+    visiting(index) = 1 ' Метка текущей цепочки; повторный вход до значения 2 выявляет циклическую зависимость.
     Dim ids As Variant, source As Long
     If mRules(index).Enabled Then
         If mRules(index).Mode <> DependentOffset Then ids = TargetPaths(mRules(index).Target)

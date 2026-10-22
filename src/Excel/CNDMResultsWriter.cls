@@ -16,7 +16,8 @@ Option Explicit
 ' в OUTPUT-единицы и сохраняет согласованный набор данных последнего расчёта.
 ' Записывает геометрию и состояния StrengthState, CapacityState, CrackedState
 ' и другие. Подробную таблицу прочности оформляет CStrengthSummaryWriter.
-' Текущие Inputs не перечитываются: сохраняется именно рассчитанное состояние.
+' При расчёте сохраняет полученное НДС; при формировании — снимок геометрии без НДС.
+' Исходные таблицы геометрии при записи не перечитываются.
 
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
@@ -109,9 +110,8 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     WriteSectionAnnotations workbook, section, runID, units, batch, previousAnnotations
 End Sub
 
-' После импорта AutoCAD записывает геометрию без расчёта сочетаний.
-' По этим данным сразу строится схема, а следующий расчёт
-' использует ту же сохранённую геометрию Results.
+' После формирования или импорта записывает геометрию без расчёта сочетаний.
+' По этому снимку сразу строится схема; следующий расчёт читает ту же геометрию Results.
 Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal fullFormatting As Boolean = True)
@@ -177,7 +177,8 @@ End Sub
 
 ' Очищает прямоугольник одной таблицы результатов. Ширину берёт из её структуры,
 ' высоту — по заполненному первому столбцу. CurrentRegion не используется,
-' поскольку из-за форматирования может захватить соседние таблицы.
+' поскольку может захватить соседние таблицы. В минимальном режиме очищает
+' только данные; при полном оформлении также удаляет шапку, название и форматы.
 Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String)
     If mMinimalFormatting Then
         Dim existingAnchor As Object, existingRows As Long
@@ -288,10 +289,7 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
 
     Dim stateCount As Long
     Dim i As Long
-    ' Считаем только конечные расчётные состояния. Для одного сочетания
-    ' могут сохраняться НДС по прочности, предельное НДС, текущее НДС
-    ' с трещинами и состояния до и после образования трещины.
-    For i = 1 To batch.Count
+    For i = 1 To batch.Count ' Считаем только конечные расчётные состояния. Для одного сочетания могут сохраняться НДС по прочности, предельное НДС, текущее НДС с трещинами и состояния до и после образования трещины.
         stateCount = stateCount + batch.ResultAt(i).StateRepository.StateCount
     Next i
 
@@ -305,9 +303,7 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
 
     Dim rowIndex As Long
     rowIndex = 2
-    ' Все строки собираются в массив VBA и одним присваиванием выгружаются
-    ' на лист. Это принципиально быстрее и устойчивее построчной записи Cells.
-    For i = 1 To batch.Count
+    For i = 1 To batch.Count ' Все строки собираются в массив VBA и одним присваиванием выгружаются на лист. Это принципиально быстрее и устойчивее построчной записи Cells.
         Dim stateIndex As Long
         For stateIndex = 1 To batch.ResultAt(i).StateRepository.StateCount
             PutCombinationElementResults data, rowIndex, section, batch, i, _
@@ -340,9 +336,7 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
     rowIndex = 2
 
     Dim i As Long
-    ' Геометрия записывается один раз на расчетный снимок. Она не зависит от LoadCase,
-    ' поэтому координаты и площади не дублируются в rngNDMElementResults для каждого сочетания.
-    For i = 1 To section.ConcreteCount
+    For i = 1 To section.ConcreteCount ' Геометрия записывается один раз на расчетный снимок. Она не зависит от LoadCase, поэтому координаты и площади не дублируются в rngNDMElementResults для каждого сочетания.
         data(rowIndex, 1) = runID
         data(rowIndex, 2) = section.ConcreteID(i)
         data(rowIndex, 3) = "Concrete"
@@ -363,9 +357,7 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         rowIndex = rowIndex + 1
     Next i
 
-    ' Бетон и арматуру записываем в одну таблицу геометрии. Для стержня указываем
-    ' диаметр вместо ширины и высоты; тип элемента определяется полем MaterialType.
-    For i = 1 To section.RebarCount
+    For i = 1 To section.RebarCount ' Бетон и арматуру записываем в одну таблицу геометрии. Для стержня указываем диаметр вместо ширины и высоты; тип элемента определяется полем MaterialType.
         data(rowIndex, 1) = runID
         data(rowIndex, 2) = section.RebarID(i)
         data(rowIndex, 3) = "Rebar"
@@ -451,16 +443,12 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Dim rowIndex As Long
     rowIndex = 2
 
-    ' Bounds нужны любой геометрии, Generated или AutoCAD. По ним схема может
-    ' восстановить общий габарит без обращения к текущим настройкам Config.
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
-    Dim bounds As Variant: bounds = snapshot.SnapshotBounds
+    Dim bounds As Variant: bounds = snapshot.SnapshotBounds ' Bounds нужны любой геометрии, Generated или AutoCAD. По ним схема может восстановить общий габарит без обращения к текущим настройкам Config.
     minX = bounds(1): maxX = bounds(2): minY = bounds(3): maxY = bounds(4)
 
-    ' Бетонные и приведённые характеристики уже подготовлены.
-    ' Переводим готовые значения в единицы вывода без пересчёта по текущему Config.
     Dim concreteProps As CSectionPropertiesCalculator
-    Set concreteProps = snapshot
+    Set concreteProps = snapshot ' Бетонные и приведённые характеристики уже подготовлены. Переводим готовые значения в единицы вывода без пересчёта по текущему Config.
 
     Dim transformedProps As CSectionPropertiesCalculator
     Set transformedProps = snapshot.TransformedSnapshot
@@ -490,10 +478,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutTransformedSectionProperties data, rowIndex, runID, section, transformedProps, units
     PutGeneralSectionCheckProperties data, rowIndex, runID, section, concreteProps, transformedProps, batch
     Dim i As Long
-    ' Общие свойства НДС хранятся отдельно от строк элементов.
-    ' Поля деформаций записываем как State.<StateType>.*, чтобы схема
-    ' и AutoCAD могли выбрать нужное состояние конкретного сочетания.
-    For i = 1 To batch.Count
+    For i = 1 To batch.Count ' Общие свойства НДС хранятся отдельно от строк элементов. Поля деформаций записываем как State.<StateType>.*, чтобы схема и AutoCAD могли выбрать нужное состояние конкретного сочетания.
         If batch.ResultAt(i).StrengthResult.DirectState.StateAvailable Then
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.ResultAt(i).StrengthResult.DirectState.StateResult.Nint, units), OutputForceUnit(units), "Равнодействующая продольная сила внутреннего НДС для выбранного сочетания."
         Else
@@ -1008,8 +993,8 @@ Private Function MaterialDiagramRowCount(ByVal batch As CBatchSectionCalculator)
     MaterialDiagramRowCount = rowCount
 End Function
 
-' Записывает минимальные свойства imported-preview: Bounds, количество
-' элементов и единицы, достаточные для проверки геометрии на схеме.
+' Записывает свойства сформированного сечения без НДС: габариты, число
+' элементов, характеристики бетона и единицы, необходимые для предварительной схемы.
 Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
@@ -1039,10 +1024,10 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     Set concreteProps = snapshot
     PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов продольной арматуры расчетной модели."
-    PutProperty data, rowIndex, runID, "ALL", "Output.LengthUnit", OutputLengthUnit(units), "-", "Единица вывода длины на момент импорта."
-    PutProperty data, rowIndex, runID, "ALL", "Output.AreaUnit", OutputAreaUnit(units), "-", "Единица вывода площади на момент импорта."
-    PutProperty data, rowIndex, runID, "ALL", "Output.StressUnit", OutputStressUnit(units), "-", "Единица вывода напряжения на момент импорта."
-    PutProperty data, rowIndex, runID, "ALL", "Output.CurvatureUnit", OutputCurvatureUnit(units), "-", "Единица вывода кривизны на момент импорта."
+    PutProperty data, rowIndex, runID, "ALL", "Output.LengthUnit", OutputLengthUnit(units), "-", "Единица вывода длины на момент формирования сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Output.AreaUnit", OutputAreaUnit(units), "-", "Единица вывода площади на момент формирования сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Output.StressUnit", OutputStressUnit(units), "-", "Единица вывода напряжения на момент формирования сечения."
+    PutProperty data, rowIndex, runID, "ALL", "Output.CurvatureUnit", OutputCurvatureUnit(units), "-", "Единица вывода кривизны на момент формирования сечения."
     PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
 
     target.Resize(UBound(data, 1), SECTION_PROPERTY_COLUMNS).Value2 = data
@@ -1160,7 +1145,8 @@ End Sub
 
 ' Оформляет диапазон как отдельную таблицу с заголовком над именованным началом.
 ' Дальнейшее чтение использует это имя и размеры таблицы,
-' а не область CurrentRegion соседних заполненных ячеек.
+' а не область CurrentRegion соседних заполненных ячеек. В минимальном режиме
+' сохраняет готовое оформление, если распознаны шапка и формат даты запуска.
 Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)
     If mMinimalFormatting Then
         If CStr(target.Cells(rowCount, 1).NumberFormat) = "dd.mm.yy" And CBool(target.Cells(1, 1).Font.Bold) Then
@@ -1490,9 +1476,7 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
         OutputAnnotationText = annotations.Text(annotationIndex)
         Exit Function
     End If
-    ' Без необязательного исходного обозначения сохраняем готовую подпись
-    ' с её собственной единицей. Текст вида B=0.3 m не разбирается как ввод.
-    If StrComp(annotations.Unit(annotationIndex), "Length", vbTextCompare) <> 0 Then
+    If StrComp(annotations.Unit(annotationIndex), "Length", vbTextCompare) <> 0 Then ' Без необязательного исходного обозначения сохраняем готовую подпись с её собственной единицей. Текст вида B=0.3 m не разбирается как ввод.
         OutputAnnotationText = annotations.Text(annotationIndex)
         Exit Function
     End If
@@ -1584,7 +1568,8 @@ Private Function OutputAnnotationUnit(ByVal annotations As CSectionAnnotations, 
     End If
 End Function
 
-' Ниже переводятся физические величины сохранённого результата в выбранные единицы вывода.
+' Переводит длину из внутренних мм в выбранную выходную единицу.
+' При отсутствии CUnitSystem оставляет внутреннее значение без изменения.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function

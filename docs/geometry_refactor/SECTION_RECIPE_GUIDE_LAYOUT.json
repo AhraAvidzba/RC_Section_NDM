@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "60ef7321fd6c6d5d1b17efaf0af9295cefc32213ec897a64668bb25fbe87f39a",
+  "bodySHA256": "856eb744c0d7aeae59dfdb5aa479f8a6821a392a66bc6011be4541e782db318a",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "1dfad79df291fc01a28b330347cbf3b2f4f23a4983e5f5a4b89fa43f03c22182",
-    "src/Common/modSectionRecipeApiGuide.bas": "23d4fc4e203de5d9e2b683cbf240e24d044eb52e544ee3ec5df612f9ce1ab2da"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "825e9ba8ccd135e343cace197c7b2ab4d58c817e5404037be51bee9aa8e9e8f2",
+    "src/Common/modSectionRecipeApiGuide.bas": "cbca439945f4b37344f29e9dc95fef5df6da2e4ab5033884d702961c44da1356"
   },
   "rows": [
     {
@@ -20,13 +20,13 @@
       "line": 2
     },
     {
-      "text": "Геометрию нового сечения можно задать декларативно: описать, что нужно получить — границы бетона, отверстия и расположение стержней.",
+      "text": "Для нового параметрического сечения создайте один класс-рецепт VBA. Он описывает границы бетона, отверстия и армирование; сетку и стержни строит общая программа.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 3
     },
     {
-      "text": "Построение сетки, создание стержней и проверки программа выполняет по этому описанию автоматически. Оно задаётся готовыми методами API в классе VBA.",
+      "text": "Ниже приведён порядок подключения. Полный API со всеми аргументами и готовыми примерами находится в модуле книги modSectionRecipeApiGuide.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 4
@@ -44,25 +44,25 @@
       "line": 6
     },
     {
-      "text": "Готовые контуры: facade.RectanglePath — прямоугольник; facade.CirclePath — окружность; facade.AdjacentRectangles — общий контур смежных прямоугольников без перекрытий.",
+      "text": "Контур можно составить из прямых, дуг и окружностей; для многоугольника можно задать скругления.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 7
     },
     {
-      "text": "Многоугольник: задайте вершины и радиусы через CPolygonSpec.AddVertex (0 — без скругления), затем Seal и facade.RoundedPolygon. Замкнутую последовательность отрезков и дуг создают через CGeometryPath.AddLine / AddArc, затем Seal True и facade.AddPath.",
+      "text": "Для арматуры доступны заданное число стержней, шаг, связанные дополнительные ряды и проекция на другую линию. Размеры и подписи задаются отдельно.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 8
     },
     {
-      "text": "Для выбора участка методом Chain имя сегмента можно получить по координатам точки через path.ResolveAnchor. Выбирайте точку внутри нужного отрезка или дуги: общий стык нескольких сегментов неоднозначен. Подробный пример — в modSectionRecipeApiGuide. Готовую замкнутую линию назначьте наружной границей через Outer или отверстием через Opening, указав имя наружной границы. Для отдельных бетонных областей задают свои наружные контуры. Точные вызовы и примеры всех способов — в modSectionRecipeApiGuide.",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 9
     },
     {
-      "text": "В классе нового типа опишите, как программа должна получить линию центров арматурных стержней. В штатных типах она строится автоматически из контура с учётом расстояния as до осей стержней. Для нового типа можно также использовать смещение контура или задать отдельный отрезок, дугу, окружность либо непрерывную последовательность таких участков. В API геометрическая линия называется Path («путь»); замкнутая линия может задавать и границу бетона или отверстия.",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 10
@@ -74,7 +74,7 @@
       "line": 11
     },
     {
-      "text": "Затем укажите диаметр стержней и способ их размещения: заданное число стержней, наибольшее допустимое расстояние между соседними стержнями, точное расстояние между ними или отдельные места, заданные расстояниями от начала линии. Для нескольких независимых линий число стержней задаётся отдельно на каждой.",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 12
@@ -86,7 +86,7 @@
       "line": 13
     },
     {
-      "text": "Можно сместить линию размещения арматуры, повернуть или отразить её; создать дополнительный ряд относительно стержней уже заданного ряда. Можно также спроецировать центры стержней исходного ряда на другую линию: по нормали к исходной линии либо по отдельно заданному направлению. Центры новых стержней будут находиться в точках пересечения лучей проекции с целевой линией.",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 14
@@ -98,7 +98,7 @@
       "line": 15
     },
     {
-      "text": "Размеры сечения, поясняющий текст и подписи числа и диаметра стержней задаются отдельно. RebarLabel поддерживает любую нормаль normalX/normalY, например (1,1) для диагонали; у отверстия её направляют в пустоту. Текст подписи и размера, в том числе Dimension с Aligned, следует своей линии и разворачивается для удобного чтения. На стороне без арматуры подпись не выводится.",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 16
@@ -122,43 +122,43 @@
       "line": 19
     },
     {
-      "text": "1. В редакторе VBA (Alt+F11) создайте класс с Implements ISectionRecipe.",
+      "text": "1. В редакторе VBA (Alt+F11) создайте Class Module и подключите Implements ISectionRecipe.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 20
     },
     {
-      "text": "2. В CreateDefinition получите копии входных таблиц через context.Table и закрытую копию единиц через context.Units. Переведите введённые размеры в мм методами CUnitSystem; перенастраивать этот объект нельзя. Сам класс описания сечения не должен читать ячейки Excel.",
+      "text": "2. В методе ISectionRecipe_CreateDefinition прочитайте таблицу через context.Reader. Длины переведите в мм через ридер или context.Units.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 21
     },
     {
-      "text": "3. Создайте CSectionDefinitionBuilder и один раз вызовите Initialize. Задайте геометрические линии с уникальными именами (ID). Создающие команды сразу регистрируют линии; их результат повторно передавать в AddPath не нужно. Замкнутую наружную границу назначьте методом Outer, а отверстие — Opening с именем соответствующей наружной границы.",
+      "text": "3. Создайте CSectionDefinitionBuilder, вызовите Initialize и опишите наружную границу. Если есть отверстия, укажите их вместе с соответствующей наружной границей.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 22
     },
     {
-      "text": "4. Опишите получение линий центров арматуры, например смещением контура на as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительные ряды можно связать с основным. В CRebarRuleOptions AnnotationGroup объединяет стержни в подпись, Publication задаёт порядок вывода, Coincidence — обработку совпадений. Параметры читает ReadRebarInputs. В AddReinforcement создают CRebarContactBuilder: один на основной ряд, отдельные настройки в Initialize и один AppendRow на активный ряд. Последний необязательный аргумент AppendRow — baseOffset в мм от линии основного ряда по нормали в бетон (по умолчанию 0). Одинаковые отступы образуют контактную группу, разные — независимые группы. Внутри группы он учитывает диаметры отдельно для Stacked и SideBySide; EverySecondBar не меняет контактных расстояний. Оба RebarDependent объявляют от Main; отключённые ряды пропускают. Произвольные смещения задаются NormalOffset/TangentOffset. Пример — в modSectionRecipeApiGuide.",
+      "text": "4. Задайте линии центров арматуры, диаметры и число стержней или шаг. При необходимости добавьте связанные ряды и правила проекции.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 23
     },
     {
-      "text": "5. При ненулевом базовом отступе R2 или R3 явно свяжите семейство с исходной геометрией: `facade.RebarContour \"Top.Main\", \"OUTER\", \"Boundary\", 50#, \"Top.Row2\", \"Top.Row3\"`. Здесь Boundary — исходная замкнутая фигура до отступа as, а 50 мм — заданный as основного ряда. Каждый дополнительный ряд проверяется по общему контуру с собственными отступами всех его сторон. Сторона без дополнительного ряда сохраняет as Main. Если as ограничивает соседнюю линию даже без активного Main, передайте его через RebarContourBaseline. Координаты стержней не исправляются: прямые стыкуются пересечением продолжений, а разрывы между точной дугой и соседом соединяются отрезком; стык может быть негладким. Исчезнувшее при отступе скругление удаляется, соседние прямые стыкуются пересечением продолжений. Само исчезновение дуги не является ошибкой. Для однозначной привязки Main можно передать normalSign — то же направление в бетон, что у CRebarContactBuilder. Проверяется положение после нормального и до касательного сдвига. Действительно непригодная позиция пропускается с OFFSET_POSITION_SKIPPED, а невозможный или неоднозначный контур даёт адресную ошибку. При обоих нулевых базовых отступах сохраняется прежний алгоритм, включая обработку исчезнувших скруглений. Добавьте нужные аннотации и вызовите Finish; общий сборщик проверит геометрию и разместит арматуру до создания сетки.",
+      "text": "5. Добавьте нужные размеры и подписи, затем верните результат Finish. Общий сборщик проверит описание и построит сечение.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 24
     },
     {
-      "text": "6. В CSectionTypeRegistry.Class_Initialize добавьте вызов RegisterRecipe с именем типа, экземпляром нового класса и именами его входных таблиц. Запустите макрос UpdateSectionRecipeTypes через Alt+F8: он обновит только список Geometry.Type по реестру, сохранив выбранный тип и остальные таблицы Config.",
+      "text": "6. Зарегистрируйте класс и имя его входной таблицы в CSectionTypeRegistry.Class_Initialize. Через Alt+F8 выполните UpdateSectionRecipeTypes для обновления выбора Geometry.Type.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 25
     },
     {
-      "text": "7. Проверьте форму, сетку, арматуру, схему, единицы, равновесие и сообщения при неверном вводе. Проверьте каждую сторону с отключённой арматурой. Примеры реализации есть в VBE этой книги: CSectionRecipeCircle и CSectionRecipePointedSection.",
+      "text": "7. Выберите новый тип, сформируйте сечение и проверьте контуры, сетку, арматуру и схему. Затем проверьте расчёт, единицы и сообщения при неверном вводе.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 26
@@ -170,8 +170,8 @@
       "line": 27
     },
     {
-      "text": "Короткий пример контура",
-      "style": "h2",
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 28
     },
@@ -182,7 +182,7 @@
       "line": 29
     },
     {
-      "text": "В примерах уже создан объект facade типа CSectionDefinitionBuilder; path имеет тип CGeometryPath, options — CRebarRuleOptions. Все размеры здесь в мм. Следующие две строки задают наружную границу прямоугольника 600 × 1000 мм:",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 30
@@ -194,16 +194,28 @@
       "line": 31
     },
     {
-      "text": "Set path = facade.RectanglePath(\"Boundary\", 0#, 0#, 600#, 1000#) ' Boundary: имя; (0,0): нижний угол; 600,1000: B,H в мм.",
-      "style": "code",
+      "text": "",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 32
+    },
+    {
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 33
     },
     {
-      "text": "facade.Outer \"OUTER\", path.ID ' OUTER: имя границы бетона; path.ID: замкнутый контур.",
-      "style": "code",
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 34
+    },
+    {
+      "text": "",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 35
     },
     {
       "text": "",
@@ -212,7 +224,7 @@
       "line": 36
     },
     {
-      "text": "Для отверстия создайте другую замкнутую линию и передайте в Opening её имя и имя наружной границы, внутри которой находится отверстие. Если нужны ссылки на отдельные стороны, задайте имена в RectanglePath через bottomEdgeID/rightEdgeID/topEdgeID/leftEdgeID, а для многоугольника — в CPolygonSpec.AddVertex через outgoingEdgeID и cornerID. Например, Top и Bottom затем можно передать в Chain вместе с именем исходной линии и параметрами концов от 0 до 1. Имена сохраняют исходный смысл после поворота и отражения. Примеры и правила публикации контуров приведены в modSectionRecipeApiGuide этой книги.",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 37
@@ -224,8 +236,8 @@
       "line": 38
     },
     {
-      "text": "Короткий пример арматуры",
-      "style": "h2",
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 39
     },
@@ -236,7 +248,7 @@
       "line": 40
     },
     {
-      "text": "На горизонтальном отрезке от (50; 950) до (550; 950) размещаются пять стержней диаметром 20 мм. В этом примере линия задана координатами; для её получения из наружного контура есть методы Offset и OffsetRoundedPolygon. Имя Top объединяет стержни для общей подписи:",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 41
@@ -248,22 +260,34 @@
       "line": 42
     },
     {
-      "text": "Set path = facade.LinePath(\"TopAxis\", 50#, 950#, 550#, 950#) ' TopAxis: имя; (50,950) и (550,950): концы линии, мм.",
-      "style": "code",
+      "text": "",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 43
+    },
+    {
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 44
     },
     {
-      "text": "Set options = New CRebarRuleOptions: options.AnnotationGroup = \"Top\" ' Top: общая подпись верхних рядов.",
-      "style": "code",
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 45
     },
     {
-      "text": "facade.RebarByCount \"Top.Main\", path.ID, 5, 20#, options ' Top.Main: ряд; path.ID: линия; 5: число; 20: диаметр, мм.",
-      "style": "code",
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 46
+    },
+    {
+      "text": "",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 47
     },
     {
       "text": "",
@@ -272,7 +296,7 @@
       "line": 48
     },
     {
-      "text": "Нулевое число стержней или нулевой диаметр отключают ряд. Условие EverySecond создаёт дополнительный ряд только у первого, третьего и следующих нечётных стержней исходного ряда; на каждой независимой линии отсчёт начинается заново.",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 49
@@ -284,8 +308,8 @@
       "line": 50
     },
     {
-      "text": "Короткий пример аннотаций",
-      "style": "h2",
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 51
     },
@@ -296,7 +320,7 @@
       "line": 52
     },
     {
-      "text": "Первая строка добавляет подпись числа и диаметра стержней верхнего ряда. Вторая — горизонтальный размер B между x = 0 и x = 600 на уровне y = 1000:",
+      "text": "",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 53
@@ -308,16 +332,28 @@
       "line": 54
     },
     {
-      "text": "facade.RebarRowLabel \"Top\", \"Top.Main\", 0#, 1# ' Top: группа; Top.Main: ряд; (0,1): направление подписи вверх.",
-      "style": "code",
+      "text": "",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 55
+    },
+    {
+      "text": "Чтение размеров и армирования",
+      "style": "h2",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 56
     },
     {
-      "text": "facade.HorizontalDistance \"DIM_B\", \"B\", 0#, 600#, 1000# ' DIM_B: имя; B: подпись; 0,600: X точек; 1000: Y, мм.",
-      "style": "code",
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 57
+    },
+    {
+      "text": "На листе «Сечения» подготовьте именованную таблицу: в блоке General — размеры, в Main — основное армирование, в Extra — дополнительные ряды. Ридер ищет поля по коротким ключам.",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 58
     },
     {
       "text": "",
@@ -326,7 +362,7 @@
       "line": 59
     },
     {
-      "text": "Подпись арматуры учитывает фактически созданные стержни и исчезает, если их нет. Размеры сечения сохраняются и на сторонах без арматуры.",
+      "text": "Можно использовать свою структуру таблицы: context.Table даёт снимок диапазона, а reader.ValueAt читает значение по номеру строки и столбца. В этом случае рецепт сам проверяет ввод и переводит единицы.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 60
@@ -338,8 +374,8 @@
       "line": 61
     },
     {
-      "text": "Чтение размеров и армирования",
-      "style": "h2",
+      "text": "",
+      "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 62
     },
@@ -350,8 +386,8 @@
       "line": 63
     },
     {
-      "text": "Каждый штатный тип имеет одну именованную таблицу на листе «Сечения» сразу после Config. В General задаются размеры, в Main — основное армирование по сторонам, в Extra — параметры второго и третьего рядов. Например, `context.Reader(\"rngMyGeometry\").PositiveLength(\"General\", \"B\")` читает ширину B и переводит её в мм. Тот же reader читает армирование по коротким ключам строк и столбцов. Русские подписи и порядок строк не участвуют в поиске.",
-      "style": "paragraph",
+      "text": "Справочник методов создания сечения",
+      "style": "h2",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 64
     },
@@ -362,7 +398,7 @@
       "line": 65
     },
     {
-      "text": "В реестре рецепту указывают имя этой таблицы. Значения армирования каждого типа хранятся независимо: смена Geometry.Type не изменяет введённые данные других сечений.",
+      "text": "Нажмите Alt+F11, затем Ctrl+R и откройте Modules → modSectionRecipeApiGuide. В модуле приведены точные сигнатуры, все параметры, единицы и готовые примеры. Поиск по имени метода — Ctrl+F.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 66
@@ -374,46 +410,10 @@
       "line": 67
     },
     {
-      "text": "Эта структура необязательна. В другой таблице `reader.ValueAt(строка, столбец)` читает значение по позиции внутри диапазона, начиная с 1. Рецепт сам согласованно разбирает эти данные, проверяет их и переводит единицы через `context.Units`; также доступен снимок `context.Table(\"имя диапазона\")`. После чтения геометрия, армирование и аннотации задаются теми же декларативными методами. Обращаться к листу из геометрического ядра не требуется.",
+      "text": "Начните с блока «МИНИМАЛЬНЫЙ ПРИМЕР»: это полный класс простого сечения. Штатные рецепты для сравнения находятся в Class Modules, например CSectionRecipeCircle и CSectionRecipeHollowRectangle.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 68
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 69
-    },
-    {
-      "text": "Справочник методов создания сечения",
-      "style": "h2",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 70
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 71
-    },
-    {
-      "text": "Откройте редактор VBA (Alt+F11), окно проекта (Ctrl+R), затем Modules → modSectionRecipeApiGuide. Здесь описаны методы создания геометрии, арматуры и аннотаций, чтение размеров и подключение нового типа. Справочник разбит на девять разделов; для каждого метода указаны назначение, точная запись вызова, параметры, единицы и значения по умолчанию. Найти метод можно через Ctrl+F по имени.",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 72
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 73
-    },
-    {
-      "text": "Как примеры нового сечения используйте штатные классы-рецепты CSectionRecipeCircle (круг), CSectionRecipeRectangles (прямоугольные сечения), CSectionRecipePointedSection (клиновидное сечение со скруглениями) и CSectionRecipeHollowRectangle (сечение с отверстием). Они находятся в редакторе VBA этой книги: Alt+F11 → Ctrl+R → Class Modules. В рецептах чтение и проверка данных отделены от создания границ бетона, армирования и аннотаций. Подробности — в modSectionRecipeApiGuide.",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 74
     },
     {
       "text": "",

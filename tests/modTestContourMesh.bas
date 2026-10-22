@@ -10,6 +10,8 @@ Option Explicit
 Private mPassed As Long, mFailed As Long, mReport As String
 Private mFixture As Object, mConfig As Object
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает сетки и НДС генерации и имитации импорта для шести форм; отдельно проверяет отверстия, ошибки ввода и сохранение модели в книге.
 Public Function RunContourMeshTests() As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     On Error GoTo Failed
@@ -17,17 +19,17 @@ Public Function RunContourMeshTests() As String
     Set mConfig = mFixture.Worksheets(1): mConfig.Name = "MeshConfig"
     Dim shape As Long, subdivision As Variant, geometry As CGeometryRegion
     For shape = 1 To 6
-        Set geometry = ControlGeometry(shape)
+        Set geometry = TestControlGeometry(shape)
         For Each subdivision In Array(1, 2, 3)
-            CompareGeneratedAndImported geometry, CStr(shape) & ".sub" & CStr(subdivision), CLng(subdivision), CLng(subdivision) = 2
+            TestCompareGeneratedAndImported geometry, CStr(shape) & ".sub" & CStr(subdivision), CLng(subdivision), CLng(subdivision) = 2
         Next subdivision
     Next shape
-    CheckArbitraryDomains
-    CheckImportContracts
-    CheckSnapshot
+    TestCheckArbitraryDomains
+    TestCheckImportContracts
+    TestCheckSnapshot
     GoTo Finish
 Failed:
-    Check "mesh.runtime." & CStr(Err.Number) & "; " & Err.Source & "; " & Err.Description, False
+    TestCheck "mesh.runtime." & CStr(Err.Number) & "; " & Err.Source & "; " & Err.Description, False
 Finish:
     On Error Resume Next
     If Not mFixture Is Nothing Then mFixture.Close False
@@ -36,7 +38,8 @@ Finish:
     RunContourMeshTests = mReport & "TOTAL_CONTOUR_MESH: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
 End Function
 
-' ДЛЯ ТЕСТОВ: приложение AutoCAD и новый документ создаёт внешний сценарий проверки.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' приложение AutoCAD и новый документ создаёт внешний сценарий проверки.
 ' Обычный экспорт строит контуры; обычный импорт читает созданные объекты чертежа.
 Public Function RunNativeContourMeshTests(ByVal acad As Object, ByVal template As String) As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
@@ -47,7 +50,7 @@ Public Function RunNativeContourMeshTests(ByVal acad As Object, ByVal template A
     Dim i As Long, exported As Long, countBefore As Long, circleEntity As Object, regions As Variant, curves(0 To 0) As Object
     Dim center(0 To 2) As Double, region As Object, path As String
     On Error GoTo Failed
-    Check "native.actualAutoCAD", InStr(1, CStr(acad.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) > 0
+    TestCheck "native.actualAutoCAD", InStr(1, CStr(acad.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) > 0
     If InStr(1, CStr(acad.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) = 0 Then Err.Raise vbObjectError + 5295, , "Требуется Autodesk AutoCAD 2023."
     Set mFixture = Application.Workbooks.Add(-4167): Set mConfig = mFixture.Worksheets(1)
     Set doc = acad.Documents.Add(template)
@@ -56,13 +59,13 @@ Public Function RunNativeContourMeshTests(ByVal acad As Object, ByVal template A
         For Each format In Array("Region", "Polyline")
             key = "CM_" & CStr(shape) & "_" & CStr(format)
             outerLayer = key & "_OUT": openingLayer = key & "_HOLE": rebarLayer = key & "_BAR": meshLayer = key & "_EMPTY"
-            Set geometry = ControlGeometry(shape)
-            Set settings = MeshSettings(2, "m", 0.04, 0.03): Set units = SettingsUnits(settings)
-            Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = ControlBars(mesh, geometry)
-            Set generated = BuildGeneratedSectionModel(mesh, bars): geometry.BuildContours generated.Contours
+            Set geometry = TestControlGeometry(shape)
+            Set settings = TestMeshSettings(2, "m", 0.04, 0.03): Set units = TestSettingsUnits(settings)
+            Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = TestControlBars(mesh, geometry)
+            Set generated = TestBuildGeneratedSectionModel(mesh, bars): geometry.BuildContours generated.Contours
             writer.WriteGeometryPreview ThisWorkbook, generated, PrepareSectionSnapshot(generated), units
             exported = SP35ExportSavedMaterialContoursForTests(doc, outerLayer, openingLayer, CStr(format))
-            Check key & ".exportedContours", exported > 0
+            TestCheck key & ".exportedContours", exported > 0
             Audit03EnsureAutoCADLayerForTests doc, rebarLayer, 1
             Audit03EnsureAutoCADLayerForTests doc, meshLayer, 8
             For i = 1 To bars.Count
@@ -73,33 +76,33 @@ Public Function RunNativeContourMeshTests(ByVal acad As Object, ByVal template A
             Next i
             countBefore = doc.ModelSpace.Count
             Set imported = importer.ImportFromModelSpace(doc.ModelSpace, meshLayer, rebarLayer, "Rebar", 0#, units, outerLayer, openingLayer, doc.Layers, settings)
-            Check key & ".sourcePreserved", doc.ModelSpace.Count = countBefore
-            Check key & ".source", imported.ConcreteMeshSource = "AutoCADContours"
-            Check key & ".notice", InStr(importer.ResultMessage(imported), CONTOUR_MESH_GENERATION_NOTICE) > 0
-            If shape < 5 Then CompareModels key, generated, imported, False Else CompareCurvedModels key, generated, imported
-            If shape = 3 Then CompareSolutions key, generated, imported, True
+            TestCheck key & ".sourcePreserved", doc.ModelSpace.Count = countBefore
+            TestCheck key & ".source", imported.ConcreteMeshSource = "AutoCADContours"
+            TestCheck key & ".notice", InStr(importer.ResultMessage(imported), CONTOUR_MESH_GENERATION_NOTICE) > 0
+            If shape < 5 Then TestCompareModels key, generated, imported, False Else TestCompareCurvedModels key, generated, imported
+            If shape = 3 Then TestCompareSolutions key, generated, imported, True
             If shape = 3 And CStr(format) = "Region" Then
-                CheckBatchPair generated, imported
-                CheckNativeFullExport doc, imported
+                TestCheckBatchPair generated, imported
+                TestCheckNativeFullExport doc, imported
             End If
             writer.WriteGeometryPreview ThisWorkbook, imported, PrepareSectionSnapshot(imported), units
             Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
-            CompareModels key & ".snapshot", imported, restored, False
-            Check key & ".restoredMeshSource", restored.ConcreteMeshSource = "AutoCADContours"
+            TestCompareModels key & ".snapshot", imported, restored, False
+            TestCheck key & ".restoredMeshSource", restored.ConcreteMeshSource = "AutoCADContours"
             exported = SP35ExportSavedMaterialContoursForTests(doc, key & "_OUT2", key & "_HOLE2", CStr(format))
-            Check key & ".secondExport", exported > 0
+            TestCheck key & ".secondExport", exported > 0
             Dim reimported As CSectionModel
             Set reimported = importer.ImportFromModelSpace(doc.ModelSpace, meshLayer, rebarLayer, "Rebar", 0#, units, key & "_OUT2", key & "_HOLE2", doc.Layers, settings)
-            CompareModels key & ".CADRoundTrip", imported, reimported, False
+            TestCompareModels key & ".CADRoundTrip", imported, reimported, False
             mReport = mReport & "NATIVE " & key & ": concrete=" & CStr(imported.ConcreteCount) & "; contours=" & CStr(imported.Contours.Count) & "; rebar=" & CStr(imported.RebarCount) & vbCrLf
         Next format
     Next shape
-    CheckNativeTwoHoles doc, settings, units
+    TestCheckNativeTwoHoles doc, settings, units
     path = ThisWorkbook.Path & "\ContourMeshNative.dwg": doc.SaveAs path
     mReport = mReport & "NATIVE_DWG: " & path & vbCrLf
     GoTo Finish
 Failed:
-    Check "native.mesh.runtime." & CStr(Err.Number) & "; " & Err.Source & "; " & Err.Description, False
+    TestCheck "native.mesh.runtime." & CStr(Err.Number) & "; " & Err.Source & "; " & Err.Description, False
 Finish:
     On Error Resume Next
     If Not doc Is Nothing Then doc.Close False
@@ -109,9 +112,10 @@ Finish:
     RunNativeContourMeshTests = mReport & "TOTAL_NATIVE_CONTOUR_MESH: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет настоящий экспорт волокон и напряжений из полного Results:
 ' миллиметры, количество/площадь Region и отсутствие нового решения НДС.
-Private Sub CheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionModel)
+Private Sub TestCheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionModel)
     Dim table As Object, profiles As Object, saved As Variant, savedProfiles As Variant
     Dim i As Long, settings As CSystemSettingsReader, concreteLayer As String, rebarLayer As String
     Dim entity As Object, count As Long, bars As Long, area As Double, expectedArea As Double, exported As Long, solves As Long
@@ -138,21 +142,21 @@ Private Sub CheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionMo
         exported = Audit03ExportAutoCADDocumentForTests(doc)
         failure = Err.Number: reason = Err.Description: Err.Clear
         On Error GoTo Failed
-        Check "native.fullExport.missingState.rejected", failure <> 0 And InStr(1, reason, "StrengthState", vbBinaryCompare) > 0 And InStr(1, reason, "CM_BEND", vbBinaryCompare) > 0
-        Check "native.fullExport.missingState.noObjects", doc.ModelSpace.Count = objectsBefore
+        TestCheck "native.fullExport.missingState.rejected", failure <> 0 And InStr(1, reason, "StrengthState", vbBinaryCompare) > 0 And InStr(1, reason, "CM_BEND", vbBinaryCompare) > 0
+        TestCheck "native.fullExport.missingState.noObjects", doc.ModelSpace.Count = objectsBefore
     Else
         snapshot = Audit02ReadExportSnapshotForTests(ThisWorkbook)
-        Check "native.fullExport.extendedState.available", InStr(1, snapshot, "CM_BEND|PR1|StrengthState|", vbBinaryCompare) = 1
+        TestCheck "native.fullExport.extendedState.available", InStr(1, snapshot, "CM_BEND|PR1|StrengthState|", vbBinaryCompare) = 1
     End If
-    Check "native.fullExport.stateSelection.noSolve", solves = SectionEquilibriumSolveCount()
+    TestCheck "native.fullExport.stateSelection.noSolve", solves = SectionEquilibriumSolveCount()
     ' Успешный экспорт в обоих режимах использует пригодное сохранённое НДС.
     ' Нагрузки исходного CM_BEND, его статусы и численные сравнения не меняются.
     exportCell.Value2 = "CM_COMP"
     snapshot = Audit02ReadExportSnapshotForTests(ThisWorkbook)
-    Check "native.fullExport.validState.available", InStr(1, snapshot, "CM_COMP|PR1|StrengthState|", vbBinaryCompare) = 1
+    TestCheck "native.fullExport.validState.available", InStr(1, snapshot, "CM_COMP|PR1|StrengthState|", vbBinaryCompare) = 1
     exported = Audit03ExportAutoCADDocumentForTests(doc)
-    Check "native.fullExport.objects", exported > model.ConcreteCount + model.RebarCount
-    Check "native.fullExport.noSolve", solves = SectionEquilibriumSolveCount()
+    TestCheck "native.fullExport.objects", exported > model.ConcreteCount + model.RebarCount
+    TestCheck "native.fullExport.noSolve", solves = SectionEquilibriumSolveCount()
     For Each entity In doc.ModelSpace
         If CStr(entity.ObjectName) = "AcDbRegion" Then
             If StrComp(CStr(entity.Layer), concreteLayer, vbTextCompare) = 0 Then
@@ -162,21 +166,22 @@ Private Sub CheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionMo
         End If
     Next entity
     For i = 1 To model.ConcreteCount: expectedArea = expectedArea + model.ConcreteArea(i): Next i
-    Check "native.fullExport.count", count = model.ConcreteCount And bars = model.RebarCount
-    Near "native.fullExport.areaInMm2", expectedArea, area, 0.0000001
+    TestCheck "native.fullExport.count", count = model.ConcreteCount And bars = model.RebarCount
+    TestNear "native.fullExport.areaInMm2", expectedArea, area, 0.0000001
     Dim restored As CSectionModel
     Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
-    Check "native.fullExport.meshSourcePreserved", restored.ConcreteMeshSource = "AutoCADContours"
+    TestCheck "native.fullExport.meshSourcePreserved", restored.ConcreteMeshSource = "AutoCADContours"
     GoTo Finish
 Failed:
-    Check "native.fullExport.runtime." & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "native.fullExport.runtime." & CStr(Err.Number) & "; " & Err.Description, False
 Finish:
     If Not IsEmpty(saved) Then table.Formula = saved
     If Not IsEmpty(savedProfiles) Then profiles.Formula = savedProfiles
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Один настоящий Region содержит два отверстия; отдельный слой отверстий пуст.
-Private Sub CheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+Private Sub TestCheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
     Dim outer As Object, hole As Object, center(0 To 2) As Double, curves(0 To 0) As Object, regions As Variant, i As Long
     Dim source As Object, query As CSectionGeometryQuery, domain As CConcreteRegion, geometry As CGeometryRegion
     Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, mesh As CFiberMeshBuilder, bars As CRebarLayout
@@ -204,13 +209,15 @@ Private Sub CheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSe
     Next i
     Set importer = New CAutoCADSectionModelImporter
     Set model = importer.ImportFromModelSpace(doc.ModelSpace, "CM_TWO_EMPTY", "CM_TWO_BAR", "Rebar", 0#, units, "CM_TWO_OUT", "", doc.Layers, settings)
-    Set generated = BuildGeneratedSectionModel(mesh, bars): CompareModels "native.twoHoles", generated, model, False
+    Set generated = TestBuildGeneratedSectionModel(mesh, bars): TestCompareModels "native.twoHoles", generated, model, False
     Set query = New CSectionGeometryQuery: query.Initialize model
-    Near "native.twoHoles.area", query.ConcreteDomain.Area, GEOM_PI * (120# * 120# - 23# * 23# - 31# * 31#), 0.0000001
-    Check "native.twoHoles.empty", Not query.ContainsPoint(query.ConcreteDomain, -45#, 0#) And Not query.ContainsPoint(query.ConcreteDomain, 45#, 0#)
+    TestNear "native.twoHoles.area", query.ConcreteDomain.Area, GEOM_PI * (120# * 120# - 23# * 23# - 31# * 31#), 0.0000001
+    TestCheck "native.twoHoles.empty", Not query.ContainsPoint(query.ConcreteDomain, -45#, 0#) And Not query.ContainsPoint(query.ConcreteDomain, 45#, 0#)
 End Sub
 
-Private Function ControlGeometry(ByVal shape As Long) As CGeometryRegion
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт шесть контрольных областей: круг, прямоугольник, два объединения прямоугольников, скруглённый контур и контур с отверстием.
+Private Function TestControlGeometry(ByVal shape As Long) As CGeometryRegion
     Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "ContourMeshFixture"
@@ -252,10 +259,12 @@ Private Function ControlGeometry(ByVal shape As Long) As CGeometryRegion
         facade.Opening "VOID", "VoidPath", "OUTER"
     End If
     Set definition = facade.Finish
-    Set ControlGeometry = FixtureGeometry(definition.ConcreteDomain)
+    Set TestControlGeometry = TestFixtureGeometry(definition.ConcreteDomain)
 End Function
 
-Private Function MeshSettings(Optional ByVal subdivision As Long = 2, Optional ByVal unit As String = "mm", _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт минимальную настоящую таблицу настроек сетки и единиц в собственной временной книге.
+Private Function TestMeshSettings(Optional ByVal subdivision As Long = 2, Optional ByVal unit As String = "mm", _
         Optional ByVal stepX As Double = 40#, Optional ByVal stepY As Double = 30#) As CSystemSettingsReader
     mConfig.Cells.ClearContents
     Dim data(1 To 7, 1 To 3) As Variant
@@ -267,33 +276,39 @@ Private Function MeshSettings(Optional ByVal subdivision As Long = 2, Optional B
     data(6, 1) = "Units.Length.Output": data(6, 2) = unit
     data(7, 1) = "Units.Area.Output": data(7, 2) = unit & "2"
     mConfig.Range("A1:C7").Value2 = data
-    Set MeshSettings = New CSystemSettingsReader
-    MeshSettings.LoadFromRange mConfig.Range("A1:C7")
+    Set TestMeshSettings = New CSystemSettingsReader
+    TestMeshSettings.LoadFromRange mConfig.Range("A1:C7")
 End Function
 
-Private Function SettingsUnits(ByVal settings As CSystemSettingsReader) As CUnitSystem
-    Set SettingsUnits = New CUnitSystem: SettingsUnits.LoadFromSettings settings
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт систему единиц из того же снимка настроек, который используется для контрольной сетки.
+Private Function TestSettingsUnits(ByVal settings As CSystemSettingsReader) As CUnitSystem
+    Set TestSettingsUnits = New CUnitSystem: TestSettingsUnits.LoadFromSettings settings
 End Function
 
-Private Function FakeLayers() As Collection
-    Set FakeLayers = New Collection
-    Dim name As Variant, layer As CFakeAcadContour
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт именованные слои бетона, арматуры и контуров для импорта без установленного AutoCAD.
+Private Function TestFakeLayers() As Collection
+    Set TestFakeLayers = New Collection
+    Dim name As Variant, layer As CTestFakeAcadContour
     For Each name In Array("CONCRETE", "REBAR", "OUTER", "OPENING")
-        Set layer = New CFakeAcadContour
-        layer.InitializeLoop "Layer", CStr(name), CStr(name), Nothing
-        FakeLayers.Add layer, CStr(name)
+        Set layer = New CTestFakeAcadContour
+        layer.TestInitializeLoop "Layer", CStr(name), CStr(name), Nothing
+        TestFakeLayers.Add layer, CStr(name)
     Next name
 End Function
 
-Private Function FakeSpace(ByVal contours As CSectionContours, ByVal bars As CRebarLayout) As Collection
-    Dim loops As Object, edges As Collection, i As Long, key As Variant, segment As CFakeAcadContour
-    Dim entity As CFakeAcadContour, rebar As CFakeAcadRegion, angle As Double, layer As String
-    Set FakeSpace = New Collection: Set loops = CreateObject("Scripting.Dictionary")
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Представляет сохранённые линии, дуги, окружности и арматуру как объекты имитируемого ModelSpace.
+Private Function TestFakeSpace(ByVal contours As CSectionContours, ByVal bars As CRebarLayout) As Collection
+    Dim loops As Object, edges As Collection, i As Long, key As Variant, segment As CTestFakeAcadContour
+    Dim entity As CTestFakeAcadContour, rebar As CTestFakeAcadRegion, angle As Double, layer As String
+    Set TestFakeSpace = New Collection: Set loops = CreateObject("Scripting.Dictionary")
     If Not bars Is Nothing Then
         For i = 1 To bars.Count
-            Set rebar = New CFakeAcadRegion
-            rebar.Initialize bars.Area(i), bars.X(i), bars.Y(i), 1#, 1#, 0#, "REBAR", "BAR" & CStr(i)
-            FakeSpace.Add rebar
+            Set rebar = New CTestFakeAcadRegion
+            rebar.TestInitialize bars.Area(i), bars.X(i), bars.Y(i), 1#, 1#, 0#, "REBAR", "BAR" & CStr(i)
+            TestFakeSpace.Add rebar
         Next i
     End If
     For i = 1 To contours.Count
@@ -302,74 +317,81 @@ Private Function FakeSpace(ByVal contours As CSectionContours, ByVal bars As CRe
         If Not loops.Exists(key) Then
             Set edges = New Collection: loops.Add key, edges
         End If
-        Set edges = loops(key): Set segment = New CFakeAcadContour
+        Set edges = loops(key): Set segment = New CTestFakeAcadContour
         Select Case contours.SegmentType(i)
             Case "CONTOUR_LINE"
-                segment.InitializeLine contours.StartX(i), contours.StartY(i), contours.EndX(i), contours.EndY(i)
+                segment.TestInitializeLine contours.StartX(i), contours.StartY(i), contours.EndX(i), contours.EndY(i)
             Case "CONTOUR_ARC"
-                angle = Atan2(contours.StartY(i) - contours.CenterY(i), contours.StartX(i) - contours.CenterX(i))
-                segment.InitializeArc contours.CenterX(i), contours.CenterY(i), contours.Radius(i), angle, contours.SweepAngle(i)
+                angle = TestAtan2(contours.StartY(i) - contours.CenterY(i), contours.StartX(i) - contours.CenterX(i))
+                segment.TestInitializeArc contours.CenterX(i), contours.CenterY(i), contours.Radius(i), angle, contours.SweepAngle(i)
             Case "CONTOUR_CIRCLE"
-                segment.InitializeCircle contours.StartX(i), contours.StartY(i), contours.Radius(i)
+                segment.TestInitializeCircle contours.StartX(i), contours.StartY(i), contours.Radius(i)
         End Select
         edges.Add segment
     Next i
     For Each key In loops.Keys
-        Set entity = New CFakeAcadContour
-        entity.InitializeLoop "AcDbRegion", Left$(CStr(key), InStr(CStr(key), "|") - 1), CStr(key), loops(key)
-        FakeSpace.Add entity
+        Set entity = New CTestFakeAcadContour
+        entity.TestInitializeLoop "AcDbRegion", Left$(CStr(key), InStr(CStr(key), "|") - 1), CStr(key), loops(key)
+        TestFakeSpace.Add entity
     Next key
 End Function
 
-Private Function Atan2(ByVal y As Double, ByVal x As Double) As Double
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Определяет угол радиус-вектора по обеим координатам, сохраняя нужную четверть для имитируемой дуги.
+Private Function TestAtan2(ByVal y As Double, ByVal x As Double) As Double
     If x = 0# Then
-        Atan2 = Sgn(y) * GEOM_PI / 2#
+        TestAtan2 = Sgn(y) * GEOM_PI / 2#
     Else
-        Atan2 = Atn(y / x)
-        If x < 0# Then Atan2 = Atan2 + GEOM_PI
+        TestAtan2 = Atn(y / x)
+        If x < 0# Then TestAtan2 = TestAtan2 + GEOM_PI
     End If
 End Function
 
-Private Function ControlBars(ByVal mesh As CFiberMeshBuilder, ByVal geometry As CGeometryRegion) As CRebarLayout
-    Set ControlBars = New CRebarLayout
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выбирает четыре положения из существующих центров сетки, чтобы обе сравниваемые модели получили одну арматуру.
+Private Function TestControlBars(ByVal mesh As CFiberMeshBuilder, ByVal geometry As CGeometryRegion) As CRebarLayout
+    Set TestControlBars = New CRebarLayout
     Dim index As Long, i As Long
     For i = 1 To 4
-        index = 1 + CLng(Fix(CDbl(mesh.FiberCount - 1) * CDbl(i) / 5#))
-        ControlBars.AddBar "SOURCE" & CStr(i), mesh.FiberX(index), mesh.FiberY(index), 16#, 0#, "Rebar", "", geometry
+        index = 1 + CLng(Fix(CDbl(mesh.FiberCount - 1) * CDbl(i) / 5#)) ' Положения 1/5–4/5 списка не привязаны к конкретному числу волокон.
+        TestControlBars.AddBar "SOURCE" & CStr(i), mesh.FiberX(index), mesh.FiberY(index), 16#, 0#, "Rebar", "", geometry
     Next i
 End Function
 
-Private Sub CompareGeneratedAndImported(ByVal geometry As CGeometryRegion, ByVal label As String, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает модель общего генератора с импортом тех же контуров; проверяет происхождение сетки, центры волокон и выбранные расчётные случаи.
+Private Sub TestCompareGeneratedAndImported(ByVal geometry As CGeometryRegion, ByVal label As String, _
         ByVal subdivision As Long, ByVal solve As Boolean)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, mesh As CFiberMeshBuilder, bars As CRebarLayout
     Dim generated As CSectionModel, imported As CSectionModel, importer As CAutoCADSectionModelImporter
     Dim query As CSectionGeometryQuery, adapter As CGeometryRegion, available As Boolean
-    Set settings = MeshSettings(subdivision): Set units = SettingsUnits(settings)
-    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = ControlBars(mesh, geometry)
-    Set generated = BuildGeneratedSectionModel(mesh, bars)
+    Set settings = TestMeshSettings(subdivision): Set units = TestSettingsUnits(settings)
+    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = TestControlBars(mesh, geometry)
+    Set generated = TestBuildGeneratedSectionModel(mesh, bars)
     geometry.BuildContours generated.Contours
     Set importer = New CAutoCADSectionModelImporter
-    Set imported = importer.ImportFromModelSpace(FakeSpace(generated.Contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", FakeLayers(), settings)
-    CompareModels label, generated, imported
-    Check label & ".source", imported.SourceType = "AutoCADImport" And imported.ConcreteMeshSource = "AutoCADContours"
-    Check label & ".notice", InStr(importer.ResultMessage(imported), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
+    Set imported = importer.ImportFromModelSpace(TestFakeSpace(generated.Contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", TestFakeLayers(), settings)
+    TestCompareModels label, generated, imported
+    TestCheck label & ".source", imported.SourceType = "AutoCADImport" And imported.ConcreteMeshSource = "AutoCADContours"
+    TestCheck label & ".notice", InStr(importer.ResultMessage(imported), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
     Set query = New CSectionGeometryQuery: query.Initialize imported
     Set adapter = New CGeometryRegion: adapter.Initialize query.ConcreteDomain
-    Near label & ".exactArea", adapter.AnalyticalArea(available), geometry.AnalyticalArea(available), 0.0000001
-    CheckCellCenters label, mesh, geometry
+    TestNear label & ".exactArea", adapter.AnalyticalArea(available), geometry.AnalyticalArea(available), 0.0000001
+    TestCheckCellCenters label, mesh, geometry
     Dim i As Long
     For i = 1 To imported.ConcreteCount
-        Check label & ".importedCenter." & CStr(i), adapter.ContainsPoint(imported.ConcreteX(i), imported.ConcreteY(i))
+        TestCheck label & ".importedCenter." & CStr(i), adapter.ContainsPoint(imported.ConcreteX(i), imported.ConcreteY(i))
     Next i
-    If solve Then CompareSolutions label, generated, imported, True
-    If label = "3.sub2" Then CheckBatchPair generated, imported
+    If solve Then TestCompareSolutions label, generated, imported, True
+    If label = "3.sub2" Then TestCheckBatchPair generated, imported
     mReport = mReport & "SECTION " & label & ": concrete=" & CStr(imported.ConcreteCount) & "; rebar=" & CStr(imported.RebarCount) & vbCrLf
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Полный расчёт двух одинаковых Г-сечений: НДС при заданной нагрузке, несущая
 ' способность и трещины СП 35. Исходная книга — тестовая копия; настройки
 ' восстанавливаются также при ошибке.
-Private Sub CheckBatchPair(ByVal first As CSectionModel, ByVal second As CSectionModel)
+Private Sub TestCheckBatchPair(ByVal first As CSectionModel, ByVal second As CSectionModel)
     Dim profileTable As Object, systemTable As Object, savedProfiles As Variant, savedSystem As Variant
     Dim i As Long, key As String, settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim profiles As CCalculationProfileCatalog, a As CBatchSectionCalculator, b As CBatchSectionCalculator
@@ -391,7 +413,7 @@ Private Sub CheckBatchPair(ByVal first As CSectionModel, ByVal second As CSectio
         If CStr(systemTable.Cells(i, 1).Value2) = "SLS.Crack.Code" Then systemTable.Cells(i, 2).Value2 = "SP35"
     Next i
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    Set units = SettingsUnits(settings)
+    Set units = TestSettingsUnits(settings)
     Set provider = New CMaterialModelProvider: provider.Initialize settings, units
     Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
     Set props = New CSectionPropertiesCalculator: props.CalculateConcrete first
@@ -406,78 +428,82 @@ Private Sub CheckBatchPair(ByVal first As CSectionModel, ByVal second As CSectio
     a.Execute: b.Execute
     For i = 1 To 2
         Set ra = a.ResultAt(i): Set rb = b.ResultAt(i)
-        Check "batch.status." & CStr(i), ra.Status = rb.Status
-        Check "batch.widthStatus." & CStr(i), ra.NormalCrackStatus = rb.NormalCrackStatus
-        Check "batch.noInputErr." & CStr(i) & "; " & rb.OverallMeta.ResultComment, rb.Status <> "InputErr"
-        Check "batch.capacityCalculated." & CStr(i), rb.StrengthResult.Capacity.ResultMeta.Calculated
-        Near "batch.capacity." & CStr(i), ra.StrengthResult.Capacity.LambdaCapacity, rb.StrengthResult.Capacity.LambdaCapacity, 0.0000000001
-        Near "batch.formation." & CStr(i), ra.CrackResult.Formation.LambdaCrc, rb.CrackResult.Formation.LambdaCrc, 0.0000000001
-        Near "batch.width." & CStr(i), ra.CrackResult.Width.CrackWidth, rb.CrackResult.Width.CrackWidth, 0.0000000001
-        Near "batch.Ar." & CStr(i), ra.CrackResult.Width.Abt, rb.CrackResult.Width.Abt, 0.00000001
+        TestCheck "batch.status." & CStr(i), ra.Status = rb.Status
+        TestCheck "batch.widthStatus." & CStr(i), ra.NormalCrackStatus = rb.NormalCrackStatus
+        TestCheck "batch.noInputErr." & CStr(i) & "; " & rb.OverallMeta.ResultComment, rb.Status <> "InputErr"
+        TestCheck "batch.capacityCalculated." & CStr(i), rb.StrengthResult.Capacity.ResultMeta.Calculated
+        TestNear "batch.capacity." & CStr(i), ra.StrengthResult.Capacity.LambdaCapacity, rb.StrengthResult.Capacity.LambdaCapacity, 0.0000000001
+        TestNear "batch.formation." & CStr(i), ra.CrackResult.Formation.LambdaCrc, rb.CrackResult.Formation.LambdaCrc, 0.0000000001
+        TestNear "batch.width." & CStr(i), ra.CrackResult.Width.CrackWidth, rb.CrackResult.Width.CrackWidth, 0.0000000001
+        TestNear "batch.Ar." & CStr(i), ra.CrackResult.Width.Abt, rb.CrackResult.Width.Abt, 0.00000001
         mReport = mReport & "BATCH " & CStr(i) & ": status=" & rb.Status & "; normalCrack=" & rb.NormalCrackStatus & _
             "; capacity=" & CStr(rb.StrengthResult.Capacity.LambdaCapacity) & "; width=" & CStr(rb.CrackResult.Width.CrackWidth) & "; Ar=" & CStr(rb.CrackResult.Width.Abt) & _
             "; reason=" & rb.OverallMeta.ResultComment & vbCrLf
     Next i
-    Check "batch.widthActuallyCalculated", b.ResultAt(2).CrackResult.Width.ResultMeta.Calculated
-    Check "batch.SP35", b.ResultAt(2).CrackResult.Width.StandardCode = "SP35"
-    Near "batch.actualRegionArea", b.ResultAt(2).CrackResult.Width.Abt, b.ResultAt(2).CrackResult.Width.InteractionRegion.Area, 0.00000001
+    TestCheck "batch.widthActuallyCalculated", b.ResultAt(2).CrackResult.Width.ResultMeta.Calculated
+    TestCheck "batch.SP35", b.ResultAt(2).CrackResult.Width.StandardCode = "SP35"
+    TestNear "batch.actualRegionArea", b.ResultAt(2).CrackResult.Width.Abt, b.ResultAt(2).CrackResult.Width.InteractionRegion.Area, 0.00000001
     Set writer = New CNDMResultsWriter
     writer.WriteResults ThisWorkbook, second, PrepareSectionSnapshot(second, provider), b, units
     Dim restored As CSectionModel
     Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
-    Check "batch.fullWriterSource", restored.ConcreteMeshSource = "AutoCADContours"
+    TestCheck "batch.fullWriterSource", restored.ConcreteMeshSource = "AutoCADContours"
     GoTo Finish
 Failed:
-    Check "batch.runtime." & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "batch.runtime." & CStr(Err.Number) & "; " & Err.Description, False
 Finish:
     If Not IsEmpty(savedProfiles) Then profileTable.Formula = savedProfiles
     If Not IsEmpty(savedSystem) Then systemTable.Formula = savedSystem
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимый контроль площади и инерции после нативного CAD-преобразования;
 ' величины отклонений сохраняются в отчете.
-Private Sub CompareCurvedModels(ByVal label As String, ByVal first As CSectionModel, ByVal second As CSectionModel)
+Private Sub TestCompareCurvedModels(ByVal label As String, ByVal first As CSectionModel, ByVal second As CSectionModel)
     Dim a As CSectionPropertiesCalculator, b As CSectionPropertiesCalculator
     Set a = New CSectionPropertiesCalculator: a.CalculateConcrete first
     Set b = New CSectionPropertiesCalculator: b.CalculateConcrete second
-    Near label & ".curvedArea", a.Area, b.Area, a.Area * 0.01
-    Near label & ".curvedIx", a.Ixc, b.Ixc, a.Ixc * 0.01
-    Near label & ".curvedIy", a.Iyc, b.Iyc, a.Iyc * 0.01
-    Check label & ".curvedBars", first.RebarCount = second.RebarCount
+    TestNear label & ".curvedArea", a.Area, b.Area, a.Area * 0.01
+    TestNear label & ".curvedIx", a.Ixc, b.Ixc, a.Ixc * 0.01
+    TestNear label & ".curvedIy", a.Iyc, b.Iyc, a.Iyc * 0.01
+    TestCheck label & ".curvedBars", first.RebarCount = second.RebarCount
     mReport = mReport & "CURVED " & label & ": GeneratedCount=" & CStr(first.ConcreteCount) & "; CADCount=" & CStr(second.ConcreteCount) & _
         "; relativeArea=" & CStr(Abs(a.Area - b.Area) / a.Area) & "; relativeIx=" & CStr(Abs(a.Ixc - b.Ixc) / a.Ixc) & "; relativeIy=" & CStr(Abs(a.Iyc - b.Iyc) / a.Iyc) & vbCrLf
 End Sub
 
-Private Sub CompareModels(ByVal label As String, ByVal first As CSectionModel, ByVal second As CSectionModel, Optional ByVal checkHandles As Boolean = True)
-    Check label & ".counts", first.ConcreteCount = second.ConcreteCount And first.RebarCount = second.RebarCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает каждый бетонный элемент и стержень в исходном порядке; проверку исходных CAD-идентификаторов можно отключить для сохранённой модели.
+Private Sub TestCompareModels(ByVal label As String, ByVal first As CSectionModel, ByVal second As CSectionModel, Optional ByVal checkHandles As Boolean = True)
+    TestCheck label & ".counts", first.ConcreteCount = second.ConcreteCount And first.RebarCount = second.RebarCount
     If first.ConcreteCount <> second.ConcreteCount Or first.RebarCount <> second.RebarCount Then Exit Sub
     Dim i As Long
     For i = 1 To first.ConcreteCount
-        Near label & ".x." & CStr(i), first.ConcreteX(i), second.ConcreteX(i)
-        Near label & ".y." & CStr(i), first.ConcreteY(i), second.ConcreteY(i)
-        Near label & ".a." & CStr(i), first.ConcreteArea(i), second.ConcreteArea(i)
-        Near label & ".width." & CStr(i), first.ConcreteWidth(i), second.ConcreteWidth(i)
-        Near label & ".height." & CStr(i), first.ConcreteHeight(i), second.ConcreteHeight(i)
-        Near label & ".Ix." & CStr(i), first.ConcreteLocalIx(i), second.ConcreteLocalIx(i)
-        Near label & ".Iy." & CStr(i), first.ConcreteLocalIy(i), second.ConcreteLocalIy(i)
-        Check label & ".id." & CStr(i), first.ConcreteID(i) = second.ConcreteID(i)
+        TestNear label & ".x." & CStr(i), first.ConcreteX(i), second.ConcreteX(i)
+        TestNear label & ".y." & CStr(i), first.ConcreteY(i), second.ConcreteY(i)
+        TestNear label & ".a." & CStr(i), first.ConcreteArea(i), second.ConcreteArea(i)
+        TestNear label & ".width." & CStr(i), first.ConcreteWidth(i), second.ConcreteWidth(i)
+        TestNear label & ".height." & CStr(i), first.ConcreteHeight(i), second.ConcreteHeight(i)
+        TestNear label & ".Ix." & CStr(i), first.ConcreteLocalIx(i), second.ConcreteLocalIx(i)
+        TestNear label & ".Iy." & CStr(i), first.ConcreteLocalIy(i), second.ConcreteLocalIy(i)
+        TestCheck label & ".id." & CStr(i), first.ConcreteID(i) = second.ConcreteID(i)
     Next i
     For i = 1 To first.RebarCount
-        Near label & ".barX." & CStr(i), first.RebarX(i), second.RebarX(i)
-        Near label & ".barY." & CStr(i), first.RebarY(i), second.RebarY(i)
-        Near label & ".barA." & CStr(i), first.RebarArea(i), second.RebarArea(i)
-        If checkHandles Then Check label & ".barHandle." & CStr(i), second.RebarSourceHandle(i) = "BAR" & CStr(i)
+        TestNear label & ".barX." & CStr(i), first.RebarX(i), second.RebarX(i)
+        TestNear label & ".barY." & CStr(i), first.RebarY(i), second.RebarY(i)
+        TestNear label & ".barA." & CStr(i), first.RebarArea(i), second.RebarArea(i)
+        If checkHandles Then TestCheck label & ".barHandle." & CStr(i), second.RebarSourceHandle(i) = "BAR" & CStr(i)
     Next i
 End Sub
 
-' 72 пары: шесть форм, четыре сочетания, три состояния материала.
-Private Sub CompareSolutions(ByVal label As String, ByVal first As CSectionModel, ByVal second As CSectionModel, ByVal exactPair As Boolean)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает четыре нагрузки и три режима материалов у каждой переданной пары моделей; в основном наборе это 72 сравнения.
+Private Sub TestCompareSolutions(ByVal label As String, ByVal first As CSectionModel, ByVal second As CSectionModel, ByVal exactPair As Boolean)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim a As CSectionSolver, b As CSectionSolver, props As CSectionPropertiesCalculator
     Dim purpose As Variant, loadIndex As Long, n As Double, mx As Double, my As Double, height As Double, width As Double
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double, prefix As String
     Dim relativeTolerance As Double
-    If Not exactPair Then relativeTolerance = 0.01
+    If Not exactPair Then relativeTolerance = 0.01 ' Нативный CAD может изменить дискретизацию дуговой границы; для такой пары проверяются интегральные величины с 1 %.
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set provider = New CMaterialModelProvider: provider.Initialize settings, units
@@ -496,133 +522,143 @@ Private Sub CompareSolutions(ByVal label As String, ByVal first As CSectionModel
             a.Solve first, provider.ConcreteMaterial(CLng(purpose)), provider.SteelMaterial(CLng(purpose)), n, mx, my
             b.Solve second, provider.ConcreteMaterial(CLng(purpose)), provider.SteelMaterial(CLng(purpose)), n, mx, my
             prefix = label & ".purpose" & CStr(purpose) & ".load" & CStr(loadIndex)
-            Check prefix & ".converged; " & a.StopReason & "; " & b.StopReason, a.Converged And b.Converged
-            Near prefix & ".eps", a.Epsilon0, b.Epsilon0, 0.000000000001 + Abs(a.Epsilon0) * relativeTolerance
-            Near prefix & ".kx", a.KappaX, b.KappaX, 0.000000000000001 + Abs(a.KappaX) * relativeTolerance
-            Near prefix & ".ky", a.KappaY, b.KappaY, 0.000000000000001 + Abs(a.KappaY) * relativeTolerance
-            Near prefix & ".N", b.Nint, n, 2#
-            Near prefix & ".Mx", b.Mxint, mx, 2000#
-            Near prefix & ".My", b.Myint, my, 2000#
-            Near prefix & ".minConcrete", a.MinConcreteStress, b.MinConcreteStress, 0.00000001 + Abs(a.MinConcreteStress) * relativeTolerance
-            Near prefix & ".maxConcrete", a.MaxConcreteStress, b.MaxConcreteStress, 0.00000001 + GeomMax(Abs(a.MaxConcreteStress), Abs(a.MinConcreteStress)) * relativeTolerance
-            Near prefix & ".minSteel", a.MinSteelStress, b.MinSteelStress, 0.00000001 + Abs(a.MinSteelStress) * relativeTolerance
-            Near prefix & ".maxSteel", a.MaxSteelStress, b.MaxSteelStress, 0.00000001 + Abs(a.MaxSteelStress) * relativeTolerance
+            TestCheck prefix & ".converged; " & a.StopReason & "; " & b.StopReason, a.Converged And b.Converged
+            TestNear prefix & ".eps", a.Epsilon0, b.Epsilon0, 0.000000000001 + Abs(a.Epsilon0) * relativeTolerance
+            TestNear prefix & ".kx", a.KappaX, b.KappaX, 0.000000000000001 + Abs(a.KappaX) * relativeTolerance
+            TestNear prefix & ".ky", a.KappaY, b.KappaY, 0.000000000000001 + Abs(a.KappaY) * relativeTolerance
+            TestNear prefix & ".N", b.Nint, n, 2#
+            TestNear prefix & ".Mx", b.Mxint, mx, 2000#
+            TestNear prefix & ".My", b.Myint, my, 2000#
+            TestNear prefix & ".minConcrete", a.MinConcreteStress, b.MinConcreteStress, 0.00000001 + Abs(a.MinConcreteStress) * relativeTolerance
+            TestNear prefix & ".maxConcrete", a.MaxConcreteStress, b.MaxConcreteStress, 0.00000001 + GeomMax(Abs(a.MaxConcreteStress), Abs(a.MinConcreteStress)) * relativeTolerance
+            TestNear prefix & ".minSteel", a.MinSteelStress, b.MinSteelStress, 0.00000001 + Abs(a.MinSteelStress) * relativeTolerance
+            TestNear prefix & ".maxSteel", a.MaxSteelStress, b.MaxSteelStress, 0.00000001 + Abs(a.MaxSteelStress) * relativeTolerance
             mReport = mReport & "SOLVE " & prefix & ": eps=" & CStr(b.Epsilon0) & "; kx=" & CStr(b.KappaX) & "; ky=" & CStr(b.KappaY) & "; iterations=" & CStr(b.Iterations) & vbCrLf
         Next loadIndex
     Next purpose
 End Sub
 
-Private Sub CheckArbitraryDomains()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет сетку вогнутого контура, двух отверстий и раздельных областей, а также очистку прежней области после ошибочной инициализации.
+Private Sub TestCheckArbitraryDomains()
     Dim query As CSectionGeometryQuery, region As CConcreteRegion, geometry As CGeometryRegion, mesh As CFiberMeshBuilder
     Set query = New CSectionGeometryQuery
-    Set region = FlatPolygon(Array(0#, 0#, 100#, 0#, 100#, 100#, 60#, 100#, 60#, 40#, 40#, 40#, 40#, 100#, 0#, 100#))
+    Set region = TestFlatPolygon(Array(0#, 0#, 100#, 0#, 100#, 100#, 60#, 100#, 60#, 40#, 40#, 40#, 40#, 100#, 0#, 100#))
     Set geometry = New CGeometryRegion: geometry.Initialize region
     Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 100#, 100#, 1, 10
-    Check "concave.subcells", mesh.FiberCount = 88
-    CheckCellCenters "concave", mesh, geometry
-    Set region = FlatPolygon(Array(0#, 0#, 300#, 0#, 300#, 200#, 0#, 200#))
+    TestCheck "concave.subcells", mesh.FiberCount = 88 ' Из 100 квадратов 10x10 мм вырез 20x60 мм исключает ровно 12.
+    TestCheckCellCenters "concave", mesh, geometry
+    Set region = TestFlatPolygon(Array(0#, 0#, 300#, 0#, 300#, 200#, 0#, 200#))
     Set region = query.SubtractContainedRegion(region, query.CircleRegion(70#, 70#, 23#))
     Set region = query.SubtractContainedRegion(region, query.CircleRegion(230#, 130#, 31#))
     geometry.Initialize region: mesh.BuildMesh geometry, 40#, 30#, 1, 3
-    CheckCellCenters "twoHoles", mesh, geometry
-    Check "twoHoles.exclude", Not geometry.ContainsPoint(70#, 70#) And Not geometry.ContainsPoint(230#, 130#)
-    Check "twoHoles.outerBoundary", geometry.ContainsPoint(0#, 0#)
-    Check "twoHoles.openingBoundary", Not geometry.ContainsPoint(93#, 70#)
+    TestCheckCellCenters "twoHoles", mesh, geometry
+    TestCheck "twoHoles.exclude", Not geometry.ContainsPoint(70#, 70#) And Not geometry.ContainsPoint(230#, 130#)
+    TestCheck "twoHoles.outerBoundary", geometry.ContainsPoint(0#, 0#)
+    TestCheck "twoHoles.openingBoundary", Not geometry.ContainsPoint(93#, 70#)
     Dim parts As Collection
     Set parts = New Collection: parts.Add region
-    parts.Add FlatPolygon(Array(400#, 0#, 500#, 0#, 500#, 100#, 400#, 100#))
+    parts.Add TestFlatPolygon(Array(400#, 0#, 500#, 0#, 500#, 100#, 400#, 100#))
     Set region = query.MergeDisjointRegions(parts): geometry.Initialize region
     mesh.BuildMesh geometry, 40#, 30#, 1, 3
-    CheckCellCenters "disjoint", mesh, geometry
-    Check "disjoint.material", geometry.ContainsPoint(450#, 50#) And Not geometry.ContainsPoint(350#, 50#)
+    TestCheckCellCenters "disjoint", mesh, geometry
+    TestCheck "disjoint.material", geometry.ContainsPoint(450#, 50#) And Not geometry.ContainsPoint(350#, 50#)
     Dim pointX() As Double, pointY() As Double, i As Long, message As String, number As Long
     geometry.GetExtremePoints pointX, pointY
     For i = 1 To UBound(pointX)
-        Check "extrema.realBoundary." & CStr(i), query.ContainsPoint(region, pointX(i), pointY(i), True)
+        TestCheck "extrema.realBoundary." & CStr(i), query.ContainsPoint(region, pointX(i), pointY(i), True)
     Next i
     On Error Resume Next
     geometry.Initialize Nothing: number = Err.Number: Err.Clear
     On Error GoTo 0
-    Check "adapter.invalidInitializeClearsOldShape", number <> 0 And Not geometry.IsValid(message)
+    TestCheck "adapter.invalidInitializeClearsOldShape", number <> 0 And Not geometry.IsValid(message)
 End Sub
 
-Private Function FlatPolygon(ByVal values As Variant) As CConcreteRegion
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Преобразует плоский список x,y в массив точек, используемый общим построителем бетонной области.
+Private Function TestFlatPolygon(ByVal values As Variant) As CConcreteRegion
     Dim points() As Double, i As Long, query As CSectionGeometryQuery
     ReDim points(1 To (UBound(values) + 1) \ 2, 1 To 2)
     For i = 1 To UBound(points, 1)
         points(i, 1) = values((i - 1) * 2): points(i, 2) = values((i - 1) * 2 + 1)
     Next i
-    Set query = New CSectionGeometryQuery: Set FlatPolygon = query.PolygonRegion(points)
+    Set query = New CSectionGeometryQuery: Set TestFlatPolygon = query.PolygonRegion(points)
 End Function
 
-Private Sub CheckCellCenters(ByVal label As String, ByVal mesh As CFiberMeshBuilder, ByVal geometry As CGeometryRegion)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет принадлежность всех центров бетону, положительные размеры ячеек и отсутствие повторных координат.
+Private Sub TestCheckCellCenters(ByVal label As String, ByVal mesh As CFiberMeshBuilder, ByVal geometry As CGeometryRegion)
     Dim i As Long, seen As Object, key As String
     Set seen = CreateObject("Scripting.Dictionary")
     For i = 1 To mesh.FiberCount
-        Check label & ".center." & CStr(i), geometry.ContainsPoint(mesh.FiberX(i), mesh.FiberY(i))
-        Check label & ".positive." & CStr(i), mesh.FiberArea(i) > 0# And mesh.FiberWidth(i) > 0# And mesh.FiberHeight(i) > 0#
+        TestCheck label & ".center." & CStr(i), geometry.ContainsPoint(mesh.FiberX(i), mesh.FiberY(i))
+        TestCheck label & ".positive." & CStr(i), mesh.FiberArea(i) > 0# And mesh.FiberWidth(i) > 0# And mesh.FiberHeight(i) > 0#
         key = CStr(mesh.FiberX(i)) & "|" & CStr(mesh.FiberY(i))
-        Check label & ".unique." & CStr(i), Not seen.Exists(key): seen(key) = True
+        TestCheck label & ".unique." & CStr(i), Not seen.Exists(key): seen(key) = True
     Next i
 End Sub
 
-Private Sub CheckImportContracts()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет независимость CAD-миллиметров от единиц Config и отказ при непригодной геометрии, неполных контурах и ошибках сетки.
+Private Sub TestCheckImportContracts()
     Dim geometry As CGeometryRegion, contours As CSectionContours, bars As CRebarLayout, mesh As CFiberMeshBuilder
     Dim importer As CAutoCADSectionModelImporter, settings As CSystemSettingsReader, units As CUnitSystem
-    Dim space As Collection, model As CSectionModel, baseline As CSectionModel, cell As CFakeAcadRegion, bad As CFakeAcadContour
+    Dim space As Collection, model As CSectionModel, baseline As CSectionModel, cell As CTestFakeAcadRegion, bad As CTestFakeAcadContour
     Dim number As Long, description As String, mode As Long, factor As Double, unit As Variant
-    Set geometry = ControlGeometry(3): Set contours = New CSectionContours: geometry.BuildContours contours
-    Set settings = MeshSettings(): Set units = SettingsUnits(settings)
-    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = ControlBars(mesh, geometry)
-    Set importer = New CAutoCADSectionModelImporter: Set space = FakeSpace(contours, bars)
-    Set baseline = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", FakeLayers(), settings)
+    Set geometry = TestControlGeometry(3): Set contours = New CSectionContours: geometry.BuildContours contours
+    Set settings = TestMeshSettings(): Set units = TestSettingsUnits(settings)
+    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = TestControlBars(mesh, geometry)
+    Set importer = New CAutoCADSectionModelImporter: Set space = TestFakeSpace(contours, bars)
+    Set baseline = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", TestFakeLayers(), settings)
     For Each unit In Array("cm", "m")
         factor = 10#: If CStr(unit) = "m" Then factor = 1000#
-        Set settings = MeshSettings(2, CStr(unit), 40# / factor, 30# / factor): Set units = SettingsUnits(settings)
-        Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", FakeLayers(), settings)
-        CompareModels "units." & CStr(unit), baseline, model
+        Set settings = TestMeshSettings(2, CStr(unit), 40# / factor, 30# / factor): Set units = TestSettingsUnits(settings)
+        Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", TestFakeLayers(), settings)
+        TestCompareModels "units." & CStr(unit), baseline, model
     Next unit
     For mode = 0 To 6
-        Set settings = MeshSettings(): Set units = SettingsUnits(settings)
-        Set space = FakeSpace(contours, bars)
-        If mode = 0 Then Set space = FakeSpace(New CSectionContours, bars)
+        Set settings = TestMeshSettings(): Set units = TestSettingsUnits(settings)
+        Set space = TestFakeSpace(contours, bars)
+        If mode = 0 Then Set space = TestFakeSpace(New CSectionContours, bars)
         If mode = 1 Then
-            Set bad = New CFakeAcadContour: bad.InitializeLoop "AcDbLine", "CONCRETE", "BAD", Nothing: space.Add bad
+            Set bad = New CTestFakeAcadContour: bad.TestInitializeLoop "AcDbLine", "CONCRETE", "BAD", Nothing: space.Add bad
         End If
         If mode = 2 Or mode = 6 Then
-            Set cell = New CFakeAcadRegion: cell.Initialize 100#, 40#, 40#, 1000#, 1000#, 0#, "CONCRETE", "CELL": space.Add cell
+            Set cell = New CTestFakeAcadRegion: cell.TestInitialize 100#, 40#, 40#, 1000#, 1000#, 0#, "CONCRETE", "CELL": space.Add cell
         End If
         If mode = 3 Or mode = 6 Then mConfig.Cells(2, 2).Value2 = 0
         If mode = 4 Then mConfig.Cells(4, 2).Value2 = 1.5
         If mode = 5 Then
             Set contours = New CSectionContours: contours.AddContourCircle "H", 40#, 40#, 10#, "", "H", "Opening"
-            Set space = FakeSpace(contours, bars)
+            Set space = TestFakeSpace(contours, bars)
         End If
         settings.LoadFromRange mConfig.Range("A1:C7")
         On Error Resume Next
-        Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", IIf(mode = 2, 200#, 0#), units, "OUTER", "OPENING", FakeLayers(), settings)
+        Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", IIf(mode = 2, 200#, 0#), units, "OUTER", "OPENING", TestFakeLayers(), settings)
         number = Err.Number: description = Err.Description: Err.Clear
         On Error GoTo 0
         If mode = 6 Then
-            Check "existing.noMeshSettingsNeeded", number = 0
-            If number = 0 Then Check "existing.notRegenerated", model.ConcreteCount = 1 And model.ConcreteMeshSource = "AutoCADRegions"
+            TestCheck "existing.noMeshSettingsNeeded", number = 0
+            If number = 0 Then TestCheck "existing.notRegenerated", model.ConcreteCount = 1 And model.ConcreteMeshSource = "AutoCADRegions"
         Else
-            Check "invalid." & CStr(mode) & "; " & description, number <> 0
-            If mode = 3 Then Check "invalid.dynamicAddress", InStr(description, "B2") > 0 And InStr(description, "Mesh.StepX") > 0
+            TestCheck "invalid." & CStr(mode) & "; " & description, number <> 0
+            If mode = 3 Then TestCheck "invalid.dynamicAddress", InStr(description, "B2") > 0 And InStr(description, "Mesh.StepX") > 0
         End If
         geometry.BuildContours contours
     Next mode
 End Sub
 
-Private Sub CheckSnapshot()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет и заново открывает собственную книгу; проверяет восстановление элементов и признака происхождения бетонной сетки.
+Private Sub TestCheckSnapshot()
     Dim geometry As CGeometryRegion, settings As CSystemSettingsReader, units As CUnitSystem, bars As CRebarLayout
     Dim mesh As CFiberMeshBuilder, contours As CSectionContours, importer As CAutoCADSectionModelImporter
     Dim model As CSectionModel, restored As CSectionModel, writer As CNDMResultsWriter, sheet As Object, names As Variant, columns As Variant, i As Long
-    Set geometry = ControlGeometry(3): Set settings = MeshSettings(): Set units = SettingsUnits(settings)
-    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = ControlBars(mesh, geometry)
+    Set geometry = TestControlGeometry(3): Set settings = TestMeshSettings(): Set units = TestSettingsUnits(settings)
+    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = TestControlBars(mesh, geometry)
     Set contours = New CSectionContours: geometry.BuildContours contours
     Set importer = New CAutoCADSectionModelImporter
-    Set model = importer.ImportFromModelSpace(FakeSpace(contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", FakeLayers(), settings)
+    Set model = importer.ImportFromModelSpace(TestFakeSpace(contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", TestFakeLayers(), settings)
     Set sheet = mFixture.Worksheets.Add: sheet.Name = "Results"
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
     columns = Array(1, 12, 29, 48, 56, 69)
@@ -636,18 +672,22 @@ Private Sub CheckSnapshot()
     mFixture.SaveAs path, 52: mFixture.Close False
     Set mFixture = Application.Workbooks.Open(path): Set mConfig = mFixture.Worksheets("MeshConfig")
     Set restored = ReadSectionGeometryFromResults(mFixture)
-    CompareModels "snapshot.reopen", model, restored, False
-    Check "snapshot.source", restored.ConcreteMeshSource = "AutoCADContours"
-    Check "snapshot.importNotice", InStr(importer.ResultMessage(restored), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
+    TestCompareModels "snapshot.reopen", model, restored, False
+    TestCheck "snapshot.source", restored.ConcreteMeshSource = "AutoCADContours"
+    TestCheck "snapshot.importNotice", InStr(importer.ResultMessage(restored), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
     restored.ConcreteMeshSource = "AutoCADRegions"
-    Check "snapshot.noFalseImportNotice", InStr(importer.ResultMessage(restored), CONTOUR_MESH_GENERATION_NOTICE) = 0
+    TestCheck "snapshot.noFalseImportNotice", InStr(importer.ResultMessage(restored), CONTOUR_MESH_GENERATION_NOTICE) = 0
 End Sub
 
-Private Sub Near(ByVal label As String, ByVal a As Double, ByVal b As Double, Optional ByVal tolerance As Double = 0.00000001)
-    Check label & "; actual=" & CStr(b) & "; expected=" & CStr(a), Abs(a - b) <= tolerance
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает фактическую и ожидаемую величины с заданным в этом наборе допуском, сохраняя числа в протоколе.
+Private Sub TestNear(ByVal label As String, ByVal a As Double, ByVal b As Double, Optional ByVal tolerance As Double = 0.00000001)
+    TestCheck label & "; actual=" & CStr(b) & "; expected=" & CStr(a), Abs(a - b) <= tolerance
 End Sub
 
-Private Sub Check(ByVal label As String, ByVal condition As Boolean)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Учитывает отдельное условие проверки и сохраняет его имя в итоговом протоколе.
+Private Sub TestCheck(ByVal label As String, ByVal condition As Boolean)
     If condition Then
         mPassed = mPassed + 1
     Else

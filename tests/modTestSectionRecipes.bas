@@ -1,9 +1,14 @@
 ﻿Attribute VB_Name = "modTestSectionRecipes"
 Option Explicit
 
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: чтение рецептов, общие правила армирования, проекции и сохранение точных геометрических и расчётных снимков.
+' ==========================================================================
+
 Private mPassed As Long, mFailed As Long, mReport As String
 
-' ДЛЯ ТЕСТОВ: обычное чтение входных данных использует только таблицы выбранного рецепта.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' обычное чтение входных данных использует только таблицы выбранного рецепта.
 Public Function RunWorkbookRecipeInputTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, fixture As Variant, rootName As String, names As Variant, name As Variant
@@ -16,40 +21,40 @@ Public Function RunWorkbookRecipeInputTests() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     Set registry = New CSectionTypeRegistry
     For Each fixture In Array("Circle", "Rectangle", "RoundedMixed", "HollowOffset")
-        FixtureRestoreInputs config, saved
-        modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        TestFixtureRestoreInputs config, saved
+        modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+        modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         typeID = registry.SelectedRecipeType(settings): names = registry.RecipeTableNames(typeID): rootName = CStr(names(0))
         For Each name In Array("Circle.Diameter", "Rectangles.B1", "PointedSection.B", "HollowRectangle.B")
-            Check "workbook.reader.noShapeKey." & CStr(fixture) & "." & CStr(name), Not settings.HasKey(CStr(name))
+            TestCheck "workbook.reader.noShapeKey." & CStr(fixture) & "." & CStr(name), Not settings.HasKey(CStr(name))
         Next name
         Set changedName = ThisWorkbook.Names(IIf(rootName = "rngCircleGeometry", "rngHollowRectangleGeometry", "rngCircleGeometry"))
         originalName = changedName.RefersTo: changedName.RefersTo = "=#REF!"
         Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
-        Check "workbook.inactiveName." & CStr(fixture), model.RebarCount > 0 And model.ConcreteCount > 0
+        TestCheck "workbook.inactiveName." & CStr(fixture), model.RebarCount > 0 And model.ConcreteCount > 0
         changedName.RefersTo = originalName: Set changedName = Nothing
         Set rootRange = ThisWorkbook.Names(rootName).RefersToRange
         Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, names, units)
         Set table = context.Table(rootName): initialCell = table.CellValue(1, 1)
         rootRange.Cells(1, 1).Value2 = "CHANGED_AFTER_CAPTURE"
-        Check "workbook.table.immutable." & CStr(fixture), CStr(table.CellValue(1, 1)) = CStr(initialCell)
+        TestCheck "workbook.table.immutable." & CStr(fixture), CStr(table.CellValue(1, 1)) = CStr(initialCell)
         Set definition = registry.CreateDefinition(typeID, context)
-        Check "workbook.definition.sealed." & CStr(fixture), definition.IsSealed
+        TestCheck "workbook.definition.sealed." & CStr(fixture), definition.IsSealed
         rootRange.ClearContents
         mesh = ReadSectionMeshOptions(settings, units)
         Set rebuilt = builder.Build(definition, mesh)
-        Check "workbook.definition.meshCount." & CStr(fixture), rebuilt.ConcreteCount = model.ConcreteCount
-        Check "workbook.definition.barCount." & CStr(fixture), rebuilt.RebarCount = model.RebarCount
+        TestCheck "workbook.definition.meshCount." & CStr(fixture), rebuilt.ConcreteCount = model.ConcreteCount
+        TestCheck "workbook.definition.barCount." & CStr(fixture), rebuilt.RebarCount = model.RebarCount
         For i = 1 To model.RebarCount
-            Near "workbook.definition.x." & CStr(fixture) & "." & CStr(i), rebuilt.RebarX(i), model.RebarX(i)
-            Near "workbook.definition.y." & CStr(fixture) & "." & CStr(i), rebuilt.RebarY(i), model.RebarY(i)
+            TestNear "workbook.definition.x." & CStr(fixture) & "." & CStr(i), rebuilt.RebarX(i), model.RebarX(i)
+            TestNear "workbook.definition.y." & CStr(fixture) & "." & CStr(i), rebuilt.RebarY(i), model.RebarY(i)
         Next i
-        FixtureRestoreInputs config, saved
+        TestFixtureRestoreInputs config, saved
         Set changedName = ThisWorkbook.Names(rootName): originalName = changedName.RefersTo: changedName.RefersTo = "=#REF!"
         number = 0: reason = ""
         On Error Resume Next
@@ -57,47 +62,48 @@ Public Function RunWorkbookRecipeInputTests() As String
         number = Err.Number: reason = Err.Description: Err.Clear
         On Error GoTo Failed
         changedName.RefersTo = originalName: Set changedName = Nothing
-        Check "workbook.activeName.reject." & CStr(fixture), number <> 0 And InStr(1, reason, rootName, vbBinaryCompare) > 0
+        TestCheck "workbook.activeName.reject." & CStr(fixture), number <> 0 And InStr(1, reason, rootName, vbBinaryCompare) > 0
     Next fixture
-    FixtureRestoreInputs config, saved
+    TestFixtureRestoreInputs config, saved
     ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = "mm"
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set rootRange = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
     Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
-    Set diameterCell = FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter")
-    Set coverCell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance")
+    Set diameterCell = TestFixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter")
+    Set coverCell = TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance")
     Application.Calculation = xlCalculationManual
     diameterCell.Value2 = 300#: coverCell.Formula = "=" & diameterCell.Address & "/4": coverCell.Calculate
     diameterCell.Value2 = 320#
-    Near "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
+    TestNear "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
     Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
-    Near "workbook.manual.capture.refreshed", context.Reader("rngCircleGeometry").Length("Main", "Circle", "as"), 80#
+    TestNear "workbook.manual.capture.refreshed", context.Reader("rngCircleGeometry").Length("Main", "Circle", "as"), 80#
     names = registry.RecipeTableNames("Circle"): names(0) = "CHANGED_COPY"
     names = registry.RecipeTableNames("Circle")
-    Check "workbook.registry.metadata.copy", CStr(names(0)) = "rngCircleGeometry"
+    TestCheck "workbook.registry.metadata.copy", CStr(names(0)) = "rngCircleGeometry"
     registry.RegisterRecipe "FixedMetadata", New CSectionRecipeCircle, Array()
     i = 0: names = registry.RecipeTableNames("FixedMetadata")
     For Each name In names: i = i + 1: Next name
-    Check "workbook.registry.emptyMetadata", i = 0
-    SetSystemInput "Geometry.Type", "FixedMetadata"
+    TestCheck "workbook.registry.emptyMetadata", i = 0
+    TestSetSystemInput "Geometry.Type", "FixedMetadata"
     settings.LoadFromWorkbook ThisWorkbook
-    Check "workbook.registry.dynamicChoice", registry.SelectedRecipeType(settings) = "FixedMetadata"
+    TestCheck "workbook.registry.dynamicChoice", registry.SelectedRecipeType(settings) = "FixedMetadata"
     TestInputTableCaptionSearch
     GoTo Finished
 Failed:
-    Check "workbook.recipe.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "workbook.recipe.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     On Error Resume Next
     If Not changedName Is Nothing Then changedName.RefersTo = originalName
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     On Error GoTo 0
     RunWorkbookRecipeInputTests = mReport & "TOTAL WORKBOOK RECIPE INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: поиск заголовка не потребляет неактивное ошибочное значение.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' поиск заголовка не потребляет неактивное ошибочное значение.
 ' При прямом чтении этого же поля ошибка остаётся адресной и не маскируется.
 Private Sub TestInputTableCaptionSearch()
     Dim values(1 To 3, 1 To 2) As Variant, addresses(1 To 3, 1 To 2) As String
@@ -109,15 +115,16 @@ Private Sub TestInputTableCaptionSearch()
         For column = 1 To 2: addresses(row, column) = "Moved!" & IIf(column = 1, "A", "B") & CStr(row): Next column
     Next row
     Set table = New CSectionInputTable: table.Initialize "CaptionFixture", values, addresses
-    Check "inputTable.caption.ignoresInactiveError", table.RowByKey("as", 2) = 1
+    TestCheck "inputTable.caption.ignoresInactiveError", table.RowByKey("as", 2) = 1
     On Error Resume Next
     value = table.CellValue(2, 2): number = Err.Number: reason = Err.Description
     Err.Clear: On Error GoTo 0
-    Check "inputTable.caption.activeReadRejects", number <> 0 And InStr(1, reason, "Moved!B2", vbBinaryCompare) > 0
-    Near "inputTable.caption.otherValuePreserved", table.Number(3, 2), 50#
+    TestCheck "inputTable.caption.activeReadRejects", number <> 0 And InStr(1, reason, "Moved!B2", vbBinaryCompare) > 0
+    TestNear "inputTable.caption.otherValuePreserved", table.Number(3, 2), 50#
 End Sub
 
-' ДЛЯ ТЕСТОВ: шум координаты касания не меняет дробление соседней ячейки.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' шум координаты касания не меняет дробление соседней ячейки.
 Public Function RunRecipeMeshBoundaryTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -134,107 +141,107 @@ Public Function RunRecipeMeshBoundaryTests() As String
         found = False
         For i = 1 To mesh.FiberCount
             If Abs(mesh.FiberX(i) - 60#) <= GEOM_TOLERANCE And Abs(mesh.FiberY(i) - 50#) <= GEOM_TOLERANCE Then
-                Near "mesh.touch.full.area." & CStr(delta), mesh.FiberArea(i), 800#
+                TestNear "mesh.touch.full.area." & CStr(delta), mesh.FiberArea(i), 800#
                 found = True
             End If
         Next i
-        Check "mesh.touch.full.cell." & CStr(delta), found
+        TestCheck "mesh.touch.full.cell." & CStr(delta), found
         If reference Is Nothing Then
             Set reference = mesh
         Else
-            Check "mesh.touch.count." & CStr(delta), mesh.FiberCount = reference.FiberCount
+            TestCheck "mesh.touch.count." & CStr(delta), mesh.FiberCount = reference.FiberCount
             If mesh.FiberCount = reference.FiberCount Then
                 For i = 1 To mesh.FiberCount
-                    Near "mesh.touch.x." & CStr(i), mesh.FiberX(i), reference.FiberX(i)
-                    Near "mesh.touch.y." & CStr(i), mesh.FiberY(i), reference.FiberY(i)
-                    Near "mesh.touch.area." & CStr(i), mesh.FiberArea(i), reference.FiberArea(i)
+                    TestNear "mesh.touch.x." & CStr(i), mesh.FiberX(i), reference.FiberX(i)
+                    TestNear "mesh.touch.y." & CStr(i), mesh.FiberY(i), reference.FiberY(i)
+                    TestNear "mesh.touch.area." & CStr(i), mesh.FiberArea(i), reference.FiberArea(i)
                 Next i
             End If
         End If
     Next delta
     GoTo Finished
 Failed:
-    Check "mesh.touch.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "mesh.touch.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunRecipeMeshBoundaryTests = mReport & "TOTAL RECIPE MESH BOUNDARY: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: общие правила без таблиц типов или старых раскладчиков.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' общие правила без таблиц типов или старых раскладчиков.
 Public Function RunRecipeRuleTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions, model As CSectionModel
     Dim builder As CSectionBuilder, path As CGeometryPath, mode As Long, scenario As Long, expected As Variant, i As Long
     For mode = IncludeBoth To IncludeEnd
-        Set facade = RuleFacade: Set options = New CRebarRuleOptions
+        Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
         options.EndMode = mode: options.StartSetback = 10#: options.EndSetback = 20#
         facade.RebarByCount "Row.Main", "Row", 3, 10#, options
         options.StartSetback = 999# ' Параметры арматуры уже скопированы в описание сечения и не зависят от исходного объекта.
-        Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+        Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
         Select Case mode
             Case IncludeBoth: expected = Array(10#, 45#, 80#)
             Case ExcludeBoth: expected = Array(27.5, 45#, 62.5)
             Case IncludeStart: expected = Array(10#, 10# + 70# / 3#, 10# + 140# / 3#)
             Case IncludeEnd: expected = Array(10# + 70# / 3#, 10# + 140# / 3#, 80#)
         End Select
-        Check "ends.count." & CStr(mode), model.RebarCount = 3
-        For i = 1 To 3: Near "ends.station." & CStr(mode) & "." & CStr(i), model.RebarX(i), CDbl(expected(i - 1)): Next i
+        TestCheck "ends.count." & CStr(mode), model.RebarCount = 3
+        For i = 1 To 3: TestNear "ends.station." & CStr(mode) & "." & CStr(i), model.RebarX(i), CDbl(expected(i - 1)): Next i
     Next mode
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.StartSetback = 10#: options.EndSetback = 20#
     facade.RebarByCount "One", "Row", 1, 10#, options
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Near "one.midpoint", model.RebarX(1), 45#
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestNear "one.midpoint", model.RebarX(1), 45#
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.EndMode = ClosedUniform
     Set path = facade.CirclePath("Closed", 0#, 0#, 100#)
     facade.RebarByCount "Closed.Row", "Closed", 4, 10#, options
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "closed.count", model.RebarCount = 4
-    Near "closed.start.x", model.RebarX(1), 100#: Near "closed.start.y", model.RebarY(1), 0#
-    Near "closed.last.x", model.RebarX(4), 0#: Near "closed.last.y", model.RebarY(4), -100#
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "closed.count", model.RebarCount = 4
+    TestNear "closed.start.x", model.RebarX(1), 100#: TestNear "closed.start.y", model.RebarY(1), 0#
+    TestNear "closed.last.x", model.RebarX(4), 0#: TestNear "closed.last.y", model.RebarY(4), -100#
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.StartSetback = 10#: options.EndSetback = 20#
     facade.RebarByMaxStep "Step", "Row", 30#, 10#, options
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "maxstep.count", model.RebarCount = 4
-    Near "maxstep.first", model.RebarX(1), 10#: Near "maxstep.last", model.RebarX(4), 80#
-    Near "maxstep.actual", model.RebarX(2) - model.RebarX(1), 70# / 3#
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "maxstep.count", model.RebarCount = 4
+    TestNear "maxstep.first", model.RebarX(1), 10#: TestNear "maxstep.last", model.RebarX(4), 80#
+    TestNear "maxstep.actual", model.RebarX(2) - model.RebarX(1), 70# / 3#
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.EndMode = ExcludeBoth
     facade.RebarByFixedStep "Fixed", "Row", 30#, 10#, options
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "fixed.count", model.RebarCount = 4
-    Near "fixed.first", model.RebarX(1), 5#: Near "fixed.last", model.RebarX(4), 95#
-    For i = 2 To 4: Near "fixed.step." & CStr(i), model.RebarX(i) - model.RebarX(i - 1), 30#: Next i
-    Set facade = RuleFacade
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "fixed.count", model.RebarCount = 4
+    TestNear "fixed.first", model.RebarX(1), 5#: TestNear "fixed.last", model.RebarX(4), 95#
+    For i = 2 To 4: TestNear "fixed.step." & CStr(i), model.RebarX(i) - model.RebarX(i - 1), 30#: Next i
+    Set facade = TestRuleFacade
     facade.RebarAtStations "Explicit", "Row", Array(10#, 30#, 90#), 10#
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "explicit.count", model.RebarCount = 3: Near "explicit.last", model.RebarX(3), 90#
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "explicit.count", model.RebarCount = 3: TestNear "explicit.last", model.RebarX(3), 90#
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.SourcePrefix = "P"
     facade.RebarByCount "Base", "Row", 3, 10#, options
     Set options = New CRebarRuleOptions
     options.NormalOffset = 10#: options.EverySecond = True: options.SourceSuffix = "_Extra"
     facade.RebarDependent "Extra", "Base", 10#, options
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "dependent.count", model.RebarCount = 5
-    Near "dependent.first.x", model.RebarX(4), 0#: Near "dependent.last.x", model.RebarX(5), 100#
-    Near "dependent.normal", model.RebarY(5), 10#
-    Check "dependent.source", model.RebarSourceName(5) = "P3_Extra"
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "dependent.count", model.RebarCount = 5
+    TestNear "dependent.first.x", model.RebarX(4), 0#: TestNear "dependent.last.x", model.RebarX(5), 100#
+    TestNear "dependent.normal", model.RebarY(5), 10#
+    TestCheck "dependent.source", model.RebarSourceName(5) = "P3_Extra"
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.SourcePrefix = "P": facade.RebarByCount "Base", "Row", 3, 10#, options
     Set path = facade.LinePath("Target", 0#, 100#, 100#, 100#)
     Set options = New CRebarRuleOptions
     options.DirectionY = 1#: options.SkipMissingProjection = True
     options.StartSetback = 10#: options.EndSetback = 10#: options.SourceSuffix = "_Projected"
     facade.RebarProjected "Projection", "Target", "Base", 10#, options
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "projection.count", model.RebarCount = 4: Check "projection.skips", builder.Rules.SkippedProjections = 2
-    Near "projection.x", model.RebarX(4), 50#: Near "projection.y", model.RebarY(4), 100#
-    Check "projection.source", model.RebarSourceName(4) = "P2_Projected"
-    ' Первое пересечение исключено setback; второе на том же пути допустимо.
-    Set facade = RuleFacade
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "projection.count", model.RebarCount = 4: TestCheck "projection.skips", builder.Rules.SkippedProjections = 2
+    TestNear "projection.x", model.RebarX(4), 50#: TestNear "projection.y", model.RebarY(4), 100#
+    TestCheck "projection.source", model.RebarSourceName(4) = "P2_Projected"
+    Set facade = TestRuleFacade ' Первое пересечение исключено setback; второе на том же пути допустимо.
     facade.RebarByCount "Base", "Row", 1, 10#
     Set path = New CGeometryPath: path.Initialize "TwoHits"
     path.AddLine "First", 0#, 50#, 100#, 50#
@@ -244,21 +251,21 @@ Public Function RunRecipeRuleTests() As String
     Set options = New CRebarRuleOptions
     options.DirectionY = 1#: options.StartSetback = 110#: options.SourceSuffix = "_Hit"
     facade.RebarProjected "SecondHit", "TwoHits", "Base", 10#, options
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "projection.secondhit.count", model.RebarCount = 2
-    Near "projection.secondhit.x", model.RebarX(2), 50#: Near "projection.secondhit.y", model.RebarY(2), 150#
-    Set facade = RuleFacade
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "projection.secondhit.count", model.RebarCount = 2
+    TestNear "projection.secondhit.x", model.RebarX(2), 50#: TestNear "projection.secondhit.y", model.RebarY(2), 150#
+    Set facade = TestRuleFacade
     Set path = facade.LinePath("Target", 0#, 100#, 100#, 100#)
     facade.PathGroup "Both", Array("Row", "Target")
     facade.RebarByCount "BothRows", "Both", 2, 10#
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "group.perpath", model.RebarCount = 4: Near "group.secondpath", model.RebarY(3), 100#
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "group.perpath", model.RebarCount = 4: TestNear "group.secondpath", model.RebarY(3), 100#
     Dim query As CSectionGeometryQuery, region As CConcreteRegion
     Set query = New CSectionGeometryQuery: Set region = query.CircleRegion(10#, -20#, 100#)
-    Near "distance.center", query.BoundaryDistance(region, 10#, -20#), 100#
-    Near "distance.inside", query.BoundaryDistance(region, 90#, -20#), 20#
-    Near "distance.outside", query.BoundaryDistance(region, 150#, -20#), 40#
-    For scenario = 0 To 7: Check "rule.invalid." & CStr(scenario), InvalidRuleRejected(scenario): Next scenario
+    TestNear "distance.center", query.BoundaryDistance(region, 10#, -20#), 100#
+    TestNear "distance.inside", query.BoundaryDistance(region, 90#, -20#), 20#
+    TestNear "distance.outside", query.BoundaryDistance(region, 150#, -20#), 40#
+    For scenario = 0 To 7: TestCheck "rule.invalid." & CStr(scenario), TestInvalidRuleRejected(scenario): Next scenario
     TestPublicationAndCoincidence
     TestLayoutIndex
     TestAdjacentRectangles
@@ -267,15 +274,17 @@ Public Function RunRecipeRuleTests() As String
     TestProjectionNormalsAndOrdinals
     GoTo Finished
 Failed:
-    Check "rules.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "rules.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunRecipeRuleTests = mReport & "TOTAL RECIPE RULES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет проекцию по нормали дуги и нумерацию успешно попавших стержней отдельно от номеров исходного ряда.
 Private Sub TestProjectionNormalsAndOrdinals()
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim builder As CSectionBuilder, model As CSectionModel, mode As Long, i As Long
-    Set facade = RuleFacade
+    Set facade = TestRuleFacade
     Set path = facade.ArcPath("SourceCurve", 0#, 0#, 100#, 0#, GEOM_PI / 2#)
     Set options = New CRebarRuleOptions: options.AnnotationGroup = "CurveBars"
     facade.RebarByCount "CurveMain", path.ID, 3, 10#, options
@@ -284,17 +293,17 @@ Private Sub TestProjectionNormalsAndOrdinals()
     facade.RebarProjected "Radial", path.ID, "CurveMain", 10#, options
     options.SourceNormalSign = 1#
     facade.RebarRowExtremeLabel "CurveBars", "CurveMain", 0#, 1#, 0#, 1#
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "projection.normal.count", model.RebarCount = 6
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "projection.normal.count", model.RebarCount = 6
     For i = 1 To 3
-        Near "projection.normal.x." & CStr(i), model.RebarX(i + 3), 2# * model.RebarX(i)
-        Near "projection.normal.y." & CStr(i), model.RebarY(i + 3), 2# * model.RebarY(i)
+        TestNear "projection.normal.x." & CStr(i), model.RebarX(i + 3), 2# * model.RebarX(i)
+        TestNear "projection.normal.y." & CStr(i), model.RebarY(i + 3), 2# * model.RebarY(i)
     Next i
-    Near "extreme.anchor.start", model.Annotations.StartX(1), 0#
-    Near "extreme.anchor.end", model.Annotations.EndX(1), 100#
-    Near "extreme.anchor.y", model.Annotations.StartY(1), 100#
+    TestNear "extreme.anchor.start", model.Annotations.StartX(1), 0#
+    TestNear "extreme.anchor.end", model.Annotations.EndX(1), 100#
+    TestNear "extreme.anchor.y", model.Annotations.StartY(1), 100#
     For mode = 0 To 1
-        Set facade = RuleFacade
+        Set facade = TestRuleFacade
         facade.RebarByCount "Base", "Row", 4, 10#
         Set path = facade.LinePath("LimitedTarget", 20#, 100#, 80#, 100#)
         Set options = New CRebarRuleOptions: options.DirectionY = 1#: options.SkipMissingProjection = True
@@ -305,24 +314,26 @@ Private Sub TestProjectionNormalsAndOrdinals()
         Set options = New CRebarRuleOptions: options.EverySecond = True: options.NormalOffset = 10#
         options.Publication = PublishPerSourcePosition
         facade.RebarDependent "Extra", "Projected", 10#, options
-        Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-        Check "projection.ordinal.count." & CStr(mode), model.RebarCount = 7 And builder.Rules.SkippedProjections = 2
-        Near "projection.publication.first." & CStr(mode), model.RebarY(4), 0#
+        Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+        TestCheck "projection.ordinal.count." & CStr(mode), model.RebarCount = 7 And builder.Rules.SkippedProjections = 2
+        TestNear "projection.publication.first." & CStr(mode), model.RebarY(4), 0#
         If mode = 1 Then
-            Near "projection.ordinal.success.x", model.RebarX(6), 100# / 3#
-            Near "projection.ordinal.success.y", model.RebarY(6), 110#
+            TestNear "projection.ordinal.success.x", model.RebarX(6), 100# / 3#
+            TestNear "projection.ordinal.success.y", model.RebarY(6), 110#
         Else
-            Near "projection.ordinal.source.x", model.RebarX(7), 200# / 3#
-            Near "projection.ordinal.source.y", model.RebarY(7), 110#
+            TestNear "projection.ordinal.source.x", model.RebarX(7), 200# / 3#
+            TestNear "projection.ordinal.source.y", model.RebarY(7), 110#
         End If
     Next mode
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет выбор входящей или выходящей касательной в углу и направление смещения связанного стержня.
 Private Sub TestRuleJointTangents()
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim builder As CSectionBuilder, model As CSectionModel, incoming As Long
     For incoming = 0 To 1
-        Set facade = RuleFacade
+        Set facade = TestRuleFacade
         Set path = New CGeometryPath: path.Initialize "Joint"
         path.AddLine "Incoming", 0#, 0#, 100#, 0#
         path.AddLine "Outgoing", 100#, 0#, 100#, 100#
@@ -332,20 +343,22 @@ Private Sub TestRuleJointTangents()
         options.IncomingTangentAtJoint = Not options.IncomingTangentAtJoint
         Set options = New CRebarRuleOptions: options.NormalOffset = 10#
         facade.RebarDependent "JointExtra", "JointMain", 10#, options
-        Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+        Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
         If incoming = 1 Then
-            Near "joint.rule.incoming.x", model.RebarX(2), 100#: Near "joint.rule.incoming.y", model.RebarY(2), 10#
+            TestNear "joint.rule.incoming.x", model.RebarX(2), 100#: TestNear "joint.rule.incoming.y", model.RebarY(2), 10#
         Else
-            Near "joint.rule.default.x", model.RebarX(2), 90#: Near "joint.rule.default.y", model.RebarY(2), 0#
+            TestNear "joint.rule.default.x", model.RebarX(2), 90#: TestNear "joint.rule.default.y", model.RebarY(2), 0#
         End If
     Next incoming
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет привязку подписи к фактическим границам ряда и округление только отображаемого размера без изменения координат.
 Private Sub TestAnnotationMeasurements()
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim builder As CSectionBuilder, model As CSectionModel, annotations As CSectionAnnotations
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
-    Set facade = RuleFacade
+    Set facade = TestRuleFacade
     Set path = facade.ArcPath("Curve", 0#, 0#, 100#, 0#, GEOM_PI / 2#)
     Set options = New CRebarRuleOptions: options.AnnotationGroup = "CurveBars": options.EndMode = ExcludeBoth
     facade.RebarByCount "CurveMain", path.ID, 3, 10#, options
@@ -353,27 +366,29 @@ Private Sub TestAnnotationMeasurements()
     facade.HorizontalDistance "REF", "Reference", 0#, 123.6, 200#, 1#, "", 1#
     facade.HorizontalDistance "NEG", "Negative", 0#, -123.6, 200#, 1#, "", 1#
     facade.HorizontalDistance "EXACT", "Exact", 0#, 123.6, 200#
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "measurements.rule.bounds", builder.Rules.RuleBounds("CurveMain", minX, maxX, minY, maxY)
-    Near "measurements.min.x", minX, 100# * Cos(3# * GEOM_PI / 8#)
-    Near "measurements.max.x", maxX, 100# * Cos(GEOM_PI / 8#)
-    Near "measurements.min.y", minY, 100# * Sin(GEOM_PI / 8#)
-    Near "measurements.max.y", maxY, 100# * Sin(3# * GEOM_PI / 8#)
-    Near "measurements.anchor.x", model.Annotations.StartX(4), minX
-    Near "measurements.anchor.start", model.Annotations.StartY(4), maxY
-    Near "measurements.anchor.end", model.Annotations.EndY(4), minY
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "measurements.rule.bounds", builder.Rules.RuleBounds("CurveMain", minX, maxX, minY, maxY)
+    TestNear "measurements.min.x", minX, 100# * Cos(3# * GEOM_PI / 8#)
+    TestNear "measurements.max.x", maxX, 100# * Cos(GEOM_PI / 8#)
+    TestNear "measurements.min.y", minY, 100# * Sin(GEOM_PI / 8#)
+    TestNear "measurements.max.y", maxY, 100# * Sin(3# * GEOM_PI / 8#)
+    TestNear "measurements.anchor.x", model.Annotations.StartX(4), minX
+    TestNear "measurements.anchor.start", model.Annotations.StartY(4), maxY
+    TestNear "measurements.anchor.end", model.Annotations.EndY(4), minY
     Set annotations = model.Annotations
-    Near "measurements.round.positive", annotations.Value(1), 124#
-    Near "measurements.round.negative", annotations.Value(2), -124#
-    Near "measurements.round.exact", annotations.Value(3), 123.6
-    Near "measurements.coordinates.unchanged", annotations.EndX(1), 123.6
-    Check "measurements.count", AnnotatedBarCount(annotations) = 3
+    TestNear "measurements.round.positive", annotations.Value(1), 124#
+    TestNear "measurements.round.negative", annotations.Value(2), -124#
+    TestNear "measurements.round.exact", annotations.Value(3), 123.6
+    TestNear "measurements.coordinates.unchanged", annotations.EndX(1), 123.6
+    TestCheck "measurements.count", TestAnnotatedBarCount(annotations) = 3
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет порядок публикации основных и связанных стержней, объединение совпадений и единственного владельца подписи.
 Private Sub TestPublicationAndCoincidence()
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions, builder As CSectionBuilder
     Dim model As CSectionModel, expected As Variant, i As Long, memberships As Variant
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.PositionOrder = FromPathMiddle: options.Publication = PublishPerSourcePosition
     options.StartSetback = 10#: options.EndSetback = 20#: options.AnnotationGroup = "Base"
     facade.RebarByCount "Base", "Row", 5, 10#, options
@@ -381,46 +396,47 @@ Private Sub TestPublicationAndCoincidence()
     options.Publication = PublishPerSourcePosition: options.EverySecond = True: options.NormalOffset = 10#
     facade.RebarDependent "Extra", "Base", 10#, options
     facade.RebarRowLabel "Base", "Base", 0#, -1#
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
     expected = Array(45#, 45#, 62.5, 27.5, 80#, 80#, 10#, 10#)
-    Check "middle.count", model.RebarCount = 8
-    For i = 1 To 8: Near "middle.order." & CStr(i), model.RebarX(i), CDbl(expected(i - 1)): Next i
-    Near "middle.first.extra", model.RebarY(2), 10#
-    Near "middle.anchor.first", model.Annotations.StartX(1), 10#
-    Near "middle.anchor.last", model.Annotations.EndX(1), 80#
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    TestCheck "middle.count", model.RebarCount = 8
+    For i = 1 To 8: TestNear "middle.order." & CStr(i), model.RebarX(i), CDbl(expected(i - 1)): Next i
+    TestNear "middle.first.extra", model.RebarY(2), 10#
+    TestNear "middle.anchor.first", model.Annotations.StartX(1), 10#
+    TestNear "middle.anchor.last", model.Annotations.EndX(1), 80#
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.AnnotationGroup = "First": facade.RebarByCount "First", "Row", 2, 10#, options
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "Second": options.Coincidence = MergeIdentical
     facade.RebarByCount "Second", "Row", 2, 10#, options
     facade.RebarRowLabel "First", "First", 0#, -1#
     facade.RebarRowLabel "Second", "Second", 0#, 1#
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "coincidence.physical.count", model.RebarCount = 2 And builder.Rules.CreatedPositions = 2
-    Check "coincidence.requested", builder.Rules.RequestedPositions = 4 And builder.Rules.MergedPositions = 2
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "coincidence.physical.count", model.RebarCount = 2 And builder.Rules.CreatedPositions = 2
+    TestCheck "coincidence.requested", builder.Rules.RequestedPositions = 4 And builder.Rules.MergedPositions = 2
     memberships = builder.Rebars.BarMemberships(1)
-    Check "coincidence.memberships", UBound(memberships) = 1 And memberships(0) = "First" And memberships(1) = "Second"
-    Check "coincidence.annotation.owner", builder.Rebars.BarAnnotationGroupName(1) = "First"
-    Check "coincidence.labels", model.Annotations.Count = 1 And model.Annotations.Text(1) = "2" & ChrW$(216) & "10"
-    Check "coincidence.labels.total", AnnotatedBarCount(model.Annotations) = model.RebarCount
-    For i = 0 To 3: Check "coincidence.invalid." & CStr(i), InvalidCoincidenceRejected(i): Next i
-    Set facade = RuleFacade
+    TestCheck "coincidence.memberships", UBound(memberships) = 1 And memberships(0) = "First" And memberships(1) = "Second"
+    TestCheck "coincidence.annotation.owner", builder.Rebars.BarAnnotationGroupName(1) = "First"
+    TestCheck "coincidence.labels", model.Annotations.Count = 1 And model.Annotations.Text(1) = "2" & ChrW$(216) & "10"
+    TestCheck "coincidence.labels.total", TestAnnotatedBarCount(model.Annotations) = model.RebarCount
+    For i = 0 To 3: TestCheck "coincidence.invalid." & CStr(i), TestInvalidCoincidenceRejected(i): Next i
+    Set facade = TestRuleFacade
     facade.RebarByCount "First", "Row", 2, 10#
     Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
     facade.RebarByCount "Second", "Row", 2, 20#, options
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "coincidence.explicit.owner", model.RebarCount = 2 And builder.Rules.Conflicts = 2
-    Near "coincidence.owner.diameter", model.RebarDiameter(1), 10#
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "coincidence.explicit.owner", model.RebarCount = 2 And builder.Rules.Conflicts = 2
+    TestNear "coincidence.owner.diameter", model.RebarDiameter(1), 10#
     TestAnnotationOwnership
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Одна общая позиция, полностью совпавшая третья группа и разные диаметры
 ' не должны повторно увеличивать количество стержней в подписях.
 Private Sub TestAnnotationOwnership()
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions, builder As CSectionBuilder
     Dim model As CSectionModel, path As CGeometryPath
     Dim annotations As CSectionAnnotations, labels As CRebarGroupAnnotationBuilder
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     options.AnnotationGroup = "First": facade.RebarByCount "First", "Row", 2, 10#, options
     Set path = facade.LinePath("SecondPath", 100#, 0#, 200#, 0#)
     Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
@@ -432,12 +448,12 @@ Private Sub TestAnnotationOwnership()
     facade.RebarRowLabel "First", "First", 0#, -1#
     facade.RebarRowLabel "Second", "Second", 0#, 1#
     facade.RebarRowLabel "Third", "Third", 0#, 1#
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
-    Check "annotations.partial.physical", model.RebarCount = 5 And builder.Rules.MergedPositions = 3
-    Check "annotations.partial.groups", model.Annotations.Count = 2
-    Check "annotations.partial.first", model.Annotations.Text(1) = "2" & ChrW$(216) & "10 + 1" & ChrW$(216) & "12"
-    Check "annotations.partial.second", model.Annotations.Text(2) = "2" & ChrW$(216) & "20"
-    Check "annotations.partial.total", AnnotatedBarCount(model.Annotations) = model.RebarCount
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
+    TestCheck "annotations.partial.physical", model.RebarCount = 5 And builder.Rules.MergedPositions = 3
+    TestCheck "annotations.partial.groups", model.Annotations.Count = 2
+    TestCheck "annotations.partial.first", model.Annotations.Text(1) = "2" & ChrW$(216) & "10 + 1" & ChrW$(216) & "12"
+    TestCheck "annotations.partial.second", model.Annotations.Text(2) = "2" & ChrW$(216) & "20"
+    TestCheck "annotations.partial.total", TestAnnotatedBarCount(model.Annotations) = model.RebarCount
     Dim anchors(1 To 4) As TSectionAnnotation
     anchors(1).Name = "First": anchors(1).EndX = 100#: anchors(1).NormalY = -1#
     anchors(2).Name = "Second": anchors(2).StartX = 100#: anchors(2).EndX = 200#: anchors(2).NormalY = 1#
@@ -445,28 +461,31 @@ Private Sub TestAnnotationOwnership()
     anchors(4).Name = "first": anchors(4).StartX = 300#: anchors(4).EndX = 400#: anchors(4).NormalY = -1#
     Set annotations = New CSectionAnnotations: Set labels = New CRebarGroupAnnotationBuilder
     labels.AddRebarLabels annotations, builder.Rebars, anchors, 4
-    Check "annotations.repeated.anchor", annotations.Count = 2
-    Check "annotations.repeated.total", AnnotatedBarCount(annotations) = model.RebarCount
+    TestCheck "annotations.repeated.anchor", annotations.Count = 2
+    TestCheck "annotations.repeated.total", TestAnnotatedBarCount(annotations) = model.RebarCount
 End Sub
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимо подсчитывает стержни по готовому тексту подписи без чтения раскладки.
-Private Function AnnotatedBarCount(ByVal annotations As CSectionAnnotations) As Long
+Private Function TestAnnotatedBarCount(ByVal annotations As CSectionAnnotations) As Long
     Dim i As Long, part As Variant, position As Long
     For i = 1 To annotations.Count
         If annotations.AnnotationType(i) = "REBAR_ANNOTATION" Then
             For Each part In Split(annotations.Text(i), "+")
                 position = InStr(1, CStr(part), ChrW$(216), vbBinaryCompare)
                 If position = 0 Then Err.Raise vbObjectError + 5532, "modTestSectionRecipes", "Неверный формат групповой подписи: " & CStr(part)
-                AnnotatedBarCount = AnnotatedBarCount + CLng(Trim$(Left$(CStr(part), position - 1)))
+                TestAnnotatedBarCount = TestAnnotatedBarCount + CLng(Trim$(Left$(CStr(part), position - 1)))
             Next part
         End If
     Next i
 End Function
 
-Private Function InvalidCoincidenceRejected(ByVal scenario As Long) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отказ при запрещённом совпадении, разных диаметрах или стали и непредставимом числе связанных позиций.
+Private Function TestInvalidCoincidenceRejected(ByVal scenario As Long) As Boolean
     On Error GoTo Rejected
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions, builder As CSectionBuilder, model As CSectionModel
-    Set facade = RuleFacade
+    Set facade = TestRuleFacade
     facade.RebarByCount "First", "Row", 2, 10#
     Set options = New CRebarRuleOptions
     Select Case scenario
@@ -477,12 +496,13 @@ Private Function InvalidCoincidenceRejected(ByVal scenario As Long) As Boolean
             facade.RebarByCount "Huge", "Row", 2147483647, 10#
             options.NormalOffset = 10#: facade.RebarDependent "Overflow", "Huge", 10#, options
     End Select
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
     Exit Function
 Rejected:
-    InvalidCoincidenceRejected = (Err.Number = vbObjectError + 5530)
+    TestInvalidCoincidenceRejected = (Err.Number = vbObjectError + 5530)
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимый последовательный поиск проверяет ускоренный поиск совпавших
 ' стержней: на границах условных ячеек, при отрицательных и удалённых координатах,
 ' а также после очистки раскладки.
@@ -505,33 +525,39 @@ Private Sub TestLayoutIndex()
                     expected = j: Exit For
                 End If
             Next j
-            Check "index.oracle." & CStr(i) & "." & CStr(delta), layout.FindBarAt(queryX, y) = expected
+            TestCheck "index.oracle." & CStr(i) & "." & CStr(delta), layout.FindBarAt(queryX, y) = expected
         Next delta
     Next i
     layout.Clear
-    Check "index.clear", layout.Count = 0 And Not layout.HasBarAt(1000000#, 500000#)
+    TestCheck "index.clear", layout.Count = 0 And Not layout.HasBarAt(1000000#, 500000#)
     layout.AddBar "I1", 1000000#, 500000#, 10#, 0#, "Rebar"
-    Check "index.reuse", layout.FindBarAt(1000000#, 500000#) = 1
+    TestCheck "index.reuse", layout.FindBarAt(1000000#, 500000#) = 1
 End Sub
 
-Private Function RuleFacade() As CSectionDefinitionBuilder
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт большой бетонный круг и прямой путь 100 мм для независимой проверки правил армирования.
+Private Function TestRuleFacade() As CSectionDefinitionBuilder
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RuleFixture"
     Set path = facade.CirclePath("Outer", 0#, 0#, 1000#): facade.Outer "OUTER", path.ID
     Set path = facade.LinePath("Row", 0#, 0#, 100#, 0#)
-    Set RuleFacade = facade
+    Set TestRuleFacade = facade
 End Function
 
-Private Function BuildFixture(ByVal facade As CSectionDefinitionBuilder, ByVal builder As CSectionBuilder) As CSectionModel
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Собирает контрольное описание штатным сборщиком с крупной фиксированной сеткой без отдельной логики рецепта.
+Private Function TestBuildFixture(ByVal facade As CSectionDefinitionBuilder, ByVal builder As CSectionBuilder) As CSectionModel
     Dim mesh As TSectionMeshOptions
     mesh.StepX = 1000#: mesh.StepY = 1000#: mesh.BoundarySubdivisions = 1: mesh.MaterialID = 1
-    Set BuildFixture = builder.Build(facade.Finish, mesh)
+    Set TestBuildFixture = builder.Build(facade.Finish, mesh)
 End Function
 
-Private Function InvalidRuleRejected(ByVal scenario As Long) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет недопустимые отступы, шаг, режим замыкания, циклическую зависимость и отсутствие допустимой проекции.
+Private Function TestInvalidRuleRejected(ByVal scenario As Long) As Boolean
     On Error GoTo Rejected
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions, builder As CSectionBuilder, model As CSectionModel, path As CGeometryPath
-    Set facade = RuleFacade: Set options = New CRebarRuleOptions
+    Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
     Select Case scenario
         Case 0: options.StartSetback = -1#: facade.RebarByCount "Bad", "Row", 2, 10#, options
         Case 1: options.StartSetback = 60#: options.EndSetback = 60#: facade.RebarByCount "Bad", "Row", 2, 10#, options
@@ -551,59 +577,66 @@ Private Function InvalidRuleRejected(ByVal scenario As Long) As Boolean
             options.DirectionY = -1#
             facade.RebarProjected "Bad", "Target", "Base", 10#, options
     End Select
-    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+    Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
     Exit Function
 Rejected:
-    InvalidRuleRejected = (Err.Number = vbObjectError + 5530)
+    TestInvalidRuleRejected = (Err.Number = vbObjectError + 5530)
 End Function
 
-Private Sub Check(ByVal name As String, ByVal passed As Boolean)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Учитывает отдельное условие проверки и сохраняет его имя в итоговом протоколе.
+Private Sub TestCheck(ByVal name As String, ByVal passed As Boolean)
     If passed Then mPassed = mPassed + 1 Else mFailed = mFailed + 1
     mReport = mReport & IIf(passed, "PASS: ", "FAIL: ") & name & vbCrLf
 End Sub
 
-Private Sub Near(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
-    Check name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.0000001
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает фактическую и ожидаемую величины с заданным в этом наборе допуском, сохраняя числа в протоколе.
+Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
+    TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.0000001
 End Sub
 
-' ДЛЯ ТЕСТОВ: роли контуров не зависят от их имён. Проверяет несколько отверстий
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' роли контуров не зависят от их имён. Проверяет несколько отверстий
 ' и независимость готовой области от изменяемых копий, выданных для чтения.
 Public Function RunRecipeDefinitionTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Dim region As CConcreteRegion, copy As CConcreteRegion, query As CSectionGeometryQuery, contours As CSectionContours
-    Set facade = RuleFacade
+    Set facade = TestRuleFacade
     Set path = facade.CirclePath("VoidA", -100#, 0#, 20#): facade.Opening "A", path.ID, "OUTER"
     Set path = facade.CirclePath("VoidB", 100#, 0#, 20#): facade.Opening "B", path.ID, "OUTER"
     Set definition = facade.Finish: Set region = definition.ConcreteDomain
     Set query = New CSectionGeometryQuery
-    Check "definition.sealed", definition.IsSealed
-    Check "definition.loops", definition.LoopCount = 3 And region.LoopCount = 3
-    Check "definition.area", Abs(region.Area - GEOM_PI * (1000000# - 800#)) < 0.00001
-    Check "definition.concrete", query.ContainsPoint(region, 0#, 0#)
-    Check "definition.hole.a", Not query.ContainsPoint(region, -100#, 0#)
-    Check "definition.hole.b", Not query.ContainsPoint(region, 100#, 0#)
+    TestCheck "definition.sealed", definition.IsSealed
+    TestCheck "definition.loops", definition.LoopCount = 3 And region.LoopCount = 3
+    TestCheck "definition.area", Abs(region.Area - GEOM_PI * (1000000# - 800#)) < 0.00001
+    TestCheck "definition.concrete", query.ContainsPoint(region, 0#, 0#)
+    TestCheck "definition.hole.a", Not query.ContainsPoint(region, -100#, 0#)
+    TestCheck "definition.hole.b", Not query.ContainsPoint(region, 100#, 0#)
     Set contours = definition.MaterialContours
-    Check "definition.roles", contours.LoopRole(1) = "Outer" And contours.LoopRole(2) = "Opening" And contours.LoopRole(3) = "Opening"
-    Check "definition.ids", contours.LoopID(2) = "A" And contours.LoopID(3) = "B"
+    TestCheck "definition.roles", contours.LoopRole(1) = "Outer" And contours.LoopRole(2) = "Opening" And contours.LoopRole(3) = "Opening"
+    TestCheck "definition.ids", contours.LoopID(2) = "A" And contours.LoopID(3) = "B"
     contours.Clear
-    Check "definition.contours.copy", definition.MaterialContours.Count = 3
+    TestCheck "definition.contours.copy", definition.MaterialContours.Count = 3
     Set copy = definition.ConcreteDomain: copy.SetOwner "Changed", "SP35", "G1"
-    Check "definition.region.copy", Len(definition.ConcreteDomain.OwnerID) = 0
+    TestCheck "definition.region.copy", Len(definition.ConcreteDomain.OwnerID) = 0
     Dim scenario As Long
-    For scenario = 0 To 4: Check "definition.invalid." & CStr(scenario), InvalidDefinitionRejected(scenario): Next scenario
+    For scenario = 0 To 4: TestCheck "definition.invalid." & CStr(scenario), TestInvalidDefinitionRejected(scenario): Next scenario
     GoTo Finished
 Failed:
-    Check "definition.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "definition.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunRecipeDefinitionTests = mReport & "TOTAL RECIPE DEFINITION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-Private Function InvalidDefinitionRejected(ByVal scenario As Long) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет целостность описания: уникальные пути, замкнутый наружный контур, владельца отверстия и запрет изменений после фиксации.
+Private Function TestInvalidDefinitionRejected(ByVal scenario As Long) As Boolean
     On Error GoTo Rejected
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
-    Set facade = RuleFacade
+    Set facade = TestRuleFacade
     Select Case scenario
         Case 0: Set path = facade.LinePath("Row", 0#, 0#, 10#, 0#)
         Case 1: facade.Outer "Other", "Row"
@@ -620,114 +653,120 @@ Private Function InvalidDefinitionRejected(ByVal scenario As Long) As Boolean
     Set definition = facade.Finish
     Exit Function
 Rejected:
-    InvalidDefinitionRejected = (Err.Number = vbObjectError + 5530 Or Err.Number = vbObjectError + 5520)
+    TestInvalidDefinitionRejected = (Err.Number = vbObjectError + 5530 Or Err.Number = vbObjectError + 5520)
 End Function
 
-' ДЛЯ ТЕСТОВ: адресность ошибок и неактивные поля Circle.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' адресность ошибок и неактивные поля Circle.
 Public Function RunCircleRecipeInputTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, calculation As Long, events As Boolean, updating As Boolean, scenario As Long
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
-    For scenario = 0 To 4: Check "circle.input." & CStr(scenario), CircleInputCase(scenario): Next scenario
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
+    For scenario = 0 To 4: TestCheck "circle.input." & CStr(scenario), TestCircleInputCase(scenario): Next scenario
     GoTo Finished
 Failed:
-    Check "circle.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "circle.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunCircleRecipeInputTests = mReport & "TOTAL CIRCLE INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-Private Function CircleInputCase(ByVal scenario As Long) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет ввод круга через настоящую таблицу: адресные ошибки активных рядов и игнорирование настроек отключённого ряда.
+Private Function TestCircleInputCase(ByVal scenario As Long) As Boolean
     Dim expectedReference As String, key As String, settings As CSystemSettingsReader, units As CUnitSystem
     Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, recipe As ISectionRecipe
     Dim definition As CSectionDefinition, table As CSectionInputTable, builder As CSectionBuilder, mesh As TSectionMeshOptions, model As CSectionModel
     On Error GoTo Rejected
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Select Case scenario
-        Case 0: key = "Rebar.Count": SetCircleInput key, 1
-        Case 1: key = "Rebar.AxisDistance": SetCircleInput key, 10# / units.InputLengthToInternal(1#)
-        Case 2: key = "Rebar.Diameter2": SetCircleInput key, -1#
+        Case 0: key = "Rebar.Count": TestSetCircleInput key, 1
+        Case 1: key = "Rebar.AxisDistance": TestSetCircleInput key, 10# / units.InputLengthToInternal(1#)
+        Case 2: key = "Rebar.Diameter2": TestSetCircleInput key, -1#
         Case 3
-            SetCircleInput "Rebar.Count", 0: SetCircleInput "Rebar.AxisDistance", "bad"
-            SetCircleInput "Rebar.Diameter2", "bad": SetCircleInput "Rebar.Loc2row", "bad"
+            TestSetCircleInput "Rebar.Count", 0: TestSetCircleInput "Rebar.AxisDistance", "bad"
+            TestSetCircleInput "Rebar.Diameter2", "bad": TestSetCircleInput "Rebar.Loc2row", "bad"
         Case 4
-            key = "Rebar.Diameter2": SetCircleInput key, 400# / units.InputLengthToInternal(1#)
-            SetCircleInput "Rebar.Loc2row", "SideBySide"
+            key = "Rebar.Diameter2": TestSetCircleInput key, 400# / units.InputLengthToInternal(1#)
+            TestSetCircleInput "Rebar.Loc2row", "SideBySide"
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
     Set table = context.Table("rngCircleGeometry")
-    If Len(key) > 0 Then expectedReference = FixtureCircleFieldCell(ThisWorkbook, key).Worksheet.Name & "!" & FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False)
+    If Len(key) > 0 Then expectedReference = TestFixtureCircleFieldCell(ThisWorkbook, key).Worksheet.Name & "!" & TestFixtureCircleFieldCell(ThisWorkbook, key).Address(False, False)
     Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
-    If scenario = 3 Then CircleInputCase = (definition.RuleCount = 0): Exit Function
+    If scenario = 3 Then TestCircleInputCase = (definition.RuleCount = 0): Exit Function
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
     Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
     Exit Function
 Rejected:
-    CircleInputCase = (Len(expectedReference) > 0 And InStr(1, Err.Description, expectedReference, vbBinaryCompare) > 0)
+    TestCircleInputCase = (Len(expectedReference) > 0 And InStr(1, Err.Description, expectedReference, vbBinaryCompare) > 0)
 End Function
 
-' ДЛЯ ТЕСТОВ: активные/неактивные поля и адресность PointedSection.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' активные/неактивные поля и адресность PointedSection.
 Public Function RunRoundedRecipeInputTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, scenario As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     For scenario = 0 To 13
-        FixtureRestoreInputs config, saved
-        Check "rounded.input." & CStr(scenario), RoundedInputCase(scenario)
+        TestFixtureRestoreInputs config, saved
+        TestCheck "rounded.input." & CStr(scenario), TestRoundedInputCase(scenario)
     Next scenario
     GoTo Finished
 Failed:
-    Check "rounded.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "rounded.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunRoundedRecipeInputTests = mReport & "TOTAL ROUNDED INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет ввод PointedSection: параметры скругления, армирование, неактивные поля и фактический адрес ошибочной ячейки.
+Private Function TestRoundedInputCase(ByVal scenario As Long) As Boolean
     Dim range As Object, invalid As Object, valid As Boolean, reference As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
     Dim context As CSectionRecipeContext, table As CSectionInputTable, recipe As ISectionRecipe, definition As CSectionDefinition
     Dim builder As CSectionBuilder, model As CSectionModel, mesh As TSectionMeshOptions
     On Error GoTo Rejected
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-    modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+    modTestShapeArchitecture.TestConfigureShapeFixture "RoundedSimple"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set range = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     Select Case scenario
-        Case 0: Set invalid = FixtureInputCell(range, "Main", "Left", "n"): invalid.Value2 = 1.5
-        Case 1: Set invalid = FixtureInputCell(range, "Main", "Left", "d"): invalid.Value2 = -1#
-        Case 2: Set invalid = FixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = CDbl(invalid.Offset(0, 1).Value2) / 2#
-        Case 3: Set invalid = FixtureInputCell(range, "Extra", "Left", "d2"): invalid.Value2 = -1#
-        Case 4: Set invalid = FixtureInputCell(range, "Extra", "Left", "pos2"): FixtureInputCell(range, "Extra", "Left", "d2").Value2 = 10#: invalid.Value2 = "bad"
-        Case 5: Set invalid = FixtureInputCell(range, "Extra", "Left", "bind2"): FixtureInputCell(range, "Extra", "Left", "d2").Value2 = 10#: invalid.Value2 = "bad"
+        Case 0: Set invalid = TestFixtureInputCell(range, "Main", "Left", "n"): invalid.Value2 = 1.5
+        Case 1: Set invalid = TestFixtureInputCell(range, "Main", "Left", "d"): invalid.Value2 = -1#
+        Case 2: Set invalid = TestFixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = CDbl(invalid.Offset(0, 1).Value2) / 2#
+        Case 3: Set invalid = TestFixtureInputCell(range, "Extra", "Left", "d2"): invalid.Value2 = -1#
+        Case 4: Set invalid = TestFixtureInputCell(range, "Extra", "Left", "pos2"): TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = 10#: invalid.Value2 = "bad"
+        Case 5: Set invalid = TestFixtureInputCell(range, "Extra", "Left", "bind2"): TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = 10#: invalid.Value2 = "bad"
         Case 6
-            valid = True: FixtureInputCell(range, "Detail", "R2", "left").Value2 = "inactive"
+            valid = True: TestFixtureInputCell(range, "Detail", "R2", "left").Value2 = "inactive"
         Case 7
-            valid = True: FixtureInputCell(range, "Main", "Left", "n").Value2 = 0: FixtureInputCell(range, "Main", "Left", "as").Value2 = "inactive"
-            FixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive"
+            valid = True: TestFixtureInputCell(range, "Main", "Left", "n").Value2 = 0: TestFixtureInputCell(range, "Main", "Left", "as").Value2 = "inactive"
+            TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive": TestFixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive"
         Case 8
-            valid = True: FixtureInputCell(range, "Main", "Left", "d").Value2 = 0: FixtureInputCell(range, "Main", "Left", "as").Value2 = "inactive"
-            FixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive"
+            valid = True: TestFixtureInputCell(range, "Main", "Left", "d").Value2 = 0: TestFixtureInputCell(range, "Main", "Left", "as").Value2 = "inactive"
+            TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive": TestFixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive"
         Case 9
-            valid = True: FixtureInputCell(range, "Extra", "Left", "d2").Value2 = 0: FixtureInputCell(range, "Extra", "Left", "d3").Value2 = 0
-            FixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Left", "bind2").Value2 = "inactive"
-        Case 10: Set invalid = FixtureInputCell(range, "Detail", "R1", "left"): invalid.Value2 = 1000#
+            valid = True: TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = 0: TestFixtureInputCell(range, "Extra", "Left", "d3").Value2 = 0
+            TestFixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive": TestFixtureInputCell(range, "Extra", "Left", "bind2").Value2 = "inactive"
+        Case 10: Set invalid = TestFixtureInputCell(range, "Detail", "R1", "left"): invalid.Value2 = 1000#
         Case 11
-            valid = True: FixtureInputCell(range, "Detail", "W", "left").Value2 = 100#
-            FixtureInputCell(range, "Detail", "R1", "left").Value2 = 220#: FixtureInputCell(range, "Detail", "R2", "left").Value2 = 0#
-        Case 12: valid = True: FixtureInputCell(range, "Detail", "R1", "left").Value2 = 200#: FixtureInputCell(range, "Detail", "R1", "right").Value2 = 200#
-        Case 13: Set invalid = FixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = 380#
+            valid = True: TestFixtureInputCell(range, "Detail", "W", "left").Value2 = 100#
+            TestFixtureInputCell(range, "Detail", "R1", "left").Value2 = 220#: TestFixtureInputCell(range, "Detail", "R2", "left").Value2 = 0#
+        Case 12: valid = True: TestFixtureInputCell(range, "Detail", "R1", "left").Value2 = 200#: TestFixtureInputCell(range, "Detail", "R1", "right").Value2 = 200#
+        Case 13: Set invalid = TestFixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = 380#
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngPointedSectionGeometry"), units)
     Set table = context.Table("rngPointedSectionGeometry")
@@ -735,72 +774,75 @@ Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
     Set recipe = New CSectionRecipePointedSection: Set definition = recipe.CreateDefinition(context)
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
     Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
-    RoundedInputCase = valid
+    TestRoundedInputCase = valid
     Exit Function
 Rejected:
-    RoundedInputCase = (Not valid And Len(reference) > 0 And InStr(1, Err.Description, reference, vbBinaryCompare) > 0)
-    If Not RoundedInputCase Then mReport = mReport & "ROUNDED INPUT DETAIL: " & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+    TestRoundedInputCase = (Not valid And Len(reference) > 0 And InStr(1, Err.Description, reference, vbBinaryCompare) > 0)
+    If Not TestRoundedInputCase Then mReport = mReport & "ROUNDED INPUT DETAIL: " & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: адресность размеров/проекционных ограничителей и неактивные поля.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' адресность размеров/проекционных ограничителей и неактивные поля.
 Public Function RunHollowRecipeInputTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, scenario As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     For scenario = 0 To 19
-        FixtureRestoreInputs config, saved
-        Check "hollow.input." & CStr(scenario), HollowInputCase(scenario)
+        TestFixtureRestoreInputs config, saved
+        TestCheck "hollow.input." & CStr(scenario), TestHollowInputCase(scenario)
     Next scenario
     GoTo Finished
 Failed:
-    Check "hollow.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "hollow.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunHollowRecipeInputTests = mReport & "TOTAL HOLLOW INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-Private Function HollowInputCase(ByVal scenario As Long) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет ввод HollowRectangle, включая положение отверстия, обязательные отступы его осевого контура и отключённые ряды.
+Private Function TestHollowInputCase(ByVal scenario As Long) As Boolean
     Dim range As Object, invalid As Object, valid As Boolean, reference As String, factor As Double
     Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
     Dim context As CSectionRecipeContext, table As CSectionInputTable, recipe As ISectionRecipe, definition As CSectionDefinition
     Dim builder As CSectionBuilder, model As CSectionModel, mesh As TSectionMeshOptions
     On Error GoTo Rejected
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-    modTestShapeArchitecture.ConfigureShapeFixture "HollowCentered"
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+    modTestShapeArchitecture.TestConfigureShapeFixture "HollowCentered"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     Set range = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     Select Case scenario
-        Case 0: Set invalid = FixtureInputCell(range, "Main", "Top", "n"): invalid.Value2 = 1.5
-        Case 1: Set invalid = FixtureInputCell(range, "Main", "Top", "d"): invalid.Value2 = -1#
-        Case 2: Set invalid = FixtureInputCell(range, "Main", "Top", "as"): invalid.Value2 = CDbl(invalid.Offset(0, 1).Value2) / 2#
-        Case 3: Set invalid = FixtureInputCell(range, "Main", "OpeningLeft", "as"): FixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: invalid.Value2 = -1#
-        Case 4: Set invalid = FixtureInputCell(range, "Detail", "Ro", "val"): invalid.Value2 = -1#
-        Case 5: Set invalid = FixtureInputCell(range, "Detail", "Xo", "val"): invalid.Value2 = 1000# / factor
+        Case 0: Set invalid = TestFixtureInputCell(range, "Main", "Top", "n"): invalid.Value2 = 1.5
+        Case 1: Set invalid = TestFixtureInputCell(range, "Main", "Top", "d"): invalid.Value2 = -1#
+        Case 2: Set invalid = TestFixtureInputCell(range, "Main", "Top", "as"): invalid.Value2 = CDbl(invalid.Offset(0, 1).Value2) / 2#
+        Case 3: Set invalid = TestFixtureInputCell(range, "Main", "OpeningLeft", "as"): TestFixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: invalid.Value2 = -1#
+        Case 4: Set invalid = TestFixtureInputCell(range, "Detail", "Ro", "val"): invalid.Value2 = -1#
+        Case 5: Set invalid = TestFixtureInputCell(range, "Detail", "Xo", "val"): invalid.Value2 = 1000# / factor
         Case 6
-            valid = True: FixtureInputCell(range, "Main", "Top", "n").Value2 = 0: FixtureInputCell(range, "Main", "Top", "as").Value2 = "inactive"
-            FixtureInputCell(range, "Extra", "Top", "d2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Top", "d3").Value2 = "inactive"
+            valid = True: TestFixtureInputCell(range, "Main", "Top", "n").Value2 = 0: TestFixtureInputCell(range, "Main", "Top", "as").Value2 = "inactive"
+            TestFixtureInputCell(range, "Extra", "Top", "d2").Value2 = "inactive": TestFixtureInputCell(range, "Extra", "Top", "d3").Value2 = "inactive"
         Case 7
-            valid = True: FixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: FixtureInputCell(range, "Extra", "OpeningLeft", "d2").Value2 = "inactive"
-            FixtureInputCell(range, "Extra", "OpeningLeft", "d3").Value2 = "inactive"
-        Case 8: Set invalid = FixtureInputCell(range, "Main", "OpeningLeft", "as"): FixtureInputCell(range, "Detail", "Ro", "val").Value2 = 0#: FixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: invalid.Value2 = "bad"
+            valid = True: TestFixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: TestFixtureInputCell(range, "Extra", "OpeningLeft", "d2").Value2 = "inactive"
+            TestFixtureInputCell(range, "Extra", "OpeningLeft", "d3").Value2 = "inactive"
+        Case 8: Set invalid = TestFixtureInputCell(range, "Main", "OpeningLeft", "as"): TestFixtureInputCell(range, "Detail", "Ro", "val").Value2 = 0#: TestFixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: invalid.Value2 = "bad"
         Case 9
-            valid = True: FixtureInputCell(range, "Extra", "Top", "d2").Value2 = 0#: FixtureInputCell(range, "Extra", "Top", "d3").Value2 = 0#
-            FixtureInputCell(range, "Extra", "Top", "pos2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Top", "bind2").Value2 = "inactive"
-        Case 10: Set invalid = FixtureInputCell(range, "Detail", "Ro", "val"): invalid.Value2 = 1000# / factor
-        Case 11: valid = True: FixtureInputCell(range, "General", "R", "val").Value2 = 500# / factor
-        Case 12: Set invalid = FixtureInputCell(range, "Extra", "Top", "bind2"): FixtureInputCell(range, "Extra", "Top", "d2").Value2 = 16# / factor: invalid.Value2 = "bad"
-        Case 13: Set invalid = FixtureInputCell(range, "Main", "Top", "n"): FixtureInputCell(range, "Main", "Top", "d").Value2 = 0#: invalid.Value2 = 1.5
-        Case 14: Set invalid = FixtureInputCell(range, "Main", "Top", "d"): invalid.Value2 = "-"
-        Case 15: Set invalid = FixtureInputCell(range, "Extra", "Top", "d2"): invalid.Value2 = "-"
-        Case 16: Set invalid = FixtureInputCell(range, "Extra", "Top", "d3"): invalid.Value2 = "-"
-        Case 17: Set invalid = FixtureInputCell(range, "Extra", "Top", "d2"): invalid.Value2 = "TODO"
-        Case 18: valid = True: FixtureInputCell(range, "Extra", "Top", "d2").ClearContents: FixtureInputCell(range, "Extra", "Top", "d3").ClearContents
-        Case 19: valid = True: FixtureInputCell(range, "Main", "Top", "d").ClearContents
+            valid = True: TestFixtureInputCell(range, "Extra", "Top", "d2").Value2 = 0#: TestFixtureInputCell(range, "Extra", "Top", "d3").Value2 = 0#
+            TestFixtureInputCell(range, "Extra", "Top", "pos2").Value2 = "inactive": TestFixtureInputCell(range, "Extra", "Top", "bind2").Value2 = "inactive"
+        Case 10: Set invalid = TestFixtureInputCell(range, "Detail", "Ro", "val"): invalid.Value2 = 1000# / factor
+        Case 11: valid = True: TestFixtureInputCell(range, "General", "R", "val").Value2 = 500# / factor
+        Case 12: Set invalid = TestFixtureInputCell(range, "Extra", "Top", "bind2"): TestFixtureInputCell(range, "Extra", "Top", "d2").Value2 = 16# / factor: invalid.Value2 = "bad"
+        Case 13: Set invalid = TestFixtureInputCell(range, "Main", "Top", "n"): TestFixtureInputCell(range, "Main", "Top", "d").Value2 = 0#: invalid.Value2 = 1.5
+        Case 14: Set invalid = TestFixtureInputCell(range, "Main", "Top", "d"): invalid.Value2 = "-"
+        Case 15: Set invalid = TestFixtureInputCell(range, "Extra", "Top", "d2"): invalid.Value2 = "-"
+        Case 16: Set invalid = TestFixtureInputCell(range, "Extra", "Top", "d3"): invalid.Value2 = "-"
+        Case 17: Set invalid = TestFixtureInputCell(range, "Extra", "Top", "d2"): invalid.Value2 = "TODO"
+        Case 18: valid = True: TestFixtureInputCell(range, "Extra", "Top", "d2").ClearContents: TestFixtureInputCell(range, "Extra", "Top", "d3").ClearContents
+        Case 19: valid = True: TestFixtureInputCell(range, "Main", "Top", "d").ClearContents
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry"), units)
     Set table = context.Table("rngHollowRectangleGeometry")
@@ -808,55 +850,60 @@ Private Function HollowInputCase(ByVal scenario As Long) As Boolean
     Set recipe = New CSectionRecipeHollowRectangle: Set definition = recipe.CreateDefinition(context)
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
     Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
-    HollowInputCase = valid
+    TestHollowInputCase = valid
     Exit Function
 Rejected:
-    HollowInputCase = (Not valid And Len(reference) > 0 And InStr(1, Err.Description, reference, vbBinaryCompare) > 0)
-    If Not HollowInputCase Then mReport = mReport & "HOLLOW INPUT DETAIL: " & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+    TestHollowInputCase = (Not valid And Len(reference) > 0 And InStr(1, Err.Description, reference, vbBinaryCompare) > 0)
+    If Not TestHollowInputCase Then mReport = mReport & "HOLLOW INPUT DETAIL: " & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: полная сборка рецепта общими классами без старых способов геометрии и размещения
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' полная сборка рецепта общими классами без старых способов геометрии и размещения
 ' арматуры.
-Public Function DumpCircleRecipeMatrix() As String
+Public Function TestDumpCircleRecipeMatrix() As String
     Dim config As Object, saved As Variant, result As String, counts As Variant, number As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, factor As Double, fixture As String
     Dim calculation As Long, events As Boolean, updating As Boolean, builder As CSectionBuilder, model As CSectionModel
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     counts = Array(2, 3, 12, 13)
     For Each number In counts
         For scenario = 0 To 6
-            SetCircleInput "Rebar.Count", CLng(number)
-            SetCircleInput "Rebar.Diameter2", IIf(scenario = 0 Or scenario = 2, 0#, 16# / factor)
-            SetCircleInput "Rebar.Diameter3", IIf(scenario = 0 Or scenario = 1, 0#, 12# / factor)
-            SetCircleInput "Rebar.Loc2row", IIf(scenario = 5 Or scenario = 6, "SideBySide", "Stacked")
-            SetCircleInput "Rebar.Loc3row", IIf(scenario = 4 Or scenario = 6, "SideBySide", "Stacked")
+            TestSetCircleInput "Rebar.Count", CLng(number)
+            TestSetCircleInput "Rebar.Diameter2", IIf(scenario = 0 Or scenario = 2, 0#, 16# / factor)
+            TestSetCircleInput "Rebar.Diameter3", IIf(scenario = 0 Or scenario = 1, 0#, 12# / factor)
+            TestSetCircleInput "Rebar.Loc2row", IIf(scenario = 5 Or scenario = 6, "SideBySide", "Stacked")
+            TestSetCircleInput "Rebar.Loc3row", IIf(scenario = 4 Or scenario = 6, "SideBySide", "Stacked")
             ThisWorkbook.Worksheets("Config").Calculate
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildCircleRecipe(settings, units, builder)
+            Set builder = New CSectionBuilder: Set model = TestBuildCircleRecipe(settings, units, builder)
             fixture = "CircleMatrix.n" & CStr(number) & ".rows" & CStr(scenario)
-            result = result & modTestShapeArchitecture.PreparedShapeSnapshot(fixture, model, builder.Mesh, builder.Rebars)
+            result = result & modTestShapeArchitecture.TestPreparedShapeSnapshot(fixture, model, builder.Mesh, builder.Rebars)
         Next scenario
     Next number
     GoTo Finished
 Failed:
     result = result & "FAIL: Circle recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    DumpCircleRecipeMatrix = result
+    TestDumpCircleRecipeMatrix = result
 End Function
 
-Private Function BuildCircleRecipe(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal builder As CSectionBuilder) As CSectionModel
-    Set BuildCircleRecipe = BuildRecipe("Circle", settings, units, builder)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Собирает круг через общий реестр и снимок входных таблиц без отдельного тестового алгоритма геометрии.
+Private Function TestBuildCircleRecipe(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal builder As CSectionBuilder) As CSectionModel
+    Set TestBuildCircleRecipe = TestBuildRecipe("Circle", settings, units, builder)
 End Function
 
-Private Function BuildRecipe(ByVal typeID As String, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal builder As CSectionBuilder) As CSectionModel
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Читает только зарегистрированные таблицы типа, создаёт его описание и передаёт общему сборщику с текущими настройками сетки.
+Private Function TestBuildRecipe(ByVal typeID As String, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal builder As CSectionBuilder) As CSectionModel
     Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext
     Dim definition As CSectionDefinition, mesh As TSectionMeshOptions
     Dim registry As CSectionTypeRegistry
@@ -864,136 +911,144 @@ Private Function BuildRecipe(ByVal typeID As String, ByVal settings As CSystemSe
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, registry.RecipeTableNames(typeID), units)
     Set definition = registry.CreateDefinition(typeID, context)
     mesh = ReadSectionMeshOptions(settings, units)
-    Set BuildRecipe = builder.Build(definition, mesh)
+    Set TestBuildRecipe = builder.Build(definition, mesh)
 End Function
 
-' ДЛЯ ТЕСТОВ: три формы Rectangles проходят один рецепт и общий сборщик.
-Public Function DumpRectanglesRecipeGeometry() As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' три формы Rectangles проходят один рецепт и общий сборщик.
+Public Function TestDumpRectanglesRecipeGeometry() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
-        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set builder = New CSectionBuilder: Set model = BuildRecipe("Rectangles", settings, units, builder)
-        result = result & modTestShapeArchitecture.PreparedShapeSnapshot(CStr(fixture), model, builder.Mesh, builder.Rebars)
+        Set builder = New CSectionBuilder: Set model = TestBuildRecipe("Rectangles", settings, units, builder)
+        result = result & modTestShapeArchitecture.TestPreparedShapeSnapshot(CStr(fixture), model, builder.Mesh, builder.Rebars)
     Next fixture
     GoTo Finished
 Failed:
     result = result & "FAIL: Rectangles recipe geometry; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    DumpRectanglesRecipeGeometry = result
+    TestDumpRectanglesRecipeGeometry = result
 End Function
 
-' ДЛЯ ТЕСТОВ: тот же ввод расширенного набора проверок обрабатывается новым общим способом
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' тот же ввод расширенного набора проверок обрабатывается новым общим способом
 ' сборки.
-Public Function DumpRectanglesRecipeMatrix() As String
+Public Function TestDumpRectanglesRecipeMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
         For scenario = 0 To 5
-            FixtureRestoreInputs config, saved
-            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-            modTestShapeArchitecture.ConfigureRectanglesScenario CStr(fixture), scenario
+            TestFixtureRestoreInputs config, saved
+            modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.TestConfigureRectanglesScenario CStr(fixture), scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("Rectangles", settings, units, builder)
-            result = result & modTestShapeArchitecture.PreparedShapeSnapshot("RectMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
+            Set builder = New CSectionBuilder: Set model = TestBuildRecipe("Rectangles", settings, units, builder)
+            result = result & modTestShapeArchitecture.TestPreparedShapeSnapshot("RectMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
         Next scenario
     Next fixture
     GoTo Finished
 Failed:
     result = result & "FAIL: Rectangles recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    DumpRectanglesRecipeMatrix = result
+    TestDumpRectanglesRecipeMatrix = result
 End Function
 
-' ДЛЯ ТЕСТОВ: точные пути общего builder на тех же 24 исходных fixtures.
-Public Function DumpRoundedRecipeMatrix() As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' точные пути общего builder на тех же 24 исходных fixtures.
+Public Function TestDumpRoundedRecipeMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
         For scenario = 0 To 5
-            FixtureRestoreInputs config, saved
-            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-            modTestShapeArchitecture.ConfigureRoundedScenario scenario
+            TestFixtureRestoreInputs config, saved
+            modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.TestConfigureRoundedScenario scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("PointedSection", settings, units, builder)
-            result = result & modTestShapeArchitecture.PreparedShapeSnapshot("RoundedMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
+            Set builder = New CSectionBuilder: Set model = TestBuildRecipe("PointedSection", settings, units, builder)
+            result = result & modTestShapeArchitecture.TestPreparedShapeSnapshot("RoundedMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
         Next scenario
     Next fixture
     GoTo Finished
 Failed:
     result = result & "FAIL: Rounded recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    DumpRoundedRecipeMatrix = result
+    TestDumpRoundedRecipeMatrix = result
 End Function
 
-' ДЛЯ ТЕСТОВ: точные дуги и проекции для 16 исходных Hollow fixtures.
-Public Function DumpHollowRecipeMatrix() As String
-    DumpHollowRecipeMatrix = HollowRecipeMatrix(0, 7)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' точные дуги и проекции для 16 исходных Hollow fixtures.
+Public Function TestDumpHollowRecipeMatrix() As String
+    TestDumpHollowRecipeMatrix = TestHollowRecipeMatrix(0, 7)
 End Function
 
-' ДЛЯ ТЕСТОВ: отсутствующие прямые участки и sharp frame тем же рецептом.
-Public Function DumpHollowRecipeEdgeMatrix() As String
-    DumpHollowRecipeEdgeMatrix = HollowRecipeMatrix(8, 10)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' отсутствующие прямые участки и sharp frame тем же рецептом.
+Public Function TestDumpHollowRecipeEdgeMatrix() As String
+    TestDumpHollowRecipeEdgeMatrix = TestHollowRecipeMatrix(8, 10)
 End Function
 
-Private Function HollowRecipeMatrix(ByVal firstScenario As Long, ByVal lastScenario As Long) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает точные снимки диапазона сценариев HollowRectangle с центральным и смещённым отверстием, восстанавливая входы.
+Private Function TestHollowRecipeMatrix(ByVal firstScenario As Long, ByVal lastScenario As Long) As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     For Each fixture In Array("HollowCentered", "HollowOffset")
         For scenario = firstScenario To lastScenario
-            FixtureRestoreInputs config, saved
-            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-            modTestShapeArchitecture.ConfigureHollowScenario scenario
+            TestFixtureRestoreInputs config, saved
+            modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.TestConfigureHollowScenario scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("HollowRectangle", settings, units, builder)
-            result = result & modTestShapeArchitecture.PreparedShapeSnapshot("HollowMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
+            Set builder = New CSectionBuilder: Set model = TestBuildRecipe("HollowRectangle", settings, units, builder)
+            result = result & modTestShapeArchitecture.TestPreparedShapeSnapshot("HollowMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
         Next scenario
     Next fixture
     GoTo Finished
 Failed:
     result = result & "FAIL: Hollow recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    HollowRecipeMatrix = result
+    TestHollowRecipeMatrix = result
 End Function
 
-' ДЛЯ ТЕСТОВ: сумма готовых подписей в полной матрице перенесенных рецептов.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' сумма готовых подписей в полной матрице перенесенных рецептов.
 Public Function RunRecipeAnnotationCountTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, fixture As Variant, scenario As Long, number As Variant
@@ -1002,85 +1057,89 @@ Public Function RunRecipeAnnotationCountTests() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     For Each number In Array(2, 3, 12, 13)
         For scenario = 0 To 6
-            SetCircleInput "Rebar.Count", CLng(number)
-            SetCircleInput "Rebar.Diameter2", IIf(scenario = 0 Or scenario = 2, 0#, 16# / factor)
-            SetCircleInput "Rebar.Diameter3", IIf(scenario = 0 Or scenario = 1, 0#, 12# / factor)
-            SetCircleInput "Rebar.Loc2row", IIf(scenario = 5 Or scenario = 6, "SideBySide", "Stacked")
-            SetCircleInput "Rebar.Loc3row", IIf(scenario = 4 Or scenario = 6, "SideBySide", "Stacked")
+            TestSetCircleInput "Rebar.Count", CLng(number)
+            TestSetCircleInput "Rebar.Diameter2", IIf(scenario = 0 Or scenario = 2, 0#, 16# / factor)
+            TestSetCircleInput "Rebar.Diameter3", IIf(scenario = 0 Or scenario = 1, 0#, 12# / factor)
+            TestSetCircleInput "Rebar.Loc2row", IIf(scenario = 5 Or scenario = 6, "SideBySide", "Stacked")
+            TestSetCircleInput "Rebar.Loc3row", IIf(scenario = 4 Or scenario = 6, "SideBySide", "Stacked")
             ThisWorkbook.Worksheets("Config").Calculate
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("Circle", settings, units, builder)
-            Check "annotations.total.Circle.n" & CStr(number) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
+            Set builder = New CSectionBuilder: Set model = TestBuildRecipe("Circle", settings, units, builder)
+            TestCheck "annotations.total.Circle.n" & CStr(number) & ".case" & CStr(scenario), TestAnnotatedBarCount(model.Annotations) = model.RebarCount
         Next scenario
     Next number
     For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
         For scenario = 0 To 5
-            FixtureRestoreInputs config, saved
-            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-            modTestShapeArchitecture.ConfigureRectanglesScenario CStr(fixture), scenario
+            TestFixtureRestoreInputs config, saved
+            modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.TestConfigureRectanglesScenario CStr(fixture), scenario
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("Rectangles", settings, units, builder)
-            Check "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
+            Set builder = New CSectionBuilder: Set model = TestBuildRecipe("Rectangles", settings, units, builder)
+            TestCheck "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), TestAnnotatedBarCount(model.Annotations) = model.RebarCount
         Next scenario
     Next fixture
     For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
         For scenario = 0 To 5
-            FixtureRestoreInputs config, saved
-            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-            modTestShapeArchitecture.ConfigureRoundedScenario scenario
+            TestFixtureRestoreInputs config, saved
+            modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.TestConfigureRoundedScenario scenario
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("PointedSection", settings, units, builder)
-            Check "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
+            Set builder = New CSectionBuilder: Set model = TestBuildRecipe("PointedSection", settings, units, builder)
+            TestCheck "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), TestAnnotatedBarCount(model.Annotations) = model.RebarCount
         Next scenario
     Next fixture
     For Each fixture In Array("HollowCentered", "HollowOffset")
         For scenario = 0 To 10
-            FixtureRestoreInputs config, saved
-            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-            modTestShapeArchitecture.ConfigureHollowScenario scenario
+            TestFixtureRestoreInputs config, saved
+            modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.TestConfigureHollowScenario scenario
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("HollowRectangle", settings, units, builder)
-            Check "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
+            Set builder = New CSectionBuilder: Set model = TestBuildRecipe("HollowRectangle", settings, units, builder)
+            TestCheck "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), TestAnnotatedBarCount(model.Annotations) = model.RebarCount
         Next scenario
     Next fixture
     GoTo Finished
 Failed:
-    Check "annotations.total.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "annotations.total.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunRecipeAnnotationCountTests = mReport & "TOTAL RECIPE ANNOTATIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет объединение двух и трёх смежных прямоугольников: площадь, вогнутые участки и отказ для недопустимого стыка.
 Private Sub TestAdjacentRectangles()
     Dim query As CSectionGeometryQuery, path As CGeometryPath, region As CConcreteRegion
     Set query = New CSectionGeometryQuery
     Set path = query.AdjacentRectangles("Pair", Array(Array(0#, 0#, 600#, 200#), Array(-50#, 200#, 300#, 400#)))
     Set region = query.RegionFromPath(path)
-    Near "adjacent.area", region.Area, 240000#
-    Check "adjacent.closed", path.IsClosed And region.LoopCount = 1
-    Check "adjacent.lower", query.ContainsPoint(region, 500#, 100#)
-    Check "adjacent.upper", query.ContainsPoint(region, -25#, 300#)
-    Check "adjacent.concavity", Not query.ContainsPoint(region, 500#, 300#)
+    TestNear "adjacent.area", region.Area, 240000#
+    TestCheck "adjacent.closed", path.IsClosed And region.LoopCount = 1
+    TestCheck "adjacent.lower", query.ContainsPoint(region, 500#, 100#)
+    TestCheck "adjacent.upper", query.ContainsPoint(region, -25#, 300#)
+    TestCheck "adjacent.concavity", Not query.ContainsPoint(region, 500#, 300#)
     Set path = query.AdjacentRectangles("Three", Array(Array(0#, 0#, 100#, 100#), Array(100#, 0#, 100#, 100#), Array(0#, 100#, 100#, 100#)))
     Set region = query.RegionFromPath(path)
-    Near "adjacent.three.area", region.Area, 30000#
-    Check "adjacent.three.concavity", Not query.ContainsPoint(region, 150#, 150#)
-    Check "adjacent.overlap.rejected", InvalidAdjacentRejected(0)
-    Check "adjacent.disjoint.rejected", InvalidAdjacentRejected(1)
-    Check "adjacent.corner.rejected", InvalidAdjacentRejected(2)
+    TestNear "adjacent.three.area", region.Area, 30000#
+    TestCheck "adjacent.three.concavity", Not query.ContainsPoint(region, 150#, 150#)
+    TestCheck "adjacent.overlap.rejected", TestInvalidAdjacentRejected(0)
+    TestCheck "adjacent.disjoint.rejected", TestInvalidAdjacentRejected(1)
+    TestCheck "adjacent.corner.rejected", TestInvalidAdjacentRejected(2)
 End Sub
 
-Private Function InvalidAdjacentRejected(ByVal scenario As Long) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отказ при наложении прямоугольников, разрыве между ними и касании только общей вершиной.
+Private Function TestInvalidAdjacentRejected(ByVal scenario As Long) As Boolean
     On Error GoTo Rejected
     Dim query As CSectionGeometryQuery, path As CGeometryPath, rect As Variant
     Set query = New CSectionGeometryQuery
@@ -1092,16 +1151,19 @@ Private Function InvalidAdjacentRejected(ByVal scenario As Long) As Boolean
     Set path = query.AdjacentRectangles("Bad", Array(Array(0#, 0#, 100#, 100#), rect))
     Exit Function
 Rejected:
-    InvalidAdjacentRejected = (InStr(1, Err.Source, "CSectionGeometryQuery", vbBinaryCompare) > 0)
+    TestInvalidAdjacentRejected = (InStr(1, Err.Source, "CSectionGeometryQuery", vbBinaryCompare) > 0)
 End Function
 
-Private Sub SetCircleInput(ByVal key As String, ByVal value As Variant)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Изменяет поле круга через общий поиск ячейки по ключу, без постоянного адреса в листе.
+Private Sub TestSetCircleInput(ByVal key As String, ByVal value As Variant)
     Dim cell As Object
-    Set cell = FixtureCircleFieldCell(ThisWorkbook, key)
+    Set cell = TestFixtureCircleFieldCell(ThisWorkbook, key)
     cell.Value2 = value
 End Sub
 
-' ДЛЯ ТЕСТОВ: обе независимые привязки круга, нечётные n, направления и реальные подписи.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' обе независимые привязки круга, нечётные n, направления и реальные подписи.
 Public Function RunCircleBindingTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim number As Variant, loc2 As Variant, loc3 As Variant, bind2 As Variant, bind3 As Variant
@@ -1113,16 +1175,16 @@ Public Function RunCircleBindingTests() As String
     For Each number In Array(2, 3, 8, 9)
         For Each loc2 In Array("Stacked", "SideBySide")
             For Each loc3 In Array("Stacked", "SideBySide")
-                Set definition = FixtureCircleDefinition(Array(1000#, 50#, number, 20#, 12#, 10#, loc2, loc3, "EachBar", "EachBar"))
-                Set before = New CRebarRuleExecutor: Set reference = FixtureAnnotatedLayout(definition, before)
+                Set definition = TestFixtureCircleDefinition(Array(1000#, 50#, number, 20#, 12#, 10#, loc2, loc3, "EachBar", "EachBar"))
+                Set before = New CRebarRuleExecutor: Set reference = TestFixtureAnnotatedLayout(definition, before)
                 For Each bind2 In Array("EachBar", "EverySecondBar")
                     For Each bind3 In Array("EachBar", "EverySecondBar")
                         prefix = "circle.bind.n" & CStr(number) & "." & loc2 & "." & loc3 & "." & bind2 & "." & bind3
-                        Set definition = FixtureCircleDefinition(Array(1000#, 50#, number, 20#, 12#, 10#, loc2, loc3, bind2, bind3))
-                        Set after = New CRebarRuleExecutor: Set actual = FixtureAnnotatedLayout(definition, after, annotations)
+                        Set definition = TestFixtureCircleDefinition(Array(1000#, 50#, number, 20#, 12#, 10#, loc2, loc3, bind2, bind3))
+                        Set after = New CRebarRuleExecutor: Set actual = TestFixtureAnnotatedLayout(definition, after, annotations)
                         expected = CLng(number) + IIf(bind2 = "EachBar", number, (CLng(number) + 1) \ 2) + IIf(bind3 = "EachBar", number, (CLng(number) + 1) \ 2)
-                        Check prefix & ".count", actual.Count = expected
-                        Check prefix & ".annotation", AnnotatedBarCount(annotations) = actual.Count
+                        TestCheck prefix & ".count", actual.Count = expected
+                        TestCheck prefix & ".annotation", TestAnnotatedBarCount(annotations) = actual.Count
                         previous = 0
                         For ordinal = 1 To CLng(number)
                             For row = 1 To 3
@@ -1130,15 +1192,15 @@ Public Function RunCircleBindingTests() As String
                                 If row = 2 Then id = id & "_R2": binding = CStr(bind2)
                                 If row = 3 Then id = id & "_R3": binding = CStr(bind3)
                                 selected = (binding = "EachBar" Or ordinal Mod 2 = 1)
-                                position = CircleSourcePosition(after, id)
-                                Check prefix & ".selected." & id, (position > 0) = selected
+                                position = TestCircleSourcePosition(after, id)
+                                TestCheck prefix & ".selected." & id, (position > 0) = selected
                                 If selected And position > 0 Then
-                                    original = CircleSourcePosition(before, id)
+                                    original = TestCircleSourcePosition(before, id)
                                     owner = after.PositionPhysicalOwner(position): oldOwner = before.PositionPhysicalOwner(original)
-                                    Near prefix & ".x." & id, actual.X(owner), reference.X(oldOwner)
-                                    Near prefix & ".y." & id, actual.Y(owner), reference.Y(oldOwner)
-                                    Near prefix & ".d." & id, actual.Diameter(owner), reference.Diameter(oldOwner)
-                                    Check prefix & ".order." & id, owner > previous
+                                    TestNear prefix & ".x." & id, actual.X(owner), reference.X(oldOwner)
+                                    TestNear prefix & ".y." & id, actual.Y(owner), reference.Y(oldOwner)
+                                    TestNear prefix & ".d." & id, actual.Diameter(owner), reference.Diameter(oldOwner)
+                                    TestCheck prefix & ".order." & id, owner > previous
                                     previous = owner
                                 End If
                             Next row
@@ -1148,118 +1210,130 @@ Public Function RunCircleBindingTests() As String
             Next loc3
         Next loc2
     Next number
-    Check "circle.bind.invalid.active2", CircleBindingInputCase(12#, 0#, "bad", "bad", False)
-    Check "circle.bind.invalid.active3", CircleBindingInputCase(0#, 10#, "bad", "bad", False)
-    Check "circle.bind.blank.active2", CircleBindingInputCase(12#, 0#, "", "EachBar", False)
-    Check "circle.bind.inactive.rows", CircleBindingInputCase(0#, 0#, "bad", "bad", True)
-    Check "circle.bind.inactive.row2", CircleBindingInputCase(0#, 10#, "bad", "EverySecondBar", True)
-    Check "circle.bind.inactive.row3", CircleBindingInputCase(12#, 0#, "EverySecondBar", "bad", True)
+    TestCheck "circle.bind.invalid.active2", TestCircleBindingInputCase(12#, 0#, "bad", "bad", False)
+    TestCheck "circle.bind.invalid.active3", TestCircleBindingInputCase(0#, 10#, "bad", "bad", False)
+    TestCheck "circle.bind.blank.active2", TestCircleBindingInputCase(12#, 0#, "", "EachBar", False)
+    TestCheck "circle.bind.inactive.rows", TestCircleBindingInputCase(0#, 0#, "bad", "bad", True)
+    TestCheck "circle.bind.inactive.row2", TestCircleBindingInputCase(0#, 10#, "bad", "EverySecondBar", True)
+    TestCheck "circle.bind.inactive.row3", TestCircleBindingInputCase(12#, 0#, "EverySecondBar", "bad", True)
     GoTo Finished
 Failed:
-    Check "circle.bind.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "circle.bind.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunCircleBindingTests = mReport & "TOTAL CIRCLE BINDINGS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Ищет исходное имя стержня; порядковый номер записи может отличаться от исходного номера.
-Private Function CircleSourcePosition(ByVal executor As CRebarRuleExecutor, ByVal id As String) As Long
+Private Function TestCircleSourcePosition(ByVal executor As CRebarRuleExecutor, ByVal id As String) As Long
     Dim i As Long
     For i = 1 To executor.PositionCount
-        If executor.PositionSourceID(i) = id Then CircleSourcePosition = i: Exit Function
+        If executor.PositionSourceID(i) = id Then TestCircleSourcePosition = i: Exit Function
     Next i
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет обязательный выбор только для существующего дополнительного ряда.
-Private Function CircleBindingInputCase(ByVal diameter2 As Double, ByVal diameter3 As Double, _
+Private Function TestCircleBindingInputCase(ByVal diameter2 As Double, ByVal diameter3 As Double, _
         ByVal binding2 As String, ByVal binding3 As String, ByVal valid As Boolean) As Boolean
     On Error GoTo Rejected
     Dim definition As CSectionDefinition
-    Set definition = FixtureCircleDefinition(Array(1000#, 50#, 8, 20#, diameter2, diameter3, "Stacked", "Stacked", binding2, binding3))
-    CircleBindingInputCase = valid
+    Set definition = TestFixtureCircleDefinition(Array(1000#, 50#, 8, 20#, diameter2, diameter3, "Stacked", "Stacked", binding2, binding3))
+    TestCircleBindingInputCase = valid
     Exit Function
 Rejected:
-    CircleBindingInputCase = Not valid And InStr(1, Err.Description, "rngCircleGeometry", vbBinaryCompare) > 0
+    TestCircleBindingInputCase = Not valid And InStr(1, Err.Description, "rngCircleGeometry", vbBinaryCompare) > 0
 End Function
 
-' ДЛЯ ТЕСТОВ: два реальных выпадающих списка, независимость и адрес ошибки Config.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' два реальных выпадающих списка, независимость и адрес ошибки Config.
 Public Function RunCircleBindingWorkbookTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim table As Object, saved As Variant, index As Long
     Dim keys As Variant, choices As Variant, formula As String, optionValue As Variant, cell As Object
     On Error GoTo Failed
-    Set table = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(table)
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    Set table = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(table)
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     keys = Array("Rebar.Bind2row", "Rebar.Bind3row")
-    Check "circle.bind.cells.independent", FixtureCircleFieldCell(ThisWorkbook, CStr(keys(0))).Address <> FixtureCircleFieldCell(ThisWorkbook, CStr(keys(1))).Address
+    TestCheck "circle.bind.cells.independent", TestFixtureCircleFieldCell(ThisWorkbook, CStr(keys(0))).Address <> TestFixtureCircleFieldCell(ThisWorkbook, CStr(keys(1))).Address
     For index = 0 To 1
-        Set cell = FixtureCircleFieldCell(ThisWorkbook, CStr(keys(index)))
+        Set cell = TestFixtureCircleFieldCell(ThisWorkbook, CStr(keys(index)))
         formula = cell.Validation.Formula1
         choices = Split(formula, Application.International(xlListSeparator))
-        Check "circle.bind.list.inline." & CStr(index), Left$(formula, 1) <> "=" And cell.Validation.Type = xlValidateList
-        Check "circle.bind.list.size." & CStr(index), UBound(choices) = 1
-        Check "circle.bind.list.values." & CStr(index), choices(0) = "EachBar" And choices(1) = "EverySecondBar"
-        Check "circle.bind.list.center." & CStr(index), cell.HorizontalAlignment = xlCenter
+        TestCheck "circle.bind.list.inline." & CStr(index), Left$(formula, 1) <> "=" And cell.Validation.Type = xlValidateList
+        TestCheck "circle.bind.list.size." & CStr(index), UBound(choices) = 1
+        TestCheck "circle.bind.list.values." & CStr(index), choices(0) = "EachBar" And choices(1) = "EverySecondBar"
+        TestCheck "circle.bind.list.center." & CStr(index), cell.HorizontalAlignment = xlCenter
         For Each optionValue In Array("EachBar", "EverySecondBar")
             cell.Value2 = optionValue
-            Check "circle.bind.list.accept." & CStr(index) & "." & optionValue, cell.Validation.Value
+            TestCheck "circle.bind.list.accept." & CStr(index) & "." & optionValue, cell.Validation.Value
         Next optionValue
-        cell.Value2 = "bad": Check "circle.bind.list.reject." & CStr(index), Not cell.Validation.Value
+        cell.Value2 = "bad": TestCheck "circle.bind.list.reject." & CStr(index), Not cell.Validation.Value
     Next index
-    SetCircleInput "Rebar.Bind2row", "EverySecondBar": SetCircleInput "Rebar.Bind3row", "EachBar"
+    TestSetCircleInput "Rebar.Bind2row", "EverySecondBar": TestSetCircleInput "Rebar.Bind3row", "EachBar"
     modSectionRecipeSetup.UpdateSectionRecipeTypes
-    Check "circle.bind.update.preserves2", FixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind2row").Value2 = "EverySecondBar"
-    Check "circle.bind.update.preserves3", FixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind3row").Value2 = "EachBar"
-    Check "circle.bind.workbook.address2", CircleBindingWorkbookRejected("Rebar.Bind2row", "Rebar.Diameter2")
-    Check "circle.bind.workbook.address3", CircleBindingWorkbookRejected("Rebar.Bind3row", "Rebar.Diameter3")
+    TestCheck "circle.bind.update.preserves2", TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind2row").Value2 = "EverySecondBar"
+    TestCheck "circle.bind.update.preserves3", TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind3row").Value2 = "EachBar"
+    TestCheck "circle.bind.workbook.address2", TestCircleBindingWorkbookRejected("Rebar.Bind2row", "Rebar.Diameter2")
+    TestCheck "circle.bind.workbook.address3", TestCircleBindingWorkbookRejected("Rebar.Bind3row", "Rebar.Diameter3")
     GoTo Restore
 Failed:
-    Check "circle.bind.workbook.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "circle.bind.workbook.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Restore:
-    If Not table Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs table, saved
+    If Not table Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs table, saved
     RunCircleBindingWorkbookTests = mReport & "TOTAL CIRCLE BINDING WORKBOOK: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Ошибка активной привязки должна содержать действительный адрес её пользовательской ячейки.
-Private Function CircleBindingWorkbookRejected(ByVal key As String, ByVal diameterKey As String) As Boolean
+Private Function TestCircleBindingWorkbookRejected(ByVal key As String, ByVal diameterKey As String) As Boolean
     On Error GoTo Rejected
     Dim settings As CSystemSettingsReader, units As CUnitSystem, context As CSectionRecipeContext, reader As CSectionInputSnapshotReader
     Dim recipe As ISectionRecipe, definition As CSectionDefinition, factor As Double
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
-    SetCircleInput "Circle.Diameter", 1000# / factor: SetCircleInput "Rebar.AxisDistance", 50# / factor
-    SetCircleInput "Rebar.Count", 8: SetCircleInput "Rebar.Diameter", 20# / factor
-    SetCircleInput "Rebar.Diameter2", 0#: SetCircleInput "Rebar.Diameter3", 0#
-    SetCircleInput diameterKey, 12# / factor: SetCircleInput "Rebar.Loc2row", "Stacked": SetCircleInput "Rebar.Loc3row", "Stacked"
-    SetCircleInput key, "bad"
+    TestSetCircleInput "Circle.Diameter", 1000# / factor: TestSetCircleInput "Rebar.AxisDistance", 50# / factor
+    TestSetCircleInput "Rebar.Count", 8: TestSetCircleInput "Rebar.Diameter", 20# / factor
+    TestSetCircleInput "Rebar.Diameter2", 0#: TestSetCircleInput "Rebar.Diameter3", 0#
+    TestSetCircleInput diameterKey, 12# / factor: TestSetCircleInput "Rebar.Loc2row", "Stacked": TestSetCircleInput "Rebar.Loc3row", "Stacked"
+    TestSetCircleInput key, "bad"
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
     Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
     Exit Function
 Rejected:
     Dim reason As String
     reason = Err.Description ' Чтение нового helper не должно сбросить исходную ошибку до её проверки.
-    CircleBindingWorkbookRejected = InStr(1, reason, FixtureCircleFieldCell(ThisWorkbook, key).Worksheet.Name & "!" & FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False), vbBinaryCompare) > 0
+    TestCircleBindingWorkbookRejected = InStr(1, reason, TestFixtureCircleFieldCell(ThisWorkbook, key).Worksheet.Name & "!" & TestFixtureCircleFieldCell(ThisWorkbook, key).Address(False, False), vbBinaryCompare) > 0
 End Function
 
-' ДЛЯ ТЕСТОВ: НДС/несущая/трещины для фактической модели нового Circle.
-Public Function DumpCircleRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
-    DumpCircleRecipeCalculations = RecipeCalculations("Circle", Array("Circle"), crackCode)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' НДС/несущая/трещины для фактической модели нового Circle.
+Public Function TestDumpCircleRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
+    TestDumpCircleRecipeCalculations = TestRecipeCalculations("Circle", Array("Circle"), crackCode)
 End Function
 
-Public Function DumpRectanglesRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
-    DumpRectanglesRecipeCalculations = RecipeCalculations("Rectangles", Array("Rectangle", "LSection", "TwoRectangles"), crackCode)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет расчётные снимки прямоугольника и двух вариантов составного сечения при выбранной методике трещин.
+Public Function TestDumpRectanglesRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
+    TestDumpRectanglesRecipeCalculations = TestRecipeCalculations("Rectangles", Array("Rectangle", "LSection", "TwoRectangles"), crackCode)
 End Function
 
-Public Function DumpRoundedRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
-    DumpRoundedRecipeCalculations = RecipeCalculations("PointedSection", _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет расчётные снимки четырёх вариантов PointedSection при выбранной методике трещин.
+Public Function TestDumpRoundedRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
+    TestDumpRoundedRecipeCalculations = TestRecipeCalculations("PointedSection", _
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode)
 End Function
 
-Public Function DumpRoundedRecipeArcCalculations(Optional ByVal crackCode As String = "SP35") As String
-    DumpRoundedRecipeArcCalculations = RecipeCalculations("PointedSection", _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет расчётные снимки PointedSection с включёнными дуговыми участками арматуры.
+Public Function TestDumpRoundedRecipeArcCalculations(Optional ByVal crackCode As String = "SP35") As String
+    TestDumpRoundedRecipeArcCalculations = TestRecipeCalculations("PointedSection", _
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, 1)
 End Function
 
-' ДЛЯ ТЕСТОВ: независимо суммирует N, Mx и My для новой геометрии с дугами.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' независимо суммирует N, Mx и My для новой геометрии с дугами.
 ' Из вклада стали вычитается вклад замещённого бетона в той же точке.
 Public Function RunRoundedRecipeEquilibriumTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
@@ -1268,35 +1342,38 @@ Public Function RunRoundedRecipeEquilibriumTests() As String
     On Error GoTo Failed
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
-        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-        modTestShapeArchitecture.ConfigureRoundedScenario 1
+        modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+        modTestShapeArchitecture.TestConfigureRoundedScenario 1
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set builder = New CSectionBuilder: Set model = BuildRecipe("PointedSection", settings, units, builder)
-        CheckModelEquilibrium CStr(fixture), model, settings, units
+        Set builder = New CSectionBuilder: Set model = TestBuildRecipe("PointedSection", settings, units, builder)
+        TestCheckModelEquilibrium CStr(fixture), model, settings, units
     Next fixture
     GoTo Finished
 Failed:
-    Check "equilibrium.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "equilibrium.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunRoundedRecipeEquilibriumTests = mReport & "TOTAL ROUNDED EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: независимо суммирует усилия для переданной модели с контурами без смены исходных
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' независимо суммирует усилия для переданной модели с контурами без смены исходных
 ' данных.
-Public Function ReviewModelEquilibrium(ByVal fixture As String, ByVal model As CSectionModel, _
+Public Function TestReviewModelEquilibrium(ByVal fixture As String, ByVal model As CSectionModel, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByRef passed As Long, ByRef failed As Long) As String
     mPassed = 0: mFailed = 0: mReport = ""
-    CheckModelEquilibrium fixture, model, settings, units
-    passed = mPassed: failed = mFailed: ReviewModelEquilibrium = mReport
+    TestCheckModelEquilibrium fixture, model, settings, units
+    passed = mPassed: failed = mFailed: TestReviewModelEquilibrium = mReport
 End Function
 
-Private Sub CheckModelEquilibrium(ByVal fixture As String, ByVal model As CSectionModel, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Независимо суммирует усилия по бетонным элементам и арматуре для трёх режимов материалов и четырёх нагрузок.
+Private Sub TestCheckModelEquilibrium(ByVal fixture As String, ByVal model As CSectionModel, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
     Dim props As CSectionPropertiesCalculator, provider As CMaterialModelProvider, solver As CSectionSolver
     Dim purpose As Variant, loadIndex As Long, i As Long, concrete As Object, steel As Object
@@ -1315,7 +1392,7 @@ Private Sub CheckModelEquilibrium(ByVal fixture As String, ByVal model As CSecti
             If loadIndex = 2 Or loadIndex = 3 Then my = my - props.Area * (maxX - minX) * 0.15
             Set solver = New CSectionSolver: solver.ApplySettings settings, units
             solver.Solve model, concrete, steel, n, mx, my
-            Check prefix & ".converged", solver.Converged
+            TestCheck prefix & ".converged", solver.Converged
             If Not solver.Converged Then GoTo NextLoad
             sn = 0#: smx = 0#: smy = 0#
             For i = 1 To model.ConcreteCount
@@ -1327,39 +1404,44 @@ Private Sub CheckModelEquilibrium(ByVal fixture As String, ByVal model As CSecti
             For i = 1 To model.RebarCount
                 x = model.RebarX(i): y = model.RebarY(i)
                 strain = solver.Epsilon0 + solver.KappaX * y + solver.KappaY * x
-                force = (steel.StressAtStrain(strain) - concrete.StressAtStrain(strain)) * model.RebarArea(i)
+                force = (steel.StressAtStrain(strain) - concrete.StressAtStrain(strain)) * model.RebarArea(i) ' Из бетона вычитается площадь, занятая арматурой; иначе независимый контроль удвоил бы её вклад.
                 sn = sn + force: smx = smx + force * y: smy = smy + force * x
             Next i
-            Check prefix & ".sum.N", Abs(sn - solver.Nint) <= 0.0000001 + Abs(sn) * 0.000000000001
-            Check prefix & ".sum.Mx", Abs(smx - solver.Mxint) <= 0.0001 + Abs(smx) * 0.000000000001
-            Check prefix & ".sum.My", Abs(smy - solver.Myint) <= 0.0001 + Abs(smy) * 0.000000000001
+            TestCheck prefix & ".sum.N", Abs(sn - solver.Nint) <= 0.0000001 + Abs(sn) * 0.000000000001
+            TestCheck prefix & ".sum.Mx", Abs(smx - solver.Mxint) <= 0.0001 + Abs(smx) * 0.000000000001
+            TestCheck prefix & ".sum.My", Abs(smy - solver.Myint) <= 0.0001 + Abs(smy) * 0.000000000001
             ' Независимые суммы уже проверены с допуском в единицах усилий. Невязка должна
             ' соответствовать усилию, возвращённому решателем; другой порядок вычитания
             ' близких больших чисел может усилить округление Double.
-            Near prefix & ".residual.N", solver.Nint - n, solver.ResidualN
-            Near prefix & ".residual.Mx", solver.Mxint - mx, solver.ResidualMx
-            Near prefix & ".residual.My", solver.Myint - my, solver.ResidualMy
+            TestNear prefix & ".residual.N", solver.Nint - n, solver.ResidualN
+            TestNear prefix & ".residual.Mx", solver.Mxint - mx, solver.ResidualMx
+            TestNear prefix & ".residual.My", solver.Myint - my, solver.ResidualMy
 NextLoad:
         Next loadIndex
     Next purpose
 End Sub
 
-' ДЛЯ ТЕСТОВ: стандартные, дуговые, Ro=0 и смещенные проекции.
-Public Function DumpHollowRecipeCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
-    DumpHollowRecipeCalculations = RecipeCalculations("HollowRectangle", Array("HollowCentered", "HollowOffset"), crackCode, 0, scenario)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' стандартные, дуговые, Ro=0 и смещенные проекции.
+Public Function TestDumpHollowRecipeCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
+    TestDumpHollowRecipeCalculations = TestRecipeCalculations("HollowRectangle", Array("HollowCentered", "HollowOffset"), crackCode, 0, scenario)
 End Function
 
-' ДЛЯ ТЕСТОВ: независимо суммирует усилия для четырёх вариантов пустотелого прямоугольника.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' независимо суммирует усилия для четырёх вариантов пустотелого прямоугольника.
 Public Function RunHollowRecipeEquilibriumTests() As String
-    RunHollowRecipeEquilibriumTests = HollowRecipeEquilibrium(0, 3)
+    RunHollowRecipeEquilibriumTests = TestHollowRecipeEquilibrium(0, 3)
 End Function
 
-' ДЛЯ ТЕСТОВ: исчезнувшие прямые грани, полный круг и острые углы.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' исчезнувшие прямые грани, полный круг и острые углы.
 Public Function RunHollowRecipeEdgeEquilibriumTests() As String
-    RunHollowRecipeEdgeEquilibriumTests = HollowRecipeEquilibrium(8, 10)
+    RunHollowRecipeEdgeEquilibriumTests = TestHollowRecipeEquilibrium(8, 10)
 End Function
 
-Private Function HollowRecipeEquilibrium(ByVal firstScenario As Long, ByVal lastScenario As Long) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет поэлементное равновесие заданного диапазона вариантов HollowRectangle и возвращает входные данные после проверки.
+Private Function TestHollowRecipeEquilibrium(ByVal firstScenario As Long, ByVal lastScenario As Long) As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
@@ -1367,29 +1449,31 @@ Private Function HollowRecipeEquilibrium(ByVal firstScenario As Long, ByVal last
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     For Each fixture In Array("HollowCentered", "HollowOffset")
         For scenario = firstScenario To lastScenario
-            FixtureRestoreInputs config, saved
-            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-            modTestShapeArchitecture.ConfigureHollowScenario scenario
+            TestFixtureRestoreInputs config, saved
+            modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.TestConfigureHollowScenario scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("HollowRectangle", settings, units, builder)
-            CheckModelEquilibrium CStr(fixture) & ".case" & CStr(scenario), model, settings, units
+            Set builder = New CSectionBuilder: Set model = TestBuildRecipe("HollowRectangle", settings, units, builder)
+            TestCheckModelEquilibrium CStr(fixture) & ".case" & CStr(scenario), model, settings, units
         Next scenario
     Next fixture
     GoTo Finished
 Failed:
-    Check "hollow.equilibrium.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "hollow.equilibrium.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    HollowRecipeEquilibrium = mReport & "TOTAL HOLLOW EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    TestHollowRecipeEquilibrium = mReport & "TOTAL HOLLOW EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Variant, ByVal crackCode As String, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Настраивает реальные профили прочности и трещин, строит выбранные рецепты и сохраняет их расчётные снимки с восстановлением входов.
+Private Function TestRecipeCalculations(ByVal typeID As String, ByVal fixtures As Variant, ByVal crackCode As String, _
         Optional ByVal roundedScenario As Long = 0, Optional ByVal hollowScenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, settings As CSystemSettingsReader, units As CUnitSystem
     Dim profiles As Object, i As Long, key As String, builder As CSectionBuilder, model As CSectionModel
@@ -1397,7 +1481,7 @@ Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Va
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     Set profiles = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange
     For i = 2 To profiles.Rows.Count
         key = CStr(profiles.Cells(i, 2).Value2)
@@ -1408,84 +1492,96 @@ Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Va
                 profiles.Cells(i, 3).Value2 = "No"
         End Select
     Next i
-    SetSystemInput "SLS.Crack.Code", crackCode
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    TestSetSystemInput "SLS.Crack.Code", crackCode
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     For Each fixture In fixtures
-        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-        If roundedScenario > 0 Then modTestShapeArchitecture.ConfigureRoundedScenario roundedScenario
-        If hollowScenario > 0 Then modTestShapeArchitecture.ConfigureHollowScenario hollowScenario
+        modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+        If roundedScenario > 0 Then modTestShapeArchitecture.TestConfigureRoundedScenario roundedScenario
+        If hollowScenario > 0 Then modTestShapeArchitecture.TestConfigureHollowScenario hollowScenario
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
+        Set builder = New CSectionBuilder: Set model = TestBuildRecipe(typeID, settings, units, builder)
         Dim label As String
         label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
         If hollowScenario > 0 Then label = label & ".case" & CStr(hollowScenario)
-        result = result & modTestShapeArchitecture.PreparedCalculationSnapshot(label, model)
+        result = result & modTestShapeArchitecture.TestPreparedCalculationSnapshot(label, model)
     Next fixture
     GoTo Finished
 Failed:
     result = result & "FAIL: recipe calculations; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    RecipeCalculations = result
+    TestRecipeCalculations = result
 End Function
 
-' ДЛЯ ТЕСТОВ: настоящий Excel PNG и структурный снимок схемы.
-Public Function DumpCircleRecipePreview(ByVal outputDirectory As String) As String
-    DumpCircleRecipePreview = RecipePreview("Circle", Array("Circle"), outputDirectory)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' настоящий Excel PNG и структурный снимок схемы.
+Public Function TestDumpCircleRecipePreview(ByVal outputDirectory As String) As String
+    TestDumpCircleRecipePreview = TestRecipePreview("Circle", Array("Circle"), outputDirectory)
 End Function
 
-Public Function DumpRectanglesRecipePreview(ByVal outputDirectory As String) As String
-    DumpRectanglesRecipePreview = RecipePreview("Rectangles", Array("Rectangle", "LSection", "TwoRectangles"), outputDirectory)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет схемы прямоугольника и составных сечений, построенных штатными рецептами.
+Public Function TestDumpRectanglesRecipePreview(ByVal outputDirectory As String) As String
+    TestDumpRectanglesRecipePreview = TestRecipePreview("Rectangles", Array("Rectangle", "LSection", "TwoRectangles"), outputDirectory)
 End Function
 
-Public Function DumpRoundedRecipePreview(ByVal outputDirectory As String) As String
-    DumpRoundedRecipePreview = RecipePreview("PointedSection", _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет схемы четырёх контрольных вариантов PointedSection.
+Public Function TestDumpRoundedRecipePreview(ByVal outputDirectory As String) As String
+    TestDumpRoundedRecipePreview = TestRecipePreview("PointedSection", _
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), outputDirectory)
 End Function
 
-Public Function DumpRoundedRecipeArcPreview(ByVal outputDirectory As String) As String
-    DumpRoundedRecipeArcPreview = RecipePreview("PointedSection", _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет схемы PointedSection с арматурой на дуговых участках.
+Public Function TestDumpRoundedRecipeArcPreview(ByVal outputDirectory As String) As String
+    TestDumpRoundedRecipeArcPreview = TestRecipePreview("PointedSection", _
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), outputDirectory, 1)
 End Function
 
-' ДЛЯ ТЕСТОВ: настоящий Excel preview стандартных/измененных Hollow-сценариев.
-Public Function DumpHollowRecipePreview(ByVal outputDirectory As String, Optional ByVal scenario As Long = 0) As String
-    DumpHollowRecipePreview = RecipePreview("HollowRectangle", Array("HollowCentered", "HollowOffset"), outputDirectory, 0, scenario)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' настоящий Excel preview стандартных/измененных Hollow-сценариев.
+Public Function TestDumpHollowRecipePreview(ByVal outputDirectory As String, Optional ByVal scenario As Long = 0) As String
+    TestDumpHollowRecipePreview = TestRecipePreview("HollowRectangle", Array("HollowCentered", "HollowOffset"), outputDirectory, 0, scenario)
 End Function
 
-Private Function RecipePreview(ByVal typeID As String, ByVal fixtures As Variant, ByVal outputDirectory As String, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Строит варианты рецепта, сохраняет схему и её координаты, затем восстанавливает исходные таблицы и режим Excel.
+Private Function TestRecipePreview(ByVal typeID As String, ByVal fixtures As Variant, ByVal outputDirectory As String, _
         Optional ByVal roundedScenario As Long = 0, Optional ByVal hollowScenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, settings As CSystemSettingsReader, units As CUnitSystem
     Dim builder As CSectionBuilder, model As CSectionModel, calculation As Long, events As Boolean, updating As Boolean, fixture As Variant
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = True
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
-    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
+    modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     For Each fixture In fixtures
-        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-        If roundedScenario > 0 Then modTestShapeArchitecture.ConfigureRoundedScenario roundedScenario
-        If hollowScenario > 0 Then modTestShapeArchitecture.ConfigureHollowScenario hollowScenario
+        modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
+        If roundedScenario > 0 Then modTestShapeArchitecture.TestConfigureRoundedScenario roundedScenario
+        If hollowScenario > 0 Then modTestShapeArchitecture.TestConfigureHollowScenario hollowScenario
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
+        Set builder = New CSectionBuilder: Set model = TestBuildRecipe(typeID, settings, units, builder)
         Dim label As String
         label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
         If hollowScenario > 0 Then label = label & ".case" & CStr(hollowScenario)
-        result = result & modTestShapeArchitecture.PreparedPreviewSnapshot(label, model, outputDirectory)
+        result = result & modTestShapeArchitecture.TestPreparedPreviewSnapshot(label, model, outputDirectory)
     Next fixture
     GoTo Finished
 Failed:
     result = result & "FAIL: recipe preview; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    RecipePreview = result
+    TestRecipePreview = result
 End Function
 
-Private Sub SetSystemInput(ByVal key As String, ByVal value As Variant)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет системное значение по ключу именованной таблицы; отсутствие ключа является ошибкой подготовки проверки.
+Private Sub TestSetSystemInput(ByVal key As String, ByVal value As Variant)
     Dim table As Object, i As Long
     Set table = ThisWorkbook.Names("rngSystemSettings").RefersToRange
     For i = 1 To table.Rows.Count
@@ -1494,7 +1590,8 @@ Private Sub SetSystemInput(ByVal key As String, ByVal value As Variant)
     Err.Raise vbObjectError + 5531, "modTestSectionRecipes", "Не найден системный ключ '" & key & "'."
 End Sub
 
-' ДЛЯ ТЕСТОВ: рецепты используют названия сторон из Config, а не внутренние имена и прежние варианты.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' рецепты используют названия сторон из Config, а не внутренние имена и прежние варианты.
 Public Function RunRecipeCaptionTests() As String
     Dim config As Object, saved As Variant, fixture As Variant, table As Object, reader As CSectionInputReader
     Dim settings As CSystemSettingsReader, units As CUnitSystem, typeID As String, tableName As String
@@ -1505,9 +1602,9 @@ Public Function RunRecipeCaptionTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     For Each fixture In Array("Circle", "LSection", "RoundedSimple", "HollowCentered")
-        FixtureRestoreInputs config, saved: modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        TestFixtureRestoreInputs config, saved: modTestShapeArchitecture.TestConfigureShapeFixture CStr(fixture)
         Select Case CStr(fixture)
             Case "Circle": typeID = "Circle"
             Case "LSection": typeID = "Rectangles"
@@ -1515,45 +1612,46 @@ Public Function RunRecipeCaptionTests() As String
             Case Else: typeID = "HollowRectangle"
         End Select
         tableName = "rng" & typeID & "Geometry"
-        Set table = ThisWorkbook.Names(tableName).RefersToRange: Set reader = FixtureInput(table.Value2)
+        Set table = ThisWorkbook.Names(tableName).RefersToRange: Set reader = TestFixtureInput(table.Value2)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder): count = model.RebarCount
+        Set builder = New CSectionBuilder: Set model = TestBuildRecipe(typeID, settings, units, builder): count = model.RebarCount
         For Each block In Array("Main", "Extra")
             keys = reader.RowKeys(CStr(block))
             For Each key In keys
                 row = reader.RowIndex(CStr(block), CStr(key))
                 caption = table.Cells(row, reader.ColumnIndex(CStr(block), "name")).Value2
                 table.Cells(row, reader.ColumnIndex(CStr(block), "name")).Value2 = "Свободное название стороны"
-                Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
-                Check typeID & ".visible.caption." & CStr(block) & CStr(key), model.RebarCount = count
+                Set builder = New CSectionBuilder: Set model = TestBuildRecipe(typeID, settings, units, builder)
+                TestCheck typeID & ".visible.caption." & CStr(block) & CStr(key), model.RebarCount = count
                 table.Cells(row, reader.ColumnIndex(CStr(block), "name")).Value2 = caption
                 table.Cells(row, 1).Value2 = "Missing"
                 number = 0: reason = ""
                 On Error Resume Next
-                Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
+                Set builder = New CSectionBuilder: Set model = TestBuildRecipe(typeID, settings, units, builder)
                 number = Err.Number: reason = Err.Description: Err.Clear
                 On Error GoTo Failed
-                Check typeID & ".missing.key." & CStr(block) & CStr(key), number <> 0 And InStr(1, reason, CStr(key), vbTextCompare) > 0
+                TestCheck typeID & ".missing.key." & CStr(block) & CStr(key), number <> 0 And InStr(1, reason, CStr(key), vbTextCompare) > 0
                 table.Cells(row, 1).Value2 = key
             Next key
         Next block
     Next fixture
     GoTo Finished
 Failed:
-    Check "recipe.captions.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+    TestCheck "recipe.captions.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunRecipeCaptionTests = mReport & "TOTAL RECIPE CAPTIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: отсутствие утверждённой подписи должно дать понятную ошибку с её названием.
-Private Function RecipeCaptionRejected(ByVal typeID As String, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal caption As String) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' отсутствие утверждённой подписи должно дать понятную ошибку с её названием.
+Private Function TestRecipeCaptionRejected(ByVal typeID As String, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal caption As String) As Boolean
     Dim builder As CSectionBuilder, model As CSectionModel
     On Error GoTo Rejected
-    Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
+    Set builder = New CSectionBuilder: Set model = TestBuildRecipe(typeID, settings, units, builder)
     Exit Function
 Rejected:
-    RecipeCaptionRejected = InStr(1, Err.Description, caption, vbBinaryCompare) > 0
+    TestRecipeCaptionRejected = InStr(1, Err.Description, caption, vbBinaryCompare) > 0
 End Function

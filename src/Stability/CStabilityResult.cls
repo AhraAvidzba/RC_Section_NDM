@@ -192,9 +192,7 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     End If
 
     mCode = stability.Code
-    ' Сохраняем Branch как код применённого метода. Причина отказа
-    ' записывается отдельно в ResultComment и не подменяет этот код.
-    mBranch = stability.Branch
+    mBranch = stability.Branch ' Сохраняем Branch как код применённого метода. Причина отказа записывается отдельно в ResultComment и не подменяет этот код.
     mDesignN = stability.DesignN
     mDesignMx = stability.DesignMx
     mDesignMy = stability.DesignMy

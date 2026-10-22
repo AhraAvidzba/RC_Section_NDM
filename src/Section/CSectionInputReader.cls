@@ -85,7 +85,8 @@ Public Function Text(ByVal blockKey As String, ByVal rowKey As String, Optional 
     End If
 End Function
 
-' Читает число с прежними проверками типов, не заменяя обязательную пустую ячейку нулём.
+' Читает число с проверками типов снимка таблицы; обязательная пустая ячейка не становится нулём.
+' Значение defaultValue используется только при явно переданной замене пустого поля.
 Public Function Number(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = "val", Optional ByVal defaultValue As Variant) As Double
     If IsMissing(defaultValue) Then
         Number = mTable.Number(RowIndex(blockKey, rowKey), ColumnIndex(blockKey, columnKey))
@@ -161,7 +162,7 @@ Private Sub EnsureIndex()
             If Len(key) = 0 Then InvalidCell row - 2, 1, "Не задан ключ блока над строкой ключей столбцов."
             If mBlocks.Exists(key) Then InvalidCell row - 2, 1, "Повторный ключ блока '" & key & "'."
             Set block = NewIndex(): Set columns = NewIndex(): Set rows = NewIndex()
-            block.Add "HeaderRow", row: block.Add "TitleRow", row - 2
+            block.Add "HeaderRow", row: block.Add "TitleRow", row - 2 ' Служебная строка key находится на две строки ниже заголовка блока.
             block.Add "Columns", columns: block.Add "Rows", rows
             mBlocks.Add key, block
             For column = 1 To mTable.ColumnCount
@@ -174,7 +175,7 @@ Private Sub EnsureIndex()
         End If
     Next row
     If mBlocks.Count = 0 Then InvalidCell 1, 1, "Не найдена строка key с ключами столбцов. Восстановите структуру входной таблицы."
-    names = mBlocks.Keys
+    names = mBlocks.Keys ' Dictionary сохраняет порядок обнаружения блоков; он нужен для границ строк, не для поиска полей.
     For index = 0 To mBlocks.Count - 1
         Set block = mBlocks(CStr(names(index))): Set rows = block("Rows")
         first = CLng(block("HeaderRow")) + 1: last = mTable.RowCount
@@ -194,7 +195,7 @@ Private Function RequiredBlock(ByVal key As String) As Object
 End Function
 
 ' Индексирует строки только запрошенного блока. Ошибка исходного размера сначала
-' указывает на поле ввода, а не на зависимую формулу ключа в другом блоке Edges.
+' указывает на поле ввода, а не на зависимую формулу ключа в ещё не запрошенном блоке.
 Private Sub IndexBlockRows(ByVal block As Object, ByVal blockKey As String)
     If CBool(block("RowsIndexed")) Then Exit Sub
     Dim rows As Object, row As Long, key As String: Set rows = NewIndex()

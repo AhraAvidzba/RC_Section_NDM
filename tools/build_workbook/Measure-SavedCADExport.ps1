@@ -65,7 +65,7 @@ try{
    }
    $prefix="'"+$books[$version].Name+"'!"
    if($scenario -eq 'Roundtrip'){
-    $result=[string]$excel.Run($prefix+'modTestPerformance.MeasureNativeCADPerformance',$doc,0)
+    $result=[string]$excel.Run($prefix+'modTestPerformance.TestMeasureNativeCADPerformance',$doc,0)
     $parts=@{};foreach($part in $result -split ([string][char]30)){$pair=$part -split '=',2;if($pair.Count -eq 2){$parts[$pair[0]]=$pair[1]}}
     $parts.signature | Set-Content -LiteralPath (Join-Path $directory ($version+'.geometry.txt')) -Encoding UTF8
     $fingerprints[$version]=Hash-Text $parts.signature

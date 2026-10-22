@@ -102,7 +102,8 @@ Failed:
     Err.Raise Err.Number, "CStabilitySummaryWriter.WriteSummary", Err.Description
 End Sub
 
-' Полностью очищает старый блок устойчивости вместе с объединениями и форматами.
+' Очищает прежние данные подробной таблицы устойчивости. При fullFormatting=True
+' удаляет также шапку, объединения и форматы; иначе сохраняет готовое оформление.
 Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
     mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 3982, "CStabilitySummaryWriter", "Книга Excel не передана."
@@ -147,8 +148,8 @@ UseDefaultHeight:
     Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.Column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
-' Снимает прежние объединения и очищает область, чтобы после переноса таблицы не осталось
-' старого оформления.
+' Готовит область к записи: при полном оформлении очищает её целиком.
+' В минимальном режиме оставляет шапку и форматы, удаляя данные и прежнюю заливку статусов.
 Private Sub PrepareTarget(ByVal target As Object)
     If mMinimalFormatting Then
         If target.Rows.Count > HEADER_ROWS Then
@@ -194,7 +195,8 @@ Private Sub ClearBlockTitleRow(ByVal target As Object)
     target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
 End Sub
 
-' Формирует многоуровневую шапку таблицы. Разделительные столбцы остаются пустыми.
+' Собирает многоуровневую шапку с актуальными единицами. В минимальном
+' режиме сохраняет совпадающую шапку; при отличии возвращается к полному оформлению.
 Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
         ByVal batch As CBatchSectionCalculator)
     If mMinimalFormatting Then
@@ -558,7 +560,8 @@ Private Sub PutSP63PlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, 
     data(rowIndex, firstColumn + 11) = PlaneStatus(batch, index, planeIndex)
 End Sub
 
-' Применяет общее оформление, границы блоков и независимую красную подсветку.
+' Оформляет подробную таблицу устойчивости: шапку, рамки, числа и статусы.
+' В минимальном режиме обновляет только подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If mMinimalFormatting Then
         FormatStatusCells target, batch
@@ -712,9 +715,8 @@ Private Function PlaneStatus(ByVal batch As CBatchSectionCalculator, ByVal index
     End If
 End Function
 
-' Методы ниже выбирают готовые величины и статусы первой или второй главной
-' плоскости из результата сочетания. Разметка таблицы использует одинаковые
-' методы для обеих плоскостей.
+' Возвращает применимость выбранной главной плоскости (1 или 2)
+' по готовому результату проверки устойчивости сочетания.
 Private Function PlaneApplicable(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Boolean
     If planeIndex = 1 Then PlaneApplicable = batch.ResultAt(index).StabilityResult.PlaneApplicable1 Else PlaneApplicable = batch.ResultAt(index).StabilityResult.PlaneApplicable2
 End Function
@@ -841,19 +843,20 @@ Private Function CompressionMagnitude(ByVal nValue As Double) As Double
 End Function
 
 ' Переводит положительную величину сжатия в пользовательские единицы силы
-' с учетом принятого знака Output.SignConvention.N.
+' с учетом принятого знака Sign.N.User.
 Private Function OutputCompressionForce(ByVal compressionMagnitude As Double, ByVal units As CUnitSystem) As Double
     If compressionMagnitude <= SMALL_VALUE Then Exit Function
     OutputCompressionForce = OutputForce(-Abs(compressionMagnitude), units)
 End Function
 
-' Выводит подписанную сжимающую силу как пользовательское значение N.
+' Переводит знаковую силу устойчивости, где плюс означает сжатие,
+' в пользовательское N. Перед переводом восстанавливает внутренний знак: сжатие — минус.
 Private Function OutputSignedCompressionForce(ByVal signedCompression As Double, ByVal units As CUnitSystem) As Double
     OutputSignedCompressionForce = OutputForce(-signedCompression, units)
 End Function
 
-' Группа функций Output... ниже только переводит внутренние единицы устойчивости
-' в пользовательские выходные единицы для Results.
+' Переводит длину из внутренних мм в выходную единицу пользователя.
+' Если CUnitSystem не передан, возвращает исходное значение в мм.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function

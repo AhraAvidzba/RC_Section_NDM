@@ -9,12 +9,12 @@ Option Explicit
 ' При экспорте исходная геометрия повторно не импортируется и НДС не пересчитывается.
 
 Private Type TAutoCADExportSettings
-    ConcreteLayer As String
-    RebarLayer As String
-    ConcreteTensionLayer As String
-    ConcreteCompressionLayer As String
-    RebarTensionLayer As String
-    RebarCompressionLayer As String
+    ConcreteLayer As String ' Слой геометрии бетона, общий для импорта и экспорта.
+    RebarLayer As String ' Слой геометрии арматуры, общий для импорта и экспорта.
+    ConcreteTensionLayer As String ' Слой текстов результатов растянутого бетона; геометрия остаётся на ConcreteLayer.
+    ConcreteCompressionLayer As String ' Слой текстов результатов сжатого бетона.
+    RebarTensionLayer As String ' Слой текстов результатов растянутой арматуры.
+    RebarCompressionLayer As String ' Слой текстов результатов сжатой арматуры.
     ConcreteTensionColor As Long
     ConcreteCompressionColor As Long
     RebarTensionColor As Long
@@ -28,7 +28,7 @@ Private Type TAutoCADExportSettings
     ContourFormat As String ' Формат только исходных контуров сечения, не расчетной области трещин.
     ContourLayer As String
     OpeningContourLayer As String
-    ExportCrackInteractionContour As Boolean
+    ExportCrackInteractionContour As Boolean ' Вывод готовой области только для выбранного НДС трещин, без нового расчёта.
     CrackInteractionLayer As String
 End Type
 
@@ -38,7 +38,7 @@ Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
 Private Const SECTION_CONTOUR_COLOR_INDEX As Long = 30 ' Наружная граница бетона: оранжевый ACI 30.
 Private Const OPENING_CONTOUR_COLOR_INDEX As Long = 4 ' Контуры отверстий: голубой ACI 4.
 Private Const CRACK_REGION_COLOR_INDEX As Long = 31 ' Расчетная область взаимодействия: ACI 31.
-Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001
+Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001 ' Допуск совпадения соседних вершин при экспорте, мм.
 Private Const TEMPORARY_SOURCE_BATCH_SIZE As Long = 1024 ' Ограничение числа живых исходных кривых одной партии.
 
 ' Выгружает выбранное сохранённое НДС в активный чертёж AutoCAD.
@@ -50,9 +50,8 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
-    ' Неверный флаг сообщения должен быть найден до изменения чертежа.
     Dim informationEnabled As Boolean
-    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
+    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled") ' Неверный флаг сообщения должен быть найден до изменения чертежа.
     Dim units As CUnitSystem
     Set units = New CUnitSystem
     units.LoadFromSettings settings
@@ -121,9 +120,8 @@ Public Sub ClearAutoCADDrawing()
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
-    ' Используем тот же снимок Config и проверяем флаг до удаления объектов.
     Dim informationEnabled As Boolean
-    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
+    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled") ' Используем тот же снимок Config и проверяем флаг до удаления объектов.
 
     Dim exportSettings As TAutoCADExportSettings
     exportSettings = ReadAutoCADExportSettings(settings, True)
@@ -197,9 +195,7 @@ Private Function AutoCADCleanupLayerSet(ByRef exportSettings As TAutoCADExportSe
     AddCleanupLayer layers, "RC_NDM_NeutralLine"
     AddCleanupLayer layers, exportSettings.CrackInteractionLayer
     AddCleanupLayer layers, EXTENSION_WARNING_LAYER
-    ' Общие контурные слои защищаются целиком, включая прежний NDM-export,
-    ' даже при совпадении с другим слоем оформления.
-    If Len(exportSettings.ContourLayer) > 0 Then layers.Item(exportSettings.ContourLayer) = False
+    If Len(exportSettings.ContourLayer) > 0 Then layers.Item(exportSettings.ContourLayer) = False ' Общие контурные слои защищаются целиком, включая прежний NDM-export, даже при совпадении с другим слоем оформления.
     If Len(exportSettings.OpeningContourLayer) > 0 Then layers.Item(exportSettings.OpeningContourLayer) = False
 
     Set AutoCADCleanupLayerSet = layers
@@ -590,9 +586,8 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         ByVal resultPrecision As Long, ByVal stateWarningText As String, ByRef exportSettings As TAutoCADExportSettings, _
         ByRef contourExportCount As Long, Optional ByVal targetDocument As Object = Nothing, _
         Optional ByVal crackRows As Object = Nothing, Optional ByVal crackSweeps As Object = Nothing)
-    ' Проверяем все углы до подключения и добавления объектов в чертеж.
     Dim arcSweeps As Object
-    If exportSettings.ContourEnabled Then Set arcSweeps = ReadSavedContourArcSweeps(ThisWorkbook)
+    If exportSettings.ContourEnabled Then Set arcSweeps = ReadSavedContourArcSweeps(ThisWorkbook) ' Проверяем все углы до подключения и добавления объектов в чертеж.
     Dim doc As Object
     Set doc = targetDocument
     If doc Is Nothing Then
@@ -666,9 +661,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     Next i
 
     DeleteAcadTemporarySources doc, temporarySources
-    ' Контур выводим после бетонных и арматурных объектов, чтобы он не
-    ' оказался закрыт AutoCAD Region, созданными для волокон расчетной сетки.
-    If exportSettings.ContourEnabled Then
+    If exportSettings.ContourEnabled Then ' Контур выводим после бетонных и арматурных объектов, чтобы он не оказался закрыт AutoCAD Region, созданными для волокон расчетной сетки.
         contourExportCount = DrawSavedContourRows(ThisWorkbook, ms, exportSettings.ContourLayer, arcSweeps, , "CONTOUR_", exportSettings.OpeningContourLayer, exportSettings.ContourFormat)
     End If
     If Not crackRows Is Nothing Then
@@ -730,10 +723,10 @@ Private Function CurrentCrackRegionRows(ByVal workbook As Object, ByVal combinat
     For row = 2 To UBound(data, 1)
         If Left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
                 StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
-            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then
+            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Дата запуска и ревизия исключают смешение с прежним сечением.
                 selected.RemoveAll: Exit Function
             End If
-            rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor)
+            rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor) ' Одна область должна принадлежать единому нормативному варианту и опорной группе.
             If Len(identity) = 0 Then identity = rowIdentity
             If rowIdentity <> identity Then selected.RemoveAll: Exit Function
             If ReadGeometryNumber(data, anchor, row, colLoop) < 1# Then Err.Raise vbObjectError + 4376, _
@@ -744,9 +737,9 @@ Private Function CurrentCrackRegionRows(ByVal workbook As Object, ByVal combinat
     Next row
 End Function
 
-' Рисует сохранённые контуры сечения или области трещин общим способом через полилинии.
-' Область не восстанавливается по сетке или площади. Каждое отверстие остаётся
-' отдельным замкнутым контуром с точными дугами.
+' Выводит исходные контуры в выбранном формате Region/Polyline,
+' а сохранённую область трещин — замкнутыми полилиниями с точными дугами.
+' Геометрию не восстанавливает по площади или сетке; отверстия сохраняются.
 Private Function DrawSavedContourRows(ByVal workbook As Object, ByVal ms As Object, ByVal contourLayer As String, _
         ByVal arcSweeps As Object, Optional ByVal selectedRows As Object = Nothing, _
         Optional ByVal typePrefix As String = "CONTOUR_", Optional ByVal openingLayer As String = vbNullString, _
@@ -936,9 +929,7 @@ Private Function DrawSavedMaterialContours(ByVal workbook As Object, ByVal ms As
 NextMaterialLoop:
     Next loopKey
     If Not asRegion Then Exit Function
-    ' Вычитаем каждый проем только из его ближайшей наружной области.
-    ' Бетонная часть внутри проема остается отдельным Region.
-    For Each loopKey In parents.Keys
+    For Each loopKey In parents.Keys ' Вычитаем каждый проем только из его ближайшей наружной области. Бетонная часть внутри проема остается отдельным Region.
         Set parent = regions.Item(parents.Item(loopKey))
         Set entity = regions.Item(loopKey)
         parent.Boolean 2, entity
@@ -948,9 +939,7 @@ NextMaterialLoop:
             Set entity = regions.Item(loopKey): Set expectedRegion = expected.Item(loopKey)
             If Abs(CDbl(entity.Area) - expectedRegion.Area) > MaxDouble(0.0001, expectedRegion.Area * 0.00000001) Then _
                 Err.Raise vbObjectError + 4371, "DrawSavedMaterialContours", "Площадь Region в AutoCAD не совпадает с сохраненной геометрией. Экспорт контура отменен."
-            ' Boolean может перенести оформление вычитаемой области на результат.
-            ' Назначаем итоговый слой и цвет после всех вычитаний.
-            If Left$(CStr(loopKey), 8) = "OPENING:" Then
+            If Left$(CStr(loopKey), 8) = "OPENING:" Then ' Boolean может перенести оформление вычитаемой области на результат. Назначаем итоговый слой и цвет после всех вычитаний.
                 entity.Layer = openingLayer: entity.Color = OPENING_CONTOUR_COLOR_INDEX
             Else
                 entity.Layer = outerLayer: entity.Color = SECTION_CONTOUR_COLOR_INDEX
@@ -962,8 +951,7 @@ NextMaterialLoop:
     Exit Function
 Failed:
     errorNumber = Err.Number: errorDescription = Err.Description
-    ' Удаляем только объекты, созданные этим незавершенным вызовом.
-    On Error Resume Next
+    On Error Resume Next ' Удаляем только объекты, созданные этим незавершенным вызовом.
     If Not curve Is Nothing Then curve.Delete
     For Each entity In created: entity.Delete: Next entity
     On Error GoTo 0
@@ -1041,9 +1029,9 @@ Private Function SavedMaterialLoopRegion(ByVal contours As CSectionContours, ByV
     Set SavedMaterialLoopRegion = query.BoundaryRegion(edges, indices.Count, "SavedMaterialContour")
 End Function
 
-' Подготавливает численные углы дуг одним проходом до записи DWG.
-' Отсутствие необязательных аннотаций допустимо; ошибка Text не становится
-' нулевым bulge. Ключом служит строка прочитанной таблицы, а не AutoCAD handle.
+' До записи DWG читает проверенные знаковые углы дуг в радианах.
+' Для исходных границ ключ — индекс CSectionContours; для области трещин —
+' номер строки аннотаций. Отсутствующая аннотация допустима, повреждённый угол — нет.
 Private Function ReadSavedContourArcSweeps(ByVal workbook As Object, Optional ByVal selectedRows As Object = Nothing, _
         Optional ByVal typePrefix As String = "CONTOUR_") As Object
     Dim result As Object, tableName As Object, anchor As Object, data As Variant
@@ -1320,11 +1308,9 @@ End Sub
 ' вроде "ActiveX component can't create object".
 Public Function ConnectToRunningAutoCAD() As Object
     Dim progID As Variant, candidate As Object
-    ' GetObject без имени файла только подключается к ROT, не запускает CAD.
-    ' Версионные ProgID нужны, если общий ключ поврежден другой DWG-программой.
     For Each progID In Array("AutoCAD.Application", "AutoCAD.Application.25.1", "AutoCAD.Application.25", _
             "AutoCAD.Application.24.3", "AutoCAD.Application.24.2", "AutoCAD.Application.24.1", _
-            "AutoCAD.Application.24", "AutoCAD.Application.23.1", "AutoCAD.Application.23", "AutoCAD.Application.22")
+            "AutoCAD.Application.24", "AutoCAD.Application.23.1", "AutoCAD.Application.23", "AutoCAD.Application.22") ' GetObject без имени файла только подключается к ROT, не запускает CAD. Версионные ProgID нужны, если общий ключ поврежден другой DWG-программой.
         Set candidate = RunningAutodeskAutoCAD(CStr(progID))
         If Not candidate Is Nothing Then Set ConnectToRunningAutoCAD = candidate: Exit Function
     Next progID
@@ -1528,9 +1514,9 @@ Private Function ConcreteDrawRotation(ByVal section As CSectionModel, ByVal inde
     ConcreteDrawRotation = section.ConcreteRotation(index)
 End Function
 
-' Возвращает точку подписи бетонного элемента в его локальной системе осей.
-' Для повернутых AutoCAD Region подпись остается рядом с тем же локальным
-' углом элемента, а не уезжает в осевой прямоугольник глобальных X/Y.
+' Возвращает координаты подписи бетонного элемента в WCS, мм.
+' Смещение сначала задаётся относительно локального угла элемента,
+' затем поворачивается вместе с ним; глобальный габарит не подменяет локальные оси.
 Private Sub ConcreteLabelPoint(ByVal x As Double, ByVal y As Double, _
         ByVal width As Double, ByVal height As Double, ByVal rotationRad As Double, _
         ByRef labelX As Double, ByRef labelY As Double)
@@ -1771,10 +1757,8 @@ Private Function AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, B
     px(2) = x + hw * c - hh * s: py(2) = y + hw * s + hh * c
     px(3) = x - hw * c - hh * s: py(3) = y - hw * s + hh * c
 
-    ' Одна замкнутая полилиния сокращает обращения к AutoCAD. Начало справа
-    ' внизу сохраняет прежнее направление первого ребра Region при импорте.
     Dim points(0 To 11) As Double, corner As Long, vertex As Long, source As Object
-    For corner = 0 To 3
+    For corner = 0 To 3 ' Одна замкнутая полилиния сокращает обращения к AutoCAD. Начало справа внизу сохраняет прежнее направление первого ребра Region при импорте.
         vertex = (corner + 1) Mod 4
         points(corner * 3) = px(vertex): points(corner * 3 + 1) = py(vertex)
     Next corner
@@ -1967,10 +1951,12 @@ Private Function ResultAnnotationLayerByPhysicalState(ByVal materialType As Stri
     End If
 End Function
 
+' Возвращает большее значение для габаритов, размеров подписей и масштабируемых допусков экспорта.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+' Возвращает меньшее значение для границ элементов и размера подписи внутри бетонного волокна.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
@@ -1981,7 +1967,8 @@ End Function
 
 ' ============================== ДЛЯ ТЕСТОВ ==============================
 
-' ДЛЯ ТЕСТОВ: выполняет обычный экспорт на подставном ModelSpace,
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' выполняет обычный экспорт на подставном ModelSpace,
 ' который запрещает чтение объектов. Не создаёт AutoCAD и слои, не меняет расчётные данные.
 Public Function SP35ExportSavedContoursToModelSpaceForTests(ByVal ms As Object, _
         Optional ByVal crackRegion As Boolean = False, Optional ByVal contourFormat As String = "Region") As Long
@@ -1992,7 +1979,8 @@ Public Function SP35ExportSavedContoursToModelSpaceForTests(ByVal ms As Object, 
         "TEST_OUTER", sweeps, , prefix, "TEST_OPENING", contourFormat)
 End Function
 
-' ДЛЯ ТЕСТОВ: выводит только сохраненные материальные контуры в собственный документ
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' выводит только сохраненные материальные контуры в собственный документ
 ' теста. Вызывает рабочие preflight и Region exporter без поиска НДС.
 Public Function SP35ExportSavedMaterialContoursForTests(ByVal doc As Object, _
         Optional ByVal outerLayer As String = "SP35_SAVED_CONTOURS", Optional ByVal openingLayer As String = "", _
@@ -2004,7 +1992,8 @@ Public Function SP35ExportSavedMaterialContoursForTests(ByVal doc As Object, _
     SP35ExportSavedMaterialContoursForTests = DrawSavedContourRows(ThisWorkbook, doc.ModelSpace, outerLayer, sweeps, , "CONTOUR_", openingLayer, contourFormat)
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет обычный отбор области по состоянию и настройке вывода.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет обычный отбор области по состоянию и настройке вывода.
 ' Сохранённые контуры записывает в собственный тестовый чертёж без нового расчёта.
 Public Function SP35ExportSavedCrackRegionForTests(ByVal doc As Object, ByVal combinationID As String, _
         ByVal stateType As String, ByVal enabled As Boolean) As Long
@@ -2018,7 +2007,8 @@ Public Function SP35ExportSavedCrackRegionForTests(ByVal doc As Object, ByVal co
         "SP35_SAVED_CRACK_REGION", sweeps, rows, "CRACK_REGION_")
 End Function
 
-' ДЛЯ ТЕСТОВ: возвращает реальные подготовленные углы экспортного контура без AutoCAD.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает реальные подготовленные углы экспортного контура без AutoCAD.
 ' Использует тот же preflight, который выполняется до изменения DWG; тест
 ' проверяет парсинг/адрес ошибки, но не заявляет приемку фактической записи DWG.
 Public Function Audit03ReadContourArcSweepsForTests(ByVal workbook As Object) As String
@@ -2029,7 +2019,8 @@ Public Function Audit03ReadContourArcSweepsForTests(ByVal workbook As Object) As
     Next key
 End Function
 
-' ДЛЯ ТЕСТОВ: читает те же сохранённые данные, что и экспорт в AutoCAD.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' читает те же сохранённые данные, что и экспорт в AutoCAD.
 ' Не создаёт приложение AutoCAD и не запускает расчёт. Полученный текст
 ' позволяет сравнить сохранённые значения после изменения Config.
 Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As String
@@ -2062,13 +2053,15 @@ Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As S
     Audit02ReadExportSnapshotForTests = result
 End Function
 
-' ДЛЯ ТЕСТОВ: счетчик одной операции и отсутствие удержанных таблиц/книги.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' счетчик одной операции и отсутствие удержанных таблиц/книги.
 ' Обычный экспорт не обращается к этой диагностике и не сохраняет модель.
 Public Function PerformanceExportReadDiagnosticsForTests() As String
-    PerformanceExportReadDiagnosticsForTests = SectionSnapshotReadDiagnostics()
+    PerformanceExportReadDiagnosticsForTests = TestSectionSnapshotReadDiagnostics()
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет рабочие правила оформления без создания DWG. Возвращает тот же
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет рабочие правила оформления без создания DWG. Возвращает тот же
 ' текст, выбранный слой и цвет, которыми пользуется цикл экспорта; флаги сами
 ' по себе не подтверждают фактическое создание графики в настоящем AutoCAD.
 Public Function Audit03AutoCADPresentationForTests(ByVal settings As CSystemSettingsReader, _
@@ -2094,7 +2087,8 @@ Public Function Audit03AutoCADPresentationForTests(ByVal settings As CSystemSett
     Set Audit03AutoCADPresentationForTests = result
 End Function
 
-' ДЛЯ ТЕСТОВ: запускает обычную очистку на подставном ModelSpace.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' запускает обычную очистку на подставном ModelSpace.
 ' Тестовые объекты отмечают вызов Delete. Проверка выявляет удаление Region
 ' и ошибки выбора слоёв; работу с настоящим чертежом проверяют отдельно.
 Public Function Audit03CleanupAutoCADModelSpaceForTests(ByVal modelSpace As Object, _
@@ -2104,7 +2098,8 @@ Public Function Audit03CleanupAutoCADModelSpaceForTests(ByVal modelSpace As Obje
     Audit03CleanupAutoCADModelSpaceForTests = DeleteAutoCADEntitiesOnLayers(modelSpace, AutoCADCleanupLayerSet(options))
 End Function
 
-' ДЛЯ ТЕСТОВ: вызывает тот же ранний выход, что и кнопка очистки подписей.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' вызывает тот же ранний выход, что и кнопка очистки подписей.
 ' Подставной документ запрещает доступ к ModelSpace при отсутствии слоёв.
 Public Function Audit03CleanupAutoCADDocumentForTests(ByVal document As Object, ByVal settings As CSystemSettingsReader) As Long
     Dim options As TAutoCADExportSettings, present As Boolean
@@ -2112,7 +2107,8 @@ Public Function Audit03CleanupAutoCADDocumentForTests(ByVal document As Object, 
     Audit03CleanupAutoCADDocumentForTests = DeleteAutoCADDocumentAnnotations(document, AutoCADCleanupLayerSet(options), present)
 End Function
 
-' ДЛЯ ТЕСТОВ: выполняет обычный экспорт в переданный собственный тестовый чертёж.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' выполняет обычный экспорт в переданный собственный тестовый чертёж.
 ' Возвращает число добавленных объектов для проверки их свойств и геометрии.
 Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object) As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, options As TAutoCADExportSettings
@@ -2132,7 +2128,8 @@ Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object) As Lon
     Audit03ExportAutoCADDocumentForTests = doc.ModelSpace.Count - before
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет настоящий Layer API тем же методом, который вызывает экспорт.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет настоящий Layer API тем же методом, который вызывает экспорт.
 ' Важна сохранность существующего слоя и отсутствие проглоченной ошибки Add.
 Public Sub Audit03EnsureAutoCADLayerForTests(ByVal doc As Object, ByVal name As String, ByVal color As Long)
     EnsureAcadLayer doc, name, color

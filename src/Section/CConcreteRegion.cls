@@ -89,7 +89,7 @@ Public Sub GetSegment(ByVal index As Long, ByRef x1 As Double, ByRef y1 As Doubl
     sweep = mEdges(index).Sweep: loopID = mEdges(index).LoopID
 End Sub
 
-' Простые свойства возвращают неизменяемые значения готового снимка.
+' Возвращает число точных отрезков и дуг во всех границах области.
 Public Property Get SegmentCount() As Long
     SegmentCount = mCount
 End Property

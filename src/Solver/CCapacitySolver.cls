@@ -75,7 +75,7 @@ Private mSolverToleranceMy As Double ' Допуск внутреннего ра�
 Private mSolverMethod As String ' Метод внутреннего CSectionSolver: Newton или Secant.
 Private mSolverSecantMaxRestarts As Long ' Настройка рестартов внутреннего secant-решателя.
 Private mMomentEquilibriumResidual As Double ' Невязка направления/момента в найденном предельном состоянии.
-Private mDiagnosticLog As String ' Журнал проверенных значений λ и причин остановки поиска.
+Private mDiagnosticLog As String ' Журнал проверенных значений lambda и причин остановки поиска.
 Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long ' Строки журнала, число записанных строк и вместимость массива.
 Private mDiagnosticJoined As String, mDiagnosticDirty As Boolean ' Собранный текст журнала и признак появления новых строк после его сборки.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал в массовом пользовательском расчете без txt-отчета.
@@ -161,8 +161,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     End If
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts, False)
     If Not units Is Nothing Then
-        ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
-        mSolverToleranceN = Sgn(mSolverToleranceN) * Abs(units.InputForceToInternal(mSolverToleranceN))
+        mSolverToleranceN = Sgn(mSolverToleranceN) * Abs(units.InputForceToInternal(mSolverToleranceN)) ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
         mSolverToleranceMx = Sgn(mSolverToleranceMx) * Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
         mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
     End If
@@ -276,14 +275,13 @@ End Sub
 
 ' Чистое осевое масштабирование без постоянных моментов является
 ' вырожденным для UltimateStrain при горизонтальном плато диаграммы:
-' разные равномерные деформации дают одну и ту же предельную N. Если прямой
-' UltimateStrain не сошелся устойчиво, эта проверка разрешает перейти на ту
-' же универсальную lambda-траекторию и найти границу одномерно.
+' разные равномерные деформации дают одну и ту же предельную N. Эта проверка
+' распознаёт осевую траекторию относительно центра бетонной сетки, чтобы
+' разрешённое перенаправление в LoadMultiplier произошло до попытки Newton.
 Private Function IsPureAxialLoadPath(ByVal section As CSectionModel, ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double) As Boolean
-    ' Ошибочную геометрию далее отклоняет общая проверка входа поиска с отдельным кодом причины.
-    On Error GoTo NotAxial
+    On Error GoTo NotAxial ' Ошибочную геометрию далее отклоняет общая проверка входа поиска с отдельным кодом причины.
     If section.ConcreteCount <= 0 Then Exit Function
     Dim math As CLoadPathMath, centerX As Double, centerY As Double, area As Double
     section.ConcreteMeshCentroid centerX, centerY, area
@@ -315,10 +313,7 @@ Private Sub AcceptRetainedPhysicalCapacity(ByVal section As CSectionModel, _
     If loadPath Is Nothing Then Exit Sub
     If mLastAcceptableSolver Is Nothing Then Exit Sub
     If Not mLastAcceptableSolver.Converged Then Exit Sub
-    ' Силовая скобка еще не подтверждает предельную плоскость на плато.
-    ' Ее предварительный успех не должен останавливать Newton или делать
-    ' непринятую пробу окончательным результатом поиска.
-    mConverged = False
+    mConverged = False ' Силовая скобка еще не подтверждает предельную плоскость на плато. Ее предварительный успех не должен останавливать Newton или делать непринятую пробу окончательным результатом поиска.
     UpdateCriticalState section, concreteMaterial, mLastAcceptableSolver
     If mCriticalStrainUtilization <= 0# Then Exit Sub
 
@@ -479,9 +474,7 @@ Private Sub InitializeUltimateLoadPathGuess(ByVal section As CSectionModel, _
     If strainLimit <= 0# Then strainLimit = 0.001
 
     If targetNValue < 0# Then
-        ' Доля меньшего физического предела не исчезает при малой N и
-        ' не растет до запредельных деформаций при перегрузке.
-        eps0 = -0.25 * strainLimit
+        eps0 = -0.25 * strainLimit ' Доля меньшего физического предела не исчезает при малой N и не растет до запредельных деформаций при перегрузке.
     ElseIf targetNValue > 0# Then
         eps0 = 0.25 * strainLimit
     End If
@@ -912,9 +905,7 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
-    ' Общий Newton проверил настройки; отказ при подготовке плоскости тоже
-    ' относится к реально начатой численной попытке, а не к раннему пропуску.
-    mSearchExecuted = True
+    mSearchExecuted = True ' Общий Newton проверил настройки; отказ при подготовке плоскости тоже относится к реально начатой численной попытке, а не к раннему пропуску.
     PrepareUltimateNumericalPath section, loadPath
     If Not startSolver Is Nothing Then
         eps0 = startSolver.Epsilon0
@@ -1031,9 +1022,7 @@ Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
     If mUltimateMomentOnlyPath Then
         LimitSearchUltimateResidualNorm = Abs(rPath1) * mUltimateMomentNMeritWeight + Abs(rPath2) + Abs(rLimit)
     Else
-        ' Евклидова норма не создает искусственного излома при переходе
-        ' одной моментной невязки через ноль. Масштабирование защищает квадрат.
-        Dim magnitude As Double
+        Dim magnitude As Double ' Общий масштаб защищает квадраты; евклидова норма непрерывна при смене знака моментной невязки.
         magnitude = MaxDouble(Abs(rPath1), MaxDouble(Abs(rPath2), Abs(rLimit)))
         If magnitude > 0# Then LimitSearchUltimateResidualNorm = magnitude * _
             Sqr((rPath1 / magnitude) ^ 2 + (rPath2 / magnitude) ^ 2 + (rLimit / magnitude) ^ 2)
@@ -1244,9 +1233,8 @@ Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, 
     ElseIf mSolverMaxIterations <= 0 Then
         SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным.", "Capacity.SolverMaxIterations"
     Else
-        ' Оба поиска используют ту же проверку настроек равновесия, без проб НДС.
         Dim validation As CSectionSolver
-        Set validation = New CSectionSolver
+        Set validation = New CSectionSolver ' Оба метода поиска используют общую проверку численных настроек без пробного решения НДС.
         validation.SolverMethod = mSolverMethod: validation.MaxIterations = mSolverMaxIterations
         validation.ToleranceN = mSolverToleranceN: validation.ToleranceMx = mSolverToleranceMx
         validation.ToleranceMy = mSolverToleranceMy: validation.SecantMaxRestarts = mSolverSecantMaxRestarts
@@ -1616,7 +1604,7 @@ Private Sub StoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVa
     Set mProbeCacheSolver(slot) = mLastSolver
 
     If mProbeCacheCount < PROBE_CACHE_SIZE Then mProbeCacheCount = mProbeCacheCount + 1
-    mProbeCacheNextSlot = slot + 1
+    mProbeCacheNextSlot = slot + 1 ' Кольцевой буфер ограниченного размера заменяет самую старую пробу текущего поиска.
     If mProbeCacheNextSlot > PROBE_CACHE_SIZE Then mProbeCacheNextSlot = 1
 End Sub
 
@@ -2066,7 +2054,8 @@ Public Property Let ConcreteTensionLimitEnabled(ByVal value As Boolean)
     mConcreteTensionLimitEnabled = value
 End Property
 
-' Модуль предельной сжимающей деформации арматуры.
+' Задаёт один и тот же модуль предельной деформации для сжатия и растяжения арматуры.
+' Для независимых пределов используются SteelCompressionLimit и SteelTensionLimit.
 Public Property Let SteelStrainLimit(ByVal value As Double)
     mSteelCompressionLimit = Abs(value)
     mSteelTensionLimit = Abs(value)
@@ -2127,7 +2116,8 @@ Public Property Let SolverBaseLoadSteps(ByVal value As Long)
     mSolverBaseLoadSteps = value
 End Property
 
-' Возвращает максимальное число внешних и внутренних итераций поиска несущей способности.
+' Задаёт максимум итераций внутреннего CSectionSolver на одной ступени нагрузки.
+' Бюджет внешнего поиска предела определяется отдельными настройками.
 Public Property Let SolverMaxIterations(ByVal value As Long)
     mSolverMaxIterations = value
 End Property
@@ -2161,24 +2151,28 @@ End Property
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: возвращает подробности поиска для проверки критического элемента,
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает подробности поиска для проверки критического элемента,
 ' повторных решений и коэффициента использования. Пользовательский вывод
 ' использует готовые SafetyFactor, LimitState, MomentUltimate и статусы сочетания.
-Public Property Get RetryCount() As Long
-    RetryCount = mRetryCount
+Public Property Get TestRetryCount() As Long
+    TestRetryCount = mRetryCount
 End Property
 
-' ДЛЯ ТЕСТОВ: деформация критического волокна или стержня.
-Public Property Get CriticalStrain() As Double
-    CriticalStrain = mCriticalStrain
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' деформация критического волокна или стержня.
+Public Property Get TestCriticalStrain() As Double
+    TestCriticalStrain = mCriticalStrain
 End Property
 
-' ДЛЯ ТЕСТОВ: iD элемента, который первым определил предельное состояние.
-Public Property Get CriticalElement() As String
-    CriticalElement = mCriticalElement
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' идентификатор элемента, который первым определил предельное состояние.
+Public Property Get TestCriticalElement() As String
+    TestCriticalElement = mCriticalElement
 End Property
 
-' ДЛЯ ТЕСТОВ: отношение фактической деформации к своему пределу.
-Public Property Get CriticalStrainUtilization() As Double
-    CriticalStrainUtilization = mCriticalStrainUtilization
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' отношение фактической деформации к своему пределу.
+Public Property Get TestCriticalStrainUtilization() As Double
+    TestCriticalStrainUtilization = mCriticalStrainUtilization
 End Property

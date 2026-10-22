@@ -11,8 +11,8 @@ from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
 D = ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16'
-MATRICES = ['DumpCircleRecipeMatrix','DumpRectanglesRecipeMatrix','DumpRoundedRecipeMatrix',
-            'DumpHollowRecipeMatrix','DumpHollowRecipeEdgeMatrix']
+MATRICES = ['TestDumpCircleRecipeMatrix','TestDumpRectanglesRecipeMatrix','TestDumpRoundedRecipeMatrix',
+            'TestDumpHollowRecipeMatrix','TestDumpHollowRecipeEdgeMatrix']
 
 
 def data(name):

@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--report', default='AuxiliaryInputsEvidence.json')
     args = parser.parse_args()
     root = args.directory
-    helper = args.helper_source or Path(__file__).resolve().parents[2]/'docs/geometry_refactor/examples/modFinalGeometryChecks.bas'
+    helper = args.helper_source or Path(__file__).resolve().parents[2]/'docs/geometry_refactor/examples/modTestFinalGeometryChecks.bas'
     expected_helper = bridge.normalize(helper.read_text(encoding='utf-8-sig'))
     errors, inputs = [], []
     for kind, reference in (('Baseline', 'Baseline/VBA_All_Code.txt'), ('Final', 'VBA_Final.txt')):
@@ -27,8 +27,8 @@ def main():
         added = sorted(set(actual)-set(base))
         changed = sorted(name for name in base if name not in actual or base[name][0] != actual[name][0]
                          or bridge.normalize(base[name][1]) != bridge.normalize(actual[name][1]))
-        helper_equal = 'modFinalGeometryChecks' in actual and bridge.normalize(actual['modFinalGeometryChecks'][1]) == expected_helper
-        if len(base) != 149 or len(actual) != 150 or added != ['modFinalGeometryChecks'] or changed or not helper_equal:
+        helper_equal = 'modTestFinalGeometryChecks' in actual and bridge.normalize(actual['modTestFinalGeometryChecks'][1]) == expected_helper
+        if len(base) != 149 or len(actual) != 150 or added != ['modTestFinalGeometryChecks'] or changed or not helper_equal:
             errors.append('Unexpected auxiliary code difference: ' + kind)
         inputs.append({'kind': kind, 'book': f'{args.book_prefix}{kind}.xlsm',
                        'bookSHA256': bridge.digest(root/f'{args.book_prefix}{kind}.xlsm'),

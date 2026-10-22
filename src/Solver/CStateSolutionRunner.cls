@@ -483,9 +483,7 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
                 "; residualMy=" & FormatNumberInvariant(retry.ResidualMy)
         End If
         If FailedRetryImprovesAllResiduals(retry, service) Then
-            ' Сохраняем более близкое поле только для следующих стартов.
-            ' Converged остаётся False; подтверждённого НДС для общего хранилища нет.
-            Set service = retry
+            Set service = retry ' Сохраняем более близкое поле только для следующих стартов. Converged остаётся False; подтверждённого НДС для общего хранилища нет.
             AppendDiagnostic retryKind & "=" & attemptName & "; сохранена более близкая несошедшаяся плоскость."
         End If
     End If
@@ -787,7 +785,8 @@ End Property
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: вызывает настоящую процедуру повторного решения с явно заданными числами.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' вызывает настоящую процедуру повторного решения с явно заданными числами.
 ' Проверяет учёт точно совпадающих попыток без создания конечного НДС
 ' или записи в общее хранилище состояний.
 Friend Function TestRunRetryAttempt(ByVal section As CSectionModel, _
@@ -800,7 +799,8 @@ Friend Function TestRunRetryAttempt(ByVal section As CSectionModel, _
         "проверка эквивалентности попыток", service, "testRetry")
 End Function
 
-' ДЛЯ ТЕСТОВ: возвращает число сохранённых кратких итогов попыток для проверки их очистки после поиска.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает число сохранённых кратких итогов попыток для проверки их очистки после поиска.
 Friend Property Get TestRetryAttemptCount() As Long
     If Not mRetryAttemptFailures Is Nothing Then TestRetryAttemptCount = mRetryAttemptFailures.Count
 End Property

@@ -12,7 +12,7 @@ Private mSectionEquilibriumIterationCount As Long ' Итерации Newton/Seca
 Private mUltimateStrainStartCount As Long ' Начальные плоскости общего UltimateStrain и реальные теплые перезапуски.
 Private mUltimateStrainIterationCount As Long ' Число итераций общего поиска предела без дополнительных оценок Якобиана и подбора шага.
 
-' Сбрасывает счетчик перед новым пакетным расчетом.
+' Сбрасывает все четыре счётчика перед новым пакетным расчётом.
 Public Sub ResetSectionEquilibriumSolveCount()
     mSectionEquilibriumSolveCount = 0
     mSectionEquilibriumIterationCount = 0
@@ -35,6 +35,7 @@ Public Sub RecordSectionEquilibriumIteration()
     mSectionEquilibriumIterationCount = mSectionEquilibriumIterationCount + 1
 End Sub
 
+' Возвращает число итераций равновесия на всех ступенях и повторных стартах после последнего сброса.
 Public Function SectionEquilibriumIterationCount() As Long
     SectionEquilibriumIterationCount = mSectionEquilibriumIterationCount
 End Function
@@ -44,14 +45,17 @@ Public Sub RecordUltimateStrainStart()
     mUltimateStrainStartCount = mUltimateStrainStartCount + 1
 End Sub
 
+' Возвращает число фактически начатых стартов поиска UltimateStrain, включая повторные плоскости.
 Public Function UltimateStrainStartCount() As Long
     UltimateStrainStartCount = mUltimateStrainStartCount
 End Function
 
+' Регистрирует итерацию общего поиска UltimateStrain; отдельные пробы Якобиана и длины шага сюда не входят.
 Public Sub RecordUltimateStrainIteration()
     mUltimateStrainIterationCount = mUltimateStrainIterationCount + 1
 End Sub
 
+' Возвращает число итераций общего поиска UltimateStrain с последнего сброса счётчиков.
 Public Function UltimateStrainIterationCount() As Long
     UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Function

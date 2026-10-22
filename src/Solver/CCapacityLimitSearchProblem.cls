@@ -129,9 +129,7 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         request.Section, request.ConcreteMaterial, request.SteelMaterial, _
         loadPath, lambdaValue, functionValue, probeState, startSolver)
     If ILimitSearchProblem_EvaluatePoint Then
-        ' Возвращаем общему поиску именно то НДС, по которому оценено текущее lambda.
-        ' Иначе конечный результат мог бы получить устаревшее состояние предыдущей пробы.
-        Set solver = mCapacity.LastSolver
+        Set solver = mCapacity.LastSolver ' Возвращаем общему поиску именно то НДС, по которому оценено текущее lambda. Иначе конечный результат мог бы получить устаревшее состояние предыдущей пробы.
         ' На осевом плато повторные силовые пробы за максимумом не дают
         ' физической верхней точки. Уже найденная допустимая проба позволяет
         ' проверить отдельную предельную плоскость без длительного дробления.

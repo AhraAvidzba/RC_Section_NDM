@@ -12,7 +12,7 @@ Option Explicit
 ' ==========================================================================
 ' Сводка пакетного расчёта на листе Results
 ' ==========================================================================
-' Записывает rngBatchSummary одним массивом по готовым данным
+' Записывает rngBatchSummary блоками из общего массива по готовым данным
 ' CBatchSectionCalculator. В сводке показываются определяющее сочетание,
 ' статусы проверок и минимальные коэффициенты запаса.
 ' Подробные таблицы прочности, трещин и устойчивости заполняются отдельными классами.
@@ -114,7 +114,8 @@ Public Function RequiredSummaryOutputRowsForWorkbook(ByVal workbook As Object, B
     RequiredSummaryOutputRowsForWorkbook = RequiredSummaryRowsForWorkbook(workbook, combinationCount)
 End Function
 
-' Записывает rngBatchSummary одним массивом и оформляет сводку.
+' Записывает готовые результаты в rngBatchSummary блочными присваиваниями
+' и оформляет сводку в выбранном полном или минимальном режиме.
 ' Подробные таблицы заполняют отдельные классы. Модель section передаётся
 ' таблице прочности для геометрических величин текущего и предельного НДС;
 ' сама сводка не выполняет инженерные расчёты.
@@ -236,16 +237,15 @@ UseDefaultHeight:
     Set SummaryClearRange = anchor.Resize(rowsToClear, RequiredSummaryOutputColumns())
 End Function
 
-' Снимает объединения и очищает текущую сводку до блочной записи массива.
-' Это важно при повторном расчете: предыдущий запуск объединяет строки
-' заголовков, и Excel не позволяет записывать двумерный массив поверх
-' частично объединенного диапазона.
+' При полном оформлении снимает объединения и очищает старую сводку.
+' В минимальном режиме очищает содержимое, сохраняя готовые форматы ячеек.
 Private Sub PrepareSummaryTarget(ByVal target As Object, ByVal requiredRows As Long)
     If target.Rows.Count < requiredRows Then Set target = target.Resize(requiredRows, target.Columns.Count)
     ClearSummaryBody target
 End Sub
 
-' Полностью очищает область общей сводки, включая старые объединения и форматы.
+' Очищает данные прежней сводки. В минимальном режиме сохраняет шапку
+' и основные форматы, но убирает прежнюю подсветку статусов.
 Private Sub ClearSummaryBody(ByVal target As Object)
     If mMinimalFormatting Then
         target.Cells(1, 1).Resize(META_ROWS, 1).ClearContents
@@ -258,7 +258,8 @@ Private Sub ClearSummaryBody(ByVal target As Object)
     target.Clear
 End Sub
 
-' Записывает уже подготовленный двумерный массив в Excel одним присваиванием.
+' Записывает сводку блоками из массива VBA. В минимальном режиме сохраняет
+' совпадающую шапку и обновляет три участка данных; изменённую шапку создаёт заново.
 Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
     If mMinimalFormatting Then
         If ResultHeaderMatches(target, data, GROUP_HEADER_ROW, COMMENT_HEADER_ROW, merges:=SummaryHeaderBlocks()) And _
@@ -629,14 +630,15 @@ End Function
 
 ' Возвращает готовое пояснение результата. Причина остановки численного
 
-' Записывает только положительные расчетные коэффициенты запаса.
+' Записывает только положительный расчётный коэффициент запаса.
+' При нулевом или отрицательном значении оставляет подготовленную ячейку без изменения.
 Private Sub PutReserveCell(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal columnIndex As Long, ByVal reserveValue As Double)
     If reserveValue > 0# Then data(rowIndex, columnIndex) = reserveValue
 End Sub
 
-' Оформляет общую сводку: объединения, серые заголовки,
-' статусную палитру, единые шрифты и рамки.
+' При полном оформлении задаёт шапку, рамки и числовые форматы сводки.
+' В минимальном режиме обновляет только подсветку статусов; ширины столбцов не меняет.
 Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If mMinimalFormatting Then
         FormatStatusCells target, batch
@@ -651,7 +653,6 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.WrapText = False
     target.Font.Name = "Arial"
     target.Font.Size = 9
-    ' Ширина столбцов задана при сборке книги и сохраняет правки пользователя.
 
     stage = "HeaderStyle"
     target.Offset(0, 0).Resize(META_ROWS, 5).Interior.Color = HEADER_COLOR

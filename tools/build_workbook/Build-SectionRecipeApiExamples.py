@@ -82,7 +82,23 @@ def build():
     members = inventory()["members"]
     paths = list((ROOT / "tests").rglob("*.bas")) + list((DOCS / "examples").glob("*.bas")) + list((DOCS / "examples").glob("*.cls"))
     routines = [routine for path in paths for routine in procedures(path)]
-    proofs = evidence()
+    # Старые журналы не переписываются после переименования тестовых процедур.
+    # Явная карта связывает прежний entrypoint с тем же проверенным телом;
+    # оба имени сохраняются в результате, чтобы источник доказательства был виден.
+    alias_path = DOCS / "SECTION_RECIPE_API_EVIDENCE_ALIASES.json"
+    alias_data = json.loads(alias_path.read_text(encoding="utf-8-sig"))
+    if alias_data.get("schema") != 1:
+        raise ValueError("Unsupported native-evidence alias schema")
+    aliases = alias_data["aliases"]
+    current_routines = {routine["owner"] + "." + routine["name"] for routine in routines}
+    for old, current in aliases.items():
+        if old == current or current not in current_routines:
+            raise ValueError("Stale native-evidence alias: " + old + " -> " + current)
+    proofs, reported_names = defaultdict(list), {}
+    for reported, reports in evidence().items():
+        current = aliases.get(reported, reported)
+        proofs[current].extend(report for report in reports if report not in proofs[current])
+        reported_names[current] = reported
     by_owner = defaultdict(list)
     for routine in routines: by_owner[routine["owner"]].append(routine)
     # Helper может вызываться через несколько уровней другого helper.
@@ -118,7 +134,7 @@ def build():
                             name = root["owner"] + "." + root["name"]
                             if name not in proofs: continue
                             if routine["name"] in reachable[name]:
-                                roots.append({"entryPoint": name, "reports": proofs[name]})
+                                roots.append({"entryPoint": name, "reportedEntryPoint": reported_names[name], "reports": proofs[name]})
                         calls[member["id"]].append({"source": routine["source"], "line": number, "routine": routine["name"],
                             "code": raw, "context": "В теле " + routine["owner"] + "." + routine["name"] + " с его подготовленными локальными объектами/входом.", "nativeRoots": roots})
     rows, missing, unproved = {}, [], []
@@ -133,11 +149,12 @@ def build():
     source_names = sorted({example["source"] for example in rows.values()})
     report_names = sorted({report for example in rows.values() for proof in example["nativeRoots"] for report in proof["reports"]})
     status = "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH" if not missing and not unproved else "CALL_REFERENCE_DRAFT"
+    source_names.append(alias_path.relative_to(ROOT).as_posix())
     return {"schema": 1, "status": status, "members": len(members), "examples": rows,
             "missingCalls": missing, "missingNativeRoots": unproved,
             "sourceHashes": {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in source_names},
             "reportHashes": {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in report_names},
-            "note": "Фрагменты исполняются в явно указанном полном контексте теста/fixture; это не самостоятельные процедуры. Root подтверждён журналом; условные ветви дополнительно проверяются смысловыми assertions."}
+            "note": "Фрагменты исполняются в явно указанном полном контексте теста/fixture; это не самостоятельные процедуры. Root подтверждён журналом. entryPoint содержит текущее имя, reportedEntryPoint — точное имя в историческом журнале; соответствие после механического Test-переименования задано явной проверенной картой. Новые вычисления этим сопоставлением не подтверждаются."}
 
 
 if __name__ == "__main__":

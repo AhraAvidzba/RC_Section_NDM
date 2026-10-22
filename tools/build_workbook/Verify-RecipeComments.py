@@ -70,7 +70,7 @@ def directions():
     previous=json.loads((PREVIOUS/'Package.json').read_text(encoding='utf-8-sig'))
     assert previous['AcceptedSHA256']==receipt('Before.json')['WorkbookSHA256']
     with ZipFile(PREVIOUS/'Evidence.zip') as z:
-        lines=z.read('CompiledContracts/modTestAudit02Snapshots.DumpRecipePathContracts.txt').decode('utf-8-sig').splitlines()
+        lines=z.read('CompiledContracts/modTestAudit02Snapshots.TestDumpRecipePathContracts.txt').decode('utf-8-sig').splitlines()
     case=None;path=None;segments=[];checked=[]
     def flush():
         if not path or not segments:return

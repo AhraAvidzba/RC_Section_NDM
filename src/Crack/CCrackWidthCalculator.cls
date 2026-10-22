@@ -258,8 +258,8 @@ End Property
 ' ------------------------------
 ' Загружает настройки подготовки формулы ширины. Поиск НДС и параметры
 ' трещинообразования настраиваются у соответствующих владельцев; допустимая
-' ширина здесь переводится в миллиметры внутренней системы единиц. Все поля
-' Width в переданном Config обязательны; неверный ввод не заменяется defaults.
+' ширина здесь переводится в миллиметры внутренней системы единиц. Проверяются
+' обязательные настройки выбранного СП; неверный ввод не заменяется начальными значениями.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
 
@@ -307,10 +307,8 @@ Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal secti
         mSP35GroupGapTolerance, mSP35RowTolerance, mSP35RadiusDiameterMode, mSP35InteractionRadiusMode, central, _
         mSP35NeighborRatioLimit, mGeometryQuery
     mCentralTensionBranch = central
-
-    ' Формула получает только площадь, реальные диаметры, напряжение и Es.
     Dim i As Long, radius As Double, psiCm As Double, width As Double, region As CConcreteRegion
-    For i = 1 To mSP35Data.CandidateCount
+    For i = 1 To mSP35Data.CandidateCount ' Геометрия и состав арматуры уже подготовлены; формулы получают площадь, реальные диаметры, напряжение и Es.
         If mSP35Data.CandidateAvailable(i) Then
             Set region = mSP35Data.CandidateRegion(i)
             radius = SP35ReinforcementRadiusFromData(region.Area, mSP35Data.CandidateBetaDiameterSum(i))
@@ -333,8 +331,7 @@ Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal secti
         Exit Sub
     End If
 
-    ' Сохраняем область с наибольшей шириной трещины и её фактическую арматуру.
-    mAbt = mInteractionRegion.Area: mSigmaS = mSP35Data.CandidateSigmaS(mSP35CriticalCandidate)
+    mAbt = mInteractionRegion.Area: mSigmaS = mSP35Data.CandidateSigmaS(mSP35CriticalCandidate) ' Сохраняем область с наибольшей шириной трещины и её фактическую арматуру.
     Dim rows As Variant, members As Variant, group As Long, j As Long, bar As Long
     rows = mSP35Data.CandidateRows(mSP35CriticalCandidate)
     For i = LBound(rows, 1) To UBound(rows, 1)
@@ -420,10 +417,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
     Dim ny As Double
     Dim normK As Double
     normK = Sqr(currentSolver.KappaX * currentSolver.KappaX + currentSolver.KappaY * currentSolver.KappaY)
-    ' При равномерной деформации нейтральной линии нет. Если порог образования
-    ' трещины не выделен, определяем состояние по текущему НДС,
-    ' не деля на нулевую кривизну.
-    If normK <= NEAR_ZERO_STRAIN Then
+    If normK <= NEAR_ZERO_STRAIN Then ' При равномерной деформации нейтральной линии нет. Если порог образования трещины не выделен, определяем состояние по текущему НДС, не деля на нулевую кривизну.
         If currentSolver.Epsilon0 > NEAR_ZERO_STRAIN Then
             CalculateCentralTension currentSolver, section, materialProvider, loadStateForClassification
         Else
@@ -431,11 +425,11 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
         End If
         Exit Sub
     End If
-    nx = currentSolver.KappaY / normK
+    nx = currentSolver.KappaY / normK ' Из epsilon = epsilon0 + kappaX*y + kappaY*x нормаль к нейтральной линии имеет компоненты (kappaY, kappaX).
     ny = currentSolver.KappaX / normK
 
-    Dim st As Double
-    Dim sc As Double
+    Dim st As Double ' Наибольшая проекция бетона на нормаль к нейтральной линии, со стороны растяжения, мм.
+    Dim sc As Double ' Наименьшая проекция бетона на ту же нормаль, с противоположной стороны, мм.
     ProjectionBoundsByConcreteContour section, nx, ny, st, sc
     mSectionDepthH = st - sc
     If mSectionDepthH <= NEAR_ZERO_STRAIN Then
@@ -444,7 +438,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
     End If
 
     Dim neutralS As Double
-    neutralS = -currentSolver.Epsilon0 / normK
+    neutralS = -currentSolver.Epsilon0 / normK ' Координата нулевой деформации на этой нормали; может лежать вне бетона, мм.
     mTensionDepth = st - MaxDouble(neutralS, sc)
     If mTensionDepth <= NEAR_ZERO_STRAIN Then
         FinishNoCrack "В текущем состоянии нет растянутой бетонной зоны."
@@ -508,7 +502,7 @@ Private Sub CompleteCrackFormula(ByVal solver As CSectionStateResult, ByVal sect
         Exit Sub
     End If
 
-    mLsRaw = 0.5 * (mAbt / mAs) * mDsEquivalent
+    mLsRaw = 0.5 * (mAbt / mAs) * mDsEquivalent ' Исходное расстояние между трещинами, мм, до применения нижней и верхней границ.
     mLs = LimitedCrackSpacing(mLsRaw, mDsEquivalent)
 End Sub
 
@@ -732,7 +726,7 @@ End Function
 Public Function SP35PsiFromData(ByVal reinforcementRadiusMm As Double, ByVal rebarProfile As String) As Double
     If reinforcementRadiusMm < 0# Then Err.Raise vbObjectError + 3781, "CCrackWidthCalculator", "Радиус армирования не может быть отрицательным."
     Dim radiusCm As Double
-    radiusCm = reinforcementRadiusMm / 10#
+    radiusCm = reinforcementRadiusMm / 10# ' Коэффициенты формулы СП 35 используют сантиметры; основная геометрия хранится в миллиметрах.
     Select Case LCase$(Trim$(rebarProfile))
         Case "periodic": SP35PsiFromData = 1.5 * Sqr(radiusCm)
         Case "smooth": SP35PsiFromData = 0.35 * radiusCm
@@ -953,7 +947,7 @@ Private Function AverageSelectedSteelStress(ByVal epsilon0 As Double, ByVal kapp
             Dim stress As Double
             strain = epsilon0 + kappaX * section.RebarY(i) + kappaY * section.RebarX(i)
             stress = steelMaterial.GetStress(strain)
-            If (Not includeCompressedStress) And stress < 0# Then stress = 0#
+            If (Not includeCompressedStress) And stress < 0# Then stress = 0# ' Сжатый вклад обнуляется, но площадь выбранного стержня остаётся в знаменателе среднего напряжения.
             weightedStress = weightedStress + section.RebarArea(i) * stress
             areaSum = areaSum + section.RebarArea(i)
             If trackCurrentMaxima Then TrackMaxSteel section, i, strain, stress
@@ -1597,9 +1591,8 @@ End Property
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ============================== ДЛЯ ТЕСТОВ ==============================
-
-' ДЛЯ ТЕСТОВ: проверяет подписанные входы действующей формулы psi без подмены найденных
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет подписанные входы действующей формулы psi без подмены найденных
 ' НДС и напряжений. Пользовательский режим User этот расчет не использует.
 Public Function Audit02AutoPsiForTests(ByVal sigmaS As Double, ByVal sigmaSCrc As Double) As Double
     Audit02AutoPsiForTests = AutoPsi(sigmaS, sigmaSCrc)

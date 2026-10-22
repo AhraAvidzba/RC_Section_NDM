@@ -61,12 +61,12 @@ def bridge_chain(root):
     good = (native.get('status') == patch.get('status') == profile.get('status') == 'PASS'
             and native.get('productionUnchanged') and native.get('unchangedOtherMethods')
             and patch.get('productionUnchanged') and patch.get('unchangedOtherCode')
-            and native.get('changedMethod') == 'modTestContourMesh.CheckNativeFullExport'
-            and patch.get('changedMethod') == 'modTestConfiguration.CheckCapacityNumericEffects'
+            and native.get('changedMethod') == 'modTestContourMesh.TestCheckNativeFullExport'
+            and patch.get('changedMethod') == 'modTestConfiguration.TestCheckCapacityNumericEffects'
             and native.get('changed') == ['modTestContourMesh'] and patch.get('changed') == ['modTestConfiguration']
             and profile.get('productionUnchanged') and profile.get('unchangedOtherCode') and profile.get('tolerancesUnchanged')
             and profile.get('changed') == ['modTestProfileConfig']
-            and profile.get('changedMethod') == 'modTestProfileConfig.CheckVisualizationValues')
+            and profile.get('changedMethod') == 'modTestProfileConfig.TestCheckVisualizationValues')
     checks = ((native, 'testedWorkbookSHA256', 'FinalReady.xlsm'),
               (native, 'releaseWorkbookSHA256', 'Release.xlsm'),
               (native, 'beforeDumpSHA256', 'VBA_Final.txt'), (native, 'afterDumpSHA256', 'VBA_Release.txt'),

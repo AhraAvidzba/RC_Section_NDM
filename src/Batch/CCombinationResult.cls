@@ -91,11 +91,9 @@ Public Property Get OverallMeta() As CResultMeta
     Set crack = mCrackResult.ResultMeta
     Set stability = mStabilityResult.Meta
     Set OverallMeta = Policy.WorstResultMeta(rkGeneric, mWorkflowMeta, strength, crack, stability)
-    ' Одну общую ошибку ввода не повторяем под именем каждой зависимой проверки.
-    ' Статус выбираем через общие правила, сохраняя отдельно возникшую ошибку расчёта CalcErr.
     If mWorkflowMeta.InternalStatus = rsInvalidInput Or mWorkflowMeta.InternalStatus = rsInvalidConfiguration Then
         If OverallMeta.InternalStatus = mWorkflowMeta.InternalStatus And OverallMeta.ResultCode = mWorkflowMeta.ResultCode Then
-            OverallMeta.ResultComment = mWorkflowMeta.ResultComment
+            OverallMeta.ResultComment = mWorkflowMeta.ResultComment ' Общую ошибку ввода показываем один раз; отдельный CalcErr сохраняется, если именно он определил общий статус.
             Exit Property
         End If
     End If

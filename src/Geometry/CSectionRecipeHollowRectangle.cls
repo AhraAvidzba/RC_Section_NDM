@@ -107,20 +107,20 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
         "у верхней стороны отверстия", "у нижней стороны отверстия", "у левой стороны отверстия", "у правой стороны отверстия")
     For i = 1 To 8
         With faces(i)
-            .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
+            .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1)) ' faces нумеруется с 1, а массивы Array — с 0; поля таблицы по-прежнему читаются по ключам.
             .RowComment = "Пустотелый прямоугольник: арматура " & .Caption & ", ряд "
             key = CStr(keys(i - 1))
             .Source = reader.SourceReference("Main", key, "as")
             If i <= 4 Then .Count = reader.Count("Main", key, "n")
             .Diameter = reader.OptionalDiameter("Main", key, "d")
             .Active = (.Diameter > 0# And (i > 4 Or .Count > 0))
-            If i > 4 Then .Active = .Active And faces(i - 4).Count > 0 And faces(i - 4).Diameter > 0#
+            If i > 4 Then .Active = .Active And faces(i - 4).Count > 0 And faces(i - 4).Diameter > 0# ' Внутреннему ряду нужны реальные исходные стержни одноимённой наружной стороны.
             If i > 4 Or .Active Then
                 .AxisDistance = reader.NonNegativeLength("Main", key, "as")
             End If
-            base = (i - 1) Mod 4 + 1
+            base = (i - 1) Mod 4 + 1 ' Номер стороны 1..4: верх, низ, лево, право; у отверстия та же последовательность.
             annotationSign = 1#
-            If i > 4 Then annotationSign = -1#
+            If i > 4 Then annotationSign = -1# ' Подписи внутренних сторон выносятся в отверстие, наружных — за внешний контур.
             Select Case base
                 Case 1: .LabelY = annotationSign
                 Case 2: .LabelY = -annotationSign
@@ -197,10 +197,10 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.TR"), faces(8).AxisDistance, faces(8).Source ' Правый as сохраняется как исходное ограничение.
     End If
     For i = 1 To 8
-        base = (i - 1) Mod 4 + 1
+        base = (i - 1) Mod 4 + 1 ' Номер стороны 1..4: верх, низ, лево, право; у отверстия та же последовательность.
         If Not faces(i).Active Then GoTo NextFace
-        normalSign = 1#: If base = 1 Or base = 3 Then normalSign = -1#
-        If i > 4 Then normalSign = -normalSign
+        normalSign = 1#: If base = 1 Or base = 3 Then normalSign = -1# ' Оси горизонталей идут вправо, вертикалей вверх: выбираем сторону нормали внутрь наружного бетона.
+        If i > 4 Then normalSign = -normalSign ' У отверстия направление в бетон противоположно направлению внутрь наружного контура.
         Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon) ' Получаем линию центров стержней выбранной стороны с отступом as.
         Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback ' Отступ от начала и, если задан, от конца линии, мм.
@@ -225,7 +225,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         extraOptions.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
         extraOptions.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
         Set contact = New CRebarContactBuilder
-        contact.Initialize faces(i).Diameter, normalSign, 1#, extraOptions
+        contact.Initialize faces(i).Diameter, normalSign, 1#, extraOptions ' Stacked использует нормаль в бетон; SideBySide — положительную касательную выбранной оси.
         For rowNumber = 2 To 3
             If faces(i).Diameters(rowNumber) > 0# Then
                 Set options = contact.AppendRow(faces(i).Diameters(rowNumber), faces(i).Locations(rowNumber), faces(i).Bindings(rowNumber), faces(i).ExtraSources(rowNumber), faces(i).BaseOffsets(rowNumber))
@@ -249,23 +249,21 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     Set polygon = outerPolygon
     geometrySource = sizes.OuterSource
     B = sizes.B: H = sizes.H: radius = sizes.R: offset = faces(index).AxisDistance
-    base = (index - 1) Mod 4 + 1
+    base = (index - 1) Mod 4 + 1 ' Для наружной стороны и соответствующей стороны отверстия получаем общий номер 1..4.
     If index > 4 Then
         Set polygon = openingPolygon
         geometrySource = sizes.OpeningSource
-        B = sizes.Bo: H = sizes.Ho: radius = sizes.Ro: x = sizes.Xo: y = sizes.Yo: offset = -offset
+        B = sizes.Bo: H = sizes.Ho: radius = sizes.Ro: x = sizes.Xo: y = sizes.Yo: offset = -offset ' Отверстие смещается наружу от пустоты в бетон, поэтому геометрический отступ отрицателен.
         If radius <= GEOM_TOLERANCE Then
             facade.Source faces(index).ID, faces(index).Source ' Связываем ошибки этой линии с её исходными полями.
             If base <= 2 Then
                 y = y + IIf(base = 1, 1#, -1#) * (H / 2# - offset)
                 Set shape = facade.LinePath("Unlimited." & faces(index).ID, x - B / 2#, y, x + B / 2#, y) ' Исходная прямая вдоль стороны отверстия.
-                ' Задаём концы линии по отступам соседних внутренних сторон; при необходимости продлеваем её.
-                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 1#, 0#, x - B / 2# - faces(7).AxisDistance, 1#, 0#, x + B / 2# + faces(8).AxisDistance)
+                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 1#, 0#, x - B / 2# - faces(7).AxisDistance, 1#, 0#, x + B / 2# + faces(8).AxisDistance) ' Задаём концы линии по отступам соседних внутренних сторон; при необходимости продлеваем её.
             Else
                 x = x + IIf(base = 3, -1#, 1#) * (B / 2# - offset)
                 Set shape = facade.LinePath("Unlimited." & faces(index).ID, x, y - H / 2#, x, y + H / 2#) ' Исходная прямая вдоль стороны отверстия.
-                ' Задаём концы линии по отступам соседних внутренних сторон; при необходимости продлеваем её.
-                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 0#, 1#, y - H / 2# - faces(6).AxisDistance, 0#, 1#, y + H / 2# + faces(5).AxisDistance)
+                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 0#, 1#, y - H / 2# - faces(6).AxisDistance, 0#, 1#, y + H / 2# + faces(5).AxisDistance) ' Задаём концы линии по отступам соседних внутренних сторон; при необходимости продлеваем её.
             End If
             Exit Function
         End If
@@ -297,7 +295,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     Dim i As Long, base As Long
     For i = 1 To 8
         If faces(i).Active Then
-            base = (i - 1) Mod 4 + 1
+            base = (i - 1) Mod 4 + 1 ' Номер стороны 1..4: верх, низ, лево, право; у отверстия та же последовательность.
             If base <= 2 Then
                 facade.RebarRowExtremeLabel faces(i).ID, faces(i).ID & ".Main", 0#, IIf(base = 1, 1#, -1#), faces(i).LabelX, faces(i).LabelY ' Для горизонтальной стороны подпись берём от крайней линии стержней.
             Else
@@ -307,7 +305,6 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     Next i
     facade.HorizontalExtent "DIM_B", "OUTER.Boundary", "B", sizes.H / 2#, 1#, "Наружная ширина HollowRectangle." ' Полная ширина по наружному контуру; размер вынесен вверх.
     facade.VerticalExtent "DIM_H", "OUTER.Boundary", "H", -sizes.B / 2#, -1#, "Наружная высота HollowRectangle." ' Полная высота сечения H; размер вынесен влево.
-    ' Полная ширина по контуру отверстия; размер под сечением.
-    facade.HorizontalExtent "DIM_B_OPENING", "OPENING.Boundary", "B_o", -sizes.H / 2#, -1#, "Ширина внутреннего отверстия Opening."
+    facade.HorizontalExtent "DIM_B_OPENING", "OPENING.Boundary", "B_o", -sizes.H / 2#, -1#, "Ширина внутреннего отверстия Opening." ' Полная ширина по контуру отверстия; размер под сечением.
     facade.VerticalExtent "DIM_H_OPENING", "OPENING.Boundary", "H_o", sizes.B / 2#, 1#, "Высота внутреннего отверстия Opening." ' Высота отверстия; размер справа от сечения.
 End Sub

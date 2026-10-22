@@ -223,10 +223,7 @@ Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As L
     Next key
     caption = Join(keys, " / ")
     For row = firstRow To lastRow
-        ' Поиск подписи не читает значение каждого параметра в этом столбце.
-        ' Ошибка Excel в неактивном поле не является искомой подписью;
-        ' настоящий потребитель поля по-прежнему получает её через CellValue.
-        value = mValues(row, keyColumn)
+        value = mValues(row, keyColumn) ' Поиск подписи не читает значение каждого параметра в этом столбце. Ошибка Excel в неактивном поле не является искомой подписью; настоящий потребитель поля по-прежнему получает её через CellValue.
         If Not IsError(value) Then
             If Not BlankValue(value) Then
                 For Each key In keys
@@ -263,9 +260,7 @@ Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
     location = mName
     If row >= 1 And row <= mRows And column >= 1 And column <= mColumns Then
         location = mAddresses(row, column) & " (" & mName & ")"
-        ' Получает понятное название строки из сохранённой таблицы без привязки к конкретному
-        ' типу сечения.
-        If column > 1 And VarType(mValues(row, 1)) = vbString Then
+        If column > 1 And VarType(mValues(row, 1)) = vbString Then ' Получает понятное название строки из сохранённой таблицы без привязки к конкретному типу сечения.
             If Len(Trim$(CStr(mValues(row, 1)))) > 0 Then location = location & "; " & CStr(mValues(row, 1))
         End If
         value = mValues(row, column)

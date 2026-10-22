@@ -54,7 +54,7 @@ Public Function Table(ByVal tableName As String) As CSectionInputTable
 End Function
 
 ' Создаёт ридер с защищёнными единицами: по ключам блоков либо по позиции ValueAt.
-' rowPrefix ограничивает чтение строками с общей начальной частью ключа; для общей таблицы это имя типа и точка.
+' rowPrefix позволяет читать строки с общей начальной частью ключа, например Circle.; без него ключи полные.
 ' Таблица произвольной структуры также доступна через Table.
 Public Function Reader(ByVal tableName As String, Optional ByVal rowPrefix As String = vbNullString) As CSectionInputReader
     Dim result As CSectionInputReader: Set result = New CSectionInputReader
@@ -62,8 +62,8 @@ Public Function Reader(ByVal tableName As String, Optional ByVal rowPrefix As St
     Set Reader = result
 End Function
 
-' Возвращает защищённую от изменений копию единиц ввода.
-' Рецепт использует её для перевода размеров, не меняя настройки.
+' Возвращает защищённый снимок единиц ввода, созданный при Initialize.
+' Повторное чтение не создаёт новую копию; рецепт не может изменить зафиксированные настройки.
 Public Property Get Units() As CUnitSystem
     If Not mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст еще не опубликован."
     Set Units = mUnits

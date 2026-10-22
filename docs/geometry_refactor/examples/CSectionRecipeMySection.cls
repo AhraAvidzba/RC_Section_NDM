@@ -25,7 +25,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     facade.Initialize "MySection"
     Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)
     facade.Outer "OUTER", path.ID
-    Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)
+    Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#) ' Осевая линия в 50 мм от верха и торцов бетона; отдельный алгоритм координат стержней не нужен.
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "Top"
     facade.RebarByCount "Top.Main", path.ID, 5, 20#, options

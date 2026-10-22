@@ -4,8 +4,8 @@ Option Explicit
 ' ==========================================================================
 ' Макросы кнопок и выполнение расчёта в Excel
 ' ==========================================================================
-' Связывает чтение Config, построение сечения, расчёт сочетаний, запись Results,
-' обновление схемы и экспорт в AutoCAD. Геометрию и расчётные алгоритмы
+' Связывает отдельное формирование сечения, чтение Config, расчёт сочетаний и запись Results,
+' а также обновление схемы. Геометрию и расчётные алгоритмы
 ' выполняют соответствующие классы; модуль задаёт порядок действий в книге.
 
 Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых строк между крупными таблицами Results.
@@ -16,10 +16,8 @@ Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых �
 Public Sub RunSectionCalculation()
     On Error GoTo Failed
     Dim startedAt As Double: startedAt = Timer
-    ' Проверяем оформление сообщения до расчета, чтобы ошибка Config не
-    ' обнаруживалась лишь после успешной записи нового Results.
     Dim informationEnabled As Boolean
-    informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
+    informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook) ' Проверяем оформление сообщения до расчета, чтобы ошибка Config не обнаруживалась лишь после успешной записи нового Results.
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, True, startedAt)
     If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Or _
@@ -164,10 +162,9 @@ Private Function CanUseGeometryPreview(ByVal workbook As Object, ByVal settings 
 Failed:
 End Function
 
-' Очищает содержимое существующего ChartObject, но не удаляет само окно схемы.
-' Это нужно, когда расчет не дал ни одного доступного состояния LC: пользователь
-' не должен видеть подпись или AutoCAD-preview схему, ошибочно связанную
-' с текущими Generated-настройками.
+' Очищает содержимое существующего ChartObject без удаления окна схемы.
+' Прежний рисунок не должен выглядеть как результат нового запуска,
+' если пригодные данные отсутствуют или обновление схемы ещё не выполнено.
 Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText As String)
     On Error GoTo Done
     Dim plotter As CSectionPlotter
@@ -240,12 +237,10 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     End If
     If Len(section.GeometryWarningText) > 0 Then FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & section.GeometryWarningText
     CalculateResultsSheet workbook
-    ' Оформление использует уже сохранённый снимок и не запускает расчёт.
-    ' Ошибка схемы не отменяет успешное формирование сечения.
     Dim plotErrorNumber As Long, plotError As String
     On Error Resume Next
     Err.Clear
-    UpdateSectionGeometryPreviewForWorkbook workbook
+    UpdateSectionGeometryPreviewForWorkbook workbook ' Оформление использует уже сохранённый снимок и не запускает расчёт. Ошибка схемы не отменяет успешное формирование сечения.
     plotErrorNumber = Err.Number: plotError = Err.Description
     Err.Clear
     On Error GoTo Failed
@@ -443,9 +438,7 @@ Failed:
     errorNumber = Err.Number
     errorSource = Err.Source
     errorDescription = Err.Description
-    ' Интерфейс возвращаем до записи отчёта: недоступный каталог отчёта
-    ' не должен оставлять события и экран выключенными или подменять ошибку.
-    If Not excelGuard Is Nothing Then excelGuard.Restore
+    If Not excelGuard Is Nothing Then excelGuard.Restore ' Интерфейс возвращаем до записи отчёта: недоступный каталог отчёта не должен оставлять события и экран выключенными или подменять ошибку.
     On Error Resume Next
     If Not report Is Nothing Then
         report.AddError "Расчет остановлен", errorDescription
@@ -836,6 +829,7 @@ Private Function NumberedCollectionLines(ByVal items As Collection) As String
     NumberedCollectionLines = lines
 End Function
 
+' Выбирает большее число при резервировании строк под сохранённые состояния и аннотации.
 Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
     If a > b Then MaxLong = a Else MaxLong = b
 End Function
@@ -1040,9 +1034,8 @@ Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
             End If
         End If
     Next rowIndex
-    ' Пустые усилия допустимы только в существующей строке нужного сочетания.
     Dim id As Variant
-    For Each id In activeIDs.Keys
+    For Each id In activeIDs.Keys ' Пустые усилия допустимы только в существующей строке нужного сочетания.
         If Not activeIDs(id) Then
             batch.AddInvalidStabilityDurationLoad CStr(id), _
                 "Для сочетания " & CStr(id) & " в таблице «Нагрузки для устойчивости» (rngStabilityDurationLoads, " & _
@@ -1199,9 +1192,9 @@ Public Function ReadWorkbookSectionDefinition(ByVal workbook As Object, ByVal se
     Set ReadWorkbookSectionDefinition = registry.CreateDefinition(typeID, context)
 End Function
 
-' Подготавливает модель сечения для расчёта: строит её по Config либо читает
-' ранее импортированную геометрию AutoCAD из Results. Если нужные сохранённые данные
-' отсутствуют, выдаёт ошибку без повторного импорта.
+' На этапе формирования строит параметрическую модель по таблице выбранного
+' рецепта на листе «Сечения». Ветка AutoCAD читает только ранее сохранённую
+' модель и не импортирует чертёж. Штатная кнопка расчёта читает Results напрямую.
 Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByRef generatedBuilder As CSectionBuilder = Nothing) As CSectionModel
     If workbook Is Nothing Then Err.Raise vbObjectError + 4130, "BuildWorkbookSectionModel", "Книга Excel не передана."
@@ -1276,7 +1269,8 @@ End Function
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: перенос пользовательской точки нагрузки
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' перенос пользовательской точки нагрузки
 ' Вызывает обычное чтение Config и перенос нагрузки. Проверяемые преобразования
 ' единиц, центр сечения и формула переноса не повторяются в тесте.
 Public Sub Audit03ApplyLoadReferenceForTests(ByVal section As CSectionModel, _

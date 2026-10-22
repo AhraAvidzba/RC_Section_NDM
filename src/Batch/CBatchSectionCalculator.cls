@@ -255,16 +255,12 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Set mReportUnits = units
     Set mReport.UnitSystem = units
     Dim conversionKey As String ' Настройка текущего пересчета единиц для точной диагностики переполнения.
-    ' Параметры трещин обязательны: пустая ячейка или отсутствующий ключ
-    ' должны дать ошибку, а не изменить методику подстановкой начального значения.
-    mCrackStandardCode = settings.GetRequiredChoice("SLS.Crack.Code", Array("SP63", "SP35"))
+    mCrackStandardCode = settings.GetRequiredChoice("SLS.Crack.Code", Array("SP63", "SP35")) ' Параметры трещин обязательны: пустая ячейка или отсутствующий ключ должны дать ошибку, а не изменить методику подстановкой начального значения.
     mCrackAllowable = settings.GetRequiredDouble("SLS.Crack.Allowable")
     mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
-    ' До решения НДС проверяем выбранные путь нагрузки и стратегию образования трещины
-    ' средствами этого расчёта. При ошибке добавляем фактический адрес настройки.
     Dim formationOptions As CCrackFormationCalculator
     Set formationOptions = New CCrackFormationCalculator
-    mCrackFormationSolutionStrategy = formationOptions.NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
+    mCrackFormationSolutionStrategy = formationOptions.NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings) ' Владелец поиска проверяет стратегию до НДС и добавляет фактический адрес ошибочной настройки.
     mCrackToleranceLambda = settings.GetRequiredDouble("SLS.Crack.ToleranceLambda")
     formationOptions.LambdaTolerance = mCrackToleranceLambda
     formationOptions.ValidateSearchSettings settings
@@ -341,32 +337,24 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         mStabilityAccidentalEccentricityUser1 = units.InputLengthToInternal(mStabilityAccidentalEccentricityUser1)
         conversionKey = "Stability.AccidentalEccentricityUser2"
         mStabilityAccidentalEccentricityUser2 = units.InputLengthToInternal(mStabilityAccidentalEccentricityUser2)
-        ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
-        conversionKey = "Solver.ToleranceN"
+        conversionKey = "Solver.ToleranceN" ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
         mSolverToleranceN = Sgn(mSolverToleranceN) * Abs(units.InputForceToInternal(mSolverToleranceN))
         conversionKey = "Solver.ToleranceMx"
         mSolverToleranceMx = Sgn(mSolverToleranceMx) * Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
         conversionKey = "Solver.ToleranceMy"
         mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
         conversionKey = "Calculation.ZeroMomentPerDepth"
-        ' Переводим величину момента на единицу длины в нужные единицы.
-        ' Отрицательный ввод сохраняем для проверки, не превращая его в допустительный
-        ' положительный порог.
-        mZeroMomentPerDepth = Sgn(mZeroMomentPerDepth) * units.InputMomentPerLengthToInternal(mZeroMomentPerDepth)
+        mZeroMomentPerDepth = Sgn(mZeroMomentPerDepth) * units.InputMomentPerLengthToInternal(mZeroMomentPerDepth) ' Переводим момент на единицу длины в Н*мм/мм, сохраняя отрицательный знак для проверки ошибочного ввода.
         conversionKey = vbNullString
     End If
-    ' Расчёт ширины проверяет параметры до проверки отсутствия трещины и до решения НДС.
-    ' Здесь настройки только передаются, без повторной реализации их диапазонов.
     Dim widthOptions As CCrackWidthCalculator
     Set widthOptions = New CCrackWidthCalculator
     ConfigureCrackCalculator widthOptions
-    widthOptions.ValidateSettings settings
-    ' Диапазоны параметров несущей способности проверяет её расчётный класс.
-    ' CSystemSettingsReader добавляет к ошибке актуальный адрес ячейки Config.
+    widthOptions.ValidateSettings settings ' Проверка параметров выполняется до НДС и до вывода об отсутствии трещины; диапазоны не дублируются здесь.
     Dim capacityOptions As CCapacityCalculator
     Set capacityOptions = New CCapacityCalculator
     ConfigureCapacityCalculator capacityOptions
-    capacityOptions.ValidateSettings settings
+    capacityOptions.ValidateSettings settings ' Владелец расчёта проверяет диапазоны; прочитанные настройки дают фактический адрес ошибки Config.
     ' Расчёт устойчивости проверяет собственные значения и варианты настроек до запуска.
     ' Адрес ошибки берём из прочитанного Config после перевода единиц.
     Dim stabilityOptions As CStabilityCalculator
@@ -697,15 +685,14 @@ Private Sub NormalizeAllCombinationMoments()
 End Sub
 
 ' Последовательно рассчитывает все сочетания и выбирает определяющее.
-' Общий порядок для всех форм: несущая способность, если запрошена,
-' НДС при заданной нагрузке, затем проверки трещин для II ГПС.
+' Для каждого сочетания сначала применяется запрошенная устойчивость, затем
+' несущая способность, НДС заданной нагрузки и проверки трещин.
+' Состав проверок и материальные модели задаются расчётным профилем.
 Public Sub Execute()
     On Error GoTo Failed
 
     ValidateReady
-    ' Модель и материалы могли измениться между запусками.
-    ' Ранее сохранённый расчётный центр в новом запуске использовать нельзя.
-    ClearTransformedReferenceCache
+    ClearTransformedReferenceCache ' Модель и материалы могли измениться между запусками. Ранее сохранённый расчётный центр в новом запуске использовать нельзя.
     ConfigureConcreteMomentDepths
     NormalizeAllCombinationMoments
     mExecuting = True
@@ -728,9 +715,7 @@ Public Sub Execute()
     ReportStep "Начат пакетный расчет. Количество сочетаний: " & CStr(mCount) & "."
 
     Dim i As Long
-    ' Ошибка одного сочетания попадает в его статус и общую сводку,
-    ' но не стирает результаты остальных строк.
-    For i = 1 To mCount
+    For i = 1 To mCount ' Ошибка одного сочетания попадает в его статус и общую сводку, но не стирает результаты остальных строк.
         currentIndex = i
         stage = "ClearResultRow"
         ClearResultRow i
@@ -777,22 +762,22 @@ End Sub
 ' для диагностики остаётся число выполненных подготовок.
 Private Sub ReleaseRunPreparation()
     mExecuting = False
-    If Not mCrackGeometryQuery Is Nothing Then mCrackDomainBuildCount = mCrackGeometryQuery.DomainBuildCount
+    If Not mCrackGeometryQuery Is Nothing Then mCrackDomainBuildCount = mCrackGeometryQuery.TestDomainBuildCount
     Set mCrackGeometryQuery = Nothing
     Dim i As Long
     For i = 1 To 2
         If Not mRunTransformedProperties(i) Is Nothing Then _
-            mMechanicalPreparationBuildCount = mMechanicalPreparationBuildCount + mRunTransformedProperties(i).PreparationBuildCount
+            mMechanicalPreparationBuildCount = mMechanicalPreparationBuildCount + mRunTransformedProperties(i).TestPreparationBuildCount
         Set mRunTransformedProperties(i) = Nothing
     Next i
     If Not mRunConcreteProperties Is Nothing Then _
-        mMechanicalPreparationBuildCount = mMechanicalPreparationBuildCount + mRunConcreteProperties.PreparationBuildCount
+        mMechanicalPreparationBuildCount = mMechanicalPreparationBuildCount + mRunConcreteProperties.TestPreparationBuildCount
     Set mRunConcreteProperties = Nothing
 End Sub
 
 ' Рассчитывает одно сочетание нагрузок и собирает его итоговый статус.
 ' Несущая способность определяет запас, решение при заданной нагрузке — текущее НДС;
-' проверки трещин выполняются для II ГПС.
+' проверки трещин используют собственные материальные модели выбранного профиля.
 Private Sub RunCombination(ByVal index As Long)
     On Error GoTo Failed
     ReportSection "Сочетание " & CStr(index) & ": " & mInputs(index).CombinationID
@@ -1015,12 +1000,9 @@ Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CS
         mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
 
     Set mWorkingLoads(index) = loadState
-
-    ' В сводку записываем усилия после фильтра малых моментов — те же,
-    ' с которыми выполняются НДС, несущая способность и расчёт трещин.
     Dim finalDesignMx As Double
     Dim finalDesignMy As Double
-    finalDesignMx = loadState.MxAboutPoint(referenceY)
+    finalDesignMx = loadState.MxAboutPoint(referenceY) ' В сводку идут отфильтрованные усилия, используемые последующими проверками; момент переносится к выбранному центру.
     finalDesignMy = loadState.MyAboutPoint(referenceX)
     mResults(index).UpdateStabilityDesignLoads loadState.N, finalDesignMx, finalDesignMy, _
         stability.PrincipalAngleRad
@@ -1051,9 +1033,7 @@ Private Sub TransformedReferencePoint(ByVal valueSet As EMaterialValueSet, _
         If mRunTransformedProperties(slot) Is Nothing Then Set mRunTransformedProperties(slot) = New CSectionPropertiesCalculator
         Set props = mRunTransformedProperties(slot)
     Else
-        ' При отдельном справочном чтении сохраняем вычисленные координаты центра.
-        ' Временный объект подготовки в завершённый запуск не возвращаем.
-        Set props = New CSectionPropertiesCalculator
+        Set props = New CSectionPropertiesCalculator ' При отдельном справочном чтении сохраняем вычисленные координаты центра. Временный объект подготовки в завершённый запуск не возвращаем.
     End If
     props.EnsureTransformed mSection, _
         mMaterialProvider.ConcreteElasticModulusFromValueSet(valueSet), _
@@ -1500,9 +1480,7 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then reason = "Некорректное сочетание нагрузок."
     mResults(index).SetProfileId mInputs(index).ProfileId
     mResults(index).SetWorkflowMeta InvalidInputMeta(rkGeneric, reason)
-    ' Ошибка одной строки относится только к запрошенным проверкам.
-    ' Неизвестный профиль не дает права выдумывать набор активных расчетов.
-    If mProfiles.HasProfile(mInputs(index).ProfileId) Then
+    If mProfiles.HasProfile(mInputs(index).ProfileId) Then ' Ошибка одной строки относится только к запрошенным проверкам. Неизвестный профиль не дает права выдумывать набор активных расчетов.
         Dim profile As CCalculationProfile
         Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
         If profile.StrengthDirectStateEnabled Then mResults(index).SetDirectStateMeta InvalidInputMeta(rkDirectState, reason)
@@ -1613,9 +1591,7 @@ End Sub
 ' Сбрасывает все результаты одной строки перед повторным расчетом LC.
 ' Входные усилия и комментарий не трогаются.
 Private Sub ClearResultRow(ByVal index As Long)
-    ' Прежний результат мог быть передан классу записи на лист или другому потребителю.
-    ' Новый запуск создаёт отдельный объект, не меняя уже выданный результат.
-    Set mResults(index) = New CCombinationResult
+    Set mResults(index) = New CCombinationResult ' Прежний результат мог быть передан классу записи на лист или другому потребителю. Новый запуск создаёт отдельный объект, не меняя уже выданный результат.
     mResults(index).Clear CAPACITY_PATH_NONE
     mResults(index).SetDirectStateMeta NotRequestedMeta(rkDirectState)
     mResults(index).SetStabilityMeta NotRequestedMeta(rkStability)
@@ -2134,9 +2110,7 @@ End Property
 Private Function DetailedInvalidInputMessage(ByVal index As Long) As String
     Dim detail As String, references As String
     detail = Trim$(mInputs(index).InputError)
-    ' Итог уже собран владельцами result-tree, включая самостоятельный crack
-    ' subtree. Popup не подменяет его машинным LimitState или display-статусом.
-    If Len(detail) = 0 Then detail = Trim$(mResults(index).OverallMeta.ResultComment)
+    If Len(detail) = 0 Then detail = Trim$(mResults(index).OverallMeta.ResultComment) ' Берём готовое пояснение общего результата, включая трещины; машинный код предела и краткий статус его не заменяют.
     If Len(detail) = 0 Then detail = Trim$(mResults(index).Status)
     If Len(detail) = 0 Then detail = mStatusPolicy.InputErr
 
@@ -2229,26 +2203,28 @@ End Property
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 
-' ДЛЯ ТЕСТОВ: возвращает число успешных построений общей области в последнем Execute.
-Friend Property Get CrackDomainBuildCount() As Long
-    CrackDomainBuildCount = mCrackDomainBuildCount
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает число успешных построений общей области в последнем Execute.
+Friend Property Get TestCrackDomainBuildCount() As Long
+    TestCrackDomainBuildCount = mCrackDomainBuildCount
 End Property
 
-' ДЛЯ ТЕСТОВ: возвращает число фактических подготовок общих массивов геометрии
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает число фактических подготовок общих массивов геометрии
 ' за текущий запуск, без повторного решения НДС.
-Friend Property Get MechanicalPreparationBuildCount() As Long
-    MechanicalPreparationBuildCount = mMechanicalPreparationBuildCount
+Friend Property Get TestMechanicalPreparationBuildCount() As Long
+    TestMechanicalPreparationBuildCount = mMechanicalPreparationBuildCount
 End Property
 
-' ДЛЯ ТЕСТОВ: проверяет, освобождены ли после Execute ссылки на временные расчётные данные.
-Friend Property Get RunPreparationReleased() As Boolean
-    RunPreparationReleased = mCrackGeometryQuery Is Nothing And mRunConcreteProperties Is Nothing And _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' проверяет, освобождены ли после Execute ссылки на временные расчётные данные.
+Friend Property Get TestRunPreparationReleased() As Boolean
+    TestRunPreparationReleased = mCrackGeometryQuery Is Nothing And mRunConcreteProperties Is Nothing And _
         mRunTransformedProperties(1) Is Nothing And mRunTransformedProperties(2) Is Nothing
 End Property
 
-' ДЛЯ ТЕСТОВ: повторный расчёт трещин не должен изменять ранее сохранённый результат.
-
-' ДЛЯ ТЕСТОВ: возвращает первый готовый результат трещин и повторяет обычный
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' возвращает первый готовый результат трещин и повторяет обычный
 ' расчёт до завершения сочетания. Новые расчётчики используют уже найденные
 ' НДС из общего хранилища без нового решения равновесия.
 Public Function TestRepeatCrackCalculation(ByVal index As Long) As CCrackResult
