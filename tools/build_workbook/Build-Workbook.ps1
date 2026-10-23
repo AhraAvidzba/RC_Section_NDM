@@ -569,6 +569,7 @@ try {
     $excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.UpdateSectionRecipeTypes")
 
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
+    Fit-SettingsInstructionRows $instructions
     if (-not (Test-BuildExcelIdentity $excel $ownedExcelProcessId $ownedExcelStartTicks)) {
         throw 'Excel process identity changed before saving the new workbook.'
     }

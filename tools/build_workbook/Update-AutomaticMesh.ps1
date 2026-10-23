@@ -55,10 +55,15 @@ try {
         $config.Cells.Item($r,4).Value2=[string]$definition[3]
         if ($key -eq 'Mesh.StepMode') {
             $config.Cells.Item($r,2).Value2='Auto 0.1';$config.Cells.Item($r,3).Value2='-'
-            $cell=$config.Cells.Item($r,2);$cell.Validation.Delete();$cell.Validation.Add(3,1,1,'Auto 0.05,Auto 0.1,Auto 0.2,User')
+            $cell=$config.Cells.Item($r,2);$cell.Validation.Delete()
+            $list=Get-ConfigValidationListAddress $config @('Auto 0.05','Auto 0.1','Auto 0.2','User')
+            $cell.Validation.Add(3,1,1,$list)
             $cell.Validation.IgnoreBlank=$false;$cell.Validation.InCellDropdown=$true;$cell.Validation.ShowError=$true
             $cell.Interior.Color=15135487;$cell.HorizontalAlignment=-4108
             $config.Cells.Item($r,5).Hyperlinks.Delete()
+            $edge=$config.Cells.Item($r,5).Borders.Item(10)
+            $reference=$config.Cells.Item($r+1,5).Borders.Item(10)
+            $edge.Weight=$reference.Weight;$edge.Color=$reference.Color;$edge.LineStyle=$reference.LineStyle
         }
         if ($key -eq 'Mesh.BoundarySubdivisions') {$config.Cells.Item($r,2).Value2=2}
     }
@@ -84,10 +89,11 @@ try {
     for($i=0;$i -lt $lines.Count;$i++) {
         $r=$helpRow+$i+1
         $help.Range('A'+($template+1)+':F'+($template+1)).Copy($help.Range('A'+$r+':F'+$r))
-        $help.Cells.Item($r,1).Value2=[string]($i+1);$help.Cells.Item($r,2).Value2=[string]$lines[$i]
+        Set-InstructionParagraphNumber $help.Cells.Item($r,1) ($i+1)
+        $help.Cells.Item($r,2).Value2=[string]$lines[$i]
         $help.Rows.Item($r).AutoFit() | Out-Null
     }
-    $config.Hyperlinks.Add($config.Cells.Item($configRow,5),'',("'Справка'!A"+$helpRow),'Открыть справку по выбору шага сетки','Подробнее') | Out-Null
+    Add-InstructionHyperlink $config.Cells.Item($configRow,5) 'Справка' $helpRow
     foreach($key in @('Mesh.StepX','Mesh.StepY','Mesh.BoundarySubdivisions')) {
         $r=Find-KeyRow $help $key
         $item=@(Get-SettingsInstructionCatalog | Where-Object Key -ceq $key)[0]

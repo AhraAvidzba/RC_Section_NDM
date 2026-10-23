@@ -3371,7 +3371,7 @@ function Add-SettingsInstructions {
             if ([string]::IsNullOrWhiteSpace([string]$line)) {
                 continue # Пустые слоты каталога не создают строки между пояснениями настройки.
             }
-            $InstructionSheet.Cells.Item($row, 1).Value2 = [string]$lineNumber
+            Set-InstructionParagraphNumber $InstructionSheet.Cells.Item($row, 1) $lineNumber
             $InstructionSheet.Cells.Item($row, 2).Value2 = $line
             $InstructionSheet.Cells.Item($row, 2).IndentLevel = 1
             if ($line.StartsWith("Формула")) {
@@ -3773,6 +3773,44 @@ function Add-InstructionHyperlink {
     $Cell.Hyperlinks.Delete()
     $Cell.Value2 = "Подробнее"
     $Cell.Parent.Hyperlinks.Add($Cell, "", "'" + $SheetName + "'!A" + $TargetRow, "", "Подробнее") | Out-Null
+    Set-InstructionHyperlinkFont $Cell
+}
+
+# Задаёт одинаковый вид обычных ссылок «Подробнее», включая уже посещённые.
+# Шрифт применяется после создания ссылки: Excel иначе подставляет стиль Hyperlink.
+function Set-InstructionHyperlinkFont {
+    param([object]$Cell)
+    $Cell.Font.Name = 'Arial'; $Cell.Font.Size = 9
+    $Cell.Font.Bold = $false; $Cell.Font.Italic = $false
+    $Cell.Font.Color = 16711680; $Cell.Font.Underline = 2
+}
+
+# Нумерует пояснение внутри блока справки; тип числа и явное выравнивание
+# устраняют разницу между прежними текстовыми и числовыми номерами.
+function Set-InstructionParagraphNumber {
+    param([object]$Cell, [int]$Number)
+    $Cell.Value2 = [double]$Number
+    $Cell.NumberFormat = '0'; $Cell.HorizontalAlignment = -4152
+    $Cell.Font.Name = 'Arial'; $Cell.Font.Size = 10
+    $Cell.Font.Bold = $false; $Cell.Font.Italic = $false
+    $Cell.Font.Color = 0; $Cell.Font.Underline = -4142
+    $Cell.IndentLevel = 0
+}
+
+# Подбирает высоту обычных пояснений после восстановления сохранённого макета.
+# Тексты каталога могут стать длиннее; заголовки остаются однострочными.
+# Только сборка: расчёт и обновление схемы эту функцию не вызывают.
+function Fit-SettingsInstructionRows {
+    param([object]$Sheet)
+    foreach ($item in (Get-SettingsInstructionCatalog)) {
+        $heading = $Sheet.Cells.Find($item.Title, $Sheet.Cells.Item(1, 1), -4163, 1, 1, 1, $false, $false, $false)
+        if ($null -eq $heading) { throw ('Не найден заголовок справки: ' + $item.Title) }
+        $count = @($item.Lines | Where-Object {-not [string]::IsNullOrWhiteSpace([string]$_)}).Count
+        $heading.EntireRow.RowHeight = [double]$Sheet.StandardHeight
+        if ($count -gt 0) {
+            $Sheet.Range($Sheet.Cells.Item($heading.Row + 1, 1), $Sheet.Cells.Item($heading.Row + $count, 6)).EntireRow.AutoFit() | Out-Null
+        }
+    }
 }
 
 # Делает заголовок блока самодостаточным: название остается на месте, а пометка "(Подробнее)"
@@ -4782,7 +4820,7 @@ function Set-SettingInstructionBlock {
     $heading.Borders.Item(8).Color = 14277081
     $heading.Borders.Item(9).Color = 14277081
     for ($index = 0; $index -lt $Lines.Count; $index++) {
-        $Sheet.Cells.Item(($Row + $index + 1), 1).Value2 = [double]($index + 1)
+        Set-InstructionParagraphNumber $Sheet.Cells.Item(($Row + $index + 1), 1) ($index + 1)
         $text = $Sheet.Cells.Item(($Row + $index + 1), 2)
         $text.Value2 = [string]$Lines[$index]; $text.HorizontalAlignment = -4131
     }

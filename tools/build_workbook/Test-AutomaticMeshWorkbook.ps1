@@ -87,7 +87,12 @@ try {
     $r=Test-FindKeyRow $config 'Mesh.StepMode';$x=Test-FindKeyRow $config 'Mesh.StepX';$boundary=Test-FindKeyRow $config 'Mesh.BoundarySubdivisions'
     if($r+1 -ne $x -or [string]$config.Cells.Item($r,2).Value2 -cne 'Auto 0.1' -or $config.Cells.Item($boundary,2).Value2 -ne 2){throw 'Defaults or position are wrong.'}
     $cell=$config.Cells.Item($r,2)
-    if($cell.Validation.Type -ne 3 -or $cell.Validation.Formula1 -cne 'Auto 0.05,Auto 0.1,Auto 0.2,User' -or -not $cell.Validation.InCellDropdown){throw 'Wrong mode dropdown.'}
+    $options=@('Auto 0.05','Auto 0.1','Auto 0.2','User')
+    $localList=$options -join [string]$app.International(5)
+    if($cell.Validation.Type -ne 3 -or $cell.Validation.Formula1 -cne $localList -or -not $cell.Validation.InCellDropdown){throw 'Wrong mode dropdown.'}
+    $savedMode=$cell.Value2
+    foreach($option in $options){$cell.Value2=$option;if(-not $cell.Validation.Value){throw ('Mode rejected: '+$option)}}
+    $cell.Value2=$savedMode
     if($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne -4108){throw 'Wrong input style.'}
     if([string]$config.Cells.Item($x,3).Formula -notmatch '^='){throw 'Manual step unit must remain a formula.'}
     $h=Test-FindKeyRow $help 'Mesh.StepMode';$hx=Test-FindKeyRow $help 'Mesh.StepX'
@@ -172,11 +177,17 @@ End Function
     $ids=[object[,]]::new($count,1)
     for($i=0;$i -lt $count;$i++){$ids[$i,0]='TEST_'+($i+1).ToString('00')}
     try {
-        $loads.Cells.Item(2,1).Resize($count,1).Value2=$ids
+        # COM-адаптер PowerShell может запомнить Value2 как String после чтения
+        # пустого шаблона. Здесь всего 30 тестовых ID; скаляры обходят его ошибку
+        # приведения массива. Рабочая блочная запись книги не изменяется.
+        for($i=0;$i -lt $count;$i++){$loads.Cells.Item($i+2,1).Value2=[string]$ids[$i,0]}
         $app.Calculate()
         $helperColumn=Get-WorkbookLayoutHelperColumn 'LoadCases'
         $actualIds=$config.Cells.Item(2,$helperColumn).Resize($count,1).Value2
-        for($i=1;$i -le $count;$i++){if([string]$actualIds[$i,1] -cne [string]$ids[($i-1),0]){throw ('Load picker lost combination '+$i)}}
+        for($i=1;$i -le $count;$i++){
+            $actual=if($count -eq 1){[string]$actualIds}else{[string]$actualIds[$i,1]}
+            if($actual -cne [string]$ids[($i-1),0]){throw ('Load picker lost combination '+$i)}
+        }
     } finally {$loads.Formula=$savedLoads;$app.Calculate()}
     Write-Output 'LOAD_PICKER_VERIFIED'
     $help.Outline.ShowLevels(1);$app.EnableEvents=$true;$config.Activate();$link.Follow()
