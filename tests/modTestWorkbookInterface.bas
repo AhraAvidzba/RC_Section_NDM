@@ -6576,7 +6576,12 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             loads.Cells(2, 4).Value2 = -750000# / momentFactor * signMy
             loads.Cells(2, 5).Value2 = "PR1": loads.Cells(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
             message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
-            TestAssertTrue stats, prefix & ".run", InStr(1, message, "Расчет импортированной", vbTextCompare) > 0
+            TestAppendLine stats, "IMPORTED_CALCULATION_MESSAGE: " & prefix & "|" & message
+            TestAssertTrue stats, prefix & ".run", InStr(1, message, "Расчет завершен. Обработано сочетаний: 1.", vbTextCompare) = 1
+            TestAssertTrue stats, prefix & ".noImportNotice", InStr(1, message, "импорт", vbTextCompare) = 0 And InStr(1, message, "AutoCAD", vbTextCompare) = 0 ' Сообщения импорта допустимы только при формировании сечения.
+            TestAssertTextEquals stats, prefix & ".directState", TestResultsPropertyValue("LC_IMPORT", "DirectStateStatus"), "OK"
+            TestAssertClose stats, prefix & ".equilibriumN", CDbl(TestResultsPropertyValue("LC_IMPORT", "Nint")) * forceFactor * signN, -100000#, 0.001
+            TestAssertTextEquals stats, prefix & ".savedSource", ResultsGeometrySource(ThisWorkbook), "AutoCADImport"
             TestAssertTrue stats, prefix & ".hasState", TestResultTableRowCount("rngNDMElementResults") > 1
             TestAssertClose stats, prefix & ".loadN", CDbl(TestResultsPropertyValue("LC_IMPORT", "N")) * forceFactor * signN, -100000#, 0.001
             TestAudit03AssertAutoCADMmGeometry stats, prefix & ".afterSolve", section
@@ -6647,7 +6652,12 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     TestAudit03ComparePlainSnapshot stats, "audit03.importUnits.invalidOutput.snapshotPreserved", preview, actual, 1
     TestSetSystemSetting "Units.Length.Output", "m"
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
-    TestAssertTrue stats, "audit03.importUnits.invalidOutput.recovery", InStr(1, message, "Расчет импортированной", vbTextCompare) > 0
+    TestAppendLine stats, "IMPORTED_CALCULATION_MESSAGE: invalidOutput.recovery|" & message
+    TestAssertTrue stats, "audit03.importUnits.invalidOutput.recovery", InStr(1, message, "Расчет завершен. Обработано сочетаний: 1.", vbTextCompare) = 1
+    TestAssertTrue stats, "audit03.importUnits.invalidOutput.noImportNotice", InStr(1, message, "импорт", vbTextCompare) = 0 And InStr(1, message, "AutoCAD", vbTextCompare) = 0 ' Повторный расчёт не повторяет сообщения этапа импорта.
+    TestAssertTextEquals stats, "audit03.importUnits.invalidOutput.directState", TestResultsPropertyValue("LC_IMPORT", "DirectStateStatus"), "OK"
+    TestAssertClose stats, "audit03.importUnits.invalidOutput.equilibriumN", CDbl(TestResultsPropertyValue("LC_IMPORT", "Nint")) * 9806.65, -100000#, 0.001 ' Здесь сохраняются выходные tf и положительное растяжение из последнего набора.
+    TestAssertTextEquals stats, "audit03.importUnits.invalidOutput.savedSource", ResultsGeometrySource(ThisWorkbook), "AutoCADImport"
     TestAudit03AssertAutoCADMmGeometry stats, "audit03.importUnits.invalidOutput.recoveredGeometry", section
     GoTo Restore
 Failed:

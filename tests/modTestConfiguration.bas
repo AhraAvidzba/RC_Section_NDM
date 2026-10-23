@@ -1824,8 +1824,11 @@ Private Sub TestCheckStabilityConfigEffects(ByRef stats As TConfigTestStats, ByV
     Dim axis As Long
     For axis = 1 To 2
         table.Formula = configured: TestSetValue table, "Stability.ZeroMomentEccentricitySign" & CStr(axis), -1#
-        Set batch = TestStabilityConfigRun(stats, prefix & ".zeroSign" & CStr(axis), section, provider, units, -10000#, 0#, 0#)
+        Set batch = TestStabilityConfigRun(stats, prefix & ".zeroSign" & CStr(axis), section, provider, units, _
+            -10000#, 0#, 0#, referenceAtStabilityCenter:=True)
         Set changed = batch.ResultAt(1).StabilityResult
+        TestCheckClose stats, prefix & ".zeroSign.trueZeroMoment1." & CStr(axis), changed.Moment1, 0#, 0#
+        TestCheckClose stats, prefix & ".zeroSign.trueZeroMoment2." & CStr(axis), changed.Moment2, 0#, 0#
         TestCheckClose stats, prefix & ".zeroSign.ea1." & CStr(axis), changed.AccidentalEcc1, IIf(axis = 1, -100#, 100#), 0.0000001
         TestCheckClose stats, prefix & ".zeroSign.ea2." & CStr(axis), changed.AccidentalEcc2, IIf(axis = 2, -80#, 80#), 0.0000001
         Set batch = TestStabilityConfigRun(stats, prefix & ".nonzeroSignInactive" & CStr(axis), section, provider, units)
@@ -2140,7 +2143,8 @@ Private Function TestStabilityConfigRun(ByRef stats As TConfigTestStats, ByVal p
         Optional ByVal nValue As Double = -10000#, Optional ByVal mxValue As Double = 200000#, _
         Optional ByVal myValue As Double = 100000#, Optional ByVal sustainedN As Double = 0#, _
         Optional ByVal sustainedMx As Double = 0#, Optional ByVal sustainedMy As Double = 0#, _
-        Optional ByVal profileId As String = "PR1") As CBatchSectionCalculator
+        Optional ByVal profileId As String = "PR1", _
+        Optional ByVal referenceAtStabilityCenter As Boolean = False) As CBatchSectionCalculator
     Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, units As CUnitSystem
     Dim provider As CMaterialModelProvider, profiles As CCalculationProfileCatalog, report As CExecutionReport
     Dim reason As String, passed As Long, failed As Long, result As CStabilityResult
@@ -2160,6 +2164,15 @@ Private Function TestStabilityConfigRun(ByRef stats As TConfigTestStats, ByVal p
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
     batch.AddCombination prefix, nValue, mxValue, myValue, profileId, "Проверка устойчивости через Config", "Auto"
     batch.AddStabilityDurationLoad prefix, sustainedN, sustainedMx, sustainedMy
+    If referenceAtStabilityCenter Then
+        Dim referenceProps As CSectionPropertiesCalculator, referenceValueSet As EMaterialValueSet
+        referenceValueSet = profiles.ProfileById(profileId).StabilityValueSet
+        Set referenceProps = New CSectionPropertiesCalculator
+        referenceProps.CalculateTransformedByModuli section, _
+            provider.ConcreteElasticModulusFromValueSet(referenceValueSet), _
+            provider.SteelElasticModulusFromValueSet(referenceValueSet)
+        batch.ApplyLoadReference referenceProps.CentroidX, referenceProps.CentroidY ' Проверка нулевого момента задаёт N в фактическом приведённом центре; погрешность центра не является моментом этого теста.
+    End If
     batch.Execute
     GoTo Publish
 InvalidRead:

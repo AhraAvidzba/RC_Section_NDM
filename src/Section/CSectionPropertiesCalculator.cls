@@ -117,10 +117,10 @@ Public Sub CalculateConcrete(ByVal section As CSectionModel)
     t0 = Timer
 
     Dim i As Long
-    ' Проходим по бетонной сетке и накапливаем геометрические моменты. Если
-    ' элемент пришел из AutoCAD Region или генератора уже с собственными
-    ' инерциями вокруг своего центра, учитываем их здесь же: это единая точка
-    ' расчета геометрических характеристик для всех последующих проверок.
+    ' Первый проход по бетонной сетке определяет площадь и центр. Собственные
+    ' инерции элементов AutoCAD Region и генераторов учитываются при последующем
+    ' центральном суммировании в FinalizeProperties; источник данных остаётся
+    ' общим для всех последующих проверок геометрических характеристик.
     For i = 1 To section.ConcreteCount
         AddConcreteWeightedArea section, i, 1#
     Next i
@@ -129,7 +129,7 @@ Public Sub CalculateConcrete(ByVal section As CSectionModel)
 
     Dim centerX As Double, centerY As Double, concreteArea As Double
     section.ConcreteMeshCentroid centerX, centerY, concreteArea
-    FinalizeProperties t0, True, centerX, centerY
+    FinalizeProperties t0, section, 0#, True, centerX, centerY
     StorePreparationContext section, 1, 0#, 0#
 End Sub
 
@@ -179,18 +179,16 @@ Public Sub CalculateTransformedByModuli(ByVal section As CSectionModel, _
     If section.RebarCount > 0 Then
         Dim replacementAreaFactor As Double ' Добавочная площадь арматуры в бетонном приведении: n - 1.
         Dim rebarWeight As Double
-        Dim rebarLocalI As Double
         replacementAreaFactor = steelModularRatio - 1# ' Сетка уже включает бетон в месте стержня, поэтому добавляется (Es/Eb - 1)*As.
         For i = 1 To section.RebarCount
             rebarWeight = replacementAreaFactor * section.RebarArea(i)
-            rebarLocalI = replacementAreaFactor * RebarCircleInertia(section.RebarArea(i))
-            AddWeightedArea rebarWeight, section.RebarX(i), section.RebarY(i), rebarLocalI, rebarLocalI, 0#
+            AddWeightedArea rebarWeight, section.RebarX(i), section.RebarY(i)
         Next i
     End If
 
     If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2207, "CSectionPropertiesCalculator", "Площадь приведенного сечения равна нулю."
 
-    FinalizeProperties t0
+    FinalizeProperties t0, section, steelModularRatio - 1#
     StorePreparationContext section, 2, concreteModulus, steelModulus
 End Sub
 
@@ -223,38 +221,70 @@ Private Function PreparationMatches(ByVal section As CSectionModel, ByVal kind A
     PreparationMatches = section.Revision = mPreparedRevision And kind = mPreparedKind And eb = mPreparedEb And es = mPreparedEs
 End Function
 
-' Добавляет элемент с весовой площадью и собственными инерциями вокруг центра.
-' Для бетонного сечения weight равен площади. Для приведенного сечения арматура
-' добавляется как (n-1)*As, поэтому ее собственная инерция также умножается на
-' тот же коэффициент приведения.
-Private Sub AddWeightedArea(ByVal weight As Double, ByVal x As Double, ByVal y As Double, _
-        Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
-        Optional ByVal localIxy As Double = 0#)
+' На первом проходе накапливает только площадь и статические моменты в локальных координатах.
+' Вторые моменты считаются после определения центра, без разности крупных сырых сумм.
+Private Sub AddWeightedArea(ByVal weight As Double, ByVal x As Double, ByVal y As Double)
     If Not mAccumulationOriginKnown Then
         mAccumulationOriginX = x: mAccumulationOriginY = y: mAccumulationOriginKnown = True
     End If
-    x = x - mAccumulationOriginX: y = y - mAccumulationOriginY ' Суммируем локально в том же проходе: большой WCS-перенос не поглощает собственную инерцию элемента.
+    x = x - mAccumulationOriginX: y = y - mAccumulationOriginY ' Общая локальная опора сохраняет малые расстояния при больших WCS-координатах.
     mArea = mArea + weight
     mStaticMomentX = mStaticMomentX + weight * y
     mStaticMomentY = mStaticMomentY + weight * x
-    mIx = mIx + localIx + weight * y * y
-    mIy = mIy + localIy + weight * x * x
-    mIxy = mIxy + localIxy + weight * x * y
 End Sub
 
-' Добавляет вклад бетонного элемента в площадь и инерции через CSectionModel.
-' Модель возвращает фактические собственные инерции или допустимую замену
-' при их отсутствии; размеры графической границы не подменяют расчётные I.
+' Добавляет площадь и статические моменты бетонного элемента; собственный тензор берёт второй проход.
 Private Sub AddConcreteWeightedArea(ByVal section As CSectionModel, ByVal index As Long, _
         ByVal weightFactor As Double)
-    Dim localIx As Double
-    Dim localIy As Double
-    Dim localIxy As Double
-    section.ConcreteLocalInertiaComponents index, localIx, localIy, localIxy
-
     AddWeightedArea section.ConcreteArea(index) * weightFactor, _
-        section.ConcreteX(index), section.ConcreteY(index), _
-        localIx * weightFactor, localIy * weightFactor, localIxy * weightFactor
+        section.ConcreteX(index), section.ConcreteY(index)
+End Sub
+
+' Считает центральные вторые моменты отдельным линейным проходом после определения центра.
+' Отклонения вычисляются в той же локальной опоре; Es/Eb-1 и собственные инерции не меняются.
+Private Sub CalculateCenteredMoments(ByVal section As CSectionModel, ByVal rebarAreaFactor As Double, _
+        ByVal localCenterX As Double, ByVal localCenterY As Double)
+    Dim ixTotal As Double, iyTotal As Double, ixyTotal As Double
+    Dim ixCorrection As Double, iyCorrection As Double, ixyCorrection As Double
+    Dim i As Long, dx As Double, dy As Double, weight As Double
+    Dim localIx As Double, localIy As Double, localIxy As Double, rebarArea As Double
+    For i = 1 To section.ConcreteCount
+        dx = (section.ConcreteX(i) - mAccumulationOriginX) - localCenterX
+        dy = (section.ConcreteY(i) - mAccumulationOriginY) - localCenterY
+        weight = section.ConcreteArea(i)
+        section.ConcreteLocalInertiaComponents i, localIx, localIy, localIxy
+        AccumulateCompensatedMoment ixTotal, ixCorrection, localIx + weight * dy * dy
+        AccumulateCompensatedMoment iyTotal, iyCorrection, localIy + weight * dx * dx
+        AccumulateCompensatedMoment ixyTotal, ixyCorrection, localIxy + weight * dx * dy
+    Next i
+    If rebarAreaFactor <> 0# Then
+        For i = 1 To section.RebarCount
+            dx = (section.RebarX(i) - mAccumulationOriginX) - localCenterX
+            dy = (section.RebarY(i) - mAccumulationOriginY) - localCenterY
+            rebarArea = section.RebarArea(i)
+            weight = rebarAreaFactor * rebarArea
+            localIx = rebarAreaFactor * RebarCircleInertia(rebarArea) ' Тот же вклад круглого стержня с коэффициентом Es/Eb-1.
+            AccumulateCompensatedMoment ixTotal, ixCorrection, localIx + weight * dy * dy
+            AccumulateCompensatedMoment iyTotal, iyCorrection, localIx + weight * dx * dx
+            AccumulateCompensatedMoment ixyTotal, ixyCorrection, weight * dx * dy
+        Next i
+    End If
+    mIxc = ixTotal + ixCorrection
+    mIyc = iyTotal + iyCorrection
+    mIxyc = ixyTotal + ixyCorrection
+End Sub
+
+' Сохраняет потерянные младшие разряды суммы по Neumaier без округления значений или обнуления Ixy.
+' Работает и с отрицательными вкладами при Es/Eb<1; допуски расчёта не участвуют в суммировании.
+Private Sub AccumulateCompensatedMoment(ByRef total As Double, ByRef correction As Double, ByVal value As Double)
+    Dim updated As Double
+    updated = total + value
+    If Abs(total) >= Abs(value) Then
+        correction = correction + ((total - updated) + value)
+    Else
+        correction = correction + ((value - updated) + total)
+    End If
+    total = updated
 End Sub
 
 ' Возвращает внешнюю проекционную оболочку сечения на произвольную ось.
@@ -619,8 +649,9 @@ End Function
 ' Завершает расчет: переводит моменты к центру тяжести, находит главные оси и
 ' радиусы инерции. Формулы одинаковы для бетонного и приведенного представления,
 ' потому что к этому моменту все различие уже учтено в накопленных весах.
-Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCenter As Boolean = False, _
-        Optional ByVal centerX As Double = 0#, Optional ByVal centerY As Double = 0#)
+Private Sub FinalizeProperties(ByVal t0 As Double, ByVal section As CSectionModel, ByVal rebarAreaFactor As Double, _
+        Optional ByVal hasConcreteCenter As Boolean = False, Optional ByVal centerX As Double = 0#, _
+        Optional ByVal centerY As Double = 0#)
     Dim localCenterX As Double, localCenterY As Double
     localCenterX = mStaticMomentY / mArea: localCenterY = mStaticMomentX / mArea ' Эти отклонения не восстанавливаем вычитанием двух больших глобальных координат.
     If hasConcreteCenter Then
@@ -630,9 +661,7 @@ Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCen
         mCentroidY = mAccumulationOriginY + localCenterY
     End If
 
-    mIxc = mIx - mArea * localCenterY * localCenterY ' Центральные моменты получаем до возврата в WCS, без разности глобальных величин порядка A*WCS^2.
-    mIyc = mIy - mArea * localCenterX * localCenterX
-    mIxyc = mIxy - mArea * localCenterX * localCenterY
+    CalculateCenteredMoments section, rebarAreaFactor, localCenterX, localCenterY ' Не вычитаем крупные Q и A*c*c: накапливаем центральный тензор напрямую.
     mStaticMomentX = mArea * mCentroidY: mStaticMomentY = mArea * mCentroidX ' Публичные статические моменты по-прежнему относятся к исходным осям WCS.
     mIx = mIxc + mArea * mCentroidY * mCentroidY
     mIy = mIyc + mArea * mCentroidX * mCentroidX
@@ -661,6 +690,7 @@ Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCen
     mPrincipalRadius2 = Sqr(GeomMax(mPrincipalI2, 0#) / mArea)
 
     mLastCalculationSeconds = Timer - t0
+    If mLastCalculationSeconds < 0# Then mLastCalculationSeconds = mLastCalculationSeconds + 86400# ' Timer обнуляется в полночь; длительность не бывает отрицательной.
 End Sub
 
 ' Сбрасывает вычисленные площади, центры, инерции, главные оси и время расчета.

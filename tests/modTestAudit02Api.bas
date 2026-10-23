@@ -1041,11 +1041,26 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
     TestCheck "offset.input.direct.reader", inputTable.OptionalRowOffset(TestFixtureInput(target.Value2).RowIndex("Extra", "Circle"), TestFixtureInput(target.Value2).ColumnIndex("Extra", "a2"), units) = 100#
     Set cell = TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2")
     cell.Formula = "=" & TestFixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Address() & "/10"
+    cell.Calculate ' Явно готовим кэш 100 при D=1000; далее низкоуровневое чтение не должно его пересчитывать.
+    TestCheck "offset.input.formula.manual.seeded", CDbl(cell.Value2) = 100#
     TestFixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 1200#
+    TestCheck "offset.input.formula.manual.stale", CDbl(cell.Value2) = 100#
     Set definition = TestReadOffsetWorkbookDefinition(): Set bars = TestFixtureLayout(definition)
     actual = TestOffsetBarsSnapshot(bars)
+    TestCheck "offset.input.formula.manual.cacheUnchanged", CDbl(cell.Value2) = 100#
+    TestCheck "offset.input.formula.manual.modeUnchanged", Application.Calculation = xlCalculationManual
+    mReport = mReport & "OFFSET_MANUAL_FORMULA: stage=cached; a2=" & CStr(cell.Value2) & vbCrLf
+    Application.Calculate ' Один явный пересчёт графа соответствует границе штатного формирования; Capture читает готовый кэш.
+    TestCheck "offset.input.formula.explicit.value", CDbl(cell.Value2) = 120#
+    Set definition = TestReadOffsetWorkbookDefinition(): Set bars = TestFixtureLayout(definition)
+    expected = TestOffsetBarsSnapshot(bars)
+    TestCheck "offset.input.formula.explicit.changedLayout", Not TestOffsetBarsEqual(actual, expected)
+    mReport = mReport & "OFFSET_MANUAL_FORMULA: stage=explicitCalculate; a2=" & CStr(cell.Value2) & vbCrLf
+    cell.Value2 = 100#: Set definition = TestReadOffsetWorkbookDefinition(): Set bars = TestFixtureLayout(definition)
+    TestCheck "offset.input.formula.manual.cachedLayout", TestOffsetBarsEqual(actual, TestOffsetBarsSnapshot(bars)) ' Проверяем полный состав, порядок, координаты и диаметры при прежнем a2=100.
     cell.Value2 = 120#: Set definition = TestReadOffsetWorkbookDefinition(): Set bars = TestFixtureLayout(definition)
-    TestCheck "offset.input.formula.manual.recalculated", TestOffsetBarsEqual(actual, TestOffsetBarsSnapshot(bars))
+    TestCheck "offset.input.formula.manual.recalculated", TestOffsetBarsEqual(expected, TestOffsetBarsSnapshot(bars))
+    TestCheck "offset.input.formula.explicit.modeUnchanged", Application.Calculation = xlCalculationManual
     GoTo Finished
 Failed:
     TestCheck "offset.workbook.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
