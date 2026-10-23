@@ -18,11 +18,11 @@ foreach($group in $manifest['After'].Groups){
     $old=$manifest['Before'].Groups | Where-Object {$_.Shape -eq $group.Shape -and $_.Group -eq $group.Group}
     if(-not $old -or $old.ReportSHA256 -cne $group.ReportSHA256){throw 'A/B manifests differ.'}
     foreach($mode in @('No','Yes')){
-        $jobs+=[pscustomobject]@{Shape=$group.Shape;Group=$group.Group;Mode=$mode;Cases=$group.CasesPerMode;Macro='modTestBatchCalculation.RunFocusedAcceptanceCases';Timeout=360}
+        $jobs+=[pscustomobject]@{Shape=$group.Shape;Group=$group.Group;Mode=$mode;Cases=$group.CasesPerMode;Macro='modTestBatchCalculation.TestRunFocusedAcceptanceCases';Timeout=360}
     }
 }
 if($jobs.Count -ne 12 -or ($jobs | Measure-Object Cases -Sum).Sum -ne 122){throw '122-case coverage mismatch.'}
-foreach($mode in @('No','Yes')){$jobs+=[pscustomobject]@{Shape='SavedWorkbook';Group='Batch15';Mode=$mode;Cases=15;Macro='modTestBatchCalculation.RunCoreRegressionBatch15';Timeout=360}}
+foreach($mode in @('No','Yes')){$jobs+=[pscustomobject]@{Shape='SavedWorkbook';Group='Batch15';Mode=$mode;Cases=15;Macro='modTestBatchCalculation.TestRunCoreRegressionBatch15';Timeout=360}}
 $stopwatch=[Diagnostics.Stopwatch]::StartNew()
 $stoppedReason='';$jobIndex=0
 try{

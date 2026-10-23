@@ -16,34 +16,38 @@ $path=Join-Path $directory 'RC_Section_NDM.xlsm'
 if(Test-Path -LiteralPath $path) { throw 'Existing evidence cannot be overwritten.' }
 Copy-Item -LiteralPath $source -Destination $path
 $method=@'
-Public Function ProbeFormat(ByVal kind As String, ByVal body As String) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Открывает в частной копии существующие функции форматирования отчёта для сравнения с исходной реализацией.
+Public Function TestProbeFormat(ByVal kind As String, ByVal body As String) As String
     Select Case kind
-        Case "Crack": ProbeFormat = CompactCrackDiagnosticText(body)
-        Case "State": ProbeFormat = CompactStateSolutionDiagnosticText(body)
-        Case "Capacity": ProbeFormat = CompactCapacityDiagnosticText(body)
+        Case "Crack": TestProbeFormat = CompactCrackDiagnosticText(body)
+        Case "State": TestProbeFormat = CompactStateSolutionDiagnosticText(body)
+        Case "Capacity": TestProbeFormat = CompactCapacityDiagnosticText(body)
         Case "Block"
             mEnabled = True: Set mLines = New Collection: mStartTimer = Timer
             AddBlock "probe", body
-            ProbeFormat = CStr(mLines.Count)
-            If mLines.Count > 1 Then ProbeFormat = ProbeFormat & "|" & CStr(mLines.Item(2))
+            TestProbeFormat = CStr(mLines.Count)
+            If mLines.Count > 1 Then TestProbeFormat = TestProbeFormat & "|" & CStr(mLines.Item(2))
     End Select
 End Function
 '@
 $entry=@'
-Public Function RunReportFormatProbe(ByVal kind As String, ByVal body As String, ByVal before As Boolean) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Пропускает одинаковый текст через исходный либо текущий formatter и возвращает результат или исходную ошибку.
+Public Function TestRunReportFormatProbe(ByVal kind As String, ByVal body As String, ByVal before As Boolean) As String
     On Error GoTo Failed
     If before Then
-        Dim oldReport As CExecutionReportBaseline
-        Set oldReport = New CExecutionReportBaseline
-        RunReportFormatProbe = oldReport.ProbeFormat(kind, body)
+        Dim oldReport As CTestExecutionReportBaseline
+        Set oldReport = New CTestExecutionReportBaseline
+        TestRunReportFormatProbe = oldReport.TestProbeFormat(kind, body)
     Else
         Dim newReport As CExecutionReport
         Set newReport = New CExecutionReport
-        RunReportFormatProbe = newReport.ProbeFormat(kind, body)
+        TestRunReportFormatProbe = newReport.TestProbeFormat(kind, body)
     End If
     Exit Function
 Failed:
-    RunReportFormatProbe = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+    TestRunReportFormatProbe = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 '@
 $excel=$null; $book=$null; $ownedPid=0; $ownedTicks=0
@@ -58,8 +62,8 @@ try {
     $book=$excel.Workbooks.Open($path,0,$false)
     if($book.ReadOnly) { throw 'Comparison copy is read-only.' }
     $original=$book.VBProject.VBComponents.Item('CExecutionReport').CodeModule
-    $baseline=$book.VBProject.VBComponents.Add(2); $baseline.Name='CExecutionReportBaseline'
-    $baseline.CodeModule.AddFromString($original.Lines(1,$original.CountOfLines)+"`r`n"+$method)
+    $baseline=$book.VBProject.VBComponents.Add(2); $baseline.Name='CTestExecutionReportBaseline'
+    $baseline.CodeModule.AddFromString("' ==========================================================================`r`n' ДЛЯ ТЕСТОВ — исходный formatter для независимого сравнения.`r`n' ==========================================================================`r`n"+$original.Lines(1,$original.CountOfLines)+"`r`n"+$method)
     $formatter=(Resolve-Path -LiteralPath (Join-Path $root $FormatterFile)).Path
     $body=[regex]::Match([IO.File]::ReadAllText($formatter),'(?ms)^Option Explicit.*').Value
     $original.DeleteLines(1,$original.CountOfLines); $original.AddFromString($body+"`r`n"+$method)
@@ -86,10 +90,10 @@ try {
         for($index=0; $index -lt $inputs.Count; $index++) {
             Write-Output ('REPORT_FORMAT_START: '+$kind+'/'+$index)
             $watch=[Diagnostics.Stopwatch]::StartNew()
-            $old=[string]$excel.Run("'"+$book.Name+"'!modTestWorkbookInterface.RunReportFormatProbe",$kind,[string]$inputs[$index],$true)
+            $old=[string]$excel.Run("'"+$book.Name+"'!modTestWorkbookInterface.TestRunReportFormatProbe",$kind,[string]$inputs[$index],$true)
             $oldSeconds=$watch.Elapsed.TotalSeconds
             $watch.Restart()
-            $new=[string]$excel.Run("'"+$book.Name+"'!modTestWorkbookInterface.RunReportFormatProbe",$kind,[string]$inputs[$index],$false)
+            $new=[string]$excel.Run("'"+$book.Name+"'!modTestWorkbookInterface.TestRunReportFormatProbe",$kind,[string]$inputs[$index],$false)
             $newSeconds=$watch.Elapsed.TotalSeconds
             if($old.StartsWith('RUNTIME ERROR:') -or $new.StartsWith('RUNTIME ERROR:')) { throw ('Format runtime: '+$old+'; '+$new) }
             if(-not [string]::Equals($old,$new,[StringComparison]::Ordinal)) { throw ('Formatted text changed: '+$kind+'/'+$index) }

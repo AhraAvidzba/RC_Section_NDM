@@ -55,7 +55,7 @@ try {
         $timeout=[math]::Min($job.Timeout,$remaining)
         Write-Output ('FOCUSED_STARTED: '+$job.Shape+'/'+$job.Group+'/'+$job.Mode+'; remaining='+$remaining+' sec')
         & (Join-Path $PSScriptRoot 'Run-Audit03Watchdog.ps1') -SourceWorkbook $source -ReportPath $reportRelative `
-            -Macro modTestBatchCalculation.RunFocusedAcceptanceCases -MacroArgument1 $job.Shape `
+            -Macro modTestBatchCalculation.TestRunFocusedAcceptanceCases -MacroArgument1 $job.Shape `
             -MacroArgument2 $job.Group -Mode $job.Mode -TimeoutSeconds $timeout -VerifyResultsReopen -VerifyStatusReopen
         $code=$LASTEXITCODE
         $body=Get-Content -LiteralPath $report -Raw -Encoding UTF8

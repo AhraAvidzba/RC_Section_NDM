@@ -1,5 +1,12 @@
-' ДЛЯ ТЕСТОВ: полная запись 15 сочетаний и контроль повторного использования подготовки.
-Public Function RunFocusedBatch15() As String
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — вспомогательный фрагмент частной приёмки; в выпуск не включается.
+' ==========================================================================
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Архивный entrypoint: исходный SavedCrackSearchProbe отсутствует; актуальные 15 сочетаний проверяет CoreRegressionBatchProbe.
+Public Function TestRunFocusedBatch15() As String
+    Err.Raise vbObjectError + 5917, "TestRunFocusedBatch15", "Архивная проверка требует исходный SavedCrackSearchProbe.bas от 09.10.2026, которого нет в репозитории. Используйте tools/build_workbook/Run-FocusedAcceptance.ps1 для действующей полной приёмки с пакетом из 15 сочетаний."
+#If False Then ' Исторический body сохранён целиком как описание прежних expectations; его зависимость не подменяется фиктивной реализацией.
     On Error GoTo Failed
     Dim stats As TBatchTestStats, body As String, result As CCombinationResult
     Dim settings As CSystemSettingsReader, units As CUnitSystem, i As Long, meta As Variant
@@ -20,7 +27,7 @@ Public Function RunFocusedBatch15() As String
         For i = 1 To mFocusedBatch.Count
             Set result = mFocusedBatch.ResultAt(i)
             TestAudit03CheckResultComments stats, mFocusedBatch, i
-            FocusedCheckStates stats, result, settings, units, "batch15." & CStr(i)
+            TestFocusedCheckStates stats, result, settings, units, "batch15." & CStr(i)
             For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
                     result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
                 TestAssertTrue stats, "batch15.noNumericalOrInputError." & CStr(i) & "." & CStr(meta.ResultKind), _
@@ -34,15 +41,16 @@ Failed:
     TestAssertTrue stats, "batch15.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
-    RunFocusedBatch15 = body & stats.Report & "TOTAL_FOCUSED_BATCH15: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestRunFocusedBatch15 = body & stats.Report & "TOTAL_FOCUSED_BATCH15: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+#End If
 End Function
-
-' ДЛЯ ТЕСТОВ: четыре показательных нагрузки для каждой встроенной формы.
-Public Function RunFocusedRepresentativeGeometry() As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет четыре характерные нагрузки каждой встроенной формы через общий focused entrypoint и сохраняет все отказы.
+Public Function TestRunFocusedRepresentativeGeometry() As String
     Dim shape As Variant, loadName As Variant, body As String, one As String, count As Long, failures As Long
     For Each shape In Array("Rectangles", "Circle", "PointedSection", "HollowRectangle")
         For Each loadName In Array("axialSmall-1", "Mx1", "mixedC1_-1", "mixedT-1_1")
-            one = RunFocusedSingleLoad(CStr(shape), CStr(loadName))
+            one = TestRunFocusedSingleLoad(CStr(shape), CStr(loadName))
             body = body & one & vbCrLf
             If InStr(1, one, "FAIL:", vbBinaryCompare) > 0 Or _
                     InStr(1, one, "FOCUSED_UNRESOLVED", vbBinaryCompare) > 0 Or _
@@ -51,6 +59,6 @@ Public Function RunFocusedRepresentativeGeometry() As String
             count = count + 1
         Next loadName
     Next shape
-    RunFocusedRepresentativeGeometry = body & "TOTAL_FOCUSED_REPRESENTATIVE_GEOMETRY: cases=" & CStr(count) & _
+    TestRunFocusedRepresentativeGeometry = body & "TOTAL_FOCUSED_REPRESENTATIVE_GEOMETRY: cases=" & CStr(count) & _
         "; failed=" & CStr(failures)
 End Function

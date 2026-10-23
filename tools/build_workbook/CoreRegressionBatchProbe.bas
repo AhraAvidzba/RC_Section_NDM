@@ -1,5 +1,10 @@
-' ДЛЯ ТЕСТОВ: один штатный batch из 15 разных сочетаний, включая N, M и N+Mx+My.
-Public Function RunCoreRegressionBatch15() As String
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — вспомогательный фрагмент частной приёмки; в выпуск не включается.
+' ==========================================================================
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выполняет штатный пакет из 15 нагрузок; проверяет повторное использование подготовки, статусы и независимое равновесие.
+Public Function TestRunCoreRegressionBatch15() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats, oldSystem As Variant, oldProfiles As Variant, oldLoads As Variant
     Dim systemRange As Object, profileRange As Object, loadRange As Object
@@ -11,7 +16,7 @@ Public Function RunCoreRegressionBatch15() As String
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     Set loadRange = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
     oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula: oldLoads = loadRange.Formula
-    FocusedSelectGeometry "SavedWorkbook"
+    TestFocusedSelectGeometry "SavedWorkbook"
     TestSetSystemSetting "Load.ReferenceOffsetX", "0"
     TestSetSystemSetting "Load.ReferenceOffsetY", "0"
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
@@ -31,11 +36,11 @@ Public Function RunCoreRegressionBatch15() As String
     TestSetSystemSetting "Load.ReferenceOffsetY", TestFormatNumberInvariant(-7# / units.InputLengthToInternal(1#))
     settings.LoadFromWorkbook ThisWorkbook
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
-    Set allCases = FocusedSelectedLoads(section, "Saved")
+    Set allCases = TestFocusedSelectedLoads(section, "Saved")
     names = Array("axialSmall-1", "axialSmall1", "Mx-1", "Mx1", "My-1", "My1", "mixedC1_-1", "mixedT-1_1", _
         "tinyMx1", "biaxial1_-1_10", "biaxial1_-1_" & CStr(0.000001), "N500", "N1000", "N500TinyMoment", "N2098Plateau")
     For Each item In allCases
-        If FocusedNameIn(CStr(item(0)), names) Then cases.Add item
+        If TestFocusedNameIn(CStr(item(0)), names) Then cases.Add item
     Next item
     If cases.Count <> 15 Then Err.Raise 5, , "Batch must contain exactly 15 selected loads."
     ReDim values(1 To loadRange.Rows.Count - 1, 1 To loadRange.Columns.Count)
@@ -65,8 +70,8 @@ Public Function RunCoreRegressionBatch15() As String
         For i = 1 To mFocusedBatch.Count
             Set result = mFocusedBatch.ResultAt(i)
             item = cases(i)
-            TestAppendLine stats, FocusedComparisonRecord(result, "batch15." & CStr(item(0)))
-            FocusedCheckStates stats, result, settings, units, "plateau.batch15." & CStr(item(0))
+            TestAppendLine stats, TestFocusedComparisonRecord(result, "batch15." & CStr(item(0)))
+            TestFocusedCheckStates stats, result, settings, units, "plateau.batch15." & CStr(item(0))
             TestAudit03CheckResultComments stats, mFocusedBatch, i
         Next i
     End If
@@ -81,5 +86,5 @@ Restore:
     If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles
     If IsArray(oldLoads) Then loadRange.Formula = oldLoads
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
-    RunCoreRegressionBatch15 = stats.Report
+    TestRunCoreRegressionBatch15 = stats.Report
 End Function

@@ -1,6 +1,7 @@
 ﻿# Addressed repeats only; the original failed load evidence remains authoritative.
 param([Parameter(Mandatory=$true)][datetime]$DeadlineUtc)
 $ErrorActionPreference='Stop'
+throw 'Архивный хвост приёмки от 10.10.2026 привязан к исторической книге FocusedBatch15MeritV3 и отсутствующему SavedCrackSearchProbe.bas. Excel не запущен. Для текущей книги используйте tools/build_workbook/Run-FocusedAcceptance.ps1, который включает действующие 122 случая и пакет из 15 сочетаний.'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $output='docs/regression/FocusedAcceptance_2026-10-10_V9'
 $candidate='docs/regression/PostAudit03/Axial1000_2026-10-09/FocusedMeritV3/RC_Section_NDM.xlsm'
@@ -8,10 +9,10 @@ $batch='docs/regression/PostAudit03/Axial1000_2026-10-09/FocusedBatch15MeritV3/R
 $probe=$output+'/RC_Section_NDM.xlsm'
 $sourceHash=(Get-FileHash -LiteralPath (Join-Path $root $candidate)).Hash
 $jobs=@(
-    @{Name='Batch15_No'; Source=$batch; Macro='RunFocusedBatch15'; Mode='No'; A=''; B=''},
-    @{Name='Batch15_Yes'; Source=$batch; Macro='RunFocusedBatch15'; Mode='Yes'; A=''; B=''},
-    @{Name='Saved_Yes'; Source=$probe; Macro='RunFocusedAcceptanceCases'; Mode='Yes'; A='SavedWorkbook'; B='Saved'},
-    @{Name='RoundedMx1_Yes'; Source=$probe; Macro='RunFocusedSingleLoad'; Mode='Yes'; A='PointedSection'; B='Mx1'}
+    @{Name='Batch15_No'; Source=$batch; Macro='TestRunFocusedBatch15'; Mode='No'; A=''; B=''},
+    @{Name='Batch15_Yes'; Source=$batch; Macro='TestRunFocusedBatch15'; Mode='Yes'; A=''; B=''},
+    @{Name='Saved_Yes'; Source=$probe; Macro='TestRunFocusedAcceptanceCases'; Mode='Yes'; A='SavedWorkbook'; B='Saved'},
+    @{Name='RoundedMx1_Yes'; Source=$probe; Macro='TestRunFocusedSingleLoad'; Mode='Yes'; A='PointedSection'; B='Mx1'}
 )
 $records=@(); $reason=''
 try {

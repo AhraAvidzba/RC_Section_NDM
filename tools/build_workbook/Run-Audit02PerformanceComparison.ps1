@@ -36,27 +36,29 @@ function Add-BenchmarkEntry {
     $branches = ($Cases.Keys | Sort-Object | ForEach-Object { "        Case `"$_`": $($Cases[$_]) stats" }) -join "`r`n"
     $entry = @"
 ' ДЛЯ ТЕСТОВ: временный benchmark использует штатные baseline assertions.
-Public Function RunAudit02PerfCase(ByVal caseName As String) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Измеряет историческую проверку вместе со штатными assertions и счётчиками частной benchmark-книги.
+Public Function TestRunAudit02PerfCase(ByVal caseName As String) As String
     On Error GoTo Failed
     Dim stats As $StatsType
     Dim started As Double
     ResetSectionEquilibriumSolveCount
-    Audit02ResetCounters
+    TestAudit02ResetCounters
     started = Timer
     Select Case caseName
 $branches
         Case Else: Err.Raise 5, "Audit02Perf", "Неизвестный сценарий"
     End Select
-    RunAudit02PerfCase = "case=" & caseName & "; passed=" & CStr(stats.Passed) & _
+    TestRunAudit02PerfCase = "case=" & caseName & "; passed=" & CStr(stats.Passed) & _
         "; failed=" & CStr(stats.Failed) & "; elapsedSec=" & CStr(Timer - started) & _
         "; solves=" & CStr(SectionEquilibriumSolveCount()) & "; probes=" & CStr(Audit02ProbeCount) & _
         "; planeProbes=" & CStr(Audit02PlaneCount) & "; probeReuse=" & CStr(Audit02ProbeReuseCount) & _
         "; stateReuse=" & CStr(Audit02StateReuseCount) & "; unconvergedProbes=" & CStr(Audit02UnconvergedCount) & _
         "; unconfirmedPhysical=" & CStr(Audit02UnconfirmedLimitCount)
-    If stats.Failed > 0 Then RunAudit02PerfCase = RunAudit02PerfCase & vbCrLf & stats.Report
+    If stats.Failed > 0 Then TestRunAudit02PerfCase = TestRunAudit02PerfCase & vbCrLf & stats.Report
     Exit Function
 Failed:
-    RunAudit02PerfCase = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+    TestRunAudit02PerfCase = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 "@
     $Module.AddFromString($entry)
@@ -81,9 +83,12 @@ try {
         }
         if (-not $found) { throw "Отсутствует настройка $key." }
         $counter = $book.VBProject.VBComponents.Add(1)
-        $counter.Name = "modAudit02PerfCounters"
+        $counter.Name = "modTestAudit02PerfCounters"
         $counter.CodeModule.AddFromString(@'
 Option Explicit
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — модуль только частной диагностической книги.
+' ==========================================================================
 ' ДЛЯ ТЕСТОВ: счетчики только этой временной benchmark-книги.
 Public Audit02ProbeCount As Long
 Public Audit02ProbeReuseCount As Long
@@ -91,7 +96,9 @@ Public Audit02StateReuseCount As Long
 Public Audit02PlaneCount As Long
 Public Audit02UnconvergedCount As Long
 Public Audit02UnconfirmedLimitCount As Long
-Public Sub Audit02ResetCounters()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сбрасывает диагностические счётчики частного benchmark перед независимым сценарием.
+Public Sub TestAudit02ResetCounters()
     Audit02ProbeCount = 0
     Audit02ProbeReuseCount = 0
     Audit02StateReuseCount = 0
@@ -99,19 +106,29 @@ Public Sub Audit02ResetCounters()
     Audit02UnconvergedCount = 0
     Audit02UnconfirmedLimitCount = 0
 End Sub
-Public Sub Audit02RecordProbe()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает физические probe только инструментированной benchmark-копии.
+Public Sub TestAudit02RecordProbe()
     Audit02ProbeCount = Audit02ProbeCount + 1
 End Sub
-Public Sub Audit02RecordProbeReuse()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает восстановленные probe отдельно от новых вычислений.
+Public Sub TestAudit02RecordProbeReuse()
     Audit02ProbeReuseCount = Audit02ProbeReuseCount + 1
 End Sub
-Public Sub Audit02RecordStateReuse()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает восстановленные состояния отдельно от новых решений.
+Public Sub TestAudit02RecordStateReuse()
     Audit02StateReuseCount = Audit02StateReuseCount + 1
 End Sub
-Public Sub Audit02RecordPlane()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает вычисления пробной плоскости деформаций в инструментированной копии.
+Public Sub TestAudit02RecordPlane()
     Audit02PlaneCount = Audit02PlaneCount + 1
 End Sub
-Public Sub Audit02RecordOutcome(ByVal solver As CSectionSolver, ByVal state As String)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Разделяет несходимость probe и неподтверждённое равновесием достижение предельной деформации.
+Public Sub TestAudit02RecordOutcome(ByVal solver As CSectionSolver, ByVal state As String)
     If solver Is Nothing Then Exit Sub
     If Not solver.Converged Then
         Audit02UnconvergedCount = Audit02UnconvergedCount + 1
@@ -123,15 +140,15 @@ End Sub
 '@
         )
         $capacity = $book.VBProject.VBComponents.Item("CCapacitySolver").CodeModule
-        Insert-Counter $capacity '^    If TryRestoreProbeCache\(' 'Audit02RecordProbe'
-        Insert-Counter $capacity '^            TryRestoreProbeCache = True' 'Audit02RecordProbeReuse'
-        Insert-Counter $capacity '^    AppendDiagnostic solver, mx, my, lambdaValue, attempt, ProbeOnce' 'Audit02RecordOutcome solver, ProbeOnce'
-        Insert-Counter $capacity '(?m)^Public Function LimitSearchEvaluateUltimateResidual\([\s\S]*?\) As Boolean\r?\n' 'Audit02RecordPlane' -After
+        Insert-Counter $capacity '^    If TryRestoreProbeCache\(' 'TestAudit02RecordProbe'
+        Insert-Counter $capacity '^            TryRestoreProbeCache = True' 'TestAudit02RecordProbeReuse'
+        Insert-Counter $capacity '^    AppendDiagnostic solver, mx, my, lambdaValue, attempt, ProbeOnce' 'TestAudit02RecordOutcome solver, ProbeOnce'
+        Insert-Counter $capacity '(?m)^Public Function LimitSearchEvaluateUltimateResidual\([\s\S]*?\) As Boolean\r?\n' 'TestAudit02RecordPlane' -After
         $formationName = @("CCrackWidthCalculator", "CCrackFormationCalculator")[$version]
         $formation = $book.VBProject.VBComponents.Item($formationName).CodeModule
-        Insert-Counter $formation '(?m)^Public Function LimitSearchEvaluateCrackFormationLoadMultiplier\([\s\S]*?\) As Boolean\r?\n' 'Audit02RecordProbe' -After
+        Insert-Counter $formation '(?m)^Public Function LimitSearchEvaluateCrackFormationLoadMultiplier\([\s\S]*?\) As Boolean\r?\n' 'TestAudit02RecordProbe' -After
         $provider = $book.VBProject.VBComponents.Item("CStateProvider").CodeModule
-        Insert-Counter $provider '^            mLastStateWasReused = True' 'Audit02RecordStateReuse'
+        Insert-Counter $provider '^            mLastStateWasReused = True' 'TestAudit02RecordStateReuse'
         Add-BenchmarkEntry $book.VBProject.VBComponents.Item("modTestCapacitySolver").CodeModule "TCapacityTestStats" @{
             bending = "TestMxPositiveAndNegative"
             biaxial = "TestMxySignedCombinations"
@@ -151,7 +168,7 @@ End Sub
                 if ($case.StartsWith("crack_")) { $module = "modTestCrackWidth" }
                 $lines.Add("START|$label|run=$run|case=$case")
                 $lines | Set-Content -LiteralPath $report -Encoding UTF8
-                $result = [string]$excel.Run("'$($book.Name)'!$module.RunAudit02PerfCase", $case)
+                $result = [string]$excel.Run("'$($book.Name)'!$module.TestRunAudit02PerfCase", $case)
                 $lines.Add("PERF|$label|run=$run|$result")
                 if ($result -match 'failed=([1-9][0-9]*)|RUNTIME ERROR') { $failed = $true }
             }

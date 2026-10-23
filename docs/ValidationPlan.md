@@ -242,6 +242,9 @@ Yes/No в пяти единицах напряжений. `RunPlateauResultsDiag
 `OpenIssuesProbe.bas`, только в изолированной копии через
 `Prepare-FocusedAcceptance.ps1 -ExtraHelperFile OpenIssuesProbe.bas`.
 
+Актуальные способы запуска внешних помощников, проверка смещения Rectangles
+и границы архивных команд описаны в [ToolProbeUsage.md](ToolProbeUsage.md).
+
 `RunLimitGuessScalingTests` проверяет старт предельного поиска при большой
 перегрузке и переносах; `RunConcreteMeshCenterTests` также проверяет кэш
 геометрического радиуса после добавления бетона, арматуры и очистки модели.

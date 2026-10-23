@@ -1,0 +1,1496 @@
+{
+  "Status": "READ_ONLY_NATIVE_COMPARISON_COMPLETED",
+  "Scope": "Directed property-kernel evidence; not full acceptance",
+  "BaselineCapture": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaBaseline01_Probes.json",
+  "BaselineCaptureSHA256": "A6CC182858AA8DD266820008D259CA18BA915D9A962BC86B1FAB67E1FBC4731A",
+  "BaselineSourceSHA256": "B23D48898C60F44C0AFB10EF52617277C8442E08C8FAFFAEA3F4B61629A0AEC9",
+  "CandidateCapture": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaCandidate02_Probes.json",
+  "CandidateCaptureSHA256": "FFE8BFB5B53A3177CF4872121FEAF63F0EBE46A83110353FC572D1D23491F67C",
+  "CandidateSourceSHA256": "8E1A22F6A50539CA6FDB3AF9EBE9D8BF7D8CC3CD81156461159D451F94784040",
+  "SourceAndPublishedUnchanged": true,
+  "TestHarnessImportsOnly": true,
+  "SameSharedHarnessBytes": true,
+  "CandidateNativeSourceEquality": {
+    "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/SourceProof01/NativeSourceEquality.json",
+    "SHA256": "F73E7DC6140F13F45247A6D07B426689E5A01313B5BE186575C1E3C76613301A",
+    "Components": 170
+  },
+  "CandidateNonVBAPreservation": {
+    "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/PartPreservation.json",
+    "SHA256": "CD547B08D266978356705F6DC52E5F825252ECC0A9AB8DABB24804CFA8EF71F5",
+    "ByteExactParts": 111
+  },
+  "InputAndCenterChecks": [
+    {
+      "Shape": "PointedSection",
+      "Stress": "MPa",
+      "ConcreteCount": 216,
+      "RebarCount": 53,
+      "InputF64SHA256": "5FFBCDCF7D632241CB02842E8C032F41B276818806805E69755E3E5866DBD588",
+      "InputFloatFields": 1457,
+      "AllInputArraysAndModuliBitwiseEqual": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "Errors": {
+        "BaselineTwoPass": {
+          "Ix": {
+            "Actual": 13597351104.78596,
+            "Decimal120Reference": "13597351104.7859589505703865798276998040036457807503651489074227311146289453163793056917199600640198071297481831682959095",
+            "NativeMinusDecimal": 2.932040274826723e-07,
+            "RelativeToInertiaScale": 9.679469027921149e-18,
+            "EpsTimesInertiaScale": 0.043592453107289944,
+            "InertiaScale": 30291333815.615654
+          },
+          "Iy": {
+            "Actual": 67481151090.236855,
+            "Decimal120Reference": "67481151090.2367961671164729268132018870086250040812507127375782452315163002777592046853050581659870591801426535289717422",
+            "NativeMinusDecimal": 5.838610618332319e-05,
+            "RelativeToInertiaScale": 1.9274854827694726e-15,
+            "EpsTimesInertiaScale": 8.680622901962638,
+            "InertiaScale": 30291333815.615654
+          },
+          "Ixy": {
+            "Actual": 6.234864375358532e-06,
+            "Decimal120Reference": "-1.034402349634179534769077354166496289963170148185355130142145044805271519803886992058607259852921982641528E-7",
+            "NativeMinusDecimal": 6.33830461032195e-06,
+            "RelativeToInertiaScale": 2.0924481730990845e-16,
+            "EpsTimesInertiaScale": 0.9423548812661112,
+            "InertiaScale": 30291333815.615654
+          },
+          "Ixc": {
+            "Actual": 13597351104.78596,
+            "Decimal120Reference": "13597351104.7859589505703865798276997682350452775280152480716226172412651926515442296432459041507216672459318770283115544",
+            "NativeMinusDecimal": 2.932040274826723e-07,
+            "RelativeToInertiaScale": 9.748923287033536e-18,
+            "EpsTimesInertiaScale": 0.043905247282747785,
+            "InertiaScale": 30075529250.768192
+          },
+          "Iyc": {
+            "Actual": 66523064142.650276,
+            "Decimal120Reference": "66523064142.6502733066565030799185970368683653510094294257785582680998497037687468435809406230619615437035795937163798316",
+            "NativeMinusDecimal": 2.8774255281700813e-06,
+            "RelativeToInertiaScale": 9.567331315031093e-17,
+            "EpsTimesInertiaScale": 0.43087429745304107,
+            "InertiaScale": 30075529250.768192
+          },
+          "Ixyc": {
+            "Actual": -9.790394765069809e-08,
+            "Decimal120Reference": "-9.75862252883683753955856409096811208378529594836917748499129146788700391036626083021380954684712203374031166737303838740E-8",
+            "NativeMinusDecimal": -3.1772236232971385e-10,
+            "RelativeToInertiaScale": 1.0564148669855862e-20,
+            "EpsTimesInertiaScale": 4.757669601304938e-05,
+            "InertiaScale": 30075529250.768192
+          }
+        },
+        "CandidateOnePass": {
+          "Ix": {
+            "Actual": 13597351104.785952,
+            "Decimal120Reference": "13597351104.7859589505703865798276998040036457807503651489074227311146289453163793056917199600640198071297481831682959095",
+            "NativeMinusDecimal": -7.336190503767328e-06,
+            "RelativeToInertiaScale": 2.4218776724798503e-16,
+            "EpsTimesInertiaScale": 1.0907167383317178,
+            "InertiaScale": 30291333815.615593
+          },
+          "Iy": {
+            "Actual": 67481151090.236626,
+            "Decimal120Reference": "67481151090.2367961671164729268132018870086250040812507127375782452315163002777592046853050581659870591801426535289717422",
+            "NativeMinusDecimal": -0.00017049572975417682,
+            "RelativeToInertiaScale": 5.62853160550771e-15,
+            "EpsTimesInertiaScale": 25.34865284120758,
+            "InertiaScale": 30291333815.615593
+          },
+          "Ixy": {
+            "Actual": -0.00011754058468144634,
+            "Decimal120Reference": "-1.034402349634179534769077354166496289963170148185355130142145044805271519803886992058607259852921982641528E-7",
+            "NativeMinusDecimal": -0.00011743714444648293,
+            "RelativeToInertiaScale": 3.876922196999542e-15,
+            "EpsTimesInertiaScale": 17.46010536175154,
+            "InertiaScale": 30291333815.615593
+          },
+          "Ixc": {
+            "Actual": 13597351104.785952,
+            "Decimal120Reference": "13597351104.7859589505703865798276997682350452775280152480716226172412651926515442296432459041507216672459318770283115544",
+            "NativeMinusDecimal": -7.336190503767328e-06,
+            "RelativeToInertiaScale": 2.43925566283425e-16,
+            "EpsTimesInertiaScale": 1.09854308942017,
+            "InertiaScale": 30075529250.768127
+          },
+          "Iyc": {
+            "Actual": 66523064142.65005,
+            "Decimal120Reference": "66523064142.6502733066565030799185970368683653510094294257785582680998497037687468435809406230619615437035795937163798316",
+            "NativeMinusDecimal": -0.00022600441040932992,
+            "RelativeToInertiaScale": 7.514561373963446e-15,
+            "EpsTimesInertiaScale": 33.842575803634496,
+            "InertiaScale": 30075529250.768127
+          },
+          "Ixyc": {
+            "Actual": -0.00012387335300445557,
+            "Decimal120Reference": "-9.75862252883683753955856409096811208378529594836917748499129146788700391036626083021380954684712203374031166737303838740E-8",
+            "NativeMinusDecimal": -0.0001237757667791672,
+            "RelativeToInertiaScale": 4.115497544436594e-15,
+            "EpsTimesInertiaScale": 18.534553207568838,
+            "InertiaScale": 30075529250.768127
+          }
+        }
+      },
+      "OnePassBinary64Replay": {
+        "Ix": {
+          "Replay": 13597351104.785957,
+          "Native": 13597351104.785952,
+          "NativeMinusReplay": -5.7220458984375e-06
+        },
+        "Iy": {
+          "Replay": 67481151090.23703,
+          "Native": 67481151090.236626,
+          "NativeMinusReplay": -0.00040435791015625
+        },
+        "Ixy": {
+          "Replay": -0.00011573754417699077,
+          "Native": -0.00011754058468144634,
+          "NativeMinusReplay": -1.8030405044555664e-06
+        },
+        "Ixc": {
+          "Replay": 13597351104.785957,
+          "Native": 13597351104.785952,
+          "NativeMinusReplay": -5.7220458984375e-06
+        },
+        "Iyc": {
+          "Replay": 66523064142.65045,
+          "Native": 66523064142.65005,
+          "NativeMinusReplay": -0.00040435791015625
+        },
+        "Ixyc": {
+          "Replay": -0.0001220703125,
+          "Native": -0.00012387335300445557,
+          "NativeMinusReplay": -1.8030405044555664e-06
+        }
+      }
+    },
+    {
+      "Shape": "PointedSection",
+      "Stress": "kgf/cm2",
+      "ConcreteCount": 216,
+      "RebarCount": 53,
+      "InputF64SHA256": "4BD0E9481817B2B960E6CE561F64C492BD8A52A56995DE1BB9A0C2A7CAD3CA15",
+      "InputFloatFields": 1457,
+      "AllInputArraysAndModuliBitwiseEqual": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "Errors": {
+        "BaselineTwoPass": {
+          "Ix": {
+            "Actual": 13597351104.785961,
+            "Decimal120Reference": "13597351104.7859614182166463220615257740936430727723297097326523867991250322483527387653460446767046443417050068709984375",
+            "NativeMinusDecimal": -2.670935994470615e-07,
+            "RelativeToInertiaScale": 8.817492193406504e-18,
+            "EpsTimesInertiaScale": 0.03971045455656779,
+            "InertiaScale": 30291333815.615658
+          },
+          "Iy": {
+            "Actual": 67481151090.23686,
+            "Decimal120Reference": "67481151090.2368079711218344186399890142778626691286189227554324050968549937918983704226594887256510735146512531310911314",
+            "NativeMinusDecimal": 5.421149535308136e-05,
+            "RelativeToInertiaScale": 1.789670130839022e-15,
+            "EpsTimesInertiaScale": 8.059957734362726,
+            "InertiaScale": 30291333815.615658
+          },
+          "Ixy": {
+            "Actual": 1.3362654995178392e-05,
+            "Decimal120Reference": "-1.034402349634180447253421838578532199220505640709911935308611052373767002080770950365175662422329365312557E-7",
+            "NativeMinusDecimal": 1.346609523014181e-05,
+            "RelativeToInertiaScale": 4.445527328743717e-16,
+            "EpsTimesInertiaScale": 2.002087522119556,
+            "InertiaScale": 30291333815.615658
+          },
+          "Ixc": {
+            "Actual": 13597351104.785961,
+            "Decimal120Reference": "13597351104.7859614182166463220615257383250425695499216221992945304659747947261328745999128469535510565984805778885645152",
+            "NativeMinusDecimal": -2.670935994470615e-07,
+            "RelativeToInertiaScale": 8.880761406392854e-18,
+            "EpsTimesInertiaScale": 0.03999539376059714,
+            "InertiaScale": 30075529250.768192
+          },
+          "Iyc": {
+            "Actual": 66523064142.65028,
+            "Decimal120Reference": "66523064142.6502850712380968913950592936331017419614543952295292995552569557120731126532518529197961729914213417637632878",
+            "NativeMinusDecimal": -1.2577615343913951e-06,
+            "RelativeToInertiaScale": 4.1820096461287354e-17,
+            "EpsTimesInertiaScale": 0.18834097083965193,
+            "InertiaScale": 30075529250.768192
+          },
+          "Ixyc": {
+            "Actual": -6.522575618871949e-09,
+            "Decimal120Reference": "-9.75862252883684617620629674365055924948397031198381451744143660555437588438516068046998458777421535297686944701569059752E-8",
+            "NativeMinusDecimal": 9.106364966949651e-08,
+            "RelativeToInertiaScale": 3.0278319929206416e-18,
+            "EpsTimesInertiaScale": 0.013636143035057868,
+            "InertiaScale": 30075529250.768192
+          }
+        },
+        "CandidateOnePass": {
+          "Ix": {
+            "Actual": 13597351104.785877,
+            "Decimal120Reference": "13597351104.7859614182166463220615257740936430727723297097326523867991250322483527387653460446767046443417050068709984375",
+            "NativeMinusDecimal": -8.419043344319706e-05,
+            "RelativeToInertiaScale": 2.779357091228382e-15,
+            "EpsTimesInertiaScale": 12.517111560385686,
+            "InertiaScale": 30291333815.615513
+          },
+          "Iy": {
+            "Actual": 67481151090.236626,
+            "Decimal120Reference": "67481151090.2368079711218344186399890142778626691286189227554324050968549937918983704226594887256510735146512531310911314",
+            "NativeMinusDecimal": -0.00018229973511566864,
+            "RelativeToInertiaScale": 6.018214193714082e-15,
+            "EpsTimesInertiaScale": 27.10362720024657,
+            "InertiaScale": 30291333815.615513
+          },
+          "Ixy": {
+            "Actual": -0.00020391210437729234,
+            "Decimal120Reference": "-1.034402349634180447253421838578532199220505640709911935308611052373767002080770950365175662422329365312557E-7",
+            "NativeMinusDecimal": -0.00020380866414232893,
+            "RelativeToInertiaScale": 6.7282829268238874e-15,
+            "EpsTimesInertiaScale": 30.30149248208733,
+            "InertiaScale": 30291333815.615513
+          },
+          "Ixc": {
+            "Actual": 13597351104.785877,
+            "Decimal120Reference": "13597351104.7859614182166463220615257383250425695499216221992945304659747947261328745999128469535510565984805778885645152",
+            "NativeMinusDecimal": -8.419043344319706e-05,
+            "RelativeToInertiaScale": 2.7993001466814435e-15,
+            "EpsTimesInertiaScale": 12.606927097492724,
+            "InertiaScale": 30075529250.76805
+          },
+          "Iyc": {
+            "Actual": 66523064142.65005,
+            "Decimal120Reference": "66523064142.6502850712380968913950592936331017419614543952295292995552569557120731126532518529197961729914213417637632878",
+            "NativeMinusDecimal": -0.0002377689920031414,
+            "RelativeToInertiaScale": 7.905729273145523e-15,
+            "EpsTimesInertiaScale": 35.6042394086302,
+            "InertiaScale": 30075529250.76805
+          },
+          "Ixyc": {
+            "Actual": -0.0002172812819480896,
+            "Decimal120Reference": "-9.75862252883684617620629674365055924948397031198381451744143660555437588438516068046998458777421535297686944701569059752E-8",
+            "NativeMinusDecimal": -0.00021718369572280123,
+            "RelativeToInertiaScale": 7.221275938718682e-15,
+            "EpsTimesInertiaScale": 32.521735626752985,
+            "InertiaScale": 30075529250.76805
+          }
+        }
+      },
+      "OnePassBinary64Replay": {
+        "Ix": {
+          "Replay": 13597351104.785885,
+          "Native": 13597351104.785877,
+          "NativeMinusReplay": -7.62939453125e-06
+        },
+        "Iy": {
+          "Replay": 67481151090.23706,
+          "Native": 67481151090.236626,
+          "NativeMinusReplay": -0.00043487548828125
+        },
+        "Ixy": {
+          "Replay": -0.00020025386930420274,
+          "Native": -0.00020391210437729234,
+          "NativeMinusReplay": -3.6582350730895996e-06
+        },
+        "Ixc": {
+          "Replay": 13597351104.785885,
+          "Native": 13597351104.785877,
+          "NativeMinusReplay": -7.62939453125e-06
+        },
+        "Iyc": {
+          "Replay": 66523064142.65048,
+          "Native": 66523064142.65005,
+          "NativeMinusReplay": -0.00043487548828125
+        },
+        "Ixyc": {
+          "Replay": -0.000213623046875,
+          "Native": -0.0002172812819480896,
+          "NativeMinusReplay": -3.6582350730895996e-06
+        }
+      }
+    },
+    {
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "ConcreteCount": 216,
+      "RebarCount": 53,
+      "InputF64SHA256": "164B20F700BD43947988470841B9A212332D16F08C08EBD8BB88ED84E250BC50",
+      "InputFloatFields": 1457,
+      "AllInputArraysAndModuliBitwiseEqual": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "Errors": {
+        "BaselineTwoPass": {
+          "Ix": {
+            "Actual": 13597351104.785963,
+            "Decimal120Reference": "13597351104.7859617921024432527033326323145153637303792226000526929195538784963202049599772670316703333687486272811152170",
+            "NativeMinusDecimal": 1.2663692364347967e-06,
+            "RelativeToInertiaScale": 4.180632137703898e-17,
+            "EpsTimesInertiaScale": 0.18827893337536394,
+            "InertiaScale": 30291333815.61566
+          },
+          "Iy": {
+            "Actual": 67481151090.23687,
+            "Decimal120Reference": "67481151090.2368097596074952507364782745038015777217886922341222361839156172430573900541501813627350949208600483466417515",
+            "NativeMinusDecimal": 6.0052404223499264e-05,
+            "RelativeToInertiaScale": 1.982494550720025e-15,
+            "EpsTimesInertiaScale": 8.928361719886743,
+            "InertiaScale": 30291333815.61566
+          },
+          "Ixy": {
+            "Actual": 1.3399907898163011e-05,
+            "Decimal120Reference": "-1.034402349634180585508625548338049196894337280328371797529865535553245178228379634731261551623981529796765E-7",
+            "NativeMinusDecimal": 1.350334813312643e-05,
+            "RelativeToInertiaScale": 4.457825533640002e-16,
+            "EpsTimesInertiaScale": 2.0076261412183793,
+            "InertiaScale": 30291333815.61566
+          },
+          "Ixc": {
+            "Actual": 13597351104.785963,
+            "Decimal120Reference": "13597351104.7859617921024432527033325965459148605079623189003982089300211554398103865086924227122187769010534387451909724",
+            "NativeMinusDecimal": 1.2663692364347967e-06,
+            "RelativeToInertiaScale": 4.2106299306518463e-17,
+            "EpsTimesInertiaScale": 0.18962991386678713,
+            "InertiaScale": 30075529250.768196
+          },
+          "Iyc": {
+            "Actual": 66523064142.65029,
+            "Decimal120Reference": "66523064142.6502868537504595901051302249213690311554120345649468078931068059117777855000900525114305968385259066449687277",
+            "NativeMinusDecimal": 4.589120634159895e-06,
+            "RelativeToInertiaScale": 1.5258652959673782e-16,
+            "EpsTimesInertiaScale": 0.6871886378336256,
+            "InertiaScale": 30075529250.768196
+          },
+          "Ixyc": {
+            "Actual": 3.073032736574714e-08,
+            "Decimal120Reference": "-9.75862252883684748478928653951265300474969428797224516229905719510142611927959078773560147826146959921046172304935028207E-8",
+            "NativeMinusDecimal": 1.2831655265411562e-07,
+            "RelativeToInertiaScale": 4.2664769615263924e-18,
+            "EpsTimesInertiaScale": 0.019214504054115067,
+            "InertiaScale": 30075529250.768196
+          }
+        },
+        "CandidateOnePass": {
+          "Ix": {
+            "Actual": 13597351104.785877,
+            "Decimal120Reference": "13597351104.7859617921024432527033326323145153637303792226000526929195538784963202049599772670316703333687486272811152170",
+            "NativeMinusDecimal": -8.45643192401277e-05,
+            "RelativeToInertiaScale": 2.7917000867269123e-15,
+            "EpsTimesInertiaScale": 12.572699470313504,
+            "InertiaScale": 30291333815.61552
+          },
+          "Iy": {
+            "Actual": 67481151090.23666,
+            "Decimal120Reference": "67481151090.2368097596074952507364782745038015777217886922341222361839156172430573900541501813627350949208600483466417515",
+            "NativeMinusDecimal": -0.00015357064265150074,
+            "RelativeToInertiaScale": 5.0697880650053566e-15,
+            "EpsTimesInertiaScale": 22.832295640405512,
+            "InertiaScale": 30291333815.61552
+          },
+          "Ixy": {
+            "Actual": -0.00020391210437729234,
+            "Decimal120Reference": "-1.034402349634180585508625548338049196894337280328371797529865535553245178228379634731261551623981529796765E-7",
+            "NativeMinusDecimal": -0.00020380866414232893,
+            "RelativeToInertiaScale": 6.728282926823885e-15,
+            "EpsTimesInertiaScale": 30.30149248208732,
+            "InertiaScale": 30291333815.61552
+          },
+          "Ixc": {
+            "Actual": 13597351104.785877,
+            "Decimal120Reference": "13597351104.7859617921024432527033325965459148605079623189003982089300211554398103865086924227122187769010534387451909724",
+            "NativeMinusDecimal": -8.45643192401277e-05,
+            "RelativeToInertiaScale": 2.8117317083611467e-15,
+            "EpsTimesInertiaScale": 12.662913874041068,
+            "InertiaScale": 30075529250.768055
+          },
+          "Iyc": {
+            "Actual": 66523064142.65008,
+            "Decimal120Reference": "66523064142.6502868537504595901051302249213690311554120345649468078931068059117777855000900525114305968385259066449687277",
+            "NativeMinusDecimal": -0.0002090339262408401,
+            "RelativeToInertiaScale": 6.9502991783761175e-15,
+            "EpsTimesInertiaScale": 31.301364789848147,
+            "InertiaScale": 30075529250.768055
+          },
+          "Ixyc": {
+            "Actual": -0.0002172812819480896,
+            "Decimal120Reference": "-9.75862252883684748478928653951265300474969428797224516229905719510142611927959078773560147826146959921046172304935028207E-8",
+            "NativeMinusDecimal": -0.00021718369572280123,
+            "RelativeToInertiaScale": 7.22127593871868e-15,
+            "EpsTimesInertiaScale": 32.52173562675298,
+            "InertiaScale": 30075529250.768055
+          }
+        }
+      },
+      "OnePassBinary64Replay": {
+        "Ix": {
+          "Replay": 13597351104.785885,
+          "Native": 13597351104.785877,
+          "NativeMinusReplay": -7.62939453125e-06
+        },
+        "Iy": {
+          "Replay": 67481151090.23706,
+          "Native": 67481151090.23666,
+          "NativeMinusReplay": -0.00040435791015625
+        },
+        "Ixy": {
+          "Replay": -0.00020025386930420274,
+          "Native": -0.00020391210437729234,
+          "NativeMinusReplay": -3.6582350730895996e-06
+        },
+        "Ixc": {
+          "Replay": 13597351104.785885,
+          "Native": 13597351104.785877,
+          "NativeMinusReplay": -7.62939453125e-06
+        },
+        "Iyc": {
+          "Replay": 66523064142.65048,
+          "Native": 66523064142.65008,
+          "NativeMinusReplay": -0.00040435791015625
+        },
+        "Ixyc": {
+          "Replay": -0.000213623046875,
+          "Native": -0.0002172812819480896,
+          "NativeMinusReplay": -3.6582350730895996e-06
+        }
+      }
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Stress": "MPa",
+      "ConcreteCount": 84,
+      "RebarCount": 44,
+      "InputF64SHA256": "3791757FA54F3A575F3AC4EAF0E5F4FF83DFBB3C705AF1A0AAFE09484D50F00D",
+      "InputFloatFields": 638,
+      "AllInputArraysAndModuliBitwiseEqual": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "Errors": {
+        "BaselineTwoPass": {
+          "Ix": {
+            "Actual": 6141649176.688064,
+            "Decimal120Reference": "6141649176.68806384733718104591361445186854401175832533226166266733233862411806552906008761940619190041275885047945448242",
+            "NativeMinusDecimal": -2.2581618495216363e-07,
+            "RelativeToInertiaScale": 3.6975164334964083e-17,
+            "EpsTimesInertiaScale": 0.1665213363209071,
+            "InertiaScale": 6107239521.816799
+          },
+          "Iy": {
+            "Actual": 6073022653.005809,
+            "Decimal120Reference": "6073022653.00580847142129415573361694964715530524431969008751087371222095722954643641078286728534050598179901554876600845",
+            "NativeMinusDecimal": 3.588399363130164e-07,
+            "RelativeToInertiaScale": 5.87564864667806e-17,
+            "EpsTimesInertiaScale": 0.2646156905573927,
+            "InertiaScale": 6107239521.816799
+          },
+          "Ixy": {
+            "Actual": 5.5879354477664794e-09,
+            "Decimal120Reference": "1.010832101855142698358960955096862099120328577256031431924633039159846351195059502257961448137621665374800E-8",
+            "NativeMinusDecimal": -4.5203855707849475e-09,
+            "RelativeToInertiaScale": 7.401683779777824e-19,
+            "EpsTimesInertiaScale": 0.0033334220312521653,
+            "InertiaScale": 6107239521.816799
+          },
+          "Ixc": {
+            "Actual": 6141649176.688064,
+            "Decimal120Reference": "6141649176.68806384733718104591361444010323285074683549978388932094872837430217246803833631442722375676163387976299098604",
+            "NativeMinusDecimal": -2.2581618495216363e-07,
+            "RelativeToInertiaScale": 3.6975164334964083e-17,
+            "EpsTimesInertiaScale": 0.1665213363209071,
+            "InertiaScale": 6107239521.816799
+          },
+          "Iyc": {
+            "Actual": 6073022653.005809,
+            "Decimal120Reference": "6073022653.00580847142129415573361470906129780221619599302035478841748498229087189542846434709064722906155959230545775855",
+            "NativeMinusDecimal": 3.588399363130164e-07,
+            "RelativeToInertiaScale": 5.87564864667806e-17,
+            "EpsTimesInertiaScale": 0.2646156905573927,
+            "InertiaScale": 6107239521.816799
+          },
+          "Ixyc": {
+            "Actual": 5.587935447692871e-09,
+            "Decimal120Reference": "1.01083210185514268212283155290100613030100135924664928717870061494982955032408346401940898854890204037552064205523088062E-8",
+            "NativeMinusDecimal": -4.520385570858556e-09,
+            "RelativeToInertiaScale": 7.40168377989835e-19,
+            "EpsTimesInertiaScale": 0.0033334220313064452,
+            "InertiaScale": 6107239521.816799
+          }
+        },
+        "CandidateOnePass": {
+          "Ix": {
+            "Actual": 6141649176.688142,
+            "Decimal120Reference": "6141649176.68806384733718104591361445186854401175832533226166266733233862411806552906008761940619190041275885047945448242",
+            "NativeMinusDecimal": 7.797547776036034e-05,
+            "RelativeToInertiaScale": 1.2767712398016982e-14,
+            "EpsTimesInertiaScale": 57.500664798082944,
+            "InertiaScale": 6107239521.816853
+          },
+          "Iy": {
+            "Actual": 6073022653.0058365,
+            "Decimal120Reference": "6073022653.00580847142129415573361694964715530524431969008751087371222095722954643641078286728534050598179901554876600845",
+            "NativeMinusDecimal": 2.8015395112094266e-05,
+            "RelativeToInertiaScale": 4.5872435512010046e-15,
+            "EpsTimesInertiaScale": 20.659108347846555,
+            "InertiaScale": 6107239521.816853
+          },
+          "Ixy": {
+            "Actual": 3.633555024862297e-05,
+            "Decimal120Reference": "1.010832101855142698358960955096862099120328577256031431924633039159846351195059502257961448137621665374800E-8",
+            "NativeMinusDecimal": 3.632544192760442e-05,
+            "RelativeToInertiaScale": 5.94793143413473e-15,
+            "EpsTimesInertiaScale": 26.78710179039443,
+            "InertiaScale": 6107239521.816853
+          },
+          "Ixc": {
+            "Actual": 6141649176.688142,
+            "Decimal120Reference": "6141649176.68806384733718104591361444010323285074683549978388932094872837430217246803833631442722375676163387976299098604",
+            "NativeMinusDecimal": 7.797547776036034e-05,
+            "RelativeToInertiaScale": 1.2767712398016982e-14,
+            "EpsTimesInertiaScale": 57.500664798082944,
+            "InertiaScale": 6107239521.816853
+          },
+          "Iyc": {
+            "Actual": 6073022653.0058365,
+            "Decimal120Reference": "6073022653.00580847142129415573361470906129780221619599302035478841748498229087189542846434709064722906155959230545775855",
+            "NativeMinusDecimal": 2.8015395112094266e-05,
+            "RelativeToInertiaScale": 4.5872435512010046e-15,
+            "EpsTimesInertiaScale": 20.659108347846555,
+            "InertiaScale": 6107239521.816853
+          },
+          "Ixyc": {
+            "Actual": 3.6335550248622894e-05,
+            "Decimal120Reference": "1.01083210185514268212283155290100613030100135924664928717870061494982955032408346401940898854890204037552064205523088062E-8",
+            "NativeMinusDecimal": 3.632544192760434e-05,
+            "RelativeToInertiaScale": 5.947931434134718e-15,
+            "EpsTimesInertiaScale": 26.787101790394377,
+            "InertiaScale": 6107239521.816853
+          }
+        }
+      },
+      "OnePassBinary64Replay": {
+        "Ix": {
+          "Replay": 6141649176.688107,
+          "Native": 6141649176.688142,
+          "NativeMinusReplay": 3.528594970703125e-05
+        },
+        "Iy": {
+          "Replay": 6073022653.005873,
+          "Native": 6073022653.0058365,
+          "NativeMinusReplay": -3.62396240234375e-05
+        },
+        "Ixy": {
+          "Replay": 3.814697265625008e-05,
+          "Native": 3.633555024862297e-05,
+          "NativeMinusReplay": -1.8114224076271125e-06
+        },
+        "Ixc": {
+          "Replay": 6141649176.688107,
+          "Native": 6141649176.688142,
+          "NativeMinusReplay": 3.528594970703125e-05
+        },
+        "Iyc": {
+          "Replay": 6073022653.005873,
+          "Native": 6073022653.0058365,
+          "NativeMinusReplay": -3.62396240234375e-05
+        },
+        "Ixyc": {
+          "Replay": 3.814697265625e-05,
+          "Native": 3.6335550248622894e-05,
+          "NativeMinusReplay": -1.8114224076271057e-06
+        }
+      }
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Stress": "kgf/cm2",
+      "ConcreteCount": 84,
+      "RebarCount": 44,
+      "InputF64SHA256": "5ADA67C57FCCE762A9A719CB68165B5A4E2A7BD2F5FB1D08F19FB02808D88C0D",
+      "InputFloatFields": 638,
+      "AllInputArraysAndModuliBitwiseEqual": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "Errors": {
+        "BaselineTwoPass": {
+          "Ix": {
+            "Actual": 6141649176.688066,
+            "Decimal120Reference": "6141649176.68806518522918244407306727458581064534912342721789836045237700720067244285271017922273517158734043392651013903",
+            "NativeMinusDecimal": 3.436404464621769e-07,
+            "RelativeToInertiaScale": 5.62677205036081e-17,
+            "EpsTimesInertiaScale": 0.25340728509303667,
+            "InertiaScale": 6107239521.8168
+          },
+          "Iy": {
+            "Actual": 6073022653.00581,
+            "Decimal120Reference": "6073022653.00580974877531582231878719564530683248513993743971620431593689206460309887799643293675434897481663437912480409",
+            "NativeMinusDecimal": 3.516023105268121e-08,
+            "RelativeToInertiaScale": 5.757139690866691e-18,
+            "EpsTimesInertiaScale": 0.025927852166507122,
+            "InertiaScale": 6107239521.8168
+          },
+          "Ixy": {
+            "Actual": 3.259629011154425e-08,
+            "Decimal120Reference": "1.010832101855143590051123266299602715478548949817898599279117401706510535916827902839634990039351512131530E-8",
+            "NativeMinusDecimal": 2.2487969092992815e-08,
+            "RelativeToInertiaScale": 3.682182271165128e-18,
+            "EpsTimesInertiaScale": 0.016583074704329518,
+            "InertiaScale": 6107239521.8168
+          },
+          "Ixc": {
+            "Actual": 6141649176.688066,
+            "Decimal120Reference": "6141649176.68806518522918244407306726282049948433761546653184981465173819344832744215499146476564465221188086169639650567",
+            "NativeMinusDecimal": 3.436404464621769e-07,
+            "RelativeToInertiaScale": 5.62677205036081e-17,
+            "EpsTimesInertiaScale": 0.25340728509303667,
+            "InertiaScale": 6107239521.8168
+          },
+          "Iyc": {
+            "Actual": 6073022653.00581,
+            "Decimal120Reference": "6073022653.00580974877531582231878495505944932945356390438863114204228120106802116600444445172843583911229569887628446668",
+            "NativeMinusDecimal": 3.516023105268122e-08,
+            "RelativeToInertiaScale": 5.757139690866692e-18,
+            "EpsTimesInertiaScale": 0.025927852166507125,
+            "InertiaScale": 6107239521.8168
+          },
+          "Ixyc": {
+            "Actual": 3.259629011154175e-08,
+            "Decimal120Reference": "1.01083210185514357381499386410372172973180195661301703630088130074365870996604298610150078036179469809232849695162908028E-8",
+            "NativeMinusDecimal": 2.2487969092990314e-08,
+            "RelativeToInertiaScale": 3.682182271164718e-18,
+            "EpsTimesInertiaScale": 0.016583074704327672,
+            "InertiaScale": 6107239521.8168
+          }
+        },
+        "CandidateOnePass": {
+          "Ix": {
+            "Actual": 6141649176.688052,
+            "Decimal120Reference": "6141649176.68806518522918244407306727458581064534912342721789836045237700720067244285271017922273517158734043392651013903",
+            "NativeMinusDecimal": -1.3007799983225323e-05,
+            "RelativeToInertiaScale": 2.1298984486784486e-15,
+            "EpsTimesInertiaScale": 9.592209859805259,
+            "InertiaScale": 6107239521.816805
+          },
+          "Iy": {
+            "Actual": 6073022653.005834,
+            "Decimal120Reference": "6073022653.00580974877531582231878719564530683248513993743971620431593689206460309887799643293675434897481663437912480409",
+            "NativeMinusDecimal": 2.387701814120893e-05,
+            "RelativeToInertiaScale": 3.909625298944539e-15,
+            "EpsTimesInertiaScale": 17.60738703948489,
+            "InertiaScale": 6107239521.816805
+          },
+          "Ixy": {
+            "Actual": 1.981854438781741e-06,
+            "Decimal120Reference": "1.010832101855143590051123266299602715478548949817898599279117401706510535916827902839634990039351512131530E-8",
+            "NativeMinusDecimal": 1.9717461177631894e-06,
+            "RelativeToInertiaScale": 3.2285390326014706e-16,
+            "EpsTimesInertiaScale": 1.4540047184175084,
+            "InertiaScale": 6107239521.816805
+          },
+          "Ixc": {
+            "Actual": 6141649176.688052,
+            "Decimal120Reference": "6141649176.68806518522918244407306726282049948433761546653184981465173819344832744215499146476564465221188086169639650567",
+            "NativeMinusDecimal": -1.3007799983225323e-05,
+            "RelativeToInertiaScale": 2.1298984486784486e-15,
+            "EpsTimesInertiaScale": 9.592209859805259,
+            "InertiaScale": 6107239521.816805
+          },
+          "Iyc": {
+            "Actual": 6073022653.005834,
+            "Decimal120Reference": "6073022653.00580974877531582231878495505944932945356390438863114204228120106802116600444445172843583911229569887628446668",
+            "NativeMinusDecimal": 2.387701814120893e-05,
+            "RelativeToInertiaScale": 3.909625298944539e-15,
+            "EpsTimesInertiaScale": 17.60738703948489,
+            "InertiaScale": 6107239521.816805
+          },
+          "Ixyc": {
+            "Actual": 1.9818544387817383e-06,
+            "Decimal120Reference": "1.01083210185514357381499386410372172973180195661301703630088130074365870996604298610150078036179469809232849695162908028E-8",
+            "NativeMinusDecimal": 1.971746117763187e-06,
+            "RelativeToInertiaScale": 3.228539032601466e-16,
+            "EpsTimesInertiaScale": 1.4540047184175064,
+            "InertiaScale": 6107239521.816805
+          }
+        }
+      },
+      "OnePassBinary64Replay": {
+        "Ix": {
+          "Replay": 6141649176.688015,
+          "Native": 6141649176.688052,
+          "NativeMinusReplay": 3.719329833984375e-05
+        },
+        "Iy": {
+          "Replay": 6073022653.005867,
+          "Native": 6073022653.005834,
+          "NativeMinusReplay": -3.337860107421875e-05
+        },
+        "Ixy": {
+          "Replay": 1.9073486328125025e-06,
+          "Native": 1.981854438781741e-06,
+          "NativeMinusReplay": 7.450580596923828e-08
+        },
+        "Ixc": {
+          "Replay": 6141649176.688015,
+          "Native": 6141649176.688052,
+          "NativeMinusReplay": 3.719329833984375e-05
+        },
+        "Iyc": {
+          "Replay": 6073022653.005867,
+          "Native": 6073022653.005834,
+          "NativeMinusReplay": -3.337860107421875e-05
+        },
+        "Ixyc": {
+          "Replay": 1.9073486328125e-06,
+          "Native": 1.9818544387817383e-06,
+          "NativeMinusReplay": 7.450580596923828e-08
+        }
+      }
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Stress": "tf/m2",
+      "ConcreteCount": 84,
+      "RebarCount": 44,
+      "InputF64SHA256": "0D25EEB431DADB6A123189030F89D74F0979897B52B64C3245CAE6A9B8A5BDEA",
+      "InputFloatFields": 638,
+      "AllInputArraysAndModuliBitwiseEqual": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "Errors": {
+        "BaselineTwoPass": {
+          "Ix": {
+            "Actual": 6141649176.688066,
+            "Decimal120Reference": "6141649176.68806538794009174682467197216711774145282255703040030766644999491633025212102451484113334629380473169647766141",
+            "NativeMinusDecimal": 1.4092953715942533e-07,
+            "RelativeToInertiaScale": 2.3075816276074462e-17,
+            "EpsTimesInertiaScale": 0.10392423758219897,
+            "InertiaScale": 6107239521.8168
+          },
+          "Iy": {
+            "Actual": 6073022653.00581,
+            "Decimal120Reference": "6073022653.00580994231380395361973521473656904827108746189410679256158892541936199213265924779771661462192946011276152137",
+            "NativeMinusDecimal": -1.5837825707861974e-07,
+            "RelativeToInertiaScale": 2.593287139186984e-17,
+            "EpsTimesInertiaScale": 0.116791269937072,
+            "InertiaScale": 6107239521.8168
+          },
+          "Ixy": {
+            "Actual": 1.862645149231207e-08,
+            "Decimal120Reference": "1.010832101855143725155996343754678352337654266488504535117183085982255812844918131430821244493570831405020E-8",
+            "NativeMinusDecimal": 8.51813047376063e-09,
+            "RelativeToInertiaScale": 1.3947595216024263e-18,
+            "EpsTimesInertiaScale": 0.006281438461760138,
+            "InertiaScale": 6107239521.8168
+          },
+          "Ixc": {
+            "Actual": 6141649176.688066,
+            "Decimal120Reference": "6141649176.68806538794009174682467196040180658044131184964612824679939774873892288771516323861605002120027794365473279205",
+            "NativeMinusDecimal": 1.4092953715942533e-07,
+            "RelativeToInertiaScale": 2.3075816276074462e-17,
+            "EpsTimesInertiaScale": 0.10392423758219897,
+            "InertiaScale": 6107239521.8168
+          },
+          "Iyc": {
+            "Actual": 6073022653.00581,
+            "Decimal120Reference": "6073022653.00580994231380395361973297415071154523898834763333552104015916339390351468043780349284818381068794544286860105",
+            "NativeMinusDecimal": -1.5837825707861974e-07,
+            "RelativeToInertiaScale": 2.593287139186984e-17,
+            "EpsTimesInertiaScale": 0.116791269937072,
+            "InertiaScale": 6107239521.8168
+          },
+          "Ixyc": {
+            "Actual": 1.862645149230957e-08,
+            "Decimal120Reference": "1.01083210185514370891986694155879357614735882249197243539236092310216725165430314280175427699596291169256953612974523282E-8",
+            "NativeMinusDecimal": 8.518130473758133e-09,
+            "RelativeToInertiaScale": 1.3947595216020172e-18,
+            "EpsTimesInertiaScale": 0.006281438461758296,
+            "InertiaScale": 6107239521.8168
+          }
+        },
+        "CandidateOnePass": {
+          "Ix": {
+            "Actual": 6141649176.688052,
+            "Decimal120Reference": "6141649176.68806538794009174682467197216711774145282255703040030766644999491633025212102451484113334629380473169647766141",
+            "NativeMinusDecimal": -1.3210510892528075e-05,
+            "RelativeToInertiaScale": 2.1630903529059823e-15,
+            "EpsTimesInertiaScale": 9.741692907316096,
+            "InertiaScale": 6107239521.816805
+          },
+          "Iy": {
+            "Actual": 6073022653.005834,
+            "Decimal120Reference": "6073022653.00580994231380395361973521473656904827108746189410679256158892541936199213265924779771661462192946011276152137",
+            "NativeMinusDecimal": 2.368347965307763e-05,
+            "RelativeToInertiaScale": 3.877935287861803e-15,
+            "EpsTimesInertiaScale": 17.464667917381313,
+            "InertiaScale": 6107239521.816805
+          },
+          "Ixy": {
+            "Actual": 1.981854438781741e-06,
+            "Decimal120Reference": "1.010832101855143725155996343754678352337654266488504535117183085982255812844918131430821244493570831405020E-8",
+            "NativeMinusDecimal": 1.9717461177631894e-06,
+            "RelativeToInertiaScale": 3.2285390326014706e-16,
+            "EpsTimesInertiaScale": 1.4540047184175084,
+            "InertiaScale": 6107239521.816805
+          },
+          "Ixc": {
+            "Actual": 6141649176.688052,
+            "Decimal120Reference": "6141649176.68806538794009174682467196040180658044131184964612824679939774873892288771516323861605002120027794365473279205",
+            "NativeMinusDecimal": -1.3210510892528075e-05,
+            "RelativeToInertiaScale": 2.1630903529059823e-15,
+            "EpsTimesInertiaScale": 9.741692907316096,
+            "InertiaScale": 6107239521.816805
+          },
+          "Iyc": {
+            "Actual": 6073022653.005834,
+            "Decimal120Reference": "6073022653.00580994231380395361973297415071154523898834763333552104015916339390351468043780349284818381068794544286860105",
+            "NativeMinusDecimal": 2.368347965307763e-05,
+            "RelativeToInertiaScale": 3.877935287861803e-15,
+            "EpsTimesInertiaScale": 17.464667917381313,
+            "InertiaScale": 6107239521.816805
+          },
+          "Ixyc": {
+            "Actual": 1.9818544387817383e-06,
+            "Decimal120Reference": "1.01083210185514370891986694155879357614735882249197243539236092310216725165430314280175427699596291169256953612974523282E-8",
+            "NativeMinusDecimal": 1.971746117763187e-06,
+            "RelativeToInertiaScale": 3.228539032601466e-16,
+            "EpsTimesInertiaScale": 1.4540047184175064,
+            "InertiaScale": 6107239521.816805
+          }
+        }
+      },
+      "OnePassBinary64Replay": {
+        "Ix": {
+          "Replay": 6141649176.688015,
+          "Native": 6141649176.688052,
+          "NativeMinusReplay": 3.719329833984375e-05
+        },
+        "Iy": {
+          "Replay": 6073022653.005867,
+          "Native": 6073022653.005834,
+          "NativeMinusReplay": -3.337860107421875e-05
+        },
+        "Ixy": {
+          "Replay": 1.9073486328125025e-06,
+          "Native": 1.981854438781741e-06,
+          "NativeMinusReplay": 7.450580596923828e-08
+        },
+        "Ixc": {
+          "Replay": 6141649176.688015,
+          "Native": 6141649176.688052,
+          "NativeMinusReplay": 3.719329833984375e-05
+        },
+        "Iyc": {
+          "Replay": 6073022653.005867,
+          "Native": 6073022653.005834,
+          "NativeMinusReplay": -3.337860107421875e-05
+        },
+        "Ixyc": {
+          "Replay": 1.9073486328125e-06,
+          "Native": 1.9818544387817383e-06,
+          "NativeMinusReplay": 7.450580596923828e-08
+        }
+      }
+    }
+  ],
+  "Decimal120ErrorExtrema": {
+    "BaselineTwoPass.Global": {
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "Field": "Iy",
+      "Actual": 67481151090.23687,
+      "Decimal120Reference": "67481151090.2368097596074952507364782745038015777217886922341222361839156172430573900541501813627350949208600483466417515",
+      "NativeMinusDecimal": 6.0052404223499264e-05,
+      "RelativeToInertiaScale": 1.982494550720025e-15,
+      "EpsTimesInertiaScale": 8.928361719886743,
+      "InertiaScale": 30291333815.61566
+    },
+    "BaselineTwoPass.Central": {
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "Field": "Iyc",
+      "Actual": 66523064142.65029,
+      "Decimal120Reference": "66523064142.6502868537504595901051302249213690311554120345649468078931068059117777855000900525114305968385259066449687277",
+      "NativeMinusDecimal": 4.589120634159895e-06,
+      "RelativeToInertiaScale": 1.5258652959673782e-16,
+      "EpsTimesInertiaScale": 0.6871886378336256,
+      "InertiaScale": 30075529250.768196
+    },
+    "CandidateOnePass.Global": {
+      "Shape": "HollowRectangle",
+      "Stress": "MPa",
+      "Field": "Ix",
+      "Actual": 6141649176.688142,
+      "Decimal120Reference": "6141649176.68806384733718104591361445186854401175832533226166266733233862411806552906008761940619190041275885047945448242",
+      "NativeMinusDecimal": 7.797547776036034e-05,
+      "RelativeToInertiaScale": 1.2767712398016982e-14,
+      "EpsTimesInertiaScale": 57.500664798082944,
+      "InertiaScale": 6107239521.816853
+    },
+    "CandidateOnePass.Central": {
+      "Shape": "HollowRectangle",
+      "Stress": "MPa",
+      "Field": "Ixc",
+      "Actual": 6141649176.688142,
+      "Decimal120Reference": "6141649176.68806384733718104591361444010323285074683549978388932094872837430217246803833631442722375676163387976299098604",
+      "NativeMinusDecimal": 7.797547776036034e-05,
+      "RelativeToInertiaScale": 1.2767712398016982e-14,
+      "EpsTimesInertiaScale": 57.500664798082944,
+      "InertiaScale": 6107239521.816853
+    }
+  },
+  "ApprovedGate": {
+    "EngineeringRelative": 1e-09,
+    "Expression": "max(original generic limit, 1e-9*sqrt(abs(Ix))*sqrt(abs(Iy)))",
+    "OnlyOptInTransformedIxyIxyc": true,
+    "SolverCrackStabilityTolerancesChanged": false,
+    "NoRoundingOrClipping": true,
+    "DecimalPerFieldErrorsAreDiagnosticNotAcceptance": true
+  },
+  "UnitPairs": [
+    {
+      "Version": "BaselineTwoPass",
+      "Shape": "PointedSection",
+      "Stress": "kgf/cm2",
+      "Field": "Ixy",
+      "Expected": 6.234864375358532e-06,
+      "Actual": 1.3362654995178392e-05,
+      "AbsoluteDifference": 7.12779061981986e-06,
+      "RelativeToInertiaScale": 2.353079155644633e-16,
+      "Historical8EpsFloor": 5.380821799792495e-05,
+      "HistoricalEffectiveLimit": 5.380821799792495e-05,
+      "WithinHistorical8Eps": true,
+      "Engineering1e9Floor": 30.291333815615655,
+      "EngineeringEffectiveLimit": 30.291333815615655,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "BaselineTwoPass",
+      "Shape": "PointedSection",
+      "Stress": "kgf/cm2",
+      "Field": "Ixyc",
+      "Expected": -9.790394765069809e-08,
+      "Actual": -6.522575618871949e-09,
+      "AbsoluteDifference": 9.138137203182614e-08,
+      "RelativeToInertiaScale": 3.038396141590495e-18,
+      "Historical8EpsFloor": 5.342487208318437e-05,
+      "HistoricalEffectiveLimit": 5.342487208318437e-05,
+      "WithinHistorical8Eps": true,
+      "Engineering1e9Floor": 30.075529250768195,
+      "EngineeringEffectiveLimit": 30.075529250768195,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "BaselineTwoPass",
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "Field": "Ixy",
+      "Expected": 6.234864375358532e-06,
+      "Actual": 1.3399907898163011e-05,
+      "AbsoluteDifference": 7.165043522804479e-06,
+      "RelativeToInertiaScale": 2.3653773605409173e-16,
+      "Historical8EpsFloor": 5.380821799792495e-05,
+      "HistoricalEffectiveLimit": 5.380821799792495e-05,
+      "WithinHistorical8Eps": true,
+      "Engineering1e9Floor": 30.291333815615655,
+      "EngineeringEffectiveLimit": 30.291333815615655,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "BaselineTwoPass",
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "Field": "Ixyc",
+      "Expected": -9.790394765069809e-08,
+      "Actual": 3.073032736574714e-08,
+      "AbsoluteDifference": 1.2863427501644523e-07,
+      "RelativeToInertiaScale": 4.277041110196245e-18,
+      "Historical8EpsFloor": 5.342487208318437e-05,
+      "HistoricalEffectiveLimit": 5.342487208318437e-05,
+      "WithinHistorical8Eps": true,
+      "Engineering1e9Floor": 30.075529250768195,
+      "EngineeringEffectiveLimit": 30.075529250768195,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "BaselineTwoPass",
+      "Shape": "HollowRectangle",
+      "Stress": "kgf/cm2",
+      "Field": "Ixy",
+      "Expected": 5.5879354477664794e-09,
+      "Actual": 3.259629011154425e-08,
+      "AbsoluteDifference": 2.700835466377777e-08,
+      "RelativeToInertiaScale": 4.422350649142912e-18,
+      "Historical8EpsFloor": 1.0848636694434786e-05,
+      "HistoricalEffectiveLimit": 1.0848636694434786e-05,
+      "WithinHistorical8Eps": true,
+      "Engineering1e9Floor": 6.107239521816799,
+      "EngineeringEffectiveLimit": 6.107239521816799,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "BaselineTwoPass",
+      "Shape": "HollowRectangle",
+      "Stress": "kgf/cm2",
+      "Field": "Ixyc",
+      "Expected": 5.587935447692871e-09,
+      "Actual": 3.259629011154175e-08,
+      "AbsoluteDifference": 2.7008354663848877e-08,
+      "RelativeToInertiaScale": 4.422350649154555e-18,
+      "Historical8EpsFloor": 1.0848636694434786e-05,
+      "HistoricalEffectiveLimit": 1.0848636694434786e-05,
+      "WithinHistorical8Eps": true,
+      "Engineering1e9Floor": 6.107239521816799,
+      "EngineeringEffectiveLimit": 6.107239521816799,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "BaselineTwoPass",
+      "Shape": "HollowRectangle",
+      "Stress": "tf/m2",
+      "Field": "Ixy",
+      "Expected": 5.5879354477664794e-09,
+      "Actual": 1.862645149231207e-08,
+      "AbsoluteDifference": 1.3038516044545588e-08,
+      "RelativeToInertiaScale": 2.1349278995802103e-18,
+      "Historical8EpsFloor": 1.0848636694434786e-05,
+      "HistoricalEffectiveLimit": 1.0848636694434786e-05,
+      "WithinHistorical8Eps": true,
+      "Engineering1e9Floor": 6.107239521816799,
+      "EngineeringEffectiveLimit": 6.107239521816799,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "BaselineTwoPass",
+      "Shape": "HollowRectangle",
+      "Stress": "tf/m2",
+      "Field": "Ixyc",
+      "Expected": 5.587935447692871e-09,
+      "Actual": 1.862645149230957e-08,
+      "AbsoluteDifference": 1.30385160446167e-08,
+      "RelativeToInertiaScale": 2.134927899591854e-18,
+      "Historical8EpsFloor": 1.0848636694434786e-05,
+      "HistoricalEffectiveLimit": 1.0848636694434786e-05,
+      "WithinHistorical8Eps": true,
+      "Engineering1e9Floor": 6.107239521816799,
+      "EngineeringEffectiveLimit": 6.107239521816799,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "CandidateOnePass",
+      "Shape": "PointedSection",
+      "Stress": "kgf/cm2",
+      "Field": "Ixy",
+      "Expected": -0.00011754058468144634,
+      "Actual": -0.00020391210437729234,
+      "AbsoluteDifference": 8.6371519695846e-05,
+      "RelativeToInertiaScale": 2.851360729824327e-15,
+      "Historical8EpsFloor": 5.3808217997924844e-05,
+      "HistoricalEffectiveLimit": 5.3808217997924844e-05,
+      "WithinHistorical8Eps": false,
+      "Engineering1e9Floor": 30.291333815615594,
+      "EngineeringEffectiveLimit": 30.291333815615594,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "CandidateOnePass",
+      "Shape": "PointedSection",
+      "Stress": "kgf/cm2",
+      "Field": "Ixyc",
+      "Expected": -0.00012387335300445557,
+      "Actual": -0.0002172812819480896,
+      "AbsoluteDifference": 9.340792894363403e-05,
+      "RelativeToInertiaScale": 3.105778394282069e-15,
+      "Historical8EpsFloor": 5.3424872083184254e-05,
+      "HistoricalEffectiveLimit": 5.3424872083184254e-05,
+      "WithinHistorical8Eps": false,
+      "Engineering1e9Floor": 30.075529250768128,
+      "EngineeringEffectiveLimit": 30.075529250768128,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "CandidateOnePass",
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "Field": "Ixy",
+      "Expected": -0.00011754058468144634,
+      "Actual": -0.00020391210437729234,
+      "AbsoluteDifference": 8.6371519695846e-05,
+      "RelativeToInertiaScale": 2.851360729824327e-15,
+      "Historical8EpsFloor": 5.3808217997924844e-05,
+      "HistoricalEffectiveLimit": 5.3808217997924844e-05,
+      "WithinHistorical8Eps": false,
+      "Engineering1e9Floor": 30.291333815615594,
+      "EngineeringEffectiveLimit": 30.291333815615594,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "CandidateOnePass",
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "Field": "Ixyc",
+      "Expected": -0.00012387335300445557,
+      "Actual": -0.0002172812819480896,
+      "AbsoluteDifference": 9.340792894363403e-05,
+      "RelativeToInertiaScale": 3.105778394282069e-15,
+      "Historical8EpsFloor": 5.3424872083184254e-05,
+      "HistoricalEffectiveLimit": 5.3424872083184254e-05,
+      "WithinHistorical8Eps": false,
+      "Engineering1e9Floor": 30.075529250768128,
+      "EngineeringEffectiveLimit": 30.075529250768128,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "CandidateOnePass",
+      "Shape": "HollowRectangle",
+      "Stress": "kgf/cm2",
+      "Field": "Ixy",
+      "Expected": 3.633555024862297e-05,
+      "Actual": 1.981854438781741e-06,
+      "AbsoluteDifference": 3.435369580984123e-05,
+      "RelativeToInertiaScale": 5.625077530874586e-15,
+      "Historical8EpsFloor": 1.0848636694434881e-05,
+      "HistoricalEffectiveLimit": 1.0848636694434881e-05,
+      "WithinHistorical8Eps": false,
+      "Engineering1e9Floor": 6.107239521816853,
+      "EngineeringEffectiveLimit": 6.107239521816853,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "CandidateOnePass",
+      "Shape": "HollowRectangle",
+      "Stress": "kgf/cm2",
+      "Field": "Ixyc",
+      "Expected": 3.6335550248622894e-05,
+      "Actual": 1.9818544387817383e-06,
+      "AbsoluteDifference": 3.4353695809841156e-05,
+      "RelativeToInertiaScale": 5.6250775308745745e-15,
+      "Historical8EpsFloor": 1.0848636694434881e-05,
+      "HistoricalEffectiveLimit": 1.0848636694434881e-05,
+      "WithinHistorical8Eps": false,
+      "Engineering1e9Floor": 6.107239521816853,
+      "EngineeringEffectiveLimit": 6.107239521816853,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "CandidateOnePass",
+      "Shape": "HollowRectangle",
+      "Stress": "tf/m2",
+      "Field": "Ixy",
+      "Expected": 3.633555024862297e-05,
+      "Actual": 1.981854438781741e-06,
+      "AbsoluteDifference": 3.435369580984123e-05,
+      "RelativeToInertiaScale": 5.625077530874586e-15,
+      "Historical8EpsFloor": 1.0848636694434881e-05,
+      "HistoricalEffectiveLimit": 1.0848636694434881e-05,
+      "WithinHistorical8Eps": false,
+      "Engineering1e9Floor": 6.107239521816853,
+      "EngineeringEffectiveLimit": 6.107239521816853,
+      "WithinApprovedEngineeringGate": true
+    },
+    {
+      "Version": "CandidateOnePass",
+      "Shape": "HollowRectangle",
+      "Stress": "tf/m2",
+      "Field": "Ixyc",
+      "Expected": 3.6335550248622894e-05,
+      "Actual": 1.9818544387817383e-06,
+      "AbsoluteDifference": 3.4353695809841156e-05,
+      "RelativeToInertiaScale": 5.6250775308745745e-15,
+      "Historical8EpsFloor": 1.0848636694434881e-05,
+      "HistoricalEffectiveLimit": 1.0848636694434881e-05,
+      "WithinHistorical8Eps": false,
+      "Engineering1e9Floor": 6.107239521816853,
+      "EngineeringEffectiveLimit": 6.107239521816853,
+      "WithinApprovedEngineeringGate": true
+    }
+  ],
+  "UnitPairGateCounts": {
+    "BaselineTwoPass": {
+      "Historical8EpsFailures": 0,
+      "ApprovedEngineeringGateFailures": 0
+    },
+    "CandidateOnePass": {
+      "Historical8EpsFailures": 8,
+      "ApprovedEngineeringGateFailures": 0
+    }
+  },
+  "Historical8EpsFailuresRetained": true,
+  "Performance": [
+    {
+      "Case": "small.positive",
+      "Fibers": 300,
+      "Bars": 64,
+      "BaselineTwoPassMilliseconds": 0.949859619140625,
+      "CandidateOnePassMilliseconds": 0.640869140625,
+      "SavedMillisecondsPerRebuild": 0.308990478515625,
+      "CandidateOverBaseline": 0.6746987951807228,
+      "KernelSpeedup": 1.4821428571428572,
+      "PercentTimeReduction": 32.53012048192772,
+      "BaselineIterations": 512,
+      "CandidateIterations": 512,
+      "BaselineSampleMilliseconds": [
+        0.77056884765625,
+        0.949859619140625,
+        0.980377197265625
+      ],
+      "CandidateSampleMilliseconds": [
+        0.640869140625,
+        0.67138671875,
+        0.568389892578125
+      ],
+      "BaselineTargetWindowMet": true,
+      "CandidateTargetWindowMet": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "NativePropertyDeltas": {
+        "Ix": {
+          "Baseline": 21039482021.467857,
+          "Candidate": 21039482021.466976,
+          "CandidateMinusBaseline": -0.000881195068359375,
+          "RelativeToInertiaScale": 2.7296319383646324e-14
+        },
+        "Iy": {
+          "Baseline": 49533713770.799355,
+          "Candidate": 49533713770.798744,
+          "CandidateMinusBaseline": -0.0006103515625,
+          "RelativeToInertiaScale": 1.8906541564430356e-14
+        },
+        "Ixy": {
+          "Baseline": 6912019303.669684,
+          "Candidate": 6912019303.668988,
+          "CandidateMinusBaseline": -0.0006961822509765625,
+          "RelativeToInertiaScale": 2.1565273971928374e-14
+        },
+        "Ixc": {
+          "Baseline": 20738597120.334908,
+          "Candidate": 20738597120.334026,
+          "CandidateMinusBaseline": -0.000881195068359375,
+          "RelativeToInertiaScale": 2.7527383712092832e-14
+        },
+        "Iyc": {
+          "Baseline": 49412277041.15172,
+          "Candidate": 49412277041.15111,
+          "CandidateMinusBaseline": -0.0006103515625,
+          "RelativeToInertiaScale": 1.9066586120930102e-14
+        },
+        "Ixyc": {
+          "Baseline": 7103169711.448318,
+          "Candidate": 7103169711.447621,
+          "CandidateMinusBaseline": -0.0006961822509765625,
+          "RelativeToInertiaScale": 2.1747824794185896e-14
+        }
+      }
+    },
+    {
+      "Case": "small.signed",
+      "Fibers": 300,
+      "Bars": 64,
+      "BaselineTwoPassMilliseconds": 0.93841552734375,
+      "CandidateOnePassMilliseconds": 0.6256103515625,
+      "SavedMillisecondsPerRebuild": 0.31280517578125,
+      "CandidateOverBaseline": 0.6666666666666666,
+      "KernelSpeedup": 1.5,
+      "PercentTimeReduction": 33.333333333333336,
+      "BaselineIterations": 512,
+      "CandidateIterations": 512,
+      "BaselineSampleMilliseconds": [
+        0.92315673828125,
+        0.9918212890625,
+        0.93841552734375
+      ],
+      "CandidateSampleMilliseconds": [
+        0.54931640625,
+        0.63323974609375,
+        0.6256103515625
+      ],
+      "BaselineTargetWindowMet": true,
+      "CandidateTargetWindowMet": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "NativePropertyDeltas": {
+        "Ix": {
+          "Baseline": 19826858746.573784,
+          "Candidate": 19826858746.574047,
+          "CandidateMinusBaseline": 0.000263214111328125,
+          "RelativeToInertiaScale": 8.502092336400537e-15
+        },
+        "Iy": {
+          "Baseline": 48340683919.1018,
+          "Candidate": 48340683919.102196,
+          "CandidateMinusBaseline": 0.000396728515625,
+          "RelativeToInertiaScale": 1.281474786935733e-14
+        },
+        "Ixy": {
+          "Baseline": 6932890459.964167,
+          "Candidate": 6932890459.964465,
+          "CandidateMinusBaseline": 0.00029850006103515625,
+          "RelativeToInertiaScale": 9.641865584396261e-15
+        },
+        "Ixc": {
+          "Baseline": 19558826591.459785,
+          "Candidate": 19558826591.46005,
+          "CandidateMinusBaseline": 0.000263214111328125,
+          "RelativeToInertiaScale": 8.569744122631348e-15
+        },
+        "Iyc": {
+          "Baseline": 48232506512.276596,
+          "Candidate": 48232506512.27699,
+          "CandidateMinusBaseline": 0.000396728515625,
+          "RelativeToInertiaScale": 1.2916715779038555e-14
+        },
+        "Ixyc": {
+          "Baseline": 7103169711.448317,
+          "Candidate": 7103169711.448615,
+          "CandidateMinusBaseline": 0.00029850006103515625,
+          "RelativeToInertiaScale": 9.718586631824682e-15
+        }
+      }
+    },
+    {
+      "Case": "dense.positive",
+      "Fibers": 90000,
+      "Bars": 64,
+      "BaselineTwoPassMilliseconds": 279.296875,
+      "CandidateOnePassMilliseconds": 143.5546875,
+      "SavedMillisecondsPerRebuild": 135.7421875,
+      "CandidateOverBaseline": 0.513986013986014,
+      "KernelSpeedup": 1.945578231292517,
+      "PercentTimeReduction": 48.60139860139861,
+      "BaselineIterations": 1,
+      "CandidateIterations": 2,
+      "BaselineSampleMilliseconds": [
+        283.203125,
+        279.296875,
+        228.515625
+      ],
+      "CandidateSampleMilliseconds": [
+        125.0,
+        195.3125,
+        143.5546875
+      ],
+      "BaselineTargetWindowMet": true,
+      "CandidateTargetWindowMet": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "NativePropertyDeltas": {
+        "Ix": {
+          "Baseline": 21039482021.470875,
+          "Candidate": 21039482021.497856,
+          "CandidateMinusBaseline": 0.026981353759765625,
+          "RelativeToInertiaScale": 8.357873030325552e-13
+        },
+        "Iy": {
+          "Baseline": 49533713770.797485,
+          "Candidate": 49533713770.82501,
+          "CandidateMinusBaseline": 0.02752685546875,
+          "RelativeToInertiaScale": 8.52685024555764e-13
+        },
+        "Ixy": {
+          "Baseline": 6912019303.670203,
+          "Candidate": 6912019303.699048,
+          "CandidateMinusBaseline": 0.028844833374023438,
+          "RelativeToInertiaScale": 8.935113377464535e-13
+        },
+        "Ixc": {
+          "Baseline": 20738597120.334908,
+          "Candidate": 20738597120.36189,
+          "CandidateMinusBaseline": 0.026981353759765625,
+          "RelativeToInertiaScale": 8.428622727083661e-13
+        },
+        "Iyc": {
+          "Baseline": 49412277041.151726,
+          "Candidate": 49412277041.17925,
+          "CandidateMinusBaseline": 0.02752685546875,
+          "RelativeToInertiaScale": 8.599030340539473e-13
+        },
+        "Ixyc": {
+          "Baseline": 7103169711.4483185,
+          "Candidate": 7103169711.477163,
+          "CandidateMinusBaseline": 0.028844833374023438,
+          "RelativeToInertiaScale": 9.010749434588308e-13
+        }
+      }
+    },
+    {
+      "Case": "dense.signed",
+      "Fibers": 90000,
+      "Bars": 64,
+      "BaselineTwoPassMilliseconds": 270.5078125,
+      "CandidateOnePassMilliseconds": 146.484375,
+      "SavedMillisecondsPerRebuild": 124.0234375,
+      "CandidateOverBaseline": 0.5415162454873647,
+      "KernelSpeedup": 1.8466666666666667,
+      "PercentTimeReduction": 45.848375451263536,
+      "BaselineIterations": 2,
+      "CandidateIterations": 2,
+      "BaselineSampleMilliseconds": [
+        282.2265625,
+        270.5078125,
+        247.0703125
+      ],
+      "CandidateSampleMilliseconds": [
+        161.1328125,
+        129.8828125,
+        146.484375
+      ],
+      "BaselineTargetWindowMet": false,
+      "CandidateTargetWindowMet": true,
+      "NativeAreaAndCentersBitwiseEqual": true,
+      "NativePropertyDeltas": {
+        "Ix": {
+          "Baseline": 19826858746.576797,
+          "Candidate": 19826858746.60479,
+          "CandidateMinusBaseline": 0.02799224853515625,
+          "RelativeToInertiaScale": 9.04179037166719e-13
+        },
+        "Iy": {
+          "Baseline": 48340683919.09993,
+          "Candidate": 48340683919.12854,
+          "CandidateMinusBaseline": 0.0286102294921875,
+          "RelativeToInertiaScale": 9.241404713478322e-13
+        },
+        "Ixy": {
+          "Baseline": 6932890459.964688,
+          "Candidate": 6932890459.994511,
+          "CandidateMinusBaseline": 0.029822349548339844,
+          "RelativeToInertiaScale": 9.63293222650602e-13
+        },
+        "Ixc": {
+          "Baseline": 19558826591.459785,
+          "Candidate": 19558826591.487778,
+          "CandidateMinusBaseline": 0.02799224853515625,
+          "RelativeToInertiaScale": 9.113736575633165e-13
+        },
+        "Iyc": {
+          "Baseline": 48232506512.2766,
+          "Candidate": 48232506512.305214,
+          "CandidateMinusBaseline": 0.0286102294921875,
+          "RelativeToInertiaScale": 9.314939263729727e-13
+        },
+        "Ixyc": {
+          "Baseline": 7103169711.4483185,
+          "Candidate": 7103169711.478141,
+          "CandidateMinusBaseline": 0.029822349548339844,
+          "RelativeToInertiaScale": 9.70958219053641e-13
+        }
+      }
+    }
+  ],
+  "PerformanceLimits": [
+    "Explicit CalculateTransformedByModuli property rebuild only; no cache hits.",
+    "Same harness bytes and constructor endpoint signature; not full-array hash of dense90000-element models.",
+    "One paired run with3samples per case; no claim of end-to-end generation/calculation acceleration.",
+    "A false target-window flag remains visible; it is not relabeled as target-window success."
+  ],
+  "GeometryEdges": {
+    "Macro": "modTestFastInertiaEdges.TestRunFastInertiaEdges",
+    "Passed": 880,
+    "Failed": 0,
+    "Seconds": 0.013401999999999999,
+    "Cases": "Asymmetric own tensors, concrete-only and n=.5/1/6; WCS0,+/-1e9,+/-1e10 per actual native harness."
+  },
+  "FailedCandidate01": {
+    "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaCandidate01_Probes.json",
+    "SHA256": "A611CAD0D4B055E68FB03730B9FC4DA8895270C022209EE2800154D39297F708",
+    "Status": "PROBE_ERROR",
+    "CompileLocation": "module=modTestFastInertiaEdges; line=16; column=10",
+    "ProductionFailure": false,
+    "Classification": "External test harness reserved UDT member; corrected harness in Candidate02."
+  },
+  "HistoricalRun01RemainsFailed": true,
+  "OverallAcceptanceClaimed": false,
+  "WorkingCodeEditedByReviewer": false,
+  "ExcelExecutedByReviewer": false,
+  "FurtherAcceptance": "Root owns affected UI/input-unit, geometry/solver/stability directed ON/OFF and publication/source checks."
+}

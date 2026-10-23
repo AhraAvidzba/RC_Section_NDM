@@ -17,10 +17,15 @@ $excel = $null; $book = $null
 # Это не подтверждение физического равновесия искусственно созданного state.
 $fixture = @'
 Option Explicit
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — модуль только частной диагностической книги.
+' ==========================================================================
 Private passed As Long
 Private failed As Long
 Private report As String
-Private Sub Check(ByVal name As String, ByVal condition As Boolean)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Регистрирует исход одной проверки typed-meta, status-policy и detailed writer, сохраняя имя проверки.
+Private Sub TestCheckStateDisplay(ByVal name As String, ByVal condition As Boolean)
     If condition Then
         passed = passed + 1
         report = report & "OK: " & name & vbCrLf
@@ -29,7 +34,9 @@ Private Sub Check(ByVal name As String, ByVal condition As Boolean)
         report = report & "FAIL: " & name & vbCrLf
     End If
 End Sub
-Public Function RunStateDisplay() As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отображение typed-статусов СП35 на presentation-состояниях без заявления физического равновесия.
+Public Function TestRunStateDisplay() As String
     On Error GoTo FailedRun
     Dim section As CSectionModel, provider As CMaterialModelProvider, batch As CBatchSectionCalculator
     Dim profiles As CCalculationProfileCatalog
@@ -51,7 +58,7 @@ Public Function RunStateDisplay() As String
     section.AddConcreteElement 0#, 0#, 800#, 1, , , "Rectangle", 20#, 40#
     Set concrete = New CConcreteMaterialParameters: concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
     Set steel = New CSteelMaterialParameters: steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
-    Set provider = New CMaterialModelProvider: provider.InitializeFromParameters concrete, steel
+    Set provider = New CMaterialModelProvider: provider.TestInitializeFromParameters concrete, steel
     Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
     Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
     Set batch.ProfileCatalog = profiles
@@ -92,27 +99,27 @@ Public Function RunStateDisplay() As String
     For i = 0 To UBound(statuses)
         Set result = batch.ResultAt(i + 1)
         expected = policy.ExternalStatus(result.CrackCurrentStateMeta)
-        Check "stateDisplay.pre." & CStr(i), CStr(anchor.Offset(i, 20).Value2) = expected
-        Check "stateDisplay.post." & CStr(i), CStr(anchor.Offset(i, 23).Value2) = expected
-        Check "stateDisplay.current." & CStr(i), CStr(anchor.Offset(i, 28).Value2) = expected
-        Check "stateDisplay.internalUnchanged." & CStr(i), result.CrackCurrentStateMeta.InternalStatus = CLng(statuses(i))
-        Check "stateDisplay.codeUnchanged." & CStr(i), result.CrackCurrentStateMeta.ResultCode = CLng(codes(i))
-        Check "stateDisplay.comment." & CStr(i), CStr(anchor.Offset(i, 1).Value2) = result.CrackSummaryMeta.ResultComment
+        TestCheckStateDisplay "stateDisplay.pre." & CStr(i), CStr(anchor.Offset(i, 20).Value2) = expected
+        TestCheckStateDisplay "stateDisplay.post." & CStr(i), CStr(anchor.Offset(i, 23).Value2) = expected
+        TestCheckStateDisplay "stateDisplay.current." & CStr(i), CStr(anchor.Offset(i, 28).Value2) = expected
+        TestCheckStateDisplay "stateDisplay.internalUnchanged." & CStr(i), result.CrackCurrentStateMeta.InternalStatus = CLng(statuses(i))
+        TestCheckStateDisplay "stateDisplay.codeUnchanged." & CStr(i), result.CrackCurrentStateMeta.ResultCode = CLng(codes(i))
+        TestCheckStateDisplay "stateDisplay.comment." & CStr(i), CStr(anchor.Offset(i, 1).Value2) = result.CrackSummaryMeta.ResultComment
         If i Mod 2 = 0 Then expected = "no" Else expected = "-"
-        Check "stateDisplay.ExtUsed." & CStr(i), CStr(anchor.Offset(i, 27).Value2) = expected
-        Check "stateDisplay.noFakeStrains." & CStr(i), IsEmpty(anchor.Offset(i, 18).Value2) And IsEmpty(anchor.Offset(i, 25).Value2)
+        TestCheckStateDisplay "stateDisplay.ExtUsed." & CStr(i), CStr(anchor.Offset(i, 27).Value2) = expected
+        TestCheckStateDisplay "stateDisplay.noFakeStrains." & CStr(i), IsEmpty(anchor.Offset(i, 18).Value2) And IsEmpty(anchor.Offset(i, 25).Value2)
     Next i
-    Check "stateDisplay.noSolve", batch.SolverCallCount = 0
+    TestCheckStateDisplay "stateDisplay.noSolve", batch.SolverCallCount = 0
     GoTo Restore
 FailedRun:
-    Check "runtime: " & CStr(Err.Number) & "; " & Err.Source & "; " & stage & "; " & Err.Description, False
+    TestCheckStateDisplay "runtime: " & CStr(Err.Number) & "; " & Err.Source & "; " & stage & "; " & Err.Description, False
 Restore:
     On Error Resume Next
     ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersTo = original
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
     On Error GoTo 0
-    RunStateDisplay = report & "TOTAL_SP35_STATE_DISPLAY: passed=" & CStr(passed) & "; failed=" & CStr(failed)
+    TestRunStateDisplay = report & "TOTAL_SP35_STATE_DISPLAY: passed=" & CStr(passed) & "; failed=" & CStr(failed)
 End Function
 '@
 try {
@@ -122,6 +129,8 @@ try {
     $book = $excel.Workbooks.Open($copy)
     $module = $book.VBProject.VBComponents.Item('CBatchSectionCalculator').CodeModule
     $module.AddFromString(@'
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Даёт контрольному модулю доступ к неопубликованному сочетанию только в частной книге проверки отображения.
 Friend Function SP35TestUnpublishedResult(ByVal index As Long) As CCombinationResult
     If mResults(index) Is Nothing Then Set mResults(index) = New CCombinationResult
     Set SP35TestUnpublishedResult = mResults(index)
@@ -129,15 +138,17 @@ End Function
 '@)
     $module = $book.VBProject.VBComponents.Item('CCrackFormationResult').CodeModule
     $module.AddFromString(@'
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Подключает контрольные состояния до и после трещинообразования для проверки typed-диагностики СП35.
 Friend Sub SP35TestAttachDiagnosticStates(ByVal pre As CSectionStateResult, ByVal post As CSectionStateResult)
     Set mPreCrackState = pre
     Set mPostCrackState = post
 End Sub
 '@)
     $component = $book.VBProject.VBComponents.Add(1)
-    $component.Name = 'modSP35StateDisplayFixture'
+    $component.Name = 'modTestSP35StateDisplay'
     $component.CodeModule.AddFromString($fixture)
-    $result = [string]$excel.Run("'$($book.Name)'!modSP35StateDisplayFixture.RunStateDisplay")
+    $result = [string]$excel.Run("'$($book.Name)'!modTestSP35StateDisplay.TestRunStateDisplay")
     $result | Set-Content -LiteralPath (Join-Path $directory 'StateDisplay.txt') -Encoding UTF8
     ($result -split "`r?`n" | Where-Object { $_ -match '^FAIL|^TOTAL' }) -join "`n"
     if ($result -notmatch 'failed=0\b') { throw 'State display assertions failed.' }

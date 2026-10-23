@@ -39,38 +39,40 @@ try {
     $module=Get-RequiredComProperty $components.Item('modTestWorkbookInterface') 'CodeModule'
     $module.AddFromString(@'
 ' ДЛЯ ТЕСТОВ: временный entrypoint подготовки сохраненной книги.
-Public Function Audit02PrepareReopenFixture() As String
-    PrepareCircleInput
-    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
-    SetSystemSetting "AutoCAD.Export.CombinationID", "LC1"
-    Audit02PrepareReopenFixture = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит частное круговое сечение и сохранённые результаты для проверки чтения после повторного открытия.
+Public Function TestAudit02PrepareReopenFixture() As String
+    TestPrepareCircleInput
+    TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    TestSetSystemSetting "AutoCAD.Export.CombinationID", "LC1"
+    TestAudit02PrepareReopenFixture = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 End Function
-
-' ДЛЯ ТЕСТОВ: меняет настройки через общий reader/helper всех таблиц Config.
-Public Function Audit02ChangeReopenMaterials() As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет частные параметры материалов и extension для проверки независимости сохранённого снимка.
+Public Function TestAudit02ChangeReopenMaterials() As String
     Dim keys As Variant, key As Variant, value As String
     keys = Array("General.DiagramExtension", "Concrete.E", "Concrete.R.ULS(I)", _
         "Concrete.R.SLS(II)", "Steel.E", "Steel.R.ULS(I)", "Steel.R.SLS(II)")
     For Each key In keys
-        value = CStr(GetSystemSetting(CStr(key)))
+        value = CStr(TestGetSystemSetting(CStr(key)))
         If CStr(key) = "General.DiagramExtension" Then
             If value = "Yes" Then value = "No" Else value = "Yes"
         Else
             value = CStr(CDbl(value) * 0.5)
         End If
-        SetSystemSetting CStr(key), value
-        Audit02ChangeReopenMaterials = Audit02ChangeReopenMaterials & CStr(key) & "=" & value & vbCrLf
+        TestSetSystemSetting CStr(key), value
+        TestAudit02ChangeReopenMaterials = TestAudit02ChangeReopenMaterials & CStr(key) & "=" & value & vbCrLf
     Next key
 End Function
-
-' ДЛЯ ТЕСТОВ: сериализует все таблицы через штатный reader, без нового НДС.
-Public Function Audit02ReadReopenSnapshot() As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сериализует сохранённые таблицы и обновляет схему, проверяя отсутствие нового solve при чтении снимка.
+Public Function TestAudit02ReadReopenSnapshot() As String
     Dim beforeSolves As Long
     beforeSolves = SectionEquilibriumSolveCount()
     Dim result As String
     Dim quantity As Variant
     For Each quantity In Array("Stress", "Strain")
-        SetProfileSetting "PR2", "Visualization.Quantity", CStr(quantity)
+        TestSetProfileSetting "PR2", "Visualization.Quantity", CStr(quantity)
         result = result & vbCrLf & CStr(quantity) & ":" & Audit02ReadExportSnapshotForTests(ThisWorkbook)
     Next quantity
     Dim names As Variant
@@ -79,7 +81,7 @@ Public Function Audit02ReadReopenSnapshot() As String
     Dim name As Variant, table As Variant
     Dim r As Long, c As Long
     For Each name In names
-        table = ResultTable(CStr(name))
+        table = TestResultTable(CStr(name))
         result = result & vbCrLf & CStr(name) & ":" & CStr(UBound(table, 1)) & "x" & CStr(UBound(table, 2))
         For r = 1 To UBound(table, 1)
             For c = 1 To UBound(table, 2)
@@ -89,16 +91,16 @@ Public Function Audit02ReadReopenSnapshot() As String
     Next name
     UpdateSectionPlotForWorkbook ThisWorkbook
     If SectionEquilibriumSolveCount() <> beforeSolves Then Err.Raise 5, "Audit02Reopen", "Reader/plot запустил новый solve"
-    Audit02ReadReopenSnapshot = result
+    TestAudit02ReadReopenSnapshot = result
 End Function
 '@
     )
     $lines.Add('STAGE: prepare calculation fixture')
-    $message = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02PrepareReopenFixture")
+    $message = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.TestAudit02PrepareReopenFixture")
     if ($message -notmatch 'Расчет завершен') { throw $message }
     $lines.Add('STAGE: read prepared snapshot')
-    $before = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02ReadReopenSnapshot")
-    $changed = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02ChangeReopenMaterials")
+    $before = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.TestAudit02ReadReopenSnapshot")
+    $changed = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.TestAudit02ChangeReopenMaterials")
     $lines.Add("CHANGED: $changed")
     $book.Save()
     $book.Close($false)
@@ -107,7 +109,7 @@ End Function
     $books=Get-RequiredComProperty $excel 'Workbooks'
     $book = $books.Open($fixture, $null, $true)
     $solvesBefore = [long]$excel.Run("'$($book.Name)'!modSolverWorkStats.SectionEquilibriumSolveCount")
-    $after = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02ReadReopenSnapshot")
+    $after = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.TestAudit02ReadReopenSnapshot")
     $solvesAfter = [long]$excel.Run("'$($book.Name)'!modSolverWorkStats.SectionEquilibriumSolveCount")
     if ($before -cne $after) { throw 'Сохраненный snapshot изменился после Config/save/reopen.' }
     if ($solvesBefore -ne 0 -or $solvesAfter -ne 0) { throw 'После повторного открытия выполнялся solve.' }

@@ -30,19 +30,20 @@ try {
         $module = $book.VBProject.VBComponents.Item('modTestWorkbookInterface').CodeModule
         $module.AddFromString(@'
 ' ДЛЯ ТЕСТОВ: запускает обычный макрос с исходными Config и сочетаниями.
-' Отключены лишь автоматическая схема и txt-report, не расчетные проверки.
-Public Function Audit02RunSavedCombinationPair(ByVal mode As String) As String
-    SetSystemSetting "General.DiagramExtension", mode
-    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
-    SetSystemSetting "General.ExecutionReportEnabled", "No"
-    Audit02RunSavedCombinationPair = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает штатный расчёт исходных сочетаний при выбранном extension, отключая только автоматическую схему и txt-отчёт.
+Public Function TestAudit02RunSavedCombinationPair(ByVal mode As String) As String
+    TestSetSystemSetting "General.DiagramExtension", mode
+    TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    TestSetSystemSetting "General.ExecutionReportEnabled", "No"
+    TestAudit02RunSavedCombinationPair = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 End Function
 '@
         )
         $lines.Add("STARTED: $mode; $([DateTime]::Now.ToString('s')); $fixture")
         $lines | Set-Content -LiteralPath $report -Encoding UTF8
         $watch = [Diagnostics.Stopwatch]::StartNew()
-        $message = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02RunSavedCombinationPair", $mode)
+        $message = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.TestAudit02RunSavedCombinationPair", $mode)
         $watch.Stop()
         $lines.Add("MESSAGE: $mode; $message")
         if ($message -notmatch 'Расчет завершен') { throw $message }

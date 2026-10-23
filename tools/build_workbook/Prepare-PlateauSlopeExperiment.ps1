@@ -35,10 +35,10 @@ function Add-EntryCounter([string]$Body,[string]$Method,[string]$Counter) {
     if ($indices.Count -ne 1) { throw "Method not unique: $Method" }
     $i=$indices[0]
     while ($lines[$i].TrimEnd().EndsWith('_')) { $i++ }
-    $lines.Insert($i+1,'    modPlateauSlopeProbe.'+$Counter+' = modPlateauSlopeProbe.'+$Counter+' + 1')
+    $lines.Insert($i+1,'    modTestPlateauSlopeProbe.'+$Counter+' = modTestPlateauSlopeProbe.'+$Counter+' + 1')
     return $lines -join "`r`n"
 }
-function Increment([string]$Counter) { return '    modPlateauSlopeProbe.'+$Counter+' = modPlateauSlopeProbe.'+$Counter+' + 1' }
+function Increment([string]$Counter) { return '    modTestPlateauSlopeProbe.'+$Counter+' = modTestPlateauSlopeProbe.'+$Counter+' + 1' }
 function Transform-Method([string]$Body,[string]$Name,[scriptblock]$Edit) {
     $pattern='(?ms)^(Public|Private|Friend) (Sub|Function) '+[regex]::Escape($Name)+'\(.*?^End (Sub|Function)'
     $matches=[regex]::Matches($Body,$pattern,[Text.RegularExpressions.RegexOptions]::IgnoreCase)
@@ -68,14 +68,14 @@ try {
     $book=$excel.Workbooks.Open($path,0,$false)
     if ($book.ReadOnly) { throw 'Experiment copy is read-only.' }
     if ($RefreshProbeModule) {
-        $probe=$book.VBProject.VBComponents.Item('modPlateauSlopeProbe')
+        $probe=$book.VBProject.VBComponents.Item('modTestPlateauSlopeProbe')
         $probe.CodeModule.DeleteLines(1,$probe.CodeModule.CountOfLines)
     } else {
-        $probe=$book.VBProject.VBComponents.Add(1); $probe.Name='modPlateauSlopeProbe'
+        $probe=$book.VBProject.VBComponents.Add(1); $probe.Name='modTestPlateauSlopeProbe'
     }
     $body=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'PlateauSlopeProbe.bas'),[Text.Encoding]::UTF8)
     $probe.CodeModule.AddFromString([regex]::Replace($body,'(?m)^Attribute VB_Name[^\r\n]*\r?\n',''))
-    $modified.Add('modPlateauSlopeProbe')
+    $modified.Add('modTestPlateauSlopeProbe')
     if ($FixAxialAssertions) {
         $body=Get-Body 'modTestBatchCalculation'
         $body=Transform-Method $body 'TestAudit03CheckCapacityPath' {
@@ -84,7 +84,7 @@ try {
             $method=Replace-Exact $method '(referenceY - 7#)' '(referenceY + offsetY)'
             Replace-Exact $method '(referenceX + 10#)' '(referenceX + offsetX)'
         }
-        $body=Transform-Method $body 'RunFocusedAcceptanceCases' {
+        $body=Transform-Method $body 'TestRunFocusedAcceptanceCases' {
             param($method)
             Replace-Exact $method 'Array(item(1), item(2), item(3)), cx, cy, True' 'Array(item(1), item(2), item(3)), cx, cy, True, units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetX", 0#, False)), units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetY", 0#, False))'
         }
@@ -93,7 +93,7 @@ try {
     if ($HighCrackedLoads -or $FixSP35Assertions) {
         $body=Get-Body 'modTestBatchCalculation'
         if ($HighCrackedLoads) {
-            $body=Transform-Method $body 'FocusedSelectedLoads' {
+            $body=Transform-Method $body 'TestFocusedSelectedLoads' {
                 param($method)
                 Replace-Exact $method 'For Each factor In Array(6#, 10#)' 'For Each factor In Array(12#, 16#)'
             }
@@ -112,7 +112,7 @@ try {
     }
     if ($CrackCode -eq 'SP63') {
         $body=Get-Body 'modTestBatchCalculation'
-        $body=Transform-Method $body 'RunFocusedAcceptanceCases' {
+        $body=Transform-Method $body 'TestRunFocusedAcceptanceCases' {
             param($method)
             $method=Replace-Exact $method 'SetSystemSetting "SLS.Crack.Code", "SP35"' 'SetSystemSetting "SLS.Crack.Code", "SP63"'
             Replace-Exact $method '|profile=PR3|code=SP35' '|profile=PR3|code=SP63'
@@ -128,7 +128,7 @@ try {
     $body=Replace-Exact $body 'Set BuildSteelTwoLine = DiagramFromArrays(eps, sig, 5)' 'Set BuildSteelTwoLine = DiagramFromArrays(eps, sig, 5, mSteelParameters.Esc, mSteelParameters.Es)'
     $body=Replace-Exact $body 'Set BuildSteelThreeLine = DiagramFromArrays(eps, sig, 9)' 'Set BuildSteelThreeLine = DiagramFromArrays(eps, sig, 9, mSteelParameters.Esc, mSteelParameters.Es)'
     $body=Replace-Exact $body 'Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long) As CMaterialDiagram' 'Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, ByVal compressionE As Double, ByVal tensionE As Double) As CMaterialDiagram'
-    $body=Replace-Exact $body '    diagram.InitializeFromArrays strains, stresses, pointCount' ("    modPlateauSlopeProbe.ApplySlope strains, stresses, pointCount, compressionE, tensionE`r`n    diagram.InitializeFromArrays strains, stresses, pointCount")
+    $body=Replace-Exact $body '    diagram.InitializeFromArrays strains, stresses, pointCount' ("    modTestPlateauSlopeProbe.TestPlateauApplySlope strains, stresses, pointCount, compressionE, tensionE`r`n    diagram.InitializeFromArrays strains, stresses, pointCount")
     Set-Body 'CMaterialModelProvider' $body
 
     $body=Get-Body 'CSectionSolver'
@@ -164,10 +164,10 @@ try {
 
     $body=Get-Body 'modTestBatchCalculation'
     $body += "`r`n"+[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'PlateauSlopeBatchProbe.bas'),[Text.Encoding]::UTF8)
-    $body=Replace-Exact $body '        ResetSectionEquilibriumSolveCount' ("        modPlateauSlopeProbe.ResetCounters`r`n        ResetSectionEquilibriumSolveCount")
+    $body=Replace-Exact $body '        ResetSectionEquilibriumSolveCount' ("        modTestPlateauSlopeProbe.TestPlateauResetCounters`r`n        ResetSectionEquilibriumSolveCount")
     # Report timing, rather than making the known >10 s controls a harness failure.
     $body=Replace-Exact $body '        AssertTrue stats, prefix & ".within10Seconds", elapsed <= 10#' '        AssertTrue stats, prefix & ".withinExperimentBudget", elapsed <= 180#'
-    $body=Replace-Exact $body '            Set result = mFocusedBatch.ResultAt(1)' ("            Set result = mFocusedBatch.ResultAt(1)`r`n            modPlateauSlopeProbe.CaptureResult CStr(item(0)), elapsed, result")
+    $body=Replace-Exact $body '            Set result = mFocusedBatch.ResultAt(1)' ("            Set result = mFocusedBatch.ResultAt(1)`r`n            modTestPlateauSlopeProbe.TestPlateauCaptureResult CStr(item(0)), elapsed, result")
     Set-Body 'modTestBatchCalculation' $body
     }
     $excel.VBE.ActiveVBProject=$book.VBProject

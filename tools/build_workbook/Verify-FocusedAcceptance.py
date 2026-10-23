@@ -18,6 +18,17 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tmp/focused-dependencies"))
 
 
+# Замороженные исторические прогоны сохраняют прежние имена. Новые runner-ы вызывают Test-имена.
+# Это конечные списки двух ролей, а не допуск произвольных макросов; SHA/source/case/error gates остаются прежними.
+FOCUSED_CASE_MACROS = frozenset({
+    "modTestBatchCalculation.RunFocusedAcceptanceCases",
+    "modTestBatchCalculation.TestRunFocusedAcceptanceCases",
+})
+FOCUSED_BOUNDS_MACROS = frozenset({
+    "modTestBatchCalculation.DumpFocusedForceBoundsExact",
+    "modTestBatchCalculation.TestDumpFocusedForceBoundsExact",
+})
+
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest().upper()
 
@@ -161,7 +172,7 @@ def independent(directory, run):
     models = {item['ID'][6:]: Model(lines) for item, lines in all_reports if item['ID'].startswith('Model_')}
     controls, failures, unsupported, numerical_messages = [], [], [], []
     for item, lines in all_reports:
-        if item['Macro'] != 'modTestBatchCalculation.RunFocusedAcceptanceCases' and item['ID'] not in ('Batch15_No', 'Batch15_Yes'):
+        if item['Macro'] not in FOCUSED_CASE_MACROS and item['ID'] not in ('Batch15_No', 'Batch15_Yes'):
             continue
         shape = item['Argument1'] or 'SavedWorkbook'
         model = models[shape]
@@ -260,7 +271,7 @@ def verify(directory, run):
             errors.append(item['ID']+': total missing or failed')
         else:
             assertions+=int(re.search(r'passed=(\d+)',totals[-1])[1])
-        if item['Macro'].endswith('.RunFocusedAcceptanceCases'):
+        if item['Macro'] in FOCUSED_CASE_MACROS:
             key=item['Argument1'],item['Argument2'],item['Mode']
             if key in seen:errors.append('Duplicate load group')
             seen.add(key)
@@ -288,7 +299,7 @@ def verify(directory, run):
             batch_time=[fields(x) for x in lines if x.startswith('CORE_BATCH_TIME|')]
             if len(batch_time)!=1 or float(batch_time[0]['seconds'])>10:
                 errors.append(item['ID']+': batch exceeds the existing 10 s gate')
-        if item['ID'].startswith(('Batch15_','Stability_','AsymmetricSteel_')) or item['Macro'].endswith('.RunFocusedAcceptanceCases'):
+        if item['ID'].startswith(('Batch15_','Stability_','AsymmetricSteel_')) or item['Macro'] in FOCUSED_CASE_MACROS:
             if 'RESULTS_SAVE_REOPEN:' not in body or 'STATUS_STYLE_SAVE_REOPEN:' not in body or 'equal=False' in body:
                 errors.append(item['ID']+': save/reopen proof missing')
         checks.append({'ID':item['ID'],'Passed':item['Passed']})
@@ -318,7 +329,7 @@ def verify(directory, run):
         independent_result=read(independent_path)
         if independent_result.get('SourceSHA256')!=run['SourceSHA256'] or independent_result.get('ReportHashes')!={item['ID']:item['ReportSHA256'] for item,_ in reports(directory,run)}:
             errors.append('Independent evidence belongs to another source or reports')
-        if any(item.get('Macro','').endswith('.DumpFocusedForceBoundsExact') for item in run['Records']):
+        if any(item.get('Macro','') in FOCUSED_BOUNDS_MACROS for item in run['Records']):
             snapshot=directory/'IndependentVerifier.py'
             if not snapshot.exists() or digest(snapshot)!=independent_result.get('VerifierSHA256'):
                 errors.append('Independent verifier snapshot is missing or differs')

@@ -1,0 +1,112 @@
+{
+  "Status": "DIRECTED_ACCEPTANCE_PASS",
+  "FullAcceptanceClaimed": false,
+  "ReleaseSHA256": "8E1A22F6A50539CA6FDB3AF9EBE9D8BF7D8CC3CD81156461159D451F94784040",
+  "DumpSHA256": "2FE407257CAEF204C0AA81EE5AE814B9D541BBBC298F8BCF5400B14EC67EA905",
+  "ReadyForPublication": true,
+  "NoCodeImportedDuringDirectedTests": true,
+  "SourceEqualitySHA256": "F73E7DC6140F13F45247A6D07B426689E5A01313B5BE186575C1E3C76613301A",
+  "PartPreservationSHA256": "CD547B08D266978356705F6DC52E5F825252ECC0A9AB8DABB24804CFA8EF71F5",
+  "Modes": {
+    "No": [
+      {
+        "Macro": "modTestGeometry.RunGeometryTests",
+        "Passed": 4051,
+        "Failed": 0,
+        "Seconds": 26.1073599
+      },
+      {
+        "Macro": "modTestConfiguration.RunAudit03StabilityConfigTests",
+        "Passed": 10024,
+        "Failed": 0,
+        "Seconds": 554.3078892
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunAudit03InputUnitConsumerTests",
+        "Passed": 1553,
+        "Failed": 0,
+        "Seconds": 501.6269377
+      },
+      {
+        "Macro": "modTestSectionSolver.RunSectionSolverTests",
+        "Passed": 3340,
+        "Failed": 0,
+        "Seconds": 2.3491573999999997
+      }
+    ],
+    "Yes": [
+      {
+        "Macro": "modTestGeometry.RunGeometryTests",
+        "Passed": 4051,
+        "Failed": 0,
+        "Seconds": 27.664857599999998
+      },
+      {
+        "Macro": "modTestConfiguration.RunAudit03StabilityConfigTests",
+        "Passed": 10024,
+        "Failed": 0,
+        "Seconds": 541.9374154999999
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunAudit03InputUnitConsumerTests",
+        "Passed": 1553,
+        "Failed": 0,
+        "Seconds": 357.8764323
+      },
+      {
+        "Macro": "modTestSectionSolver.RunSectionSolverTests",
+        "Passed": 3340,
+        "Failed": 0,
+        "Seconds": 2.2329784
+      }
+    ]
+  },
+  "RawReports": {
+    "No": {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaDirectedOff01_Probes.json",
+      "SHA256": "97DCF6A15F10D90F50F779F754AA70FA92AFE9FCA2EDC18BAFCA9BEC8BB45BBC"
+    },
+    "Yes": {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaDirectedOn01_Probes.json",
+      "SHA256": "7A3DC8B4F3569597995D3C18173FCB1DB188BF30744AF31677FA5682BFED0AF4"
+    }
+  },
+  "AssertionsPerMode": 18968,
+  "NativeAnalyticEdges": 880,
+  "CandidateCaptureSHA256": "FFE8BFB5B53A3177CF4872121FEAF63F0EBE46A83110353FC572D1D23491F67C",
+  "BaselineCaptureSHA256": "A6CC182858AA8DD266820008D259CA18BA915D9A962BC86B1FAB67E1FBC4731A",
+  "Performance": [
+    {
+      "Case": "small.positive",
+      "BeforeMilliseconds": 0.949859619140625,
+      "AfterMilliseconds": 0.640869140625,
+      "SavedMilliseconds": 0.308990478515625,
+      "SpeedRatio": 1.4821428571428572
+    },
+    {
+      "Case": "small.signed",
+      "BeforeMilliseconds": 0.93841552734375,
+      "AfterMilliseconds": 0.6256103515625,
+      "SavedMilliseconds": 0.31280517578125,
+      "SpeedRatio": 1.5
+    },
+    {
+      "Case": "dense.positive",
+      "BeforeMilliseconds": 279.296875,
+      "AfterMilliseconds": 143.5546875,
+      "SavedMilliseconds": 135.7421875,
+      "SpeedRatio": 1.945578231292517
+    },
+    {
+      "Case": "dense.signed",
+      "BeforeMilliseconds": 270.5078125,
+      "AfterMilliseconds": 146.484375,
+      "SavedMilliseconds": 124.0234375,
+      "SpeedRatio": 1.8466666666666667
+    }
+  ],
+  "PerformanceIsPropertiesKernelOnly": true,
+  "UserApprovedEngineeringTolerance": "1e-9 * sqrt(abs(Ix)) * sqrt(abs(Iy)), unit Ixy/Ixyc comparison only",
+  "SolverCrackStabilityTolerancesChanged": false,
+  "Meaning": "Measured one-pass speed restored; critical local WCS protection retained. Full historical run remains versioned separately."
+}

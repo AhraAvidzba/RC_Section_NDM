@@ -1,0 +1,1930 @@
+{
+  "Status": "ARCHIVE_INTEGRITY_PASS",
+  "ArchiveSHA256": "9FA72B36AC1A27EE75F334003C5980AA9018760671386638427E13CE09D3EF9D",
+  "Bytes": 4084660,
+  "Files": 384,
+  "AllEntriesSHA256Checked": true,
+  "NoPrivateWorkbooksOrForeignOutputs": true,
+  "Manifest": [
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Acceptance.json",
+      "Bytes": 1656,
+      "SHA256": "E445193DC363CD19E8BF25C33FB3E0914777C329B5202E5FE90F482A459ECE30"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/AsymmetricSteel_No.txt",
+      "Bytes": 11509,
+      "SHA256": "6D4EC94AE1A5E8C027CEDD8E858204399BE69FEC31EB001E9536FDD6FAC06A07"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/AsymmetricSteel_Yes.txt",
+      "Bytes": 11267,
+      "SHA256": "6125DCC5578CD3023B55F42D182992624C132807B17698CCE6FD9F3FC874EBB9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Batch15_No.txt",
+      "Bytes": 116245,
+      "SHA256": "68BB3B178000CDD0CD9B5CB88FEEAA042CC302E04A0108BD3231E65DC8CCA069"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Batch15_Yes.txt",
+      "Bytes": 114530,
+      "SHA256": "396707EE612A73A9D793594915D7CA819036F07890382781DCC911269A2CCA99"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Circle_Generated_No.txt",
+      "Bytes": 75670,
+      "SHA256": "B174A8F12CF53D53384A6DDFB88B82EFFB6C03BA2CF3F8167E2E43A028F57132"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Circle_Generated_No.txt.progress.txt",
+      "Bytes": 140044,
+      "SHA256": "9A050DE039F05B12580CB96627CCD557A33812DC33B97CCD9FFD643D4159C018"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Circle_Generated_Yes.txt",
+      "Bytes": 74238,
+      "SHA256": "96571DD333BE0DFB2684046B3937944A9EA72B0150012651ACFCCE1478D15C0B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Circle_Generated_Yes.txt.progress.txt",
+      "Bytes": 137174,
+      "SHA256": "53FE42F3D03097A48943BC6D2BA7642CB76B270D40A386DCE24FF036D502BF37"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Combined.bas",
+      "Bytes": 22006,
+      "SHA256": "61F184E6D7E81D26B86127B53098E8A7D9ADA8AEE6139AD9B368F91D6BEB4671"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/CombinedAcceptance.json",
+      "Bytes": 859,
+      "SHA256": "5AD8BD97854A89CB22083B1C1E648F299043A569991408347E3E86CA8801B212"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/CoreRegressionBatchProbe.bas",
+      "Bytes": 5529,
+      "SHA256": "5D382B488C599C35DF2DBDAC5FCDFFD735E4A0C66ABF04EB216FC8D0BA7AB295"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/FocusedAcceptanceProbe.bas",
+      "Bytes": 22003,
+      "SHA256": "F52C5FCCDA983A2E82DD56D983190C58033C6143B7BB902BFA969AB8E9CB8962"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/FocusedForceBounds.bas",
+      "Bytes": 5279,
+      "SHA256": "8DE3668BFD4D4D8B5F95725C496BC7D0D672BAA6AD2EE92EC3BC036E964559C1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/FocusedRunner.ps1",
+      "Bytes": 7283,
+      "SHA256": "EF77CB821FCDE74D93C36BFD069C0852CCF35A27CE89E2D75A629941327BCA90"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/FocusedSpecialProbe.bas",
+      "Bytes": 11191,
+      "SHA256": "3C9F7DC951F9087A4EAC50C4EAA3264D3E4AA0F9691DC4C5C93E41881539047D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/HollowRectangle_Generated_No.txt",
+      "Bytes": 80760,
+      "SHA256": "0D4985CB59AE304C23B1269F0C6DB89BBFF6D593A96A70F3BD62E497B4B3D1D3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/HollowRectangle_Generated_No.txt.progress.txt",
+      "Bytes": 150214,
+      "SHA256": "50908D0DDF54F66D0080723776014001602853DAD3BC8D1DF2AF5E2234C858EF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/HollowRectangle_Generated_Yes.txt",
+      "Bytes": 78970,
+      "SHA256": "A89220C69AB5A12AD2CC15ED3D3513C55B902BC9FD39B46727541D49ED056E23"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/HollowRectangle_Generated_Yes.txt.progress.txt",
+      "Bytes": 146626,
+      "SHA256": "F1265897DB7D03B295C2AEED27D75BDA1E66845836A5D966A12BFC88EBD5CA26"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Independent.json",
+      "Bytes": 192936,
+      "SHA256": "52EA4968DF81302270037EFD3A10D5C1E177807563252F5AEE37DBF3C2A949DD"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Model_Circle.txt",
+      "Bytes": 15926,
+      "SHA256": "3351332BA94B9898287615535B918A7E4B7F52878846C01CC59B658138AF41BD"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Model_HollowRectangle.txt",
+      "Bytes": 25216,
+      "SHA256": "495D85EFFEBB5218DCE6A806687E394A48B22AD088A940FCBFA38EC6D74F4088"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Model_PointedSection.txt",
+      "Bytes": 32785,
+      "SHA256": "78654D0BE8725A7DA9D8BFE1A680BC907B0D5C7E102FEB7924B3CA9A1A1C971F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Model_Rectangles.txt",
+      "Bytes": 22032,
+      "SHA256": "2AD48664A4363C5D3D7EA20CCF4F555941BE938D69F4D608B4D9C95D85C6E1EA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Model_SavedWorkbook.txt",
+      "Bytes": 15325,
+      "SHA256": "3389730785E43D947739CBE3BEF01264B05E4ABACA3E4CCA2E1EB9A72617C6BE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/NativeRunner.ps1",
+      "Bytes": 13332,
+      "SHA256": "4EA00B483E3E2B428E66942953EB3F1C0BC1C8D3AFC3C69A6996C2B08B802076"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.progress.txt",
+      "Bytes": 26609,
+      "SHA256": "3754F443FDD1E9B7621FDE51B0C9D537B121D6DBF5256B43EE44E075F40331AB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "Bytes": 29560,
+      "SHA256": "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+      "Bytes": 229,
+      "SHA256": "22C832FBB765B136B8755FAC4026AB7F6E9DD3BCA24FFA7921FCC12317422F5E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+      "Bytes": 265,
+      "SHA256": "6216F2892C0AC2B61701AAE4599CB1001F8B2245293DEDA04F933F6A57CA674E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+      "Bytes": 155,
+      "SHA256": "4EC0E48C405037D2F5A4CE2E3B15E29740ED871232780722FF998C705D84F2F9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+      "Bytes": 598,
+      "SHA256": "A39C14511883D5D29336332B8A7890E4DAEEB34DA779EA1151F0ED7566F22E74"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.progress.txt",
+      "Bytes": 21084,
+      "SHA256": "7B96AD765220F260B85297035ACFFA218A75914299EFF133FC3C8C4688C2308A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "Bytes": 20600,
+      "SHA256": "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+      "Bytes": 229,
+      "SHA256": "B5DD23C00B59DDE74A76F5F22409322CE46082B0C464EA096291AE7CA0A63E56"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+      "Bytes": 265,
+      "SHA256": "150366B193780B5F9196F9D83C59E86F9FF5E11917CCE3E754934BA0F143786F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+      "Bytes": 154,
+      "SHA256": "2DE9E9AD7753EE58FBCBC4C29426FA92BBFC0C316577367B6570ACDFBDAD3911"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+      "Bytes": 596,
+      "SHA256": "2EC6EFBE15693144486BB8C5670BB397F611F54D8BFACBEB241EDB6354C8DFE0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/NativeCAD/Stage.json",
+      "Bytes": 795,
+      "SHA256": "BA15749FC85681609EFC1E36F1551490BC29F3F7033A0EF68950725069FAF2D4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/OutputPresentation.txt",
+      "Bytes": 65523,
+      "SHA256": "83C21D69DA5349D5E7B6F1C46C761C0F175C61928F048184C14A5E6EDB6ED740"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/PointedSection_Generated_No.txt",
+      "Bytes": 80149,
+      "SHA256": "8EBFE8D557453100E75793C92B3862F0C0138D304AF776146402260C68D630D4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/PointedSection_Generated_No.txt.progress.txt",
+      "Bytes": 148986,
+      "SHA256": "B1CEAE657BD2FEC643A0084871B722DC7F12C83B80133CF88276BF3F30211175"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/PointedSection_Generated_Yes.txt",
+      "Bytes": 78449,
+      "SHA256": "48677F0F2674516AE59E4C226EFA4734DB65F9DA6FCE6E6F6A2AAE5F535BCF90"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/PointedSection_Generated_Yes.txt.progress.txt",
+      "Bytes": 145586,
+      "SHA256": "88FBBEDF4BA75B6A2E384D8EF6F3E10FAB5B17DAE65ACA4DF1DA24CACF32C5FB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Probe/InputManifest.json",
+      "Bytes": 3602,
+      "SHA256": "8154274659D8654E615CC634D4A000B8292A18AE2E950A5F87387768969D6B70"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Probe/Preparation.json",
+      "Bytes": 1003,
+      "SHA256": "22A653C7C7D1E8B10D8F07A32D0E7A90FFBF4D831BBF1A323CB307A1D9124849"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Rectangles_Generated_No.txt",
+      "Bytes": 77965,
+      "SHA256": "17B7DDB978FD3869C435F8CF924ED1338B27EDDE43AE934C76E10493CF02FFEF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Rectangles_Generated_No.txt.progress.txt",
+      "Bytes": 144624,
+      "SHA256": "B4775F1A4EF48219A9B74CB60136C70A04D514A7FCEB634B7336C889E4D337B0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Rectangles_Generated_Yes.txt",
+      "Bytes": 76352,
+      "SHA256": "C3652B89FED1AED42E46C40CC470B22F6054B528567C5EB752F1BCD610618205"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Rectangles_Generated_Yes.txt.progress.txt",
+      "Bytes": 141406,
+      "SHA256": "4C304C39AF7317D39850A4961799AB379CEB90FEB011A69B299009BC96E3617E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Run.json",
+      "Bytes": 19225,
+      "SHA256": "0E3F47454ECC0CAE196814143C7910D0FD6F5969355A72FCDCD7479C044D1FC5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedSectionFixture.json",
+      "Bytes": 90873,
+      "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedWorkbook_Paths_No.txt",
+      "Bytes": 61353,
+      "SHA256": "D4AF3BFA4EAD4319AEE9E9FE98D78D9CB087DCDC538115B569D39B5327E3664E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedWorkbook_Paths_No.txt.progress.txt",
+      "Bytes": 112852,
+      "SHA256": "E257ECCDD5E0211B9BE2D6A981A0225A6242A88F5618782F1BA67FA270B7245E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedWorkbook_Paths_Yes.txt",
+      "Bytes": 60107,
+      "SHA256": "117EBBD941FE317F5AF28FD5DD3374DEEAFC78981F45C6741809D5C154948B1A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "Bytes": 110352,
+      "SHA256": "E5A56EA5B4207ED94CD6CC0A11581E8C8A8CF62E3BC6B8CA64D65D554F42C1BD"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedWorkbook_Saved_No.txt",
+      "Bytes": 265100,
+      "SHA256": "231AEB5183D92C3F83BB88C97F0BA34D7003063A3ACDCB0F331BE4A4CA8763B1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedWorkbook_Saved_No.txt.progress.txt",
+      "Bytes": 466604,
+      "SHA256": "6D64A1C149A9914F915F27AEAAD0B8F717CCCCFD37055331866213F112B9BC3D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedWorkbook_Saved_Yes.txt",
+      "Bytes": 255107,
+      "SHA256": "6D8F86B6E8295B7D537A2FB13BA18D500B427B4FBDA89627411EFBD3A5DF6D71"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "Bytes": 455510,
+      "SHA256": "B5571D02EE447E093A2EFC9DFFFCBB2DFFF862B30A8CEE26CE10339030A1D5DF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Stability_No.txt",
+      "Bytes": 11042,
+      "SHA256": "EE944E4CBEF3F7354D0AAEED83357B82027343B5A2D15C0959DC8A415EA9F79C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Focused/Stability_Yes.txt",
+      "Bytes": 10831,
+      "SHA256": "EBBBD6FD2A5F0BC577CB6B27E3257D83C75B07E742283479E886E84D20A2D3F3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Full_Off.txt",
+      "Bytes": 16846309,
+      "SHA256": "8FD27A0115915B72E6E53853115A90FEEBAFE6DC104645AB83DA28C14420B23A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Full_Off.txt.progress.txt",
+      "Bytes": 1841736,
+      "SHA256": "14D5D05B7565D0B33C5BF0BDCC7E2E35422B471C28DA1DEE0933999C18D30656"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Full_On.txt",
+      "Bytes": 16846143,
+      "SHA256": "37E6BAEB3747792A04801BD53E1414D6BEBCCF83F96234E86AA0706D3AFE1868"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Full_On.txt.progress.txt",
+      "Bytes": 1841736,
+      "SHA256": "14D5D05B7565D0B33C5BF0BDCC7E2E35422B471C28DA1DEE0933999C18D30656"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/FullRunner.ps1",
+      "Bytes": 11564,
+      "SHA256": "C28C27EA38E12183FC429E64585D11B80F4810E10C0F006A4FFB1949709A2FCB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Geometry_Off.txt",
+      "Bytes": 1703238,
+      "SHA256": "D03230421E8002C724BED0899B0FD0AE6D25707CD0F54B91F9CAEDADC1C2A111"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Geometry_On.txt",
+      "Bytes": 1703440,
+      "SHA256": "764FEAD43EF6476224FF757170EB8E8A0EB668214655B6A2C401316706B56DC4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/ModeRunner.ps1",
+      "Bytes": 22075,
+      "SHA256": "8ED084156B0826137EB6ACF11419E0F09610C40E3C327C5873471D50C44BCFBD"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Recipes_Off.txt",
+      "Bytes": 554077,
+      "SHA256": "D7FEBBFD59F5B1604BBEA8910AF34E52DB9F412DB96F7628F934A9880F9B52E2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Recipes_On.txt",
+      "Bytes": 554112,
+      "SHA256": "A8F9D10EB75A91795B48F23A9E9324044B56218B8F54F69032A4D824D4C57C63"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Run.json",
+      "Bytes": 23320,
+      "SHA256": "E835ECCA1219D879B9197CED4A8444986FDFEEC2E65D952E366ECBD767BA70F0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/SavedOffsets_Off.txt",
+      "Bytes": 2520,
+      "SHA256": "8B9F891A1030793644A102AEAB9A28B5DFA334A108F439AFAAAD3FD8BBD9B624"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/SavedOffsets_On.txt",
+      "Bytes": 2524,
+      "SHA256": "54E844A21978F39795BA794ADDA59D0F5BA50465234901734AE81DB28F0A18DE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/SP35_Off.txt",
+      "Bytes": 47241,
+      "SHA256": "865D35D3681286461E4FA78CB5CBF3B7DB9575960B8F2AD9FBE905A0E33596DF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/SP35_On.txt",
+      "Bytes": 47253,
+      "SHA256": "7EEF714CCECC343E4086B577724ED460E16859D39299E7B9676726334F764FF7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-23_WorkingCodeReview_Run02/Summary.json",
+      "Bytes": 68515,
+      "SHA256": "6C7286FB4A4BA7CECA18AB7EEA6FB944DA084CB20B479127CFD31D5020B86E35"
+    },
+    {
+      "Path": "docs/regression/Rect23_No.txt.fixture/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "1CD72351AFA334016E5A2EB9513E864C902A8094C2C562533DB8E10447F91CC8"
+    },
+    {
+      "Path": "docs/regression/Rect23_No.txt.fixture/Preparation.json",
+      "Bytes": 370,
+      "SHA256": "7975E38CF781565D4D76E1BEC9684B07459100C945BD548737445AC89DEB0652"
+    },
+    {
+      "Path": "docs/regression/Rect23_No.txt.fixture/Prepare.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/Rect23_No.txt.fixture/Prepare.stdout.log",
+      "Bytes": 58,
+      "SHA256": "4A99AC4578F7461619250D5D48704753A6F2A81014FBCAC0969BF3C1D2D0920A"
+    },
+    {
+      "Path": "docs/regression/Rect23_No.txt.json",
+      "Bytes": 766,
+      "SHA256": "FFC0D2B362B6E51122874397D4A5CA6B1AB44F17A9DB91CD6ED11970734006AF"
+    },
+    {
+      "Path": "docs/regression/Rect23_No02.txt",
+      "Bytes": 976735,
+      "SHA256": "7E9E9A29290719CF8E3FFF7B8D324A2E02626A75680935863EDEE78DF52E9B6F"
+    },
+    {
+      "Path": "docs/regression/Rect23_No02.txt.fixture/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "E3729024F8E1CB7CB029A0A956F569204C1D70D410F24D4EA1A93DF8E1B3A3A0"
+    },
+    {
+      "Path": "docs/regression/Rect23_No02.txt.fixture/Preparation.json",
+      "Bytes": 370,
+      "SHA256": "8F75970CE7EEC955AA643A18425EADEE59DAA95B971AD399E61F24BC1D815431"
+    },
+    {
+      "Path": "docs/regression/Rect23_No02.txt.fixture/Prepare.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/Rect23_No02.txt.fixture/Prepare.stdout.log",
+      "Bytes": 58,
+      "SHA256": "59083B60718875B1B44E2424F18AF6E1D4675A0F2313A50564E297C0BE6DFA46"
+    },
+    {
+      "Path": "docs/regression/Rect23_No02.txt.json",
+      "Bytes": 763,
+      "SHA256": "602A565A9BFB7AE08E407E554BD988A2A69F96707EDBF46C227AD5E8808D783F"
+    },
+    {
+      "Path": "docs/regression/Rect23_Yes02.txt",
+      "Bytes": 976744,
+      "SHA256": "344C6646FCE7D33DEB3EE0AB434AE99BA7E4EA804C684E933453899009F1E5A1"
+    },
+    {
+      "Path": "docs/regression/Rect23_Yes02.txt.fixture/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "F24FD44ACBD475B5D86880574AD740B568CC33E5D2443C492875266FFC8A5892"
+    },
+    {
+      "Path": "docs/regression/Rect23_Yes02.txt.fixture/Preparation.json",
+      "Bytes": 370,
+      "SHA256": "45063C78FE4475C0F6316BA9BA5AAA035623CE7F6A088D8F2143A3138E6C9B7C"
+    },
+    {
+      "Path": "docs/regression/Rect23_Yes02.txt.fixture/Prepare.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/Rect23_Yes02.txt.fixture/Prepare.stdout.log",
+      "Bytes": 58,
+      "SHA256": "956E50C18462145B0C59B1D6C507A6A577FDEEE047874C84EF693AEC0239AC8C"
+    },
+    {
+      "Path": "docs/regression/Rect23_Yes02.txt.json",
+      "Bytes": 764,
+      "SHA256": "15AA2ECCC61612728637611F19684E3B0E3DBF2EE5CD6FA6ABDA7F1A16E4A84C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionCandidateOff05_Probes.json",
+      "Bytes": 14647,
+      "SHA256": "0E43ABE76537B4597307E693BCFB0E8B9977D550B643B88B55D242C87004C319"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionCoverageProof.json",
+      "Bytes": 143189,
+      "SHA256": "19405269A109189F37B10C82B56F1080767EB1FAE692D31334F7012055D23C29"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionDecision.json",
+      "Bytes": 2504,
+      "SHA256": "CDCA06761D8EDFC01FC5F459709482B3D5339741579CBCE159E34CAC4C27A332"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionDirectedOff01_Probes.json",
+      "Bytes": 2910,
+      "SHA256": "E06E9F3299E7887ACEA35404CA541BCB699BB09C1866E9BD2B8D97A6D2507D83"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionDirectedOff03_Probes.json",
+      "Bytes": 4775,
+      "SHA256": "FC903205297FCC92A01A1CE2BA2177047C3E55BA64E37F867971709C658C05CD"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionDirectedOff04_Probes.json",
+      "Bytes": 14424,
+      "SHA256": "2043F7B6E1480964DFB106F70C24FB74CBA9BED38E28041DDECECEDD42720679"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionFallbackOff01_Probes.json",
+      "Bytes": 17432,
+      "SHA256": "294ABFC5EE590A125725E11B13C85666E5072A4099D515F664283617D3027148"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionFallbackOn01_Probes.json",
+      "Bytes": 17432,
+      "SHA256": "3DDCAEFC20A14E88E3118FC3BDB14F22B6CD7EDF3C7AFC4D2E5107B312BC3676"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionFocusedFinalIntegrity.json",
+      "Bytes": 221,
+      "SHA256": "FB3B165AF4BE92A7E48F6986B339B681261171591A8CFA31CE7FB3DC249A490A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionFocusedLaunch.json",
+      "Bytes": 49649,
+      "SHA256": "D10C4FEF8698CEA583B3DC9EB4D911E22D97705C4FB368313C4C0807CC20CF43"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionFocusedMonitor.jsonl",
+      "Bytes": 315,
+      "SHA256": "BC90765347C0D919C9CAF329DD601FF8800A602B002C7F7554B5A1CCBECDF715"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionMatrixFinal.json",
+      "Bytes": 36209,
+      "SHA256": "599BD80146E25B351E898F4DDF1FE7FBE356AD2A516142FF944E033FC3771C4F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionProbes05/modTestLinearPlanGaps.bas",
+      "Bytes": 13618,
+      "SHA256": "EAC19E7095BC094A06176679737054F6DD89D5F814C3F74A0EE8EEA765AF1D6C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionProbes05/modTestPlotSeriesFallback.bas",
+      "Bytes": 18624,
+      "SHA256": "D510D187326B35929F1A83B8285CBB004B40C2C0337C3805DBF9F166020229AB"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionProbes05/modTestPlotSeriesFixture.bas",
+      "Bytes": 12785,
+      "SHA256": "417C2B76681FFA3538B9A36257AFBC43F9DC5DB200FD184D0E1078F8ECA5C43D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionProbes05/modTestPlotSeriesWorkflow.bas",
+      "Bytes": 17317,
+      "SHA256": "80602DDD465B6B5737D04CB9215E528C2B3F088446602BE551BCBDE8B60C947E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/ActualReleaseVBA.txt.ReadOnly.json",
+      "Bytes": 480,
+      "SHA256": "9611BE5639018AB09F28876F7DA552FD66CFB229EF28842F988C2DCC0DB08F83"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/CleanCompile.json",
+      "Bytes": 54328,
+      "SHA256": "FE9C1F44B7A4556571D3F0CDA056F53EE658F9F7147F5F26935D1AB37612F2C3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/DirectedAcceptance.json",
+      "Bytes": 3108,
+      "SHA256": "AD8AC15CC3DE2FF85841277D1050A478C887915DA171AF0DCDE9DE7FAE09BB40"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/PartPreservation.json",
+      "Bytes": 30231,
+      "SHA256": "8D06C75E0B3334A19480D6F00B90FDED05E73F66AAFD95F9ECB92F1AC411508A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/Publication.json",
+      "Bytes": 116864,
+      "SHA256": "A02FD743545B749B3E9B79131E7B72052C298C3361373AE21942DC66AD2AD35D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/RepoManifest.json",
+      "Bytes": 36578,
+      "SHA256": "3A87F36B9686B29C4249F9B5C0FEF378BE137D0C6513AD324426E06554AFA231"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/SourceProof01/NativeSourceEquality.json",
+      "Bytes": 43915,
+      "SHA256": "BA946FD73E7D214A7BFF9C62CE7AA967F23449066E29227016D1C1E6BCA1CDBD"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/SourceProof01/ProofSelfChecks.json",
+      "Bytes": 2330,
+      "SHA256": "D2DC088D87409BE2B21FC799051C8AB1EF52D8C7A37FAA3740EDFEF9EBD3DB37"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionRelease01/SourceProof01/VbeNumericCanonicalization.json",
+      "Bytes": 5253,
+      "SHA256": "7E4F7C3A7A3A2460E95447AFC07898EC273290385319F0E67CF690F95A9284FF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionReleasePlotOff01_Probes.json",
+      "Bytes": 506022,
+      "SHA256": "469293C214B5D1B61A263C26058C87682BC5019ED2A78C25258907406EA5D5F7"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionReleasePlotOn01_Probes.json",
+      "Bytes": 506024,
+      "SHA256": "6880975AD8D88DAB68AB6EC8B8635B3E29741B8D69F0D63C0F28110A26DE49D5"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/CompletionReleaseRunnerAdaptation.json",
+      "Bytes": 930,
+      "SHA256": "FD1FD132F0BD147D543C7C9A8DFF754F9DBAE1AB4B11FB596F4F8AAAAD4B8AF9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ApplyAndProveToolProbeNaming.py",
+      "Bytes": 13644,
+      "SHA256": "3DC6B11A56C47B882D4966BFC5624733459905D62B63CFC1F5D2AA39089A9CD4"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ApplyAndProveToolProbeNaming.py.txt",
+      "Bytes": 13565,
+      "SHA256": "C9C50D061B6DC4070B1590C777C9DD810B03A6C8A1637D2CFA06AD937EB28D3D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/BuildCompileOnlyContexts.py.txt",
+      "Bytes": 9013,
+      "SHA256": "AD45EF2BB7CF8B63DC0DFDA4B39AB1E1537896C9D9730031B0CF34D130384A96"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/BuildPlanReadOnly.py.txt",
+      "Bytes": 30737,
+      "SHA256": "7A81AD518005616C8E73D28F1F8CE9045F5ED088E1DA6BCBF6AA594C94B71892"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_CoreRegressionBatchProbe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_CoreRegressionBatchProbe_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 6026,
+      "SHA256": "8793B7501A04B3D71F9F84DE354E4D04805D93CE906996E9F2A47CA90BE8A24E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_CoreRegressionBatchProbe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedAcceptanceProbe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedAcceptanceProbe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedBatch15Probe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedBatch15Probe_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 5212,
+      "SHA256": "82D96B5155BB12A39E20B1D680C7A812994CF3717D76F05EB8A356B78F86D315"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedBatch15Probe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedForceBounds_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedForceBounds_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 6404,
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedForceBounds_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedSnapshotDiagnostic_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedSnapshotDiagnostic_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 7076,
+      "SHA256": "010F4F5792628BE9F45B64D9616D283FFCEC463F8B6E55A0D2BD2DB508DC92A7"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedSnapshotDiagnostic_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedSpecialProbe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedSpecialProbe_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 11957,
+      "SHA256": "91E93175339D42162A805C7730782813DAB172ECCB2F71342BB7E7D02475B6C9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_FocusedSpecialProbe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_OpenIssuesProbe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_OpenIssuesProbe_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 4517,
+      "SHA256": "98C34885E6250C91F6B43008FE27854729385423AFE5B9E640375E68BFC02126"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_OpenIssuesProbe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_OverloadTimingProbe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_OverloadTimingProbe_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 4145,
+      "SHA256": "0E4AC354391FAD22AA9ED46934E5AE4F908175DAF0EB6B37C3854CA5B979CF74"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_OverloadTimingProbe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauFactorControlProbe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauFactorControlProbe_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 2369,
+      "SHA256": "586F71AE677F2538AA0F87DA4CE2ABA67E97FAECA1F7446C29DD3B511E6757EB"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauFactorControlProbe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeBatchProbe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeBatchProbe_modTestBatchCalculation_Append_3.vba.txt",
+      "Bytes": 2100,
+      "SHA256": "CDBDCE073802DD87E66B1C02586DA8FD4112535F39631CAFA972FBF3E1247872"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeBatchProbe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeBatchProbe_modTestPlateauSlopeProbe_AddStandard_2.vba.txt",
+      "Bytes": 20935,
+      "SHA256": "BBE02160DB97B53713B0A00DD9D9AACB91B5D3D9757BA634AB8D032F83836404"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeExtendedProbe_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeExtendedProbe_modTestBatchCalculation_Append_3.vba.txt",
+      "Bytes": 6044,
+      "SHA256": "C32F0C233BE7E38B6230E2216FE69569F25DBD3DC859316B7C7C57E59F17D468"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeExtendedProbe_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeExtendedProbe_modTestPlateauSlopeProbe_AddStandard_2.vba.txt",
+      "Bytes": 20935,
+      "SHA256": "BBE02160DB97B53713B0A00DD9D9AACB91B5D3D9757BA634AB8D032F83836404"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_PlateauSlopeProbe_modTestPlateauSlopeProbe_AddStandard_0.vba.txt",
+      "Bytes": 20935,
+      "SHA256": "BBE02160DB97B53713B0A00DD9D9AACB91B5D3D9757BA634AB8D032F83836404"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/BAS_RectanglesOffsetProbe_modTestSectionRecipes_Append_0.vba.txt",
+      "Bytes": 5206,
+      "SHA256": "5FBE5310CD647CCFCB43761A898452F661ED1625DB35BD9BE63BEAB494102CF0"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Compare-FocusedReportFormatting_CExecutionReport_Append_2.vba.txt",
+      "Bytes": 931,
+      "SHA256": "81397475ACC1981EA7C8593804D50FA8EAC4294C5BB04EAFC1A7489922A6CAF0"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Compare-FocusedReportFormatting_CTestExecutionReportBaseline_Append_1.vba.txt",
+      "Bytes": 931,
+      "SHA256": "81397475ACC1981EA7C8593804D50FA8EAC4294C5BB04EAFC1A7489922A6CAF0"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Compare-FocusedReportFormatting_modTestWorkbookInterface_Append_3.vba.txt",
+      "Bytes": 939,
+      "SHA256": "135F47CE4488945731331F5A080A79730B683BAEE7A01FF0FAE1F3AC672B5858"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Export-CoreRegressionForceBounds_modTestBatchCalculation_Append_1.vba.txt",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Export-CoreRegressionForceBounds_modTestBatchCalculation_Append_2.vba.txt",
+      "Bytes": 6404,
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Export-CoreRegressionForceBounds_modTestBatchCalculation_Append_3.vba.txt",
+      "Bytes": 1512,
+      "SHA256": "BC72BD4B59FB680B454EC677B55994DF53F8226B055770A00F04267154241978"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Export-CoreRegressionForceBounds_modTestBatchCalculation_Declarations_0.vba.txt",
+      "Bytes": 264,
+      "SHA256": "F45C2C3748348C0A7A2C8516B553662197695ADC44BC311B00619C243272DC12"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Measure-PostAudit03Snapshot_modTestSnapshotMeasure_AddStandard_0.vba.txt",
+      "Bytes": 3655,
+      "SHA256": "46993081CC3FEA81556D294884E883DF189BD7C80051A1FCCCC955B38115445F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_New-Audit03WriterTraceFixture_CBatchResultWriter_Append_0.vba.txt",
+      "Bytes": 1015,
+      "SHA256": "BF4B767322440F8ED459929C2A4578A166241CB7F97A1F878BDAA9A5150D2E5D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit02PerformanceComparison_modTestAudit02PerfCounters_AddStandard_0.vba.txt",
+      "Bytes": 2931,
+      "SHA256": "35C62C6BC8D1F01EA378073DBF952A43F733E6584672CD1F31939076B5796E0F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit02PerformanceComparison_modTestCapacitySolver_Append_1.vba.txt",
+      "Bytes": 1846,
+      "SHA256": "55DA833E22A7A8A0C111DDCF0FDC0BB21A0C594DF0DF977373071042A0677B06"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit02PerformanceComparison_modTestCrackWidth_Append_2.vba.txt",
+      "Bytes": 1751,
+      "SHA256": "E9FFA5C93D27A5D6DCDE1EC3CC0F706EC3E847CEB76C480C70144063EB8E404E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit02SavedCombinationPair_modTestWorkbookInterface_Append_0.vba.txt",
+      "Bytes": 788,
+      "SHA256": "3AB70CD64E93CDEA80E6E5C57EAC6A04CE242072323898188D4EBF33555B9E2C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit02SnapshotReopen_modTestWorkbookInterface_Append_0.vba.txt",
+      "Bytes": 3313,
+      "SHA256": "65087BFF361E6B78529E5B42A85E48B2BD5384D9FA1362BD97FC3CA2472DFF75"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit03PerformanceComparison_modTestAudit03PerfCounters_AddStandard_0.vba.txt",
+      "Bytes": 8933,
+      "SHA256": "6CB2203BDA5364209C55AC830847E9E726524029AAAF731F366A6DF0E76011AF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit03PerformanceComparison_modTestBatchCalculation_Append_5.vba.txt",
+      "Bytes": 2505,
+      "SHA256": "5E5FFCBA0256C116661382090B8FB4D5CF7899679E326799ED89A96AAFB26803"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit03PerformanceComparison_modTestCapacitySolver_Append_2.vba.txt",
+      "Bytes": 2909,
+      "SHA256": "63DC99E52A365EFFCF900CF19A4F3AEE01D8A4A628253A9F7D1D8F6FEB643628"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit03PerformanceComparison_modTestCrackWidth_Append_4.vba.txt",
+      "Bytes": 2660,
+      "SHA256": "6B6E78EDECA4BA54F4A7C795CD89EF7FC1437C70CBF48DC26C69A49257BF32D9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit03PerformanceComparison_modTestGeometry_Append_1.vba.txt",
+      "Bytes": 3215,
+      "SHA256": "615649F278DEBC1BE0D2523AEA039965A337983F8D910CC9C13BAE85D12BC2FF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Run-Audit03PerformanceComparison_modTestGeometry_Append_3.vba.txt",
+      "Bytes": 2790,
+      "SHA256": "8F0B074F0ACF0C0BFAB78AD8B18E4BE9E671556152A813B849888EFD1C279295"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Test-SP35StateDisplay_CBatchSectionCalculator_Append_0.vba.txt",
+      "Bytes": 506,
+      "SHA256": "E742015B531BC87304FF515AC5DE6A61F72469258EF6DE1008F1C0EFEF4F937A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Test-SP35StateDisplay_CCrackFormationResult_Append_1.vba.txt",
+      "Bytes": 431,
+      "SHA256": "503CA2971BE58FE57D63DBA036A6BB7E5E033C46E1550C8BFBE47B715312A60F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Test-SP35StateDisplay_modTestSP35StateDisplay_AddStandard_2.vba.txt",
+      "Bytes": 7518,
+      "SHA256": "2E5991E3E1D31F46EBEAD20B7860876AD0385A1EB81B2ADEC2438201AB5CD03D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Update-PrivateWorkbookCode_CSectionGeometryQuery_Append_1.vba.txt",
+      "Bytes": 2013,
+      "SHA256": "5B0A7A51E50C19FDFB3C43AA91C32FA897C7616691486A4B7E94CC5F63B9223B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Embedded_Update-PrivateWorkbookCode_CSectionGeometryQuery_Declarations_0.vba.txt",
+      "Bytes": 29,
+      "SHA256": "9BA0A458CBA9B0A8926D7AE14552D7C007FF67AE7A57933A992BEE8DE1B9865D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Manifest.json",
+      "Bytes": 33822,
+      "SHA256": "3AC4A085F45F725467CF928E0A6A123528F96B59592DA6768F8D030A1F03B9CA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_CoreRegressionBatchProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "5F50B1E8B11B46CF63016D067338F1B18794255950661C0C608C0B8959E28D0E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_CoreRegressionBatchProbe/Result.json",
+      "Bytes": 1351,
+      "SHA256": "19054A177CCF720130809AB809F406801D42A67FB236E8C4D6B9C30E0A6A4DAC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedAcceptanceProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "02FDCADD0D5F5E6B95AD188000D62D357C8F8C3A5E2CCB00C564CCFD795C1D48"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedAcceptanceProbe/Result.json",
+      "Bytes": 1087,
+      "SHA256": "EE5F01271A86BE1E2B2A13521D5FFFF953F1E26C11645EC1BBE34D04A5EA3232"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedBatch15Probe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "DEF6D82CFD5700AC265473BE554EEB1B53A9B25A86F5D7B101B5C69D0299F439"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedBatch15Probe/Result.json",
+      "Bytes": 1345,
+      "SHA256": "CA392D8BC9E3205B7B5488C6CF9B4EDA7F4F2344C35804AF17355599B34CEF73"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedForceBounds/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "582F589FFB20534E7897687B672C9B80D2F88826045F7DCBD0C74472370B9453"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedForceBounds/Result.json",
+      "Bytes": 1345,
+      "SHA256": "3CC5ABB54588819AB65EEF4377238A8D99F5BC61F0CF3CB96D4190A18F556C6B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedSnapshotDiagnostic/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "38D2CB48939F5FF25D9C56B0E6F4815AEA480312982E856BF9D16EC56B2B7B59"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedSnapshotDiagnostic/Result.json",
+      "Bytes": 1352,
+      "SHA256": "548D5883D22E7D685C55A5AA3299E277C04C5A5BF0F4DA3F9FCD08957E95D6A8"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedSpecialProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "A351B8C561FF5FBC97C5FEE6CEC3F584B0AB71F1125B80337B7BB0FB0D26B2D1"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_FocusedSpecialProbe/Result.json",
+      "Bytes": 1346,
+      "SHA256": "5D9E439CC1E10493BD5B4F1AA87D6E6FC85C7871D55EDD70EEBF81070742A249"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_OpenIssuesProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "8697510F4C6A39AB6647C22C60F245141A5826EC7BCC8F494C1DDEB330FF80C9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_OpenIssuesProbe/Result.json",
+      "Bytes": 1342,
+      "SHA256": "0B446F6C80443DDC4FFB880B7EED9B4EBC6C367759580679525ED6BAFE75977E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_OverloadTimingProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "8E8CFBB7DAF96ADD7B33B6A1694B4E02F5D21C51289709307584CB1E747376CF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_OverloadTimingProbe/Result.json",
+      "Bytes": 1346,
+      "SHA256": "BFB4274FE6C9FEFAE1963AA1AA3A52EBE83317724DF3CC10D36408A775D7E267"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_PlateauFactorControlProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "3D10B20CBC5BE4D8C865FC795917A1341C80316C1537B4A1994C2421E05F2F07"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_PlateauFactorControlProbe/Result.json",
+      "Bytes": 1352,
+      "SHA256": "C44BC3E7C173158137DE6112FA0919EE36893810ACEFC5B37AC6E8AC6A522F4A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_PlateauSlopeBatchProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "6BC9311BE61F45FABAD8B78CF757FC9A19329BFFA9C68F1EEEDD8D27AF337A08"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_PlateauSlopeBatchProbe/Result.json",
+      "Bytes": 1615,
+      "SHA256": "8E4DB06EDA3C3E06DC862D13D1CDF800DBB70DE77141731882DFE2DC7000ECCA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_PlateauSlopeExtendedProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "054F4E9F74267B00AFA0D6DAD913B91287C1C0B50BA1DC48E9DEE97F2E2E3C54"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_PlateauSlopeExtendedProbe/Result.json",
+      "Bytes": 1618,
+      "SHA256": "ECBC685430BE1E1992B0922B5DBCE2C2206F5F3770D402891B8CEB3A6A148541"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_PlateauSlopeProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "8C761EAD398EC16FC5762C2368DD58D71239C47DE733BA539740475DB2550751"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_PlateauSlopeProbe/Result.json",
+      "Bytes": 822,
+      "SHA256": "3987B0F1D8C4E715C7E8E4CE0AA56D76452C5634B6CFA9603C86EEBC9A842255"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_RectanglesOffsetProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "519DDE49E5D636BF302B950E9F1E1D080624BDB41190D339AC8A79D9A374B326"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/BAS_RectanglesOffsetProbe/Result.json",
+      "Bytes": 818,
+      "SHA256": "EDC479645E66CA8D21158FD0B17EC4140DF635EF6750D3A629C3859B81CDA7DE"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Compare-FocusedReportFormatting/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "5775F346F6D024CA2B4F1EC8EEE0065852657A2CAFCE4ACF4EBF8BF6D13B3F61"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Compare-FocusedReportFormatting/Result.json",
+      "Bytes": 1003,
+      "SHA256": "BF660651ACDB65F695AF2927689EFF8C583BF7EE1CD0365B58895A5244D19FF8"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Export-CoreRegressionForceBounds/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "423DD203B7C8C3492663192F40D8B239E81E430E61D3CFA9D7575D5AC5FC8BBC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Export-CoreRegressionForceBounds/Result.json",
+      "Bytes": 1005,
+      "SHA256": "AD2EFBF2632BD0583D464E65F478631565E6B1C0FA612C62A171A218F88851EF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Measure-PostAudit03Snapshot/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "F902DDC3C81A420B893890E291BC45C81B59CA95263976291F846939F6889E9B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Measure-PostAudit03Snapshot/Result.json",
+      "Bytes": 995,
+      "SHA256": "F14557FA90788E04F200ED472588343E56C7F2856617E27E8A2734122CA2AC3C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_New-Audit03WriterTraceFixture/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "14F5552D1AD4EDB2549AE963EF98C68789E53A55CD27E5E52DBC5F5C381E8599"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_New-Audit03WriterTraceFixture/Result.json",
+      "Bytes": 999,
+      "SHA256": "4F9DF1B838285C0BB32FF9C63B11D517C25E7A26BDA5EDD37F4F89FD2D1C8695"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Run-Audit02PerformanceComparison/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "D213BF5527BE1EDF0D0A3677E7FB5BDE4861FC111CAB583A621BDECF66F5CF07"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Run-Audit02PerformanceComparison/Result.json",
+      "Bytes": 1005,
+      "SHA256": "56FB3EBB70E7E31F2B851C94DD3B9AF3CF264E6D3B0742F1ACBC73C7234FB9D7"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Run-Audit02SavedCombinationPair/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "DE1181A93D4DD4AA6DE4EF518DABF7F857FD76025D1DFA1BDA0E5EA445A5974E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Run-Audit02SavedCombinationPair/Result.json",
+      "Bytes": 1002,
+      "SHA256": "CD22386AEBECEE3E5694443351EBDAF8472B1E7101AD23B8A492A2F7E1C47FC9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Run-Audit02SnapshotReopen/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "617F658B468E8D3962E99E1E424B72F093045B14DF58F65A25D8644EABC9F037"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Run-Audit02SnapshotReopen/Result.json",
+      "Bytes": 991,
+      "SHA256": "D96E9E4EF473CD677ED6E77D4ED3A2ED640746BC41F65997613E61E94F978D93"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Run-Audit03PerformanceComparison/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "115BBF85C118440E74A6AF811AE495EA2E251C184F57E21666A415C8BE435113"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Run-Audit03PerformanceComparison/Result.json",
+      "Bytes": 1005,
+      "SHA256": "853B994FF0E135FF957660C2B622D6E4ECD66802B8ACF2A73A0EBD10AC9D3B29"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Test-SP35StateDisplay/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "4EC5E94B32A0D2B34C7BAFF8380DCCDCD99C4E518BDF5F6B21FF27A3BBF758F5"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Test-SP35StateDisplay/Result.json",
+      "Bytes": 1349,
+      "SHA256": "97218E72F6C31950CA2414C48CE668EC3067A59CD173EB13A3C1AADEB3E866F3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Update-PrivateWorkbookCode/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "B45F837C8B141A821B58DFA25B268B723EAEADE2EBE8E972B9A9D278FF7254E9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Embedded_Update-PrivateWorkbookCode/Result.json",
+      "Bytes": 993,
+      "SHA256": "541A9B489F10AE615596C7103A0219AA36E7D70CAE2C98206BDA6AD5BD65BE8B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative01/Progress.json",
+      "Bytes": 14050,
+      "SHA256": "8CC87C5A95925C157723AAAE3C9A95E71425B07D06F7EFD5BC52B2F1A6A4EBF7"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_CoreRegressionBatchProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "D9D2C32FCC899F023213548BDD9B8966984ED165E20CAD414E86C6A0FC962DFF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_CoreRegressionBatchProbe/Result.json",
+      "Bytes": 1351,
+      "SHA256": "673D8E78569F4323DE6B9E109CDC5C45B2A12212130D6BA8149BE0973C095A4D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedAcceptanceProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "BF6E70CF36C03AB5FC86268B627EFD60EFFFF12F5E1537DD4404598F8AE06FAF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedAcceptanceProbe/Result.json",
+      "Bytes": 1087,
+      "SHA256": "26F41A1BB90A02A4D36D50BE6EE1939DEBFB2361DEBE10AA3E655498FD9E4FFC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedBatch15Probe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "CC4615C16F370A3115423E6B9F7EA2FE49F0509CA11B5899A249CB8B6E635E5D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedBatch15Probe/Result.json",
+      "Bytes": 1345,
+      "SHA256": "72ABE39C2E24605EF27B3F05278CBD82D5EC09FECE56CD9B557EAE625FFE809E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedForceBounds/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "D3B523FFE54D77345D1A55F03004CF317EACBABD8D66514F24D6765269F25450"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedForceBounds/Result.json",
+      "Bytes": 1344,
+      "SHA256": "38FBB990458AD1FCF443B8118742EA0468871DF154C7FE4AE2A2712CD6E0D28D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedSnapshotDiagnostic/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "635EF44E9B678DB938E95AC763919BEA52398BDCA2B21C475D4558832AEB59EB"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedSnapshotDiagnostic/Result.json",
+      "Bytes": 1352,
+      "SHA256": "96F2E0D0E91EF65AE66ED49A9D6339D85C16B9A9E2D3A2E9041813395F56E975"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedSpecialProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "84C77B5B84EA206FB4A94811E6142DBBFD2D7FCF4241E9BD5920D1FFB7000FA4"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_FocusedSpecialProbe/Result.json",
+      "Bytes": 1345,
+      "SHA256": "E2DE56E8FD2F07E1E0F16E0D13FB4BC5C71502184085EE8B0F402ED87833E2A3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_OpenIssuesProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "130A62BDC1389711A25491449A9395074EFEA17D3921759C1CC8EFEB5092ADC6"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_OpenIssuesProbe/Result.json",
+      "Bytes": 1341,
+      "SHA256": "B1BA5D048D90859DA8DC118A2AF9AADE1B40873DFCABF92993D510EEAAD2D2AD"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_OverloadTimingProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "8E7DC9AE411AB9A6B0E9856DFDFEC7EB8E2C31AF1A8280CFF1DA7B05A8EE1A53"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_OverloadTimingProbe/Result.json",
+      "Bytes": 1345,
+      "SHA256": "112D2CFB6D0B7B3E79FD3068CB04756FBD34FCC2984775AA87AFCC7CEC7B0898"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_PlateauFactorControlProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "864926E91B0B1FD9A47B663FB3176CEB792CA8EAB3C4E9135AA0E9B9979343F3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_PlateauFactorControlProbe/Result.json",
+      "Bytes": 1351,
+      "SHA256": "5E23C59C48E2120F74EEF6AE9158A2EDB9E54CF6B2B6082C3AE6242154499BE2"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_PlateauSlopeBatchProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "4FFFFF3511B2CB63CBD5D9FBA927C9C247368A6FA154EFDCF9B9CC066AEF35AA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_PlateauSlopeBatchProbe/Result.json",
+      "Bytes": 1616,
+      "SHA256": "96714DDF7E2208DBAE087E5B5D0DC1462A0F8A29D4F73547556D0754F6464395"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_PlateauSlopeExtendedProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "2A1DB8D5708755F57C8399301B9AC8ABDA0682972DEB172FA4BA7CF5A8B35340"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_PlateauSlopeExtendedProbe/Result.json",
+      "Bytes": 1618,
+      "SHA256": "33BBDC08F83E7E91B8A91B7B3DCB2D8842A29527C0A75A58047259FAF16E689D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_PlateauSlopeProbe/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "90B88C1AEF7CDF370360E24C919ED1351898B78B7C6E21227412DCA360D1A1AA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_PlateauSlopeProbe/Result.json",
+      "Bytes": 822,
+      "SHA256": "0C29F35F0C5AF69A4EED9A35396C4F3F41F37558A07C8EEE98A8F605A2EAD6BF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_RectanglesOffsetProbe/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "7C278D581249329B4503E6C745034C532F9A49FD14FA7DEAA3076DB72BD1A2E0"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/BAS_RectanglesOffsetProbe/Result.json",
+      "Bytes": 817,
+      "SHA256": "F1CBE1218F715488807B1533C3643A18AF015F63EEDE20830782685F2E95158B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Compare-FocusedReportFormatting/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "8E5772D58BAEBF9E8040A112D5A25CD7C4B7204C59C2E3BAD59C7D5A9B6C3658"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Compare-FocusedReportFormatting/Result.json",
+      "Bytes": 1564,
+      "SHA256": "EF6D26F83EFDBD719F1C93C811C814A02D32BA3535A1C77297FFD4A3E4DA593F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Export-CoreRegressionForceBounds/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "CF981909296CBBDD69B5184C2CDB4513F5FE30386F59E710C4B8B8DBF26CF2D2"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Export-CoreRegressionForceBounds/Result.json",
+      "Bytes": 1625,
+      "SHA256": "2BF7CB698DEEFBED6E03EA8D2F2C18F68FEBF41592BC4B9126731E0F25EAB249"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Measure-PostAudit03Snapshot/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "439E079AA54D48178D1B93AE92160B77DD801BA7DA55ED25D153D539C5A31A26"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Measure-PostAudit03Snapshot/Result.json",
+      "Bytes": 835,
+      "SHA256": "7561C74FF666F18E857978F82B83A980FDD5C426DBAB6ED49EE0FD22477D5E4F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_New-Audit03WriterTraceFixture/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "74E85C6B35AD6AEC9A27850E60019C8DB517A1D45AFF5A96A296BD8FBAC4EB78"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_New-Audit03WriterTraceFixture/Result.json",
+      "Bytes": 828,
+      "SHA256": "61FCE071B8FCC3647504ABBB7DE4784A1B7F5BB73FBC4BB75D81A9BF6F86EAE1"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Run-Audit02PerformanceComparison/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "DFB1926183C39EBA9D42A82E64236CAC06CF1A5CA280A2ACD6478CE09E28BA55"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Run-Audit02PerformanceComparison/Result.json",
+      "Bytes": 1357,
+      "SHA256": "8B41C63CA86DF080A5D207F557C9DBA3C1E7D90878B62CB46618A1ADF32EC4EB"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Run-Audit02SavedCombinationPair/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "CDA864ED02692021254AE9451948E341ADD7E7C1460FFA83A44CCA626A7AAB9B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Run-Audit02SavedCombinationPair/Result.json",
+      "Bytes": 836,
+      "SHA256": "F091FF731AC09EF2187F07B78B7438D951914C457ADF3577C7F6D63A29F211F3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Run-Audit02SnapshotReopen/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "53230BD192D26B38A05B7359D4F513F54E91E937DAEE7654866D72BDFED107AD"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Run-Audit02SnapshotReopen/Result.json",
+      "Bytes": 830,
+      "SHA256": "869C1CE6339C169C02291B88F8DE0DAD5F962098F57D0D21ACA4719CBC1DB626"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Run-Audit03PerformanceComparison/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "A7F2D9A41EA8A75BE3E250287AE0CD10799CDB9914E8D6D0B8C610E327416CCF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Run-Audit03PerformanceComparison/Result.json",
+      "Bytes": 2125,
+      "SHA256": "9BFF6939D3DBF1E49699F20DB177BAF09335D3B27445D0C9876103CC9FAFAEB7"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Test-SP35StateDisplay/OwnExcel.json",
+      "Bytes": 68,
+      "SHA256": "F158F68430A51960EFE6125E13377181930C8B4B4F00FA43DCAF6D1F85D4DB7A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Test-SP35StateDisplay/Result.json",
+      "Bytes": 1349,
+      "SHA256": "AD0EC2CF0BD8F1FAE45A6728AFF17B363CA1EBBCED34EB3142CCE4EFD5619131"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Update-PrivateWorkbookCode/OwnExcel.json",
+      "Bytes": 69,
+      "SHA256": "98ADA635EA4D8EB3A307F7CEE0673C14DBBBDFA09918C147CD8DF4C47C73735C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Embedded_Update-PrivateWorkbookCode/Result.json",
+      "Bytes": 1093,
+      "SHA256": "A84E0FDD53E8D0A154D7946C059993DA5F7E1C9D65DBF9DEA29ADA1AD548B241"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyContexts/Native_RootNative02/Progress.json",
+      "Bytes": 14040,
+      "SHA256": "E47B0A31B6E649F9D94F499C7C9DCADA63EE37B97E03DE4E6A4E25960AAE9DBA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/CompileOnlyFeasibility.json",
+      "Bytes": 8319,
+      "SHA256": "46A56DE701E2B2B6B0BD96128DE900DA9462FBFEFB5A0271570190BC940A4C37"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/EmbeddedCompileContextReview.json",
+      "Bytes": 25822,
+      "SHA256": "51F822DA84629A50B8A6688553DB8396D22DD135F37652D9C95596CAC3480F60"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/FinalToolNamingAudit.json",
+      "Bytes": 37512,
+      "SHA256": "1C5532F772EB625178FBB21E22B3BDC5C5B6669656B95ABF885706B2EA8AD9D9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/FindCurrentTestApiCallers.py.txt",
+      "Bytes": 1386,
+      "SHA256": "D858075C82637479E5C44F93DF09E6D9D88C5B8D3042B5405034F43B02AFE7CB"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/GenericBindingIndependentReview.json",
+      "Bytes": 250653,
+      "SHA256": "6ECE38D45AA9C4A7917AD5DA3B9588D7F30DDF9E8FAA535F5B19A9D348AF70F2"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/HANDOFF.txt",
+      "Bytes": 4526,
+      "SHA256": "12611A3947D95D7C4D807A39E368FE6D9ADE0C2448BE7A9A9CA8DB57ADB291C9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/LegacyBindingFix01/Proof.json",
+      "Bytes": 33134,
+      "SHA256": "3A7421F5DE256A4A4F8E4F7C2AE7A5D002482AA5583211CC507E5CBCA0F9DDD9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/LegacyFinalPowerShellParser51.json",
+      "Bytes": 8613,
+      "SHA256": "FDF000AAEEF7670A3FD3C4DB51A2944FA63F49AE0F6B6FBC2E1A7E075D1B81FA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/LegacyToolClosureHandoff.json",
+      "Bytes": 8062,
+      "SHA256": "95385C01182D3C63ADB8DF03C9CAAC0E4CC40D43E845A594A426C13E40B70A25"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/LegacyToolClosureProof.json",
+      "Bytes": 54442,
+      "SHA256": "AF7128B1891A02CFD8A927A0843048BA569A8C597100CE7DAA6D8BF51EBCC0B3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/OfflineCompatibilityProof.json",
+      "Bytes": 4758,
+      "SHA256": "F72BBC8AE47EB9E9A6F30CAC7B6A73DC32D757EAF17D6B25D7308F2A906EA18D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/PreexistingToolBindingDebt.json",
+      "Bytes": 9289,
+      "SHA256": "83456DBF4D85203583905A56890881B3B0BA49C6A34ADC3D96AECAD911CB76E6"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ProposedPowerShell_ParseInputOnly.json",
+      "Bytes": 196413,
+      "SHA256": "1414C881CDA54CEC2E3D5E0A07436676639BF2A43A805270BA4E911A7FB0E5D9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ProposedPowerShellParser.json",
+      "Bytes": 2596,
+      "SHA256": "72D281B877D1426A436822C3D10E6723CF7AF5D6140644CFA8DB37CC1FA794B1"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ProposedPowerShellParser51.json",
+      "Bytes": 4912,
+      "SHA256": "C227CF9A51E31D3E7A9AFD94FE313E5BA0888C2AB5DF7115A14062FA702E0B63"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ProveLegacyClosure.py.txt",
+      "Bytes": 8694,
+      "SHA256": "1922636C42E40168F63065BBE367846B6B53B4B74FA4EC142FFD2BF327F775B4"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/RectanglesWrapperPathFix/ArchiveEarlyRefusalProof.json",
+      "Bytes": 5896,
+      "SHA256": "F6FDE90A3FF5B0590DB4636E498F321616BEFDB9D2B8CDBFF73242745743C5B3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/RectanglesWrapperPathFix/BeforeWrapper.ps1.txt",
+      "Bytes": 11949,
+      "SHA256": "F215F268A9605E482745A0AA84EB0CD556F925A8BED510EA9ABBA7F07461B0D8"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/RectanglesWrapperPathFix/CauseAndFix.json",
+      "Bytes": 9897,
+      "SHA256": "A0F87497791BDC9A1BBA315CE5B529B98F0F85AFAC3192FBAD1D28A4D90D7119"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/RectanglesWrapperPathFix/PathContractProof.json",
+      "Bytes": 3364,
+      "SHA256": "5B74D246B875D47E94962EC9CF50DC18D263EE776F9E543F3F5151D68C48D563"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/RectanglesWrapperPathFix/SummarizeCauseReadOnly.py.txt",
+      "Bytes": 3131,
+      "SHA256": "AA51706EA070D0E240843C1E9C471E117CBB4050CD2BA3F579923ABB887B819A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/RootApply01/Proof.json",
+      "Bytes": 32666,
+      "SHA256": "C3229D507E4DE91A51AEE63A3C4FDFBCA762805E2B8001587C803B410DF21695"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/RootVerify01/Proof.json",
+      "Bytes": 32638,
+      "SHA256": "8177EFEE7A899E2215FCEB05803DEF1470513E49449A69B8D8870E36639703BE"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/Run-ToolProbeCompileOnly.ps1.txt",
+      "Bytes": 12775,
+      "SHA256": "B16A4276BA716A1556CF97F6985277E3C48DEC8CDDE06FB47ABCE493D126C452"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/Run-ToolProbeCompileOnlyShort.ps1",
+      "Bytes": 13305,
+      "SHA256": "679FDBC0AD94F8A4FDC187096E6A0C67F9A37CACE8608B4899B96B6F2B5EC7B8"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ShortCompilePathAdaptation.json",
+      "Bytes": 471,
+      "SHA256": "5E4452304F2811220C8DEB991BB8082EB1706C8C4718766A2CD05539E064EC16"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ToolProbeNamingPlan.json",
+      "Bytes": 330212,
+      "SHA256": "5C96CBF2F2180999F615A614FEFB00752FF6E3D093D6AE57D4618919E6E3394C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/ToolProbeNamingReview.json",
+      "Bytes": 1135,
+      "SHA256": "9ACE705CC31E71C411E6AE786C96C5ADD2AE5E04412B2A342B18F274494D000F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Finalize-CompletionDecision.py",
+      "Bytes": 7408,
+      "SHA256": "EBAA41FFCAB5D61E546B2C5D45814987946E1B0924ED1A5BEA187248FAB7A7D1"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Finalize-CompletionDirected.py",
+      "Bytes": 5330,
+      "SHA256": "42B8B7A50C4813781C129C9D2D22E9B2309627C53368DC0886D1E3BADF8B4857"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FullLaunchRun02.json",
+      "Bytes": 61586,
+      "SHA256": "E905663E69BD756F1E3FF1B40AF4009F2B6ACDC299614F80711A0C3F75EC14CD"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Geometry/PlotSeriesFallbackReview.json",
+      "Bytes": 5859,
+      "SHA256": "468661CE919EC7623D14C81DE1DF1C6A5C00AA72CBCD380CC89680E0211D5ACC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Geometry/SeriesGapPhysicalFixtureProof.json",
+      "Bytes": 22642,
+      "SHA256": "C03683D5B153D0B6ED39F4D182FD69DC2865CD78ACB1FE36C6526E64C089A314"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Launch-CompletionFocused.ps1",
+      "Bytes": 4017,
+      "SHA256": "EB0B1848721F4D0BB674E26868DB3CA15E41C962C7E75533358D27C5EBA2D1A8"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/InactiveLinearGapTestPlan.json",
+      "Bytes": 8518,
+      "SHA256": "4919E65372E5B0BEE0FD7ED52E49DE92EB2D34E2A0B2D9AD1A622715A215F92C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Pack-CompletionEvidence.py",
+      "Bytes": 6134,
+      "SHA256": "56D1CF3672478B1F5076C98F9BA928ECE55BDF49C5FD5E3DDF5A2779BE8FFBC5"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Run-CompletionProbes.ps1",
+      "Bytes": 16168,
+      "SHA256": "CED2B553D51CB84B4C6812041FA90E12926D74C251B91F639197E636AA47782D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Run02Core156Receipt.json",
+      "Bytes": 4247,
+      "SHA256": "62E1E48E3854BD688E781F7E7F5ED837D2502DF0369C7C6E0A084F5707B61E38"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Acceptance.json",
+      "Bytes": 1656,
+      "SHA256": "0D936943B1425AB8AC498868D5234BE562022E1036BCE9D2E23978DFBB68F09D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/AsymmetricSteel_No.txt",
+      "Bytes": 11517,
+      "SHA256": "445D7912786794E6B038D8DEEC933E55216F60567D6D720A99B1B6E05EAFB8E0"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/AsymmetricSteel_Yes.txt",
+      "Bytes": 11276,
+      "SHA256": "D9B42C873AFB602C2F8488EC5965CB952544E1EC96FCFE1321A099442611512D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Batch15_No.txt",
+      "Bytes": 116257,
+      "SHA256": "B517105D0C391BEE1EA1FE7A0661E1DE39831F6AB86273AA6212457D13E86306"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Batch15_Yes.txt",
+      "Bytes": 114552,
+      "SHA256": "1DEDB64B7B323E279B9B6ADA84084E333E13438D5B75ACB4DFA4038DCA2E8788"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Circle_Generated_No.txt",
+      "Bytes": 75678,
+      "SHA256": "BCD55C6A405C77D0AA22ACDDEE43B9DE270DF94B7EC84372288813D247FB555B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Circle_Generated_No.txt.progress.txt",
+      "Bytes": 140038,
+      "SHA256": "D1B6A429CC1F81E14EF9891E84515765584174E714175B990B8909722D09BD8C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Circle_Generated_Yes.txt",
+      "Bytes": 74249,
+      "SHA256": "7AD8809D6265FC7CEE530523D3FAC648ABCBC1452A04FF71EF5EB18376423759"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Circle_Generated_Yes.txt.progress.txt",
+      "Bytes": 137172,
+      "SHA256": "42182FB206A13EFDD4AB802A90CF25D0122F9B820425397E871D21291CC2037C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Combined.bas",
+      "Bytes": 24394,
+      "SHA256": "5CB182225F470633ADEE4E746B0BDB6246EBF4E8B8F55FFC4146E2AEB9ED6600"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/CoreRegressionBatchProbe.bas",
+      "Bytes": 6026,
+      "SHA256": "8793B7501A04B3D71F9F84DE354E4D04805D93CE906996E9F2A47CA90BE8A24E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/FocusedAcceptanceProbe.bas",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/FocusedForceBounds.bas",
+      "Bytes": 6404,
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/FocusedRunner.ps1",
+      "Bytes": 7299,
+      "SHA256": "86545C45E6EE1626B10C3544ECEF68BC2B12D239781CC6E0705D79A4558CB6ED"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/FocusedSpecialProbe.bas",
+      "Bytes": 11957,
+      "SHA256": "91E93175339D42162A805C7730782813DAB172ECCB2F71342BB7E7D02475B6C9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/HollowRectangle_Generated_No.txt",
+      "Bytes": 80766,
+      "SHA256": "2BAFCBAE83FEFAB6B2EFD0D8F34A186D5985CA453D9CA784DAF7B5500834CC4E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/HollowRectangle_Generated_No.txt.progress.txt",
+      "Bytes": 150196,
+      "SHA256": "636ED5152E79E0907651B9159E5190EB78F68B7D9D275416A41CF2B41B76E467"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/HollowRectangle_Generated_Yes.txt",
+      "Bytes": 78990,
+      "SHA256": "7365B1B01839A744CA1217B3F8F951118C0C830E4AD9E8D5523A3ADB1E44311F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/HollowRectangle_Generated_Yes.txt.progress.txt",
+      "Bytes": 146636,
+      "SHA256": "012752327BEED21B54DACF24603191573479402D284CAED190B0A6000319F6B5"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Independent.json",
+      "Bytes": 192936,
+      "SHA256": "2D8DD8482960DAF3C1BAD8C77E765BA2D88BBF53F3D11697FC2A125FC9178420"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Model_Circle.txt",
+      "Bytes": 15938,
+      "SHA256": "9311627F5E9D23D546BBF2008902DCBFF8F47683E7A1186C853A9F0C51488685"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Model_HollowRectangle.txt",
+      "Bytes": 25229,
+      "SHA256": "9A79C84506E6DA8E4A4411AC3B9B0B69D92BBC1D214EF48F7078D6F8A124D80B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Model_PointedSection.txt",
+      "Bytes": 32797,
+      "SHA256": "B821472A34B46924E8A8753CC6139F8B299A1C3E886C4521E4A1FD0BF04498B9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Model_Rectangles.txt",
+      "Bytes": 22046,
+      "SHA256": "BE2B4C9FD14D4749284A368EA2F006433D3DB86E21433D89191AB206F7F6C71D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Model_SavedWorkbook.txt",
+      "Bytes": 15337,
+      "SHA256": "23647926B8A92C585C50052E8BF3AD06C88A092236887EE6366034F9A8EF4EFD"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/NativeRunner.ps1",
+      "Bytes": 13332,
+      "SHA256": "4EA00B483E3E2B428E66942953EB3F1C0BC1C8D3AFC3C69A6996C2B08B802076"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.progress.txt",
+      "Bytes": 26609,
+      "SHA256": "C4C916C5239705AA22DCD82E3D0630E299C10C9F111D72ECE6B99C764D1E6A21"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "Bytes": 29560,
+      "SHA256": "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+      "Bytes": 229,
+      "SHA256": "A1002D9F3EAF0FAE93976ECD01CB15512079CD3B26EAA6F18B5A80B0BFCCA361"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+      "Bytes": 265,
+      "SHA256": "38692D865AD2D273867C1DE73530B9DCDB4FD414531F89B6FE1AF5B20F9DCFD7"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+      "Bytes": 154,
+      "SHA256": "6F16A24CBF2F63AE7936131EF40934627CE8DC3D17F487E72D3F66FEEE05ED6B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+      "Bytes": 604,
+      "SHA256": "384060C9B6F18E36252355B790EA2F6BD89BF6EDC650508DD45282E3128275F9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.progress.txt",
+      "Bytes": 21084,
+      "SHA256": "37FCBFC64E40F44EE8D2AAAA073626D44001771C92D70D2466F6FCF2A7200291"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "Bytes": 20600,
+      "SHA256": "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+      "Bytes": 229,
+      "SHA256": "7F17C3B7EC6C3B5D56BB367A1E736A9987BBF035A6900E1D7A00C003230EACDA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+      "Bytes": 265,
+      "SHA256": "01D392119F7FDC043BFDDB65CF535CB18778D129F60FFA8706BC9E1EFF131F7D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+      "Bytes": 155,
+      "SHA256": "0D23BFD976084E8E8DC3609F4CE46C59B957F1CE2AAFB655730BEB8FF29456EC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+      "Bytes": 602,
+      "SHA256": "E7D3FB3E6242954D766963C4F3FA2B65F4B9395E17F0A1AE25A9A5A294ADEC1E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/NativeCAD/Stage.json",
+      "Bytes": 787,
+      "SHA256": "112235E25FC4ED8871E85930DCB4022F6BDA93DC6313A2355AAB259589E8D41D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/OutputPresentation.txt",
+      "Bytes": 65519,
+      "SHA256": "A6BB7B8AFC36ECF59C5A0BE40B30E6EF0A40BCF24447FC58501E4AC72CA41C6E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/PointedSection_Generated_No.txt",
+      "Bytes": 80153,
+      "SHA256": "8467FEABEA8F5DC5E6AE4A381BC04DBA6626BDF86E6176D417BFA1CC26C3F2D3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/PointedSection_Generated_No.txt.progress.txt",
+      "Bytes": 148982,
+      "SHA256": "F009F4FE0BA8CE8ACECF499B0603C47BC58512089DE6F9A838677EC2A1D5A0EC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/PointedSection_Generated_Yes.txt",
+      "Bytes": 78448,
+      "SHA256": "23CC958BC7FECB141F04F322D3CD72539F948ED977BCC20E05F5C6C1E48ADA82"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/PointedSection_Generated_Yes.txt.progress.txt",
+      "Bytes": 145576,
+      "SHA256": "9C3A5BA323A5A54CB9621A51C55F095F067F5A50B1AF797A42C10578BD324CE0"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Probe/InputManifest.json",
+      "Bytes": 3596,
+      "SHA256": "2A1D5EFA0A398C2194E307E5CC93DD36392CAD17076E68078B391C8C177BDB62"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Probe/Preparation.json",
+      "Bytes": 1009,
+      "SHA256": "C5723C4514AE8ABFB348E8506DE987F5F771A14E4B1ACC41366F4A67BF3486AD"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Rectangles_Generated_No.txt",
+      "Bytes": 77974,
+      "SHA256": "796DB11CB84AAA33E5BFF5E7249E68047B261B954ACCC015647678ACC1CD2D2D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Rectangles_Generated_No.txt.progress.txt",
+      "Bytes": 144624,
+      "SHA256": "097382DA57CB1C4970F60154C1AA8540053A57ACF201A5B0EC13E81F4E3D0F65"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Rectangles_Generated_Yes.txt",
+      "Bytes": 76366,
+      "SHA256": "383A799DD2762BC2CA1B71A4064050115210ACF014C8B3C36367AF2705021163"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Rectangles_Generated_Yes.txt.progress.txt",
+      "Bytes": 141402,
+      "SHA256": "4F6520EEE36890507DF36F9D9D1BF05DCBE477138F1CDFF1E5DBC040A03B281F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Run.json",
+      "Bytes": 19329,
+      "SHA256": "EE5F18CBA1F84D865651EE0B0ADCE781432CB69CF37F580EC690AE4AF17FF4CA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedSectionFixture.json",
+      "Bytes": 90873,
+      "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedWorkbook_Paths_No.txt",
+      "Bytes": 61372,
+      "SHA256": "B1EB183C22388554E3A4D27B5E561A8C9493B3EA0E737A0CEAEB35961083E291"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedWorkbook_Paths_No.txt.progress.txt",
+      "Bytes": 112858,
+      "SHA256": "368D42A703E8F39E1AC22C19DB698EEB29DB354F9151CABC6A73A16C6E451296"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedWorkbook_Paths_Yes.txt",
+      "Bytes": 60111,
+      "SHA256": "0971736376634EF5F1ED3CB2F315B3338B6A8168C7567321615859FAD4F7C08C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "Bytes": 110340,
+      "SHA256": "9C266A9890D7F7C9ED0E242B3963FE853BE6B9CE4F19D646732A79B231367922"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedWorkbook_Saved_No.txt",
+      "Bytes": 265113,
+      "SHA256": "080531495EA3AD9FC67A27FFCBA4B020A25BCD9E81BC68CF1330358F797F526D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedWorkbook_Saved_No.txt.progress.txt",
+      "Bytes": 466596,
+      "SHA256": "19A91FE0D7F0E647B7EAB09753B9A7ABA74CC3FA0132A22EB24FFB1C88CAA456"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedWorkbook_Saved_Yes.txt",
+      "Bytes": 255105,
+      "SHA256": "217039785291A97F025C74F9BB28227B67B3A9B22B70BDB20AA125DC4EAD2F3C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "Bytes": 455482,
+      "SHA256": "49E45DEE85418CBC3A2720DC9C2D9BDD4AEA7E1EE8364FA7C88DFE96C2CA4998"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Stability_No.txt",
+      "Bytes": 11054,
+      "SHA256": "C60B0C461BA37BBA1349D0CB98B6FA5295CADC59221DEBB56C9CAB6F58A394F6"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_CompletionFocused_Run01/Stability_Yes.txt",
+      "Bytes": 10839,
+      "SHA256": "8BAC1A962CA574934281BF6A1AB9FF9B70AE4F0D1E808598B3C4273AE3AD59B3"
+    }
+  ]
+}

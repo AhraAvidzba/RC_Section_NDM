@@ -1,0 +1,265 @@
+{
+  "Status": "APPROVED_TWO_FILE_ONE_PASS_RESTORE_SCOPE_AND_OFFLINE_GATE_PROOF",
+  "AllPassed": true,
+  "AsOfUTC": "2026-10-23T05:38:10.053645+00:00",
+  "UserDirection": "Не увеличивать время ради инженерно ничтожной неточности; использовать простой быстрый алгоритм и инженерный допуск.",
+  "ExactChangedFiles": [
+    "src/Section/CSectionPropertiesCalculator.cls",
+    "tests/modTestWorkbookInterface.bas"
+  ],
+  "BeforeSnapshot": {
+    "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/OnePassEngineeringTolerance/BeforeApplySnapshot.json",
+    "SHA256": "DBF62EF9B74F6F6B45F48EBA4A004CAFD6A5DEE748AED0377AB6304B82049C3B"
+  },
+  "Files": [
+    {
+      "Path": "src/Section/CSectionPropertiesCalculator.cls",
+      "BeforeSHA256": "D90548E4D83357918BE4CD335A66108A72557EC75FAA646A730673F63D16AEBD",
+      "CurrentSHA256": "CFA3CDD5EDB18595E8EFDBE21B5B8A792C8C2F1CC30A8B9182E1C2B1176C29DA",
+      "BeforeMethodCount": 56,
+      "CurrentMethodCount": 54,
+      "BodyUnchangedMethods": 49,
+      "ChangedExistingMethods": [
+        "FinalizeProperties",
+        "CalculateConcrete",
+        "CalculateTransformedByModuli",
+        "AddWeightedArea",
+        "AddConcreteWeightedArea"
+      ],
+      "RemovedMethods": [
+        "AccumulateCompensatedMoment",
+        "CalculateCenteredMoments"
+      ],
+      "AddedMethods": [],
+      "ChangedCurrentBindings": [
+        {
+          "Name": "CalculateConcrete",
+          "Kind": "Sub",
+          "Line": 110,
+          "EndLine": 134,
+          "BodySHA256": "D8271625328409DED5D45A2F0A47985F2E3F32DA2B222261A34581160F5C321E",
+          "ExecutableSHA256": "6890782DA3CA428CD2D123E2C0DAEE960C77D0076EFB4E87DB659C442D143D23"
+        },
+        {
+          "Name": "CalculateTransformedByModuli",
+          "Kind": "Sub",
+          "Line": 159,
+          "EndLine": 195,
+          "BodySHA256": "5049604169319EC4F06392F037184BB7E81D97823C0CFB336D037D5DC1DF249E",
+          "ExecutableSHA256": "B073724BA43C9D0EFDDEAF01906BED3503888E35997E1C4064905E17EC520B80"
+        },
+        {
+          "Name": "AddWeightedArea",
+          "Kind": "Sub",
+          "Line": 230,
+          "EndLine": 243,
+          "BodySHA256": "97828BC552C8C015B49DDF66CE39EB14DE6A31FBB61F467FB009FEEE68956683",
+          "ExecutableSHA256": "DA01240005792544228E5EAFE68B65218ED3AD328562E3B9668B397B203124AD"
+        },
+        {
+          "Name": "AddConcreteWeightedArea",
+          "Kind": "Sub",
+          "Line": 248,
+          "EndLine": 258,
+          "BodySHA256": "467D46EB38DCBC04AE369BBCA133590AD217DE410EAC48CF3D7C7B3D2235A7B4",
+          "ExecutableSHA256": "76E776B04CF002629ADC55CBAD477323F5EEE664CD17C196770389D468EAC33F"
+        },
+        {
+          "Name": "FinalizeProperties",
+          "Kind": "Sub",
+          "Line": 622,
+          "EndLine": 665,
+          "BodySHA256": "D3C179B770624EBA43E69817000573F4D938B685ADD10AB868C35FBF75A261B7",
+          "ExecutableSHA256": "4E5EE24D13EDC062B8480A5D2E07A1CB3EEBF5843C319CEC1C0EDCEA42C82B4D"
+        }
+      ]
+    },
+    {
+      "Path": "tests/modTestWorkbookInterface.bas",
+      "BeforeSHA256": "6FB300789F4DB40389AF1E9719C61751E10C398CF59EA2DED5CCC8CDC2540BBD",
+      "CurrentSHA256": "0389C9F37677629011E89BEF7EF6F5D2DDB51A575E3559E1F34567F45BD84635",
+      "BeforeMethodCount": 264,
+      "CurrentMethodCount": 264,
+      "BodyUnchangedMethods": 263,
+      "ChangedExistingMethods": [
+        "TestAudit03InertiaRoundoffLimit"
+      ],
+      "RemovedMethods": [],
+      "AddedMethods": [],
+      "ChangedCurrentBindings": [
+        {
+          "Name": "TestAudit03InertiaRoundoffLimit",
+          "Kind": "Function",
+          "Line": 5901,
+          "EndLine": 5909,
+          "BodySHA256": "350558FFA4EDCF3274602F4F977108B151845383D372683E24396998815B966D",
+          "ExecutableSHA256": "6F335BBAECF4229BEB826686E5AC22451F543D32353BC39B3A76B84527287E15"
+        }
+      ]
+    }
+  ],
+  "AuditedModuleCount": 164,
+  "UnchangedModuleFiles": 162,
+  "BeforeSrcMethods": 3711,
+  "CurrentSrcMethods": 3709,
+  "UnchangedExistingSrcMethodBodies": 3704,
+  "BeforeAllMethods": 5746,
+  "CurrentAllMethods": 5744,
+  "UnchangedAllMethodBodies": 5738,
+  "SourceEqualsExact9ffPlusMidnightGuard": true,
+  "TestFileOnlyCommentAndOneCoefficientChanged": true,
+  "IxyOptInDispatchMethodEntireBodyUnchanged": true,
+  "Preserved": [
+    "First-element local origin and local centralization beforeWCS restore",
+    "Same physical tensors/coordinates, concrete authoritative center, signedEs/Eb-1 and circle ownI",
+    "Same public/friendAPI/cache/revision behavior",
+    "Approved coreDistance sign guard and all other accepted fixes already in9ff",
+    "Timer-midnight protection froma84",
+    "All Solver/Cracks/Stability production coefficients/tolerances and material decisions unchanged"
+  ],
+  "EngineeringTestPolicy": {
+    "Coefficient": 1e-09,
+    "Scale": "sqrt(abs(Ix))*sqrt(abs(Iy)); c suffix forIxyc",
+    "AppliesOnlyTo": [
+      "compareInertiaRoundoff=True",
+      "Properties column4",
+      "Transformed.Ixy orTransformed.Ixyc"
+    ],
+    "NormativeRequirementClaimed": false,
+    "Meaning": "Same1e-9 engineering relative precision as the existing generic Properties unit comparator, with a nonvanishing scale nearIxy0; not a runtime solver tolerance or a universal condition-number guarantee.",
+    "Boundaries": "Near-singular/cancelling signed tensors or arbitrarily remote negligible first fibers have no universal relative error bound. Existing geometry/equilibrium/status tests are retained; this change does not classify substantial discrepancies as rounding."
+  },
+  "OfflineEvidenceSource": {
+    "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/NativeBaselineExactOracle.json",
+    "SHA256": "BF5F0FFF7F1E1F3FCEBC909FCF0ACD81C5D1AD9FBD8CE259D4DBFA049DB01F29"
+  },
+  "OfflineThresholdChecks": [
+    {
+      "Shape": "PointedSection",
+      "Stress": "kgf/cm2",
+      "Parameter": "Transformed.Ixy",
+      "CapturedMachineDifference": 8.6371519695846e-05,
+      "RelativeDifference": 2.851360729824327e-15,
+      "EngineeringFloor": 30.291333815615594,
+      "EffectiveLimit": 30.291333815615594,
+      "MachineNoiseAccepted": true,
+      "MeaningfulRelativePerturbation": 1e-06,
+      "MeaningfulDelta": 30291.33381561559,
+      "MeaningfulRejected": true,
+      "NonOptInEffectiveLimit": 1.0001175405846815e-09,
+      "NonOptInLimitUnchanged": true
+    },
+    {
+      "Shape": "PointedSection",
+      "Stress": "kgf/cm2",
+      "Parameter": "Transformed.Ixyc",
+      "CapturedMachineDifference": 9.340792894363403e-05,
+      "RelativeDifference": 3.105778394282069e-15,
+      "EngineeringFloor": 30.075529250768128,
+      "EffectiveLimit": 30.07552925076813,
+      "MachineNoiseAccepted": true,
+      "MeaningfulRelativePerturbation": 1e-06,
+      "MeaningfulDelta": 30075.529250768126,
+      "MeaningfulRejected": true,
+      "NonOptInEffectiveLimit": 1.0001238733530045e-09,
+      "NonOptInLimitUnchanged": true
+    },
+    {
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "Parameter": "Transformed.Ixy",
+      "CapturedMachineDifference": 8.6371519695846e-05,
+      "RelativeDifference": 2.851360729824327e-15,
+      "EngineeringFloor": 30.291333815615594,
+      "EffectiveLimit": 30.291333815615594,
+      "MachineNoiseAccepted": true,
+      "MeaningfulRelativePerturbation": 1e-06,
+      "MeaningfulDelta": 30291.33381561559,
+      "MeaningfulRejected": true,
+      "NonOptInEffectiveLimit": 1.0001175405846815e-09,
+      "NonOptInLimitUnchanged": true
+    },
+    {
+      "Shape": "PointedSection",
+      "Stress": "tf/m2",
+      "Parameter": "Transformed.Ixyc",
+      "CapturedMachineDifference": 9.340792894363403e-05,
+      "RelativeDifference": 3.105778394282069e-15,
+      "EngineeringFloor": 30.075529250768128,
+      "EffectiveLimit": 30.07552925076813,
+      "MachineNoiseAccepted": true,
+      "MeaningfulRelativePerturbation": 1e-06,
+      "MeaningfulDelta": 30075.529250768126,
+      "MeaningfulRejected": true,
+      "NonOptInEffectiveLimit": 1.0001238733530045e-09,
+      "NonOptInLimitUnchanged": true
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Stress": "kgf/cm2",
+      "Parameter": "Transformed.Ixy",
+      "CapturedMachineDifference": 3.435369580984123e-05,
+      "RelativeDifference": 5.625077530874586e-15,
+      "EngineeringFloor": 6.107239521816853,
+      "EffectiveLimit": 6.107239521816854,
+      "MachineNoiseAccepted": true,
+      "MeaningfulRelativePerturbation": 1e-06,
+      "MeaningfulDelta": 6107.239521816852,
+      "MeaningfulRejected": true,
+      "NonOptInEffectiveLimit": 1.0000363355502487e-09,
+      "NonOptInLimitUnchanged": true
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Stress": "kgf/cm2",
+      "Parameter": "Transformed.Ixyc",
+      "CapturedMachineDifference": 3.4353695809841156e-05,
+      "RelativeDifference": 5.6250775308745745e-15,
+      "EngineeringFloor": 6.107239521816853,
+      "EffectiveLimit": 6.107239521816854,
+      "MachineNoiseAccepted": true,
+      "MeaningfulRelativePerturbation": 1e-06,
+      "MeaningfulDelta": 6107.239521816852,
+      "MeaningfulRejected": true,
+      "NonOptInEffectiveLimit": 1.0000363355502487e-09,
+      "NonOptInLimitUnchanged": true
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Stress": "tf/m2",
+      "Parameter": "Transformed.Ixy",
+      "CapturedMachineDifference": 3.435369580984123e-05,
+      "RelativeDifference": 5.625077530874586e-15,
+      "EngineeringFloor": 6.107239521816853,
+      "EffectiveLimit": 6.107239521816854,
+      "MachineNoiseAccepted": true,
+      "MeaningfulRelativePerturbation": 1e-06,
+      "MeaningfulDelta": 6107.239521816852,
+      "MeaningfulRejected": true,
+      "NonOptInEffectiveLimit": 1.0000363355502487e-09,
+      "NonOptInLimitUnchanged": true
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Stress": "tf/m2",
+      "Parameter": "Transformed.Ixyc",
+      "CapturedMachineDifference": 3.4353695809841156e-05,
+      "RelativeDifference": 5.6250775308745745e-15,
+      "EngineeringFloor": 6.107239521816853,
+      "EffectiveLimit": 6.107239521816854,
+      "MachineNoiseAccepted": true,
+      "MeaningfulRelativePerturbation": 1e-06,
+      "MeaningfulDelta": 6107.239521816852,
+      "MeaningfulRejected": true,
+      "NonOptInEffectiveLimit": 1.0000363355502487e-09,
+      "NonOptInLimitUnchanged": true
+    }
+  ],
+  "NonIxyOptInFieldsRetainGenericLimit": true,
+  "NonOptInRetainsGenericLimit": true,
+  "MeaningfulOneEMinus6PerturbationsAllRejected": true,
+  "NativeOrCOMExecuted": false,
+  "FullTestsExecuted": false,
+  "NativeAcceptancePending": true,
+  "OverallPassClaimed": false
+}

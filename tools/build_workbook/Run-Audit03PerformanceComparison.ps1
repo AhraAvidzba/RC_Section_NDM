@@ -123,7 +123,7 @@ function Add-DurationCounter {
     $header = [regex]::Match($methodCode, '(?is)^Public Sub [\s\S]*?\)\r?\n')
     if (-not $header.Success) { throw "Duration header missing: $Method" }
     $methodCode = $methodCode.Insert($header.Length, "    Dim audit03Started As Double`r`n    audit03Started = Timer`r`n")
-    $record = "Audit03RecordDuration `"$Category`", Timer - audit03Started"
+    $record = "TestAudit03RecordDuration `"$Category`", Timer - audit03Started"
     $methodCode = $methodCode.Replace('Exit Sub', "$record`: Exit Sub")
     $methodCode = [regex]::Replace($methodCode, '(?m)^End Sub', "    $record`r`nEnd Sub")
     $replacement = $code.Remove($matches[0].Index, $matches[0].Length).Insert($matches[0].Index, $methodCode)
@@ -137,12 +137,14 @@ function Add-BenchmarkEntry {
     $branches = ($Cases.Keys | Sort-Object | ForEach-Object { "        Case `"$_`": $($Cases[$_]) stats" }) -join "`r`n"
     $entry = @"
 ' ДЛЯ ТЕСТОВ: временный benchmark использует штатные baseline assertions.
-Public Function RunAudit03PerfCase(ByVal caseName As String) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Измеряет штатную проверку, повторения геометрии и стадии подготовки, решателя, упаковки и записи.
+Public Function TestRunAudit03PerfCase(ByVal caseName As String) As String
     On Error GoTo Failed
     Dim stats As $StatsType
     Dim started As Double
     ResetSectionEquilibriumSolveCount
-    Audit03ResetCounters
+    TestAudit03ResetCounters
     Audit03DisableDiagnostics = (caseName = "diagnostics_off")
     started = Timer
     Dim cycle As Long, cycles As Long
@@ -154,7 +156,7 @@ $branches
         Case Else: Err.Raise 5, "Audit03Perf", "Неизвестный сценарий"
     End Select
     Next cycle
-    RunAudit03PerfCase = "case=" & caseName & "; passed=" & CStr(stats.Passed) & _
+    TestRunAudit03PerfCase = "case=" & caseName & "; passed=" & CStr(stats.Passed) & _
         "; failed=" & CStr(stats.Failed) & "; cycles=" & CStr(cycles) & "; elapsedSec=" & CStr(Timer - started) & _
         "; solves=" & CStr(SectionEquilibriumSolveCount()) & "; probes=" & CStr(Audit03ProbeCount) & _
         "; planeProbes=" & CStr(Audit03PlaneCount) & "; probeReuse=" & CStr(Audit03ProbeReuseCount) & _
@@ -167,10 +169,10 @@ $branches
         "; geometrySec=" & CStr(Audit03GeometrySeconds) & "; coreSec=" & CStr(Audit03CoreSeconds) & _
         "; packagingSec=" & CStr(Audit03PackagingSeconds) & "; writeSec=" & CStr(Audit03WriteSeconds) & _
         "; modelSizes=" & Audit03ModelSizes
-    RunAudit03PerfCase = RunAudit03PerfCase & vbCrLf & stats.Report & Audit03DuplicateLog
+    TestRunAudit03PerfCase = TestRunAudit03PerfCase & vbCrLf & stats.Report & Audit03DuplicateLog
     Exit Function
 Failed:
-    RunAudit03PerfCase = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+    TestRunAudit03PerfCase = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 "@
     $Module.AddFromString($entry)
@@ -202,9 +204,12 @@ try {
         }
         if (-not $found) { throw "Отсутствует настройка $key." }
         $counter = $book.VBProject.VBComponents.Add(1)
-        $counter.Name = "modAudit03PerfCounters"
+        $counter.Name = "modTestAudit03PerfCounters"
         $counter.CodeModule.AddFromString(@'
 Option Explicit
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — модуль только частной диагностической книги.
+' ==========================================================================
 ' ДЛЯ ТЕСТОВ: счетчики только этой временной benchmark-книги.
 Public Audit03ProbeCount As Long
 Public Audit03ProbeReuseCount As Long
@@ -228,7 +233,9 @@ Private Audit03SolveAttemptSequence As Long
 Public Audit03DuplicateLog As String
 Public Audit03DisableDiagnostics As Boolean
 Public Audit03RetryFormatCalls As Long
-Public Sub Audit03ResetCounters()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Очищает счётчики и точные записи попыток benchmark, включая повторные решения и форматирование диагностики.
+Public Sub TestAudit03ResetCounters()
     Audit03ProbeCount = 0
     Audit03ProbeReuseCount = 0
     Audit03StateReuseCount = 0
@@ -252,8 +259,9 @@ Public Sub Audit03ResetCounters()
     Audit03DisableDiagnostics = False
     Audit03RetryFormatCalls = 0
 End Sub
-' ДЛЯ ТЕСТОВ: сравнение scalar options использует точные Double, без string-key.
-Public Sub Audit03RecordSolveAttempt(ByVal attempt As Variant)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает точные численные параметры попыток без строкового округления и фиксирует действительно повторившиеся решения.
+Public Sub TestAudit03RecordSolveAttempt(ByVal attempt As Variant)
     Dim previous As Variant, index As Long, equal As Boolean
     Dim previousIndex As Long
     Audit03SolveAttemptSequence = Audit03SolveAttemptSequence + 1
@@ -277,16 +285,24 @@ Public Sub Audit03RecordSolveAttempt(ByVal attempt As Variant)
     Audit03SolveAttempts.Add attempt
     Audit03SolveAttemptNumbers.Add Audit03SolveAttemptSequence
 End Sub
-Public Sub Audit03RecordIteration()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает итерации только инструментированной benchmark-копии.
+Public Sub TestAudit03RecordIteration()
     Audit03IterationCount = Audit03IterationCount + 1
 End Sub
-Public Sub Audit03RecordRetryFormat()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает форматирование диагностики повторной попытки, не меняя текст и решение.
+Public Sub TestAudit03RecordRetryFormat()
     Audit03RetryFormatCalls = Audit03RetryFormatCalls + 1
 End Sub
-Public Sub Audit03RecordRetry()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает повторные попытки решения в инструментированной копии.
+Public Sub TestAudit03RecordRetry()
     Audit03RetryCount = Audit03RetryCount + 1
 End Sub
-Public Sub Audit03RecordDuration(ByVal category As String, ByVal seconds As Double)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Накапливает время заданной стадии и корректно учитывает переход Timer через полночь.
+Public Sub TestAudit03RecordDuration(ByVal category As String, ByVal seconds As Double)
     If seconds < 0 Then seconds = seconds + 86400#
     Select Case category
         Case "geometry": Audit03GeometrySeconds = Audit03GeometrySeconds + seconds
@@ -295,7 +311,9 @@ Public Sub Audit03RecordDuration(ByVal category As String, ByVal seconds As Doub
         Case "write": Audit03WriteSeconds = Audit03WriteSeconds + seconds
     End Select
 End Sub
-Public Sub Audit03RecordModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Записывает число волокон и стержней; одинаковый размер модели в отчёте не дублируется.
+Public Sub TestAudit03RecordModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout)
     Dim sizeText As String
     sizeText = CStr(mesh.FiberCount) & "f/"
     If rebars Is Nothing Then
@@ -308,25 +326,39 @@ Public Sub Audit03RecordModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As C
         Audit03ModelSizes = Audit03ModelSizes & sizeText
     End If
 End Sub
-Public Sub Audit03RecordNewtonCall()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает вызовы численного решателя в инструментированной копии.
+Public Sub TestAudit03RecordNewtonCall()
     Audit03NewtonCallCount = Audit03NewtonCallCount + 1
 End Sub
-Public Sub Audit03RecordIntegration()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает интегрирования усилий в инструментированной копии.
+Public Sub TestAudit03RecordIntegration()
     Audit03IntegrationCount = Audit03IntegrationCount + 1
 End Sub
-Public Sub Audit03RecordProbe()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает физические probe в инструментированной копии.
+Public Sub TestAudit03RecordProbe()
     Audit03ProbeCount = Audit03ProbeCount + 1
 End Sub
-Public Sub Audit03RecordProbeReuse()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает восстановленные probe отдельно от новых вычислений.
+Public Sub TestAudit03RecordProbeReuse()
     Audit03ProbeReuseCount = Audit03ProbeReuseCount + 1
 End Sub
-Public Sub Audit03RecordStateReuse()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает восстановленные состояния отдельно от новых решений.
+Public Sub TestAudit03RecordStateReuse()
     Audit03StateReuseCount = Audit03StateReuseCount + 1
 End Sub
-Public Sub Audit03RecordPlane()
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает вычисления плоскостей деформаций в инструментированной копии.
+Public Sub TestAudit03RecordPlane()
     Audit03PlaneCount = Audit03PlaneCount + 1
 End Sub
-Public Sub Audit03RecordOutcome(ByVal solver As CSectionSolver, ByVal state As String)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Разделяет несходимость и неподтверждённое предельное состояние фактического результата решателя.
+Public Sub TestAudit03RecordOutcome(ByVal solver As CSectionSolver, ByVal state As String)
     If solver Is Nothing Then Exit Sub
     If Not solver.Converged Then
         Audit03UnconvergedCount = Audit03UnconvergedCount + 1
@@ -338,11 +370,11 @@ End Sub
 '@
         )
         $solver = $book.VBProject.VBComponents.Item("CSectionSolver").CodeModule
-        Insert-Counter $solver '(?m)^Private Function SolveNewtonLoadStep\([\s\S]*?\) As Boolean\r?\n' 'Audit03RecordNewtonCall' -After
-        Insert-Counter $solver '(?m)^Private Sub EvaluateStateInto\([\s\S]*?\)\r?\n' 'Audit03RecordIntegration' -After
-        Insert-Counter $solver '^        mIterations = mIterations \+ 1' 'Audit03RecordIteration' -ExpectedMatches 2
+        Insert-Counter $solver '(?m)^Private Function SolveNewtonLoadStep\([\s\S]*?\) As Boolean\r?\n' 'TestAudit03RecordNewtonCall' -After
+        Insert-Counter $solver '(?m)^Private Sub EvaluateStateInto\([\s\S]*?\)\r?\n' 'TestAudit03RecordIntegration' -After
+        Insert-Counter $solver '^        mIterations = mIterations \+ 1' 'TestAudit03RecordIteration' -ExpectedMatches 2
         Insert-Counter $solver '^    RecordSectionEquilibriumSolve\r?$' @'
-Audit03RecordSolveAttempt Array(ObjPtr(section), ObjPtr(concreteMaterial), ObjPtr(steelMaterial), _
+TestAudit03RecordSolveAttempt Array(ObjPtr(section), ObjPtr(concreteMaterial), ObjPtr(steelMaterial), _
     targetN, targetMx, targetMy, mMaxIterations, mLoadSteps, mToleranceN, mToleranceMx, mToleranceMy, _
     mSolverMethod, mSecantMaxRestarts, mUseInitialState, _
     mInitialEpsilon0, mInitialKappaX, mInitialKappaY, mUseInitialLoads, _
@@ -353,25 +385,27 @@ Audit03RecordSolveAttempt Array(ObjPtr(section), ObjPtr(concreteMaterial), ObjPt
         Add-DurationCounter $book.VBProject.VBComponents.Item("CFiberMeshBuilder").CodeModule 'BuildMesh' 'geometry'
         Add-DurationCounter $book.VBProject.VBComponents.Item("CSectionStateResult").CodeModule 'InitializeFromSolver' 'packaging'
         Add-DurationCounter $book.VBProject.VBComponents.Item("CCrackWidthResult").CodeModule 'InitializeFromCalculator' 'packaging'
-        Insert-Counter $book.VBProject.VBComponents.Item("modGeometryTypes").CodeModule '(?m)^Public Function BuildGeneratedSectionModel\([\s\S]*?\) As CSectionModel\r?\n' 'Audit03RecordModel mesh, rebars' -After
+        Insert-Counter $book.VBProject.VBComponents.Item("modGeometryTypes").CodeModule '(?m)^Public Function TestBuildGeneratedSectionModel\([\s\S]*?\) As CSectionModel\r?\n' 'TestAudit03RecordModel mesh, rebars' -After
         $capacity = $book.VBProject.VBComponents.Item("CCapacitySolver").CodeModule
-        Insert-Counter $capacity '^    If TryRestoreProbeCache\(' 'Audit03RecordProbe'
-        Insert-Counter $capacity '^            TryRestoreProbeCache = True' 'Audit03RecordProbeReuse'
-        Insert-Counter $capacity '^    AppendDiagnostic solver, mx, my, lambdaValue, attempt, ProbeOnce' 'Audit03RecordOutcome solver, ProbeOnce'
-        Insert-Counter $capacity '^        If attempt < mMaxRetries Then mRetryCount = mRetryCount \+ 1' 'If attempt < mMaxRetries Then Audit03RecordRetry'
-        Insert-Counter $capacity '(?m)^Public Function LimitSearchEvaluateUltimateResidual\([\s\S]*?\) As Boolean\r?\n' 'Audit03RecordPlane' -After
+        Insert-Counter $capacity '^    If TryRestoreProbeCache\(' 'TestAudit03RecordProbe'
+        Insert-Counter $capacity '^            TryRestoreProbeCache = True' 'TestAudit03RecordProbeReuse'
+        Insert-Counter $capacity '^    AppendDiagnostic solver, mx, my, lambdaValue, attempt, ProbeOnce' 'TestAudit03RecordOutcome solver, ProbeOnce'
+        Insert-Counter $capacity '^        If attempt < mMaxRetries Then mRetryCount = mRetryCount \+ 1' 'If attempt < mMaxRetries Then TestAudit03RecordRetry'
+        Insert-Counter $capacity '(?m)^Public Function LimitSearchEvaluateUltimateResidual\([\s\S]*?\) As Boolean\r?\n' 'TestAudit03RecordPlane' -After
         $formationName = "CCrackFormationCalculator"
         $formation = $book.VBProject.VBComponents.Item($formationName).CodeModule
-        Insert-Counter $formation '(?m)^Public Function LimitSearchEvaluateCrackFormationLoadMultiplier\([\s\S]*?\) As Boolean\r?\n' 'Audit03RecordProbe' -After
+        Insert-Counter $formation '(?m)^Public Function LimitSearchEvaluateCrackFormationLoadMultiplier\([\s\S]*?\) As Boolean\r?\n' 'TestAudit03RecordProbe' -After
         $provider = $book.VBProject.VBComponents.Item("CStateProvider").CodeModule
-        Insert-Counter $provider '^            mLastStateWasReused = True' 'Audit03RecordStateReuse'
-        Insert-Counter $book.VBProject.VBComponents.Item('CStateSolutionRunner').CodeModule '(?m)^Private Function FormatNumberInvariant\(ByVal value As Double\) As String\r?\n' 'Audit03RecordRetryFormat' -After
+        Insert-Counter $provider '^            mLastStateWasReused = True' 'TestAudit03RecordStateReuse'
+        Insert-Counter $book.VBProject.VBComponents.Item('CStateSolutionRunner').CodeModule '(?m)^Private Function FormatNumberInvariant\(ByVal value As Double\) As String\r?\n' 'TestAudit03RecordRetryFormat' -After
         Insert-Counter $book.VBProject.VBComponents.Item('modTestCapacitySolver').CodeModule '^    cap.SolverMaxIterations = 60\r?$' 'If Audit03DisableDiagnostics Then cap.DiagnosticsEnabled = False' -After
         # Batch WriteSummary includes its detailed writers; count only the root.
         Add-DurationCounter $book.VBProject.VBComponents.Item('CBatchResultWriter').CodeModule 'WriteSummary' 'write'
         Add-DurationCounter $book.VBProject.VBComponents.Item('CNDMResultsWriter').CodeModule 'WriteResults' 'write'
         $book.VBProject.VBComponents.Item('modTestGeometry').CodeModule.AddFromString(@'
 ' ДЛЯ ТЕСТОВ: та же Hollow-сетка в обеих версиях, без уменьшения дискретизации.
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Повторно строит HollowRectangle с выбранными радиусами и проверяет пригодность полученной бетонной сетки.
 Private Sub TestAudit03HollowMeshPerf(ByRef stats As TTestStats)
     Dim geom As CGeometryRegion, query As CSectionGeometryQuery, contours As CSectionContours
     Set query = New CSectionGeometryQuery: Set contours = New CSectionContours
@@ -396,17 +430,17 @@ Private Sub TestAudit03HollowMeshPerf(ByRef stats As TTestStats)
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 10#, 10#, 1, 2
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, Nothing, "HollowPerf")
+    Set section = TestBuildGeneratedSectionModel(mesh, Nothing, "HollowPerf")
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
     props.CalculateConcrete section
     Dim available As Boolean
     Dim area As Double
     area = geom.AnalyticalArea(available)
-    AssertTrue stats, "perf.hollow.areaAvailable", available
-    AssertTrue stats, "perf.hollow.gridArea", Abs(props.Area - area) < area * 0.01
-    AssertTrue stats, "perf.hollow.empty", Not geom.ContainsPoint(40#, -30#)
-    AppendLine stats, "NUMERIC: hollow; fibers=" & CStr(mesh.FiberCount) & "; area=" & CStr(props.Area) & _
+    TestAssertTrue stats, "perf.hollow.areaAvailable", available
+    TestAssertTrue stats, "perf.hollow.gridArea", Abs(props.Area - area) < area * 0.01
+    TestAssertTrue stats, "perf.hollow.empty", Not geom.ContainsPoint(40#, -30#)
+    TestAppendLine stats, "NUMERIC: hollow; fibers=" & CStr(mesh.FiberCount) & "; area=" & CStr(props.Area) & _
         "; x=" & CStr(props.CentroidX) & "; y=" & CStr(props.CentroidY) & _
         "; Ix=" & CStr(props.Ixc) & "; Iy=" & CStr(props.Iyc) & "; Ixy=" & CStr(props.Ixyc)
 End Sub
@@ -452,7 +486,7 @@ End Sub
                 $lines.Add("START|$label|run=$run|case=$case")
                 Save-PerformanceReport
                 $excel.EnableCancelKey = 0
-                $result = [string]$excel.Run("'$($book.Name)'!$module.RunAudit03PerfCase", $case)
+                $result = [string]$excel.Run("'$($book.Name)'!$module.TestRunAudit03PerfCase", $case)
                 $lines.Add("PERF|$label|run=$run|$result")
                 if ($result -match 'failed=([1-9][0-9]*)|RUNTIME ERROR') { $failed = $true }
             }

@@ -1,24 +1,27 @@
-' ДЛЯ ТЕСТОВ: добавляется только в modTestBatchCalculation независимой копии.
-' Использует штатную кнопку расчета, не меняя solver, материалы или допуски.
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — вспомогательный фрагмент частной приёмки; в выпуск не включается.
+' ==========================================================================
 
-Public Sub CaptureFocusedCalculation(ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет ссылки на фактически рассчитанные модель и пакет частной книги для независимых проверок после штатного workflow.
+Public Sub TestCaptureFocusedCalculation(ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator)
     Set mFocusedSection = section
     Set mFocusedBatch = batch
 End Sub
-
-' ДЛЯ ТЕСТОВ: фиксирует состав без запуска НДС, Search и записи Results.
-Public Function DescribeFocusedAcceptance(ByVal shapeName As String, ByVal groupName As String) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает состав выбранных нагрузок и формы без решения НДС, поиска предела и записи Results.
+Public Function TestDescribeFocusedAcceptance(ByVal shapeName As String, ByVal groupName As String) As String
     Dim oldRebars As Variant
     oldRebars = ThisWorkbook.Worksheets("Сечения").UsedRange.Formula
     On Error GoTo Failed
     Dim oldSystem As Variant, settings As CSystemSettingsReader, units As CUnitSystem
     Dim section As CSectionModel, cases As Collection, item As Variant, output As String
     oldSystem = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula
-    FocusedSelectGeometry shapeName
+    TestFocusedSelectGeometry shapeName
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
-    Set cases = FocusedSelectedLoads(section, groupName)
+    Set cases = TestFocusedSelectedLoads(section, groupName)
     output = "FOCUSED_MANIFEST|shape=" & shapeName & "|group=" & groupName & "|cases=" & CStr(cases.Count) & _
         "|fibers=" & CStr(section.ConcreteCount) & "|rebars=" & CStr(section.RebarCount) & vbCrLf
     For Each item In cases
@@ -33,11 +36,11 @@ Failed:
 Restore:
     If IsArray(oldRebars) Then ThisWorkbook.Worksheets("Сечения").UsedRange.Formula = oldRebars
     If IsArray(oldSystem) Then ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula = oldSystem
-    DescribeFocusedAcceptance = output
+    TestDescribeFocusedAcceptance = output
 End Function
-
-' ДЛЯ ТЕСТОВ: одна форма и выбранные нагрузки, без матрицы всех настроек.
-Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal groupName As String, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выполняет выбранные нагрузки штатным workflow, проверяет состояния и вывод, затем восстанавливает исходные таблицы частной книги.
+Public Function TestRunFocusedAcceptanceCases(ByVal shapeName As String, ByVal groupName As String, _
         Optional ByVal selectedLoadName As String = "") As String
     On Error GoTo Failed
     Dim oldRebars As Variant
@@ -52,7 +55,7 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     Set loadRange = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
     oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula: oldLoads = loadRange.Formula
-    FocusedSelectGeometry shapeName
+    TestFocusedSelectGeometry shapeName
     TestSetSystemSetting "Load.ReferenceOffsetX", "0"
     TestSetSystemSetting "Load.ReferenceOffsetY", "0"
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
@@ -72,7 +75,7 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
     TestSetSystemSetting "Load.ReferenceOffsetY", TestFormatNumberInvariant(-7# / units.InputLengthToInternal(1#))
     settings.LoadFromWorkbook ThisWorkbook
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
-    Set cases = FocusedSelectedLoads(section, groupName)
+    Set cases = TestFocusedSelectedLoads(section, groupName)
     If Len(selectedLoadName) > 0 Then
         Dim selected As New Collection
         For Each item In cases
@@ -98,7 +101,7 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
         ResetSectionEquilibriumSolveCount
         start = Timer
         If CDbl(item(1)) = 0# And CDbl(item(2)) = 0# And CDbl(item(3)) = 0# Then
-            FocusedCheckZeroInput stats, prefix
+            TestFocusedCheckZeroInput stats, prefix
         Else
             message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
         End If
@@ -124,8 +127,8 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
             TestAudit03CheckCapacityPath stats, result.StrengthResult.Capacity, prefix, CStr(item(4)), _
                 Array(item(1), item(2), item(3)), cx, cy, True
             TestAudit03CheckFormationPath stats, result.CrackResult.Formation, prefix, path, Array(item(1), item(2), item(3))
-            FocusedCheckStates stats, result, settings, units, prefix
-            TestAppendLine stats, FocusedComparisonRecord(result, CStr(item(0)))
+            TestFocusedCheckStates stats, result, settings, units, prefix
+            TestAppendLine stats, TestFocusedComparisonRecord(result, CStr(item(0)))
             For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
                     result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
                 TestAssertTrue stats, prefix & ".noInputOrInternalError." & CStr(meta.ResultKind), _
@@ -135,8 +138,8 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
                     "FOCUSED_UNRESOLVED|shape=" & shapeName & "|id=" & CStr(item(0)) & _
                     "|kind=" & CStr(meta.ResultKind) & "|reason=" & meta.ResultComment
             Next meta
-            FocusedCheckOutputRow stats, "rngStrengthSummaryAnchor", CStr(item(0)), prefix
-            FocusedCheckOutputRow stats, "rngCrackSummaryAnchor", CStr(item(0)), prefix
+            TestFocusedCheckOutputRow stats, "rngStrengthSummaryAnchor", CStr(item(0)), prefix
+            TestFocusedCheckOutputRow stats, "rngCrackSummaryAnchor", CStr(item(0)), prefix
             TestAppendLine stats, "FOCUSED_RESULT|id=" & CStr(item(0)) & "|overall=" & result.Status & _
                 "|capacity=" & result.StrengthResult.Capacity.Status & "|cracks=" & result.CrackSummaryStatus
         ElseIf CStr(item(0)) <> "zero" Then
@@ -160,14 +163,14 @@ Restore:
     If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles
     If IsArray(oldLoads) Then loadRange.Formula = oldLoads
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
-    RunFocusedAcceptanceCases = stats.Report
+    TestRunFocusedAcceptanceCases = stats.Report
     Exit Function
 RestoreFailed:
-    RunFocusedAcceptanceCases = stats.Report & "RESTORE ERROR: " & CStr(Err.Number) & "; " & Err.Description
+    TestRunFocusedAcceptanceCases = stats.Report & "RESTORE ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
-
-' ДЛЯ ТЕСТОВ: одинаковая запись чисел и typed-статусов для сравнения двух сборок.
-Private Function FocusedComparisonRecord(ByVal result As CCombinationResult, ByVal id As String) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сериализует typed-статусы, коды и численные результаты для сравнения сборок без подмены статуса текстом.
+Private Function TestFocusedComparisonRecord(ByVal result As CCombinationResult, ByVal id As String) As String
     Dim output As String, meta As Variant, numbers As Variant, i As Long
     output = "FOCUSED_COMPARE|id=" & id & "|path=" & result.StrengthResult.Capacity.PathResolved
     For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
@@ -182,16 +185,16 @@ Private Function FocusedComparisonRecord(ByVal result As CCombinationResult, ByV
     For i = LBound(numbers) To UBound(numbers)
         output = output & "|number" & CStr(i) & "=" & Replace$(Trim$(Str$(CDbl(numbers(i)))), ",", ".")
     Next i
-    FocusedComparisonRecord = output
+    TestFocusedComparisonRecord = output
 End Function
-
-' ДЛЯ ТЕСТОВ: воспроизводит один замер с теми же данными и проверками.
-Public Function RunFocusedSingleLoad(ByVal shapeName As String, ByVal loadName As String) As String
-    RunFocusedSingleLoad = RunFocusedAcceptanceCases(shapeName, "Generated", loadName)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает одно именованное сочетание встроенной формы через общий focused workflow и его проверки.
+Public Function TestRunFocusedSingleLoad(ByVal shapeName As String, ByVal loadName As String) As String
+    TestRunFocusedSingleLoad = TestRunFocusedAcceptanceCases(shapeName, "Generated", loadName)
 End Function
-
-' ДЛЯ ТЕСТОВ: генерируемые формы читаются настоящим реестром из Config.
-Private Sub FocusedSelectGeometry(ByVal shapeName As String)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выбирает сохранённый импорт либо зарегистрированную форму и задаёт независимый контрольный набор армирования этой формы.
+Private Sub TestFocusedSelectGeometry(ByVal shapeName As String)
     Select Case shapeName
         Case "SavedWorkbook": TestSetSystemSetting "Geometry.Source", "AutoCAD"
         Case "Rectangles", "Circle", "PointedSection", "HollowRectangle"
@@ -203,9 +206,9 @@ Private Sub FocusedSelectGeometry(ByVal shapeName As String)
         Case Else: Err.Raise 5, "FocusedSelectGeometry", "Unknown focused geometry: " & shapeName
     End Select
 End Sub
-
-' ДЛЯ ТЕСТОВ: выбирает нагрузки по именам, не по положению в старой матрице.
-Private Function FocusedSelectedLoads(ByVal section As CSectionModel, ByVal groupName As String) As Collection
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отбирает нормированные нагрузки по устойчивым именам, отдельно задаёт шесть LoadPath и проверяет полноту группы.
+Private Function TestFocusedSelectedLoads(ByVal section As CSectionModel, ByVal groupName As String) As Collection
     Dim result As New Collection, item As Variant, path As Variant, names As Variant
     names = Array("axialSmall-1", "axialSmall1", "Mx-1", "Mx1", "My-1", "My1", "mixedC1_-1", "mixedT-1_1")
     If groupName = "Paths" Then
@@ -222,11 +225,11 @@ Private Function FocusedSelectedLoads(ByVal section As CSectionModel, ByVal grou
         If groupName = "Saved" Then names = Array("axialSmall-1", "axialSmall1", "Mx-1", "Mx1", "My-1", "My1", _
             "mixedC1_-1", "mixedT-1_1", "zero", "tinyMx1", "biaxial1_-1_10", "biaxial1_-1_1000000", "biaxial1_-1_" & CStr(0.000001))
         For Each item In TestAudit03NormalizedLoads(section, "Light")
-            If FocusedNameIn(CStr(item(0)), names) Then result.Add Array(item(0), item(1), item(2), item(3), "Auto")
+            If TestFocusedNameIn(CStr(item(0)), names) Then result.Add Array(item(0), item(1), item(2), item(3), "Auto")
         Next item
         If groupName = "Saved" Then
             For Each item In TestAudit03NormalizedLoads(section, "Stress")
-                If FocusedNameIn(CStr(item(0)), Array("axialC" & CStr(0.95), "axialC1", "axialC" & CStr(1.05), "axialC2", _
+                If TestFocusedNameIn(CStr(item(0)), Array("axialC" & CStr(0.95), "axialC1", "axialC" & CStr(1.05), "axialC2", _
                         "overloadMixed1", "overloadMixed1000000")) Then _
                     result.Add Array(item(0), item(1), item(2), item(3), "Auto")
             Next item
@@ -241,18 +244,19 @@ Private Function FocusedSelectedLoads(ByVal section As CSectionModel, ByVal grou
     Else
         Err.Raise 5, "FocusedSelectedLoads", "Unknown focused group: " & groupName
     End If
-    Set FocusedSelectedLoads = result
+    Set TestFocusedSelectedLoads = result
 End Function
-
-Private Function FocusedNameIn(ByVal name As String, ByVal names As Variant) As Boolean
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет точное совпадение имени нагрузки с одним из заданных имён, сохраняя исходный регистр отбора.
+Private Function TestFocusedNameIn(ByVal name As String, ByVal names As Variant) As Boolean
     Dim item As Variant
     For Each item In names
-        If name = CStr(item) Then FocusedNameIn = True: Exit Function
+        If name = CStr(item) Then TestFocusedNameIn = True: Exit Function
     Next item
 End Function
-
-' ДЛЯ ТЕСТОВ: reader намеренно не запускает расчет для полностью нулевой строки.
-Private Sub FocusedCheckZeroInput(ByRef stats As TBatchTestStats, ByVal prefix As String)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Требует отказа полностью нулевой нагрузки до запуска решателя; отсутствие результата не принимается за нулевое НДС.
+Private Sub TestFocusedCheckZeroInput(ByRef stats As TBatchTestStats, ByVal prefix As String)
     On Error GoTo Rejected
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
@@ -264,9 +268,9 @@ Rejected:
     TestAssertTrue stats, prefix & ".zeroRejectedBeforeSolve", errorNumber = vbObjectError + 4101
     TestAssertTrue stats, prefix & ".zeroNoSolverCalls", SectionEquilibriumSolveCount() = 0
 End Sub
-
-' ДЛЯ ТЕСТОВ: повторное интегрирование по фактическим диаграммам каждого state.
-Private Sub FocusedCheckStates(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Независимо интегрирует сохранённые диаграммы и плоскость деформаций, проверяя равновесие в WCS и относительно бетонного центра.
+Private Sub TestFocusedCheckStates(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal prefix As String)
     Dim i As Long, state As CSectionStateResult, probe As CSectionSolver
     Dim n As Double, mx As Double, my As Double, cx As Double, cy As Double, area As Double
@@ -281,9 +285,9 @@ Private Sub FocusedCheckStates(ByRef stats As TBatchTestStats, ByVal result As C
         TestAppendLine stats, "FOCUSED_STATE|id=" & prefix & "|type=" & state.StateTypeText & _
             "|converged=" & CStr(state.Converged) & "|physical=" & CStr(state.WithinPhysicalRange) & _
             "|extension=" & CStr(state.ExtensionUsed) & "|status=" & state.Status & _
-            "|N=" & FocusedExactNumber(state.TargetN) & "|Mx=" & FocusedExactNumber(state.TargetMx) & _
-            "|My=" & FocusedExactNumber(state.TargetMy) & "|eps0=" & FocusedExactNumber(state.Epsilon0) & _
-            "|kx=" & FocusedExactNumber(state.KappaX) & "|ky=" & FocusedExactNumber(state.KappaY)
+            "|N=" & TestFocusedExactNumber(state.TargetN) & "|Mx=" & TestFocusedExactNumber(state.TargetMx) & _
+            "|My=" & TestFocusedExactNumber(state.TargetMy) & "|eps0=" & TestFocusedExactNumber(state.Epsilon0) & _
+            "|kx=" & TestFocusedExactNumber(state.KappaX) & "|ky=" & TestFocusedExactNumber(state.KappaY)
         If state.Converged Then
             TestAssertTrue stats, prefix & ".snapshot." & CStr(i), state.HasMaterialSnapshot
             Set probe = New CSectionSolver
@@ -304,15 +308,16 @@ Private Sub FocusedCheckStates(ByRef stats As TBatchTestStats, ByVal result As C
         If Not extensionEnabled Then TestAssertTrue stats, prefix & ".noHiddenExtension." & CStr(i), Not state.ExtensionUsed
     Next i
 End Sub
-
- ' ДЛЯ ТЕСТОВ: независимый интеграл использует полную точность сохранённой плоскости.
-Private Function FocusedExactNumber(ByVal value As Double) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет все биты Double в F64-записи через два слова для независимого контроля без десятичной потери точности.
+Private Function TestFocusedExactNumber(ByVal value As Double) As String
     Dim number As TFocusedDouble, words As TFocusedWords
     number.Value = value: LSet words = number
-    FocusedExactNumber = "F64:" & Right$("00000000" & Hex$(words.High), 8) & Right$("00000000" & Hex$(words.Low), 8)
+    TestFocusedExactNumber = "F64:" & Right$("00000000" & Hex$(words.High), 8) & Right$("00000000" & Hex$(words.Low), 8)
 End Function
-
-Private Sub FocusedCheckOutputRow(ByRef stats As TBatchTestStats, ByVal rangeName As String, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет, что первая строка итоговой таблицы относится к фактически рассчитанному сочетанию.
+Private Sub TestFocusedCheckOutputRow(ByRef stats As TBatchTestStats, ByVal rangeName As String, _
         ByVal id As String, ByVal prefix As String)
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange.Cells(1, 1)

@@ -105,7 +105,7 @@ End Type
     $body=$module.Lines(1,$module.CountOfLines)
     $target='    batch.Execute'
     if ([regex]::Matches($body,[regex]::Escape($target)).Count -ne 1) { throw 'Calculation capture target mismatch.' }
-    $body=$body.Replace($target,$target+"`r`n    modTestBatchCalculation.CaptureFocusedCalculation section, batch")
+    $body=$body.Replace($target,$target+"`r`n    modTestBatchCalculation.TestCaptureFocusedCalculation section, batch")
     $module.DeleteLines(1,$module.CountOfLines); $module.AddFromString($body)
     $modified=@()
     foreach ($component in $book.VBProject.VBComponents) {

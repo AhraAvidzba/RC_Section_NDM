@@ -46,7 +46,7 @@ try {
     Write-Output ('OWNED_EXCEL: id='+$ownedPid+'; utcStartTicks='+$ownedTicks)
     $book=$excel.Workbooks.Open($source,0,$true)
     foreach ($job in $jobs) {
-        $body=[string]$excel.Run("'RC_Section_NDM.xlsm'!modTestBatchCalculation.DescribeFocusedAcceptance",$job.Shape,$job.Group)
+        $body=[string]$excel.Run("'RC_Section_NDM.xlsm'!modTestBatchCalculation.TestDescribeFocusedAcceptance",$job.Shape,$job.Group)
         if ($body -match 'RUNTIME ERROR|FAIL:' -or $body -notmatch 'FOCUSED_MANIFEST_COMPLETE: no calculation executed') {
             throw ('Invalid geometry/load manifest: '+$job.Shape+'/'+$job.Group+'; '+$body)
         }

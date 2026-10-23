@@ -1,9 +1,10 @@
-# Selected contracts, full special cases and one 15-load batch per mode.
+﻿# Selected contracts, full special cases and one 15-load batch per mode.
 param([string]$CandidateDirectory='docs/regression/PostAudit03/Axial1000_2026-10-09/FocusedMeritV1',
       [string]$ProbeDirectory='docs/regression/FocusedAcceptance_2026-10-10_V5',
       [string]$LoadEvidenceDirectory='',
       [Parameter(Mandatory=$true)][datetime]$DeadlineUtc)
 $ErrorActionPreference='Stop'
+throw 'Архивная команда от 10.10.2026 требует отсутствующие исходные PrepareSlowCaseProbe.ps1 и SavedCrackSearchProbe.bas. Excel не запущен. Для действующей полной приёмки, включая 122 случая и пакет из 15 сочетаний, используйте tools/build_workbook/Run-FocusedAcceptance.ps1; исторические ожидания этой команды не пересоздаются.'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $candidate=Join-Path (Join-Path $root $CandidateDirectory) 'RC_Section_NDM.xlsm'
 $probe=Join-Path (Join-Path $root $ProbeDirectory) 'RC_Section_NDM.xlsm'
@@ -43,7 +44,7 @@ function Invoke-SelectedGate([string]$Source,[string]$Name,[string]$Mode,[string
         @($totals | Where-Object {$_.Groups[2].Value -ne '0'}).Count) {
         throw ('Selected gate failed: '+$Name+'/'+$Argument+'/'+$Mode)
     }
-    if ($Name -like '*RunFocusedBatch15') {
+    if ($Name -like '*TestRunFocusedBatch15') {
         $timing=[regex]::Match($body,'CRACK_SEARCH_PROBE\|case=batch15\|mode=[^|]+\|count=15\|elapsedSec=([^|\r\n]+)')
         if (-not $timing.Success -or [double]::Parse($timing.Groups[1].Value,[Globalization.CultureInfo]::InvariantCulture) -gt 10) {
             throw 'Batch15 did not complete within 10 seconds.'
@@ -56,7 +57,7 @@ function Invoke-SelectedGate([string]$Source,[string]$Name,[string]$Mode,[string
 try {
     foreach ($mode in @('No','Yes')) {
         foreach ($case in @('Stability','AsymmetricSteel')) {
-            Invoke-SelectedGate $probe 'modTestBatchCalculation.RunFocusedSpecialCase' $mode $case -Reopen
+            Invoke-SelectedGate $probe 'modTestBatchCalculation.TestRunFocusedSpecialCase' $mode $case -Reopen
         }
     }
     foreach ($mode in @('No','Yes')) {
@@ -82,7 +83,7 @@ try {
     & (Join-Path $series 'PrepareSlowCaseProbe.ps1') -SourceDirectory $sourceRelative -OutputDirectory $batchDirectory `
         -HelperFile SavedCrackSearchProbe.bas -SecondHelperFile '../../../../tools/build_workbook/FocusedBatch15Probe.bas'
     $batch=Join-Path $series ($batchDirectory+'/RC_Section_NDM.xlsm')
-    foreach ($mode in @('No','Yes')) { Invoke-SelectedGate $batch 'modTestBatchCalculation.RunFocusedBatch15' $mode -Reopen }
+    foreach ($mode in @('No','Yes')) { Invoke-SelectedGate $batch 'modTestBatchCalculation.TestRunFocusedBatch15' $mode -Reopen }
     $passed=$true
 } catch { $reason=$_.Exception.Message; Write-Output ('SELECTED_FAILURE: '+$reason) }
 finally {

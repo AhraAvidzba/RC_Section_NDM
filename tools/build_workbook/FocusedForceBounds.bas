@@ -1,5 +1,10 @@
-' ДЛЯ ТЕСТОВ: фактическая геометрия и диаграммы PR3 для независимых границ усилий.
-Public Function DumpFocusedForceBounds(Optional ByVal shapeName As String = "SavedWorkbook") As String
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — вспомогательный фрагмент частной приёмки; в выпуск не включается.
+' ==========================================================================
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сериализует фактические волокна, диаграммы PR3 и допуски для независимой оценки усилий без решения НДС.
+Public Function TestDumpFocusedForceBounds(Optional ByVal shapeName As String = "SavedWorkbook") As String
     Dim oldRebars As Variant
     oldRebars = ThisWorkbook.Worksheets("Сечения").UsedRange.Formula
     On Error GoTo Failed
@@ -8,24 +13,24 @@ Public Function DumpFocusedForceBounds(Optional ByVal shapeName As String = "Sav
     Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, mode As Variant, label As Variant
     Dim output As String, x As Double, y As Double, i As Long, oldSystem As Variant
     oldSystem = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula
-    FocusedSelectGeometry shapeName
+    TestFocusedSelectGeometry shapeName
     TestSetSystemSetting "SLS.Crack.Code", "SP35"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
     Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
     CalculateConcreteSectionCentroid section, x, y
-    output = "CENTER|x=" & FocusedBoundNumber(x) & "|y=" & FocusedBoundNumber(y) & vbCrLf
-    output = output & "ACCEPTANCE_TOLERANCE|N=" & FocusedBoundNumber(Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))) & _
-        "|Mx=" & FocusedBoundNumber(Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))) & _
-        "|My=" & FocusedBoundNumber(Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))) & vbCrLf
+    output = "CENTER|x=" & TestFocusedBoundNumber(x) & "|y=" & TestFocusedBoundNumber(y) & vbCrLf
+    output = output & "ACCEPTANCE_TOLERANCE|N=" & TestFocusedBoundNumber(Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))) & _
+        "|Mx=" & TestFocusedBoundNumber(Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))) & _
+        "|My=" & TestFocusedBoundNumber(Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))) & vbCrLf
     For i = 1 To section.ConcreteCount
-        output = output & "FIBER|kind=C|x=" & FocusedBoundNumber(section.ConcreteX(i) - x) & _
-            "|y=" & FocusedBoundNumber(section.ConcreteY(i) - y) & "|area=" & FocusedBoundNumber(section.ConcreteArea(i)) & vbCrLf
+        output = output & "FIBER|kind=C|x=" & TestFocusedBoundNumber(section.ConcreteX(i) - x) & _
+            "|y=" & TestFocusedBoundNumber(section.ConcreteY(i) - y) & "|area=" & TestFocusedBoundNumber(section.ConcreteArea(i)) & vbCrLf
     Next i
     For i = 1 To section.RebarCount
-        output = output & "FIBER|kind=S|x=" & FocusedBoundNumber(section.RebarX(i) - x) & _
-            "|y=" & FocusedBoundNumber(section.RebarY(i) - y) & "|area=" & FocusedBoundNumber(section.RebarArea(i)) & vbCrLf
+        output = output & "FIBER|kind=S|x=" & TestFocusedBoundNumber(section.RebarX(i) - x) & _
+            "|y=" & TestFocusedBoundNumber(section.RebarY(i) - y) & "|area=" & TestFocusedBoundNumber(section.RebarArea(i)) & vbCrLf
     Next i
     For Each mode In Array("No", "Yes")
         TestSetSystemSetting "General.DiagramExtension", CStr(mode)
@@ -39,8 +44,8 @@ Public Function DumpFocusedForceBounds(Optional ByVal shapeName As String = "Sav
             End Select
             Set concrete = provider.ConcreteMaterialForEquilibriumFromSpec(spec)
             Set steel = provider.SteelMaterialForEquilibriumFromSpec(spec)
-            FocusedBoundPoints output, CStr(mode), CStr(label), "C", concrete
-            FocusedBoundPoints output, CStr(mode), CStr(label), "S", steel
+            TestFocusedBoundPoints output, CStr(mode), CStr(label), "C", concrete
+            TestFocusedBoundPoints output, CStr(mode), CStr(label), "S", steel
         Next label
     Next mode
     GoTo Restore
@@ -49,33 +54,35 @@ Failed:
 Restore:
     If IsArray(oldRebars) Then ThisWorkbook.Worksheets("Сечения").UsedRange.Formula = oldRebars
     If IsArray(oldSystem) Then ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula = oldSystem
-    DumpFocusedForceBounds = output
+    TestDumpFocusedForceBounds = output
 End Function
-
-Private Sub FocusedBoundPoints(ByRef output As String, ByVal mode As String, ByVal profile As String, _
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Записывает физические пределы, признаки extension и все точки фактической диаграммы для независимого интеграла.
+Private Sub TestFocusedBoundPoints(ByRef output As String, ByVal mode As String, ByVal profile As String, _
         ByVal kind As String, ByVal material As CMaterialDiagram)
     Dim i As Long
     output = output & "MATERIAL_FLAGS|mode=" & mode & "|profile=" & profile & "|kind=" & kind & _
         "|compressionExtension=" & CStr(material.HasCompressionExtension) & "|tensionExtension=" & CStr(material.HasTensionExtension) & _
-        "|compressionLimit=" & FocusedBoundNumber(material.PhysicalCompressionStrain) & _
-        "|tensionLimit=" & FocusedBoundNumber(material.PhysicalTensionStrain) & vbCrLf
+        "|compressionLimit=" & TestFocusedBoundNumber(material.PhysicalCompressionStrain) & _
+        "|tensionLimit=" & TestFocusedBoundNumber(material.PhysicalTensionStrain) & vbCrLf
     For i = 1 To material.PointCount
         output = output & "MATERIAL|mode=" & mode & "|profile=" & profile & "|kind=" & kind & _
-            "|strain=" & FocusedBoundNumber(material.PointStrain(i)) & "|stress=" & FocusedBoundNumber(material.PointStress(i)) & vbCrLf
+            "|strain=" & TestFocusedBoundNumber(material.PointStrain(i)) & "|stress=" & TestFocusedBoundNumber(material.PointStress(i)) & vbCrLf
     Next i
 End Sub
-
-Private Function FocusedBoundNumber(ByVal value As Double) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выбирает F64 либо инвариантную научную запись чисел модели, не округляя сами расчётные данные.
+Private Function TestFocusedBoundNumber(ByVal value As Double) As String
     If mFocusedBinaryDump Then
-        FocusedBoundNumber = FocusedExactNumber(value)
+        TestFocusedBoundNumber = TestFocusedExactNumber(value)
     Else
-        FocusedBoundNumber = Replace$(Format$(value, "0.0000000000000000E+00"), ",", ".")
+        TestFocusedBoundNumber = Replace$(Format$(value, "0.0000000000000000E+00"), ",", ".")
     End If
 End Function
-
-' ДЛЯ ТЕСТОВ: сохраняет все биты Double для независимой проверки больших усилий.
-Public Function DumpFocusedForceBoundsExact(Optional ByVal shapeName As String = "SavedWorkbook") As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Включает F64-формат при выгрузке фактической модели для независимой проверки больших усилий.
+Public Function TestDumpFocusedForceBoundsExact(Optional ByVal shapeName As String = "SavedWorkbook") As String
     mFocusedBinaryDump = True
-    DumpFocusedForceBoundsExact = DumpFocusedForceBounds(shapeName)
+    TestDumpFocusedForceBoundsExact = TestDumpFocusedForceBounds(shapeName)
     mFocusedBinaryDump = False
 End Function

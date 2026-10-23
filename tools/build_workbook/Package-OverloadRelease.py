@@ -25,8 +25,8 @@ assert baseline.keys() == candidate.keys() == all_code.keys() and len(candidate)
 assert all(normalize(baseline[name][2]) == normalize(all_code[name][2]) for name in baseline), 'User VBA differs from current ALL CODE; reconcile it before publishing.'
 changed_components = sorted(name for name in baseline if normalize(baseline[name][2]) != normalize(candidate[name][2]))
 assert set(changed_components) == {'CCapacitySolver', 'CCapacityLimitSearchProblem', 'CLimitSearchCoordinator', 'CUltimateStrainSearch', 'modTestCapacitySolver'}
-assert 'RunOverloadTimingCase' not in candidate['modTestBatchCalculation'][2]
-assert 'CaptureFocusedCalculation' not in candidate['modWorkbookCalculation'][2]
+assert 'TestRunOverloadTimingCase' not in candidate['modTestBatchCalculation'][2]
+assert 'TestCaptureFocusedCalculation' not in candidate['modWorkbookCalculation'][2]
 accepted = directory / 'Accepted.xlsm'
 assert not accepted.exists()
 with ZipFile(directory / 'Baseline.xlsm') as a, ZipFile(directory / 'Candidate/RC_Section_NDM.xlsm') as b, ZipFile(accepted, 'w') as output:

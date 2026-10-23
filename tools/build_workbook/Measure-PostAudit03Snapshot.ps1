@@ -11,7 +11,12 @@ $directory = Join-Path $root $ReportDirectory
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 $fixture = @'
 Option Explicit
-Public Function MeasureSnapshot(ByVal scenario As Long) As String
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — модуль только частной диагностической книги.
+' ==========================================================================
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Измеряет подготовку и запись шести готовых состояний и проверяет, что запись снимка не вызвала новый solve.
+Public Function TestMeasureSnapshot(ByVal scenario As Long) As String
     Dim table As Object, row As Long, key As String
     Set table = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     For row = 2 To table.Rows.Count
@@ -55,7 +60,7 @@ Public Function MeasureSnapshot(ByVal scenario As Long) As String
     prepared = Timer - before
     __WRITE__
     elapsed = Timer - before
-    MeasureSnapshot = "status=" & batch.ResultAt(1).Status & "; extension=" & CStr(batch.ResultAt(1).ExtensionUsed) & _
+    TestMeasureSnapshot = "status=" & batch.ResultAt(1).Status & "; extension=" & CStr(batch.ResultAt(1).ExtensionUsed) & _
         "; noSolve=" & CStr(SectionEquilibriumSolveCount() = solves) & "; prepareSeconds=" & CStr(prepared) & "; totalSeconds=" & CStr(elapsed)
 End Function
 '@
@@ -73,10 +78,11 @@ foreach ($mode in 'Baseline', 'Current') {
         $body = $fixture.Replace('__PREPARE__', '').Replace('__WRITE__', 'writer.WriteResults ThisWorkbook, section, provider, batch')
         if ($mode -eq 'Current') {
             $body = $fixture.Replace('__PREPARE__', 'Dim snapshot As CSectionPropertiesCalculator: Set snapshot = PrepareSectionSnapshot(section, provider)').Replace('__WRITE__', 'writer.WriteResults ThisWorkbook, section, snapshot, batch')
+            $body = $body.Replace('provider.InitializeFromParameters ', 'provider.TestInitializeFromParameters ') # Текущий Test API; историческая ветка Baseline использует прежний контракт своей книги.
         }
-        $component = $book.VBProject.VBComponents.Add(1); $component.Name = 'modPostAudit03MeasureFixture'; $component.CodeModule.AddFromString($body)
+        $component = $book.VBProject.VBComponents.Add(1); $component.Name = 'modTestSnapshotMeasure'; $component.CodeModule.AddFromString($body)
         for ($scenario = 0; $scenario -lt 6; $scenario++) {
-            $result = [string]$excel.Run("'$($book.Name)'!modPostAudit03MeasureFixture.MeasureSnapshot", $scenario)
+            $result = [string]$excel.Run("'$($book.Name)'!modTestSnapshotMeasure.TestMeasureSnapshot", $scenario)
             if ($result -notmatch 'noSolve=True') { throw "Snapshot caused solve: $result" }
             $runs += [ordered]@{Mode=$mode; Scenario=$scenario; Result=$result}
             foreach ($name in 'rngNDMSectionGeometry', 'rngNDMElementResults', 'rngNDMSectionProperties', 'rngNDMMaterialDiagrams', 'rngNDMSectionAnnotations') {

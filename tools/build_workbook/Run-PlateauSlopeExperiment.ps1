@@ -19,10 +19,10 @@ if ($Stage -eq 'Extended') {
 $jobs=[Collections.Generic.List[object]]::new()
 if ($Stage -eq 'ForcedAxial') {
     foreach ($mode in @('No','Yes')) {
-        $jobs.Add(@{Name="ForcedAxial_${mode}"; Mode=$mode; Macro='modPlateauSlopeProbe.RunPlateauForcedAxial'; Argument=''; Timeout=300})
+        $jobs.Add(@{Name="ForcedAxial_${mode}"; Mode=$mode; Macro='modTestPlateauSlopeProbe.TestRunPlateauForcedAxial'; Argument=''; Timeout=300})
     }
 } elseif ($Stage -eq 'Materials') {
-    $jobs.Add(@{Name='Materials'; Mode='No'; Macro='modPlateauSlopeProbe.RunPlateauMaterialChecks'; Argument=''; Timeout=120})
+    $jobs.Add(@{Name='Materials'; Mode='No'; Macro='modTestPlateauSlopeProbe.TestRunPlateauMaterialChecks'; Argument=''; Timeout=120})
 } else {
     foreach ($mode in @('No','Yes')) {
         foreach ($alpha in @('0','0.0001')) {
@@ -57,7 +57,7 @@ if ($Stage -eq 'ForcedAxial') {
 $manifest=[Collections.Generic.List[object]]::new()
 foreach ($job in $jobs) {
     if ((Get-PSDrive C).Free -lt 256MB) {throw 'Insufficient disk space for isolated test copies.'}
-    $macro=if ($job.Macro) {$job.Macro} else {'modTestBatchCalculation.RunPlateauSlopeCases'}
+    $macro=if ($job.Macro) {$job.Macro} else {'modTestBatchCalculation.TestRunPlateauSlopeCases'}
     $report=Join-Path $ReportDirectory ($job.Name+'.txt')
     Write-Output ('PLATEAU_JOB_START: '+$job.Name)
     & (Join-Path $PSScriptRoot 'Run-Audit03Watchdog.ps1') -SourceWorkbook $probe -ReportPath $report -Macro $macro -MacroArgument1 $job.Argument -Mode $job.Mode -TimeoutSeconds $job.Timeout

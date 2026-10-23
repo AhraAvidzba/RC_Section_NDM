@@ -53,14 +53,14 @@ try {
     & (Join-Path $PSScriptRoot 'Describe-FocusedAcceptance.ps1') -ProbeDirectory ($EvidenceDirectory+'/Probe')
     $input=Get-Content -LiteralPath (Join-Path $directory 'Probe/InputManifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach($group in $input.Groups){foreach($mode in @('No','Yes')){
-        Invoke-Gate ($group.Shape+'_'+$group.Group+'_'+$mode) 'modTestBatchCalculation.RunFocusedAcceptanceCases' $mode $group.Shape $group.Group -Reopen
+        Invoke-Gate ($group.Shape+'_'+$group.Group+'_'+$mode) 'modTestBatchCalculation.TestRunFocusedAcceptanceCases' $mode $group.Shape $group.Group -Reopen
     }}
     foreach($mode in @('No','Yes')){
-        Invoke-Gate ('Batch15_'+$mode) 'modTestBatchCalculation.RunCoreRegressionBatch15' $mode -Reopen
-        foreach($case in @('Stability','AsymmetricSteel')){Invoke-Gate ($case+'_'+$mode) 'modTestBatchCalculation.RunFocusedSpecialCase' $mode $case -Reopen}
+        Invoke-Gate ('Batch15_'+$mode) 'modTestBatchCalculation.TestRunCoreRegressionBatch15' $mode -Reopen
+        foreach($case in @('Stability','AsymmetricSteel')){Invoke-Gate ($case+'_'+$mode) 'modTestBatchCalculation.TestRunFocusedSpecialCase' $mode $case -Reopen}
     }
     foreach($shape in @('Rectangles','Circle','PointedSection','HollowRectangle','SavedWorkbook')){
-        Invoke-Gate ('Model_'+$shape) 'modTestBatchCalculation.DumpFocusedForceBoundsExact' 'No' $shape '' 120
+        Invoke-Gate ('Model_'+$shape) 'modTestBatchCalculation.TestDumpFocusedForceBoundsExact' 'No' $shape '' 120
     }
     Invoke-Gate 'OutputPresentation' 'RunConfigPresentationTests' 'No' '' '' 180
     & (Join-Path $PSScriptRoot 'Run-FocusedNativeAcceptance.ps1') -SourceWorkbook $source -ReportDirectory ($EvidenceDirectory+'/NativeCAD') -MaxSeconds ([math]::Min(420,(Remaining)))

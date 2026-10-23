@@ -12,26 +12,27 @@ $combined=Join-Path $temporary 'Combined.bas'
 if(Test-Path -LiteralPath $combined){throw 'Existing bounds preparation; choose another evidence run.'}
 $wrapper=@'
 
-' ДЛЯ ТЕСТОВ: те же сохранённые элементы и СП35, что в нагрузочном прогоне.
-Public Function DumpCoreRegressionForceBounds() As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выгружает сохранённую модель, диаграммы СП35 и допуски той же книги без решения НДС.
+Public Function TestDumpCoreRegressionForceBounds() As String
     Dim oldSystem As Variant, output As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem
     On Error GoTo Failed
     oldSystem = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula
-    SetSystemSetting "Geometry.Source", "AutoCAD"
-    SetSystemSetting "SLS.Crack.Code", "SP35"
-    output = DumpFocusedForceBounds("SavedWorkbook")
+    TestSetSystemSetting "Geometry.Source", "AutoCAD"
+    TestSetSystemSetting "SLS.Crack.Code", "SP35"
+    output = TestDumpFocusedForceBounds("SavedWorkbook")
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    output = output & "ACCEPTANCE_TOLERANCE|N=" & FocusedBoundNumber(Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))) & _
-        "|Mx=" & FocusedBoundNumber(Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))) & _
-        "|My=" & FocusedBoundNumber(Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))) & vbCrLf
+    output = output & "ACCEPTANCE_TOLERANCE|N=" & TestFocusedBoundNumber(Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))) & _
+        "|Mx=" & TestFocusedBoundNumber(Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))) & _
+        "|My=" & TestFocusedBoundNumber(Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))) & vbCrLf
     GoTo Restore
 Failed:
     output = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     If IsArray(oldSystem) Then ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula = oldSystem
-    DumpCoreRegressionForceBounds = output
+    TestDumpCoreRegressionForceBounds = output
 End Function
 '@
 $helper=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'FocusedForceBounds.bas'),[Text.Encoding]::UTF8)
@@ -41,7 +42,7 @@ $preparation=Get-Content -LiteralPath (Join-Path $directoryPath 'ForceBounds/Pre
 $inputs=Get-Content -LiteralPath (Join-Path $directoryPath 'InputsBefore.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 if($preparation.SourceSHA256 -cne $inputs.CurrentSHA256.ToUpperInvariant()){throw 'Main workbook changed since comparison.'}
 Copy-Item -LiteralPath $combined -Destination (Join-Path $directoryPath 'ForceBounds/Combined.bas')
-& (Join-Path $PSScriptRoot 'Run-Audit03Watchdog.ps1') -SourceWorkbook ($Directory+'/ForceBounds/RC_Section_NDM.xlsm') -ReportPath ($Directory+'/ForceBounds/Model.txt') -Macro 'modTestBatchCalculation.DumpCoreRegressionForceBounds' -Mode No -TimeoutSeconds 120
+& (Join-Path $PSScriptRoot 'Run-Audit03Watchdog.ps1') -SourceWorkbook ($Directory+'/ForceBounds/RC_Section_NDM.xlsm') -ReportPath ($Directory+'/ForceBounds/Model.txt') -Macro 'modTestBatchCalculation.TestDumpCoreRegressionForceBounds' -Mode No -TimeoutSeconds 120
 if($LASTEXITCODE -ne 0){throw 'Force model export failed.'}
 $report=Join-Path $directoryPath 'ForceBounds/Model.txt'
 $body=Get-Content -LiteralPath $report -Raw -Encoding UTF8

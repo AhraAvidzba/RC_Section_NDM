@@ -30,7 +30,7 @@ try {
     $book=$excel.Workbooks.Open($path,0,$false)
     if ($book.ReadOnly) { throw 'Experiment copy is read-only.' }
     $body=Get-Body 'modTestBatchCalculation'
-    $body=Transform-Method $body 'RunFocusedAcceptanceCases' {
+    $body=Transform-Method $body 'TestRunFocusedAcceptanceCases' {
         param($method)
         Replace-Exact $method '    settings.LoadFromWorkbook ThisWorkbook' ("    If groupName = ""PureAxial"" Then`r`n        SetSystemSetting ""Load.ReferenceOffsetX"", ""0""`r`n        SetSystemSetting ""Load.ReferenceOffsetY"", ""0""`r`n    End If`r`n    settings.LoadFromWorkbook ThisWorkbook")
     }
@@ -39,7 +39,7 @@ try {
     ElseIf groupName = "Cracked" Then
         Dim factor As Variant
         For Each item In Audit03NormalizedLoads(section, "Light")
-            If FocusedNameIn(CStr(item(0)), Array("Mx-1", "Mx1", "My-1", "My1", "mixedC1_-1", "mixedT-1_1")) Then
+            If TestFocusedNameIn(CStr(item(0)), Array("Mx-1", "Mx1", "My-1", "My1", "mixedC1_-1", "mixedT-1_1")) Then
                 For Each factor In Array(6#, 10#)
                     result.Add Array("cracked_" & CStr(item(0)) & "_x" & CStr(factor), item(1), _
                         CDbl(factor) * CDbl(item(2)), CDbl(factor) * CDbl(item(3)), "Auto")
@@ -48,7 +48,7 @@ try {
         Next item
     ElseIf groupName = "PureAxial" Then
         For Each item In Audit03NormalizedLoads(section, "Light")
-            If FocusedNameIn(CStr(item(0)), Array("axialSmall-1", "axialSmall1")) Then _
+            If TestFocusedNameIn(CStr(item(0)), Array("axialSmall-1", "axialSmall1")) Then _
                 result.Add Array(item(0), item(1), 0#, 0#, "Auto")
         Next item
         result.Add Array("N500", -500# * 9806.65, 0#, 0#, "Auto")
@@ -56,7 +56,7 @@ try {
         result.Add Array("N2098Plateau", -2098.694 * 9806.65, 0#, 0#, "Auto")
 '@
     $body=Replace-Exact $body $marker ($branch+"`r`n"+$marker)
-    $body=Replace-Exact $body '        one = RunFocusedAcceptanceCases(CStr(parts(2)), CStr(parts(3)), CStr(parts(4)))' ("        If CStr(parts(3)) = ""Batch15"" Then`r`n            one = RunPlateauBatch15()`r`n        Else`r`n            one = RunFocusedAcceptanceCases(CStr(parts(2)), CStr(parts(3)), CStr(parts(4)))`r`n        End If")
+    $body=Replace-Exact $body '        one = TestRunFocusedAcceptanceCases(CStr(parts(2)), CStr(parts(3)), CStr(parts(4)))' ("        If CStr(parts(3)) = ""Batch15"" Then`r`n            one = TestRunPlateauBatch15()`r`n        Else`r`n            one = TestRunFocusedAcceptanceCases(CStr(parts(2)), CStr(parts(3)), CStr(parts(4)))`r`n        End If")
     $body += "`r`n"+[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'PlateauSlopeExtendedProbe.bas'),[Text.Encoding]::UTF8)
     Set-Body 'modTestBatchCalculation' $body
     $excel.VBE.ActiveVBProject=$book.VBProject

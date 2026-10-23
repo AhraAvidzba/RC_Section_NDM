@@ -1,5 +1,10 @@
-' ДЛЯ ТЕСТОВ: два полных смешанных расчета, только в независимой копии.
-Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — вспомогательный фрагмент частной приёмки; в выпуск не включается.
+' ==========================================================================
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' В частной книге проверяет устойчивость либо асимметричные свойства стали и восстанавливает исходный ввод.
+Public Function TestRunFocusedSpecialCase(ByVal caseName As String) As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object, loadRange As Object
     Dim oldSystem As Variant, oldProfiles As Variant, oldLoads As Variant, oldSteel As Variant, values() As Variant
@@ -18,7 +23,7 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
     oldSteel = steelRange.Formula
     Set durationRange = ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersToRange
     oldDuration = durationRange.Formula
-    FocusedSelectGeometry "SavedWorkbook"
+    TestFocusedSelectGeometry "SavedWorkbook"
     TestSetSystemSetting "Load.ReferenceOffsetX", "0": TestSetSystemSetting "Load.ReferenceOffsetY", "0"
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
@@ -44,12 +49,12 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
             For Each item In Array(Array("Steel.R.ULS(I)", 2, 250#), Array("Steel.R.ULS(I)", 3, 400#), _
                     Array("Steel.R.SLS(II)", 2, 280#), Array("Steel.R.SLS(II)", 3, 450#), _
                     Array("Steel.E", 2, 190000#), Array("Steel.E", 3, 210000#))
-                FocusedSetSteelValue steelRange, CStr(item(0)), CLng(item(1)), CDbl(item(2)) / units.InputStressToInternal(1#)
+                TestFocusedSetSteelValue steelRange, CStr(item(0)), CLng(item(1)), CDbl(item(2)) / units.InputStressToInternal(1#)
             Next item
-            FocusedSetSteelValue steelRange, "Steel.TwoLine.Es2", 2, 0.02
-            FocusedSetSteelValue steelRange, "Steel.TwoLine.Es2", 3, 0.03
-            FocusedSetSteelValue steelRange, "Steel.ThreeLine.Es2", 2, 0.018
-            FocusedSetSteelValue steelRange, "Steel.ThreeLine.Es2", 3, 0.022
+            TestFocusedSetSteelValue steelRange, "Steel.TwoLine.Es2", 2, 0.02
+            TestFocusedSetSteelValue steelRange, "Steel.TwoLine.Es2", 3, 0.03
+            TestFocusedSetSteelValue steelRange, "Steel.ThreeLine.Es2", 2, 0.018
+            TestFocusedSetSteelValue steelRange, "Steel.ThreeLine.Es2", 3, 0.022
             TestSetProfileValue "MaterialModel.Strength.SteelDiagram", "PR3", "TwoLine"
             TestSetProfileValue "MaterialModel.CrackInitiation.SteelDiagram", "PR3", "TwoLine"
             TestSetProfileValue "MaterialModel.CrackedState.SteelDiagram", "PR3", "TwoLine"
@@ -106,15 +111,15 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
         TestAssertTrue stats, "special.mechanicalNoRepeat", mFocusedBatch.TestMechanicalPreparationBuildCount <= IIf(caseName = "Stability", 3, 2)
         If caseName = "Stability" Then TestAssertEquals stats, "special.stability", result.StabilityResult.Status, "OK"
         TestAudit03CheckResultComments stats, mFocusedBatch, 1
-        FocusedCheckStates stats, result, settings, units, "special." & caseName
+        TestFocusedCheckStates stats, result, settings, units, "special." & caseName
         For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
                 result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
             TestAssertTrue stats, "special.noNumericalOrInputError." & CStr(meta.ResultKind), _
                 meta.InternalStatus <> rsNumericalFailure And meta.InternalStatus <> rsInvalidInput And _
                 meta.InternalStatus <> rsInvalidConfiguration And meta.InternalStatus <> rsInternalError
         Next meta
-        FocusedCheckOutputRow stats, "rngStrengthSummaryAnchor", caseName, "special"
-        FocusedCheckOutputRow stats, "rngCrackSummaryAnchor", caseName, "special"
+        TestFocusedCheckOutputRow stats, "rngStrengthSummaryAnchor", caseName, "special"
+        TestFocusedCheckOutputRow stats, "rngCrackSummaryAnchor", caseName, "special"
     End If
     TestAppendLine stats, "TOTAL_FOCUSED_SPECIAL: case=" & caseName & "; elapsedSec=" & TestFormatNumberInvariant(elapsed) & _
         "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
@@ -129,13 +134,14 @@ Restore:
     If IsArray(oldSteel) Then steelRange.Formula = oldSteel
     If IsArray(oldDuration) Then durationRange.Formula = oldDuration
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
-    RunFocusedSpecialCase = stats.Report
+    TestRunFocusedSpecialCase = stats.Report
     Exit Function
 RestoreFailed:
-    RunFocusedSpecialCase = stats.Report & "RESTORE ERROR: " & CStr(Err.Number) & "; " & Err.Description
+    TestRunFocusedSpecialCase = stats.Report & "RESTORE ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
-
-Private Sub FocusedSetSteelValue(ByVal table As Object, ByVal key As String, ByVal column As Long, ByVal value As Double)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Находит строку стальных параметров по ключу и меняет только заданную сторону частного контрольного материала.
+Private Sub TestFocusedSetSteelValue(ByVal table As Object, ByVal key As String, ByVal column As Long, ByVal value As Double)
     Dim row As Long
     For row = 2 To table.Rows.Count
         If StrComp(CStr(table.Cells(row, 1).Value2), key, vbTextCompare) = 0 Then

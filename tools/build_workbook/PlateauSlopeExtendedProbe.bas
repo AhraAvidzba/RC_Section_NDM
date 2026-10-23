@@ -1,5 +1,10 @@
-' ДЛЯ ТЕСТОВ: один штатный batch из 15 разных сочетаний, включая N, M и N+Mx+My.
-Public Function RunPlateauBatch15() As String
+' ==========================================================================
+' ДЛЯ ТЕСТОВ — вспомогательный фрагмент частной приёмки; в выпуск не включается.
+' ==========================================================================
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Измеряет пакет 15 сочетаний; отдельно снимает счётчики пакета и проверяет реальные сохранённые состояния.
+Public Function TestRunPlateauBatch15() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats, oldSystem As Variant, oldProfiles As Variant, oldLoads As Variant
     Dim systemRange As Object, profileRange As Object, loadRange As Object
@@ -11,31 +16,31 @@ Public Function RunPlateauBatch15() As String
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     Set loadRange = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
     oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula: oldLoads = loadRange.Formula
-    FocusedSelectGeometry "SavedWorkbook"
-    SetSystemSetting "Load.ReferenceOffsetX", "0"
-    SetSystemSetting "Load.ReferenceOffsetY", "0"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
-    SetSystemSetting "SLS.Crack.Code", "SP35"
-    SetSystemSetting "Plot.Enabled", "Yes"
-    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    SetSystemSetting "Plot.LoadCase", "Worst"
-    SetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
-    SetProfileValue "Visualization.State", "PR3", "StrengthState"
+    TestFocusedSelectGeometry "SavedWorkbook"
+    TestSetSystemSetting "Load.ReferenceOffsetX", "0"
+    TestSetSystemSetting "Load.ReferenceOffsetY", "0"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    TestSetSystemSetting "SLS.Crack.Code", "SP35"
+    TestSetSystemSetting "Plot.Enabled", "Yes"
+    TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
+    TestSetSystemSetting "Plot.LoadCase", "Worst"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
+    TestSetProfileValue "Visualization.State", "PR3", "StrengthState"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    SetSystemSetting "Load.ReferenceOffsetX", FormatNumberInvariant(10# / units.InputLengthToInternal(1#))
-    SetSystemSetting "Load.ReferenceOffsetY", FormatNumberInvariant(-7# / units.InputLengthToInternal(1#))
+    TestSetSystemSetting "Load.ReferenceOffsetX", TestFormatNumberInvariant(10# / units.InputLengthToInternal(1#))
+    TestSetSystemSetting "Load.ReferenceOffsetY", TestFormatNumberInvariant(-7# / units.InputLengthToInternal(1#))
     settings.LoadFromWorkbook ThisWorkbook
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
-    Set allCases = FocusedSelectedLoads(section, "Saved")
+    Set allCases = TestFocusedSelectedLoads(section, "Saved")
     names = Array("axialSmall-1", "axialSmall1", "Mx-1", "Mx1", "My-1", "My1", "mixedC1_-1", "mixedT-1_1", _
         "tinyMx1", "biaxial1_-1_10", "biaxial1_-1_" & CStr(0.000001), "N500", "N1000", "N500TinyMoment", "N2098Plateau")
     For Each item In allCases
-        If FocusedNameIn(CStr(item(0)), names) Then cases.Add item
+        If TestFocusedNameIn(CStr(item(0)), names) Then cases.Add item
     Next item
     If cases.Count <> 15 Then Err.Raise 5, , "Batch must contain exactly 15 selected loads."
     ReDim values(1 To loadRange.Rows.Count - 1, 1 To loadRange.Columns.Count)
@@ -50,36 +55,36 @@ Public Function RunPlateauBatch15() As String
     Next item
     loadRange.Offset(1, 0).Resize(loadRange.Rows.Count - 1, loadRange.Columns.Count).Value2 = values
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
-    modPlateauSlopeProbe.ResetCounters
+    modTestPlateauSlopeProbe.TestPlateauResetCounters
     started = Timer
-    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
+    message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
     elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
-    AssertTrue stats, "plateau.batch15.capture", Not mFocusedBatch Is Nothing
+    TestAssertTrue stats, "plateau.batch15.capture", Not mFocusedBatch Is Nothing
     If Not mFocusedBatch Is Nothing Then
-        AssertTrue stats, "plateau.batch15.count", mFocusedBatch.Count = 15
-        AssertTrue stats, "plateau.batch15.preparationReleased", mFocusedBatch.RunPreparationReleased
-        AssertTrue stats, "plateau.batch15.noRepeatedMaterialPreparation", mFocusedBatch.MechanicalPreparationBuildCount <= 2
-        AssertTrue stats, "plateau.batch15.oneCrackDomain", mFocusedBatch.CrackDomainBuildCount <= 1
-        modPlateauSlopeProbe.CaptureResult "__batch15_total__", elapsed, mFocusedBatch.ResultAt(1)
-        modPlateauSlopeProbe.ResetCounters
+        TestAssertTrue stats, "plateau.batch15.count", mFocusedBatch.Count = 15
+        TestAssertTrue stats, "plateau.batch15.preparationReleased", mFocusedBatch.TestRunPreparationReleased
+        TestAssertTrue stats, "plateau.batch15.noRepeatedMaterialPreparation", mFocusedBatch.TestMechanicalPreparationBuildCount <= 2
+        TestAssertTrue stats, "plateau.batch15.oneCrackDomain", mFocusedBatch.TestCrackDomainBuildCount <= 1
+        modTestPlateauSlopeProbe.TestPlateauCaptureResult "__batch15_total__", elapsed, mFocusedBatch.ResultAt(1)
+        modTestPlateauSlopeProbe.TestPlateauResetCounters
         For i = 1 To mFocusedBatch.Count
             Set result = mFocusedBatch.ResultAt(i)
             item = cases(i)
-            modPlateauSlopeProbe.CaptureResult "batch15." & CStr(item(0)), 0#, result
-            FocusedCheckStates stats, result, settings, units, "plateau.batch15." & CStr(item(0))
-            Audit03CheckResultComments stats, mFocusedBatch, i
+            modTestPlateauSlopeProbe.TestPlateauCaptureResult "batch15." & CStr(item(0)), 0#, result
+            TestFocusedCheckStates stats, result, settings, units, "plateau.batch15." & CStr(item(0))
+            TestAudit03CheckResultComments stats, mFocusedBatch, i
         Next i
     End If
-    AppendLine stats, "TOTAL_PLATEAU_BATCH15: seconds=" & FormatNumberInvariant(elapsed) & _
+    TestAppendLine stats, "TOTAL_PLATEAU_BATCH15: seconds=" & TestFormatNumberInvariant(elapsed) & _
         "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: plateau.batch15.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: plateau.batch15.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     If IsArray(oldSystem) Then systemRange.Formula = oldSystem
     If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles
     If IsArray(oldLoads) Then loadRange.Formula = oldLoads
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
-    RunPlateauBatch15 = stats.Report
+    TestRunPlateauBatch15 = stats.Report
 End Function

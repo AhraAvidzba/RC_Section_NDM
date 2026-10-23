@@ -26,7 +26,7 @@ function Measure-Case([string]$shape,[string]$id,[double[]]$load,[string]$path,[
     $numbers=@($load | ForEach-Object {$_.ToString('R',$culture)})
     $specification=(@($shape,$id)+$numbers+@($path,$strategy)) -join '|'
     Write-Output ('START '+$id+'; '+$specification)
-    $raw=[string]$excel.Run("'$($book.Name)'!modTestBatchCalculation.RunOverloadTimingCase",$specification)
+    $raw=[string]$excel.Run("'$($book.Name)'!modTestBatchCalculation.TestRunOverloadTimingCase",$specification)
     [IO.File]::WriteAllText((Join-Path $output ($id+'.txt')),$raw,(New-Object Text.UTF8Encoding($true)))
     $report=Join-Path (Split-Path -Parent $source) 'RC_Section_NDM_execution_report.txt'
     if(Test-Path -LiteralPath $report){Copy-Item -LiteralPath $report -Destination (Join-Path $output ($id+'.execution.txt')) -Force}

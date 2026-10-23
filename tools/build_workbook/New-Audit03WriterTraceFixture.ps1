@@ -32,22 +32,22 @@ try {
     $book = $excel.Workbooks.Open($target)
     $module = $book.VBProject.VBComponents.Item('CBatchResultWriter').CodeModule
     $body = $module.Lines(1, $module.CountOfLines)
-    if ($body -match 'Audit03TraceWriterMemory') { throw 'Fixture already instrumented.' }
+    if ($body -match 'TestAudit03TraceWriterMemory') { throw 'Fixture already instrumented.' }
     $body = [regex]::Replace($body, '(?m)^([ \t]*)stage = ([^\r\n]+)(?=\r?$)', {
         param($match)
-        $match.Value + "`r`n" + $match.Groups[1].Value + 'Audit03TraceWriterMemory stage'
+        $match.Value + "`r`n" + $match.Groups[1].Value + 'TestAudit03TraceWriterMemory stage'
     })
-    if ([regex]::Matches($body, 'Audit03TraceWriterMemory stage').Count -lt 20) {
+    if ([regex]::Matches($body, 'TestAudit03TraceWriterMemory stage').Count -lt 20) {
         throw 'Writer stage instrumentation is incomplete.'
     }
     $body = $body.Replace('WriteStabilitySummary workbook, batch, units',
-        "WriteStabilitySummary workbook, batch, units`r`n    Audit03TraceWriterMemory `"Complete`"")
+        "WriteStabilitySummary workbook, batch, units`r`n    TestAudit03TraceWriterMemory `"Complete`"")
     $escapedTrace = $trace.Replace('"', '""')
     $body += @"
 
-' ДЛЯ ТЕСТОВ: только временная fixture, не production source.
-' Записывает память до очередной стадии, чтобы отделить writer от solve.
-Private Sub Audit03TraceWriterMemory(ByVal stage As String)
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет состояние памяти Excel перед стадией writer только в отдельной диагностической книге.
+Private Sub TestAudit03TraceWriterMemory(ByVal stage As String)
     Dim process As Object, channel As Integer
     channel = FreeFile
     Open "$escapedTrace" For Append As #channel

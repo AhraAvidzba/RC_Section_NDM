@@ -34,8 +34,8 @@ try{
                 if($base.Count -ne 1){throw 'Original comparison group was not found uniquely.'}
                 Write-Output ('REPEAT_STARTED: '+$id)
                 $arguments=@{SourceWorkbook=(Join-Path $directoryPath ($version+'/RC_Section_NDM.xlsm'));ReportPath=$reportRelative;Mode=$candidate.mode;TimeoutSeconds=[math]::Min($remaining,360);VerifyResultsReopen=$true;VerifyStatusReopen=$true}
-                if($candidate.group -eq 'Batch15'){$arguments.Macro='modTestBatchCalculation.RunCoreRegressionBatch15'}
-                else{$arguments.Macro='modTestBatchCalculation.RunFocusedAcceptanceCases';$arguments.MacroArgument1=$candidate.shape;$arguments.MacroArgument2=$candidate.group}
+                if($candidate.group -eq 'Batch15'){$arguments.Macro='modTestBatchCalculation.TestRunCoreRegressionBatch15'}
+                else{$arguments.Macro='modTestBatchCalculation.TestRunFocusedAcceptanceCases';$arguments.MacroArgument1=$candidate.shape;$arguments.MacroArgument2=$candidate.group}
                 & (Join-Path $PSScriptRoot 'Run-Audit03Watchdog.ps1') @arguments
                 $exit=$LASTEXITCODE
                 $body=Get-Content -LiteralPath $report -Raw -Encoding UTF8

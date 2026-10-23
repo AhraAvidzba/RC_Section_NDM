@@ -67,14 +67,15 @@ try {
         if ($file.BaseName -eq 'CSectionTypeRegistry') {$body=Add-GeometryExampleRegistration $body $RecipeRegistration}
         if ($TraceGeometry -and $file.BaseName -eq 'CSectionGeometryQuery') {
             $body=$body.Replace('Option Explicit',"Option Explicit`r`nPrivate mCutTrace As String")
-            $body=$body.Replace('    Set ClipHalfPlane = MakeRegion',"    mCutTrace = CutTrace(raw, rawCount, nx, ny, bound, lineCuts, lineCount)`r`n    Set ClipHalfPlane = MakeRegion")
+            $body=$body.Replace('    Set ClipHalfPlane = MakeRegion',"    mCutTrace = TestCutTrace(raw, rawCount, nx, ny, bound, lineCuts, lineCount)`r`n    Set ClipHalfPlane = MakeRegion")
             $needle='If candidate = 0 Then GeometryError'
             if ([regex]::Matches($body,[regex]::Escape($needle)).Count -ne 1) {throw 'Geometry trace target mismatch.'}
-            $body=$body.Replace($needle,'If candidate = 0 Then GeometryError FailedRegionTrace(edges, count, used) & ')
+            $body=$body.Replace($needle,'If candidate = 0 Then GeometryError TestFailedRegionTrace(edges, count, used) & ')
             $body += @'
 
-' ДЛЯ ТЕСТОВ: диагностика только в отдельной книге, не в исходном ядре.
-Private Function FailedRegionTrace(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef used() As Boolean) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выводит использованные и оставшиеся рёбра неудачного обхода области только в частной диагностической копии.
+Private Function TestFailedRegionTrace(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef used() As Boolean) As String
     Dim i As Long, result As String
     result = mCutTrace & "REGION_TRACE; count=" & CStr(count) & vbCrLf
     For i = 1 To count
@@ -83,10 +84,11 @@ Private Function FailedRegionTrace(ByRef edges() As TRegionEdge, ByVal count As 
             CStr(edges(i).X2) & "|" & CStr(edges(i).Y2) & "|sweep=" & _
             CStr(edges(i).Sweep) & vbCrLf
     Next i
-    FailedRegionTrace = result
+    TestFailedRegionTrace = result
 End Function
-
-Private Function CutTrace(ByRef raw() As TRegionEdge, ByVal rawCount As Long, ByVal nx As Double, ByVal ny As Double, ByVal bound As Double, ByRef cuts() As Double, ByVal count As Long) As String
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Записывает пересечения и проверку середины интервалов отсечения для разбора построения частной области.
+Private Function TestCutTrace(ByRef raw() As TRegionEdge, ByVal rawCount As Long, ByVal nx As Double, ByVal ny As Double, ByVal bound As Double, ByRef cuts() As Double, ByVal count As Long) As String
     Dim i As Long, s As Double, x As Double, y As Double, result As String
     result = "CUT_TRACE|nx=" & CStr(nx) & "|ny=" & CStr(ny) & "|bound=" & CStr(bound) & "|cuts=" & CStr(count) & vbCrLf
     For i = 1 To count
@@ -97,7 +99,7 @@ Private Function CutTrace(ByRef raw() As TRegionEdge, ByVal rawCount As Long, By
             result = result & "MID|" & CStr(x) & "|" & CStr(y) & "|inside=" & CStr(ContainsRaw(raw, rawCount, x + nx * QUERY_TOLERANCE * 8#, y + ny * QUERY_TOLERANCE * 8#, False)) & vbCrLf
         End If
     Next i
-    CutTrace = result
+    TestCutTrace = result
 End Function
 '@
         }

@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestWorkbookInterface"
+Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -5893,10 +5893,11 @@ NextColumn:
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' около нулевого Ixy сравниваем round-trip округление относительно
-' sqrt(Ix*Iy), а не самого исчезающе малого Ixy. Восемь машинных epsilon
-' ограничивают только ошибку представления модулей; solver tolerance не меняется.
-' Исторический unit-sign тест не включает это дополнительное правило.
+' Около нулевого Ixy сравниваем unit-roundtrip относительно sqrt(Ix*Iy).
+' Инженерный относительный порог 1e-9 совпадает с общим сравнением Properties:
+' машинный шум не требует дополнительного прохода расчёта геометрии.
+' Правило включается только для Transformed.Ixy/Ixyc при compareInertiaRoundoff=True;
+' пороги solver/прочности/трещин/устойчивости и исторический unit-sign тест не меняются.
 Private Function TestAudit03InertiaRoundoffLimit(ByRef properties As Variant, ByVal parameter As String) As Double
     Dim ix As Double, iy As Double, row As Long, suffix As String
     If parameter = "Transformed.Ixyc" Then suffix = "c"
@@ -5904,7 +5905,7 @@ Private Function TestAudit03InertiaRoundoffLimit(ByRef properties As Variant, By
         If CStr(properties(row, 3)) = "Transformed.Ix" & suffix Then ix = CDbl(properties(row, 4))
         If CStr(properties(row, 3)) = "Transformed.Iy" & suffix Then iy = CDbl(properties(row, 4))
     Next row
-    TestAudit03InertiaRoundoffLimit = 8# * (2# ^ -52#) * Sqr(Abs(ix)) * Sqr(Abs(iy))
+    TestAudit03InertiaRoundoffLimit = 0.000000001 * Sqr(Abs(ix)) * Sqr(Abs(iy))
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

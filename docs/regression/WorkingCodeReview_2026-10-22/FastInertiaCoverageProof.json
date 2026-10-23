@@ -1,0 +1,11 @@
+{
+  "AllPassed": true,
+  "Scope": "STATIC_REVIEW_BINDING_ONLY",
+  "CurrentSrcFileCount": 117,
+  "CurrentMethodCount": 3709,
+  "ParentCoverage": "CompletionCoverageProof.json",
+  "TwoFileScopeProof": "docs\\regression\\WorkingCodeReview_2026-10-22\\Math\\FullUI_Ixy\\OnePassEngineeringTolerance\\StrictDiffAndOfflineThresholdProof.json",
+  "TwoFileScopeProofSHA256": "24147FB065E1CF0462110550B71401423983931C59920CDE25D9F0E609A06B17",
+  "PreservedUIFix": true,
+  "NativeAcceptanceSeparate": true
+}
