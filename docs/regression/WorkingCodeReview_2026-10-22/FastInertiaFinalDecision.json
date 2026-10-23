@@ -1,0 +1,58 @@
+{
+  "Complete": true,
+  "Status": "AUDIT_AND_ONE_PASS_FOLLOWUP_COMPLETE",
+  "AtUTC": "2026-10-23T06:35:58.055202+00:00",
+  "WorkbookSHA256": "8E1A22F6A50539CA6FDB3AF9EBE9D8BF7D8CC3CD81156461159D451F94784040",
+  "DumpSHA256": "2FE407257CAEF204C0AA81EE5AE814B9D541BBBC298F8BCF5400B14EC67EA905",
+  "DirectedGateSHA256": "0BB60979B98CC214744185FB0B0128D23DC5EDFD6B0DBAEAFCE16E35C21CFE59",
+  "PublicationSHA256": "91646176C7CCCCFAA9C63733B27F09B853ECF3472582936C23B2A4E462EA07C8",
+  "FocusedAcceptanceSHA256": "A50CF0A5E893D01555FCBE54511B6F2CB4B3DB5A80A52CA9FB8E1BE179123715",
+  "PublishedSourceCommit": "e8fee38a2934f553a9a59179b2826d105d136d10",
+  "DirectedAssertionsEachMode": 18968,
+  "AnalyticAdditionalAssertions": 880,
+  "FocusedCases": 122,
+  "FocusedAssertions": 13952,
+  "IndependentIntegrals": 560,
+  "FocusedElapsedSeconds": 819.2487856,
+  "FrozenScripts": 19,
+  "FrozenComponents": 164,
+  "Changed": [],
+  "EngineeringPolicy": "User explicitly rejected extra runtime for insignificant roundoff. One local pass restored; only unit Ixy/Ixyc test floor is 1e-9 of inertia scale.",
+  "SolverCrackStabilityTolerancesChanged": false,
+  "HistoricalFull156": "Run02/A168 PASS retained; no full156 PASS is claimed for the new book.",
+  "PermanentMonitoring": "ACTIVE; do not disable automatically",
+  "ForeignOutputsExcluded": true,
+  "OriginalCoordinatesPreserved": true,
+  "Performance": [
+    {
+      "Case": "small.positive",
+      "BeforeMilliseconds": 0.949859619140625,
+      "AfterMilliseconds": 0.640869140625,
+      "SavedMilliseconds": 0.308990478515625,
+      "SpeedRatio": 1.4821428571428572
+    },
+    {
+      "Case": "small.signed",
+      "BeforeMilliseconds": 0.93841552734375,
+      "AfterMilliseconds": 0.6256103515625,
+      "SavedMilliseconds": 0.31280517578125,
+      "SpeedRatio": 1.5
+    },
+    {
+      "Case": "dense.positive",
+      "BeforeMilliseconds": 279.296875,
+      "AfterMilliseconds": 143.5546875,
+      "SavedMilliseconds": 135.7421875,
+      "SpeedRatio": 1.945578231292517
+    },
+    {
+      "Case": "dense.signed",
+      "BeforeMilliseconds": 270.5078125,
+      "AfterMilliseconds": 146.484375,
+      "SavedMilliseconds": 124.0234375,
+      "SpeedRatio": 1.8466666666666667
+    }
+  ],
+  "PerformanceIsPropertiesKernelOnly": true,
+  "Limit": "No universal absence of bugs or final normative verification is claimed; arbitrary nearly singular signed tensors retain conditioning limits."
+}

@@ -1,0 +1,514 @@
+{
+  "Status": "ARCHIVE_INTEGRITY_PASS",
+  "Archive": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaEvidence_2026-10-23.zip",
+  "ArchiveSHA256": "CD2CBA9180151FF30107C07AE67A2240B93F800DE37BFC36E951E92CD55EA10A",
+  "Bytes": 785276,
+  "Files": 100,
+  "AllEntriesSHA256Checked": true,
+  "SelectedFilesUnchangedDuringPacking": true,
+  "NoPrivateWorkbooksOrForeignOutputs": true,
+  "BeforeApplySnapshotExcluded": true,
+  "NoNewFull156AcceptanceClaimed": true,
+  "Manifest": [
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Excel/ToolProbeNaming/LegacyToolFinalHandoff.json",
+      "Bytes": 10003,
+      "SHA256": "7E7C4C0D93419C1967BE0727459B0DB6379C5379B5A1BA13BBF84C3E70297101"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaBaseline01_Probes.json",
+      "Bytes": 168731,
+      "SHA256": "A6CC182858AA8DD266820008D259CA18BA915D9A962BC86B1FAB67E1FBC4731A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaCandidate01_Probes.json",
+      "Bytes": 3525,
+      "SHA256": "A611CAD0D4B055E68FB03730B9FC4DA8895270C022209EE2800154D39297F708"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaCandidate02_Probes.json",
+      "Bytes": 171566,
+      "SHA256": "FFE8BFB5B53A3177CF4872121FEAF63F0EBE46A83110353FC572D1D23491F67C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaCoverageProof.json",
+      "Bytes": 508,
+      "SHA256": "0E0DF3831DFC630244B6130DD0BC8BBF0749605B5EA6BF62D099C3F42D0FED4A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaDirectedDriverFix.json",
+      "Bytes": 2537,
+      "SHA256": "6F7BCB0E303A7178240B2134FDDB417A48F6F94435670EEAB51B5ABE11352352"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaDirectedOff01_Probes.json",
+      "Bytes": 3175595,
+      "SHA256": "97DCF6A15F10D90F50F779F754AA70FA92AFE9FCA2EDC18BAFCA9BEC8BB45BBC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaDirectedOn01_Probes.json",
+      "Bytes": 3175602,
+      "SHA256": "7A3DC8B4F3569597995D3C18173FCB1DB188BF30744AF31677FA5682BFED0AF4"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaFinalDecision.json",
+      "Bytes": 2483,
+      "SHA256": "B04CFCFB71563653A3108D75F004B37E89E6F0BD43DF59542147A47A13B4A46E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaFocusedLaunch.json",
+      "Bytes": 49653,
+      "SHA256": "57DDB4E6C87B0A3B68FA1A832A4EF3CAD5FDC00C3243E1B9686B5706FAFEC989"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaFocusedLauncherFix.json",
+      "Bytes": 629,
+      "SHA256": "DDCA4D1929984A2FC0F9E40B461EA623103E4B7D2686B6DBFC920F0CE4E0D9D4"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/ActualReleaseVBA.txt.ReadOnly.json",
+      "Bytes": 482,
+      "SHA256": "C81AF3B7750C0CF061B095CF7D70E994C7FC835B6F6507A014C64AE5F641E4DB"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/CleanCompile.json",
+      "Bytes": 54330,
+      "SHA256": "FB0E0AD36B9AAE8C3F9DAC1C4C3230E753C27FBD528085F418C9E5DFD3BDF319"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/DirectedAcceptance.json",
+      "Bytes": 3844,
+      "SHA256": "0BB60979B98CC214744185FB0B0128D23DC5EDFD6B0DBAEAFCE16E35C21CFE59"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/PartPreservation.json",
+      "Bytes": 30232,
+      "SHA256": "CD547B08D266978356705F6DC52E5F825252ECC0A9AB8DABB24804CFA8EF71F5"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/Publication.json",
+      "Bytes": 116865,
+      "SHA256": "91646176C7CCCCFAA9C63733B27F09B853ECF3472582936C23B2A4E462EA07C8"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/RepoManifest.json",
+      "Bytes": 36578,
+      "SHA256": "5DD1243432A2CB32873F12C9F4CC1C89F6B0FC6016E0EC1E7465268424EFAD87"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/SourceProof01/NativeSourceEquality.json",
+      "Bytes": 43916,
+      "SHA256": "F73E7DC6140F13F45247A6D07B426689E5A01313B5BE186575C1E3C76613301A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/SourceProof01/ProofSelfChecks.json",
+      "Bytes": 2330,
+      "SHA256": "D2DC088D87409BE2B21FC799051C8AB1EF52D8C7A37FAA3740EDFEF9EBD3DB37"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaRelease01/SourceProof01/VbeNumericCanonicalization.json",
+      "Bytes": 5253,
+      "SHA256": "7E4F7C3A7A3A2460E95447AFC07898EC273290385319F0E67CF690F95A9284FF"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/FastInertiaScriptsPreflight.json",
+      "Bytes": 880,
+      "SHA256": "C3FD57C5F46B886691D5487595C550C7DA33BBF191539BC052AEE4FD1B0C8C7B"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Finalize-FastInertiaCompletion.py",
+      "Bytes": 5027,
+      "SHA256": "0EAE4C2A7529D0027AC8F728E8E844A9C34D6134A3C60BB2E2CE141761354698"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Finalize-FastInertiaDirected.py",
+      "Bytes": 5895,
+      "SHA256": "36003C67828DD8AE7A170939A67E4699BD8D8C4FD82B280FE28890426CE1F888"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Geometry/FastInertiaEdgesCompileFix.json",
+      "Bytes": 1813,
+      "SHA256": "81417651B413DDD049C79E68605EF2AB2C696A47EF054292D6D2AC130856D790"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Geometry/FastInertiaEdgesPreparation.json",
+      "Bytes": 6766,
+      "SHA256": "798F969813F8A597FA2DC786D7477B09450A7B7729270C1556E65F160BB7EB81"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Geometry/modTestFastInertiaEdges.bas",
+      "Bytes": 17311,
+      "SHA256": "184101D519B8523BD0E8297332DC7B8E46A3C69B83C83495B93326EFA2BE8EA8"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Launch-FastInertiaFocused.ps1",
+      "Bytes": 4299,
+      "SHA256": "26778BA2E76920D6E62E76734CD2853CAC445E616C7289FB85207151BBCA65C3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/AnalyzeNativeIxyArrays.py",
+      "Bytes": 9991,
+      "SHA256": "EB42E4C0604A81F52B904289546B07ECDD147442AE4FF6CA58ADBE7D13D72DAE"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/BuildActualNativeBaselineReview.py",
+      "Bytes": 12462,
+      "SHA256": "174F0A98A033B12F7713C7FF36C5F20EE7FC400F473DCAA5D224725D6970D46A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/BuildActualNativeCandidateReview.py",
+      "Bytes": 10996,
+      "SHA256": "F4BE00CE110D15CFC2933996286758CBB12253004B20D43FA139618A2C45E8BE"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/modTestInputIxyBaseline.bas",
+      "Bytes": 9106,
+      "SHA256": "2E8E55765B23C310B4FCCDB5CF10FEC7D4C10AA7B99A8C60BBA917F3B0B02576"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/modTestIxyPerformance.bas",
+      "Bytes": 16441,
+      "SHA256": "5D78B8E10603882C32A1AF090F0B324B1922D81DDA8F5A7C84831FCD11BF77AC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/OnePassEngineeringTolerance/AnalyzeFastInertiaComparison.py",
+      "Bytes": 15575,
+      "SHA256": "78899E9EF34AA37A603010955581797F82A10A57A0FD4A51DC76C565098F17F9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/OnePassEngineeringTolerance/ApprovedOnePassAndTestGate.patch",
+      "Bytes": 13810,
+      "SHA256": "45C7FA2FBE585D5295EE72D0303C94EFF4E242E053C8453FE341D6DB84860390"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/OnePassEngineeringTolerance/BuildOnePassProof.py",
+      "Bytes": 14056,
+      "SHA256": "CD669184135E64B02EB15EC43A13200C26EE8CA1BC6CD16BAF71F33DB35B03A2"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/OnePassEngineeringTolerance/FastInertiaNativeComparison.json",
+      "Bytes": 67171,
+      "SHA256": "CDAEDBA8FF83368099E19C8F1C6364DDB78E97A90D13457E1B002743D92C4744"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/OnePassEngineeringTolerance/FastInertiaNativeComparisonCompact.json",
+      "Bytes": 10113,
+      "SHA256": "BE48776ACC27BBD29F96229B5A1E966950971E8AF4DE73B99EBC3CCAF0736745"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/OnePassEngineeringTolerance/NativeValidationPlan.json",
+      "Bytes": 2968,
+      "SHA256": "D362C4A4BB92173747996A40AD10CC9A41AC0ADFF164A72DACC55C195132C68C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Math/FullUI_Ixy/OnePassEngineeringTolerance/StrictDiffAndOfflineThresholdProof.json",
+      "Bytes": 10983,
+      "SHA256": "24147FB065E1CF0462110550B71401423983931C59920CDE25D9F0E609A06B17"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Pack-FastInertiaEvidence.py",
+      "Bytes": 18116,
+      "SHA256": "67B325FE67DA087166B81D42A944BE9B4818FB95B03C3B33C8CF0FEDE9573DD1"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Publish-FastInertiaRelease.ps1",
+      "Bytes": 7494,
+      "SHA256": "95502263011FF0B4CEAAAA6FB0BF1109B76E2175EE45D465B4236A3203419030"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Run-CompletionProbes.ps1",
+      "Bytes": 16168,
+      "SHA256": "CED2B553D51CB84B4C6812041FA90E12926D74C251B91F639197E636AA47782D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Run-FastInertiaDirected.ps1",
+      "Bytes": 1760,
+      "SHA256": "B84EC853936B2DF733F41D7AE31572DF073A200210FBE9C4024742686D8E6FD6"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-22/Test-FastInertiaScripts.ps1",
+      "Bytes": 910,
+      "SHA256": "6679EE26DA7C9D33F0616786FBD1F4A68D34B1D6A3E7B7D66A114AA45815BA6E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Acceptance.json",
+      "Bytes": 1656,
+      "SHA256": "A50CF0A5E893D01555FCBE54511B6F2CB4B3DB5A80A52CA9FB8E1BE179123715"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/AsymmetricSteel_No.txt",
+      "Bytes": 11520,
+      "SHA256": "B449D005370743D09F43029BAD631A3CCDD9442E86C15CED416989A804BCF2D0"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/AsymmetricSteel_Yes.txt",
+      "Bytes": 11278,
+      "SHA256": "F33D4B2FB03182E0AB4955A1CDD4523DBAB67B215C4457EA5F8B5758993C89C9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Batch15_No.txt",
+      "Bytes": 116253,
+      "SHA256": "94856F6BC69A92133E7B72648E1CD751FD68AA3307EE41FB8065D9FD9D8F8DA9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Batch15_Yes.txt",
+      "Bytes": 114553,
+      "SHA256": "F022C7DF6CCA761E4E839F0721D478E5B342E9BFB9B0DE173B1EAB176C354DAC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Circle_Generated_No.txt",
+      "Bytes": 75668,
+      "SHA256": "AAACB941EE2C395B15867B37A91F502284EDE130883B8701DF8DC54B7418EE2C"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Circle_Generated_Yes.txt",
+      "Bytes": 74241,
+      "SHA256": "ADB5F3212463A2F96A0242FD8221F8A93F560D0BA63116D9DA1F22FB09389A89"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Combined.bas",
+      "Bytes": 24394,
+      "SHA256": "5CB182225F470633ADEE4E746B0BDB6246EBF4E8B8F55FFC4146E2AEB9ED6600"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/CoreRegressionBatchProbe.bas",
+      "Bytes": 6026,
+      "SHA256": "8793B7501A04B3D71F9F84DE354E4D04805D93CE906996E9F2A47CA90BE8A24E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/FocusedAcceptanceProbe.bas",
+      "Bytes": 24191,
+      "SHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/FocusedForceBounds.bas",
+      "Bytes": 6404,
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/FocusedRunner.ps1",
+      "Bytes": 7299,
+      "SHA256": "86545C45E6EE1626B10C3544ECEF68BC2B12D239781CC6E0705D79A4558CB6ED"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/FocusedSpecialProbe.bas",
+      "Bytes": 11957,
+      "SHA256": "91E93175339D42162A805C7730782813DAB172ECCB2F71342BB7E7D02475B6C9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/HollowRectangle_Generated_No.txt",
+      "Bytes": 80758,
+      "SHA256": "9E21E9A62ED85A6929A032FB07FC88F98479B463971F2C1CDF9BE6F3CF4B925D"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/HollowRectangle_Generated_Yes.txt",
+      "Bytes": 78988,
+      "SHA256": "C559F00A9CF79538724134BD290487B995DAA26302645B07D0933C9756D10D4E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Independent.json",
+      "Bytes": 192936,
+      "SHA256": "43F682322B8A6B5220768C13EA97F1804E4DE10733D480EFEFE43ECBA08EDDCE"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/IndependentVerifier.py",
+      "Bytes": 22901,
+      "SHA256": "25AAB7C88741D90F0A3D7BE658BE862B87DCEDEF68184F49B49E02A2D1D23C67"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Model_Circle.txt",
+      "Bytes": 15936,
+      "SHA256": "CA087BCB769966EE66BCC4F4969BEE5DCEE384EC9D08FA27E8EDF94AC7610879"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Model_HollowRectangle.txt",
+      "Bytes": 25228,
+      "SHA256": "22EA4A4883679182343107F19B83550591B45CB8F612388DBEFC194095E327EA"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Model_PointedSection.txt",
+      "Bytes": 32798,
+      "SHA256": "3E935B16EC529AF0248CC70BEB5E1AA7BF4EF02B3425B8C9654B0741BCC0D551"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Model_Rectangles.txt",
+      "Bytes": 22044,
+      "SHA256": "AE788941FB83ECC4EC6E3F947721B435875517C37137A1D86956F4B982033F36"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Model_SavedWorkbook.txt",
+      "Bytes": 15340,
+      "SHA256": "1C64B3BDC5901DCA936558F1C00A05F4D979DE1F6AE448B5FF168FA996632B8A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/NativeRunner.ps1",
+      "Bytes": 13332,
+      "SHA256": "4EA00B483E3E2B428E66942953EB3F1C0BC1C8D3AFC3C69A6996C2B08B802076"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.progress.txt",
+      "Bytes": 26609,
+      "SHA256": "F594D640A31A13D1EBE1BA978F9ED576BD973F7754F908D40722C87F4896B00E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "Bytes": 29560,
+      "SHA256": "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "30E60B8A0A6BB95FB392BAB154580D0CB26AD807FA59F20B8D6D3A822DE45689"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+      "Bytes": 264,
+      "SHA256": "71CCDA64961B957F51CDF1703DCA877E0F6909CD558A65643D2C335774CDE1AE"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+      "Bytes": 155,
+      "SHA256": "1953B8D6C3D8C1F443D6A1D9F749E807A11795694BED0F463E882102AEF7F714"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+      "Bytes": 604,
+      "SHA256": "99A0631F627AC769AB4C1A9C4B390C1526156B939147E0E9E330AB9842614171"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarCapacityTests/stdout.log",
+      "Bytes": 247,
+      "SHA256": "A6433BAADB28B9AC866DEB0678ECFB6E3DAAC502B966F86C2731FFE0507B4777"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.progress.txt",
+      "Bytes": 21084,
+      "SHA256": "8A10C8D95B1713B453A4CC47694611357BCC8F25E500F4AEFABAC270B6A421A1"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "Bytes": 20600,
+      "SHA256": "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "0E40B83085D3ECC8852FD9A9106645A516DAC427091AFE7A019FC4DED7D907C2"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+      "Bytes": 264,
+      "SHA256": "1F5C1E7AA59DC124B5BD7F2EF1FFF79D461436D15CEF9EADB40DFA2B9E60EBC4"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+      "Bytes": 155,
+      "SHA256": "6CFC00AF45F98F5995A35F73F49843C69E5BF28BAFCA932BE1FA601F476A8B44"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+      "Bytes": 602,
+      "SHA256": "745E58291ED88E966D6673748601DAAE8A5AB0751B7BDCC4A030106BDF17E6DD"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/RunRealAutoCADFarOriginTests/stdout.log",
+      "Bytes": 247,
+      "SHA256": "FC924D8766B6D425ED6A1A2620E1B1CAF24C2CDCDBC627A4F5260BF2A1DF1CE1"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/NativeCAD/Stage.json",
+      "Bytes": 787,
+      "SHA256": "A9C144C0B0F7A74F40E8B4712852D161C85069D7F20A5DCC36A49BC3C6546579"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/OutputPresentation.txt",
+      "Bytes": 65524,
+      "SHA256": "5F58B074AE6B6130A1B70D52546814621B88674D94FCFC6E978785C0FF3F577E"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/PointedSection_Generated_No.txt",
+      "Bytes": 80151,
+      "SHA256": "BEACF85651BE70F67A75BF19EE1CE1A02C211E8AE3C10948C2870427556A97BE"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/PointedSection_Generated_Yes.txt",
+      "Bytes": 78455,
+      "SHA256": "5E683488F484808876AA6B12AC23933B0D2D9D0C9F96B40CA69C40783F5155C0"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Probe/InputManifest.json",
+      "Bytes": 3602,
+      "SHA256": "86F7FB4F0ABD054151C4D43623551FC619D3391EBDF98B787BAD220F11EA9A14"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Probe/Preparation.json",
+      "Bytes": 1010,
+      "SHA256": "26D9A94782115F5E014C4D6AE58E8764E9A601217CB6AA143681D3D26F9DEBB9"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Rectangles_Generated_No.txt",
+      "Bytes": 77969,
+      "SHA256": "276CBACE3C8E8CB2D7AC5DB77C6D4B0B55668CE01F7EE8C2BA5FFBB158323ACE"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Rectangles_Generated_Yes.txt",
+      "Bytes": 76354,
+      "SHA256": "3CC074E0AADCEAE3F050CB2878FE2490344C62221F4143B94F32BE242E6FD260"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Run.json",
+      "Bytes": 19357,
+      "SHA256": "394ED8E08888F828ED47E945FEB6DBEF53B6B0EBA9DBFF5C369ACB92373D32A6"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/SavedSectionFixture.json",
+      "Bytes": 90873,
+      "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/SavedWorkbook_Paths_No.txt",
+      "Bytes": 61362,
+      "SHA256": "6186F01DCC8B577E640A27DC5CD5BE7E2E0882E6ABED0B8F79905481A429D6C5"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/SavedWorkbook_Paths_Yes.txt",
+      "Bytes": 60109,
+      "SHA256": "2D5129D187AE6C96BAC8DEA61674D1731DC1A945EF1613E9D48B4E19FCD78FEC"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/SavedWorkbook_Saved_No.txt",
+      "Bytes": 265087,
+      "SHA256": "0007D370D1DF337F4E639034260904A1915D4828440AF0129D9961E4EE7A12C4"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/SavedWorkbook_Saved_Yes.txt",
+      "Bytes": 255093,
+      "SHA256": "1921ACC9D3759A6F261931A89709AEADC7297CCB76910A26E0612E2F8E6405C6"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Stability_No.txt",
+      "Bytes": 11055,
+      "SHA256": "27260B1A32E33AF4F96CF9C6F9222E844B4EF60977F6530FD2A85AA97A791571"
+    },
+    {
+      "Path": "docs/regression/WorkingCodeReview_2026-10-23_FastInertiaFocused_Run01/Stability_Yes.txt",
+      "Bytes": 10842,
+      "SHA256": "155B037807871F012D06D3BF2B2D7AAB90F99C6D5A6CF9E1B69F4EA45BF253EB"
+    },
+    {
+      "Path": "docs/reports/OnePassInertia_2026-10-23.md",
+      "Bytes": 8884,
+      "SHA256": "A6067C91E2F89630453BF0BD82E103C8D6BF600E42B806CAB6506A3074983A1C"
+    }
+  ]
+}
