@@ -73,6 +73,12 @@ function Get-WorkbookLayoutSnapshot {
     }
     foreach($sheet in $Workbook.Worksheets){
         $xml=$XmlSheets[[string]$sheet.Name];$columns=@();$rows=@();$objects=@();$tables=@()
+        $helpHiddenRows=@()
+        if($sheet.Name -eq 'Справка'){
+            $helpHiddenRows=@($xml.worksheet.sheetData.row | Where-Object {$_.hidden -eq '1'} | ForEach-Object {[int]$_.r})
+            $sheet.Outline.ShowLevels(8) | Out-Null
+            $sheet.Rows.Hidden=$false # Размеры и координаты рисунков снимаются в раскрытом разделе; скрытые строки сжимают их высоту до нуля.
+        }
         foreach($column in $xml.worksheet.cols.col){
             $first=[int]$column.min;$last=[int]$column.max;$area=$sheet.Range($sheet.Columns.Item($first),$sheet.Columns.Item($last))
             $hidden=[bool]$area.EntireColumn.Hidden
@@ -87,11 +93,13 @@ function Get-WorkbookLayoutSnapshot {
             if($height -ne [double]$sheet.StandardHeight -or $row.hidden -eq '1'){$rows+=,[ordered]@{Row=[int]$row.r;Height=$height;Hidden=($row.hidden -eq '1')}}
         }
         foreach($shape in $sheet.Shapes){
+            if($sheet.Name -eq 'Справка' -and $shape.Type -eq 13 -and $shape.Height -le 0){throw ('Рисунок справки имеет нулевую высоту: '+$shape.Name)}
             $chartType=$null;if($shape.Type -eq 3){$chartType=[int]$sheet.ChartObjects($shape.Name).Chart.ChartType}
             $objects+=,[ordered]@{Name=[string]$shape.Name;Type=[int]$shape.Type;ChartType=$chartType;Left=[double]$shape.Left;Top=[double]$shape.Top;Width=[double]$shape.Width;Height=[double]$shape.Height;Placement=[int]$shape.Placement;Visible=[int]$shape.Visible;LockAspectRatio=[int]$shape.LockAspectRatio}
         }
         foreach($table in $sheet.ListObjects){$tables+=,[ordered]@{Name=[string]$table.Name;Address=$table.Range.Address()}}
         $sheets+=,[ordered]@{Name=[string]$sheet.Name;Visible=[int]$sheet.Visible;StandardWidth=[double]$sheet.StandardWidth;StandardHeight=[double]$sheet.StandardHeight;Columns=$columns;Rows=$rows;Objects=$objects;Tables=$tables;PrintArea=[string]$XmlSheets['__PrintAreas'][[string]$sheet.Name]}
+        foreach($hiddenRow in $helpHiddenRows){$sheet.Rows.Item($hiddenRow).Hidden=$true}
     }
     $config=$Workbook.Worksheets.Item('Config');$system=$Workbook.Names.Item('rngSystemSettings').RefersToRange
     $caseColumn=0
@@ -161,10 +169,14 @@ function Apply-WorkbookLayout {
         $sheet=$Workbook.Worksheets.Item($item.Name)
         if($previous){$sheet.Move([Type]::Missing,$previous)}
         $previous=$sheet;$sheet.Visible=[int]$item.Visible;$sheet.StandardWidth=[double]$item.StandardWidth
+        if($item.Name -eq 'Справка'){$sheet.Outline.ShowLevels(8) | Out-Null} # Сбрасываем и признаки свёрнутых групп, а не только Hidden отдельных строк.
         $sheet.Columns.ColumnWidth=[double]$item.StandardWidth;$sheet.Columns.Hidden=$false
         $sheet.Rows.RowHeight=[double]$item.StandardHeight;$sheet.Rows.Hidden=$false
         foreach($column in $item.Columns){$range=$sheet.Range($sheet.Columns.Item($column.First),$sheet.Columns.Item($column.Last));$range.ColumnWidth=[double]$column.Width;$range.EntireColumn.Hidden=[bool]$column.Hidden}
-        foreach($row in $item.Rows){$sheet.Rows.Item($row.Row).RowHeight=[double]$row.Height;$sheet.Rows.Item($row.Row).Hidden=[bool]$row.Hidden}
+        foreach($row in $item.Rows){
+            $sheet.Rows.Item($row.Row).RowHeight=[double]$row.Height
+            if($item.Name -ne 'Справка'){$sheet.Rows.Item($row.Row).Hidden=[bool]$row.Hidden}
+        }
         $sheet.PageSetup.PrintArea=[string]$item.PrintArea
         foreach($object in $item.Objects){
             $shape=$null;try{$shape=$sheet.Shapes.Item($object.Name)}catch{}
@@ -173,10 +185,12 @@ function Apply-WorkbookLayout {
                 $chart=$sheet.ChartObjects().Add($object.Left,$object.Top,$object.Width,$object.Height);$chart.Name=[string]$object.Name;$chart.Chart.ChartType=[int]$object.ChartType;$shape=$sheet.Shapes.Item($object.Name)
             }
             if($null -eq $shape){throw ('В сборке отсутствует объект '+$item.Name+'!'+$object.Name)}
+            if($item.Name -eq 'Справка' -and $object.Type -eq 13 -and $object.Height -le 0){throw ('В макете потеряна высота рисунка справки: '+$object.Name)}
             $shape.LockAspectRatio=0;$shape.Width=[double]$object.Width;$shape.Height=[double]$object.Height
             $shape.Left=[double]$object.Left;$shape.Top=[double]$object.Top;$shape.Placement=[int]$object.Placement;$shape.Visible=[int]$object.Visible;$shape.LockAspectRatio=[int]$object.LockAspectRatio
         }
         foreach($table in $item.Tables){$sheet.ListObjects.Item($table.Name).Resize($sheet.Range($table.Address))}
+        # Справку сохраняем раскрытой, с ненулевыми размерами рисунков. Штатное сворачивание выполняет Workbook_Open, без изменения макета.
     }
     foreach($item in $Layout.Names){
         $name=$Workbook.Names.Item($item.Name)

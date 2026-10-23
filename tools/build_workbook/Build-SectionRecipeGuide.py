@@ -19,6 +19,8 @@ def build() -> dict:
     rows = []
     code = False
     for number, line in enumerate(source.read_text(encoding='utf-8-sig').splitlines(), 1):
+        if not line.strip():
+            continue  # Пустые строки Markdown не превращаются в пустые строки листа.
         if line.startswith('```'):
             code = not code
             continue
@@ -29,8 +31,6 @@ def build() -> dict:
             style = 'title' if len(heading[1]) == 1 else 'h2'
             text = heading[2]
         rows.append({'text': text, 'style': style, 'source': 'ADDING_SECTION_TYPE.md', 'line': number})
-    # Пустой разделитель сохраняет границы блока; служебные данные остаются в JSON.
-    rows.append({'text': '', 'style': 'spacer'})
     body_hash = hashlib.sha256('\n'.join(row['text'] for row in rows).encode('utf-8')).hexdigest()
     return {'schema': 3, 'title': 'Добавление нового типа сечения', 'bodySHA256': body_hash,
             'sourceHashes': {'docs/geometry_refactor/ADDING_SECTION_TYPE.md': sha(source),

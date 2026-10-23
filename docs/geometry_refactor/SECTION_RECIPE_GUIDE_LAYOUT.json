@@ -1,9 +1,9 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "856eb744c0d7aeae59dfdb5aa479f8a6821a392a66bc6011be4541e782db318a",
+  "bodySHA256": "4f3aa759afdf70f035e87a19fc7f23ffc8ccf48c8494a06fee6218af7190b814",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "825e9ba8ccd135e343cace197c7b2ab4d58c817e5404037be51bee9aa8e9e8f2",
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "ed90f563613917f911fd3a24d58d1f079ccaa497fb3d915df0d5ace2a2a9afe4",
     "src/Common/modSectionRecipeApiGuide.bas": "cbca439945f4b37344f29e9dc95fef5df6da2e4ab5033884d702961c44da1356"
   },
   "rows": [
@@ -12,12 +12,6 @@
       "style": "title",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 1
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 2
     },
     {
       "text": "Для нового параметрического сечения создайте один класс-рецепт VBA. Он описывает границы бетона, отверстия и армирование; сетку и стержни строит общая программа.",
@@ -30,12 +24,6 @@
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 4
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 5
     },
     {
       "text": "Возможности",
@@ -56,368 +44,88 @@
       "line": 8
     },
     {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 9
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 10
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 11
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 12
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 13
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 14
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 15
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 16
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 17
-    },
-    {
       "text": "Порядок действий",
       "style": "h2",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 18
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 19
+      "line": 10
     },
     {
       "text": "1. В редакторе VBA (Alt+F11) создайте Class Module и подключите Implements ISectionRecipe.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 20
+      "line": 12
     },
     {
       "text": "2. В методе ISectionRecipe_CreateDefinition прочитайте таблицу через context.Reader. Длины переведите в мм через ридер или context.Units.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 21
+      "line": 13
     },
     {
       "text": "3. Создайте CSectionDefinitionBuilder, вызовите Initialize и опишите наружную границу. Если есть отверстия, укажите их вместе с соответствующей наружной границей.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 22
+      "line": 14
     },
     {
       "text": "4. Задайте линии центров арматуры, диаметры и число стержней или шаг. При необходимости добавьте связанные ряды и правила проекции.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 23
+      "line": 15
     },
     {
       "text": "5. Добавьте нужные размеры и подписи, затем верните результат Finish. Общий сборщик проверит описание и построит сечение.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 24
+      "line": 16
     },
     {
       "text": "6. Зарегистрируйте класс и имя его входной таблицы в CSectionTypeRegistry.Class_Initialize. Через Alt+F8 выполните UpdateSectionRecipeTypes для обновления выбора Geometry.Type.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 25
+      "line": 17
     },
     {
       "text": "7. Выберите новый тип, сформируйте сечение и проверьте контуры, сетку, арматуру и схему. Затем проверьте расчёт, единицы и сообщения при неверном вводе.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 26
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 27
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 28
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 29
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 30
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 31
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 32
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 33
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 34
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 35
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 36
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 37
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 38
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 39
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 40
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 41
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 42
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 43
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 44
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 45
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 46
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 47
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 48
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 49
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 50
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 51
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 52
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 53
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 54
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 55
+      "line": 18
     },
     {
       "text": "Чтение размеров и армирования",
       "style": "h2",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 56
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 57
+      "line": 20
     },
     {
       "text": "На листе «Сечения» подготовьте именованную таблицу: в блоке General — размеры, в Main — основное армирование, в Extra — дополнительные ряды. Ридер ищет поля по коротким ключам.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 58
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 59
+      "line": 22
     },
     {
       "text": "Можно использовать свою структуру таблицы: context.Table даёт снимок диапазона, а reader.ValueAt читает значение по номеру строки и столбца. В этом случае рецепт сам проверяет ввод и переводит единицы.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 60
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 61
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 62
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 63
+      "line": 24
     },
     {
       "text": "Справочник методов создания сечения",
       "style": "h2",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 64
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 65
+      "line": 26
     },
     {
       "text": "Нажмите Alt+F11, затем Ctrl+R и откройте Modules → modSectionRecipeApiGuide. В модуле приведены точные сигнатуры, все параметры, единицы и готовые примеры. Поиск по имени метода — Ctrl+F.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 66
-    },
-    {
-      "text": "",
-      "style": "paragraph",
-      "source": "ADDING_SECTION_TYPE.md",
-      "line": 67
+      "line": 28
     },
     {
       "text": "Начните с блока «МИНИМАЛЬНЫЙ ПРИМЕР»: это полный класс простого сечения. Штатные рецепты для сравнения находятся в Class Modules, например CSectionRecipeCircle и CSectionRecipeHollowRectangle.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
-      "line": 68
-    },
-    {
-      "text": "",
-      "style": "spacer"
+      "line": 30
     }
   ],
   "sections": [],

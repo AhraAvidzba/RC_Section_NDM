@@ -1595,7 +1595,6 @@ function Get-SettingsInstructionCatalog {
     # Справка по повторному оформлению Results завершает каталог согласно утверждённому макету листа.
     $finalHelpBlock = @($items | Where-Object { $_.Key -eq 'General.ReformatResultsEnabled' })
     if ($finalHelpBlock.Count -ne 1) { throw 'В каталоге справки должен быть один блок General.ReformatResultsEnabled.' }
-    $finalHelpBlock[0].Title = 'General.ReformatResultsEnabled — повторное оформление Results'
     $items.Remove($finalHelpBlock[0]) | Out-Null
     $items.Add($finalHelpBlock[0]) | Out-Null
     $items
@@ -3348,7 +3347,6 @@ function Add-SettingsInstructions {
     $InstructionSheet.Range($InstructionSheet.Cells.Item($statusTableStart, 1), $InstructionSheet.Cells.Item($row, 2)).Borders.Color = 14277081
     $row += 3
 
-    $blankInstructionRows = New-Object System.Collections.Generic.List[int]
     $anchors = @{}
     foreach ($item in (Get-SettingsInstructionCatalog)) {
         $anchors[$item.Key] = $row
@@ -3362,11 +3360,7 @@ function Add-SettingsInstructions {
         $lineNumber = 1
         foreach ($line in $item.Lines) {
             if ([string]::IsNullOrWhiteSpace([string]$line)) {
-                $InstructionSheet.Range($InstructionSheet.Cells.Item($row, 1), $InstructionSheet.Cells.Item($row, 2)).ClearContents()
-                $InstructionSheet.Range($InstructionSheet.Cells.Item($row, 1), $InstructionSheet.Cells.Item($row, 6)).Interior.Color = 16777215
-                $blankInstructionRows.Add($row) | Out-Null
-                $row++
-                continue
+                continue # Пустые слоты каталога не создают строки между пояснениями настройки.
             }
             $InstructionSheet.Cells.Item($row, 1).Value2 = [string]$lineNumber
             $InstructionSheet.Cells.Item($row, 2).Value2 = $line
@@ -3441,7 +3435,6 @@ function Add-SettingsInstructions {
     $InstructionSheet.Range($InstructionSheet.Cells.Item(1, 1), $InstructionSheet.Cells.Item($row, 6)).Borders.LineStyle = 1
     $InstructionSheet.Range($InstructionSheet.Cells.Item(1, 1), $InstructionSheet.Cells.Item($row, 6)).Borders.Color = 14277081
     $InstructionSheet.Rows.AutoFit()
-    foreach ($blankRow in $blankInstructionRows) { $InstructionSheet.Rows.Item($blankRow).RowHeight = 2.5 } # После AutoFit возвращаем компактную высоту пустых слотов.
     foreach ($formulaRow in $script:FormulaImageRows) {
         $InstructionSheet.Rows.Item($formulaRow.Row).RowHeight = $formulaRow.Height
         # AutoFit может сместить/масштабировать xlMoveAndSize-картинки.
