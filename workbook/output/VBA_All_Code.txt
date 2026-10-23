@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-23 03:27:39
+Date: 2026-10-23 07:29:27
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -49823,7 +49823,7 @@ Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: Annotat
 ====================================================================================================
 COMPONENT: CSectionPlotter
 TYPE: 2
-LINES: 2084
+LINES: 2093
 ====================================================================================================
 Option Explicit
 
@@ -49876,6 +49876,7 @@ Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ
 Private Const RESULT_COLOR_BUCKET_COUNT As Long = 16 ' Число цветовых ступеней для расчетных маркеров Excel Chart.
 Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 3 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
 Private Const ELEMENT_SHAPE_RENDER_MAX_COUNT As Long = 5000 ' До этого числа элементов геометрию рисуем поэлементно Shape-ами.
+Private Const ELEMENT_SERIES_MAX_COUNT As Long = 255 ' Безопасный предел рядов XY-диаграммы; при большем числе оформлений используем отдельные фигуры.
 Private Const CONCRETE_SHAPE_FILL_RATIO As Double = 0.7 ' Визуальный размер бетонной ячейки: оставляет зазор между соседними элементами.
 Private Const REFERENCE_AXIS_WEIGHT As Double = 0.56 ' Толщина сплошных главных осей; немного тоньше нейтральной линии.
 Private Const REFERENCE_BAND_MIN_THICKNESS As Double = 0.4 ' Минимальная толщина Freeform-полосы, чтобы тонкие оси оставались видимыми.
@@ -49929,7 +49930,7 @@ Private mRebarTensionColor As Long ' Цвет максимального рас�
 Private mConcreteCompressionColor As Long ' Цвет максимального сжатия бетона.
 Private mConcreteTensionColor As Long ' Цвет максимального растяжения бетона.
 Private mElementShapeLayerEnabled As Boolean ' True - расчетные элементы выводятся Shape-ами без укрупнения.
-Private mElementGroupingEnabled As Boolean ' True - включено укрупнение элементов для обхода лимитов/перегрузки Excel Chart.
+Private mElementGroupingEnabled As Boolean ' True - цвета большой сетки разбиты на ступени; сохраняется и при резервной отрисовке фигурами.
 Private mAxisLabelsEnabled As Boolean ' Нужно ли выводить маленькие подписи глобальных осей X/Y.
 Private mAxisLabelFontSize As Double ' Размер шрифта подписей глобальных осей X/Y в пунктах Excel.
 Private mContourEnabled As Boolean ' Контур нужен как расчетной, так и geometry-only схеме.
@@ -50011,7 +50012,7 @@ Public Sub Draw(ByVal Workbook As Object, ByVal data As CSectionPlotDataReader, 
     ConfigureEqualScale data, settings
     ClearGeneratedShapes
     CalculateResultRange data
-    AddElementSeries data
+    AddElementSeries data, settings
     DrawShapeDecorations data
     If data.GeometryOnly Then
         DrawGeometryReferenceOverlay data
@@ -50302,8 +50303,9 @@ End Sub
 
 ' Рисует элементы с их фактическими размерами отдельными фигурами.
 ' Только для очень больших сеток использует группы маркеров диаграммы
-' одинакового оформления, чтобы не перегружать Excel тысячами фигур.
-Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
+' одинакового оформления. Если групп больше лимита Excel, выводит фигуры,
+' сохраняя ступени цветов большой сетки и координаты каждого элемента.
+Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If mElementShapeLayerEnabled Then
         CapturePlotAreaMetrics
         AddElementShapes data
@@ -50324,6 +50326,13 @@ Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
         Else
             Set indexList = New Collection
             buckets.Add key, indexList
+            If buckets.count > ELEMENT_SERIES_MAX_COUNT Then
+                mElementShapeLayerEnabled = True ' До создания первого ряда переключаем всю сетку, чтобы не оставлять частично нарисованные элементы.
+                ConfigureEqualScale data, settings ' Фигуры используют устойчивую рамку ChartObject; заново согласуем с ней одинаковый масштаб X/Y.
+                CapturePlotAreaMetrics
+                AddElementShapes data
+                Exit Sub
+            End If
         End If
         indexList.Add i
     Next i
