@@ -710,6 +710,7 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     TestAudit03SetPlotSetting table, "Geometry.Source", "Generated"
     TestAudit03SetPlotSetting table, "Geometry.Type", "Circle"
     TestAudit03SetPlotSetting table, "Geometry.Source", "Generated": TestAudit03SetPlotSetting table, "Geometry.Type", "Circle" ' Выполняем действительный stability-only запуск без НДС-состояний.
+    TestAudit03SetPlotSetting table, "Mesh.StepMode", "User"
     TestAudit03SetPlotSetting table, "Mesh.StepX", "100": TestAudit03SetPlotSetting table, "Mesh.StepY", "100"
     Set profiles = fixture.Names.Item("rngCalculationProfiles").RefersToRange
     For row = 1 To profiles.Rows.Count

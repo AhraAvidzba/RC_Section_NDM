@@ -408,7 +408,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
 
     requiredKeys = Array( _
         "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "Calculation.ZeroMomentPerDepth", _
-        "Geometry.Source", "Geometry.Type", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", _
+        "Geometry.Source", "Geometry.Type", "Mesh.StepMode", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", _
         "Load.ReferenceOffsetX", "Load.ReferenceOffsetY")
     TestAssertRequiredKeys stats, requiredKeys
     TestRecipeInputCatalog stats

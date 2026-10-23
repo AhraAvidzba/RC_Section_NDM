@@ -5250,7 +5250,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 332,
+      "line": 333,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Slice",
       "anchor": "api-cgeometrypath-slice"
@@ -5262,7 +5262,7 @@
       "signature": "Public Function Reversed() As CGeometryPath",
       "parameters": [],
       "resultType": "CGeometryPath",
-      "line": 448,
+      "line": 449,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Reversed",
       "anchor": "api-cgeometrypath-reversed"
@@ -5307,7 +5307,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 465,
+      "line": 466,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Transformed",
       "anchor": "api-cgeometrypath-transformed"

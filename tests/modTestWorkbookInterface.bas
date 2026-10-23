@@ -1579,6 +1579,7 @@ End Sub
 Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     TestPrepareUserRectanglesMomentUltimateInput
     TestPrepareFullStateProfile "PR3"
+    TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "10"
     TestSetSystemSetting "Mesh.StepY", "10"
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
@@ -3605,6 +3606,7 @@ Private Sub TestPrepareRectanglesInput()
     TestSetSystemSetting "Rectangles.SectionType", "TwoRect"
     TestSetSystemSetting "Rectangles.UpperOffsetX", "0"
     TestSetSystemSetting "Plot.LoadCase", "LC_L"
+    TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "40"
     TestSetSystemSetting "Mesh.StepY", "40"
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "2"
@@ -3691,6 +3693,7 @@ Private Sub TestPrepareUserRectanglesMomentUltimateInput()
     TestSetSystemSetting "General.DiagramExtension", "Yes"
     TestSetSystemSetting "Solver.MaxIterations", "80"
     TestSetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "50"
     TestSetSystemSetting "Mesh.StepY", "50"
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
@@ -3742,6 +3745,7 @@ Private Sub TestPrepareUserRectanglesAxialTensionInput()
     TestSetSystemSetting "General.DiagramExtension", "Yes"
     TestSetSystemSetting "Solver.MaxIterations", "80"
     TestSetSystemSetting "Solver.LoadSteps", "1"
+    TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "50"
     TestSetSystemSetting "Mesh.StepY", "50"
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
@@ -6008,6 +6012,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0.001"
     TestSetSystemSetting "Load.ReferenceOffsetX", "10"
     TestSetSystemSetting "Load.ReferenceOffsetY", "-7"
+    TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "50": TestSetSystemSetting "Mesh.StepY", "50"
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
     TestSetSystemSetting "Solver.ToleranceN", "0.1"
@@ -7743,6 +7748,7 @@ Public Function RunExcelGuardWorkflowTests() As String
     oldCancel = app.EnableCancelKey
     TestAppendLine stats, "GUARD_WORKFLOW_HOST: globalHwnd=" & CStr(Application.Hwnd) & "; workbookHwnd=" & CStr(app.Hwnd) & "; books=" & CStr(app.Workbooks.Count) & "; name=" & ThisWorkbook.Name
     TestSetSystemSetting "Circle.Diameter", "400" ' Фиксированный небольшой пример, независимый от пользовательской сетки.
+    TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "50": TestSetSystemSetting "Mesh.StepY", "50"
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
     TestSetSystemSetting "Rebar.Diameter2", "0": TestSetSystemSetting "Rebar.Diameter3", "0"
@@ -8577,6 +8583,7 @@ Private Sub TestResultsFormatting(ByRef stats As TUiTestStats)
     settings.LoadFromWorkbook ThisWorkbook
     Dim extension As String: extension = settings.GetRequiredString("General.DiagramExtension")
     TestPrepareCircleInput
+    TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "30": TestSetSystemSetting "Mesh.StepY", "30"
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "2"
     TestSetSystemSetting "Plot.Enabled", "No"
@@ -8962,6 +8969,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         TestSetSystemSetting "General.ExecutionReportEnabled", "No"
         TestSetSystemSetting "Plot.Enabled", "No"
         TestSetSystemSetting "Units.Force.Output", "N"
+        TestSetSystemSetting "Mesh.StepMode", "User"
         TestSetSystemSetting "Mesh.StepX", "60": TestSetSystemSetting "Mesh.StepY", "60"
         TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
         TestSetSystemSetting "Solver.ToleranceN", "0.0001"

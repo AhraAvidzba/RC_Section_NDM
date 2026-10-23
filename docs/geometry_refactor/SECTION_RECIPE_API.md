@@ -105,7 +105,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:34
     Set path = facade.CirclePath("Full", 0#, 0#, 100#)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:1329.
+Полный контекст: tests/modTestAudit02Api.bas:1344.
 
 Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
@@ -176,7 +176,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:55
     Set path = facade.ArcPath("Curve", 0#, 0#, 100#, 0#, GEOM_PI / 2#)
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:362.
+Полный контекст: tests/modTestSectionRecipes.bas:367.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -571,7 +571,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:178
     Set path = facade.Slice("Half", path.ID, 50# * GEOM_PI, 150# * GEOM_PI)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:1332.
+Полный контекст: tests/modTestAudit02Api.bas:1347.
 
 Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
@@ -781,7 +781,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:259
     facade.Opening "VOID", path.ID, "OUTER"
 ```
 
-Полный контекст: tests/modTestGeometry.bas:2021.
+Полный контекст: tests/modTestGeometry.bas:2261.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -849,7 +849,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:284
     facade.RebarByMaxStep "Step", "Row", 30#, 10#, options
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:206.
+Полный контекст: tests/modTestSectionRecipes.bas:211.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -883,7 +883,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:293
     facade.RebarByFixedStep "Fixed", "Row", 30#, 10#, options
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:213.
+Полный контекст: tests/modTestSectionRecipes.bas:218.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1157,7 +1157,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:389
     facade.HorizontalDistance "EXACT", "Exact", 0#, 123.6, 200#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:368.
+Полный контекст: tests/modTestSectionRecipes.bas:373.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1431,7 +1431,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:488
     facade.RebarRowLabel "Base", "Base", 0#, -1#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:398.
+Полный контекст: tests/modTestSectionRecipes.bas:403.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1525,7 +1525,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:520
     facade.RebarRowExtremeLabel "CurveBars", "CurveMain", 0#, 1#, 0#, 1#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:295.
+Полный контекст: tests/modTestSectionRecipes.bas:300.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1579,15 +1579,15 @@ Public Sub Initialize(ByVal pathID As String)
 
 Source: src/Geometry/CGeometryPath.cls:40
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.TestAdvancedGuideDefinition с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestGeometry.TestGeometryReviewAnnulusTranslation с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set path = New CGeometryPath: path.Initialize "Nose"
+    Set hole = New CGeometryPath: hole.Initialize "Hole"
 ```
 
-Полный контекст: tests/modTestRecipeApiCatalogue.bas:53.
+Полный контекст: tests/modTestGeometry.bas:430.
 
-Native entrypoint: modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples; журнал: docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt.
+Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-cgeometrypath-addline"></a>
 ### CGeometryPath.AddLine
@@ -2184,7 +2184,7 @@ Source: src/Geometry/CGeometryPath.cls:218
     path.AtDistance 0#, x, y, tx, ty
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:1330.
+Полный контекст: tests/modTestAudit02Api.bas:1345.
 
 Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
@@ -2239,7 +2239,7 @@ Public Sub ProjectionBounds(ByVal directionX As Double, ByVal directionY As Doub
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:317
+Source: src/Geometry/CGeometryPath.cls:318
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
 
@@ -2273,7 +2273,7 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:332
+Source: src/Geometry/CGeometryPath.cls:333
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
@@ -2300,7 +2300,7 @@ Public Function Reversed() As CGeometryPath
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:448
+Source: src/Geometry/CGeometryPath.cls:449
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
@@ -2334,7 +2334,7 @@ Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, Opti
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:465
+Source: src/Geometry/CGeometryPath.cls:466
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
 
@@ -2372,7 +2372,7 @@ Public Function RayHit(ByVal originX As Double, ByVal originY As Double, ByVal d
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:490
+Source: src/Geometry/CGeometryPath.cls:491
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestRays с его подготовленными локальными объектами/входом.
 
@@ -2892,7 +2892,7 @@ Source: src/Section/CSectionDefinition.cls:81
     TestCheck "definition.sealed", definition.IsSealed
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:612.
+Полный контекст: tests/modTestSectionRecipes.bas:617.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeDefinitionTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2946,7 +2946,7 @@ Source: src/Section/CSectionDefinition.cls:85
     TestCheck "definition.loops", definition.LoopCount = 3 And region.LoopCount = 3
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:613.
+Полный контекст: tests/modTestSectionRecipes.bas:618.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeDefinitionTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3116,7 +3116,7 @@ Source: src/Section/CSectionDefinition.cls:358
     Set contours = definition.MaterialContours
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:618.
+Полный контекст: tests/modTestSectionRecipes.bas:623.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeDefinitionTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3145,7 +3145,7 @@ Source: src/Section/CSectionDefinition.cls:366
     geom.WriteContours model.Contours
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1834.
+Полный контекст: tests/modTestGeometry.bas:2074.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3178,7 +3178,7 @@ Source: src/Section/CRebarRuleOptions.cls:19
     options.StartSetback = 10#: options.EndSetback = 20#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:192.
+Полный контекст: tests/modTestSectionRecipes.bas:197.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3207,7 +3207,7 @@ Source: src/Section/CRebarRuleOptions.cls:20
     options.StartSetback = 10#: options.EndSetback = 20#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:192.
+Полный контекст: tests/modTestSectionRecipes.bas:197.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3236,7 +3236,7 @@ Source: src/Section/CRebarRuleOptions.cls:21
     options.EndMode = ExcludeBoth
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:212.
+Полный контекст: tests/modTestSectionRecipes.bas:217.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3497,7 +3497,7 @@ Source: src/Section/CRebarRuleOptions.cls:30
             options.DirectionY = -1#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:577.
+Полный контекст: tests/modTestSectionRecipes.bas:582.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3526,7 +3526,7 @@ Source: src/Section/CRebarRuleOptions.cls:31
     options.SourceNormalSign = 1#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:294.
+Полный контекст: tests/modTestSectionRecipes.bas:299.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3642,7 +3642,7 @@ Source: src/Section/CRebarRuleOptions.cls:35
         options.Publication = PublishPerSourcePosition
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:311.
+Полный контекст: tests/modTestSectionRecipes.bas:316.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3700,7 +3700,7 @@ Source: src/Section/CRebarRuleOptions.cls:37
     options.AnnotationGroup = "Second": options.Coincidence = MergeIdentical
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:409.
+Полный контекст: tests/modTestSectionRecipes.bas:414.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3787,7 +3787,7 @@ Source: src/Section/CRebarRuleOptions.cls:40
     options.SourcePrefix = "P"
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:223.
+Полный контекст: tests/modTestSectionRecipes.bas:228.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3816,7 +3816,7 @@ Source: src/Section/CRebarRuleOptions.cls:41
     options.DirectionY = 1#: options.StartSetback = 110#: options.SourceSuffix = "_Hit"
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:252.
+Полный контекст: tests/modTestSectionRecipes.bas:257.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -4252,7 +4252,7 @@ Source: src/Section/CSectionInputTable.cls:64
             For row = 1 To table.RowCount
 ```
 
-Полный контекст: tests/modTestSectionSolver.bas:491.
+Полный контекст: tests/modTestSectionSolver.bas:501.
 
 Native entrypoint: modTestSectionSolver.RunSectionSolverTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt.
 
@@ -4279,7 +4279,7 @@ Source: src/Section/CSectionInputTable.cls:66
                 For column = 1 To table.ColumnCount
 ```
 
-Полный контекст: tests/modTestSectionSolver.bas:492.
+Полный контекст: tests/modTestSectionSolver.bas:502.
 
 Native entrypoint: modTestSectionSolver.RunSectionSolverTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt.
 
@@ -4999,7 +4999,7 @@ Public Function Capture(ByVal workbook As Object, ByVal tableNames As Variant, B
 
 Ошибки/исправление: Адресные ошибки имени/блока/формулы. Повреждённый выбранный блок не равен отсутствию потребителя; восстановите имя/ячейку.
 
-Source: src/Excel/CSectionInputSnapshotReader.cls:21
+Source: src/Excel/CSectionInputSnapshotReader.cls:23
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.RunWorkbookRecipeInputTests с его подготовленными локальными объектами/входом.
 
@@ -5042,7 +5042,7 @@ Source: src/Excel/CSectionTypeRegistry.cls:32
     registry.RegisterRecipe "FixedMetadata", New CSectionRecipeCircle, Array()
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:85.
+Полный контекст: tests/modTestSectionRecipes.bas:90.
 
 Native entrypoint: modTestSectionRecipes.RunWorkbookRecipeInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt.
 
@@ -5104,7 +5104,7 @@ Source: src/Excel/CSectionTypeRegistry.cls:55
     names = registry.RecipeTableNames("Circle")
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:83.
+Полный контекст: tests/modTestSectionRecipes.bas:88.
 
 Native entrypoint: modTestSectionRecipes.RunWorkbookRecipeInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt.
 
@@ -5162,7 +5162,7 @@ Source: src/Excel/CSectionTypeRegistry.cls:66
     TestCheck "workbook.registry.dynamicChoice", registry.SelectedRecipeType(settings) = "FixedMetadata"
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:91.
+Полный контекст: tests/modTestSectionRecipes.bas:96.
 
 Native entrypoint: modTestSectionRecipes.RunWorkbookRecipeInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt.
 
@@ -5194,7 +5194,7 @@ Source: src/Excel/CSectionTypeRegistry.cls:73
     Set definition = registry.CreateDefinition(typeID, context)
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:912.
+Полный контекст: tests/modTestSectionRecipes.bas:917.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeAnnotationCountTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/AnnotationCounts.txt.
 
@@ -5222,7 +5222,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
 | definition | CSectionDefinition; ByVal; обязательный | Успешно опубликованный неизменяемый CSectionDefinition. |
-| meshOptions | TSectionMeshOptions; ByRef; обязательный | TSectionMeshOptions: StepX/StepY мм>0, BoundarySubdivisions целое≥1, MaterialID≥1. ByRef: возвращаемые скаляры/буфер можно изменять, исходный immutable snapshot не меняется. |
+| meshOptions | TSectionMeshOptions; ByRef; обязательный | TSectionMeshOptions: при AutoStepFactor=0 StepX/StepY мм>0; при AutoStepFactor>0 шаг равен min(B,H)·AutoStepFactor. BoundarySubdivisions целое≥1, MaterialID≥1 в обоих режимах. ByRef: возвращаемые скаляры/буфер можно изменять, исходный immutable snapshot не меняется. |
 
 Тип результата: CSectionModel. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
 
@@ -5257,7 +5257,7 @@ Public Property Get Mesh() As CFiberMeshBuilder
 
 Ошибки/исправление: 5530: неопубликованное definition, неверные meshOptions, отсутствие баров/успешной сборки. Исправьте ввод; старый результат после отказа не выдаётся.
 
-Source: src/Section/CSectionBuilder.cls:58
+Source: src/Section/CSectionBuilder.cls:59
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunDefinitionLifecycleTests с его подготовленными локальными объектами/входом.
 
@@ -5284,7 +5284,7 @@ Public Property Get Rebars() As CRebarLayout
 
 Ошибки/исправление: 5530: неопубликованное definition, неверные meshOptions, отсутствие баров/успешной сборки. Исправьте ввод; старый результат после отказа не выдаётся.
 
-Source: src/Section/CSectionBuilder.cls:65
+Source: src/Section/CSectionBuilder.cls:66
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunPublishedBuildTests с его подготовленными локальными объектами/входом.
 
@@ -5311,7 +5311,7 @@ Public Property Get Rules() As CRebarRuleExecutor
 
 Ошибки/исправление: 5530: неопубликованное definition, неверные meshOptions, отсутствие баров/успешной сборки. Исправьте ввод; старый результат после отказа не выдаётся.
 
-Source: src/Section/CSectionBuilder.cls:72
+Source: src/Section/CSectionBuilder.cls:73
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.TestRunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -5350,7 +5350,7 @@ Source: src/Section/CRebarRuleExecutor.cls:46
     TestAssertTrue stats, "rounded.rebar.requested", builder.RequestedPositions = 16
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1882.
+Полный контекст: tests/modTestGeometry.bas:2122.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -5377,7 +5377,7 @@ Source: src/Section/CRebarRuleExecutor.cls:48
         TestAssertClose stats, prefix & ".beforeCoordinates", CDbl(builder.CreatedPositions), 0#, 0#
 ```
 
-Полный контекст: tests/modTestGeometry.bas:2751.
+Полный контекст: tests/modTestGeometry.bas:2991.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -5725,7 +5725,7 @@ Source: src/Section/CRebarRuleExecutor.cls:83
         If executor.PositionSourceID(i) = id Then TestCircleSourcePosition = i: Exit Function
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:1231.
+Полный контекст: tests/modTestSectionRecipes.bas:1236.
 
 Native entrypoint: modTestSectionRecipes.RunCircleBindingTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunCircleBindingTests.txt.
 
@@ -5965,7 +5965,7 @@ Source: src/Excel/CUnitSystem.cls:58
     units.LoadFromSettings settings
 ```
 
-Полный контекст: tests/modTestMaterialDiagrams.bas:1163.
+Полный контекст: tests/modTestMaterialDiagrams.bas:1164.
 
 Native entrypoint: modTestMaterialDiagrams.RunMaterialDiagramTests; журнал: docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt.
 
@@ -6614,7 +6614,7 @@ Source: src/Excel/CUnitSystem.cls:242
         factor = units.InputStressToInternal(1#)
 ```
 
-Полный контекст: tests/modTestMaterialDiagrams.bas:1326.
+Полный контекст: tests/modTestMaterialDiagrams.bas:1327.
 
 Native entrypoint: modTestMaterialDiagrams.RunMaterialDiagramTests; журнал: docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt.
 
@@ -7308,7 +7308,7 @@ Source: src/Section/CConcreteRegion.cls:120
     TestNear "adjacent.area", region.Area, 240000#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:1126.
+Полный контекст: tests/modTestSectionRecipes.bas:1131.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -7951,7 +7951,7 @@ Source: src/Section/CSectionGeometryQuery.cls:484
     Set region = query.SubtractContainedRegion(region, query.CircleRegion(70#, 70#, 23#))
 ```
 
-Полный контекст: tests/modTestContourMesh.bas:552.
+Полный контекст: tests/modTestContourMesh.bas:680.
 
 Native entrypoint: modTestContourMesh.RunContourMeshTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt.
 
@@ -8154,7 +8154,7 @@ Source: src/Section/CSectionGeometryQuery.cls:838
     TestCheck "adjacent.lower", query.ContainsPoint(region, 500#, 100#)
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:1128.
+Полный контекст: tests/modTestSectionRecipes.bas:1133.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -8187,7 +8187,7 @@ Source: src/Section/CSectionGeometryQuery.cls:880
     TestNear "distance.inside", query.BoundaryDistance(region, 90#, -20#), 20#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:266.
+Полный контекст: tests/modTestSectionRecipes.bas:271.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -8317,7 +8317,7 @@ Source: src/Section/CSectionGeometryQuery.cls:1085
     Set path = query.AdjacentRectangles("Bad", Array(Array(0#, 0#, 100#, 100#), rect))
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:1151.
+Полный контекст: tests/modTestSectionRecipes.bas:1156.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -8425,7 +8425,7 @@ Source: src/Section/CSectionGeometryQuery.cls:1351
     localCover = query.ConcreteCoverFromPointAlongDirection(0#, 60#, 0#, 1#)
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1224.
+Полный контекст: tests/modTestGeometry.bas:1464.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -8622,7 +8622,7 @@ Source: src/Common/modSectionRecipeTypes.bas:24
     options.EndMode = ExcludeBoth
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:212.
+Полный контекст: tests/modTestSectionRecipes.bas:217.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -8754,7 +8754,7 @@ Source: src/Common/modSectionRecipeTypes.bas:52
         options.Publication = PublishPerSourcePosition
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:311.
+Полный контекст: tests/modTestSectionRecipes.bas:316.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -8819,7 +8819,7 @@ Source: src/Common/modSectionRecipeTypes.bas:62
     options.AnnotationGroup = "Second": options.Coincidence = MergeIdentical
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:409.
+Полный контекст: tests/modTestSectionRecipes.bas:414.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -9076,14 +9076,14 @@ Source: src/Common/modSectionRecipeTypes.bas:145
     Dim anchors(1 To 4) As TSectionAnnotation
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:457.
+Полный контекст: tests/modTestSectionRecipes.bas:462.
 
 Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-modsectionrecipetypes-tsectionmeshoptions"></a>
 ### modSectionRecipeTypes.TSectionMeshOptions
 
-Настройки общей дискретизации: StepX/StepY в мм>0, subdivisions≥1, MaterialID≥1. Для книги читаются общим workflow.
+Настройки общей дискретизации: AutoStepFactor=0 — ручные StepX/StepY в мм>0; AutoStepFactor>0 — единый шаг min(B,H)·AutoStepFactor. subdivisions≥1 и MaterialID≥1 в обоих режимах. Для книги читаются общим workflow.
 
 ```vb
 Public Type TSectionMeshOptions
@@ -9094,6 +9094,7 @@ Public Type TSectionMeshOptions
 ```vb
 StepX As Double
 StepY As Double
+AutoStepFactor As Double
 BoundarySubdivisions As Long
 MaterialID As Long
 SourceReference As String
@@ -9149,7 +9150,7 @@ PathID As String
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:175
+Source: src/Common/modSectionRecipeTypes.bas:176
 
 Минимальный вызов; требуемый контекст: В теле modTestIndividualContours.TestRoundedCorners с его подготовленными локальными объектами/входом.
 
@@ -9182,7 +9183,7 @@ Public Sub SectionRecipeError(ByVal owner As String, ByVal reason As String, Opt
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:193
+Source: src/Common/modSectionRecipeTypes.bas:194
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.TestRunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -9216,7 +9217,7 @@ Public Function SectionRecipeErrorText(ByVal reason As String, Optional ByVal so
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:200
+Source: src/Common/modSectionRecipeTypes.bas:201
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestRecipeErrorParagraphs с его подготовленными локальными объектами/входом.
 
@@ -9248,7 +9249,7 @@ Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal sourceReferen
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:282
+Source: src/Common/modSectionRecipeTypes.bas:283
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.TestRunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -9287,7 +9288,7 @@ Source: src/Common/modGeometryTypes.bas:14
     angle = GEOM_PI / 4#
 ```
 
-Полный контекст: tests/modTestGeometry.bas:380.
+Полный контекст: tests/modTestGeometry.bas:620.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -9314,7 +9315,7 @@ Source: src/Common/modGeometryTypes.bas:15
     If Abs(expected) <= GEOM_TOLERANCE Then
 ```
 
-Полный контекст: tests/modTestGeometry.bas:2663.
+Полный контекст: tests/modTestGeometry.bas:2903.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -9405,15 +9406,15 @@ LoopID As Long
 
 Source: src/Common/modGeometryTypes.bas:26
 
-Минимальный вызов; требуемый контекст: В теле modTestPolygonSpec.TestNamedPublication с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestGeometry.TestGeometryReviewSquareEdges с его подготовленными локальными объектами/входом.
 
 ```vb
-    Dim edge As TRegionEdge, kind As String
+    Dim reversed(1 To 4) As TRegionEdge
 ```
 
-Полный контекст: tests/modTestPolygonSpec.bas:334.
+Полный контекст: tests/modTestGeometry.bas:264.
 
-Native entrypoint: modTestPolygonSpec.RunNamedSegmentTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt.
+Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-modgeometrytypes-tfiber"></a>
 ### modGeometryTypes.TFiber
@@ -9528,7 +9529,7 @@ Source: src/Common/modGeometryTypes.bas:70
             maxY = GeomMax(maxY, model.RebarY(i))
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:1286.
+Полный контекст: tests/modTestAudit02Api.bas:1301.
 
 Native entrypoint: modTestAudit02Api.RunOffsetOpeningAnnotationTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
@@ -9625,7 +9626,7 @@ Source: src/Common/modGeometryTypes.bas:124
     Set model = TestBuildGeneratedSectionModel(mesh, Nothing)
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1424.
+Полный контекст: tests/modTestGeometry.bas:1664.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 

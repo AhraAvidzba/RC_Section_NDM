@@ -94,6 +94,7 @@ Private Sub TestConfigureGeneralFixture(ByVal system As Object, ByVal unitsRange
     Next row
     TestSetValue system, "Geometry.Source", "Generated"
     TestSetValue system, "Geometry.Type", "Circle"
+    TestSetValue system, "Mesh.StepMode", "User"
     TestSetValue system, "Mesh.StepX", 20#: TestSetValue system, "Mesh.StepY", 20#
     TestSetValue system, "Mesh.BoundarySubdivisions", 2
     TestSetValue system, "Load.ReferenceOffsetX", 0#: TestSetValue system, "Load.ReferenceOffsetY", 0#
@@ -149,6 +150,7 @@ Private Sub TestCheckGeometryAndMesh(ByRef stats As TGeneralConfigStats, ByVal s
         TestCheckClose stats, prefix & ".areaAccuracy", TestConcreteArea(changed), GEOM_PI * 150# ^ 2, 1000#
         TestSetValue system, CStr(key), 20#
     Next key
+    TestSetValue system, "Mesh.StepMode", "User"
     TestSetValue system, "Mesh.StepX", 55#: TestSetValue system, "Mesh.StepY", 55#
     TestSetValue system, "Mesh.BoundarySubdivisions", 1
     Set baseline = TestBuildModel(stats)
@@ -162,6 +164,7 @@ Private Sub TestCheckGeometryAndMesh(ByRef stats As TGeneralConfigStats, ByVal s
         Abs(TestConcreteArea(changed) - TestConcreteArea(baseline)) > 1#
     TestCheck stats, "generalGeometry.Mesh.BoundarySubdivisions.accuracy", _
         Abs(TestConcreteArea(changed) - GEOM_PI * 150# ^ 2) < Abs(TestConcreteArea(baseline) - GEOM_PI * 150# ^ 2)
+    TestSetValue system, "Mesh.StepMode", "User"
     TestSetValue system, "Mesh.StepX", 20#: TestSetValue system, "Mesh.StepY", 20#
     TestSetValue system, "Mesh.BoundarySubdivisions", 2
 End Sub
@@ -178,6 +181,7 @@ Private Sub TestCheckGeneratedMeshUnits(ByRef stats As TGeneralConfigStats, ByVa
     TestSetValue unitRange, "Length", "m"
     TestSetValue circleRange, "Circle.Diameter", 0.3: TestSetValue circleRange, "Rebar.AxisDistance", 0.03
     TestSetValue circleRange, "Rebar.Diameter", 0.016
+    TestSetValue system, "Mesh.StepMode", "User"
     TestSetValue system, "Mesh.StepX", 0.02: TestSetValue system, "Mesh.StepY", 0.02
     Set changed = TestBuildModel(stats)
     TestCheck stats, "generalGeometry.Mesh.StepX.unitsCount", changed.ConcreteCount = baseline.ConcreteCount
@@ -200,6 +204,7 @@ Private Sub TestCheckGeneratedMeshUnits(ByRef stats As TGeneralConfigStats, ByVa
     End If
     circleRange.Formula = savedCircle
     TestSetValue unitRange, "Length", "mm"
+    TestSetValue system, "Mesh.StepMode", "User"
     TestSetValue system, "Mesh.StepX", 20#: TestSetValue system, "Mesh.StepY", 20#
 End Sub
 
@@ -223,6 +228,7 @@ Private Sub TestCheckSavedImport(ByRef stats As TGeneralConfigStats, ByVal syste
     Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, imported, PrepareSectionSnapshot(imported), units
     TestSetValue system, "Geometry.Source", "AutoCAD"
     TestSetValue system, "Geometry.Type", "Unknown"
+    TestSetValue system, "Mesh.StepMode", "User"
     TestSetValue system, "Mesh.StepX", -1#: TestSetValue system, "Mesh.StepY", -1#
     TestSetValue system, "Mesh.BoundarySubdivisions", -1
     Set restored = TestBuildModel(stats)

@@ -1337,8 +1337,8 @@ Public Function RunRealAutoCADFarOriginTests(ByVal ownedApplication As Object, _
     TestCheck "far.WCS", CLng(doc.GetVariable("WORLDUCS")) = 1
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1)
     keys = Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
-        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Import.MinArea", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions")
-    values = Array("FAR_EMPTY", "FAR_REBAR", "FAR_OUTER", "FAR_OPENING", 0#, 100#, 100#, 2)
+        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Import.MinArea", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", "Mesh.StepMode")
+    values = Array("FAR_EMPTY", "FAR_REBAR", "FAR_OUTER", "FAR_OPENING", 0#, 100#, 100#, 2, "User")
     sheet.Cells(1, 1).Value2 = "Key": sheet.Cells(1, 2).Value2 = "Value": sheet.Cells(1, 3).Value2 = "Unit"
     For i = 0 To UBound(keys)
         sheet.Cells(i + 2, 1).Value2 = keys(i): sheet.Cells(i + 2, 2).Value2 = values(i): sheet.Cells(i + 2, 3).Value2 = "-"

@@ -2993,7 +2993,7 @@
         }
       ],
       "resultType": null,
-      "line": 317,
+      "line": 318,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.ProjectionBounds",
       "anchor": "api-cgeometrypath-projectionbounds"
@@ -3022,7 +3022,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 332,
+      "line": 333,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Slice",
       "anchor": "api-cgeometrypath-slice"
@@ -3034,7 +3034,7 @@
       "signature": "Public Function Reversed() As CGeometryPath",
       "parameters": [],
       "resultType": "CGeometryPath",
-      "line": 448,
+      "line": 449,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Reversed",
       "anchor": "api-cgeometrypath-reversed"
@@ -3079,7 +3079,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 465,
+      "line": 466,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Transformed",
       "anchor": "api-cgeometrypath-transformed"
@@ -3140,7 +3140,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 490,
+      "line": 491,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.RayHit",
       "anchor": "api-cgeometrypath-rayhit"
@@ -4849,7 +4849,7 @@
         }
       ],
       "resultType": "CSectionRecipeContext",
-      "line": 21,
+      "line": 23,
       "source": "src/Excel/CSectionInputSnapshotReader.cls",
       "id": "CSectionInputSnapshotReader.Capture",
       "anchor": "api-csectioninputsnapshotreader-capture"
@@ -5031,7 +5031,7 @@
       "signature": "Public Property Get Mesh() As CFiberMeshBuilder",
       "parameters": [],
       "resultType": "CFiberMeshBuilder",
-      "line": 58,
+      "line": 59,
       "source": "src/Section/CSectionBuilder.cls",
       "id": "CSectionBuilder.Mesh",
       "anchor": "api-csectionbuilder-mesh"
@@ -5043,7 +5043,7 @@
       "signature": "Public Property Get Rebars() As CRebarLayout",
       "parameters": [],
       "resultType": "CRebarLayout",
-      "line": 65,
+      "line": 66,
       "source": "src/Section/CSectionBuilder.cls",
       "id": "CSectionBuilder.Rebars",
       "anchor": "api-csectionbuilder-rebars"
@@ -5055,7 +5055,7 @@
       "signature": "Public Property Get Rules() As CRebarRuleExecutor",
       "parameters": [],
       "resultType": "CRebarRuleExecutor",
-      "line": 72,
+      "line": 73,
       "source": "src/Section/CSectionBuilder.cls",
       "id": "CSectionBuilder.Rules",
       "anchor": "api-csectionbuilder-rules"
@@ -7918,6 +7918,7 @@
       "fields": [
         "StepX As Double",
         "StepY As Double",
+        "AutoStepFactor As Double",
         "BoundarySubdivisions As Long",
         "MaterialID As Long",
         "SourceReference As String"
@@ -7948,7 +7949,7 @@
         "SourcePositionID As String",
         "PathID As String"
       ],
-      "line": 175,
+      "line": 176,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.TRebarPosition",
       "anchor": "api-modsectionrecipetypes-trebarposition"
@@ -8001,7 +8002,7 @@
         }
       ],
       "resultType": null,
-      "line": 193,
+      "line": 194,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.SectionRecipeError",
       "anchor": "api-modsectionrecipetypes-sectionrecipeerror"
@@ -8046,7 +8047,7 @@
         }
       ],
       "resultType": "String",
-      "line": 200,
+      "line": 201,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.SectionRecipeErrorText",
       "anchor": "api-modsectionrecipetypes-sectionrecipeerrortext"
@@ -8091,7 +8092,7 @@
         }
       ],
       "resultType": null,
-      "line": 282,
+      "line": 283,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.SectionRecipeGeometryError",
       "anchor": "api-modsectionrecipetypes-sectionrecipegeometryerror"
@@ -9124,21 +9125,21 @@
   "sourceHashes": {
     "src/Section/ISectionRecipe.cls": "d963bc8c3c3f105fed9825b07db11a0258e275604286fea66d7322488ad5edf0",
     "src/Section/CSectionDefinitionBuilder.cls": "104928a202bedcbc4563fd9b9d8978a865f05cdd0b64c1e9f4f2dbe5e883adc5",
-    "src/Geometry/CGeometryPath.cls": "df4428a40e05baf816c182877d30172337b81c942b0f1fcca8b2454555112fb9",
+    "src/Geometry/CGeometryPath.cls": "097a1bfe5e558bb3760d3229eda4b20e316525a1a458bebe8e92212325c762b2",
     "src/Geometry/CPolygonSpec.cls": "3dae51cac0089249fb9e6bb7a7692778c113ab04b6f8562400a65c74cad9c4c8",
     "src/Section/CSectionDefinition.cls": "d4834ef4b5174f302fd98af301eb0d15b75e6e87bd9a61b617156d124736dcff",
     "src/Section/CRebarRuleOptions.cls": "5dd52f9c2943224d069bd02d2ba651eaf54cee16bb1448a81bf4c3bcde48a95b",
     "src/Geometry/CGeometryDiagnostic.cls": "8946153d9883bc493bb4015304782921f4e281d52c51c58fdd5a90c60ecfd49b",
     "src/Section/CSectionInputTable.cls": "fc92642c97aff707eba7e6e18e0d7e66423224dcef628ca7c51a54744146a2ce",
     "src/Section/CSectionRecipeContext.cls": "1088cde1e89361a750946ba69bb0dda8b8f78259e5c9001d668dff1097e04dc0",
-    "src/Excel/CSectionInputSnapshotReader.cls": "6a106927a2d52cca4a6a157bb898a1626d53b11d1b7b7e2ad8e74b52eebeb704",
+    "src/Excel/CSectionInputSnapshotReader.cls": "d7aaf59c813510c4ad5b66220a90c17ab80146742073b9cda8594d282285a95f",
     "src/Excel/CSectionTypeRegistry.cls": "b4c7e7e060e33a77e455b0c69a9d497a0eb5c7513869e81a49133b961a66de8d",
-    "src/Section/CSectionBuilder.cls": "2c8dde1eb08b45b70ae1d8946ad021b5e3aaf91375857ef547ed201d51e8f366",
+    "src/Section/CSectionBuilder.cls": "25efd360b4189c778c6af8d92077c3f179d2dd6386cb68b3d3ddc1a5867d61fc",
     "src/Section/CRebarRuleExecutor.cls": "9660d1ebe5855c608444ac24da044142aef38d6e26c6b18487aad4e778c499a3",
     "src/Excel/CUnitSystem.cls": "acdcc7657cb0ac8aa82c62f4b047ea1e4db5c40fb16a805a5bf1d42364d30dd1",
     "src/Section/CConcreteRegion.cls": "bfc6f341e90483978620556698ee3afedcbc9224217592a458974f7502919b77",
-    "src/Section/CSectionGeometryQuery.cls": "51b43cbb85314bf12704c203c77206e527117af54ab1404dc848ddc490dc50f6",
-    "src/Common/modSectionRecipeTypes.bas": "5af4d7499f06d451eb547cf7e60fcf63d57e14f32ccee534c83f5d0ec11ddf47",
+    "src/Section/CSectionGeometryQuery.cls": "b1d60f982e0bd79a2de23360d23655476d8914bb10671b2fe52e34c0e5e509ed",
+    "src/Common/modSectionRecipeTypes.bas": "82643b79943b3a76422a0721467183ec630caec0f018ba5564428b3c8b8b30fa",
     "src/Common/modGeometryTypes.bas": "0b286f64c33319b1b0e8b34ef0e0d25ab4edf2f917ca97fd75501d673ac0a78f",
     "src/Section/CRebarContactBuilder.cls": "fe783d4ec67dcfa33fcb9176701079440125cec3bb2d498d2655805220afb1cc",
     "src/Section/CSectionInputReader.cls": "9810c06f5760d32752cb69f0a87df650c5f210558a12b63b1a328a097ecb680a"

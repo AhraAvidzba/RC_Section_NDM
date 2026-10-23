@@ -23,10 +23,11 @@ Private mBuildSeconds As Double ' Время создания только се�
 
 ' Разбивает бетонную область регулярной сеткой. Полностью внутренние ячейки
 ' добавляет целиком, а пограничные при необходимости делит на более мелкие
-' по настройке Mesh.BoundarySubdivisions.
+' по настройке Mesh.BoundarySubdivisions. При autoStepFactor > 0 одинаковый
+' шаг по X/Y равен этой доле меньшего точного габарита области в WCS.
 Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1, _
-        Optional ByVal sourceReference As String = vbNullString)
+        Optional ByVal sourceReference As String = vbNullString, Optional ByVal autoStepFactor As Double = 0#)
 
     On Error GoTo FailedBuild
     If mReadOnly Then Err.Raise vbObjectError + 2111, "CFiberMeshBuilder", "Опубликованную сетку нельзя перестроить. Создайте новый построитель."
@@ -34,8 +35,7 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     Dim message As String
     If geometry Is Nothing Then Err.Raise vbObjectError + 2107, "CFiberMeshBuilder", "Геометрия бетонного сечения не передана."
     If Not geometry.IsValid(message) Then Err.Raise vbObjectError + 2100, "CFiberMeshBuilder", message
-    If stepX <= 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Mesh.StepX должен быть положительным."
-    If stepY <= 0# Then Err.Raise vbObjectError + 2102, "CFiberMeshBuilder", "Mesh.StepY должен быть положительным."
+    If autoStepFactor < 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Коэффициент автоматического шага не может быть отрицательным."
     If boundarySubdivisions < 1 Then Err.Raise vbObjectError + 2109, "CFiberMeshBuilder", _
         "Mesh.BoundarySubdivisions должен быть целым числом не меньше 1."
 
@@ -56,6 +56,14 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
             "Габариты бетонной геометрии вырождены: minX=" & CStr(minX) & _
             "; maxX=" & CStr(maxX) & "; minY=" & CStr(minY) & "; maxY=" & CStr(maxY) & "."
     End If
+
+    If autoStepFactor > 0# Then
+        stepX = (maxX - minX) * autoStepFactor
+        If maxY - minY < maxX - minX Then stepX = (maxY - minY) * autoStepFactor ' Размеры берутся по всей области, включая смещения и поворот; отверстия не становятся отдельным габаритом.
+        stepY = stepX
+    End If
+    If stepX <= 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Mesh.StepX должен быть положительным."
+    If stepY <= 0# Then Err.Raise vbObjectError + 2102, "CFiberMeshBuilder", "Mesh.StepY должен быть положительным."
 
     Dim nx As Long
     Dim ny As Long

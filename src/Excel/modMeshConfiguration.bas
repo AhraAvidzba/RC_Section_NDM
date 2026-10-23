@@ -15,22 +15,31 @@ Public Function BuildConfiguredConcreteMesh(ByVal geometry As CGeometryRegion, _
     Dim options As TSectionMeshOptions, mesh As CFiberMeshBuilder
     options = ReadSectionMeshOptions(settings, units)
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geometry, options.StepX, options.StepY, options.MaterialID, options.BoundarySubdivisions, options.SourceReference
+    mesh.BuildMesh geometry, options.StepX, options.StepY, options.MaterialID, options.BoundarySubdivisions, options.SourceReference, options.AutoStepFactor
     Set BuildConfiguredConcreteMesh = mesh
 End Function
 
-' Читает положительные шаги и целое разбиение границы; возвращает размеры в мм
-' и адреса исходных настроек для ошибок параметрического построения и импорта.
+' Читает режим шага и целое разбиение границы. В User переводит оба шага в мм;
+' в Auto передаёт коэффициент общему построителю, не читая неиспользуемые ручные поля.
 Public Function ReadSectionMeshOptions(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As TSectionMeshOptions
     If settings Is Nothing Or units Is Nothing Then Err.Raise vbObjectError + 4139, _
         "modMeshConfiguration", "Настройки и единицы бетонной сетки не переданы."
-    Dim options As TSectionMeshOptions
-    options.StepX = ReadMeshStep(settings, units, "Mesh.StepX")
-    options.StepY = ReadMeshStep(settings, units, "Mesh.StepY")
+    Dim options As TSectionMeshOptions, mode As String
+    mode = settings.GetRequiredChoice("Mesh.StepMode", Array("Auto 0.05", "Auto 0.1", "Auto 0.2", "User"))
+    Select Case mode
+        Case "Auto 0.05": options.AutoStepFactor = 0.05
+        Case "Auto 0.1": options.AutoStepFactor = 0.1
+        Case "Auto 0.2": options.AutoStepFactor = 0.2
+        Case "User"
+            options.StepX = ReadMeshStep(settings, units, "Mesh.StepX")
+            options.StepY = ReadMeshStep(settings, units, "Mesh.StepY")
+    End Select
     options.BoundarySubdivisions = ReadMeshBoundarySubdivisions(settings)
     options.MaterialID = 1
-    options.SourceReference = "Mesh.StepX: " & settings.InputLocation("Mesh.StepX") & "; Mesh.StepY: " & _
-        settings.InputLocation("Mesh.StepY") & "; Mesh.BoundarySubdivisions: " & settings.InputLocation("Mesh.BoundarySubdivisions")
+    options.SourceReference = "Mesh.StepMode: " & settings.InputLocation("Mesh.StepMode")
+    If options.AutoStepFactor = 0# Then options.SourceReference = options.SourceReference & _
+        "; Mesh.StepX: " & settings.InputLocation("Mesh.StepX") & "; Mesh.StepY: " & settings.InputLocation("Mesh.StepY")
+    options.SourceReference = options.SourceReference & "; Mesh.BoundarySubdivisions: " & settings.InputLocation("Mesh.BoundarySubdivisions")
     ReadSectionMeshOptions = options
 End Function
 

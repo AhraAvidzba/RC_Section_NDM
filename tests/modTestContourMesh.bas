@@ -267,7 +267,7 @@ End Function
 Private Function TestMeshSettings(Optional ByVal subdivision As Long = 2, Optional ByVal unit As String = "mm", _
         Optional ByVal stepX As Double = 40#, Optional ByVal stepY As Double = 30#) As CSystemSettingsReader
     mConfig.Cells.ClearContents
-    Dim data(1 To 7, 1 To 3) As Variant
+    Dim data(1 To 8, 1 To 3) As Variant
     data(1, 1) = "Key": data(1, 2) = "Value": data(1, 3) = "Unit"
     data(2, 1) = "Mesh.StepX": data(2, 2) = stepX
     data(3, 1) = "Mesh.StepY": data(3, 2) = stepY
@@ -275,10 +275,138 @@ Private Function TestMeshSettings(Optional ByVal subdivision As Long = 2, Option
     data(5, 1) = "Units.Length.Input": data(5, 2) = unit
     data(6, 1) = "Units.Length.Output": data(6, 2) = unit
     data(7, 1) = "Units.Area.Output": data(7, 2) = unit & "2"
-    mConfig.Range("A1:C7").Value2 = data
+    data(8, 1) = "Mesh.StepMode": data(8, 2) = "User"
+    mConfig.Range("A1:C8").Value2 = data
     Set TestMeshSettings = New CSystemSettingsReader
-    TestMeshSettings.LoadFromRange mConfig.Range("A1:C7")
+    TestMeshSettings.LoadFromRange mConfig.Range("A1:C8")
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает автоматический шаг с независимым ручным эталоном на шести формах,
+' включая отверстие и смещения, оба порядка габаритов, единицы и дробление границы.
+' Ошибочные неиспользуемые ручные поля не должны мешать Auto; неизвестный режим отклоняется.
+Public Function RunAutomaticMeshTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Set mFixture = Application.Workbooks.Add(-4167)
+    Set mConfig = mFixture.Worksheets(1): mConfig.Name = "AutoMeshConfig"
+    Dim shape As Long, subdivision As Variant, factor As Variant, geometry As CGeometryRegion
+    For shape = 1 To 8
+        If shape <= 6 Then
+            Set geometry = TestControlGeometry(shape)
+        ElseIf shape = 7 Then
+            Set geometry = TestFixtureBox(500#, 200#, 1000000000#, -1000000000#)
+        Else
+            Set geometry = TestFixtureBox(20#, 60#)
+        End If
+        For Each subdivision In Array(1, 2)
+            For Each factor In Array(0.05, 0.1, 0.2)
+                TestAutomaticMeshCase geometry, CDbl(factor), CLng(subdivision), shape
+            Next factor
+        Next subdivision
+    Next shape
+    TestAutomaticMeshInputs
+    TestAutomaticSectionBuilder
+    GoTo Finish
+Failed:
+    TestCheck "autoMesh.runtime." & CStr(Err.Number) & "; " & Err.Source & "; " & Err.Description, False
+Finish:
+    On Error Resume Next
+    If Not mFixture Is Nothing Then mFixture.Close False
+    Set mFixture = Nothing: Set mConfig = Nothing
+    On Error GoTo 0
+    RunAutomaticMeshTests = mReport & "TOTAL_AUTO_MESH: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Строит одну Auto-сетку через рабочее чтение и её ручной эталон; сравнивает каждый
+' элемент и импорт тех же контуров. Нечисловые ручные шаги намеренно оставлены в Auto.
+Private Sub TestAutomaticMeshCase(ByVal geometry As CGeometryRegion, ByVal factor As Double, ByVal subdivision As Long, ByVal shape As Long)
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, actual As CFiberMeshBuilder, expected As CFiberMeshBuilder
+    Dim step As Double, i As Long, label As String, contours As CSectionContours, bars As CRebarLayout
+    Dim imported As CSectionModel, generated As CSectionModel, importer As CAutoCADSectionModelImporter, unit As String
+    Select Case shape Mod 3
+        Case 0: unit = "mm"
+        Case 1: unit = "cm"
+        Case 2: unit = "m"
+    End Select
+    Set settings = TestMeshSettings(subdivision, unit)
+    mConfig.Range("B8").Value2 = "Auto " & Replace(CStr(factor), ",", ".")
+    mConfig.Range("B2").Formula = "=1/0": mConfig.Range("B3").Value2 = "unused"
+    settings.LoadFromRange mConfig.Range("A1:C8"): Set units = TestSettingsUnits(settings)
+    Set actual = BuildConfiguredConcreteMesh(geometry, settings, units)
+    step = geometry.Width: If geometry.Height < step Then step = geometry.Height
+    step = step * factor
+    Set expected = New CFiberMeshBuilder: expected.BuildMesh geometry, step, step, 1, subdivision
+    label = "autoMesh." & CStr(shape) & "." & CStr(factor) & ".sub" & CStr(subdivision)
+    TestCheck label & ".count", actual.FiberCount = expected.FiberCount
+    For i = 1 To expected.FiberCount
+        TestCheck label & ".fiber" & CStr(i), actual.FiberX(i) = expected.FiberX(i) And actual.FiberY(i) = expected.FiberY(i) And _
+            actual.FiberWidth(i) = expected.FiberWidth(i) And actual.FiberHeight(i) = expected.FiberHeight(i) And actual.FiberArea(i) = expected.FiberArea(i)
+    Next i
+    Set contours = New CSectionContours: geometry.BuildContours contours
+    Set bars = TestControlBars(expected, geometry): Set generated = TestBuildGeneratedSectionModel(expected, bars)
+    Set importer = New CAutoCADSectionModelImporter
+    Set imported = importer.ImportFromModelSpace(TestFakeSpace(contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, _
+        "OUTER", "OPENING", TestFakeLayers(), settings)
+    TestCompareModels label & ".import", generated, imported
+    TestCheck label & ".manualKept", mConfig.Range("B2").Formula = "=1/0" And mConfig.Range("B3").Value2 = "unused"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет обязательность режима, его фактический адрес, строгие ручные шаги
+' и сохранение независимого дробления границы в автоматическом режиме.
+Private Sub TestAutomaticMeshInputs()
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, mesh As CFiberMeshBuilder, geometry As CGeometryRegion
+    Dim mode As Variant, number As Long, description As String, options As TSectionMeshOptions
+    For Each mode In Array(vbNullString, "TODO", "Auto 0.3", CVErr(2015))
+        Set settings = TestMeshSettings(): mConfig.Range("B8").Value2 = mode
+        On Error Resume Next
+        settings.LoadFromRange mConfig.Range("A1:C8")
+        number = Err.Number: description = Err.Description: Err.Clear
+        If number = 0 Then
+            Set units = TestSettingsUnits(settings): options = ReadSectionMeshOptions(settings, units)
+            number = Err.Number: description = Err.Description: Err.Clear
+        End If
+        On Error GoTo 0
+        TestCheck "autoMesh.invalidMode; " & description, number <> 0 And InStr(description, "B8") > 0 And InStr(description, "Mesh.StepMode") > 0
+    Next mode
+    Set settings = TestMeshSettings(2, "cm", 4#, 3#): Set units = TestSettingsUnits(settings)
+    options = ReadSectionMeshOptions(settings, units)
+    TestCheck "autoMesh.userExact", options.StepX = 40# And options.StepY = 30# And options.AutoStepFactor = 0# And options.BoundarySubdivisions = 2
+    mConfig.Range("B2").Value2 = 0#: settings.LoadFromRange mConfig.Range("A1:C8")
+    On Error Resume Next
+    options = ReadSectionMeshOptions(settings, units): number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "autoMesh.userInvalid", number <> 0 And InStr(description, "B2") > 0
+    mConfig.Range("B8").Value2 = "Auto 0.1": mConfig.Range("B4").Value2 = 0#
+    settings.LoadFromRange mConfig.Range("A1:C8")
+    On Error Resume Next
+    options = ReadSectionMeshOptions(settings, units): number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "autoMesh.autoInvalidSubdivision", number <> 0 And InStr(description, "B4") > 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет передачу AutoStepFactor через полноценный CSectionBuilder:
+' ручные шаги при Auto не требуются, дробление 2 сохраняется, ожидаемый шаг 30 мм.
+Private Sub TestAutomaticSectionBuilder()
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
+    Dim builder As CSectionBuilder, options As TSectionMeshOptions, model As CSectionModel, mesh As CFiberMeshBuilder
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "TestAutoMesh"
+    Set path = facade.RectanglePath("Boundary", 0#, 0#, 300#, 500#): facade.Outer "OUTER", path.ID
+    Set path = facade.LinePath("Axis", 40#, 40#, 260#, 40#): facade.RebarByCount "Main", path.ID, 3, 16#
+    Set definition = facade.Finish
+    options.AutoStepFactor = 0.1: options.BoundarySubdivisions = 2: options.MaterialID = 1
+    Set builder = New CSectionBuilder: Set model = builder.Build(definition, options): Set mesh = builder.Mesh
+    TestCheck "autoMesh.sectionBuilder.bars", model.RebarCount = 3
+    TestCheck "autoMesh.sectionBuilder.mainStep", mesh.FiberWidth(1) = 30# And mesh.FiberHeight(1) = 30#
+    Dim i As Long, refined As Boolean
+    For i = 1 To mesh.FiberCount
+        If mesh.FiberWidth(i) = 15# And mesh.FiberHeight(i) = 15# Then refined = True
+    Next i
+    TestCheck "autoMesh.sectionBuilder.refined", refined
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Создаёт систему единиц из того же снимка настроек, который используется для контрольной сетки.
@@ -632,7 +760,7 @@ Private Sub TestCheckImportContracts()
             Set contours = New CSectionContours: contours.AddContourCircle "H", 40#, 40#, 10#, "", "H", "Opening"
             Set space = TestFakeSpace(contours, bars)
         End If
-        settings.LoadFromRange mConfig.Range("A1:C7")
+        settings.LoadFromRange mConfig.Range("A1:C8")
         On Error Resume Next
         Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", IIf(mode = 2, 200#, 0#), units, "OUTER", "OPENING", TestFakeLayers(), settings)
         number = Err.Number: description = Err.Description: Err.Clear

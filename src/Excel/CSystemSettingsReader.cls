@@ -19,7 +19,7 @@ Option Explicit
 
 Private mKeys() As String ' Имена настроек Config: Solver.Method, Capacity.SolutionStrategy и т.п.
 Private mValues() As String ' Значения, которые ввел пользователь или подставили формулы таблицы.
-Private mValueErrors() As String ' Отложенные ошибки оформления: выдаются при запросе активного параметра без подстановки значения.
+Private mValueErrors() As String ' Отложенные ошибки условных полей: выдаются при запросе активного параметра без подстановки значения.
 Private mDefaults() As String ' Сопутствующий текст, переданный при AppendSetting; сам по себе не заменяет пустое значение настройки.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
 Private mLocations() As String ' Лист, адрес и видимый столбец прочитанного значения; только диагностика ввода.
@@ -221,7 +221,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
             Else
                 sourceValue = vbNullString
             End If
-            If Left$(keyValue, 5) = "Plot." Then
+            If Left$(keyValue, 5) = "Plot." Or keyValue = "Mesh.StepX" Or keyValue = "Mesh.StepY" Then ' Ручные шаги не являются входом Auto; в User их ошибки выдаются при обязательном чтении.
                 AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
             Else
                 AppendSetting keyValue, _
@@ -493,9 +493,9 @@ Private Function SignQuantityKey(ByVal caption As String) As String
     End Select
 End Function
 
-' Сохраняет значение оформления вместе с возможной ошибкой ячейки.
-' Ошибка выдаётся при запросе активного параметра; выключенная группа
-' аннотаций не требует чтения своих неиспользуемых полей.
+' Сохраняет условный ввод вместе с возможной ошибкой ячейки.
+' Ошибка выдаётся при запросе активного параметра; выключенные аннотации
+' и автоматический шаг сетки не требуют чтения неиспользуемых ручных полей.
 Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String, _
         ByVal rowIndex As Long, ByVal columnIndex As Long, Optional ByVal source As String = vbNullString)
     Dim value As String, valueError As String

@@ -167,6 +167,7 @@ End Type
 Public Type TSectionMeshOptions
     StepX As Double ' Ширина основной ячейки бетонной сетки, мм.
     StepY As Double ' Высота основной ячейки бетонной сетки, мм.
+    AutoStepFactor As Double ' 0 — использовать StepX/StepY; >0 — одинаковый шаг как доля меньшего габарита бетонной области.
     BoundarySubdivisions As Long ' Число подъячеек вдоль стороны граничной ячейки.
     MaterialID As Long ' Номер материала создаваемых бетонных элементов.
     SourceReference As String ' Сохранённые адреса параметров сетки для пояснения ошибок построения.

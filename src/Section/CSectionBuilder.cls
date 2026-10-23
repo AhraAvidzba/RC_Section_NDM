@@ -30,7 +30,8 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Set mMesh = Nothing: Set mRebars = Nothing: Set mRules = Nothing: Set mModel = Nothing
     If definition Is Nothing Then SectionRecipeError "CSectionBuilder", "Не передано описание геометрии и армирования сечения."
     If Not definition.IsSealed Then SectionRecipeError "CSectionBuilder", "Описание сечения ещё не завершено. Перед сборкой завершите его методом Finish."
-    If meshOptions.StepX <= 0# Or meshOptions.StepY <= 0# Or meshOptions.BoundarySubdivisions < 1 Or meshOptions.MaterialID < 1 Then _
+    If meshOptions.AutoStepFactor < 0# Or (meshOptions.AutoStepFactor = 0# And (meshOptions.StepX <= 0# Or meshOptions.StepY <= 0#)) Or _
+            meshOptions.BoundarySubdivisions < 1 Or meshOptions.MaterialID < 1 Then _
         SectionRecipeError "CSectionBuilder", "Недопустимые внутренние настройки бетонной сетки."
     Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout, rules As CRebarRuleExecutor
     Dim modelBuilder As CSectionModelBuilder, annotationBuilder As CSectionAnnotationBuilder, model As CSectionModel
@@ -38,7 +39,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Set rules = New CRebarRuleExecutor: Set rebars = rules.Build(definition, geometry) ' Сначала проверяем арматуру общим исполнителем правил, затем строим бетонную сетку.
     If rebars.Count = 0 Then SectionRecipeError "CSectionBuilder", "После построения сечения не получен ни один стержень. Проверьте количества и диаметры в исходной таблице выбранного сечения."
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geometry, meshOptions.StepX, meshOptions.StepY, meshOptions.MaterialID, meshOptions.BoundarySubdivisions, meshOptions.SourceReference
+    mesh.BuildMesh geometry, meshOptions.StepX, meshOptions.StepY, meshOptions.MaterialID, meshOptions.BoundarySubdivisions, meshOptions.SourceReference, meshOptions.AutoStepFactor
     Set modelBuilder = New CSectionModelBuilder: Set model = modelBuilder.BuildFromGenerated(mesh, rebars)
     model.GeometryDiagnosticsText = rules.DiagnosticsText
     Dim i As Long

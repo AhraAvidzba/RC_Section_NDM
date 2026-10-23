@@ -214,7 +214,7 @@ End Function
 Private Sub GenerateConcreteFromContour(ByVal model As CSectionModel, ByVal domain As CConcreteRegion, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
     If settings Is Nothing Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
-        "Для генерации бетона по контуру задайте Mesh.StepX, Mesh.StepY и Mesh.BoundarySubdivisions на листе Config."
+        "Для генерации бетона по контуру задайте Mesh.StepMode и Mesh.BoundarySubdivisions на листе Config; в режиме User также задайте Mesh.StepX и Mesh.StepY."
     If units Is Nothing Then
         Set units = New CUnitSystem
         units.LoadFromSettings settings

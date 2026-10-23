@@ -172,6 +172,7 @@ Public Sub TestConfigureShapeFixture(ByVal fixture As String)
     Set units = New CUnitSystem: units.LoadFromSettings settings
     factor = units.InputLengthToInternal(1#)
     TestSetSetting "Geometry.Source", "Generated"
+    TestSetSetting "Mesh.StepMode", "User"
     TestSetSetting "Mesh.StepX", 40# / factor: TestSetSetting "Mesh.StepY", 30# / factor
     TestSetSetting "Mesh.BoundarySubdivisions", 2
     Select Case fixture
