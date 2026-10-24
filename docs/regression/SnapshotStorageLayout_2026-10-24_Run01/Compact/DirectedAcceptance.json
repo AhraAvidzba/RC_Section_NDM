@@ -1,0 +1,56 @@
+{
+  "Status": "PASS",
+  "CandidateSuites": {
+    "No": {
+      "Snapshot": {
+        "Passed": 375,
+        "Failed": 0
+      },
+      "SnapshotUI": {
+        "Passed": 32,
+        "Failed": 0
+      },
+      "Workflow": {
+        "Passed": 114,
+        "Failed": 0
+      },
+      "Formatting": {
+        "Passed": 64,
+        "Failed": 0
+      }
+    },
+    "Yes": {
+      "Snapshot": {
+        "Passed": 375,
+        "Failed": 0
+      },
+      "SnapshotUI": {
+        "Passed": 32,
+        "Failed": 0
+      },
+      "Workflow": {
+        "Passed": 114,
+        "Failed": 0
+      },
+      "Formatting": {
+        "Passed": 64,
+        "Failed": 0
+      }
+    }
+  },
+  "ExactFinalBookSnapshotSuites": {
+    "No": {
+      "Passed": 375,
+      "Failed": 0
+    },
+    "Yes": {
+      "Passed": 375,
+      "Failed": 0
+    }
+  },
+  "Saved30ArchiveRecovery": {
+    "Passed": 45,
+    "Failed": 0
+  },
+  "FullRun": false
+}

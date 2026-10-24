@@ -266,7 +266,7 @@ End Sub
             }}
         }
         $book.SaveCopyAs((Join-Path $directory ('Results_'+$count+'.xlsm'))) # Вне таймера: независимая последующая сверка оформления Results.
-        Copy-Item -LiteralPath (Join-Path $directory 'TestSnapshotIO.ndms') -Destination (Join-Path $directory ('Results_'+$count+'.ndms'))
+        Copy-Item -LiteralPath (Join-Path $directory 'TestSnapshotIO.ndm') -Destination (Join-Path $directory ('Results_'+$count+'.ndm'))
     }
 }catch{
     $reason=$_.Exception.Message

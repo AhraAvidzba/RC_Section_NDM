@@ -1,0 +1,52 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotStorageLayout_2026-10-24_Run01\Candidate03\RC_Section_NDM.xlsm
+SOURCE_SHA256: ED101976A7B5AB58AC9759A5129D512ACA839B38E29163B9934D851F00DA039D
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_62e866c968b540af853da16a151b1b62\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=88976; startTicks=639284400682291655
+===== modTestWorkbookInterface.TestRunSnapshotUiFailureProbe =====
+SUITE_STARTED: modTestWorkbookInterface.TestRunSnapshotUiFailureProbe; 2026-10-24T15:01:14
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=88236; workingSet=123187200; privateBytes=74637312; cpu=136.8125
+EXCEL_AFTER_SUITE: pid=88976; workingSet=161812480; privateBytes=115220480; cpu=15.5625
+EXCEL_AFTER_SUITE: pid=206172; workingSet=223748096; privateBytes=149651456; cpu=217.40625
+OK: ui.plot.missingState.run
+OK: ui.plot.missingState.noError
+OK: ui.plot.missingState.geometryTitle
+OK: ui.plot.missingState.note
+OK: ui.plot.missingState.plotNoSolve
+OK: ui.plot.missingState.buttonGeometryTitle
+OK: ui.plot.missingState.buttonNote
+OK: ui.plot.missingState.buttonNoSolve
+OK: ui.plot.missingState.File.run
+OK: ui.plot.missingState.File.noError
+OK: ui.plot.missingState.File.geometryTitle
+OK: ui.plot.missingState.File.note
+OK: ui.plot.missingState.File.plotNoSolve
+OK: ui.plot.missingState.File.buttonGeometryTitle
+OK: ui.plot.missingState.File.buttonNote
+OK: ui.plot.missingState.File.buttonNoSolve
+OK: ui.results.fullSnapshot.message
+OK: ui.results.fullSnapshot.geometry143
+OK: ui.results.fullSnapshot.elementRows
+OK: ui.results.fullSnapshot.LC_FULL_01.StrengthState
+OK: ui.results.fullSnapshot.LC_FULL_01.CapacityState
+OK: ui.results.fullSnapshot.LC_FULL_01.CrackedState
+OK: ui.results.fullSnapshot.LC_FULL_01.PreCrackState
+OK: ui.results.fullSnapshot.LC_FULL_01.PostCrackState
+OK: ui.results.fullSnapshot.LC_FULL_30.StrengthState
+OK: ui.results.fullSnapshot.LC_FULL_30.CapacityState
+OK: ui.results.fullSnapshot.LC_FULL_30.CrackedState
+OK: ui.results.fullSnapshot.LC_FULL_30.PreCrackState
+OK: ui.results.fullSnapshot.LC_FULL_30.PostCrackState
+OK: ui.results.fullSnapshot.propertiesRows
+OK: ui.results.fullSnapshot.commonGeometryOnly
+OK: ui.results.fullSnapshot.materialRows
+TOTAL SNAPSHOT UI PROBE: passed=32; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_62e866c968b540af853da16a151b1b62\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.TestRunSnapshotUiFailureProbe; 2026-10-24T15:01:25
+SUITE_MODE_OVERRIDE: explicit test setup left Yes; changes discarded on close
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

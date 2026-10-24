@@ -1,0 +1,198 @@
+﻿[
+    {
+        "Kind":  "Header",
+        "Repeat":  0,
+        "Skip":  false,
+        "TotalSeconds":  2.37276289996225,
+        "CheckSeconds":  0.000541099812835455,
+        "Calls":  4
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  0,
+        "Skip":  true,
+        "TotalSeconds":  2.15200650005136,
+        "CheckSeconds":  0,
+        "Calls":  0
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  0,
+        "Readable":  false,
+        "Seconds":  0.0664872999768704
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  0,
+        "Readable":  true,
+        "Seconds":  0.404135700082406
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  1,
+        "Skip":  false,
+        "TotalSeconds":  2.33195539994631,
+        "CheckSeconds":  0.00059860001783818,
+        "Calls":  4
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  1,
+        "Skip":  true,
+        "TotalSeconds":  2.33376179996412,
+        "CheckSeconds":  0,
+        "Calls":  0
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  1,
+        "Readable":  false,
+        "Seconds":  0.0647613001056015
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  1,
+        "Readable":  true,
+        "Seconds":  0.352677499991842
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  2,
+        "Skip":  false,
+        "TotalSeconds":  2.38001590000931,
+        "CheckSeconds":  0.000689199776388705,
+        "Calls":  4
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  2,
+        "Skip":  true,
+        "TotalSeconds":  2.51147929998115,
+        "CheckSeconds":  0,
+        "Calls":  0
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  2,
+        "Readable":  false,
+        "Seconds":  0.0948154999641702
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  2,
+        "Readable":  true,
+        "Seconds":  0.414913200074807
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  3,
+        "Skip":  false,
+        "TotalSeconds":  2.50990840001032,
+        "CheckSeconds":  0.000711799948476255,
+        "Calls":  4
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  3,
+        "Skip":  true,
+        "TotalSeconds":  2.56928179995157,
+        "CheckSeconds":  0,
+        "Calls":  0
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  3,
+        "Readable":  false,
+        "Seconds":  0.0639577999245375
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  3,
+        "Readable":  true,
+        "Seconds":  0.363067500060424
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  4,
+        "Skip":  false,
+        "TotalSeconds":  2.46676129999105,
+        "CheckSeconds":  0.000563799869269133,
+        "Calls":  4
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  4,
+        "Skip":  true,
+        "TotalSeconds":  2.35653840005398,
+        "CheckSeconds":  0,
+        "Calls":  0
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  4,
+        "Readable":  false,
+        "Seconds":  0.0759633000707254
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  4,
+        "Readable":  true,
+        "Seconds":  0.359882100019604
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  5,
+        "Skip":  false,
+        "TotalSeconds":  2.43658420001157,
+        "CheckSeconds":  0.000574600067920983,
+        "Calls":  4
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  5,
+        "Skip":  true,
+        "TotalSeconds":  2.54672669991851,
+        "CheckSeconds":  0,
+        "Calls":  0
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  5,
+        "Readable":  false,
+        "Seconds":  0.0716984000755474
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  5,
+        "Readable":  true,
+        "Seconds":  0.367485300055705
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  6,
+        "Skip":  false,
+        "TotalSeconds":  2.39414039999247,
+        "CheckSeconds":  0.000620799837633967,
+        "Calls":  4
+    },
+    {
+        "Kind":  "Header",
+        "Repeat":  6,
+        "Skip":  true,
+        "TotalSeconds":  2.354209800018,
+        "CheckSeconds":  0,
+        "Calls":  0
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  6,
+        "Readable":  false,
+        "Seconds":  0.0669953000033274
+    },
+    {
+        "Kind":  "Archive",
+        "Repeat":  6,
+        "Readable":  true,
+        "Seconds":  0.358357599936426
+    }
+]

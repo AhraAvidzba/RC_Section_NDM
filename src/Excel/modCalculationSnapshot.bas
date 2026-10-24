@@ -98,7 +98,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Exit Sub
 Failed:
     Dim errorNumber As Long, reason As String, source As String
-    errorNumber = Err.Number: reason = Err.Description: source = Err.source
+    errorNumber = Err.Number: reason = ResultOutputErrorDescription(Err.Description): source = Err.source
     If entered Then EndCalculationSnapshotRead
     guard.Restore
     Err.Raise errorNumber, source, reason
@@ -110,8 +110,11 @@ Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snaps
     For Each key In snapshot.BaseKeys()
         If CStr(key) <> "rngNDMElementResults" Or includeElements Then
             Set anchor = workbook.Names.Item(CStr(key)).RefersToRange
-            If snapshot.TableRowCount(CStr(key)) > anchor.Worksheet.Rows.Count - anchor.Row + 1 Then Err.Raise 5, , _
-                "Таблица " & CStr(key) & " не помещается на Results. Для большого снимка выберите Results.SnapshotStorage = File."
+            If Not ResultRowsFitSheet(anchor.Row, snapshot.TableRowCount(CStr(key)), anchor.Worksheet.Rows.Count) Then
+                Dim reason As String: reason = ResultRowLimitDescription(CStr(key), anchor.Row, snapshot.TableRowCount(CStr(key)), anchor.Worksheet.Rows.Count)
+                If CStr(key) = "rngNDMElementResults" Then reason = reason & vbCrLf & "Что сделать:" & vbCrLf & "1) " & ExternalSnapshotStorageAdvice(workbook) & " Повторите «Обновить схему и результаты»."
+                Err.Raise 5, "ValidateRestoredSnapshotLayout", reason
+            End If
         End If
     Next key
     Dim names As Variant, keys As Variant, nextNames As Variant, headers As Variant, i As Long
@@ -126,6 +129,39 @@ Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snaps
             "В снимке больше строк, чем в текущей раскладке Results: " & CStr(names(i)) & " пересекает " & CStr(nextNames(i)) & ". Увеличьте расстояние между именованными диапазонами."
     Next i
 End Sub
+
+' Проверяет фактическую вместимость листа с учётом первой строки, без переполнения Long.
+' Предел передаётся из Worksheet.Rows.Count: старые форматы Excel имеют другую высоту.
+Public Function ResultRowsFitSheet(ByVal firstRow As Long, ByVal rowCount As Double, ByVal rowLimit As Long) As Boolean
+    If firstRow < 1 Or rowCount < 1# Or rowLimit < firstRow Then Exit Function
+    ResultRowsFitSheet = rowCount <= CDbl(rowLimit) - CDbl(firstRow) + 1#
+End Function
+
+' Называет потребное число строк и фактический предел текущего листа, включая смещение якоря.
+Public Function ResultRowLimitDescription(ByVal tableName As String, ByVal firstRow As Long, ByVal rowCount As Double, ByVal rowLimit As Long) As String
+    ResultRowLimitDescription = tableName & " требует " & Format$(rowCount, "0") & " строк от строки " & CStr(firstRow) & _
+        " (последняя строка " & Format$(CDbl(firstRow) + rowCount - 1#, "0") & "). " & _
+        "Этот лист Excel поддерживает " & CStr(rowLimit) & " строк; ниже начала диапазона доступно " & CStr(rowLimit - firstRow + 1) & "."
+End Function
+
+' Предлагает File с реальным адресом настройки; выбор пользователя автоматически не изменяет.
+Public Function ExternalSnapshotStorageAdvice(ByVal workbook As Object) As String
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
+    settings.LoadFromRange workbook.Names.Item("rngSystemSettings").RefersToRange
+    ExternalSnapshotStorageAdvice = "На Config установите Results.SnapshotStorage = File (" & settings.InputLocation("Results.SnapshotStorage") & _
+        "), чтобы сохранять полный снимок во внешнем файле .ndm: для данных снимка на листе Excel недостаточно строк."
+End Function
+
+' Объясняет подтверждённый отказ Excel из-за объединённых ячеек, сохраняя прочие причины без подмены.
+' Одного кода 1004 недостаточно: он используется Excel для множества разных ошибок.
+Public Function ResultOutputErrorDescription(ByVal original As String) As String
+    ResultOutputErrorDescription = original
+    Dim normalized As String: normalized = LCase$(Replace$(original, "ё", "е"))
+    If (InStr(normalized, "объединен") > 0 And InStr(normalized, "ячей") > 0) Or InStr(normalized, "merged cell") > 0 Then
+        ResultOutputErrorDescription = "Не удалось вывести результаты на лист Results: область вывода попадает в объединённые ячейки. " & _
+            "Снимите объединение в месте вывода или перенесите именованный диапазон в свободную необъединённую область, затем повторите действие."
+    End If
+End Function
 
 ' Сохраняет снимок перед общим обновлением. В режиме Excel прежние общие
 ' таблицы и один LC-блок вместе составляют тот же набор, что внешний файл.

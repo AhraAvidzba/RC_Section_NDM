@@ -1,0 +1,13 @@
+﻿{
+    "Status":  "PASS",
+    "PID":  95812,
+    "StartTicks":  "639284403820613110",
+    "ActualRows":  1048576,
+    "FirstRow":  1048574,
+    "AvailableRows":  3,
+    "FileCalculationSucceeded":  true,
+    "ExcelPreflightRejected":  true,
+    "ExternalFileUnchangedAfterRejection":  true,
+    "SnapshotSHA256":  "8E72739A9C5465462609CAF82EE86EBBB41F6ED20108D5764E669A685C7884FD",
+    "Error":  "ERROR|Все сочетания (30) не помещаются в текущую раскладку или пределы листа Results. Расчет не запущен.\r\nЧто сделать:\r\n1) rngNDMElementResults требует 4321 строк от строки 1048574 (последняя строка 1052894). Этот лист Excel поддерживает 1048576 строк; ниже начала диапазона доступно 3.\r\n2) На Config установите Results.SnapshotStorage = File (лист Config, ячейка B8), чтобы сохранять полный снимок во внешнем файле .ndm: для данных снимка на листе Excel недостаточно строк.\r\n3) Либо на листе Config уменьшите число строк в rngLoadCombinations."
+}

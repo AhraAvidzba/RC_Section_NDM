@@ -22,6 +22,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotUTF16Strings
     TestSnapshotAdaptiveExtent
     TestSnapshotStatusSpans
+    TestSnapshotOutputGuards
     TestSnapshotSeparatedProperties
     Dim initial As CSystemSettingsReader: Set initial = New CSystemSettingsReader: initial.LoadFromWorkbook ThisWorkbook
     Dim extension As String: extension = initial.GetRequiredString("General.DiagramExtension")
@@ -37,6 +38,7 @@ Public Function RunCalculationSnapshotTests() As String
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim original As CCalculationSnapshot: Set original = store.LoadSheet(ThisWorkbook)
     TestSnapshotOneUseSource
+    TestSnapshotNativeLayout original
     TestSnapshotValidationReuse original
     TestSnapshotElementIndex
     Dim originalPlot As String: originalPlot = TestSnapshotPlot()
@@ -57,10 +59,13 @@ Public Function RunCalculationSnapshotTests() As String
     Dim token As String: token = "TestSnapshot_" & Format$(Now, "yyyymmdd_hhnnss")
     TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
     Dim path As String: path = store.SnapshotPath(ThisWorkbook)
-    TestSnapshotCheck "name.extensionAutomatic", path = ThisWorkbook.Path & Application.PathSeparator & token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotCheck "name.extensionAutomatic", path = ThisWorkbook.Path & Application.PathSeparator & token & "_" & ChrW$(&H3B1) & ".ndm"
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndm"
+    TestSnapshotCheck "name.explicitSuffixCompatible", store.SnapshotPath(ThisWorkbook) = path
     TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndms"
     TestSnapshotCheck "name.previousSuffixCompatible", store.SnapshotPath(ThisWorkbook) = path
     TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
+    TestSnapshotLegacyFile original, store
     store.SaveFile ThisWorkbook, original
     Dim fileSnapshot As CCalculationSnapshot: Set fileSnapshot = store.LoadFile(ThisWorkbook)
     TestSnapshotEqual "file.allTables", original, fileSnapshot
@@ -85,12 +90,12 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotCheck "file.savedProfile.export", Audit02ReadExportSnapshotForTests(ThisWorkbook) = originalExport
     header.Value2 = "PR1"
     ' Новый выбранный файл не должен менять показанное НДС до нажатия кнопки.
-    TestSnapshotSetting "Results.SnapshotName", token & "_other.ndms"
+    TestSnapshotSetting "Results.SnapshotName", token & "_other.ndm"
     TestSnapshotCheck "selection.keepsDisplayed", TestSnapshotPlot() = originalPlot
     TestSnapshotCheck "missing.rejected", TestSnapshotRefreshRejected()
     TestSnapshotCheck "readScope.afterFailure", TestCalculationSnapshotReadReleased()
     TestSnapshotCheck "missing.keepsGeometry", TestSnapshotSameMatrix(geometry, ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry"))
-    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndm"
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
     Dim value As Byte: file.OpenUpdate path: file.Position = 95: value = file.ReadByte
     file.Position = 95: file.WriteByte value Xor 1: file.CloseFile
@@ -110,14 +115,14 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotCheck "overwrite.oneFile", Not CreateObject("Scripting.FileSystemObject").FileExists(path & ".part") And CreateObject("Scripting.FileSystemObject").FileExists(path)
     TestSnapshotUpper second
     Dim secondPlot As String: secondPlot = TestSnapshotPlot()
-    TestSnapshotSetting "Results.SnapshotName", token & "_other.ndms": store.SaveFile ThisWorkbook, original
+    TestSnapshotSetting "Results.SnapshotName", token & "_other.ndm": store.SaveFile ThisWorkbook, original
     Dim inputs As Variant: inputs = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Formula
     TestSnapshotCorruptUpper
     UpdateSectionResultsForWorkbook ThisWorkbook
     TestSnapshotUpper original
     TestSnapshotCheck "switch.otherSection.plot", TestSnapshotPlot() = originalPlot
     TestSnapshotCheck "switch.inputPreserved", TestSnapshotSameMatrix(inputs, ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Formula)
-    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndms": UpdateSectionResultsForWorkbook ThisWorkbook
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndm": UpdateSectionResultsForWorkbook ThisWorkbook
     TestSnapshotCheck "switch.back.plot", TestSnapshotPlot() = secondPlot
     ' Никакого обращения к решателю при обновлении: даже ошибочный solver Config допустим.
     TestSnapshotSetting "Solver.MaxIterations", "not_a_number"
@@ -128,11 +133,11 @@ Public Function RunCalculationSnapshotTests() As String
     SaveAndDisplayCalculationSnapshot ThisWorkbook, second
     TestSnapshotEqual "sheet.afterFile", second, store.LoadSheet(ThisWorkbook)
     Dim invalidName As Variant
-    For Each invalidName In Array("../escape", "CON.ndms", "a:b", "", "NUL", "LPT1.ndms")
+    For Each invalidName In Array("../escape", "CON.ndm", "a:b", "", "NUL", "LPT1.ndm")
         TestSnapshotSetting "Results.SnapshotName", CStr(invalidName)
         TestSnapshotCheck "name.rejected." & CStr(invalidName), TestSnapshotPathRejected(store)
     Next invalidName
-    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndm"
     Dim preview As String: preview = FormSectionForWorkbook(ThisWorkbook)
     TestSnapshotCheck "preview.clearsSnapshot", Not store.HasSheetSnapshot(ThisWorkbook) And Not store.HasFileReference(ThisWorkbook)
     TestSnapshotCheck "readScope.afterPreview", TestCalculationSnapshotReadReleased()
@@ -148,10 +153,133 @@ Finished:
     On Error Resume Next
     If Not store Is Nothing Then store.ClearReference ThisWorkbook
     If Len(path) > 0 Then If CreateObject("Scripting.FileSystemObject").FileExists(path) Then CreateObject("Scripting.FileSystemObject").DeleteFile path
-    Dim otherPath As String: otherPath = ThisWorkbook.Path & Application.PathSeparator & token & "_other.ndms"
+    Dim otherPath As String: otherPath = ThisWorkbook.Path & Application.PathSeparator & token & "_other.ndm"
     If Len(token) > 0 Then If CreateObject("Scripting.FileSystemObject").FileExists(otherPath) Then CreateObject("Scripting.FileSystemObject").DeleteFile otherPath
     On Error GoTo 0
     RunCalculationSnapshotTests = mTestReport & "TOTAL CALCULATION SNAPSHOT: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет границы старого и нового листа, большие оценки и точную классификацию ошибки объединения.
+Private Sub TestSnapshotOutputGuards()
+    Dim limit As Variant
+    For Each limit In Array(65536, ThisWorkbook.Worksheets("Results").Rows.Count)
+        TestSnapshotCheck "rows.exact." & CStr(limit), ResultRowsFitSheet(156, CDbl(limit) - 155#, CLng(limit))
+        TestSnapshotCheck "rows.offsetOverflow." & CStr(limit), Not ResultRowsFitSheet(156, CDbl(limit) - 154#, CLng(limit))
+        TestSnapshotCheck "rows.totalOverflow." & CStr(limit), Not ResultRowsFitSheet(1, CDbl(limit) + 1#, CLng(limit))
+        TestSnapshotCheck "rows.largeDouble." & CStr(limit), Not ResultRowsFitSheet(156, 5000000000#, CLng(limit))
+    Next limit
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    TestSnapshotCheck "rows.estimateNoLongOverflow", writer.EstimatedElementResultRows(1000000, 5000) = 5000000001#
+    Dim russian As String, english As String
+    russian = ResultOutputErrorDescription("Мы не можем это сделать в объединенной ячейке.")
+    english = ResultOutputErrorDescription("We can't do that to a merged cell.")
+    TestSnapshotCheck "merged.russian", InStr(russian, "Не удалось вывести результаты на лист Results") > 0 And InStr(russian, "Снимите объединение") > 0
+    TestSnapshotCheck "merged.english", english = russian
+    TestSnapshotCheck "merged.other1004Unchanged", ResultOutputErrorDescription("Application-defined or object-defined error") = "Application-defined or object-defined error"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отказ до solver у последней строки, частичное объединение и оформление перенесённой шапки.
+Private Sub TestSnapshotNativeLayout(ByVal original As CCalculationSnapshot)
+    Dim name As Object: Set name = ThisWorkbook.Names.Item("rngNDMElementResults")
+    Dim previous As String: previous = name.RefersTo
+    Dim anchor As Object: Set anchor = name.RefersToRange
+    Dim limit As Long: limit = anchor.Worksheet.Rows.Count
+    name.RefersTo = "=" & anchor.Worksheet.Cells(limit - 2, anchor.Column).Address(External:=True)
+    Dim solves As Long: solves = SectionEquilibriumSolveCount()
+    Dim reason As String: reason = TestSnapshotCalculationError()
+    TestSnapshotCheck "rows.native.preflight", InStr(reason, "Results.SnapshotStorage = File") > 0 And InStr(reason, CStr(limit)) > 0 And InStr(reason, "1)") > 0
+    TestSnapshotCheck "rows.native.noSolver", SectionEquilibriumSolveCount() = solves
+    reason = TestSnapshotPreparedRefreshError(original)
+    TestSnapshotCheck "rows.native.restoreAdvice", InStr(reason, "1) На Config установите Results.SnapshotStorage = File") > 0
+    name.RefersTo = previous
+    UpdateSectionResultsForWorkbook ThisWorkbook, original
+    TestSnapshotUpper original
+    Set name = ThisWorkbook.Names.Item("rngNDMLoadCaseResults")
+    previous = name.RefersTo
+    Set anchor = ThisWorkbook.Worksheets("Results").Cells(500, 500)
+    anchor.Offset(0, -1).Resize(1, 2).Merge
+    name.RefersTo = "=" & anchor.Address(External:=True)
+    reason = TestSnapshotPreparedRefreshError(original)
+    TestSnapshotCheck "merged.native.refresh", InStr(reason, "область вывода попадает в объединённые ячейки") > 0
+    reason = TestSnapshotCalculationError()
+    TestSnapshotCheck "merged.native.calculate", InStr(reason, "область вывода попадает в объединённые ячейки") > 0
+    anchor.Offset(0, -1).Resize(1, 2).UnMerge
+    name.RefersTo = previous
+    UpdateSectionResultsForWorkbook ThisWorkbook, original
+    TestSnapshotSetting "General.ReformatResultsEnabled", "No"
+    Set name = ThisWorkbook.Names.Item("rngBatchSummary")
+    previous = name.RefersTo
+    Set anchor = ThisWorkbook.Worksheets("Results").Cells(name.RefersToRange.Row, 500)
+    name.RefersTo = "=" & anchor.Address(External:=True)
+    UpdateSectionResultsForWorkbook ThisWorkbook, original
+    TestSnapshotUpper original
+    TestSnapshotCheck "minimal.movedHeaderCreated", anchor.Cells(6, 1).Font.Bold
+    anchor.Cells(6, 1).Font.Color = RGB(12, 34, 56)
+    UpdateSectionResultsForWorkbook ThisWorkbook, original
+    TestSnapshotCheck "minimal.recognizedHeaderPreserved", CLng(anchor.Cells(6, 1).Font.Color) = RGB(12, 34, 56)
+    name.RefersTo = previous
+    TestSnapshotSetting "General.ReformatResultsEnabled", "Yes"
+    UpdateSectionResultsForWorkbook ThisWorkbook, original
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает реальную причину отказа расчёта в частной книге без изменения ожиданий.
+Private Function TestSnapshotCalculationError() As String
+    On Error GoTo Rejected
+    Dim message As String: message = RunSectionCalculationForWorkbook(ThisWorkbook)
+    Exit Function
+Rejected:
+    TestSnapshotCalculationError = Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Передаёт готовый снимок, чтобы проверить размещение без повторного чтения уже перенесённого якоря.
+Private Function TestSnapshotPreparedRefreshError(ByVal original As CCalculationSnapshot) As String
+    On Error GoTo Rejected
+    UpdateSectionResultsForWorkbook ThisWorkbook, original
+    Exit Function
+Rejected:
+    TestSnapshotPreparedRefreshError = Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Старый суффикс читается только при отсутствии нового; повреждение нового не маскируется старым.
+Private Sub TestSnapshotLegacyFile(ByVal original As CCalculationSnapshot, ByVal store As CCalculationSnapshotStore)
+    Dim path As String: path = store.SnapshotPath(ThisWorkbook)
+    Dim previous As String: previous = Left$(path, Len(path) - 4) & ".ndms"
+    Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
+    Dim checksum As CFileChecksum: Set checksum = New CFileChecksum
+    store.SaveFile ThisWorkbook, original
+    fileSystem.MoveFile path, previous ' FSO сохраняет Unicode имени; оператор VBA Name зависит от системной кодовой страницы.
+    Dim hash As String: hash = checksum.FileSHA256(previous)
+    TestSnapshotEqual "legacy.load", original, store.LoadFile(ThisWorkbook)
+    store.LinkFile ThisWorkbook
+    TestSnapshotEqual "legacy.link", original, store.LoadLinkedFile(ThisWorkbook)
+    store.SaveFile ThisWorkbook, original
+    TestSnapshotCheck "legacy.saveNewSuffix", fileSystem.FileExists(path) And checksum.FileSHA256(previous) = hash
+    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
+    Dim value As Byte: file.OpenUpdate path: file.Position = 95: value = file.ReadByte
+    file.Position = 95: file.WriteByte value Xor 1: file.CloseFile
+    TestSnapshotCheck "legacy.corruptPreferredRejected", TestSnapshotFileRejected(store)
+    TestSnapshotCheck "legacy.oldFileUntouched", checksum.FileSHA256(previous) = hash
+    store.SaveFile ThisWorkbook, original
+    file.OpenUpdate previous: file.Position = 95: value = file.ReadByte
+    file.Position = 95: file.WriteByte value Xor 1: file.CloseFile
+    TestSnapshotEqual "legacy.preferredWins", original, store.LoadFile(ThisWorkbook)
+    fileSystem.DeleteFile previous
+    store.ClearReference ThisWorkbook
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Неудачное чтение выбранного файла обязано вернуть ошибку, не переключаясь на старый снимок.
+Private Function TestSnapshotFileRejected(ByVal store As CCalculationSnapshotStore) As Boolean
+    On Error GoTo Rejected
+    Dim snapshot As CCalculationSnapshot: Set snapshot = store.LoadFile(ThisWorkbook)
+    Exit Function
+Rejected:
+    TestSnapshotFileRejected = True
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -588,13 +716,50 @@ Private Sub TestSnapshotRepeatedImportedAnnotations(ByVal extension As String)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет полноту служебного дополнения на уже рассчитанном снимке любой геометрии и числа LC.
+' Внешний runner сохраняет исходный файл и вызывает метод только в своей частной копии.
+Public Function TestSheetArchiveRecovery() As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    On Error GoTo Failed
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    Dim original As CCalculationSnapshot: Set original = store.LoadSheet(ThisWorkbook)
+    Dim target As Object: Set target = ThisWorkbook.Names.Item("rngNDMLoadCaseResults").RefersToRange
+    Dim count As Long: count = CLng(target.Offset(2, 1).Value2)
+    TestSnapshotCheck "archive.payloadBelowHeader", count > 0 And Len(CStr(target.Offset(3, 1).Value2)) > 100
+    TestSnapshotCheck "archive.visibleTextFormat", target.Offset(3, 1).NumberFormat = "@" And Len(CStr(target.Offset(3, 1).Text)) > 0
+    TestSnapshotCheck "archive.bodyBorders", target.Offset(3, 1).Borders(10).LineStyle = 1
+    TestSnapshotCheck "archive.geometrySeparate", TestSnapshotCommonOnly(original.Table("rngNDMSectionProperties"))
+    Dim keys As Variant: keys = original.Keys()
+    TestSnapshotCheck "archive.sixteenTables", UBound(keys) - LBound(keys) + 1 = 16
+    Dim header As Object: Set header = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange.Find("PR1", LookAt:=1)
+    If header Is Nothing Then Err.Raise 5, , "В частном снимке не найден PR1."
+    Dim plot As String: plot = TestSnapshotPlot()
+    TestSnapshotCorruptUpper
+    header.Value2 = "PR91"
+    TestSnapshotSetting "Solver.MaxIterations", "not_a_number"
+    Dim solves As Long: solves = SectionEquilibriumSolveCount()
+    UpdateSectionResultsForWorkbook ThisWorkbook
+    TestSnapshotCheck "archive.noSolver", SectionEquilibriumSolveCount() = solves
+    TestSnapshotCheck "archive.savedProfilePlot", TestSnapshotPlot() = plot
+    TestSnapshotUpper original
+    TestSnapshotEqual "archive.allTablesAfterRestore", original, store.LoadSheet(ThisWorkbook)
+    header.Value2 = "PR1"
+    TestSnapshotSetting "Solver.MaxIterations", "100"
+    GoTo Finished
+Failed:
+    TestSnapshotCheck "archive.runtime " & CStr(Err.Number) & ": " & Err.Description, False
+Finished:
+    TestSheetArchiveRecovery = mTestReport & "TOTAL SHEET ARCHIVE: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Готовит реальный расчёт для внешней проверки Save/Close/Open и Save As.
 ' Runner вызывает его только в своей записываемой копии; пользовательские книги не участвуют.
 Public Function TestPrepareSnapshotReopen(ByVal mode As String) As String
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     modTestPerformance.TestConfigurePerformanceFixture "MIXED", 6, "Newton", "Circle", "Normal", settings.GetRequiredString("General.DiagramExtension")
     TestSnapshotSetting "Results.SnapshotStorage", mode
-    TestSnapshotSetting "Results.SnapshotName", "TestReopen_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotSetting "Results.SnapshotName", "TestReopen_" & ChrW$(&H3B1) & ".ndm"
     TestSnapshotSetting "General.ExecutionReportEnabled", "No"
     TestSnapshotSetting "Plot.LoadCase", "PERF_01"
     TestSnapshotSetting "AutoCAD.Export.CombinationID", "PERF_01"

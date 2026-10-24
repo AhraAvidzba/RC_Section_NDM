@@ -58,10 +58,10 @@ Public Function OutputColumnCount(ByVal rangeName As String) As Long
 End Function
 
 ' Оценивает наибольшее число строк таблицы элементов rngNDMElementResults до начала расчёта.
-Public Function EstimatedElementResultRows(ByVal elementCount As Long, ByVal namedStateCount As Long) As Long
+Public Function EstimatedElementResultRows(ByVal elementCount As Long, ByVal namedStateCount As Long) As Double
     If elementCount < 0 Then elementCount = 0
     If namedStateCount < 0 Then namedStateCount = 0
-    EstimatedElementResultRows = 1 + elementCount * namedStateCount
+    EstimatedElementResultRows = 1# + CDbl(elementCount) * CDbl(namedStateCount) ' Оценка большого снимка должна дойти до проверки предела листа, не переполнив Long.
 End Function
 
 ' До расчёта оценивает размер rngNDMSectionProperties по наибольшему числу сохраняемых НДС.

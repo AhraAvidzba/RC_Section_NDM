@@ -1,0 +1,15 @@
+{
+  "ModuleCount": 177,
+  "MethodCount": 5970,
+  "MissingModuleHeaders": [],
+  "MissingMethodHeaders": [],
+  "MissingTestMarkers": [],
+  "MissingTestNames": [],
+  "MissingTestModuleNames": [],
+  "MissingTestModuleMarkers": [],
+  "MissingTestDividers": [],
+  "ContractNameExceptions": 121,
+  "ContractAccessorExceptions": 129,
+  "RawAuditSHA256": "A78C066205E7C07073A0840EBC05AD9B10CC6FE8DF3755DEEF67BC2C66800DB6",
+  "FullRawAuditKeptLocally": true
+}

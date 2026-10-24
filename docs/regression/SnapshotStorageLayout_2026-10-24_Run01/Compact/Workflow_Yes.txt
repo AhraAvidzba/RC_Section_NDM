@@ -1,0 +1,133 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotStorageLayout_2026-10-24_Run01\Candidate03\RC_Section_NDM.xlsm
+SOURCE_SHA256: ED101976A7B5AB58AC9759A5129D512ACA839B38E29163B9934D851F00DA039D
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_fac382aa66c8438c8a9ef2b8c66e920e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=116240; startTicks=639284401956914683
+===== modTestWorkbookInterface.RunSectionWorkflowCalculationTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunSectionWorkflowCalculationTests; 2026-10-24T15:03:21
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=116240; workingSet=171921408; privateBytes=117886976; cpu=22.671875
+EXCEL_AFTER_SUITE: pid=203404; workingSet=147021824; privateBytes=90927104; cpu=8.328125
+EXCEL_AFTER_SUITE: pid=206172; workingSet=224215040; privateBytes=150355968; cpu=236.578125
+OK: ui.run.message
+OK: ui.run.capacity.na
+OK: ui.run.direct.status
+OK: ui.run.strainPlane
+OK: ui.run.crack
+OK: ui.run.system.noLegacyMainInput
+OK: ui.run.system.materialDiagramControls
+OK: ui.strengthSummary.currentDepths
+OK: ui.strengthSummary.direct.noCapacityDepths
+OK: ui.results.elements.header
+OK: ui.results.elements.rows
+OK: ui.results.elements.noCombinationIndex
+OK: ui.results.elements.materialType
+OK: ui.results.elements.units
+OK: ui.results.elements.noGeometryDup
+OK: ui.results.elements.noPlaneDup
+OK: ui.results.elements.physicalStateAlign
+OK: ui.results.geometry.header
+OK: ui.results.geometry.rows
+OK: ui.results.strength.anchor
+OK: ui.results.crack.anchor
+OK: ui.results.stability.anchor
+OK: ui.results.geometry.position
+OK: ui.results.contours.position
+OK: ui.results.properties.position
+OK: ui.results.materialDiagrams.position
+OK: ui.results.annotations.position
+OK: ui.results.geometry.noSource
+OK: ui.results.geometry.noMaterialClass
+OK: ui.results.properties.header
+OK: ui.results.properties.hasStateEpsilon0
+OK: ui.results.properties.hasStateNeutralLine
+OK: ui.results.properties.noLegacyPlane
+OK: ui.results.properties.hasBounds
+OK: ui.results.properties.commonLoadReference
+OK: ui.results.properties.hasTransformedAxes
+OK: ui.results.properties.noLegacyTransformedAliases
+OK: ui.results.properties.noLcLoadReference
+OK: ui.results.properties.transformedArea.moduli; actual=0.084053028172; expected=0.084053028172
+OK: ui.results.properties.transformedCoreDistance.positive
+OK: ui.results.properties.transformedCoreDistance.axis1Sym; actual=0.038240711975; expected=0.038240711975
+OK: ui.results.properties.transformedCoreDistance.axis2Sym; actual=0.038240711975; expected=0.038240711975
+OK: ui.results.properties.transformedCoreDistanceXY.positive
+OK: ui.results.properties.concreteCoreDistanceXY.exists
+OK: ui.results.annotations.header
+OK: ui.results.annotations.rows
+OK: ui.results.materialDiagrams.header
+OK: ui.results.materialDiagrams.rows
+OK: ui.results.materialDiagrams.stateType
+OK: ui.results.materialDiagrams.role
+OK: ui.results.materialDiagrams.diagramId
+OK: ui.results.materialDiagrams.spec
+OK: ui.results.materialDiagrams.mode
+OK: ui.results.materialDiagrams.noPurpose
+OK: ui.results.materialDiagrams.noLoadCase
+OK: ui.results.materialDiagrams.usedStates
+OK: ui.plot.chart.created
+OK: ui.plot.title.comment
+OK: ui.plot.title.overlay
+OK: ui.profiles.topHeader.noDuplicateParameter
+OK: ui.profiles.lowerHeader.parameter
+OK: ui.profiles.pr3.default
+OK: ui.profiles.pr4.default
+OK: ui.profiles.visualizationStressPrecision.default
+OK: ui.rectangles.message
+OK: ui.rectangles.result.status
+OK: ui.rectangles.system.perSectionInput
+OK: ui.rectangles.system.materialDiagramControls
+OK: workflow.form.noSolver
+OK: workflow.form.autoPreview
+OK: workflow.form.elapsedMessage
+OK: workflow.preview.noSolver
+OK: workflow.calculate.elapsed; actual=0.625; expected=0.64453125
+OK: workflow.calculate.elapsedMessage
+OK: workflow.calculate.noFormationMessages
+OK: workflow.calculate.savedFormationDiagnostic
+OK: workflow.calculate.frozenSource
+OK: workflow.calculate.geometryExact
+OK: workflow.calculate.contoursExact
+OK: workflow.calculate.eightBars
+OK: workflow.repeat.completed
+OK: workflow.repeat.geometryExact
+OK: workflow.repeat.contoursExact
+OK: workflow.repeat.force; actual=-10.197162129779; expected=-10.197162129779
+OK: workflow.plotError.warning
+OK: workflow.plotError.force; actual=-10.197162129779; expected=-10.197162129779
+OK: workflow.visualizationError.warning
+OK: workflow.visualizationError.force; actual=-10.197162129779; expected=-10.197162129779
+OK: workflow.failedForm.reason
+OK: workflow.failedForm.geometryPreserved
+OK: workflow.failedForm.contoursPreserved
+OK: workflow.reform.independentLoads
+OK: workflow.reform.changed
+OK: workflow.reform.clearsStates
+OK: workflow.reform.previewOnly
+OK: workflow.optional.completed
+OK: workflow.optional.statesExact
+OK: workflow.optional.plotAvailable
+OK: workflow.noAnnotations.completed
+OK: workflow.noAnnotations.statesExact
+OK: loadActivation.Excel.message.0
+OK: loadActivation.Excel.resultsPreserved.0
+OK: loadActivation.Excel.scopeReleased.0
+OK: loadActivation.Excel.message.1
+OK: loadActivation.Excel.resultsPreserved.1
+OK: loadActivation.Excel.scopeReleased.1
+OK: loadActivation.File.message.0
+OK: loadActivation.File.resultsPreserved.0
+OK: loadActivation.File.scopeReleased.0
+OK: loadActivation.File.bytesPreserved.0
+OK: loadActivation.File.message.1
+OK: loadActivation.File.resultsPreserved.1
+OK: loadActivation.File.scopeReleased.1
+OK: loadActivation.File.bytesPreserved.1
+TOTAL_WORKFLOW_CALCULATION: passed=114; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_fac382aa66c8438c8a9ef2b8c66e920e\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunSectionWorkflowCalculationTests; 2026-10-24T15:03:38
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

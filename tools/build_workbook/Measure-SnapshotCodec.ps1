@@ -165,7 +165,7 @@ End Sub
 '@
     $component=$book.VBProject.VBComponents.Add(1);$component.Name='modTestSnapshotCodec';$component.CodeModule.AddFromString($helper)
     $settings=$book.Names.Item('rngSystemSettings').RefersToRange;$values=$settings.Value2
-    for($row=1;$row -le $values.GetLength(0);$row++){if([string]$values[$row,1] -ceq 'Results.SnapshotName'){$settings.Cells.Item($row,2).Value2='TestSnapshotCodec.ndms'}}
+    for($row=1;$row -le $values.GetLength(0);$row++){if([string]$values[$row,1] -ceq 'Results.SnapshotName'){$settings.Cells.Item($row,2).Value2='TestSnapshotCodec.ndm'}}
     $app.VBE.ActiveVBProject=$book.VBProject;$compile=$app.VBE.CommandBars.FindControl(1,578);if($compile.Enabled){$compile.Execute()};if($compile.Enabled){throw 'Codec measurement did not compile.'}
     $actions=@('SaveFile','LoadFile','WriteSheet','ReadSheet');if($Scope -eq 'File'){$actions=@('SaveFile','LoadFile')}
     foreach($count in $Elements){foreach($state in $States){
@@ -179,7 +179,7 @@ End Sub
                 Write-Output ($record|ConvertTo-Json -Compress)
             }
         }
-        $path=Join-Path $directory ('Payload_'+$count+'_'+$state+'.ndms');Copy-Item -LiteralPath (Join-Path $directory 'TestSnapshotCodec.ndms') -Destination $path
+        $path=Join-Path $directory ('Payload_'+$count+'_'+$state+'.ndm');Copy-Item -LiteralPath (Join-Path $directory 'TestSnapshotCodec.ndm') -Destination $path
         [ordered]@{Elements=$count;States=$state;SHA256=(Get-FileHash -LiteralPath $path).Hash;Bytes=(Get-Item -LiteralPath $path).Length}|ConvertTo-Json -Compress|Add-Content -LiteralPath (Join-Path $directory 'Payloads.jsonl') -Encoding UTF8
         [void]$app.Run("'$($book.Name)'!modTestSnapshotCodec.TestRelease")
     }}

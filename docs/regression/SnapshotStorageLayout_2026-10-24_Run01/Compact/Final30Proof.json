@@ -1,0 +1,49 @@
+﻿{
+    "Status":  "PASS",
+    "PID":  98440,
+    "StartTicks":  "639284398227151938",
+    "Concrete":  1232,
+    "Rebar":  8,
+    "Combinations":  30,
+    "ArchiveParts":  16,
+    "ArchivePhysicalRows":  19,
+    "ArchiveRange":  "$AY$156:$AZ$174",
+    "VisibleArchive":  true,
+    "BodyStyles":  [
+                       {
+                           "Name":  "rngNDMElementResults",
+                           "Font":  "Arial",
+                           "FontSize":  9,
+                           "Border":  1,
+                           "BorderColor":  13158600,
+                           "Horizontal":  -4108,
+                           "Vertical":  -4108,
+                           "Wrap":  false
+                       },
+                       {
+                           "Name":  "rngNDMLoadCaseResults",
+                           "Font":  "Arial",
+                           "FontSize":  9,
+                           "Border":  1,
+                           "BorderColor":  13158600,
+                           "Horizontal":  -4108,
+                           "Vertical":  -4108,
+                           "Wrap":  false
+                       },
+                       {
+                           "Name":  "rngNDMSectionContours",
+                           "Font":  "Arial",
+                           "FontSize":  9,
+                           "Border":  1,
+                           "BorderColor":  13158600,
+                           "Horizontal":  -4108,
+                           "Vertical":  -4108,
+                           "Wrap":  false
+                       }
+                   ],
+    "Components":  178,
+    "ImportedComponents":  0,
+    "NoTemporaryInstrumentation":  true,
+    "NativeRecoveryFailed":  0,
+    "WorksheetRows":  1048576
+}

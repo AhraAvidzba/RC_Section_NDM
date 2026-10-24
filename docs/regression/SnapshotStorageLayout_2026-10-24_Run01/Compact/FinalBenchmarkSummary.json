@@ -1,0 +1,30 @@
+{
+  "Status": "PASS",
+  "Concrete": 1232,
+  "Rebar": 8,
+  "Combinations": 30,
+  "Repeats": 6,
+  "Warmups": 1,
+  "SkipHeaderFalse": {
+    "RefreshMedianSeconds": 2.4153623000020197,
+    "CheckMedianSeconds": 0.0006096999277360735,
+    "CallsPerRefresh": 4
+  },
+  "SkipHeaderTrue": {
+    "RefreshMedianSeconds": 2.434008850017565,
+    "CheckMedianSeconds": 0.0,
+    "CallsPerRefresh": 0
+  },
+  "ReadableFalse": {
+    "SaveMedianSeconds": 0.0693468500394374,
+    "Min": 0.0639577999245375,
+    "Max": 0.0948154999641702
+  },
+  "ReadableTrue": {
+    "SaveMedianSeconds": 0.361474800040014,
+    "Min": 0.352677499991842,
+    "Max": 0.414913200074807
+  },
+  "Decision": "Keep header checks and compact Base64; archive rows are now visible and use neighboring table styling.",
+  "Limitations": "Header bypass measured only matching prepared headers; it is not a correct functional replacement. Readable prototype measures assembly, block write and formatting of all 10 extra matrices, not an implemented production reader. Whole-calculation acceleration is not claimed."
+}

@@ -19,6 +19,8 @@ Private Declare PtrSafe Function MoveFileExW Lib "kernel32" (ByVal source As Lon
 Private Declare PtrSafe Sub CopySnapshotBits Lib "kernel32" Alias "RtlMoveMemory" (ByRef target As Currency, ByRef source As Double, ByVal count As LongPtr)
 Private Declare PtrSafe Sub CopyPackedBytes Lib "kernel32" Alias "RtlMoveMemory" (ByVal target As LongPtr, ByVal source As LongPtr, ByVal count As LongPtr)
 Private Const MAGIC As String = "NDMSNP04" ' Контракт плотных колонок и точных повторяющихся серий версии 4.
+Private Const FILE_EXTENSION As String = ".ndm" ' Имя в Config не требует расширения; новые снимки получают один общий суффикс.
+Private Const LEGACY_FILE_EXTENSION As String = ".ndms" ' Прежние файлы доступны для чтения без изменения их содержимого или имени.
 Private Const SNAPSHOT_RANGE As String = "rngNDMLoadCaseResults" ' Единственный новый именованный диапазон Results.
 Private Const CHUNK_BYTES As Long = 18000 ' Base64 меньше предела 32767 символов одной ячейки Excel.
 Private Const LINK_PREFIX As String = "NDM.CalculationSnapshot." ' Привязка показанных результатов к уже загруженному файлу.
@@ -37,7 +39,7 @@ End Function
 
 ' Связывает Results с точным файлом после успешного сохранения или загрузки.
 Public Sub LinkFile(ByVal workbook As Object)
-    Dim path As String: path = SnapshotPath(workbook)
+    Dim path As String: path = SelectedReadPath(workbook)
     Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
     Dim digest As CFileChecksum: Set digest = New CFileChecksum
     SetLink workbook, "File", fileSystem.GetFileName(path)
@@ -96,6 +98,11 @@ Public Function SnapshotPath(ByVal workbook As Object) As String
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
     settings.LoadFromRange workbook.Names.Item("rngSystemSettings").RefersToRange
     Dim name As String: name = Trim$(settings.GetRequiredString("Results.SnapshotName"))
+    If LCase$(Right$(name, Len(LEGACY_FILE_EXTENSION))) = LEGACY_FILE_EXTENSION Then
+        name = Left$(name, Len(name) - Len(LEGACY_FILE_EXTENSION))
+    ElseIf LCase$(Right$(name, Len(FILE_EXTENSION))) = FILE_EXTENSION Then
+        name = Left$(name, Len(name) - Len(FILE_EXTENSION))
+    End If
     Dim token As Variant, invalid As Boolean
     For Each token In Array("\", "/", ":", "*", "?", Chr$(34), "<", ">", "|")
         If InStr(name, CStr(token)) > 0 Then invalid = True
@@ -111,12 +118,21 @@ Public Function SnapshotPath(ByVal workbook As Object) As String
     End If
     If Len(name) = 0 Or Len(name) > 180 Or Right$(name, 1) = "." Or Right$(name, 1) = " " Then invalid = True
     If invalid Then Err.Raise 5, "CCalculationSnapshotStore", settings.InputErrorMessage( _
-        "Results.SnapshotName", "Требуется допустимое имя снимка без пути.", "Введите, например, NDM_Snapshot; расширение .ndms добавляется автоматически.")
-    If LCase$(Right$(name, 5)) <> ".ndms" Then name = name & ".ndms"
+        "Results.SnapshotName", "Требуется допустимое имя снимка без пути.", "Введите, например, NDM_Snapshot; расширение .ndm добавляется автоматически.")
+    name = name & FILE_EXTENSION
     If Len(CStr(workbook.Path)) = 0 Or InStr(CStr(workbook.Path), "://") > 0 Then Err.Raise 5, , "Сначала сохраните книгу в локальную папку."
     SnapshotPath = CStr(workbook.Path) & Application.PathSeparator & name
     If Len(SnapshotPath) > 245 Then Err.Raise 5, , settings.InputErrorMessage("Results.SnapshotName", _
         "Полный путь снимка слишком длинный для файловых операций VBA.", "Сократите имя или путь к папке книги.")
+End Function
+
+' Выбирает файл текущего имени Config; новый .ndm имеет приоритет перед прежним .ndms.
+' Повреждённый существующий .ndm не подменяется старым расчётом: после выбора проверяется его SHA256.
+Private Function SelectedReadPath(ByVal workbook As Object) As String
+    SelectedReadPath = SnapshotPath(workbook)
+    If FileExists(SelectedReadPath) Then Exit Function
+    Dim previous As String: previous = Left$(SelectedReadPath, Len(SelectedReadPath) - Len(FILE_EXTENSION)) & LEGACY_FILE_EXTENSION
+    If FileExists(previous) Then SelectedReadPath = previous
 End Function
 
 ' Сохраняет полный файл; существующий расчёт заменяет только после успешной записи нового.
@@ -142,7 +158,7 @@ End Sub
 
 ' Загружает файл, выбранный сейчас в Config; прежняя привязка просмотра его не заменяет.
 Public Function LoadFile(ByVal workbook As Object) As CCalculationSnapshot
-    Dim path As String: path = SnapshotPath(workbook)
+    Dim path As String: path = SelectedReadPath(workbook)
     If Not FileExists(path) Then Err.Raise vbObjectError + 4956, "CCalculationSnapshotStore", "Файл снимка не найден: " & path
     Dim snapshot As CCalculationSnapshot: Set snapshot = ReadBinary(path)
     snapshot.Validate
@@ -160,9 +176,9 @@ Public Sub SaveSheetExtra(ByVal workbook As Object, ByVal snapshot As CCalculati
     file.OpenRead temporary
     rows = (file.Size + CHUNK_BYTES - 1) \ CHUNK_BYTES
     Dim data() As Variant: ReDim data(1 To rows + 3, 1 To 2)
-    data(1, 1) = "Результаты по сочетаниям": data(1, 2) = MAGIC
+    data(1, 1) = "LC-снимок": data(1, 2) = MAGIC
     data(2, 1) = "Время расчёта, с": data(2, 2) = snapshot.ElapsedSeconds
-    data(3, 1) = "Части снимка": data(3, 2) = rows
+    data(3, 1) = "Блоки данных Base64": data(3, 2) = rows
     Dim node As Object: Set node = CreateObject("MSXML2.DOMDocument.6.0").createElement("data")
     node.DataType = "bin.base64"
     For i = 1 To rows
@@ -173,14 +189,34 @@ Public Sub SaveSheetExtra(ByVal workbook As Object, ByVal snapshot As CCalculati
     Next i
     file.CloseFile: DeleteFile temporary
     Dim target As Object: Set target = workbook.Names.Item(SNAPSHOT_RANGE).RefersToRange
+    If Not ResultRowsFitSheet(target.Row, UBound(data, 1), target.Worksheet.Rows.Count) Then Err.Raise 5, , _
+        ResultRowLimitDescription(SNAPSHOT_RANGE, target.Row, UBound(data, 1), target.Worksheet.Rows.Count) & vbCrLf & _
+        "Что сделать:" & vbCrLf & "1) " & ExternalSnapshotStorageAdvice(workbook)
     ClearSheetExtra workbook
-    target.Resize(UBound(data, 1), 2).Value2 = data
-    With target.Resize(3, 2)
-        .Font.Name = "Arial": .Font.Size = 9: .Borders.LineStyle = 1
-        .Interior.Color = RGB(217, 217, 217): .WrapText = False
+    With target.Resize(UBound(data, 1), 2)
+        .Font.Name = "Arial": .Font.Size = 9: .WrapText = False
+        .HorizontalAlignment = -4108: .VerticalAlignment = -4108
+        .Borders.LineStyle = 1: .Borders.Color = RGB(200, 200, 200)
     End With
+    target.Offset(3, 0).Resize(rows, 1).NumberFormat = "0"
+    target.Offset(3, 1).Resize(rows, 1).NumberFormat = "@" ' Текст архива виден; формат не позволяет Excel трактовать его как формулу или число.
+    target.Resize(UBound(data, 1), 2).Value2 = data
+    With target.Resize(1, 2)
+        .Interior.Color = RGB(217, 217, 217): .Font.Bold = True
+        .HorizontalAlignment = -4131
+    End With
+    target.Offset(1, 0).Resize(2, 1).HorizontalAlignment = -4131
+    target.Offset(3, 1).Resize(rows, 1).HorizontalAlignment = -4152 ' Как текстовые пояснения соседних таблиц, длинный архив удерживается внутри правой границы ячейки.
     target.Offset(1, 1).NumberFormat = "0.00"
-    target.Offset(3, 0).Resize(rows, 2).NumberFormat = ";;;" ' Служебные порции не превращают нижний блок в километры видимого текста.
+    If target.Row > 1 Then
+        With target.Offset(-1, 0).Resize(1, 2)
+            .UnMerge: .Clear: .Merge
+            .Value2 = "Результаты по сочетаниям"
+            .Font.Name = "Arial": .Font.Size = 9: .Font.Bold = True
+            .HorizontalAlignment = -4108: .VerticalAlignment = -4108
+            .Interior.Color = RGB(217, 217, 217)
+        End With
+    End If
     Exit Sub
 Failed:
     Dim reason As String: reason = Err.Description
@@ -238,6 +274,11 @@ Public Sub ClearSheetExtra(ByVal workbook As Object)
     If IsNumeric(target.Offset(2, 1).Value2) Then rows = rows + CLng(target.Offset(2, 1).Value2)
     If rows < 3 Or rows > 100003 Then rows = 3
     target.Resize(rows, 2).Clear
+    If target.Row > 1 Then
+        With target.Offset(-1, 0).Resize(1, 2)
+            .UnMerge: .Clear
+        End With
+    End If
 End Sub
 
 ' Записывает все матрицы либо только дополнения тем же двоичным кодеком.

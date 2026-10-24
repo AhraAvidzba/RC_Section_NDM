@@ -1,0 +1,13 @@
+{
+  "InitialSnapshotCheck": {
+    "Passed": 102,
+    "Failed": 1,
+    "Reason": "Test-only VBA Name rename does not handle the Unicode alpha filename on this code page. Replaced by Unicode-capable FSO.MoveFile without changing any assertions or working file IO.",
+    "Evidence": "Fresh02/Snapshot_No.txt"
+  },
+  "ExpectedCapacityProbe03": {
+    "Reason": "Expected raised VBA error was not caught inside VBA entrypoint and displayed the VBE End dialog. Repeated with a private test dispatcher; no working code changes needed.",
+    "FinalEvidence": "CapacityProof04.json"
+  },
+  "ExpectationsWeakened": false
+}

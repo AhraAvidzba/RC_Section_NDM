@@ -1,0 +1,12 @@
+﻿{
+    "Status":  "PASS",
+    "Workbook":  "docs/regression/SnapshotStorageLayout_2026-10-24_Run01/Fresh03/RC_Section_NDM.xlsm",
+    "BeforeSHA256":  "F7B91B3C5240126DDA5C5A6A3B788F35EA3D3F4B4BA4430FB1B764ACACF94E23",
+    "WorkbookSHA256":  "6D769D03384EA675E0B9F28E7F0990F30D82714C7B651BC469DBC4DB8EC237A3",
+    "CompiledWithoutImport":  true,
+    "ImportedComponents":  0,
+    "Components":  178,
+    "ExportSHA256":  "3236D9B254A09C517AAE2534A406C9B8D4A9BE7F24BFAE4593A5685E1A92D9D3",
+    "OwnedPID":  73616,
+    "StartTicks":  "639284403834665680"
+}

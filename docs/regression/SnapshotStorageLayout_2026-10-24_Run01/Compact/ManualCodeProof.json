@@ -1,0 +1,7 @@
+{
+  "Status": "PASS",
+  "ComparedComponents": 178,
+  "SameCodeAsPublishedBook": true,
+  "NoBenchInstrumentation": true,
+  "Errors": []
+}

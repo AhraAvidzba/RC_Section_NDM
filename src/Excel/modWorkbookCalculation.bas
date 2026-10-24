@@ -454,7 +454,7 @@ Failed:
     Dim errorDescription As String
     errorNumber = Err.Number
     errorSource = Err.Source
-    errorDescription = Err.Description
+    errorDescription = ResultOutputErrorDescription(Err.Description)
     If Not excelGuard Is Nothing Then excelGuard.Restore ' Интерфейс возвращаем до записи отчёта: недоступный каталог отчёта не должен оставлять события и экран выключенными или подменять ошибку.
     On Error Resume Next
     If Not report Is Nothing Then
@@ -655,7 +655,7 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
         ByVal annotationCount As Long, ByVal contourCount As Long, ByVal requiredGapColumns As Long)
     Dim names(1 To 6) As String
-    Dim rows(1 To 6) As Long
+    Dim rows(1 To 6) As Double
     Dim cols(1 To 6) As Long
     names(1) = "rngNDMElementResults"
     names(2) = "rngNDMSectionGeometry"
@@ -666,7 +666,9 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
 
     rows(1) = ndmWriter.EstimatedElementResultRows(elementCount, estimatedStateCount)
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    If combinationCount > 0 Then If store.StorageMode(workbook) = "File" Then rows(1) = 3 ' В книге остаются шапка и ссылка; числовые состояния хранятся в одном внешнем файле.
+    Dim fileMode As Boolean: fileMode = False
+    If combinationCount > 0 Then fileMode = store.StorageMode(workbook) = "File"
+    If fileMode Then rows(1) = 1 ' Таблица состояний на лист не выводится; остальные технические таблицы остаются обязательными.
     rows(2) = 1 + elementCount
     rows(3) = 1 + contourCount
     rows(4) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
@@ -687,6 +689,9 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
             AddLayoutIssue issues, names(index) & " должен находиться на том же листе Results, что и остальные блоки вывода."
         End If
         CheckFootprintWithinSheet issues, ws, names(index), anchor.Row, anchor.Column, rows(index), cols(index)
+        If index = 1 And Not fileMode Then
+            If Not ResultRowsFitSheet(anchor.Row, rows(index), ws.Rows.Count) Then AddLayoutIssue issues, ExternalSnapshotStorageAdvice(workbook)
+        End If
 
         Set anchors(index) = anchor
         Dim other As Long, gapColumns As Long
@@ -710,7 +715,7 @@ End Sub
 ' Проверяет, что прямоугольник вывода не выходит за пределы листа Excel.
 Private Sub CheckFootprintWithinSheet(ByVal issues As Collection, ByVal ws As Object, _
         ByVal blockName As String, ByVal firstRow As Long, ByVal firstColumn As Long, _
-        ByVal rowCount As Long, ByVal columnCount As Long)
+        ByVal rowCount As Double, ByVal columnCount As Long)
     If rowCount < 1 Then rowCount = 1
     If columnCount < 1 Then columnCount = 1
     If firstRow < 1 Or firstColumn < 1 Then
@@ -718,10 +723,7 @@ Private Sub CheckFootprintWithinSheet(ByVal issues As Collection, ByVal ws As Ob
         Exit Sub
     End If
 
-    If firstRow + rowCount - 1 > ws.Rows.Count Then
-        AddLayoutIssue issues, blockName & " требует " & CStr(rowCount) & _
-            " строк от строки " & CStr(firstRow) & ", но ниже не хватает строк листа."
-    End If
+    If Not ResultRowsFitSheet(firstRow, rowCount, ws.Rows.Count) Then AddLayoutIssue issues, ResultRowLimitDescription(blockName, firstRow, rowCount, ws.Rows.Count)
     If firstColumn + columnCount - 1 > ws.Columns.Count Then
         AddLayoutIssue issues, blockName & " требует " & CStr(columnCount) & _
             " столбцов от столбца " & CStr(firstColumn) & ", но справа не хватает столбцов листа."
@@ -804,7 +806,7 @@ End Function
 ' Включает уже подготовленные адресные рекомендации, не теряя число сочетаний.
 Private Function ResultsOutputLayoutMessage(ByVal combinationCount As Long, ByVal issues As Collection) As String
     ResultsOutputLayoutMessage = "Все сочетания (" & CStr(combinationCount) & _
-        ") не помещаются между нужными диапазонами Results. Расчет не запущен." & _
+        ") не помещаются в текущую раскладку или пределы листа Results. Расчет не запущен." & _
         vbCrLf & "Что сделать:" & _
         vbCrLf & NumberedCollectionLines(issues) & _
         vbCrLf & CStr(issues.Count + 1) & ") Либо на листе Config уменьшите число строк в rngLoadCombinations."

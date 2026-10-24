@@ -1,0 +1,72 @@
+﻿[
+    {
+        "Repeat":  0,
+        "Readable":  false,
+        "Seconds":  0.22934640001039952
+    },
+    {
+        "Repeat":  0,
+        "Readable":  true,
+        "Seconds":  0.15716170007362962
+    },
+    {
+        "Repeat":  1,
+        "Readable":  false,
+        "Seconds":  0.083682699943892658
+    },
+    {
+        "Repeat":  1,
+        "Readable":  true,
+        "Seconds":  0.14283340005204082
+    },
+    {
+        "Repeat":  2,
+        "Readable":  false,
+        "Seconds":  0.068702000076882541
+    },
+    {
+        "Repeat":  2,
+        "Readable":  true,
+        "Seconds":  0.15090729994699359
+    },
+    {
+        "Repeat":  3,
+        "Readable":  false,
+        "Seconds":  0.074075400014407933
+    },
+    {
+        "Repeat":  3,
+        "Readable":  true,
+        "Seconds":  0.13227370008826256
+    },
+    {
+        "Repeat":  4,
+        "Readable":  false,
+        "Seconds":  0.076314599951729178
+    },
+    {
+        "Repeat":  4,
+        "Readable":  true,
+        "Seconds":  0.13921399996615946
+    },
+    {
+        "Repeat":  5,
+        "Readable":  false,
+        "Seconds":  0.0709513999754563
+    },
+    {
+        "Repeat":  5,
+        "Readable":  true,
+        "Seconds":  0.13365219999104738
+    },
+    {
+        "Repeat":  6,
+        "Readable":  false,
+        "Seconds":  0.072341900086030364
+    },
+    {
+        "Repeat":  6,
+        "Readable":  true,
+        "Seconds":  0.13678920001257211
+    }
+]

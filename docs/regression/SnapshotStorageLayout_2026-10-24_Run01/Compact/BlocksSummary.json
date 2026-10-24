@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "Repeats": 6,
+  "Warmups": 1,
+  "CompactSaveMedianSeconds": 0.07320865005021915,
+  "ReadableBlocksMedianSeconds": 0.1380015999893658,
+  "NoWritesToUnusedColumns": true,
+  "Scope": "Only assembly, writing and formatting of extra tables; no full-calculation speed claim."
+}

@@ -42,7 +42,7 @@ def main() -> None:
         rows.append(dict(Elements=key[0], States=key[1], Action=key[2], Before=a, After=b,
                          ReductionPercent=100 * (a["Median"] - b["Median"]) / a["Median"]))
     for elements, states in sorted({key[:2] for key in before}):
-        name = f"Payload_{elements}_{states}.ndms"
+        name = f"Payload_{elements}_{states}.ndm"
         a, b = (args.baseline / name).read_bytes(), (args.candidate / name).read_bytes()
         if a != b:
             raise ValueError(f"The NDMSNP04 file changed: {name}")

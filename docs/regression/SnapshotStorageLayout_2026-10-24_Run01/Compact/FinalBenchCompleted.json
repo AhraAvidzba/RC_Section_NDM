@@ -1,0 +1,10 @@
+﻿{
+    "Status":  "PASS",
+    "PID":  90812,
+    "StartTicks":  "639284405862842636",
+    "Geometry":  "1232+8",
+    "Combinations":  30,
+    "MeasuredRepeats":  6,
+    "Warmups":  1,
+    "TemporaryInstrumentationOnly":  true
+}

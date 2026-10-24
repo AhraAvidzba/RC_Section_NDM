@@ -90,7 +90,7 @@ try {
                     $settings=$book.Names.Item('rngSystemSettings').RefersToRange;$values=$settings.Value2;$found=$false
                     for($row=1;$row -le $values.GetLength(0);$row++){
                         if([string]$values[$row,1] -ceq 'Results.SnapshotStorage'){$settings.Cells.Item($row,2).Value2=$storage;$found=$true}
-                        if([string]$values[$row,1] -ceq 'Results.SnapshotName'){$settings.Cells.Item($row,2).Value2='TestPerformanceSnapshot.ndms'}
+                        if([string]$values[$row,1] -ceq 'Results.SnapshotName'){$settings.Cells.Item($row,2).Value2='TestPerformanceSnapshot.ndm'}
                     }
                     if(-not $found){throw 'Selected snapshot storage setting is absent.'}
                 }

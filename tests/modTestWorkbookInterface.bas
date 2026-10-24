@@ -1154,7 +1154,7 @@ Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats
     On Error GoTo Failed
     TestSetSystemSetting "Results.SnapshotStorage", storage
     If storage = "File" Then
-        TestSetSystemSetting "Results.SnapshotName", "TestMissingState_" & Format$(Now, "yyyymmdd_hhnnss") & ".ndms"
+        TestSetSystemSetting "Results.SnapshotName", "TestMissingState_" & Format$(Now, "yyyymmdd_hhnnss") & ".ndm"
         Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
         path = store.SnapshotPath(ThisWorkbook)
         If TestFileExists(path) Then path = vbNullString: Err.Raise 5, , "Файл текущего теста уже существует."
@@ -9171,7 +9171,7 @@ Private Sub TestNoActiveLoadsPreserveResults(ByRef stats As TUiTestStats)
         TestPrepareCircleInput
         TestSetSystemSetting "General.ExecutionReportEnabled", "No"
         TestSetSystemSetting "Results.SnapshotStorage", CStr(mode)
-        TestSetSystemSetting "Results.SnapshotName", "TestLoadActivation_" & Format$(Now, "yyyymmdd_hhnnss") & ".ndms"
+        TestSetSystemSetting "Results.SnapshotName", "TestLoadActivation_" & Format$(Now, "yyyymmdd_hhnnss") & ".ndm"
         message = FormSectionForWorkbook(ThisWorkbook)
         message = RunSectionCalculationForWorkbook(ThisWorkbook)
         before = modTestPerformance.TestPerformanceResultsFingerprint()

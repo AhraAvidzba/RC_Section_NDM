@@ -89,10 +89,10 @@ try {
   $moved=Join-Path $folder 'SaveAs';New-Item -ItemType Directory -Path $moved|Out-Null
   $movedPath=Join-Path $moved 'RC_Section_NDM.xlsm'
   $fileHash=$null
-  if($mode -eq 'File'){$file=Get-ChildItem -LiteralPath $folder -Filter '*.ndms';if(@($file).Count -ne 1){throw 'Expected one snapshot file.'};$fileHash=(Get-FileHash -LiteralPath $file.FullName).Hash}
+  if($mode -eq 'File'){$file=Get-ChildItem -LiteralPath $folder -Filter '*.ndm';if(@($file).Count -ne 1){throw 'Expected one snapshot file.'};$fileHash=(Get-FileHash -LiteralPath $file.FullName).Hash}
   $book.SaveAs($movedPath,52);$book.Close($false);$book=$null
   if($mode -eq 'File'){
-   $movedFile=Get-ChildItem -LiteralPath $moved -Filter '*.ndms'
+   $movedFile=Get-ChildItem -LiteralPath $moved -Filter '*.ndm'
    if(@($movedFile).Count -ne 1 -or (Get-FileHash -LiteralPath $movedFile.FullName).Hash -cne $fileHash){throw 'Save As did not preserve the exact single snapshot.'}
    if((Get-FileHash -LiteralPath $file.FullName).Hash -cne $fileHash){throw 'Save As modified the source snapshot.'}
   }
@@ -107,7 +107,7 @@ try {
    $secondFolder=Join-Path $moved 'SecondSaveAs';New-Item -ItemType Directory -Path $secondFolder|Out-Null
    $secondPath=Join-Path $secondFolder 'RC_Section_NDM.xlsm'
    $book.SaveAs($secondPath,52);$book.Close($false);$book=$null
-   $secondFile=Get-ChildItem -LiteralPath $secondFolder -Filter '*.ndms'
+   $secondFile=Get-ChildItem -LiteralPath $secondFolder -Filter '*.ndm'
    if(@($secondFile).Count -ne 1 -or (Get-FileHash -LiteralPath $secondFile.FullName).Hash -cne $fileHash){throw 'Repeated Save As lost the snapshot after removing its original copy.'}
    $book=$app.Workbooks.Open($secondPath,0,$false)
    $actual=Test-SnapshotFingerprint 'TestRestoreSnapshotAfterReopen'
