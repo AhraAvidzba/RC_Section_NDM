@@ -1,0 +1,12 @@
+{
+  "Status": "PROCESSED_FAILED_FIXED_DIRECTED",
+  "ProcessedUTC": "2026-10-24T04:53:56.016323+00:00",
+  "OriginalSourceSHA256": "00C2165E937D631DE9F2C1C4760DDB23C06BBC694FF174475BB9B7A060F538E6",
+  "OriginalFailedAssertions": 10,
+  "IndependentCauses": 3,
+  "FocusedPassed": true,
+  "FixedBookSHA256": "91B5C5C6DA655E14B699CBB5C15ADB7CF6BA94555DC0890243A956E79637EF12",
+  "FixedDirectedPassedPerMode": 3622,
+  "FullPASSForNewSHA": false,
+  "Report": "docs/reports/CompleteSnapshot_FullFollowup_2026-10-24.md"
+}

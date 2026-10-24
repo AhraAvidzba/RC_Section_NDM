@@ -1,0 +1,76 @@
+{
+  "Status": "DIRECTED_PASS_ONLY",
+  "WorkbookSHA256": "91B5C5C6DA655E14B699CBB5C15ADB7CF6BA94555DC0890243A956E79637EF12",
+  "NoCodeImported": true,
+  "NoAndYes": [
+    {
+      "Mode": "No",
+      "Passed": 3622,
+      "Failed": 0,
+      "Suites": [
+        {
+          "Suite": "modTestWorkbookInterface.TestRunSnapshotUiFailureProbe",
+          "Passed": 32,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestRecipeOperations.RunSavedPointedOffsetTests",
+          "Passed": 14,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestRecipeOperations.RunSavedOffsetCalculationTests",
+          "Passed": 8,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestWorkbookInterface.RunAudit03GeneralPlotTests",
+          "Passed": 3377,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+          "Passed": 191,
+          "Failed": 0
+        }
+      ],
+      "Report": "docs\\regression\\CompleteSnapshot_2026-10-24\\FullFollowupDirected_No.txt",
+      "ReportSHA256": "2AE2ADB98B4380747633BB43B6643B788219AE871C6FE1C4AFBA1078A402993D"
+    },
+    {
+      "Mode": "Yes",
+      "Passed": 3622,
+      "Failed": 0,
+      "Suites": [
+        {
+          "Suite": "modTestWorkbookInterface.TestRunSnapshotUiFailureProbe",
+          "Passed": 32,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestRecipeOperations.RunSavedPointedOffsetTests",
+          "Passed": 14,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestRecipeOperations.RunSavedOffsetCalculationTests",
+          "Passed": 8,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestWorkbookInterface.RunAudit03GeneralPlotTests",
+          "Passed": 3377,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+          "Passed": 191,
+          "Failed": 0
+        }
+      ],
+      "Report": "docs\\regression\\CompleteSnapshot_2026-10-24\\FullFollowupDirected_Yes.txt",
+      "ReportSHA256": "E7D54CB7376CE2484B6C0B7B69CCC2CD9310E9A48604C2F365F986481E8BAB3B"
+    }
+  ],
+  "OriginalFullStatusNotPromoted": true
+}

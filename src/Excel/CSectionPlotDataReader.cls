@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -504,6 +504,7 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim resultAnchor As Object
     Set resultAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
     results = ReadElementResultTable(workbook, mLoadCase, mStateType)
+    If Not HasRows(results) Then results = ReadElementResultTable(workbook, , , True) ' Индекс отличает отсутствие выбранного состояния от отсутствия всех результатов без копирования полной таблицы.
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."
 

@@ -1,0 +1,10 @@
+{
+  "Status": "COMPILED_WITHOUT_CODE_IMPORT",
+  "Workbook": "docs/regression/CompleteSnapshot_2026-10-24/FullFollowupClean01/RC_Section_NDM.xlsm",
+  "BeforeSHA256": "56F4B7F44B8FECB6930FFD3C580667B636F12C20ED1E126EB0F7AB05F7D54CF7",
+  "WorkbookSHA256": "91B5C5C6DA655E14B699CBB5C15ADB7CF6BA94555DC0890243A956E79637EF12",
+  "SourceModulesImported": 0,
+  "ForeignExecutionReportUnchanged": true,
+  "OwnedPID": 67508,
+  "StartTicks": "639284140820770789"
+}

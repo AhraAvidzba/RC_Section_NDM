@@ -1,0 +1,88 @@
+{
+  "Status": "DIRECTED_PASS_ONLY",
+  "CandidateSHA256": "1D4326C52B5331E33E29E0AF022CD48F7FC12912191CAC7289A276F00E620E3F",
+  "FrozenFullSourceSHA256": "00C2165E937D631DE9F2C1C4760DDB23C06BBC694FF174475BB9B7A060F538E6",
+  "BaselineProbeSHA256": "9E48912276D730FAD787EA8F2FC7C503F49405000883D5DBC4CFC1B476B1A789",
+  "OriginalFailedAssertionsPreserved": [
+    "ui.plot.missingState.noError",
+    "ui.plot.missingState.geometryTitle",
+    "ui.plot.missingState.note",
+    "ui.results.fullSnapshot.propertiesRows",
+    "saved.calculation.runtime"
+  ],
+  "OriginalFullStatusNotPromoted": true,
+  "CandidateComponents": 178,
+  "UnchangedComponents": 175,
+  "DeferredSourceFiles": 3,
+  "NoAndYes": [
+    {
+      "Mode": "No",
+      "Passed": 3622,
+      "Failed": 0,
+      "Suites": [
+        {
+          "Suite": "modTestWorkbookInterface.TestRunSnapshotUiFailureProbe",
+          "Passed": 32,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestRecipeOperations.RunSavedPointedOffsetTests",
+          "Passed": 14,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestRecipeOperations.RunSavedOffsetCalculationTests",
+          "Passed": 8,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestWorkbookInterface.RunAudit03GeneralPlotTests",
+          "Passed": 3377,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+          "Passed": 191,
+          "Failed": 0
+        }
+      ],
+      "Log": "docs\\regression\\CompleteSnapshotFullLaunch_2026-10-24_Run01\\ParallelFix01\\Directed_No.txt",
+      "LogSHA256": "4D53BDB93AD5AD0B4B709BB45E987C872BD4A0A7352B6BDA6994A2441EAEB58D"
+    },
+    {
+      "Mode": "Yes",
+      "Passed": 3622,
+      "Failed": 0,
+      "Suites": [
+        {
+          "Suite": "modTestWorkbookInterface.TestRunSnapshotUiFailureProbe",
+          "Passed": 32,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestRecipeOperations.RunSavedPointedOffsetTests",
+          "Passed": 14,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestRecipeOperations.RunSavedOffsetCalculationTests",
+          "Passed": 8,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestWorkbookInterface.RunAudit03GeneralPlotTests",
+          "Passed": 3377,
+          "Failed": 0
+        },
+        {
+          "Suite": "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+          "Passed": 191,
+          "Failed": 0
+        }
+      ],
+      "Log": "docs\\regression\\CompleteSnapshotFullLaunch_2026-10-24_Run01\\ParallelFix01\\Directed_Yes.txt",
+      "LogSHA256": "30E19F3B602A45980A913EFC7DAFF6B6E13D05555BB7134E59F79366D90CE307"
+    }
+  ],
+  "NotAppliedToParticipatingInputs": true
+}

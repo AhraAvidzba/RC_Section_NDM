@@ -1,0 +1,300 @@
+{
+  "Passed": true,
+  "SourceSHA256": "00C2165E937D631DE9F2C1C4760DDB23C06BBC694FF174475BB9B7A060F538E6",
+  "VerifierSHA256": "25AAB7C88741D90F0A3D7BE658BE862B87DCEDEF68184F49B49E02A2D1D23C67",
+  "ReportHashes": {
+    "Rectangles_Generated_No": "C73D3E2166907C5C9E1744F053E32DB34D373E671A18969C34109D7F8B594F17",
+    "Rectangles_Generated_Yes": "A9FC56918A68EE38271892DEFC1F4706E557544D286F56862E6C49AE104A3837",
+    "Circle_Generated_No": "BC0BB62D55C8C185450F9A818845503EC2143E8C2F248C0225C137BD13E80D43",
+    "Circle_Generated_Yes": "FD2DA94C27BF76D1A25AEE4764A4CEA9894FDE461D4CAA4E0B4E7DCADDD1F619",
+    "PointedSection_Generated_No": "83BF489E4D143F5264CA3F3435083AD55D81A7ADFB51B921E165F6CBC8D235F8",
+    "PointedSection_Generated_Yes": "4683575AF1973157DA7CFBC2277D9ED7EC6BC46B4F6891E5260CD32E24478EFE",
+    "HollowRectangle_Generated_No": "ED463A523EA27CE51D1BDCE3023AD0CCBA9DAD4F8B5219CB6978CD2C5A1E4FD9",
+    "HollowRectangle_Generated_Yes": "81D5E6A77DA2259BE8FF41C6609368A38C03FFF8AA7DEF2D0053451374E6E982",
+    "SavedWorkbook_Saved_No": "D0C0D1EFA5B89EAB94E98F62EC60B7AC03FCF6577BF8452D8BE63D0A5A0FC5F3",
+    "SavedWorkbook_Saved_Yes": "1774D3C43AFC9F18A841CF2EAA4D1FCB924A34D8960434A75DD26D70B983D63A",
+    "SavedWorkbook_Paths_No": "CAB996E288A18332D7245C227BED41A92FD66BFC5B5B8D70D0CEE9307BA62157",
+    "SavedWorkbook_Paths_Yes": "51E71C9BEDE758D17BC45DE9DB5B813D7BFD03EBA71867F9A51754FC9009D1CA",
+    "Batch15_No": "35E6BCBA9F57071BF3F0BF440888EAA65DC7805029032B645F77D177A3AC865B",
+    "Stability_No": "BD0209CB17A5108484187ED1C7C789B0593B66F8A30F3D95221BD09C781967DC",
+    "AsymmetricSteel_No": "120785C1FE4737A349743A4B70D0C5CB393A84821A3D065C1C689D36C28E404A",
+    "Batch15_Yes": "D1D8BE9C34E57F869C81D6B3486F61EA48749B50D678BD7A7AC1970A16DC9D20",
+    "Stability_Yes": "4C97E7D0CF50321A453369CF1CA51FC706EAA2BC5C09CF8A8C41A6EDDDF3176A",
+    "AsymmetricSteel_Yes": "4D3EEFE67167929C20EE6134C9E46B66F5FB75846BC78CAD0FE79B57E6ED7A03",
+    "Model_Rectangles": "957C8C20BC3A50C14DBB10B74EA2C53DD0E5E64B17ECFB1ED3C3E3DB66249064",
+    "Model_Circle": "43FA5D12BCC3105E8797EC589A0999D6CF276DE002C995E2E6BFB14EB92678B9",
+    "Model_PointedSection": "31DDCE5813A384A0400AFAA61890FF3AE62CA488CE31DD0133E08F592C77CD75",
+    "Model_HollowRectangle": "FBD336149A4664C1B8BA02E0902E95DED3F7E456981720FF9B7A91E109E29ACE",
+    "Model_SavedWorkbook": "AC8B72AE070510D1939F9C08A3997D0D5DA5C3873C5DD3FC9D4F4293CAFDA0DE",
+    "OutputPresentation": "6802A906B829E51B7ABEC7670381FA859E01BDA49F6609D5BCC99C0255A6BFDC"
+  },
+  "ScipyVersion": "1.18.1",
+  "ModelCount": 5,
+  "IndependentIntegrals": 562,
+  "ReviewedNumFailStates": 10,
+  "NumericalMessages": [
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.axialC1.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Достигнут лимит итераций на ступени нагрузки 1.",
+      "Covered": true
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.overloadMixed1.direct|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Не удалось решить систему равновесия: матрица не позволяет однозначно определить приращения деформаций.",
+      "Covered": true
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.overloadMixed1.current|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Достигнут лимит итераций на ступени нагрузки 1.",
+      "Covered": true
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.axialC1.05.direct|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Не удалось решить систему равновесия: матрица не позволяет однозначно определить приращения деформаций.",
+      "Covered": true
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.axialC2.direct|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Не удалось решить систему равновесия: матрица не позволяет однозначно определить приращения деформаций.",
+      "Covered": true
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.axialC2.current|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Не удалось решить систему равновесия: матрица не позволяет однозначно определить приращения деформаций.",
+      "Covered": true
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.overloadMixed1000000.direct|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Не удалось решить систему равновесия: матрица не позволяет однозначно определить приращения деформаций.",
+      "Covered": true
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.overloadMixed1000000.current|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Не удалось решить систему равновесия: матрица не позволяет однозначно определить приращения деформаций.",
+      "Covered": true
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "Line": "META: audit03.comments.N2098Plateau.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Достигнут лимит итераций на ступени нагрузки 1.",
+      "Covered": true
+    },
+    {
+      "Report": "Batch15_No",
+      "Line": "META: audit03.comments.N2098Plateau.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Достигнут лимит итераций на ступени нагрузки 1.",
+      "Covered": true
+    }
+  ],
+  "Unsupported": [],
+  "Failures": [
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.axialC1",
+      "Mode": "No",
+      "Type": "StrengthState",
+      "Role": "PR1",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -0.6629610867394757,
+        0.4003650179058577,
+        -0.6326060779872856
+      ],
+      "ProjectedTargetN": 14293231.587152652,
+      "MaximumProjectionN": 13753902.936153162,
+      "AcceptanceProjectionN": 7.394574127303889,
+      "RoundoffAllowanceN": 0.014293231587152653,
+      "StrictMarginN": 539321.2421321314,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.overloadMixed1",
+      "Mode": "No",
+      "Type": "StrengthState",
+      "Role": "PR1",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -0.5403219490866182,
+        0.595000920728397,
+        -0.5950009207283613
+      ],
+      "ProjectedTargetN": 20419610.943839595,
+      "MaximumProjectionN": 11931944.995244686,
+      "AcceptanceProjectionN": 7.6541094905290255,
+      "RoundoffAllowanceN": 0.020419610943839595,
+      "StrictMarginN": 8487658.274065807,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.overloadMixed1",
+      "Mode": "No",
+      "Type": "CrackedState",
+      "Role": "PR2",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -0.5314222936261063,
+        0.5989951359723924,
+        -0.5989951359723914
+      ],
+      "ProjectedTargetN": 20293990.673477467,
+      "MaximumProjectionN": 15133870.70057758,
+      "AcceptanceProjectionN": 7.693206586667657,
+      "RoundoffAllowanceN": 0.02029399067347747,
+      "StrictMarginN": 5160112.25939931,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.axialC1.05",
+      "Mode": "No",
+      "Type": "StrengthState",
+      "Role": "PR1",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "ProjectedTargetN": 22019250.754610725,
+      "MaximumProjectionN": 20735089.53829558,
+      "AcceptanceProjectionN": 0.980665,
+      "RoundoffAllowanceN": 0.022019250754610725,
+      "StrictMarginN": 1284160.2136308958,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.axialC2",
+      "Mode": "No",
+      "Type": "StrengthState",
+      "Role": "PR1",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "ProjectedTargetN": 41941430.00878233,
+      "MaximumProjectionN": 20735089.53829558,
+      "AcceptanceProjectionN": 0.980665,
+      "RoundoffAllowanceN": 0.04194143000878233,
+      "StrictMarginN": 21206339.44788032,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.axialC2",
+      "Mode": "No",
+      "Type": "CrackedState",
+      "Role": "PR2",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -1.0,
+        -0.0,
+        -0.0
+      ],
+      "ProjectedTargetN": 41941430.00878233,
+      "MaximumProjectionN": 26693718.96800813,
+      "AcceptanceProjectionN": 0.980665,
+      "RoundoffAllowanceN": 0.04194143000878233,
+      "StrictMarginN": 15247710.018167766,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.overloadMixed1000000",
+      "Mode": "No",
+      "Type": "StrengthState",
+      "Role": "PR1",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -0.6915692810809451,
+        0.44386692599203004,
+        -0.5698368902375226
+      ],
+      "ProjectedTargetN": 22255030978131.605,
+      "MaximumProjectionN": 14342895.652430184,
+      "AcceptanceProjectionN": 7.050893767744926,
+      "RoundoffAllowanceN": 22255.030978131606,
+      "StrictMarginN": 22255016612973.87,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.overloadMixed1000000",
+      "Mode": "No",
+      "Type": "CrackedState",
+      "Role": "PR2",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -0.6915692810809451,
+        0.44386692599203004,
+        -0.5698368902375226
+      ],
+      "ProjectedTargetN": 22255030978131.605,
+      "MaximumProjectionN": 18464010.867120113,
+      "AcceptanceProjectionN": 7.050893767744926,
+      "RoundoffAllowanceN": 22255.030978131606,
+      "StrictMarginN": 22255012491858.656,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "SavedWorkbook_Saved_No",
+      "ID": "focused.SavedWorkbook.N2098Plateau",
+      "Mode": "No",
+      "Type": "StrengthState",
+      "Role": "PR1",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -0.6629610867394757,
+        0.4003650179058577,
+        -0.6326060779872856
+      ],
+      "ProjectedTargetN": 14027716.777105285,
+      "MaximumProjectionN": 13753902.936153162,
+      "AcceptanceProjectionN": 7.394574127303889,
+      "RoundoffAllowanceN": 0.014027716777105285,
+      "StrictMarginN": 273806.43235027854,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    },
+    {
+      "Report": "Batch15_No",
+      "ID": "plateau.batch15.N2098Plateau",
+      "Mode": "No",
+      "Type": "StrengthState",
+      "Role": "PR1",
+      "Classification": "ProvenImpossibleByNecessaryForceBounds",
+      "HiGHSStatus": 2,
+      "Passed": true,
+      "Direction": [
+        -0.6629610867394757,
+        0.4003650179058577,
+        -0.6326060779872856
+      ],
+      "ProjectedTargetN": 14027716.777105285,
+      "MaximumProjectionN": 13753902.936153162,
+      "AcceptanceProjectionN": 7.394574127303889,
+      "RoundoffAllowanceN": 0.014027716777105285,
+      "StrictMarginN": 273806.43235027854,
+      "Meaning": "Full requested state; no claim about an entire load path."
+    }
+  ]
+}

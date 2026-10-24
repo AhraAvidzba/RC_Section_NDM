@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestWorkbookInterface"
+﻿Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -197,6 +197,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit02SavedResultsIgnoreMaterialChanges stats
     TestAppendLine stats, "RUN: TestMissingProfileStateDrawsGeometryOnly"
     TestMissingProfileStateDrawsGeometryOnly stats
+    TestMissingProfileStateDrawsGeometryOnly stats, "File"
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestAppendLine stats, "RUN: TestCircleWorkbookRunWritesResults"
@@ -1145,26 +1146,57 @@ End Sub
 ' Проверяет, что отсутствие выбранного StateType не превращается в popup-only
 ' ошибку. Схема должна показать сохраненную геометрию Results и крупную
 ' подпись под сечением, что запрошенного состояния в snapshot нет.
-Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats)
+Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats, Optional ByVal storage As String = "Excel")
+    Dim originalStorage As String, originalName As String, path As String, label As String
+    originalStorage = TestGetSystemSetting("Results.SnapshotStorage")
+    originalName = TestGetSystemSetting("Results.SnapshotName")
+    label = "ui.plot.missingState": If storage = "File" Then label = label & ".File"
+    On Error GoTo Failed
+    TestSetSystemSetting "Results.SnapshotStorage", storage
+    If storage = "File" Then
+        TestSetSystemSetting "Results.SnapshotName", "TestMissingState_" & Format$(Now, "yyyymmdd_hhnnss") & ".ndms"
+        Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+        path = store.SnapshotPath(ThisWorkbook)
+        If TestFileExists(path) Then path = vbNullString: Err.Raise 5, , "Файл текущего теста уже существует."
+    End If
     TestPrepareCircleInput
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
     TestSetSystemSetting "Plot.LoadCase", "LC1"
 
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
-    TestAssertTrue stats, "ui.plot.missingState.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    TestAssertTrue stats, label & ".run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
 
     TestSetProfileSetting "PR2", "Visualization.State", "CapacityState"
-
+    Dim solves As Long: solves = SectionEquilibriumSolveCount()
     Dim errorDescription As String
     On Error Resume Next
     UpdateSectionPlotForWorkbook ThisWorkbook
     errorDescription = Err.Description
-    On Error GoTo 0
+    On Error GoTo Failed
 
-    TestAssertTrue stats, "ui.plot.missingState.noError", Len(errorDescription) = 0
-    TestAssertTrue stats, "ui.plot.missingState.geometryTitle", TestPlotVisibleTitleContains("Геометрия расчетного сечения")
-    TestAssertTrue stats, "ui.plot.missingState.note", TestPlotShapeTextContains("Запрашиваемое состояние")
+    TestAssertTrue stats, label & ".noError", Len(errorDescription) = 0
+    TestAssertTrue stats, label & ".geometryTitle", TestPlotVisibleTitleContains("Геометрия расчетного сечения")
+    TestAssertTrue stats, label & ".note", TestPlotShapeTextContains("Запрашиваемое состояние")
+    TestAssertTrue stats, label & ".plotNoSolve", SectionEquilibriumSolveCount() = solves
+    UpdateSectionResultsForWorkbook ThisWorkbook
+    TestAssertTrue stats, label & ".buttonGeometryTitle", TestPlotVisibleTitleContains("Геометрия расчетного сечения")
+    TestAssertTrue stats, label & ".buttonNote", TestPlotShapeTextContains("Запрашиваемое состояние")
+    TestAssertTrue stats, label & ".buttonNoSolve", SectionEquilibriumSolveCount() = solves
+Finished:
+    If Len(path) > 0 Then
+        If TestFileExists(path) And store.HasFileReference(ThisWorkbook) Then
+            TestSetSystemSetting "Results.SnapshotStorage", "Excel"
+            UpdateSectionResultsForWorkbook ThisWorkbook
+        End If
+        TestDeleteFileIfExists path
+    End If
+    TestSetSystemSetting "Results.SnapshotStorage", originalStorage
+    TestSetSystemSetting "Results.SnapshotName", originalName
+    Exit Sub
+Failed:
+    TestAssertTrue stats, label & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
+    Resume Finished
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -1454,7 +1486,13 @@ Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     TestAssertElementStateRows stats, elementResults, "LC_FULL_30", "PostCrackState", geometryRowCount
 
     TestAssertTrue stats, "ui.results.fullSnapshot.propertiesRows", _
-        TestResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 30 * (23 + 5 * 10)
+        UBound(TestResultTable("rngNDMSectionProperties"), 1) >= 1 + 55 + 30 * (23 + 5 * 10)
+    Dim common As Variant, commonOnly As Boolean, commonRow As Long
+    common = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionProperties"): commonOnly = True
+    For commonRow = 2 To UBound(common, 1)
+        If StrComp(CStr(common(commonRow, 2)), "ALL", vbTextCompare) <> 0 Then commonOnly = False
+    Next commonRow
+    TestAssertTrue stats, "ui.results.fullSnapshot.commonGeometryOnly", commonOnly
     TestAssertTrue stats, "ui.results.fullSnapshot.materialRows", _
         TestResultTableRowCount("rngNDMMaterialDiagrams") > 1
 End Sub
@@ -9088,4 +9126,22 @@ Finished:
     On Error GoTo 0
     TestFreshnessAssertState stats, app, initial, "freshness.testCleanup"
     RunTestCalculationFreshnessWorkflow = stats.Report & "TOTAL_FRESHNESS_WORKFLOW: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает затронутые UI-проверки на независимой кандидатной книге.
+Public Function TestRunSnapshotUiFailureProbe() As String
+    Dim stats As TUiTestStats
+    On Error GoTo Failed
+    TestMissingProfileStateDrawsGeometryOnly stats
+    TestMissingProfileStateDrawsGeometryOnly stats, "File"
+    TestThirtyCombinationsWithFiveStatesWriteSnapshot stats
+Done:
+    TestAppendLine stats, "TOTAL SNAPSHOT UI PROBE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestRunSnapshotUiFailureProbe = stats.Report
+    Exit Function
+Failed:
+    TestAssertTrue stats, "probe.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    Resume Done
 End Function

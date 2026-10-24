@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-24 04:03:04
+Date: 2026-10-24 07:49:23
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -50083,7 +50083,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionPlotDataReader
 TYPE: 2
-LINES: 1310
+LINES: 1311
 ====================================================================================================
 Option Explicit
 
@@ -50582,6 +50582,7 @@ Private Sub ReadGeometryAndResults(ByVal Workbook As Object)
     Dim resultAnchor As Object
     Set resultAnchor = Workbook.names.item("rngNDMElementResults").RefersToRange
     results = ReadElementResultTable(Workbook, mLoadCase, mStateType)
+    If Not HasRows(results) Then results = ReadElementResultTable(Workbook, , , True) ' Индекс отличает отсутствие выбранного состояния от отсутствия всех результатов без копирования полной таблицы.
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."
 
@@ -109882,7 +109883,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestRecipeOperations
 TYPE: 1
-LINES: 624
+LINES: 644
 ====================================================================================================
 Option Explicit
 
@@ -110424,6 +110425,7 @@ Public Function RunSavedOffsetCalculationTests() As String
     Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String, formation As String
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     TestPrepareSavedOffsetCase
+    TestPrepareSavedOffsetCalculationLoad
     Set area = ThisWorkbook.names("rngPointedSectionGeometry").RefersToRange
     Set inputCell = TestFixtureInputCell(area, "Extra", "Right", "a2")
     For Each value In Array(40#, 50#)
@@ -110508,6 +110510,25 @@ Private Function TestSavedRecipeDiagnostics() As String
     Loop
     Err.Raise 5, "modTestRecipeOperations", "В Results отсутствует сохранённая диагностика геометрии."
 End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задаёт собственное двухосное сочетание независимо от пользовательских строк чистой книги.
+' Все усилия сначала заданы во внутренних единицах, затем переводятся единой CUnitSystem.
+Private Sub TestPrepareSavedOffsetCalculationLoad()
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
+    Dim loads As Object: Set loads = ThisWorkbook.names("rngLoadCombinations").RefersToRange
+    Dim values() As Variant: ReDim values(1 To loads.rows.count - 1, 1 To loads.columns.count)
+    values(1, 1) = "LC_SAVED_OFFSETS"
+    values(1, 2) = -111000# / units.InputForceToInternal(1#)
+    values(1, 3) = 6000000# / units.InputMomentMxToInternal(1#)
+    values(1, 4) = 3000000# / units.InputMomentMyToInternal(1#)
+    values(1, 5) = "PR1": values(1, 6) = "Auto"
+    values(1, 7) = "ДЛЯ ТЕСТОВ: сохранённые смещения, собственное сочетание"
+    loads.offset(1, 0).Resize(UBound(values, 1), UBound(values, 2)).value2 = values
+End Sub
 ====================================================================================================
 COMPONENT: modTestRecipeSetbacks
 TYPE: 1
@@ -118051,7 +118072,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 9091
+LINES: 9147
 ====================================================================================================
 Option Explicit
 
@@ -118251,6 +118272,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit02SavedResultsIgnoreMaterialChanges stats
     TestAppendLine stats, "RUN: TestMissingProfileStateDrawsGeometryOnly"
     TestMissingProfileStateDrawsGeometryOnly stats
+    TestMissingProfileStateDrawsGeometryOnly stats, "File"
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestAppendLine stats, "RUN: TestCircleWorkbookRunWritesResults"
@@ -119199,26 +119221,57 @@ End Sub
 ' Проверяет, что отсутствие выбранного StateType не превращается в popup-only
 ' ошибку. Схема должна показать сохраненную геометрию Results и крупную
 ' подпись под сечением, что запрошенного состояния в snapshot нет.
-Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats)
+Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats, Optional ByVal storage As String = "Excel")
+    Dim originalStorage As String, originalName As String, path As String, label As String
+    originalStorage = TestGetSystemSetting("Results.SnapshotStorage")
+    originalName = TestGetSystemSetting("Results.SnapshotName")
+    label = "ui.plot.missingState": If storage = "File" Then label = label & ".File"
+    On Error GoTo Failed
+    TestSetSystemSetting "Results.SnapshotStorage", storage
+    If storage = "File" Then
+        TestSetSystemSetting "Results.SnapshotName", "TestMissingState_" & format$(Now, "yyyymmdd_hhnnss") & ".ndms"
+        Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+        path = store.SnapshotPath(ThisWorkbook)
+        If TestFileExists(path) Then path = vbNullString: Err.Raise 5, , "Файл текущего теста уже существует."
+    End If
     TestPrepareCircleInput
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
     TestSetSystemSetting "Plot.LoadCase", "LC1"
 
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
-    TestAssertTrue stats, "ui.plot.missingState.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    TestAssertTrue stats, label & ".run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
 
     TestSetProfileSetting "PR2", "Visualization.State", "CapacityState"
-
+    Dim solves As Long: solves = SectionEquilibriumSolveCount()
     Dim errorDescription As String
     On Error Resume Next
     UpdateSectionPlotForWorkbook ThisWorkbook
     errorDescription = Err.description
-    On Error GoTo 0
+    On Error GoTo Failed
 
-    TestAssertTrue stats, "ui.plot.missingState.noError", Len(errorDescription) = 0
-    TestAssertTrue stats, "ui.plot.missingState.geometryTitle", TestPlotVisibleTitleContains("Геометрия расчетного сечения")
-    TestAssertTrue stats, "ui.plot.missingState.note", TestPlotShapeTextContains("Запрашиваемое состояние")
+    TestAssertTrue stats, label & ".noError", Len(errorDescription) = 0
+    TestAssertTrue stats, label & ".geometryTitle", TestPlotVisibleTitleContains("Геометрия расчетного сечения")
+    TestAssertTrue stats, label & ".note", TestPlotShapeTextContains("Запрашиваемое состояние")
+    TestAssertTrue stats, label & ".plotNoSolve", SectionEquilibriumSolveCount() = solves
+    UpdateSectionResultsForWorkbook ThisWorkbook
+    TestAssertTrue stats, label & ".buttonGeometryTitle", TestPlotVisibleTitleContains("Геометрия расчетного сечения")
+    TestAssertTrue stats, label & ".buttonNote", TestPlotShapeTextContains("Запрашиваемое состояние")
+    TestAssertTrue stats, label & ".buttonNoSolve", SectionEquilibriumSolveCount() = solves
+Finished:
+    If Len(path) > 0 Then
+        If TestFileExists(path) And store.HasFileReference(ThisWorkbook) Then
+            TestSetSystemSetting "Results.SnapshotStorage", "Excel"
+            UpdateSectionResultsForWorkbook ThisWorkbook
+        End If
+        TestDeleteFileIfExists path
+    End If
+    TestSetSystemSetting "Results.SnapshotStorage", originalStorage
+    TestSetSystemSetting "Results.SnapshotName", originalName
+    Exit Sub
+Failed:
+    TestAssertTrue stats, label & ".runtime." & CStr(Err.number) & "." & Err.description, False
+    Resume Finished
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -119508,7 +119561,13 @@ Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     TestAssertElementStateRows stats, elementResults, "LC_FULL_30", "PostCrackState", geometryRowCount
 
     TestAssertTrue stats, "ui.results.fullSnapshot.propertiesRows", _
-        TestResultTableRowCount("rngNDMSectionProperties") >= 1 + 55 + 30 * (23 + 5 * 10)
+        UBound(TestResultTable("rngNDMSectionProperties"), 1) >= 1 + 55 + 30 * (23 + 5 * 10)
+    Dim common As Variant, commonOnly As Boolean, commonRow As Long
+    common = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionProperties"): commonOnly = True
+    For commonRow = 2 To UBound(common, 1)
+        If StrComp(CStr(common(commonRow, 2)), "ALL", vbTextCompare) <> 0 Then commonOnly = False
+    Next commonRow
+    TestAssertTrue stats, "ui.results.fullSnapshot.commonGeometryOnly", commonOnly
     TestAssertTrue stats, "ui.results.fullSnapshot.materialRows", _
         TestResultTableRowCount("rngNDMMaterialDiagrams") > 1
 End Sub
@@ -127142,6 +127201,24 @@ Finished:
     On Error GoTo 0
     TestFreshnessAssertState stats, app, initial, "freshness.testCleanup"
     RunTestCalculationFreshnessWorkflow = stats.report & "TOTAL_FRESHNESS_WORKFLOW: passed=" & stats.passed & "; failed=" & stats.Failed
+End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает затронутые UI-проверки на независимой кандидатной книге.
+Public Function TestRunSnapshotUiFailureProbe() As String
+    Dim stats As TUiTestStats
+    On Error GoTo Failed
+    TestMissingProfileStateDrawsGeometryOnly stats
+    TestMissingProfileStateDrawsGeometryOnly stats, "File"
+    TestThirtyCombinationsWithFiveStatesWriteSnapshot stats
+Done:
+    TestAppendLine stats, "TOTAL SNAPSHOT UI PROBE: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
+    TestRunSnapshotUiFailureProbe = stats.report
+    Exit Function
+Failed:
+    TestAssertTrue stats, "probe.runtime." & CStr(Err.number) & "." & Err.description, False
+    Resume Done
 End Function
 
 ====================================================================================================

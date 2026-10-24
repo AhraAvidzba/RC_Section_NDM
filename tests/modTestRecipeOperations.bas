@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestRecipeOperations"
+﻿Attribute VB_Name = "modTestRecipeOperations"
 Option Explicit
 
 ' ==========================================================================
@@ -539,6 +539,7 @@ Public Function RunSavedOffsetCalculationTests() As String
     Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String, formation As String
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     TestPrepareSavedOffsetCase
+    TestPrepareSavedOffsetCalculationLoad
     Set area = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     Set inputCell = TestFixtureInputCell(area, "Extra", "Right", "a2")
     For Each value In Array(40#, 50#)
@@ -623,3 +624,22 @@ Private Function TestSavedRecipeDiagnostics() As String
     Loop
     Err.Raise 5, "modTestRecipeOperations", "В Results отсутствует сохранённая диагностика геометрии."
 End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задаёт собственное двухосное сочетание независимо от пользовательских строк чистой книги.
+' Все усилия сначала заданы во внутренних единицах, затем переводятся единой CUnitSystem.
+Private Sub TestPrepareSavedOffsetCalculationLoad()
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
+    Dim loads As Object: Set loads = ThisWorkbook.Names("rngLoadCombinations").RefersToRange
+    Dim values() As Variant: ReDim values(1 To loads.Rows.Count - 1, 1 To loads.Columns.Count)
+    values(1, 1) = "LC_SAVED_OFFSETS"
+    values(1, 2) = -111000# / units.InputForceToInternal(1#)
+    values(1, 3) = 6000000# / units.InputMomentMxToInternal(1#)
+    values(1, 4) = 3000000# / units.InputMomentMyToInternal(1#)
+    values(1, 5) = "PR1": values(1, 6) = "Auto"
+    values(1, 7) = "ДЛЯ ТЕСТОВ: сохранённые смещения, собственное сочетание"
+    loads.Offset(1, 0).Resize(UBound(values, 1), UBound(values, 2)).Value2 = values
+End Sub

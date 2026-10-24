@@ -1,0 +1,172 @@
+{
+  "Status": "APPLIED_AFTER_FULL_TERMINATION",
+  "AppliedUTC": "2026-10-24T04:43:39.709790+00:00",
+  "OriginalFullStatus": "INCOMPLETE_OR_FAILED",
+  "OriginalSourceSHA256": "00C2165E937D631DE9F2C1C4760DDB23C06BBC694FF174475BB9B7A060F538E6",
+  "CompletedCoreSuites": 162,
+  "OriginalFailedAssertions": 10,
+  "IndependentCauses": 3,
+  "FocusedCases": 122,
+  "FocusedAssertions": 13994,
+  "IndependentIntegrals": 562,
+  "ReviewedNumFailStates": 10,
+  "DirectedPassedPerMode": 3622,
+  "NonTargetInputsUnchanged": 478,
+  "Components": [
+    {
+      "Component": "CSectionPlotDataReader",
+      "OriginalPath": "src\\Excel\\CSectionPlotDataReader.cls",
+      "OriginalSHA256": "BD0B53546E4B2060BA6E73626753F48F8C19BB021DC30FECFDB943694AA0BFF1",
+      "AppliedSHA256": "19546AB390F03DD2656D16155CEF9E2E388CF465E9D0D462214975AA2DFD73DE"
+    },
+    {
+      "Component": "modTestWorkbookInterface",
+      "OriginalPath": "tests\\modTestWorkbookInterface.bas",
+      "OriginalSHA256": "300D04A4BBA2777F67B805274DB057E1F9B0752916C03789BE883C0AAE01BDC2",
+      "AppliedSHA256": "32549B8A8DD10CC19E4C864B6010E80D6421CE5FD4FC476269D32910C3F08B42"
+    },
+    {
+      "Component": "modTestRecipeOperations",
+      "OriginalPath": "tests\\modTestRecipeOperations.bas",
+      "OriginalSHA256": "ECBCC7A14FF15D502DF5F975A79ED15B1EF97F844BBCE0B1E199B3C75FAC81C6",
+      "AppliedSHA256": "FCB17E8A41E95E16AE330066DAF93B473A7426BA03EDB62D468C11F363A96E63"
+    }
+  ],
+  "FocusedPrimaryTotals": [
+    {
+      "ID": "Rectangles_Generated_No",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Rectangles; group=Generated; cases=8; maxSeconds=3.484375; passed=714; failed=0"
+      ]
+    },
+    {
+      "ID": "Rectangles_Generated_Yes",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Rectangles; group=Generated; cases=8; maxSeconds=3.533203125; passed=683; failed=0"
+      ]
+    },
+    {
+      "ID": "Circle_Generated_No",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Circle; group=Generated; cases=8; maxSeconds=3.56640625; passed=714; failed=0"
+      ]
+    },
+    {
+      "ID": "Circle_Generated_Yes",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Circle; group=Generated; cases=8; maxSeconds=3.38671875; passed=683; failed=0"
+      ]
+    },
+    {
+      "ID": "PointedSection_Generated_No",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=PointedSection; group=Generated; cases=8; maxSeconds=3.8828125; passed=726; failed=0"
+      ]
+    },
+    {
+      "ID": "PointedSection_Generated_Yes",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=PointedSection; group=Generated; cases=8; maxSeconds=3.841796875; passed=694; failed=0"
+      ]
+    },
+    {
+      "ID": "HollowRectangle_Generated_No",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=HollowRectangle; group=Generated; cases=8; maxSeconds=4.00390625; passed=714; failed=0"
+      ]
+    },
+    {
+      "ID": "HollowRectangle_Generated_Yes",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=HollowRectangle; group=Generated; cases=8; maxSeconds=3.74609375; passed=683; failed=0"
+      ]
+    },
+    {
+      "ID": "SavedWorkbook_Saved_No",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=23; maxSeconds=6.8515625; passed=1947; failed=0"
+      ]
+    },
+    {
+      "ID": "SavedWorkbook_Saved_Yes",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=23; maxSeconds=2.4453125; passed=1928; failed=0"
+      ]
+    },
+    {
+      "ID": "SavedWorkbook_Paths_No",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Paths; cases=6; maxSeconds=2.982421875; passed=533; failed=0"
+      ]
+    },
+    {
+      "ID": "SavedWorkbook_Paths_Yes",
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Paths; cases=6; maxSeconds=3.0390625; passed=510; failed=0"
+      ]
+    },
+    {
+      "ID": "Batch15_No",
+      "Totals": [
+        "TOTAL_CORE_BATCH15: seconds=3.9375; passed=910; failed=0"
+      ]
+    },
+    {
+      "ID": "Stability_No",
+      "Totals": [
+        "TOTAL_FOCUSED_SPECIAL: case=Stability; elapsedSec=3.; passed=92; failed=0"
+      ]
+    },
+    {
+      "ID": "AsymmetricSteel_No",
+      "Totals": [
+        "TOTAL_FOCUSED_SPECIAL: case=AsymmetricSteel; elapsedSec=3.041015625; passed=92; failed=0"
+      ]
+    },
+    {
+      "ID": "Batch15_Yes",
+      "Totals": [
+        "TOTAL_CORE_BATCH15: seconds=3.68359375; passed=861; failed=0"
+      ]
+    },
+    {
+      "ID": "Stability_Yes",
+      "Totals": [
+        "TOTAL_FOCUSED_SPECIAL: case=Stability; elapsedSec=3.001953125; passed=87; failed=0"
+      ]
+    },
+    {
+      "ID": "AsymmetricSteel_Yes",
+      "Totals": [
+        "TOTAL_FOCUSED_SPECIAL: case=AsymmetricSteel; elapsedSec=3.; passed=87; failed=0"
+      ]
+    },
+    {
+      "ID": "Model_Rectangles",
+      "Totals": []
+    },
+    {
+      "ID": "Model_Circle",
+      "Totals": []
+    },
+    {
+      "ID": "Model_PointedSection",
+      "Totals": []
+    },
+    {
+      "ID": "Model_HollowRectangle",
+      "Totals": []
+    },
+    {
+      "ID": "Model_SavedWorkbook",
+      "Totals": []
+    },
+    {
+      "ID": "OutputPresentation",
+      "Totals": [
+        "TOTAL_CONFIG_PRESENTATION: passed=1336; failed=0"
+      ]
+    }
+  ],
+  "OriginalFullStatusNotPromoted": true
+}
