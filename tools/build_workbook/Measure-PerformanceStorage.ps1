@@ -1,4 +1,4 @@
-# Alternating A/B in one owned Excel process; source books remain read-only copies.
+﻿# Alternating A/B in one owned Excel process; source books remain read-only copies.
 # Timers belong to VBA operations, not setup/assertions. Five observations use max, not P95.
 param(
     [string]$Directory = 'docs/regression/Performance/StorageMeasurements', [int]$Repeats = 5,
@@ -9,10 +9,13 @@ param(
     [string]$Family = 'DIRECT', [string]$Method = 'Newton', [string]$Shape = 'Saved',
     [string]$Order = 'Normal', [string]$Extension = 'Yes', [int[]]$Counts = @(1,10,30),
     [ValidateSet('Staged','Full')][string[]]$BatchModes = @('Staged','Full'), [switch]$Pilot, [int]$RunsPerOpen = 1,
-    [switch]$MeasureOverhead, [switch]$KeepInputs
+    [switch]$MeasureOverhead, [switch]$KeepInputs, [switch]$SavedLoadPrefix, [switch]$CalculateOnly, [switch]$NormalizeExcelSignedZero,
+    [ValidateSet('Excel','File')][string]$BaselineSnapshotStorage = '',
+    [ValidateSet('Excel','File')][string]$CandidateSnapshotStorage = ''
 )
 $ErrorActionPreference = 'Stop'
 if ($Repeats -lt 5 -and -not $Pilot) { throw 'At least five A/B observations are required.' }
+if($CalculateOnly -and ($Group -ne 'Batch' -or @($BatchModes|Where-Object {$_ -ne 'Full'}).Count)){throw 'CalculateOnly requires Batch/Full.'}
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directoryPath = [IO.Path]::GetFullPath((Join-Path $root $Directory))
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Performance')) + [IO.Path]::DirectorySeparatorChar
@@ -41,12 +44,20 @@ function Get-Memory([int]$ProcessId) {
     return [ordered]@{PrivateBytes=$process.PrivateMemorySize64; WorkingSet=$process.WorkingSet64; PeakWorkingSet=$process.PeakWorkingSet64}
 }
 $excel = $null; $book = $null; $records = New-Object 'System.Collections.Generic.List[object]'
+$excelProcessId=0;$excelStartTicks=0;$previousExcel=@(Get-Process EXCEL -ErrorAction SilentlyContinue|ForEach-Object Id)
+function Test-OwnedPerformanceExcel {
+    if(-not $excelProcessId -or $excelProcessId -in $previousExcel){return $false}
+    $ownedProcess=Get-Process -Id $excelProcessId -ErrorAction SilentlyContinue
+    return $ownedProcess -and $ownedProcess.ProcessName -eq 'EXCEL' -and $ownedProcess.StartTime.ToUniversalTime().Ticks -eq $excelStartTicks
+}
 try {
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $false; $excel.DisplayAlerts = $false; $excel.EnableEvents = $false; $excel.AutomationSecurity = 1
     $window = [IntPtr][long](Get-ComProperty $excel 'Hwnd'); [uint32]$excelProcessId = 0
     [void][PerformanceExcelIdentity]::GetWindowThreadProcessId($window, [ref]$excelProcessId)
     $process = Get-Process -Id $excelProcessId
+    $excelStartTicks=$process.StartTime.ToUniversalTime().Ticks
+    if(-not(Test-OwnedPerformanceExcel)){throw 'Excel ownership was not established.'}
     $imagePath = $process.MainModule.FileName
     $pe = [IO.File]::ReadAllBytes($imagePath); $offset = [BitConverter]::ToInt32($pe,60)
     $machine = [BitConverter]::ToUInt16($pe,$offset+4); $bitness = 64; if ($machine -eq 332) {$bitness=32}; $pe=$null
@@ -70,10 +81,26 @@ try {
         for ($repeat=1; $repeat -le $Repeats; $repeat++) {
             foreach ($version in @('A','B')) {
                 $books = Get-ComProperty $excel 'Workbooks'
-                $book = $books.Open($paths[$version])
+                $book = $books.Open($paths[$version],0,$true)
                 $excel.Calculation = -4135
+                $storage=if($version -eq 'A'){$BaselineSnapshotStorage}else{$CandidateSnapshotStorage}
+                if($storage){
+                    $settings=$book.Names.Item('rngSystemSettings').RefersToRange;$values=$settings.Value2;$found=$false
+                    for($row=1;$row -le $values.GetLength(0);$row++){
+                        if([string]$values[$row,1] -ceq 'Results.SnapshotStorage'){$settings.Cells.Item($row,2).Value2=$storage;$found=$true}
+                        if([string]$values[$row,1] -ceq 'Results.SnapshotName'){$settings.Cells.Item($row,2).Value2='TestPerformanceSnapshot.ndms'}
+                    }
+                    if(-not $found){throw 'Selected snapshot storage setting is absent.'}
+                }
                 if ($Group -eq 'Batch' -or $Group -eq 'Export') {
                     if(-not $KeepInputs) {[void]$excel.Run("'$($book.Name)'!modTestPerformance.TestConfigurePerformanceFixture",[string]$Family,[int]$case.Count,[string]$Method,[string]$Shape,[string]$Order,[string]$Extension)}
+                    if($SavedLoadPrefix){
+                        if(-not $KeepInputs -or $Group -ne 'Batch'){throw 'SavedLoadPrefix requires a saved batch fixture.'}
+                        foreach($name in @('rngLoadCombinations','rngStabilityDurationLoads')){
+                            $table=$book.Names.Item($name).RefersToRange
+                            if($case.Count -lt $table.Rows.Count-1){$table.Offset($case.Count+1,0).Resize($table.Rows.Count-$case.Count-1,$table.Columns.Count).ClearContents()}
+                        }
+                    }
                     if ($repeat -eq 1) {
                         $inputs=@{}; foreach($name in @('rngSystemSettings','rngCalculationProfiles','rngLoadCombinations','rngStabilityDurationLoads')) {
                             $inputs[$name]=$book.Names.Item($name).RefersToRange.Value2
@@ -82,9 +109,27 @@ try {
                     }
                     if($Group -eq 'Export') {[void]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceBatch",'Full')}
                 }
+                $geometryStats=$null
+                if($CalculateOnly){
+                    # Формирование выполняется до замера команды «Рассчитать» в обоих вариантах.
+                    [void]$excel.Run("'$($book.Name)'!modWorkbookCalculation.FormSectionForWorkbook",$book)
+                    $anchor=$book.Names.Item('rngNDMSectionGeometry').RefersToRange
+                    $last=[int]$anchor.Worksheet.Cells.Item($anchor.Worksheet.Rows.Count,$anchor.Column).End(-4162).Row
+                    $geometry=$anchor.Resize($last-$anchor.Row+1,16).Value2;$concrete=0;$bars=0
+                    for($row=2;$row -le $geometry.GetLength(0);$row++){if([string]$geometry[$row,3] -ceq 'Concrete'){$concrete++}elseif([string]$geometry[$row,3] -ceq 'Rebar'){$bars++}}
+                    $geometryStats=[ordered]@{Concrete=$concrete;Rebar=$bars}
+                }
                 for ($run=1; $run -le $RunsPerOpen; $run++) {
                 $before = Get-Memory $excelProcessId
-                if ($case.Name -eq 'model') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceModel", [int]$case.Count) }
+                if($CalculateOnly){
+                    $clock=[Diagnostics.Stopwatch]::StartNew()
+                    $message=[string]$excel.Run("'$($book.Name)'!modWorkbookCalculation.RunSectionCalculationForWorkbook",$book,$false)
+                    $clock.Stop()
+                    $fingerprint=[string]$excel.Run("'$($book.Name)'!modTestPerformance.TestPerformanceResultsFingerprint")
+                    $fingerprint+="`n"+[string]$excel.Run("'$($book.Name)'!modTestPerformance.TestPerformancePlotFingerprint")
+                    $result='seconds='+$clock.Elapsed.TotalSeconds.ToString('R',[Globalization.CultureInfo]::InvariantCulture)+[char]30+'fingerprint='+$fingerprint
+                }
+                elseif ($case.Name -eq 'model') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceModel", [int]$case.Count) }
                 elseif ($case.Name -eq 'extent') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceExtent", [bool]($version -eq 'B'), [int]$case.Count) }
                 elseif ($Group -eq 'Solver') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceSolver", [string]$case.Method, [int]$SolverDivisions, [int]$case.Count) }
                 elseif ($Group -eq 'Export') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.TestMeasurePerformanceExport",10) }
@@ -100,10 +145,17 @@ try {
                 }
                 if ($fields.ContainsKey('fingerprint')) {
                     $fingerprintPath = Join-Path $directoryPath "$($case.Name)-$version-$repeat-$run-fingerprint.txt"
-                    [IO.File]::WriteAllText($fingerprintPath,[string]$fields['fingerprint'],[Text.UTF8Encoding]::new($false))
+                    $fingerprint=[string]$fields['fingerprint']
+                    if($NormalizeExcelSignedZero){
+                        # Excel Value2 сохраняет -0 как +0; файл сохраняет исходный знак нуля.
+                        # Эквивалентны только эти два представления точного нуля, без численного допуска.
+                        [IO.File]::WriteAllText(($fingerprintPath+'.raw'),$fingerprint,[Text.UTF8Encoding]::new($false))
+                        $fingerprint=[regex]::Replace($fingerprint,'(?m)(^|\|)D:0000000000000080(?=\|)','$1D:0000000000000000')
+                    }
+                    [IO.File]::WriteAllText($fingerprintPath,$fingerprint,[Text.UTF8Encoding]::new($false))
                     $fields['fingerprint']=(Get-FileHash -LiteralPath $fingerprintPath -Algorithm SHA256).Hash
                 }
-                $record = [ordered]@{Case=$case.Name; Version=$version; Repeat=$repeat; RunWithinOpen=$run; Pilot=[bool]$Pilot; Count=$case.Count; Seconds=$seconds; Values=$fields; Technical=$technical; MemoryBefore=$before; MemoryAfter=$after}
+                $record = [ordered]@{Case=$case.Name; Version=$version; Repeat=$repeat; RunWithinOpen=$run; Pilot=[bool]$Pilot; Count=$case.Count; Seconds=$seconds; Values=$fields; Technical=$technical; MemoryBefore=$before; MemoryAfter=$after;Geometry=$geometryStats;CalculationOnly=[bool]$CalculateOnly;ExcelSignedZeroEquivalent=[bool]$NormalizeExcelSignedZero}
                 $records.Add($record)
                 $records | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $directoryPath 'Raw.json') -Encoding UTF8
                 Write-Output ($record | ConvertTo-Json -Depth 5 -Compress)
@@ -134,14 +186,14 @@ try {
             $seconds = @($records | Where-Object {$_.Case -eq $case.Name -and $_.Version -eq $version -and $_.RunWithinOpen -eq $run} | ForEach-Object {$_.Seconds} | Sort-Object)
             $median=$seconds[[int][Math]::Floor($seconds.Count/2)]
             if ($seconds.Count % 2 -eq 0) {$median=($seconds[$seconds.Count/2-1]+$seconds[$seconds.Count/2])/2}
-            $summary += [ordered]@{Case=$case.Name; Version=$version; RunWithinOpen=$run; Observations=$seconds.Count; Median=$median; Min=$seconds[0]; Max=$seconds[-1]; ExactValues=$true; FullPhasesMeasured=($Group -ne 'Batch' -or $case.Mode -ne 'Full')}
+            $summary += [ordered]@{Case=$case.Name; Version=$version; RunWithinOpen=$run; Observations=$seconds.Count; Median=$median; Min=$seconds[0]; Max=$seconds[-1]; ExactValues=$true; EndToEnd=($Group -eq 'Batch' -and $case.Mode -eq 'Full'); PhaseBreakdown=($Group -ne 'Batch' -or $case.Mode -ne 'Full');CalculationOnly=[bool]$CalculateOnly;Geometry=$geometryStats;ExcelSignedZeroEquivalent=[bool]$NormalizeExcelSignedZero}
         }}
     }
     foreach ($key in @('A','B')) { if ((Get-FileHash -LiteralPath $paths[$key] -Algorithm SHA256).Hash -ne $hashes[$key]) { throw "Source changed: $key" } }
     $summary | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $directoryPath 'Summary.json') -Encoding UTF8
 }
 finally {
-    if ($null -ne $book) {try {$book.Close($false)} catch {Write-Warning $_}; [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($book)}
-    if ($null -ne $excel) {try {$excel.Quit()} catch {Write-Warning $_}; [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)}
+    if ($null -ne $book) {if(Test-OwnedPerformanceExcel){try {$book.Close($false)} catch {Write-Warning $_}}; [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($book)}
+    if ($null -ne $excel) {if(Test-OwnedPerformanceExcel){try {$excel.Quit()} catch {Write-Warning $_}}; [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)}
     [GC]::Collect(); [GC]::WaitForPendingFinalizers()
 }

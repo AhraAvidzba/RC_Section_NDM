@@ -98,6 +98,8 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
     On Error GoTo Failed
+    Dim snapshotReadEntered As Boolean
+    BeginCalculationSnapshotRead workbook: snapshotReadEntered = True
     ResetReaderState
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
@@ -107,11 +109,14 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     ReadGeometryAndResults workbook
     ReadAnnotations workbook
     Set mReadTables = Nothing
+    EndCalculationSnapshotRead
+    snapshotReadEntered = False
     Exit Sub
 Failed:
     Dim errorNumber As Long, description As String, errorSource As String
     errorNumber = Err.Number: description = Err.Description: errorSource = Err.Source
     ResetReaderState
+    If snapshotReadEntered Then EndCalculationSnapshotRead
     Err.Raise errorNumber, errorSource, description
 End Sub
 
@@ -223,7 +228,12 @@ Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
     profiles.LoadFromWorkbook workbook
 
     Dim profile As CCalculationProfile
-    Set profile = profiles.ProfileById(mProfileId)
+    If profiles.HasProfile(mProfileId) Then
+        Set profile = profiles.ProfileById(mProfileId)
+    Else
+        Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+        If snapshot Is Nothing Then Set profile = profiles.ProfileById(mProfileId) Else Set profile = snapshot.SavedVisualizationProfile(mProfileId)
+    End If
     mProfileCrackWidthEnabled = profile.CrackWidthEnabled
     mStateType = profile.VisualizationStateText
     mVisualizationQuantity = VisualizationQuantityToText(profile.VisualizationQuantity)
@@ -245,7 +255,7 @@ End Function
 Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal loadCase As String) As String
     On Error GoTo Failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadElementResultTable(workbook, loadCase, , True)
     If Not HasRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -289,7 +299,7 @@ End Function
 Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadElementResultTable(workbook, , , True)
     If Not HasRows(data) Then Exit Function
 
     Dim colLoadCase As Long
@@ -493,7 +503,7 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim results As Variant
     Dim resultAnchor As Object
     Set resultAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
-    results = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    results = ReadElementResultTable(workbook, mLoadCase, mStateType)
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."
 
@@ -901,6 +911,10 @@ End Sub
 ' Читает таблицу от её именованного начала, без CurrentRegion.
 ' Текстовый заголовок над таблицей в массив данных не включается.
 Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+    If Left$(rangeName, 6) = "rngNDM" Then
+        ReadAnchoredResultTable = modSectionSnapshot.ReadAnchoredResultTable(workbook, rangeName)
+        Exit Function
+    End If
     If Not mReadTables Is Nothing Then
         If mReadTables.Exists(rangeName) Then
             ReadAnchoredResultTable = mReadTables.Item(rangeName)

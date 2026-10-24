@@ -1,0 +1,932 @@
+[
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 2.68062690005172,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 83222528,
+      "WorkingSet": 120528896,
+      "PeakWorkingSet": 129425408
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 96497664,
+      "WorkingSet": 142610432,
+      "PeakWorkingSet": 152621056
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.32658110000193,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 95629312,
+      "WorkingSet": 143265792,
+      "PeakWorkingSet": 162500608
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 117153792,
+      "WorkingSet": 164761600,
+      "PeakWorkingSet": 164765696
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.70750679995399,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 101728256,
+      "WorkingSet": 149561344,
+      "PeakWorkingSet": 170717184
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 103444480,
+      "WorkingSet": 150945792,
+      "PeakWorkingSet": 170717184
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.51583449996542,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 102506496,
+      "WorkingSet": 150470656,
+      "PeakWorkingSet": 170717184
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 124280832,
+      "WorkingSet": 172072960,
+      "PeakWorkingSet": 172077056
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.49680050008465,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 113524736,
+      "WorkingSet": 160903168,
+      "PeakWorkingSet": 178356224
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 109481984,
+      "WorkingSet": 157245440,
+      "PeakWorkingSet": 178356224
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.33593629999086,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 105492480,
+      "WorkingSet": 153366528,
+      "PeakWorkingSet": 178356224
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 125988864,
+      "WorkingSet": 173842432,
+      "PeakWorkingSet": 178356224
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.53694239992183,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 103731200,
+      "WorkingSet": 151769088,
+      "PeakWorkingSet": 179884032
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 111222784,
+      "WorkingSet": 158597120,
+      "PeakWorkingSet": 179884032
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.31839509995189,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 109690880,
+      "WorkingSet": 157925376,
+      "PeakWorkingSet": 179884032
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 129417216,
+      "WorkingSet": 177475584,
+      "PeakWorkingSet": 179884032
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.74509590002708,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 116584448,
+      "WorkingSet": 164069376,
+      "PeakWorkingSet": 183521280
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 114024448,
+      "WorkingSet": 162222080,
+      "PeakWorkingSet": 183521280
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 1.4002010000404,
+    "Values": {
+      "fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 109318144,
+      "WorkingSet": 157966336,
+      "PeakWorkingSet": 183521280
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 130666496,
+      "WorkingSet": 179134464,
+      "PeakWorkingSet": 183521280
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 4.61543779994827,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 110133248,
+      "WorkingSet": 158326784,
+      "PeakWorkingSet": 185409536
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 139853824,
+      "WorkingSet": 175198208,
+      "PeakWorkingSet": 236068864
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 3.2380497000413,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 122613760,
+      "WorkingSet": 169627648,
+      "PeakWorkingSet": 236068864
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 140398592,
+      "WorkingSet": 188071936,
+      "PeakWorkingSet": 242470912
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 4.49431300000288,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 142192640,
+      "WorkingSet": 186707968,
+      "PeakWorkingSet": 242470912
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 147386368,
+      "WorkingSet": 194965504,
+      "PeakWorkingSet": 242921472
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 2.99157269997522,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 133332992,
+      "WorkingSet": 180047872,
+      "PeakWorkingSet": 242921472
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 160079872,
+      "WorkingSet": 207593472,
+      "PeakWorkingSet": 245710848
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 4.44945559999906,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 136179712,
+      "WorkingSet": 181723136,
+      "PeakWorkingSet": 245710848
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 149192704,
+      "WorkingSet": 196763648,
+      "PeakWorkingSet": 245710848
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 2.96568879997358,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 155144192,
+      "WorkingSet": 203108352,
+      "PeakWorkingSet": 245710848
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 160825344,
+      "WorkingSet": 207695872,
+      "PeakWorkingSet": 247283712
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 4.39843780000228,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 145235968,
+      "WorkingSet": 190062592,
+      "PeakWorkingSet": 247283712
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 148865024,
+      "WorkingSet": 195993600,
+      "PeakWorkingSet": 247283712
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 2.8471339000389,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 149704704,
+      "WorkingSet": 195497984,
+      "PeakWorkingSet": 247283712
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 164032512,
+      "WorkingSet": 211935232,
+      "PeakWorkingSet": 249552896
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 4.35114389995579,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 146419712,
+      "WorkingSet": 191279104,
+      "PeakWorkingSet": 249552896
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 152043520,
+      "WorkingSet": 199819264,
+      "PeakWorkingSet": 249552896
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 3.19450899993535,
+    "Values": {
+      "fingerprint": "F9400405DA1F9FFFDDA81977E090CE6FE255E472FC345A8FB301C8951E8D94FA"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 159805440,
+      "WorkingSet": 207982592,
+      "PeakWorkingSet": 249552896
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 168898560,
+      "WorkingSet": 216965120,
+      "PeakWorkingSet": 252899328
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 12.1148404999403,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 140730368,
+      "WorkingSet": 185704448,
+      "PeakWorkingSet": 252899328
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 184750080,
+      "WorkingSet": 232120320,
+      "PeakWorkingSet": 386768896
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 7.29176499997266,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 168681472,
+      "WorkingSet": 216506368,
+      "PeakWorkingSet": 386768896
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 192782336,
+      "WorkingSet": 240119808,
+      "PeakWorkingSet": 386768896
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 11.4305890999967,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 149999616,
+      "WorkingSet": 194879488,
+      "PeakWorkingSet": 386768896
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 203984896,
+      "WorkingSet": 250867712,
+      "PeakWorkingSet": 392777728
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 7.26817319996189,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 185249792,
+      "WorkingSet": 232923136,
+      "PeakWorkingSet": 392777728
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 203272192,
+      "WorkingSet": 250433536,
+      "PeakWorkingSet": 392777728
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 11.390997099923,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 178561024,
+      "WorkingSet": 226369536,
+      "PeakWorkingSet": 392777728
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 214872064,
+      "WorkingSet": 261836800,
+      "PeakWorkingSet": 397012992
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 7.21199370000977,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 200286208,
+      "WorkingSet": 247693312,
+      "PeakWorkingSet": 397012992
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 215957504,
+      "WorkingSet": 263032832,
+      "PeakWorkingSet": 397012992
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 11.1882253000513,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 151576576,
+      "WorkingSet": 198467584,
+      "PeakWorkingSet": 397012992
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 220741632,
+      "WorkingSet": 267001856,
+      "PeakWorkingSet": 397012992
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 7.31480699998792,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 207273984,
+      "WorkingSet": 254230528,
+      "PeakWorkingSet": 397012992
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 222883840,
+      "WorkingSet": 269893632,
+      "PeakWorkingSet": 397012992
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 11.4736533999676,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 200368128,
+      "WorkingSet": 248102912,
+      "PeakWorkingSet": 397012992
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 223838208,
+      "WorkingSet": 270974976,
+      "PeakWorkingSet": 401367040
+    }
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 7.23379570001271,
+    "Values": {
+      "fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    },
+    "Technical": {
+      "core": "0.",
+      "plot": "0.",
+      "preparation": "0.",
+      "clear": "0.",
+      "packing": "0.",
+      "snapshot": "0.",
+      "summary": "0."
+    },
+    "MemoryBefore": {
+      "PrivateBytes": 214282240,
+      "WorkingSet": 261840896,
+      "PeakWorkingSet": 401367040
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 229502976,
+      "WorkingSet": 276733952,
+      "PeakWorkingSet": 401367040
+    }
+  }
+]

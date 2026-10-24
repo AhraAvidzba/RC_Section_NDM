@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -16,6 +16,7 @@ Option Explicit
 ' плоскостям и выбранному нормативу СП 35 или СП 63. Переводит величины
 ' в пользовательские единицы и оформляет таблицу без повторного расчёта.
 
+Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник готовых значений без записи и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
 Private Const HEADER_ROWS As Long = 5 ' Число строк шапки над первой строкой данных.
@@ -91,9 +92,9 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     If mMinimalFormatting Then
         mMinimalFormatting = (CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@")
     End If
-    PrepareTarget target
+    If mCapturedSnapshot Is Nothing Then PrepareTarget target
     WriteHeaders target, units, batch
-    WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
+    If mCapturedSnapshot Is Nothing Then WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
     WriteData target, batch, units
     FormatTable target, batch
     Exit Sub
@@ -199,6 +200,11 @@ End Sub
 ' режиме сохраняет совпадающую шапку; при отличии возвращается к полному оформлению.
 Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
         ByVal batch As CBatchSectionCalculator)
+    If Not mCapturedSnapshot Is Nothing Then
+        Dim savedLabels As Variant: savedLabels = HeaderRowLabels(units, batch)
+        mCapturedSnapshot.AddTable "Stability.Labels", savedLabels
+        Exit Sub
+    End If
     If mMinimalFormatting Then
         Dim expectedLabels As Variant: expectedLabels = HeaderRowLabels(units, batch)
         If CStr(target.Cells(2, 1).Value2) = "Combination ID" Then
@@ -438,6 +444,10 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
         PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
     Next i
 
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "Stability.Data", data
+        Exit Sub
+    End If
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
 
@@ -563,6 +573,7 @@ End Sub
 ' Оформляет подробную таблицу устойчивости: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+    If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
         FormatStatusCells target, batch
         Exit Sub
@@ -618,14 +629,19 @@ End Sub
 
 ' Красит блоки строки LC по итоговому статусу расчета устойчивости.
 Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
-    If batch Is Nothing Then Exit Sub
+    Dim rows() As Long, i As Long
+    If batch Is Nothing Then
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS)
+        If IsEmpty(storedRows) Then Exit Sub
+        rows = storedRows
+    Else
     If batch.Count <= 0 Then Exit Sub
     Dim dataRows As Long: dataRows = target.Rows.Count - HEADER_ROWS
-    Dim rows() As Long, i As Long
     ReDim rows(1 To batch.Count)
     For i = 1 To batch.Count
         rows(i) = HEADER_ROWS + OutputDataOffset(batch, i, dataRows)
     Next i
+    End If
     ApplyTableStatusFills target, rows, Array( _
         3, SP35_PLANE1_FIRST + 8, SP35_PLANE1_FIRST + 14, _
         SP35_PLANE2_FIRST + 8, SP35_PLANE2_FIRST + 14, SP63_PLANE1_FIRST + 11, _
@@ -917,3 +933,28 @@ Private Function StatusPolicy() As CResultStatusPolicy
     If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
+
+' Передаёт отдельный приёмник готовых массивов; при Nothing сохраняется обычный вывод.
+Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
+    Set mCapturedSnapshot = value
+End Property
+
+' Восстанавливает готовую подробную таблицу и её прежнее оформление без решения НДС.
+Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
+    Set mCapturedSnapshot = Nothing
+    mMinimalFormatting = Not fullFormatting
+    Dim data As Variant: data = snapshot.Table("Stability.Data")
+    Dim target As Object: Set target = TargetRange(workbook, UBound(data, 1))
+    Dim labels As Variant: labels = snapshot.Table("Stability.Labels")
+    If mMinimalFormatting Then mMinimalFormatting = CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@" And _
+        CStr(target.Cells(2, 1).Value2) = "Combination ID" And ResultHeaderMatches(target.Offset(4, 0), labels, firstColumn:=4)
+    PrepareTarget target
+    If Not mMinimalFormatting Then
+        WriteHeaders target, Nothing, Nothing
+        target.Offset(4, 0).Resize(1, TOTAL_COLUMNS).Value2 = labels
+        ApplyHeaderSubscripts target
+    End If
+    WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
+    target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data
+    FormatTable target, Nothing
+End Sub

@@ -54,9 +54,9 @@ Public Sub UpdateSectionPlot()
     On Error GoTo Failed
     Dim informationEnabled As Boolean
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
-    UpdateSectionPlotForWorkbook ThisWorkbook
+    UpdateSectionResultsForWorkbook ThisWorkbook
     If informationEnabled Then
-        ShowWorkbookMessage "Схема сечения обновлена по последнему расчетному снимку Results.", vbInformation, "RC Section NDM"
+        ShowWorkbookMessage "Схема и подробные результаты восстановлены из выбранного снимка без повторного расчёта.", vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
@@ -249,7 +249,7 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
         FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
             "Предупреждение:" & vbCrLf & "Схема не обновлена. Сечение сохранено в Results." & vbCrLf & vbCrLf & _
             SectionRecipeErrorText(plotError) & vbCrLf & vbCrLf & _
-            "После исправления настроек оформления нажмите «Обновить схему»."
+            "После исправления настроек оформления нажмите «Обновить схему и результаты»."
     End If
     guard.Restore True
     FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
@@ -382,6 +382,11 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Точка приложения нагрузки Y", ReportLengthText(batch.LoadReferenceY, units)
 
     report.AddSection "Проверка вывода Results"
+    OfferExternalCalculationSnapshot workbook, CDbl(section.ConcreteCount + section.RebarCount) * EstimatedNamedStateCountForOutput(batch, profiles), showMessages
+    Dim snapshotStore As CCalculationSnapshotStore: Set snapshotStore = New CCalculationSnapshotStore
+    If snapshotStore.StorageMode(workbook) = "File" Then
+        Dim validatedSnapshotPath As String: validatedSnapshotPath = snapshotStore.SnapshotPath(workbook)
+    End If
     ValidateResultsOutputLayout workbook, section, batch, profiles
     report.AddStep "Проверена раскладка Results для " & CStr(batch.Count) & " сочетаний."
 
@@ -398,18 +403,18 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Dim summaryWriter As CBatchResultWriter
     Set summaryWriter = New CBatchResultWriter
     report.AddSection "Запись результатов"
-    report.AddStep "Начата запись batch summary."
+    Dim savedSnapshot As CCalculationSnapshot: Set savedSnapshot = New CCalculationSnapshot
+    Set summaryWriter.CaptureSnapshot = savedSnapshot
     summaryWriter.WriteSummary workbook, batch, units, section, fullFormatting
-    report.AddStep "Сводка batch summary записана на лист Results."
-
-    Dim ndmWriter As CNDMResultsWriter
-    Set ndmWriter = New CNDMResultsWriter
-    report.AddStep "Начата запись расчётных состояний и диаграмм в Results; координаты сформированного сечения сохраняются."
+    Dim ndmWriter As CNDMResultsWriter: Set ndmWriter = New CNDMResultsWriter
+    Set ndmWriter.CaptureSnapshot = savedSnapshot
     ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True, fullFormatting
-    report.AddStep "Расчетный снимок NDM записан на лист Results."
-
+    savedSnapshot.AddTable "Calculation.Profiles", workbook.Names.Item("rngCalculationProfiles").RefersToRange.Value2
+    savedSnapshot.Validate
+    report.AddStep "Полный снимок подготовлен; сохранение и общее обновление схемы и результатов."
     Dim plotWarning As String
-    plotWarning = UpdateCalculatedSectionPlot(workbook, settings, batch.StateAvailableCount, report)
+    plotWarning = SaveAndDisplayCalculationSnapshot(workbook, savedSnapshot)
+    report.AddStep "Снимок сохранён. Подробные таблицы и схема обновлены из него без повторного решения."
 
     Dim totalElapsedSeconds As Double
     totalElapsedSeconds = ElapsedSecondsFrom(runStart)
@@ -428,8 +433,10 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
             "Пошаговый отчет сохранен: " & report.FilePath
     End If
     CalculateResultsSheet workbook
+    savedSnapshot.ElapsedSeconds = ElapsedSecondsFrom(runStart)
+    snapshotStore.UpdateSavedElapsed workbook, savedSnapshot
+    summaryWriter.UpdateElapsedSeconds workbook, savedSnapshot.ElapsedSeconds
     excelGuard.Restore True
-    summaryWriter.UpdateElapsedSeconds workbook, ElapsedSecondsFrom(runStart)
     RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & _
         "Время расчёта: " & Format$(ElapsedSecondsFrom(runStart), "0.00") & " с."
     Exit Function
@@ -451,33 +458,6 @@ Failed:
     Err.Raise errorNumber, errorSource, errorDescription
 End Function
 
-
-' Выполняет отдельный этап оформления после успешной записи расчёта.
-' Ошибка схемы возвращается предупреждением и не отменяет готовое НДС.
-Private Function UpdateCalculatedSectionPlot(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
-        ByVal stateCount As Long, ByVal report As CExecutionReport) As String
-    On Error GoTo Failed
-    report.AddSection "Схема"
-    If Not settings.GetRequiredBoolean("Plot.Enabled") Then
-        report.AddStep "Обновление схемы пропущено: Plot.Enabled = No."
-    ElseIf Not settings.GetRequiredBoolean("Plot.AutoUpdateAfterCalculation") Then
-        report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
-    ElseIf stateCount > 0 Then
-        UpdateSectionPlotForWorkbook workbook, False
-        report.AddStep "Схема обновлена по сохранённым Results."
-    Else
-        ClearSectionPlotForNoData workbook, "Схема не обновлена: нет доступных расчётных состояний LC."
-        report.AddStep "Нет доступных расчётных состояний для схемы."
-    End If
-    Exit Function
-Failed:
-    Dim reason As String: reason = Err.Description
-    report.AddError "Схема не обновлена; результаты расчёта сохранены", reason
-    UpdateCalculatedSectionPlot = "Предупреждение:" & vbCrLf & _
-        "Схема не обновлена. Результаты расчёта сохранены в Results." & vbCrLf & vbCrLf & _
-        SectionRecipeErrorText(reason) & vbCrLf & vbCrLf & _
-        "После исправления настроек оформления нажмите «Обновить схему». Повторный расчёт не требуется."
-End Function
 
 ' До расчёта проверяет, хватает ли места таблицам Results. Учитывает заголовки,
 ' ширину таблиц, блоки сохранённой геометрии и состояний, а также две пустые
@@ -678,6 +658,8 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
     names(6) = "rngNDMSectionAnnotations"
 
     rows(1) = ndmWriter.EstimatedElementResultRows(elementCount, estimatedStateCount)
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    If combinationCount > 0 Then If store.StorageMode(workbook) = "File" Then rows(1) = 3 ' В книге остаются шапка и ссылка; числовые состояния хранятся в одном внешнем файле.
     rows(2) = 1 + elementCount
     rows(3) = 1 + contourCount
     rows(4) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
@@ -685,8 +667,7 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
     rows(6) = 1 + MaxLong(2, annotationCount)
 
     Dim index As Long
-    Dim previousRightColumn As Long
-    previousRightColumn = 0
+    Dim anchors(1 To 6) As Object
     For index = 1 To 6
         cols(index) = ndmWriter.OutputColumnCount(names(index))
 
@@ -700,16 +681,17 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
         End If
         CheckFootprintWithinSheet issues, ws, names(index), anchor.Row, anchor.Column, rows(index), cols(index)
 
-        If previousRightColumn > 0 Then
-            Dim gapColumns As Long
-            gapColumns = anchor.Column - previousRightColumn - 1
-            If gapColumns < requiredGapColumns Then
-                AddLayoutIssue issues, "Между нижними блоками Results должно быть не меньше " & _
-                    CStr(requiredGapColumns) & " пустых столбцов. Перед " & names(index) & _
-                    " сейчас " & CStr(gapColumns) & ". Раздвиньте якоря вправо."
+        Set anchors(index) = anchor
+        Dim other As Long, gapColumns As Long
+        For other = 1 To index - 1
+            If anchor.Column >= anchors(other).Column Then
+                gapColumns = anchor.Column - anchors(other).Column - cols(other)
+            Else
+                gapColumns = anchors(other).Column - anchor.Column - cols(index)
             End If
-        End If
-        previousRightColumn = anchor.Column + cols(index) - 1
+            If gapColumns < requiredGapColumns Then AddLayoutIssue issues, _
+                "Между " & names(other) & " и " & names(index) & " требуется не менее " & CStr(requiredGapColumns) & " пустых столбцов."
+        Next other
     Next index
     Exit Sub
 

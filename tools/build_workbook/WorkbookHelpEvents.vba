@@ -1,13 +1,29 @@
 Option Explicit
 
 ' ==========================================================================
-' События книги: начальное состояние Справки и переход к нужной настройке
+' События книги: Справка и сохранение связанного файла подробных НДС
 ' ==========================================================================
-' Обработчики управляют только просмотром; ввод и расчётные снимки не меняются.
+' Обработчики управляют справкой и копированием связанного снимка при Save As;
+' пользовательский ввод и содержимое расчётного снимка не меняются.
+Private mLastWorkbookFolder As String ' Последняя папка книги для последовательных Save As после переноса исходного файла.
 
 ' При открытии раскрывает раздел настроек Config и листа «Сечения», остальные сворачивает.
 Private Sub Workbook_Open()
+    mLastWorkbookFolder = ThisWorkbook.Path
     ApplyHelpDefaults
+End Sub
+
+' После Save As переносит файл того же снимка рядом с новой книгой.
+' Расчётные значения и другие файлы не меняет; существующий файл проверяет по SHA256.
+Private Sub Workbook_AfterSave(ByVal Success As Boolean)
+    If Not Success Then Exit Sub
+    On Error GoTo Failed
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    store.EnsureBesideWorkbook ThisWorkbook, mLastWorkbookFolder
+    mLastWorkbookFolder = ThisWorkbook.Path
+    Exit Sub
+Failed:
+    MsgBox Err.Description, vbExclamation, "Снимок расчёта"
 End Sub
 
 ' Единое начальное состояние outline-групп для открытия книги.

@@ -1,0 +1,13 @@
+{
+  "Status": "PROCESSED_WITH_DIRECTED_FIXES",
+  "HistoricalAcceptance": "INCOMPLETE_OR_FAILED",
+  "HistoricalSourceSHA256": "99DC41B566EBBAD79438D61FEB967D4B45D4BA0631D94AA5A72166B2D660A4B3",
+  "Report": "docs/reports/AutoMesh_FullFollowup_2026-10-24.md",
+  "CompactEvidence": "docs/regression/CompleteSnapshot_2026-10-24/Compact/EvidenceIndex.json",
+  "PrimaryEvidenceUnchanged": true,
+  "MainAssertions": {"Passed": 299084, "Failed": 76},
+  "FailureCause": "38 required manual Mesh.StepX/StepY assumptions repeated in both modes while Auto was selected",
+  "NativeFixtureFix": "Include Mesh.StepMode in actual test range size",
+  "NewLongFullRepeatOfHistoricalBook": false,
+  "NextFeatureAcceptance": "Separate authorized full acceptance of CompleteSnapshot; historical FAIL is not promoted"
+}

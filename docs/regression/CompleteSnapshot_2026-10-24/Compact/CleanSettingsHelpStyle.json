@@ -1,0 +1,814 @@
+﻿{
+    "Status":  "PASS",
+    "WorkbookSHA256":  "00C2165E937D631DE9F2C1C4760DDB23C06BBC694FF174475BB9B7A060F538E6",
+    "ListSeparator":  ";",
+    "Validation":  [
+                       {
+                           "Value":  "Auto 0.05",
+                           "Accepted":  true
+                       },
+                       {
+                           "Value":  "Auto 0.1",
+                           "Accepted":  true
+                       },
+                       {
+                           "Value":  "Auto 0.2",
+                           "Accepted":  true
+                       },
+                       {
+                           "Value":  "User",
+                           "Accepted":  true
+                       }
+                   ],
+    "InvalidValuesRejected":  2,
+    "RightBorder":  "dotted/black/thin",
+    "LinkFontsChecked":  136,
+    "HelpBlocks":  [
+                       {
+                           "Key":  "Units",
+                           "Row":  591,
+                           "Paragraphs":  9
+                       },
+                       {
+                           "Key":  "SignConvention",
+                           "Row":  602,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "LoadCombinations",
+                           "Row":  610,
+                           "Paragraphs":  13
+                       },
+                       {
+                           "Key":  "StabilityLoads",
+                           "Row":  635,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "SP35Table721",
+                           "Row":  642,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "ConcreteMaterialParameters",
+                           "Row":  650,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "SteelMaterialParameters",
+                           "Row":  659,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "CalculationProfiles",
+                           "Row":  667,
+                           "Paragraphs":  12
+                       },
+                       {
+                           "Key":  "MaterialDiagramControlTables",
+                           "Row":  681,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "PlotAnnotationSettings",
+                           "Row":  687,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "DependentRebarRows",
+                           "Row":  696,
+                           "Paragraphs":  8
+                       },
+                       {
+                           "Key":  "CircleGeometry",
+                           "Row":  706,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "PointedSectionGeometry",
+                           "Row":  714,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "HollowRectangleGeometry",
+                           "Row":  721,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "RectanglesGeometry",
+                           "Row":  728,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "General.ExecutionReportEnabled",
+                           "Row":  736,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "General.NonCriticalMessagesEnabled",
+                           "Row":  745,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Results.SnapshotStorage",
+                           "Row":  752,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "Results.SnapshotName",
+                           "Row":  761,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "General.WorstCombinationCriterion",
+                           "Row":  769,
+                           "Paragraphs":  8
+                       },
+                       {
+                           "Key":  "General.PlateauSlopeFactor",
+                           "Row":  779,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "General.DiagramExtension",
+                           "Row":  787,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Calculation.ZeroMomentPerDepth",
+                           "Row":  794,
+                           "Paragraphs":  8
+                       },
+                       {
+                           "Key":  "Geometry.Source",
+                           "Row":  804,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "Geometry.Type",
+                           "Row":  813,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Mesh.StepMode",
+                           "Row":  820,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "Mesh.StepX",
+                           "Row":  829,
+                           "Paragraphs":  8
+                       },
+                       {
+                           "Key":  "Mesh.StepY",
+                           "Row":  839,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Mesh.BoundarySubdivisions",
+                           "Row":  843,
+                           "Paragraphs":  9
+                       },
+                       {
+                           "Key":  "Load.ReferenceOffsetX",
+                           "Row":  854,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "Load.ReferenceOffsetY",
+                           "Row":  863,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Solver.Method",
+                           "Row":  867,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Solver.MaxIterations",
+                           "Row":  874,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Solver.LoadSteps",
+                           "Row":  881,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Solver.ToleranceN",
+                           "Row":  887,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Solver.ToleranceMx",
+                           "Row":  893,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Solver.ToleranceMy",
+                           "Row":  899,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Solver.SecantMaxRestarts",
+                           "Row":  905,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Capacity.SolutionStrategy",
+                           "Row":  911,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Capacity.SolverMaxIterations",
+                           "Row":  919,
+                           "Paragraphs":  8
+                       },
+                       {
+                           "Key":  "Capacity.ToleranceStrain",
+                           "Row":  929,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Capacity.MaxLambda",
+                           "Row":  937,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Capacity.SearchMethod",
+                           "Row":  945,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Capacity.InitialLambda",
+                           "Row":  952,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Capacity.ToleranceLambda",
+                           "Row":  960,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Capacity.MaxRetries",
+                           "Row":  968,
+                           "Paragraphs":  10
+                       },
+                       {
+                           "Key":  "Capacity.BaseLoadSteps",
+                           "Row":  980,
+                           "Paragraphs":  10
+                       },
+                       {
+                           "Key":  "Stability.Code",
+                           "Row":  992,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Stability.ElementLength",
+                           "Row":  1000,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "Stability.Mu1",
+                           "Row":  1009,
+                           "Paragraphs":  8
+                       },
+                       {
+                           "Key":  "Stability.Mu2",
+                           "Row":  1019,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Stability.SystemType",
+                           "Row":  1023,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Stability.ZeroMomentEccentricitySign1",
+                           "Row":  1031,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "Stability.ZeroMomentEccentricitySign2",
+                           "Row":  1040,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Stability.AccidentalEccentricityMode",
+                           "Row":  1044,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Stability.AccidentalEccentricityUser1",
+                           "Row":  1052,
+                           "Paragraphs":  8
+                       },
+                       {
+                           "Key":  "Stability.AccidentalEccentricityUser2",
+                           "Row":  1062,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Stability.AccidentalEccentricityPlanes",
+                           "Row":  1066,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Stability.PhiLMode",
+                           "Row":  1073,
+                           "Paragraphs":  9
+                       },
+                       {
+                           "Key":  "Stability.SP63.Ks",
+                           "Row":  1084,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "Stability.SP63.DeltaEMin",
+                           "Row":  1089,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "Stability.SP63.DeltaEMax",
+                           "Row":  1094,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "Stability.SP35.PhiP",
+                           "Row":  1099,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "Stability.SP35.NOverNcrLimit",
+                           "Row":  1104,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.Code",
+                           "Row":  1109,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.Allowable",
+                           "Row":  1114,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "SLS.Crack.InitiationSolutionStrategy",
+                           "Row":  1123,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "SLS.Crack.ToleranceLambda",
+                           "Row":  1130,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "SLS.Crack.TensionZoneMode",
+                           "Row":  1136,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "SLS.Crack.CoverDistanceMode",
+                           "Row":  1144,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "SLS.Crack.Phi1",
+                           "Row":  1150,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.Phi2",
+                           "Row":  1155,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.Phi3Mode",
+                           "Row":  1160,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "SLS.Crack.Phi3",
+                           "Row":  1166,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.PsiMode",
+                           "Row":  1171,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "SLS.Crack.SigmaSCrcAveragingMode",
+                           "Row":  1179,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "SLS.Crack.PsiS",
+                           "Row":  1185,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "SLS.Crack.SP35.GroupGapTolerance",
+                           "Row":  1191,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.SP35.RowTolerance",
+                           "Row":  1196,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.SP35.NeighborRatioLimit",
+                           "Row":  1201,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.SP35.RadiusDiameterMode",
+                           "Row":  1206,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.SP35.InteractionRadiusMode",
+                           "Row":  1211,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "SLS.Crack.SP35.RebarProfile",
+                           "Row":  1216,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "AutoCAD.Common.ConcreteLayer",
+                           "Row":  1221,
+                           "Paragraphs":  8
+                       },
+                       {
+                           "Key":  "AutoCAD.Common.RebarLayer",
+                           "Row":  1231,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "AutoCAD.Common.SectionContourLayer",
+                           "Row":  1237,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "AutoCAD.Common.OpeningContourLayer",
+                           "Row":  1243,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "AutoCAD.Import.MinArea",
+                           "Row":  1249,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.CombinationID",
+                           "Row":  1258,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.NeutralLineEnabled",
+                           "Row":  1267,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.PrincipalAxesMode",
+                           "Row":  1274,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.LoadPointEnabled",
+                           "Row":  1282,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.ContourEnabled",
+                           "Row":  1289,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.ContourFormat",
+                           "Row":  1297,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.ExportCrackInteractionContour",
+                           "Row":  1304,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.LabelMode",
+                           "Row":  1311,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "AutoCAD.Export.CrackInteractionLayer",
+                           "Row":  1318,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "AutoCAD.Layer.ConcreteTension",
+                           "Row":  1323,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "AutoCAD.Layer.ConcreteCompression",
+                           "Row":  1332,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "AutoCAD.Layer.RebarTension",
+                           "Row":  1336,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "AutoCAD.Layer.RebarCompression",
+                           "Row":  1340,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "AutoCAD.Color.ConcreteTension",
+                           "Row":  1344,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "AutoCAD.Color.ConcreteCompression",
+                           "Row":  1350,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "AutoCAD.Color.RebarTension",
+                           "Row":  1354,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "AutoCAD.Color.RebarCompression",
+                           "Row":  1358,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "AutoCAD.Color.Neutral",
+                           "Row":  1362,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Plot.Enabled",
+                           "Row":  1366,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Plot.AutoUpdateAfterCalculation",
+                           "Row":  1372,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Plot.LoadCase",
+                           "Row":  1380,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Plot.ResultGradient",
+                           "Row":  1387,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Plot.ResultLabelsEnabled",
+                           "Row":  1393,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Plot.ResultLabelSpacing",
+                           "Row":  1400,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Plot.NeutralLineEnabled",
+                           "Row":  1407,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Plot.PrincipalAxesMode",
+                           "Row":  1414,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "Plot.LoadApplicationPointEnabled",
+                           "Row":  1422,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Plot.AxisLabelsEnabled",
+                           "Row":  1429,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Plot.AxisLabelsFontSize",
+                           "Row":  1435,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Plot.ContourEnabled",
+                           "Row":  1441,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Plot.LegendEnabled",
+                           "Row":  1447,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Plot.LegendMode",
+                           "Row":  1454,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Plot.Color.RebarCompression",
+                           "Row":  1460,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Plot.Color.RebarTension",
+                           "Row":  1467,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Plot.Color.ConcreteCompression",
+                           "Row":  1471,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Plot.Color.ConcreteTension",
+                           "Row":  1475,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Enabled",
+                           "Row":  1479,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "Placement",
+                           "Row":  1484,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "Offset",
+                           "Row":  1489,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "LineEnabled",
+                           "Row":  1498,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "LineWeight",
+                           "Row":  1503,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "ExtensionLineWeight",
+                           "Row":  1508,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "TextUnits",
+                           "Row":  1513,
+                           "Paragraphs":  7
+                       },
+                       {
+                           "Key":  "TextHeight",
+                           "Row":  1522,
+                           "Paragraphs":  6
+                       },
+                       {
+                           "Key":  "TextGap",
+                           "Row":  1530,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "ArrowType",
+                           "Row":  1537,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "ArrowSize",
+                           "Row":  1542,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "Color",
+                           "Row":  1547,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "ExtensionLineColor",
+                           "Row":  1552,
+                           "Paragraphs":  3
+                       },
+                       {
+                           "Key":  "ContourLineWeight",
+                           "Row":  1557,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Concrete.R.ULS(I)",
+                           "Row":  1561,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Concrete.R.SLS(II)",
+                           "Row":  1567,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Concrete.Rb.mc2",
+                           "Row":  1573,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Concrete.E",
+                           "Row":  1580,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Concrete.TwoLine.Eb1Red",
+                           "Row":  1586,
+                           "Paragraphs":  5
+                       },
+                       {
+                           "Key":  "Concrete.ThreeLine.Eb0",
+                           "Row":  1593,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Concrete.TwoThreeLine.Eb2",
+                           "Row":  1597,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "Steel.R.ULS(I)",
+                           "Row":  1601,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Steel.R.SLS(II)",
+                           "Row":  1607,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Steel.E",
+                           "Row":  1613,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Steel.TwoLine.Es2",
+                           "Row":  1619,
+                           "Paragraphs":  4
+                       },
+                       {
+                           "Key":  "Steel.ThreeLine.Es2",
+                           "Row":  1625,
+                           "Paragraphs":  2
+                       },
+                       {
+                           "Key":  "General.ReformatResultsEnabled",
+                           "Row":  1629,
+                           "Paragraphs":  6
+                       }
+                   ],
+    "NumberedParagraphs":  734,
+    "HelpPictures":  76,
+    "OutlineCycles":  8,
+    "Navigation":  [
+                       {
+                           "Key":  "General.ReformatResultsEnabled",
+                           "ScrollRow":  1629,
+                           "WholeSectionExpanded":  true
+                       },
+                       {
+                           "Key":  "Mesh.StepMode",
+                           "ScrollRow":  820,
+                           "WholeSectionExpanded":  true
+                       },
+                       {
+                           "Key":  "Results.SnapshotStorage",
+                           "ScrollRow":  752,
+                           "WholeSectionExpanded":  true
+                       },
+                       {
+                           "Key":  "Results.SnapshotName",
+                           "ScrollRow":  761,
+                           "WholeSectionExpanded":  true
+                       }
+                   ],
+    "UpdateButtonCaption":  "Обновить схему и результаты",
+    "FreshResults":  true,
+    "SavedResultsAllowed":  false,
+    "VBACompiled":  true,
+    "OwnedPID":  181688,
+    "StartTicks":  "639284005458362536"
+}

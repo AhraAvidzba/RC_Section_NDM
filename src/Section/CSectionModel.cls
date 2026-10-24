@@ -68,6 +68,10 @@ Private mObservedContourRevision As Long ' Последняя учтенная �
 Private mConcreteCenterValid As Boolean, mConcreteCenterRevision As Long ' Признак готовности и версия геометрии для сохранённого центра бетонной сетки.
 Private mConcreteCenterX As Double, mConcreteCenterY As Double, mConcreteCenterArea As Double ' Координаты центра бетонной сетки в мм и её суммарная площадь в мм2.
 Private mElementRadiusValid As Boolean, mElementRadiusRevision As Long, mElementRadius As Double ' Готовность, версия геометрии и сохранённый максимальный радиус размещения элементов, мм.
+Private mForceIntegrator As CDiscreteForceIntegrator ' Индекс только этой модели; точная ревизия и центр проверяются при каждой пробе усилий.
+Private mTestDisableForceIntegration As Boolean ' ДЛЯ ТЕСТОВ: принудительный прежний обход для независимого сравнения того же solve.
+Private mForceProbeCount As Long ' Число реальных проб усилий: короткий одиночный solve не оплачивает построение индекса.
+Private mForceBatchCount As Long, mForceProbeRevision As Long ' Объём текущего запуска и ревизия счётчика проб.
 
 Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допуск, при котором главные локальные I считаются изотропными.
 Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
@@ -76,6 +80,8 @@ Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' До
 ' После Clear объект снова готов принимать бетонные элементы, арматуру и
 ' аннотации без следов предыдущего расчета.
 Public Sub Clear()
+    Set mForceIntegrator = Nothing
+    mForceProbeCount = 0
     mRevision = mRevision + 1
     mConcreteCenterValid = False
     mElementRadiusValid = False
@@ -118,6 +124,34 @@ Public Sub Clear()
 
     Set mAnnotations = New CSectionAnnotations
     Set mContours = New CSectionContours
+End Sub
+
+' Для большой сетки переиспользует геометрический индекс только при точном совпадении
+' ревизии и центра. Малые сетки не выделяют массивов и сохраняют прежний обход.
+Friend Function TryConcreteForces(ByVal diagram As CMaterialDiagram, ByVal eps As Double, ByVal kx As Double, ByVal ky As Double, _
+        ByVal originX As Double, ByVal originY As Double, ByRef n As Double, ByRef mx As Double, ByRef my As Double) As Boolean
+    If mConcreteCount <= 5000 Then Exit Function
+    Dim revision As Long: revision = Me.Revision
+    If revision <> mForceProbeRevision Then
+        mForceProbeRevision = revision: mForceProbeCount = 0: Set mForceIntegrator = Nothing
+    End If
+    mForceProbeCount = mForceProbeCount + 1
+    If mTestDisableForceIntegration Then Exit Function
+    If mForceBatchCount >= 4 Then
+        If mForceProbeCount < 16 Then Exit Function
+    Else
+        If mForceProbeCount < 64 Then Exit Function ' Короткий одиночный Newton не оплачивает построение дерева в самом конце поиска.
+    End If
+    If mForceIntegrator Is Nothing Then Set mForceIntegrator = New CDiscreteForceIntegrator
+    If Not mForceIntegrator.Matches(Me.Revision, originX, originY) Then mForceIntegrator.Initialize Me, originX, originY
+    TryConcreteForces = mForceIntegrator.TryForces(diagram, eps, kx, ky, n, mx, my)
+End Function
+
+' Сообщает объём одного запуска до расчёта. Геометрический индекс переиспользуется
+' только при совпадении ревизии; неготовая подготовка предыдущего запуска не навязывается одиночному solve.
+Friend Sub BeginForceIntegrationRun(ByVal combinationCount As Long)
+    mForceBatchCount = combinationCount
+    If mForceIntegrator Is Nothing Then mForceProbeCount = 0
 End Sub
 
 ' Диагностическая метка источника модели: Generated, AutoCADImport и т.п.
@@ -1052,4 +1086,17 @@ End Property
 Public Property Get RebarSteelClass(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSteelClass = mRebarSteelClass(index)
+End Property
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Позволяет сравнить полный поиск с прежним обходом без изменения сетки и материалов.
+Public Sub TestSetForceIntegrationEnabled(ByVal enabled As Boolean)
+    mTestDisableForceIntegration = Not enabled
+    mForceProbeCount = 0: Set mForceIntegrator = Nothing
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Показывает число настоящих проб для проверки холодного одиночного и пакетного пути.
+Public Property Get TestForceProbeCount() As Long
+    TestForceProbeCount = mForceProbeCount
 End Property

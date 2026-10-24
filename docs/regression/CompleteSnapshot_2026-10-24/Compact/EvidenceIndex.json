@@ -1,0 +1,274 @@
+{
+  "Status": "DIRECTED_PASS_FULL_PENDING",
+  "WorkbookSHA256": "614B18277D1B07E530E496C81E4745D75D3E2F3AC60428F8DFDD21223667EA0B",
+  "Files": [
+    {
+      "Source": "docs/regression/CompleteSnapshot_2026-10-24/Release14/IndependentReleaseProof.json",
+      "SHA256": "D9DB8973B8C3EFDEA51CC1695D2030AE37253AA7680E52B047C345CB20C17F24",
+      "Compact": "IndependentReleaseProof.json",
+      "CompactSHA256": "D9DB8973B8C3EFDEA51CC1695D2030AE37253AA7680E52B047C345CB20C17F24"
+    },
+    {
+      "Source": "docs/regression/CompleteSnapshot_2026-10-24/Lifecycle02/Lifecycle.json",
+      "SHA256": "D69BE9056E86E3C966B2C9938C731A073FC1B3B68102322B9A6B1C6DCECBB305",
+      "Compact": "Lifecycle.json",
+      "CompactSHA256": "D69BE9056E86E3C966B2C9938C731A073FC1B3B68102322B9A6B1C6DCECBB305"
+    },
+    {
+      "Source": "docs/regression/CompleteSnapshot_2026-10-24/RuntimeFormatting03/RuntimeFormatting.json",
+      "SHA256": "B3DE6B0237B6D7FEEE1105B858017CC46F75610F28BBC9643BA6644BBB1FEB91",
+      "Compact": "RuntimeFormatting.json",
+      "CompactSHA256": "B3DE6B0237B6D7FEEE1105B858017CC46F75610F28BBC9643BA6644BBB1FEB91"
+    },
+    {
+      "Source": "docs/regression/CompleteSnapshot_2026-10-24/Style11/SettingsHelpStyle.json",
+      "SHA256": "34621658F4D50C2EDC50F0D1BDA5356EC3045777EDB5029EE11C031CD0912975",
+      "Compact": "SettingsHelpStyle.json",
+      "CompactSHA256": "34621658F4D50C2EDC50F0D1BDA5356EC3045777EDB5029EE11C031CD0912975"
+    },
+    {
+      "Source": "docs/regression/CompleteSnapshot_2026-10-24/Style11/SnapshotSettingStyles.json",
+      "SHA256": "AFC51D82E5C37F2E6845BA6C2403F96505E7F5AFA5B9F49133ECDF5442A72F2A",
+      "Compact": "SnapshotSettingStyles.json",
+      "CompactSHA256": "AFC51D82E5C37F2E6845BA6C2403F96505E7F5AFA5B9F49133ECDF5442A72F2A"
+    },
+    {
+      "Source": "docs/regression/CompleteSnapshot_2026-10-24/Style11/InlineValidationLists.json",
+      "SHA256": "7BC48874D4CF16BA6A850762901382ACB16FD8AA3F99D6C506313F3D9AC9DF51",
+      "Compact": "InlineValidationLists.json",
+      "CompactSHA256": "7BC48874D4CF16BA6A850762901382ACB16FD8AA3F99D6C506313F3D9AC9DF51"
+    },
+    {
+      "Source": "docs/regression/CompleteSnapshot_2026-10-24/FinalDocumentationAudit.json",
+      "SHA256": "0F46097C8DBB73D67C6DD7EF759ADA0F5C600713E526FBE09D5771BFD136FC6C",
+      "Compact": "VbaDocumentation.json",
+      "CompactSHA256": "610E72C3A715E5F1E0255F451317675EADCFE41CBB976F7C941B1710510E99E1"
+    },
+    {
+      "Source": "docs/regression/CompleteSnapshot_2026-10-24/FinalClassCommentsAudit.json",
+      "SHA256": "5EA83BE911D910659AD71CF6369BA5BCC945B6333758379E3475A907672B11EA",
+      "Compact": "ClassComments.json",
+      "CompactSHA256": "6518A03D80630877B4763465B02BA28E881DF97F7171D7A188E61533E3148F5B"
+    },
+    {
+      "Source": "docs\\regression\\CompleteSnapshot_2026-10-24\\HelpNavigation01\\AllHelpNavigation.json",
+      "SHA256": "44EC01977D4F737F193B334A6328FEF65D05F5603DC7C3D44B2001565D761CC6"
+    },
+    {
+      "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardFixtureProvenance.json",
+      "SHA256": "19FB189231A9DDC6781220F660ECBB5BF93DD850B8081149FB60123F6B8FB272",
+      "Compact": "StandardFixtureProvenance.json",
+      "CompactSHA256": "19FB189231A9DDC6781220F660ECBB5BF93DD850B8081149FB60123F6B8FB272"
+    },
+    {
+      "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealFixtureProvenance.json",
+      "SHA256": "E3EC03530A084F101360D0E3748E3DAF34BF22D79E1BBE32E48F356BF577435E",
+      "Compact": "RealFixtureProvenance.json",
+      "CompactSHA256": "E3EC03530A084F101360D0E3748E3DAF34BF22D79E1BBE32E48F356BF577435E"
+    },
+    {
+      "Source": "docs/regression/AutoMeshFullLaunch_2026-10-23_Run01/ImmutableAtAllStagesEnd.json",
+      "SHA256": "E581C56BF1C9AB9120B9EFB9CA17323A0D0F58F3228AD638FEC4BAB9349FB799",
+      "Compact": "HistoricalImmutable.json",
+      "CompactSHA256": "E581C56BF1C9AB9120B9EFB9CA17323A0D0F58F3228AD638FEC4BAB9349FB799"
+    },
+    {
+      "Source": "docs/regression/AutoMeshFullLaunch_2026-10-23_Run01/KnownFailureTriage.json",
+      "SHA256": "293FE014F4F53CE471CEC2BE11E8F9B4CCA174A69E43E2D6CD9277326550AC67",
+      "Compact": "HistoricalFailureTriage.json",
+      "CompactSHA256": "293FE014F4F53CE471CEC2BE11E8F9B4CCA174A69E43E2D6CD9277326550AC67"
+    },
+    {
+      "Source": "docs/regression/AutoMeshFullLaunch_2026-10-23_Run01/ParallelFix01/DirectedAcceptance.json",
+      "SHA256": "56C56CD43D6298255408AFB8261B4043A2DBE00FB8906020B2CB8B02EE509CB6",
+      "Compact": "HistoricalRequiredGeometryDirected.json",
+      "CompactSHA256": "56C56CD43D6298255408AFB8261B4043A2DBE00FB8906020B2CB8B02EE509CB6"
+    },
+    {
+      "Source": "docs/regression/AutoMeshFullLaunch_2026-10-23_Run01/NativeFixtureFollowup01/NativeCAD/Stage.json",
+      "SHA256": "657493D1F720A298E3DC4FA8A2E410ABFBE31FF79608086BCD312F53035056A3",
+      "Compact": "HistoricalNativeCADDirected.json",
+      "CompactSHA256": "657493D1F720A298E3DC4FA8A2E410ABFBE31FF79608086BCD312F53035056A3"
+    },
+    {
+      "Source": "docs/regression/AutoMeshFullLaunch_2026-10-23_Run01/AutomaticMeshSupplementRun_Retry01.json",
+      "SHA256": "699158CC3B2BEC872D026F4F11584932F71FB63F0A1EC19CB75F0E8C93171203",
+      "Compact": "HistoricalAutomaticMeshSupplement.json",
+      "CompactSHA256": "699158CC3B2BEC872D026F4F11584932F71FB63F0A1EC19CB75F0E8C93171203"
+    },
+    {
+      "Compact": "CleanFreshReleaseProof.json",
+      "CompactSHA256": "74563BF8668BFCB980FBE1EE78FB7858DC3221ACE085D161B5F64DCE047D0399"
+    },
+    {
+      "Compact": "CleanSettingsHelpStyle.json",
+      "CompactSHA256": "A74FD24DEA380CE88DE188B61595F767411D5EFDF82E7A4168ADF1EFC9FF0F2F"
+    },
+    {
+      "Compact": "CleanDirectedAcceptance.json",
+      "CompactSHA256": "7CB58E7FDE5DB550A4A06B641CC2BC2A850DBF7455F36CDDE50C188748ABECDE"
+    },
+    {
+      "Compact": "CleanPublication.json",
+      "CompactSHA256": "96E77E82AE85C690347EE281D842C4C1B0101162718906AFF575CF6D37DE5FA6"
+    }
+  ],
+  "Suites": [
+    {
+      "Source": "docs\\regression\\CompleteSnapshot_2026-10-24\\FinalDirected_No.txt",
+      "SHA256": "D52C469CACE30D6E56AA9F690073BE558750A0641A98094872E088174EEF5347",
+      "SourceSHA256": "B7B21FA2376DE00103CE889C2FE76F66D59B6B600FFABDBCEC49CAB015C4B876",
+      "Totals": [
+        "TOTAL CALCULATION SNAPSHOT: passed=191; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=100; failed=0",
+        "TOTAL_RESULTS_FORMATTING: passed=64; failed=0",
+        "TOTAL_AUDIT03_GENERAL_PLOT: passed=3377; failed=0"
+      ]
+    },
+    {
+      "Source": "docs\\regression\\CompleteSnapshot_2026-10-24\\FinalDirected_Yes.txt",
+      "SHA256": "57050474440F1492CE7DA258D741F7181D7E21E5463E83E5E26A7F21D7789361",
+      "SourceSHA256": "B7B21FA2376DE00103CE889C2FE76F66D59B6B600FFABDBCEC49CAB015C4B876",
+      "Totals": [
+        "TOTAL CALCULATION SNAPSHOT: passed=191; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=100; failed=0",
+        "TOTAL_RESULTS_FORMATTING: passed=64; failed=0"
+      ]
+    },
+    {
+      "Source": "docs\\regression\\CompleteSnapshot_2026-10-24\\Discrete_No04.txt",
+      "SHA256": "0F6BCD44025FBD5473DC4904B72061F4059EE2E05C7BE3FC422901F024496C80",
+      "SourceSHA256": "9381CAEC2F33B713FADBE42AFE1EE00EEB4DE27FBB87F0475046773634ED8EDD",
+      "Totals": [
+        "TOTAL DISCRETE FORCES: passed=266; failed=0"
+      ]
+    },
+    {
+      "Source": "docs\\regression\\CompleteSnapshot_2026-10-24\\Directed_Yes02.txt",
+      "SHA256": "9B54E82922B7479DB74F24EA9B47502B40B7FFCB9CB07FC97D24852F1C10E7D2",
+      "SourceSHA256": "9381CAEC2F33B713FADBE42AFE1EE00EEB4DE27FBB87F0475046773634ED8EDD",
+      "Totals": [
+        "TOTAL CALCULATION SNAPSHOT: passed=164; failed=0",
+        "TOTAL DISCRETE FORCES: passed=266; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=100; failed=0",
+        "TOTAL_RESULTS_FORMATTING: passed=64; failed=0"
+      ]
+    }
+  ],
+  "Performance": [
+    {
+      "Series": "RealFileFive04",
+      "MatchedPairs": 15,
+      "Files": [
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealFileFive04/Summary.json",
+          "SHA256": "FC194F5CF18BA764655A8275405AC443EDC5E8877ADE8FE18FF99E9D120E392A",
+          "Compact": "RealFileFive04_Summary.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealFileFive04/Raw.json",
+          "SHA256": "31796EFA5F6005B7B7DAFB8EDDDC0AFA0C3A0C05F37BBEF08B9F60E59B699D46",
+          "Compact": "RealFileFive04_Raw.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealFileFive04/Environment.json",
+          "SHA256": "55C958D2C113F62BC9D67B4E2D74727D190D412E52AB637EE6EE764406AB85F2",
+          "Compact": "RealFileFive04_Environment.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealFileFive04/batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30-B-input.json",
+          "SHA256": "03F5184BA02CD5BE73FB9A72A5F336376B8CC114544A6E80BDE7291C17ABB86F",
+          "LocalOnly": true,
+          "LocalEvidence": "RealFileFive04_Inputs30.json",
+          "Reason": "Input matrices remain local; public evidence keeps timings, hashes and geometry counts"
+        }
+      ]
+    },
+    {
+      "Series": "RealExcelFive04",
+      "MatchedPairs": 15,
+      "Files": [
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealExcelFive04/Summary.json",
+          "SHA256": "D14BCBAA31F0ED52DAA44191EE927FBDA64568D075C78C7A4ECE5AC708672BA0",
+          "Compact": "RealExcelFive04_Summary.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealExcelFive04/Raw.json",
+          "SHA256": "2A88D247039382CF73D0C5C0054E6CB5599A849835E88ADC93B3AFA92E61CB33",
+          "Compact": "RealExcelFive04_Raw.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealExcelFive04/Environment.json",
+          "SHA256": "ABB7A9FDB81806E87AFC5E211813D647F54071F83DAD636CD5F27DBC98D3466C",
+          "Compact": "RealExcelFive04_Environment.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/RealExcelFive04/batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30-B-input.json",
+          "SHA256": "2032E24D56F31028F8163DC542AB744869AED0ECF25A524786FCAC3623799DE9",
+          "LocalOnly": true,
+          "LocalEvidence": "RealExcelFive04_Inputs30.json",
+          "Reason": "Input matrices remain local; public evidence keeps timings, hashes and geometry counts"
+        }
+      ]
+    },
+    {
+      "Series": "StandardFileFive01",
+      "MatchedPairs": 15,
+      "Files": [
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardFileFive01/Summary.json",
+          "SHA256": "88A5307698BF1D0EEE6DDF3C90A48082D444D08BA0A675AC8D7D74B8E06CD7C7",
+          "Compact": "StandardFileFive01_Summary.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardFileFive01/Raw.json",
+          "SHA256": "990E6B01C90F09AF2F888B1072E5E60AFB4344C2D3EA483C64ED225E3B988E4F",
+          "Compact": "StandardFileFive01_Raw.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardFileFive01/Environment.json",
+          "SHA256": "5FAA1DB7E7C63EC1266A97E91483FB1EC0157BCA553D7207B4F61BC1BFDAA91C",
+          "Compact": "StandardFileFive01_Environment.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardFileFive01/batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30-B-input.json",
+          "SHA256": "7C391F7C94AE250A96806B461E3A2B25C52D6B336CC8F632A60E8980DCAFFEBA",
+          "LocalOnly": true,
+          "LocalEvidence": "StandardFileFive01_Inputs30.json",
+          "Reason": "Input matrices remain local; public evidence keeps timings, hashes and geometry counts"
+        }
+      ]
+    },
+    {
+      "Series": "StandardExcelFive01",
+      "MatchedPairs": 15,
+      "Files": [
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardExcelFive01/Summary.json",
+          "SHA256": "C803FC9D2804691F958C9EE0D396B383BA1FDD301ECADE52780A4CBDE161DA35",
+          "Compact": "StandardExcelFive01_Summary.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardExcelFive01/Raw.json",
+          "SHA256": "2E3973A66F4A2F07489F26114210BA200A5E7859463239B7C422726C1DC45260",
+          "Compact": "StandardExcelFive01_Raw.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardExcelFive01/Environment.json",
+          "SHA256": "5D61742017CD812D1194C6C6B54D48B0CDEDFAF70F9A091E4C2CF377C6FE4652",
+          "Compact": "StandardExcelFive01_Environment.json"
+        },
+        {
+          "Source": "docs/regression/Performance/CompleteSnapshot_2026-10-24/StandardExcelFive01/batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30-B-input.json",
+          "SHA256": "6C45D1E646BD712DFBB9924F59E9351999D761BDCF6B06CD9968FD3E794BA5CD",
+          "LocalOnly": true,
+          "LocalEvidence": "StandardExcelFive01_Inputs30.json",
+          "Reason": "Input matrices remain local; public evidence keeps timings, hashes and geometry counts"
+        }
+      ]
+    }
+  ],
+  "PublishedWorkbookSHA256": "00C2165E937D631DE9F2C1C4760DDB23C06BBC694FF174475BB9B7A060F538E6",
+  "PublishedWorkbookMode": "Fresh build requested by user; previous user data book remains local"
+}

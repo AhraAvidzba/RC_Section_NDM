@@ -30,6 +30,12 @@ INDIVIDUAL_ROW_MACROS = {
     'modTestIndividualContours.RunOffsetNeighborMergeTests',
     'modTestIndividualContours.RunIndividualContourPerformanceTests',
 }
+SNAPSHOT_ACCELERATION_GROUP_COUNTS = {**INDIVIDUAL_ROW_GROUP_COUNTS, 'CurrentFeatures': 3}
+SNAPSHOT_ACCELERATION_MACROS = {
+    'modTestContourMesh.RunAutomaticMeshTests',
+    'modTestCalculationSnapshot.RunCalculationSnapshotTests',
+    'modTestDiscreteForces.RunDiscreteForceTests',
+}
 
 
 def coverage_errors(manifest):
@@ -38,9 +44,9 @@ def coverage_errors(manifest):
         return []
     errors=[]
     version=manifest.get('CoverageVersion',1)
-    if version not in (1,2,3):
+    if version not in (1,2,3,4):
         errors.append('Unsupported full coverage version')
-    counts=INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
+    counts=SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
     if manifest.get('IncludesFocusedAcceptance') is not True:
         errors.append('The current full definition requires focused acceptance')
     expected={(group,mode) for group in counts for mode in ('No','Yes')}
@@ -51,10 +57,14 @@ def coverage_errors(manifest):
     for job in jobs:
         if job.get('ExpectedSuites')!=counts.get(job['Group']):
             errors.append('Canonical suite coverage differs: '+job['Group'])
-        if version == 3 and job['Group'] == 'Geometry':
+        if version >= 3 and job['Group'] == 'Geometry':
             macros = job.get('Macro', [])
             if len(macros) != counts['Geometry'] or len(macros) != len(set(macros)) or not INDIVIDUAL_ROW_MACROS <= set(macros):
                 errors.append('Individual row coverage is incomplete or duplicated')
+        if version == 4 and job['Group'] == 'CurrentFeatures':
+            macros = job.get('Macro', [])
+            if len(macros) != 3 or set(macros) != SNAPSHOT_ACCELERATION_MACROS:
+                errors.append('Automatic mesh, complete snapshot and discrete force coverage are all mandatory')
     return errors
 
 def load_logs():
@@ -81,8 +91,8 @@ def summarize(directory):
         report['group']=job['Group']
         report['mode']=job['Mode']
         report['expectedMacros']=expected
-        report['printedSuccessfulAssertions']=len(re.findall(r'(?m)^OK(?::|\|)',text))
-        report['failures']=re.findall(r'(?m)^FAIL:.*$',text)
+        report['printedSuccessfulAssertions']=len(re.findall(r'(?m)^(?:OK(?::|\|)|PASS )',text))
+        report['failures']=re.findall(r'(?m)^FAIL(?::| ).*$',text)
         if actual!=expected:
             report.setdefault('errors',[]).append('Suite names/order differ from the declared plan')
             report['status']='INCOMPLETE_OR_FAILED'

@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -18,6 +18,7 @@ Option Explicit
 ' если всё сечение растянуто, сжатые напряжения и деформации не подменяются
 ' значениями другого знака.
 
+Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник готовых значений без записи и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
 Private Const HEADER_ROWS As Long = 4 ' Строки шапки над первой строкой LC.
@@ -139,9 +140,9 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     If mMinimalFormatting Then
         mMinimalFormatting = (CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@")
     End If
-    PrepareTarget target
+    If mCapturedSnapshot Is Nothing Then PrepareTarget target
     WriteHeaders target, units
-    WriteBlockTitle target, "Расчет НДС и несущей способности по модели прочности"
+    If mCapturedSnapshot Is Nothing Then WriteBlockTitle target, "Расчет НДС и несущей способности по модели прочности"
     WriteData target, batch, units, section
     FormatTable target, batch
     Exit Sub
@@ -272,6 +273,10 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
 
     PutHeaderNotes headers
     PutColumnLabels headers, units
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "Strength.Headers", headers
+        Exit Sub
+    End If
     If mMinimalFormatting Then
         If ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks()) Then Exit Sub
         mMinimalFormatting = False
@@ -425,6 +430,10 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     For i = 1 To batch.Count
         PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, section
     Next i
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "Strength.Data", data
+        Exit Sub
+    End If
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
 
@@ -599,6 +608,7 @@ End Sub
 ' Оформляет подробную таблицу прочности: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+    If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
         ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS
         Exit Sub
@@ -664,13 +674,18 @@ End Sub
 
 ' Красит строковые блоки подробной таблицы по фактическому статусу каждой проверки.
 Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
-    If batch Is Nothing Then Exit Sub
-    If batch.Count <= 0 Then Exit Sub
     Dim rows() As Long, i As Long
+    If batch Is Nothing Then
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS)
+        If IsEmpty(storedRows) Then Exit Sub
+        rows = storedRows
+    Else
+    If batch.Count <= 0 Then Exit Sub
     ReDim rows(1 To batch.Count)
     For i = 1 To batch.Count
         rows(i) = HEADER_ROWS + OutputDataOffset(batch, i, dataRows)
     Next i
+    End If
     ApplyTableStatusFills target, rows, Array( _
         COL_STATUS, COL_STATE_STATUS, COL_CAP_STATUS)
 End Sub
@@ -848,3 +863,26 @@ End Function
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a <= b Then MinDouble = a Else MinDouble = b
 End Function
+
+' Передаёт отдельный приёмник готовых массивов; при Nothing сохраняется обычный вывод.
+Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
+    Set mCapturedSnapshot = value
+End Property
+
+' Восстанавливает готовую подробную таблицу и её прежнее оформление без решения НДС.
+Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
+    Set mCapturedSnapshot = Nothing
+    mMinimalFormatting = Not fullFormatting
+    Dim data As Variant: data = snapshot.Table("Strength.Data")
+    Dim target As Object: Set target = TargetRange(workbook, UBound(data, 1))
+    Dim headers As Variant: headers = snapshot.Table("Strength.Headers")
+    If mMinimalFormatting Then mMinimalFormatting = CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@" And ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks())
+    PrepareTarget target
+    If Not mMinimalFormatting Then
+        target.Resize(HEADER_ROWS, TOTAL_COLUMNS).Value2 = headers
+        MergeHeaders target
+    End If
+    WriteBlockTitle target, "Расчет НДС и несущей способности по модели прочности"
+    target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data
+    FormatTable target, Nothing
+End Sub

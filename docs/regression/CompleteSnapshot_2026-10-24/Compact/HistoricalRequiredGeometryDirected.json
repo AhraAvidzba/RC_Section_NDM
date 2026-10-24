@@ -1,0 +1,77 @@
+{
+  "Status": "DIRECTED_PASS_PUBLICATION_DEFERRED",
+  "CheckedUtc": "2026-10-23T18:10:27.920156+00:00",
+  "OriginalFrozenSHA256": "99DC41B566EBBAD79438D61FEB967D4B45D4BA0631D94AA5A72166B2D660A4B3",
+  "CandidateSHA256": "082175D8D7F3E9B715F610AC7B9BB7F6538AEDA0FDA6D00FD534A40D54614A1F",
+  "ModifiedComponents": [
+    "modTestGeometryConfig"
+  ],
+  "Other169ComponentsUnchanged": true,
+  "Original38ChecksAllPassInBothModes": true,
+  "OriginalAssertionsPreserved": true,
+  "MainFullRunUnchanged": true,
+  "OriginalFullOffRetains38Failures": true,
+  "CandidateIsNotFullAcceptance": true,
+  "Results": [
+    {
+      "Mode": "No",
+      "Report": "docs\\regression\\AutoMeshFullLaunch_2026-10-23_Run01\\ParallelFix01\\Directed_Off.txt",
+      "PassedAssertions": 116072,
+      "Suites": [
+        {
+          "name": "modTestGeometryConfig.RunAudit03RequiredGeometryInputTests",
+          "status": "PASS",
+          "started": "2026-10-23T21:07:58",
+          "finished": "2026-10-23T21:08:36",
+          "passed": 922,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestContourMesh.RunAutomaticMeshTests",
+          "status": "PASS",
+          "started": "2026-10-23T21:08:37",
+          "finished": "2026-10-23T21:08:41",
+          "passed": 115150,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "ReportSHA256": "1098764DDBA44C54377FD6138A2697C8E47226F6D0964E6D5E3D6D876BB6DFD0"
+    },
+    {
+      "Mode": "Yes",
+      "Report": "docs\\regression\\AutoMeshFullLaunch_2026-10-23_Run01\\ParallelFix01\\Directed_On.txt",
+      "PassedAssertions": 116072,
+      "Suites": [
+        {
+          "name": "modTestGeometryConfig.RunAudit03RequiredGeometryInputTests",
+          "status": "PASS",
+          "started": "2026-10-23T21:08:48",
+          "finished": "2026-10-23T21:09:16",
+          "passed": 922,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestContourMesh.RunAutomaticMeshTests",
+          "status": "PASS",
+          "started": "2026-10-23T21:09:17",
+          "finished": "2026-10-23T21:09:20",
+          "passed": 115150,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "ReportSHA256": "5294FF5F0F45BC0C093DFDF5290D161533FFA29C2F8453FAF9B2290D47ADC6ED"
+    }
+  ]
+}

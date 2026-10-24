@@ -693,12 +693,29 @@ Public Function TestMeasurePerformanceBatch(ByVal mode As String) As String
         "core=" & TestNumberText(core) & Chr$(30) & "clear=" & TestNumberText(clear) & Chr$(30) & "packing=" & TestNumberText(packing) & Chr$(30) & _
         "summary=" & TestNumberText(summary) & Chr$(30) & "snapshot=" & TestNumberText(snapshot) & Chr$(30) & "plot=" & TestNumberText(plot) & _
         Chr$(30) & tech & Chr$(30) & "fingerprint=" & fingerprint & TestPerformanceResultsFingerprint()
+    If mode = "Full" Then TestMeasurePerformanceBatch = TestMeasurePerformanceBatch & vbLf & TestPerformancePlotFingerprint()
     Exit Function
 Failed:
     Dim number As Long, description As String
     number = Err.Number: description = Err.Description
     If Not guard Is Nothing Then guard.Restore
     Err.Raise number, "TestMeasurePerformanceBatch", description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает фактические данные схемы вне таймера: File не может ускориться за счёт пустого рисунка.
+Private Function TestPerformancePlotFingerprint() As String
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    If Not settings.GetRequiredBoolean("Plot.Enabled") Then TestPerformancePlotFingerprint = "PLOT_DISABLED": Exit Function
+    Dim reader As CSectionPlotDataReader: Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
+    Dim text As String, lines() As String, i As Long
+    text = "PLOT|" & reader.LoadCase & "|" & reader.StateType & "|" & reader.LengthUnit & "|" & reader.ResultUnit & "|" & CStr(reader.Count)
+    ReDim lines(0 To reader.Count): lines(0) = text
+    For i = 1 To reader.Count
+        lines(i) = reader.ElementID(i) & "|" & TestDoubleBits(reader.X(i)) & "|" & TestDoubleBits(reader.Y(i)) & "|" & _
+            TestDoubleBits(reader.Area(i)) & "|" & TestDoubleBits(reader.ResultValue(i)) & "|" & reader.PhysicalState(i)
+    Next i
+    TestPerformancePlotFingerprint = Join(lines, vbLf)
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -912,6 +929,9 @@ Public Function TestPerformanceResultsFingerprint() As String
             If rows < 1 Then rows = 1
         End If
         data = anchor.Resize(rows, columns).Value2
+        If CStr(name) = "rngNDMElementResults" Or CStr(name) = "rngNDMSectionProperties" Or CStr(name) = "rngNDMSectionAnnotations" Then
+            data = ReadAnchoredResultTable(ThisWorkbook, CStr(name)): rows = UBound(data, 1): columns = UBound(data, 2)
+        End If
         ReDim lines(0 To rows)
         lines(0) = CStr(name) & "|" & CStr(rows) & "|" & CStr(columns)
         For row = 1 To rows
@@ -928,18 +948,40 @@ Public Function TestPerformanceResultsFingerprint() As String
             Next col
             lines(row) = line
         Next row
+        If CStr(name) = "rngNDMSectionProperties" Or CStr(name) = "rngNDMSectionAnnotations" Then
+            If rows > 2 Then TestSortFingerprintLines lines, 2, rows ' Общие и LC-строки физически разделены; сравниваются все значения независимо от порядка блоков.
+        End If
         result = result & Join(lines, vbLf) & vbLf
     Next name
     TestPerformanceResultsFingerprint = result
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Упорядочивает только сериализованные строки свойств/аннотаций; ни одно поле не исключает.
+Private Sub TestSortFingerprintLines(ByRef lines() As String, ByVal first As Long, ByVal last As Long)
+    Dim left As Long, right As Long, pivot As String, temporary As String
+    left = first: right = last: pivot = lines((first + last) \ 2)
+    Do While left <= right
+        Do While StrComp(lines(left), pivot, vbBinaryCompare) < 0: left = left + 1: Loop
+        Do While StrComp(lines(right), pivot, vbBinaryCompare) > 0: right = right - 1: Loop
+        If left <= right Then
+            temporary = lines(left): lines(left) = lines(right): lines(right) = temporary
+            left = left + 1: right = right - 1
+        End If
+    Loop
+    If first < right Then TestSortFingerprintLines lines, first, right
+    If left < last Then TestSortFingerprintLines lines, left, last
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' различает Empty/error/типы и сохраняет биты числовой ячейки.
 Private Function TestCellFingerprint(ByVal value As Variant) As String
     If IsError(value) Then
         TestCellFingerprint = "E:" & CStr(value)
-    ElseIf IsEmpty(value) Then
+    ElseIf IsEmpty(value) Or (VarType(value) = vbString And Len(CStr(value)) = 0) Then
         TestCellFingerprint = "Empty"
+    ElseIf VarType(value) = vbBoolean Then
+        TestCellFingerprint = "T:8:" & CStr(Len(CStr(value))) & ":" & CStr(value) ' Excel преобразует текст True/False в Boolean; сохранённый смысл флага одинаков.
     ElseIf VarType(value) = vbDouble Then
         TestCellFingerprint = "D:" & TestDoubleBits(CDbl(value))
     Else

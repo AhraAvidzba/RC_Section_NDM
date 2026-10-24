@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -17,6 +17,7 @@ Option Explicit
 ' статусы проверок и минимальные коэффициенты запаса.
 ' Подробные таблицы прочности, трещин и устойчивости заполняются отдельными классами.
 
+Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник общей и подробных сводок до сохранения снимка.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
 Private Const TARGET_COLUMNS As Long = 26 ' Ширина верхней сводки с разложением устойчивости по СП, плоскостям и ветвям.
@@ -133,7 +134,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     summaryRows = RequiredSummaryRowsForWorkbook(workbook, batch.Count)
 
     stage = "PrepareSummaryTarget"
-    PrepareSummaryTarget SummaryClearRange(workbook), summaryRows
+    If mCapturedSnapshot Is Nothing Then PrepareSummaryTarget SummaryClearRange(workbook), summaryRows
 
     stage = "SummaryTargetRange"
     Dim target As Object
@@ -261,6 +262,11 @@ End Sub
 ' Записывает сводку блоками из массива VBA. В минимальном режиме сохраняет
 ' совпадающую шапку и обновляет три участка данных; изменённую шапку создаёт заново.
 Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
+    If Not mCapturedSnapshot Is Nothing Then
+        NormalizeSnapshotHeaders data
+        mCapturedSnapshot.AddTable "Summary", data
+        Exit Sub
+    End If
     If mMinimalFormatting Then
         If ResultHeaderMatches(target, data, GROUP_HEADER_ROW, COMMENT_HEADER_ROW, merges:=SummaryHeaderBlocks()) And _
                 CStr(target.Cells(target.Rows.Count, SUM_COL_RESERVE_STRAIN).NumberFormat) = "0.000" Then
@@ -275,10 +281,27 @@ Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
     target.Resize(UBound(data, 1), TARGET_COLUMNS).Value2 = data
 End Sub
 
+' Сохраняет расположение надписей после стандартного Merge, не обращаясь к листу.
+' Excel переносит единственное непустое значение блока в его верхнюю левую ячейку.
+Private Sub NormalizeSnapshotHeaders(ByRef data() As Variant)
+    Dim block As Variant, row As Long, column As Long, value As Variant, found As Boolean
+    For Each block In SummaryHeaderBlocks()
+        found = False: value = Empty
+        For row = CLng(block(0)) To CLng(block(1))
+            For column = CLng(block(2)) To CLng(block(3))
+                If Not found And Len(CStr(data(row, column))) > 0 Then value = data(row, column): found = True
+                data(row, column) = Empty
+            Next column
+        Next row
+        data(CLng(block(0)), CLng(block(2))) = value
+    Next block
+End Sub
+
 ' Обновляет подробную таблицу устойчивости рядом с сохранёнными расчётными данными.
 Private Sub WriteStabilitySummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CStabilitySummaryWriter
     Set writer = New CStabilitySummaryWriter
+    Set writer.CaptureSnapshot = mCapturedSnapshot
     writer.WriteSummary workbook, batch, units, Not mMinimalFormatting
 End Sub
 
@@ -287,6 +310,7 @@ Private Sub WriteStrengthSummary(ByVal workbook As Object, ByVal batch As CBatch
         ByVal units As CUnitSystem, ByVal section As CSectionModel)
     Dim writer As CStrengthSummaryWriter
     Set writer = New CStrengthSummaryWriter
+    Set writer.CaptureSnapshot = mCapturedSnapshot
     writer.WriteSummary workbook, batch, units, section, Not mMinimalFormatting
 End Sub
 
@@ -294,6 +318,7 @@ End Sub
 Private Sub WriteCrackSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
+    Set writer.CaptureSnapshot = mCapturedSnapshot
     writer.WriteSummary workbook, batch, units, Not mMinimalFormatting
 End Sub
 
@@ -640,6 +665,7 @@ End Sub
 ' При полном оформлении задаёт шапку, рамки и числовые форматы сводки.
 ' В минимальном режиме обновляет только подсветку статусов; ширины столбцов не меняет.
 Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+    If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
         FormatStatusCells target, batch
         Exit Sub
@@ -840,13 +866,18 @@ End Sub
 
 ' Задаёт цвет ячеек статусов общей сводки по единой палитре modStatusFormatting.
 Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
-    If batch Is Nothing Then Exit Sub
-    If batch.Count <= 0 Then Exit Sub
     Dim rows() As Long, i As Long
+    If batch Is Nothing Then
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, FIRST_DATA_ROW - 1)
+        If IsEmpty(storedRows) Then Exit Sub
+        rows = storedRows
+    Else
+    If batch.Count <= 0 Then Exit Sub
     ReDim rows(1 To batch.Count)
     For i = 1 To batch.Count
         rows(i) = FIRST_DATA_ROW + OutputDataOffset(batch, i, target.Rows.Count - FIRST_DATA_ROW + 1) - 1
     Next i
+    End If
     ApplyTableStatusFills target, rows, Array( _
         SUM_COL_OVERALL_STATUS, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY, _
         SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK, SUM_COL_STATUS_SP35_P1_ETA, _
@@ -881,3 +912,25 @@ End Function
 Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
     If a > b Then MaxLong = a Else MaxLong = b
 End Function
+
+' Передаёт отдельный приёмник готовых массивов; при Nothing сохраняется обычный вывод.
+Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
+    Set mCapturedSnapshot = value
+End Property
+
+' Восстанавливает общую и три подробные сводки из одних сохранённых массивов.
+Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
+    Set mCapturedSnapshot = Nothing
+    mMinimalFormatting = Not fullFormatting
+    Dim data() As Variant: data = snapshot.Table("Summary")
+    PrepareSummaryTarget SummaryClearRange(workbook), UBound(data, 1)
+    Dim target As Object: Set target = SummaryTargetRange(workbook, UBound(data, 1))
+    WriteSummaryBody target, data
+    FormatSummary workbook, target, Nothing
+    Dim strength As CStrengthSummaryWriter: Set strength = New CStrengthSummaryWriter
+    Dim cracks As CCrackSummaryWriter: Set cracks = New CCrackSummaryWriter
+    Dim stability As CStabilitySummaryWriter: Set stability = New CStabilitySummaryWriter
+    strength.RestoreSummary workbook, snapshot, fullFormatting
+    cracks.RestoreSummary workbook, snapshot, fullFormatting
+    stability.RestoreSummary workbook, snapshot, fullFormatting
+End Sub

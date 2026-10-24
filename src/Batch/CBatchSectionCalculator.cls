@@ -692,6 +692,7 @@ Public Sub Execute()
     On Error GoTo Failed
 
     ValidateReady
+    mSection.BeginForceIntegrationRun mCount
     ClearTransformedReferenceCache ' Модель и материалы могли измениться между запусками. Ранее сохранённый расчётный центр в новом запуске использовать нельзя.
     ConfigureConcreteMomentDepths
     NormalizeAllCombinationMoments

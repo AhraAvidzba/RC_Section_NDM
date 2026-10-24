@@ -1,0 +1,872 @@
+[
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.9235681,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 91107328,
+      "WorkingSet": 135696384,
+      "PeakWorkingSet": 154411008
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 93773824,
+      "WorkingSet": 139550720,
+      "PeakWorkingSet": 157528064
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.7182582,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 115871744,
+      "WorkingSet": 162381824,
+      "PeakWorkingSet": 162594816
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 100126720,
+      "WorkingSet": 146771968,
+      "PeakWorkingSet": 164614144
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.8328863,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 118489088,
+      "WorkingSet": 164470784,
+      "PeakWorkingSet": 164958208
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 101810176,
+      "WorkingSet": 147660800,
+      "PeakWorkingSet": 164958208
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.6883264,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 123351040,
+      "WorkingSet": 169312256,
+      "PeakWorkingSet": 169525248
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 106766336,
+      "WorkingSet": 152977408,
+      "PeakWorkingSet": 171143168
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.780742,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 121516032,
+      "WorkingSet": 168140800,
+      "PeakWorkingSet": 171143168
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 105406464,
+      "WorkingSet": 151846912,
+      "PeakWorkingSet": 171143168
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.6475533,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 125005824,
+      "WorkingSet": 172044288,
+      "PeakWorkingSet": 172257280
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 108724224,
+      "WorkingSet": 155607040,
+      "PeakWorkingSet": 173826048
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.7587988,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 122601472,
+      "WorkingSet": 169066496,
+      "PeakWorkingSet": 173826048
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 105627648,
+      "WorkingSet": 152293376,
+      "PeakWorkingSet": 173826048
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.6830619,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 125825024,
+      "WorkingSet": 172785664,
+      "PeakWorkingSet": 173826048
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 109551616,
+      "WorkingSet": 156430336,
+      "PeakWorkingSet": 174297088
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "A",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.91183,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 123527168,
+      "WorkingSet": 170635264,
+      "PeakWorkingSet": 174297088
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 107147264,
+      "WorkingSet": 154476544,
+      "PeakWorkingSet": 174297088
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "B",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 1,
+    "Seconds": 0.9021403,
+    "Values": {
+      "fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 126726144,
+      "WorkingSet": 174153728,
+      "PeakWorkingSet": 174366720
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 110645248,
+      "WorkingSet": 157884416,
+      "PeakWorkingSet": 176050176
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.9064325,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 124661760,
+      "WorkingSet": 172167168,
+      "PeakWorkingSet": 176050176
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 108687360,
+      "WorkingSet": 155570176,
+      "PeakWorkingSet": 176050176
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.255193,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 128102400,
+      "WorkingSet": 174759936,
+      "PeakWorkingSet": 176050176
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 110419968,
+      "WorkingSet": 157786112,
+      "PeakWorkingSet": 177094656
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.5882772,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 125575168,
+      "WorkingSet": 173363200,
+      "PeakWorkingSet": 177094656
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 114982912,
+      "WorkingSet": 162201600,
+      "PeakWorkingSet": 177094656
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.138513,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 112230400,
+      "WorkingSet": 159981568,
+      "PeakWorkingSet": 178925568
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 116854784,
+      "WorkingSet": 164311040,
+      "PeakWorkingSet": 182312960
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.5245287,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 128270336,
+      "WorkingSet": 176115712,
+      "PeakWorkingSet": 182312960
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 117161984,
+      "WorkingSet": 164483072,
+      "PeakWorkingSet": 182312960
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.169404,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 131690496,
+      "WorkingSet": 179691520,
+      "PeakWorkingSet": 182312960
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 116400128,
+      "WorkingSet": 164118528,
+      "PeakWorkingSet": 183070720
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.6633816,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 134971392,
+      "WorkingSet": 181788672,
+      "PeakWorkingSet": 183070720
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 119906304,
+      "WorkingSet": 166838272,
+      "PeakWorkingSet": 185610240
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.2502686,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 141074432,
+      "WorkingSet": 188518400,
+      "PeakWorkingSet": 188731392
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 123322368,
+      "WorkingSet": 171286528,
+      "PeakWorkingSet": 189857792
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "A",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.4900081,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 135454720,
+      "WorkingSet": 182427648,
+      "PeakWorkingSet": 189857792
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 120680448,
+      "WorkingSet": 167997440,
+      "PeakWorkingSet": 189857792
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "B",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 10,
+    "Seconds": 1.2080567,
+    "Values": {
+      "fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 142860288,
+      "WorkingSet": 190980096,
+      "PeakWorkingSet": 191193088
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 124088320,
+      "WorkingSet": 172347392,
+      "PeakWorkingSet": 191275008
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 3.6198791,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 138678272,
+      "WorkingSet": 186699776,
+      "PeakWorkingSet": 191275008
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 131010560,
+      "WorkingSet": 179216384,
+      "PeakWorkingSet": 212443136
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 1,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 2.3833596,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 148307968,
+      "WorkingSet": 196259840,
+      "PeakWorkingSet": 212443136
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 133443584,
+      "WorkingSet": 181411840,
+      "PeakWorkingSet": 216195072
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 3.5158891,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 150663168,
+      "WorkingSet": 197664768,
+      "PeakWorkingSet": 216195072
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 137379840,
+      "WorkingSet": 185569280,
+      "PeakWorkingSet": 217698304
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 2,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 2.3868444,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 154243072,
+      "WorkingSet": 200646656,
+      "PeakWorkingSet": 217698304
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 138985472,
+      "WorkingSet": 187273216,
+      "PeakWorkingSet": 218005504
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 3.4995884,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 152915968,
+      "WorkingSet": 199241728,
+      "PeakWorkingSet": 218005504
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 138637312,
+      "WorkingSet": 186908672,
+      "PeakWorkingSet": 221446144
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 3,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 2.4140439,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 159145984,
+      "WorkingSet": 207642624,
+      "PeakWorkingSet": 221446144
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 142254080,
+      "WorkingSet": 190586880,
+      "PeakWorkingSet": 221446144
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 3.702994,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 158216192,
+      "WorkingSet": 206958592,
+      "PeakWorkingSet": 221446144
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 139694080,
+      "WorkingSet": 188375040,
+      "PeakWorkingSet": 221630464
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 4,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 2.292489,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 160448512,
+      "WorkingSet": 209317888,
+      "PeakWorkingSet": 221630464
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 141881344,
+      "WorkingSet": 190488576,
+      "PeakWorkingSet": 221630464
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "A",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 3.5183998,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 157409280,
+      "WorkingSet": 203685888,
+      "PeakWorkingSet": 221630464
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 140951552,
+      "WorkingSet": 189702144,
+      "PeakWorkingSet": 223715328
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "B",
+    "Repeat": 5,
+    "RunWithinOpen": 1,
+    "Pilot": false,
+    "Count": 30,
+    "Seconds": 2.4355943,
+    "Values": {
+      "fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB"
+    },
+    "Technical": {},
+    "MemoryBefore": {
+      "PrivateBytes": 162304000,
+      "WorkingSet": 211210240,
+      "PeakWorkingSet": 223715328
+    },
+    "MemoryAfter": {
+      "PrivateBytes": 140984320,
+      "WorkingSet": 189206528,
+      "PeakWorkingSet": 223715328
+    },
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "CalculationOnly": true,
+    "ExcelSignedZeroEquivalent": true
+  }
+]

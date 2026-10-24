@@ -940,6 +940,12 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
+    If Not physical And Not concreteDiagram Is Nothing Then
+        If section.ConcreteCount > 5000 Then
+            If section.TryConcreteForces(concreteDiagram, eps0, kx, ky, originX, originY, nInt, mxInt, myInt) Then GoTo ConcreteForcesReady
+        End If
+    End If
+
     For i = 1 To section.ConcreteCount
         section.ConcreteElementForSolver i, xCoord, yCoord, area
         xCoord = xCoord - originX: yCoord = yCoord - originY
@@ -981,6 +987,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         If buildTangent Then AddTangent tangent * area, xCoord, yCoord
     Next i
 
+ConcreteForcesReady:
     If section.RebarCount > 0 Then
         For i = 1 To section.RebarCount
             section.RebarElementForSolver i, xCoord, yCoord, area

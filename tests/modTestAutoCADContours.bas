@@ -1344,7 +1344,7 @@ Public Function RunRealAutoCADFarOriginTests(ByVal ownedApplication As Object, _
         sheet.Cells(i + 2, 1).Value2 = keys(i): sheet.Cells(i + 2, 2).Value2 = values(i): sheet.Cells(i + 2, 3).Value2 = "-"
         If i < 4 Then doc.Layers.Add CStr(values(i))
     Next i
-    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("A1:C9")
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("A1").Resize(UBound(keys) + 2, 3) ' Включает весь фактический набор ключей вместе с заголовком, включая Mesh.StepMode.
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set importer = New CAutoCADSectionModelImporter
     Set concrete = New CConcreteMaterialParameters: concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6

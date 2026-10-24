@@ -1,0 +1,22 @@
+﻿{
+    "Status":  "COMPLETED_PENDING_REVIEW",
+    "Started":  "2026-10-23T23:05:00.3825525+03:00",
+    "Finished":  "2026-10-23T23:05:25.0335320+03:00",
+    "SourceSHA256":  "99DC41B566EBBAD79438D61FEB967D4B45D4BA0631D94AA5A72166B2D660A4B3",
+    "Runs":  [
+                 {
+                     "ExitCode":  0,
+                     "ReportSHA256":  "027EE5E21F9ECA584AF380914EC986165CBFFBDEF275AD5B48173E6F60DF3269",
+                     "Mode":  "No",
+                     "Report":  "docs/regression/FullOnOff_2026-10-23_AutoMesh_Run01/AutomaticMesh_No.txt"
+                 },
+                 {
+                     "ExitCode":  0,
+                     "ReportSHA256":  "5E47E1D229F5C5214186618E1B06377813AE3393F0F65E727D7B5D0BFBF1F475",
+                     "Mode":  "Yes",
+                     "Report":  "docs/regression/FullOnOff_2026-10-23_AutoMesh_Run01/AutomaticMesh_Yes.txt"
+                 }
+             ],
+    "Error":  "",
+    "PlanSHA256":  "4600C7B5549B3830F842DF43526793EB05995A925D9466D1A9E2DD1C87B8CDAC"
+}

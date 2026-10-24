@@ -1128,7 +1128,7 @@ Private Sub TestCheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStat
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Обязательные общие Geometry/mesh поля проверяет штатная сборка модели.
+' Обязательные общие поля Geometry и ручные шаги в режиме User проверяет штатная сборка модели.
 ' В missing-варианте временно меняется ключ, а не удаляются пользовательские
 ' строки; recovery восстанавливает его до следующего сценария.
 Private Sub TestCheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal circleRange As Object)
@@ -1136,6 +1136,7 @@ Private Sub TestCheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats,
     Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel
     Dim errorNumber As Long, description As String, prefix As String, caseIndex As Long
     TestSetKey systemRange, "Geometry.Type", "Circle": TestSetKey systemRange, "Geometry.Source", "Generated"
+    TestSetKey systemRange, "Mesh.StepMode", "User" ' Ручные шаги проверяются как активные входы; внешний тест возвращает исходные формулы, включая режим Auto.
     TestConfigureCircle circleRange
     For Each key In Array("Geometry.Type", "Geometry.Source", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions")
         Set cell = TestRequiredGeometryKeyCell(systemRange, CStr(key))

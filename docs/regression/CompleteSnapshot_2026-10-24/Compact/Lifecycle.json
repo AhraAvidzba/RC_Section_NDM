@@ -1,0 +1,60 @@
+﻿{
+    "Status":  "PASS",
+    "SourceSHA256":  "8E35F9309BF1031BC0C79F30491FEB67E477F1ED7F8884BE36376763C6A31AD0",
+    "Checks":  [
+                   {
+                       "Mode":  "Excel",
+                       "Stage":  "Save/Close/Open/Restore",
+                       "ExactSHA256":  "811D09C865BA4C0B085C9BFD1B27E4BD5FA6A6454D2816B36FEF6F66237E856D",
+                       "SolverCalls":  0
+                   },
+                   {
+                       "Mode":  "Excel",
+                       "Stage":  "SaveAs/Close/Open/Restore",
+                       "ExactSHA256":  "811D09C865BA4C0B085C9BFD1B27E4BD5FA6A6454D2816B36FEF6F66237E856D",
+                       "ExternalSHA256":  null,
+                       "SolverCalls":  0
+                   },
+                   {
+                       "Mode":  "File",
+                       "Stage":  "Save/Close/Open/Restore",
+                       "ExactSHA256":  "9D3899AD89AADDFC5ECF236451A8964978E2EF480C325C8C6670145C287A57B8",
+                       "SolverCalls":  0
+                   },
+                   {
+                       "Mode":  "File",
+                       "Stage":  "SaveAs/Close/Open/Restore",
+                       "ExactSHA256":  "9D3899AD89AADDFC5ECF236451A8964978E2EF480C325C8C6670145C287A57B8",
+                       "ExternalSHA256":  "6E1285156542513AF8F760C148ADE07019EB568532F0C672E8F84BF73428B608",
+                       "SolverCalls":  0
+                   },
+                   {
+                       "Mode":  "File",
+                       "Stage":  "SecondSaveAs/OriginalRemoved/Reopen/Restore",
+                       "ExactSHA256":  "9D3899AD89AADDFC5ECF236451A8964978E2EF480C325C8C6670145C287A57B8",
+                       "ExternalSHA256":  "6E1285156542513AF8F760C148ADE07019EB568532F0C672E8F84BF73428B608",
+                       "SolverCalls":  0
+                   },
+                   {
+                       "Stage":  "LargeSnapshotPrompt",
+                       "EstimatedRows":  60000,
+                       "Button":  0,
+                       "Storage":  "Excel",
+                       "Continued":  true
+                   },
+                   {
+                       "Stage":  "LargeSnapshotPrompt",
+                       "EstimatedRows":  60001,
+                       "Button":  7,
+                       "Storage":  "Excel",
+                       "Continued":  true
+                   },
+                   {
+                       "Stage":  "LargeSnapshotPrompt",
+                       "EstimatedRows":  60001,
+                       "Button":  6,
+                       "Storage":  "File",
+                       "Continued":  true
+                   }
+               ]
+}

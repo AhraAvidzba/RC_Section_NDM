@@ -1,0 +1,110 @@
+[
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "A",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 0.8328863,
+    "Min": 0.7587988,
+    "Max": 0.9235681,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false,
+    "CalculationOnly": true,
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-1",
+    "Version": "B",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 0.6883264,
+    "Min": 0.6475533,
+    "Max": 0.9021403,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false,
+    "CalculationOnly": true,
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "A",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 1.5882772,
+    "Min": 1.4900081,
+    "Max": 1.9064325,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false,
+    "CalculationOnly": true,
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-10",
+    "Version": "B",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 1.2080567,
+    "Min": 1.138513,
+    "Max": 1.255193,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false,
+    "CalculationOnly": true,
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "A",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 3.5183998,
+    "Min": 3.4995884,
+    "Max": 3.702994,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false,
+    "CalculationOnly": true,
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "ExcelSignedZeroEquivalent": true
+  },
+  {
+    "Case": "batch-CAPACITY_CRACK_STABILITY_SP63-Newton-Rectangles-Normal-Yes-Full-30",
+    "Version": "B",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 2.3868444,
+    "Min": 2.292489,
+    "Max": 2.4355943,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false,
+    "CalculationOnly": true,
+    "Geometry": {
+      "Concrete": 220,
+      "Rebar": 14
+    },
+    "ExcelSignedZeroEquivalent": true
+  }
+]

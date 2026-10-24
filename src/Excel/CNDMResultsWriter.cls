@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -19,6 +19,7 @@ Option Explicit
 ' При расчёте сохраняет полученное НДС; при формировании — снимок геометрии без НДС.
 ' Исходные таблицы геометрии при записи не перечитываются.
 
+Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник полного результата до сохранения и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' Столбцы результата каждого элемента: запуск, сочетание, профиль, вид НДС, имя элемента, материал, деформация, напряжение и состояние работы.
@@ -82,10 +83,17 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Готовые характеристики снимка не переданы."
     If batch Is Nothing Then Err.Raise vbObjectError + 4454, "CNDMResultsWriter", "Пакетный расчетчик не передан."
 
+    If Not mCapturedSnapshot Is Nothing Then
+        CapturePreparedResults workbook, section, snapshot, batch, units, preserveGeometry
+        Exit Sub
+    End If
+
+    ClearPublishedCalculationSnapshot workbook
+
     snapshot.ValidateSnapshot section, True
     Dim previousAnnotations As Variant, previousDiagnostics As String
     If preserveGeometry Then
-        previousAnnotations = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
+        previousAnnotations = ReadPhysicalResultTable(workbook, "rngNDMSectionAnnotations")
         previousDiagnostics = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
     End If
     If preserveGeometry Then
@@ -120,6 +128,8 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
     If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Для предварительной схемы не переданы подготовленные характеристики сечения."
     snapshot.ValidateSnapshot section
+
+    ClearPublishedCalculationSnapshot workbook
 
     ClearSnapshotData workbook
 
@@ -160,6 +170,7 @@ End Sub
 Public Sub ClearResults(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4455, "CNDMResultsWriter", "Книга Excel не передана."
 
+    ClearPublishedCalculationSnapshot workbook
     ClearSnapshotData workbook
     Dim emptyContours As CSectionContours: Set emptyContours = New CSectionContours
     WriteSectionContours workbook, emptyContours, Empty
@@ -259,7 +270,7 @@ End Sub
 ' При перемещении таблиц заголовок следует за ними и не расширяется на весь лист.
 Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
     Dim anchor As Object, block As Object, name As Variant
-    Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
+    Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
     If anchor.Row <= SNAPSHOT_TITLE_OFFSET Then Exit Function
 
     Dim rightColumn As Long, blockRightColumn As Long
@@ -311,6 +322,10 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
         Next stateIndex
     Next i
 
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddPreparedElementResults data, rowIndex - 1
+        Exit Sub
+    End If
     target.Resize(rowCount, ELEMENT_RESULT_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, ELEMENT_RESULT_COLUMNS, "Результаты элементов по сочетаниям"
 End Sub
@@ -379,6 +394,10 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         rowIndex = rowIndex + 1
     Next i
 
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "rngNDMSectionGeometry", data
+        Exit Sub
+    End If
     target.Offset(0, 14).Resize(rowCount, 2).NumberFormat = "@"
     target.Resize(rowCount, GEOMETRY_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, GEOMETRY_COLUMNS, "Геометрия расчетных элементов сечения"
@@ -392,7 +411,7 @@ End Sub
 Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSectionContours, _
         ByVal runID As Variant, Optional ByVal units As CUnitSystem = Nothing)
     Dim target As Object: Set target = workbook.Names.Item("rngNDMSectionContours").RefersToRange
-    ClearNamedRegion workbook, "rngNDMSectionContours"
+    If mCapturedSnapshot Is Nothing Then ClearNamedRegion workbook, "rngNDMSectionContours"
     Dim data() As Variant, headers As Variant, i As Long, row As Long, kind As String
     headers = Array("RunID", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
         "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", "SourceID", "Comment", "LengthUnit (SectionXY)")
@@ -415,6 +434,10 @@ Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSec
         data(row, 15) = contours.SourceID(i): data(row, 16) = contours.Comment(i)
         data(row, 17) = OutputLengthUnit(units)
     Next i
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "rngNDMSectionContours", data
+        Exit Sub
+    End If
     target.Resize(contours.Count + 1, CONTOUR_COLUMNS).Value2 = data
     FormatResultsBlock target, contours.Count + 1, CONTOUR_COLUMNS, "Достоверные контуры и отверстия сечения"
 End Sub
@@ -515,6 +538,10 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutNamedStateProperties data, rowIndex, runID, batch, i, units
     Next i
 
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddSeparatedTable "rngNDMSectionProperties", data
+        Exit Sub
+    End If
     target.Resize(rowCount, SECTION_PROPERTY_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
 End Sub
@@ -563,6 +590,10 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, _
     rowCount = rowIndex - 1
     If rowCount < 1 Then rowCount = 1
 
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "rngNDMMaterialDiagrams", data
+        Exit Sub
+    End If
     target.Resize(rowCount, MATERIAL_DIAGRAM_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, MATERIAL_DIAGRAM_COLUMNS, "Фактические диаграммы материалов"
 End Sub
@@ -1050,8 +1081,14 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
     Dim rowCount As Long
     rowCount = 1 + annotations.Count
     Dim previousCount As Long, savedRow As Long, savedColumn As Long, savedKind As String
-    Dim previousColumns As Long
+    Dim previousColumns As Long, i As Long, identity As String, fresh As Object, keepPrevious() As Boolean
+    Set fresh = CreateObject("Scripting.Dictionary"): fresh.CompareMode = vbBinaryCompare
+    For i = 1 To annotations.Count
+        identity = annotations.AnnotationType(i) & Chr$(30) & annotations.AnnotationID(i)
+        fresh.Item(identity) = True ' Автоматические размеры с тем же ID заменяют прежние, а не накапливаются при повторном расчёте.
+    Next i
     If IsArray(previous) Then
+        ReDim keepPrevious(1 To UBound(previous, 1))
         previousColumns = UBound(previous, 2)
         If previousColumns > ANNOTATION_COLUMNS Then previousColumns = ANNOTATION_COLUMNS
         For savedRow = 2 To UBound(previous, 1)
@@ -1059,11 +1096,16 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
             If previousColumns >= 2 Then
                 If Not IsError(previous(savedRow, 2)) Then savedKind = CStr(previous(savedRow, 2))
             End If
-            If Left$(savedKind, 6) <> "CRACK_" Then previousCount = previousCount + 1
+            identity = vbNullString
+            If previousColumns >= 3 Then
+                If Not IsError(previous(savedRow, 3)) Then identity = savedKind & Chr$(30) & CStr(previous(savedRow, 3))
+            End If
+            keepPrevious(savedRow) = (Left$(savedKind, 6) <> "CRACK_" And Not fresh.Exists(identity))
+            If keepPrevious(savedRow) Then previousCount = previousCount + 1
         Next savedRow
         rowCount = rowCount + previousCount
     End If
-    Dim regions As Collection, region As CConcreteRegion, combination As CCombinationResult, i As Long
+    Dim regions As Collection, region As CConcreteRegion, combination As CCombinationResult
     Set regions = New Collection
     If Not batch Is Nothing Then
         For i = 1 To batch.Count
@@ -1086,11 +1128,7 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
 
     If IsArray(previous) Then
         For savedRow = 2 To UBound(previous, 1)
-            savedKind = vbNullString
-            If previousColumns >= 2 Then
-                If Not IsError(previous(savedRow, 2)) Then savedKind = CStr(previous(savedRow, 2))
-            End If
-            If Left$(savedKind, 6) <> "CRACK_" Then
+            If keepPrevious(savedRow) Then
                 For savedColumn = 1 To previousColumns
                     data(rowIndex, savedColumn) = previous(savedRow, savedColumn)
                 Next savedColumn
@@ -1108,6 +1146,10 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
     Next region
 
     Dim textColumn As Variant
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddSeparatedTable "rngNDMSectionAnnotations", data
+        Exit Sub
+    End If
     For Each textColumn In Array(2, 3, 10, 12, 13, 23, 24)
         target.Resize(rowCount, ANNOTATION_COLUMNS).Columns.Item(CLng(textColumn)).NumberFormat = "@"
     Next textColumn
@@ -1158,13 +1200,21 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
     Dim tableRange As Object
     Set tableRange = target.Resize(rowCount, columnCount)
 
-    tableRange.HorizontalAlignment = -4108
-    tableRange.VerticalAlignment = -4108
-    tableRange.Font.Name = "Arial"
-    tableRange.Font.Size = 9
-    If rowCount > 1 Then tableRange.Offset(1, 0).Resize(rowCount - 1, columnCount).WrapText = False
-    tableRange.Borders.LineStyle = 1
-    tableRange.Borders.Color = RGB(200, 200, 200)
+    Dim bodyStyle As String
+    If rowCount > 5000 And Not mMinimalFormatting Then bodyStyle = OutputBodyStyle(target)
+    If Len(bodyStyle) > 0 Then
+        tableRange.Style = bodyStyle
+        tableRange.Borders.Item(5).LineStyle = -4142
+        tableRange.Borders.Item(6).LineStyle = -4142
+    Else
+        tableRange.HorizontalAlignment = -4108
+        tableRange.VerticalAlignment = -4108
+        tableRange.Font.Name = "Arial"
+        tableRange.Font.Size = 9
+        If rowCount > 1 Then tableRange.Offset(1, 0).Resize(rowCount - 1, columnCount).WrapText = False
+        tableRange.Borders.LineStyle = 1
+        tableRange.Borders.Color = RGB(200, 200, 200)
+    End If
     tableRange.Rows.Item(1).Interior.Color = RGB(217, 217, 217)
     tableRange.Rows.Item(1).Font.Bold = True
     tableRange.Rows.Item(1).HorizontalAlignment = -4131
@@ -1189,6 +1239,27 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
         titleRange.Interior.Color = RGB(217, 217, 217)
     End If
 End Sub
+
+' Применяет к большой таблице те же шрифты, выравнивание и четыре стороны
+' каждой ячейки одним проходом Excel. Диагональные линии не создаёт.
+Private Function OutputBodyStyle(ByVal target As Object) As String
+    On Error GoTo Unavailable
+    Dim style As Object, book As Object, name As String
+    Set book = target.Worksheet.Parent: name = "NDM_OutputBody_v3"
+    On Error Resume Next
+    Set style = book.Styles.Item(name)
+    On Error GoTo Unavailable
+    If style Is Nothing Then Set style = book.Styles.Add(name)
+    With style
+        .IncludeNumber = False: .IncludePatterns = False: .IncludeProtection = False
+        .IncludeAlignment = True: .IncludeFont = True: .IncludeBorder = True
+        .HorizontalAlignment = -4108: .VerticalAlignment = -4108: .WrapText = False
+        .Font.Name = "Arial": .Font.Size = 9
+        .Borders.LineStyle = 1: .Borders.Color = RGB(200, 200, 200)
+    End With
+    OutputBodyStyle = name
+Unavailable:
+End Function
 
 ' Задаёт одинаковую точность отображения общих численных столбцов во всех таблицах результатов.
 Private Sub ApplyResultNumberFormats(ByVal tableRange As Object, ByRef headers As Variant)
@@ -1246,12 +1317,21 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
         ByVal stateResult As CSectionStateResult, ByVal runID As Variant, ByVal units As CUnitSystem)
     If stateResult Is Nothing Then Exit Sub
     If Not stateResult.Converged Then Exit Sub
-    Dim prepared As Variant, i As Long
+    Dim prepared As Variant, i As Long, combinationID As String, profileId As String, stateType As String
+    combinationID = batch.CombinationID(combinationIndex)
+    profileId = batch.ResultAt(combinationIndex).ProfileId
+    stateType = stateResult.StateTypeText
     prepared = stateResult.PrepareElementSnapshot(section)
     For i = 1 To UBound(prepared, 1)
-        PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            batch.ResultAt(combinationIndex).ProfileId, stateResult.StateTypeText, CStr(prepared(i, 1)), CStr(prepared(i, 2)), _
-            CDbl(prepared(i, 3)), CDbl(prepared(i, 4)), CStr(prepared(i, 5)), units
+        data(rowIndex, 1) = runID
+        data(rowIndex, 2) = combinationID
+        data(rowIndex, 3) = profileId
+        data(rowIndex, 4) = stateType
+        data(rowIndex, 5) = prepared(i, 1)
+        data(rowIndex, 6) = prepared(i, 2)
+        data(rowIndex, 7) = prepared(i, 3)
+        data(rowIndex, 8) = OutputStress(CDbl(prepared(i, 4)), units)
+        data(rowIndex, 9) = prepared(i, 5)
         rowIndex = rowIndex + 1
     Next i
 End Sub
@@ -1674,3 +1754,89 @@ End Function
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
+
+' Подключает подготовку полного снимка без промежуточной записи таблиц Excel.
+Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
+    Set mCapturedSnapshot = value
+End Property
+
+' Собирает готовые матрицы. Прежняя геометрия переносится в памяти с новым RunID.
+Private Sub CapturePreparedResults(ByVal workbook As Object, ByVal section As CSectionModel, _
+        ByVal props As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
+        ByVal units As CUnitSystem, ByVal preserveGeometry As Boolean)
+    props.ValidateSnapshot section, True
+    Dim runID As Date: runID = Now: mCapturedSnapshot.RunID = CDbl(runID)
+    Dim previousAnnotations As Variant, diagnostics As String
+    If preserveGeometry Then
+        previousAnnotations = ReadPhysicalResultTable(workbook, "rngNDMSectionAnnotations")
+        diagnostics = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
+        Dim key As Variant, data As Variant, i As Long
+        For Each key In Array("rngNDMSectionGeometry", "rngNDMSectionContours")
+            data = ReadPhysicalResultTable(workbook, CStr(key))
+            If CStr(key) = "rngNDMSectionGeometry" Then data = CalculationGeometryTable(data)
+            For i = 2 To UBound(data, 1): data(i, 1) = CDbl(runID): Next i
+            mCapturedSnapshot.AddTable CStr(key), data
+        Next key
+    Else
+        WriteSectionGeometry workbook, section, runID, units
+        WriteSectionContours workbook, section.Contours, runID, units
+    End If
+    WriteElementResults workbook, section, batch, runID, units
+    WriteSectionProperties workbook, section, props, batch, runID, units, diagnostics
+    WriteMaterialDiagrams workbook, batch, runID, units
+    WriteSectionAnnotations workbook, section, runID, units, batch, previousAnnotations
+End Sub
+
+' Сохраняет обязательные 14 полей геометрии без изменений. Отсутствующие или
+' ошибочные необязательные подписи и JSON не становятся входом расчёта НДС.
+Private Function CalculationGeometryTable(ByRef source As Variant) As Variant
+    Dim data() As Variant, row As Long, column As Long
+    ReDim data(1 To UBound(source, 1), 1 To GEOMETRY_COLUMNS)
+    For row = 1 To UBound(source, 1)
+        For column = 1 To 14: data(row, column) = source(row, column): Next column
+    Next row
+    data(1, 15) = "Comment": data(1, 16) = "ExtraData"
+    For column = 15 To 16
+        If UBound(source, 2) >= column Then
+            If CStr(source(1, column)) = CStr(data(1, column)) Then
+                For row = 2 To UBound(source, 1)
+                    If Not IsError(source(row, column)) Then data(row, column) = source(row, column)
+                Next row
+            End If
+        End If
+    Next column
+    CalculationGeometryTable = data
+End Function
+
+' Выводит общие технические таблицы выбранного сечения, включая сетку,
+' общие геометрические характеристики и фактически использованные диаграммы.
+Public Sub RestoreSnapshotBase(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True, Optional ByVal includeElements As Boolean = True)
+    Set mCapturedSnapshot = Nothing: mMinimalFormatting = Not fullFormatting
+    ClearNamedRegion workbook, "rngNDMElementResults"
+    Dim key As Variant, data As Variant, target As Object, title As String
+    For Each key In snapshot.BaseKeys()
+        If CStr(key) = "rngNDMElementResults" And Not includeElements Then GoTo NextBaseTable
+        data = snapshot.Table(CStr(key))
+        ClearNamedRegion workbook, CStr(key)
+        Set target = workbook.Names.Item(CStr(key)).RefersToRange
+        If CStr(key) = "rngNDMSectionGeometry" Then target.Resize(UBound(data, 1), UBound(data, 2)).Columns.Item(15).Resize(, 2).NumberFormat = "@"
+        If CStr(key) = "rngNDMSectionAnnotations" Then
+            Dim column As Variant
+            For Each column In Array(2, 3, 10, 12, 13, 23, 24)
+                target.Resize(UBound(data, 1), UBound(data, 2)).Columns.Item(CLng(column)).NumberFormat = "@"
+            Next column
+        End If
+        target.Resize(UBound(data, 1), UBound(data, 2)).Value2 = data
+        Select Case CStr(key)
+            Case "rngNDMElementResults": title = "Результаты элементов по сочетаниям"
+            Case "rngNDMSectionGeometry": title = "Сформированная сетка и арматура"
+            Case "rngNDMSectionContours": title = "Сохранённые контуры сечения"
+            Case "rngNDMSectionProperties": title = "Общие геометрические характеристики сечения"
+            Case "rngNDMMaterialDiagrams": title = "Фактически использованные диаграммы материалов"
+            Case "rngNDMSectionAnnotations": title = "Аннотации схемы"
+        End Select
+        FormatResultsBlock target, UBound(data, 1), UBound(data, 2), title
+NextBaseTable:
+    Next key
+    WriteSnapshotTitle workbook
+End Sub

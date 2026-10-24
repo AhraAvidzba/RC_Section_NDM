@@ -233,6 +233,27 @@ Public Function StressAtStrain(ByVal strain As Double) As Double
     End If
 End Function
 
+' Подтверждает единственную аффинную ветвь во всём интервале деформаций.
+' Использует фактические подготовленные коэффициенты; переходы и граничные узлы не сглаживает.
+Friend Function TryLinearStressRange(ByVal low As Double, ByVal high As Double, ByRef slope As Double, ByRef intercept As Double) As Boolean
+    EnsureInitialized
+    If low > high Then Exit Function
+    If high < mStrains(1) Then
+        slope = 0#: If mHasCompressionExtension Then slope = mSegmentTangent(1)
+        intercept = mStresses(1) - slope * mStrains(1)
+    ElseIf low > mStrains(mPointCount) Then
+        slope = 0#: If mHasTensionExtension Then slope = mSegmentTangent(mPointCount - 1)
+        intercept = mStresses(mPointCount) - slope * mStrains(mPointCount)
+    Else
+        If low <= mStrains(1) Or high >= mStrains(mPointCount) Then Exit Function
+        Dim first As Long, last As Long
+        first = FindSegmentIndex(low): last = FindSegmentIndex(high)
+        If first < 1 Or first <> last Then Exit Function
+        slope = mSegmentTangent(first): intercept = mSegmentIntercept(first)
+    End If
+    TryLinearStressRange = True
+End Function
+
 ' Возвращает напряжение по деформации через общий material API решателей.
 Public Function GetStress(ByVal strain As Double) As Double
     GetStress = StressAtStrain(strain)

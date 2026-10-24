@@ -34,7 +34,7 @@ function Invoke-Gate([string]$ID,[string]$Macro,[string]$Mode,[string]$A='',[str
     & (Join-Path $PSScriptRoot 'Run-Audit03Watchdog.ps1') -SourceWorkbook (Join-Path $directory 'Probe/RC_Section_NDM.xlsm') -ReportPath $relative -Macro $Macro -MacroArgument1 $A -MacroArgument2 $B -Mode $Mode -TimeoutSeconds ([math]::Min($Timeout,(Remaining))) -VerifyResultsReopen:$Reopen -VerifyStatusReopen:$Reopen
     $code=$LASTEXITCODE
     $body=Get-Content -LiteralPath (Join-Path $root $relative) -Raw -Encoding UTF8
-    $passed=$code -eq 0 -and $body -notmatch '(?m)^(FAIL:|RUNTIME ERROR|SCRIPT ERROR|WATCHDOG_FAILURE|RESTORE ERROR|CLEANUP ERROR)'
+    $passed=$code -eq 0 -and $body -notmatch '(?m)^(FAIL[: ]|RUNTIME ERROR|SCRIPT ERROR|WATCHDOG_FAILURE|RESTORE ERROR|CLEANUP ERROR)'
     $records.Add(@{ID=$ID;Kind='VBA';Macro=$Macro;Mode=$Mode;Argument1=$A;Argument2=$B;ExitCode=$code;Passed=$passed;Report=$relative;ReportSHA256=(Get-FileHash -LiteralPath (Join-Path $root $relative)).Hash})
     Save-Run
     Write-Output ('FOCUSED_FINISHED: '+$ID+'; passed='+$passed)

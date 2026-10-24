@@ -252,7 +252,12 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     profiles.LoadFromWorkbook workbook
 
     Dim profile As CCalculationProfile
-    Set profile = profiles.ProfileById(profileId)
+    If profiles.HasProfile(profileId) Then
+        Set profile = profiles.ProfileById(profileId)
+    Else
+        Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+        If snapshot Is Nothing Then Set profile = profiles.ProfileById(profileId) Else Set profile = snapshot.SavedVisualizationProfile(profileId)
+    End If
     stateType = profile.VisualizationStateText
     quantity = VisualizationQuantityToText(profile.VisualizationQuantity)
     resultPrecision = profile.VisualizationPrecisionForQuantity(profile.VisualizationQuantity)
@@ -288,7 +293,7 @@ End Function
 Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal combinationID As String) As String
     On Error GoTo Failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadElementResultTable(workbook, combinationID, , True)
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -314,7 +319,7 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
     Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
 
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadElementResultTable(workbook, combinationID, stateType)
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4352, "ReadElementResultsForCombination", _
         "На листе Results нет таблицы результатов НДМ. Сначала выполните расчет."
 

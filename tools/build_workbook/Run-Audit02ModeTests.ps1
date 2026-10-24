@@ -271,7 +271,7 @@ try {
         }
         foreach ($line in ($result -split "`r?`n")) {
             $lines.Add($line)
-            if ($line -match "failed=([1-9][0-9]*)|^FAIL:|RUNTIME ERROR") { $failed = $true }
+            if ($line -match "failed=([1-9][0-9]*)|^FAIL(?::| )|RUNTIME ERROR") { $failed = $true }
         }
         # Получаем заново ссылку на ту же открытую книгу после долгого VBA Run.
         # Файл не открывается повторно: несохраненные изменения suite остаются
@@ -344,6 +344,6 @@ try {
     [GC]::Collect()
     [GC]::WaitForPendingFinalizers()
     Save-Progress
-    $lines | Where-Object { $_ -match "^SOURCE|^FIXTURE|^GLOBAL_MODE|^TOTAL|^FAIL:|^SCRIPT ERROR|^RUNTIME ERROR|^MODE_AFTER" }
+    $lines | Where-Object { $_ -match "^SOURCE|^FIXTURE|^GLOBAL_MODE|^TOTAL|^FAIL(?::| )|^SCRIPT ERROR|^RUNTIME ERROR|^MODE_AFTER" }
 }
 if ($failed) { exit 1 }

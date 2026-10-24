@@ -26,7 +26,7 @@ def inspect(path, source_hash, expected_count):
         name = start.group(1)
         finish = re.search(r"(?m)^SUITE_FINISHED: " + re.escape(name) + r"; (.+)$", block)
         totals = re.findall(r"(?m)^TOTAL[^\r\n]*?passed=(\d+); failed=(\d+)[^\r\n]*", block)
-        failed_lines = re.findall(r"(?m)^FAIL:.*$", block)
+        failed_lines = re.findall(r"(?m)^FAIL(?::| ).*$", block)
         failures = sum(int(failed) for _, failed in totals)
         passed = int(totals[-1][0]) if totals else None
         status = "RUNNING" if not finish else "PASS"

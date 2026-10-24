@@ -1327,11 +1327,11 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 49 And ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Column = 1
     TestAssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
     TestAssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
-    TestAssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
-    TestAssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 30
-    TestAssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 49
-    TestAssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 57
-    TestAssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 70
+    TestAssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 1
+    TestAssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 55
+    TestAssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 19
+    TestAssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 27
+    TestAssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 74
     TestAssertTrue stats, "ui.results.geometry.noSource", TestResultHeaderColumn(geometryResults, "SourceName") = 0
     TestAssertTrue stats, "ui.results.geometry.noMaterialClass", TestResultHeaderColumn(geometryResults, "MaterialClass") = 0
     TestAssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -3255,6 +3255,10 @@ End Function
 ' Читает сохранённую таблицу от её именованной начальной ячейки до конца данных.
 ' Новый расчёт и текущие исходные размеры сечения не используются.
 Private Function TestResultTable(ByVal rangeName As String) As Variant
+    If rangeName = "rngNDMSectionProperties" Or rangeName = "rngNDMSectionAnnotations" Then
+        TestResultTable = ReadAnchoredResultTable(ThisWorkbook, rangeName)
+        Exit Function
+    End If
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange
 

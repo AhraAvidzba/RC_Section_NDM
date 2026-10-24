@@ -1,0 +1,16 @@
+﻿[
+    {
+        "Key":  "Results.SnapshotStorage",
+        "Input":  "RGB(255,242,230)/center",
+        "CellsCompared":  5,
+        "BordersCompared":  20,
+        "RightBorder":  "dotted/black/thin"
+    },
+    {
+        "Key":  "Results.SnapshotName",
+        "Input":  "RGB(255,242,230)/center",
+        "CellsCompared":  5,
+        "BordersCompared":  20,
+        "RightBorder":  "dotted/black/thin"
+    }
+]

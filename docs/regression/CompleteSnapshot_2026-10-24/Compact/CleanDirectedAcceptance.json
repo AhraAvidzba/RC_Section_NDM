@@ -1,0 +1,51 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "00C2165E937D631DE9F2C1C4760DDB23C06BBC694FF174475BB9B7A060F538E6",
+  "SnapshotNo": {
+    "Failed": 0,
+    "Passed": 191
+  },
+  "SnapshotYes": {
+    "Failed": 0,
+    "Passed": 191
+  },
+  "WorkflowNo": {
+    "Failed": 0,
+    "Passed": 100
+  },
+  "WorkflowYes": {
+    "Failed": 0,
+    "Passed": 100
+  },
+  "InitialCommandError": "Wrong RunWorkflowCalculationTests name after completed snapshot suite; existing RunSectionWorkflowCalculationTests executed separately without code change",
+  "PrimaryReports": [
+    {
+      "Report": "docs/regression/CompleteSnapshot_2026-10-24/CleanDirected_No.txt",
+      "SHA256": "409CD8C2832A1317F6F2975678F0A8AFA14A884168AAF2E90A652B6919FF8540",
+      "Totals": [
+        "TOTAL CALCULATION SNAPSHOT: passed=191; failed=0"
+      ],
+      "InvocationError": true,
+      "WatchdogPassed": false
+    },
+    {
+      "Report": "docs/regression/CompleteSnapshot_2026-10-24/CleanWorkflow_No01.txt",
+      "SHA256": "614B1F0F9DC1DC1DBA9A94BE9CEA357B98DA58D5D4DD37D2020C97625C3D0227",
+      "Totals": [
+        "TOTAL_WORKFLOW_CALCULATION: passed=100; failed=0"
+      ],
+      "InvocationError": false,
+      "WatchdogPassed": true
+    },
+    {
+      "Report": "docs/regression/CompleteSnapshot_2026-10-24/CleanDirected_Yes01.txt",
+      "SHA256": "9954A236E50E7B7669BF61B2ECA87C8F93A75F9C953B20B4E7DFDDDDA9CBEE0C",
+      "Totals": [
+        "TOTAL CALCULATION SNAPSHOT: passed=191; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=100; failed=0"
+      ],
+      "InvocationError": false,
+      "WatchdogPassed": true
+    }
+  ]
+}

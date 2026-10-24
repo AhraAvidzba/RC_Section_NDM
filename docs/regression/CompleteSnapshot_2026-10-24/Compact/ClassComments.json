@@ -1,0 +1,22 @@
+{
+  "schema": 3,
+  "status": "PASS",
+  "classes": 114,
+  "methods": 3744,
+  "sourceComponents": 176,
+  "missingHeaderCount": 0,
+  "missingMethodCount": 0,
+  "missingHeaders": [],
+  "missingMethods": [],
+  "nonstandardHeaders": [],
+  "fields": 2119,
+  "missingFieldCount": 0,
+  "missingFields": [],
+  "wrongTestMethodOrder": [],
+  "allowMethodReorder": false,
+  "baseRef": null,
+  "executableCodeChanges": [],
+  "commentChanges": [],
+  "FullAuditSHA256": "5EA83BE911D910659AD71CF6369BA5BCC945B6333758379E3475A907672B11EA",
+  "Compaction": "Per-method comment listings omitted; counts and all violations retained"
+}

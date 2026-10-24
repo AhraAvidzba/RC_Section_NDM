@@ -1,0 +1,22 @@
+{
+  "Status": "PASS",
+  "BeforeSHA256": "99DC41B566EBBAD79438D61FEB967D4B45D4BA0631D94AA5A72166B2D660A4B3",
+  "WorkbookSHA256": "614B18277D1B07E530E496C81E4745D75D3E2F3AC60428F8DFDD21223667EA0B",
+  "Checks": 15847,
+  "SourceComponents": 172,
+  "DocumentComponents": 6,
+  "VBENormalization": "Identifier case, insignificant whitespace, native 15-significant-digit floating literals",
+  "AddedNames": [
+    "rngNDMLoadCaseResults"
+  ],
+  "LowerOrder": [
+    "rngNDMSectionGeometry",
+    "rngNDMSectionProperties",
+    "rngNDMMaterialDiagrams",
+    "rngNDMElementResults",
+    "rngNDMLoadCaseResults",
+    "rngNDMSectionContours",
+    "rngNDMSectionAnnotations"
+  ],
+  "Errors": []
+}

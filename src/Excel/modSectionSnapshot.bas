@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modSectionSnapshot"
+Attribute VB_Name = "modSectionSnapshot"
 Option Explicit
 
 ' ==========================================================================
@@ -11,6 +11,7 @@ Option Explicit
 Private mSnapshotUnits As CUnitSystem ' Преобразование единиц, записанных в Results, независимо от текущего Config.
 Private mSnapshotReadTables As Object ' Таблицы одной операции чтения; освобождаются после восстановления модели или ошибки.
 Private mSnapshotReadWorkbook As Object ' Книга, которой принадлежат временно прочитанные таблицы.
+Private mSnapshotReadGeometryOnly As Boolean ' Формирование модели читает общую геометрию; экспорт также получает LC из полного снимка.
 Private mSnapshotTableReadCount As Long ' ДЛЯ ТЕСТОВ: число загрузок целых таблиц; чтения при поиске границ сюда не входят.
 
 ' Восстанавливает расчётную модель из обязательных координат, площадей,
@@ -262,7 +263,7 @@ End Function
 Public Function ResultsGeometrySource(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadPhysicalResultTable(workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -285,7 +286,11 @@ End Function
 Public Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal combinationID As String, ByVal propertyName As String) As String
     On Error GoTo Failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If combinationID = "ALL" And propertyName <> "LoadReferenceX" And propertyName <> "LoadReferenceY" And Left$(propertyName, Len("SP35.Slenderness")) <> "SP35.Slenderness" Then
+        data = ReadPhysicalResultTable(workbook, "rngNDMSectionProperties")
+    Else
+        data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    End If
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -369,11 +374,28 @@ End Function
 ' Не использует CurrentRegion: расположенные рядом пояснения и заголовки
 ' не должны попадать в массив расчётных данных.
 Public Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+    If workbook Is mSnapshotReadWorkbook And mSnapshotReadGeometryOnly Then
+        ReadAnchoredResultTable = ReadPhysicalResultTable(workbook, rangeName)
+        Exit Function
+    End If
+    If rangeName = "rngNDMElementResults" Or rangeName = "rngNDMSectionProperties" Or rangeName = "rngNDMSectionAnnotations" Then
+        Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+        If Not snapshot Is Nothing Then
+            ReadAnchoredResultTable = snapshot.ResultTable(rangeName)
+            Exit Function
+        End If
+    End If
+    ReadAnchoredResultTable = ReadPhysicalResultTable(workbook, rangeName)
+End Function
+
+' Читает только физические ячейки. Используется при сборке полного снимка,
+' чтобы загрузка LC-дополнения не обращалась рекурсивно к самой себе.
+Public Function ReadPhysicalResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
     Dim useReadTables As Boolean
     useReadTables = Not mSnapshotReadTables Is Nothing And workbook Is mSnapshotReadWorkbook
     If useReadTables Then
         If mSnapshotReadTables.Exists(rangeName) Then
-            ReadAnchoredResultTable = mSnapshotReadTables.Item(rangeName)
+            ReadPhysicalResultTable = mSnapshotReadTables.Item(rangeName)
             Exit Function
         End If
     End If
@@ -388,11 +410,55 @@ Public Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeNam
     rowCount = AnchoredRowCount(anchor)
     If rowCount <= 0 Then rowCount = 1
 
-    ReadAnchoredResultTable = anchor.Resize(rowCount, columnCount).Value2
+    ReadPhysicalResultTable = anchor.Resize(rowCount, columnCount).Value2
     If useReadTables Then
-        mSnapshotReadTables.Add rangeName, ReadAnchoredResultTable
+        mSnapshotReadTables.Add rangeName, ReadPhysicalResultTable
         mSnapshotTableReadCount = mSnapshotTableReadCount + 1
     End If
+End Function
+
+' Выбирает сохранённое сочетание или только перечень состояний. Внешний файл
+' проверяется так же, как при полном чтении; новые НДС и импорт не выполняются.
+Public Function ReadElementResultTable(ByVal workbook As Object, Optional ByVal combinationID As String = "", _
+        Optional ByVal stateType As String = "", Optional ByVal indexOnly As Boolean = False) As Variant
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    If Not snapshot Is Nothing Then ReadElementResultTable = snapshot.SelectElementResults(combinationID, stateType, indexOnly): Exit Function
+    Dim data As Variant: data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    If Len(combinationID) = 0 And Len(stateType) = 0 And Not indexOnly Then ReadElementResultTable = data: Exit Function
+    Dim rows As Long, i As Long, j As Long, used As Long, identity As String, seen As Object
+    Dim caseColumn As Long: caseColumn = ResultColumn(data, "LoadCase")
+    Dim stateColumn As Long: stateColumn = ResultColumn(data, "StateType")
+    Set seen = CreateObject("Scripting.Dictionary"): seen.CompareMode = vbTextCompare
+    For i = 2 To UBound(data, 1)
+        If (Len(combinationID) = 0 Or StrComp(CStr(data(i, caseColumn)), combinationID, vbTextCompare) = 0) And _
+                (Len(stateType) = 0 Or StrComp(CStr(data(i, stateColumn)), stateType, vbTextCompare) = 0) Then
+            If indexOnly Then
+                identity = CStr(data(i, caseColumn)) & Chr$(30) & CStr(data(i, stateColumn))
+                If Not seen.Exists(identity) Then seen.Add identity, i: rows = rows + 1
+            Else
+                rows = rows + 1
+            End If
+        End If
+    Next i
+    Dim selected() As Variant: ReDim selected(1 To rows + 1, 1 To UBound(data, 2))
+    For j = 1 To UBound(data, 2): selected(1, j) = data(1, j): Next j
+    used = 1
+    For i = 2 To UBound(data, 1)
+        If (Len(combinationID) = 0 Or StrComp(CStr(data(i, caseColumn)), combinationID, vbTextCompare) = 0) And _
+                (Len(stateType) = 0 Or StrComp(CStr(data(i, stateColumn)), stateType, vbTextCompare) = 0) Then
+            If indexOnly Then
+                identity = CStr(data(i, caseColumn)) & Chr$(30) & CStr(data(i, stateColumn))
+                If seen.Exists(identity) Then
+                    If CLng(seen.Item(identity)) = i Then
+                        used = used + 1: For j = 1 To UBound(data, 2): selected(used, j) = data(i, j): Next j
+                    End If
+                End If
+            Else
+                used = used + 1: For j = 1 To UBound(data, 2): selected(used, j) = data(i, j): Next j
+            End If
+        End If
+    Next i
+    ReadElementResultTable = selected
 End Function
 
 ' Определяет ширину таблицы по непрерывной строке заголовков.
@@ -502,15 +568,19 @@ Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As 
 End Function
 
 ' Начинает одно чтение согласованного снимка: каждая таблица получается один раз.
-Public Sub BeginSectionSnapshotRead(ByVal workbook As Object)
+Public Sub BeginSectionSnapshotRead(ByVal workbook As Object, Optional ByVal geometryOnly As Boolean = False)
+    BeginCalculationSnapshotRead workbook
     Set mSnapshotReadTables = CreateObject("Scripting.Dictionary")
     Set mSnapshotReadWorkbook = workbook
+    mSnapshotReadGeometryOnly = geometryOnly
     mSnapshotTableReadCount = 0
 End Sub
 
 ' Освобождает массивы снимка после чтения или ошибки, сохраняя счётчик обращений.
 Public Sub EndSectionSnapshotRead()
     Set mSnapshotReadTables = Nothing: Set mSnapshotReadWorkbook = Nothing
+    mSnapshotReadGeometryOnly = False
+    EndCalculationSnapshotRead
 End Sub
 
 
@@ -518,7 +588,7 @@ End Sub
 ' аннотации добавляются только по запросу; генератор и AutoCAD не вызываются.
 Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional ByVal includeOptionalData As Boolean = False) As CSectionModel
     On Error GoTo Failed
-    BeginSectionSnapshotRead workbook ' Общие таблицы читаются один раз за операцию; кэш освобождается и при ошибке.
+    BeginSectionSnapshotRead workbook, True ' Модель использует только общую геометрию, без загрузки больших массивов прежних НДС.
     Dim source As String: source = ResultsGeometrySource(workbook)
     If Len(source) = 0 Then Err.Raise vbObjectError + 4380, "ReadFormedSectionFromResults", _
         "В Results нет сформированного сечения. Сначала нажмите «Сформировать сечение»."
@@ -570,10 +640,23 @@ Private Sub RestoreModelAnnotations(ByVal workbook As Object, ByVal model As CSe
     Next row
 End Sub
 
+' Получает номера непустых строк готовой сводки для прежней подсветки статусов.
+' Источником служит сохранённый ID, а не повторная загрузка сочетаний Config.
+Public Function ResultSnapshotStatusRows(ByVal target As Object, ByVal headerRows As Long) As Variant
+    Dim count As Long: count = target.Rows.Count - headerRows
+    If count < 1 Then Exit Function
+    Dim values As Variant: values = target.Offset(headerRows, 0).Resize(count, 3).Value2
+    Dim rows() As Long, i As Long, used As Long, value As Variant: ReDim rows(1 To count)
+    For i = 1 To count
+        If Len(CStr(values(i, 1))) > 0 Or Len(CStr(values(i, 2))) > 0 Or Len(CStr(values(i, 3))) > 0 Then
+            used = used + 1: rows(used) = headerRows + i
+        End If
+    Next i
+    If used = 0 Then Exit Function
+    ReDim Preserve rows(1 To used): ResultSnapshotStatusRows = rows
+End Function
+
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
 ' Показывает число блочных чтений и освобождение таблиц после операции.
 Public Function TestSectionSnapshotReadDiagnostics() As String
     TestSectionSnapshotReadDiagnostics = "tables=" & CStr(mSnapshotTableReadCount) & ";released=" & _

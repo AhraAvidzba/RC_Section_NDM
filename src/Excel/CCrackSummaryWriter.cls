@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -17,6 +17,8 @@ Option Explicit
 ' Переводит величины в пользовательские единицы и оформляет таблицу.
 ' Пустой столбец между частями таблицы сохраняется без рамок и заливки.
 
+Private mSnapshotLengthUnit As String ' Сохранённая единица для формата ширины при восстановлении.
+Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник готовых значений без записи и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
 Private Const HEADER_ROWS As Long = 4 ' Число строк шапки над первой строкой сочетаний.
@@ -158,9 +160,9 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     If mMinimalFormatting Then
         mMinimalFormatting = (CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@")
     End If
-    PrepareTarget target
+    If mCapturedSnapshot Is Nothing Then PrepareTarget target
     WriteHeaders target, units
-    WriteBlockTitle target, "Расчет нормальных и продольных трещин"
+    If mCapturedSnapshot Is Nothing Then WriteBlockTitle target, "Расчет нормальных и продольных трещин"
     WriteData target, batch, units
     FormatTable target, batch, units
     Exit Sub
@@ -296,6 +298,10 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
 
     PutHeaderNotes headers, units
     PutColumnLabels headers, units
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "Cracks.Headers", headers
+        Exit Sub
+    End If
     If mMinimalFormatting Then
         If ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks()) Then Exit Sub
         mMinimalFormatting = False
@@ -493,6 +499,10 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     For i = 1 To batch.Count
         PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
     Next i
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "Cracks.Data", data
+        Exit Sub
+    End If
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
 
@@ -728,6 +738,7 @@ End Sub
 ' Оформляет подробную таблицу трещин: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
+    If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
         ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS
         Exit Sub
@@ -796,7 +807,9 @@ End Sub
 ' Возвращает точность отображения ширины/допуска в текущей OUTPUT Length.
 ' Форматирование не округляет сохраненное число и не меняет размер столбца.
 Private Function CrackWidthNumberFormat(ByVal units As CUnitSystem) As String
-    Select Case OutputLengthUnit(units)
+    Dim lengthUnit As String: lengthUnit = OutputLengthUnit(units)
+    If Len(mSnapshotLengthUnit) > 0 Then lengthUnit = mSnapshotLengthUnit
+    Select Case lengthUnit
         Case "m": CrackWidthNumberFormat = "0.000000"
         Case "cm": CrackWidthNumberFormat = "0.0000"
         Case Else: CrackWidthNumberFormat = "0.000"
@@ -815,13 +828,18 @@ End Sub
 
 ' Красит блоки строки по статусу общей проверки, нормальных и продольных трещин.
 Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
-    If batch Is Nothing Then Exit Sub
-    If batch.Count <= 0 Then Exit Sub
     Dim rows() As Long, i As Long
+    If batch Is Nothing Then
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS)
+        If IsEmpty(storedRows) Then Exit Sub
+        rows = storedRows
+    Else
+    If batch.Count <= 0 Then Exit Sub
     ReDim rows(1 To batch.Count)
     For i = 1 To batch.Count
         rows(i) = HEADER_ROWS + OutputDataOffset(batch, i, dataRows)
     Next i
+    End If
     ApplyTableStatusFills target, rows, Array( _
         COL_STATUS, COL_PRE_CRACK_STATUS, COL_POST_CRACK_STATUS, _
         COL_FORMATION_STATE, COL_CRACK_STATE_STATUS, COL_ACRC_STATUS, _
@@ -1085,3 +1103,28 @@ Private Function StatusPolicy() As CResultStatusPolicy
     If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
+
+' Передаёт отдельный приёмник готовых массивов; при Nothing сохраняется обычный вывод.
+Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
+    Set mCapturedSnapshot = value
+End Property
+
+' Восстанавливает готовую подробную таблицу и её прежнее оформление без решения НДС.
+Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
+    Set mCapturedSnapshot = Nothing
+    mMinimalFormatting = Not fullFormatting
+    Dim data As Variant: data = snapshot.Table("Cracks.Data")
+    Dim target As Object: Set target = TargetRange(workbook, UBound(data, 1))
+    Dim headers As Variant: headers = snapshot.Table("Cracks.Headers")
+    If mMinimalFormatting Then mMinimalFormatting = CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@" And ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks())
+    PrepareTarget target
+    If Not mMinimalFormatting Then
+        target.Resize(HEADER_ROWS, TOTAL_COLUMNS).Value2 = headers
+        MergeHeaders target
+    End If
+    WriteBlockTitle target, "Расчет нормальных и продольных трещин"
+    target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data
+    mSnapshotLengthUnit = snapshot.OutputLengthUnit
+    FormatTable target, Nothing, Nothing
+    mSnapshotLengthUnit = vbNullString
+End Sub

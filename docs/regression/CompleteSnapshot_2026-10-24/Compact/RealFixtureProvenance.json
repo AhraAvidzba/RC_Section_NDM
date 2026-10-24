@@ -1,0 +1,19 @@
+{
+  "Source": "outputs/01a12ece-8192-7141-89b3-f83f1176184c/TimingReplay_2026-10-23/04_ImportedSP35_Batch30.xlsm",
+  "SourceSHA256": "0B31A4D1F9ED7F783BB964018B413CB486B8325F95D70EFC468D3D730544C92E",
+  "Concrete": 1232,
+  "Rebar": 8,
+  "LoadCases": 30,
+  "PreservedNamedInputs": [
+    "rngUnitSettings",
+    "rngSignConventionSettings",
+    "rngStabilityDurationLoads",
+    "rngSP35Table721",
+    "rngCalculationProfiles",
+    "rngLoadCombinations"
+  ],
+  "PreviousAutomaticAnnotationsClearedForFirstCalculation": [],
+  "GeometryCopiedWithoutRegeneration": true,
+  "OwnedPID": 183868,
+  "OwnedTicks": 639283945188593475
+}

@@ -3,14 +3,16 @@ param(
     [string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
     [Parameter(Mandatory=$true)][string]$EvidenceDirectory,
     [Parameter(Mandatory=$true)][string]$Deadline,
-    [ValidateRange(1,12)][double]$ForecastHours=5,
+    [ValidateRange(1,12)][double]$ForecastHours=6,
     [string]$Python=(Join-Path $env:USERPROFILE '.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
 )
 $ErrorActionPreference='Stop'
 Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
-& $Python (Join-Path $PSScriptRoot 'Test-FocusedAcceptanceVerifier.py')
-if($LASTEXITCODE -ne 0){throw 'Focused verification prerequisites must pass before the long full run.'}
+foreach($verifier in @('Test-FocusedAcceptanceVerifier.py','Test-FullCoverageVerifier.py')){
+    & $Python (Join-Path $PSScriptRoot $verifier)
+    if($LASTEXITCODE -ne 0){throw ('Acceptance verification prerequisites failed: '+$verifier)}
+}
 $sourcePath=$SourceWorkbook
 if (-not [IO.Path]::IsPathRooted($sourcePath)) {$sourcePath=Join-Path $root $sourcePath}
 $source=(Resolve-Path -LiteralPath $sourcePath).Path
@@ -102,6 +104,7 @@ $recipes=@(
     'modTestWorkbookInterface.RunConfigComparisonContractTests'
 )
 $savedOffsets=@('modTestRecipeOperations.RunSavedPointedOffsetTests','modTestRecipeOperations.RunSavedOffsetCalculationTests')
+$currentFeatures=@('modTestContourMesh.RunAutomaticMeshTests','modTestCalculationSnapshot.RunCalculationSnapshotTests','modTestDiscreteForces.RunDiscreteForceTests')
 $jobs=@()
 foreach ($mode in @('No','Yes')) {
     $label=if($mode -eq 'No') {'Off'} else {'On'}
@@ -110,13 +113,14 @@ foreach ($mode in @('No','Yes')) {
     $jobs+=@{Group='SP35';Mode=$mode;Label=$label;Macro=$sp35;ExpectedSuites=$sp35.Count;MaximumSeconds=3600}
     $jobs+=@{Group='Recipes';Mode=$mode;Label=$label;Macro=$recipes;ExpectedSuites=$recipes.Count;MaximumSeconds=3600}
     $jobs+=@{Group='SavedOffsets';Mode=$mode;Label=$label;Macro=$savedOffsets;ExpectedSuites=$savedOffsets.Count;MaximumSeconds=600;FixtureGeometryType='PointedSection'}
+    $jobs+=@{Group='CurrentFeatures';Mode=$mode;Label=$label;Macro=$currentFeatures;ExpectedSuites=$currentFeatures.Count;MaximumSeconds=900}
 }
 $manifest=[ordered]@{Status='RUNNING';StartedUTC=[DateTimeOffset]::UtcNow.ToString('o');Deadline=$limit.ToString('o');ForecastHours=$ForecastHours;
     SourceCommit=(& git -C $root rev-parse HEAD);SourceWorkbook=$source;SourceSHA256=$sourceHash;FrozenWorkbook=$frozen;
     RunnerSHA256=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash;
     ModeRunnerSHA256=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Algorithm SHA256).Hash;
     GeometryTypeInTestCopies='Rectangles';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false;
-    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=3;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
+    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=4;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
 $manifestPath=Join-Path $directory 'Run.json'
 function Save-Run {$manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding UTF8}
 Save-Run
@@ -169,4 +173,16 @@ if ($manifest.RunnerChanged) {$failed=$true}
 $manifest['FinishedUTC']=[DateTimeOffset]::UtcNow.ToString('o')
 if ($manifest.Status -eq 'RUNNING') {$manifest.Status=if($failed){'REVIEW_REQUIRED'}else{'COMPLETED_PENDING_LOG_REVIEW'}}
 Save-Run
+& $Python (Join-Path $PSScriptRoot 'Summarize-FullOnOffAcceptance.py') --directory $directory --check 1> (Join-Path $directory 'Summary.stdout.json') 2> (Join-Path $directory 'Summary.stderr.log')
+$summaryCode=$LASTEXITCODE
+& $Python (Join-Path $PSScriptRoot 'Finalize-CompleteAcceptance.py') --core-directory $directory --focused-directory (Join-Path $root $focusedDirectory) 1> (Join-Path $directory 'Finalize.stdout.json') 2> (Join-Path $directory 'Finalize.stderr.log')
+$finalizeCode=$LASTEXITCODE
+if($summaryCode -eq 0 -and $finalizeCode -eq 0){
+    Copy-Item -LiteralPath (Join-Path $root ($focusedDirectory+'/CombinedAcceptance.json')) -Destination (Join-Path $directory 'CompleteCurrentAcceptance.json')
+}
+[ordered]@{Status=if(-not $failed -and $summaryCode -eq 0 -and $finalizeCode -eq 0){'COMPLETED_PENDING_LOG_REVIEW'}else{'REVIEW_REQUIRED'};
+    FinishedUTC=[DateTimeOffset]::UtcNow.ToString('o');SourceSHA256=$sourceHash;ExpectedSuites=($jobs|Measure-Object ExpectedSuites -Sum).Sum;
+    SummarizeExitCode=$summaryCode;FinalizeExitCode=$finalizeCode;CompleteAcceptance='CompleteCurrentAcceptance.json'}|
+    ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $directory 'Completion.json') -Encoding UTF8
+if($summaryCode -ne 0 -or $finalizeCode -ne 0){$failed=$true}
 if ($failed) {exit 1}

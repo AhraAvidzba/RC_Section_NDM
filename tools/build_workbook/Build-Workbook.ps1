@@ -386,13 +386,13 @@ function Add-CalculationButtons {
 
     $plotButton = $Sheet.Shapes.AddShape(1, $left, $top + 2 * $buttonStep, $buttonWidth, $buttonHeight)
     $plotButton.Name = "btnUpdateSectionPlot"
-    $plotButton.TextFrame.Characters().Text = "Обновить схему"
+    $plotButton.TextFrame.Characters().Text = "Обновить схему и результаты"
     $plotButton.OnAction = "UpdateSectionPlot"
     $plotButton.Fill.ForeColor.RGB = 5287936
     $plotButton.Line.ForeColor.RGB = 5287936
     $plotButton.TextFrame.Characters().Font.Color = 16777215
     $plotButton.TextFrame.Characters().Font.Bold = $true
-    $plotButton.TextFrame.Characters().Font.Size = 9
+    $plotButton.TextFrame.Characters().Font.Size = 8
     Center-ShapeButtonText $plotButton
 }
 
@@ -527,22 +527,23 @@ try {
     Add-WorkbookName $workbook "rngStrengthSummaryAnchor" $results '$A$49'
     Add-WorkbookName $workbook "rngCrackSummaryAnchor" $results '$A$85'
     Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$122'
-    Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$156'
-    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$156'
-    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$AD$156'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AW$156'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$BE$156'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BR$156'
+    Add-WorkbookName $workbook "rngNDMElementResults" $results '$AN$156'
+    Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$A$156'
+    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$BC$156'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$S$156'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AA$156'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BV$156'
+    Add-WorkbookName $workbook "rngNDMLoadCaseResults" $results '$AY$156'
     $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
     # Постоянные подписи создаются один раз при сборке шаблона.
     # Поэлементная запись обходит ограничение COM-адаптера PowerShell для этой шапки.
     for ($i = 0; $i -lt $contourHeaders.Count; $i++) {
-        $results.Cells.Item(156, 30 + $i).Value2 = [string]$contourHeaders[$i]
+        $results.Cells.Item(156, 55 + $i).Value2 = [string]$contourHeaders[$i]
     }
-    $results.Range('AD155:AT155').Merge()
-    $results.Cells.Item(155, 30).Value2 = 'Достоверные контуры и отверстия сечения'
-    $results.Range('AD155:AT156').Font.Bold = $true
-    Set-Border $results.Range('AD156:AT156')
+    $results.Range('BC155:BS155').Merge()
+    $results.Cells.Item(155, 55).Value2 = 'Достоверные контуры и отверстия сечения'
+    $results.Range('BC155:BS156').Font.Bold = $true
+    Set-Border $results.Range('BC156:BS156')
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

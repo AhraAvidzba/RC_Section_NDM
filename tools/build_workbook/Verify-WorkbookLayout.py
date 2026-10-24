@@ -41,6 +41,29 @@ def compare_styles(before, after):
     return count, failures
 
 
+def verify_runtime(directory):
+    """Проверяет самостоятельный runtime-прогон, не подменяя отдельную приёмку пересборки."""
+    manifest = json.loads((directory/'Run.json').read_text('utf-8-sig'))
+    failures = []
+    if manifest['Status'] != 'RUNTIME_COMPLETED':
+        failures.append('Runtime did not finish')
+    if hashlib.sha256((directory/'Runtime.xlsm').read_bytes()).hexdigest().upper() != manifest['SourceWorkbookSHA256']:
+        failures.append('Private source differs from the runtime manifest')
+    baseline = read(directory/'BeforeFormation.xlsm')
+    stages = []
+    for stage in ('BeforeCalculation', 'AfterCalculation1', 'AfterPlot1', 'AfterCalculation2', 'AfterPlot2'):
+        count, errors = compare_styles(baseline, read(directory/f'{stage}.xlsm'))
+        failures.extend(f'{stage}: {error}' for error in errors)
+        stages.append(dict(Stage=stage, Checks=count, Failures=errors))
+    result = dict(Status='FAIL' if failures else 'PASS', SourceSHA256=manifest['SourceWorkbookSHA256'],
+                  Scope='Input formatting through formation, calculation and refresh',
+                  Stages=stages, Failures=failures)
+    (directory/'RuntimeFormatting.json').write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+    print(json.dumps(result, ensure_ascii=False))
+    if failures:
+        raise SystemExit(1)
+
+
 def verify(directory):
     old, new = read(directory/'Saved.xlsm'), read(directory/'Candidate.xlsm')
     failures, checked, cached = [], 0, []
@@ -88,7 +111,7 @@ def verify(directory):
 
     # Полный поиск команд оформления в рабочих исходниках и модулях книги/листов.
     pattern=re.compile(r'RowHeight|ColumnWidth|AutoFit|StandardHeight|StandardWidth|ClearFormats|\.Interior\.|\.Font\.|\.NumberFormat|\.HorizontalAlignment|\.VerticalAlignment|\.WrapText|\.Borders\b',re.I)
-    expected={'CBatchResultWriter','CCrackSummaryWriter','CNDMResultsWriter','CStabilitySummaryWriter','CStrengthSummaryWriter','CSectionPlotter','modStatusFormatting'}
+    expected={'CBatchResultWriter','CCrackSummaryWriter','CNDMResultsWriter','CStabilitySummaryWriter','CStrengthSummaryWriter','CSectionPlotter','modStatusFormatting','CCalculationSnapshotStore'}
     source=Path(__file__).resolve().parents[2]/'src'
     format_owners=[]
     for file in sorted(source.rglob('*')):
@@ -136,4 +159,6 @@ def verify(directory):
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--directory', type=Path, required=True)
-    verify(parser.parse_args().directory)
+    parser.add_argument('--runtime-only', action='store_true')
+    arguments = parser.parse_args()
+    (verify_runtime if arguments.runtime_only else verify)(arguments.directory)

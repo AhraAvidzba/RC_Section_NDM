@@ -1,0 +1,15 @@
+{
+  "ModuleCount": 177,
+  "MethodCount": 5937,
+  "MissingModuleHeaders": [],
+  "MissingMethodHeaders": [],
+  "MissingTestMarkers": [],
+  "MissingTestNames": [],
+  "MissingTestModuleNames": [],
+  "MissingTestModuleMarkers": [],
+  "MissingTestDividers": [],
+  "ContractNameExceptions": 121,
+  "ContractAccessorExceptions": 129,
+  "FullAuditSHA256": "0F46097C8DBB73D67C6DD7EF759ADA0F5C600713E526FBE09D5771BFD136FC6C",
+  "Compaction": "Per-method comment listings omitted; counts and all violations retained"
+}

@@ -1,0 +1,511 @@
+﻿[
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$4",
+        "Formula":  "mm;cm;m",
+        "Items":  [
+                      "mm",
+                      "cm",
+                      "m"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$5",
+        "Formula":  "mm2;cm2;m2",
+        "Items":  [
+                      "mm2",
+                      "cm2",
+                      "m2"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$6",
+        "Formula":  "N;kN;tf",
+        "Items":  [
+                      "N",
+                      "kN",
+                      "tf"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$7",
+        "Formula":  "N*mm;kN*m;tf*m",
+        "Items":  [
+                      "N*mm",
+                      "kN*m",
+                      "tf*m"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$8",
+        "Formula":  "Pa;kPa;MPa;kgf/cm2;tf/m2",
+        "Items":  [
+                      "Pa",
+                      "kPa",
+                      "MPa",
+                      "kgf/cm2",
+                      "tf/m2"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$9",
+        "Formula":  "1/mm;1/m",
+        "Items":  [
+                      "1/mm",
+                      "1/m"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$13",
+        "Formula":  "Tension;Compression",
+        "Items":  [
+                      "Tension",
+                      "Compression"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$14",
+        "Formula":  "+Y tension;-Y tension",
+        "Items":  [
+                      "+Y tension",
+                      "-Y tension"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$15",
+        "Formula":  "+X tension;-X tension",
+        "Items":  [
+                      "+X tension",
+                      "-X tension"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$J$42",
+        "Formula":  "Yes;No",
+        "Items":  [
+                      "Yes",
+                      "No"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$52",
+        "Formula":  "SP63;SP35",
+        "Items":  [
+                      "SP63",
+                      "SP35"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$56",
+        "Formula":  "Determinate;Indeterminate",
+        "Items":  [
+                      "Determinate",
+                      "Indeterminate"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$57",
+        "Formula":  "1;-1",
+        "Items":  [
+                      "1",
+                      "-1"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$59",
+        "Formula":  "AutoWithL;AutoWithμL;User",
+        "Items":  [
+                      "AutoWithL",
+                      "AutoWithμL",
+                      "User"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$62",
+        "Formula":  "OnlyMomentPlane;BothPlanes",
+        "Items":  [
+                      "OnlyMomentPlane",
+                      "BothPlanes"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$63",
+        "Formula":  "Auto;PhiL2",
+        "Items":  [
+                      "Auto",
+                      "PhiL2"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$27",
+        "Formula":  "Newton;Secant",
+        "Items":  [
+                      "Newton",
+                      "Secant"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$38",
+        "Formula":  "Auto;UltimateStrain;LoadMultiplier",
+        "Items":  [
+                      "Auto",
+                      "UltimateStrain",
+                      "LoadMultiplier"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$44",
+        "Formula":  "Bisection;Brent;Secant",
+        "Items":  [
+                      "Bisection",
+                      "Brent",
+                      "Secant"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$92",
+        "Formula":  "Max;Min;Average",
+        "Items":  [
+                      "Max",
+                      "Min",
+                      "Average"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$93",
+        "Formula":  "3d;5d;6d",
+        "Items":  [
+                      "3d",
+                      "5d",
+                      "6d"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$94",
+        "Formula":  "Periodic;Smooth",
+        "Items":  [
+                      "Periodic",
+                      "Smooth"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$83",
+        "Formula":  "Auto;User",
+        "Items":  [
+                      "Auto",
+                      "User"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$85",
+        "Formula":  "User;Auto;AlwaysCalc",
+        "Items":  [
+                      "User",
+                      "Auto",
+                      "AlwaysCalc"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$86",
+        "Formula":  "AllSelected;TensionOnly",
+        "Items":  [
+                      "AllSelected",
+                      "TensionOnly"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$79",
+        "Formula":  "Effective;FullTension",
+        "Items":  [
+                      "Effective",
+                      "FullTension"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$80",
+        "Formula":  "NearestContour;GlobalExtreme",
+        "Items":  [
+                      "NearestContour",
+                      "GlobalExtreme"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$132",
+        "Formula":  "Transformed;Concrete;None",
+        "Items":  [
+                      "Transformed",
+                      "Concrete",
+                      "None"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$138",
+        "Formula":  "Separate;Common",
+        "Items":  [
+                      "Separate",
+                      "Common"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$10",
+        "Formula":  "StrengthStrain;StrengthCapacity;Cracks;Stability",
+        "Items":  [
+                      "StrengthStrain",
+                      "StrengthCapacity",
+                      "Cracks",
+                      "Stability"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$110",
+        "Formula":  "Region;Polyline",
+        "Items":  [
+                      "Region",
+                      "Polyline"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$112",
+        "Formula":  "ValuesOnly;NamesAndValues",
+        "Items":  [
+                      "ValuesOnly",
+                      "NamesAndValues"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$J$47",
+        "Formula":  "ULS(I);SLS(II)",
+        "Items":  [
+                      "ULS(I)",
+                      "SLS(II)"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$J$55",
+        "Formula":  "TwoLine;ThreeLine",
+        "Items":  [
+                      "TwoLine",
+                      "ThreeLine"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$J$51",
+        "Formula":  "Ignore;UseDiagram",
+        "Items":  [
+                      "Ignore",
+                      "UseDiagram"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$J$64",
+        "Formula":  "StrengthState;CapacityState;PreCrackState;PostCrackState;CrackedState",
+        "Items":  [
+                      "StrengthState",
+                      "CapacityState",
+                      "PreCrackState",
+                      "PostCrackState",
+                      "CrackedState"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$J$65",
+        "Formula":  "Stress;Strain",
+        "Items":  [
+                      "Stress",
+                      "Strain"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$16",
+        "Formula":  "Generated;AutoCAD",
+        "Items":  [
+                      "Generated",
+                      "AutoCAD"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$18",
+        "Formula":  "Auto 0.05;Auto 0.1;Auto 0.2;User",
+        "Items":  [
+                      "Auto 0.05",
+                      "Auto 0.1",
+                      "Auto 0.2",
+                      "User"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$M$71",
+        "Formula":  "Auto;λ*Mx;λ*My;λ*Mxy;λ*N;λ*NMxy",
+        "Items":  [
+                      "Auto",
+                      "λ*Mx",
+                      "λ*My",
+                      "λ*Mxy",
+                      "λ*N",
+                      "λ*NMxy"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$105",
+        "Formula":  "Outside;Inside",
+        "Items":  [
+                      "Outside",
+                      "Inside"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$I$110",
+        "Formula":  "mm;pt",
+        "Items":  [
+                      "mm",
+                      "pt"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$J$113",
+        "Formula":  "Triangle;Stealth;Diamond;Oval;Open",
+        "Items":  [
+                      "Triangle",
+                      "Stealth",
+                      "Diamond",
+                      "Oval",
+                      "Open"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$J$114",
+        "Formula":  "Small;Medium;Wide",
+        "Items":  [
+                      "Small",
+                      "Medium",
+                      "Wide"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "$B$8",
+        "Formula":  "Excel;File",
+        "Items":  [
+                      "Excel",
+                      "File"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "$E$49",
+        "Formula":  "EachBar;EverySecondBar",
+        "Items":  [
+                      "EachBar",
+                      "EverySecondBar"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "$F$49",
+        "Formula":  "Stacked;SideBySide",
+        "Items":  [
+                      "Stacked",
+                      "SideBySide"
+                  ],
+        "NativeItemsAccepted":  true
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "$C$25",
+        "Formula":  "TwoRect;OneRect",
+        "Items":  [
+                      "TwoRect",
+                      "OneRect"
+                  ],
+        "NativeItemsAccepted":  true
+    }
+]

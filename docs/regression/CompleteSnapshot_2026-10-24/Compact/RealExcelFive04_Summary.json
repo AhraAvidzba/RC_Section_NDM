@@ -1,0 +1,74 @@
+[
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "A",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 1.55858080007602,
+    "Min": 1.49058280000463,
+    "Max": 2.09951379999984,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-1",
+    "Version": "B",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 1.46741749998182,
+    "Min": 1.45270630007144,
+    "Max": 1.55178610002622,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "A",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 4.4956251999829,
+    "Min": 4.39978960005101,
+    "Max": 4.56433429999743,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-10",
+    "Version": "B",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 3.68427590001374,
+    "Min": 3.58143220003694,
+    "Max": 3.70814050000627,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "A",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 11.4392093999777,
+    "Min": 11.0995982000604,
+    "Max": 11.4895163000328,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false
+  },
+  {
+    "Case": "batch-REAL_IMPORTED_SP35-Newton-Saved-Normal-Yes-Full-30",
+    "Version": "B",
+    "RunWithinOpen": 1,
+    "Observations": 5,
+    "Median": 9.27428310003597,
+    "Min": 9.00279389997013,
+    "Max": 9.48441999999341,
+    "ExactValues": true,
+    "EndToEnd": true,
+    "PhaseBreakdown": false
+  }
+]
