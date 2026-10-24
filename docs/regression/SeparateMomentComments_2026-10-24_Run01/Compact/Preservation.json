@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "ChangedParts": [
+    "xl/vbaProject.bin"
+  ],
+  "UnchangedParts": 106,
+  "WorkbookSHA256": "1F17823483798C8549275285B0C8696736EC90277B28D543A4EF95731937367A",
+  "InputValuesFormulasFormattingAndResultsPartsByteIdentical": true
+}

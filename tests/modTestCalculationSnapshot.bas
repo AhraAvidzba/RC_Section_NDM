@@ -1044,6 +1044,11 @@ Private Sub TestSnapshotSummaryLoads(ByVal snapshot As CCalculationSnapshot)
     TestSnapshotCheck "loads.summary.originalMyComment", CStr(data(11, 30)) = "Исходный изгибающий момент My"
     TestSnapshotCheck "loads.summary.forceNoEta", InStr(CStr(data(11, 31)), ChrW$(&H3B7)) = 0
     TestSnapshotCheck "loads.summary.momentsEta", InStr(CStr(data(11, 32)), ChrW$(&H3B7)) > 0
+    TestSnapshotCheck "loads.summary.workingMxComment", CStr(data(11, 32)) = "Изгибающий момент Mx с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
+    TestSnapshotCheck "loads.summary.workingMyComment", CStr(data(11, 33)) = "Изгибающий момент My с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
+    Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
+    TestSnapshotCheck "loads.summary.workingMxSeparate", Not CBool(anchor.Cells(11, 32).MergeCells)
+    TestSnapshotCheck "loads.summary.workingMySeparate", Not CBool(anchor.Cells(11, 33).MergeCells)
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
     TestSnapshotCheck "loads.summary.forceUnit", CStr(data(10, 28)) = "N, " & units.OutputForceUnit

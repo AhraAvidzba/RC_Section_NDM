@@ -1,0 +1,13 @@
+{
+  "ModuleCount": 177,
+  "MethodCount": 5980,
+  "MissingModuleHeaders": [],
+  "MissingMethodHeaders": [],
+  "MissingTestMarkers": [],
+  "MissingTestNames": [],
+  "MissingTestModuleNames": [],
+  "MissingTestModuleMarkers": [],
+  "MissingTestDividers": [],
+  "ContractNameExceptions": 121,
+  "ContractAccessorExceptions": 129
+}

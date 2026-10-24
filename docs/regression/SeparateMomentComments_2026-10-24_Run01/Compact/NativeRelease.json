@@ -1,0 +1,12 @@
+﻿{
+    "Status":  "PASS",
+    "Workbook":  "docs/regression/SeparateMomentComments_2026-10-24_Run01/Final/RC_Section_NDM.xlsm",
+    "BeforeSHA256":  "1F17823483798C8549275285B0C8696736EC90277B28D543A4EF95731937367A",
+    "WorkbookSHA256":  "1F17823483798C8549275285B0C8696736EC90277B28D543A4EF95731937367A",
+    "CompiledWithoutImport":  false,
+    "ImportedComponents":  0,
+    "Components":  178,
+    "ExportSHA256":  "A50AFDB444C19D8DF55F96327BD50E0791ACBF7724312FB4A57C057E13B48C9A",
+    "OwnedPID":  126556,
+    "StartTicks":  "639284716385864887"
+}

@@ -1,0 +1,17 @@
+{
+  "Status": "PASS_DIRECTED_PRE_FULL",
+  "FullAcceptanceStatus": "NOT_STARTED",
+  "WorkbookSHA256": "1F17823483798C8549275285B0C8696736EC90277B28D543A4EF95731937367A",
+  "AllCodeSHA256": "A50AFDB444C19D8DF55F96327BD50E0791ACBF7724312FB4A57C057E13B48C9A",
+  "SnapshotNo": {
+    "Passed": 417,
+    "Failed": 0
+  },
+  "SnapshotYes": {
+    "Passed": 417,
+    "Failed": 0
+  },
+  "NativeLoadsChecks": 186,
+  "Legacy26": true,
+  "Legacy33": true
+}

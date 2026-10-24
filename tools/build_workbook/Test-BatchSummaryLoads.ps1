@@ -63,8 +63,11 @@ function Test-BatchLoadsOutput {
     Test-BatchLoadsAssert ($data[11,29] -ceq 'Исходный изгибающий момент Mx') 'Original Mx comment is wrong.'
     Test-BatchLoadsAssert ($data[11,30] -ceq 'Исходный изгибающий момент My') 'Original My comment is wrong.'
     Test-BatchLoadsAssert (-not ([string]$data[11,31]).Contains([char]0x3b7)) 'Eta must not annotate N.'
-    Test-BatchLoadsAssert (([string]$data[11,32]).Contains([char]0x3b7)) 'The moment comment lost eta.'
-    Test-BatchLoadsAssert ($anchor.Offset(10,31).MergeArea.Columns.Count -eq 2) 'Only the two moment comments may be merged.'
+    foreach($column in @(32,33)){
+        $component=if($column -eq 32){'Mx'}else{'My'}
+        Test-BatchLoadsAssert ($data[11,$column] -ceq ('Изгибающий момент '+$component+' с учётом '+[char]0x3b7+' от продольного изгиба (если применимо)')) 'The individual moment comment is wrong.'
+        Test-BatchLoadsAssert (-not [bool]$anchor.Cells.Item(11,$column).MergeCells) 'Moment comments must be separate cells.'
+    }
     foreach($block in @(@(5,27,2,6),@(7,27,2,3),@(7,30,2,3))){
         $range=$anchor.Offset($block[0],$block[1]).Resize($block[2],$block[3])
         Test-BatchLoadsAssert ($range.Cells.Item(1,1).MergeArea.Address() -ceq $range.Address()) 'Wrong load-header merge.'

@@ -1,0 +1,107 @@
+﻿{
+    "Status":  "NATIVE_PASS_PENDING_INDEPENDENT_REVIEW",
+    "SourceSHA256":  "1F17823483798C8549275285B0C8696736EC90277B28D543A4EF95731937367A",
+    "Mode":  "Yes",
+    "Baseline":  false,
+    "Checks":  186,
+    "Cases":  [
+                  {
+                      "Name":  "Excel_Full",
+                      "Storage":  "Excel",
+                      "Format":  "Yes",
+                      "Criterion":  "StrengthCapacity",
+                      "ForceUnit":  "tf",
+                      "MomentUnit":  "tf*m",
+                      "Shape":  "PointedSection",
+                      "Family":  "MIXED",
+                      "Count":  3,
+                      "Filtered":  false,
+                      "WorstID":  "PERF_02",
+                      "Workbook":  "Excel_Full_Ready.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 3. Определяющее сочетание: PERF_02\r\n\r\nВремя расчёта: 1.56 с."
+                  },
+                  {
+                      "Name":  "File_Minimal",
+                      "Storage":  "File",
+                      "Format":  "No",
+                      "Criterion":  "Stability",
+                      "ForceUnit":  "kN",
+                      "MomentUnit":  "kN*m",
+                      "Shape":  "PointedSection",
+                      "Family":  "MIXED",
+                      "Count":  3,
+                      "Filtered":  false,
+                      "WorstID":  "PERF_03",
+                      "Workbook":  "File_Minimal_Ready.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 3. Определяющее сочетание: PERF_03\r\n\r\nВремя расчёта: 1.63 с."
+                  },
+                  {
+                      "Name":  "Excel_Filtered",
+                      "Storage":  "Excel",
+                      "Format":  "No",
+                      "Criterion":  "StrengthStrain",
+                      "ForceUnit":  "tf",
+                      "MomentUnit":  "tf*m",
+                      "Shape":  "PointedSection",
+                      "Family":  "MIXED",
+                      "Count":  3,
+                      "Filtered":  true,
+                      "WorstID":  "PERF_03",
+                      "Workbook":  "Excel_Filtered_Ready.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 3. Определяющее сочетание: PERF_03\r\n\r\nВремя расчёта: 1.65 с."
+                  },
+                  {
+                      "Name":  "File_Cracks",
+                      "Storage":  "File",
+                      "Format":  "Yes",
+                      "Criterion":  "Cracks",
+                      "ForceUnit":  "tf",
+                      "MomentUnit":  "tf*m",
+                      "Shape":  "Circle",
+                      "Family":  "CRACK_SP35",
+                      "Count":  2,
+                      "Filtered":  false,
+                      "WorstID":  "PERF_01",
+                      "Workbook":  "File_Cracks_Ready.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 2. Определяющее сочетание: PERF_01\r\n\r\nВремя расчёта: 1.04 с."
+                  }
+              ],
+    "Restores":  [
+                     {
+                         "Name":  "File_Minimal",
+                         "Before":  "Restore1_Before.xlsm",
+                         "After":  "Restore1_After.xlsm",
+                         "ExpectedBook":  "File_Minimal_Ready.xlsm",
+                         "WorstID":  "PERF_03",
+                         "SolverCalls":  0
+                     },
+                     {
+                         "Name":  "File_Cracks",
+                         "Before":  "Restore2_Before.xlsm",
+                         "After":  "Restore2_After.xlsm",
+                         "ExpectedBook":  "File_Cracks_Ready.xlsm",
+                         "WorstID":  "PERF_01",
+                         "SolverCalls":  0
+                     },
+                     {
+                         "Name":  "File_Minimal",
+                         "Before":  "Restore3_Before.xlsm",
+                         "After":  "Restore3_After.xlsm",
+                         "ExpectedBook":  "File_Minimal_Ready.xlsm",
+                         "WorstID":  "PERF_03",
+                         "SolverCalls":  0
+                     },
+                     {
+                         "Name":  "File_Cracks",
+                         "Before":  "Restore4_Before.xlsm",
+                         "After":  "Restore4_After.xlsm",
+                         "ExpectedBook":  "File_Cracks_Ready.xlsm",
+                         "WorstID":  "PERF_01",
+                         "SolverCalls":  0,
+                         "AfterReopenButton":  true
+                     }
+                 ],
+    "ImportedVBA":  0,
+    "OwnedPID":  165720,
+    "StartTicks":  "639284716403198413"
+}

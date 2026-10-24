@@ -1,0 +1,12 @@
+﻿{
+    "Status":  "PASS",
+    "SourceSHA256":  "1F17823483798C8549275285B0C8696736EC90277B28D543A4EF95731937367A",
+    "OldSnapshotSHA256":  "CD90D09307FF8C002964F7326EABAE73484932C8DCDAE3B1E7917B5413B1C018",
+    "SolverCalls":  0,
+    "SeparateComments":  [
+                             "Mx",
+                             "My"
+                         ],
+    "OwnedPID":  198316,
+    "StartTicks":  "639284718184344101"
+}

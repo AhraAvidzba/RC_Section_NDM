@@ -454,8 +454,14 @@ Private Sub PutPointLoadHeaders(ByRef data() As Variant, ByVal forceUnit As Stri
     data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_MX) = "Исходный изгибающий момент Mx"
     data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_MY) = "Исходный изгибающий момент My"
     data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_N) = "Продольная сила"
-    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = "с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = WorkingMomentComment("My")
 End Sub
+
+' Возвращает отдельный комментарий момента; продольная сила на eta не умножается.
+Private Function WorkingMomentComment(ByVal component As String) As String
+    WorkingMomentComment = "Изгибающий момент " & component & " с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
+End Function
 
 ' Записывает исходные и рабочие усилия из готового пакета, без обращения к Config.
 ' Ошибка устойчивости не подменяется якобы успешно уточнёнными моментами.
@@ -871,7 +877,6 @@ Private Function SummaryHeaderBlocks() As Collection
     blocks.Add Array(GROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_ORIGINAL_N, SUM_COL_DESIGN_MY)
     blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_ORIGINAL_N, SUM_COL_ORIGINAL_MY)
     blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_DESIGN_N, SUM_COL_DESIGN_MY)
-    blocks.Add Array(COMMENT_HEADER_ROW, COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX, SUM_COL_DESIGN_MY)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_STATUS_SP35_P2_TABLE)
@@ -1006,7 +1011,11 @@ End Sub
 ' Это совместимость внешнего формата: текущий Config и содержимое файла не меняются.
 Private Function SummaryForDisplay(ByVal snapshot As CCalculationSnapshot) As Variant
     Dim saved As Variant: saved = snapshot.Table("Summary")
-    If UBound(saved, 2) = TARGET_COLUMNS Then SummaryForDisplay = saved: Exit Function
+    If UBound(saved, 2) = TARGET_COLUMNS Then
+        saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
+        saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = WorkingMomentComment("My")
+        SummaryForDisplay = saved: Exit Function
+    End If
     Dim data() As Variant, row As Long, column As Long
     ReDim data(1 To UBound(saved, 1), 1 To TARGET_COLUMNS)
     For row = 1 To UBound(saved, 1)
@@ -1018,6 +1027,7 @@ Private Function SummaryForDisplay(ByVal snapshot As CCalculationSnapshot) As Va
     Next column
     data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_N) = "Не сохранено в этом снимке"
     data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = "Блок нагрузок отсутствует в прежнем снимке"
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = "Блок нагрузок отсутствует в прежнем снимке"
     SummaryForDisplay = data
 End Function
 
