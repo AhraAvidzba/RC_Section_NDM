@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: BE1246B7E40ED924ECC83CCEA0804260FADF8C68E30CD32E9E8D817A321FF6F5
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh09\RC_Section_NDM.xlsm
+SOURCE_SHA256: 4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_94d2251dc8d845e9a46ad6fedd88d140\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=135400; startTicks=639284339424067039
+===== modTestWorkbookInterface.TestRunSnapshotUiFailureProbe =====
+SUITE_STARTED: modTestWorkbookInterface.TestRunSnapshotUiFailureProbe; 2026-10-24T13:19:08
+OK: ui.results.fullSnapshot.LC_FULL_01.StrengthState
+OK: ui.results.fullSnapshot.LC_FULL_01.CapacityState
+OK: ui.results.fullSnapshot.LC_FULL_01.CrackedState
+OK: ui.results.fullSnapshot.LC_FULL_01.PreCrackState
+OK: ui.results.fullSnapshot.LC_FULL_01.PostCrackState
+OK: ui.results.fullSnapshot.LC_FULL_30.StrengthState
+OK: ui.results.fullSnapshot.LC_FULL_30.CapacityState
+OK: ui.results.fullSnapshot.LC_FULL_30.CrackedState
+OK: ui.results.fullSnapshot.LC_FULL_30.PreCrackState
+OK: ui.results.fullSnapshot.LC_FULL_30.PostCrackState
+OK: ui.results.fullSnapshot.propertiesRows
+OK: ui.results.fullSnapshot.commonGeometryOnly
+OK: ui.results.fullSnapshot.materialRows
+TOTAL SNAPSHOT UI PROBE: passed=32; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_94d2251dc8d845e9a46ad6fedd88d140\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.TestRunSnapshotUiFailureProbe; 2026-10-24T13:19:19
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

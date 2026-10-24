@@ -10,12 +10,14 @@ param(
     [string]$Order = 'Normal', [string]$Extension = 'Yes', [int[]]$Counts = @(1,10,30),
     [ValidateSet('Staged','Full')][string[]]$BatchModes = @('Staged','Full'), [switch]$Pilot, [int]$RunsPerOpen = 1,
     [switch]$MeasureOverhead, [switch]$KeepInputs, [switch]$SavedLoadPrefix, [switch]$CalculateOnly, [switch]$NormalizeExcelSignedZero,
+    [switch]$ReuseFormedGeometry,
     [ValidateSet('Excel','File')][string]$BaselineSnapshotStorage = '',
     [ValidateSet('Excel','File')][string]$CandidateSnapshotStorage = ''
 )
 $ErrorActionPreference = 'Stop'
 if ($Repeats -lt 5 -and -not $Pilot) { throw 'At least five A/B observations are required.' }
 if($CalculateOnly -and ($Group -ne 'Batch' -or @($BatchModes|Where-Object {$_ -ne 'Full'}).Count)){throw 'CalculateOnly requires Batch/Full.'}
+if($ReuseFormedGeometry -and -not $CalculateOnly){throw 'ReuseFormedGeometry requires CalculateOnly.'}
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directoryPath = [IO.Path]::GetFullPath((Join-Path $root $Directory))
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Performance')) + [IO.Path]::DirectorySeparatorChar
@@ -111,8 +113,8 @@ try {
                 }
                 $geometryStats=$null
                 if($CalculateOnly){
-                    # Формирование выполняется до замера команды «Рассчитать» в обоих вариантах.
-                    [void]$excel.Run("'$($book.Name)'!modWorkbookCalculation.FormSectionForWorkbook",$book)
+                    # Готовая геометрия используется явно по флагу; иначе формирование остаётся за пределами таймера.
+                    if(-not $ReuseFormedGeometry){[void]$excel.Run("'$($book.Name)'!modWorkbookCalculation.FormSectionForWorkbook",$book)}
                     $anchor=$book.Names.Item('rngNDMSectionGeometry').RefersToRange
                     $last=[int]$anchor.Worksheet.Cells.Item($anchor.Worksheet.Rows.Count,$anchor.Column).End(-4162).Row
                     $geometry=$anchor.Resize($last-$anchor.Row+1,16).Value2;$concrete=0;$bars=0
@@ -155,7 +157,7 @@ try {
                     [IO.File]::WriteAllText($fingerprintPath,$fingerprint,[Text.UTF8Encoding]::new($false))
                     $fields['fingerprint']=(Get-FileHash -LiteralPath $fingerprintPath -Algorithm SHA256).Hash
                 }
-                $record = [ordered]@{Case=$case.Name; Version=$version; Repeat=$repeat; RunWithinOpen=$run; Pilot=[bool]$Pilot; Count=$case.Count; Seconds=$seconds; Values=$fields; Technical=$technical; MemoryBefore=$before; MemoryAfter=$after;Geometry=$geometryStats;CalculationOnly=[bool]$CalculateOnly;ExcelSignedZeroEquivalent=[bool]$NormalizeExcelSignedZero}
+                $record = [ordered]@{Case=$case.Name; Version=$version; Repeat=$repeat; RunWithinOpen=$run; Pilot=[bool]$Pilot; Count=$case.Count; Seconds=$seconds; Values=$fields; Technical=$technical; MemoryBefore=$before; MemoryAfter=$after;Geometry=$geometryStats;CalculationOnly=[bool]$CalculateOnly;ReusedFormedGeometry=[bool]$ReuseFormedGeometry;ExcelSignedZeroEquivalent=[bool]$NormalizeExcelSignedZero}
                 $records.Add($record)
                 $records | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $directoryPath 'Raw.json') -Encoding UTF8
                 Write-Output ($record | ConvertTo-Json -Depth 5 -Compress)
@@ -186,7 +188,7 @@ try {
             $seconds = @($records | Where-Object {$_.Case -eq $case.Name -and $_.Version -eq $version -and $_.RunWithinOpen -eq $run} | ForEach-Object {$_.Seconds} | Sort-Object)
             $median=$seconds[[int][Math]::Floor($seconds.Count/2)]
             if ($seconds.Count % 2 -eq 0) {$median=($seconds[$seconds.Count/2-1]+$seconds[$seconds.Count/2])/2}
-            $summary += [ordered]@{Case=$case.Name; Version=$version; RunWithinOpen=$run; Observations=$seconds.Count; Median=$median; Min=$seconds[0]; Max=$seconds[-1]; ExactValues=$true; EndToEnd=($Group -eq 'Batch' -and $case.Mode -eq 'Full'); PhaseBreakdown=($Group -ne 'Batch' -or $case.Mode -ne 'Full');CalculationOnly=[bool]$CalculateOnly;Geometry=$geometryStats;ExcelSignedZeroEquivalent=[bool]$NormalizeExcelSignedZero}
+            $summary += [ordered]@{Case=$case.Name; Version=$version; RunWithinOpen=$run; Observations=$seconds.Count; Median=$median; Min=$seconds[0]; Max=$seconds[-1]; ExactValues=$true; EndToEnd=($Group -eq 'Batch' -and $case.Mode -eq 'Full'); PhaseBreakdown=($Group -ne 'Batch' -or $case.Mode -ne 'Full');CalculationOnly=[bool]$CalculateOnly;ReusedFormedGeometry=[bool]$ReuseFormedGeometry;Geometry=$geometryStats;ExcelSignedZeroEquivalent=[bool]$NormalizeExcelSignedZero}
         }}
     }
     foreach ($key in @('A','B')) { if ((Get-FileHash -LiteralPath $paths[$key] -Algorithm SHA256).Hash -ne $hashes[$key]) { throw "Source changed: $key" } }

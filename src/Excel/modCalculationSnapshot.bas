@@ -86,7 +86,6 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Else
         store.ClearSheetExtra workbook
         store.LinkFile workbook
-        store.WriteFileNotice workbook
     End If
     If prepared Is Nothing Then
         UpdateSectionPlotForWorkbook workbook, False

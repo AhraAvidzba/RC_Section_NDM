@@ -535,8 +535,10 @@ End Function
 ' Соседние ячейки за концом таблицы не включаются в результат.
 Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As Boolean, _
         Optional ByVal maxCount As Long = 0) As Long
-    Const BLOCK_SIZE As Long = 1024
-    Dim available As Long, offset As Long, count As Long, i As Long
+    Const INITIAL_BLOCK_SIZE As Long = 1024
+    Const MAX_BLOCK_SIZE As Long = 32768
+    Dim available As Long, offset As Long, count As Long, i As Long, blockSize As Long
+    blockSize = INITIAL_BLOCK_SIZE ' Малые таблицы читаются прежним объёмом; большие требуют логарифмического числа начальных COM-вызовов.
     If columns Then
         available = anchor.Worksheet.Columns.Count - anchor.Column + 1
     Else
@@ -546,7 +548,7 @@ Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As 
     Dim block As Variant, value As Variant
     Do While offset < available
         count = available - offset
-        If count > BLOCK_SIZE Then count = BLOCK_SIZE
+        If count > blockSize Then count = blockSize
         If columns Then
             block = anchor.Offset(0, offset).Resize(1, count).Value2
         Else
@@ -564,6 +566,7 @@ Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As 
             SnapshotAnchoredExtent = SnapshotAnchoredExtent + 1
         Next i
         offset = offset + count
+        If blockSize < MAX_BLOCK_SIZE Then blockSize = blockSize * 2
     Loop
 End Function
 
@@ -586,7 +589,8 @@ End Sub
 
 ' Читает обязательную геометрию для расчёта. Необязательные сведения и
 ' аннотации добавляются только по запросу; генератор и AutoCAD не вызываются.
-Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional ByVal includeOptionalData As Boolean = False) As CSectionModel
+Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional ByVal includeOptionalData As Boolean = False, _
+        Optional ByVal preservedWriter As CNDMResultsWriter = Nothing) As CSectionModel
     On Error GoTo Failed
     BeginSectionSnapshotRead workbook, True ' Модель использует только общую геометрию, без загрузки больших массивов прежних НДС.
     Dim source As String: source = ResultsGeometrySource(workbook)
@@ -597,6 +601,7 @@ Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional 
         model.GeometryDiagnosticsText = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
         RestoreModelAnnotations workbook, model
     End If
+    If Not preservedWriter Is Nothing Then preservedWriter.PreparePreservedSnapshotSource workbook ' Повторно использует уже прочитанные таблицы; после расчёта файл собирается только в памяти.
     EndSectionSnapshotRead
     Set ReadFormedSectionFromResults = model
     Exit Function
@@ -642,13 +647,21 @@ End Sub
 
 ' Получает номера непустых строк готовой сводки для прежней подсветки статусов.
 ' Источником служит сохранённый ID, а не повторная загрузка сочетаний Config.
-Public Function ResultSnapshotStatusRows(ByVal target As Object, ByVal headerRows As Long) As Variant
-    Dim count As Long: count = target.Rows.Count - headerRows
+Public Function ResultSnapshotStatusRows(ByVal target As Object, ByVal headerRows As Long, _
+        Optional ByRef preparedValues As Variant, Optional ByVal headerRowsInValues As Long = 0) As Variant
+    Dim count As Long, values As Variant
+    If IsMissing(preparedValues) Then
+        count = target.Rows.Count - headerRows
+        If count < 1 Then Exit Function
+        values = target.Offset(headerRows, 0).Resize(count, 3).Value2
+    Else
+        values = preparedValues: count = UBound(values, 1) - headerRowsInValues
+    End If
     If count < 1 Then Exit Function
-    Dim values As Variant: values = target.Offset(headerRows, 0).Resize(count, 3).Value2
-    Dim rows() As Long, i As Long, used As Long, value As Variant: ReDim rows(1 To count)
+    Dim rows() As Long, i As Long, used As Long, sourceRow As Long: ReDim rows(1 To count)
     For i = 1 To count
-        If Len(CStr(values(i, 1))) > 0 Or Len(CStr(values(i, 2))) > 0 Or Len(CStr(values(i, 3))) > 0 Then
+        sourceRow = i: If Not IsMissing(preparedValues) Then sourceRow = i + headerRowsInValues
+        If Len(CStr(values(sourceRow, 1))) > 0 Or Len(CStr(values(sourceRow, 2))) > 0 Or Len(CStr(values(sourceRow, 3))) > 0 Then
             used = used + 1: rows(used) = headerRows + i
         End If
     Next i

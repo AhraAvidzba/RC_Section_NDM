@@ -19,6 +19,9 @@ Public Function RunCalculationSnapshotTests() As String
     mTestReport = "": mTestPassed = 0: mTestFailed = 0
     On Error GoTo Failed
     TestSnapshotBinaryBuffer
+    TestSnapshotUTF16Strings
+    TestSnapshotAdaptiveExtent
+    TestSnapshotStatusSpans
     TestSnapshotSeparatedProperties
     Dim initial As CSystemSettingsReader: Set initial = New CSystemSettingsReader: initial.LoadFromWorkbook ThisWorkbook
     Dim extension As String: extension = initial.GetRequiredString("General.DiagramExtension")
@@ -33,6 +36,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotCheck "readScope.afterCalculation", TestCalculationSnapshotReadReleased()
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim original As CCalculationSnapshot: Set original = store.LoadSheet(ThisWorkbook)
+    TestSnapshotOneUseSource
     TestSnapshotValidationReuse original
     TestSnapshotElementIndex
     Dim originalPlot As String: originalPlot = TestSnapshotPlot()
@@ -51,8 +55,12 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotUpper original
     TestSnapshotCheck "sheet.plot.exact", TestSnapshotPlot() = originalPlot
     Dim token As String: token = "TestSnapshot_" & Format$(Now, "yyyymmdd_hhnnss")
-    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
     Dim path As String: path = store.SnapshotPath(ThisWorkbook)
+    TestSnapshotCheck "name.extensionAutomatic", path = ThisWorkbook.Path & Application.PathSeparator & token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotCheck "name.previousSuffixCompatible", store.SnapshotPath(ThisWorkbook) = path
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
     store.SaveFile ThisWorkbook, original
     Dim fileSnapshot As CCalculationSnapshot: Set fileSnapshot = store.LoadFile(ThisWorkbook)
     TestSnapshotEqual "file.allTables", original, fileSnapshot
@@ -60,6 +68,7 @@ Public Function RunCalculationSnapshotTests() As String
     UpdateSectionResultsForWorkbook ThisWorkbook
     TestSnapshotCheck "file.linked", store.HasFileReference(ThisWorkbook)
     TestSnapshotCheck "file.noSheetDuplicate", Not store.HasSheetSnapshot(ThisWorkbook)
+    TestSnapshotCheck "file.noPlaceholder", Application.WorksheetFunction.CountA(ThisWorkbook.Names.Item("rngNDMLoadCaseResults").RefersToRange.Resize(3, 2)) = 0
     TestSnapshotUpper original
     TestSnapshotCheck "file.plot.exact", TestSnapshotPlot() = originalPlot
     TestSnapshotCheck "file.export.exact", Audit02ReadExportSnapshotForTests(ThisWorkbook) = originalExport
@@ -130,6 +139,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotCheck "layout.lowerOrder", TestSnapshotLowerOrder()
     TestSnapshotRepeatedImportedAnnotations extension
     TestSnapshotColumnCodec second, store
+    TestSnapshotRepeatedElementIDs second, store
     TestSnapshotMinimalFormatting
     GoTo Finished
 Failed:
@@ -210,6 +220,23 @@ Private Sub TestSnapshotBinaryBuffer()
     TestSnapshotCheck "buffer.eofRejected", TestSnapshotBinaryEOFRejected(file)
     file.CloseFile: file.OpenUpdate path: file.Position = 0: file.WriteByte 42: file.Position = 0
     TestSnapshotCheck "buffer.flushBeforeRead", file.ReadByte = 42
+    file.WriteByte 99 ' После короткого чтения Windows-указатель находится дальше Position из-за предварительного чтения.
+    TestSnapshotCheck "buffer.writeAtLogicalReadPosition", file.ReadByte = Asc("M") And file.Position = 3
+    file.Position = 0
+    TestSnapshotCheck "buffer.readAfterMixedWrite", file.ReadByte = 42 And file.ReadByte = 99
+    Dim chunk As Variant
+    For Each chunk In Array(127&, 32767&, 65535, 65536, 65537, 131089)
+        file.Position = 8: actual = file.ReadBytes(CLng(chunk)): same = True
+        For row = 0 To UBound(actual)
+            If actual(row) <> expected(row) Then same = False: Exit For
+        Next row
+        TestSnapshotCheck "buffer.readChunk." & CStr(chunk), same And file.Position = 8 + CLng(chunk)
+    Next chunk
+    file.Position = 8 + 65534: actual = file.ReadBytes(19): same = True
+    For row = 0 To UBound(actual)
+        If actual(row) <> expected(65534 + row) Then same = False: Exit For
+    Next row
+    TestSnapshotCheck "buffer.backwardSeekAndBoundary", same
     file.CloseFile
     CreateObject("Scripting.FileSystemObject").DeleteFile path
     Exit Sub
@@ -231,6 +258,199 @@ Private Function TestSnapshotBinaryEOFRejected(ByVal file As CBinarySnapshotFile
 Rejected:
     TestSnapshotBinaryEOFRejected = True
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Ускоренное чтение границ сохраняет первую пустую ячейку, пробелы и точный maxCount.
+Private Sub TestSnapshotAdaptiveExtent()
+    Dim sheet As Object, app As Object, alerts As Boolean
+    Set app = ThisWorkbook.Application: alerts = app.DisplayAlerts
+    On Error GoTo Failed
+    Set sheet = ThisWorkbook.Worksheets.Add
+    Dim values() As Variant, row As Long
+    ReDim values(1 To 100001, 1 To 1)
+    For row = 1 To UBound(values, 1): values(row, 1) = row: Next row
+    sheet.Cells(1, 1).Resize(UBound(values, 1), 1).Value2 = values
+    sheet.Cells(100003, 1).Value2 = CVErr(2015) ' Посторонняя ошибка за первой пустой ячейкой не входит в таблицу.
+    TestSnapshotCheck "extent.large", SnapshotAnchoredExtent(sheet.Cells(1, 1), False) = 100001
+    TestSnapshotCheck "extent.maxCount", SnapshotAnchoredExtent(sheet.Cells(1, 1), False, 65537) = 65537
+    sheet.Cells(4097, 1).Value2 = " "
+    TestSnapshotCheck "extent.spaceAtGrowingBoundary", SnapshotAnchoredExtent(sheet.Cells(1, 1), False) = 4096
+    sheet.Cells(1024, 1).ClearContents
+    TestSnapshotCheck "extent.emptyAtInitialBoundary", SnapshotAnchoredExtent(sheet.Cells(1, 1), False) = 1023
+    sheet.Cells(1, 1).ClearContents
+    TestSnapshotCheck "extent.emptyAnchor", SnapshotAnchoredExtent(sheet.Cells(1, 1), False) = 0
+    ReDim values(1 To 1, 1 To 4098)
+    For row = 1 To UBound(values, 2): values(1, row) = "Header" & CStr(row): Next row
+    sheet.Cells(2, 2).Resize(1, UBound(values, 2)).Value2 = values
+    sheet.Cells(2, 2 + 3072).ClearContents
+    TestSnapshotCheck "extent.columns", SnapshotAnchoredExtent(sheet.Cells(2, 2), True) = 3072
+    app.DisplayAlerts = False: sheet.Delete: app.DisplayAlerts = alerts
+    Exit Sub
+Failed:
+    Dim number As Long, description As String: number = Err.Number: description = Err.Description
+    On Error Resume Next
+    app.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    app.DisplayAlerts = alerts
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotAdaptiveExtent", description
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Объединение цветных интервалов сохраняет пропуски и работает без чтения заполненных ячеек.
+Private Sub TestSnapshotStatusSpans()
+    Dim sheet As Object, app As Object, alerts As Boolean
+    Set app = ThisWorkbook.Application: alerts = app.DisplayAlerts
+    On Error GoTo Failed
+    Set sheet = ThisWorkbook.Worksheets.Add
+    Dim target As Object: Set target = sheet.Cells(4, 5).Resize(13, 3)
+    Dim values(1 To 13, 1 To 3) As Variant, body(1 To 11, 1 To 3) As Variant
+    Dim rows(1 To 8) As Long, ids As Variant, row As Long, column As Long, testCase As Long, i As Long, selected As Boolean, same As Boolean
+    ids = Array(3&, 4&, 10&, 6&, 7&, 8&, 13&, 12&)
+    For i = 1 To 8: rows(i) = CLng(ids(i - 1)): Next i
+    For row = 1 To 13
+        values(row, 1) = "OK": values(row, 2) = "FAIL": values(row, 3) = "N/A"
+    Next row
+    values(4, 3) = "Cracked": values(10, 3) = "NotCracked": values(6, 3) = ""
+    For row = 1 To 11
+        For column = 1 To 3: body(row, column) = values(row + 2, column): Next column
+    Next row
+    For testCase = 0 To 2
+        target.Interior.Color = RGB(1, 2, 3)
+        If testCase = 0 Then
+            target.Value2 = values: ApplyTableStatusFills target, rows, Array(1, 2, 3), True, 3
+        ElseIf testCase = 1 Then
+            target.Value2 = CVErr(2015): ApplyTableStatusFills target, rows, Array(1, 2, 3), True, 3, values
+        Else
+            target.Value2 = CVErr(2015): ApplyTableStatusFills target, rows, Array(1, 2, 3), True, 3, body, 2
+        End If
+        same = True
+        For row = 1 To 13
+            selected = False
+            For i = 1 To 8: If rows(i) = row Then selected = True
+            Next i
+            For column = 1 To 3
+                Dim color As Long: color = RGB(1, 2, 3)
+                If selected Then
+                    If Not (column = 3 And (row = 4 Or row = 6 Or row = 10)) Then color = StatusFillColor(CStr(values(row, column)))
+                End If
+                If CLng(target.Cells(row, column).Interior.Color) <> color Then same = False
+            Next column
+        Next row
+        TestSnapshotCheck "statusSpans.gapsAndPreparedValues." & CStr(testCase), same
+    Next testCase
+    app.DisplayAlerts = False: sheet.Delete: app.DisplayAlerts = alerts
+    Exit Sub
+Failed:
+    Dim number As Long, description As String: number = Err.Number: description = Err.Description
+    On Error Resume Next
+    app.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    app.DisplayAlerts = alerts
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotStatusSpans", description
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет прямой строковый IO независимо от кодека: старые байтовые операции служат эталоном.
+Private Sub TestSnapshotUTF16Strings()
+    Dim path As String: path = ThisWorkbook.Path & Application.PathSeparator & "TestUTF16_" & Format$(Now, "yyyymmdd_hhnnss") & ".bin"
+    If Len(Dir$(path)) > 0 Then Err.Raise 5, , "Тестовый файл UTF16 уже существует."
+    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
+    On Error GoTo Failed
+    Dim samples As Variant, sample As Variant, bytes() As Byte, actual As String, count As Long, index As Long
+    samples = Array(vbNullString, "ASCII", ChrW$(&H416) & ChrW$(&H3B1), "left" & Chr$(0) & "right", _
+        ChrW$(&HD83D) & ChrW$(&HDE00), ChrW$(&HD800), String$(32767, "x"), String$(65536, "z"))
+    file.OpenWrite path
+    For Each sample In samples: file.WriteSizedUTF16 CStr(sample): Next sample
+    file.CloseFile: file.OpenRead path
+    For Each sample In samples
+        count = file.ReadLong: actual = vbNullString
+        If count > 0 Then bytes = file.ReadBytes(count): actual = bytes
+        TestSnapshotCheck "utf16.write.matchesBytes." & CStr(index), count = LenB(CStr(sample)) And StrComp(actual, CStr(sample), vbBinaryCompare) = 0
+        index = index + 1
+    Next sample
+    file.CloseFile: file.OpenWrite path
+    For Each sample In samples
+        file.WriteLong LenB(CStr(sample))
+        If LenB(CStr(sample)) > 0 Then bytes = CStr(sample): file.WriteBytes bytes
+    Next sample
+    file.CloseFile: file.OpenRead path: index = 0
+    For Each sample In samples
+        actual = file.ReadSizedUTF16(131072)
+        TestSnapshotCheck "utf16.read.matchesBytes." & CStr(index), LenB(actual) = LenB(CStr(sample)) And StrComp(actual, CStr(sample), vbBinaryCompare) = 0
+        index = index + 1
+    Next sample
+    file.CloseFile
+    Dim testCase As Long
+    For testCase = 0 To 3
+        file.OpenWrite path
+        Select Case testCase
+            Case 0: file.WriteLong -1
+            Case 1: file.WriteLong 3: file.WriteASCII "abc"
+            Case 2: file.WriteSizedUTF16 String$(65537, "z")
+            Case 3: file.WriteLong 20: file.WriteByte 7
+        End Select
+        file.CloseFile: file.OpenRead path
+        TestSnapshotCheck "utf16.invalidLength." & CStr(testCase), TestSnapshotUTF16Rejected(file)
+        file.CloseFile
+    Next testCase
+    Kill path
+    Exit Sub
+Failed:
+    Dim number As Long, reason As String: number = Err.Number: reason = Err.Description
+    On Error Resume Next
+    file.CloseFile: Kill path
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotUTF16Strings", reason
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Перехватывает только ожидаемую ошибку чтения некорректной длины строки.
+Private Function TestSnapshotUTF16Rejected(ByVal file As CBinarySnapshotFile) As Boolean
+    On Error GoTo Rejected
+    Dim text As String: text = file.ReadSizedUTF16(131072)
+    Exit Function
+Rejected:
+    TestSnapshotUTF16Rejected = (Err.Number = 5)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Повторное использование writer-а читает новые входные строки, а не массив предыдущей операции.
+Private Sub TestSnapshotOneUseSource()
+    Dim target As Object, saved As Variant
+    Set target = ThisWorkbook.Names("rngNDMSectionGeometry").RefersToRange.Cells(2, 15)
+    saved = target.Formula
+    On Error GoTo Failed
+    Dim section As CSectionModel: Set section = ReadFormedSectionFromResults(ThisWorkbook)
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
+    Dim provider As CMaterialModelProvider: Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Dim props As CSectionPropertiesCalculator: Set props = PrepareSectionSnapshot(section, provider)
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    Dim batch As CBatchSectionCalculator: Set batch = New CBatchSectionCalculator
+    Dim first As CCalculationSnapshot: Set first = New CCalculationSnapshot
+    target.Value2 = "TestSourceBefore"
+    writer.PreparePreservedSnapshotSource ThisWorkbook
+    Set writer.CaptureSnapshot = first
+    writer.WriteResults ThisWorkbook, section, props, batch, units, True
+    Dim values As Variant: values = first.Table("rngNDMSectionGeometry")
+    TestSnapshotCheck "capture.oneUse.initial", CStr(values(2, 15)) = "TestSourceBefore"
+    target.Value2 = "TestSourceAfter"
+    Dim second As CCalculationSnapshot: Set second = New CCalculationSnapshot
+    Set writer.CaptureSnapshot = second
+    writer.WriteResults ThisWorkbook, section, props, batch, units, True
+    values = second.Table("rngNDMSectionGeometry")
+    TestSnapshotCheck "capture.oneUse.newSource", CStr(values(2, 15)) = "TestSourceAfter"
+    target.Formula = saved
+    Exit Sub
+Failed:
+    Dim number As Long, reason As String: number = Err.Number: reason = Err.Description
+    On Error Resume Next
+    target.Formula = saved
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotOneUseSource", reason
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Повторная проверка сохраняет защиту при изменении даты и добавлении новой части.
@@ -305,6 +525,41 @@ Private Sub TestSnapshotColumnCodec(ByVal original As CCalculationSnapshot, ByVa
     TestSnapshotCheck "codec.mixed.bitExact", TestSnapshotSameMatrix(data, actual)
     TestSnapshotCheck "codec.emptyKinds", VarType(actual(1, 5)) = vbString And VarType(actual(1024, 5)) = vbEmpty
     TestSnapshotCheck "codec.booleanKind", VarType(actual(1, 3)) = vbBoolean And VarType(actual(1024, 3)) = vbBoolean
+    store.SaveFile ThisWorkbook, original
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Повторяющиеся ElementID сохраняются точно; любое нарушение шаблона включает общий кодек.
+Private Sub TestSnapshotRepeatedElementIDs(ByVal original As CCalculationSnapshot, ByVal store As CCalculationSnapshotStore)
+    Dim count As Long: count = original.TableRowCount("rngNDMSectionGeometry") - 1
+    Dim groups As Long: groups = 2 + 4096 \ count
+    Dim expected As Variant: expected = original.Table("rngNDMElementResults")
+    Dim data() As Variant, row As Long, column As Long, sourceRow As Long
+    ReDim data(1 To groups * count + 1, 1 To 9)
+    For column = 1 To 9: data(1, column) = expected(1, column): Next column
+    For row = 2 To UBound(data, 1)
+        sourceRow = 2 + (row - 2) Mod count
+        For column = 1 To 9: data(row, column) = expected(sourceRow, column): Next column
+    Next row
+    Dim testCase As Long, sample As CCalculationSnapshot, loaded As CCalculationSnapshot, key As Variant
+    Dim changed As Long, savedID As String
+    For testCase = 0 To 3
+        changed = 0
+        Select Case testCase
+            Case 1: changed = UBound(data, 1): savedID = CStr(data(changed, 5)): data(changed, 5) = "TestMismatch_" & savedID
+            Case 2: changed = 3: savedID = CStr(data(changed, 5)): data(changed, 5) = data(2, 5)
+            Case 3: changed = 2: savedID = CStr(data(changed, 5)): data(changed, 5) = "ElementID"
+        End Select
+        Set sample = New CCalculationSnapshot: sample.RunID = original.RunID: sample.ElapsedSeconds = original.ElapsedSeconds
+        For Each key In original.Keys()
+            If CStr(key) <> "rngNDMElementResults" Then sample.AddTable CStr(key), original.Table(CStr(key))
+        Next key
+        sample.AddTable "rngNDMElementResults", data
+        store.SaveFile ThisWorkbook, sample: Set loaded = store.LoadFile(ThisWorkbook)
+        TestSnapshotCheck "codec.repeatedIDs." & CStr(testCase) & ".exact", TestSnapshotSameMatrix(data, loaded.Table("rngNDMElementResults"))
+        TestSnapshotCheck "codec.repeatedIDs." & CStr(testCase) & ".sourceUnchanged", TestSnapshotSameMatrix(data, sample.Table("rngNDMElementResults"))
+        If changed > 0 Then data(changed, 5) = savedID
+    Next testCase
     store.SaveFile ThisWorkbook, original
 End Sub
 

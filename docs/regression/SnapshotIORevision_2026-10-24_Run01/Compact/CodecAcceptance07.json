@@ -1,0 +1,485 @@
+{
+  "Status": "PASS",
+  "SyntheticIOOnly": true,
+  "SolverCalls": 0,
+  "ExactAllCells": true,
+  "FileFormat": "NDMSNP04 unchanged",
+  "Payloads": [
+    {
+      "Elements": 50,
+      "States": 1,
+      "Bytes": 29783,
+      "SHA256": "A84A3ACB2EFFC03A29B103896F037873BD2896D4984D0217AD1D1DE0FC3B264A",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 50,
+      "States": 5,
+      "Bytes": 41265,
+      "SHA256": "6E4B3401F40BEED377E23A208B9FFECAFADCC042287494D346DCC72DB1A0A911",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 5000,
+      "States": 1,
+      "Bytes": 604870,
+      "SHA256": "93D59BDB3BEB46E13960EEC3ABB65FA7275254945E53C4C0BCBE69B6AE8C4A6D",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 5000,
+      "States": 5,
+      "Bytes": 1325502,
+      "SHA256": "DBA769922B2CC91E9756393B9106C801188A8E736C6DE1E79E7A2674CB63B2E9",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 50000,
+      "States": 1,
+      "Bytes": 6124010,
+      "SHA256": "FB513AA3C464B803D0E5286988F9C51C0437E7DB3DAD9B19A82A70F4B8D76D69",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 50000,
+      "States": 5,
+      "Bytes": 13329502,
+      "SHA256": "909EBFF1B272C0E4093DAAA7EB89CA83E6F01CD78E55340BC16448397EF2C77C",
+      "ByteIdentical": true
+    }
+  ],
+  "Comparisons": [
+    {
+      "Elements": 50,
+      "States": 1,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.02360620000399649,
+        "Min": 0.023368699941784143,
+        "Max": 0.029433900024741888,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.01675140007864684,
+        "Min": 0.016061000060290098,
+        "Max": 0.02123559999745339,
+        "Observations": 5
+      },
+      "ReductionPercent": 29.0381337283813
+    },
+    {
+      "Elements": 50,
+      "States": 1,
+      "Action": "ReadSheet",
+      "Before": {
+        "Median": 0.010159300058148801,
+        "Min": 0.010011399979703128,
+        "Max": 0.01040250004734844,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.006633499986492097,
+        "Min": 0.006436399999074638,
+        "Max": 0.008661000058054924,
+        "Observations": 5
+      },
+      "ReductionPercent": 34.705147514849216
+    },
+    {
+      "Elements": 50,
+      "States": 1,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 0.015977100003510714,
+        "Min": 0.015582099906168878,
+        "Max": 0.016562000033445656,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.021830599987879395,
+        "Min": 0.021265899995341897,
+        "Max": 0.024779399973340333,
+        "Observations": 5
+      },
+      "ReductionPercent": -36.63681133048218
+    },
+    {
+      "Elements": 50,
+      "States": 1,
+      "Action": "WriteSheet",
+      "Before": {
+        "Median": 0.0363567000022158,
+        "Min": 0.035726799978874624,
+        "Max": 0.0378517999779433,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.03880119998939335,
+        "Min": 0.036660099984146655,
+        "Max": 0.04187620000448078,
+        "Observations": 5
+      },
+      "ReductionPercent": -6.723657501997067
+    },
+    {
+      "Elements": 50,
+      "States": 5,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.025257900008000433,
+        "Min": 0.025163199985399842,
+        "Max": 0.027435699943453074,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.016495899995788932,
+        "Min": 0.015998699935153127,
+        "Max": 0.01766820007469505,
+        "Observations": 5
+      },
+      "ReductionPercent": 34.69013658869558
+    },
+    {
+      "Elements": 50,
+      "States": 5,
+      "Action": "ReadSheet",
+      "Before": {
+        "Median": 0.010654899990186095,
+        "Min": 0.010463699931278825,
+        "Max": 0.011604500003159046,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.007338700001128018,
+        "Min": 0.007056899950839579,
+        "Max": 0.008736300049349666,
+        "Observations": 5
+      },
+      "ReductionPercent": 31.1237082667367
+    },
+    {
+      "Elements": 50,
+      "States": 5,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 0.03231509996112436,
+        "Min": 0.031975400052033365,
+        "Max": 0.038716800045222044,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.02420069999061525,
+        "Min": 0.02311149996239692,
+        "Max": 0.02982190006878227,
+        "Observations": 5
+      },
+      "ReductionPercent": 25.110242519041808
+    },
+    {
+      "Elements": 50,
+      "States": 5,
+      "Action": "WriteSheet",
+      "Before": {
+        "Median": 0.06041819998063147,
+        "Min": 0.059596900013275445,
+        "Max": 0.1016450000461191,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.05751389998476952,
+        "Min": 0.05561149993445724,
+        "Max": 0.08816639997530729,
+        "Observations": 5
+      },
+      "ReductionPercent": 4.806995237847191
+    },
+    {
+      "Elements": 5000,
+      "States": 1,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.12157640000805259,
+        "Min": 0.11981709999963641,
+        "Max": 0.12422780005726963,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.09677859989460558,
+        "Min": 0.08701350004412234,
+        "Max": 0.10223800002131611,
+        "Observations": 5
+      },
+      "ReductionPercent": 20.396886329751936
+    },
+    {
+      "Elements": 5000,
+      "States": 1,
+      "Action": "ReadSheet",
+      "Before": {
+        "Median": 0.050708799972198904,
+        "Min": 0.04992450005374849,
+        "Max": 0.052039600093849,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.04784399992786348,
+        "Min": 0.04716660000849515,
+        "Max": 0.05251720000524074,
+        "Observations": 5
+      },
+      "ReductionPercent": 5.649512601177806
+    },
+    {
+      "Elements": 5000,
+      "States": 1,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 0.1104308000067249,
+        "Min": 0.10017119999974966,
+        "Max": 0.12412660010159016,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.12184050003997982,
+        "Min": 0.10579880001023412,
+        "Max": 0.1418026000028476,
+        "Observations": 5
+      },
+      "ReductionPercent": -10.331990742220563
+    },
+    {
+      "Elements": 5000,
+      "States": 1,
+      "Action": "WriteSheet",
+      "Before": {
+        "Median": 1.0702810999937356,
+        "Min": 1.06643130001612,
+        "Max": 1.1855893000029027,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 1.0769768001046032,
+        "Min": 1.0639975999947637,
+        "Max": 1.2036378999473527,
+        "Observations": 5
+      },
+      "ReductionPercent": -0.62560201342496
+    },
+    {
+      "Elements": 5000,
+      "States": 5,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.1956062000244856,
+        "Min": 0.18998210004065186,
+        "Max": 0.21571069990750402,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.17021939996629953,
+        "Min": 0.15198799991048872,
+        "Max": 0.18086869991384447,
+        "Observations": 5
+      },
+      "ReductionPercent": 12.978525248692621
+    },
+    {
+      "Elements": 5000,
+      "States": 5,
+      "Action": "ReadSheet",
+      "Before": {
+        "Median": 0.10630069999024272,
+        "Min": 0.10386629996355623,
+        "Max": 0.11669729999266565,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.1033106999238953,
+        "Min": 0.0997254999820143,
+        "Max": 0.10640279995277524,
+        "Observations": 5
+      },
+      "ReductionPercent": 2.8127755194668245
+    },
+    {
+      "Elements": 5000,
+      "States": 5,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 0.2256229999475181,
+        "Min": 0.22051379992626607,
+        "Max": 0.2517768000252545,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.16780149994883686,
+        "Min": 0.13822490000166,
+        "Max": 0.19231780001427978,
+        "Observations": 5
+      },
+      "ReductionPercent": 25.627484791945427
+    },
+    {
+      "Elements": 5000,
+      "States": 5,
+      "Action": "WriteSheet",
+      "Before": {
+        "Median": 2.5961685999063775,
+        "Min": 2.592994299950078,
+        "Max": 2.645993800018914,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 2.6073394999839365,
+        "Min": 2.587348199915141,
+        "Max": 2.6090759000508115,
+        "Observations": 5
+      },
+      "ReductionPercent": -0.4302840762330265
+    },
+    {
+      "Elements": 50000,
+      "States": 1,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 1.1794482000404969,
+        "Min": 1.1756217000074685,
+        "Max": 1.18690610001795,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.8063886999152601,
+        "Min": 0.7283429000526667,
+        "Max": 0.8934845000039786,
+        "Observations": 5
+      },
+      "ReductionPercent": 31.630002921063227
+    },
+    {
+      "Elements": 50000,
+      "States": 1,
+      "Action": "ReadSheet",
+      "Before": {
+        "Median": 0.4504589999560267,
+        "Min": 0.4387987001100555,
+        "Max": 0.4615326999919489,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.45028859993908554,
+        "Min": 0.4383178000571206,
+        "Max": 0.4852293999865651,
+        "Observations": 5
+      },
+      "ReductionPercent": 0.037828085787555456
+    },
+    {
+      "Elements": 50000,
+      "States": 1,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 1.20155649993103,
+        "Min": 1.1371009999420494,
+        "Max": 1.30096590006724,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 1.1589998999843374,
+        "Min": 1.0912289000116289,
+        "Max": 1.2119607999920845,
+        "Observations": 5
+      },
+      "ReductionPercent": 3.5417893331803674
+    },
+    {
+      "Elements": 50000,
+      "States": 1,
+      "Action": "WriteSheet",
+      "Before": {
+        "Median": 10.505474000005051,
+        "Min": 10.485396899981424,
+        "Max": 10.604821699904278,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 10.57896139996592,
+        "Min": 10.489260599948466,
+        "Max": 10.711139100021683,
+        "Observations": 5
+      },
+      "ReductionPercent": -0.6995153189740199
+    },
+    {
+      "Elements": 50000,
+      "States": 5,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 1.9796822000062093,
+        "Min": 1.9732023000251502,
+        "Max": 1.9899997999891639,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 1.6415658999467269,
+        "Min": 1.617614999995567,
+        "Max": 1.7643469999311492,
+        "Observations": 5
+      },
+      "ReductionPercent": 17.079322128492237
+    },
+    {
+      "Elements": 50000,
+      "States": 5,
+      "Action": "ReadSheet",
+      "Before": {
+        "Median": 1.0441778000677004,
+        "Min": 1.0296240999596193,
+        "Max": 1.0525212999200448,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 1.049411499989219,
+        "Min": 1.0375150999752805,
+        "Max": 1.0791008999804035,
+        "Observations": 5
+      },
+      "ReductionPercent": -0.50122689078232
+    },
+    {
+      "Elements": 50000,
+      "States": 5,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 2.512499700067565,
+        "Min": 2.416228900081478,
+        "Max": 2.571822899975814,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 1.8474736000644043,
+        "Min": 1.8067862999159843,
+        "Max": 1.9460985000478104,
+        "Observations": 5
+      },
+      "ReductionPercent": 26.468703657368675
+    },
+    {
+      "Elements": 50000,
+      "States": 5,
+      "Action": "WriteSheet",
+      "Before": {
+        "Median": 25.96023690002039,
+        "Min": 25.805484700016677,
+        "Max": 26.16649959993083,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 25.90104839997366,
+        "Min": 25.827970099984668,
+        "Max": 25.9807923999615,
+        "Observations": 5
+      },
+      "ReductionPercent": 0.22799676395358145
+    }
+  ]
+}

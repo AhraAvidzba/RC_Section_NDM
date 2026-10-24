@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 8C95A92344BD69763FA8491A56E2F2420120F04DA50E474FA57FA594DE4E6534
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3f90a9206d4043afb97a6a2c540bd8a7\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=139500; startTicks=639284328259670278
+===== modTestWorkbookInterface.RunSectionWorkflowCalculationTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunSectionWorkflowCalculationTests; 2026-10-24T13:00:30
+OK: loadActivation.Excel.resultsPreserved.0
+OK: loadActivation.Excel.scopeReleased.0
+OK: loadActivation.Excel.message.1
+OK: loadActivation.Excel.resultsPreserved.1
+OK: loadActivation.Excel.scopeReleased.1
+OK: loadActivation.File.message.0
+OK: loadActivation.File.resultsPreserved.0
+OK: loadActivation.File.scopeReleased.0
+OK: loadActivation.File.bytesPreserved.0
+OK: loadActivation.File.message.1
+OK: loadActivation.File.resultsPreserved.1
+OK: loadActivation.File.scopeReleased.1
+OK: loadActivation.File.bytesPreserved.1
+TOTAL_WORKFLOW_CALCULATION: passed=114; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3f90a9206d4043afb97a6a2c540bd8a7\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunSectionWorkflowCalculationTests; 2026-10-24T13:00:46
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

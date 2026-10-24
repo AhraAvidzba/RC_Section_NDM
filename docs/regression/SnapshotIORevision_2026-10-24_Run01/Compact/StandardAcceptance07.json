@@ -1,0 +1,719 @@
+{
+  "Status": "PASS",
+  "Baseline": [
+    {
+      "Count": 1,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 0.8903196999999999,
+      "Min": 0.8359825999999999,
+      "Max": 0.9871806,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00648920005187392,
+        "Plot": 0.247996999998577,
+        "PrepareSummary": 0.00593809993006289,
+        "PrepareTechnical": 0.0475655000191182,
+        "ReadPhysicalAfterSolve": 4,
+        "SaveSheetExtra": 0.0201394000323489,
+        "Solve": 0.0616341000422835,
+        "WriteBase": 0.0704888000618666,
+        "WriteSummary": 0.235361599945463
+      },
+      "ManualMedian": 0.6047269,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "Plot": 0.203982900013216,
+        "ReadBinary": 1,
+        "WriteBase": 0.0751366000622511,
+        "WriteSummary": 0.224732399918139
+      },
+      "SheetMedian": 0.304579999996349,
+      "Fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F",
+      "Released": true
+    },
+    {
+      "Count": 1,
+      "Mode": "File",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 0.8848882,
+      "Min": 0.7688849999999999,
+      "Max": 0.9672980999999999,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.0286284000612795,
+        "Plot": 0.231768599944189,
+        "PrepareSummary": 0.00547510001342744,
+        "PrepareTechnical": 0.0665416999254376,
+        "ReadPhysicalAfterSolve": 4,
+        "SaveFile": 0.0581621999153867,
+        "Solve": 0.0437662000767887,
+        "WriteBase": 0.0409346999367699,
+        "WriteSummary": 0.239880500012077
+      },
+      "ManualMedian": 0.6172027,
+      "ManualPhases": {
+        "Plot": 0.20867730001919,
+        "ReadBinary": 1,
+        "WriteBase": 0.0369675999972969,
+        "WriteSummary": 0.218519299989566
+      },
+      "SheetMedian": 0.2812415000516917,
+      "Fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F",
+      "Released": true
+    },
+    {
+      "Count": 10,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 1.5449267,
+      "Min": 1.4966973,
+      "Max": 1.6737624999999998,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00664699997287244,
+        "Plot": 0.216833899961784,
+        "PrepareSummary": 0.0388394000474364,
+        "PrepareTechnical": 0.194072399986908,
+        "ReadPhysicalAfterSolve": 4,
+        "SaveSheetExtra": 0.0285271999891847,
+        "Solve": 0.433880000025965,
+        "WriteBase": 0.255042099975981,
+        "WriteSummary": 0.233686699997634
+      },
+      "ManualMedian": 0.8707931,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "Plot": 0.214682799996808,
+        "ReadBinary": 1,
+        "WriteBase": 0.291272800066508,
+        "WriteSummary": 0.239131500013173
+      },
+      "SheetMedian": 0.491611999925226,
+      "Fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125",
+      "Released": true
+    },
+    {
+      "Count": 10,
+      "Mode": "File",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 1.4283666,
+      "Min": 1.4028817,
+      "Max": 1.4654078,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.0216329999966547,
+        "Plot": 0.209396100020967,
+        "PrepareSummary": 0.0408810999942943,
+        "PrepareTechnical": 0.185010000015609,
+        "ReadPhysicalAfterSolve": 4,
+        "SaveFile": 0.116387699963525,
+        "Solve": 0.363686400000006,
+        "WriteBase": 0.0816154000349343,
+        "WriteSummary": 0.259017800097354
+      },
+      "ManualMedian": 0.6121413,
+      "ManualPhases": {
+        "Plot": 0.1948014999507,
+        "ReadBinary": 1,
+        "WriteBase": 0.0449427999556065,
+        "WriteSummary": 0.222812199965119
+      },
+      "SheetMedian": 0.3433035999769342,
+      "Fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125",
+      "Released": true
+    },
+    {
+      "Count": 30,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 3.1378003999999997,
+      "Min": 2.9289875999999997,
+      "Max": 3.1615816,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00333259999752045,
+        "Plot": 0.215421100030653,
+        "PrepareSummary": 0.192518500029109,
+        "PrepareTechnical": 0.403613900067285,
+        "ReadPhysicalAfterSolve": 4,
+        "SaveSheetExtra": 0.0439671999774873,
+        "Solve": 1.13528649997897,
+        "WriteBase": 0.663023400120437,
+        "WriteSummary": 0.245795399998315
+      },
+      "ManualMedian": 1.4515251,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "Plot": 0.199435699963942,
+        "ReadBinary": 1,
+        "WriteBase": 0.778982699965127,
+        "WriteSummary": 0.245193299953826
+      },
+      "SheetMedian": 0.908818800118752,
+      "Fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB",
+      "Released": true
+    },
+    {
+      "Count": 30,
+      "Mode": "File",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 2.8075596999999997,
+      "Min": 2.7121022,
+      "Max": 2.9137597,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.0325550000416115,
+        "Plot": 0.242366199963726,
+        "PrepareSummary": 0.157309499918483,
+        "PrepareTechnical": 0.417962900013663,
+        "ReadPhysicalAfterSolve": 4,
+        "SaveFile": 0.251683500013314,
+        "Solve": 1.12332139990758,
+        "WriteBase": 0.171046599978581,
+        "WriteSummary": 0.266726600006223
+      },
+      "ManualMedian": 0.7660327,
+      "ManualPhases": {
+        "Plot": 0.211506200022995,
+        "ReadBinary": 1,
+        "WriteBase": 0.0581611000234261,
+        "WriteSummary": 0.253947000019252
+      },
+      "SheetMedian": 0.43981619994156096,
+      "Fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB",
+      "Released": true
+    }
+  ],
+  "Candidate": [
+    {
+      "Count": 1,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 0.6769856,
+      "Min": 0.6755662,
+      "Max": 0.8604794,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00419090001378208,
+        "Plot": 0.185391899896786,
+        "PrepareSummary": 0.00489109999034554,
+        "PrepareTechnical": 0.0299715999281034,
+        "SaveSheetExtra": 0.0176462000235915,
+        "Solve": 0.0457623000256717,
+        "WriteBase": 0.0681794999400154,
+        "WriteSummary": 0.221506000030786
+      },
+      "ManualMedian": 0.5433964,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "LoadSheetData": 0.018356499960646,
+        "Plot": 0.173079199972562,
+        "ReadBinary": 1,
+        "WriteBase": 0.0725785000249743,
+        "WriteSummary": 0.223553900024854
+      },
+      "SheetMedian": 0.2910825000144543,
+      "Fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F",
+      "Released": true
+    },
+    {
+      "Count": 1,
+      "Mode": "Excel",
+      "Path": "Reload",
+      "Observations": 5,
+      "Median": 0.806094,
+      "Min": 0.7500903,
+      "Max": 0.8716244,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00398240005597472,
+        "LoadSheet": 1,
+        "LoadSheetData": 0.0250076000811532,
+        "Plot": 0.175591700011864,
+        "PrepareSummary": 0.00456600007601082,
+        "PrepareTechnical": 0.0471327999839559,
+        "ReadBinary": 1,
+        "SaveSheetExtra": 0.0146369999274611,
+        "Solve": 0.0442013000138104,
+        "WriteBase": 0.141024800133891,
+        "WriteSummary": 0.215023900032975
+      },
+      "ManualMedian": 0.5198338,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "LoadSheetData": 0.021394900046289,
+        "Plot": 0.169922799919732,
+        "ReadBinary": 1,
+        "WriteBase": 0.0719957000110298,
+        "WriteSummary": 0.215450499905273
+      },
+      "SheetMedian": 0.35604870016686596,
+      "Fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F",
+      "Released": true
+    },
+    {
+      "Count": 1,
+      "Mode": "File",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 0.7559905,
+      "Min": 0.6912997,
+      "Max": 0.9269073999999999,
+      "Phases": {
+        "BindFile": 0.00629799999296665,
+        "ClearSheetExtra": 0.000250900047831237,
+        "FinalizeFileOrSheet": 0.0167738000163808,
+        "Plot": 0.185620400006883,
+        "PrepareSummary": 0.0057022999972105,
+        "PrepareTechnical": 0.0502643999643624,
+        "SaveFile": 0.0489004999399185,
+        "Solve": 0.0353435999713838,
+        "WriteBase": 0.0406206999905407,
+        "WriteFileNotice": 0.000584500026889145,
+        "WriteSummary": 0.221579000004567
+      },
+      "ManualMedian": 0.47553839999999997,
+      "ManualPhases": {
+        "BindFile": 0.00592620007228106,
+        "ClearSheetExtra": 0.000244599999859929,
+        "LoadFile": 0.0273267000447959,
+        "Plot": 0.16886410000734,
+        "ReadBinary": 1,
+        "WriteBase": 0.0377597999759018,
+        "WriteFileNotice": 0.000682799960486591,
+        "WriteSummary": 0.215746500063688
+      },
+      "SheetMedian": 0.2631723000667987,
+      "Fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F",
+      "Released": true
+    },
+    {
+      "Count": 1,
+      "Mode": "File",
+      "Path": "Reload",
+      "Observations": 5,
+      "Median": 0.7876934999999999,
+      "Min": 0.6982976,
+      "Max": 0.8784674,
+      "Phases": {
+        "BindFile": 0.00617379997856915,
+        "ClearSheetExtra": 0.000293100019916892,
+        "FinalizeFileOrSheet": 0.0178258999949321,
+        "LoadFile": 0.0321471999632195,
+        "Plot": 0.179648299934343,
+        "PrepareSummary": 0.00547620002180338,
+        "PrepareTechnical": 0.0450061999727041,
+        "ReadBinary": 1,
+        "SaveFile": 0.0461784000508487,
+        "Solve": 0.0439651999622583,
+        "WriteBase": 0.040694999974221,
+        "WriteFileNotice": 0.000688500003889203,
+        "WriteSummary": 0.214474100037478
+      },
+      "ManualMedian": 0.5179097,
+      "ManualPhases": {
+        "BindFile": 0.00797250005416572,
+        "ClearSheetExtra": 0.000261300010606647,
+        "LoadFile": 0.0241462000412866,
+        "Plot": 0.192648499971256,
+        "ReadBinary": 1,
+        "WriteBase": 0.037993700010702,
+        "WriteFileNotice": 0.000667999964207411,
+        "WriteSummary": 0.223042199970223
+      },
+      "SheetMedian": 0.2561126000946388,
+      "Fingerprint": "564523D561D5F4F2FBD179BBB545C5ED48C98E4A3C8DB2347EBF446B8A79080F",
+      "Released": true
+    },
+    {
+      "Count": 10,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 1.4054856,
+      "Min": 1.3795522,
+      "Max": 1.479866,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00366659997962415,
+        "Plot": 0.193006000015885,
+        "PrepareSummary": 0.0363832000875846,
+        "PrepareTechnical": 0.166941600036807,
+        "SaveSheetExtra": 0.0265273000113666,
+        "Solve": 0.351079000043683,
+        "WriteBase": 0.280074599897489,
+        "WriteSummary": 0.225658899988048
+      },
+      "ManualMedian": 0.7902821999999999,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "LoadSheetData": 0.0436148000881076,
+        "Plot": 0.182196600013413,
+        "ReadBinary": 1,
+        "WriteBase": 0.290677700075321,
+        "WriteSummary": 0.218399200006388
+      },
+      "SheetMedian": 0.5097521999850869,
+      "Fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125",
+      "Released": true
+    },
+    {
+      "Count": 10,
+      "Mode": "Excel",
+      "Path": "Reload",
+      "Observations": 5,
+      "Median": 1.7493117999999999,
+      "Min": 1.7307526999999998,
+      "Max": 1.8941721,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00350560003425926,
+        "LoadSheet": 1,
+        "LoadSheetData": 0.0475965000223368,
+        "Plot": 0.19645159994252,
+        "PrepareSummary": 0.033540099975653,
+        "PrepareTechnical": 0.168573400005698,
+        "ReadBinary": 1,
+        "SaveSheetExtra": 0.0291768000461161,
+        "Solve": 0.333982500014827,
+        "WriteBase": 0.563547699945048,
+        "WriteSummary": 0.222198699950241
+      },
+      "ManualMedian": 0.7957987,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "LoadSheetData": 0.0486420999513939,
+        "Plot": 0.183822900056839,
+        "ReadBinary": 1,
+        "WriteBase": 0.292987699969672,
+        "WriteSummary": 0.218564299982972
+      },
+      "SheetMedian": 0.787482499959879,
+      "Fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125",
+      "Released": true
+    },
+    {
+      "Count": 10,
+      "Mode": "File",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 1.3268143,
+      "Min": 1.2407896999999999,
+      "Max": 1.4038761,
+      "Phases": {
+        "BindFile": 0.00741910003125668,
+        "ClearSheetExtra": 0.000653699971735477,
+        "FinalizeFileOrSheet": 0.0217350000748411,
+        "Plot": 0.185313199996017,
+        "PrepareSummary": 0.0372349000535905,
+        "PrepareTechnical": 0.167357800062746,
+        "SaveFile": 0.0876127999508753,
+        "Solve": 0.368238499970175,
+        "WriteBase": 0.0837084999075159,
+        "WriteFileNotice": 0.000675699906423688,
+        "WriteSummary": 0.221754200058058
+      },
+      "ManualMedian": 0.5732611,
+      "ManualPhases": {
+        "BindFile": 0.00817379995714873,
+        "ClearSheetExtra": 0.000620700069703162,
+        "LoadFile": 0.0679297000169754,
+        "Plot": 0.192138600046746,
+        "ReadBinary": 1,
+        "WriteBase": 0.0432205999968573,
+        "WriteFileNotice": 0.0006266999989748,
+        "WriteSummary": 0.23431139998138
+      },
+      "SheetMedian": 0.3066021999111396,
+      "Fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125",
+      "Released": true
+    },
+    {
+      "Count": 10,
+      "Mode": "File",
+      "Path": "Reload",
+      "Observations": 5,
+      "Median": 1.4494445999999999,
+      "Min": 1.3381554999999998,
+      "Max": 1.4662864,
+      "Phases": {
+        "BindFile": 0.00819940003566444,
+        "ClearSheetExtra": 0.000656899996101856,
+        "FinalizeFileOrSheet": 0.0223908999469131,
+        "LoadFile": 0.0628814999945462,
+        "Plot": 0.205782799981534,
+        "PrepareSummary": 0.0330715999007225,
+        "PrepareTechnical": 0.164590500062332,
+        "ReadBinary": 1,
+        "SaveFile": 0.0882301999954507,
+        "Solve": 0.353688600007445,
+        "WriteBase": 0.0820971000939608,
+        "WriteFileNotice": 0.000627000001259148,
+        "WriteSummary": 0.231919599929824
+      },
+      "ManualMedian": 0.5505580999999999,
+      "ManualPhases": {
+        "BindFile": 0.00688790006097406,
+        "ClearSheetExtra": 0.000609999988228083,
+        "LoadFile": 0.0667206000071019,
+        "Plot": 0.193598599988036,
+        "ReadBinary": 1,
+        "WriteBase": 0.043301000026986,
+        "WriteFileNotice": 0.00058230001013726,
+        "WriteSummary": 0.217956000007689
+      },
+      "SheetMedian": 0.31415239989291827,
+      "Fingerprint": "268C8463673CA1264327F7C371FBA30AC3950E9654473401C17EB2324CE83125",
+      "Released": true
+    },
+    {
+      "Count": 30,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 2.9831393999999998,
+      "Min": 2.7887166999999997,
+      "Max": 3.0783228,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00358979997690767,
+        "Plot": 0.221625400008634,
+        "PrepareSummary": 0.114835600019433,
+        "PrepareTechnical": 0.399721399997361,
+        "SaveSheetExtra": 0.0439489999553189,
+        "Solve": 1.04305759991985,
+        "WriteBase": 0.68561119993683,
+        "WriteSummary": 0.254701999947429
+      },
+      "ManualMedian": 1.4140192,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "LoadSheetData": 0.117598199984059,
+        "Plot": 0.199478500057012,
+        "ReadBinary": 1,
+        "WriteBase": 0.775408199988306,
+        "WriteSummary": 0.23858680005651
+      },
+      "SheetMedian": 0.9464741998817779,
+      "Fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB",
+      "Released": true
+    },
+    {
+      "Count": 30,
+      "Mode": "Excel",
+      "Path": "Reload",
+      "Observations": 5,
+      "Median": 3.9444350999999997,
+      "Min": 3.8532674,
+      "Max": 4.0293344,
+      "Phases": {
+        "FinalizeFileOrSheet": 0.00426449999213219,
+        "LoadSheet": 1,
+        "LoadSheetData": 0.110463699907996,
+        "Plot": 0.202471400029026,
+        "PrepareSummary": 0.114377800025977,
+        "PrepareTechnical": 0.394774300046265,
+        "ReadBinary": 1,
+        "SaveSheetExtra": 0.0437578000128269,
+        "Solve": 1.09655099990778,
+        "WriteBase": 1.46286470000632,
+        "WriteSummary": 0.248063700040802
+      },
+      "ManualMedian": 1.4566093,
+      "ManualPhases": {
+        "LoadSheet": 1,
+        "LoadSheetData": 0.119758599903435,
+        "Plot": 0.204607299994677,
+        "ReadBinary": 1,
+        "WriteBase": 0.792254599975422,
+        "WriteSummary": 0.244969699997455
+      },
+      "SheetMedian": 1.7045843999367198,
+      "Fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB",
+      "Released": true
+    },
+    {
+      "Count": 30,
+      "Mode": "File",
+      "Path": "Memory",
+      "Observations": 5,
+      "Median": 2.5600462999999998,
+      "Min": 2.4807007,
+      "Max": 2.7546982,
+      "Phases": {
+        "BindFile": 0.0120353000238538,
+        "ClearSheetExtra": 0.00146519998088479,
+        "FinalizeFileOrSheet": 0.0303597999736667,
+        "Plot": 0.20857610006351,
+        "PrepareSummary": 0.110920000006445,
+        "PrepareTechnical": 0.400384600041434,
+        "SaveFile": 0.173321899957955,
+        "Solve": 1.02254969999194,
+        "WriteBase": 0.170593600021675,
+        "WriteFileNotice": 0.000625299988314509,
+        "WriteSummary": 0.249734499957412
+      },
+      "ManualMedian": 0.7136391999999999,
+      "ManualPhases": {
+        "BindFile": 0.0114614999620244,
+        "ClearSheetExtra": 0.00151079997885972,
+        "LoadFile": 0.152872500009835,
+        "Plot": 0.200170399970375,
+        "ReadBinary": 1,
+        "WriteBase": 0.0566538999555632,
+        "WriteFileNotice": 0.000603299937210977,
+        "WriteSummary": 0.241589299985208
+      },
+      "SheetMedian": 0.424038299941458,
+      "Fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB",
+      "Released": true
+    },
+    {
+      "Count": 30,
+      "Mode": "File",
+      "Path": "Reload",
+      "Observations": 5,
+      "Median": 2.7654983,
+      "Min": 2.5746267,
+      "Max": 2.8689766,
+      "Phases": {
+        "BindFile": 0.0136023999657482,
+        "ClearSheetExtra": 0.00149789999704808,
+        "FinalizeFileOrSheet": 0.0326127000153065,
+        "LoadFile": 0.156880299909972,
+        "Plot": 0.216295000049286,
+        "PrepareSummary": 0.105729200062342,
+        "PrepareTechnical": 0.379527800017968,
+        "ReadBinary": 1,
+        "SaveFile": 0.199416199931875,
+        "Solve": 1.04380189999938,
+        "WriteBase": 0.170818799990229,
+        "WriteFileNotice": 0.000598800019361079,
+        "WriteSummary": 0.239496800000779
+      },
+      "ManualMedian": 0.6940327,
+      "ManualPhases": {
+        "BindFile": 0.0116999000310898,
+        "ClearSheetExtra": 0.00143740000203252,
+        "LoadFile": 0.154449600027874,
+        "Plot": 0.200539899989963,
+        "ReadBinary": 1,
+        "WriteBase": 0.0575660000322387,
+        "WriteFileNotice": 0.000616699922829866,
+        "WriteSummary": 0.237454399932176
+      },
+      "SheetMedian": 0.41409209987614315,
+      "Fingerprint": "A56F68E75D850B0FB39A8C3BC996B1B3C04139E73C19A076AF841236B1EA89AB",
+      "Released": true
+    }
+  ],
+  "Comparisons": [
+    {
+      "Count": 1,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Before": 0.8903196999999999,
+      "After": 0.6769856,
+      "ReductionPercent": 23.96151629577555,
+      "ManualBefore": 0.6047269,
+      "ManualAfter": 0.5433964
+    },
+    {
+      "Count": 1,
+      "Mode": "File",
+      "Path": "Memory",
+      "Before": 0.8848882,
+      "After": 0.7559905,
+      "ReductionPercent": 14.566552023182139,
+      "ManualBefore": 0.6172027,
+      "ManualAfter": 0.47553839999999997
+    },
+    {
+      "Count": 10,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Before": 1.5449267,
+      "After": 1.4054856,
+      "ReductionPercent": 9.025742127442033,
+      "ManualBefore": 0.8707931,
+      "ManualAfter": 0.7902821999999999
+    },
+    {
+      "Count": 10,
+      "Mode": "File",
+      "Path": "Memory",
+      "Before": 1.4283666,
+      "After": 1.3268143,
+      "ReductionPercent": 7.109680385973744,
+      "ManualBefore": 0.6121413,
+      "ManualAfter": 0.5732611
+    },
+    {
+      "Count": 30,
+      "Mode": "Excel",
+      "Path": "Memory",
+      "Before": 3.1378003999999997,
+      "After": 2.9831393999999998,
+      "ReductionPercent": 4.928962339350838,
+      "ManualBefore": 1.4515251,
+      "ManualAfter": 1.4140192
+    },
+    {
+      "Count": 30,
+      "Mode": "File",
+      "Path": "Memory",
+      "Before": 2.8075596999999997,
+      "After": 2.5600462999999998,
+      "ReductionPercent": 8.81596213252384,
+      "ManualBefore": 0.7660327,
+      "ManualAfter": 0.7136391999999999
+    }
+  ],
+  "MemoryComparisons": [
+    {
+      "Count": 1,
+      "Mode": "Excel",
+      "Memory": 0.6769856,
+      "Reload": 0.806094,
+      "MemoryReductionPercent": 16.016543976260834
+    },
+    {
+      "Count": 1,
+      "Mode": "File",
+      "Memory": 0.7559905,
+      "Reload": 0.7876934999999999,
+      "MemoryReductionPercent": 4.0247888296653365
+    },
+    {
+      "Count": 10,
+      "Mode": "Excel",
+      "Memory": 1.4054856,
+      "Reload": 1.7493117999999999,
+      "MemoryReductionPercent": 19.654940874462742
+    },
+    {
+      "Count": 10,
+      "Mode": "File",
+      "Memory": 1.3268143,
+      "Reload": 1.4494445999999999,
+      "MemoryReductionPercent": 8.460502733253826
+    },
+    {
+      "Count": 30,
+      "Mode": "Excel",
+      "Memory": 2.9831393999999998,
+      "Reload": 3.9444350999999997,
+      "MemoryReductionPercent": 24.37093463649586
+    },
+    {
+      "Count": 30,
+      "Mode": "File",
+      "Memory": 2.5600462999999998,
+      "Reload": 2.7654983,
+      "MemoryReductionPercent": 7.429113227081
+    }
+  ],
+  "ExactResultAndPlotFingerprints": true,
+  "AutomaticSnapshotReloads": 0,
+  "PostSolveSheetReadsBeforeSave": 0,
+  "ManualRefreshLoadsSavedData": true,
+  "AllReadContextsReleased": true,
+  "NumberEquivalence": "Only IEEE-754 positive/negative exact zero; all other values exact"
+}

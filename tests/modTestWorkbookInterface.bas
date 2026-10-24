@@ -8492,6 +8492,7 @@ Public Function RunSectionWorkflowCalculationTests() As String
     TestRectanglesWorkbookRunWritesResults stats
     TestWorkflowFrozenGeometry stats
     TestWorkflowOptionalAnnotations stats
+    TestNoActiveLoadsPreserveResults stats
 Done:
     TestFixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
     TestAppendLine stats, "TOTAL_WORKFLOW_CALCULATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
@@ -9145,3 +9146,58 @@ Failed:
     TestAssertTrue stats, "probe.runtime." & CStr(Err.Number) & "." & Err.Description, False
     Resume Done
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Полностью отключённые LC не запускают решатель и сохраняют показанный снимок в обоих хранилищах.
+Public Function RunLoadActivationWorkflowTests() As String
+    Dim stats As TUiTestStats
+    TestNoActiveLoadsPreserveResults stats
+    RunLoadActivationWorkflowTests = stats.Report & "TOTAL LOAD ACTIVATION WORKFLOW: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет штатную команду без активных LC; входит также в общий workbook-набор.
+Private Sub TestNoActiveLoadsPreserveResults(ByRef stats As TUiTestStats)
+    Dim saved As Object, names As Variant, name As Variant, mode As Variant
+    Set saved = CreateObject("Scripting.Dictionary")
+    names = Array("rngSystemSettings", "rngCalculationProfiles", "rngUnitSettings", "rngSignConventionSettings", _
+        "rngLoadCombinations", "rngStabilityDurationLoads", "rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
+    On Error GoTo Failed
+    For Each name In names: saved.Add CStr(name), ThisWorkbook.Names(CStr(name)).RefersToRange.Formula: Next name
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    Dim checksum As CFileChecksum: Set checksum = New CFileChecksum
+    Dim file As String, oldHash As String, message As String, before As String, testCase As Long, loads As Object
+    For Each mode In Array("Excel", "File")
+        TestPrepareCircleInput
+        TestSetSystemSetting "General.ExecutionReportEnabled", "No"
+        TestSetSystemSetting "Results.SnapshotStorage", CStr(mode)
+        TestSetSystemSetting "Results.SnapshotName", "TestLoadActivation_" & Format$(Now, "yyyymmdd_hhnnss") & ".ndms"
+        message = FormSectionForWorkbook(ThisWorkbook)
+        message = RunSectionCalculationForWorkbook(ThisWorkbook)
+        before = modTestPerformance.TestPerformanceResultsFingerprint()
+        If CStr(mode) = "File" Then file = store.SnapshotPath(ThisWorkbook): oldHash = checksum.FileSHA256(file)
+        Set loads = ThisWorkbook.Names("rngLoadCombinations").RefersToRange
+        For testCase = 0 To 1
+            If testCase = 0 Then
+                loads.Cells(2, 1).ClearContents
+            Else
+                loads.Cells(2, 1).Value2 = "ZERO": loads.Cells(2, 2).Resize(1, 3).Value2 = 0#
+                loads.Cells(2, 5).Value2 = CVErr(xlErrNA): loads.Cells(2, 6).Value2 = "unknown"
+            End If
+            message = RunSectionCalculationForWorkbook(ThisWorkbook)
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".message." & testCase, InStr(1, message, "Расчёт не запускался", vbBinaryCompare) > 0
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".resultsPreserved." & testCase, before = modTestPerformance.TestPerformanceResultsFingerprint()
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".scopeReleased." & testCase, TestCalculationSnapshotReadReleased()
+            If CStr(mode) = "File" Then TestAssertTrue stats, "loadActivation.File.bytesPreserved." & testCase, oldHash = checksum.FileSHA256(file)
+        Next testCase
+        If Len(file) > 0 Then Kill file: file = vbNullString
+    Next mode
+    GoTo Restore
+Failed:
+    TestAssertTrue stats, "loadActivation.workflow.runtime." & Err.Description, False
+Restore:
+    On Error Resume Next
+    If Len(file) > 0 Then Kill file
+    For Each name In saved.Keys: ThisWorkbook.Names(CStr(name)).RefersToRange.Formula = saved.Item(name): Next name
+    On Error GoTo 0
+End Sub

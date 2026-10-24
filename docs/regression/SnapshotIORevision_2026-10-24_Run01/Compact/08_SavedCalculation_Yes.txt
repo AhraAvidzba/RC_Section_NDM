@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 1C5025AD535A595377EE8F3F5B73BB3A630F868423D7BB19AC3AB4A0D6DE4E4C
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88bd578781d444d48c08893300789c0b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=152160; startTicks=639284332104243472
+===== modTestRecipeOperations.RunSavedOffsetCalculationTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-24T13:06:55
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88bd578781d444d48c08893300789c0b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=152160; startTicks=639284332104243472
+===== modTestRecipeOperations.RunSavedOffsetCalculationTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-24T13:06:55
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=83928; workingSet=182185984; privateBytes=119152640; cpu=68.9375
+EXCEL_AFTER_SUITE: pid=152160; workingSet=161189888; privateBytes=109449216; cpu=11.21875
+OBSERVED_SAVED_CALCULATION: a2=40; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: LC_SAVED_OFFSETS | Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88bd578781d444d48c08893300789c0b\RC_Section_NDM_execution_report.txt |  | Время расчёта: 0.85 с.
+OBSERVED_SAVED_CALCULATION: a2=50; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: LC_SAVED_OFFSETS | Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88bd578781d444d48c08893300789c0b\RC_Section_NDM_execution_report.txt |  | Время расчёта: 0.83 с.
+TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88bd578781d444d48c08893300789c0b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-24T13:07:03
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

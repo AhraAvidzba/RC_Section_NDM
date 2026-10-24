@@ -1,0 +1,26 @@
+COMPACT EXCERPT; full local log SHA256: 88C14E7DC4DAE5542570BC44A0FB1A343F0AEAF2A259C96B4A657E96D2310C61
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7ea0acffd8f74668978a4a838dd038b7\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=120212; startTicks=639284332009371153
+===== modTestRecipeOperations.RunSavedPointedOffsetTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-24T13:06:46
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7ea0acffd8f74668978a4a838dd038b7\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=120212; startTicks=639284332009371153
+===== modTestRecipeOperations.RunSavedPointedOffsetTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-24T13:06:46
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=83928; workingSet=182943744; privateBytes=119681024; cpu=67.265625
+EXCEL_AFTER_SUITE: pid=120212; workingSet=128851968; privateBytes=82038784; cpu=5.84375
+TOTAL_SAVED_POINTED_OFFSETS: passed=14; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7ea0acffd8f74668978a4a838dd038b7\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-24T13:06:47
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

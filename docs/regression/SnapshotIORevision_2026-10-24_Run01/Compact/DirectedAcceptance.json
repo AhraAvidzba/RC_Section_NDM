@@ -1,0 +1,297 @@
+{
+  "Status": "PASS",
+  "FullSuiteRun": false,
+  "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+  "Suites": [
+    {
+      "Suite": "Snapshot",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 239,
+      "Failed": 0,
+      "LogSHA256": "F5177E0647FA7944F9BDB36061C7FE5E62439DE3B3DE8F5055F18308B81D99FF"
+    },
+    {
+      "Suite": "LoadActivation",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 44,
+      "Failed": 0,
+      "LogSHA256": "01B34EF902D33DD722087DECD6D53AA4576D12E25B8AC00D42AC077C87CDB12D"
+    },
+    {
+      "Suite": "LoadActivationWorkflow",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 14,
+      "Failed": 0,
+      "LogSHA256": "582C3F7A4B25459106E14B722BCEA78C3CC081398A6F7FA1AE1FE70332C0ABA0"
+    },
+    {
+      "Suite": "GeneralPlot",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 3377,
+      "Failed": 0,
+      "LogSHA256": "C1AF5FA6FF226D0A8599156648C91A4ED1370AD53D0794A1CD0B536A59BE0116"
+    },
+    {
+      "Suite": "SnapshotUI",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 32,
+      "Failed": 0,
+      "LogSHA256": "35CDE6B323C6D36E6DB0644AFC01E1B9546B531BB607FF2A8A5AC5D0EF26AA14"
+    },
+    {
+      "Suite": "WorkflowCalculation",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 114,
+      "Failed": 0,
+      "LogSHA256": "8C95A92344BD69763FA8491A56E2F2420120F04DA50E474FA57FA594DE4E6534"
+    },
+    {
+      "Suite": "ResultsFormatting",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 64,
+      "Failed": 0,
+      "LogSHA256": "0153F5D0B9F9147AA9AC4BFA7CF4DDD39058EC6C6D2E6E5000C547FD9B6DBD33"
+    },
+    {
+      "Suite": "BlockOutput",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 370,
+      "Failed": 0,
+      "LogSHA256": "BAE6C188A480B474B26626B1818A53942680BC40DD9F8A6D6A7C051AEFDC9090"
+    },
+    {
+      "Suite": "SavedPointed",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 14,
+      "Failed": 0,
+      "LogSHA256": "C38E1E3443B79189F1FF25D3AA5D06144EC753F7FB6DDD064A73893356BD7E34"
+    },
+    {
+      "Suite": "SavedCalculation",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 8,
+      "Failed": 0,
+      "LogSHA256": "8E95A69B08F58C18C6BBD49D1733D20667924177325B16C2A35F589A77D2A3F1"
+    },
+    {
+      "Suite": "LoadTable",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 11813,
+      "Failed": 0,
+      "LogSHA256": "397871F2D1251AACAB39F032515D82B9AECCA4538EC786832463D32FDE496D16"
+    },
+    {
+      "Suite": "DurationMatching",
+      "Mode": "No",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 384,
+      "Failed": 0,
+      "LogSHA256": "BDEB465B7EEA982B3163BEECEBAF44BD9E4821F31C6FCA26B0162525940BA191"
+    },
+    {
+      "Suite": "Snapshot",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 239,
+      "Failed": 0,
+      "LogSHA256": "572DB42CDE0279949D555E448508C1FF0E4FE07C1EA3F079BEF362BFB165FCAE"
+    },
+    {
+      "Suite": "LoadActivation",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 44,
+      "Failed": 0,
+      "LogSHA256": "3B2C59DF624EFAE93F77AD9617F661E1F1EF344B51EE8964B62D747BBC848F81"
+    },
+    {
+      "Suite": "LoadActivationWorkflow",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 14,
+      "Failed": 0,
+      "LogSHA256": "AA7C45F2C4D44A16C26D104FB786C5B882A79F98B1E5234CC66DFF767CAF75F2"
+    },
+    {
+      "Suite": "GeneralPlot",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 3377,
+      "Failed": 0,
+      "LogSHA256": "0C238B47C06C26E24C2A30CB6EA88D067E4C4F5A88A6708308AD2FCE6D756D26"
+    },
+    {
+      "Suite": "SnapshotUI",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 32,
+      "Failed": 0,
+      "LogSHA256": "C0965166D273106EF2A04C6D8A21B0B402ED2945037AA6DD57E0D00401F7CAB8"
+    },
+    {
+      "Suite": "WorkflowCalculation",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 114,
+      "Failed": 0,
+      "LogSHA256": "84BF50539B257097183365EA59A990A086A79179D82B7CE2C6CCB74824ED8C87"
+    },
+    {
+      "Suite": "ResultsFormatting",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 64,
+      "Failed": 0,
+      "LogSHA256": "A7AF0DF9D51E227547DF0EDF8BCA7C2A45D9F6A89CB709D7EF31612F56993A5A"
+    },
+    {
+      "Suite": "BlockOutput",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 370,
+      "Failed": 0,
+      "LogSHA256": "354B09D0972595A25B5B9103A27BF7DCC5E971914EC8045BBF7CE4ACA04479A5"
+    },
+    {
+      "Suite": "SavedPointed",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 14,
+      "Failed": 0,
+      "LogSHA256": "88C14E7DC4DAE5542570BC44A0FB1A343F0AEAF2A259C96B4A657E96D2310C61"
+    },
+    {
+      "Suite": "SavedCalculation",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 8,
+      "Failed": 0,
+      "LogSHA256": "1C5025AD535A595377EE8F3F5B73BB3A630F868423D7BB19AC3AB4A0D6DE4E4C"
+    },
+    {
+      "Suite": "LoadTable",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 11813,
+      "Failed": 0,
+      "LogSHA256": "4F9B714E5CF781F15505618504FC727F4099323B4131BFDFD1A25B55E5F831F6"
+    },
+    {
+      "Suite": "DurationMatching",
+      "Mode": "Yes",
+      "Revision": "08",
+      "WorkbookSHA256": "2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC",
+      "Passed": 384,
+      "Failed": 0,
+      "LogSHA256": "304712187B21C3932CD1E5C1EB15B65DC0B39FBB77E80100746C6448C50E1AFC"
+    },
+    {
+      "Suite": "Snapshot",
+      "Mode": "No",
+      "Revision": "09",
+      "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+      "Passed": 242,
+      "Failed": 0,
+      "LogSHA256": "9FD29CCBD5D12B459999B0C44946F13C99B262D4D52031402834E39E24D7D610"
+    },
+    {
+      "Suite": "SnapshotUI",
+      "Mode": "No",
+      "Revision": "09",
+      "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+      "Passed": 32,
+      "Failed": 0,
+      "LogSHA256": "0E26438D9945003C5B4C334E1AADB1A0F2716DA8CCCA55591361A080D2F2B1AC"
+    },
+    {
+      "Suite": "WorkflowCalculation",
+      "Mode": "No",
+      "Revision": "09",
+      "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+      "Passed": 114,
+      "Failed": 0,
+      "LogSHA256": "84B049102FA3069E94E546B669A291EAECAE603C80B15AC12378EEF3F0F4361D"
+    },
+    {
+      "Suite": "ResultsFormatting",
+      "Mode": "No",
+      "Revision": "09",
+      "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+      "Passed": 64,
+      "Failed": 0,
+      "LogSHA256": "95499A7A09D99977968395952272CD639B6B9B90E225DF01FCD68039185B8163"
+    },
+    {
+      "Suite": "Snapshot",
+      "Mode": "Yes",
+      "Revision": "09",
+      "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+      "Passed": 242,
+      "Failed": 0,
+      "LogSHA256": "A9917E7DA7070292484CDB61BF96CFA63D4AB4011FF3E098AF88B497287F9545"
+    },
+    {
+      "Suite": "SnapshotUI",
+      "Mode": "Yes",
+      "Revision": "09",
+      "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+      "Passed": 32,
+      "Failed": 0,
+      "LogSHA256": "BE1246B7E40ED924ECC83CCEA0804260FADF8C68E30CD32E9E8D817A321FF6F5"
+    },
+    {
+      "Suite": "WorkflowCalculation",
+      "Mode": "Yes",
+      "Revision": "09",
+      "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+      "Passed": 114,
+      "Failed": 0,
+      "LogSHA256": "1CED3AC3262B3D2A6241AB601288EF1E4D67BDCB53F442F404D077F55C3F847C"
+    },
+    {
+      "Suite": "ResultsFormatting",
+      "Mode": "Yes",
+      "Revision": "09",
+      "WorkbookSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+      "Passed": 64,
+      "Failed": 0,
+      "LogSHA256": "A874D07080BA0219AC57F5BFDF94C296CF21EF6E2E981F815A96C164F6E73271"
+    }
+  ],
+  "TotalAssertions": 33850,
+  "NoSourceImports": true
+}

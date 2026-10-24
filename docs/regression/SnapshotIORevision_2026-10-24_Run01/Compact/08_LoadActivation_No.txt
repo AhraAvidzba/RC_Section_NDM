@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 01B34EF902D33DD722087DECD6D53AA4576D12E25B8AC00D42AC077C87CDB12D
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6732741f46494bc598ec342fb930ee62\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=64976; startTicks=639284327441591815
+===== modTestLoadTableConfig.RunLoadActivationTests =====
+SUITE_STARTED: modTestLoadTableConfig.RunLoadActivationTests; 2026-10-24T12:59:09
+OK: loadActivation.blankID.0
+OK: loadActivation.keepsLoads.0
+OK: loadActivation.blankID.1
+OK: loadActivation.keepsLoads.1
+OK: loadActivation.blankID.2
+OK: loadActivation.keepsLoads.2
+OK: loadActivation.keepsFormula
+OK: loadActivation.zeroNoValidation
+OK: loadActivation.sparse.count
+OK: loadActivation.sparse.first
+OK: loadActivation.sparse.last
+OK: loadActivation.numericZeroID
+OK: loadActivation.nonzeroNotDiscarded
+TOTAL LOAD ACTIVATION: passed=44; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6732741f46494bc598ec342fb930ee62\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestLoadTableConfig.RunLoadActivationTests; 2026-10-24T12:59:10
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 0153F5D0B9F9147AA9AC4BFA7CF4DDD39058EC6C6D2E6E5000C547FD9B6DBD33
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e6be956655ee4f16893123f4c304befa\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=101772; startTicks=639284328496575765
+===== modTestWorkbookInterface.RunResultsFormattingTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunResultsFormattingTests; 2026-10-24T13:00:54
+OK: formatting.propertyNoWrap.27
+OK: formatting.propertyNoWrap.28
+OK: formatting.propertyNoWrap.29
+OK: formatting.propertyNoWrap.30
+OK: formatting.propertyNoWrap.31
+OK: formatting.propertyNoWrap.32
+OK: formatting.propertyNoWrap.33
+OK: formatting.propertyNoWrap.34
+OK: formatting.propertyNoWrap.35
+OK: formatting.propertyNoWrap.36
+OK: formatting.propertyNoWrap.37
+OK: formatting.propertyNoWrap.38
+OK: formatting.propertyNoWrap.39
+TOTAL_RESULTS_FORMATTING: passed=64; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e6be956655ee4f16893123f4c304befa\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunResultsFormattingTests; 2026-10-24T13:01:02
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

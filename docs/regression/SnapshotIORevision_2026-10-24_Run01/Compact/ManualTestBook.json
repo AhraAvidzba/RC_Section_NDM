@@ -1,0 +1,18 @@
+{
+  "Status": "PASS",
+  "Workbook": "outputs/01a12ece-8192-7141-89b3-f83f1176184c/RC_Section_NDM_Test_1232_30.xlsm",
+  "WorkbookSHA256": "D7E038D81D52EF69643A2D13EAF5463F622F96110163DA681E234A881E50E23C",
+  "CodeSourceSHA256": "4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E",
+  "FixtureSHA256": "0B31A4D1F9ED7F783BB964018B413CB486B8325F95D70EFC468D3D730544C92E",
+  "ConcreteElements": 1232,
+  "RebarElements": 8,
+  "Combinations": 30,
+  "Storage": "File",
+  "SnapshotName": "NDM_Test_1232_30",
+  "SnapshotFile": "NDM_Test_1232_30.ndms",
+  "GeometryCopiedWithoutRegeneration": true,
+  "ImportedComponents": 0,
+  "TimingInstrumentation": false,
+  "OwnedPID": 120264,
+  "StartTicks": "639284338617687233"
+}

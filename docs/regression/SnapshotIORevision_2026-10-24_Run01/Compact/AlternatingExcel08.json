@@ -1,0 +1,46 @@
+{
+  "Status": "PASS",
+  "Purpose": "Separate code effects from order/session variation",
+  "Sources": [
+    {
+      "Path": "docs/regression/Performance/SnapshotIORevision_2026-10-24_AB01/Measurements/Raw.json",
+      "ReversedOrder": false,
+      "SHA256": "F2F21C27ADE00108D21CF27CE937480E47F5DE886791DC7F1674D2047DD4300F"
+    },
+    {
+      "Path": "docs/regression/Performance/SnapshotIORevision_2026-10-24_AB02_Reverse1/Raw.json",
+      "ReversedOrder": true,
+      "SHA256": "DA09056B1A55165842F8D38D67F5B216017D6D965E3D117F7D475F6DAD81CAE8"
+    }
+  ],
+  "Comparisons": [
+    {
+      "Count": 1,
+      "Before": 1.485932,
+      "After": 1.4894945,
+      "ReductionPercent": -0.23974852146665615,
+      "ObservationsPerVersion": 10,
+      "BeforeMin": 1.3941452,
+      "BeforeMax": 2.2662250999999998,
+      "AfterMin": 1.4171329,
+      "AfterMax": 2.0400757,
+      "ExactValues": true,
+      "Fingerprint": "8B734ADDD76E95A68A1419F0452E98CE6C30B80805AF1610972D0687F7BFE7ED"
+    },
+    {
+      "Count": 30,
+      "Before": 9.6596301,
+      "After": 9.5562693,
+      "ReductionPercent": 1.0700285510932663,
+      "ObservationsPerVersion": 5,
+      "BeforeMin": 9.31043,
+      "BeforeMax": 9.974122,
+      "AfterMin": 9.2689667,
+      "AfterMax": 9.819825999999999,
+      "ExactValues": true,
+      "Fingerprint": "C374F9E33ACF8A98A8ACE1D3F7DBA79E1971C04B35C267AE9E34BAD95843BDA5"
+    }
+  ],
+  "ReusedFormedGeometry": true,
+  "NoSourceModifications": true
+}

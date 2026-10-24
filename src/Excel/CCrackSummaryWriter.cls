@@ -737,10 +737,11 @@ End Sub
 
 ' Оформляет подробную таблицу трещин: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
-Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
+Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem, _
+        Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS
+        ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS, preparedValues
         Exit Sub
     End If
     target.Font.Name = "Arial"
@@ -799,7 +800,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         widthFormat = CrackWidthNumberFormat(units) ' Сохраняем одинаковую физическую точность 0.001 мм: ширина в метрах не должна выглядеть нулевой из-за общего трехзначного формата таблицы.
         target.Offset(HEADER_ROWS, COL_SP35_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
         target.Offset(HEADER_ROWS, COL_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
-        ApplyStatusCells target, batch, dataRows
+        ApplyStatusCells target, batch, dataRows, preparedValues
     End If
     ApplyHeaderSubscripts target
 End Sub
@@ -827,10 +828,11 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstCol As Long, ByVal la
 End Sub
 
 ' Красит блоки строки по статусу общей проверки, нормальных и продольных трещин.
-Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
+Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long, _
+        Optional ByRef preparedValues As Variant)
     Dim rows() As Long, i As Long
     If batch Is Nothing Then
-        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS)
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS, preparedValues)
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
@@ -843,7 +845,7 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
     ApplyTableStatusFills target, rows, Array( _
         COL_STATUS, COL_PRE_CRACK_STATUS, COL_POST_CRACK_STATUS, _
         COL_FORMATION_STATE, COL_CRACK_STATE_STATUS, COL_ACRC_STATUS, _
-        COL_SP35_STATUS, COL_LONG_STATUS), False, COL_FORMATION_STATE
+        COL_SP35_STATUS, COL_LONG_STATUS), False, COL_FORMATION_STATE, preparedValues, HEADER_ROWS
 End Sub
 
 ' Записывает данные выполненной формулы СП 35: выбранную опорную группу,
@@ -1125,6 +1127,6 @@ Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculati
     WriteBlockTitle target, "Расчет нормальных и продольных трещин"
     target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data
     mSnapshotLengthUnit = snapshot.OutputLengthUnit
-    FormatTable target, Nothing, Nothing
+    FormatTable target, Nothing, Nothing, data
     mSnapshotLengthUnit = vbNullString
 End Sub

@@ -607,10 +607,11 @@ End Sub
 
 ' Оформляет подробную таблицу прочности: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
-Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator, _
+        Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS
+        ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS, preparedValues
         Exit Sub
     End If
     target.Font.Name = "Arial"
@@ -646,7 +647,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         target.Offset(HEADER_ROWS, COL_CAP_LIMIT_STATE - 1).Resize(dataRows, 3).NumberFormat = "@"
         target.Offset(HEADER_ROWS, COL_CAP_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         ApplyStrainNumberFormat target, dataRows
-        ApplyStatusCells target, batch, dataRows
+        ApplyStatusCells target, batch, dataRows, preparedValues
     End If
     ApplyHeaderSubscripts target
 End Sub
@@ -673,10 +674,11 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstCol As Long, ByVal la
 End Sub
 
 ' Красит строковые блоки подробной таблицы по фактическому статусу каждой проверки.
-Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
+Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long, _
+        Optional ByRef preparedValues As Variant)
     Dim rows() As Long, i As Long
     If batch Is Nothing Then
-        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS)
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS, preparedValues)
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
@@ -687,7 +689,7 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
     Next i
     End If
     ApplyTableStatusFills target, rows, Array( _
-        COL_STATUS, COL_STATE_STATUS, COL_CAP_STATUS)
+        COL_STATUS, COL_STATE_STATUS, COL_CAP_STATUS), False, 0, preparedValues, HEADER_ROWS
 End Sub
 
 
@@ -884,5 +886,5 @@ Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculati
     End If
     WriteBlockTitle target, "Расчет НДС и несущей способности по модели прочности"
     target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data
-    FormatTable target, Nothing
+    FormatTable target, Nothing, data
 End Sub

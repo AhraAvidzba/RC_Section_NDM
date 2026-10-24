@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 304712187B21C3932CD1E5C1EB15B65DC0B39FBB77E80100746C6448C50E1AFC
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0b496cf3db594d38a201fff4c3dd10fb\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=146000; startTicks=639284333155848878
+===== modTestProfileConfig.RunStabilityDurationMatchingTests =====
+SUITE_STARTED: modTestProfileConfig.RunStabilityDurationMatchingTests; 2026-10-24T13:08:40
+OK: durationMatching.SP35.case12.batchComment
+OK: durationMatching.SP35.case12.comment0
+OK: durationMatching.SP35.case12.comment1
+OK: durationMatching.SP35.case12.comment2
+OK: durationMatching.SP35.case12.causePreserved2
+OK: durationMatching.SP35.case12.combinationContext2
+OK: durationMatching.SP35.case12.inputRow2
+OK: durationMatching.SP35.case12.failureReason2
+PROFILE_CONFIG_RESULT: durationMatching.SP35.case12; status=InputErr; comment=Устойчивость: Для сочетания DURATION_1 в таблице «Нагрузки для устойчивости» (rngStabilityDurationLoads, __AuditDurationInputs!BH800:BK830) не найдена строка с этим номером. Добавьте строку или исправьте номер сочетания. Если дополнительной нагрузки нет, оставьте N, Mx и My пустыми либо укажите 0.
+OK: durationMatching.SP35.case12.combinationInReason
+OK: durationMatching.SP35.case12.missingReason
+OK: durationMatching.SP35.case12.overallInputErr
+OK: durationMatching.SP35.case12.directContinues
+TOTAL_AUDIT03_DURATION_CONFIG: passed=384; failed=0; cases=24
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0b496cf3db594d38a201fff4c3dd10fb\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestProfileConfig.RunStabilityDurationMatchingTests; 2026-10-24T13:09:05
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

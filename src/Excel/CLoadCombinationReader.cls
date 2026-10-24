@@ -45,11 +45,8 @@ Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCal
     data = source.Value2
 
     Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1) ' Пустые строки оставляем пользователю для ввода, а не превращаем в ошибки.
-        If IsEmptyCombinationRow(data, rowIndex) Then ' Строка свободна для будущего ввода LC.
-        Else
-            AddRow data, batch, rowIndex, units, source
-        End If
+    For rowIndex = 2 To UBound(data, 1) ' Пустой номер отключает строку, сохраняя введённые нагрузки и её исходное место.
+        If Not IsBlankCell(data(rowIndex, 1)) Then AddRow data, batch, rowIndex, units, source
     Next rowIndex
 End Sub
 
@@ -67,6 +64,16 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     pathLocation = "LoadPath"
     If UBound(data, 2) >= 6 Then pathLocation = CellLocation(source, rowIndex, 6, "LoadPath")
     combinationID = ReadCellText(data(rowIndex, 1), CellLocation(source, rowIndex, 1, "CombinationID"), errorText)
+    Dim nValue As Double, mxValue As Double, myValue As Double
+    nValue = ReadOptionalLoadDouble(data(rowIndex, 2), CellLocation(source, rowIndex, 2, "N"), errorText)
+    mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText)
+    myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText)
+    If Len(errorText) = 0 Then ' Точно нулевой LC не использует профиль, путь и комментарий; ненулевые малые нагрузки сохраняются.
+        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, source, rowIndex
+        If Len(errorText) = 0 Then
+            If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub
+        End If
+    End If
     profileId = ReadCellText(data(rowIndex, 5), CellLocation(source, rowIndex, 5, "ProfileId"), errorText)
     If UBound(data, 2) >= 7 Then
         loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText)
@@ -83,20 +90,6 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If Len(pathDescriptor.NormalizeKey(loadPathText)) = 0 Then _
         AppendError errorText, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy"
 
-    Dim nValue As Double
-    Dim mxValue As Double
-    Dim myValue As Double
-    nValue = ReadOptionalLoadDouble(data(rowIndex, 2), CellLocation(source, rowIndex, 2, "N"), errorText)
-    mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText)
-    myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText)
-
-    If Len(errorText) = 0 Then ' Пропускаем только точно нулевые нагрузки. Силы и моменты имеют разные единицы; порог практически нулевого момента применяется позже в расчётном классе.
-        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, source, rowIndex
-        If Len(errorText) = 0 Then
-            If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub
-        End If
-    End If
-
     If Len(Trim$(combinationID)) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 1, "CombinationID") & " не заполнен"
     If Len(profileId) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 5, "ProfileId") & " не заполнен"
 
@@ -106,15 +99,6 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
         batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
     End If
 End Sub
-
-' Проверяет, что пользователь действительно ничего не ввел в строке LC.
-Private Function IsEmptyCombinationRow(ByRef data As Variant, ByVal rowIndex As Long) As Boolean
-    Dim col As Long
-    For col = 1 To UBound(data, 2)
-        If Not IsBlankCell(data(rowIndex, col)) Then Exit Function
-    Next col
-    IsEmptyCombinationRow = True
-End Function
 
 ' Читает нагрузку, где пустая ячейка означает 0.
 ' Это позволяет задавать одноосный изгиб как N + Mx при пустом My.

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-24 07:49:23
+Date: 2026-10-24 13:16:16
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -54,7 +54,7 @@ Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal Target As Hy
     Set helpSheet = ThisWorkbook.Worksheets("Справка")
     Set targetCell = helpSheet.range(addressText)
     RevealHelpOutlineGroup helpSheet, targetCell.row
-    Application.Goto targetCell, True
+    Application.GoTo targetCell, True
     If Not ActiveWindow Is Nothing Then
         ActiveWindow.ScrollRow = targetCell.row
         ActiveWindow.ScrollColumn = 1
@@ -92,6 +92,7 @@ Private Sub RevealHelpOutlineGroup(ByVal helpSheet As Worksheet, ByVal targetRow
 SafeExit:
 End Sub
 
+
 ====================================================================================================
 COMPONENT: Лист1
 TYPE: 100
@@ -100,6 +101,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: Лист2
 TYPE: 100
@@ -108,6 +110,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: Лист3
 TYPE: 100
@@ -116,6 +119,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: Лист4
 TYPE: 100
@@ -124,6 +128,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: Лист5
 TYPE: 100
@@ -132,6 +137,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: CLoadPathDescriptor
 TYPE: 2
@@ -427,6 +433,7 @@ Public Function vector() As CLoadPathVector
     result.Initialize nOffset, nBase, mxOffset, mxBase, myOffset, myBase
     Set vector = result
 End Function
+
 
 ====================================================================================================
 COMPONENT: CLoadPathMath
@@ -739,6 +746,7 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+
 ====================================================================================================
 COMPONENT: CLoadPathVector
 TYPE: 2
@@ -836,6 +844,7 @@ Public Property Get myBase() As Double
     myBase = mMyBase
 End Property
 
+
 ====================================================================================================
 COMPONENT: CMomentZeroFilter
 TYPE: 2
@@ -892,6 +901,7 @@ End Function
 Public Property Get MomentPerDepth() As Double
     MomentPerDepth = mMomentPerDepth
 End Property
+
 
 ====================================================================================================
 COMPONENT: CResultMeta
@@ -1123,6 +1133,7 @@ Public Property Get DiagnosticText() As String
     If Len(Trim$(mResultComment)) > 0 Then DiagnosticText = DiagnosticText & "; " & mResultComment
 End Property
 
+
 ====================================================================================================
 COMPONENT: CResultStatusPolicy
 TYPE: 2
@@ -1328,6 +1339,7 @@ Public Function StatusPriority(ByVal statusText As String) As Long
     End Select
 End Function
 
+
 ====================================================================================================
 COMPONENT: CSectionLoadState
 TYPE: 2
@@ -1493,6 +1505,7 @@ Private Function NormalizeMy(ByVal momentValue As Double) As Double
         NormalizeMy = mMomentFilter.NormalizeMoment(momentValue, mConcreteDepthForMy)
     End If
 End Function
+
 
 ====================================================================================================
 COMPONENT: modCalculationPurpose
@@ -1817,6 +1830,7 @@ Public Function IsStateBasePurpose(ByVal purpose As ECalculationPurpose) As Bool
     IsStateBasePurpose = (purpose = cpStrength Or purpose = cpCrackedNDS)
 End Function
 
+
 ====================================================================================================
 COMPONENT: modGeometryPrimitives
 TYPE: 1
@@ -2078,6 +2092,7 @@ Private Sub GeometryError(ByVal reason As String)
     Err.Raise vbObjectError + 5401, "modGeometryPrimitives", reason
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modGeometryTypes
 TYPE: 1
@@ -2210,6 +2225,7 @@ Public Function TestBuildGeneratedSectionModel(ByVal mesh As CFiberMeshBuilder, 
     Set builder = New CSectionModelBuilder
     Set TestBuildGeneratedSectionModel = builder.BuildFromGenerated(mesh, rebars, sourceType)
 End Function
+
 
 ====================================================================================================
 COMPONENT: modResultStatus
@@ -2349,6 +2365,7 @@ Public Function ResultKindToText(ByVal value As EResultKind) As String
         Case Else: ResultKindToText = "Generic"
     End Select
 End Function
+
 ====================================================================================================
 COMPONENT: modSectionRecipeApiGuide
 TYPE: 1
@@ -5994,6 +6011,7 @@ LINES: 3640
 '         Public Property Get SourceReference() As String
 '
 
+
 ====================================================================================================
 COMPONENT: modSectionRecipeTypes
 TYPE: 1
@@ -6300,6 +6318,7 @@ Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal SourceReferen
     Err.Raise number, source, reason
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modSolverWorkStats
 TYPE: 1
@@ -6365,6 +6384,7 @@ End Sub
 Public Function UltimateStrainIterationCount() As Long
     UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Function
+
 ====================================================================================================
 COMPONENT: ILimitSearchProblem
 TYPE: 2
@@ -6639,6 +6659,7 @@ Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason 
         ByVal transitionMessage As String, ByVal successMessage As String, _
         Optional ByVal firstSearchExecuted As Boolean = False)
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CFiberMeshBuilder
@@ -6932,6 +6953,7 @@ Public Property Get TestBuildSeconds() As Double
     TestBuildSeconds = mBuildSeconds
 End Property
 
+
 ====================================================================================================
 COMPONENT: CGeometryDiagnostic
 TYPE: 2
@@ -6971,6 +6993,7 @@ Public Property Get detail1() As Double: detail1 = mDetail1: End Property
 Public Property Get detail2() As Double: detail2 = mDetail2: End Property
 ' Возвращает адрес исходного параметра или текстовую ссылку на место его задания.
 Public Property Get SourceReference() As String: SourceReference = mSource: End Property
+
 
 ====================================================================================================
 COMPONENT: CGeometryPath
@@ -7564,6 +7587,7 @@ Private Sub PathError(ByVal description As String, Optional ByVal code As String
     Err.Raise vbObjectError + 5520, "CGeometryPath", SectionRecipeErrorText(description, context:="Геометрическая линия '" & mid & "':")
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CGeometryRegion
 TYPE: 2
@@ -7673,6 +7697,7 @@ Public Sub BuildContours(ByVal contours As CSectionContours)
     contours.clear
     contours.AddMaterialRegion mRegion, "REGION", "Достоверный контур бетонной области."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CGeometryVariableOffset
@@ -7827,6 +7852,7 @@ End Function
 Private Sub Fail(ByVal reason As String, ByVal SourceReference As String)
     SectionRecipeError "CGeometryVariableOffset", reason, SourceReference
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CPolygonSpec
@@ -7988,6 +8014,7 @@ Private Sub SpecError(ByVal reason As String, Optional ByVal SourceReference As 
     Err.Raise vbObjectError + 5470, "CPolygonSpec", reason
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CSectionRecipeCircle
 TYPE: 2
@@ -8115,6 +8142,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByVal diam
     If rebar.count > 0 And rebar.diameter > 0# Then facade.RebarLabel "Circle", "Circle.Axis", 0#, 1# ' Общая подпись всех круговых рядов над сечением.
     facade.VerticalExtent "DIM_CIRCLE_D", "CONTOUR_CIRCLE", "D", -diameter / 2#, -1#, "Диаметр параметрического круглого сечения." ' Диаметр бетонного круга; размер вынесен влево.
 End Sub
+
 ====================================================================================================
 COMPONENT: CSectionRecipeHollowRectangle
 TYPE: 2
@@ -8422,6 +8450,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     facade.VerticalExtent "DIM_H_OPENING", "OPENING.Boundary", "H_o", sizes.b / 2#, 1#, "Высота внутреннего отверстия Opening." ' Высота отверстия; размер справа от сечения.
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CSectionRecipePointedSection
 TYPE: 2
@@ -8661,6 +8690,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     If sizes.Widths(2) > 0# And maxX - sizes.b / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_RIGHT", "W'", sizes.b / 2#, maxX, sizes.h / 2#, 1#, "Фактический вынос правого края бетона относительно правого торца базы B.", 1# ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CSectionRecipeRectangles
 TYPE: 2
@@ -8881,6 +8911,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     End If
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CConcreteRegion
 TYPE: 2
@@ -9032,6 +9063,7 @@ Public Function clone() As CConcreteRegion
     Set clone = result
 End Function
 
+
 ====================================================================================================
 COMPONENT: CRebarContactBuilder
 TYPE: 2
@@ -9139,6 +9171,7 @@ Failed:
     If Len(SourceReference) > 0 And InStr(1, reason, SourceReference, vbBinaryCompare) = 0 Then reason = SourceReference & ": " & reason
     Err.Raise number, owner, reason
 End Function
+
 ====================================================================================================
 COMPONENT: CRebarGroupAnnotationBuilder
 TYPE: 2
@@ -9224,6 +9257,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     If right$(textValue, 1) = "." Then textValue = left$(textValue, Len(textValue) - 1)
     FormatNumberInvariant = textValue
 End Function
+
 
 ====================================================================================================
 COMPONENT: CRebarLayout
@@ -9510,6 +9544,7 @@ End Property
 Private Sub RequireMutable()
     If mReadOnly Then Err.Raise vbObjectError + 3110, "CRebarLayout", "Опубликованную арматурную раскладку нельзя изменять. Создайте новую раскладку."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CRebarOffsetContours
@@ -9932,6 +9967,7 @@ End Function
 Private Sub Fail(ByVal reason As String, ByVal SourceReference As String)
     SectionRecipeError "CRebarOffsetContours", reason, SourceReference
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CRebarRuleExecutor
@@ -10928,6 +10964,7 @@ Friend Sub TestCopyTransfer(ByVal positionIndex As Long, ByRef source As TRebarP
     rule = mRules(mPositions(positionIndex).RuleIndex)
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CRebarRuleOptions
 TYPE: 2
@@ -11054,6 +11091,7 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.AnnotationGroup = AnnotationGroup: rule.comment = comment
     rule.SourceReference = SourceReference
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionAnnotationBuilder
@@ -11458,6 +11496,7 @@ Private Function ApproxSign() As String
     ApproxSign = ChrW$(&H2248)
 End Function
 
+
 ====================================================================================================
 COMPONENT: CSectionAnnotations
 TYPE: 2
@@ -11649,6 +11688,7 @@ Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Индекс аннотации вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CSectionBuilder
 TYPE: 2
@@ -11729,6 +11769,7 @@ Private Sub RequireCurrentModel()
     If mModel Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной модели."
     If mModel.revision <> mModelRevision Then SectionRecipeError "CSectionBuilder", "После сборки геометрия модели изменилась; прежние сетка, арматура и правила больше не соответствуют модели. Выполните новую сборку."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionContours
@@ -11907,6 +11948,7 @@ End Property
 Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionContours", "Индекс сегмента контура вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionDefinition
@@ -12336,6 +12378,7 @@ Private Sub DefinitionError(ByVal reason As String, Optional ByVal entityID As S
     mDiagnostic.Initialize code, entityID, relatedEntityID, reason, 0#, 0#, reference
     SectionRecipeError "CSectionDefinition", "Определение '" & mTypeID & "': " & reason, reference
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionDefinitionBuilder
@@ -12868,6 +12911,7 @@ End Sub
 Private Sub RequireOpen()
     If mDefinition Is Nothing Or mFinished Then SectionRecipeError "CSectionDefinitionBuilder", "Фасад не открыт для описания сечения."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionGeometryQuery
@@ -14761,6 +14805,7 @@ Friend Property Get TestDomainBuildCount() As Long
     TestDomainBuildCount = mDomainBuildCount
 End Property
 
+
 ====================================================================================================
 COMPONENT: CSectionInputReader
 TYPE: 2
@@ -14985,6 +15030,7 @@ End Function
 Private Sub InvalidCell(ByVal row As Long, ByVal column As Long, ByVal reason As String)
     Err.Raise vbObjectError + 5525, "CSectionInputReader", mTable.SourceReference(row, column) & " (" & mTable.name & "): " & reason
 End Sub
+
 ====================================================================================================
 COMPONENT: CSectionInputTable
 TYPE: 2
@@ -15260,6 +15306,7 @@ Private Sub inputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
     End If
     Err.Raise vbObjectError + 5525, "CSectionInputTable", SectionRecipeErrorText(reason, location)
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionModel
@@ -16360,6 +16407,7 @@ Public Property Get TestForceProbeCount() As Long
     TestForceProbeCount = mForceProbeCount
 End Property
 
+
 ====================================================================================================
 COMPONENT: CSectionModelBuilder
 TYPE: 2
@@ -16421,6 +16469,7 @@ Public Sub AppendConcreteMesh(ByVal model As CSectionModel, ByVal mesh As CFiber
             mesh.fiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberWidth(i) * mesh.FiberWidth(i) / 12#, 0#
     Next i
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionPropertiesCalculator
@@ -17245,6 +17294,7 @@ Public Property Get TestLastCalculationSeconds() As Double
     TestLastCalculationSeconds = mLastCalculationSeconds
 End Property
 
+
 ====================================================================================================
 COMPONENT: CSectionRecipeContext
 TYPE: 2
@@ -17311,6 +17361,7 @@ Public Property Get units() As CUnitSystem
     If Not mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст еще не опубликован."
     Set units = mUnits
 End Property
+
 ====================================================================================================
 COMPONENT: ISectionRecipe
 TYPE: 2
@@ -17329,6 +17380,7 @@ Option Explicit
 ' по входным таблицам и системе единиц переданного контекста.
 Public Function CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
 End Function
+
 ====================================================================================================
 COMPONENT: CConcreteMaterialParameters
 TYPE: 2
@@ -17524,6 +17576,7 @@ Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
     mEbt2 = ebt2
     Validate
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CMaterialDiagram
@@ -18071,6 +18124,7 @@ Public Sub TestInitialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal e
         TestInitializeFromTwoCompressionPoints eps1, stress1, eps2, CDbl(stress2)
     End If
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CMaterialModelProvider
@@ -19048,6 +19102,7 @@ Public Sub TestInitializeFromParameters(ByVal concreteParameters As CConcreteMat
     mInitialized = True
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CMaterialModelSpec
 TYPE: 2
@@ -19150,6 +19205,7 @@ End Property
 Public Property Get steelDiagramText() As String
     steelDiagramText = SteelDiagramKindToText(mSteelDiagram)
 End Property
+
 
 ====================================================================================================
 COMPONENT: CSteelMaterialParameters
@@ -19319,6 +19375,7 @@ Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
     Validate
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CTestLinearConcreteMaterial
 TYPE: 2
@@ -19371,6 +19428,7 @@ End Function
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     GetSecantModulus = mElasticModulus
 End Function
+
 ====================================================================================================
 COMPONENT: CTestLinearSteelMaterial
 TYPE: 2
@@ -19423,6 +19481,7 @@ End Function
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     GetSecantModulus = mElasticModulus
 End Function
+
 ====================================================================================================
 COMPONENT: CCapacityCalculator
 TYPE: 2
@@ -19747,6 +19806,7 @@ Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
 
     Set CreateConfiguredSolver = cap
 End Function
+
 
 ====================================================================================================
 COMPONENT: CCapacityLimitSearchProblem
@@ -20279,6 +20339,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(format$(value, "0.############"), ",", ".")
 End Function
 
+
 ====================================================================================================
 COMPONENT: CCapacityResult
 TYPE: 2
@@ -20705,6 +20766,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCapacityResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CCapacitySolver
@@ -22881,6 +22943,7 @@ Public Property Get TestCriticalStrainUtilization() As Double
     TestCriticalStrainUtilization = mCriticalStrainUtilization
 End Property
 
+
 ====================================================================================================
 COMPONENT: CCrackLimitSearchProblem
 TYPE: 2
@@ -23300,6 +23363,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
         FormatNumberInvariant = left$(FormatNumberInvariant, Len(FormatNumberInvariant) - 1)
 End Function
 
+
 ====================================================================================================
 COMPONENT: CDiscreteForceIntegrator
 TYPE: 2
@@ -23454,6 +23518,7 @@ Public Function TryForces(ByVal diagram As CMaterialDiagram, ByVal eps As Double
     Loop
     TryForces = True
 End Function
+
 
 ====================================================================================================
 COMPONENT: CLimitSearchCoordinator
@@ -23747,6 +23812,7 @@ Private Function NormalizeStrategy(ByVal value As String) As String
             NormalizeStrategy = Trim$(value)
     End Select
 End Function
+
 
 ====================================================================================================
 COMPONENT: CLimitSearchRequest
@@ -24079,6 +24145,7 @@ Private Sub ClearLoadPathSelection()
     mPureAxialLoad = False
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CLimitSearchResult
 TYPE: 2
@@ -24311,6 +24378,7 @@ Public Property Get PointState() As CSectionStateResult
     Set PointState = mPointState
 End Property
 
+
 ====================================================================================================
 COMPONENT: CLinearSystem3x3
 TYPE: 2
@@ -24516,6 +24584,7 @@ End Property
 Public Property Get TestAbsoluteResidual() As Double
     TestAbsoluteResidual = mAbsoluteResidual
 End Property
+
 
 ====================================================================================================
 COMPONENT: CLoadMultiplierSearch
@@ -25331,6 +25400,7 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+
 ====================================================================================================
 COMPONENT: CSectionNumericalFrame
 TYPE: 2
@@ -25442,6 +25512,7 @@ End Property
 Friend Property Get lengthScale() As Double
     lengthScale = mLength
 End Property
+
 
 ====================================================================================================
 COMPONENT: CSectionSolver
@@ -27129,6 +27200,7 @@ Public Property Get TestMatrixRestartCount() As Long
     TestMatrixRestartCount = mMatrixRestartCount
 End Property
 
+
 ====================================================================================================
 COMPONENT: CSectionStrainLimits
 TYPE: 2
@@ -27265,6 +27337,7 @@ End Property
 Public Property Get description() As String
     description = mDescription
 End Property
+
 
 ====================================================================================================
 COMPONENT: CStateGuessBuilder
@@ -27932,6 +28005,7 @@ End Function
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
+
 
 ====================================================================================================
 COMPONENT: CStateSolutionRunner
@@ -28735,6 +28809,7 @@ End Function
 Friend Property Get TestRetryAttemptCount() As Long
     If Not mRetryAttemptFailures Is Nothing Then TestRetryAttemptCount = mRetryAttemptFailures.count
 End Property
+
 
 ====================================================================================================
 COMPONENT: CUltimateStrainSearch
@@ -29755,6 +29830,7 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
+
 ====================================================================================================
 COMPONENT: modLimitSearchRequestFactory
 TYPE: 1
@@ -29802,6 +29878,7 @@ Public Sub InitializeCrackFormationSearchRequest(ByVal request As CLimitSearchRe
         solutionStrategy, CrackFormationPath, targetN, targetMx, targetMy, _
         momentMxAtReference, momentMyAtReference, referenceX, referenceY
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modNonlinearStepControl
@@ -29853,6 +29930,7 @@ Public Function NonlinearMaterialTransitions(ByVal section As CSectionModel, _
     Next i
     NonlinearMaterialTransitions = first > 0#
 End Function
+
 
 ====================================================================================================
 COMPONENT: CCrackFormationCalculator
@@ -32009,6 +32087,7 @@ Private Function ExecuteFormationSearch(ByVal request As CLimitSearchRequest) As
     Set ExecuteFormationSearch = coordinator.ExecuteCrackFormation(request)
 End Function
 
+
 ====================================================================================================
 COMPONENT: CCrackFormationResult
 TYPE: 2
@@ -32258,6 +32337,7 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CCrackResult
 TYPE: 2
@@ -32449,6 +32529,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCrackResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CCrackWidthCalculator
@@ -34055,6 +34136,7 @@ Public Function Audit02AutoPsiForTests(ByVal SigmaS As Double, ByVal SigmaSCrc A
     Audit02AutoPsiForTests = AutoPsi(SigmaS, SigmaSCrc)
 End Function
 
+
 ====================================================================================================
 COMPONENT: CCrackWidthResult
 TYPE: 2
@@ -34373,6 +34455,7 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CLongitudinalCrackCalculator
 TYPE: 2
@@ -34462,6 +34545,7 @@ Public Function BlockedByDependency(ByVal dependencyName As String, ByVal reason
         0#, RbMc2, 0#
     Set BlockedByDependency = result
 End Function
+
 
 ====================================================================================================
 COMPONENT: CLongitudinalCrackResult
@@ -34559,6 +34643,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CLongitudinalCrackResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSP35CrackData
@@ -35223,6 +35308,7 @@ End Sub
 Private Function minValue(ByVal first As Double, ByVal second As Double) As Double
     If first < second Then minValue = first Else minValue = second
 End Function
+
 
 ====================================================================================================
 COMPONENT: CStabilityCalculator
@@ -36935,6 +37021,7 @@ Public Property Get PlanePassed2() As Boolean
     PlanePassed2 = mPlanePassed2
 End Property
 
+
 ====================================================================================================
 COMPONENT: CStabilityResult
 TYPE: 2
@@ -37634,6 +37721,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CStabilityResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
@@ -39871,6 +39959,7 @@ Public Function TestRepeatCrackCalculation(ByVal index As Long) As CCrackResult
     RunCrackWidth index, profile
 End Function
 
+
 ====================================================================================================
 COMPONENT: CCalculationProfile
 TYPE: 2
@@ -40206,6 +40295,7 @@ Private Function ParseVisualizationPrecision(ByVal valueText As String, ByVal se
             settingName & " должен быть целым числом от 0 до 10."
     ParseVisualizationPrecision = CLng(numericValue)
 End Function
+
 
 ====================================================================================================
 COMPONENT: CCalculationProfileCatalog
@@ -40551,6 +40641,7 @@ Public Property Get ProfileAt(ByVal index As Long) As CCalculationProfile
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, "CCalculationProfileCatalog", "Индекс профиля вне диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
     Set ProfileAt = mProfiles(index)
 End Property
+
 
 ====================================================================================================
 COMPONENT: CCombinationResult
@@ -40913,6 +41004,7 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CDirectStateResult
 TYPE: 2
@@ -41078,10 +41170,11 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CSectionStateResult
 TYPE: 2
-LINES: 551
+LINES: 573
 ====================================================================================================
 Option Explicit
 
@@ -41230,29 +41323,51 @@ End Sub
 ' повторно. Используется прежняя сетка; изменённая геометрия вызывает ошибку.
 Public Function PrepareElementSnapshot(ByVal section As CSectionModel) As Variant
     If Not mConverged Then Exit Function
+    ValidateElementSnapshotSource section
+    Dim data() As Variant
+    ReDim data(1 To section.ConcreteCount + section.rebarCount, 1 To 5)
+    FillElementSnapshot section, data, 1, 1
+    PrepareElementSnapshot = data
+End Function
+
+' Заполняет пять полей в готовом массиве потребителя без промежуточной матрицы.
+' Значения остаются во внутренних единицах; Excel и преобразования вывода здесь не используются.
+Public Sub CopyElementSnapshotTo(ByVal section As CSectionModel, ByRef data() As Variant, ByVal firstRow As Long, ByVal firstColumn As Long)
+    If Not mConverged Then Exit Sub
+    ValidateElementSnapshotSource section
+    If firstRow < LBound(data, 1) Or firstColumn < LBound(data, 2) Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Неверное начало массива снимка элементов."
+    If UBound(data, 1) - firstRow + 1 < section.ConcreteCount + section.rebarCount Or UBound(data, 2) - firstColumn < 4 Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Недостаточный размер массива снимка элементов."
+    FillElementSnapshot section, data, firstRow, firstColumn
+End Sub
+
+' Проверяет принадлежность готового НДС неизменённой модели и наличие фактических диаграмм.
+Private Sub ValidateElementSnapshotSource(ByVal section As CSectionModel)
     If section Is Nothing Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Модель для снимка элементов не передана."
     If Not section Is mSnapshotSection Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Снимок НДС относится к другой модели сечения."
     If section.revision <> mSnapshotRevision Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "После расчета НДС геометрия изменилась; выполните расчет для текущего сечения."
     If Not HasMaterialSnapshot Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Фактические диаграммы состояния недоступны для записи элементов."
-    Dim data() As Variant, i As Long, row As Long, strain As Double, stress As Double
-    ReDim data(1 To section.ConcreteCount + section.rebarCount, 1 To 5)
-    row = 1
+End Sub
+
+' Вычисляет прежние поля элементов тем же порядком операций в заданном окне массива.
+' Общая реализация сохраняет точное совпадение старого пятиколоночного и прямого путей вывода.
+Private Sub FillElementSnapshot(ByVal section As CSectionModel, ByRef data() As Variant, ByVal firstRow As Long, ByVal firstColumn As Long)
+    Dim i As Long, row As Long, strain As Double, stress As Double
+    row = firstRow
     For i = 1 To section.ConcreteCount
         strain = mEpsilon0 + mKappaX * section.concreteY(i) + mKappaY * section.concreteX(i)
         stress = mSnapshotConcrete.GetStress(strain)
-        data(row, 1) = section.ConcreteID(i): data(row, 2) = "Concrete"
-        data(row, 3) = strain: data(row, 4) = stress: data(row, 5) = ElementPhysicalState("Concrete", strain, stress)
+        data(row, firstColumn) = section.ConcreteID(i): data(row, firstColumn + 1) = "Concrete"
+        data(row, firstColumn + 2) = strain: data(row, firstColumn + 3) = stress: data(row, firstColumn + 4) = ElementPhysicalState("Concrete", strain, stress)
         row = row + 1
     Next i
     For i = 1 To section.rebarCount
         strain = mEpsilon0 + mKappaX * section.rebarY(i) + mKappaY * section.RebarX(i)
         stress = mSnapshotSteel.GetStress(strain)
-        data(row, 1) = section.RebarID(i): data(row, 2) = "Rebar"
-        data(row, 3) = strain: data(row, 4) = stress: data(row, 5) = ElementPhysicalState("Rebar", strain, stress)
+        data(row, firstColumn) = section.RebarID(i): data(row, firstColumn + 1) = "Rebar"
+        data(row, firstColumn + 2) = strain: data(row, firstColumn + 3) = stress: data(row, firstColumn + 4) = ElementPhysicalState("Rebar", strain, stress)
         row = row + 1
     Next i
-    PrepareElementSnapshot = data
-End Function
+End Sub
 
 ' Определяет работу элемента по его деформации и напряжению.
 ' Это состояние материала, а не итоговый статус сочетания нагрузок.
@@ -41634,6 +41749,7 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CStateProvider
 TYPE: 2
@@ -41883,6 +41999,7 @@ Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
 
+
 ====================================================================================================
 COMPONENT: CStateRepository
 TYPE: 2
@@ -42075,6 +42192,7 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CStateRequest
 TYPE: 2
@@ -42182,6 +42300,7 @@ End Property
 Public Property Get AllowRetryStarts() As Boolean
     AllowRetryStarts = mAllowRetryStarts
 End Property
+
 
 ====================================================================================================
 COMPONENT: CStrengthResult
@@ -42316,6 +42435,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CStrengthResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CAutoCADContourReader
@@ -42497,6 +42617,7 @@ Private Sub CleanupTemporary(ByVal temporary As Object, ByVal pieces As Variant)
     If Not temporary Is Nothing Then temporary.Delete
     On Error GoTo 0
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CAutoCADSectionModelImporter
@@ -43428,10 +43549,11 @@ Public Property Get TestDebugEdgeProbeCount() As Long
     TestDebugEdgeProbeCount = mEdgeProbeCount
 End Property
 
+
 ====================================================================================================
 COMPONENT: CBatchResultWriter
 TYPE: 2
-LINES: 928
+LINES: 929
 ====================================================================================================
 Option Explicit
 
@@ -44090,10 +44212,11 @@ End Sub
 
 ' При полном оформлении задаёт шапку, рамки и числовые форматы сводки.
 ' В минимальном режиме обновляет только подсветку статусов; ширины столбцов не меняет.
-Private Sub FormatSummary(ByVal Workbook As Object, ByVal Target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatSummary(ByVal Workbook As Object, ByVal Target As Object, ByVal batch As CBatchSectionCalculator, _
+        Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        FormatStatusCells Target, batch
+        FormatStatusCells Target, batch, preparedValues
         Exit Sub
     End If
     On Error GoTo Failed
@@ -44142,7 +44265,7 @@ Private Sub FormatSummary(ByVal Workbook As Object, ByVal Target As Object, ByVa
     Target.offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 2).Resize(Target.rows.count - GROUP_HEADER_ROW + 1, 1).Interior.colorIndex = -4142
     Target.offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 2).Resize(Target.rows.count - GROUP_HEADER_ROW + 1, 1).Interior.colorIndex = -4142
     stage = "FormatStatusCells"
-    FormatStatusCells Target, batch
+    FormatStatusCells Target, batch, preparedValues
     stage = "WriteStatusLegend"
     WriteStatusLegend Target
 
@@ -44291,10 +44414,10 @@ Private Sub ApplySummaryBorders(ByVal area As Object)
 End Sub
 
 ' Задаёт цвет ячеек статусов общей сводки по единой палитре modStatusFormatting.
-Private Sub FormatStatusCells(ByVal Target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatStatusCells(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, Optional ByRef preparedValues As Variant)
     Dim rows() As Long, i As Long
     If batch Is Nothing Then
-        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(Target, FIRST_DATA_ROW - 1)
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(Target, FIRST_DATA_ROW - 1, preparedValues, FIRST_DATA_ROW - 1)
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
@@ -44308,7 +44431,7 @@ Private Sub FormatStatusCells(ByVal Target As Object, ByVal batch As CBatchSecti
         SUM_COL_OVERALL_STATUS, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY, _
         SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK, SUM_COL_STATUS_SP35_P1_ETA, _
         SUM_COL_STATUS_SP35_P1_TABLE, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_STATUS_SP35_P2_TABLE, _
-        SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2), True
+        SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2), True, 0, preparedValues
 End Sub
 
 
@@ -44352,7 +44475,7 @@ Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculati
     PrepareSummaryTarget SummaryClearRange(Workbook), UBound(data, 1)
     Dim Target As Object: Set Target = SummaryTargetRange(Workbook, UBound(data, 1))
     WriteSummaryBody Target, data
-    FormatSummary Workbook, Target, Nothing
+    FormatSummary Workbook, Target, Nothing, data
     Dim strength As CStrengthSummaryWriter: Set strength = New CStrengthSummaryWriter
     Dim cracks As CCrackSummaryWriter: Set cracks = New CCrackSummaryWriter
     Dim stability As CStabilitySummaryWriter: Set stability = New CStabilitySummaryWriter
@@ -44361,10 +44484,11 @@ Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculati
     stability.RestoreSummary Workbook, snapshot, fullFormatting
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CBinarySnapshotFile
 TYPE: 2
-LINES: 194
+LINES: 232
 ====================================================================================================
 Option Explicit
 
@@ -44386,6 +44510,8 @@ Private mSize As Long ' Проверенная длина доступного �
 Private mPath As String ' Имя для сообщения о фактической файловой ошибке.
 Private mWriteBuffer(0 To 65535) As Byte ' Объединяет короткие записи служебных полей в блоки по 64 КиБ.
 Private mBuffered As Long ' Логическая позиция включает эти ещё не отправленные Windows байты.
+Private mReadBuffer(0 To 65535) As Byte ' Небольшие поля и строки читаются блоками, без отдельного ReadFile для каждого значения.
+Private mReadCount As Long, mReadOffset As Long ' Физический указатель опережает Position только на непрочитанный остаток этого буфера.
 
 ' Открывает существующий файл на чтение, не создавая пустой файл при опечатке.
 Public Sub OpenRead(ByVal path As String)
@@ -44417,11 +44543,12 @@ End Sub
 Public Sub CloseFile()
     On Error GoTo Failed
     If mHandle <> 0 Then FlushWrites: CloseHandle mHandle: mHandle = 0
+    mReadCount = 0: mReadOffset = 0
     Exit Sub
 Failed:
     Dim number As Long, reason As String: number = Err.number: reason = Err.description
     If mHandle <> 0 Then CloseHandle mHandle: mHandle = 0
-    mBuffered = 0
+    mBuffered = 0: mReadCount = 0: mReadOffset = 0
     Err.Raise number, "CBinarySnapshotFile.CloseFile", reason
 End Sub
 
@@ -44446,17 +44573,31 @@ Public Property Let position(ByVal value As Long)
     If value < 0 Or value > mSize Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Неверное смещение снимка: " & mPath
     FlushWrites
     If SetFilePointer(mHandle, value, 0, 0) <> value Then Err.Raise 5, "CBinarySnapshotFile", "Не удалось изменить позицию: " & mPath
-    mPosition = value
+    mPosition = value: mReadCount = 0: mReadOffset = 0
 End Property
 
 ' Читает строго заданное число байтов, не допускает незаметного усечения массива.
 Private Sub ReadExact(ByVal Target As LongPtr, ByVal count As Long)
-    Dim Done As Long
+    Dim Done As Long, copied As Long, take As Long, remaining As Long
     If count < 0 Or count > mSize - mPosition Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Файл снимка оборван: " & mPath
     If count = 0 Then Exit Sub
     FlushWrites
-    If ReadFile(mHandle, Target, count, Done, 0) = 0 Or Done <> count Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка чтения файла: " & mPath
-    mPosition = mPosition + count
+    Do While copied < count
+        remaining = count - copied
+        If mReadOffset < mReadCount Then
+            take = mReadCount - mReadOffset: If take > remaining Then take = remaining
+            CopyStreamBytes Target + copied, VarPtr(mReadBuffer(mReadOffset)), take
+            mReadOffset = mReadOffset + take: mPosition = mPosition + take: copied = copied + take
+        ElseIf remaining >= 65536 Then
+            If ReadFile(mHandle, Target + copied, remaining, Done, 0) = 0 Or Done <> remaining Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка чтения файла: " & mPath
+            mPosition = mPosition + remaining: copied = count
+            mReadCount = 0: mReadOffset = 0
+        Else
+            take = mSize - mPosition: If take > 65536 Then take = 65536
+            If ReadFile(mHandle, VarPtr(mReadBuffer(0)), take, Done, 0) = 0 Or Done <> take Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка чтения файла: " & mPath
+            mReadCount = take: mReadOffset = 0
+        End If
+    Loop
 End Sub
 
 ' Пишет блок целиком; ограничение размера проверяет до переполнения Long.
@@ -44464,6 +44605,10 @@ Private Sub WriteExact(ByVal source As LongPtr, ByVal count As Long)
     Dim Done As Long
     If count < 0 Or CDbl(mPosition) + count > 2147483647# Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Превышен размер снимка: " & mPath
     If count = 0 Then Exit Sub
+    If mReadOffset < mReadCount Then
+        If SetFilePointer(mHandle, mPosition, 0, 0) <> mPosition Then Err.Raise 5, "CBinarySnapshotFile", "Не удалось изменить позицию: " & mPath
+    End If
+    mReadCount = 0: mReadOffset = 0
     If count <= 65536 Then
         If mBuffered + count > 65536 Then FlushWrites
         CopyStreamBytes VarPtr(mWriteBuffer(mBuffered)), source, count
@@ -44493,6 +44638,23 @@ End Sub
 ' Читает одно 32-битное целое.
 Public Function ReadLong() As Long
     Dim value As Long: ReadExact VarPtr(value), 4: ReadLong = value
+End Function
+
+' Записывает длину и UTF-16LE прямо из BSTR, без временного массива байтов.
+Public Sub WriteSizedUTF16(ByVal value As String)
+    Dim count As Long: count = LenB(value)
+    WriteExact VarPtr(count), 4
+    WriteExact StrPtr(value), count
+End Sub
+
+' Читает проверенную UTF-16LE строку прямо в отдельный BSTR нужной длины.
+' Пустые строки, встроенный NUL и любые кодовые единицы Unicode сохраняются побайтно.
+Public Function ReadSizedUTF16(ByVal maximumBytes As Long) As String
+    Dim count As Long: count = ReadLong()
+    If count < 0 Or count > maximumBytes Or count Mod 2 <> 0 Or count > mSize - mPosition Then Err.Raise 5, , "Неверная длина строки снимка."
+    If count = 0 Then Exit Function
+    ReadSizedUTF16 = String$(count \ 2, vbNullChar)
+    ReadExact StrPtr(ReadSizedUTF16), count
 End Function
 
 ' Записывает исходные восемь байтов числа IEEE 754.
@@ -44560,10 +44722,11 @@ End Sub
 Public Function ReadASCII(ByVal count As Long) As String
     Dim values() As Byte: values = ReadBytes(count): ReadASCII = StrConv(values, vbUnicode)
 End Function
+
 ====================================================================================================
 COMPONENT: CCalculationSnapshot
 TYPE: 2
-LINES: 357
+LINES: 370
 ====================================================================================================
 Option Explicit
 
@@ -44574,6 +44737,7 @@ Option Explicit
 ' Числа сохраняются без округления. После подготовки набор только читается;
 ' восстановление не обращается к модели сечения, материалам или AutoCAD.
 Private mTables As Object ' Матрицы значений по стабильным ключам таблиц и шапок.
+Private mTableRows As Object ' Высоты неизменяемых матриц, без копирования таблиц при проверке раскладки.
 Private mElapsedSeconds As Double ' Полное время запуска, отдельное от содержимого таблиц.
 Private mRunID As Double ' Точная дата одного согласованного запуска.
 Private mValidated As Boolean ' Повторная проверка того же неизменённого набора не копирует большие массивы.
@@ -44586,6 +44750,8 @@ Private mElementGroupCount As Long ' Число групп; ноль также 
 Private Sub Class_Initialize()
     Set mTables = CreateObject("Scripting.Dictionary")
     mTables.CompareMode = vbBinaryCompare
+    Set mTableRows = CreateObject("Scripting.Dictionary")
+    mTableRows.CompareMode = vbBinaryCompare
 End Sub
 
 ' Устанавливает дату до заполнения таблиц; преобразование в текст не требуется.
@@ -44622,6 +44788,7 @@ Public Sub AddTable(ByVal key As String, ByVal values As Variant)
     Else
         mTables.Add key, values
     End If
+    mTableRows.Add key, UBound(values, 1)
     mValidated = False
 End Sub
 
@@ -44658,6 +44825,7 @@ Friend Sub AddPreparedElementResults(ByRef values() As Variant, ByVal usedRows A
         mElements = trimmed
     End If
     mTables.Add "rngNDMElementResults", Empty
+    mTableRows.Add "rngNDMElementResults", usedRows
     mElementGroupCount = 0: mValidated = False
 End Sub
 
@@ -44695,13 +44863,21 @@ Public Function table(ByVal key As String) As Variant
     table = values
 End Function
 
+' Передаёт большую таблицу элементов кодеку по ссылке, без независимой копии для записи.
+' Кодек только читает массив; публичный Table по-прежнему возвращает независимые данные.
+Friend Sub WritePreparedTable(ByVal key As String, ByVal store As CCalculationSnapshotStore, ByVal file As CBinarySnapshotFile)
+    If key = "rngNDMElementResults" Then
+        store.WritePreparedMatrix file, mElements, TableRowCount("rngNDMSectionGeometry") - 1
+    Else
+        Dim values As Variant: values = table(key)
+        store.WritePreparedMatrix file, values
+    End If
+End Sub
+
 ' Возвращает размер без копирования всей матрицы ради одного UBound.
 Public Function TableRowCount(ByVal key As String) As Long
-    If key = "rngNDMElementResults" And mTables.Exists(key) Then
-        TableRowCount = UBound(mElements, 1)
-    Else
-        Dim values As Variant: values = table(key): TableRowCount = UBound(values, 1)
-    End If
+    If Not mTables.Exists(key) Then Err.Raise 5, "CCalculationSnapshot", "В снимке отсутствует таблица: " & key
+    TableRowCount = CLng(mTableRows.item(key))
 End Function
 
 ' Выбирает только нужные строки по кратковременному индексу неизменяемого снимка.
@@ -44922,10 +45098,11 @@ Private Function IsCaseProperty(ByRef values As Variant, ByVal row As Long) As B
     IsCaseProperty = CStr(values(row, 2)) <> "ALL" Or key = "LoadReferenceX" Or key = "LoadReferenceY" Or left$(key, Len("SP35.Slenderness")) = "SP35.Slenderness"
 End Function
 
+
 ====================================================================================================
 COMPONENT: CCalculationSnapshotStore
 TYPE: 2
-LINES: 563
+LINES: 610
 ====================================================================================================
 Option Explicit
 
@@ -44937,6 +45114,7 @@ Option Explicit
 ' Подмена файла выполняется атомарно после записи и контрольной суммы.
 Private Declare PtrSafe Function MoveFileExW Lib "kernel32" (ByVal source As LongPtr, ByVal Target As LongPtr, ByVal flags As Long) As Long
 Private Declare PtrSafe Sub CopySnapshotBits Lib "kernel32" Alias "RtlMoveMemory" (ByRef Target As Currency, ByRef source As Double, ByVal count As LongPtr)
+Private Declare PtrSafe Sub CopyPackedBytes Lib "kernel32" Alias "RtlMoveMemory" (ByVal Target As LongPtr, ByVal source As LongPtr, ByVal count As LongPtr)
 Private Const MAGIC As String = "NDMSNP04" ' Контракт плотных колонок и точных повторяющихся серий версии 4.
 Private Const SNAPSHOT_RANGE As String = "rngNDMLoadCaseResults" ' Единственный новый именованный диапазон Results.
 Private Const CHUNK_BYTES As Long = 18000 ' Base64 меньше предела 32767 символов одной ячейки Excel.
@@ -44986,18 +45164,6 @@ Public Sub ClearReference(ByVal Workbook As Object)
     Next key
 End Sub
 
-' Оставляет один аккуратный указатель на внешний LC-блок вместо скрытых дублей данных.
-Public Sub WriteFileNotice(ByVal Workbook As Object)
-    Dim Target As Object: Set Target = Workbook.names.item(SNAPSHOT_RANGE).RefersToRange
-    Target.cells(1, 1).value2 = "Результаты LC": Target.cells(1, 2).value2 = "Внешний снимок"
-    Target.cells(2, 1).value2 = "Файл": Target.cells(2, 2).value2 = LinkText(Workbook, "File")
-    Target.cells(3, 1).value2 = "Загрузка": Target.cells(3, 2).value2 = "Обновить схему и результаты"
-    With Target.Resize(3, 2)
-        .font.name = "Arial": .font.size = 9: .WrapText = False
-        .Borders.LineStyle = 1: .Interior.color = RGB(217, 217, 217)
-    End With
-End Sub
-
 ' Записывает одно собственное служебное свойство без изменения чужих метаданных.
 Private Sub SetLink(ByVal Workbook As Object, ByVal key As String, ByVal value As String)
     On Error Resume Next
@@ -45042,7 +45208,7 @@ Public Function SnapshotPath(ByVal Workbook As Object) As String
     End If
     If Len(name) = 0 Or Len(name) > 180 Or right$(name, 1) = "." Or right$(name, 1) = " " Then invalid = True
     If invalid Then Err.Raise 5, "CCalculationSnapshotStore", settings.InputErrorMessage( _
-        "Results.SnapshotName", "Требуется допустимое имя файла без пути.", "Введите, например, NDM_Snapshot.ndms.")
+        "Results.SnapshotName", "Требуется допустимое имя снимка без пути.", "Введите, например, NDM_Snapshot; расширение .ndms добавляется автоматически.")
     If LCase$(right$(name, 5)) <> ".ndms" Then name = name & ".ndms"
     If Len(CStr(Workbook.path)) = 0 Or InStr(CStr(Workbook.path), "://") > 0 Then Err.Raise 5, , "Сначала сохраните книгу в локальную папку."
     SnapshotPath = CStr(Workbook.path) & Application.PathSeparator & name
@@ -45174,7 +45340,7 @@ End Sub
 ' Записывает все матрицы либо только дополнения тем же двоичным кодеком.
 Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot, ByVal extrasOnly As Boolean)
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim count As Long, key As Variant, values As Variant, hash As String
+    Dim count As Long, key As Variant, hash As String
     On Error GoTo Failed
     For Each key In snapshot.keys()
         If Not extrasOnly Or Not snapshot.IsBaseKey(CStr(key)) Then count = count + 1
@@ -45183,7 +45349,7 @@ Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnap
     file.WriteASCII MAGIC: file.WriteLong 4: file.WriteDouble snapshot.runID: file.WriteDouble snapshot.elapsedSeconds: file.WriteLong count
     For Each key In snapshot.keys()
         If Not extrasOnly Or Not snapshot.IsBaseKey(CStr(key)) Then
-            PutText file, CStr(key): values = snapshot.table(CStr(key)): WriteMatrix file, values
+            PutText file, CStr(key): snapshot.WritePreparedTable CStr(key), Me, file
         End If
     Next key
     file.CloseFile
@@ -45195,6 +45361,12 @@ Failed:
     Dim reason As String: reason = Err.description
     file.CloseFile
     Err.Raise vbObjectError + 4953, "CCalculationSnapshotStore.WriteBinary", reason
+End Sub
+
+' Записывает переданный снимком массив без копирования большой матрицы элементов.
+' Таблица остаётся собственностью снимка; ни значения, ни порядок строк не меняются.
+Friend Sub WritePreparedMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Variant, Optional ByVal elementCount As Long = 0)
+    WriteMatrix file, values, elementCount
 End Sub
 
 ' Проверяет контрольную сумму до выделения матриц и чтения значений.
@@ -45227,7 +45399,7 @@ End Function
 
 ' Сохраняет колонку плотными массивами типов, чисел и индексов Unicode-словаря.
 ' Повторяющиеся имена сочетаний и материалов не записываются заново для каждого элемента.
-Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Variant)
+Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Variant, Optional ByVal elementCount As Long = 0)
     Dim rows As Long, columns As Long, i As Long, j As Long, flags() As Byte, numbers() As Double, codes() As Long
     Dim dictionary As Object, item As Variant, mask As Byte, count As Long, kind As Long
     Dim text As String, previousText As String, previousCode As Long
@@ -45240,6 +45412,9 @@ Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Varia
             GoTo NextColumn
         End If
         If WriteRepeatedColumn(file, values, j, rows) Then GoTo NextColumn
+        If elementCount > 0 And j = 5 Then
+            If WriteRepeatedElementIDs(file, values, rows, elementCount) Then GoTo NextColumn
+        End If
         ReDim flags(1 To rows): ReDim numbers(1 To rows): ReDim codes(1 To rows)
         Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbBinaryCompare: mask = 0: previousCode = 0
         For i = 1 To rows
@@ -45266,11 +45441,64 @@ Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Varia
         If (mask And 1) <> 0 Then file.WriteDoubles numbers
         If (mask And 2) <> 0 Then
             file.WriteLongs codes: count = dictionary.count: file.WriteLong count
-            For Each item In dictionary.keys: PutText file, CStr(item): Next item
+            If Not WritePackedDictionary(file, dictionary) Then
+        For Each item In dictionary.keys: PutText file, CStr(item): Next item
+    End If
         End If
 NextColumn:
     Next j
 End Sub
+
+' Проверяет повторение точного списка ElementID во всех сохранённых состояниях.
+' Создаёт прежний словарь лишь для первого блока; несовпадение возвращает обычный кодек без записи байтов.
+Private Function WriteRepeatedElementIDs(ByVal file As CBinarySnapshotFile, ByRef values As Variant, ByVal rows As Long, ByVal elementCount As Long) As Boolean
+    If elementCount < 1 Or rows < 4096 Then Exit Function
+    If (rows - 1) Mod elementCount <> 0 Or (rows - 1) \ elementCount < 2 Then Exit Function
+    Dim dictionary As Object: Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbBinaryCompare
+    Dim flags() As Byte, codes() As Long, row As Long, first As Long, text As String, key As Variant
+    ReDim flags(1 To rows): ReDim codes(1 To rows)
+    For row = 1 To elementCount + 1
+        If VarType(values(row, 5)) <> vbString Then Exit Function
+        text = CStr(values(row, 5))
+        If dictionary.Exists(text) Then Exit Function
+        dictionary.Add text, row: flags(row) = 1: codes(row) = row
+    Next row
+    first = 2
+    For row = elementCount + 2 To rows
+        If VarType(values(row, 5)) <> vbString Then Exit Function
+        If StrComp(CStr(values(row, 5)), CStr(values(first, 5)), vbBinaryCompare) <> 0 Then Exit Function
+        flags(row) = 1: codes(row) = first
+        first = first + 1: If first > elementCount + 1 Then first = 2
+    Next row
+    file.WriteByte 2: file.WriteBytes flags: file.WriteLongs codes: file.WriteLong dictionary.count
+    If Not WritePackedDictionary(file, dictionary) Then
+        For Each key In dictionary.keys: PutText file, CStr(key): Next key
+    End If
+    WriteRepeatedElementIDs = True
+End Function
+
+' Готовит крупный словарь в один непрерывный блок с прежними Long-длинами и UTF-16LE.
+' Предел 8 МиБ ограничивает дополнительную память; маленькие и слишком большие словари идут потоком.
+Private Function WritePackedDictionary(ByVal file As CBinarySnapshotFile, ByVal dictionary As Object) As Boolean
+    If dictionary.count < 512 Then Exit Function
+    Dim keys As Variant: keys = dictionary.keys
+    Dim key As Variant, total As Double, text As String
+    For Each key In keys
+        total = total + 4# + LenB(CStr(key))
+        If total > 8388608# Then Exit Function
+    Next key
+    Dim data() As Byte: ReDim data(0 To CLng(total) - 1)
+    Dim offset As Long, count As Long
+    For Each key In keys
+        text = CStr(key): count = LenB(text)
+        CopyPackedBytes VarPtr(data(offset)), VarPtr(count), 4
+        offset = offset + 4
+        If count > 0 Then CopyPackedBytes VarPtr(data(offset)), StrPtr(text), count
+        offset = offset + count
+    Next key
+    file.WriteBytes data
+    WritePackedDictionary = True
+End Function
 
 ' Небольшие сводки и шапки не создают сотни отдельных COM-словарей.
 ' Буфер потока объединяет короткие значения в крупные физические записи.
@@ -45409,16 +45637,12 @@ End Sub
 
 ' Сохраняет UTF-16LE с явной длиной, не завися от системной ANSI-кодировки.
 Private Sub PutText(ByVal file As CBinarySnapshotFile, ByVal value As String)
-    Dim count As Long, bytes() As Byte: count = LenB(value): file.WriteLong count
-    If count > 0 Then bytes = value: file.WriteBytes bytes
+    file.WriteSizedUTF16 value
 End Sub
 
 ' Проверяет размер строки до выделения памяти и чтения точного Unicode.
 Private Function GetText(ByVal file As CBinarySnapshotFile) As String
-    Dim count As Long, bytes() As Byte: count = file.ReadLong
-    If count < 0 Or count > 131072 Or count Mod 2 <> 0 Or count > file.size - file.position Then Err.Raise 5, , "Неверная длина строки снимка."
-    If count = 0 Then Exit Function
-    bytes = file.ReadBytes(count): GetText = bytes
+    GetText = file.ReadSizedUTF16(131072)
 End Function
 
 ' Создаёт уникальное имя служебного временного файла Windows, не оставляя его после операции.
@@ -45490,10 +45714,11 @@ Private Sub DeleteFile(ByVal path As String)
     CreateObject("Scripting.FileSystemObject").DeleteFile path, True
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CCrackSummaryWriter
 TYPE: 2
-LINES: 1122
+LINES: 1124
 ====================================================================================================
 Option Explicit
 
@@ -46225,10 +46450,11 @@ End Sub
 
 ' Оформляет подробную таблицу трещин: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
-Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
+Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem, _
+        Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        ApplyStatusCells Target, batch, Target.rows.count - HEADER_ROWS
+        ApplyStatusCells Target, batch, Target.rows.count - HEADER_ROWS, preparedValues
         Exit Sub
     End If
     Target.font.name = "Arial"
@@ -46287,7 +46513,7 @@ Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalc
         widthFormat = CrackWidthNumberFormat(units) ' Сохраняем одинаковую физическую точность 0.001 мм: ширина в метрах не должна выглядеть нулевой из-за общего трехзначного формата таблицы.
         Target.offset(HEADER_ROWS, COL_SP35_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
         Target.offset(HEADER_ROWS, COL_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
-        ApplyStatusCells Target, batch, dataRows
+        ApplyStatusCells Target, batch, dataRows, preparedValues
     End If
     ApplyHeaderSubscripts Target
 End Sub
@@ -46315,10 +46541,11 @@ Private Sub FormatBlock(ByVal Target As Object, ByVal firstCol As Long, ByVal la
 End Sub
 
 ' Красит блоки строки по статусу общей проверки, нормальных и продольных трещин.
-Private Sub ApplyStatusCells(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
+Private Sub ApplyStatusCells(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long, _
+        Optional ByRef preparedValues As Variant)
     Dim rows() As Long, i As Long
     If batch Is Nothing Then
-        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(Target, HEADER_ROWS)
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(Target, HEADER_ROWS, preparedValues)
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
@@ -46331,7 +46558,7 @@ Private Sub ApplyStatusCells(ByVal Target As Object, ByVal batch As CBatchSectio
     ApplyTableStatusFills Target, rows, Array( _
         COL_STATUS, COL_PRE_CRACK_STATUS, COL_POST_CRACK_STATUS, _
         COL_FORMATION_STATE, COL_CRACK_STATE_STATUS, COL_ACRC_STATUS, _
-        COL_SP35_STATUS, COL_LONG_STATUS), False, COL_FORMATION_STATE
+        COL_SP35_STATUS, COL_LONG_STATUS), False, COL_FORMATION_STATE, preparedValues, HEADER_ROWS
 End Sub
 
 ' Записывает данные выполненной формулы СП 35: выбранную опорную группу,
@@ -46613,9 +46840,10 @@ Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculati
     WriteBlockTitle Target, "Расчет нормальных и продольных трещин"
     Target.offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
     mSnapshotLengthUnit = snapshot.OutputLengthUnit
-    FormatTable Target, Nothing, Nothing
+    FormatTable Target, Nothing, Nothing, data
     mSnapshotLengthUnit = vbNullString
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CExcelAppStateGuard
@@ -46733,6 +46961,7 @@ End Sub
 Private Sub Class_Terminate()
     Restore
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CExecutionReport
@@ -47403,6 +47632,7 @@ Private Function JoinReportParts(ByRef parts() As String, ByVal count As Long) A
     JoinReportParts = Join(parts, vbCrLf)
 End Function
 
+
 ====================================================================================================
 COMPONENT: CFileChecksum
 TYPE: 2
@@ -47453,10 +47683,11 @@ Failed:
     If provider <> 0 Then CryptReleaseContext provider, 0
     Err.Raise vbObjectError + 4943, "CFileChecksum.FileSHA256", reason
 End Function
+
 ====================================================================================================
 COMPONENT: CLoadCombinationReader
 TYPE: 2
-LINES: 187
+LINES: 171
 ====================================================================================================
 Option Explicit
 
@@ -47496,11 +47727,8 @@ Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCal
     data = source.value2
 
     Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1) ' Пустые строки оставляем пользователю для ввода, а не превращаем в ошибки.
-        If IsEmptyCombinationRow(data, rowIndex) Then ' Строка свободна для будущего ввода LC.
-        Else
-            AddRow data, batch, rowIndex, units, source
-        End If
+    For rowIndex = 2 To UBound(data, 1) ' Пустой номер отключает строку, сохраняя введённые нагрузки и её исходное место.
+        If Not IsBlankCell(data(rowIndex, 1)) Then AddRow data, batch, rowIndex, units, source
     Next rowIndex
 End Sub
 
@@ -47518,6 +47746,16 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     pathLocation = "LoadPath"
     If UBound(data, 2) >= 6 Then pathLocation = CellLocation(source, rowIndex, 6, "LoadPath")
     combinationID = ReadCellText(data(rowIndex, 1), CellLocation(source, rowIndex, 1, "CombinationID"), errorText)
+    Dim nValue As Double, mxValue As Double, myValue As Double
+    nValue = ReadOptionalLoadDouble(data(rowIndex, 2), CellLocation(source, rowIndex, 2, "N"), errorText)
+    mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText)
+    myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText)
+    If Len(errorText) = 0 Then ' Точно нулевой LC не использует профиль, путь и комментарий; ненулевые малые нагрузки сохраняются.
+        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, source, rowIndex
+        If Len(errorText) = 0 Then
+            If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub
+        End If
+    End If
     profileID = ReadCellText(data(rowIndex, 5), CellLocation(source, rowIndex, 5, "ProfileId"), errorText)
     If UBound(data, 2) >= 7 Then
         loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText)
@@ -47534,20 +47772,6 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If Len(pathDescriptor.NormalizeKey(loadPathText)) = 0 Then _
         AppendError errorText, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy"
 
-    Dim nValue As Double
-    Dim mxValue As Double
-    Dim myValue As Double
-    nValue = ReadOptionalLoadDouble(data(rowIndex, 2), CellLocation(source, rowIndex, 2, "N"), errorText)
-    mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText)
-    myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText)
-
-    If Len(errorText) = 0 Then ' Пропускаем только точно нулевые нагрузки. Силы и моменты имеют разные единицы; порог практически нулевого момента применяется позже в расчётном классе.
-        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, source, rowIndex
-        If Len(errorText) = 0 Then
-            If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub
-        End If
-    End If
-
     If Len(Trim$(combinationID)) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 1, "CombinationID") & " не заполнен"
     If Len(profileID) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 5, "ProfileId") & " не заполнен"
 
@@ -47557,15 +47781,6 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
         batch.AddCombination combinationID, nValue, mxValue, myValue, profileID, comment, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
     End If
 End Sub
-
-' Проверяет, что пользователь действительно ничего не ввел в строке LC.
-Private Function IsEmptyCombinationRow(ByRef data As Variant, ByVal rowIndex As Long) As Boolean
-    Dim col As Long
-    For col = 1 To UBound(data, 2)
-        If Not IsBlankCell(data(rowIndex, col)) Then Exit Function
-    Next col
-    IsEmptyCombinationRow = True
-End Function
 
 ' Читает нагрузку, где пустая ячейка означает 0.
 ' Это позволяет задавать одноосный изгиб как N + Mx при пустом My.
@@ -47645,10 +47860,11 @@ Private Sub AppendError(ByRef errorText As String, ByVal item As String)
     errorText = errorText & item
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CNDMResultsWriter
 TYPE: 2
-LINES: 1834
+LINES: 1854
 ====================================================================================================
 Option Explicit
 
@@ -47664,6 +47880,9 @@ Option Explicit
 
 Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник полного результата до сохранения и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
+Private mPreservedWorkbook As Object ' Владелец исходных таблиц, прочитанных до расчёта в пределах одной операции.
+Private mPreservedGeometry As Variant, mPreservedContours As Variant, mPreservedAnnotations As Variant ' Точные входные строки; новые результаты через лист не передаются.
+Private mPreservedDiagnostics As String ' Прежнее пояснение происхождения геометрии, сохранённое до запуска решателя.
 
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' Столбцы результата каждого элемента: запуск, сочетание, профиль, вид НДС, имя элемента, материал, деформация, напряжение и состояние работы.
 Private Const GEOMETRY_COLUMNS As Long = 16 ' Только расчетные бетонные элементы и арматура.
@@ -48832,7 +49051,8 @@ End Sub
 ' Дальнейшее чтение использует это имя и размеры таблицы,
 ' а не область CurrentRegion соседних заполненных ячеек. В минимальном режиме
 ' сохраняет готовое оформление, если распознаны шапка и формат даты запуска.
-Friend Sub FormatResultsBlock(ByVal Target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)
+Friend Sub FormatResultsBlock(ByVal Target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String, _
+        Optional ByRef preparedValues As Variant)
     If mMinimalFormatting Then
         If CStr(Target.cells(rowCount, 1).NumberFormat) = "dd.mm.yy" And CBool(Target.cells(1, 1).font.Bold) Then
             If rowCount > 1 Then Target.offset(1, 0).Resize(rowCount - 1, columnCount).WrapText = False
@@ -48863,9 +49083,14 @@ Friend Sub FormatResultsBlock(ByVal Target As Object, ByVal rowCount As Long, By
     tableRange.rows.item(1).HorizontalAlignment = -4131
     tableRange.columns.item(1).NumberFormat = "dd.mm.yy"
 
-    Dim headers As Variant: headers = tableRange.rows.item(1).value2
-    AlignCommentColumns tableRange, headers
-    ApplyResultNumberFormats tableRange, headers
+    If IsMissing(preparedValues) Then
+        Dim headers As Variant: headers = tableRange.rows.item(1).value2
+        AlignCommentColumns tableRange, headers
+        ApplyResultNumberFormats tableRange, headers
+    Else
+        AlignCommentColumns tableRange, preparedValues
+        ApplyResultNumberFormats tableRange, preparedValues
+    End If
 
     If Target.row > 2 Then
         Dim titleRange As Object
@@ -48960,23 +49185,20 @@ Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex
         ByVal stateResult As CSectionStateResult, ByVal runID As Variant, ByVal units As CUnitSystem)
     If stateResult Is Nothing Then Exit Sub
     If Not stateResult.converged Then Exit Sub
-    Dim prepared As Variant, i As Long, combinationID As String, profileID As String, stateType As String
+    Dim lastRow As Long, combinationID As String, profileID As String, stateType As String
     combinationID = batch.combinationID(combinationIndex)
     profileID = batch.ResultAt(combinationIndex).profileID
     stateType = stateResult.stateTypeText
-    prepared = stateResult.PrepareElementSnapshot(section)
-    For i = 1 To UBound(prepared, 1)
+    stateResult.CopyElementSnapshotTo section, data, rowIndex, 5
+    lastRow = rowIndex + section.ConcreteCount + section.rebarCount - 1
+    Do While rowIndex <= lastRow
         data(rowIndex, 1) = runID
         data(rowIndex, 2) = combinationID
         data(rowIndex, 3) = profileID
         data(rowIndex, 4) = stateType
-        data(rowIndex, 5) = prepared(i, 1)
-        data(rowIndex, 6) = prepared(i, 2)
-        data(rowIndex, 7) = prepared(i, 3)
-        data(rowIndex, 8) = OutputStress(CDbl(prepared(i, 4)), units)
-        data(rowIndex, 9) = prepared(i, 5)
+        data(rowIndex, 8) = OutputStress(CDbl(data(rowIndex, 8)), units)
         rowIndex = rowIndex + 1
-    Next i
+    Loop
 End Sub
 
 ' Кладет одну строку rngNDMElementResults в общий массив перед блочной записью на лист.
@@ -49403,7 +49625,18 @@ Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
     Set mCapturedSnapshot = value
 End Property
 
-' Собирает готовые матрицы. Прежняя геометрия переносится в памяти с новым RunID.
+' Сохраняет исходные таблицы в коротком контексте чтения модели до расчёта.
+' При последующей подготовке файла используются эти массивы, а не ячейки Results.
+Friend Sub PreparePreservedSnapshotSource(ByVal Workbook As Object)
+    Set mPreservedWorkbook = Nothing ' Неудачное новое чтение не оставляет действительной привязку предыдущего набора.
+    mPreservedGeometry = CalculationGeometryTable(ReadPhysicalResultTable(Workbook, "rngNDMSectionGeometry"))
+    mPreservedContours = ReadPhysicalResultTable(Workbook, "rngNDMSectionContours")
+    mPreservedAnnotations = ReadPhysicalResultTable(Workbook, "rngNDMSectionAnnotations")
+    mPreservedDiagnostics = ReadLoadCasePropertyText(Workbook, "ALL", "Geometry.RecipeDiagnostics")
+    Set mPreservedWorkbook = Workbook
+End Sub
+
+' Собирает конечные таблицы из результатов и заранее сохранённых входных массивов.
 Private Sub CapturePreparedResults(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal props As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
         ByVal units As CUnitSystem, ByVal preserveGeometry As Boolean)
@@ -49411,12 +49644,13 @@ Private Sub CapturePreparedResults(ByVal Workbook As Object, ByVal section As CS
     Dim runID As Date: runID = Now: mCapturedSnapshot.runID = CDbl(runID)
     Dim previousAnnotations As Variant, diagnostics As String
     If preserveGeometry Then
-        previousAnnotations = ReadPhysicalResultTable(Workbook, "rngNDMSectionAnnotations")
-        diagnostics = ReadLoadCasePropertyText(Workbook, "ALL", "Geometry.RecipeDiagnostics")
+        If Not Workbook Is mPreservedWorkbook Then PreparePreservedSnapshotSource Workbook
+        Set mPreservedWorkbook = Nothing ' Входные строки потребляются один раз; повторный вызов writer-а обязан прочитать актуальный источник.
+        previousAnnotations = mPreservedAnnotations
+        diagnostics = mPreservedDiagnostics
         Dim key As Variant, data As Variant, i As Long
         For Each key In Array("rngNDMSectionGeometry", "rngNDMSectionContours")
-            data = ReadPhysicalResultTable(Workbook, CStr(key))
-            If CStr(key) = "rngNDMSectionGeometry" Then data = CalculationGeometryTable(data)
+            If CStr(key) = "rngNDMSectionGeometry" Then data = mPreservedGeometry Else data = mPreservedContours
             For i = 2 To UBound(data, 1): data(i, 1) = CDbl(runID): Next i
             mCapturedSnapshot.AddTable CStr(key), data
         Next key
@@ -49424,6 +49658,8 @@ Private Sub CapturePreparedResults(ByVal Workbook As Object, ByVal section As CS
         WriteSectionGeometry Workbook, section, runID, units
         WriteSectionContours Workbook, section.contours, runID, units
     End If
+    Set mPreservedWorkbook = Nothing
+    mPreservedGeometry = Empty: mPreservedContours = Empty: mPreservedAnnotations = Empty: mPreservedDiagnostics = vbNullString
     WriteElementResults Workbook, section, batch, runID, units
     WriteSectionProperties Workbook, section, props, batch, runID, units, diagnostics
     WriteMaterialDiagrams Workbook, batch, runID, units
@@ -49455,7 +49691,7 @@ End Function
 ' общие геометрические характеристики и фактически использованные диаграммы.
 Public Sub RestoreSnapshotBase(ByVal Workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True, Optional ByVal includeElements As Boolean = True)
     Set mCapturedSnapshot = Nothing: mMinimalFormatting = Not fullFormatting
-    ClearNamedRegion Workbook, "rngNDMElementResults"
+    If Not includeElements Then ClearNamedRegion Workbook, "rngNDMElementResults"
     Dim key As Variant, data As Variant, Target As Object, title As String
     For Each key In snapshot.BaseKeys()
         If CStr(key) = "rngNDMElementResults" And Not includeElements Then GoTo NextBaseTable
@@ -49478,11 +49714,12 @@ Public Sub RestoreSnapshotBase(ByVal Workbook As Object, ByVal snapshot As CCalc
             Case "rngNDMMaterialDiagrams": title = "Фактически использованные диаграммы материалов"
             Case "rngNDMSectionAnnotations": title = "Аннотации схемы"
         End Select
-        FormatResultsBlock Target, UBound(data, 1), UBound(data, 2), title
+        FormatResultsBlock Target, UBound(data, 1), UBound(data, 2), title, data
 NextBaseTable:
     Next key
     WriteSnapshotTitle Workbook
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CPlotAnnotationLayout
@@ -50024,6 +50261,7 @@ Public Property Get dimensionsEnabled() As Boolean: dimensionsEnabled = mDimensi
 ' Активна ли группа подписей арматуры.
 Public Property Get rebarLabelsEnabled() As Boolean: rebarLabelsEnabled = mRebarLabelsEnabled: End Property
 
+
 ====================================================================================================
 COMPONENT: CSectionInputSnapshotReader
 TYPE: 2
@@ -50080,10 +50318,11 @@ Private Function columnName(ByVal column As Long) As String
     Loop
 End Function
 
+
 ====================================================================================================
 COMPONENT: CSectionPlotDataReader
 TYPE: 2
-LINES: 1311
+LINES: 1322
 ====================================================================================================
 Option Explicit
 
@@ -50417,6 +50656,17 @@ End Function
 Private Function ReadBatchSummaryComment(ByVal Workbook As Object, ByVal loadCase As String) As String
     On Error GoTo Failed
     If Len(Trim$(loadCase)) = 0 Then Exit Function
+
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(Workbook)
+    If Not snapshot Is Nothing Then
+        Dim summary As Variant, summaryRow As Long: summary = snapshot.table("Summary")
+        For summaryRow = 13 To UBound(summary, 1)
+            If StrComp(Trim$(SafeText(summary(summaryRow, 1))), loadCase, vbTextCompare) = 0 Then
+                ReadBatchSummaryComment = Trim$(SafeText(summary(summaryRow, 2))): Exit Function
+            End If
+        Next summaryRow
+        Exit Function
+    End If
 
     Dim anchor As Object, nextAnchor As Object, summaryWriter As CStrengthSummaryWriter
     Set anchor = Workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
@@ -51395,6 +51645,7 @@ Public Property Get AnnotationNormalY(ByVal index As Long) As Double: Annotation
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property
 ' Возвращает прочитанный и проверенный угол без повторного разбора текстовых значений Results.
 Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: AnnotationSweepAngle = mAnnotationSweepAngle(index): End Property
+
 
 ====================================================================================================
 COMPONENT: CSectionPlotter
@@ -53493,6 +53744,7 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
+
 ====================================================================================================
 COMPONENT: CSectionTypeRegistry
 TYPE: 2
@@ -53567,10 +53819,11 @@ Public Function CreateDefinition(ByVal typeID As String, ByVal context As CSecti
     Set recipe = CreateRecipe(typeID)
     Set CreateDefinition = recipe.CreateDefinition(context)
 End Function
+
 ====================================================================================================
 COMPONENT: CStabilitySummaryWriter
 TYPE: 2
-LINES: 952
+LINES: 953
 ====================================================================================================
 Option Explicit
 
@@ -54137,10 +54390,11 @@ End Sub
 
 ' Оформляет подробную таблицу устойчивости: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
-Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, _
+        Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        FormatStatusCells Target, batch
+        FormatStatusCells Target, batch, preparedValues
         Exit Sub
     End If
     Target.font.name = "Arial"
@@ -54166,7 +54420,7 @@ Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalc
     Target.offset(HEADER_ROWS, 0).Resize(dataRows, 3).NumberFormat = "@"
     Target.offset(HEADER_ROWS, 1).Resize(dataRows, 1).HorizontalAlignment = -4131
 
-    FormatStatusCells Target, batch
+    FormatStatusCells Target, batch, preparedValues
 End Sub
 
 ' Оформляет строку примечаний как обычный текст, а не как дополнительный заголовок.
@@ -54193,10 +54447,10 @@ Private Sub FormatBlock(ByVal Target As Object, ByVal firstColumn As Long, ByVal
 End Sub
 
 ' Красит блоки строки LC по итоговому статусу расчета устойчивости.
-Private Sub FormatStatusCells(ByVal Target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatStatusCells(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, Optional ByRef preparedValues As Variant)
     Dim rows() As Long, i As Long
     If batch Is Nothing Then
-        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(Target, HEADER_ROWS)
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(Target, HEADER_ROWS, preparedValues)
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
@@ -54210,7 +54464,7 @@ Private Sub FormatStatusCells(ByVal Target As Object, ByVal batch As CBatchSecti
     ApplyTableStatusFills Target, rows, Array( _
         3, SP35_PLANE1_FIRST + 8, SP35_PLANE1_FIRST + 14, _
         SP35_PLANE2_FIRST + 8, SP35_PLANE2_FIRST + 14, SP63_PLANE1_FIRST + 11, _
-        SP63_PLANE2_FIRST + 11)
+        SP63_PLANE2_FIRST + 11), False, 0, preparedValues, HEADER_ROWS
 End Sub
 
 ' Заполняет все статусные колонки нормативных ветвей значением N/A до записи выбранной методики.
@@ -54521,13 +54775,14 @@ Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculati
     End If
     WriteBlockTitle Target, "Расчет продольного изгиба и устойчивости"
     Target.offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
-    FormatTable Target, Nothing
+    FormatTable Target, Nothing, data
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CStrengthSummaryWriter
 TYPE: 2
-LINES: 880
+LINES: 882
 ====================================================================================================
 Option Explicit
 
@@ -55129,10 +55384,11 @@ End Sub
 
 ' Оформляет подробную таблицу прочности: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
-Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, _
+        Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        ApplyStatusCells Target, batch, Target.rows.count - HEADER_ROWS
+        ApplyStatusCells Target, batch, Target.rows.count - HEADER_ROWS, preparedValues
         Exit Sub
     End If
     Target.font.name = "Arial"
@@ -55168,7 +55424,7 @@ Private Sub FormatTable(ByVal Target As Object, ByVal batch As CBatchSectionCalc
         Target.offset(HEADER_ROWS, COL_CAP_LIMIT_STATE - 1).Resize(dataRows, 3).NumberFormat = "@"
         Target.offset(HEADER_ROWS, COL_CAP_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         ApplyStrainNumberFormat Target, dataRows
-        ApplyStatusCells Target, batch, dataRows
+        ApplyStatusCells Target, batch, dataRows, preparedValues
     End If
     ApplyHeaderSubscripts Target
 End Sub
@@ -55195,10 +55451,11 @@ Private Sub FormatBlock(ByVal Target As Object, ByVal firstCol As Long, ByVal la
 End Sub
 
 ' Красит строковые блоки подробной таблицы по фактическому статусу каждой проверки.
-Private Sub ApplyStatusCells(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
+Private Sub ApplyStatusCells(ByVal Target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long, _
+        Optional ByRef preparedValues As Variant)
     Dim rows() As Long, i As Long
     If batch Is Nothing Then
-        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(Target, HEADER_ROWS)
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(Target, HEADER_ROWS, preparedValues)
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
@@ -55209,7 +55466,7 @@ Private Sub ApplyStatusCells(ByVal Target As Object, ByVal batch As CBatchSectio
     Next i
     End If
     ApplyTableStatusFills Target, rows, Array( _
-        COL_STATUS, COL_STATE_STATUS, COL_CAP_STATUS)
+        COL_STATUS, COL_STATE_STATUS, COL_CAP_STATUS), False, 0, preparedValues, HEADER_ROWS
 End Sub
 
 
@@ -55406,8 +55663,9 @@ Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculati
     End If
     WriteBlockTitle Target, "Расчет НДС и несущей способности по модели прочности"
     Target.offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
-    FormatTable Target, Nothing
+    FormatTable Target, Nothing, data
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSystemSettingsReader
@@ -56283,6 +56541,7 @@ Public Function KeyAt(ByVal index As Long) As String
     KeyAt = mKeys(index)
 End Function
 
+
 ====================================================================================================
 COMPONENT: CUnitSystem
 TYPE: 2
@@ -56755,6 +57014,7 @@ Private Function ValidMySign(ByVal value As String, ByVal settingKey As String, 
         Case Else: Err.Raise vbObjectError + 4538, "CUnitSystem", settings.InputErrorMessage(settingKey, "Правило знака момента My не распознано.", "Выберите +X tension или -X tension: знак X обозначает сторону растяжения при положительном My.")
     End Select
 End Function
+
 
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
@@ -58902,10 +59162,11 @@ Public Sub Audit03EnsureAutoCADLayerForTests(ByVal doc As Object, ByVal name As 
     EnsureAcadLayer doc, name, color
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modCalculationSnapshot
 TYPE: 1
-LINES: 208
+LINES: 207
 ====================================================================================================
 Option Explicit
 
@@ -58994,7 +59255,6 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal Workbook As Object, Optional By
     Else
         store.ClearSheetExtra Workbook
         store.LinkFile Workbook
-        store.WriteFileNotice Workbook
     End If
     If prepared Is Nothing Then
         UpdateSectionPlotForWorkbook Workbook, False
@@ -59115,6 +59375,7 @@ Public Function TestCalculationSnapshotReadReleased() As Boolean
     TestCalculationSnapshotReadReleased = (mReadDepth = 0 And mReadSnapshot Is Nothing And mReadWorkbook Is Nothing)
 End Function
 
+
 ====================================================================================================
 COMPONENT: modMeshConfiguration
 TYPE: 1
@@ -59197,6 +59458,7 @@ Public Function ReadMeshBoundarySubdivisions(ByVal settings As CSystemSettingsRe
         settings.InputErrorMessage("Mesh.BoundarySubdivisions", "Число подъячеек меньше 1.", "Введите целое число не меньше 1.")
 End Function
 
+
 ====================================================================================================
 COMPONENT: modResultsFormatting
 TYPE: 1
@@ -59261,6 +59523,7 @@ Public Sub WriteResultDataSlice(ByVal Target As Object, ByRef data() As Variant,
     Next row
     Target.offset(firstRow - 1, firstColumn - 1).Resize(rows, columns).value2 = output
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modSectionOptionalData
@@ -59419,6 +59682,7 @@ Private Sub JsonSpace(ByVal text As String, ByRef position As Long)
     Loop
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modSectionRecipeSetup
 TYPE: 1
@@ -59492,10 +59756,11 @@ Private Function RequiredTable(ByVal name As String) As Object
     If RequiredTable Is Nothing Then SectionRecipeError "modSectionRecipeSetup", "Не найден диапазон '" & name & "'. Восстановите именованный диапазон Config."
 End Function
 
+
 ====================================================================================================
 COMPONENT: modSectionSnapshot
 TYPE: 1
-LINES: 664
+LINES: 677
 ====================================================================================================
 Option Explicit
 
@@ -60033,8 +60298,10 @@ End Function
 ' Соседние ячейки за концом таблицы не включаются в результат.
 Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As Boolean, _
         Optional ByVal maxCount As Long = 0) As Long
-    Const BLOCK_SIZE As Long = 1024
-    Dim available As Long, offset As Long, count As Long, i As Long
+    Const INITIAL_BLOCK_SIZE As Long = 1024
+    Const MAX_BLOCK_SIZE As Long = 32768
+    Dim available As Long, offset As Long, count As Long, i As Long, blockSize As Long
+    blockSize = INITIAL_BLOCK_SIZE ' Малые таблицы читаются прежним объёмом; большие требуют логарифмического числа начальных COM-вызовов.
     If columns Then
         available = anchor.Worksheet.columns.count - anchor.column + 1
     Else
@@ -60044,7 +60311,7 @@ Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As 
     Dim block As Variant, value As Variant
     Do While offset < available
         count = available - offset
-        If count > BLOCK_SIZE Then count = BLOCK_SIZE
+        If count > blockSize Then count = blockSize
         If columns Then
             block = anchor.offset(0, offset).Resize(1, count).value2
         Else
@@ -60062,6 +60329,7 @@ Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As 
             SnapshotAnchoredExtent = SnapshotAnchoredExtent + 1
         Next i
         offset = offset + count
+        If blockSize < MAX_BLOCK_SIZE Then blockSize = blockSize * 2
     Loop
 End Function
 
@@ -60084,7 +60352,8 @@ End Sub
 
 ' Читает обязательную геометрию для расчёта. Необязательные сведения и
 ' аннотации добавляются только по запросу; генератор и AutoCAD не вызываются.
-Public Function ReadFormedSectionFromResults(ByVal Workbook As Object, Optional ByVal includeOptionalData As Boolean = False) As CSectionModel
+Public Function ReadFormedSectionFromResults(ByVal Workbook As Object, Optional ByVal includeOptionalData As Boolean = False, _
+        Optional ByVal preservedWriter As CNDMResultsWriter = Nothing) As CSectionModel
     On Error GoTo Failed
     BeginSectionSnapshotRead Workbook, True ' Модель использует только общую геометрию, без загрузки больших массивов прежних НДС.
     Dim source As String: source = ResultsGeometrySource(Workbook)
@@ -60095,6 +60364,7 @@ Public Function ReadFormedSectionFromResults(ByVal Workbook As Object, Optional 
         model.GeometryDiagnosticsText = ReadLoadCasePropertyText(Workbook, "ALL", "Geometry.RecipeDiagnostics")
         RestoreModelAnnotations Workbook, model
     End If
+    If Not preservedWriter Is Nothing Then preservedWriter.PreparePreservedSnapshotSource Workbook ' Повторно использует уже прочитанные таблицы; после расчёта файл собирается только в памяти.
     EndSectionSnapshotRead
     Set ReadFormedSectionFromResults = model
     Exit Function
@@ -60140,13 +60410,21 @@ End Sub
 
 ' Получает номера непустых строк готовой сводки для прежней подсветки статусов.
 ' Источником служит сохранённый ID, а не повторная загрузка сочетаний Config.
-Public Function ResultSnapshotStatusRows(ByVal Target As Object, ByVal headerRows As Long) As Variant
-    Dim count As Long: count = Target.rows.count - headerRows
+Public Function ResultSnapshotStatusRows(ByVal Target As Object, ByVal headerRows As Long, _
+        Optional ByRef preparedValues As Variant, Optional ByVal headerRowsInValues As Long = 0) As Variant
+    Dim count As Long, values As Variant
+    If IsMissing(preparedValues) Then
+        count = Target.rows.count - headerRows
+        If count < 1 Then Exit Function
+        values = Target.offset(headerRows, 0).Resize(count, 3).value2
+    Else
+        values = preparedValues: count = UBound(values, 1) - headerRowsInValues
+    End If
     If count < 1 Then Exit Function
-    Dim values As Variant: values = Target.offset(headerRows, 0).Resize(count, 3).value2
-    Dim rows() As Long, i As Long, used As Long, value As Variant: ReDim rows(1 To count)
+    Dim rows() As Long, i As Long, used As Long, sourceRow As Long: ReDim rows(1 To count)
     For i = 1 To count
-        If Len(CStr(values(i, 1))) > 0 Or Len(CStr(values(i, 2))) > 0 Or Len(CStr(values(i, 3))) > 0 Then
+        sourceRow = i: If Not IsMissing(preparedValues) Then sourceRow = i + headerRowsInValues
+        If Len(CStr(values(sourceRow, 1))) > 0 Or Len(CStr(values(sourceRow, 2))) > 0 Or Len(CStr(values(sourceRow, 3))) > 0 Then
             used = used + 1: rows(used) = headerRows + i
         End If
     Next i
@@ -60161,10 +60439,11 @@ Public Function TestSectionSnapshotReadDiagnostics() As String
         CStr(mSnapshotReadTables Is Nothing And mSnapshotReadWorkbook Is Nothing)
 End Function
 
+
 ====================================================================================================
 COMPONENT: modStatusFormatting
 TYPE: 1
-LINES: 99
+LINES: 121
 ====================================================================================================
 Option Explicit
 
@@ -60214,14 +60493,21 @@ End Sub
 ' на длину адреса. Прочие ячейки, шрифты и рамки не затрагиваются.
 Public Sub ApplyTableStatusFills(ByVal Target As Object, ByRef rowNumbers() As Long, _
         ByVal columnNumbers As Variant, Optional ByVal skipEmpty As Boolean = False, _
-        Optional ByVal formationColumn As Long = 0)
-    Dim values As Variant: values = Target.value2
+        Optional ByVal formationColumn As Long = 0, Optional ByRef preparedValues As Variant, _
+        Optional ByVal preparedRowOffset As Long = 0)
+    Dim values As Variant
+    If IsMissing(preparedValues) Then
+        values = Target.value2: preparedRowOffset = 0
+    Else
+        values = preparedValues
+    End If
     Dim groups As Object: Set groups = CreateObject("Scripting.Dictionary")
-    Dim letters As Object: Set letters = CreateObject("Scripting.Dictionary")
-    Dim column As Variant, row As Long, status As String, key As String, address As String
+    Dim column As Variant, row As Long, status As String, key As String
     Dim absoluteColumn As Long, columnText As String, remainder As Long
     Dim firstRow As Long, firstColumn As Long
     firstRow = Target.row: firstColumn = Target.column
+    Dim sheet As Object: Set sheet = Target.Worksheet
+    Dim i As Long, spanFirst As Long, spanLast As Long, spanColor As String, skip As Boolean
     For Each column In columnNumbers
         absoluteColumn = firstColumn + CLng(column) - 1: columnText = vbNullString
         Do While absoluteColumn > 0
@@ -60229,33 +60515,48 @@ Public Sub ApplyTableStatusFills(ByVal Target As Object, ByRef rowNumbers() As L
             columnText = Chr$(65 + remainder) & columnText
             absoluteColumn = (absoluteColumn - 1) \ 26
         Loop
-        letters.Add CLng(column), columnText
-    Next column
-    Dim i As Long
-    For i = LBound(rowNumbers) To UBound(rowNumbers)
-        row = rowNumbers(i)
-        For Each column In columnNumbers
-            status = CStr(values(row, CLng(column)))
-            If skipEmpty And Len(Trim$(status)) = 0 Then GoTo NextCell
+        spanFirst = 0
+        For i = LBound(rowNumbers) To UBound(rowNumbers)
+            row = rowNumbers(i)
+            status = CStr(values(row - preparedRowOffset, CLng(column)))
+            skip = skipEmpty And Len(Trim$(status)) = 0
             If CLng(column) = formationColumn Then
-                If status = "Cracked" Or status = "NotCracked" Then GoTo NextCell
+                If status = "Cracked" Or status = "NotCracked" Then skip = True
             End If
-            key = CStr(StatusFillColor(status))
-            address = letters.item(CLng(column)) & CStr(firstRow + row - 1)
-            If Not groups.Exists(key) Then groups.Add key, vbNullString
-            If Len(groups.item(key)) + Len(address) > 200 Then
-                Target.Worksheet.range(groups.item(key)).Interior.color = CLng(key)
-                groups.item(key) = vbNullString
+            If skip Then
+                If spanFirst > 0 Then AppendStatusFillSpan sheet, groups, spanColor, columnText, firstRow + spanFirst - 1, firstRow + spanLast - 1
+                spanFirst = 0
+            Else
+                key = CStr(StatusFillColor(status))
+                If spanFirst > 0 And (key <> spanColor Or row <> spanLast + 1) Then
+                    AppendStatusFillSpan sheet, groups, spanColor, columnText, firstRow + spanFirst - 1, firstRow + spanLast - 1
+                    spanFirst = 0
+                End If
+                If spanFirst = 0 Then spanFirst = row: spanColor = key
+                spanLast = row
             End If
-            If Len(groups.item(key)) > 0 Then address = "," & address
-            groups.item(key) = groups.item(key) & address
-NextCell:
-        Next column
-    Next i
+        Next i
+        If spanFirst > 0 Then AppendStatusFillSpan sheet, groups, spanColor, columnText, firstRow + spanFirst - 1, firstRow + spanLast - 1
+    Next column
     Dim color As Variant
     For Each color In groups.keys
-        Target.Worksheet.range(groups.item(color)).Interior.color = CLng(color)
+        If Len(groups.item(color)) > 0 Then sheet.range(groups.item(color)).Interior.color = CLng(color)
     Next color
+End Sub
+
+' Объединяет соседние строки одного цвета, не затрагивая пропуски и незаполненные LC.
+' Ограничение длины адреса сохраняет прежнюю совместимость Excel при больших пакетах.
+Private Sub AppendStatusFillSpan(ByVal sheet As Object, ByVal groups As Object, ByVal color As String, _
+        ByVal columnText As String, ByVal first As Long, ByVal last As Long)
+    Dim address As String: address = columnText & CStr(first)
+    If last > first Then address = address & ":" & columnText & CStr(last)
+    If Not groups.Exists(color) Then groups.Add color, vbNullString
+    If Len(groups.item(color)) + Len(address) > 200 Then
+        sheet.range(groups.item(color)).Interior.color = CLng(color)
+        groups.item(color) = vbNullString
+    End If
+    If Len(groups.item(color)) > 0 Then address = "," & address
+    groups.item(color) = groups.item(color) & address
 End Sub
 
 ' Возвращает общий словарь статусов для модуля цветового оформления.
@@ -60265,10 +60566,11 @@ Private Function StatusPolicy() As CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
 
+
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
 TYPE: 1
-LINES: 1265
+LINES: 1272
 ====================================================================================================
 Option Explicit
 
@@ -60603,7 +60905,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
     Dim section As CSectionModel
     report.AddSection "Геометрия и материалы"
     report.AddStep "Начато чтение сформированного сечения из Results."
-    Set section = ReadFormedSectionFromResults(Workbook)
+    Dim ndmWriter As CNDMResultsWriter: Set ndmWriter = New CNDMResultsWriter
+    Set section = ReadFormedSectionFromResults(Workbook, False, ndmWriter)
     report.AddStep "CSectionModel прочитан из сохранённого снимка Results без генерации и импорта."
     report.AddValue "Источник сохранённого сечения", section.sourceType
     report.AddValue "Происхождение бетонной сетки", section.ConcreteMeshSource
@@ -60637,7 +60940,13 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
     report.AddSection "Сочетания нагрузок"
     report.AddStep "Начато чтение rngLoadCombinations."
     reader.LoadFromWorkbook Workbook, batch, units
-    If batch.count = 0 Then Err.Raise vbObjectError + 4101, "RunSectionCalculationForWorkbook", "Не задано ни одного сочетания нагрузок."
+    If batch.count = 0 Then
+        RunSectionCalculationForWorkbook = "Расчёт не запускался: нет сочетаний с заполненным CombinationID и ненулевыми нагрузками. Прежние результаты сохранены."
+        report.AddStep RunSectionCalculationForWorkbook
+        report.Save RunSectionCalculationForWorkbook
+        excelGuard.Restore True
+        Exit Function
+    End If
     report.AddValue "Прочитано сочетаний", CStr(batch.count)
     report.AddBlock "Список сочетаний", CombinationListForReport(batch, units)
     LoadStabilityDurationLoadsFromWorkbook Workbook, batch, units
@@ -60665,6 +60974,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
     report.AddStep "Сформированное сечение и прежние результаты сохраняются до завершения вычислений."
 
     report.AddSection "Расчет сочетаний"
+    Dim savedProfileValues As Variant: savedProfileValues = Workbook.names.item("rngCalculationProfiles").RefersToRange.value2 ' Замораживает исходный профиль до вычислений, без чтения Config при подготовке файла.
     batch.Execute
     report.AddValue "Время batch-расчета", FormatReportNumber(batch.elapsedSeconds) & " с"
     report.AddValue "Количество стартов UltimateStrain", CStr(batch.UltimateStrainStartCount)
@@ -60677,10 +60987,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
     Dim savedSnapshot As CCalculationSnapshot: Set savedSnapshot = New CCalculationSnapshot
     Set summaryWriter.CaptureSnapshot = savedSnapshot
     summaryWriter.WriteSummary Workbook, batch, units, section, fullFormatting
-    Dim ndmWriter As CNDMResultsWriter: Set ndmWriter = New CNDMResultsWriter
     Set ndmWriter.CaptureSnapshot = savedSnapshot
     ndmWriter.writeResults Workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True, fullFormatting
-    savedSnapshot.AddTable "Calculation.Profiles", Workbook.names.item("rngCalculationProfiles").RefersToRange.value2
+    savedSnapshot.AddTable "Calculation.Profiles", savedProfileValues
     savedSnapshot.Validate
     report.AddStep "Полный снимок подготовлен; сохранение и общее обновление схемы и результатов."
     Dim plotWarning As String
@@ -61535,6 +61844,7 @@ Public Sub Audit03ApplyLoadReferenceForTests(ByVal section As CSectionModel, _
     ApplyLoadReferenceFromSettings section, settings, units, batch
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modWorkbookMessages
 TYPE: 1
@@ -61663,6 +61973,7 @@ Private Function ErrorReasonParagraphs(ByVal reason As String) As String
     If left$(details, 1) = ":" Then details = Trim$(mid$(details, 2))
     ErrorReasonParagraphs = SectionRecipeErrorText(details, location, left$(reason, first - 1))
 End Function
+
 
 ====================================================================================================
 COMPONENT: CTestExcelApplicationState
@@ -61794,6 +62105,7 @@ Public Sub Calculate()
     If TestCalculateFault <> 0 Then Err.Raise TestCalculateFault, "CTestExcelApplicationState.Calculate", "Непредвиденный отказ пересчёта для проверки восстановления Excel."
     If Not TestNativeApplication Is Nothing Then TestNativeApplication.Calculate
 End Sub
+
 ====================================================================================================
 COMPONENT: CTestFakeAcadContour
 TYPE: 2
@@ -62012,6 +62324,7 @@ Public Sub Delete()
     mDeleted = True
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CTestFakeAcadContourExport
 TYPE: 2
@@ -62221,6 +62534,7 @@ End Sub
 Public Sub GetXData(ByVal appName As String, ByRef codes As Variant, ByRef values As Variant)
     codes = mCodes: values = mValues
 End Sub
+
 ====================================================================================================
 COMPONENT: CTestFakeAcadDocument
 TYPE: 2
@@ -62299,6 +62613,7 @@ End Property
 Public Property Get TestVariableReads() As Long
     TestVariableReads = mVariableReads
 End Property
+
 ====================================================================================================
 COMPONENT: CTestFakeAcadLine
 TYPE: 2
@@ -62368,6 +62683,7 @@ End Property
 Public Property Get TestDeleted() As Boolean
     TestDeleted = mDeleted
 End Property
+
 
 ====================================================================================================
 COMPONENT: CTestFakeAcadRegion
@@ -62508,6 +62824,7 @@ End Sub
 Public Property Get TestDeleted() As Boolean
     TestDeleted = mDeleted
 End Property
+
 
 ====================================================================================================
 COMPONENT: CTestLimitSearchProblem
@@ -63387,6 +63704,7 @@ Private Function TestMultiplierFaultReason() As String
     TestMultiplierFaultReason = "Контрольный отказ LoadMultiplier, сценарий " & CStr(mMultiplierScenario) & "."
 End Function
 
+
 ====================================================================================================
 COMPONENT: CTestWorkflowWorkbook
 TYPE: 2
@@ -63446,6 +63764,7 @@ End Property
 Public Property Get path() As String
     path = mWorkbook.path
 End Property
+
 ====================================================================================================
 COMPONENT: modTestAudit02Api
 TYPE: 1
@@ -65080,6 +65399,7 @@ Restore:
     RunProgramMessageTests = mReport & "TOTAL PROGRAM MESSAGES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+
 ====================================================================================================
 COMPONENT: modTestAudit02Snapshots
 TYPE: 1
@@ -65386,6 +65706,7 @@ Private Function TestRecipeRuleFields(ByVal definition As CSectionDefinition) As
     Next index
     TestRecipeRuleFields = result
 End Function
+
 
 ====================================================================================================
 COMPONENT: modTestAutoCADConfig
@@ -66716,6 +67037,7 @@ Private Sub TestCheckNativeColors(ByRef stats As TCadStats, ByVal doc As Object,
         End If
     Next entity
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestAutoCADContours
@@ -69057,6 +69379,7 @@ Private Sub TestWaitForCAD(ByVal acad As Object)
         If elapsed > 30# Then Err.Raise vbObjectError + 5502, , "AutoCAD не завершил инициализацию за 30 секунд."
     Loop
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
@@ -79805,10 +80128,11 @@ Finished:
     RunPostAudit03SnapshotOwnerTests = stats.report & "TOTAL_POSTAUDIT03_SNAPSHOT: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
+
 ====================================================================================================
 COMPONENT: modTestCalculationSnapshot
 TYPE: 1
-LINES: 544
+LINES: 799
 ====================================================================================================
 Option Explicit
 
@@ -79830,6 +80154,9 @@ Public Function RunCalculationSnapshotTests() As String
     mTestReport = "": mTestPassed = 0: mTestFailed = 0
     On Error GoTo Failed
     TestSnapshotBinaryBuffer
+    TestSnapshotUTF16Strings
+    TestSnapshotAdaptiveExtent
+    TestSnapshotStatusSpans
     TestSnapshotSeparatedProperties
     Dim initial As CSystemSettingsReader: Set initial = New CSystemSettingsReader: initial.LoadFromWorkbook ThisWorkbook
     Dim extension As String: extension = initial.GetRequiredString("General.DiagramExtension")
@@ -79844,6 +80171,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotCheck "readScope.afterCalculation", TestCalculationSnapshotReadReleased()
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim original As CCalculationSnapshot: Set original = store.LoadSheet(ThisWorkbook)
+    TestSnapshotOneUseSource
     TestSnapshotValidationReuse original
     TestSnapshotElementIndex
     Dim originalPlot As String: originalPlot = TestSnapshotPlot()
@@ -79862,8 +80190,12 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotUpper original
     TestSnapshotCheck "sheet.plot.exact", TestSnapshotPlot() = originalPlot
     Dim token As String: token = "TestSnapshot_" & format$(Now, "yyyymmdd_hhnnss")
-    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
     Dim path As String: path = store.SnapshotPath(ThisWorkbook)
+    TestSnapshotCheck "name.extensionAutomatic", path = ThisWorkbook.path & Application.PathSeparator & token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndms"
+    TestSnapshotCheck "name.previousSuffixCompatible", store.SnapshotPath(ThisWorkbook) = path
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
     store.SaveFile ThisWorkbook, original
     Dim fileSnapshot As CCalculationSnapshot: Set fileSnapshot = store.LoadFile(ThisWorkbook)
     TestSnapshotEqual "file.allTables", original, fileSnapshot
@@ -79871,6 +80203,7 @@ Public Function RunCalculationSnapshotTests() As String
     UpdateSectionResultsForWorkbook ThisWorkbook
     TestSnapshotCheck "file.linked", store.HasFileReference(ThisWorkbook)
     TestSnapshotCheck "file.noSheetDuplicate", Not store.HasSheetSnapshot(ThisWorkbook)
+    TestSnapshotCheck "file.noPlaceholder", Application.WorksheetFunction.CountA(ThisWorkbook.names.item("rngNDMLoadCaseResults").RefersToRange.Resize(3, 2)) = 0
     TestSnapshotUpper original
     TestSnapshotCheck "file.plot.exact", TestSnapshotPlot() = originalPlot
     TestSnapshotCheck "file.export.exact", Audit02ReadExportSnapshotForTests(ThisWorkbook) = originalExport
@@ -79941,6 +80274,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotCheck "layout.lowerOrder", TestSnapshotLowerOrder()
     TestSnapshotRepeatedImportedAnnotations extension
     TestSnapshotColumnCodec second, store
+    TestSnapshotRepeatedElementIDs second, store
     TestSnapshotMinimalFormatting
     GoTo Finished
 Failed:
@@ -80021,6 +80355,23 @@ Private Sub TestSnapshotBinaryBuffer()
     TestSnapshotCheck "buffer.eofRejected", TestSnapshotBinaryEOFRejected(file)
     file.CloseFile: file.OpenUpdate path: file.position = 0: file.WriteByte 42: file.position = 0
     TestSnapshotCheck "buffer.flushBeforeRead", file.ReadByte = 42
+    file.WriteByte 99 ' После короткого чтения Windows-указатель находится дальше Position из-за предварительного чтения.
+    TestSnapshotCheck "buffer.writeAtLogicalReadPosition", file.ReadByte = Asc("M") And file.position = 3
+    file.position = 0
+    TestSnapshotCheck "buffer.readAfterMixedWrite", file.ReadByte = 42 And file.ReadByte = 99
+    Dim chunk As Variant
+    For Each chunk In Array(127&, 32767&, 65535, 65536, 65537, 131089)
+        file.position = 8: actual = file.ReadBytes(CLng(chunk)): same = True
+        For row = 0 To UBound(actual)
+            If actual(row) <> expected(row) Then same = False: Exit For
+        Next row
+        TestSnapshotCheck "buffer.readChunk." & CStr(chunk), same And file.position = 8 + CLng(chunk)
+    Next chunk
+    file.position = 8 + 65534: actual = file.ReadBytes(19): same = True
+    For row = 0 To UBound(actual)
+        If actual(row) <> expected(65534 + row) Then same = False: Exit For
+    Next row
+    TestSnapshotCheck "buffer.backwardSeekAndBoundary", same
     file.CloseFile
     CreateObject("Scripting.FileSystemObject").DeleteFile path
     Exit Sub
@@ -80042,6 +80393,199 @@ Private Function TestSnapshotBinaryEOFRejected(ByVal file As CBinarySnapshotFile
 Rejected:
     TestSnapshotBinaryEOFRejected = True
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Ускоренное чтение границ сохраняет первую пустую ячейку, пробелы и точный maxCount.
+Private Sub TestSnapshotAdaptiveExtent()
+    Dim sheet As Object, app As Object, alerts As Boolean
+    Set app = ThisWorkbook.Application: alerts = app.DisplayAlerts
+    On Error GoTo Failed
+    Set sheet = ThisWorkbook.Worksheets.Add
+    Dim values() As Variant, row As Long
+    ReDim values(1 To 100001, 1 To 1)
+    For row = 1 To UBound(values, 1): values(row, 1) = row: Next row
+    sheet.cells(1, 1).Resize(UBound(values, 1), 1).value2 = values
+    sheet.cells(100003, 1).value2 = CVErr(2015) ' Посторонняя ошибка за первой пустой ячейкой не входит в таблицу.
+    TestSnapshotCheck "extent.large", SnapshotAnchoredExtent(sheet.cells(1, 1), False) = 100001
+    TestSnapshotCheck "extent.maxCount", SnapshotAnchoredExtent(sheet.cells(1, 1), False, 65537) = 65537
+    sheet.cells(4097, 1).value2 = " "
+    TestSnapshotCheck "extent.spaceAtGrowingBoundary", SnapshotAnchoredExtent(sheet.cells(1, 1), False) = 4096
+    sheet.cells(1024, 1).ClearContents
+    TestSnapshotCheck "extent.emptyAtInitialBoundary", SnapshotAnchoredExtent(sheet.cells(1, 1), False) = 1023
+    sheet.cells(1, 1).ClearContents
+    TestSnapshotCheck "extent.emptyAnchor", SnapshotAnchoredExtent(sheet.cells(1, 1), False) = 0
+    ReDim values(1 To 1, 1 To 4098)
+    For row = 1 To UBound(values, 2): values(1, row) = "Header" & CStr(row): Next row
+    sheet.cells(2, 2).Resize(1, UBound(values, 2)).value2 = values
+    sheet.cells(2, 2 + 3072).ClearContents
+    TestSnapshotCheck "extent.columns", SnapshotAnchoredExtent(sheet.cells(2, 2), True) = 3072
+    app.DisplayAlerts = False: sheet.Delete: app.DisplayAlerts = alerts
+    Exit Sub
+Failed:
+    Dim number As Long, description As String: number = Err.number: description = Err.description
+    On Error Resume Next
+    app.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    app.DisplayAlerts = alerts
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotAdaptiveExtent", description
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Объединение цветных интервалов сохраняет пропуски и работает без чтения заполненных ячеек.
+Private Sub TestSnapshotStatusSpans()
+    Dim sheet As Object, app As Object, alerts As Boolean
+    Set app = ThisWorkbook.Application: alerts = app.DisplayAlerts
+    On Error GoTo Failed
+    Set sheet = ThisWorkbook.Worksheets.Add
+    Dim Target As Object: Set Target = sheet.cells(4, 5).Resize(13, 3)
+    Dim values(1 To 13, 1 To 3) As Variant, body(1 To 11, 1 To 3) As Variant
+    Dim rows(1 To 8) As Long, ids As Variant, row As Long, column As Long, testCase As Long, i As Long, selected As Boolean, same As Boolean
+    ids = Array(3&, 4&, 10&, 6&, 7&, 8&, 13&, 12&)
+    For i = 1 To 8: rows(i) = CLng(ids(i - 1)): Next i
+    For row = 1 To 13
+        values(row, 1) = "OK": values(row, 2) = "FAIL": values(row, 3) = "N/A"
+    Next row
+    values(4, 3) = "Cracked": values(10, 3) = "NotCracked": values(6, 3) = ""
+    For row = 1 To 11
+        For column = 1 To 3: body(row, column) = values(row + 2, column): Next column
+    Next row
+    For testCase = 0 To 2
+        Target.Interior.color = RGB(1, 2, 3)
+        If testCase = 0 Then
+            Target.value2 = values: ApplyTableStatusFills Target, rows, Array(1, 2, 3), True, 3
+        ElseIf testCase = 1 Then
+            Target.value2 = CVErr(2015): ApplyTableStatusFills Target, rows, Array(1, 2, 3), True, 3, values
+        Else
+            Target.value2 = CVErr(2015): ApplyTableStatusFills Target, rows, Array(1, 2, 3), True, 3, body, 2
+        End If
+        same = True
+        For row = 1 To 13
+            selected = False
+            For i = 1 To 8: If rows(i) = row Then selected = True
+            Next i
+            For column = 1 To 3
+                Dim color As Long: color = RGB(1, 2, 3)
+                If selected Then
+                    If Not (column = 3 And (row = 4 Or row = 6 Or row = 10)) Then color = StatusFillColor(CStr(values(row, column)))
+                End If
+                If CLng(Target.cells(row, column).Interior.color) <> color Then same = False
+            Next column
+        Next row
+        TestSnapshotCheck "statusSpans.gapsAndPreparedValues." & CStr(testCase), same
+    Next testCase
+    app.DisplayAlerts = False: sheet.Delete: app.DisplayAlerts = alerts
+    Exit Sub
+Failed:
+    Dim number As Long, description As String: number = Err.number: description = Err.description
+    On Error Resume Next
+    app.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    app.DisplayAlerts = alerts
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotStatusSpans", description
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет прямой строковый IO независимо от кодека: старые байтовые операции служат эталоном.
+Private Sub TestSnapshotUTF16Strings()
+    Dim path As String: path = ThisWorkbook.path & Application.PathSeparator & "TestUTF16_" & format$(Now, "yyyymmdd_hhnnss") & ".bin"
+    If Len(Dir$(path)) > 0 Then Err.Raise 5, , "Тестовый файл UTF16 уже существует."
+    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
+    On Error GoTo Failed
+    Dim samples As Variant, sample As Variant, bytes() As Byte, actual As String, count As Long, index As Long
+    samples = Array(vbNullString, "ASCII", ChrW$(&H416) & ChrW$(&H3B1), "left" & Chr$(0) & "right", _
+        ChrW$(&HD83D) & ChrW$(&HDE00), ChrW$(&HD800), String$(32767, "x"), String$(65536, "z"))
+    file.OpenWrite path
+    For Each sample In samples: file.WriteSizedUTF16 CStr(sample): Next sample
+    file.CloseFile: file.OpenRead path
+    For Each sample In samples
+        count = file.ReadLong: actual = vbNullString
+        If count > 0 Then bytes = file.ReadBytes(count): actual = bytes
+        TestSnapshotCheck "utf16.write.matchesBytes." & CStr(index), count = LenB(CStr(sample)) And StrComp(actual, CStr(sample), vbBinaryCompare) = 0
+        index = index + 1
+    Next sample
+    file.CloseFile: file.OpenWrite path
+    For Each sample In samples
+        file.WriteLong LenB(CStr(sample))
+        If LenB(CStr(sample)) > 0 Then bytes = CStr(sample): file.WriteBytes bytes
+    Next sample
+    file.CloseFile: file.OpenRead path: index = 0
+    For Each sample In samples
+        actual = file.ReadSizedUTF16(131072)
+        TestSnapshotCheck "utf16.read.matchesBytes." & CStr(index), LenB(actual) = LenB(CStr(sample)) And StrComp(actual, CStr(sample), vbBinaryCompare) = 0
+        index = index + 1
+    Next sample
+    file.CloseFile
+    Dim testCase As Long
+    For testCase = 0 To 3
+        file.OpenWrite path
+        Select Case testCase
+            Case 0: file.WriteLong -1
+            Case 1: file.WriteLong 3: file.WriteASCII "abc"
+            Case 2: file.WriteSizedUTF16 String$(65537, "z")
+            Case 3: file.WriteLong 20: file.WriteByte 7
+        End Select
+        file.CloseFile: file.OpenRead path
+        TestSnapshotCheck "utf16.invalidLength." & CStr(testCase), TestSnapshotUTF16Rejected(file)
+        file.CloseFile
+    Next testCase
+    Kill path
+    Exit Sub
+Failed:
+    Dim number As Long, reason As String: number = Err.number: reason = Err.description
+    On Error Resume Next
+    file.CloseFile: Kill path
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotUTF16Strings", reason
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Перехватывает только ожидаемую ошибку чтения некорректной длины строки.
+Private Function TestSnapshotUTF16Rejected(ByVal file As CBinarySnapshotFile) As Boolean
+    On Error GoTo Rejected
+    Dim text As String: text = file.ReadSizedUTF16(131072)
+    Exit Function
+Rejected:
+    TestSnapshotUTF16Rejected = (Err.number = 5)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Повторное использование writer-а читает новые входные строки, а не массив предыдущей операции.
+Private Sub TestSnapshotOneUseSource()
+    Dim Target As Object, saved As Variant
+    Set Target = ThisWorkbook.names("rngNDMSectionGeometry").RefersToRange.cells(2, 15)
+    saved = Target.formula
+    On Error GoTo Failed
+    Dim section As CSectionModel: Set section = ReadFormedSectionFromResults(ThisWorkbook)
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
+    Dim provider As CMaterialModelProvider: Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Dim props As CSectionPropertiesCalculator: Set props = PrepareSectionSnapshot(section, provider)
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    Dim batch As CBatchSectionCalculator: Set batch = New CBatchSectionCalculator
+    Dim first As CCalculationSnapshot: Set first = New CCalculationSnapshot
+    Target.value2 = "TestSourceBefore"
+    writer.PreparePreservedSnapshotSource ThisWorkbook
+    Set writer.CaptureSnapshot = first
+    writer.writeResults ThisWorkbook, section, props, batch, units, True
+    Dim values As Variant: values = first.table("rngNDMSectionGeometry")
+    TestSnapshotCheck "capture.oneUse.initial", CStr(values(2, 15)) = "TestSourceBefore"
+    Target.value2 = "TestSourceAfter"
+    Dim second As CCalculationSnapshot: Set second = New CCalculationSnapshot
+    Set writer.CaptureSnapshot = second
+    writer.writeResults ThisWorkbook, section, props, batch, units, True
+    values = second.table("rngNDMSectionGeometry")
+    TestSnapshotCheck "capture.oneUse.newSource", CStr(values(2, 15)) = "TestSourceAfter"
+    Target.formula = saved
+    Exit Sub
+Failed:
+    Dim number As Long, reason As String: number = Err.number: reason = Err.description
+    On Error Resume Next
+    Target.formula = saved
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotOneUseSource", reason
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Повторная проверка сохраняет защиту при изменении даты и добавлении новой части.
@@ -80116,6 +80660,41 @@ Private Sub TestSnapshotColumnCodec(ByVal original As CCalculationSnapshot, ByVa
     TestSnapshotCheck "codec.mixed.bitExact", TestSnapshotSameMatrix(data, actual)
     TestSnapshotCheck "codec.emptyKinds", VarType(actual(1, 5)) = vbString And VarType(actual(1024, 5)) = vbEmpty
     TestSnapshotCheck "codec.booleanKind", VarType(actual(1, 3)) = vbBoolean And VarType(actual(1024, 3)) = vbBoolean
+    store.SaveFile ThisWorkbook, original
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Повторяющиеся ElementID сохраняются точно; любое нарушение шаблона включает общий кодек.
+Private Sub TestSnapshotRepeatedElementIDs(ByVal original As CCalculationSnapshot, ByVal store As CCalculationSnapshotStore)
+    Dim count As Long: count = original.TableRowCount("rngNDMSectionGeometry") - 1
+    Dim groups As Long: groups = 2 + 4096 \ count
+    Dim expected As Variant: expected = original.table("rngNDMElementResults")
+    Dim data() As Variant, row As Long, column As Long, sourceRow As Long
+    ReDim data(1 To groups * count + 1, 1 To 9)
+    For column = 1 To 9: data(1, column) = expected(1, column): Next column
+    For row = 2 To UBound(data, 1)
+        sourceRow = 2 + (row - 2) Mod count
+        For column = 1 To 9: data(row, column) = expected(sourceRow, column): Next column
+    Next row
+    Dim testCase As Long, sample As CCalculationSnapshot, loaded As CCalculationSnapshot, key As Variant
+    Dim changed As Long, savedID As String
+    For testCase = 0 To 3
+        changed = 0
+        Select Case testCase
+            Case 1: changed = UBound(data, 1): savedID = CStr(data(changed, 5)): data(changed, 5) = "TestMismatch_" & savedID
+            Case 2: changed = 3: savedID = CStr(data(changed, 5)): data(changed, 5) = data(2, 5)
+            Case 3: changed = 2: savedID = CStr(data(changed, 5)): data(changed, 5) = "ElementID"
+        End Select
+        Set sample = New CCalculationSnapshot: sample.runID = original.runID: sample.elapsedSeconds = original.elapsedSeconds
+        For Each key In original.keys()
+            If CStr(key) <> "rngNDMElementResults" Then sample.AddTable CStr(key), original.table(CStr(key))
+        Next key
+        sample.AddTable "rngNDMElementResults", data
+        store.SaveFile ThisWorkbook, sample: Set loaded = store.LoadFile(ThisWorkbook)
+        TestSnapshotCheck "codec.repeatedIDs." & CStr(testCase) & ".exact", TestSnapshotSameMatrix(data, loaded.table("rngNDMElementResults"))
+        TestSnapshotCheck "codec.repeatedIDs." & CStr(testCase) & ".sourceUnchanged", TestSnapshotSameMatrix(data, sample.table("rngNDMElementResults"))
+        If changed > 0 Then data(changed, 5) = savedID
+    Next testCase
     store.SaveFile ThisWorkbook, original
 End Sub
 
@@ -80353,6 +80932,7 @@ Private Sub TestSnapshotCheck(ByVal label As String, ByVal value As Boolean)
     If value Then mTestPassed = mTestPassed + 1 Else mTestFailed = mTestFailed + 1
     mTestReport = mTestReport & IIf(value, "PASS ", "FAIL ") & label & vbCrLf
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
@@ -84803,6 +85383,7 @@ Private Sub TestRequestReinitialization(ByRef stats As TCapacityTestStats)
     Next prior
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestConfiguration
 TYPE: 1
@@ -87294,6 +87875,7 @@ Private Sub TestCheckStabilityLengthRange(ByRef stats As TConfigTestStats, ByVal
     table.formula = configured
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestContourMesh
 TYPE: 1
@@ -88122,6 +88704,7 @@ Private Sub TestCheck(ByVal label As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & label & vbCrLf
     End If
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestCrackWidth
@@ -90259,6 +90842,7 @@ Private Sub TestNearUniformCrackTranslations(ByRef stats As TCrackTestStats)
     Next center
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestDeclarativeExamples
 TYPE: 1
@@ -90403,6 +90987,7 @@ End Sub
 Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000000001 * (1# + Abs(expected))
 End Sub
+
 ====================================================================================================
 COMPONENT: modTestDeclarativeGeometry
 TYPE: 1
@@ -91280,6 +91865,7 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
     End If
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestDiscreteForces
 TYPE: 1
@@ -91451,6 +92037,7 @@ Private Sub TestForceCheck(ByVal label As String, ByVal condition As Boolean)
         mTestFailed = mTestFailed + 1: mTestReport = mTestReport & "FAIL: " & label & vbCrLf
     End If
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestGeneralGeometryConfig
@@ -92063,6 +92650,7 @@ Private Sub TestLogLine(ByRef stats As TGeneralConfigStats, ByVal line As String
     Print #fileNumber, stats.report;
     Close #fileNumber
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestGeometry
@@ -95823,6 +96411,7 @@ Private Sub TestGeometryReviewJointSample(ByRef stats As TTestStats, ByVal path 
     TestAssertTrue stats, prefix & ".normalTransferSameSegment", (failure <> 0) = (edge.sweep <> 0#)
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestGeometryConfig
 TYPE: 1
@@ -97538,6 +98127,7 @@ Finished:
     RunSectionRebarInputSmokeTests = stats.report & "TOTAL_SECTION_REBAR_INPUT_SMOKE: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & "; cases=" & CStr(cases) & vbCrLf
 End Function
 
+
 ====================================================================================================
 COMPONENT: modTestGeometryFixtures
 TYPE: 1
@@ -98129,6 +98719,7 @@ Public Function TestFixtureRunSectionWorkflow(ByVal Workbook As Object, Optional
     TestFixtureRunSectionWorkflow = RunSectionCalculationForWorkbook(Workbook, showMessages)
 End Function
 
+
 ====================================================================================================
 COMPONENT: modTestGeometryPublication
 TYPE: 1
@@ -98424,6 +99015,7 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestGeometryQuery
@@ -99379,6 +99971,7 @@ Private Sub TestCheckGeneratedContoursEqual(ByVal prefix As String, ByVal expect
     Next i
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestGeometryReview
 TYPE: 1
@@ -100239,6 +100832,7 @@ Private Sub TestRecipeErrorParagraphs()
     TestCheck "message.missing.setting.no.fake.address", InStr(text, "Источник данных:" & vbCrLf & "лист Config, раздел") > 0 And InStr(text, "Адреса ячеек:") = 0
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestGeometrySolidSnapshots
 TYPE: 1
@@ -100375,6 +100969,7 @@ Private Function TestBits(ByVal value As Double) As String
     number.value = value: LSet words = number
     TestBits = right$("00000000" & Hex$(words.high), 8) & right$("00000000" & Hex$(words.low), 8)
 End Function
+
 
 ====================================================================================================
 COMPONENT: modTestIndividualContours
@@ -101242,10 +101837,11 @@ Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expecte
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= GEOM_BOUNDARY_TOLERANCE
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestLoadTableConfig
 TYPE: 1
-LINES: 941
+LINES: 1000
 ====================================================================================================
 Option Explicit
 
@@ -101268,6 +101864,63 @@ Private Const FORCE_FACTOR As Double = 9806.65 ' Независимый этал
 Private Const MOMENT_FACTOR As Double = 9806650# ' Независимый эталон tf*m -> N*mm.
 Private Const ROW_COUNT As Long = 30 ' Поадресная приемка штатного шаблона, не ограничение runtime.
 Private mDiagnosticRun As Boolean ' Только отдельный диагностический entrypoint включает подробные solver logs.
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отключение строки пустым ID, точные нули и неизменность исходных усилий.
+Public Function RunLoadActivationTests() As String
+    Dim stats As TLoadTableStats
+    TestLoadActivationRows stats
+    RunLoadActivationTests = stats.report & "TOTAL LOAD ACTIVATION: passed=" & stats.passed & "; failed=" & stats.Failed & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выполняет тот же контракт включения LC внутри основного набора таблицы сочетаний.
+Private Sub TestLoadActivationRows(ByRef stats As TLoadTableStats)
+    Dim source As Object, saved As Variant, data As Variant, blank As Variant
+    Dim batch As CBatchSectionCalculator, reader As CLoadCombinationReader, row As Long, column As Long, testCase As Long
+    Set source = ThisWorkbook.names("rngLoadCombinations").RefersToRange: saved = source.formula
+    On Error GoTo Failed
+    data = source.value2
+    For row = 2 To UBound(data, 1)
+        For column = 1 To UBound(data, 2): data(row, column) = vbNullString: Next column
+    Next row
+    blank = data
+    Set reader = New CLoadCombinationReader
+    For row = 2 To UBound(data, 1): data(row, 2) = CDbl(row): data(row, 5) = "PR1": Next row
+    source.value2 = data: Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+    TestCheck stats, "loadActivation.allDisabled.count", batch.count = 0 And batch.SolverCallCount = 0
+    For row = 2 To UBound(data, 1): TestCheck stats, "loadActivation.allDisabled.keepsRow." & CStr(row), CDbl(source.cells(row, 2).value2) = CDbl(row): Next row
+    For testCase = 0 To 2
+        data = blank: data(2, 2) = 42#: data(2, 3) = CVErr(xlErrNA): data(2, 5) = CVErr(xlErrValue): data(2, 6) = "unknown"
+        If testCase = 1 Then data(2, 1) = "   "
+        source.value2 = data
+        If testCase = 2 Then source.cells(2, 1).formula = "="""""
+        Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+        TestCheck stats, "loadActivation.blankID." & CStr(testCase), batch.count = 0
+        TestCheck stats, "loadActivation.keepsLoads." & CStr(testCase), CDbl(source.cells(2, 2).value2) = 42# And IsError(source.cells(2, 3).value2)
+        If testCase = 2 Then TestCheck stats, "loadActivation.keepsFormula", CStr(source.cells(2, 1).formula) = "="""""
+    Next testCase
+    data = blank: data(2, 1) = "ZERO": data(2, 2) = 0#: data(2, 3) = -0#: data(2, 5) = CVErr(xlErrNA): data(2, 6) = "unknown"
+    source.value2 = data: Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+    TestCheck stats, "loadActivation.zeroNoValidation", batch.count = 0 And batch.SolverCallCount = 0
+    data = blank: data(2, 1) = "ACTIVE_A": data(2, 2) = -1#: data(2, 5) = "PR1"
+    data(3, 2) = 100#: data(3, 5) = "PR1"
+    data(4, 1) = "ZERO": data(4, 5) = "PR1"
+    data(5, 1) = "ACTIVE_B": data(5, 3) = 2#: data(5, 5) = "PR1"
+    source.value2 = data: Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+    TestCheck stats, "loadActivation.sparse.count", batch.count = 2
+    TestCheck stats, "loadActivation.sparse.first", batch.combinationID(1) = "ACTIVE_A" And batch.SourceDataOffset(1) = 1
+    TestCheck stats, "loadActivation.sparse.last", batch.combinationID(2) = "ACTIVE_B" And batch.SourceDataOffset(2) = 4
+    data = blank: data(2, 1) = 0#: data(2, 2) = 1E-18: data(2, 5) = "PR1"
+    source.value2 = data: Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+    TestCheck stats, "loadActivation.numericZeroID", batch.count = 1 And batch.combinationID(1) = "0"
+    TestCheck stats, "loadActivation.nonzeroNotDiscarded", batch.n(1) <> 0#
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1: TestLogLine stats, "FAIL: loadActivation.runtime; " & Err.description
+Restore:
+    source.formula = saved
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ: ПРОФИЛИ И ОШИБКИ LC ==============================
@@ -101530,6 +102183,7 @@ Public Function RunAudit03LoadTableTests(Optional ByRef passed As Long = 0, _
     profiles.LoadFromWorkbook ThisWorkbook
     TestBuildPhysicalFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
     TestLogLine stats, "LOAD_TABLE_CONFIG: addresses=210; effectiveExtension=" & CStr(provider.diagramExtensionEnabled)
+    TestLoadActivationRows stats
     baseline = TestBaselineRows(loads)
 
     loads.value2 = baseline
@@ -101709,7 +102363,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Для каждой колонки проверяет ошибку формулы; дополнительно проверяет
-' обязательные пустые ID, неизвестный путь, текст и overflow компонент.
+' пустой профиль, неизвестный путь, текст и overflow компонент; пустой ID отключает строку.
 ' Ошибочные строки не решаются и сохраняют собственный адрес/причину в summary.
 Private Sub TestCheckInvalidRows(ByRef stats As TLoadTableStats, ByVal source As Object, ByVal baseline As Variant, _
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
@@ -101720,6 +102374,7 @@ Private Sub TestCheckInvalidRows(ByRef stats As TLoadTableStats, ByVal source As
         For caseIndex = 1 To 3
             If caseIndex = 3 And (column < 2 Or column > 4) Then Exit For
             If caseIndex = 2 And column = 7 Then Exit For
+            If caseIndex = 2 And column = 1 Then Exit For ' Пустой ID теперь отключает строку; этот контракт проверяет RunLoadActivationTests.
             data = baseline
             For slot = 1 To ROW_COUNT
                 Select Case caseIndex
@@ -102187,6 +102842,7 @@ Finished:
     On Error GoTo 0
     RunTestMultiAreaLoadValidation = stats.report & "TOTAL_MULTI_AREA_LOAD: passed=" & stats.passed & "; failed=" & stats.Failed
 End Function
+
 
 ====================================================================================================
 COMPONENT: modTestMaterialDiagrams
@@ -103844,6 +104500,7 @@ ExpectedError:
     TestMaterialOrderCase = Err.number: description = Err.description
 End Function
 
+
 ====================================================================================================
 COMPONENT: modTestPerformance
 TYPE: 1
@@ -105171,6 +105828,7 @@ Public Function TestCADRoundoffFields(ByVal prefix As String, ByVal Target As Ob
         TestCADRoundoffFields = TestCADRoundoffFields & prefix & "|" & CStr(name) & "|" & kind & "|" & text & vbLf
     Next name
 End Function
+
 
 ====================================================================================================
 COMPONENT: modTestPlotConfig
@@ -107023,6 +107681,7 @@ Private Sub TestAppendLine(ByRef stats As TUiTestStats, ByVal value As String)
     stats.report = stats.report & value & vbCrLf
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestPolygonSpec
 TYPE: 1
@@ -107378,6 +108037,7 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestProfileConfig
@@ -109260,6 +109920,7 @@ Private Sub TestDurationMatching(ByRef stats As TProfileStats, ByVal profiles As
     settings.LoadFromWorkbook ThisWorkbook
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestRecipeAnnotations
 TYPE: 1
@@ -109580,6 +110241,7 @@ Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expecte
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000000001 * (1# + Abs(expected))
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestRecipeApiCatalogue
 TYPE: 1
@@ -109880,6 +110542,7 @@ Private Sub TestCheck(ByVal name As String, ByVal passed As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
 ====================================================================================================
 COMPONENT: modTestRecipeOperations
 TYPE: 1
@@ -110529,6 +111192,7 @@ Private Sub TestPrepareSavedOffsetCalculationLoad()
     values(1, 7) = "ДЛЯ ТЕСТОВ: сохранённые смещения, собственное сочетание"
     loads.offset(1, 0).Resize(UBound(values, 1), UBound(values, 2)).value2 = values
 End Sub
+
 ====================================================================================================
 COMPONENT: modTestRecipeSetbacks
 TYPE: 1
@@ -110843,6 +111507,7 @@ End Sub
 Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000001
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestRegressionBaseline
@@ -111250,6 +111915,7 @@ Private Function TestFormatNumberInvariant(ByVal value As Double) As String
     TestFormatNumberInvariant = Replace$(format$(value, "0.############"), ",", ".")
 End Function
 
+
 ====================================================================================================
 COMPONENT: modTestSectionInputReader
 TYPE: 1
@@ -111439,6 +112105,7 @@ Failed:
 Finished:
     RunSectionInputReaderTests = mReport & "TOTAL_SECTION_INPUT_READER: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
 ====================================================================================================
 COMPONENT: modTestSectionRecipes
 TYPE: 1
@@ -113105,6 +113772,7 @@ Private Function TestRecipeCaptionRejected(ByVal typeID As String, ByVal setting
 Rejected:
     TestRecipeCaptionRejected = InStr(1, Err.description, caption, vbBinaryCompare) > 0
 End Function
+
 
 ====================================================================================================
 COMPONENT: modTestSectionSolver
@@ -115288,6 +115956,7 @@ Failed:
     TestAppendLine stats, "FAIL: audit03.extremeRunner.runtime; " & CStr(Err.number) & "; " & Err.description
 End Sub
 
+
 ====================================================================================================
 COMPONENT: modTestSectionWorkflow
 TYPE: 1
@@ -115775,6 +116444,7 @@ Public Function RunCompactAcceptanceTests() As String
     report = report & RunAnnotationSectionScaleTests()
     RunCompactAcceptanceTests = report
 End Function
+
 
 ====================================================================================================
 COMPONENT: modTestShapeArchitecture
@@ -116630,6 +117300,7 @@ Private Sub TestSetSetting(ByVal key As String, ByVal value As Variant)
     Next name
     Err.Raise vbObjectError + 5291, "modTestShapeArchitecture", "Нет ключа fixture: " & key
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestSP35CrackWidth
@@ -118069,10 +118740,11 @@ Restore:
     RunSP35EndToEndTests = mReport
 End Function
 
+
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 9147
+LINES: 9203
 ====================================================================================================
 Option Explicit
 
@@ -126567,6 +127239,7 @@ Public Function RunSectionWorkflowCalculationTests() As String
     TestRectanglesWorkbookRunWritesResults stats
     TestWorkflowFrozenGeometry stats
     TestWorkflowOptionalAnnotations stats
+    TestNoActiveLoadsPreserveResults stats
 Done:
     TestFixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
     TestAppendLine stats, "TOTAL_WORKFLOW_CALCULATION: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
@@ -127221,6 +127894,62 @@ Failed:
     Resume Done
 End Function
 
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Полностью отключённые LC не запускают решатель и сохраняют показанный снимок в обоих хранилищах.
+Public Function RunLoadActivationWorkflowTests() As String
+    Dim stats As TUiTestStats
+    TestNoActiveLoadsPreserveResults stats
+    RunLoadActivationWorkflowTests = stats.report & "TOTAL LOAD ACTIVATION WORKFLOW: passed=" & stats.passed & "; failed=" & stats.Failed & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет штатную команду без активных LC; входит также в общий workbook-набор.
+Private Sub TestNoActiveLoadsPreserveResults(ByRef stats As TUiTestStats)
+    Dim saved As Object, names As Variant, name As Variant, mode As Variant
+    Set saved = CreateObject("Scripting.Dictionary")
+    names = Array("rngSystemSettings", "rngCalculationProfiles", "rngUnitSettings", "rngSignConventionSettings", _
+        "rngLoadCombinations", "rngStabilityDurationLoads", "rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
+    On Error GoTo Failed
+    For Each name In names: saved.Add CStr(name), ThisWorkbook.names(CStr(name)).RefersToRange.formula: Next name
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    Dim checksum As CFileChecksum: Set checksum = New CFileChecksum
+    Dim file As String, oldHash As String, message As String, before As String, testCase As Long, loads As Object
+    For Each mode In Array("Excel", "File")
+        TestPrepareCircleInput
+        TestSetSystemSetting "General.ExecutionReportEnabled", "No"
+        TestSetSystemSetting "Results.SnapshotStorage", CStr(mode)
+        TestSetSystemSetting "Results.SnapshotName", "TestLoadActivation_" & format$(Now, "yyyymmdd_hhnnss") & ".ndms"
+        message = FormSectionForWorkbook(ThisWorkbook)
+        message = RunSectionCalculationForWorkbook(ThisWorkbook)
+        before = modTestPerformance.TestPerformanceResultsFingerprint()
+        If CStr(mode) = "File" Then file = store.SnapshotPath(ThisWorkbook): oldHash = checksum.FileSHA256(file)
+        Set loads = ThisWorkbook.names("rngLoadCombinations").RefersToRange
+        For testCase = 0 To 1
+            If testCase = 0 Then
+                loads.cells(2, 1).ClearContents
+            Else
+                loads.cells(2, 1).value2 = "ZERO": loads.cells(2, 2).Resize(1, 3).value2 = 0#
+                loads.cells(2, 5).value2 = CVErr(xlErrNA): loads.cells(2, 6).value2 = "unknown"
+            End If
+            message = RunSectionCalculationForWorkbook(ThisWorkbook)
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".message." & testCase, InStr(1, message, "Расчёт не запускался", vbBinaryCompare) > 0
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".resultsPreserved." & testCase, before = modTestPerformance.TestPerformanceResultsFingerprint()
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".scopeReleased." & testCase, TestCalculationSnapshotReadReleased()
+            If CStr(mode) = "File" Then TestAssertTrue stats, "loadActivation.File.bytesPreserved." & testCase, oldHash = checksum.FileSHA256(file)
+        Next testCase
+        If Len(file) > 0 Then Kill file: file = vbNullString
+    Next mode
+    GoTo Restore
+Failed:
+    TestAssertTrue stats, "loadActivation.workflow.runtime." & Err.description, False
+Restore:
+    On Error Resume Next
+    If Len(file) > 0 Then Kill file
+    For Each name In saved.keys: ThisWorkbook.names(CStr(name)).RefersToRange.formula = saved.item(name): Next name
+    On Error GoTo 0
+End Sub
+
+
 ====================================================================================================
 COMPONENT: modTestZeroContourParity
 TYPE: 1
@@ -127316,3 +128045,5 @@ Private Function TestBits(ByVal value As Double) As String
         right$("0" & Hex$(bytes.Byte5), 2) & right$("0" & Hex$(bytes.Byte6), 2) & _
         right$("0" & Hex$(bytes.Byte7), 2) & right$("0" & Hex$(bytes.Byte8), 2)
 End Function
+
+

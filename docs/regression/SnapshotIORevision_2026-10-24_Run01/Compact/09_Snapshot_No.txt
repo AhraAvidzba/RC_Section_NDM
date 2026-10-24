@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 9FD29CCBD5D12B459999B0C44946F13C99B262D4D52031402834E39E24D7D610
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh09\RC_Section_NDM.xlsm
+SOURCE_SHA256: 4B12C3C9FF65136B76EBE2F4DD690CC666914AFED68F3B1606583B488BE6013E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_288e374051314588a6b8faba365aef34\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=190592; startTicks=639284338234118428
+===== modTestCalculationSnapshot.RunCalculationSnapshotTests =====
+SUITE_STARTED: modTestCalculationSnapshot.RunCalculationSnapshotTests; 2026-10-24T13:17:08
+PASS codec.emptyKinds
+PASS codec.booleanKind
+PASS codec.repeatedIDs.0.exact
+PASS codec.repeatedIDs.0.sourceUnchanged
+PASS codec.repeatedIDs.1.exact
+PASS codec.repeatedIDs.1.sourceUnchanged
+PASS codec.repeatedIDs.2.exact
+PASS codec.repeatedIDs.2.sourceUnchanged
+PASS codec.repeatedIDs.3.exact
+PASS codec.repeatedIDs.3.sourceUnchanged
+PASS minimal.Excel.font
+PASS minimal.Excel.numberFormat
+PASS minimal.File.font
+PASS minimal.File.numberFormat
+TOTAL CALCULATION SNAPSHOT: passed=242; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_288e374051314588a6b8faba365aef34\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCalculationSnapshot.RunCalculationSnapshotTests; 2026-10-24T13:17:28
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

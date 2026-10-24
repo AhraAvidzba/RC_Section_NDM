@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 0C238B47C06C26E24C2A30CB6EA88D067E4C4F5A88A6708308AD2FCE6D756D26
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6fc92ef024214e908fd262d8d95d0f63\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=66696; startTicks=639284330851306909
+===== modTestWorkbookInterface.RunAudit03GeneralPlotTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03GeneralPlotTests; 2026-10-24T13:04:50
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка CJ811): Обязательное значение не задано. Ячейка значения не заполнена. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка CJ811): Обязательное значение не задано. Введённое значение: "TODO". Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка CJ811): Недопустимый вариант: "INVALID". Введённое значение: "INVALID". Выберите из списка: Small, Medium, Wide.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка CJ811) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.noSolve
+NAMED_ANNOTATION_CASES: fields=21; positions=2; variants=210; equilibriumCases=0
+TOTAL_AUDIT03_GENERAL_PLOT: passed=3377; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6fc92ef024214e908fd262d8d95d0f63\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03GeneralPlotTests; 2026-10-24T13:05:25
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

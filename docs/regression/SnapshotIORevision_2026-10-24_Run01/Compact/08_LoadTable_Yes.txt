@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 4F9B714E5CF781F15505618504FC727F4099323B4131BFDFD1A25B55E5F831F6
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_82dbca058ef849548b022c63951ee0cf\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=122568; startTicks=639284332256175864
+===== modTestLoadTableConfig.RunAudit03LoadTableTests =====
+SUITE_STARTED: modTestLoadTableConfig.RunAudit03LoadTableTests; 2026-10-24T13:07:11
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.exists
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.converged
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.physicalRange
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.noExtension
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.targetN|actual=77975.3317835274|expected=77975.3317835274
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.targetMx|actual=2999051.22244336|expected=2999051.22244336
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.targetMy|actual=-1499525.61122168|expected=-1499525.61122168
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.equilibriumN|actual=77975.3317835274|expected=77975.3317835274
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.equilibriumMx|actual=2999051.18563557|expected=2999051.22244336
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.formationPoint.equilibriumMy|actual=-1499525.52854884|expected=-1499525.61122168
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.currentState
+OK: loadTable.Slot30.LoadPath.LambdaNMxy.summaryComment
+LOAD_TABLE_PATH: loadTable.Slot30.LoadPath.LambdaNMxy; capacityStatus=4; capacityCode=4; capacity=Поиск несущей способности через UltimateStrain сошелся.; strength=; crack=; stability=; overall=
+TOTAL_AUDIT03_LOAD_TABLE: passed=11813; failed=0; cases=880
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_82dbca058ef849548b022c63951ee0cf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestLoadTableConfig.RunAudit03LoadTableTests; 2026-10-24T13:08:32
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

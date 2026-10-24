@@ -340,6 +340,17 @@ Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCas
     On Error GoTo Failed
     If Len(Trim$(loadCase)) = 0 Then Exit Function
 
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    If Not snapshot Is Nothing Then
+        Dim summary As Variant, summaryRow As Long: summary = snapshot.Table("Summary")
+        For summaryRow = 13 To UBound(summary, 1)
+            If StrComp(Trim$(SafeText(summary(summaryRow, 1))), loadCase, vbTextCompare) = 0 Then
+                ReadBatchSummaryComment = Trim$(SafeText(summary(summaryRow, 2))): Exit Function
+            End If
+        Next summaryRow
+        Exit Function
+    End If
+
     Dim anchor As Object, nextAnchor As Object, summaryWriter As CStrengthSummaryWriter
     Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
     Dim firstRow As Long, lastRow As Long, summaryEnd As Long, row As Long, data As Variant, combinationID As String

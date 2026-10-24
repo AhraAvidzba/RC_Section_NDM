@@ -27,6 +27,8 @@ Private mSize As Long ' Проверенная длина доступного �
 Private mPath As String ' Имя для сообщения о фактической файловой ошибке.
 Private mWriteBuffer(0 To 65535) As Byte ' Объединяет короткие записи служебных полей в блоки по 64 КиБ.
 Private mBuffered As Long ' Логическая позиция включает эти ещё не отправленные Windows байты.
+Private mReadBuffer(0 To 65535) As Byte ' Небольшие поля и строки читаются блоками, без отдельного ReadFile для каждого значения.
+Private mReadCount As Long, mReadOffset As Long ' Физический указатель опережает Position только на непрочитанный остаток этого буфера.
 
 ' Открывает существующий файл на чтение, не создавая пустой файл при опечатке.
 Public Sub OpenRead(ByVal path As String)
@@ -58,11 +60,12 @@ End Sub
 Public Sub CloseFile()
     On Error GoTo Failed
     If mHandle <> 0 Then FlushWrites: CloseHandle mHandle: mHandle = 0
+    mReadCount = 0: mReadOffset = 0
     Exit Sub
 Failed:
     Dim number As Long, reason As String: number = Err.Number: reason = Err.Description
     If mHandle <> 0 Then CloseHandle mHandle: mHandle = 0
-    mBuffered = 0
+    mBuffered = 0: mReadCount = 0: mReadOffset = 0
     Err.Raise number, "CBinarySnapshotFile.CloseFile", reason
 End Sub
 
@@ -87,17 +90,31 @@ Public Property Let Position(ByVal value As Long)
     If value < 0 Or value > mSize Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Неверное смещение снимка: " & mPath
     FlushWrites
     If SetFilePointer(mHandle, value, 0, 0) <> value Then Err.Raise 5, "CBinarySnapshotFile", "Не удалось изменить позицию: " & mPath
-    mPosition = value
+    mPosition = value: mReadCount = 0: mReadOffset = 0
 End Property
 
 ' Читает строго заданное число байтов, не допускает незаметного усечения массива.
 Private Sub ReadExact(ByVal target As LongPtr, ByVal count As Long)
-    Dim done As Long
+    Dim done As Long, copied As Long, take As Long, remaining As Long
     If count < 0 Or count > mSize - mPosition Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Файл снимка оборван: " & mPath
     If count = 0 Then Exit Sub
     FlushWrites
-    If ReadFile(mHandle, target, count, done, 0) = 0 Or done <> count Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка чтения файла: " & mPath
-    mPosition = mPosition + count
+    Do While copied < count
+        remaining = count - copied
+        If mReadOffset < mReadCount Then
+            take = mReadCount - mReadOffset: If take > remaining Then take = remaining
+            CopyStreamBytes target + copied, VarPtr(mReadBuffer(mReadOffset)), take
+            mReadOffset = mReadOffset + take: mPosition = mPosition + take: copied = copied + take
+        ElseIf remaining >= 65536 Then
+            If ReadFile(mHandle, target + copied, remaining, done, 0) = 0 Or done <> remaining Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка чтения файла: " & mPath
+            mPosition = mPosition + remaining: copied = count
+            mReadCount = 0: mReadOffset = 0
+        Else
+            take = mSize - mPosition: If take > 65536 Then take = 65536
+            If ReadFile(mHandle, VarPtr(mReadBuffer(0)), take, done, 0) = 0 Or done <> take Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка чтения файла: " & mPath
+            mReadCount = take: mReadOffset = 0
+        End If
+    Loop
 End Sub
 
 ' Пишет блок целиком; ограничение размера проверяет до переполнения Long.
@@ -105,6 +122,10 @@ Private Sub WriteExact(ByVal source As LongPtr, ByVal count As Long)
     Dim done As Long
     If count < 0 Or CDbl(mPosition) + count > 2147483647# Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Превышен размер снимка: " & mPath
     If count = 0 Then Exit Sub
+    If mReadOffset < mReadCount Then
+        If SetFilePointer(mHandle, mPosition, 0, 0) <> mPosition Then Err.Raise 5, "CBinarySnapshotFile", "Не удалось изменить позицию: " & mPath
+    End If
+    mReadCount = 0: mReadOffset = 0
     If count <= 65536 Then
         If mBuffered + count > 65536 Then FlushWrites
         CopyStreamBytes VarPtr(mWriteBuffer(mBuffered)), source, count
@@ -134,6 +155,23 @@ End Sub
 ' Читает одно 32-битное целое.
 Public Function ReadLong() As Long
     Dim value As Long: ReadExact VarPtr(value), 4: ReadLong = value
+End Function
+
+' Записывает длину и UTF-16LE прямо из BSTR, без временного массива байтов.
+Public Sub WriteSizedUTF16(ByVal value As String)
+    Dim count As Long: count = LenB(value)
+    WriteExact VarPtr(count), 4
+    WriteExact StrPtr(value), count
+End Sub
+
+' Читает проверенную UTF-16LE строку прямо в отдельный BSTR нужной длины.
+' Пустые строки, встроенный NUL и любые кодовые единицы Unicode сохраняются побайтно.
+Public Function ReadSizedUTF16(ByVal maximumBytes As Long) As String
+    Dim count As Long: count = ReadLong()
+    If count < 0 Or count > maximumBytes Or count Mod 2 <> 0 Or count > mSize - mPosition Then Err.Raise 5, , "Неверная длина строки снимка."
+    If count = 0 Then Exit Function
+    ReadSizedUTF16 = String$(count \ 2, vbNullChar)
+    ReadExact StrPtr(ReadSizedUTF16), count
 End Function
 
 ' Записывает исходные восемь байтов числа IEEE 754.

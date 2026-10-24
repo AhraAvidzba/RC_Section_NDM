@@ -572,10 +572,11 @@ End Sub
 
 ' Оформляет подробную таблицу устойчивости: шапку, рамки, числа и статусы.
 ' В минимальном режиме обновляет только подсветку статусов.
-Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator, _
+        Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        FormatStatusCells target, batch
+        FormatStatusCells target, batch, preparedValues
         Exit Sub
     End If
     target.Font.Name = "Arial"
@@ -601,7 +602,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, 3).NumberFormat = "@"
     target.Offset(HEADER_ROWS, 1).Resize(dataRows, 1).HorizontalAlignment = -4131
 
-    FormatStatusCells target, batch
+    FormatStatusCells target, batch, preparedValues
 End Sub
 
 ' Оформляет строку примечаний как обычный текст, а не как дополнительный заголовок.
@@ -628,10 +629,10 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstColumn As Long, ByVal
 End Sub
 
 ' Красит блоки строки LC по итоговому статусу расчета устойчивости.
-Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, Optional ByRef preparedValues As Variant)
     Dim rows() As Long, i As Long
     If batch Is Nothing Then
-        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS)
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, HEADER_ROWS, preparedValues)
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
@@ -645,7 +646,7 @@ Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSecti
     ApplyTableStatusFills target, rows, Array( _
         3, SP35_PLANE1_FIRST + 8, SP35_PLANE1_FIRST + 14, _
         SP35_PLANE2_FIRST + 8, SP35_PLANE2_FIRST + 14, SP63_PLANE1_FIRST + 11, _
-        SP63_PLANE2_FIRST + 11)
+        SP63_PLANE2_FIRST + 11), False, 0, preparedValues, HEADER_ROWS
 End Sub
 
 ' Заполняет все статусные колонки нормативных ветвей значением N/A до записи выбранной методики.
@@ -956,5 +957,5 @@ Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculati
     End If
     WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
     target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data
-    FormatTable target, Nothing
+    FormatTable target, Nothing, data
 End Sub

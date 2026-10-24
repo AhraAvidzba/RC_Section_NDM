@@ -1,0 +1,269 @@
+{
+  "Status": "PASS",
+  "SyntheticIOOnly": true,
+  "SolverCalls": 0,
+  "ExactAllCells": true,
+  "FileFormat": "NDMSNP04 unchanged",
+  "Payloads": [
+    {
+      "Elements": 50,
+      "States": 1,
+      "Bytes": 29783,
+      "SHA256": "A84A3ACB2EFFC03A29B103896F037873BD2896D4984D0217AD1D1DE0FC3B264A",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 50,
+      "States": 5,
+      "Bytes": 41265,
+      "SHA256": "6E4B3401F40BEED377E23A208B9FFECAFADCC042287494D346DCC72DB1A0A911",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 5000,
+      "States": 1,
+      "Bytes": 604870,
+      "SHA256": "93D59BDB3BEB46E13960EEC3ABB65FA7275254945E53C4C0BCBE69B6AE8C4A6D",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 5000,
+      "States": 5,
+      "Bytes": 1325502,
+      "SHA256": "DBA769922B2CC91E9756393B9106C801188A8E736C6DE1E79E7A2674CB63B2E9",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 50000,
+      "States": 1,
+      "Bytes": 6124010,
+      "SHA256": "FB513AA3C464B803D0E5286988F9C51C0437E7DB3DAD9B19A82A70F4B8D76D69",
+      "ByteIdentical": true
+    },
+    {
+      "Elements": 50000,
+      "States": 5,
+      "Bytes": 13329502,
+      "SHA256": "909EBFF1B272C0E4093DAAA7EB89CA83E6F01CD78E55340BC16448397EF2C77C",
+      "ByteIdentical": true
+    }
+  ],
+  "Comparisons": [
+    {
+      "Elements": 50,
+      "States": 1,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.01675140007864684,
+        "Min": 0.016061000060290098,
+        "Max": 0.02123559999745339,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.012118299957364798,
+        "Min": 0.011705000069923699,
+        "Max": 0.016028900048695505,
+        "Observations": 5
+      },
+      "ReductionPercent": 27.657987389292288
+    },
+    {
+      "Elements": 50,
+      "States": 1,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 0.021830599987879395,
+        "Min": 0.021265899995341897,
+        "Max": 0.024779399973340333,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.014806100050918758,
+        "Min": 0.014656400075182319,
+        "Max": 0.01649609999731183,
+        "Observations": 5
+      },
+      "ReductionPercent": 32.17731047639882
+    },
+    {
+      "Elements": 50,
+      "States": 5,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.016495899995788932,
+        "Min": 0.015998699935153127,
+        "Max": 0.01766820007469505,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.01206330000422895,
+        "Min": 0.012007799930870533,
+        "Max": 0.01570790004916489,
+        "Observations": 5
+      },
+      "ReductionPercent": 26.870919396283533
+    },
+    {
+      "Elements": 50,
+      "States": 5,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 0.02420069999061525,
+        "Min": 0.02311149996239692,
+        "Max": 0.02982190006878227,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.020790699985809624,
+        "Min": 0.019596599973738194,
+        "Max": 0.0269177999580279,
+        "Observations": 5
+      },
+      "ReductionPercent": 14.090501539740515
+    },
+    {
+      "Elements": 5000,
+      "States": 1,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.09677859989460558,
+        "Min": 0.08701350004412234,
+        "Max": 0.10223800002131611,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.0855329999467358,
+        "Min": 0.0815278000663966,
+        "Max": 0.08936849993187934,
+        "Observations": 5
+      },
+      "ReductionPercent": 11.619924198238587
+    },
+    {
+      "Elements": 5000,
+      "States": 1,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 0.12184050003997982,
+        "Min": 0.10579880001023412,
+        "Max": 0.1418026000028476,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.13115929998457432,
+        "Min": 0.1147736000129953,
+        "Max": 0.14798939996398985,
+        "Observations": 5
+      },
+      "ReductionPercent": -7.648359898011501
+    },
+    {
+      "Elements": 5000,
+      "States": 5,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.17021939996629953,
+        "Min": 0.15198799991048872,
+        "Max": 0.18086869991384447,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.16714279993902892,
+        "Min": 0.1465632999315858,
+        "Max": 0.19225009996443987,
+        "Observations": 5
+      },
+      "ReductionPercent": 1.8074320717143453
+    },
+    {
+      "Elements": 5000,
+      "States": 5,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 0.16780149994883686,
+        "Min": 0.13822490000166,
+        "Max": 0.19231780001427978,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.16276039998047054,
+        "Min": 0.16062290000263602,
+        "Max": 0.22982339991722256,
+        "Observations": 5
+      },
+      "ReductionPercent": 3.004204354492284
+    },
+    {
+      "Elements": 50000,
+      "States": 1,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 0.8063886999152601,
+        "Min": 0.7283429000526667,
+        "Max": 0.8934845000039786,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 0.8316274000098929,
+        "Min": 0.8126507000997663,
+        "Max": 0.843489499995485,
+        "Observations": 5
+      },
+      "ReductionPercent": -3.129842977373695
+    },
+    {
+      "Elements": 50000,
+      "States": 1,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 1.1589998999843374,
+        "Min": 1.0912289000116289,
+        "Max": 1.2119607999920845,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 1.3219037000089884,
+        "Min": 1.1215969000477344,
+        "Max": 1.3819164999295026,
+        "Observations": 5
+      },
+      "ReductionPercent": -14.055549101156304
+    },
+    {
+      "Elements": 50000,
+      "States": 5,
+      "Action": "LoadFile",
+      "Before": {
+        "Median": 1.6415658999467269,
+        "Min": 1.617614999995567,
+        "Max": 1.7643469999311492,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 1.614321600063704,
+        "Min": 1.5304028000682592,
+        "Max": 1.6598141000140458,
+        "Observations": 5
+      },
+      "ReductionPercent": 1.6596531326526125
+    },
+    {
+      "Elements": 50000,
+      "States": 5,
+      "Action": "SaveFile",
+      "Before": {
+        "Median": 1.8474736000644043,
+        "Min": 1.8067862999159843,
+        "Max": 1.9460985000478104,
+        "Observations": 5
+      },
+      "After": {
+        "Median": 1.964527599979192,
+        "Min": 1.8843223999720067,
+        "Max": 2.0926633999915794,
+        "Observations": 5
+      },
+      "ReductionPercent": -6.335895674542095
+    }
+  ]
+}

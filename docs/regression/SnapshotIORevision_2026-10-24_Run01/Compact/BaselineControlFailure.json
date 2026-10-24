@@ -1,0 +1,11 @@
+{
+  "Status": "FAIL",
+  "Reason": "TEST_CALCULATION_ERROR: Результаты читаются с листа после расчёта до записи снимка.",
+  "PoisonResults": true,
+  "Phases": {
+    "Solve": 0.0869525000452995,
+    "PrepareSummary": 0.0170905000995845,
+    "ReadPhysicalAfterSolve": 1
+  },
+  "SourceSHA256": "91B5C5C6DA655E14B699CBB5C15ADB7CF6BA94555DC0890243A956E79637EF12"
+}

@@ -1,0 +1,15 @@
+{
+  "Status": "PASS",
+  "Checks": 38015,
+  "Sheets": [
+    "Config",
+    "Сечения",
+    "Расчет"
+  ],
+  "AuthorizedChanges": [
+    "Config!B9",
+    "Config!D9"
+  ],
+  "Reason": "Results.SnapshotName defaults to a base name and describes automatic .ndms extension",
+  "Errors": []
+}

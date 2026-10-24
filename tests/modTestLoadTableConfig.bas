@@ -22,6 +22,63 @@ Private Const ROW_COUNT As Long = 30 ' Поадресная приемка шт�
 Private mDiagnosticRun As Boolean ' Только отдельный диагностический entrypoint включает подробные solver logs.
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отключение строки пустым ID, точные нули и неизменность исходных усилий.
+Public Function RunLoadActivationTests() As String
+    Dim stats As TLoadTableStats
+    TestLoadActivationRows stats
+    RunLoadActivationTests = stats.Report & "TOTAL LOAD ACTIVATION: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выполняет тот же контракт включения LC внутри основного набора таблицы сочетаний.
+Private Sub TestLoadActivationRows(ByRef stats As TLoadTableStats)
+    Dim source As Object, saved As Variant, data As Variant, blank As Variant
+    Dim batch As CBatchSectionCalculator, reader As CLoadCombinationReader, row As Long, column As Long, testCase As Long
+    Set source = ThisWorkbook.Names("rngLoadCombinations").RefersToRange: saved = source.Formula
+    On Error GoTo Failed
+    data = source.Value2
+    For row = 2 To UBound(data, 1)
+        For column = 1 To UBound(data, 2): data(row, column) = vbNullString: Next column
+    Next row
+    blank = data
+    Set reader = New CLoadCombinationReader
+    For row = 2 To UBound(data, 1): data(row, 2) = CDbl(row): data(row, 5) = "PR1": Next row
+    source.Value2 = data: Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+    TestCheck stats, "loadActivation.allDisabled.count", batch.Count = 0 And batch.SolverCallCount = 0
+    For row = 2 To UBound(data, 1): TestCheck stats, "loadActivation.allDisabled.keepsRow." & CStr(row), CDbl(source.Cells(row, 2).Value2) = CDbl(row): Next row
+    For testCase = 0 To 2
+        data = blank: data(2, 2) = 42#: data(2, 3) = CVErr(xlErrNA): data(2, 5) = CVErr(xlErrValue): data(2, 6) = "unknown"
+        If testCase = 1 Then data(2, 1) = "   "
+        source.Value2 = data
+        If testCase = 2 Then source.Cells(2, 1).Formula = "="""""
+        Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+        TestCheck stats, "loadActivation.blankID." & CStr(testCase), batch.Count = 0
+        TestCheck stats, "loadActivation.keepsLoads." & CStr(testCase), CDbl(source.Cells(2, 2).Value2) = 42# And IsError(source.Cells(2, 3).Value2)
+        If testCase = 2 Then TestCheck stats, "loadActivation.keepsFormula", CStr(source.Cells(2, 1).Formula) = "="""""
+    Next testCase
+    data = blank: data(2, 1) = "ZERO": data(2, 2) = 0#: data(2, 3) = -0#: data(2, 5) = CVErr(xlErrNA): data(2, 6) = "unknown"
+    source.Value2 = data: Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+    TestCheck stats, "loadActivation.zeroNoValidation", batch.Count = 0 And batch.SolverCallCount = 0
+    data = blank: data(2, 1) = "ACTIVE_A": data(2, 2) = -1#: data(2, 5) = "PR1"
+    data(3, 2) = 100#: data(3, 5) = "PR1"
+    data(4, 1) = "ZERO": data(4, 5) = "PR1"
+    data(5, 1) = "ACTIVE_B": data(5, 3) = 2#: data(5, 5) = "PR1"
+    source.Value2 = data: Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+    TestCheck stats, "loadActivation.sparse.count", batch.Count = 2
+    TestCheck stats, "loadActivation.sparse.first", batch.CombinationID(1) = "ACTIVE_A" And batch.SourceDataOffset(1) = 1
+    TestCheck stats, "loadActivation.sparse.last", batch.CombinationID(2) = "ACTIVE_B" And batch.SourceDataOffset(2) = 4
+    data = blank: data(2, 1) = 0#: data(2, 2) = 0.000000000000000001: data(2, 5) = "PR1"
+    source.Value2 = data: Set batch = New CBatchSectionCalculator: reader.LoadFromWorkbook ThisWorkbook, batch
+    TestCheck stats, "loadActivation.numericZeroID", batch.Count = 1 And batch.CombinationID(1) = "0"
+    TestCheck stats, "loadActivation.nonzeroNotDiscarded", batch.N(1) <> 0#
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1: TestLogLine stats, "FAIL: loadActivation.runtime; " & Err.Description
+Restore:
+    source.Formula = saved
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ============================== ДЛЯ ТЕСТОВ: ПРОФИЛИ И ОШИБКИ LC ==============================
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -282,6 +339,7 @@ Public Function RunAudit03LoadTableTests(Optional ByRef passed As Long = 0, _
     profiles.LoadFromWorkbook ThisWorkbook
     TestBuildPhysicalFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
     TestLogLine stats, "LOAD_TABLE_CONFIG: addresses=210; effectiveExtension=" & CStr(provider.DiagramExtensionEnabled)
+    TestLoadActivationRows stats
     baseline = TestBaselineRows(loads)
 
     loads.Value2 = baseline
@@ -461,7 +519,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Для каждой колонки проверяет ошибку формулы; дополнительно проверяет
-' обязательные пустые ID, неизвестный путь, текст и overflow компонент.
+' пустой профиль, неизвестный путь, текст и overflow компонент; пустой ID отключает строку.
 ' Ошибочные строки не решаются и сохраняют собственный адрес/причину в summary.
 Private Sub TestCheckInvalidRows(ByRef stats As TLoadTableStats, ByVal source As Object, ByVal baseline As Variant, _
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
@@ -472,6 +530,7 @@ Private Sub TestCheckInvalidRows(ByRef stats As TLoadTableStats, ByVal source As
         For caseIndex = 1 To 3
             If caseIndex = 3 And (column < 2 Or column > 4) Then Exit For
             If caseIndex = 2 And column = 7 Then Exit For
+            If caseIndex = 2 And column = 1 Then Exit For ' Пустой ID теперь отключает строку; этот контракт проверяет RunLoadActivationTests.
             data = baseline
             For slot = 1 To ROW_COUNT
                 Select Case caseIndex

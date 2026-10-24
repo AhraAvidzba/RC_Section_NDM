@@ -332,7 +332,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Dim section As CSectionModel
     report.AddSection "Геометрия и материалы"
     report.AddStep "Начато чтение сформированного сечения из Results."
-    Set section = ReadFormedSectionFromResults(workbook)
+    Dim ndmWriter As CNDMResultsWriter: Set ndmWriter = New CNDMResultsWriter
+    Set section = ReadFormedSectionFromResults(workbook, False, ndmWriter)
     report.AddStep "CSectionModel прочитан из сохранённого снимка Results без генерации и импорта."
     report.AddValue "Источник сохранённого сечения", section.SourceType
     report.AddValue "Происхождение бетонной сетки", section.ConcreteMeshSource
@@ -366,7 +367,13 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddSection "Сочетания нагрузок"
     report.AddStep "Начато чтение rngLoadCombinations."
     reader.LoadFromWorkbook workbook, batch, units
-    If batch.Count = 0 Then Err.Raise vbObjectError + 4101, "RunSectionCalculationForWorkbook", "Не задано ни одного сочетания нагрузок."
+    If batch.Count = 0 Then
+        RunSectionCalculationForWorkbook = "Расчёт не запускался: нет сочетаний с заполненным CombinationID и ненулевыми нагрузками. Прежние результаты сохранены."
+        report.AddStep RunSectionCalculationForWorkbook
+        report.Save RunSectionCalculationForWorkbook
+        excelGuard.Restore True
+        Exit Function
+    End If
     report.AddValue "Прочитано сочетаний", CStr(batch.Count)
     report.AddBlock "Список сочетаний", CombinationListForReport(batch, units)
     LoadStabilityDurationLoadsFromWorkbook workbook, batch, units
@@ -394,6 +401,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddStep "Сформированное сечение и прежние результаты сохраняются до завершения вычислений."
 
     report.AddSection "Расчет сочетаний"
+    Dim savedProfileValues As Variant: savedProfileValues = workbook.Names.Item("rngCalculationProfiles").RefersToRange.Value2 ' Замораживает исходный профиль до вычислений, без чтения Config при подготовке файла.
     batch.Execute
     report.AddValue "Время batch-расчета", FormatReportNumber(batch.ElapsedSeconds) & " с"
     report.AddValue "Количество стартов UltimateStrain", CStr(batch.UltimateStrainStartCount)
@@ -406,10 +414,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Dim savedSnapshot As CCalculationSnapshot: Set savedSnapshot = New CCalculationSnapshot
     Set summaryWriter.CaptureSnapshot = savedSnapshot
     summaryWriter.WriteSummary workbook, batch, units, section, fullFormatting
-    Dim ndmWriter As CNDMResultsWriter: Set ndmWriter = New CNDMResultsWriter
     Set ndmWriter.CaptureSnapshot = savedSnapshot
     ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True, fullFormatting
-    savedSnapshot.AddTable "Calculation.Profiles", workbook.Names.Item("rngCalculationProfiles").RefersToRange.Value2
+    savedSnapshot.AddTable "Calculation.Profiles", savedProfileValues
     savedSnapshot.Validate
     report.AddStep "Полный снимок подготовлен; сохранение и общее обновление схемы и результатов."
     Dim plotWarning As String

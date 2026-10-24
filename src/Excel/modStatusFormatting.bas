@@ -47,14 +47,21 @@ End Sub
 ' на длину адреса. Прочие ячейки, шрифты и рамки не затрагиваются.
 Public Sub ApplyTableStatusFills(ByVal target As Object, ByRef rowNumbers() As Long, _
         ByVal columnNumbers As Variant, Optional ByVal skipEmpty As Boolean = False, _
-        Optional ByVal formationColumn As Long = 0)
-    Dim values As Variant: values = target.Value2
+        Optional ByVal formationColumn As Long = 0, Optional ByRef preparedValues As Variant, _
+        Optional ByVal preparedRowOffset As Long = 0)
+    Dim values As Variant
+    If IsMissing(preparedValues) Then
+        values = target.Value2: preparedRowOffset = 0
+    Else
+        values = preparedValues
+    End If
     Dim groups As Object: Set groups = CreateObject("Scripting.Dictionary")
-    Dim letters As Object: Set letters = CreateObject("Scripting.Dictionary")
-    Dim column As Variant, row As Long, status As String, key As String, address As String
+    Dim column As Variant, row As Long, status As String, key As String
     Dim absoluteColumn As Long, columnText As String, remainder As Long
     Dim firstRow As Long, firstColumn As Long
     firstRow = target.Row: firstColumn = target.Column
+    Dim sheet As Object: Set sheet = target.Worksheet
+    Dim i As Long, spanFirst As Long, spanLast As Long, spanColor As String, skip As Boolean
     For Each column In columnNumbers
         absoluteColumn = firstColumn + CLng(column) - 1: columnText = vbNullString
         Do While absoluteColumn > 0
@@ -62,33 +69,48 @@ Public Sub ApplyTableStatusFills(ByVal target As Object, ByRef rowNumbers() As L
             columnText = Chr$(65 + remainder) & columnText
             absoluteColumn = (absoluteColumn - 1) \ 26
         Loop
-        letters.Add CLng(column), columnText
-    Next column
-    Dim i As Long
-    For i = LBound(rowNumbers) To UBound(rowNumbers)
-        row = rowNumbers(i)
-        For Each column In columnNumbers
-            status = CStr(values(row, CLng(column)))
-            If skipEmpty And Len(Trim$(status)) = 0 Then GoTo NextCell
+        spanFirst = 0
+        For i = LBound(rowNumbers) To UBound(rowNumbers)
+            row = rowNumbers(i)
+            status = CStr(values(row - preparedRowOffset, CLng(column)))
+            skip = skipEmpty And Len(Trim$(status)) = 0
             If CLng(column) = formationColumn Then
-                If status = "Cracked" Or status = "NotCracked" Then GoTo NextCell
+                If status = "Cracked" Or status = "NotCracked" Then skip = True
             End If
-            key = CStr(StatusFillColor(status))
-            address = letters.Item(CLng(column)) & CStr(firstRow + row - 1)
-            If Not groups.Exists(key) Then groups.Add key, vbNullString
-            If Len(groups.Item(key)) + Len(address) > 200 Then
-                target.Worksheet.Range(groups.Item(key)).Interior.Color = CLng(key)
-                groups.Item(key) = vbNullString
+            If skip Then
+                If spanFirst > 0 Then AppendStatusFillSpan sheet, groups, spanColor, columnText, firstRow + spanFirst - 1, firstRow + spanLast - 1
+                spanFirst = 0
+            Else
+                key = CStr(StatusFillColor(status))
+                If spanFirst > 0 And (key <> spanColor Or row <> spanLast + 1) Then
+                    AppendStatusFillSpan sheet, groups, spanColor, columnText, firstRow + spanFirst - 1, firstRow + spanLast - 1
+                    spanFirst = 0
+                End If
+                If spanFirst = 0 Then spanFirst = row: spanColor = key
+                spanLast = row
             End If
-            If Len(groups.Item(key)) > 0 Then address = "," & address
-            groups.Item(key) = groups.Item(key) & address
-NextCell:
-        Next column
-    Next i
+        Next i
+        If spanFirst > 0 Then AppendStatusFillSpan sheet, groups, spanColor, columnText, firstRow + spanFirst - 1, firstRow + spanLast - 1
+    Next column
     Dim color As Variant
     For Each color In groups.Keys
-        target.Worksheet.Range(groups.Item(color)).Interior.Color = CLng(color)
+        If Len(groups.Item(color)) > 0 Then sheet.Range(groups.Item(color)).Interior.Color = CLng(color)
     Next color
+End Sub
+
+' Объединяет соседние строки одного цвета, не затрагивая пропуски и незаполненные LC.
+' Ограничение длины адреса сохраняет прежнюю совместимость Excel при больших пакетах.
+Private Sub AppendStatusFillSpan(ByVal sheet As Object, ByVal groups As Object, ByVal color As String, _
+        ByVal columnText As String, ByVal first As Long, ByVal last As Long)
+    Dim address As String: address = columnText & CStr(first)
+    If last > first Then address = address & ":" & columnText & CStr(last)
+    If Not groups.Exists(color) Then groups.Add color, vbNullString
+    If Len(groups.Item(color)) + Len(address) > 200 Then
+        sheet.Range(groups.Item(color)).Interior.Color = CLng(color)
+        groups.Item(color) = vbNullString
+    End If
+    If Len(groups.Item(color)) > 0 Then address = "," & address
+    groups.Item(color) = groups.Item(color) & address
 End Sub
 
 ' Возвращает общий словарь статусов для модуля цветового оформления.

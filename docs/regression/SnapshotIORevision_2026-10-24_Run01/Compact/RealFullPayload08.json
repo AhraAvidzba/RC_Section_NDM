@@ -1,0 +1,110 @@
+{
+  "Status": "PASS",
+  "Tables": [
+    {
+      "Key": "Summary",
+      "Rows": 42,
+      "Columns": 26,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Strength.Headers",
+      "Rows": 4,
+      "Columns": 49,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Strength.Data",
+      "Rows": 30,
+      "Columns": 49,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Cracks.Headers",
+      "Rows": 4,
+      "Columns": 72,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Cracks.Data",
+      "Rows": 30,
+      "Columns": 72,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Stability.Labels",
+      "Rows": 1,
+      "Columns": 84,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Stability.Data",
+      "Rows": 30,
+      "Columns": 84,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMSectionGeometry",
+      "Rows": 1241,
+      "Columns": 16,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMSectionContours",
+      "Rows": 13,
+      "Columns": 17,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMElementResults",
+      "Rows": 114081,
+      "Columns": 9,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMSectionProperties",
+      "Rows": 69,
+      "Columns": 6,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "LoadCase.Properties",
+      "Rows": 1891,
+      "Columns": 6,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMMaterialDiagrams",
+      "Rows": 51,
+      "Columns": 11,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMSectionAnnotations",
+      "Rows": 4,
+      "Columns": 24,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "LoadCase.Annotations",
+      "Rows": 222,
+      "Columns": 24,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Calculation.Profiles",
+      "Rows": 32,
+      "Columns": 7,
+      "AllValuesEqual": true
+    }
+  ],
+  "CellsCompared": 1072585,
+  "BaselineSHA256": "D80C7718BCB93FE27353D4BC3EA0CDA1B6D934E1414DADD77AB99FFA61E1F091",
+  "CandidateSHA256": "5230F796F2CE91DC1D5C386357F4EBFAE5F8926B3CD53C8D8149D1AE0856B036",
+  "RunIDsInternallyConsistent": true,
+  "Exclusions": [
+    "RunID between separate calculations",
+    "Elapsed time"
+  ],
+  "NumberEquivalence": "Only the sign of exact zero; every other Double bit is unchanged"
+}

@@ -1,0 +1,28 @@
+COMPACT EXCERPT; full local log SHA256: 354B09D0972595A25B5B9103A27BF7DCC5E971914EC8045BBF7CE4ACA04479A5
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SnapshotIORevision_2026-10-24_Run01\Fresh\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2DFD689879262753F9D01C79FCF32B9FC8874F87C7CCB23389EAC5C42DE4C4DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c6e3421372cc4185acdfe51ecdcc8731\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=89216; startTicks=639284331883063095
+===== modTestWorkbookInterface.RunResultBlockOutputTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunResultBlockOutputTests; 2026-10-24T13:06:33
+OK: block.color.119.11
+OK: block.color.120.2
+OK: block.color.120.4
+OK: block.color.120.11
+OK: block.unrelatedColumn
+OK: block.fontUnchanged
+OK: block.heightUnchanged
+OK: block.outsideUnchanged
+OK: block.formed
+OK: block.formationKeepsHeight
+OK: block.geometryJsonRightAligned
+OK: block.annotationJsonRightAligned
+OK: block.calculated
+OK: block.calculationKeepsHeight
+TOTAL_BLOCK_OUTPUT: passed=370; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c6e3421372cc4185acdfe51ecdcc8731\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunResultBlockOutputTests; 2026-10-24T13:06:38
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

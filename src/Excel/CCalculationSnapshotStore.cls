@@ -17,6 +17,7 @@ Option Explicit
 ' Подмена файла выполняется атомарно после записи и контрольной суммы.
 Private Declare PtrSafe Function MoveFileExW Lib "kernel32" (ByVal source As LongPtr, ByVal target As LongPtr, ByVal flags As Long) As Long
 Private Declare PtrSafe Sub CopySnapshotBits Lib "kernel32" Alias "RtlMoveMemory" (ByRef target As Currency, ByRef source As Double, ByVal count As LongPtr)
+Private Declare PtrSafe Sub CopyPackedBytes Lib "kernel32" Alias "RtlMoveMemory" (ByVal target As LongPtr, ByVal source As LongPtr, ByVal count As LongPtr)
 Private Const MAGIC As String = "NDMSNP04" ' Контракт плотных колонок и точных повторяющихся серий версии 4.
 Private Const SNAPSHOT_RANGE As String = "rngNDMLoadCaseResults" ' Единственный новый именованный диапазон Results.
 Private Const CHUNK_BYTES As Long = 18000 ' Base64 меньше предела 32767 символов одной ячейки Excel.
@@ -66,18 +67,6 @@ Public Sub ClearReference(ByVal workbook As Object)
     Next key
 End Sub
 
-' Оставляет один аккуратный указатель на внешний LC-блок вместо скрытых дублей данных.
-Public Sub WriteFileNotice(ByVal workbook As Object)
-    Dim target As Object: Set target = workbook.Names.Item(SNAPSHOT_RANGE).RefersToRange
-    target.Cells(1, 1).Value2 = "Результаты LC": target.Cells(1, 2).Value2 = "Внешний снимок"
-    target.Cells(2, 1).Value2 = "Файл": target.Cells(2, 2).Value2 = LinkText(workbook, "File")
-    target.Cells(3, 1).Value2 = "Загрузка": target.Cells(3, 2).Value2 = "Обновить схему и результаты"
-    With target.Resize(3, 2)
-        .Font.Name = "Arial": .Font.Size = 9: .WrapText = False
-        .Borders.LineStyle = 1: .Interior.Color = RGB(217, 217, 217)
-    End With
-End Sub
-
 ' Записывает одно собственное служебное свойство без изменения чужих метаданных.
 Private Sub SetLink(ByVal workbook As Object, ByVal key As String, ByVal value As String)
     On Error Resume Next
@@ -122,7 +111,7 @@ Public Function SnapshotPath(ByVal workbook As Object) As String
     End If
     If Len(name) = 0 Or Len(name) > 180 Or Right$(name, 1) = "." Or Right$(name, 1) = " " Then invalid = True
     If invalid Then Err.Raise 5, "CCalculationSnapshotStore", settings.InputErrorMessage( _
-        "Results.SnapshotName", "Требуется допустимое имя файла без пути.", "Введите, например, NDM_Snapshot.ndms.")
+        "Results.SnapshotName", "Требуется допустимое имя снимка без пути.", "Введите, например, NDM_Snapshot; расширение .ndms добавляется автоматически.")
     If LCase$(Right$(name, 5)) <> ".ndms" Then name = name & ".ndms"
     If Len(CStr(workbook.Path)) = 0 Or InStr(CStr(workbook.Path), "://") > 0 Then Err.Raise 5, , "Сначала сохраните книгу в локальную папку."
     SnapshotPath = CStr(workbook.Path) & Application.PathSeparator & name
@@ -254,7 +243,7 @@ End Sub
 ' Записывает все матрицы либо только дополнения тем же двоичным кодеком.
 Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot, ByVal extrasOnly As Boolean)
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim count As Long, key As Variant, values As Variant, hash As String
+    Dim count As Long, key As Variant, hash As String
     On Error GoTo Failed
     For Each key In snapshot.Keys()
         If Not extrasOnly Or Not snapshot.IsBaseKey(CStr(key)) Then count = count + 1
@@ -263,7 +252,7 @@ Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnap
     file.WriteASCII MAGIC: file.WriteLong 4: file.WriteDouble snapshot.RunID: file.WriteDouble snapshot.ElapsedSeconds: file.WriteLong count
     For Each key In snapshot.Keys()
         If Not extrasOnly Or Not snapshot.IsBaseKey(CStr(key)) Then
-            PutText file, CStr(key): values = snapshot.Table(CStr(key)): WriteMatrix file, values
+            PutText file, CStr(key): snapshot.WritePreparedTable CStr(key), Me, file
         End If
     Next key
     file.CloseFile
@@ -275,6 +264,12 @@ Failed:
     Dim reason As String: reason = Err.Description
     file.CloseFile
     Err.Raise vbObjectError + 4953, "CCalculationSnapshotStore.WriteBinary", reason
+End Sub
+
+' Записывает переданный снимком массив без копирования большой матрицы элементов.
+' Таблица остаётся собственностью снимка; ни значения, ни порядок строк не меняются.
+Friend Sub WritePreparedMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Variant, Optional ByVal elementCount As Long = 0)
+    WriteMatrix file, values, elementCount
 End Sub
 
 ' Проверяет контрольную сумму до выделения матриц и чтения значений.
@@ -307,7 +302,7 @@ End Function
 
 ' Сохраняет колонку плотными массивами типов, чисел и индексов Unicode-словаря.
 ' Повторяющиеся имена сочетаний и материалов не записываются заново для каждого элемента.
-Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Variant)
+Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Variant, Optional ByVal elementCount As Long = 0)
     Dim rows As Long, columns As Long, i As Long, j As Long, flags() As Byte, numbers() As Double, codes() As Long
     Dim dictionary As Object, item As Variant, mask As Byte, count As Long, kind As Long
     Dim text As String, previousText As String, previousCode As Long
@@ -320,6 +315,9 @@ Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Varia
             GoTo NextColumn
         End If
         If WriteRepeatedColumn(file, values, j, rows) Then GoTo NextColumn
+        If elementCount > 0 And j = 5 Then
+            If WriteRepeatedElementIDs(file, values, rows, elementCount) Then GoTo NextColumn
+        End If
         ReDim flags(1 To rows): ReDim numbers(1 To rows): ReDim codes(1 To rows)
         Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbBinaryCompare: mask = 0: previousCode = 0
         For i = 1 To rows
@@ -346,11 +344,64 @@ Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Varia
         If (mask And 1) <> 0 Then file.WriteDoubles numbers
         If (mask And 2) <> 0 Then
             file.WriteLongs codes: count = dictionary.Count: file.WriteLong count
-            For Each item In dictionary.Keys: PutText file, CStr(item): Next item
+            If Not WritePackedDictionary(file, dictionary) Then
+        For Each item In dictionary.Keys: PutText file, CStr(item): Next item
+    End If
         End If
 NextColumn:
     Next j
 End Sub
+
+' Проверяет повторение точного списка ElementID во всех сохранённых состояниях.
+' Создаёт прежний словарь лишь для первого блока; несовпадение возвращает обычный кодек без записи байтов.
+Private Function WriteRepeatedElementIDs(ByVal file As CBinarySnapshotFile, ByRef values As Variant, ByVal rows As Long, ByVal elementCount As Long) As Boolean
+    If elementCount < 1 Or rows < 4096 Then Exit Function
+    If (rows - 1) Mod elementCount <> 0 Or (rows - 1) \ elementCount < 2 Then Exit Function
+    Dim dictionary As Object: Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbBinaryCompare
+    Dim flags() As Byte, codes() As Long, row As Long, first As Long, text As String, key As Variant
+    ReDim flags(1 To rows): ReDim codes(1 To rows)
+    For row = 1 To elementCount + 1
+        If VarType(values(row, 5)) <> vbString Then Exit Function
+        text = CStr(values(row, 5))
+        If dictionary.Exists(text) Then Exit Function
+        dictionary.Add text, row: flags(row) = 1: codes(row) = row
+    Next row
+    first = 2
+    For row = elementCount + 2 To rows
+        If VarType(values(row, 5)) <> vbString Then Exit Function
+        If StrComp(CStr(values(row, 5)), CStr(values(first, 5)), vbBinaryCompare) <> 0 Then Exit Function
+        flags(row) = 1: codes(row) = first
+        first = first + 1: If first > elementCount + 1 Then first = 2
+    Next row
+    file.WriteByte 2: file.WriteBytes flags: file.WriteLongs codes: file.WriteLong dictionary.Count
+    If Not WritePackedDictionary(file, dictionary) Then
+        For Each key In dictionary.Keys: PutText file, CStr(key): Next key
+    End If
+    WriteRepeatedElementIDs = True
+End Function
+
+' Готовит крупный словарь в один непрерывный блок с прежними Long-длинами и UTF-16LE.
+' Предел 8 МиБ ограничивает дополнительную память; маленькие и слишком большие словари идут потоком.
+Private Function WritePackedDictionary(ByVal file As CBinarySnapshotFile, ByVal dictionary As Object) As Boolean
+    If dictionary.Count < 512 Then Exit Function
+    Dim keys As Variant: keys = dictionary.Keys
+    Dim key As Variant, total As Double, text As String
+    For Each key In keys
+        total = total + 4# + LenB(CStr(key))
+        If total > 8388608# Then Exit Function
+    Next key
+    Dim data() As Byte: ReDim data(0 To CLng(total) - 1)
+    Dim offset As Long, count As Long
+    For Each key In keys
+        text = CStr(key): count = LenB(text)
+        CopyPackedBytes VarPtr(data(offset)), VarPtr(count), 4
+        offset = offset + 4
+        If count > 0 Then CopyPackedBytes VarPtr(data(offset)), StrPtr(text), count
+        offset = offset + count
+    Next key
+    file.WriteBytes data
+    WritePackedDictionary = True
+End Function
 
 ' Небольшие сводки и шапки не создают сотни отдельных COM-словарей.
 ' Буфер потока объединяет короткие значения в крупные физические записи.
@@ -489,16 +540,12 @@ End Sub
 
 ' Сохраняет UTF-16LE с явной длиной, не завися от системной ANSI-кодировки.
 Private Sub PutText(ByVal file As CBinarySnapshotFile, ByVal value As String)
-    Dim count As Long, bytes() As Byte: count = LenB(value): file.WriteLong count
-    If count > 0 Then bytes = value: file.WriteBytes bytes
+    file.WriteSizedUTF16 value
 End Sub
 
 ' Проверяет размер строки до выделения памяти и чтения точного Unicode.
 Private Function GetText(ByVal file As CBinarySnapshotFile) As String
-    Dim count As Long, bytes() As Byte: count = file.ReadLong
-    If count < 0 Or count > 131072 Or count Mod 2 <> 0 Or count > file.Size - file.Position Then Err.Raise 5, , "Неверная длина строки снимка."
-    If count = 0 Then Exit Function
-    bytes = file.ReadBytes(count): GetText = bytes
+    GetText = file.ReadSizedUTF16(131072)
 End Function
 
 ' Создаёт уникальное имя служебного временного файла Windows, не оставляя его после операции.

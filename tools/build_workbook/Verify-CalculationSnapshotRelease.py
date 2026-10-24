@@ -117,7 +117,7 @@ def verify_fresh(after_path, export_path, root):
     book = read(after_path)
     sources, documents, errors = verify_native_sources(export_path, root)
     settings = {row[0][1]: row[1][1] for row in table(book, 'rngSystemSettings') if row[0][1]}
-    defaults = {'Results.SnapshotStorage': 'Excel', 'Results.SnapshotName': 'NDM_Snapshot.ndms',
+    defaults = {'Results.SnapshotStorage': 'Excel', 'Results.SnapshotName': 'NDM_Snapshot',
                 'Mesh.StepMode': 'Auto 0.1', 'Mesh.BoundarySubdivisions': '2'}
     for key, expected in defaults.items():
         if str(settings.get(key)) != expected:

@@ -154,29 +154,51 @@ End Sub
 ' повторно. Используется прежняя сетка; изменённая геометрия вызывает ошибку.
 Public Function PrepareElementSnapshot(ByVal section As CSectionModel) As Variant
     If Not mConverged Then Exit Function
+    ValidateElementSnapshotSource section
+    Dim data() As Variant
+    ReDim data(1 To section.ConcreteCount + section.RebarCount, 1 To 5)
+    FillElementSnapshot section, data, 1, 1
+    PrepareElementSnapshot = data
+End Function
+
+' Заполняет пять полей в готовом массиве потребителя без промежуточной матрицы.
+' Значения остаются во внутренних единицах; Excel и преобразования вывода здесь не используются.
+Public Sub CopyElementSnapshotTo(ByVal section As CSectionModel, ByRef data() As Variant, ByVal firstRow As Long, ByVal firstColumn As Long)
+    If Not mConverged Then Exit Sub
+    ValidateElementSnapshotSource section
+    If firstRow < LBound(data, 1) Or firstColumn < LBound(data, 2) Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Неверное начало массива снимка элементов."
+    If UBound(data, 1) - firstRow + 1 < section.ConcreteCount + section.RebarCount Or UBound(data, 2) - firstColumn < 4 Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Недостаточный размер массива снимка элементов."
+    FillElementSnapshot section, data, firstRow, firstColumn
+End Sub
+
+' Проверяет принадлежность готового НДС неизменённой модели и наличие фактических диаграмм.
+Private Sub ValidateElementSnapshotSource(ByVal section As CSectionModel)
     If section Is Nothing Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Модель для снимка элементов не передана."
     If Not section Is mSnapshotSection Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Снимок НДС относится к другой модели сечения."
     If section.Revision <> mSnapshotRevision Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "После расчета НДС геометрия изменилась; выполните расчет для текущего сечения."
     If Not HasMaterialSnapshot Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Фактические диаграммы состояния недоступны для записи элементов."
-    Dim data() As Variant, i As Long, row As Long, strain As Double, stress As Double
-    ReDim data(1 To section.ConcreteCount + section.RebarCount, 1 To 5)
-    row = 1
+End Sub
+
+' Вычисляет прежние поля элементов тем же порядком операций в заданном окне массива.
+' Общая реализация сохраняет точное совпадение старого пятиколоночного и прямого путей вывода.
+Private Sub FillElementSnapshot(ByVal section As CSectionModel, ByRef data() As Variant, ByVal firstRow As Long, ByVal firstColumn As Long)
+    Dim i As Long, row As Long, strain As Double, stress As Double
+    row = firstRow
     For i = 1 To section.ConcreteCount
         strain = mEpsilon0 + mKappaX * section.ConcreteY(i) + mKappaY * section.ConcreteX(i)
         stress = mSnapshotConcrete.GetStress(strain)
-        data(row, 1) = section.ConcreteID(i): data(row, 2) = "Concrete"
-        data(row, 3) = strain: data(row, 4) = stress: data(row, 5) = ElementPhysicalState("Concrete", strain, stress)
+        data(row, firstColumn) = section.ConcreteID(i): data(row, firstColumn + 1) = "Concrete"
+        data(row, firstColumn + 2) = strain: data(row, firstColumn + 3) = stress: data(row, firstColumn + 4) = ElementPhysicalState("Concrete", strain, stress)
         row = row + 1
     Next i
     For i = 1 To section.RebarCount
         strain = mEpsilon0 + mKappaX * section.RebarY(i) + mKappaY * section.RebarX(i)
         stress = mSnapshotSteel.GetStress(strain)
-        data(row, 1) = section.RebarID(i): data(row, 2) = "Rebar"
-        data(row, 3) = strain: data(row, 4) = stress: data(row, 5) = ElementPhysicalState("Rebar", strain, stress)
+        data(row, firstColumn) = section.RebarID(i): data(row, firstColumn + 1) = "Rebar"
+        data(row, firstColumn + 2) = strain: data(row, firstColumn + 3) = stress: data(row, firstColumn + 4) = ElementPhysicalState("Rebar", strain, stress)
         row = row + 1
     Next i
-    PrepareElementSnapshot = data
-End Function
+End Sub
 
 ' Определяет работу элемента по его деформации и напряжению.
 ' Это состояние материала, а не итоговый статус сочетания нагрузок.

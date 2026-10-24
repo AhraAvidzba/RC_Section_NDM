@@ -664,10 +664,11 @@ End Sub
 
 ' При полном оформлении задаёт шапку, рамки и числовые форматы сводки.
 ' В минимальном режиме обновляет только подсветку статусов; ширины столбцов не меняет.
-Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator, _
+        Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        FormatStatusCells target, batch
+        FormatStatusCells target, batch, preparedValues
         Exit Sub
     End If
     On Error GoTo Failed
@@ -716,7 +717,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     stage = "FormatStatusCells"
-    FormatStatusCells target, batch
+    FormatStatusCells target, batch, preparedValues
     stage = "WriteStatusLegend"
     WriteStatusLegend target
 
@@ -865,10 +866,10 @@ Private Sub ApplySummaryBorders(ByVal area As Object)
 End Sub
 
 ' Задаёт цвет ячеек статусов общей сводки по единой палитре modStatusFormatting.
-Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, Optional ByRef preparedValues As Variant)
     Dim rows() As Long, i As Long
     If batch Is Nothing Then
-        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, FIRST_DATA_ROW - 1)
+        Dim storedRows As Variant: storedRows = ResultSnapshotStatusRows(target, FIRST_DATA_ROW - 1, preparedValues, FIRST_DATA_ROW - 1)
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
@@ -882,7 +883,7 @@ Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSecti
         SUM_COL_OVERALL_STATUS, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY, _
         SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK, SUM_COL_STATUS_SP35_P1_ETA, _
         SUM_COL_STATUS_SP35_P1_TABLE, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_STATUS_SP35_P2_TABLE, _
-        SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2), True
+        SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2), True, 0, preparedValues
 End Sub
 
 
@@ -926,7 +927,7 @@ Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculati
     PrepareSummaryTarget SummaryClearRange(workbook), UBound(data, 1)
     Dim target As Object: Set target = SummaryTargetRange(workbook, UBound(data, 1))
     WriteSummaryBody target, data
-    FormatSummary workbook, target, Nothing
+    FormatSummary workbook, target, Nothing, data
     Dim strength As CStrengthSummaryWriter: Set strength = New CStrengthSummaryWriter
     Dim cracks As CCrackSummaryWriter: Set cracks = New CCrackSummaryWriter
     Dim stability As CStabilitySummaryWriter: Set stability = New CStabilitySummaryWriter

@@ -16,6 +16,7 @@ Option Explicit
 ' Числа сохраняются без округления. После подготовки набор только читается;
 ' восстановление не обращается к модели сечения, материалам или AutoCAD.
 Private mTables As Object ' Матрицы значений по стабильным ключам таблиц и шапок.
+Private mTableRows As Object ' Высоты неизменяемых матриц, без копирования таблиц при проверке раскладки.
 Private mElapsedSeconds As Double ' Полное время запуска, отдельное от содержимого таблиц.
 Private mRunID As Double ' Точная дата одного согласованного запуска.
 Private mValidated As Boolean ' Повторная проверка того же неизменённого набора не копирует большие массивы.
@@ -28,6 +29,8 @@ Private mElementGroupCount As Long ' Число групп; ноль также 
 Private Sub Class_Initialize()
     Set mTables = CreateObject("Scripting.Dictionary")
     mTables.CompareMode = vbBinaryCompare
+    Set mTableRows = CreateObject("Scripting.Dictionary")
+    mTableRows.CompareMode = vbBinaryCompare
 End Sub
 
 ' Устанавливает дату до заполнения таблиц; преобразование в текст не требуется.
@@ -64,6 +67,7 @@ Public Sub AddTable(ByVal key As String, ByVal values As Variant)
     Else
         mTables.Add key, values
     End If
+    mTableRows.Add key, UBound(values, 1)
     mValidated = False
 End Sub
 
@@ -100,6 +104,7 @@ Friend Sub AddPreparedElementResults(ByRef values() As Variant, ByVal usedRows A
         mElements = trimmed
     End If
     mTables.Add "rngNDMElementResults", Empty
+    mTableRows.Add "rngNDMElementResults", usedRows
     mElementGroupCount = 0: mValidated = False
 End Sub
 
@@ -137,13 +142,21 @@ Public Function Table(ByVal key As String) As Variant
     Table = values
 End Function
 
+' Передаёт большую таблицу элементов кодеку по ссылке, без независимой копии для записи.
+' Кодек только читает массив; публичный Table по-прежнему возвращает независимые данные.
+Friend Sub WritePreparedTable(ByVal key As String, ByVal store As CCalculationSnapshotStore, ByVal file As CBinarySnapshotFile)
+    If key = "rngNDMElementResults" Then
+        store.WritePreparedMatrix file, mElements, TableRowCount("rngNDMSectionGeometry") - 1
+    Else
+        Dim values As Variant: values = Table(key)
+        store.WritePreparedMatrix file, values
+    End If
+End Sub
+
 ' Возвращает размер без копирования всей матрицы ради одного UBound.
 Public Function TableRowCount(ByVal key As String) As Long
-    If key = "rngNDMElementResults" And mTables.Exists(key) Then
-        TableRowCount = UBound(mElements, 1)
-    Else
-        Dim values As Variant: values = Table(key): TableRowCount = UBound(values, 1)
-    End If
+    If Not mTables.Exists(key) Then Err.Raise 5, "CCalculationSnapshot", "В снимке отсутствует таблица: " & key
+    TableRowCount = CLng(mTableRows.Item(key))
 End Function
 
 ' Выбирает только нужные строки по кратковременному индексу неизменяемого снимка.
