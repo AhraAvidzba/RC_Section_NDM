@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestWorkbookInterface"
+Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -1360,10 +1360,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
     TestAssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
     TestAssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 1
-    TestAssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 55
+    TestAssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 51
     TestAssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 19
     TestAssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 27
-    TestAssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 74
+    TestAssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 70
     TestAssertTrue stats, "ui.results.geometry.noSource", TestResultHeaderColumn(geometryResults, "SourceName") = 0
     TestAssertTrue stats, "ui.results.geometry.noMaterialClass", TestResultHeaderColumn(geometryResults, "MaterialClass") = 0
     TestAssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -1492,7 +1492,7 @@ Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     For commonRow = 2 To UBound(common, 1)
         If StrComp(CStr(common(commonRow, 2)), "ALL", vbTextCompare) <> 0 Then commonOnly = False
     Next commonRow
-    TestAssertTrue stats, "ui.results.fullSnapshot.commonGeometryOnly", commonOnly
+    TestAssertTrue stats, "ui.results.fullSnapshot.readableLoadCaseProperties", Not commonOnly
     TestAssertTrue stats, "ui.results.fullSnapshot.materialRows", _
         TestResultTableRowCount("rngNDMMaterialDiagrams") > 1
 End Sub

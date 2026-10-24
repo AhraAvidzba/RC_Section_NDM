@@ -1,0 +1,134 @@
+[
+  {
+    "Group": "Snapshot",
+    "Macro": "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+    "Mode": "No",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL CALCULATION SNAPSHOT: passed=372; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/Snapshot_No.txt"
+  },
+  {
+    "Group": "SnapshotUI",
+    "Macro": "modTestWorkbookInterface.TestRunSnapshotUiFailureProbe",
+    "Mode": "No",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL SNAPSHOT UI PROBE: passed=32; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/SnapshotUI_No.txt"
+  },
+  {
+    "Group": "Workflow",
+    "Macro": "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+    "Mode": "No",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL_WORKFLOW_CALCULATION: passed=114; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/Workflow_No.txt"
+  },
+  {
+    "Group": "GeneralPlot",
+    "Macro": "modTestWorkbookInterface.RunAudit03GeneralPlotTests",
+    "Mode": "No",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL_AUDIT03_GENERAL_PLOT: passed=3377; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/GeneralPlot_No.txt"
+  },
+  {
+    "Group": "CrackPlot",
+    "Macro": "modTestPlotConfig.RunCrackAnnotationPlotTests",
+    "Mode": "No",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL_CRACK_ANNOTATION_PLOT: passed=123; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/CrackPlot_No.txt"
+  },
+  {
+    "Group": "Formatting",
+    "Macro": "modTestWorkbookInterface.RunResultsFormattingTests",
+    "Mode": "No",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL_RESULTS_FORMATTING: passed=64; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/Formatting_No.txt"
+  },
+  {
+    "Group": "Snapshot",
+    "Macro": "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+    "Mode": "Yes",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL CALCULATION SNAPSHOT: passed=372; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/Snapshot_Yes.txt"
+  },
+  {
+    "Group": "SnapshotUI",
+    "Macro": "modTestWorkbookInterface.TestRunSnapshotUiFailureProbe",
+    "Mode": "Yes",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL SNAPSHOT UI PROBE: passed=32; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/SnapshotUI_Yes.txt"
+  },
+  {
+    "Group": "Workflow",
+    "Macro": "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+    "Mode": "Yes",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL_WORKFLOW_CALCULATION: passed=114; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/Workflow_Yes.txt"
+  },
+  {
+    "Group": "GeneralPlot",
+    "Macro": "modTestWorkbookInterface.RunAudit03GeneralPlotTests",
+    "Mode": "Yes",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL_AUDIT03_GENERAL_PLOT: passed=3377; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/GeneralPlot_Yes.txt"
+  },
+  {
+    "Group": "CrackPlot",
+    "Macro": "modTestPlotConfig.RunCrackAnnotationPlotTests",
+    "Mode": "Yes",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL_CRACK_ANNOTATION_PLOT: passed=123; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/CrackPlot_Yes.txt"
+  },
+  {
+    "Group": "Formatting",
+    "Macro": "modTestWorkbookInterface.RunResultsFormattingTests",
+    "Mode": "Yes",
+    "Status": "PASS",
+    "Totals": [
+      "TOTAL_RESULTS_FORMATTING: passed=64; failed=0"
+    ],
+    "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+    "Log": "docs/regression/ExcelSingleResults_2026-10-24_Run01/CandidateDirected/Formatting_Yes.txt"
+  }
+]

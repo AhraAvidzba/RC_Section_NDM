@@ -4,7 +4,8 @@ Option Explicit
 ' ==========================================================================
 ' Общая загрузка и восстановление результатов без повторного расчёта
 ' ==========================================================================
-' Расчёт сохраняет полный снимок, затем вызывает тот же путь, что кнопка.
+' После расчёта вывод использует готовые данные в памяти. Кнопка в File
+' восстанавливает полный снимок, в Excel обновляет схему по таблицам Results.
 ' Кратковременный контекст чтения принадлежит одной операции и одной книге.
 Private mReadSnapshot As CCalculationSnapshot ' Неизменяемый набор только на время одной операции чтения.
 Private mReadWorkbook As Object ' Книга, которой принадлежит текущий контекст.
@@ -36,21 +37,17 @@ Public Function CurrentCalculationSnapshot(ByVal workbook As Object) As CCalcula
     End If
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim snapshot As CCalculationSnapshot
-    If store.HasFileReference(workbook) Then
-        Set snapshot = store.LoadLinkedFile(workbook)
-    ElseIf store.HasSheetSnapshot(workbook) Then
-        Set snapshot = store.LoadSheet(workbook)
-    Else
-        Exit Function
-    End If
+    If Not store.HasFileReference(workbook) Then Exit Function
+    If store.StorageMode(workbook) <> "File" Then Exit Function
+    Set snapshot = store.LoadLinkedFile(workbook)
     If mReadDepth > 0 And workbook Is mReadWorkbook Then Set mReadSnapshot = snapshot
     Set CurrentCalculationSnapshot = snapshot
 End Function
 
-' Восстанавливает общие данные сечения и все подробные сводки выбранного снимка.
-' Файл читается по имени Config, а не по старой ссылке. Solver и импорт не вызываются.
+' Выводит готовый расчёт из памяти либо восстанавливает полный снимок File.
+' Ручное обновление Excel читает схему с листа и не восстанавливает верхние сводки.
 Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional ByVal prepared As CCalculationSnapshot = Nothing, _
-        Optional ByVal sheetAlreadySaved As Boolean = False, Optional ByRef plotWarning As String = "")
+        Optional ByRef plotWarning As String = "")
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
     Dim entered As Boolean
     On Error GoTo Failed
@@ -61,11 +58,8 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     If snapshot Is Nothing Then
         If mode = "File" Then
             Set snapshot = store.LoadFile(workbook)
-        ElseIf store.HasSheetSnapshot(workbook) Then
-            Set snapshot = store.LoadSheet(workbook)
-        ElseIf store.HasFileReference(workbook) Then
-            Set snapshot = store.LoadLinkedFile(workbook)
         Else
+            store.ClearReference workbook
             UpdateSectionPlotForWorkbook workbook
             guard.Restore True
             Exit Sub
@@ -78,13 +72,11 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook workbook
     Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
-    If Not sheetAlreadySaved Then writer.RestoreSnapshotBase workbook, snapshot, fullFormatting, mode = "Excel"
+    writer.RestoreSnapshotBase workbook, snapshot, fullFormatting, mode = "Excel"
     summary.RestoreSummary workbook, snapshot, fullFormatting
     If mode = "Excel" Then
         store.ClearReference workbook
-        If Not sheetAlreadySaved Then store.SaveSheetExtra workbook, snapshot
     Else
-        store.ClearSheetExtra workbook
         store.LinkFile workbook
     End If
     If prepared Is Nothing Then
@@ -106,12 +98,17 @@ End Sub
 
 ' Проверяет вместимость готовых таблиц до очистки; число LC не берётся из текущего Config.
 Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, ByVal includeElements As Boolean)
-    Dim key As Variant, values As Variant, anchor As Object
+    Dim key As Variant, values As Variant, anchor As Object, rowCount As Long
     For Each key In snapshot.BaseKeys()
         If CStr(key) <> "rngNDMElementResults" Or includeElements Then
             Set anchor = workbook.Names.Item(CStr(key)).RefersToRange
-            If Not ResultRowsFitSheet(anchor.Row, snapshot.TableRowCount(CStr(key)), anchor.Worksheet.Rows.Count) Then
-                Dim reason As String: reason = ResultRowLimitDescription(CStr(key), anchor.Row, snapshot.TableRowCount(CStr(key)), anchor.Worksheet.Rows.Count)
+            rowCount = snapshot.TableRowCount(CStr(key))
+            If includeElements Then
+                If CStr(key) = "rngNDMSectionProperties" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Properties") - 1
+                If CStr(key) = "rngNDMSectionAnnotations" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Annotations") - 1
+            End If
+            If Not ResultRowsFitSheet(anchor.Row, rowCount, anchor.Worksheet.Rows.Count) Then
+                Dim reason As String: reason = ResultRowLimitDescription(CStr(key), anchor.Row, rowCount, anchor.Worksheet.Rows.Count)
                 If CStr(key) = "rngNDMElementResults" Then reason = reason & vbCrLf & "Что сделать:" & vbCrLf & "1) " & ExternalSnapshotStorageAdvice(workbook) & " Повторите «Обновить схему и результаты»."
                 Err.Raise 5, "ValidateRestoredSnapshotLayout", reason
             End If
@@ -163,23 +160,16 @@ Public Function ResultOutputErrorDescription(ByVal original As String) As String
     End If
 End Function
 
-' Сохраняет снимок перед общим обновлением. В режиме Excel прежние общие
-' таблицы и один LC-блок вместе составляют тот же набор, что внешний файл.
+' Сохраняет полный снимок только в File; оба режима выводят результаты из памяти.
+' Excel оставляет обычные читаемые таблицы без второго архива подробных сводок.
 Public Function SaveAndDisplayCalculationSnapshot(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot) As String
     snapshot.Validate
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    Dim onSheet As Boolean: onSheet = (store.StorageMode(workbook) = "Excel")
-    If Not onSheet Then
+    If store.StorageMode(workbook) = "File" Then
         store.SaveFile workbook, snapshot
-    Else
-        Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
-        Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook workbook
-        writer.RestoreSnapshotBase workbook, snapshot, settings.GetRequiredBoolean("General.ReformatResultsEnabled")
-        store.ClearReference workbook
-        store.SaveSheetExtra workbook, snapshot
     End If
     Dim warning As String
-    UpdateSectionResultsForWorkbook workbook, snapshot, onSheet, warning
+    UpdateSectionResultsForWorkbook workbook, snapshot, warning
     SaveAndDisplayCalculationSnapshot = warning
 End Function
 
@@ -198,7 +188,7 @@ Private Function TryUpdateCalculatedSnapshotPlot(ByVal workbook As Object, ByVal
     UpdateSectionPlotForWorkbook workbook, False
     Exit Function
 Failed:
-    TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Снимок и результаты сохранены." & vbCrLf & _
+    TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Расчётные результаты сохранены." & vbCrLf & _
         Err.Description & vbCrLf & "Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется."
 End Function
 
@@ -225,15 +215,9 @@ Public Sub OfferExternalCalculationSnapshot(ByVal workbook As Object, ByVal esti
 End Sub
 
 ' Удаляет привязку готового расчёта перед обычной записью preview или тестового writer.
-' Отсутствующий новый якорь в изолированной тестовой книге не создаётся автоматически.
 Public Sub ClearPublishedCalculationSnapshot(ByVal workbook As Object)
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     store.ClearReference workbook
-    Dim target As Object
-    On Error Resume Next
-    Set target = workbook.Names.Item("rngNDMLoadCaseResults").RefersToRange
-    On Error GoTo 0
-    If Not target Is Nothing Then store.ClearSheetExtra workbook
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

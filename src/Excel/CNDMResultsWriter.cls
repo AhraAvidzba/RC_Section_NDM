@@ -1829,14 +1829,15 @@ Private Function CalculationGeometryTable(ByRef source As Variant) As Variant
 End Function
 
 ' Выводит общие технические таблицы выбранного сечения, включая сетку,
-' общие геометрические характеристики и фактически использованные диаграммы.
+' общие характеристики и диаграммы. В Excel LC-свойства и области трещин
+' остаются читаемыми строками прежних таблиц; File хранит их в полном снимке.
 Public Sub RestoreSnapshotBase(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True, Optional ByVal includeElements As Boolean = True)
     Set mCapturedSnapshot = Nothing: mMinimalFormatting = Not fullFormatting
     If Not includeElements Then ClearNamedRegion workbook, "rngNDMElementResults"
     Dim key As Variant, data As Variant, target As Object, title As String
     For Each key In snapshot.BaseKeys()
         If CStr(key) = "rngNDMElementResults" And Not includeElements Then GoTo NextBaseTable
-        data = snapshot.Table(CStr(key))
+        If includeElements Then data = snapshot.ResultTable(CStr(key)) Else data = snapshot.Table(CStr(key))
         ClearNamedRegion workbook, CStr(key)
         Set target = workbook.Names.Item(CStr(key)).RefersToRange
         If CStr(key) = "rngNDMSectionGeometry" Then target.Resize(UBound(data, 1), UBound(data, 2)).Columns.Item(15).Resize(, 2).NumberFormat = "@"
@@ -1855,6 +1856,7 @@ Public Sub RestoreSnapshotBase(ByVal workbook As Object, ByVal snapshot As CCalc
             Case "rngNDMMaterialDiagrams": title = "Фактически использованные диаграммы материалов"
             Case "rngNDMSectionAnnotations": title = "Аннотации схемы"
         End Select
+        If includeElements And CStr(key) = "rngNDMSectionProperties" Then title = "Характеристики сечения и сочетаний"
         FormatResultsBlock target, UBound(data, 1), UBound(data, 2), title, data
 NextBaseTable:
     Next key

@@ -10,9 +10,9 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Один полный снимок расчёта: файл либо существующие таблицы и одно дополнение
+' Полный файловый снимок расчёта с проверкой целостности
 ' ==========================================================================
-' В файле сохраняет весь набор; на Results не дублирует существующие таблицы.
+' Сохраняет полный набор в одном .ndm; Excel-вывод не использует этот архив.
 ' Одинаковые строки колонки хранятся словарём, числа — исходными Double.
 ' Подмена файла выполняется атомарно после записи и контрольной суммы.
 Private Declare PtrSafe Function MoveFileExW Lib "kernel32" (ByVal source As LongPtr, ByVal target As LongPtr, ByVal flags As Long) As Long
@@ -21,16 +21,7 @@ Private Declare PtrSafe Sub CopyPackedBytes Lib "kernel32" Alias "RtlMoveMemory"
 Private Const MAGIC As String = "NDMSNP04" ' Контракт плотных колонок и точных повторяющихся серий версии 4.
 Private Const FILE_EXTENSION As String = ".ndm" ' Имя в Config не требует расширения; новые снимки получают один общий суффикс.
 Private Const LEGACY_FILE_EXTENSION As String = ".ndms" ' Прежние файлы доступны для чтения без изменения их содержимого или имени.
-Private Const SNAPSHOT_RANGE As String = "rngNDMLoadCaseResults" ' Единственный новый именованный диапазон Results.
-Private Const CHUNK_BYTES As Long = 18000 ' Base64 меньше предела 32767 символов одной ячейки Excel.
 Private Const LINK_PREFIX As String = "NDM.CalculationSnapshot." ' Привязка показанных результатов к уже загруженному файлу.
-
-' Отличает законченный снимок на листе от прежних таблиц элементов или preview.
-Public Function HasSheetSnapshot(ByVal workbook As Object) As Boolean
-    On Error GoTo Missing
-    HasSheetSnapshot = CStr(workbook.Names.Item(SNAPSHOT_RANGE).RefersToRange.Offset(0, 1).Value2) = MAGIC
-Missing:
-End Function
 
 ' Проверяет источник уже показанного расчёта независимо от нового выбора Config.
 Public Function HasFileReference(ByVal workbook As Object) As Boolean
@@ -144,7 +135,7 @@ Public Sub SaveFile(ByVal workbook As Object, ByVal snapshot As CCalculationSnap
     On Error GoTo Failed
     If FileExists(temporary) Then Err.Raise 5, , "Временный файл занят другим сохранением: " & temporary
     ownsTemporary = True
-    WriteBinary temporary, snapshot, False
+    WriteBinary temporary, snapshot
     If MoveFileExW(StrPtr(temporary), StrPtr(target), 9) = 0 Then Err.Raise 5, , _
         "Не удалось заменить файл снимка. Проверьте права на папку и закройте файл в другой программе. Код Windows: " & CStr(Err.LastDllError)
     Exit Sub
@@ -165,136 +156,18 @@ Public Function LoadFile(ByVal workbook As Object) As CCalculationSnapshot
     Set LoadFile = snapshot
 End Function
 
-' Пишет только недостающие сводки в один дополнительный диапазон нижнего блока Results.
-' Уже существующие технические таблицы сохраняются штатным писателем отдельно.
-Public Sub SaveSheetExtra(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot)
-    Dim temporary As String: temporary = TemporaryPath()
-    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim bytes() As Byte, count As Long, rows As Long, i As Long
-    On Error GoTo Failed
-    WriteBinary temporary, snapshot, True
-    file.OpenRead temporary
-    rows = (file.Size + CHUNK_BYTES - 1) \ CHUNK_BYTES
-    Dim data() As Variant: ReDim data(1 To rows + 3, 1 To 2)
-    data(1, 1) = "LC-снимок": data(1, 2) = MAGIC
-    data(2, 1) = "Время расчёта, с": data(2, 2) = snapshot.ElapsedSeconds
-    data(3, 1) = "Блоки данных Base64": data(3, 2) = rows
-    Dim node As Object: Set node = CreateObject("MSXML2.DOMDocument.6.0").createElement("data")
-    node.DataType = "bin.base64"
-    For i = 1 To rows
-        count = file.Size - file.Position: If count > CHUNK_BYTES Then count = CHUNK_BYTES
-        bytes = file.ReadBytes(count)
-        node.nodeTypedValue = bytes
-        data(i + 3, 1) = i: data(i + 3, 2) = Replace$(Replace$(node.Text, vbCr, ""), vbLf, "")
-    Next i
-    file.CloseFile: DeleteFile temporary
-    Dim target As Object: Set target = workbook.Names.Item(SNAPSHOT_RANGE).RefersToRange
-    If Not ResultRowsFitSheet(target.Row, UBound(data, 1), target.Worksheet.Rows.Count) Then Err.Raise 5, , _
-        ResultRowLimitDescription(SNAPSHOT_RANGE, target.Row, UBound(data, 1), target.Worksheet.Rows.Count) & vbCrLf & _
-        "Что сделать:" & vbCrLf & "1) " & ExternalSnapshotStorageAdvice(workbook)
-    ClearSheetExtra workbook
-    With target.Resize(UBound(data, 1), 2)
-        .Font.Name = "Arial": .Font.Size = 9: .WrapText = False
-        .HorizontalAlignment = -4108: .VerticalAlignment = -4108
-        .Borders.LineStyle = 1: .Borders.Color = RGB(200, 200, 200)
-    End With
-    target.Offset(3, 0).Resize(rows, 1).NumberFormat = "0"
-    target.Offset(3, 1).Resize(rows, 1).NumberFormat = "@" ' Текст архива виден; формат не позволяет Excel трактовать его как формулу или число.
-    target.Resize(UBound(data, 1), 2).Value2 = data
-    With target.Resize(1, 2)
-        .Interior.Color = RGB(217, 217, 217): .Font.Bold = True
-        .HorizontalAlignment = -4131
-    End With
-    target.Offset(1, 0).Resize(2, 1).HorizontalAlignment = -4131
-    target.Offset(3, 1).Resize(rows, 1).HorizontalAlignment = -4152 ' Как текстовые пояснения соседних таблиц, длинный архив удерживается внутри правой границы ячейки.
-    target.Offset(1, 1).NumberFormat = "0.00"
-    If target.Row > 1 Then
-        With target.Offset(-1, 0).Resize(1, 2)
-            .UnMerge: .Clear: .Merge
-            .Value2 = "Результаты по сочетаниям"
-            .Font.Name = "Arial": .Font.Size = 9: .Font.Bold = True
-            .HorizontalAlignment = -4108: .VerticalAlignment = -4108
-            .Interior.Color = RGB(217, 217, 217)
-        End With
-    End If
-    Exit Sub
-Failed:
-    Dim reason As String: reason = Err.Description
-    On Error Resume Next
-    file.CloseFile
-    If Len(temporary) > 0 Then If FileExists(temporary) Then DeleteFile temporary
-    On Error GoTo 0
-    Err.Raise vbObjectError + 4951, "CCalculationSnapshotStore", "Не удалось сохранить " & SNAPSHOT_RANGE & ": " & reason
-End Sub
-
-' Объединяет одно дополнение с прежними нижними таблицами без их дублирования.
-Public Function LoadSheet(ByVal workbook As Object) As CCalculationSnapshot
-    Dim target As Object: Set target = workbook.Names.Item(SNAPSHOT_RANGE).RefersToRange
-    If CStr(target.Offset(0, 1).Value2) <> MAGIC Then Err.Raise 5, , "На Results отсутствует полный снимок " & SNAPSHOT_RANGE & ". Выполните расчёт."
-    Dim count As Long: count = CLng(target.Offset(2, 1).Value2)
-    If count < 1 Or count > 100000 Then Err.Raise 5, , "Повреждено число частей " & SNAPSHOT_RANGE
-    Dim data As Variant: data = target.Offset(3, 0).Resize(count, 2).Value2
-    Dim temporary As String: temporary = TemporaryPath()
-    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim bytes() As Byte, i As Long, node As Object
-    On Error GoTo Failed
-    Set node = CreateObject("MSXML2.DOMDocument.6.0").createElement("data"): node.DataType = "bin.base64"
-    file.OpenWrite temporary
-    For i = 1 To count
-        If CLng(data(i, 1)) <> i Then Err.Raise 5, , "Нарушен порядок частей снимка."
-        node.Text = CStr(data(i, 2)): bytes = node.nodeTypedValue: file.WriteBytes bytes
-    Next i
-    file.CloseFile
-    Dim snapshot As CCalculationSnapshot: Set snapshot = ReadBinary(temporary): DeleteFile temporary
-    Dim elapsed As Variant: elapsed = target.Offset(1, 1).Value2
-    If VarType(elapsed) <> vbDouble Then Err.Raise 5, , "Повреждено время расчёта в " & SNAPSHOT_RANGE
-    If CDbl(elapsed) < 0# Then Err.Raise 5, , "Отрицательное время расчёта в " & SNAPSHOT_RANGE
-    snapshot.ElapsedSeconds = CDbl(elapsed)
-    Dim key As Variant, values As Variant
-    For Each key In snapshot.BaseKeys()
-        values = ReadPhysicalResultTable(workbook, CStr(key))
-        snapshot.AddTable CStr(key), values
-    Next key
-    snapshot.Validate
-    Set LoadSheet = snapshot
-    Exit Function
-Failed:
-    Dim reason As String: reason = Err.Description
-    On Error Resume Next
-    file.CloseFile
-    If Len(temporary) > 0 Then If FileExists(temporary) Then DeleteFile temporary
-    On Error GoTo 0
-    Err.Raise vbObjectError + 4952, "CCalculationSnapshotStore", "Не удалось прочитать " & SNAPSHOT_RANGE & ": " & reason
-End Function
-
-' Удаляет только собственное дополнение; геометрию и пользовательские ячейки не меняет.
-Public Sub ClearSheetExtra(ByVal workbook As Object)
-    Dim target As Object: Set target = workbook.Names.Item(SNAPSHOT_RANGE).RefersToRange
-    Dim rows As Long: rows = 3
-    If IsNumeric(target.Offset(2, 1).Value2) Then rows = rows + CLng(target.Offset(2, 1).Value2)
-    If rows < 3 Or rows > 100003 Then rows = 3
-    target.Resize(rows, 2).Clear
-    If target.Row > 1 Then
-        With target.Offset(-1, 0).Resize(1, 2)
-            .UnMerge: .Clear
-        End With
-    End If
-End Sub
-
-' Записывает все матрицы либо только дополнения тем же двоичным кодеком.
-Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot, ByVal extrasOnly As Boolean)
+' Записывает все матрицы полного снимка прежним двоичным кодеком версии 4.
+Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot)
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
     Dim count As Long, key As Variant, hash As String
     On Error GoTo Failed
     For Each key In snapshot.Keys()
-        If Not extrasOnly Or Not snapshot.IsBaseKey(CStr(key)) Then count = count + 1
+        count = count + 1
     Next key
     file.OpenWrite path
     file.WriteASCII MAGIC: file.WriteLong 4: file.WriteDouble snapshot.RunID: file.WriteDouble snapshot.ElapsedSeconds: file.WriteLong count
     For Each key In snapshot.Keys()
-        If Not extrasOnly Or Not snapshot.IsBaseKey(CStr(key)) Then
-            PutText file, CStr(key): snapshot.WritePreparedTable CStr(key), Me, file
-        End If
+        PutText file, CStr(key): snapshot.WritePreparedTable CStr(key), Me, file
     Next key
     file.CloseFile
     Dim digest As CFileChecksum: Set digest = New CFileChecksum: hash = digest.FileSHA256(path)
@@ -589,16 +462,11 @@ Private Function GetText(ByVal file As CBinarySnapshotFile) As String
     GetText = file.ReadSizedUTF16(131072)
 End Function
 
-' Создаёт уникальное имя служебного временного файла Windows, не оставляя его после операции.
-Private Function TemporaryPath() As String
-    Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
-    TemporaryPath = fileSystem.BuildPath(fileSystem.GetSpecialFolder(2), fileSystem.GetTempName)
-End Function
-
 ' После переноса книги копирует связанный снимок, если рядом его ещё нет.
 ' Одноимённый иной расчёт не заменяет; обычное сохранение не переписывает файл.
 Public Sub EnsureBesideWorkbook(ByVal workbook As Object, Optional ByVal previousFolder As String = "")
     If Not HasFileReference(workbook) Then Exit Sub
+    If StorageMode(workbook) <> "File" Then Exit Sub
     Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
     Dim target As String: target = CStr(workbook.Path) & Application.PathSeparator & LinkText(workbook, "File")
     Dim source As String: source = LinkText(workbook, "Folder") & Application.PathSeparator & LinkText(workbook, "File")
@@ -618,12 +486,9 @@ Public Sub EnsureBesideWorkbook(ByVal workbook As Object, Optional ByVal previou
 End Sub
 
 ' Обновляет только фиксированное поле времени и SHA256, не собирая большие таблицы заново.
-' На листе время имеет отдельное поле в том же диапазоне: повторной сериализации нет.
+' Excel-режим хранит время только в верхней сводке, без сериализованного дополнения.
 Public Sub UpdateSavedElapsed(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot)
-    If StorageMode(workbook) = "Excel" Then
-        workbook.Names.Item(SNAPSHOT_RANGE).RefersToRange.Offset(1, 1).Value2 = snapshot.ElapsedSeconds
-        Exit Sub
-    End If
+    If StorageMode(workbook) = "Excel" Then Exit Sub
     Dim target As String: target = SnapshotPath(workbook)
     Dim temporary As String: temporary = target & ".part"
     Dim ownsTemporary As Boolean, elapsed As Double, hash As String

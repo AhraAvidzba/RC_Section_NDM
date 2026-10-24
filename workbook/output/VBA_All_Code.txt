@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-24 15:07:00
+Date: 2026-10-24 17:16:56
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -8475,7 +8475,7 @@ Implements ISectionRecipe
 Private Type TRoundedInput
     b As Double ' Ширина прямоугольной основы без боковых выступов, мм.
     h As Double ' Высота наружного контура, мм.
-    Widths(1 To 2) As Double ' Выносы вершин левого и правого выступов до скругления, мм.
+    widths(1 To 2) As Double ' Выносы вершин левого и правого выступов до скругления, мм.
     r1(1 To 2) As Double ' Радиусы верхнего и нижнего углов каждой боковой стороны, мм.
     r2(1 To 2) As Double ' Радиусы скругления вершин левого и правого выступов, мм.
     geometrySource As String ' Адрес исходных размеров для пояснения геометрических ошибок.
@@ -8525,10 +8525,10 @@ Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes 
     sizes.geometrySource = reader.SourceReference("General", "B") & "; " & reader.SourceReference("General", "H")
     For side = 1 To 2
         If side = 1 Then key = "Left." Else key = "Right."
-        sizes.Widths(side) = reader.NonNegativeLength("General", key & "W")
+        sizes.widths(side) = reader.NonNegativeLength("General", key & "W")
         sizes.r1(side) = reader.NonNegativeLength("General", key & "R1")
         sizes.geometrySource = sizes.geometrySource & "; " & reader.SourceReference("General", key & "W") & "; " & reader.SourceReference("General", key & "R1")
-        If sizes.Widths(side) > 0# Then
+        If sizes.widths(side) > 0# Then
             sizes.r2(side) = reader.NonNegativeLength("General", key & "R2")
             sizes.geometrySource = sizes.geometrySource & "; " & reader.SourceReference("General", key & "R2")
         End If
@@ -8583,10 +8583,10 @@ Private Function DescribePolygon(ByRef sizes As TRoundedInput) As CPolygonSpec
     Set polygon = New CPolygonSpec
     polygon.AddVertex "TL", -sizes.b / 2#, sizes.h / 2#, sizes.r1(1), sizes.geometrySource, OutgoingEdgeID:="Edge.TL" ' Верхний левый угол; Edge.TL — верхняя грань, размеры в мм.
     polygon.AddVertex "TR", sizes.b / 2#, sizes.h / 2#, sizes.r1(2), sizes.geometrySource ' Верхний правый угол до скругления; координаты и радиус в мм.
-    If sizes.Widths(2) > 0# Then polygon.AddVertex "RightNose", sizes.b / 2# + sizes.Widths(2), 0#, sizes.r2(2), sizes.geometrySource ' Вершина правого выступа до скругления; координаты и радиус в мм.
+    If sizes.widths(2) > 0# Then polygon.AddVertex "RightNose", sizes.b / 2# + sizes.widths(2), 0#, sizes.r2(2), sizes.geometrySource ' Вершина правого выступа до скругления; координаты и радиус в мм.
     polygon.AddVertex "BR", sizes.b / 2#, -sizes.h / 2#, sizes.r1(2), sizes.geometrySource, OutgoingEdgeID:="Edge.BR" ' Нижний правый угол; Edge.BR — нижняя грань, размеры в мм.
     polygon.AddVertex "BL", -sizes.b / 2#, -sizes.h / 2#, sizes.r1(1), sizes.geometrySource, OutgoingEdgeID:="Edge.BL" ' Нижний левый угол; Edge.BL — участок к следующей вершине, размеры в мм.
-    If sizes.Widths(1) > 0# Then polygon.AddVertex "LeftNose", -sizes.b / 2# - sizes.Widths(1), 0#, sizes.r2(1), sizes.geometrySource, OutgoingEdgeID:="Edge.LeftNose" ' Вершина левого выступа до скругления; координаты и радиус в мм.
+    If sizes.widths(1) > 0# Then polygon.AddVertex "LeftNose", -sizes.b / 2# - sizes.widths(1), 0#, sizes.r2(1), sizes.geometrySource, OutgoingEdgeID:="Edge.LeftNose" ' Вершина левого выступа до скругления; координаты и радиус в мм.
     polygon.Seal ' Проверяем вершины и завершаем их описание.
     Set DescribePolygon = polygon ' Возвращаем подготовленный многоугольник.
 End Function
@@ -8686,8 +8686,8 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     outer.ProjectionBounds 1#, 0#, minX, maxX
     facade.HorizontalDistance "DIM_B", "B", -sizes.b / 2#, sizes.b / 2#, sizes.h / 2#, 1#, "Размер горизонтальной базы PointedSection между левым и правым торцом." ' Ширина основы B до скругления углов; размер сверху.
     facade.VerticalExtent "DIM_H", outer.id, "H", minX, -1#, "Полная высота PointedSection." ' Полная высота сечения H; размер вынесен влево.
-    If sizes.Widths(1) > 0# And -sizes.b / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.b / 2#, sizes.h / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1# ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
-    If sizes.Widths(2) > 0# And maxX - sizes.b / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_RIGHT", "W'", sizes.b / 2#, maxX, sizes.h / 2#, 1#, "Фактический вынос правого края бетона относительно правого торца базы B.", 1# ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
+    If sizes.widths(1) > 0# And -sizes.b / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.b / 2#, sizes.h / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1# ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
+    If sizes.widths(2) > 0# And maxX - sizes.b / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_RIGHT", "W'", sizes.b / 2#, maxX, sizes.h / 2#, 1#, "Фактический вынос правого края бетона относительно правого торца базы B.", 1# ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
 End Sub
 
 
@@ -44726,7 +44726,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCalculationSnapshot
 TYPE: 2
-LINES: 370
+LINES: 369
 ====================================================================================================
 Option Explicit
 
@@ -44953,13 +44953,12 @@ Public Function HasTable(ByVal key As String) As Boolean
     HasTable = mTables.Exists(key)
 End Function
 
-' Возвращает стабильный порядок частей для одного формата файла и листа.
+' Возвращает стабильный порядок частей полного файла и временного набора в памяти.
 Public Function keys() As Variant
     keys = mTables.keys
 End Function
 
-' Перечисляет уже существующие технические таблицы; они не дублируются
-' в единственном новом диапазоне дополнительных сведений на Results.
+' Перечисляет шесть прежних технических таблиц Results; отдельного архива на листе нет.
 Public Function BaseKeys() As Variant
     BaseKeys = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
         "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
@@ -45102,14 +45101,14 @@ End Function
 ====================================================================================================
 COMPONENT: CCalculationSnapshotStore
 TYPE: 2
-LINES: 651
+LINES: 516
 ====================================================================================================
 Option Explicit
 
 ' ==========================================================================
-' Один полный снимок расчёта: файл либо существующие таблицы и одно дополнение
+' Полный файловый снимок расчёта с проверкой целостности
 ' ==========================================================================
-' В файле сохраняет весь набор; на Results не дублирует существующие таблицы.
+' Сохраняет полный набор в одном .ndm; Excel-вывод не использует этот архив.
 ' Одинаковые строки колонки хранятся словарём, числа — исходными Double.
 ' Подмена файла выполняется атомарно после записи и контрольной суммы.
 Private Declare PtrSafe Function MoveFileExW Lib "kernel32" (ByVal source As LongPtr, ByVal Target As LongPtr, ByVal flags As Long) As Long
@@ -45118,16 +45117,7 @@ Private Declare PtrSafe Sub CopyPackedBytes Lib "kernel32" Alias "RtlMoveMemory"
 Private Const MAGIC As String = "NDMSNP04" ' Контракт плотных колонок и точных повторяющихся серий версии 4.
 Private Const FILE_EXTENSION As String = ".ndm" ' Имя в Config не требует расширения; новые снимки получают один общий суффикс.
 Private Const LEGACY_FILE_EXTENSION As String = ".ndms" ' Прежние файлы доступны для чтения без изменения их содержимого или имени.
-Private Const SNAPSHOT_RANGE As String = "rngNDMLoadCaseResults" ' Единственный новый именованный диапазон Results.
-Private Const CHUNK_BYTES As Long = 18000 ' Base64 меньше предела 32767 символов одной ячейки Excel.
 Private Const LINK_PREFIX As String = "NDM.CalculationSnapshot." ' Привязка показанных результатов к уже загруженному файлу.
-
-' Отличает законченный снимок на листе от прежних таблиц элементов или preview.
-Public Function HasSheetSnapshot(ByVal Workbook As Object) As Boolean
-    On Error GoTo Missing
-    HasSheetSnapshot = CStr(Workbook.names.item(SNAPSHOT_RANGE).RefersToRange.offset(0, 1).value2) = MAGIC
-Missing:
-End Function
 
 ' Проверяет источник уже показанного расчёта независимо от нового выбора Config.
 Public Function HasFileReference(ByVal Workbook As Object) As Boolean
@@ -45241,7 +45231,7 @@ Public Sub SaveFile(ByVal Workbook As Object, ByVal snapshot As CCalculationSnap
     On Error GoTo Failed
     If FileExists(temporary) Then Err.Raise 5, , "Временный файл занят другим сохранением: " & temporary
     ownsTemporary = True
-    WriteBinary temporary, snapshot, False
+    WriteBinary temporary, snapshot
     If MoveFileExW(StrPtr(temporary), StrPtr(Target), 9) = 0 Then Err.Raise 5, , _
         "Не удалось заменить файл снимка. Проверьте права на папку и закройте файл в другой программе. Код Windows: " & CStr(Err.LastDllError)
     Exit Sub
@@ -45262,136 +45252,18 @@ Public Function LoadFile(ByVal Workbook As Object) As CCalculationSnapshot
     Set LoadFile = snapshot
 End Function
 
-' Пишет только недостающие сводки в один дополнительный диапазон нижнего блока Results.
-' Уже существующие технические таблицы сохраняются штатным писателем отдельно.
-Public Sub SaveSheetExtra(ByVal Workbook As Object, ByVal snapshot As CCalculationSnapshot)
-    Dim temporary As String: temporary = TemporaryPath()
-    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim bytes() As Byte, count As Long, rows As Long, i As Long
-    On Error GoTo Failed
-    WriteBinary temporary, snapshot, True
-    file.OpenRead temporary
-    rows = (file.size + CHUNK_BYTES - 1) \ CHUNK_BYTES
-    Dim data() As Variant: ReDim data(1 To rows + 3, 1 To 2)
-    data(1, 1) = "LC-снимок": data(1, 2) = MAGIC
-    data(2, 1) = "Время расчёта, с": data(2, 2) = snapshot.elapsedSeconds
-    data(3, 1) = "Блоки данных Base64": data(3, 2) = rows
-    Dim node As Object: Set node = CreateObject("MSXML2.DOMDocument.6.0").createElement("data")
-    node.DataType = "bin.base64"
-    For i = 1 To rows
-        count = file.size - file.position: If count > CHUNK_BYTES Then count = CHUNK_BYTES
-        bytes = file.ReadBytes(count)
-        node.nodeTypedValue = bytes
-        data(i + 3, 1) = i: data(i + 3, 2) = Replace$(Replace$(node.text, vbCr, ""), vbLf, "")
-    Next i
-    file.CloseFile: DeleteFile temporary
-    Dim Target As Object: Set Target = Workbook.names.item(SNAPSHOT_RANGE).RefersToRange
-    If Not ResultRowsFitSheet(Target.row, UBound(data, 1), Target.Worksheet.rows.count) Then Err.Raise 5, , _
-        ResultRowLimitDescription(SNAPSHOT_RANGE, Target.row, UBound(data, 1), Target.Worksheet.rows.count) & vbCrLf & _
-        "Что сделать:" & vbCrLf & "1) " & ExternalSnapshotStorageAdvice(Workbook)
-    ClearSheetExtra Workbook
-    With Target.Resize(UBound(data, 1), 2)
-        .font.name = "Arial": .font.size = 9: .WrapText = False
-        .HorizontalAlignment = -4108: .VerticalAlignment = -4108
-        .Borders.LineStyle = 1: .Borders.color = RGB(200, 200, 200)
-    End With
-    Target.offset(3, 0).Resize(rows, 1).NumberFormat = "0"
-    Target.offset(3, 1).Resize(rows, 1).NumberFormat = "@" ' Текст архива виден; формат не позволяет Excel трактовать его как формулу или число.
-    Target.Resize(UBound(data, 1), 2).value2 = data
-    With Target.Resize(1, 2)
-        .Interior.color = RGB(217, 217, 217): .font.Bold = True
-        .HorizontalAlignment = -4131
-    End With
-    Target.offset(1, 0).Resize(2, 1).HorizontalAlignment = -4131
-    Target.offset(3, 1).Resize(rows, 1).HorizontalAlignment = -4152 ' Как текстовые пояснения соседних таблиц, длинный архив удерживается внутри правой границы ячейки.
-    Target.offset(1, 1).NumberFormat = "0.00"
-    If Target.row > 1 Then
-        With Target.offset(-1, 0).Resize(1, 2)
-            .UnMerge: .clear: .Merge
-            .value2 = "Результаты по сочетаниям"
-            .font.name = "Arial": .font.size = 9: .font.Bold = True
-            .HorizontalAlignment = -4108: .VerticalAlignment = -4108
-            .Interior.color = RGB(217, 217, 217)
-        End With
-    End If
-    Exit Sub
-Failed:
-    Dim reason As String: reason = Err.description
-    On Error Resume Next
-    file.CloseFile
-    If Len(temporary) > 0 Then If FileExists(temporary) Then DeleteFile temporary
-    On Error GoTo 0
-    Err.Raise vbObjectError + 4951, "CCalculationSnapshotStore", "Не удалось сохранить " & SNAPSHOT_RANGE & ": " & reason
-End Sub
-
-' Объединяет одно дополнение с прежними нижними таблицами без их дублирования.
-Public Function LoadSheet(ByVal Workbook As Object) As CCalculationSnapshot
-    Dim Target As Object: Set Target = Workbook.names.item(SNAPSHOT_RANGE).RefersToRange
-    If CStr(Target.offset(0, 1).value2) <> MAGIC Then Err.Raise 5, , "На Results отсутствует полный снимок " & SNAPSHOT_RANGE & ". Выполните расчёт."
-    Dim count As Long: count = CLng(Target.offset(2, 1).value2)
-    If count < 1 Or count > 100000 Then Err.Raise 5, , "Повреждено число частей " & SNAPSHOT_RANGE
-    Dim data As Variant: data = Target.offset(3, 0).Resize(count, 2).value2
-    Dim temporary As String: temporary = TemporaryPath()
-    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim bytes() As Byte, i As Long, node As Object
-    On Error GoTo Failed
-    Set node = CreateObject("MSXML2.DOMDocument.6.0").createElement("data"): node.DataType = "bin.base64"
-    file.OpenWrite temporary
-    For i = 1 To count
-        If CLng(data(i, 1)) <> i Then Err.Raise 5, , "Нарушен порядок частей снимка."
-        node.text = CStr(data(i, 2)): bytes = node.nodeTypedValue: file.WriteBytes bytes
-    Next i
-    file.CloseFile
-    Dim snapshot As CCalculationSnapshot: Set snapshot = ReadBinary(temporary): DeleteFile temporary
-    Dim elapsed As Variant: elapsed = Target.offset(1, 1).value2
-    If VarType(elapsed) <> vbDouble Then Err.Raise 5, , "Повреждено время расчёта в " & SNAPSHOT_RANGE
-    If CDbl(elapsed) < 0# Then Err.Raise 5, , "Отрицательное время расчёта в " & SNAPSHOT_RANGE
-    snapshot.elapsedSeconds = CDbl(elapsed)
-    Dim key As Variant, values As Variant
-    For Each key In snapshot.BaseKeys()
-        values = ReadPhysicalResultTable(Workbook, CStr(key))
-        snapshot.AddTable CStr(key), values
-    Next key
-    snapshot.Validate
-    Set LoadSheet = snapshot
-    Exit Function
-Failed:
-    Dim reason As String: reason = Err.description
-    On Error Resume Next
-    file.CloseFile
-    If Len(temporary) > 0 Then If FileExists(temporary) Then DeleteFile temporary
-    On Error GoTo 0
-    Err.Raise vbObjectError + 4952, "CCalculationSnapshotStore", "Не удалось прочитать " & SNAPSHOT_RANGE & ": " & reason
-End Function
-
-' Удаляет только собственное дополнение; геометрию и пользовательские ячейки не меняет.
-Public Sub ClearSheetExtra(ByVal Workbook As Object)
-    Dim Target As Object: Set Target = Workbook.names.item(SNAPSHOT_RANGE).RefersToRange
-    Dim rows As Long: rows = 3
-    If IsNumeric(Target.offset(2, 1).value2) Then rows = rows + CLng(Target.offset(2, 1).value2)
-    If rows < 3 Or rows > 100003 Then rows = 3
-    Target.Resize(rows, 2).clear
-    If Target.row > 1 Then
-        With Target.offset(-1, 0).Resize(1, 2)
-            .UnMerge: .clear
-        End With
-    End If
-End Sub
-
-' Записывает все матрицы либо только дополнения тем же двоичным кодеком.
-Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot, ByVal extrasOnly As Boolean)
+' Записывает все матрицы полного снимка прежним двоичным кодеком версии 4.
+Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot)
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
     Dim count As Long, key As Variant, hash As String
     On Error GoTo Failed
     For Each key In snapshot.keys()
-        If Not extrasOnly Or Not snapshot.IsBaseKey(CStr(key)) Then count = count + 1
+        count = count + 1
     Next key
     file.OpenWrite path
     file.WriteASCII MAGIC: file.WriteLong 4: file.WriteDouble snapshot.runID: file.WriteDouble snapshot.elapsedSeconds: file.WriteLong count
     For Each key In snapshot.keys()
-        If Not extrasOnly Or Not snapshot.IsBaseKey(CStr(key)) Then
-            PutText file, CStr(key): snapshot.WritePreparedTable CStr(key), Me, file
-        End If
+        PutText file, CStr(key): snapshot.WritePreparedTable CStr(key), Me, file
     Next key
     file.CloseFile
     Dim digest As CFileChecksum: Set digest = New CFileChecksum: hash = digest.FileSHA256(path)
@@ -45686,16 +45558,11 @@ Private Function GetText(ByVal file As CBinarySnapshotFile) As String
     GetText = file.ReadSizedUTF16(131072)
 End Function
 
-' Создаёт уникальное имя служебного временного файла Windows, не оставляя его после операции.
-Private Function TemporaryPath() As String
-    Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
-    TemporaryPath = fileSystem.BuildPath(fileSystem.GetSpecialFolder(2), fileSystem.GetTempName)
-End Function
-
 ' После переноса книги копирует связанный снимок, если рядом его ещё нет.
 ' Одноимённый иной расчёт не заменяет; обычное сохранение не переписывает файл.
 Public Sub EnsureBesideWorkbook(ByVal Workbook As Object, Optional ByVal previousFolder As String = "")
     If Not HasFileReference(Workbook) Then Exit Sub
+    If StorageMode(Workbook) <> "File" Then Exit Sub
     Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
     Dim Target As String: Target = CStr(Workbook.path) & Application.PathSeparator & LinkText(Workbook, "File")
     Dim source As String: source = LinkText(Workbook, "Folder") & Application.PathSeparator & LinkText(Workbook, "File")
@@ -45715,12 +45582,9 @@ Public Sub EnsureBesideWorkbook(ByVal Workbook As Object, Optional ByVal previou
 End Sub
 
 ' Обновляет только фиксированное поле времени и SHA256, не собирая большие таблицы заново.
-' На листе время имеет отдельное поле в том же диапазоне: повторной сериализации нет.
+' Excel-режим хранит время только в верхней сводке, без сериализованного дополнения.
 Public Sub UpdateSavedElapsed(ByVal Workbook As Object, ByVal snapshot As CCalculationSnapshot)
-    If StorageMode(Workbook) = "Excel" Then
-        Workbook.names.item(SNAPSHOT_RANGE).RefersToRange.offset(1, 1).value2 = snapshot.elapsedSeconds
-        Exit Sub
-    End If
+    If StorageMode(Workbook) = "Excel" Then Exit Sub
     Dim Target As String: Target = SnapshotPath(Workbook)
     Dim temporary As String: temporary = Target & ".part"
     Dim ownsTemporary As Boolean, elapsed As Double, hash As String
@@ -47905,7 +47769,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CNDMResultsWriter
 TYPE: 2
-LINES: 1854
+LINES: 1856
 ====================================================================================================
 Option Explicit
 
@@ -49729,14 +49593,15 @@ Private Function CalculationGeometryTable(ByRef source As Variant) As Variant
 End Function
 
 ' Выводит общие технические таблицы выбранного сечения, включая сетку,
-' общие геометрические характеристики и фактически использованные диаграммы.
+' общие характеристики и диаграммы. В Excel LC-свойства и области трещин
+' остаются читаемыми строками прежних таблиц; File хранит их в полном снимке.
 Public Sub RestoreSnapshotBase(ByVal Workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True, Optional ByVal includeElements As Boolean = True)
     Set mCapturedSnapshot = Nothing: mMinimalFormatting = Not fullFormatting
     If Not includeElements Then ClearNamedRegion Workbook, "rngNDMElementResults"
     Dim key As Variant, data As Variant, Target As Object, title As String
     For Each key In snapshot.BaseKeys()
         If CStr(key) = "rngNDMElementResults" And Not includeElements Then GoTo NextBaseTable
-        data = snapshot.table(CStr(key))
+        If includeElements Then data = snapshot.ResultTable(CStr(key)) Else data = snapshot.table(CStr(key))
         ClearNamedRegion Workbook, CStr(key)
         Set Target = Workbook.names.item(CStr(key)).RefersToRange
         If CStr(key) = "rngNDMSectionGeometry" Then Target.Resize(UBound(data, 1), UBound(data, 2)).columns.item(15).Resize(, 2).NumberFormat = "@"
@@ -49755,6 +49620,7 @@ Public Sub RestoreSnapshotBase(ByVal Workbook As Object, ByVal snapshot As CCalc
             Case "rngNDMMaterialDiagrams": title = "Фактически использованные диаграммы материалов"
             Case "rngNDMSectionAnnotations": title = "Аннотации схемы"
         End Select
+        If includeElements And CStr(key) = "rngNDMSectionProperties" Then title = "Характеристики сечения и сочетаний"
         FormatResultsBlock Target, UBound(data, 1), UBound(data, 2), title, data
 NextBaseTable:
     Next key
@@ -55993,7 +55859,7 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
     For rowIndex = 2 To UBound(data, 1)
         Dim rowKey As String
         rowKey = ConfigCellText(data(rowIndex, 1), "параметр бетона", rowIndex, vbNullString, False, 1)
-        If Len(rowKey) = 0 Then GoTo NextRow
+        If Len(rowKey) = 0 Then GoTo nextRow
 
         Dim compressionValue As String
         Dim tensionValue As String
@@ -56028,7 +55894,7 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
             Case Else
                 If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue, rowIndex, 2
         End Select
-NextRow:
+nextRow:
     Next rowIndex
 End Sub
 
@@ -56048,7 +55914,7 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
     For rowIndex = 2 To UBound(data, 1)
         Dim rowKey As String
         rowKey = ConfigCellText(data(rowIndex, 1), "параметр арматуры", rowIndex, vbNullString, False, 1)
-        If Len(rowKey) = 0 Then GoTo NextRow
+        If Len(rowKey) = 0 Then GoTo nextRow
 
         Dim compressionValue As String
         Dim tensionValue As String
@@ -56076,7 +55942,7 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
             Case Else
                 If Len(compressionValue) > 0 Then AppendSetting rowKey, compressionValue, compressionValue, commentValue, rowIndex, 2
         End Select
-NextRow:
+nextRow:
     Next rowIndex
 End Sub
 
@@ -59207,14 +59073,15 @@ End Sub
 ====================================================================================================
 COMPONENT: modCalculationSnapshot
 TYPE: 1
-LINES: 243
+LINES: 227
 ====================================================================================================
 Option Explicit
 
 ' ==========================================================================
 ' Общая загрузка и восстановление результатов без повторного расчёта
 ' ==========================================================================
-' Расчёт сохраняет полный снимок, затем вызывает тот же путь, что кнопка.
+' После расчёта вывод использует готовые данные в памяти. Кнопка в File
+' восстанавливает полный снимок, в Excel обновляет схему по таблицам Results.
 ' Кратковременный контекст чтения принадлежит одной операции и одной книге.
 Private mReadSnapshot As CCalculationSnapshot ' Неизменяемый набор только на время одной операции чтения.
 Private mReadWorkbook As Object ' Книга, которой принадлежит текущий контекст.
@@ -59246,21 +59113,17 @@ Public Function CurrentCalculationSnapshot(ByVal Workbook As Object) As CCalcula
     End If
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim snapshot As CCalculationSnapshot
-    If store.HasFileReference(Workbook) Then
-        Set snapshot = store.LoadLinkedFile(Workbook)
-    ElseIf store.HasSheetSnapshot(Workbook) Then
-        Set snapshot = store.LoadSheet(Workbook)
-    Else
-        Exit Function
-    End If
+    If Not store.HasFileReference(Workbook) Then Exit Function
+    If store.StorageMode(Workbook) <> "File" Then Exit Function
+    Set snapshot = store.LoadLinkedFile(Workbook)
     If mReadDepth > 0 And Workbook Is mReadWorkbook Then Set mReadSnapshot = snapshot
     Set CurrentCalculationSnapshot = snapshot
 End Function
 
-' Восстанавливает общие данные сечения и все подробные сводки выбранного снимка.
-' Файл читается по имени Config, а не по старой ссылке. Solver и импорт не вызываются.
+' Выводит готовый расчёт из памяти либо восстанавливает полный снимок File.
+' Ручное обновление Excel читает схему с листа и не восстанавливает верхние сводки.
 Public Sub UpdateSectionResultsForWorkbook(ByVal Workbook As Object, Optional ByVal prepared As CCalculationSnapshot = Nothing, _
-        Optional ByVal sheetAlreadySaved As Boolean = False, Optional ByRef plotWarning As String = "")
+        Optional ByRef plotWarning As String = "")
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
     Dim entered As Boolean
     On Error GoTo Failed
@@ -59271,11 +59134,8 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal Workbook As Object, Optional By
     If snapshot Is Nothing Then
         If mode = "File" Then
             Set snapshot = store.LoadFile(Workbook)
-        ElseIf store.HasSheetSnapshot(Workbook) Then
-            Set snapshot = store.LoadSheet(Workbook)
-        ElseIf store.HasFileReference(Workbook) Then
-            Set snapshot = store.LoadLinkedFile(Workbook)
         Else
+            store.ClearReference Workbook
             UpdateSectionPlotForWorkbook Workbook
             guard.Restore True
             Exit Sub
@@ -59288,13 +59148,11 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal Workbook As Object, Optional By
     Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook Workbook
     Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
-    If Not sheetAlreadySaved Then writer.RestoreSnapshotBase Workbook, snapshot, fullFormatting, mode = "Excel"
+    writer.RestoreSnapshotBase Workbook, snapshot, fullFormatting, mode = "Excel"
     summary.RestoreSummary Workbook, snapshot, fullFormatting
     If mode = "Excel" Then
         store.ClearReference Workbook
-        If Not sheetAlreadySaved Then store.SaveSheetExtra Workbook, snapshot
     Else
-        store.ClearSheetExtra Workbook
         store.LinkFile Workbook
     End If
     If prepared Is Nothing Then
@@ -59316,12 +59174,17 @@ End Sub
 
 ' Проверяет вместимость готовых таблиц до очистки; число LC не берётся из текущего Config.
 Private Sub ValidateRestoredSnapshotLayout(ByVal Workbook As Object, ByVal snapshot As CCalculationSnapshot, ByVal includeElements As Boolean)
-    Dim key As Variant, values As Variant, anchor As Object
+    Dim key As Variant, values As Variant, anchor As Object, rowCount As Long
     For Each key In snapshot.BaseKeys()
         If CStr(key) <> "rngNDMElementResults" Or includeElements Then
             Set anchor = Workbook.names.item(CStr(key)).RefersToRange
-            If Not ResultRowsFitSheet(anchor.row, snapshot.TableRowCount(CStr(key)), anchor.Worksheet.rows.count) Then
-                Dim reason As String: reason = ResultRowLimitDescription(CStr(key), anchor.row, snapshot.TableRowCount(CStr(key)), anchor.Worksheet.rows.count)
+            rowCount = snapshot.TableRowCount(CStr(key))
+            If includeElements Then
+                If CStr(key) = "rngNDMSectionProperties" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Properties") - 1
+                If CStr(key) = "rngNDMSectionAnnotations" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Annotations") - 1
+            End If
+            If Not ResultRowsFitSheet(anchor.row, rowCount, anchor.Worksheet.rows.count) Then
+                Dim reason As String: reason = ResultRowLimitDescription(CStr(key), anchor.row, rowCount, anchor.Worksheet.rows.count)
                 If CStr(key) = "rngNDMElementResults" Then reason = reason & vbCrLf & "Что сделать:" & vbCrLf & "1) " & ExternalSnapshotStorageAdvice(Workbook) & " Повторите «Обновить схему и результаты»."
                 Err.Raise 5, "ValidateRestoredSnapshotLayout", reason
             End If
@@ -59373,23 +59236,16 @@ Public Function ResultOutputErrorDescription(ByVal original As String) As String
     End If
 End Function
 
-' Сохраняет снимок перед общим обновлением. В режиме Excel прежние общие
-' таблицы и один LC-блок вместе составляют тот же набор, что внешний файл.
+' Сохраняет полный снимок только в File; оба режима выводят результаты из памяти.
+' Excel оставляет обычные читаемые таблицы без второго архива подробных сводок.
 Public Function SaveAndDisplayCalculationSnapshot(ByVal Workbook As Object, ByVal snapshot As CCalculationSnapshot) As String
     snapshot.Validate
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    Dim onSheet As Boolean: onSheet = (store.StorageMode(Workbook) = "Excel")
-    If Not onSheet Then
+    If store.StorageMode(Workbook) = "File" Then
         store.SaveFile Workbook, snapshot
-    Else
-        Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
-        Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook Workbook
-        writer.RestoreSnapshotBase Workbook, snapshot, settings.GetRequiredBoolean("General.ReformatResultsEnabled")
-        store.ClearReference Workbook
-        store.SaveSheetExtra Workbook, snapshot
     End If
     Dim warning As String
-    UpdateSectionResultsForWorkbook Workbook, snapshot, onSheet, warning
+    UpdateSectionResultsForWorkbook Workbook, snapshot, warning
     SaveAndDisplayCalculationSnapshot = warning
 End Function
 
@@ -59408,7 +59264,7 @@ Private Function TryUpdateCalculatedSnapshotPlot(ByVal Workbook As Object, ByVal
     UpdateSectionPlotForWorkbook Workbook, False
     Exit Function
 Failed:
-    TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Снимок и результаты сохранены." & vbCrLf & _
+    TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Расчётные результаты сохранены." & vbCrLf & _
         Err.description & vbCrLf & "Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется."
 End Function
 
@@ -59435,15 +59291,9 @@ Public Sub OfferExternalCalculationSnapshot(ByVal Workbook As Object, ByVal esti
 End Sub
 
 ' Удаляет привязку готового расчёта перед обычной записью preview или тестового writer.
-' Отсутствующий новый якорь в изолированной тестовой книге не создаётся автоматически.
 Public Sub ClearPublishedCalculationSnapshot(ByVal Workbook As Object)
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     store.ClearReference Workbook
-    Dim Target As Object
-    On Error Resume Next
-    Set Target = Workbook.names.item("rngNDMLoadCaseResults").RefersToRange
-    On Error GoTo 0
-    If Not Target Is Nothing Then store.ClearSheetExtra Workbook
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -61068,10 +60918,10 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
     ndmWriter.writeResults Workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True, fullFormatting
     savedSnapshot.AddTable "Calculation.Profiles", savedProfileValues
     savedSnapshot.Validate
-    report.AddStep "Полный снимок подготовлен; сохранение и общее обновление схемы и результатов."
+    report.AddStep "Результаты подготовлены; сохранение в выбранном режиме и вывод из памяти."
     Dim plotWarning As String
     plotWarning = SaveAndDisplayCalculationSnapshot(Workbook, savedSnapshot)
-    report.AddStep "Снимок сохранён. Подробные таблицы и схема обновлены из него без повторного решения."
+    report.AddStep "Подробные таблицы и схема заполнены из готовых данных без повторного решения. Полный файл снимка сохраняется только в режиме File."
 
     Dim totalElapsedSeconds As Double
     totalElapsedSeconds = ElapsedSecondsFrom(runStart)
@@ -80211,7 +80061,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCalculationSnapshot
 TYPE: 1
-LINES: 964
+LINES: 1036
 ====================================================================================================
 Option Explicit
 
@@ -80242,15 +80092,18 @@ Public Function RunCalculationSnapshotTests() As String
     Dim extension As String: extension = initial.GetRequiredString("General.DiagramExtension")
     modTestPerformance.TestConfigurePerformanceFixture "MIXED", 6, "Newton", "Circle", "Normal", extension
     TestSnapshotSetting "General.ExecutionReportEnabled", "No"
-    TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    Dim token As String: token = "TestSnapshot_" & format$(Now, "yyyymmdd_hhnnss")
+    TestSnapshotSetting "Results.SnapshotStorage", "File"
+    TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
+    Dim path As String: path = store.SnapshotPath(ThisWorkbook)
     TestSnapshotSetting "Plot.LoadCase", "PERF_01"
     Dim loads As Object: Set loads = ThisWorkbook.names.item("rngLoadCombinations").RefersToRange
     loads.cells(2, 1).value2 = "Сочетание_" & ChrW$(&H3B1) & "_01": TestSnapshotSetting "Plot.LoadCase", "Сочетание_" & ChrW$(&H3B1) & "_01"
     Dim message As String: message = FormSectionForWorkbook(ThisWorkbook)
     message = RunSectionCalculationForWorkbook(ThisWorkbook)
     TestSnapshotCheck "readScope.afterCalculation", TestCalculationSnapshotReadReleased()
-    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    Dim original As CCalculationSnapshot: Set original = store.LoadSheet(ThisWorkbook)
+    Dim original As CCalculationSnapshot: Set original = store.LoadFile(ThisWorkbook)
     TestSnapshotOneUseSource
     TestSnapshotNativeLayout original
     TestSnapshotValidationReuse original
@@ -80258,8 +80111,8 @@ Public Function RunCalculationSnapshotTests() As String
     Dim originalPlot As String: originalPlot = TestSnapshotPlot()
     TestSnapshotSetting "AutoCAD.Export.CombinationID", "Сочетание_" & ChrW$(&H3B1) & "_01"
     Dim originalExport As String: originalExport = Audit02ReadExportSnapshotForTests(ThisWorkbook)
-    TestSnapshotCheck "native.calculate.snapshot", store.HasSheetSnapshot(ThisWorkbook)
-    TestSnapshotCheck "native.calculate.noFileReference", Not store.HasFileReference(ThisWorkbook)
+    TestSnapshotCheck "native.calculate.fileReference", store.HasFileReference(ThisWorkbook)
+    TestSnapshotCheck "native.calculate.noSheetArchive", Not TestSnapshotNameExists("rngNDMLoadCaseResults")
     TestSnapshotCheck "native.calculate.states", UBound(original.table("rngNDMElementResults"), 1) > 1
     TestSnapshotCheck "native.calculate.elapsed", original.elapsedSeconds > 0#
     TestSnapshotCheck "native.common.onlyALL", TestSnapshotCommonOnly(original.table("rngNDMSectionProperties"))
@@ -80269,10 +80122,8 @@ Public Function RunCalculationSnapshotTests() As String
     message = vbNullString
     UpdateSectionResultsForWorkbook ThisWorkbook
     TestSnapshotUpper original
-    TestSnapshotCheck "sheet.plot.exact", TestSnapshotPlot() = originalPlot
-    Dim token As String: token = "TestSnapshot_" & format$(Now, "yyyymmdd_hhnnss")
+    TestSnapshotCheck "file.restored.plot.exact", TestSnapshotPlot() = originalPlot
     TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
-    Dim path As String: path = store.SnapshotPath(ThisWorkbook)
     TestSnapshotCheck "name.extensionAutomatic", path = ThisWorkbook.path & Application.PathSeparator & token & "_" & ChrW$(&H3B1) & ".ndm"
     TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndm"
     TestSnapshotCheck "name.explicitSuffixCompatible", store.SnapshotPath(ThisWorkbook) = path
@@ -80286,8 +80137,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotSetting "Results.SnapshotStorage", "File"
     UpdateSectionResultsForWorkbook ThisWorkbook
     TestSnapshotCheck "file.linked", store.HasFileReference(ThisWorkbook)
-    TestSnapshotCheck "file.noSheetDuplicate", Not store.HasSheetSnapshot(ThisWorkbook)
-    TestSnapshotCheck "file.noPlaceholder", Application.WorksheetFunction.CountA(ThisWorkbook.names.item("rngNDMLoadCaseResults").RefersToRange.Resize(3, 2)) = 0
+    TestSnapshotCheck "file.noSheetArchive", Not TestSnapshotNameExists("rngNDMLoadCaseResults")
     TestSnapshotUpper original
     TestSnapshotCheck "file.plot.exact", TestSnapshotPlot() = originalPlot
     TestSnapshotCheck "file.export.exact", Audit02ReadExportSnapshotForTests(ThisWorkbook) = originalExport
@@ -80344,8 +80194,10 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotUpper second
     TestSnapshotSetting "Solver.MaxIterations", "100"
     TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+    Dim detached As CCalculationSnapshot: Set detached = CurrentCalculationSnapshot(ThisWorkbook)
+    TestSnapshotCheck "excel.ignoresPreviousFileLink", detached Is Nothing
     SaveAndDisplayCalculationSnapshot ThisWorkbook, second
-    TestSnapshotEqual "sheet.afterFile", second, store.LoadSheet(ThisWorkbook)
+    TestSnapshotExcelCurrent second
     Dim invalidName As Variant
     For Each invalidName In Array("../escape", "CON.ndm", "a:b", "", "NUL", "LPT1.ndm")
         TestSnapshotSetting "Results.SnapshotName", CStr(invalidName)
@@ -80353,7 +80205,7 @@ Public Function RunCalculationSnapshotTests() As String
     Next invalidName
     TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1) & ".ndm"
     Dim preview As String: preview = FormSectionForWorkbook(ThisWorkbook)
-    TestSnapshotCheck "preview.clearsSnapshot", Not store.HasSheetSnapshot(ThisWorkbook) And Not store.HasFileReference(ThisWorkbook)
+    TestSnapshotCheck "preview.clearsSnapshot", Not store.HasFileReference(ThisWorkbook)
     TestSnapshotCheck "readScope.afterPreview", TestCalculationSnapshotReadReleased()
     TestSnapshotCheck "layout.lowerOrder", TestSnapshotLowerOrder()
     TestSnapshotRepeatedImportedAnnotations extension
@@ -80396,6 +80248,7 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет отказ до solver у последней строки, частичное объединение и оформление перенесённой шапки.
 Private Sub TestSnapshotNativeLayout(ByVal original As CCalculationSnapshot)
+    TestSnapshotSetting "Results.SnapshotStorage", "Excel"
     Dim name As Object: Set name = ThisWorkbook.names.item("rngNDMElementResults")
     Dim previous As String: previous = name.RefersTo
     Dim anchor As Object: Set anchor = name.RefersToRange
@@ -80410,9 +80263,37 @@ Private Sub TestSnapshotNativeLayout(ByVal original As CCalculationSnapshot)
     name.RefersTo = previous
     UpdateSectionResultsForWorkbook ThisWorkbook, original
     TestSnapshotUpper original
-    Set name = ThisWorkbook.names.item("rngNDMLoadCaseResults")
+    Set name = ThisWorkbook.names.item("rngNDMSectionProperties")
+    previous = name.RefersTo: Set anchor = name.RefersToRange
+    Dim common As Variant: common = original.table("rngNDMSectionProperties")
+    Dim cases As Variant: cases = original.table("LoadCase.Properties")
+    Dim staged() As Variant, row As Long, column As Long, nextRow As Long
+    ReDim staged(1 To UBound(common, 1) + 2, 1 To 6)
+    For row = 1 To UBound(common, 1)
+        For column = 1 To 6: staged(row, column) = common(row, column): Next column
+    Next row
+    nextRow = UBound(common, 1) + 1
+    For row = 2 To UBound(cases, 1)
+        If CStr(cases(row, 3)) = "LoadReferenceX" Or CStr(cases(row, 3)) = "LoadReferenceY" Then
+            For column = 1 To 6: staged(nextRow, column) = cases(row, column): Next column
+            nextRow = nextRow + 1
+        End If
+    Next row
+    name.RefersTo = "=" & anchor.Worksheet.cells(limit - UBound(staged, 1) + 1, anchor.column).address(external:=True)
+    name.RefersToRange.Resize(UBound(staged, 1), 6).value2 = staged ' Сохраняем метаданные сформированного сечения: проверяется переполнение вывода, а не пустой источник геометрии.
+    solves = SectionEquilibriumSolveCount()
+    reason = TestSnapshotCalculationError()
+    TestSnapshotCheck "rows.readableLC.preflight", InStr(reason, "rngNDMSectionProperties") > 0 And InStr(reason, CStr(limit)) > 0
+    TestSnapshotCheck "rows.readableLC.noSolver", SectionEquilibriumSolveCount() = solves
+    reason = TestSnapshotPreparedRefreshError(original)
+    TestSnapshotCheck "rows.readableLC.prepared", InStr(reason, "rngNDMSectionProperties") > 0 And InStr(reason, CStr(limit)) > 0
+    name.RefersToRange.Resize(UBound(staged, 1), 6).clear
+    name.RefersTo = previous
+    UpdateSectionResultsForWorkbook ThisWorkbook, original
+    TestSnapshotSetting "General.ReformatResultsEnabled", "No"
+    Set name = ThisWorkbook.names.item("rngBatchSummary")
     previous = name.RefersTo
-    Set anchor = ThisWorkbook.Worksheets("Results").cells(500, 500)
+    Set anchor = ThisWorkbook.Worksheets("Results").cells(name.RefersToRange.row, 500)
     anchor.offset(0, -1).Resize(1, 2).Merge
     name.RefersTo = "=" & anchor.address(external:=True)
     reason = TestSnapshotPreparedRefreshError(original)
@@ -80435,6 +80316,7 @@ Private Sub TestSnapshotNativeLayout(ByVal original As CCalculationSnapshot)
     TestSnapshotCheck "minimal.recognizedHeaderPreserved", CLng(anchor.cells(6, 1).font.color) = RGB(12, 34, 56)
     name.RefersTo = previous
     TestSnapshotSetting "General.ReformatResultsEnabled", "Yes"
+    TestSnapshotSetting "Results.SnapshotStorage", "File"
     UpdateSectionResultsForWorkbook ThisWorkbook, original
 End Sub
 
@@ -80914,9 +80796,7 @@ Private Sub TestSnapshotRepeatedImportedAnnotations(ByVal extension As String)
     TestSnapshotSetting "Plot.LoadCase", "PERF_01"
     Dim message As String: message = RunSectionCalculationForWorkbook(ThisWorkbook)
     Dim first As Variant: first = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionAnnotations")
-    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    Dim original As CCalculationSnapshot: Set original = store.LoadSheet(ThisWorkbook)
-    Dim expected As Variant: expected = original.table("rngNDMElementResults")
+    Dim expected As Variant: expected = ReadPhysicalResultTable(ThisWorkbook, "rngNDMElementResults")
     message = RunSectionCalculationForWorkbook(ThisWorkbook)
     Dim actual As Variant: actual = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionAnnotations")
     TestSnapshotCheck "repeat.imported.annotationCount", UBound(first, 1) = UBound(actual, 1)
@@ -80930,40 +80810,76 @@ Private Sub TestSnapshotRepeatedImportedAnnotations(ByVal extension As String)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет полноту служебного дополнения на уже рассчитанном снимке любой геометрии и числа LC.
-' Внешний runner сохраняет исходный файл и вызывает метод только в своей частной копии.
-Public Function TestSheetArchiveRecovery() As String
+' Проверяет текущие читаемые Excel-таблицы, отсутствие архива и неизменность верхнего вывода.
+' Внешний runner вызывает метод только в своей частной рассчитанной копии.
+Public Function TestExcelCurrentResultsRefresh() As String
     mTestReport = "": mTestPassed = 0: mTestFailed = 0
     On Error GoTo Failed
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    Dim original As CCalculationSnapshot: Set original = store.LoadSheet(ThisWorkbook)
-    Dim Target As Object: Set Target = ThisWorkbook.names.item("rngNDMLoadCaseResults").RefersToRange
-    Dim count As Long: count = CLng(Target.offset(2, 1).value2)
-    TestSnapshotCheck "archive.payloadBelowHeader", count > 0 And Len(CStr(Target.offset(3, 1).value2)) > 100
-    TestSnapshotCheck "archive.visibleTextFormat", Target.offset(3, 1).NumberFormat = "@" And Len(CStr(Target.offset(3, 1).text)) > 0
-    TestSnapshotCheck "archive.bodyBorders", Target.offset(3, 1).Borders(10).LineStyle = 1
-    TestSnapshotCheck "archive.geometrySeparate", TestSnapshotCommonOnly(original.table("rngNDMSectionProperties"))
-    Dim keys As Variant: keys = original.keys()
-    TestSnapshotCheck "archive.sixteenTables", UBound(keys) - LBound(keys) + 1 = 16
-    Dim header As Object: Set header = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange.Find("PR1", LookAt:=1)
-    If header Is Nothing Then Err.Raise 5, , "В частном снимке не найден PR1."
+    TestSnapshotCheck "excel.storage", store.StorageMode(ThisWorkbook) = "Excel"
+    TestSnapshotCheck "excel.noArchiveName", Not TestSnapshotNameExists("rngNDMLoadCaseResults")
+    TestSnapshotCheck "excel.noFileReference", Not store.HasFileReference(ThisWorkbook)
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(ThisWorkbook)
+    TestSnapshotCheck "excel.noPersistentFullSnapshot", snapshot Is Nothing
+    Dim properties As Variant: properties = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionProperties")
+    TestSnapshotCheck "excel.readableLoadCaseProperties", Not TestSnapshotCommonOnly(properties)
+    Dim names As Variant: names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+    Dim widths As Variant: widths = Array(26, 49, 72, 84)
+    Dim before(0 To 3) As Variant, i As Long
     Dim plot As String: plot = TestSnapshotPlot()
-    TestSnapshotCorruptUpper
-    header.value2 = "PR91"
+    Dim exported As String: exported = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    TestSnapshotCorruptUpper ' Удалённые значения не должны восстанавливаться из скрытого архива.
+    For i = 0 To 3: before(i) = ThisWorkbook.names.item(CStr(names(i))).RefersToRange.Resize(32, CLng(widths(i))).value2: Next i
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim iterations As String: iterations = settings.GetRequiredString("Solver.MaxIterations")
+    Dim selectedName As String: selectedName = settings.GetRequiredString("Results.SnapshotName")
+    TestSnapshotSetting "Results.SnapshotName", "../this_file_is_not_used_in_Excel"
     TestSnapshotSetting "Solver.MaxIterations", "not_a_number"
     Dim solves As Long: solves = SectionEquilibriumSolveCount()
     UpdateSectionResultsForWorkbook ThisWorkbook
-    TestSnapshotCheck "archive.noSolver", SectionEquilibriumSolveCount() = solves
-    TestSnapshotCheck "archive.savedProfilePlot", TestSnapshotPlot() = plot
-    TestSnapshotUpper original
-    TestSnapshotEqual "archive.allTablesAfterRestore", original, store.LoadSheet(ThisWorkbook)
-    header.value2 = "PR1"
-    TestSnapshotSetting "Solver.MaxIterations", "100"
+    TestSnapshotCheck "excel.refresh.noSolver", SectionEquilibriumSolveCount() = solves
+    TestSnapshotCheck "excel.refresh.plotExact", TestSnapshotPlot() = plot
+    TestSnapshotCheck "excel.refresh.exportExact", Audit02ReadExportSnapshotForTests(ThisWorkbook) = exported
+    For i = 0 To 3
+        TestSnapshotCheck "excel.refresh.keepsUpper." & CStr(names(i)), TestSnapshotSameMatrix(before(i), ThisWorkbook.names.item(CStr(names(i))).RefersToRange.Resize(32, CLng(widths(i))).value2)
+    Next i
+    TestSnapshotCheck "excel.refresh.keepsProperties", TestSnapshotSameMatrix(properties, ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionProperties"))
+    TestSnapshotCheck "excel.refresh.contextReleased", TestCalculationSnapshotReadReleased()
+    TestSnapshotSetting "Solver.MaxIterations", iterations
+    TestSnapshotSetting "Results.SnapshotName", selectedName
     GoTo Finished
 Failed:
-    TestSnapshotCheck "archive.runtime " & CStr(Err.number) & ": " & Err.description, False
+    TestSnapshotCheck "excel.runtime " & CStr(Err.number) & ": " & Err.description, False
 Finished:
-    TestSheetArchiveRecovery = mTestReport & "TOTAL SHEET ARCHIVE: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+    TestExcelCurrentResultsRefresh = mTestReport & "TOTAL EXCEL CURRENT RESULTS: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет все шесть технических таблиц Excel с теми же готовыми массивами расчёта.
+Private Sub TestSnapshotExcelCurrent(ByVal original As CCalculationSnapshot)
+    Dim key As Variant
+    TestSnapshotUpper original
+    For Each key In original.BaseKeys()
+        TestSnapshotCheck "excel.physical." & CStr(key), TestSnapshotSameMatrix(original.ResultTable(CStr(key)), ReadPhysicalResultTable(ThisWorkbook, CStr(key)))
+    Next key
+    Dim previousReport As String: previousReport = mTestReport
+    Dim previousPassed As Long: previousPassed = mTestPassed
+    Dim previousFailed As Long: previousFailed = mTestFailed
+    Dim result As String: result = TestExcelCurrentResultsRefresh()
+    mTestReport = previousReport & mTestReport: mTestPassed = previousPassed + mTestPassed: mTestFailed = previousFailed + mTestFailed
+    If InStr(result, "failed=0") = 0 Then Err.Raise 5, , result
+    SaveAndDisplayCalculationSnapshot ThisWorkbook, original
+    TestSnapshotUpper original
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отсутствие удалённого имени без создания диапазона или изменения книги.
+Private Function TestSnapshotNameExists(ByVal name As String) As Boolean
+    Dim Target As Object
+    On Error Resume Next
+    Set Target = ThisWorkbook.names.item(name)
+    On Error GoTo 0
+    TestSnapshotNameExists = Not Target Is Nothing
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -80983,16 +80899,17 @@ Public Function TestPrepareSnapshotReopen(ByVal mode As String) As String
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Повреждает только вывод и задаёт непригодный solver, затем восстанавливает сохранённое без решения.
+' File восстанавливает повреждённый вывод; Excel обновляет схему без изменения сводок.
 Public Function TestRestoreSnapshotAfterReopen() As String
-    TestSnapshotCorruptUpper
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    If store.StorageMode(ThisWorkbook) = "File" Then TestSnapshotCorruptUpper
     TestSnapshotSetting "Solver.MaxIterations", "not_a_number"
     Dim solves As Long: solves = SectionEquilibriumSolveCount()
     UpdateSectionResultsForWorkbook ThisWorkbook
     If SectionEquilibriumSolveCount() <> solves Then Err.Raise 5, , "Восстановление повторно вызвало solver."
     Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(ThisWorkbook)
     mTestReport = "": mTestPassed = 0: mTestFailed = 0
-    TestSnapshotUpper snapshot
+    If Not snapshot Is Nothing Then TestSnapshotUpper snapshot
     If mTestFailed <> 0 Then Err.Raise 5, , mTestReport
     If Not TestCalculationSnapshotReadReleased() Then Err.Raise 5, , "Контекст чтения не освобождён."
     TestRestoreSnapshotAfterReopen = TestSnapshotReopenFingerprint()
@@ -81002,12 +80919,17 @@ End Function
 ' Возвращает все части снимка, данные схемы и экспорта для побитного сравнения после открытия.
 Public Function TestSnapshotReopenFingerprint() As String
     Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(ThisWorkbook)
-    If snapshot Is Nothing Then Err.Raise 5, , "Снимок не найден после повторного открытия."
+    Dim keys As Variant
+    If snapshot Is Nothing Then
+        keys = Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMElementResults", "rngNDMSectionContours", "rngNDMSectionAnnotations")
+    Else
+        keys = snapshot.keys()
+    End If
     Dim key As Variant, values As Variant, row As Long, column As Long, text As String, value As Variant
     Dim lines() As String, line As String
-    text = TestSnapshotDouble(snapshot.runID) & "|" & TestSnapshotDouble(snapshot.elapsedSeconds)
-    For Each key In snapshot.keys()
-        values = snapshot.table(CStr(key))
+    If Not snapshot Is Nothing Then text = TestSnapshotDouble(snapshot.runID) & "|" & TestSnapshotDouble(snapshot.elapsedSeconds)
+    For Each key In keys
+        If snapshot Is Nothing Then values = ReadPhysicalResultTable(ThisWorkbook, CStr(key)) Else values = snapshot.table(CStr(key))
         ReDim lines(0 To UBound(values, 1))
         lines(0) = CStr(key) & "|" & CStr(UBound(values, 1)) & "|" & CStr(UBound(values, 2))
         For row = 1 To UBound(values, 1)
@@ -81162,7 +81084,7 @@ End Sub
 ' Проверяет заданный горизонтальный порядок, не фиксируя адреса верхних таблиц.
 Private Function TestSnapshotLowerOrder() As Boolean
     Dim name As Variant, last As Long, column As Long
-    For Each name In Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMElementResults", "rngNDMLoadCaseResults", "rngNDMSectionContours", "rngNDMSectionAnnotations")
+    For Each name In Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMElementResults", "rngNDMSectionContours", "rngNDMSectionAnnotations")
         column = ThisWorkbook.names.item(CStr(name)).RefersToRange.column
         If column <= last Then Exit Function
         last = column
@@ -120351,10 +120273,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange.row = 85 And ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange.column = 1
     TestAssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange.row = 122 And ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange.column = 1
     TestAssertTrue stats, "ui.results.geometry.position", ThisWorkbook.names.item("rngNDMSectionGeometry").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionGeometry").RefersToRange.column = 1
-    TestAssertTrue stats, "ui.results.contours.position", ThisWorkbook.names.item("rngNDMSectionContours").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionContours").RefersToRange.column = 55
+    TestAssertTrue stats, "ui.results.contours.position", ThisWorkbook.names.item("rngNDMSectionContours").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionContours").RefersToRange.column = 51
     TestAssertTrue stats, "ui.results.properties.position", ThisWorkbook.names.item("rngNDMSectionProperties").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionProperties").RefersToRange.column = 19
     TestAssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.names.item("rngNDMMaterialDiagrams").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMMaterialDiagrams").RefersToRange.column = 27
-    TestAssertTrue stats, "ui.results.annotations.position", ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange.column = 74
+    TestAssertTrue stats, "ui.results.annotations.position", ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange.row = 156 And ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange.column = 70
     TestAssertTrue stats, "ui.results.geometry.noSource", TestResultHeaderColumn(geometryResults, "SourceName") = 0
     TestAssertTrue stats, "ui.results.geometry.noMaterialClass", TestResultHeaderColumn(geometryResults, "MaterialClass") = 0
     TestAssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.names.item("rngNDMSectionProperties").RefersToRange.value2) = "RunID"
@@ -120483,7 +120405,7 @@ Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     For commonRow = 2 To UBound(common, 1)
         If StrComp(CStr(common(commonRow, 2)), "ALL", vbTextCompare) <> 0 Then commonOnly = False
     Next commonRow
-    TestAssertTrue stats, "ui.results.fullSnapshot.commonGeometryOnly", commonOnly
+    TestAssertTrue stats, "ui.results.fullSnapshot.readableLoadCaseProperties", Not commonOnly
     TestAssertTrue stats, "ui.results.fullSnapshot.materialRows", _
         TestResultTableRowCount("rngNDMMaterialDiagrams") > 1
 End Sub

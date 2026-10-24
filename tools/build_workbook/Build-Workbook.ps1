@@ -502,7 +502,7 @@ try {
     # Размеры столбцов Config уже назначены Add-SystemSettings; повторно их не меняем.
     $results.Range("A1:AE1").Font.Bold = $true
     # Заливка относится только к построенному снимку, не ко всей строке листа.
-    $results.Range("A154:CL154").Interior.Color = 15652797
+    $results.Range("A154:CO154").Interior.Color = 15652797
     $results.Cells.Item(154, 1).Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
     $results.Cells.Item(154, 1).Font.Name = "Arial"
     $results.Cells.Item(154, 1).Font.Size = 12
@@ -518,7 +518,7 @@ try {
     $results.Range("BQ156:CL156").Font.Bold = $true
     # Явная ширина используемых колонок не пересчитывается Excel при смене
     # шрифта ячеек, в отличие от общей default-ширины листа. Это только сборка.
-    $results.Range("A:CL").ColumnWidth = 10
+    $results.Range("A:CO").ColumnWidth = 10
     $results.Columns.Item(1).ColumnWidth = 15
     $results.Columns.Item(2).ColumnWidth = 18
     $results.Columns.Item(3).ColumnWidth = 21
@@ -529,21 +529,20 @@ try {
     Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$122'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$AN$156'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$A$156'
-    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$BC$156'
+    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$AY$156'
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$S$156'
     Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AA$156'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BV$156'
-    Add-WorkbookName $workbook "rngNDMLoadCaseResults" $results '$AY$156'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BR$156'
     $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
     # Постоянные подписи создаются один раз при сборке шаблона.
     # Поэлементная запись обходит ограничение COM-адаптера PowerShell для этой шапки.
     for ($i = 0; $i -lt $contourHeaders.Count; $i++) {
-        $results.Cells.Item(156, 55 + $i).Value2 = [string]$contourHeaders[$i]
+        $results.Cells.Item(156, 51 + $i).Value2 = [string]$contourHeaders[$i]
     }
-    $results.Range('BC155:BS155').Merge()
-    $results.Cells.Item(155, 55).Value2 = 'Достоверные контуры и отверстия сечения'
-    $results.Range('BC155:BS156').Font.Bold = $true
-    Set-Border $results.Range('BC156:BS156')
+    $results.Range('AY155:BO155').Merge()
+    $results.Cells.Item(155, 51).Value2 = 'Достоверные контуры и отверстия сечения'
+    $results.Range('AY155:BO156').Font.Bold = $true
+    Set-Border $results.Range('AY156:BO156')
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

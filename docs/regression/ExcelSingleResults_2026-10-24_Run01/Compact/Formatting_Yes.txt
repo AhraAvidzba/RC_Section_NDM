@@ -1,0 +1,82 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\ExcelSingleResults_2026-10-24_Run01\TestFixtureFix01\RC_Section_NDM.xlsm
+SOURCE_SHA256: 91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2d635ecc9b214c42adb67c8f4f97f9d0\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=208424; startTicks=639284482571939525
+===== modTestWorkbookInterface.RunResultsFormattingTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunResultsFormattingTests; 2026-10-24T17:17:41
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=206172; workingSet=247603200; privateBytes=203042816; cpu=1213.421875
+EXCEL_AFTER_SUITE: pid=208424; workingSet=164147200; privateBytes=111456256; cpu=13.75
+OK: formatting.dropdown
+OK: formatting.completed
+OK: formatting.reusesBody.rngStrengthSummaryAnchor
+OK: formatting.reusesBody.rngCrackSummaryAnchor
+OK: formatting.reusesBody.rngStabilitySummaryAnchor
+OK: formatting.reusesSummary
+OK: formatting.elementStatesExact
+OK: formatting.propertiesExact
+OK: formatting.strengthTitle
+OK: formatting.strengthMergedHeader
+OK: formatting.strengthDataText
+OK: formatting.strengthForceUnit
+OK: formatting.stabilityForceUnit
+OK: formatting.elementStressUnit
+OK: formatting.changedStatus
+OK: formatting.changedStatusColor
+OK: formatting.oldCombinationsCleared
+OK: formatting.oldStatusColorCleared
+OK: formatting.newRowsFormatted
+OK: formatting.missingHeaderRestored
+OK: formatting.headerMergesRestored
+OK: formatting.invalidRejected
+OK: formatting.invalidNoSolve
+OK: formatting.invalidPreservesResults
+OK: formatting.formationModel
+OK: formatting.formationClearsStates
+OK: formatting.propertyNoWrap.2
+OK: formatting.propertyNoWrap.3
+OK: formatting.propertyNoWrap.4
+OK: formatting.propertyNoWrap.5
+OK: formatting.propertyNoWrap.6
+OK: formatting.propertyNoWrap.7
+OK: formatting.propertyNoWrap.8
+OK: formatting.propertyNoWrap.9
+OK: formatting.propertyNoWrap.10
+OK: formatting.propertyNoWrap.11
+OK: formatting.propertyNoWrap.12
+OK: formatting.propertyNoWrap.13
+OK: formatting.propertyNoWrap.14
+OK: formatting.propertyNoWrap.15
+OK: formatting.propertyNoWrap.16
+OK: formatting.propertyNoWrap.17
+OK: formatting.propertyNoWrap.18
+OK: formatting.propertyNoWrap.19
+OK: formatting.propertyNoWrap.20
+OK: formatting.propertyNoWrap.21
+OK: formatting.propertyNoWrap.22
+OK: formatting.propertyNoWrap.23
+OK: formatting.propertyNoWrap.24
+OK: formatting.propertyNoWrap.25
+OK: formatting.propertyNoWrap.26
+OK: formatting.propertyNoWrap.27
+OK: formatting.propertyNoWrap.28
+OK: formatting.propertyNoWrap.29
+OK: formatting.propertyNoWrap.30
+OK: formatting.propertyNoWrap.31
+OK: formatting.propertyNoWrap.32
+OK: formatting.propertyNoWrap.33
+OK: formatting.propertyNoWrap.34
+OK: formatting.propertyNoWrap.35
+OK: formatting.propertyNoWrap.36
+OK: formatting.propertyNoWrap.37
+OK: formatting.propertyNoWrap.38
+OK: formatting.propertyNoWrap.39
+TOTAL_RESULTS_FORMATTING: passed=64; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2d635ecc9b214c42adb67c8f4f97f9d0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunResultsFormattingTests; 2026-10-24T17:17:51
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

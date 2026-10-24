@@ -1,0 +1,33 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "505E324FB927D8F6BB9FF764B8DBAB811B66CB63DE99E4666E8DAC53D6F9C969",
+  "Scope": "Input formatting through formation, calculation and refresh",
+  "Stages": [
+    {
+      "Stage": "BeforeCalculation",
+      "Checks": 49947,
+      "Failures": []
+    },
+    {
+      "Stage": "AfterCalculation1",
+      "Checks": 49947,
+      "Failures": []
+    },
+    {
+      "Stage": "AfterPlot1",
+      "Checks": 49947,
+      "Failures": []
+    },
+    {
+      "Stage": "AfterCalculation2",
+      "Checks": 49947,
+      "Failures": []
+    },
+    {
+      "Stage": "AfterPlot2",
+      "Checks": 49947,
+      "Failures": []
+    }
+  ],
+  "Failures": []
+}

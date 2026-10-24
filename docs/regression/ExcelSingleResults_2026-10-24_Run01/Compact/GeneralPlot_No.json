@@ -1,0 +1,16 @@
+{
+  "Status": "PASS",
+  "Mode": "No",
+  "RawLogSHA256": "DBC186D2A7961FFA833CBFDD1494837954693D0725AEF323C10D9F67A2DCD1F0",
+  "Totals": [
+    "TOTAL_AUDIT03_GENERAL_PLOT: passed=3377; failed=0"
+  ],
+  "Ownership": [
+    "TEST_EXCEL_PROCESS: id=176252; startTicks=639284479912648659"
+  ],
+  "SourceSHA256": "91EF213E84E209CA0E4BD06B98072ACCB5E9A57E96FD2D1C403D47718D02BA86",
+  "SourceUnchanged": true,
+  "WatchdogCompleted": true,
+  "AllPrintedAssertionsPassed": true,
+  "RawLogLocalPath": "../CandidateDirected/GeneralPlot_No.txt"
+}

@@ -1,0 +1,20 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "C456377A98C1C71D5128DA7E958DE1EA8349CF587E9B9BE96A8E5F42785A042E",
+  "SourceWorkbookSHA256": "505E324FB927D8F6BB9FF764B8DBAB811B66CB63DE99E4666E8DAC53D6F9C969",
+  "SourceComponents": 172,
+  "DocumentComponents": 6,
+  "ConcreteElements": 1232,
+  "RebarElements": 8,
+  "Combinations": 30,
+  "FixtureSHA256": "0B31A4D1F9ED7F783BB964018B413CB486B8325F95D70EFC468D3D730544C92E",
+  "GeometryCopiedWithoutRegeneration": true,
+  "OriginalSixInputTablesEqual": true,
+  "OriginalInputErrorsPreserved": 4,
+  "RefreshChecks": 14,
+  "FailedChecks": 0,
+  "TemporaryWrapperAbsent": true,
+  "PreparationCloseRPC": "RPC_E_SYS_CALL_FAILED after Save/Close; saved file independently reopened and checked, no owned Excel remained",
+  "RawInputsCommitted": false,
+  "NoArchiveName": true
+}

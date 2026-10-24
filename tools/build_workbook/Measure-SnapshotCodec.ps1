@@ -109,10 +109,13 @@ Public Sub TestPrepare(ByVal elementCount As Long, ByVal stateCount As Long)
 End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает каждую ячейку и каждый бит Double независимо от двоичного кодека.
-Private Sub TestEqual(ByVal actual As CCalculationSnapshot)
+Private Sub TestEqual(ByVal actual As CCalculationSnapshot, Optional ByVal sheetOnly As Boolean = False)
     Dim key As Variant, a As Variant, b As Variant, row As Long, column As Long, x As TTestNumber, y As TTestNumber, bitsX As TTestBits, bitsY As TTestBits
-    For Each key In mTestSample.Keys()
-        a = mTestSample.Table(CStr(key)): b = actual.Table(CStr(key))
+    Dim keys As Variant
+    If sheetOnly Then keys = mTestSample.BaseKeys() Else keys = mTestSample.Keys()
+    For Each key In keys
+        If sheetOnly Then a = mTestSample.ResultTable(CStr(key)) Else a = mTestSample.Table(CStr(key))
+        b = actual.Table(CStr(key))
         If UBound(a, 1) <> UBound(b, 1) Or UBound(a, 2) <> UBound(b, 2) Then Err.Raise 5, , "Matrix dimensions changed: " & CStr(key)
         For row = 1 To UBound(a, 1)
             For column = 1 To UBound(a, 2)
@@ -141,12 +144,16 @@ Public Function TestMeasure(ByVal action As String) As Double
         Case "WriteSheet"
             Set writer = New CNDMResultsWriter
             writer.RestoreSnapshotBase ThisWorkbook, mTestSample, True, True
-            store.SaveSheetExtra ThisWorkbook, mTestSample
-        Case "ReadSheet": Set loaded = store.LoadSheet(ThisWorkbook)
+        Case "ReadSheet"
+            Set loaded = New CCalculationSnapshot
+            Dim key As Variant, values As Variant
+            For Each key In mTestSample.BaseKeys()
+                values = ReadPhysicalResultTable(ThisWorkbook, CStr(key)): loaded.AddTable CStr(key), values
+            Next key
         Case Else: Err.Raise 5, , "Unknown codec operation."
     End Select
     TestMeasure = TestNow() - started
-    If Not loaded Is Nothing Then TestEqual loaded
+    If Not loaded Is Nothing Then TestEqual loaded, action = "ReadSheet"
     Exit Function
 Failed:
     mTestError = Err.Description

@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "ExactResultAndPlotFingerprints": true,
+  "AutomaticSnapshotReloads": 0,
+  "PostSolveSheetReadsBeforeSave": 0,
+  "ManualRefreshLoadsSavedData": true,
+  "AllReadContextsReleased": true,
+  "NumberEquivalence": "Only IEEE-754 positive/negative exact zero; all other values exact"
+}

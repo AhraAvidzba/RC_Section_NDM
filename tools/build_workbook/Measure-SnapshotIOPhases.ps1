@@ -166,12 +166,12 @@ Public Function TestReleased() As Boolean
 End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Меняет только частный путь после сохранения для честного сравнения повторной загрузки.
-Public Sub TestDisplay(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, ByVal onSheet As Boolean, ByRef warning As String)
+Public Sub TestDisplay(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, ByRef warning As String)
     TestAfterSave
     If TestForceReload Then
         UpdateSectionResultsForWorkbook workbook
     Else
-        UpdateSectionResultsForWorkbook workbook, snapshot, onSheet, warning
+        UpdateSectionResultsForWorkbook workbook, snapshot, warning
     End If
 End Sub
 '@
@@ -182,18 +182,13 @@ End Sub
     Add-TestSnapshotPhaseLine 'modWorkbookCalculation' 'RunSectionCalculationForWorkbook' '    summaryWriter.WriteSummary workbook, batch, units, section, fullFormatting' 'PrepareSummary'
     Add-TestSnapshotPhaseLine 'modWorkbookCalculation' 'RunSectionCalculationForWorkbook' '    ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True, fullFormatting' 'PrepareTechnical'
     Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'SaveAndDisplayCalculationSnapshot' '        store.SaveFile workbook, snapshot' 'SaveFile'
-    Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'SaveAndDisplayCalculationSnapshot' '        writer.RestoreSnapshotBase workbook, snapshot, settings.GetRequiredBoolean("General.ReformatResultsEnabled")' 'WriteBase'
-    Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'SaveAndDisplayCalculationSnapshot' '        store.SaveSheetExtra workbook, snapshot' 'SaveSheetExtra'
     $code=$book.VBProject.VBComponents.Item('modCalculationSnapshot').CodeModule
-    $body=[string]$code.Lines(1,$code.CountOfLines);$needle='    UpdateSectionResultsForWorkbook workbook, snapshot, onSheet, warning'
+    $body=[string]$code.Lines(1,$code.CountOfLines);$needle='    UpdateSectionResultsForWorkbook workbook, snapshot, warning'
     $matches=[regex]::Matches($body,[regex]::Escape($needle),'IgnoreCase');if($matches.Count -ne 1){throw 'Display anchor mismatch.'}
-    $body=$body.Replace($matches[0].Value,'    modTestSnapshotIOProfiler.TestDisplay workbook, snapshot, onSheet, warning');$code.DeleteLines(1,$code.CountOfLines);$code.AddFromString($body)
-    Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '    If Not sheetAlreadySaved Then writer.RestoreSnapshotBase workbook, snapshot, fullFormatting, mode = "Excel"' 'WriteBase'
+    $body=$body.Replace($matches[0].Value,'    modTestSnapshotIOProfiler.TestDisplay workbook, snapshot, warning');$code.DeleteLines(1,$code.CountOfLines);$code.AddFromString($body)
+    Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '    writer.RestoreSnapshotBase workbook, snapshot, fullFormatting, mode = "Excel"' 'WriteBase'
     Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '    summary.RestoreSummary workbook, snapshot, fullFormatting' 'WriteSummary'
     Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '            Set snapshot = store.LoadFile(workbook)' 'LoadFile'
-    Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '            Set snapshot = store.LoadSheet(workbook)' 'LoadSheetData'
-    Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '            Set snapshot = store.LoadLinkedFile(workbook)' 'LoadLinkedFileData'
-    Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '        store.ClearSheetExtra workbook' 'ClearSheetExtra'
     Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '        store.LinkFile workbook' 'BindFile'
     $noticeCode=$book.VBProject.VBComponents.Item('modCalculationSnapshot').CodeModule
     if(([string]$noticeCode.Lines(1,$noticeCode.CountOfLines)) -match '(?i)store\.WriteFileNotice workbook'){
@@ -203,7 +198,6 @@ End Sub
     Add-TestSnapshotPhaseLine 'modCalculationSnapshot' 'UpdateSectionResultsForWorkbook' '        UpdateSectionPlotForWorkbook workbook, False' 'Plot'
     Add-TestSnapshotPhaseLine 'modWorkbookCalculation' 'RunSectionCalculationForWorkbook' '    snapshotStore.UpdateSavedElapsed workbook, savedSnapshot' 'FinalizeFileOrSheet'
     Add-TestSnapshotPhaseEntry 'CCalculationSnapshotStore' 'ReadBinary' '    modTestSnapshotIOProfiler.TestRead "ReadBinary"'
-    Add-TestSnapshotPhaseEntry 'CCalculationSnapshotStore' 'LoadSheet' '    modTestSnapshotIOProfiler.TestRead "LoadSheet"'
     Add-TestSnapshotPhaseEntry 'modSectionSnapshot' 'ReadPhysicalResultTable' '    modTestSnapshotIOProfiler.TestPhysicalRead'
     $app.VBE.ActiveVBProject=$book.VBProject;$compile=$app.VBE.CommandBars.FindControl(1,578);if($compile.Enabled){$compile.Execute()};if($compile.Enabled){throw 'Instrumented project does not compile.'}
     $book.Save()
@@ -239,6 +233,7 @@ End Sub
         $paths=@('Memory');if($CompareReload){$paths+=,'Reload'}
         for($repeat=0;$repeat -le $Repeats;$repeat++){
             foreach($path in $paths){foreach($mode in @('File','Excel')){
+                if($mode -eq 'Excel' -and $path -eq 'Reload'){continue} # В Excel нет архивного пути повторного восстановления сводок.
                 Set-TestSnapshotPhaseSetting 'Results.SnapshotStorage' $mode
                 [void]$app.Run("'$($book.Name)'!modTestSnapshotIOProfiler.TestReset",[bool]($path -eq 'Reload'),[bool]$PoisonResults)
                 $watch=[Diagnostics.Stopwatch]::StartNew();$message=[string]$app.Run("'$($book.Name)'!modTestSnapshotIOProfiler.TestCalculate",$book);$watch.Stop()

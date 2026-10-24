@@ -1,0 +1,60 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "505E324FB927D8F6BB9FF764B8DBAB811B66CB63DE99E4666E8DAC53D6F9C969",
+  "Checks": [
+    {
+      "Mode": "Excel",
+      "Stage": "Save/Close/Open/Restore",
+      "ExactSHA256": "356692A54152B4FD51859583B6299F9A88B908781906422DE87EE9BC303CAD46",
+      "SolverCalls": 0
+    },
+    {
+      "Mode": "Excel",
+      "Stage": "SaveAs/Close/Open/Restore",
+      "ExactSHA256": "356692A54152B4FD51859583B6299F9A88B908781906422DE87EE9BC303CAD46",
+      "ExternalSHA256": null,
+      "SolverCalls": 0
+    },
+    {
+      "Mode": "File",
+      "Stage": "Save/Close/Open/Restore",
+      "ExactSHA256": "4A5CB7913CEBEDCB3351307FFD00B54F3D30D7C70739A887A28B1F8F502421D5",
+      "SolverCalls": 0
+    },
+    {
+      "Mode": "File",
+      "Stage": "SaveAs/Close/Open/Restore",
+      "ExactSHA256": "4A5CB7913CEBEDCB3351307FFD00B54F3D30D7C70739A887A28B1F8F502421D5",
+      "ExternalSHA256": "F1FEE32FE286E00C9F30F141B0BA7971A65EF2BBECEE025F33C7033D466EF7FB",
+      "SolverCalls": 0
+    },
+    {
+      "Mode": "File",
+      "Stage": "SecondSaveAs/OriginalRemoved/Reopen/Restore",
+      "ExactSHA256": "4A5CB7913CEBEDCB3351307FFD00B54F3D30D7C70739A887A28B1F8F502421D5",
+      "ExternalSHA256": "F1FEE32FE286E00C9F30F141B0BA7971A65EF2BBECEE025F33C7033D466EF7FB",
+      "SolverCalls": 0
+    },
+    {
+      "Stage": "LargeSnapshotPrompt",
+      "EstimatedRows": 60000,
+      "Button": 0,
+      "Storage": "Excel",
+      "Continued": true
+    },
+    {
+      "Stage": "LargeSnapshotPrompt",
+      "EstimatedRows": 60001,
+      "Button": 7,
+      "Storage": "Excel",
+      "Continued": true
+    },
+    {
+      "Stage": "LargeSnapshotPrompt",
+      "EstimatedRows": 60001,
+      "Button": 6,
+      "Storage": "File",
+      "Continued": true
+    }
+  ]
+}

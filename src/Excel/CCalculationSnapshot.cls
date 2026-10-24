@@ -232,13 +232,12 @@ Public Function HasTable(ByVal key As String) As Boolean
     HasTable = mTables.Exists(key)
 End Function
 
-' Возвращает стабильный порядок частей для одного формата файла и листа.
+' Возвращает стабильный порядок частей полного файла и временного набора в памяти.
 Public Function Keys() As Variant
     Keys = mTables.Keys
 End Function
 
-' Перечисляет уже существующие технические таблицы; они не дублируются
-' в единственном новом диапазоне дополнительных сведений на Results.
+' Перечисляет шесть прежних технических таблиц Results; отдельного архива на листе нет.
 Public Function BaseKeys() As Variant
     BaseKeys = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
         "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")

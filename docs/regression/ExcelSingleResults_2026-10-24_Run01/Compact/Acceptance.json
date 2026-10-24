@@ -1,0 +1,20 @@
+{
+  "Status": "PASS",
+  "Scope": "DIRECTED_ONLY",
+  "FullOnOffExecuted": false,
+  "WorkbookSHA256": "505E324FB927D8F6BB9FF764B8DBAB811B66CB63DE99E4666E8DAC53D6F9C969",
+  "AllCodeSHA256": "B97F728C1B289663D9CA4F7058268220DD33A2E71E2C5667535526327278EB07",
+  "CandidateGroups": 12,
+  "CandidateAssertionsPerMode": 4082,
+  "ReleaseSnapshotAssertionsPerMode": 372,
+  "All172SourceAnd6DocumentComponentsEqual": true,
+  "ArchiveRangeAbsent": true,
+  "BlankColumnsBetweenTables": 2,
+  "ExcelRefreshRestoresUpperTables": false,
+  "FileRefreshRestoresAllTables": true,
+  "FileFormat": "NDMSNP04",
+  "NativeHelpBlocks": 151,
+  "NativeHelpParagraphs": 737,
+  "HelpLinks": 136,
+  "FormulaPictures": 76
+}

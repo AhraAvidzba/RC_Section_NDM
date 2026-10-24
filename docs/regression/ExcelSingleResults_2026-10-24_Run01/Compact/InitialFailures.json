@@ -1,0 +1,20 @@
+{
+  "OriginalLogsPreserved": true,
+  "Items": [
+    {
+      "Log": "Directed/Workflow_No.txt",
+      "Failed": 2,
+      "Reason": "Old contour/annotation positions 55/74; required compact layout is 51/70"
+    },
+    {
+      "Log": "FinalDirected/Snapshot_No.txt",
+      "Failed": 1,
+      "Reason": "New capacity fixture moved metadata to an empty anchor, causing missing formed section before capacity validation"
+    },
+    {
+      "Log": "Diagnostic01/Snapshot_No.txt",
+      "Diagnostic": "В Results нет сформированного сечения",
+      "Correction": "Stage common metadata and load reference; retain exact capacity and no-solver expectations"
+    }
+  ]
+}

@@ -67,10 +67,10 @@ def main() -> None:
             raise ValueError("Candidate reads Results after solving before saving the snapshot")
         if record["Path"] == "Memory" and (phases.get("ReadBinary", 0) or phases.get("LoadSheet", 0)):
             raise ValueError("Automatic memory path reloads saved data")
-        if record["ManualPhases"].get("ReadBinary", 0) < 1:
+        if record["Mode"] == "File" and record["ManualPhases"].get("ReadBinary", 0) < 1:
             raise ValueError("Manual refresh did not load the saved snapshot")
-        if record["Mode"] == "Excel" and record["ManualPhases"].get("LoadSheet", 0) < 1:
-            raise ValueError("Manual Excel refresh did not read its sheet snapshot")
+        if record["Mode"] == "Excel" and record["ManualPhases"].get("ReadBinary", 0):
+            raise ValueError("Manual Excel refresh read a binary snapshot")
     for key, after in candidate_by_case.items():
         before = baseline_by_case.get(key)
         if before:

@@ -418,10 +418,10 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True, fullFormatting
     savedSnapshot.AddTable "Calculation.Profiles", savedProfileValues
     savedSnapshot.Validate
-    report.AddStep "Полный снимок подготовлен; сохранение и общее обновление схемы и результатов."
+    report.AddStep "Результаты подготовлены; сохранение в выбранном режиме и вывод из памяти."
     Dim plotWarning As String
     plotWarning = SaveAndDisplayCalculationSnapshot(workbook, savedSnapshot)
-    report.AddStep "Снимок сохранён. Подробные таблицы и схема обновлены из него без повторного решения."
+    report.AddStep "Подробные таблицы и схема заполнены из готовых данных без повторного решения. Полный файл снимка сохраняется только в режиме File."
 
     Dim totalElapsedSeconds As Double
     totalElapsedSeconds = ElapsedSecondsFrom(runStart)
