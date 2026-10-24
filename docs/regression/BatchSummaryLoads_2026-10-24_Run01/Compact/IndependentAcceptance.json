@@ -1,0 +1,273 @@
+{
+  "Status": "PASS",
+  "Modes": [
+    {
+      "Mode": "No",
+      "Cases": [
+        {
+          "Name": "Excel_Full",
+          "OriginalLoadChecks": 9,
+          "WorkingLoadChecks": 9,
+          "WorstID": "PERF_02",
+          "AmplifiedMoments": true,
+          "FilteredOriginalPreserved": false,
+          "WorkbookSHA256": "3F26E18B2547B168887860181383A2629437287C8B6AF71A1D37626C95EE5E42"
+        },
+        {
+          "Name": "File_Minimal",
+          "OriginalLoadChecks": 9,
+          "WorkingLoadChecks": 9,
+          "WorstID": "PERF_03",
+          "AmplifiedMoments": true,
+          "FilteredOriginalPreserved": false,
+          "WorkbookSHA256": "951328FC686D32AD455BA208B16C1C4971852911C52F4E627D3DCDAFC404EB1E"
+        },
+        {
+          "Name": "Excel_Filtered",
+          "OriginalLoadChecks": 9,
+          "WorkingLoadChecks": 0,
+          "WorstID": "PERF_03",
+          "AmplifiedMoments": false,
+          "FilteredOriginalPreserved": true,
+          "WorkbookSHA256": "A3501FF6A1277683A2C69A94D53704021643E4E0507B595E83AE6FE4A0B21E23"
+        },
+        {
+          "Name": "File_Cracks",
+          "OriginalLoadChecks": 6,
+          "WorkingLoadChecks": 0,
+          "WorstID": "PERF_01",
+          "AmplifiedMoments": false,
+          "FilteredOriginalPreserved": false,
+          "WorkbookSHA256": "9367CCA6FF4CA1458324AF981EAD45F9DA09FFD6C52B1C0C7DDDA682D9B8C7C6"
+        }
+      ],
+      "Restores": [
+        {
+          "Name": "File_Minimal",
+          "ResultDataExact": true,
+          "OtherSheetsUnchanged": true,
+          "ChartShapesExact": true,
+          "AfterReopenButton": false,
+          "SolverCalls": 0,
+          "SuppressedEmptyTableHeadersRemoved": [
+            "AN155",
+            "AN156",
+            "AO156",
+            "AP156",
+            "AQ156",
+            "AR156",
+            "AS156",
+            "AT156",
+            "AU156",
+            "AV156"
+          ]
+        },
+        {
+          "Name": "File_Cracks",
+          "ResultDataExact": true,
+          "OtherSheetsUnchanged": true,
+          "ChartShapesExact": true,
+          "AfterReopenButton": false,
+          "SolverCalls": 0,
+          "SuppressedEmptyTableHeadersRemoved": []
+        },
+        {
+          "Name": "File_Minimal",
+          "ResultDataExact": true,
+          "OtherSheetsUnchanged": true,
+          "ChartShapesExact": true,
+          "AfterReopenButton": false,
+          "SolverCalls": 0,
+          "SuppressedEmptyTableHeadersRemoved": [
+            "AN155",
+            "AN156",
+            "AO156",
+            "AP156",
+            "AQ156",
+            "AR156",
+            "AS156",
+            "AT156",
+            "AU156",
+            "AV156"
+          ]
+        },
+        {
+          "Name": "File_Cracks",
+          "ResultDataExact": true,
+          "OtherSheetsUnchanged": true,
+          "ChartShapesExact": true,
+          "AfterReopenButton": true,
+          "SolverCalls": 0,
+          "SuppressedEmptyTableHeadersRemoved": []
+        }
+      ],
+      "LegacySnapshotCompatible": true,
+      "NativeChecks": 170,
+      "SourceSHA256": "23FE376DE9C4BE2482DB5E387892E0287583EB06D1B1F54B4FBB97E91B0BAA52"
+    },
+    {
+      "Mode": "Yes",
+      "Cases": [
+        {
+          "Name": "Excel_Full",
+          "OriginalLoadChecks": 9,
+          "WorkingLoadChecks": 9,
+          "WorstID": "PERF_02",
+          "AmplifiedMoments": true,
+          "FilteredOriginalPreserved": false,
+          "WorkbookSHA256": "295882A0CE3C3BC8986B50841FBA3CEE20C61019AC2E542851EDBAD1C9CAB7CE"
+        },
+        {
+          "Name": "File_Minimal",
+          "OriginalLoadChecks": 9,
+          "WorkingLoadChecks": 9,
+          "WorstID": "PERF_03",
+          "AmplifiedMoments": true,
+          "FilteredOriginalPreserved": false,
+          "WorkbookSHA256": "64CC1FB15C318A712447B17BD97A8D236AE42E97EA9ABE38C05A2E9DAA55E304"
+        },
+        {
+          "Name": "Excel_Filtered",
+          "OriginalLoadChecks": 9,
+          "WorkingLoadChecks": 0,
+          "WorstID": "PERF_03",
+          "AmplifiedMoments": false,
+          "FilteredOriginalPreserved": true,
+          "WorkbookSHA256": "25DB702E3F92178BB7065E16B8D1E8061B74DBC96A3474339DBAD4BA698F998E"
+        },
+        {
+          "Name": "File_Cracks",
+          "OriginalLoadChecks": 6,
+          "WorkingLoadChecks": 0,
+          "WorstID": "PERF_01",
+          "AmplifiedMoments": false,
+          "FilteredOriginalPreserved": false,
+          "WorkbookSHA256": "EA9B7CFC4879F6857DB59DC7B8E1BFF5963527A646DAF8653400D47D2D5F9E24"
+        }
+      ],
+      "Restores": [
+        {
+          "Name": "File_Minimal",
+          "ResultDataExact": true,
+          "OtherSheetsUnchanged": true,
+          "ChartShapesExact": true,
+          "AfterReopenButton": false,
+          "SolverCalls": 0,
+          "SuppressedEmptyTableHeadersRemoved": [
+            "AN155",
+            "AN156",
+            "AO156",
+            "AP156",
+            "AQ156",
+            "AR156",
+            "AS156",
+            "AT156",
+            "AU156",
+            "AV156"
+          ]
+        },
+        {
+          "Name": "File_Cracks",
+          "ResultDataExact": true,
+          "OtherSheetsUnchanged": true,
+          "ChartShapesExact": true,
+          "AfterReopenButton": false,
+          "SolverCalls": 0,
+          "SuppressedEmptyTableHeadersRemoved": []
+        },
+        {
+          "Name": "File_Minimal",
+          "ResultDataExact": true,
+          "OtherSheetsUnchanged": true,
+          "ChartShapesExact": true,
+          "AfterReopenButton": false,
+          "SolverCalls": 0,
+          "SuppressedEmptyTableHeadersRemoved": [
+            "AN155",
+            "AN156",
+            "AO156",
+            "AP156",
+            "AQ156",
+            "AR156",
+            "AS156",
+            "AT156",
+            "AU156",
+            "AV156"
+          ]
+        },
+        {
+          "Name": "File_Cracks",
+          "ResultDataExact": true,
+          "OtherSheetsUnchanged": true,
+          "ChartShapesExact": true,
+          "AfterReopenButton": true,
+          "SolverCalls": 0,
+          "SuppressedEmptyTableHeadersRemoved": []
+        }
+      ],
+      "LegacySnapshotCompatible": true,
+      "NativeChecks": 170,
+      "SourceSHA256": "23FE376DE9C4BE2482DB5E387892E0287583EB06D1B1F54B4FBB97E91B0BAA52"
+    }
+  ],
+  "Baseline": {
+    "Cases": [
+      {
+        "Name": "Excel_Full",
+        "ExistingResultsExact": true,
+        "ExcludedRunIDCells": 5734
+      },
+      {
+        "Name": "File_Minimal",
+        "ExistingResultsExact": true,
+        "ExcludedRunIDCells": 537
+      },
+      {
+        "Name": "Excel_Filtered",
+        "ExistingResultsExact": true,
+        "ExcludedRunIDCells": 4441
+      },
+      {
+        "Name": "File_Cracks",
+        "ExistingResultsExact": true,
+        "ExcludedRunIDCells": 252
+      }
+    ],
+    "ValuesCompared": 175993,
+    "Exclusions": [
+      "New load block and moved legend",
+      "RunID",
+      "Measured elapsed time"
+    ]
+  },
+  "Inputs": {
+    "InputValuesAndFormulasUnchanged": true,
+    "StaticDescriptionsSynchronized": [
+      {
+        "Cell": "D92",
+        "Before": "[NDM] Max/Min/Average выбирает диаметр только для радиусов зоны. Сумма βnd всегда использует реальные диаметры всех стержней.",
+        "After": "Принято в программе: Max/Min/Average выбирает диаметр только для радиусов зоны. Сумма βnd всегда использует реальные диаметры всех стержней."
+      },
+      {
+        "Cell": "D90",
+        "Before": "[NDM] Разнесение центров групп одного ряда по нормали к НЛ. Не выбирает боковых соседей. Ряд 1 - наружный, номера растут к НЛ. Начальное значение 50 мм; ввод в INPUT Length.",
+        "After": "Принято в программе: Разнесение центров групп одного ряда по нормали к НЛ. Не выбирает боковых соседей. Ряд 1 - наружный, номера растут к НЛ. Начальное значение 50 мм; ввод в INPUT Length."
+      },
+      {
+        "Cell": "D43",
+        "Before": "Только для LoadMultiplier. Верхняя граница расширения скобки поиска λ.",
+        "After": "Только для LoadMultiplier. Верхняя граница расширения интервала поиска λ."
+      },
+      {
+        "Cell": "D89",
+        "Before": "[NDM] Максимальное расстояние между поверхностями растянутых арматурных стержней для их объединения в группу; ввод в INPUT Length.",
+        "After": "Принято в программе: Максимальное расстояние между поверхностями растянутых арматурных стержней для их объединения в группу; ввод в INPUT Length."
+      },
+      {
+        "Cell": "D91",
+        "Before": "[NDM] Порог t/L между рассматриваемой группой растянутых арматурных стержней и ближайшей группой стержней слева/справа вдоль НЛ. Ниже порога - полный r; при равенстве/выше - min(r; t/2). L - расстояние между центрами групп, t - расстояние между их проекциями на НЛ.",
+        "After": "Принято в программе: Порог t/L между рассматриваемой группой растянутых арматурных стержней и ближайшей группой стержней слева/справа вдоль НЛ. Ниже порога - полный r; при равенстве/выше - min(r; t/2). L - расстояние между центрами групп, t - расстояние между их проекциями на НЛ."
+      }
+    ]
+  }
+}

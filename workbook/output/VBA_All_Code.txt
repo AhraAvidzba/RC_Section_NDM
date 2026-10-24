@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-24 17:16:56
+Date: 2026-10-24 23:29:55
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -37726,7 +37726,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2231
+LINES: 2252
 ====================================================================================================
 Option Explicit
 
@@ -39542,6 +39542,27 @@ End Property
 ' Возвращает рабочую продольную силу текущего расчёта, Н; исходная строка сочетания сохраняется.
 Public Property Get n(ByVal index As Long) As Double
     n = mWorkingLoads(index).n
+End Property
+
+' Показывает, что исходная строка усилий прочитана без ошибки ввода.
+' Нулевые заглушки ошибочной строки не выдаются за заданные нагрузки.
+Public Property Get OriginalLoadsAvailable(ByVal index As Long) As Boolean
+    OriginalLoadsAvailable = mInputs(index).inputValid
+End Property
+
+' Возвращает заданную N до фильтров и продольного изгиба, во внутренних Н.
+Public Property Get originalN(ByVal index As Long) As Double
+    originalN = mInputs(index).n
+End Property
+
+' Возвращает заданный Mx в пользовательской точке до фильтров, Н*мм.
+Public Property Get OriginalMx(ByVal index As Long) As Double
+    OriginalMx = mInputs(index).mx
+End Property
+
+' Возвращает заданный My в пользовательской точке до фильтров, Н*мм.
+Public Property Get OriginalMy(ByVal index As Long) As Double
+    OriginalMy = mInputs(index).my
 End Property
 
 ' Возвращает рабочий момент Mx относительно начала координат модели, Н*мм.
@@ -43553,7 +43574,7 @@ End Property
 ====================================================================================================
 COMPONENT: CBatchResultWriter
 TYPE: 2
-LINES: 929
+LINES: 1023
 ====================================================================================================
 Option Explicit
 
@@ -43568,7 +43589,7 @@ Option Explicit
 Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник общей и подробных сводок до сохранения снимка.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
-Private Const TARGET_COLUMNS As Long = 26 ' Ширина верхней сводки с разложением устойчивости по СП, плоскостям и ветвям.
+Private Const TARGET_COLUMNS As Long = 33 ' Сводка, один пустой столбец и шесть нагрузок в пользовательской точке.
 Private Const META_ROWS As Long = 4 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 6 ' Первая строка шестистрочной шапки основной таблицы.
 Private Const SUBGROUP_HEADER_ROW As Long = 7 ' Строка внутренних подзаголовков расчетных блоков.
@@ -43602,6 +43623,12 @@ Private Const SUM_COL_RESERVE_SP35_P2_ETA As Long = 23 ' Запас СП35, пл
 Private Const SUM_COL_RESERVE_SP35_P2_TABLE As Long = 24 ' Запас СП35, плоскость 2, ec <= r: Nult/N.
 Private Const SUM_COL_RESERVE_SP63_P1 As Long = 25 ' Запас СП63, плоскость 1: Ncr/N.
 Private Const SUM_COL_RESERVE_SP63_P2 As Long = 26 ' Запас СП63, плоскость 2: Ncr/N.
+Private Const SUM_COL_ORIGINAL_N As Long = 28 ' Исходная N до фильтров и продольного изгиба.
+Private Const SUM_COL_ORIGINAL_MX As Long = 29 ' Исходный Mx в пользовательской точке.
+Private Const SUM_COL_ORIGINAL_MY As Long = 30 ' Исходный My в пользовательской точке.
+Private Const SUM_COL_DESIGN_N As Long = 31 ' Рабочая N, не умножаемая на коэффициент eta.
+Private Const SUM_COL_DESIGN_MX As Long = 32 ' Рабочий Mx после продольного изгиба, если он применим.
+Private Const SUM_COL_DESIGN_MY As Long = 33 ' Рабочий My после продольного изгиба, если он применим.
 
 Private Const STATUS_LEGEND_GAP_COLUMNS As Long = 1 ' Один пустой столбец между общей сводкой и расшифровкой статусов.
 Private Const STATUS_LEGEND_COLUMNS As Long = 2 ' Ширина правого словаря статусов: код и текстовая расшифровка.
@@ -43708,6 +43735,7 @@ Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCa
         stage = "PutCombination " & CStr(i)
         PutCombination data, FIRST_DATA_ROW + OutputDataOffset(batch, i, summaryRows - FIRST_DATA_ROW + 1) - 1, batch, i, units, section
     Next i
+    If batch.WorstCombinationIndex > 0 Then PutPointLoads data, WORST_HEADER_ROW, batch, batch.WorstCombinationIndex, units
 
     stage = "WriteSummaryBody"
     WriteSummaryBody Target, data
@@ -43817,7 +43845,8 @@ Private Sub WriteSummaryBody(ByVal Target As Object, ByRef data() As Variant)
     End If
     If mMinimalFormatting Then
         If ResultHeaderMatches(Target, data, GROUP_HEADER_ROW, COMMENT_HEADER_ROW, merges:=SummaryHeaderBlocks()) And _
-                CStr(Target.cells(Target.rows.count, SUM_COL_RESERVE_STRAIN).NumberFormat) = "0.000" Then
+                CStr(Target.cells(Target.rows.count, SUM_COL_RESERVE_STRAIN).NumberFormat) = "0.000" And _
+                CStr(Target.cells(Target.rows.count, SUM_COL_ORIGINAL_N).NumberFormat) = "0.000" Then
             WriteResultDataSlice Target, data, 1, 1, META_ROWS, 1
             WriteResultDataSlice Target, data, 1, 7, 3, 1
             WriteResultDataSlice Target, data, WORST_HEADER_ROW, 1, UBound(data, 1) - WORST_HEADER_ROW + 1, TARGET_COLUMNS
@@ -43973,7 +44002,55 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_CRACK) = "нормальные трещины"
     data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_LONG_CRACK) = "продольные трещины"
     PutStabilityColumnHeaders data, SUM_COL_RESERVE_SP35_P1_ETA, SUM_COL_RESERVE_SP63_P1, sp35EtaLabel
+    Dim forceUnit As String, momentUnit As String
+    forceUnit = "N": momentUnit = "N*mm"
+    If Not units Is Nothing Then forceUnit = units.OutputForceUnit: momentUnit = units.OutputMomentUnit
+    PutPointLoadHeaders data, forceUnit, momentUnit
 End Sub
+
+' Заполняет шестистрочную шапку нагрузок; единицы принадлежат сохранённому расчёту.
+Private Sub PutPointLoadHeaders(ByRef data() As Variant, ByVal forceUnit As String, ByVal momentUnit As String)
+    data(GROUP_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Нагрузки в точке приложения"
+    data(COLUMN_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Исходные заданные нагрузки"
+    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного изгиба" & vbLf & "(если применимо)"
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_N) = "N, " & forceUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_MX) = "Mx, " & momentUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_MY) = "My, " & momentUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_DESIGN_N) = "N, " & forceUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_DESIGN_MX) = "Mx, " & momentUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_DESIGN_MY) = "My, " & momentUnit
+    data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Исходная продольная сила"
+    data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_MX) = "Исходный изгибающий момент Mx"
+    data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_MY) = "Исходный изгибающий момент My"
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_N) = "Продольная сила"
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = "с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
+End Sub
+
+' Записывает исходные и рабочие усилия из готового пакета, без обращения к Config.
+' Ошибка устойчивости не подменяется якобы успешно уточнёнными моментами.
+Private Sub PutPointLoads(ByRef data() As Variant, ByVal row As Long, ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
+    If Not batch.OriginalLoadsAvailable(index) Then Exit Sub
+    data(row, SUM_COL_ORIGINAL_N) = PointLoadToOutput(batch.originalN(index), 0, units)
+    data(row, SUM_COL_ORIGINAL_MX) = PointLoadToOutput(batch.OriginalMx(index), 1, units)
+    data(row, SUM_COL_ORIGINAL_MY) = PointLoadToOutput(batch.OriginalMy(index), 2, units)
+    Dim policy As CResultStatusPolicy: Set policy = StatusPolicy()
+    Dim status As String: status = policy.ExternalStatus(batch.ResultAt(index).stabilityMeta)
+    If status <> policy.OK And status <> policy.NotApplicable Then Exit Sub
+    data(row, SUM_COL_DESIGN_N) = PointLoadToOutput(batch.n(index), 0, units)
+    data(row, SUM_COL_DESIGN_MX) = PointLoadToOutput(batch.UserMx(index), 1, units)
+    data(row, SUM_COL_DESIGN_MY) = PointLoadToOutput(batch.UserMy(index), 2, units)
+End Sub
+
+' Применяет единственные рабочие преобразования единиц и знаков CUnitSystem.
+' component: 0 — продольная сила, 1 — Mx, 2 — My в одной точке приложения.
+Private Function PointLoadToOutput(ByVal value As Double, ByVal component As Long, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then PointLoadToOutput = value: Exit Function
+    Select Case component
+        Case 0: PointLoadToOutput = units.InternalForceToOutput(value)
+        Case 1: PointLoadToOutput = units.InternalMomentMxToOutput(value)
+        Case 2: PointLoadToOutput = units.InternalMomentMyToOutput(value)
+    End Select
+End Function
 
 ' Заполняет трехстрочную часть шапки для устойчивости: плоскость, ветвь и
 ' проверяемый коэффициент запаса. Для СП35 eta-ветви показывается именно
@@ -44056,6 +44133,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     data(rowIndex, SUM_COL_COMMENT) = batch.CombinationName(index)
     data(rowIndex, SUM_COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).OverallMeta)
     data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.ResultAt(index).OverallMeta)
+    PutPointLoads data, rowIndex, batch, index, units
 
     PutStatusCell data, rowIndex, SUM_COL_STATUS_STRAIN, policy, _
         batch.StrengthDirectStateRequested(index), batch.ResultAt(index).DirectStateMeta
@@ -44264,6 +44342,7 @@ Private Sub FormatSummary(ByVal Workbook As Object, ByVal Target As Object, ByVa
     Target.offset(FIRST_DATA_ROW - 1, SUM_COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
     Target.offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 2).Resize(Target.rows.count - GROUP_HEADER_ROW + 1, 1).Interior.colorIndex = -4142
     Target.offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 2).Resize(Target.rows.count - GROUP_HEADER_ROW + 1, 1).Interior.colorIndex = -4142
+    Target.offset(GROUP_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 2).Resize(Target.rows.count - GROUP_HEADER_ROW + 1, 1).Interior.colorIndex = -4142
     stage = "FormatStatusCells"
     FormatStatusCells Target, batch, preparedValues
     stage = "WriteStatusLegend"
@@ -44277,9 +44356,13 @@ Private Sub FormatSummary(ByVal Workbook As Object, ByVal Target As Object, ByVa
         SUM_COL_STATUS_SP63_P2 - SUM_COL_STATUS_STRAIN + 1)
     ApplySummaryBorders Target.offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(Target.rows.count - GROUP_HEADER_ROW + 1, _
         SUM_COL_RESERVE_SP63_P2 - SUM_COL_RESERVE_STRAIN + 1)
+    ApplySummaryBorders Target.offset(GROUP_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 1).Resize(Target.rows.count - GROUP_HEADER_ROW + 1, _
+        SUM_COL_DESIGN_MY - SUM_COL_ORIGINAL_N + 1)
     stage = "NumberFormat"
     Target.offset(WORST_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(Target.rows.count - WORST_HEADER_ROW + 1, _
         SUM_COL_RESERVE_SP63_P2 - SUM_COL_RESERVE_STRAIN + 1).NumberFormat = "0.000"
+    Target.offset(WORST_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 1).Resize(Target.rows.count - WORST_HEADER_ROW + 1, _
+        SUM_COL_DESIGN_MY - SUM_COL_ORIGINAL_N + 1).NumberFormat = "0.000"
     Exit Sub
 
 Failed:
@@ -44354,6 +44437,10 @@ Private Function SummaryHeaderBlocks() As Collection
     blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_OVERALL_STATUS, SUM_COL_OVERALL_STATUS)
     blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_SP63_P2)
     blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_SP63_P2)
+    blocks.Add Array(GROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_ORIGINAL_N, SUM_COL_DESIGN_MY)
+    blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_ORIGINAL_N, SUM_COL_ORIGINAL_MY)
+    blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_DESIGN_N, SUM_COL_DESIGN_MY)
+    blocks.Add Array(COMMENT_HEADER_ROW, COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX, SUM_COL_DESIGN_MY)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_STATUS_SP35_P2_TABLE)
@@ -44471,7 +44558,7 @@ End Property
 Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
     Set mCapturedSnapshot = Nothing
     mMinimalFormatting = Not fullFormatting
-    Dim data() As Variant: data = snapshot.table("Summary")
+    Dim data() As Variant: data = SummaryForDisplay(snapshot)
     PrepareSummaryTarget SummaryClearRange(Workbook), UBound(data, 1)
     Dim Target As Object: Set Target = SummaryTargetRange(Workbook, UBound(data, 1))
     WriteSummaryBody Target, data
@@ -44483,6 +44570,34 @@ Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculati
     cracks.RestoreSummary Workbook, snapshot, fullFormatting
     stability.RestoreSummary Workbook, snapshot, fullFormatting
 End Sub
+
+' Читает прежние файловые снимки без блока нагрузок, не придумывая исходный ввод.
+' Это совместимость внешнего формата: текущий Config и содержимое файла не меняются.
+Private Function SummaryForDisplay(ByVal snapshot As CCalculationSnapshot) As Variant
+    Dim saved As Variant: saved = snapshot.table("Summary")
+    If UBound(saved, 2) = TARGET_COLUMNS Then SummaryForDisplay = saved: Exit Function
+    Dim data() As Variant, row As Long, column As Long
+    ReDim data(1 To UBound(saved, 1), 1 To TARGET_COLUMNS)
+    For row = 1 To UBound(saved, 1)
+        For column = 1 To UBound(saved, 2): data(row, column) = saved(row, column): Next column
+    Next row
+    PutPointLoadHeaders data, SavedSummaryUnit(snapshot, "Output.ForceUnit"), SavedSummaryUnit(snapshot, "Output.MomentUnit")
+    For column = SUM_COL_ORIGINAL_N To SUM_COL_ORIGINAL_MY
+        data(COMMENT_HEADER_ROW, column) = "Не сохранено в этом снимке"
+    Next column
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_N) = "Не сохранено в этом снимке"
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = "Блок нагрузок отсутствует в прежнем снимке"
+    SummaryForDisplay = data
+End Function
+
+' Получает единицу прежнего файлового снимка, независимо от текущих настроек.
+Private Function SavedSummaryUnit(ByVal snapshot As CCalculationSnapshot, ByVal key As String) As String
+    Dim data As Variant, row As Long: data = snapshot.table("rngNDMSectionProperties")
+    For row = 2 To UBound(data, 1)
+        If CStr(data(row, 3)) = key Then SavedSummaryUnit = CStr(data(row, 4)): Exit Function
+    Next row
+    Err.Raise 5, "CBatchResultWriter", "В снимке отсутствует единица " & key
+End Function
 
 
 ====================================================================================================
@@ -44726,7 +44841,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCalculationSnapshot
 TYPE: 2
-LINES: 369
+LINES: 371
 ====================================================================================================
 Option Explicit
 
@@ -45033,7 +45148,9 @@ Private Sub ValidateTableShape(ByVal key As String, ByRef values As Variant)
         Case "rngNDMSectionProperties", "LoadCase.Properties": columns = 6
         Case "rngNDMMaterialDiagrams": columns = 11
         Case "rngNDMSectionAnnotations", "LoadCase.Annotations": columns = 24
-        Case "Summary": columns = 26
+        Case "Summary"
+            columns = 33
+            If UBound(values, 2) = 26 Then columns = 26 ' Прежний файловый снимок не содержит отдельного блока исходных нагрузок.
         Case "Strength.Headers": columns = 49: rows = 4
         Case "Strength.Data": columns = 49
         Case "Cracks.Headers": columns = 72: rows = 4
@@ -80061,7 +80178,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCalculationSnapshot
 TYPE: 1
-LINES: 1036
+LINES: 1128
 ====================================================================================================
 Option Explicit
 
@@ -80088,6 +80205,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotStatusSpans
     TestSnapshotOutputGuards
     TestSnapshotSeparatedProperties
+    TestSnapshotOriginalLoadMemory
     Dim initial As CSystemSettingsReader: Set initial = New CSystemSettingsReader: initial.LoadFromWorkbook ThisWorkbook
     Dim extension As String: extension = initial.GetRequiredString("General.DiagramExtension")
     modTestPerformance.TestConfigurePerformanceFixture "MIXED", 6, "Newton", "Circle", "Normal", extension
@@ -80104,6 +80222,8 @@ Public Function RunCalculationSnapshotTests() As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook)
     TestSnapshotCheck "readScope.afterCalculation", TestCalculationSnapshotReadReleased()
     Dim original As CCalculationSnapshot: Set original = store.LoadFile(ThisWorkbook)
+    TestSnapshotSummaryLoads original
+    TestSnapshotLegacySummary original
     TestSnapshotOneUseSource
     TestSnapshotNativeLayout original
     TestSnapshotValidationReuse original
@@ -80824,7 +80944,7 @@ Public Function TestExcelCurrentResultsRefresh() As String
     Dim properties As Variant: properties = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionProperties")
     TestSnapshotCheck "excel.readableLoadCaseProperties", Not TestSnapshotCommonOnly(properties)
     Dim names As Variant: names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
-    Dim widths As Variant: widths = Array(26, 49, 72, 84)
+    Dim widths As Variant: widths = Array(33, 49, 72, 84)
     Dim before(0 To 3) As Variant, i As Long
     Dim plot As String: plot = TestSnapshotPlot()
     Dim exported As String: exported = Audit02ReadExportSnapshotForTests(ThisWorkbook)
@@ -81078,6 +81198,95 @@ Private Sub TestSnapshotSetting(ByVal key As String, ByVal value As String)
         If CStr(values(i, 1)) = field Then table.cells(i, column).value2 = value: Exit Sub
     Next i
     Err.Raise 5, , "Не найдена тестовая настройка: " & key
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет неизменённые исходные числа, включая малые моменты и ошибочную строку.
+Private Sub TestSnapshotOriginalLoadMemory()
+    Dim batch As CBatchSectionCalculator: Set batch = New CBatchSectionCalculator
+    batch.AddCombination "RAW", -123.456, 1E-20, -2E-20, "PR1", "Исходные числа"
+    batch.AddInvalidCombination "BAD", "PR1", "Ошибка", "Некорректная нагрузка"
+    TestSnapshotCheck "loads.original.available", batch.OriginalLoadsAvailable(1)
+    TestSnapshotCheck "loads.original.force", TestSnapshotDouble(batch.originalN(1)) = TestSnapshotDouble(-123.456)
+    TestSnapshotCheck "loads.original.tinyMx", TestSnapshotDouble(batch.OriginalMx(1)) = TestSnapshotDouble(1E-20)
+    TestSnapshotCheck "loads.original.tinyMy", TestSnapshotDouble(batch.OriginalMy(1)) = TestSnapshotDouble(-2E-20)
+    TestSnapshotCheck "loads.invalid.notInvented", Not batch.OriginalLoadsAvailable(2)
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает новые исходные числа с фактическим вводом, а рабочие — с таблицей устойчивости.
+' Строка worst обязана принадлежать тому же LC, что указан в самом верху снимка.
+Private Sub TestSnapshotSummaryLoads(ByVal snapshot As CCalculationSnapshot)
+    Dim data As Variant: data = snapshot.table("Summary")
+    TestSnapshotCheck "loads.summary.width", UBound(data, 2) = 33
+    TestSnapshotCheck "loads.summary.title", CStr(data(6, 28)) = "Нагрузки в точке приложения"
+    TestSnapshotCheck "loads.summary.lineBreak", InStr(CStr(data(8, 31)), vbLf & "(если применимо)") > 0
+    TestSnapshotCheck "loads.summary.originalMxComment", CStr(data(11, 29)) = "Исходный изгибающий момент Mx"
+    TestSnapshotCheck "loads.summary.originalMyComment", CStr(data(11, 30)) = "Исходный изгибающий момент My"
+    TestSnapshotCheck "loads.summary.forceNoEta", InStr(CStr(data(11, 31)), ChrW$(&H3B7)) = 0
+    TestSnapshotCheck "loads.summary.momentsEta", InStr(CStr(data(11, 32)), ChrW$(&H3B7)) > 0
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
+    TestSnapshotCheck "loads.summary.forceUnit", CStr(data(10, 28)) = "N, " & units.OutputForceUnit
+    TestSnapshotCheck "loads.summary.momentUnit", CStr(data(10, 29)) = "Mx, " & units.OutputMomentUnit
+    Dim loads As Variant: loads = ThisWorkbook.names.item("rngLoadCombinations").RefersToRange.value2
+    Dim stable As Variant: stable = snapshot.table("Stability.Data")
+    Dim row As Long, inputRow As Long, stableRow As Long, column As Long, expected As Double
+    For row = 13 To UBound(data, 1)
+        If Len(CStr(data(row, 1))) = 0 Then GoTo NextSummaryLoad
+        For inputRow = 2 To UBound(loads, 1)
+            If CStr(loads(inputRow, 1)) = CStr(data(row, 1)) Then Exit For
+        Next inputRow
+        If inputRow > UBound(loads, 1) Then Err.Raise 5, , "Ввод тестового сочетания не найден."
+        expected = units.InternalForceToOutput(units.InputForceToInternal(CDbl(loads(inputRow, 2))))
+        TestSnapshotCheck "loads.summary.originalN." & CStr(row), TestSnapshotDouble(data(row, 28)) = TestSnapshotDouble(expected)
+        expected = units.InternalMomentMxToOutput(units.InputMomentMxToInternal(CDbl(loads(inputRow, 3))))
+        TestSnapshotCheck "loads.summary.originalMx." & CStr(row), TestSnapshotDouble(data(row, 29)) = TestSnapshotDouble(expected)
+        expected = units.InternalMomentMyToOutput(units.InputMomentMyToInternal(CDbl(loads(inputRow, 4))))
+        TestSnapshotCheck "loads.summary.originalMy." & CStr(row), TestSnapshotDouble(data(row, 30)) = TestSnapshotDouble(expected)
+        For stableRow = 1 To UBound(stable, 1)
+            If CStr(stable(stableRow, 1)) = CStr(data(row, 1)) And CStr(stable(stableRow, 3)) = "OK" Then
+                For column = 0 To 2
+                    TestSnapshotCheck "loads.summary.afterStability." & CStr(row) & "." & CStr(column), TestSnapshotDouble(data(row, 31 + column)) = TestSnapshotDouble(stable(stableRow, 12 + column))
+                Next column
+            End If
+        Next stableRow
+        If CStr(data(row, 1)) = CStr(data(1, 1)) Then
+            For column = 28 To 33
+                TestSnapshotCheck "loads.summary.worst." & CStr(column), TestSnapshotDouble(data(12, column)) = TestSnapshotDouble(data(row, column))
+            Next column
+        End If
+NextSummaryLoad:
+    Next row
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Читает прежнюю 26-колоночную сводку без подстановки текущих нагрузок Config.
+Private Sub TestSnapshotLegacySummary(ByVal original As CCalculationSnapshot)
+    Dim sample As CCalculationSnapshot: Set sample = New CCalculationSnapshot
+    sample.runID = original.runID: sample.elapsedSeconds = original.elapsedSeconds
+    Dim key As Variant, saved As Variant, data() As Variant, row As Long, column As Long
+    For Each key In original.keys()
+        saved = original.table(CStr(key))
+        If CStr(key) = "Summary" Then
+            ReDim data(1 To UBound(saved, 1), 1 To 26)
+            For row = 1 To UBound(saved, 1)
+                For column = 1 To 26: data(row, column) = saved(row, column): Next column
+            Next row
+            sample.AddTable CStr(key), data
+        Else
+            sample.AddTable CStr(key), saved
+        End If
+    Next key
+    sample.Validate
+    Dim writer As CBatchResultWriter: Set writer = New CBatchResultWriter
+    writer.RestoreSummary ThisWorkbook, sample
+    Dim Target As Object: Set Target = ThisWorkbook.names.item("rngBatchSummary").RefersToRange.cells(1, 1)
+    TestSnapshotCheck "loads.legacy.explicitMissing", CStr(Target.cells(11, 28).value2) = "Не сохранено в этом снимке"
+    TestSnapshotCheck "loads.legacy.noCurrentInput", Application.CountA(Target.offset(11, 27).Resize(31, 6)) = 0
+    saved = original.table("Summary")
+    TestSnapshotCheck "loads.legacy.keepsWorst", CStr(Target.cells(1, 1).value2) = CStr(saved(1, 1))
+    writer.RestoreSummary ThisWorkbook, original
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

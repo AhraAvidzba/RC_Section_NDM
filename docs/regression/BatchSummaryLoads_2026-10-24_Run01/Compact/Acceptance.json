@@ -1,0 +1,28 @@
+{
+  "Status": "PASS_DIRECTED",
+  "BaselineCommit": "6fb955f39ae3f7a0d49929fdac5813edd6515e54",
+  "Branch": "codex/linked-rebar-row-offsets",
+  "Checks": {
+    "FinalSnapshot_No": "TOTAL CALCULATION SNAPSHOT: passed=413; failed=0",
+    "FinalFormatting_No": "TOTAL_RESULTS_FORMATTING: passed=64; failed=0",
+    "FinalSnapshot_Yes": "TOTAL CALCULATION SNAPSHOT: passed=413; failed=0",
+    "FinalFormatting_Yes": "TOTAL_RESULTS_FORMATTING: passed=64; failed=0"
+  },
+  "Independent": "175993 prior values; 8 new calculations; 8 file switches; 2 legacy loads",
+  "FullAcceptanceRun": false,
+  "Monitor": "PAUSED",
+  "Files": {
+    "src/Batch/CBatchSectionCalculator.cls": "BF236A34C1F67E7C94B1AEE1FE030D8C4308BC233CAB39ABF58D8583F5211A8D",
+    "src/Excel/CBatchResultWriter.cls": "10496262D0529F062260979AAE5E17B0DCDED97115B22667105205E60D6DCE73",
+    "src/Excel/CCalculationSnapshot.cls": "F8562267F207D2B5A93675599546F4B13D07AAE789D4D8611527D84735983F5E",
+    "tests/modTestCalculationSnapshot.bas": "A0C92A29203854FBC7024F220E389E65EFCFE12DFDBA0C1837F49426B361BA28",
+    "tools/build_workbook/SettingsCatalog.ps1": "23C6AA8FF05E7702F5DAFA85478E0B70EFBA1A64C6C3C5C9C274266ACE72C8A3",
+    "tools/build_workbook/WorkbookLayout.json": "82DD292BD145F83CB54002858FDE46B368CCDC535243CA7FBC5C9194C238670D",
+    "tools/build_workbook/Test-BatchSummaryLoads.ps1": "7C7A71565CE7941D33FA1A09071E0E4DC37610C92547FE32037FD8DB84D18A96",
+    "tools/build_workbook/Verify-BatchSummaryLoads.py": "2D0607E6C667B2586F05CBDDFD679DFD9C9389AE442B5CD1650113953CA2ABDE",
+    "workbook/output/RC_Section_NDM.xlsm": "23FE376DE9C4BE2482DB5E387892E0287583EB06D1B1F54B4FBB97E91B0BAA52",
+    "workbook/output/VBA_All_Code.txt": "2A2C084A9D0A8B9EE9BC43AC7A1F1E923BD2155761BC48387B67591E0C37FEF6"
+  },
+  "ReadyWorkbook": "Native_Yes_05/Excel_Full_Ready.xlsm",
+  "ReadyWorkbookSHA256": "295882A0CE3C3BC8986B50841FBA3CEE20C61019AC2E542851EDBAD1C9CAB7CE"
+}

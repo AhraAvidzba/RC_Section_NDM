@@ -20,7 +20,7 @@ Option Explicit
 Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник общей и подробных сводок до сохранения снимка.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
-Private Const TARGET_COLUMNS As Long = 26 ' Ширина верхней сводки с разложением устойчивости по СП, плоскостям и ветвям.
+Private Const TARGET_COLUMNS As Long = 33 ' Сводка, один пустой столбец и шесть нагрузок в пользовательской точке.
 Private Const META_ROWS As Long = 4 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 6 ' Первая строка шестистрочной шапки основной таблицы.
 Private Const SUBGROUP_HEADER_ROW As Long = 7 ' Строка внутренних подзаголовков расчетных блоков.
@@ -54,6 +54,12 @@ Private Const SUM_COL_RESERVE_SP35_P2_ETA As Long = 23 ' Запас СП35, пл
 Private Const SUM_COL_RESERVE_SP35_P2_TABLE As Long = 24 ' Запас СП35, плоскость 2, ec <= r: Nult/N.
 Private Const SUM_COL_RESERVE_SP63_P1 As Long = 25 ' Запас СП63, плоскость 1: Ncr/N.
 Private Const SUM_COL_RESERVE_SP63_P2 As Long = 26 ' Запас СП63, плоскость 2: Ncr/N.
+Private Const SUM_COL_ORIGINAL_N As Long = 28 ' Исходная N до фильтров и продольного изгиба.
+Private Const SUM_COL_ORIGINAL_MX As Long = 29 ' Исходный Mx в пользовательской точке.
+Private Const SUM_COL_ORIGINAL_MY As Long = 30 ' Исходный My в пользовательской точке.
+Private Const SUM_COL_DESIGN_N As Long = 31 ' Рабочая N, не умножаемая на коэффициент eta.
+Private Const SUM_COL_DESIGN_MX As Long = 32 ' Рабочий Mx после продольного изгиба, если он применим.
+Private Const SUM_COL_DESIGN_MY As Long = 33 ' Рабочий My после продольного изгиба, если он применим.
 
 Private Const STATUS_LEGEND_GAP_COLUMNS As Long = 1 ' Один пустой столбец между общей сводкой и расшифровкой статусов.
 Private Const STATUS_LEGEND_COLUMNS As Long = 2 ' Ширина правого словаря статусов: код и текстовая расшифровка.
@@ -160,6 +166,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
         stage = "PutCombination " & CStr(i)
         PutCombination data, FIRST_DATA_ROW + OutputDataOffset(batch, i, summaryRows - FIRST_DATA_ROW + 1) - 1, batch, i, units, section
     Next i
+    If batch.WorstCombinationIndex > 0 Then PutPointLoads data, WORST_HEADER_ROW, batch, batch.WorstCombinationIndex, units
 
     stage = "WriteSummaryBody"
     WriteSummaryBody target, data
@@ -269,7 +276,8 @@ Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
     End If
     If mMinimalFormatting Then
         If ResultHeaderMatches(target, data, GROUP_HEADER_ROW, COMMENT_HEADER_ROW, merges:=SummaryHeaderBlocks()) And _
-                CStr(target.Cells(target.Rows.Count, SUM_COL_RESERVE_STRAIN).NumberFormat) = "0.000" Then
+                CStr(target.Cells(target.Rows.Count, SUM_COL_RESERVE_STRAIN).NumberFormat) = "0.000" And _
+                CStr(target.Cells(target.Rows.Count, SUM_COL_ORIGINAL_N).NumberFormat) = "0.000" Then
             WriteResultDataSlice target, data, 1, 1, META_ROWS, 1
             WriteResultDataSlice target, data, 1, 7, 3, 1
             WriteResultDataSlice target, data, WORST_HEADER_ROW, 1, UBound(data, 1) - WORST_HEADER_ROW + 1, TARGET_COLUMNS
@@ -425,7 +433,55 @@ Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem
     data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_CRACK) = "нормальные трещины"
     data(COLUMN_HEADER_ROW, SUM_COL_RESERVE_LONG_CRACK) = "продольные трещины"
     PutStabilityColumnHeaders data, SUM_COL_RESERVE_SP35_P1_ETA, SUM_COL_RESERVE_SP63_P1, sp35EtaLabel
+    Dim forceUnit As String, momentUnit As String
+    forceUnit = "N": momentUnit = "N*mm"
+    If Not units Is Nothing Then forceUnit = units.OutputForceUnit: momentUnit = units.OutputMomentUnit
+    PutPointLoadHeaders data, forceUnit, momentUnit
 End Sub
+
+' Заполняет шестистрочную шапку нагрузок; единицы принадлежат сохранённому расчёту.
+Private Sub PutPointLoadHeaders(ByRef data() As Variant, ByVal forceUnit As String, ByVal momentUnit As String)
+    data(GROUP_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Нагрузки в точке приложения"
+    data(COLUMN_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Исходные заданные нагрузки"
+    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного изгиба" & vbLf & "(если применимо)"
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_N) = "N, " & forceUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_MX) = "Mx, " & momentUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_MY) = "My, " & momentUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_DESIGN_N) = "N, " & forceUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_DESIGN_MX) = "Mx, " & momentUnit
+    data(COLUMN_HEADER_LAST_ROW, SUM_COL_DESIGN_MY) = "My, " & momentUnit
+    data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Исходная продольная сила"
+    data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_MX) = "Исходный изгибающий момент Mx"
+    data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_MY) = "Исходный изгибающий момент My"
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_N) = "Продольная сила"
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = "с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
+End Sub
+
+' Записывает исходные и рабочие усилия из готового пакета, без обращения к Config.
+' Ошибка устойчивости не подменяется якобы успешно уточнёнными моментами.
+Private Sub PutPointLoads(ByRef data() As Variant, ByVal row As Long, ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
+    If Not batch.OriginalLoadsAvailable(index) Then Exit Sub
+    data(row, SUM_COL_ORIGINAL_N) = PointLoadToOutput(batch.OriginalN(index), 0, units)
+    data(row, SUM_COL_ORIGINAL_MX) = PointLoadToOutput(batch.OriginalMx(index), 1, units)
+    data(row, SUM_COL_ORIGINAL_MY) = PointLoadToOutput(batch.OriginalMy(index), 2, units)
+    Dim policy As CResultStatusPolicy: Set policy = StatusPolicy()
+    Dim status As String: status = policy.ExternalStatus(batch.ResultAt(index).StabilityMeta)
+    If status <> policy.OK And status <> policy.NotApplicable Then Exit Sub
+    data(row, SUM_COL_DESIGN_N) = PointLoadToOutput(batch.N(index), 0, units)
+    data(row, SUM_COL_DESIGN_MX) = PointLoadToOutput(batch.UserMx(index), 1, units)
+    data(row, SUM_COL_DESIGN_MY) = PointLoadToOutput(batch.UserMy(index), 2, units)
+End Sub
+
+' Применяет единственные рабочие преобразования единиц и знаков CUnitSystem.
+' component: 0 — продольная сила, 1 — Mx, 2 — My в одной точке приложения.
+Private Function PointLoadToOutput(ByVal value As Double, ByVal component As Long, ByVal units As CUnitSystem) As Double
+    If units Is Nothing Then PointLoadToOutput = value: Exit Function
+    Select Case component
+        Case 0: PointLoadToOutput = units.InternalForceToOutput(value)
+        Case 1: PointLoadToOutput = units.InternalMomentMxToOutput(value)
+        Case 2: PointLoadToOutput = units.InternalMomentMyToOutput(value)
+    End Select
+End Function
 
 ' Заполняет трехстрочную часть шапки для устойчивости: плоскость, ветвь и
 ' проверяемый коэффициент запаса. Для СП35 eta-ветви показывается именно
@@ -508,6 +564,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
     data(rowIndex, SUM_COL_COMMENT) = batch.CombinationName(index)
     data(rowIndex, SUM_COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).OverallMeta)
     data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.ResultAt(index).OverallMeta)
+    PutPointLoads data, rowIndex, batch, index, units
 
     PutStatusCell data, rowIndex, SUM_COL_STATUS_STRAIN, policy, _
         batch.StrengthDirectStateRequested(index), batch.ResultAt(index).DirectStateMeta
@@ -716,6 +773,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Offset(FIRST_DATA_ROW - 1, SUM_COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
     target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
+    target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     stage = "FormatStatusCells"
     FormatStatusCells target, batch, preparedValues
     stage = "WriteStatusLegend"
@@ -729,9 +787,13 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
         SUM_COL_STATUS_SP63_P2 - SUM_COL_STATUS_STRAIN + 1)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, _
         SUM_COL_RESERVE_SP63_P2 - SUM_COL_RESERVE_STRAIN + 1)
+    ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, _
+        SUM_COL_DESIGN_MY - SUM_COL_ORIGINAL_N + 1)
     stage = "NumberFormat"
     target.Offset(WORST_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(target.Rows.Count - WORST_HEADER_ROW + 1, _
         SUM_COL_RESERVE_SP63_P2 - SUM_COL_RESERVE_STRAIN + 1).NumberFormat = "0.000"
+    target.Offset(WORST_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 1).Resize(target.Rows.Count - WORST_HEADER_ROW + 1, _
+        SUM_COL_DESIGN_MY - SUM_COL_ORIGINAL_N + 1).NumberFormat = "0.000"
     Exit Sub
 
 Failed:
@@ -806,6 +868,10 @@ Private Function SummaryHeaderBlocks() As Collection
     blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_OVERALL_STATUS, SUM_COL_OVERALL_STATUS)
     blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_SP63_P2)
     blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_SP63_P2)
+    blocks.Add Array(GROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_ORIGINAL_N, SUM_COL_DESIGN_MY)
+    blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_ORIGINAL_N, SUM_COL_ORIGINAL_MY)
+    blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_DESIGN_N, SUM_COL_DESIGN_MY)
+    blocks.Add Array(COMMENT_HEADER_ROW, COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX, SUM_COL_DESIGN_MY)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK)
     blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_STATUS_SP35_P2_TABLE)
@@ -923,7 +989,7 @@ End Property
 Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
     Set mCapturedSnapshot = Nothing
     mMinimalFormatting = Not fullFormatting
-    Dim data() As Variant: data = snapshot.Table("Summary")
+    Dim data() As Variant: data = SummaryForDisplay(snapshot)
     PrepareSummaryTarget SummaryClearRange(workbook), UBound(data, 1)
     Dim target As Object: Set target = SummaryTargetRange(workbook, UBound(data, 1))
     WriteSummaryBody target, data
@@ -935,3 +1001,31 @@ Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculati
     cracks.RestoreSummary workbook, snapshot, fullFormatting
     stability.RestoreSummary workbook, snapshot, fullFormatting
 End Sub
+
+' Читает прежние файловые снимки без блока нагрузок, не придумывая исходный ввод.
+' Это совместимость внешнего формата: текущий Config и содержимое файла не меняются.
+Private Function SummaryForDisplay(ByVal snapshot As CCalculationSnapshot) As Variant
+    Dim saved As Variant: saved = snapshot.Table("Summary")
+    If UBound(saved, 2) = TARGET_COLUMNS Then SummaryForDisplay = saved: Exit Function
+    Dim data() As Variant, row As Long, column As Long
+    ReDim data(1 To UBound(saved, 1), 1 To TARGET_COLUMNS)
+    For row = 1 To UBound(saved, 1)
+        For column = 1 To UBound(saved, 2): data(row, column) = saved(row, column): Next column
+    Next row
+    PutPointLoadHeaders data, SavedSummaryUnit(snapshot, "Output.ForceUnit"), SavedSummaryUnit(snapshot, "Output.MomentUnit")
+    For column = SUM_COL_ORIGINAL_N To SUM_COL_ORIGINAL_MY
+        data(COMMENT_HEADER_ROW, column) = "Не сохранено в этом снимке"
+    Next column
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_N) = "Не сохранено в этом снимке"
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = "Блок нагрузок отсутствует в прежнем снимке"
+    SummaryForDisplay = data
+End Function
+
+' Получает единицу прежнего файлового снимка, независимо от текущих настроек.
+Private Function SavedSummaryUnit(ByVal snapshot As CCalculationSnapshot, ByVal key As String) As String
+    Dim data As Variant, row As Long: data = snapshot.Table("rngNDMSectionProperties")
+    For row = 2 To UBound(data, 1)
+        If CStr(data(row, 3)) = key Then SavedSummaryUnit = CStr(data(row, 4)): Exit Function
+    Next row
+    Err.Raise 5, "CBatchResultWriter", "В снимке отсутствует единица " & key
+End Function

@@ -1823,6 +1823,27 @@ Public Property Get N(ByVal index As Long) As Double
     N = mWorkingLoads(index).N
 End Property
 
+' Показывает, что исходная строка усилий прочитана без ошибки ввода.
+' Нулевые заглушки ошибочной строки не выдаются за заданные нагрузки.
+Public Property Get OriginalLoadsAvailable(ByVal index As Long) As Boolean
+    OriginalLoadsAvailable = mInputs(index).InputValid
+End Property
+
+' Возвращает заданную N до фильтров и продольного изгиба, во внутренних Н.
+Public Property Get OriginalN(ByVal index As Long) As Double
+    OriginalN = mInputs(index).N
+End Property
+
+' Возвращает заданный Mx в пользовательской точке до фильтров, Н*мм.
+Public Property Get OriginalMx(ByVal index As Long) As Double
+    OriginalMx = mInputs(index).Mx
+End Property
+
+' Возвращает заданный My в пользовательской точке до фильтров, Н*мм.
+Public Property Get OriginalMy(ByVal index As Long) As Double
+    OriginalMy = mInputs(index).My
+End Property
+
 ' Возвращает рабочий момент Mx относительно начала координат модели, Н*мм.
 Public Property Get Mx(ByVal index As Long) As Double
     Mx = mWorkingLoads(index).InternalMx

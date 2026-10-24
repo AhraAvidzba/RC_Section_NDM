@@ -1,0 +1,67 @@
+{
+  "Status": "PASS",
+  "Checked": 10,
+  "Processes": [
+    {
+      "Source": "FinalCompiled/NativeRelease.json",
+      "PID": 142188,
+      "StartTicks": "639284701184757575",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "PublishedNative02/NativeRelease.json",
+      "PID": 150264,
+      "StartTicks": "639284705817939846",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "Native_No_05/NativeSummaryLoads.json",
+      "PID": 137072,
+      "StartTicks": "639284701568369815",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "Native_Yes_05/NativeSummaryLoads.json",
+      "PID": 179132,
+      "StartTicks": "639284701553529370",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "Baseline_No_05/NativeSummaryLoads.json",
+      "PID": 120180,
+      "StartTicks": "639284700503766153",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "SettingsHelp/SettingsHelpStyle.json",
+      "PID": 207644,
+      "StartTicks": "639284702030012238",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "FinalSnapshot_No.txt",
+      "PID": 188688,
+      "StartTicks": "639284702015105926",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "FinalSnapshot_Yes.txt",
+      "PID": 156996,
+      "StartTicks": "639284702036106431",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "FinalFormatting_No.txt",
+      "PID": 164704,
+      "StartTicks": "639284701562403386",
+      "ExactOwnedProcessAbsent": true
+    },
+    {
+      "Source": "FinalFormatting_Yes.txt",
+      "PID": 19844,
+      "StartTicks": "639284701574542093",
+      "ExactOwnedProcessAbsent": true
+    }
+  ],
+  "UserProcessesStopped": 0
+}

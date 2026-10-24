@@ -312,7 +312,9 @@ Private Sub ValidateTableShape(ByVal key As String, ByRef values As Variant)
         Case "rngNDMSectionProperties", "LoadCase.Properties": columns = 6
         Case "rngNDMMaterialDiagrams": columns = 11
         Case "rngNDMSectionAnnotations", "LoadCase.Annotations": columns = 24
-        Case "Summary": columns = 26
+        Case "Summary"
+            columns = 33
+            If UBound(values, 2) = 26 Then columns = 26 ' Прежний файловый снимок не содержит отдельного блока исходных нагрузок.
         Case "Strength.Headers": columns = 49: rows = 4
         Case "Strength.Data": columns = 49
         Case "Cracks.Headers": columns = 72: rows = 4

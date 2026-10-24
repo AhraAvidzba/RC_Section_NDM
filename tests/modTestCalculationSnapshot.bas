@@ -24,6 +24,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotStatusSpans
     TestSnapshotOutputGuards
     TestSnapshotSeparatedProperties
+    TestSnapshotOriginalLoadMemory
     Dim initial As CSystemSettingsReader: Set initial = New CSystemSettingsReader: initial.LoadFromWorkbook ThisWorkbook
     Dim extension As String: extension = initial.GetRequiredString("General.DiagramExtension")
     modTestPerformance.TestConfigurePerformanceFixture "MIXED", 6, "Newton", "Circle", "Normal", extension
@@ -40,6 +41,8 @@ Public Function RunCalculationSnapshotTests() As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook)
     TestSnapshotCheck "readScope.afterCalculation", TestCalculationSnapshotReadReleased()
     Dim original As CCalculationSnapshot: Set original = store.LoadFile(ThisWorkbook)
+    TestSnapshotSummaryLoads original
+    TestSnapshotLegacySummary original
     TestSnapshotOneUseSource
     TestSnapshotNativeLayout original
     TestSnapshotValidationReuse original
@@ -760,7 +763,7 @@ Public Function TestExcelCurrentResultsRefresh() As String
     Dim properties As Variant: properties = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionProperties")
     TestSnapshotCheck "excel.readableLoadCaseProperties", Not TestSnapshotCommonOnly(properties)
     Dim names As Variant: names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
-    Dim widths As Variant: widths = Array(26, 49, 72, 84)
+    Dim widths As Variant: widths = Array(33, 49, 72, 84)
     Dim before(0 To 3) As Variant, i As Long
     Dim plot As String: plot = TestSnapshotPlot()
     Dim exported As String: exported = Audit02ReadExportSnapshotForTests(ThisWorkbook)
@@ -1014,6 +1017,95 @@ Private Sub TestSnapshotSetting(ByVal key As String, ByVal value As String)
         If CStr(values(i, 1)) = field Then table.Cells(i, column).Value2 = value: Exit Sub
     Next i
     Err.Raise 5, , "Не найдена тестовая настройка: " & key
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет неизменённые исходные числа, включая малые моменты и ошибочную строку.
+Private Sub TestSnapshotOriginalLoadMemory()
+    Dim batch As CBatchSectionCalculator: Set batch = New CBatchSectionCalculator
+    batch.AddCombination "RAW", -123.456#, 1E-20, -2E-20, "PR1", "Исходные числа"
+    batch.AddInvalidCombination "BAD", "PR1", "Ошибка", "Некорректная нагрузка"
+    TestSnapshotCheck "loads.original.available", batch.OriginalLoadsAvailable(1)
+    TestSnapshotCheck "loads.original.force", TestSnapshotDouble(batch.OriginalN(1)) = TestSnapshotDouble(-123.456#)
+    TestSnapshotCheck "loads.original.tinyMx", TestSnapshotDouble(batch.OriginalMx(1)) = TestSnapshotDouble(1E-20)
+    TestSnapshotCheck "loads.original.tinyMy", TestSnapshotDouble(batch.OriginalMy(1)) = TestSnapshotDouble(-2E-20)
+    TestSnapshotCheck "loads.invalid.notInvented", Not batch.OriginalLoadsAvailable(2)
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает новые исходные числа с фактическим вводом, а рабочие — с таблицей устойчивости.
+' Строка worst обязана принадлежать тому же LC, что указан в самом верху снимка.
+Private Sub TestSnapshotSummaryLoads(ByVal snapshot As CCalculationSnapshot)
+    Dim data As Variant: data = snapshot.Table("Summary")
+    TestSnapshotCheck "loads.summary.width", UBound(data, 2) = 33
+    TestSnapshotCheck "loads.summary.title", CStr(data(6, 28)) = "Нагрузки в точке приложения"
+    TestSnapshotCheck "loads.summary.lineBreak", InStr(CStr(data(8, 31)), vbLf & "(если применимо)") > 0
+    TestSnapshotCheck "loads.summary.originalMxComment", CStr(data(11, 29)) = "Исходный изгибающий момент Mx"
+    TestSnapshotCheck "loads.summary.originalMyComment", CStr(data(11, 30)) = "Исходный изгибающий момент My"
+    TestSnapshotCheck "loads.summary.forceNoEta", InStr(CStr(data(11, 31)), ChrW$(&H3B7)) = 0
+    TestSnapshotCheck "loads.summary.momentsEta", InStr(CStr(data(11, 32)), ChrW$(&H3B7)) > 0
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
+    TestSnapshotCheck "loads.summary.forceUnit", CStr(data(10, 28)) = "N, " & units.OutputForceUnit
+    TestSnapshotCheck "loads.summary.momentUnit", CStr(data(10, 29)) = "Mx, " & units.OutputMomentUnit
+    Dim loads As Variant: loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Value2
+    Dim stable As Variant: stable = snapshot.Table("Stability.Data")
+    Dim row As Long, inputRow As Long, stableRow As Long, column As Long, expected As Double
+    For row = 13 To UBound(data, 1)
+        If Len(CStr(data(row, 1))) = 0 Then GoTo NextSummaryLoad
+        For inputRow = 2 To UBound(loads, 1)
+            If CStr(loads(inputRow, 1)) = CStr(data(row, 1)) Then Exit For
+        Next inputRow
+        If inputRow > UBound(loads, 1) Then Err.Raise 5, , "Ввод тестового сочетания не найден."
+        expected = units.InternalForceToOutput(units.InputForceToInternal(CDbl(loads(inputRow, 2))))
+        TestSnapshotCheck "loads.summary.originalN." & CStr(row), TestSnapshotDouble(data(row, 28)) = TestSnapshotDouble(expected)
+        expected = units.InternalMomentMxToOutput(units.InputMomentMxToInternal(CDbl(loads(inputRow, 3))))
+        TestSnapshotCheck "loads.summary.originalMx." & CStr(row), TestSnapshotDouble(data(row, 29)) = TestSnapshotDouble(expected)
+        expected = units.InternalMomentMyToOutput(units.InputMomentMyToInternal(CDbl(loads(inputRow, 4))))
+        TestSnapshotCheck "loads.summary.originalMy." & CStr(row), TestSnapshotDouble(data(row, 30)) = TestSnapshotDouble(expected)
+        For stableRow = 1 To UBound(stable, 1)
+            If CStr(stable(stableRow, 1)) = CStr(data(row, 1)) And CStr(stable(stableRow, 3)) = "OK" Then
+                For column = 0 To 2
+                    TestSnapshotCheck "loads.summary.afterStability." & CStr(row) & "." & CStr(column), TestSnapshotDouble(data(row, 31 + column)) = TestSnapshotDouble(stable(stableRow, 12 + column))
+                Next column
+            End If
+        Next stableRow
+        If CStr(data(row, 1)) = CStr(data(1, 1)) Then
+            For column = 28 To 33
+                TestSnapshotCheck "loads.summary.worst." & CStr(column), TestSnapshotDouble(data(12, column)) = TestSnapshotDouble(data(row, column))
+            Next column
+        End If
+NextSummaryLoad:
+    Next row
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Читает прежнюю 26-колоночную сводку без подстановки текущих нагрузок Config.
+Private Sub TestSnapshotLegacySummary(ByVal original As CCalculationSnapshot)
+    Dim sample As CCalculationSnapshot: Set sample = New CCalculationSnapshot
+    sample.RunID = original.RunID: sample.ElapsedSeconds = original.ElapsedSeconds
+    Dim key As Variant, saved As Variant, data() As Variant, row As Long, column As Long
+    For Each key In original.Keys()
+        saved = original.Table(CStr(key))
+        If CStr(key) = "Summary" Then
+            ReDim data(1 To UBound(saved, 1), 1 To 26)
+            For row = 1 To UBound(saved, 1)
+                For column = 1 To 26: data(row, column) = saved(row, column): Next column
+            Next row
+            sample.AddTable CStr(key), data
+        Else
+            sample.AddTable CStr(key), saved
+        End If
+    Next key
+    sample.Validate
+    Dim writer As CBatchResultWriter: Set writer = New CBatchResultWriter
+    writer.RestoreSummary ThisWorkbook, sample
+    Dim target As Object: Set target = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
+    TestSnapshotCheck "loads.legacy.explicitMissing", CStr(target.Cells(11, 28).Value2) = "Не сохранено в этом снимке"
+    TestSnapshotCheck "loads.legacy.noCurrentInput", Application.CountA(target.Offset(11, 27).Resize(31, 6)) = 0
+    saved = original.Table("Summary")
+    TestSnapshotCheck "loads.legacy.keepsWorst", CStr(target.Cells(1, 1).Value2) = CStr(saved(1, 1))
+    writer.RestoreSummary ThisWorkbook, original
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
