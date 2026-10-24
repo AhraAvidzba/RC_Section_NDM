@@ -1,0 +1,22 @@
+{
+  "Status": "RESOLVED_WITH_EXPECTATIONS_RETAINED",
+  "Issues": [
+    {
+      "Evidence": "NativePictures/NativeChecks.json",
+      "Cause": "Picture checker assumed exactly six Reformat paragraphs after editorial reduction to five.",
+      "Resolution": "Use current catalog paragraph count; NativePictures02 PASS."
+    },
+    {
+      "Evidence": "LayoutAcceptance.json",
+      "Cause": "Legacy scoped Print_Area was not recognized by XML metadata reader; one Results width entry was stale.",
+      "Resolution": "Recognize legacy print area and align metadata to existing workbook width; neither workbook print areas nor column widths changed. LayoutAcceptance02 PASS, 1207 checks."
+    },
+    {
+      "Evidence": "MultipleSnapshots03",
+      "Cause": "Additional CRACK_SP35 fixture overloaded the stock 300 mm circle and produced no crack interaction region.",
+      "Resolution": "Reduce only fixture Mx/My to 0.25 of original values, retaining actual nonempty-region assertion. MultipleSnapshots04 PASS, five files and twelve restores."
+    }
+  ],
+  "InitialEvidencePreserved": true,
+  "ProductionVBAChanges": 0
+}

@@ -570,6 +570,7 @@ try {
 
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
     Fit-SettingsInstructionRows $instructions
+    Set-HelpSectionOrderAndOutline $workbook -Expanded | Out-Null
     if (-not (Test-BuildExcelIdentity $excel $ownedExcelProcessId $ownedExcelStartTicks)) {
         throw 'Excel process identity changed before saving the new workbook.'
     }

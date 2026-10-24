@@ -1,0 +1,59 @@
+[
+  {
+    "ReplacedGeneric": "Plot.*Enabled",
+    "FocusedKeys": [
+      "Plot.NeutralLineEnabled",
+      "Plot.LoadApplicationPointEnabled",
+      "Plot.LegendEnabled"
+    ]
+  },
+  {
+    "ReplacedGeneric": "AutoCAD.Export.*Enabled",
+    "FocusedKeys": [
+      "AutoCAD.Export.NeutralLineEnabled",
+      "AutoCAD.Export.LoadPointEnabled"
+    ]
+  },
+  {
+    "ReplacedGeneric": "AutoCAD.Layer.*",
+    "FocusedKeys": [
+      "AutoCAD.Layer.ConcreteTension"
+    ]
+  },
+  {
+    "ReplacedGeneric": "AutoCAD.Color.*",
+    "FocusedKeys": [
+      "AutoCAD.Color.ConcreteTension"
+    ]
+  },
+  {
+    "ReplacedGeneric": "Stability.Mu*",
+    "FocusedKeys": [
+      "Stability.Mu1"
+    ]
+  },
+  {
+    "ReplacedGeneric": "Stability.ZeroMomentEccentricitySign*",
+    "FocusedKeys": [
+      "Stability.ZeroMomentEccentricitySign1"
+    ]
+  },
+  {
+    "ReplacedGeneric": "Stability.AccidentalEccentricityUser*",
+    "FocusedKeys": [
+      "Stability.AccidentalEccentricityUser1"
+    ]
+  },
+  {
+    "ReplacedGeneric": "Concrete.*",
+    "FocusedKeys": [
+      "Concrete.TwoLine.Eb1Red"
+    ]
+  },
+  {
+    "ReplacedGeneric": "Steel.*",
+    "FocusedKeys": [
+      "Steel.TwoLine.Es2"
+    ]
+  }
+]

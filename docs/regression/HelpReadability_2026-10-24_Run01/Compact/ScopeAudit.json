@@ -1,0 +1,1226 @@
+{
+  "Status": "PASS",
+  "Blocks": 151,
+  "ChangedBlocks": 109,
+  "ParagraphsBefore": 737,
+  "ParagraphsAfter": 604,
+  "HelpBefore": {
+    "Characters": 194731,
+    "NonemptyCells": 2161
+  },
+  "HelpAfter": {
+    "Characters": 178321,
+    "NonemptyCells": 1902
+  },
+  "RecipeGuideGrowth": 2.27,
+  "Records": [
+    {
+      "Key": "Units",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 9,
+      "AfterParagraphs": 9,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SignConvention",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 6,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "LoadCombinations",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 14,
+      "AfterParagraphs": 14,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "StabilityLoads",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 5,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SP35Table721",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 6,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "ConcreteMaterialParameters",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 7,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SteelMaterialParameters",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 6,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "CalculationProfiles",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 12,
+      "AfterParagraphs": 12,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "MaterialDiagramControlTables",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 4,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "PlotAnnotationSettings",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 7,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "DependentRebarRows",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 8,
+      "AfterParagraphs": 8,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "CircleGeometry",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 6,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "PointedSectionGeometry",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 5,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "HollowRectangleGeometry",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 5,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "RectanglesGeometry",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 6,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "General.ExecutionReportEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 6,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "General.NonCriticalMessagesEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Results.SnapshotStorage",
+      "Kind": "Setting",
+      "BeforeParagraphs": 9,
+      "AfterParagraphs": 7,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Results.SnapshotName",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "General.WorstCombinationCriterion",
+      "Kind": "Setting",
+      "BeforeParagraphs": 8,
+      "AfterParagraphs": 7,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "General.PlateauSlopeFactor",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "General.DiagramExtension",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Calculation.ZeroMomentPerDepth",
+      "Kind": "Setting",
+      "BeforeParagraphs": 8,
+      "AfterParagraphs": 7,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Geometry.Source",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 6,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Geometry.Type",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Mesh.StepMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 6,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Mesh.StepX",
+      "Kind": "Setting",
+      "BeforeParagraphs": 8,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Mesh.StepY",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Mesh.BoundarySubdivisions",
+      "Kind": "Setting",
+      "BeforeParagraphs": 9,
+      "AfterParagraphs": 8,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Load.ReferenceOffsetX",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 6,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Load.ReferenceOffsetY",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Solver.Method",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Solver.MaxIterations",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Solver.LoadSteps",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Solver.ToleranceN",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Solver.ToleranceMx",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Solver.ToleranceMy",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Solver.SecantMaxRestarts",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.SolutionStrategy",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.SolverMaxIterations",
+      "Kind": "Setting",
+      "BeforeParagraphs": 8,
+      "AfterParagraphs": 7,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.ToleranceStrain",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.MaxLambda",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.SearchMethod",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.InitialLambda",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.ToleranceLambda",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.MaxRetries",
+      "Kind": "Setting",
+      "BeforeParagraphs": 10,
+      "AfterParagraphs": 9,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Capacity.BaseLoadSteps",
+      "Kind": "Setting",
+      "BeforeParagraphs": 10,
+      "AfterParagraphs": 9,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.Code",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.ElementLength",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 6,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.Mu1",
+      "Kind": "Setting",
+      "BeforeParagraphs": 8,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.Mu2",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.SystemType",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign1",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign2",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser1",
+      "Kind": "Setting",
+      "BeforeParagraphs": 8,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser2",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityPlanes",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.PhiLMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 9,
+      "AfterParagraphs": 8,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.SP63.Ks",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMin",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMax",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.SP35.PhiP",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Stability.SP35.NOverNcrLimit",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.Code",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.Allowable",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 6,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.InitiationSolutionStrategy",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.ToleranceLambda",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.TensionZoneMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.CoverDistanceMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.Phi1",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.Phi2",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.Phi3Mode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.Phi3",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.PsiMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.SigmaSCrcAveragingMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.PsiS",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.SP35.GroupGapTolerance",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.SP35.RowTolerance",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.SP35.NeighborRatioLimit",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.SP35.RadiusDiameterMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.SP35.InteractionRadiusMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "SLS.Crack.SP35.RebarProfile",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Common.ConcreteLayer",
+      "Kind": "Setting",
+      "BeforeParagraphs": 8,
+      "AfterParagraphs": 7,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Common.RebarLayer",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Common.SectionContourLayer",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Common.OpeningContourLayer",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Import.MinArea",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 6,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.CombinationID",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 6,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.NeutralLineEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.PrincipalAxesMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 6,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.LoadPointEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.ContourEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.ContourFormat",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.ExportCrackInteractionContour",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.LabelMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 5,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Export.CrackInteractionLayer",
+      "Kind": "Setting",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 2,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteTension",
+      "Kind": "Setting",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteCompression",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarTension",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarCompression",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteTension",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteCompression",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Color.RebarTension",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Color.RebarCompression",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "AutoCAD.Color.Neutral",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.Enabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.AutoUpdateAfterCalculation",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.LoadCase",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.ResultGradient",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.ResultLabelsEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.ResultLabelSpacing",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.NeutralLineEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.PrincipalAxesMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.LoadApplicationPointEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.AxisLabelsEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.AxisLabelsFontSize",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.ContourEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.LegendEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.LegendMode",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.Color.RebarCompression",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 5,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.Color.RebarTension",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.Color.ConcreteCompression",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Plot.Color.ConcreteTension",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 1,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Enabled",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Placement",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Offset",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 7,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "LineEnabled",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "LineWeight",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "ExtensionLineWeight",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "TextUnits",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 7,
+      "AfterParagraphs": 7,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "TextHeight",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 6,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "TextGap",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 5,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "ArrowType",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "ArrowSize",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Color",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "ExtensionLineColor",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 3,
+      "AfterParagraphs": 3,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "ContourLineWeight",
+      "Kind": "TableGuide",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 2,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Concrete.R.ULS(I)",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 4,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Concrete.R.SLS(II)",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 4,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Concrete.Rb.mc2",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 5,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Concrete.E",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 4,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Concrete.TwoLine.Eb1Red",
+      "Kind": "Setting",
+      "BeforeParagraphs": 5,
+      "AfterParagraphs": 4,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Concrete.ThreeLine.Eb0",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 2,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Concrete.TwoThreeLine.Eb2",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 2,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Steel.R.ULS(I)",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 4,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Steel.R.SLS(II)",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 4,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Steel.E",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 4,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Steel.TwoLine.Es2",
+      "Kind": "Setting",
+      "BeforeParagraphs": 4,
+      "AfterParagraphs": 3,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "Steel.ThreeLine.Es2",
+      "Kind": "Setting",
+      "BeforeParagraphs": 2,
+      "AfterParagraphs": 2,
+      "Changed": false,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    },
+    {
+      "Key": "General.ReformatResultsEnabled",
+      "Kind": "Setting",
+      "BeforeParagraphs": 6,
+      "AfterParagraphs": 5,
+      "Changed": true,
+      "ScopeReviewed": "Own parameter, its applicability, permitted input and direct dependencies; no unrelated setting descriptions"
+    }
+  ]
+}

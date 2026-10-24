@@ -1,0 +1,18 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "505E324FB927D8F6BB9FF764B8DBAB811B66CB63DE99E4666E8DAC53D6F9C969",
+  "TargetSHA256": "756C2CD9936D4304F37EBD364DE827999993F98F85D94DBD4C969571508F6042",
+  "ChangedParts": [
+    "xl/workbook.xml",
+    "xl/worksheets/sheet1.xml",
+    "xl/worksheets/sheet2.xml",
+    "xl/worksheets/sheet3.xml",
+    "xl/styles.xml",
+    "xl/drawings/drawing2.xml"
+  ],
+  "HelpLinks": 150,
+  "Pictures": 76,
+  "VBAByteIdentical": true,
+  "MediaByteIdentical": true,
+  "OtherPartsByteIdentical": true
+}

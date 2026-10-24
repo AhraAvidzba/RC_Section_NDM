@@ -1,0 +1,19 @@
+{
+  "Source": "docs/regression/FullOnOff_2026-10-24_CompleteSnapshot_Run01/Focused/PointedSection_Generated_Yes.txt",
+  "Line": 13,
+  "Section": "PointedSection",
+  "Case": "axialSmall-1",
+  "DiagramExtension": "Yes",
+  "ElapsedSeconds": 3.841796875,
+  "ConcreteElements": 388,
+  "Rebars": 26,
+  "MeasurementIncludes": [
+    "Geometry generation",
+    "Calculation",
+    "Results output",
+    "Scheme update"
+  ],
+  "CalculateButtonOnlySeparatelyMeasured": false,
+  "HistoricalWorkbookSHA256": "00C2165E937D631DE9F2C1C4760DDB23C06BBC694FF174475BB9B7A060F538E6",
+  "NoRerunForTimingAnswer": true
+}

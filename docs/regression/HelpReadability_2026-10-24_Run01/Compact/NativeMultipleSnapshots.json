@@ -1,0 +1,201 @@
+﻿{
+    "Status":  "NATIVE_PASS_PENDING_INDEPENDENT_SHEET_REVIEW",
+    "SourceSHA256":  "756C2CD9936D4304F37EBD364DE827999993F98F85D94DBD4C969571508F6042",
+    "ImportedVBA":  0,
+    "Cases":  [
+                  {
+                      "Name":  "Круг",
+                      "Shape":  "Circle",
+                      "Combinations":  1,
+                      "Seconds":  0.75509739999999992,
+                      "DataHash":  "9FC3368F576C53BA1B7D0D94507156CC00F6859563D826B4B1E3F669C00017AD",
+                      "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                      "FileSHA256":  "7F94E6CACBC8CB8BAA37054DB807FB01C9951CAB6F71D82C21334F4E5DEAB5E4",
+                      "ExpectedBook":  "Круг_Expected.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: Круг_PERF_01\r\n\r\nВремя расчёта: 0.72 с.",
+                      "Formation":  "Сечение сформировано и сохранено в Results.\r\n\r\nБетонных элементов: 136.\r\nСтержней арматуры: 8.\r\n\r\nВремя формирования сечения: 3.02 с."
+                  },
+                  {
+                      "Name":  "Клин",
+                      "Shape":  "PointedSection",
+                      "Combinations":  2,
+                      "Seconds":  1.0333558999999999,
+                      "DataHash":  "E7D59D236A3A11C069730009C353C0A7C3F9FCE2503A02DDBC725AE47196D22D",
+                      "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                      "FileSHA256":  "1391D0D614A6AE57C5AE81B04288B828412836A868E2CA386A4C389083FB5CB9",
+                      "ExpectedBook":  "Клин_Expected.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 2. Определяющее сочетание: Клин_PERF_02\r\n\r\nВремя расчёта: 1.02 с.",
+                      "Formation":  "Сечение сформировано и сохранено в Results.\r\n\r\nБетонных элементов: 388.\r\nСтержней арматуры: 26.\r\n\r\nВремя формирования сечения: 0.48 с."
+                  },
+                  {
+                      "Name":  "Полый",
+                      "Shape":  "HollowRectangle",
+                      "Combinations":  3,
+                      "Seconds":  1.0045819999999999,
+                      "DataHash":  "45442E4BEA39E81D55D1E9CFB2112359B303B1AFADEF73FF422378FBABA6CCBD",
+                      "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                      "FileSHA256":  "4D926770332674770C36DFFC67B37BB50DD886BB45CED5783CF422962BE41760",
+                      "ExpectedBook":  "Полый_Expected.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 3. Определяющее сочетание: Полый_PERF_03\r\n\r\nВремя расчёта: 0.95 с.",
+                      "Formation":  "Сечение сформировано и сохранено в Results.\r\n\r\nБетонных элементов: 252.\r\nСтержней арматуры: 56.\r\n\r\nВремя формирования сечения: 0.45 с."
+                  },
+                  {
+                      "Name":  "Прямоугольники",
+                      "Shape":  "Rectangles",
+                      "Combinations":  4,
+                      "Seconds":  0.742761,
+                      "DataHash":  "ECBDAAEA887230F70D9BF60E06981676B78902FD80EC4DAED140565EAD14037D",
+                      "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                      "FileSHA256":  "BD70AB1373F0DE117421685D45DEEF09BD47DA498956F20A72B464E8F41E1CF0",
+                      "ExpectedBook":  "Прямоугольники_Expected.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 4. Определяющее сочетание: Прямоугольники_PERF_04\r\n\r\nВремя расчёта: 0.70 с.",
+                      "Formation":  "Сечение сформировано и сохранено в Results.\r\n\r\nБетонных элементов: 84.\r\nСтержней арматуры: 28.\r\n\r\nВремя формирования сечения: 0.24 с."
+                  },
+                  {
+                      "Name":  "Круг_трещины",
+                      "Shape":  "Circle",
+                      "Combinations":  2,
+                      "Seconds":  0.6939025,
+                      "DataHash":  "2716E446F25E844166C6E4F89E46B2309FA191944A3257647FFF6DB19F4FE1EE",
+                      "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                      "FileSHA256":  "878EA143E9C659FE829002602FD6A2B0DF28FBD7F8C78848C8B5F57190AC7BBD",
+                      "ExpectedBook":  "Круг_трещины_Expected.xlsm",
+                      "Message":  "Расчет завершен. Обработано сочетаний: 2. Определяющее сочетание: Круг_трещины_PERF_01\r\n\r\nВремя расчёта: 0.68 с.",
+                      "Formation":  "Сечение сформировано и сохранено в Results.\r\n\r\nБетонных элементов: 136.\r\nСтержней арматуры: 8.\r\n\r\nВремя формирования сечения: 0.23 с."
+                  }
+              ],
+    "Restores":  [
+                     {
+                         "Name":  "Клин",
+                         "Before":  "Restore1_Before.xlsm",
+                         "After":  "Restore1_After.xlsm",
+                         "ExpectedBook":  "Клин_Expected.xlsm",
+                         "DataHash":  "E7D59D236A3A11C069730009C353C0A7C3F9FCE2503A02DDBC725AE47196D22D",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true
+                     },
+                     {
+                         "Name":  "Круг_трещины",
+                         "Before":  "Restore2_Before.xlsm",
+                         "After":  "Restore2_After.xlsm",
+                         "ExpectedBook":  "Круг_трещины_Expected.xlsm",
+                         "DataHash":  "2716E446F25E844166C6E4F89E46B2309FA191944A3257647FFF6DB19F4FE1EE",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true
+                     },
+                     {
+                         "Name":  "Круг",
+                         "Before":  "Restore3_Before.xlsm",
+                         "After":  "Restore3_After.xlsm",
+                         "ExpectedBook":  "Круг_Expected.xlsm",
+                         "DataHash":  "9FC3368F576C53BA1B7D0D94507156CC00F6859563D826B4B1E3F669C00017AD",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true
+                     },
+                     {
+                         "Name":  "Прямоугольники",
+                         "Before":  "Restore4_Before.xlsm",
+                         "After":  "Restore4_After.xlsm",
+                         "ExpectedBook":  "Прямоугольники_Expected.xlsm",
+                         "DataHash":  "ECBDAAEA887230F70D9BF60E06981676B78902FD80EC4DAED140565EAD14037D",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true
+                     },
+                     {
+                         "Name":  "Полый",
+                         "Before":  "Restore5_Before.xlsm",
+                         "After":  "Restore5_After.xlsm",
+                         "ExpectedBook":  "Полый_Expected.xlsm",
+                         "DataHash":  "45442E4BEA39E81D55D1E9CFB2112359B303B1AFADEF73FF422378FBABA6CCBD",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true
+                     },
+                     {
+                         "Name":  "Круг_трещины",
+                         "Before":  "Restore6_Before.xlsm",
+                         "After":  "Restore6_After.xlsm",
+                         "ExpectedBook":  "Круг_трещины_Expected.xlsm",
+                         "DataHash":  "2716E446F25E844166C6E4F89E46B2309FA191944A3257647FFF6DB19F4FE1EE",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true
+                     },
+                     {
+                         "Name":  "Клин",
+                         "Before":  "Restore7_Before.xlsm",
+                         "After":  "Restore7_After.xlsm",
+                         "ExpectedBook":  "Клин_Expected.xlsm",
+                         "DataHash":  "E7D59D236A3A11C069730009C353C0A7C3F9FCE2503A02DDBC725AE47196D22D",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true
+                     },
+                     {
+                         "Name":  "Круг",
+                         "Before":  "Restore8_Before.xlsm",
+                         "After":  "Restore8_After.xlsm",
+                         "ExpectedBook":  "Круг_Expected.xlsm",
+                         "DataHash":  "9FC3368F576C53BA1B7D0D94507156CC00F6859563D826B4B1E3F669C00017AD",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true,
+                         "AfterReopen":  true,
+                         "ButtonMacro":  "UpdateSectionPlot"
+                     },
+                     {
+                         "Name":  "Клин",
+                         "Before":  "Restore9_Before.xlsm",
+                         "After":  "Restore9_After.xlsm",
+                         "ExpectedBook":  "Клин_Expected.xlsm",
+                         "DataHash":  "E7D59D236A3A11C069730009C353C0A7C3F9FCE2503A02DDBC725AE47196D22D",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true,
+                         "AfterReopen":  true,
+                         "ButtonMacro":  "UpdateSectionPlot"
+                     },
+                     {
+                         "Name":  "Полый",
+                         "Before":  "Restore10_Before.xlsm",
+                         "After":  "Restore10_After.xlsm",
+                         "ExpectedBook":  "Полый_Expected.xlsm",
+                         "DataHash":  "45442E4BEA39E81D55D1E9CFB2112359B303B1AFADEF73FF422378FBABA6CCBD",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true,
+                         "AfterReopen":  true,
+                         "ButtonMacro":  "UpdateSectionPlot"
+                     },
+                     {
+                         "Name":  "Прямоугольники",
+                         "Before":  "Restore11_Before.xlsm",
+                         "After":  "Restore11_After.xlsm",
+                         "ExpectedBook":  "Прямоугольники_Expected.xlsm",
+                         "DataHash":  "ECBDAAEA887230F70D9BF60E06981676B78902FD80EC4DAED140565EAD14037D",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true,
+                         "AfterReopen":  true,
+                         "ButtonMacro":  "UpdateSectionPlot"
+                     },
+                     {
+                         "Name":  "Круг_трещины",
+                         "Before":  "Restore12_Before.xlsm",
+                         "After":  "Restore12_After.xlsm",
+                         "ExpectedBook":  "Круг_трещины_Expected.xlsm",
+                         "DataHash":  "2716E446F25E844166C6E4F89E46B2309FA191944A3257647FFF6DB19F4FE1EE",
+                         "ChartHash":  "77B579D18D2E95611DE2B07CF32E15E988C790F629E6651FC951B3F81B0266A3",
+                         "SolverCalls":  0,
+                         "ReadContextReleased":  true,
+                         "AfterReopen":  true,
+                         "ButtonMacro":  "UpdateSectionPlot"
+                     }
+                 ],
+    "OwnedPID":  127696,
+    "StartTicks":  "639284636618352388"
+}

@@ -78,15 +78,17 @@ try {
         foreach($picture in $expected){if([Math]::Abs($sheet.Shapes.Item($picture.Name).Height-$picture.Height) -gt 0.4){throw 'Outline toggle damaged Help picture.'}}
         $setting=$sheet.Cells.Find('General.ReformatResultsEnabled',$sheet.Cells.Item(1,1),-4163,1)
         $first=[int]$setting.Row
-        $sheet.Range("A$($first+1):F$($first+6)").EntireRow.AutoFit()
+        $entry=Get-SettingsInstructionCatalog | Where-Object Key -eq 'General.ReformatResultsEnabled'
+        $paragraphCount=@($entry.Lines | Where-Object {-not [string]::IsNullOrWhiteSpace([string]$_)}).Count
+        $sheet.Range("A$($first+1):F$($first+$paragraphCount)").EntireRow.AutoFit()
         if($setting.MergeArea.Address() -cne ('$A$'+$first+':$F$'+$first)){throw 'Setting heading is not merged A:F.'}
         $heights=@()
-        for($r=$first+1;$r -le $first+6;$r++){
+        for($r=$first+1;$r -le $first+$paragraphCount;$r++){
             if([string]$sheet.Cells.Item($r,1).Value2 -cne [string]($r-$first) -or $sheet.Cells.Item($r,2).MergeCells -or $sheet.Cells.Item($r,2).Font.Size -ne 10){throw 'Setting body differs from common numbered layout.'}
             $heights+=,[ordered]@{Row=$r;Height=[double]$sheet.Rows.Item($r).RowHeight}
         }
         foreach($link in $sheet.Hyperlinks){if([string]$link.SubAddress -match "^'?Config'?!"){throw 'Reverse Help-to-Config link remains.'}}
-        Export-TestHelpRange $sheet $temp $first ($first+6) 'ReformatSetting'
+        Export-TestHelpRange $sheet $temp $first ($first+$paragraphCount) 'ReformatSetting'
         Export-TestHelpRange $sheet $temp 96 103 'DirectFormulas'
         Export-TestHelpRange $sheet $temp 183 188 'CrackFraction'
         Export-TestHelpRange $sheet $temp 305 309 'SP35Diagram'

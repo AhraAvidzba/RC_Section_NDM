@@ -1,0 +1,83 @@
+{
+  "Status": "PASS",
+  "MainTitles": [
+    {
+      "Title": "Подготовка геометрии в AutoCAD и импорт",
+      "Row": 1,
+      "Height": 26,
+      "Font": "Arial",
+      "Size": 16,
+      "Color": 15921906,
+      "Outline": 1
+    },
+    {
+      "Title": "Поиск НДС текущего сочетания",
+      "Row": 86,
+      "Height": 26,
+      "Font": "Arial",
+      "Size": 16,
+      "Color": 15921906,
+      "Outline": 1
+    },
+    {
+      "Title": "Поиск предельной несущей способности",
+      "Row": 130,
+      "Height": 26,
+      "Font": "Arial",
+      "Size": 16,
+      "Color": 15921906,
+      "Outline": 1
+    },
+    {
+      "Title": "Расчет ширины раскрытия нормальных трещин",
+      "Row": 175,
+      "Height": 26,
+      "Font": "Arial",
+      "Size": 16,
+      "Color": 15921906,
+      "Outline": 1
+    },
+    {
+      "Title": "Расчет продольного изгиба и устойчивости",
+      "Row": 397,
+      "Height": 26,
+      "Font": "Arial",
+      "Size": 16,
+      "Color": 15921906,
+      "Outline": 1
+    },
+    {
+      "Title": "Справка по результатам расчета листа Results",
+      "Row": 495,
+      "Height": 26,
+      "Font": "Arial",
+      "Size": 16,
+      "Color": 15921906,
+      "Outline": 1
+    },
+    {
+      "Title": "Добавление нового типа сечения",
+      "Row": 554,
+      "Height": 26,
+      "Font": "Arial",
+      "Size": 16,
+      "Color": 15921906,
+      "Outline": 1
+    },
+    {
+      "Title": "Справка по настройкам Config и листа «Сечения»",
+      "Row": 581,
+      "Height": 26,
+      "Font": "Arial",
+      "Size": 16,
+      "Color": 15921906,
+      "Outline": 1
+    }
+  ],
+  "GuideName": "$A$554:$F$580",
+  "GuideRows": 27,
+  "BodySHA256": "5c88216b06a3cb21184e43dceb624706d3a61710efc512f700fe8d41b7c703a0",
+  "GeneratedTextSurvivedApprovedLayout": true,
+  "Pictures": 76,
+  "ImportedVBA": 0
+}

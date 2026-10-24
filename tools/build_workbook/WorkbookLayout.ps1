@@ -49,7 +49,7 @@ function Get-WorkbookLayoutXmlSheets {
         $areas=@{}
         $orderedSheets=@($wb.workbook.sheets.sheet)
         foreach($name in $wb.workbook.definedNames.definedName){
-            if($name.name -ne '_xlnm.Print_Area'){continue}
+            if($name.name -notin @('_xlnm.Print_Area','Print_Area')){continue} # Учитываем и прежнюю короткую запись локального имени области печати.
             $sheetName=[string]$orderedSheets[[int]$name.localSheetId].name
             $text=[string]$name.InnerText
             $text=$text.Replace("'"+$sheetName.Replace("'","''")+"'!",'').Replace($sheetName+'!','')
@@ -121,6 +121,9 @@ function Move-WorkbookLayoutTables {
     $moves=New-Object 'System.Collections.Generic.List[object]'
     foreach($item in $Layout.Names){
         if(-not $item.Sheet){continue}
+        # Справка растёт вместе с текстом. Её блоки перемещаются целыми строками
+        # в HelpOutline.ps1; старые координаты ячеек разрушили бы текст и outline.
+        if($item.Sheet -eq 'Справка'){continue}
         $range=$null;try{$range=$Workbook.Names.Item($item.Name).RefersToRange}catch{throw ('В сборке отсутствует именованный диапазон '+$item.Name)}
         if($range.Worksheet.Name -eq $item.Sheet -and $range.Address() -eq $item.Address){continue}
         if($range.Rows.Count -ne $item.Rows -or $range.Columns.Count -ne $item.Columns){throw ('Изменилась структура '+$item.Name+'; обновите описание расположения книги.')}
@@ -171,14 +174,17 @@ function Apply-WorkbookLayout {
         $previous=$sheet;$sheet.Visible=[int]$item.Visible;$sheet.StandardWidth=[double]$item.StandardWidth
         if($item.Name -eq 'Справка'){$sheet.Outline.ShowLevels(8) | Out-Null} # Сбрасываем и признаки свёрнутых групп, а не только Hidden отдельных строк.
         $sheet.Columns.ColumnWidth=[double]$item.StandardWidth;$sheet.Columns.Hidden=$false
-        $sheet.Rows.RowHeight=[double]$item.StandardHeight;$sheet.Rows.Hidden=$false
+        if($item.Name -ne 'Справка'){$sheet.Rows.RowHeight=[double]$item.StandardHeight}
+        $sheet.Rows.Hidden=$false
         foreach($column in $item.Columns){$range=$sheet.Range($sheet.Columns.Item($column.First),$sheet.Columns.Item($column.Last));$range.ColumnWidth=[double]$column.Width;$range.EntireColumn.Hidden=[bool]$column.Hidden}
         foreach($row in $item.Rows){
+            if($item.Name -eq 'Справка'){continue} # Высоты уже рассчитаны по текущему тексту, а не по прежним номерам строк.
             $sheet.Rows.Item($row.Row).RowHeight=[double]$row.Height
             if($item.Name -ne 'Справка'){$sheet.Rows.Item($row.Row).Hidden=[bool]$row.Hidden}
         }
         $sheet.PageSetup.PrintArea=[string]$item.PrintArea
         foreach($object in $item.Objects){
+            if($item.Name -eq 'Справка'){continue} # Формулы привязаны к смысловым строкам действующего генератора.
             $shape=$null;try{$shape=$sheet.Shapes.Item($object.Name)}catch{}
             if($null -eq $shape -and $object.Type -eq 3){
                 # Новый шаблон не содержит старых результатов; создаём пустой контейнер схемы.
@@ -193,6 +199,7 @@ function Apply-WorkbookLayout {
         # Справку сохраняем раскрытой, с ненулевыми размерами рисунков. Штатное сворачивание выполняет Workbook_Open, без изменения макета.
     }
     foreach($item in $Layout.Names){
+        if($item.Sheet -eq 'Справка'){continue}
         $name=$Workbook.Names.Item($item.Name)
         if($item.Sheet){$range=$name.RefersToRange;if($range.Worksheet.Name -ne $item.Sheet -or $range.Address() -ne $item.Address){throw ('Не восстановлен диапазон '+$item.Name)}}
         elseif([string]$name.RefersTo -ne [string]$item.RefersTo){$name.RefersTo=[string]$item.RefersTo}

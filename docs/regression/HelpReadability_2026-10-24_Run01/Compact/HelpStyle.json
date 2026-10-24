@@ -1,0 +1,58 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "756C2CD9936D4304F37EBD364DE827999993F98F85D94DBD4C969571508F6042",
+  "ListSeparator": ";",
+  "Validation": [
+    {
+      "Value": "Auto 0.05",
+      "Accepted": true
+    },
+    {
+      "Value": "Auto 0.1",
+      "Accepted": true
+    },
+    {
+      "Value": "Auto 0.2",
+      "Accepted": true
+    },
+    {
+      "Value": "User",
+      "Accepted": true
+    }
+  ],
+  "InvalidValuesRejected": 2,
+  "RightBorder": "dotted/black/thin",
+  "LinkFontsChecked": 136,
+  "HelpBlocks": 151,
+  "NumberedParagraphs": 604,
+  "HelpPictures": 76,
+  "OutlineCycles": 8,
+  "Navigation": [
+    {
+      "Key": "General.ReformatResultsEnabled",
+      "ScrollRow": 1506,
+      "WholeSectionExpanded": true
+    },
+    {
+      "Key": "Mesh.StepMode",
+      "ScrollRow": 818,
+      "WholeSectionExpanded": true
+    },
+    {
+      "Key": "Results.SnapshotStorage",
+      "ScrollRow": 757,
+      "WholeSectionExpanded": true
+    },
+    {
+      "Key": "Results.SnapshotName",
+      "ScrollRow": 766,
+      "WholeSectionExpanded": true
+    }
+  ],
+  "UpdateButtonCaption": "Обновить схему и результаты",
+  "FreshResults": true,
+  "SavedResultsAllowed": false,
+  "VBACompiled": true,
+  "OwnedPID": 72852,
+  "StartTicks": "639284622767334271"
+}

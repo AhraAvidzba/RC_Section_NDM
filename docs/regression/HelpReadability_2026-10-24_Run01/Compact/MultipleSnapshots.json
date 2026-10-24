@@ -1,0 +1,215 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "756C2CD9936D4304F37EBD364DE827999993F98F85D94DBD4C969571508F6042",
+  "Snapshots": [
+    {
+      "Name": "Круг",
+      "Tables": 16,
+      "Cells": 17143
+    },
+    {
+      "Name": "Клин",
+      "Tables": 16,
+      "Cells": 46810
+    },
+    {
+      "Name": "Полый",
+      "Tables": 16,
+      "Cells": 49242
+    },
+    {
+      "Name": "Прямоугольники",
+      "Tables": 16,
+      "Cells": 29267
+    },
+    {
+      "Name": "Круг_трещины",
+      "Tables": 16,
+      "Cells": 23246
+    }
+  ],
+  "Restores": [
+    {
+      "Name": "Клин",
+      "ResultsNonemptyCells": 8294,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 486,
+      "ActualChartSHA256": "A7DB02FB70320D9F67F2C076C1FE08D67434FE65A465B3E8AE6D19C6B9027234",
+      "AfterReopenButton": false,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Круг_трещины",
+      "ResultsNonemptyCells": 3967,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 194,
+      "ActualChartSHA256": "23113BAD8E3763B3F189A187270724660E5E9B4752791BF07DAFB823FFCFC782",
+      "AfterReopenButton": false,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Круг",
+      "ResultsNonemptyCells": 3935,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 193,
+      "ActualChartSHA256": "C5D6C7F1F15A4F27213621A437B268C15577C7AACD23E09535566B59623715B6",
+      "AfterReopenButton": false,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Прямоугольники",
+      "ResultsNonemptyCells": 4055,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 194,
+      "ActualChartSHA256": "2C709D0F4AF4F4F3679E3169B5085CBD54FFA9E682B6B9269258BCBA94BA1EC7",
+      "AfterReopenButton": false,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Полый",
+      "ResultsNonemptyCells": 6957,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 398,
+      "ActualChartSHA256": "4C73C2239F6540822E9B3C7BFAF7EAE8D988FCCCA75B6FFC565293745D10757B",
+      "AfterReopenButton": false,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Круг_трещины",
+      "ResultsNonemptyCells": 3967,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 194,
+      "ActualChartSHA256": "23113BAD8E3763B3F189A187270724660E5E9B4752791BF07DAFB823FFCFC782",
+      "AfterReopenButton": false,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Клин",
+      "ResultsNonemptyCells": 8294,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 486,
+      "ActualChartSHA256": "A7DB02FB70320D9F67F2C076C1FE08D67434FE65A465B3E8AE6D19C6B9027234",
+      "AfterReopenButton": false,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Круг",
+      "ResultsNonemptyCells": 3935,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 193,
+      "ActualChartSHA256": "C5D6C7F1F15A4F27213621A437B268C15577C7AACD23E09535566B59623715B6",
+      "AfterReopenButton": true,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Клин",
+      "ResultsNonemptyCells": 8294,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 486,
+      "ActualChartSHA256": "A7DB02FB70320D9F67F2C076C1FE08D67434FE65A465B3E8AE6D19C6B9027234",
+      "AfterReopenButton": true,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Полый",
+      "ResultsNonemptyCells": 6957,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 398,
+      "ActualChartSHA256": "4C73C2239F6540822E9B3C7BFAF7EAE8D988FCCCA75B6FFC565293745D10757B",
+      "AfterReopenButton": true,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Прямоугольники",
+      "ResultsNonemptyCells": 4055,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 194,
+      "ActualChartSHA256": "2C709D0F4AF4F4F3679E3169B5085CBD54FFA9E682B6B9269258BCBA94BA1EC7",
+      "AfterReopenButton": true,
+      "SolverCalls": 0
+    },
+    {
+      "Name": "Круг_трещины",
+      "ResultsNonemptyCells": 3967,
+      "OtherSheetsUnchanged": [
+        "Config",
+        "Расчет",
+        "Справка",
+        "Сечения"
+      ],
+      "ActualChartShapesExact": true,
+      "ActualChartShapeCount": 194,
+      "ActualChartSHA256": "23113BAD8E3763B3F189A187270724660E5E9B4752791BF07DAFB823FFCFC782",
+      "AfterReopenButton": true,
+      "SolverCalls": 0
+    }
+  ],
+  "InputValuesFormulasStylesDimensionsValidationUnchanged": true,
+  "VBAImports": 0
+}

@@ -120,8 +120,30 @@ function Resize-HelpEmptyRows($Workbook,$Sheet,[int]$First,[int]$Count,[bool]$In
     }
 }
 
-# Создаёт одну outline-группу для каждого раздела; Config последний и раскрыт.
-function Set-HelpSectionOrderAndOutline($Workbook) {
+# Оформляет главные заголовки одинаково и подбирает высоту без AutoFit merged-ячеек.
+# Рисунки сохраняют свою строку и размер при изменении высоты предшествующих строк.
+function Set-HelpMainTitlePresentation($Sheet,$Rows) {
+    $pictures=@($Sheet.Shapes | ForEach-Object {
+        [pscustomobject]@{Shape=$_;Row=[int]$_.TopLeftCell.Row;Offset=[double]$_.Top-[double]$Sheet.Rows.Item($_.TopLeftCell.Row).Top;
+            Left=[double]$_.Left;Width=[double]$_.Width;Height=[double]$_.Height}
+    })
+    foreach($title in $script:HelpMainTitles){
+        $row=[int]$Rows[$title];$band=$Sheet.Range("A${row}:F${row}")
+        $band.Merge() | Out-Null
+        $band.Font.Name='Arial';$band.Font.Size=16;$band.Font.Bold=$true;$band.Font.Color=0
+        $band.Interior.Color=15921906;$band.WrapText=$false
+        $band.HorizontalAlignment=-4131;$band.VerticalAlignment=-4108
+        $band.EntireRow.RowHeight=26
+    }
+    foreach($picture in $pictures){
+        $picture.Shape.Top=[double]$Sheet.Rows.Item($picture.Row).Top+$picture.Offset
+        $picture.Shape.Left=$picture.Left;$picture.Shape.Width=$picture.Width;$picture.Shape.Height=$picture.Height
+    }
+}
+
+# Создаёт одну outline-группу для каждого раздела; Config последний.
+# При сборке сохраняет раскрытые строки, чтобы Excel не сжал рисунки формул.
+function Set-HelpSectionOrderAndOutline($Workbook,[switch]$Expanded) {
     $script:HelpRowMoves=@()
     $sheet=$Workbook.Worksheets.Item('Справка')
     $sheet.Rows.Hidden=$false
@@ -153,6 +175,7 @@ function Set-HelpSectionOrderAndOutline($Workbook) {
         if ($ordered[$i] -le $ordered[$i-1]) {throw 'Help sections have an unexpected order.'}
     }
     $last=Get-HelpContentLastRow $sheet
+    Set-HelpMainTitlePresentation $sheet $rows
     $sheet.Cells.ClearOutline() | Out-Null
     $sheet.Rows.Hidden=$false;$sheet.Outline.SummaryRow=0
     for ($i=0;$i -lt $ordered.Count;$i++) {
@@ -160,8 +183,10 @@ function Set-HelpSectionOrderAndOutline($Workbook) {
         if ($i+1 -lt $ordered.Count) {$end=$ordered[$i+1]-1}
         if ($end -gt $ordered[$i]) {$sheet.Rows.Item(($ordered[$i]+1).ToString()+':'+$end).Group() | Out-Null}
     }
-    $sheet.Outline.ShowLevels(1) | Out-Null
-    $sheet.Rows.Item([int]$rows[$configTitle]).ShowDetail=$true
+    if(-not $Expanded){
+        $sheet.Outline.ShowLevels(1) | Out-Null
+        $sheet.Rows.Item([int]$rows[$configTitle]).ShowDetail=$true
+    }
     $sheet.Range($sheet.Cells.Item(1,1),$sheet.Cells.Item($last,6)).Borders.Item(10).LineStyle=1
     return [ordered]@{Titles=$script:HelpMainTitles;Rows=$ordered;LastRow=$last;DefaultExpanded=$configTitle;Groups=8;Moves=$script:HelpRowMoves}
 }

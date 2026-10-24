@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "OnlyHelpTextFormattingAndDependentLinksChanged": true,
+  "AllInputCellValuesFormulasStylesValidationUnchanged": true,
+  "ResultsByteIdentical": true,
+  "OriginalStyleEntriesRetained": true,
+  "OtherZipPartsByteIdentical": true,
+  "VBAByteIdentical": true,
+  "ChangedParts": [
+    "xl/workbook.xml",
+    "xl/worksheets/sheet1.xml",
+    "xl/worksheets/sheet2.xml",
+    "xl/worksheets/sheet3.xml",
+    "xl/styles.xml",
+    "xl/drawings/drawing2.xml"
+  ]
+}

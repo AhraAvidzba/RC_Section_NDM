@@ -199,7 +199,7 @@ function Update-SectionRecipeGuide {
             $addresses=$byStyle[$style]
             foreach ($run in (Get-RecipeGuideRowRuns $addresses)) {
                 $styled=$sheet.Range($sheet.Cells.Item($run.First,1),$sheet.Cells.Item($run.Last,6))
-                if ($style -in 'title','h1','h2','h3') {$styled.Font.Bold=$true;$styled.Interior.Color=14277081}
+                if ($style -in 'title','h1','h2','h3') {$styled.Font.Bold=$true;$styled.Interior.Color=15921906}
                 # Главный раздел имеет ту же светлую заливку, что остальные разделы Справки.
                 if ($style -eq 'title') {$styled.Interior.Color=15921906}
                 if ($style -in 'title','h1') {$styled.Font.Size=16}
@@ -239,7 +239,7 @@ function Update-SectionRecipeGuide {
             }
             throw ('Native guide text differs from source: '+($different | ConvertTo-Json -Compress))
         }
-        $outline=Set-HelpSectionOrderAndOutline $Workbook
+        $outline=Set-HelpSectionOrderAndOutline $Workbook -Expanded
         $range=$Workbook.Names.Item('rngSectionRecipeGuide').RefersToRange
         $start=[int]$range.Row;$end=$start+[int]$range.Rows.Count-1
         $apiRows=[ordered]@{}
