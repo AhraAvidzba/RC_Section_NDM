@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -111,9 +111,10 @@ Public Function Number(ByVal row As Long, ByVal column As Long, Optional ByVal d
         value = defaultValue
     End If
     If IsNull(value) Or IsError(value) Or IsObject(value) Or IsArray(value) Then InputError row, column, "Ожидается число. Введите числовое значение."
-    If VarType(value) = vbBoolean Or Not IsNumeric(value) Then InputError row, column, "Ожидается число. Введите числовое значение."
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed) Then InputError row, column, "Ожидается число без разделителей разрядов. Введите числовое значение."
     On Error GoTo Invalid
-    Number = CDbl(value)
+    Number = parsed
     Exit Function
 Invalid:
     InputError row, column, "Число выходит за допустимый диапазон. Введите число меньшего модуля."

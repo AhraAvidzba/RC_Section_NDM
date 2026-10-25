@@ -1,4 +1,4 @@
-Attribute VB_Name = "modSectionOptionalData"
+﻿Attribute VB_Name = "modSectionOptionalData"
 Option Explicit
 
 ' ==========================================================================
@@ -70,11 +70,9 @@ End Function
 ' Проверяет число оформления перед обратным преобразованием. Повреждённая
 ' строка не превращается в ноль; расчёт этот метод не вызывает.
 Public Function ReadSectionOptionalNumber(ByVal value As String, ByVal address As String) As Double
-    Dim decimalSeparator As String
-    decimalSeparator = Mid$(CStr(0.5), 2, 1)
-    If Len(Trim$(value)) = 0 Or InStr(value, ",") > 0 Then GoTo InvalidNumber
-    If Not IsNumeric(Replace$(value, ".", decimalSeparator)) Then GoTo InvalidNumber
-    ReadSectionOptionalNumber = Val(value)
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed, False) Then GoTo InvalidNumber
+    ReadSectionOptionalNumber = Val(value) ' Сохраняем прежнее округление инвариантного формата после полной проверки; Val не определяет допустимую грамматику.
     Exit Function
 InvalidNumber:
     Err.Raise vbObjectError + 4382, "ReadSectionOptionalNumber", _

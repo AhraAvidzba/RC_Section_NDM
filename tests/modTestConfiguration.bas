@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestConfiguration"
+﻿Attribute VB_Name = "modTestConfiguration"
 Option Explicit
 
 ' ==========================================================================
@@ -2571,6 +2571,115 @@ Private Sub TestReadLocaleSetting(ByVal settings As CSystemSettingsReader, ByVal
     On Error GoTo Failed
     settings.LoadFromRange area
     value = settings.GetRequiredDouble("Locale.TestNumber")
+    Exit Sub
+Failed:
+    code = Err.Number: reason = Err.Description
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет реальные числовые границы без solver: таблицу рецепта, нагрузки, профиль,
+' геометрию Results, таблицу СП35 и инвариантное необязательное поле снимка.
+Public Function RunLocaleBoundaryTests(Optional ByRef passedCount As Long = 0, Optional ByRef failedCount As Long = 0) As String
+    Dim stats As TConfigTestStats, fixture As Object, separator As Variant, value As Variant
+    Dim kind As Long, code As Long, reason As String, actual As Double, expected As Double, prefix As String
+    Dim oldUse As Boolean, oldDecimal As String, oldThousands As String, valid As Boolean
+    Dim path As String, reopened As Object, index As Long, persisted(1 To 3, 1 To 1) As Variant
+    oldUse = Application.UseSystemSeparators: oldDecimal = Application.DecimalSeparator: oldThousands = Application.ThousandsSeparator
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167): fixture.Worksheets(1).Name = "LocaleBoundary"
+    For Each separator In Array(".", ",")
+        Application.UseSystemSeparators = False: Application.DecimalSeparator = CStr(separator)
+        If separator = "." Then Application.ThousandsSeparator = "," Else Application.ThousandsSeparator = "."
+        For kind = 0 To 5
+            For Each value In Array("1.5", "1,5", "1 2", "12 34", "1 234.5", "1,234.5", "1.234,5", "$1", "1E2", "2 0", "0 2")
+                valid = value = "1.5" Or value = "1,5" Or value = "1E2"
+                If kind = 0 And value = "1,5" Then valid = False ' Необязательный JSON сохраняет прежнюю точку, а не локальный десятичный формат.
+                If kind = 3 Then valid = False ' Точность схемы — целое 0..10; дроби и 100 отвергаются независимо от локали.
+                expected = 1.5: If value = "1E2" Then expected = 100#
+                TestReadLocaleBoundary kind, value, fixture, actual, code, reason
+                prefix = "locale.boundary." & CStr(separator) & "." & kind & "." & CStr(value)
+                If valid Then
+                    TestCheck stats, prefix & ".value", code = 0 And actual = expected
+                Else
+                    TestCheck stats, prefix & ".rejected", code <> 0
+                End If
+                TestLogLine stats, "LOCALE_BOUNDARY_CASE: " & prefix & "; code=" & code & "; actual=" & actual & "; reason=" & reason
+            Next value
+        Next kind
+        For Each value In Array(0#, 1.5, -1.23456789012345, 1E-100, 1E+100)
+            actual = ReadSectionOptionalNumber(SectionOptionalNumber(CDbl(value)), "LocaleBoundary!A1")
+            TestCheck stats, "locale.json.roundtrip." & CStr(separator), actual = CDbl(value)
+        Next value
+        persisted(1, 1) = 1234.5: persisted(2, 1) = "1234,5": persisted(3, 1) = "1 2"
+        fixture.Worksheets(1).Range("J10:J12").NumberFormat = "@"
+        fixture.Worksheets(1).Range("J10:J12").Value2 = persisted
+        path = Environ$("TEMP") & "\NDM_Locale_Test_" & Hex$(CLng(Timer * 1000#)) & ".xlsx"
+        fixture.SaveAs path, 51
+        fixture.Close False: Set fixture = Nothing
+        If separator = "." Then Application.DecimalSeparator = "," Else Application.DecimalSeparator = "."
+        Set reopened = Application.Workbooks.Open(path, 0, True)
+        For index = 1 To 3
+            valid = TryReadStrictDouble(reopened.Worksheets(1).Cells(index + 9, 10).Value2, actual)
+            If index < 3 Then
+                TestCheck stats, "locale.file.reopen." & separator & "." & index, valid And actual = 1234.5
+            Else
+                TestCheck stats, "locale.file.groupingRejected." & separator, Not valid
+            End If
+        Next index
+        reopened.Close False: Set reopened = Nothing
+        Kill path: path = vbNullString
+        Set fixture = Application.Workbooks.Add(-4167): fixture.Worksheets(1).Name = "LocaleBoundary"
+    Next separator
+    GoTo Cleanup
+Failed:
+    TestCheck stats, "locale.boundary.runtime." & Err.Number & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    If Not reopened Is Nothing Then reopened.Close False
+    If Len(path) > 0 Then Kill path
+    Application.UseSystemSeparators = False: Application.DecimalSeparator = oldDecimal
+    Application.ThousandsSeparator = oldThousands: Application.UseSystemSeparators = oldUse
+    On Error GoTo 0
+    passedCount = stats.Passed: failedCount = stats.Failed
+    RunLocaleBoundaryTests = stats.Report & "TOTAL LOCALE BOUNDARIES: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет первую ошибку реального публичного адаптера; не заменяет его моделью парсинга.
+Private Sub TestReadLocaleBoundary(ByVal kind As Long, ByVal value As Variant, ByVal fixture As Object, _
+        ByRef actual As Double, ByRef code As Long, ByRef reason As String)
+    Dim data(1 To 2, 1 To 5) As Variant, inputTable As CSectionInputTable, area As Object
+    Dim profile As CCalculationProfile, validator As CStabilityCalculator, sp35 As Variant
+    Dim invalidRow As Long, invalidColumn As Long, batch As CBatchSectionCalculator, reader As CLoadCombinationReader
+    actual = 0#: code = 0: reason = vbNullString
+    On Error GoTo Failed
+    data(1, 1) = "Value": data(2, 1) = value
+    Select Case kind
+        Case 0: actual = ReadSectionOptionalNumber(CStr(value), "LocaleBoundary!D8")
+        Case 1
+            Set inputTable = New CSectionInputTable: inputTable.Initialize "LocaleBoundary", data
+            actual = inputTable.Number(2, 1)
+        Case 2
+            Set area = fixture.Worksheets(1).Range("D7")
+            actual = ReadGeometryNumber(data, area, 2, 1)
+        Case 3
+            Set profile = New CCalculationProfile: profile.SetVisualization "", "", CStr(value)
+            actual = profile.VisualizationStressPrecision
+        Case 4
+            sp35 = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+            sp35(2, 4) = value: Set validator = New CStabilityCalculator
+            If Not validator.TryValidateSP35Table721(sp35, invalidRow, invalidColumn, reason) Then Err.Raise 5, , reason
+            actual = CDbl(sp35(2, 4))
+        Case 5
+            Set area = fixture.Worksheets(1).Range("D7:H8"): area.NumberFormat = "@"
+            data(1, 1) = "CombinationID": data(1, 2) = "N": data(1, 3) = "Mx": data(1, 4) = "My": data(1, 5) = "ProfileId"
+            data(2, 1) = "LOCALE": data(2, 2) = value: data(2, 3) = 1#: data(2, 4) = 0#: data(2, 5) = "PR1"
+            area.Value2 = data: Set batch = New CBatchSectionCalculator: Set reader = New CLoadCombinationReader
+            reader.LoadFromRange area, batch
+            If Not batch.OriginalLoadsAvailable(1) Then Err.Raise 5, , batch.SourceReference(1)
+            actual = batch.OriginalN(1)
+    End Select
     Exit Sub
 Failed:
     code = Err.Number: reason = Err.Description

@@ -1,4 +1,4 @@
-Attribute VB_Name = "modSectionSnapshot"
+﻿Attribute VB_Name = "modSectionSnapshot"
 Option Explicit
 
 ' ==========================================================================
@@ -322,9 +322,10 @@ Public Function ReadGeometryNumber(ByRef data As Variant, ByVal anchor As Object
         If allowBlank Then Exit Function
         GoTo InvalidNumber
     End If
-    If Not IsNumeric(value) Then GoTo InvalidNumber
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed) Then GoTo InvalidNumber
     On Error GoTo InvalidNumber
-    ReadGeometryNumber = CDbl(value)
+    ReadGeometryNumber = parsed
     Exit Function
 InvalidNumber:
     Err.Raise vbObjectError + 4367, "ReadSectionGeometryFromResults", _

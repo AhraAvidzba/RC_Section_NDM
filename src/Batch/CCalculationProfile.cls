@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -324,11 +324,9 @@ End Function
 ' Читает пользовательское количество знаков после запятой для Stress/Strain.
 ' Ограничение защищает Excel-подписи от чрезмерно длинных строк.
 Private Function ParseVisualizationPrecision(ByVal valueText As String, ByVal settingName As String) As Long
-    If Not IsNumeric(valueText) Then Err.Raise vbObjectError + 3991, "CCalculationProfile", _
-        settingName & " должен быть целым числом от 0 до 10."
-
     Dim numericValue As Double
-    numericValue = CDbl(valueText)
+    If Not TryReadStrictDouble(valueText, numericValue) Then Err.Raise vbObjectError + 3991, "CCalculationProfile", _
+        settingName & " должен быть целым числом от 0 до 10."
     If numericValue < 0# Or numericValue > 10# Then _
         Err.Raise vbObjectError + 3992, "CCalculationProfile", _
             settingName & " должен быть целым числом от 0 до 10."

@@ -339,6 +339,13 @@ Public Function RunBatchCalculationTests() As String
     stats.Report = stats.Report & RunAudit03UserPsiFallbackTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
 
+    TestAppendLine stats, "RUN: RunLocaleNumberTests"
+    stats.Report = stats.Report & RunLocaleNumberTests(searchPassed, searchFailed) & vbCrLf
+    stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
+    TestAppendLine stats, "RUN: RunLocaleBoundaryTests"
+    stats.Report = stats.Report & RunLocaleBoundaryTests(searchPassed, searchFailed) & vbCrLf
+    stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
+
     Dim elapsed As Double: elapsed = Timer - t0
     If elapsed < 0# Then elapsed = elapsed + 86400#
     TestAppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _

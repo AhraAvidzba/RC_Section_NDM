@@ -1,0 +1,17 @@
+{
+  "Status": "CONFIRMED_BEFORE_FIX",
+  "Primary": "Baseline01_No.txt",
+  "SHA256": "E86C8AEAA19E2040904E01E38FF30210446D1FF6D445BC535D013003D4376F4B",
+  "Passed": 96,
+  "Failed": 52,
+  "ConfirmedAdapters": [
+    "CSectionInputTable",
+    "CLoadCombinationReader",
+    "modSectionSnapshot",
+    "CCalculationProfile",
+    "modSectionOptionalData",
+    "CStabilityCalculator"
+  ],
+  "SameMalformedSpaceGroupingAcceptedInBothExcelSeparators": true,
+  "FullPass": false
+}

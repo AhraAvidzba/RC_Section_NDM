@@ -1,0 +1,50 @@
+{
+  "Status": "PASS_STAGE5B_PROFILE_NO_YES_ONLY",
+  "Records": [
+    {
+      "Mode": "No",
+      "Primary": "Probe01_No.txt",
+      "SHA256": "A4A13D2F956E89209DE973EC55035793159C3768C85F9AAEF5EB7C228EA6BF44",
+      "Totals": [
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=105; failed=0",
+        "TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=152; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.2255859375"
+      ],
+      "CompletedMacros": [
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunLocaleBoundaryTests",
+        "modTestBatchCalculation.RunAudit03SP35TableDiagnosticTests",
+        "modTestConfiguration.RunAudit03GeneralRunConfigTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage5a": true
+    },
+    {
+      "Mode": "Yes",
+      "Primary": "Probe01_Yes.txt",
+      "SHA256": "245372FE1F2AD216FAFB53604261C02C1F1015EAC37187BB8C280389EC47A139",
+      "Totals": [
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=105; failed=0",
+        "TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=152; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.30859375"
+      ],
+      "CompletedMacros": [
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunLocaleBoundaryTests",
+        "modTestBatchCalculation.RunAudit03SP35TableDiagnosticTests",
+        "modTestConfiguration.RunAudit03GeneralRunConfigTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage5a": true
+    }
+  ],
+  "FullPass": false
+}

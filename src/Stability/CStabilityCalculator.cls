@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -1099,8 +1099,14 @@ Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As
         RaiseInput "Таблица 7.21 СП 35: " & reason
     End If
 
-    Dim rowCount As Long
+    Dim rowCount As Long, numericRow As Long, numericColumn As Long, numericValue As Double
     rowCount = UBound(table721, 1)
+    For numericRow = 2 To rowCount
+        For numericColumn = 3 To 8
+            If Not TryReadStrictDouble(table721(numericRow, numericColumn), numericValue) Then RaiseInput "Таблица 7.21 СП 35 содержит неверное число."
+            table721(numericRow, numericColumn) = numericValue ' Только локальная копия уже проверенной таблицы: последующая интерполяция получает прежние Double независимо от написания десятичного знака.
+        Next numericColumn
+    Next numericRow
 
     Dim lowerRow As Long
     Dim upperRow As Long
@@ -1185,8 +1191,7 @@ Private Function SP35TablePositiveNumber(ByVal rawValue As Variant, ByRef value 
     If IsError(rawValue) Or IsEmpty(rawValue) Or IsNull(rawValue) Then Exit Function
     If IsObject(rawValue) Or IsArray(rawValue) Then Exit Function
     If VarType(rawValue) = vbBoolean Or VarType(rawValue) = vbDate Then Exit Function
-    If Not IsNumeric(rawValue) Then Exit Function
-    value = CDbl(rawValue)
+    If Not TryReadStrictDouble(rawValue, value) Then Exit Function
     SP35TablePositiveNumber = (value > 0#)
     Exit Function
 InvalidValue:

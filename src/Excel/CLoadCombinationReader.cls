@@ -103,17 +103,18 @@ End Sub
 ' Читает нагрузку, где пустая ячейка означает 0.
 ' Это позволяет задавать одноосный изгиб как N + Mx при пустом My.
 Private Function ReadOptionalLoadDouble(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String) As Double
+    Dim parsed As Double
     If IsError(value) Then
         AppendError errorText, fieldName & " содержит ошибку формулы Excel"
     ElseIf IsNull(value) Then
         AppendError errorText, fieldName & " содержит недопустимое значение Null"
     ElseIf IsBlankCell(value) Then
         Exit Function
-    ElseIf Not IsNumeric(value) Then
-        AppendError errorText, fieldName & " должен быть числом"
+    ElseIf Not TryReadStrictDouble(value, parsed) Then
+        AppendError errorText, fieldName & " должен быть числом без разделителей разрядов"
     Else
         On Error GoTo ConversionFailed
-        ReadOptionalLoadDouble = CDbl(value)
+        ReadOptionalLoadDouble = parsed
     End If
     Exit Function
 ConversionFailed:
