@@ -8452,6 +8452,7 @@ Private Sub TestWorkflowFrozenGeometry(ByRef stats As TUiTestStats)
     TestSetSystemSetting "Geometry.Source", "AutoCAD"
     TestSetSystemSetting "Geometry.Type", "Invalid.Unused.Geometry"
     TestSetSystemSetting "Circle.Diameter", "INVALID"
+    Dim attention As Boolean
     Dim calculationStarted As Double, actualElapsed As Double, savedElapsed As Double
     calculationStarted = Timer
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
@@ -8475,12 +8476,16 @@ Private Sub TestWorkflowFrozenGeometry(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "workflow.repeat.contoursExact", TestWorkflowSameTable(contours, TestResultTable("rngNDMSectionContours"))
     TestAssertClose stats, "workflow.repeat.force", CDbl(TestResultsPropertyValue("LC1", "N")), n, 0#
     TestSetSystemSetting "Plot.LegendMode", "INVALID"
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    attention = False
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False, -1#, , attention)
+    TestAssertTrue stats, "workflow.plotError.typedWarning", attention
     TestAssertTrue stats, "workflow.plotError.warning", InStr(message, "Расчет завершен") > 0 And InStr(message, "Схема не обновлена") > 0
     TestAssertClose stats, "workflow.plotError.force", CDbl(TestResultsPropertyValue("LC1", "N")), n, 0#
     TestSetSystemSetting "Plot.LegendMode", "Separate"
     TestSetProfileSetting "PR2", "Visualization.State", "INVALID"
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    attention = False
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False, -1#, , attention)
+    TestAssertTrue stats, "workflow.visualizationError.typedWarning", attention
     TestAssertTrue stats, "workflow.visualizationError.warning", InStr(message, "Расчет завершен") > 0 And InStr(message, "Схема не обновлена") > 0
     TestAssertClose stats, "workflow.visualizationError.force", CDbl(TestResultsPropertyValue("LC1", "N")), n, 0#
     TestSetProfileSetting "PR2", "Visualization.State", "CrackedState"
@@ -8565,6 +8570,7 @@ End Function
 ' Проверяет автоматическую схему после формирования и независимость от НДС.
 Public Function RunFormationPreviewTests() As String
     Dim stats As TUiTestStats, saved As Variant, message As String, solves As Long
+    Dim attention As Boolean
     saved = TestFixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
     On Error GoTo Failed
     TestPrepareCircleInput
@@ -8572,21 +8578,23 @@ Public Function RunFormationPreviewTests() As String
     TestSetSystemSetting "Plot.Enabled", "Yes"
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
     solves = SectionEquilibriumSolveCount()
-    message = FormSectionForWorkbook(ThisWorkbook)
+    message = FormSectionForWorkbook(ThisWorkbook, -1#, , attention)
     TestAssertTrue stats, "formPreview.saved", InStr(message, "Сечение сформировано") > 0
     TestAssertTrue stats, "formPreview.drawn", TestPlotVisibleTitleContains("Сформированное сечение")
     TestAssertTrue stats, "formPreview.annotations", TestCountPlotShapes("AnnotationLine") > 0
     TestAssertTrue stats, "formPreview.noSolver", SectionEquilibriumSolveCount() = solves
     TestSetSystemSetting "Plot.LegendMode", "INVALID"
-    message = FormSectionForWorkbook(ThisWorkbook)
+    message = FormSectionForWorkbook(ThisWorkbook, -1#, , attention)
     TestAssertTrue stats, "formPreview.error.warning", InStr(message, "Сечение сформировано") > 0 And InStr(message, "Схема не обновлена") > 0
+    TestAssertTrue stats, "formPreview.error.typedWarning", attention
     TestAssertTrue stats, "formPreview.error.reason", InStr(message, "Plot.LegendMode") > 0
     Dim section As CSectionModel: Set section = ReadFormedSectionFromResults(ThisWorkbook)
     TestAssertTrue stats, "formPreview.error.snapshot", section.ConcreteCount > 0 And section.RebarCount = 8
     TestAssertTrue stats, "formPreview.error.noSolver", SectionEquilibriumSolveCount() = solves
     TestSetSystemSetting "Plot.Enabled", "No"
-    message = FormSectionForWorkbook(ThisWorkbook)
+    message = FormSectionForWorkbook(ThisWorkbook, -1#, , attention)
     TestAssertTrue stats, "formPreview.disabled.saved", InStr(message, "Сечение сформировано") > 0 And InStr(message, "Схема не обновлена") = 0
+    TestAssertTrue stats, "formPreview.disabled.noTypedWarning", Not attention
     TestAssertTrue stats, "formPreview.disabled.noDrawing", Not TestPlotVisibleTitleContains("Сформированное сечение")
     TestAssertTrue stats, "formPreview.disabled.noSolver", SectionEquilibriumSolveCount() = solves
 Done:

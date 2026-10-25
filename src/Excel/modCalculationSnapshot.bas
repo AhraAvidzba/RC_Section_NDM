@@ -47,7 +47,8 @@ End Function
 ' Выводит готовый расчёт из памяти либо восстанавливает полный снимок File.
 ' Ручное обновление Excel читает схему с листа и не восстанавливает верхние сводки.
 Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional ByVal prepared As CCalculationSnapshot = Nothing, _
-        Optional ByRef plotWarning As String = "")
+        Optional ByRef plotWarning As String = "", Optional ByRef plotHasWarning As Boolean = False)
+    plotHasWarning = False
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
     Dim entered As Boolean
     On Error GoTo Failed
@@ -82,7 +83,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     If prepared Is Nothing Then
         UpdateSectionPlotForWorkbook workbook, False
     Else
-        plotWarning = TryUpdateCalculatedSnapshotPlot(workbook, snapshot)
+        plotWarning = TryUpdateCalculatedSnapshotPlot(workbook, snapshot, plotHasWarning)
     End If
     EndCalculationSnapshotRead
     entered = False
@@ -162,20 +163,24 @@ End Function
 
 ' Сохраняет полный снимок только в File; оба режима выводят результаты из памяти.
 ' Excel оставляет обычные читаемые таблицы без второго архива подробных сводок.
-Public Function SaveAndDisplayCalculationSnapshot(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot) As String
+Public Function SaveAndDisplayCalculationSnapshot(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, _
+        Optional ByRef plotHasWarning As Boolean = False) As String
+    plotHasWarning = False
     snapshot.Validate
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     If store.StorageMode(workbook) = "File" Then
         store.SaveFile workbook, snapshot
     End If
     Dim warning As String
-    UpdateSectionResultsForWorkbook workbook, snapshot, warning
+    UpdateSectionResultsForWorkbook workbook, snapshot, warning, plotHasWarning
     SaveAndDisplayCalculationSnapshot = warning
 End Function
 
 ' Ошибка оформления не отменяет сохранённый расчёт и заполненные подробные таблицы.
 ' Ручное обновление возвращает исходную ошибку; автоматическое завершение — предупреждение.
-Private Function TryUpdateCalculatedSnapshotPlot(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot) As String
+Private Function TryUpdateCalculatedSnapshotPlot(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, _
+        ByRef plotHasWarning As Boolean) As String
+    plotHasWarning = False
     On Error GoTo Failed
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook workbook
     If Not settings.GetRequiredBoolean("Plot.Enabled") Then Exit Function
@@ -188,6 +193,7 @@ Private Function TryUpdateCalculatedSnapshotPlot(ByVal workbook As Object, ByVal
     UpdateSectionPlotForWorkbook workbook, False
     Exit Function
 Failed:
+    plotHasWarning = True
     TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Расчётные результаты сохранены." & vbCrLf & _
         Err.Description & vbCrLf & "Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется."
 End Function

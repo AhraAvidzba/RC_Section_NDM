@@ -1,0 +1,68 @@
+﻿{
+  "Status": "PASS_STAGE2_PROFILE_NO_YES_ONLY",
+  "At": "2026-10-26T01:16:14.112371+03:00",
+  "Records": [
+    {
+      "Mode": "No",
+      "SHA256": "6C3A66A4B3BE0F68341D931F815E22926B029390E3A0548FAC4C8E4F5500E838",
+      "Primary": "Probe01_No.txt",
+      "CompletedMacros": [
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestAutoCADContours.RunAutoCADContourTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestWorkbookInterface.RunFormationPreviewTests",
+        "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=112; failed=0",
+        "TOTAL RECIPE DIAGNOSTICS: passed=35; failed=0",
+        "TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0",
+        "TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0",
+        "TOTAL_AUTOCAD_CONTOURS: passed=627; failed=0",
+        "TOTAL_CONTOUR_MESH: passed=34351; failed=0",
+        "TOTAL_FORMATION_PREVIEW: passed=13; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=116; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.21484375"
+      ],
+      "BaselineExactExceptElapsedTime": true
+    },
+    {
+      "Mode": "Yes",
+      "SHA256": "124A0F58BC55111265F27CB019A0853280355032B35BBB297F9C2361F784F84B",
+      "Primary": "Probe01_Yes.txt",
+      "CompletedMacros": [
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestAutoCADContours.RunAutoCADContourTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestWorkbookInterface.RunFormationPreviewTests",
+        "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=112; failed=0",
+        "TOTAL RECIPE DIAGNOSTICS: passed=35; failed=0",
+        "TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0",
+        "TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0",
+        "TOTAL_AUTOCAD_CONTOURS: passed=627; failed=0",
+        "TOTAL_CONTOUR_MESH: passed=34351; failed=0",
+        "TOTAL_FORMATION_PREVIEW: passed=13; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=116; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.03515625"
+      ],
+      "BaselineExactExceptElapsedTime": true
+    }
+  ],
+  "CandidateSHA256": "379ABAEE2A98F8BA63EA6EAE1F6C1E978A60DD96AD3237BBBE2CE6B052EDADF9",
+  "FullPass": false
+}

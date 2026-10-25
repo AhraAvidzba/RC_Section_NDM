@@ -58,6 +58,8 @@ Private mRebarMaterialID() As Long ' Номер материала стержн�
 Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
 Private mRebarRecipeTrace() As String ' Необязательные сведения о правилах и исходных позициях, из которых получен стержень.
 Private mGeometryDiagnostics As String ' Пояснения и предупреждения, полученные при подготовке геометрии.
+Private mHasGeometryWarnings As Boolean ' Значимое событие текущего построения; исторический текст снимка его не восстанавливает.
+Private mGeometryWarnings As String ' Готовая краткая сводка, независимая от подробного текста диагностики.
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 Private mRebarCapacity As Long ' Резерв арматуры живет только вместе с этой моделью.
 
@@ -119,6 +121,7 @@ Public Sub Clear()
     Erase mRebarMaterialID
     Erase mRebarComment
     Erase mRebarRecipeTrace: mGeometryDiagnostics = vbNullString
+    mHasGeometryWarnings = False: mGeometryWarnings = vbNullString
     mRebarCount = 0
     mRebarCapacity = 0
 
@@ -189,17 +192,22 @@ Public Property Get GeometryDiagnosticsText() As String
     GeometryDiagnosticsText = mGeometryDiagnostics
 End Property
 
-' Возвращает краткие предупреждения о построении для сообщения после расчёта.
-Public Property Get GeometryWarningText() As String
-    Dim lines As Variant, line As Variant
-    lines = Split(mGeometryDiagnostics, vbCrLf)
-    For Each line In lines
-        If Left$(CStr(line), Len("Предупреждение:")) = "Предупреждение:" Then
-            If Len(GeometryWarningText) > 0 Then GeometryWarningText = GeometryWarningText & vbCrLf
-            GeometryWarningText = GeometryWarningText & CStr(line)
-        End If
-    Next line
+' Возвращает факт значимого события текущего построения, независимо от пояснения.
+' Исторические Results хранят только текст; он не является машинной классификацией.
+Public Property Get HasGeometryWarnings() As Boolean
+    HasGeometryWarnings = mHasGeometryWarnings
 End Property
+
+' Возвращает готовую краткую сводку; подробная Geometry.RecipeDiagnostics сохраняется отдельно.
+Public Property Get GeometryWarningText() As String
+    GeometryWarningText = mGeometryWarnings
+End Property
+
+' Сохраняет итог исполнителя правил без разбора фраз; не меняет арматуру и ревизию геометрии.
+Friend Sub SetGeometryWarnings(ByVal hasWarnings As Boolean, ByVal warningText As String)
+    mHasGeometryWarnings = hasWarnings
+    mGeometryWarnings = warningText
+End Sub
 
 ' Добавляет связь стержня с правилом, линией и исходной позицией.
 ' Все связи одного стержня сохраняются без изменения его площади, инерций

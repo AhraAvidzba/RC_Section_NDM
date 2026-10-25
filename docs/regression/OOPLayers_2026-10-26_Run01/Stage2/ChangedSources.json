@@ -1,0 +1,12 @@
+﻿{
+  "CAutoCADSectionModelImporter": "src/Excel/CAutoCADSectionModelImporter.cls",
+  "modCalculationSnapshot": "src/Excel/modCalculationSnapshot.bas",
+  "modWorkbookCalculation": "src/Excel/modWorkbookCalculation.bas",
+  "CRebarRuleExecutor": "src/Section/CRebarRuleExecutor.cls",
+  "CSectionBuilder": "src/Section/CSectionBuilder.cls",
+  "CSectionModel": "src/Section/CSectionModel.cls",
+  "modTestAutoCADContours": "tests/modTestAutoCADContours.bas",
+  "modTestContourMesh": "tests/modTestContourMesh.bas",
+  "modTestRecipeOperations": "tests/modTestRecipeOperations.bas",
+  "modTestWorkbookInterface": "tests/modTestWorkbookInterface.bas"
+}

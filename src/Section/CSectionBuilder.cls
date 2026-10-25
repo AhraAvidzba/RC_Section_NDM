@@ -42,6 +42,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     mesh.BuildMesh geometry, meshOptions.StepX, meshOptions.StepY, meshOptions.MaterialID, meshOptions.BoundarySubdivisions, meshOptions.SourceReference, meshOptions.AutoStepFactor
     Set modelBuilder = New CSectionModelBuilder: Set model = modelBuilder.BuildFromGenerated(mesh, rebars)
     model.GeometryDiagnosticsText = rules.DiagnosticsText
+    model.SetGeometryWarnings rules.HasGeometryWarnings, rules.GeometryWarningText
     Dim i As Long
     For i = 1 To rules.PositionCount
         model.AppendRebarRecipeTrace rules.PositionPhysicalOwner(i), rules.PositionRuleID(i), rules.PositionPathID(i), rules.PositionSourceID(i)

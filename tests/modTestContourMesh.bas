@@ -502,6 +502,7 @@ Private Sub TestCompareGeneratedAndImported(ByVal geometry As CGeometryRegion, B
     TestCompareModels label, generated, imported
     TestCheck label & ".source", imported.SourceType = "AutoCADImport" And imported.ConcreteMeshSource = "AutoCADContours"
     TestCheck label & ".notice", InStr(importer.ResultMessage(imported), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
+    TestCheck label & ".typedWarning", importer.HasImportWarnings
     Set query = New CSectionGeometryQuery: query.Initialize imported
     Set adapter = New CGeometryRegion: adapter.Initialize query.ConcreteDomain
     TestNear label & ".exactArea", adapter.AnalyticalArea(available), geometry.AnalyticalArea(available), 0.0000001

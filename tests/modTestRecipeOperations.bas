@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestRecipeOperations"
+Attribute VB_Name = "modTestRecipeOperations"
 Option Explicit
 
 ' ==========================================================================
@@ -435,6 +435,7 @@ Public Function RunSavedPointedOffsetTests() As String
     Dim table As Object, config As Object, saved As Variant, values As Variant, value As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim i As Long, count As Long, expected As Long, inputCell As Object
+    Dim attention As Boolean, information As Boolean, message As String
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     TestPrepareSavedOffsetCase
@@ -454,7 +455,23 @@ Public Function RunSavedPointedOffsetTests() As String
         TestCheck "saved.right.warning." & CStr(value), TestSavedRuleSkipped(model.GeometryDiagnosticsText, "H.Right.Row2") = IIf(CDbl(value) > 40#, 1, 0)
         TestCheck "saved.warning.summary." & CStr(value), (Len(model.GeometryWarningText) > 0) = (InStr(model.GeometryDiagnosticsText, "Предупреждение:") > 0)
         If CDbl(value) > 40# Then TestCheck "saved.right.warning.address." & CStr(value), InStr(model.GeometryDiagnosticsText, inputCell.Worksheet.Name & "!" & inputCell.Address(False, False)) > 0
+        TestCheck "saved.warning.typed." & CStr(value), model.HasGeometryWarnings = (CDbl(value) > 40#)
+        model.GeometryDiagnosticsText = "Localized text without warning keyword"
+        TestCheck "saved.warning.localized." & CStr(value), model.HasGeometryWarnings = (CDbl(value) > 40#)
+        model.GeometryDiagnosticsText = ""
+        TestCheck "saved.warning.empty." & CStr(value), model.HasGeometryWarnings = (CDbl(value) > 40#)
+        attention = Not (CDbl(value) > 40#)
+        message = FormSectionForWorkbook(ThisWorkbook, -1#, information, attention)
+        TestCheck "saved.warning.buttonFlag." & CStr(value), attention = (CDbl(value) > 40#)
+
     Next value
+    Set model = New CSectionModel
+    model.GeometryDiagnosticsText = "Предупреждение: исторический текст без кодов."
+    TestCheck "saved.warning.historicalNotClassified", Not model.HasGeometryWarnings And model.GeometryWarningText = ""
+    model.SetGeometryWarnings True, ""
+    TestCheck "saved.warning.emptyDisplayStillEvent", model.HasGeometryWarnings
+    model.Clear
+    TestCheck "saved.warning.clearResetsEvent", Not model.HasGeometryWarnings
     GoTo Finished
 Failed:
     TestCheck "saved.offset.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
@@ -516,6 +533,7 @@ Public Function RunFullBoundaryOffsetTests() As String
                     TestCheck prefix & ".row2", row2 = IIf(binding = 1, 1, 3)
                     TestCheck prefix & ".row3", row3 = IIf(binding = 1 And chain = 1, 1, 3)
                     TestCheck prefix & ".warning", InStr(executor.DiagnosticsText, "Предупреждение:") > 0
+                    TestCheck prefix & ".typedWarning", executor.HasGeometryWarnings
                     TestCheck prefix & ".address", InStr(executor.DiagnosticsText, "WholeBoundary[Extra,2]") > 0
                     TestCheck prefix & ".source.unchanged", whole.IsClosed And whole.SegmentCount = 4 And side.SegmentCount = 1
                 Next chain

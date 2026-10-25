@@ -29,10 +29,16 @@ Private Const EXPLICIT_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.02 ' Допу�
 Private mEdgeProbeCount As Long ' ДЛЯ ТЕСТОВ: сколько раз импорт обращался к Explode за углом простой грани.
 Private mImportComment As String ' Диагностика достоверных контуров, сформированная ответственным importer-ом.
 Private mImportWarnings As String ' Только предупреждения для краткого итогового окна.
+Private mHasImportWarnings As Boolean ' Факт значимого события импорта, включая автоматическую генерацию сетки.
 
 ' Возвращает подробную диагностику импорта, не предназначенную для итогового окна.
 Public Property Get ImportComment() As String
     ImportComment = mImportComment
+End Property
+
+' Возвращает факт предупреждения, не анализируя текст краткого окна или диагностики.
+Public Property Get HasImportWarnings() As Boolean
+    HasImportWarnings = mHasImportWarnings
 End Property
 
 ' Формирует итог этапа формирования сечения: количество принятых элементов
@@ -59,6 +65,7 @@ End Function
 
 ' Добавляет отдельную строку предупреждения без смешивания с технической диагностикой.
 Private Sub AppendImportWarning(ByVal text As String)
+    mHasImportWarnings = True
     If Len(mImportWarnings) > 0 Then mImportWarnings = mImportWarnings & vbCrLf
     mImportWarnings = mImportWarnings & text
 End Sub
@@ -158,7 +165,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
         Optional ByVal contourLayer As String = "", Optional ByVal openingLayer As String = "", Optional ByVal drawingLayers As Object = Nothing, _
         Optional ByVal meshSettings As CSystemSettingsReader = Nothing) As CSectionModel
     mImportComment = vbNullString
-    mImportWarnings = vbNullString
+    mImportWarnings = vbNullString: mHasImportWarnings = False
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
     If Len(Trim$(concreteLayer)) = 0 Or Len(Trim$(rebarLayer)) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
         "Не заданы слои импорта. Укажите отдельный слой бетонных Region и отдельный слой арматурных Region."
@@ -225,6 +232,7 @@ Private Sub GenerateConcreteFromContour(ByVal model As CSectionModel, ByVal doma
     Set builder = New CSectionModelBuilder
     builder.AppendConcreteMesh model, mesh, "Бетонная сетка сгенерирована по точному контуру AutoCAD."
     model.ConcreteMeshSource = "AutoCADContours"
+    mHasImportWarnings = True
     mImportComment = mImportComment & " " & CONTOUR_MESH_GENERATION_NOTICE
 End Sub
 

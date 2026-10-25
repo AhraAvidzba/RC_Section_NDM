@@ -68,10 +68,10 @@ End Sub
 Public Sub FormSection()
     On Error GoTo Failed
     Dim startedAt As Double: startedAt = Timer
-    Dim informationEnabled As Boolean
+    Dim informationEnabled As Boolean, requiresAttention As Boolean
     Dim message As String
-    message = FormSectionForWorkbook(ThisWorkbook, startedAt, informationEnabled)
-    If InStr(1, message, "Предупреждени", vbTextCompare) > 0 Then
+    message = FormSectionForWorkbook(ThisWorkbook, startedAt, informationEnabled, requiresAttention)
+    If requiresAttention Then
         ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
     ElseIf informationEnabled Then
         ShowWorkbookMessage message, vbInformation, "RC Section NDM"
@@ -195,7 +195,8 @@ End Sub
 ' Не читает сочетания и не выполняет расчёт; прежний снимок сохраняется,
 ' если получение новой геометрии или подготовка её характеристик завершились ошибкой.
 Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal startedAt As Double = -1#, _
-        Optional ByRef informationEnabled As Boolean = False) As String
+        Optional ByRef informationEnabled As Boolean = False, Optional ByRef requiresAttention As Boolean = False) As String
+    requiresAttention = False
     On Error GoTo Failed
     If startedAt < 0# Then startedAt = Timer
     If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "FormSectionForWorkbook", "Книга Excel не передана."
@@ -217,6 +218,8 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
         Set section = importer.ImportFromActiveDocument(settings, units)
         section.ApplyAverageRotationToEquivalentAreaFallbacks
     End If
+    requiresAttention = section.HasGeometryWarnings
+    If Not importer Is Nothing Then requiresAttention = requiresAttention Or importer.HasImportWarnings
     Dim snapshot As CSectionPropertiesCalculator: Set snapshot = PrepareSectionSnapshot(section)
     Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
     Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
@@ -245,6 +248,7 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     Err.Clear
     On Error GoTo Failed
     If plotErrorNumber <> 0 Then
+        requiresAttention = True
         FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
             "Предупреждение:" & vbCrLf & "Схема не обновлена. Сечение сохранено в Results." & vbCrLf & vbCrLf & _
             SectionRecipeErrorText(plotError) & vbCrLf & vbCrLf & _
@@ -420,8 +424,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     savedSnapshot.AddTable "Calculation.Profiles", savedProfileValues
     savedSnapshot.Validate
     report.AddStep "Результаты подготовлены; сохранение в выбранном режиме и вывод из памяти."
-    Dim plotWarning As String
-    plotWarning = SaveAndDisplayCalculationSnapshot(workbook, savedSnapshot)
+    Dim plotWarning As String, plotHasWarning As Boolean
+    plotWarning = SaveAndDisplayCalculationSnapshot(workbook, savedSnapshot, plotHasWarning)
     report.AddStep "Подробные таблицы и схема заполнены из готовых данных без повторного решения. Полный файл снимка сохраняется только в режиме File."
 
     Dim totalElapsedSeconds As Double
@@ -432,7 +436,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
     RunSectionCalculationForWorkbook = CalculationBatchMessage(batch, , requiresAttention)
-    requiresAttention = requiresAttention Or Len(plotWarning) > 0
+    requiresAttention = requiresAttention Or plotHasWarning
     If Len(plotWarning) > 0 Then RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & plotWarning
     If report.Enabled Then
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."

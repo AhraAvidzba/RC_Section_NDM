@@ -333,6 +333,7 @@ Private Sub TestCheckKnownOuterWithoutOpenings()
         TestCheck "knownOuterOnly." & CStr(mode) & ".comment", InStr(importer.ImportComment, "отверстия по сетке не добавляются") > 0
         TestCheck "knownOuterOnly." & CStr(mode) & ".shortMessage", InStr(importer.ResultMessage(section), "Наружных контуров: 1; отверстий: 0.") > 0 And _
             InStr(importer.ResultMessage(section), "Предупреждения:") = 0 And InStr(importer.ResultMessage(section), "Координаты") = 0
+        TestCheck "knownOuterOnly." & CStr(mode) & ".noTypedWarning", Not importer.HasImportWarnings
         TestCheck "knownOuterOnly." & CStr(mode) & ".sourceKept", Not outer.TestDeleted
         writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
@@ -1810,6 +1811,7 @@ Private Sub TestCheckEmptyStandaloneContourSegments()
     TestCheckArea prefix & ".area", query.ConcreteDomain.Area, 9600#
     TestCheck prefix & ".sourceKept", Not zero.TestDeleted And Not opening.TestDeleted
     TestCheck prefix & ".warning", InStr(importer.ImportComment, "нулевой длины") > 0 And InStr(importer.ImportComment, "ZERO_LINE") > 0
+    TestCheck prefix & ".typedWarning", importer.HasImportWarnings
     TestCheck prefix & ".shortMessage", InStr(importer.ResultMessage(section), "Наружных контуров: 1; отверстий: 1.") > 0 And _
         InStr(importer.ResultMessage(section), vbCrLf & vbCrLf & "Предупреждения:") > 0 And _
         InStr(importer.ResultMessage(section), "реальные линии/дуги") = 0

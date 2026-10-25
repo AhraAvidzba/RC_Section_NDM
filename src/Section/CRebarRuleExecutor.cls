@@ -150,8 +150,7 @@ Public Function DiagnosticsText() As String
         "; Conflicts=" & CStr(Conflicts) & "; BarOverlaps=" & CStr(BarOverlaps) & _
         "; DiagnosticRecordsOmitted=" & CStr(DiagnosticRecordsOmitted) & vbCrLf
     If mSkippedOffsets > 0 Then
-        DiagnosticsText = DiagnosticsText & "Предупреждение: после смещения не размещено дополнительных стержней: " & CStr(mSkippedOffsets) & _
-            ". Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results." & vbCrLf
+        DiagnosticsText = DiagnosticsText & SkippedOffsetsWarning() & vbCrLf
         For i = 1 To mDefinition.RuleCount
             If mRules(i).Mode = DependentOffset And mSkippedByRule(i) > 0 Then DiagnosticsText = DiagnosticsText & _
                 mRules(i).SourceReference & ": " & mRules(i).Comment & "; пропущено " & CStr(mSkippedByRule(i)) & " стержней." & vbCrLf
@@ -162,8 +161,7 @@ Public Function DiagnosticsText() As String
         Next diagnostic
     End If
     If mMergedOffsetNeighbors > 0 Then
-        DiagnosticsText = DiagnosticsText & "Предупреждение: объединено дополнительных стержней соседних граней: " & CStr(mMergedOffsetNeighbors) & _
-            ". В расчёте и подписях учтён только первый добавленный стержень с его координатами и диаметром." & vbCrLf
+        DiagnosticsText = DiagnosticsText & MergedOffsetNeighborsWarning() & vbCrLf
         For Each diagnostic In mDiagnostics
             If diagnostic.Code = "OFFSET_NEIGHBOR_MERGED" Then DiagnosticsText = DiagnosticsText & diagnostic.SourceReference & ": " & diagnostic.Reason & vbCrLf
         Next diagnostic
@@ -171,6 +169,32 @@ Public Function DiagnosticsText() As String
     If Not mDefinition Is Nothing Then
         For i = 1 To mDefinition.RuleCount: DiagnosticsText = DiagnosticsText & RuleTrace(mRules(i).RuleID) & vbCrLf: Next i
     End If
+End Function
+
+' Распознаёт значимые пропуски и объединения по полным счётчикам, включая события сверх лимита записей.
+Public Property Get HasGeometryWarnings() As Boolean
+    HasGeometryWarnings = (mSkippedOffsets > 0 Or mMergedOffsetNeighbors > 0)
+End Property
+
+' Готовит прежние краткие строки по событиям, не извлекая их из подробного отчёта.
+Public Property Get GeometryWarningText() As String
+    If mSkippedOffsets > 0 Then GeometryWarningText = SkippedOffsetsWarning()
+    If mMergedOffsetNeighbors > 0 Then
+        If mSkippedOffsets > 0 Then GeometryWarningText = GeometryWarningText & vbCrLf
+        GeometryWarningText = GeometryWarningText & MergedOffsetNeighborsWarning()
+    End If
+End Property
+
+' Поясняет пропуск дополнительных позиций; наличие события определяет счётчик, а не эта строка.
+Private Function SkippedOffsetsWarning() As String
+    SkippedOffsetsWarning = "Предупреждение: после смещения не размещено дополнительных стержней: " & CStr(mSkippedOffsets) & _
+        ". Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results."
+End Function
+
+' Поясняет объединение соседей, сохраняя прежний текст и число физических стержней.
+Private Function MergedOffsetNeighborsWarning() As String
+    MergedOffsetNeighborsWarning = "Предупреждение: объединено дополнительных стержней соседних граней: " & CStr(mMergedOffsetNeighbors) & _
+        ". В расчёте и подписях учтён только первый добавленный стержень с его координатами и диаметром."
 End Function
 
 ' Размещает стержни по готовому описанию в переданной бетонной области
