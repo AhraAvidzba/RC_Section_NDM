@@ -932,6 +932,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
         sheet.Range("A5").Resize(3, 15).Value2 = TestAudit03GeometrySnapshotArray("mm", 1#)
         annotations(2, 2) = -50#: annotations(2, 4) = 50#: annotations(2, 9) = "mm": sheet.Range("A20").Resize(2, 9).Value2 = annotations
         TestSnapshotMetadataAdapterParity stats, fixture, settings, reader, anchor
+        TestLocaleSavedNumbers stats, fixture, settings, reader, anchor
         baseline = sheet.Range("A5:X37").Value2
         For Each row In Array(11, 12, 14, 15, 16, 17)
             Set cell = anchor.Cells(row, 3)
@@ -1929,4 +1930,80 @@ Private Sub TestSnapshotMetadataAdapterParity(ByRef stats As TUiTestStats, ByVal
     Next row
     anchor.Cells(1, 4).Resize(18, 1).Value2 = originalUnits
     anchor.Cells(11, 3).Resize(2, 1).NumberFormat = "General"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет десятичный текст и повреждённые группы в готовых свойствах, элементах
+' и аннотациях. Оба потребителя читают сохранённое НДС без нового solver.
+Private Sub TestLocaleSavedNumbers(ByRef stats As TUiTestStats, ByVal fixture As Object, _
+        ByVal settings As CSystemSettingsReader, ByVal reader As CSectionPlotDataReader, ByVal anchor As Object)
+    Dim saved As Variant, annotation As Object, elements As Object, geometry As Object, cell As Object
+    Dim original As Variant, field As Long, value As Variant, separator As Variant, valid As Boolean, expected As Double
+    Dim code As Long, reason As String, actual As Double, exported As String, prefix As String, solveCount As Long
+    Dim oldUse As Boolean, oldDecimal As String, oldThousands As String
+    oldUse = Application.UseSystemSeparators: oldDecimal = Application.DecimalSeparator: oldThousands = Application.ThousandsSeparator
+    saved = anchor.Resize(18, 4).Value2: solveCount = SectionEquilibriumSolveCount()
+    Set annotation = fixture.Names.Item("rngNDMSectionAnnotations").RefersToRange
+    Set elements = fixture.Names.Item("rngNDMElementResults").RefersToRange
+    Set geometry = fixture.Names.Item("rngNDMSectionGeometry").RefersToRange
+    On Error GoTo Failed
+    anchor.Cells(2, 4).Resize(6, 1).Value2 = "mm": anchor.Cells(9, 4).Resize(2, 1).Value2 = "1/mm"
+    For Each separator In Array(".", ",")
+        Application.UseSystemSeparators = False: Application.DecimalSeparator = CStr(separator)
+        If separator = "." Then Application.ThousandsSeparator = "," Else Application.ThousandsSeparator = "."
+        For field = 0 To 3
+            Select Case field
+                Case 0: Set cell = anchor.Cells(8, 3)
+                Case 1: Set cell = annotation.Cells(2, 2)
+                Case 2: Set cell = elements.Cells(2, 6)
+                Case 3: Set cell = geometry.Cells(2, 3)
+            End Select
+            original = cell.Value2: cell.NumberFormat = "@"
+            For Each value In Array("1.5", "1,5", "-1.25E-3", "1 2", "12 34", "1 234.5", "1,234.5", "1.234,5")
+                valid = value = "1.5" Or value = "1,5" Or value = "-1.25E-3"
+                expected = 1.5: If value = "-1.25E-3" Then expected = -0.00125
+                cell.Value2 = value: prefix = "locale.saved." & CStr(separator) & "." & field & "." & CStr(value)
+                TestAudit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+                If valid Then
+                    TestAssertTrue stats, prefix & ".read", code = 0
+                    If code = 0 Then
+                        Select Case field
+                            Case 0: actual = reader.Epsilon0
+                            Case 1: actual = reader.AnnotationStartX(1)
+                            Case 2: actual = reader.ResultValue(1)
+                            Case 3: actual = reader.X(1)
+                        End Select
+                        TestAssertClose stats, prefix & ".value", actual, expected, 0#
+                    End If
+                Else
+                    TestAssertTrue stats, prefix & ".rejected", code <> 0
+                    TestAssertTrue stats, prefix & ".address", InStr(reason, cell.Address(False, False)) > 0
+                End If
+                If field = 0 Then
+                    On Error Resume Next
+                    Err.Clear: exported = TestReadStateMetadataForTests(fixture, "PLOT", "StrengthState")
+                    code = Err.Number: reason = Err.Description: Err.Clear
+                    On Error GoTo Failed
+                    If valid Then
+                        TestAssertTrue stats, prefix & ".exportRead", code = 0
+                    Else
+                        TestAssertTrue stats, prefix & ".exportRejected", code <> 0
+                        TestAssertTrue stats, prefix & ".exportAddress", InStr(reason, cell.Address(False, False)) > 0
+                    End If
+                End If
+            Next value
+            cell.Value2 = original
+        Next field
+    Next separator
+    TestAssertTrue stats, "locale.saved.noSolver", SectionEquilibriumSolveCount() = solveCount
+    GoTo Cleanup
+Failed:
+    TestAssertTrue stats, "locale.saved.runtime." & Err.Number & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not cell Is Nothing Then cell.Value2 = original
+    anchor.Resize(18, 4).Value2 = saved
+    Application.UseSystemSeparators = False: Application.DecimalSeparator = oldDecimal
+    Application.ThousandsSeparator = oldThousands: Application.UseSystemSeparators = oldUse
+    On Error GoTo 0
 End Sub

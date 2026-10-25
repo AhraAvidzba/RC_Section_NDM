@@ -1,0 +1,12 @@
+{
+  "Status": "CONFIRMED_BEFORE_FIX",
+  "Primary": "Baseline01_No.txt",
+  "SHA256": "06E684B5F8607EBCAE6F3073D05DBE7981E903FE2A5B917FA1D60EDA46154116",
+  "Totals": [
+    "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1417; failed=128",
+    "TOTAL_AUDIT03_PROFILE_CONFIG: passed=8860; failed=0; cases=292"
+  ],
+  "FailureCount": 128,
+  "SourceUnchanged": true,
+  "FullPass": false
+}

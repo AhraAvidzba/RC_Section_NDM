@@ -639,9 +639,10 @@ Private Function ReadSnapshotNumber(ByVal value As Variant, ByVal anchor As Obje
         If allowBlank Then Exit Function
         GoTo InvalidNumber
     End If
-    If Not IsNumeric(value) Then GoTo InvalidNumber
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed) Then GoTo InvalidNumber
     On Error GoTo InvalidNumber
-    ReadSnapshotNumber = CDbl(value)
+    ReadSnapshotNumber = parsed
     Exit Function
 InvalidNumber:
     Err.Raise vbObjectError + 4719, "CSectionPlotDataReader", _
@@ -835,9 +836,10 @@ Private Function ReadAnnotationNumber(ByVal value As Variant, ByVal anchor As Ob
         ByVal row As Long, ByVal column As Long, ByVal field As String) As Double
     If IsError(value) Then GoTo InvalidValue
     If IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
-    If Not IsNumeric(value) Then GoTo InvalidValue
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed) Then GoTo InvalidValue
     On Error GoTo InvalidValue
-    ReadAnnotationNumber = CDbl(value)
+    ReadAnnotationNumber = parsed
     Exit Function
 InvalidValue:
     Err.Raise vbObjectError + 4718, "CSectionPlotDataReader", AnnotationInputMessage(anchor, row, column, field)

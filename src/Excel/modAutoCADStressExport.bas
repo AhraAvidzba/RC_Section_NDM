@@ -1,4 +1,4 @@
-Attribute VB_Name = "modAutoCADStressExport"
+﻿Attribute VB_Name = "modAutoCADStressExport"
 Option Explicit
 
 ' ==========================================================================
@@ -347,7 +347,7 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
         If StrComp(Trim$(SafeText(data(rowIndex, colCombination))), combinationID, vbTextCompare) = 0 And _
                 StrComp(Trim$(SafeText(data(rowIndex, colStateType))), stateType, vbTextCompare) = 0 Then
             found = True
-            resultByID(CStr(data(rowIndex, colID))) = CDbl(data(rowIndex, colValue))
+            resultByID(CStr(data(rowIndex, colID))) = ReadExportSnapshotNumber(data, anchor, rowIndex, colValue)
             physicalStateByID(CStr(data(rowIndex, colID))) = CStr(data(rowIndex, colState))
         End If
     Next rowIndex
@@ -355,6 +355,22 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
     If Not found Then Err.Raise vbObjectError + 4354, "ReadElementResultsForCombination", _
         MissingExportStateMessage(combinationID, stateType)
 End Sub
+
+
+' Читает только числовую ячейку сохранённого снимка перед экспортом. Числовые Variant
+' сохраняют точность, текст проходит общую полную грамматику; ошибка называет реальный Name-адрес.
+Private Function ReadExportSnapshotNumber(ByRef data As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long) As Double
+    Dim parsed As Double
+    If TryReadStrictDouble(data(row, column), parsed) Then
+        ReadExportSnapshotNumber = parsed: Exit Function
+    End If
+    Err.Raise vbObjectError + 4361, "ReadResultsExportState", _
+        "В сохранённом снимке Results поле " & ResultHeaderBase(CStr(data(1, column))) & _
+        " содержит неверное число: " & anchor.Worksheet.Name & "!" & _
+        anchor.Offset(row - 1, column - 1).Address(False, False) & _
+        ". Повторите расчёт или заново сформируйте сечение для восстановления снимка."
+End Function
 
 ' Читает сохранённое поле деформаций, точку нагрузки и выбранные главные оси.
 ' Переводит длины и кривизны в нужные единицы. Подготавливает предупреждение,
@@ -375,6 +391,8 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     Dim colValue As Long: colValue = ResultColumn(data, "Value")
     Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
 
+    Dim anchor As Object: Set anchor = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
+
     Dim foundState As Boolean
     Dim stateStatus As String
     Dim policy As CResultStatusPolicy
@@ -390,21 +408,21 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
         If StrComp(CStr(data(rowIndex, colLoadCase)), "ALL", vbTextCompare) = 0 Then
             Select Case LCase$(Trim$(CStr(data(rowIndex, colParameter))))
                 Case "concrete.centroidx"
-                    concreteCentroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    concreteCentroidX = OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colValue), CStr(data(rowIndex, colUnit)))
                 Case "concrete.centroidy"
-                    concreteCentroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    concreteCentroidY = OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colValue), CStr(data(rowIndex, colUnit)))
                 Case "concrete.principalangle"
-                    concretePrincipalAngle = CDbl(data(rowIndex, colValue))
+                    concretePrincipalAngle = ReadExportSnapshotNumber(data, anchor, rowIndex, colValue)
                 Case "transformed.centroidx"
-                    transformedCentroidX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    transformedCentroidX = OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colValue), CStr(data(rowIndex, colUnit)))
                 Case "transformed.centroidy"
-                    transformedCentroidY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    transformedCentroidY = OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colValue), CStr(data(rowIndex, colUnit)))
                 Case "transformed.principalangle"
-                    transformedPrincipalAngle = CDbl(data(rowIndex, colValue))
+                    transformedPrincipalAngle = ReadExportSnapshotNumber(data, anchor, rowIndex, colValue)
                 Case "loadreferencex"
-                    loadReferenceX = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    loadReferenceX = OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colValue), CStr(data(rowIndex, colUnit)))
                 Case "loadreferencey"
-                    loadReferenceY = OutputLengthToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    loadReferenceY = OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colValue), CStr(data(rowIndex, colUnit)))
             End Select
         ElseIf StrComp(CStr(data(rowIndex, colLoadCase)), combinationID, vbTextCompare) = 0 Then
             Dim key As String
@@ -414,12 +432,12 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
             If Left$(key, Len(prefix)) = prefix Then
                 Select Case Mid$(key, Len(prefix) + 1)
                 Case "epsilon0"
-                    epsilon0 = CDbl(data(rowIndex, colValue))
+                    epsilon0 = ReadExportSnapshotNumber(data, anchor, rowIndex, colValue)
                     foundState = True
                 Case "kappax"
-                    kappaX = OutputCurvatureToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    kappaX = OutputCurvatureToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colValue), CStr(data(rowIndex, colUnit)))
                 Case "kappay"
-                    kappaY = OutputCurvatureToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
+                    kappaY = OutputCurvatureToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colValue), CStr(data(rowIndex, colUnit)))
                 Case "extensionused"
                     If Not TryReadSnapshotBoolean(data(rowIndex, colValue), extensionUsed) Then _
                         RejectExportSnapshotMetadata workbook, rowIndex, colValue, SafeText(data(rowIndex, colParameter))
@@ -808,19 +826,19 @@ Private Function DrawSavedContourRows(ByVal workbook As Object, ByVal ms As Obje
                 Dim lineUnit As String
                 lineUnit = AnnotationLengthUnit(data, rowIndex, colUnit, anchor)
                 AppendContourSegment segStartX, segStartY, segEndX, segEndY, segBulge, segCount, _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lineUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), lineUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), lineUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), lineUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colStartX), lineUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colStartY), lineUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colEndX), lineUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colEndY), lineUnit), _
                     0#
             Case typePrefix & "ARC"
                 Dim arcUnit As String
                 arcUnit = AnnotationLengthUnit(data, rowIndex, colUnit, anchor)
                 AppendContourSegment segStartX, segStartY, segEndX, segEndY, segBulge, segCount, _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), arcUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), arcUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), arcUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), arcUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colStartX), arcUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colStartY), arcUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colEndX), arcUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colEndY), arcUnit), _
                     Tan(CDbl(arcSweeps.Item(CStr(rowIndex))) / 4#)
             Case typePrefix & "CIRCLE"
                 If segCount > 0 Then
@@ -838,9 +856,9 @@ Private Function DrawSavedContourRows(ByVal workbook As Object, ByVal ms As Obje
                 circleUnit = AnnotationLengthUnit(data, rowIndex, colUnit, anchor)
                 DrawSavedContourRows = DrawSavedContourRows + _
                     DrawContourCirclePolyline(ms, rowLayer, _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), circleUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), circleUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), circleUnit), CRACK_REGION_COLOR_INDEX)
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colStartX), circleUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colStartY), circleUnit), _
+                    OutputLengthToInternalByUnit(ReadExportSnapshotNumber(data, anchor, rowIndex, colEndX), circleUnit), CRACK_REGION_COLOR_INDEX)
         End Select
 NextContourRow:
     Next rowIndex

@@ -1,0 +1,11 @@
+{
+  "Status": "FAILED_NOT_TESTED",
+  "At": "2026-10-26T02:33:55.942015+03:00",
+  "Reason": "Duplicate local Dim anchor in ReadElementResultsForCombination introduced by patch; existing anchor at method start reused after correction.",
+  "CompilerPID": 396,
+  "CompilerStartTicks": "639285678183288341",
+  "CompilerExited": true,
+  "PublishedBookUnchanged": true,
+  "Source": "TestPrepareCandidate.ps1",
+  "FirstCandidateNotAccepted": true
+}

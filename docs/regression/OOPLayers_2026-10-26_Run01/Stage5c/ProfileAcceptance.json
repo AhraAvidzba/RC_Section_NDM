@@ -1,0 +1,50 @@
+{
+  "Status": "PASS_STAGE5C_PROFILE_NO_YES_ONLY",
+  "Records": [
+    {
+      "Mode": "No",
+      "Primary": "Probe02_No.txt",
+      "SHA256": "93DAC9B379B7E7A02695BB902F925557C1721C3D0115F1F92AF534D83C040AA0",
+      "Totals": [
+        "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1545; failed=0",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=417; failed=0; cases=21",
+        "TOTAL_AUTOCAD_CONFIG: passed=1243; failed=0",
+        "TOTAL_AUTOCAD_CONTOURS: passed=627; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.287109375"
+      ],
+      "CompletedMacros": [
+        "modTestPlotConfig.RunAudit03SnapshotMetadataTests",
+        "modTestProfileConfig.RunLocaleDurationTests",
+        "modTestAutoCADConfig.RunAudit03AutoCADConfigTests",
+        "modTestAutoCADContours.RunAutoCADContourTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage5b": true
+    },
+    {
+      "Mode": "Yes",
+      "Primary": "Probe02_Yes.txt",
+      "SHA256": "633909006FC57B81B089283D7F8D02C3BE913780A463900276D34ECEFB820562",
+      "Totals": [
+        "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1545; failed=0",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=417; failed=0; cases=21",
+        "TOTAL_AUTOCAD_CONFIG: passed=1243; failed=0",
+        "TOTAL_AUTOCAD_CONTOURS: passed=627; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.1943359375"
+      ],
+      "CompletedMacros": [
+        "modTestPlotConfig.RunAudit03SnapshotMetadataTests",
+        "modTestProfileConfig.RunLocaleDurationTests",
+        "modTestAutoCADConfig.RunAudit03AutoCADConfigTests",
+        "modTestAutoCADContours.RunAutoCADContourTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage5b": true
+    }
+  ],
+  "FullPass": false
+}

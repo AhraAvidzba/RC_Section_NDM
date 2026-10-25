@@ -1,4 +1,4 @@
-Attribute VB_Name = "modWorkbookCalculation"
+﻿Attribute VB_Name = "modWorkbookCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -1052,12 +1052,13 @@ Private Function TryReadDurationLoad(ByVal value As Variant, ByVal component As 
     If VarType(value) = vbString Then
         If Len(Trim$(CStr(value))) = 0 Then TryReadDurationLoad = True: Exit Function
     End If
-    If Not IsNumeric(value) Then reason = "вместо числа задан текст или другой недопустимый тип значения.": Exit Function
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed) Then reason = "вместо числа задан текст, разделители разрядов или другой недопустимый тип значения.": Exit Function
     On Error GoTo InvalidNumber
     Select Case component
-        Case 2: internalValue = units.InputForceToInternal(CDbl(value))
-        Case 3: internalValue = units.InputMomentMxToInternal(CDbl(value))
-        Case 4: internalValue = units.InputMomentMyToInternal(CDbl(value))
+        Case 2: internalValue = units.InputForceToInternal(parsed)
+        Case 3: internalValue = units.InputMomentMxToInternal(parsed)
+        Case 4: internalValue = units.InputMomentMyToInternal(parsed)
         Case Else: Err.Raise vbObjectError + 4113, "TryReadDurationLoad", "Неизвестная компонента дополнительной нагрузки устойчивости."
     End Select
     TryReadDurationLoad = True

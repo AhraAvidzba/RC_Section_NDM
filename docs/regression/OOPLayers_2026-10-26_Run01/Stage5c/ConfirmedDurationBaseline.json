@@ -1,0 +1,11 @@
+{
+  "Status": "CONFIRMED_BEFORE_FIX",
+  "Primary": "BaselineDuration01_No.txt",
+  "SHA256": "5B0AD321685CBBD72D07694B3DDF5ABDF1E52CB82EE4A203FD02C86F1FA2CC65",
+  "Passed": 12811,
+  "Failed": 30,
+  "Cases": 643,
+  "RejectedExpectations": "6 malformed N/Mx/My inputs accepted; 5 checks per case fail. All other original cases pass.",
+  "SourceUnchanged": true,
+  "FullPass": false
+}

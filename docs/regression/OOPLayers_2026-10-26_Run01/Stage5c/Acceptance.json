@@ -1,0 +1,20 @@
+{
+  "Status": "PASS_STAGE5C_ONLY",
+  "At": "2026-10-26T02:39:35.807418+03:00",
+  "BookSHA256": "8A395370FA71D3ECD9110630C9EA7C9771C7FFE3C6648392AA6F91AEC4A11C22",
+  "AllCodeSHA256": "F009F93A7D3D7D7B101C7685BBDF7630606242A261CD543E631B6663785C9A46",
+  "NativeSourceEquality": true,
+  "Components": 178,
+  "ChangedProductionComponents": 3,
+  "ChangedTestComponents": 2,
+  "UnchangedComponents": 173,
+  "UnchangedNonVbaParts": 106,
+  "NewClasses": 0,
+  "NewModules": 0,
+  "PreservedCompilationFailure": "CompilationFailure01.json",
+  "PreservedBaselines": [
+    "Baseline01_No.txt",
+    "BaselineDuration01_No.txt"
+  ],
+  "FullPass": false
+}

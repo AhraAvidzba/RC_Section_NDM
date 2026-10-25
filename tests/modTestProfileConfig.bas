@@ -743,7 +743,8 @@ End Sub
 ' Отдельно проверяет ошибочный ввод, изоляцию LC, единицы/знаки, перенос точки
 ' приложения и адреса после перемещения имени. Формулы/Names восстанавливаются.
 Public Function RunAudit03DurationConfigTests(Optional ByRef passed As Long = 0, _
-        Optional ByRef failed As Long = 0, Optional ByVal matchingOnly As Boolean = False) As String
+        Optional ByRef failed As Long = 0, Optional ByVal matchingOnly As Boolean = False, _
+        Optional ByVal localeOnly As Boolean = False) As String
     Dim stats As TProfileStats, names As Variant, saved(0 To 5) As Variant, i As Long
     Dim profiles As Object, system As Object, loads As Object, duration As Object
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
@@ -779,6 +780,12 @@ Public Function RunAudit03DurationConfigTests(Optional ByRef passed As Long = 0,
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     TestBuildDurationFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
+    If localeOnly Then
+        TestDurationInvalidRows stats, profiles, loads, duration, section, provider, settings, units, 1
+        TestDurationLocaleValid stats, loads, duration, section, provider, settings, units
+        TestDurationOverflow stats, loads, duration, section, provider, settings, units
+        GoTo Restore
+    End If
     TestDurationMatching stats, profiles, system, loads, duration, section, provider, settings, units, sheet
     If matchingOnly Then GoTo Restore
     TestDurationCells stats, profiles, loads, duration, section, provider, settings, units
@@ -919,15 +926,21 @@ End Sub
 ' устойчивость не получает Calculated=True или NumFail.
 Private Sub TestDurationInvalidRows(ByRef stats As TProfileStats, ByVal profiles As Object, ByVal loads As Object, _
         ByVal duration As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
-        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, Optional ByVal slotLimit As Long = 0)
     Dim slot As Long, column As Long, testValue As Variant, data As Variant, batch As CBatchSectionCalculator
     Dim code As Long, reason As String, prefix As String, cell As Object, errorCase As Long
     TestEnableChecks profiles, 1, "Yes", "No", "No", "Yes"
-    For slot = 1 To duration.Rows.Count - 1
+    If slotLimit = 0 Then slotLimit = duration.Rows.Count - 1
+    For slot = 1 To slotLimit
         For column = 2 To 4
-            For errorCase = 1 To 2
+            For errorCase = 1 To IIf(slot = 1, 4, 2)
                 TestPrepareDurationLoads loads, duration, slot
-                If errorCase = 1 Then testValue = "BAD_DURATION" Else testValue = CVErr(2015)
+                Select Case errorCase
+                    Case 1: testValue = "BAD_DURATION"
+                    Case 2: testValue = CVErr(2015)
+                    Case 3: testValue = "1 2"
+                    Case 4: testValue = "12 34"
+                End Select
                 data = duration.Value2: data(slot + 1, column) = testValue: duration.Value2 = data
                 TestAddDurationRecoveryLoad loads, duration, slot
                 Set cell = duration.Cells(slot + 1, column)
@@ -1873,4 +1886,45 @@ Private Sub TestDurationMatching(ByRef stats As TProfileStats, ByVal profiles As
     TestEnableChecks profiles, 1, "No", "No", "No", "Yes"
     TestSetTableValue system, "Stability.Code", "SP63", 2
     settings.LoadFromWorkbook ThisWorkbook
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выполняет только изменённую числовую границу duration; полный набор сохраняет прежний охват всех строк.
+Public Function RunLocaleDurationTests(Optional ByRef passed As Long = 0, Optional ByRef failed As Long = 0) As String
+    RunLocaleDurationTests = RunAudit03DurationConfigTests(passed, failed, False, True)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Оба десятичных написания дополнительных нагрузок дают прежние Н/Н*мм, знаки и пояснения.
+Private Sub TestDurationLocaleValid(ByRef stats As TProfileStats, ByVal loads As Object, ByVal duration As Object, _
+        ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim separator As Variant, column As Long, data As Variant, batch As CBatchSectionCalculator
+    Dim code As Long, reason As String, prefix As String, oldUse As Boolean, oldDecimal As String, oldThousands As String, oldFormat As Variant
+    oldUse = Application.UseSystemSeparators: oldDecimal = Application.DecimalSeparator: oldThousands = Application.ThousandsSeparator
+    On Error GoTo Failed
+    For Each separator In Array(".", ",")
+        Application.UseSystemSeparators = False: Application.DecimalSeparator = CStr(separator)
+        If separator = "." Then Application.ThousandsSeparator = "," Else Application.ThousandsSeparator = "."
+        For column = 2 To 4
+            TestPrepareDurationLoads loads, duration, 1
+            data = duration.Value2: data(2, column) = CStr(data(2, column)) & CStr(separator) & "0"
+            oldFormat = duration.Cells(2, column).NumberFormat
+            duration.Cells(2, column).NumberFormat = "@": duration.Value2 = data
+            duration.Cells(2, column).NumberFormat = oldFormat
+            prefix = "durationLocale." & CStr(separator) & "." & column
+            code = TestExecuteDuration(section, provider, settings, units, batch, reason)
+            TestCheck stats, prefix & ".reader", code = 0
+            If code = 0 Then TestCheckDurationResult stats, prefix, batch, units, -25000#, 400000#, 600000#: TestCheckComments stats, prefix, batch, units
+            stats.Cases = stats.Cases + 1
+        Next column
+    Next separator
+    GoTo Cleanup
+Failed:
+    TestCheck stats, "durationLocale.runtime." & Err.Number & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    Application.UseSystemSeparators = False: Application.DecimalSeparator = oldDecimal
+    Application.ThousandsSeparator = oldThousands: Application.UseSystemSeparators = oldUse
+    On Error GoTo 0
 End Sub
