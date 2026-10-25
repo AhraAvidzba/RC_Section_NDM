@@ -1,0 +1,23 @@
+﻿{
+  "Status": "PASS_STAGE1_ONLY",
+  "At": "2026-10-26T01:08:50.666889+03:00",
+  "BookSHA256": "56D7BB01D656B83CCCD4424D3E1A7DE796F309CDC35FDE46FB654BA2EF97B472",
+  "AllCodeSHA256": "B6895DB70ED86C80482153EE764571029B976C22B1D24BC3949E57B813A420D6",
+  "NativeSourceEquality": true,
+  "SourceComponents": 172,
+  "DocumentModules": 6,
+  "ChangedSourceComponents": 17,
+  "NewClasses": 0,
+  "NewModules": 0,
+  "NonVbaPartsBytePreserved": 106,
+  "ProfileModes": [
+    "No",
+    "Yes"
+  ],
+  "FullPass": false,
+  "EarlierFailuresPreserved": [
+    "Probe01 report-path wrapper error before Excel",
+    "Probe02_No three obsolete assertions requiring numerical failure to remain silent; corrected per TZ section5"
+  ],
+  "OwnExcelClosure": "No own Excel left; independent process inventory contains only user Excel3712/startTicks639285451789199985."
+}

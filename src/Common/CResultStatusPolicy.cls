@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Единые правила внешних статусов результатов
+' Единые правила метаданных и внешних статусов результатов
 ' ==========================================================================
 ' Преобразует InternalStatus, ResultCode и ResultKind в обозначение статуса
 ' для пользователя. Применяет общий словарь вывода к готовому результату;
@@ -66,9 +66,7 @@ Public Function ExternalStatus(ByVal meta As CResultMeta) As String
         Exit Function
     End If
 
-    If (meta.ResultKind = rkCapacity Or meta.ResultKind = rkCrackFormation) And _
-            meta.InternalStatus = rsCheckFailed And _
-            (meta.ResultCode = rcInitialStateBeyondLimit Or meta.ResultCode = rcCriterionNotReached) Then
+    If IsBaseFailure(meta) Then
         ExternalStatus = STATUS_BASEFAIL
         Exit Function
     End If
@@ -91,6 +89,63 @@ Public Function ExternalStatus(ByVal meta As CResultMeta) As String
         Case Else
             ExternalStatus = STATUS_CALCERR
     End Select
+End Function
+
+
+' Определяет особый физический BaseFail по виду проверки и машинной причине.
+' Пользовательский текст и признаки локализации не участвуют в решении.
+Private Function IsBaseFailure(ByVal meta As CResultMeta) As Boolean
+    If meta Is Nothing Then Exit Function
+    IsBaseFailure = (meta.ResultKind = rkCapacity Or meta.ResultKind = rkCrackFormation) And _
+        meta.InternalStatus = rsCheckFailed And _
+        (meta.ResultCode = rcInitialStateBeyondLimit Or meta.ResultCode = rcCriterionNotReached)
+End Function
+
+' Возвращает прежний приоритет непосредственно по метаданным. Отсутствующий,
+' не сформированный и неизвестный исход сохраняет приоритет внутренней ошибки.
+Public Function MetaPriority(ByVal meta As CResultMeta) As Long
+    MetaPriority = 6
+    If meta Is Nothing Then Exit Function
+    Select Case meta.InternalStatus
+        Case rsNotRequested, rsNotApplicable, rsBlockedByDependency
+            MetaPriority = 0
+        Case rsSuccess, rsSuccessWithWarning
+            MetaPriority = 1
+        Case rsCheckFailed
+            If IsBaseFailure(meta) Then MetaPriority = 3 Else MetaPriority = 2
+        Case rsNumericalFailure
+            MetaPriority = 4
+        Case rsInvalidInput, rsInvalidConfiguration
+            MetaPriority = 5
+    End Select
+End Function
+
+' Определяет физически интерпретируемое завершение без преобразования в строку.
+' Признаки Applies/Calculated остаются исходными и здесь не переписываются.
+Public Function IsMetaFinished(ByVal meta As CResultMeta) As Boolean
+    If meta Is Nothing Then Exit Function
+    Select Case meta.InternalStatus
+        Case rsSuccess, rsSuccessWithWarning, rsCheckFailed
+            IsMetaFinished = True
+    End Select
+End Function
+
+' Распознаёт ошибку ввода/Config по внутреннему статусу без внешнего кода.
+Public Function IsMetaInvalid(ByVal meta As CResultMeta) As Boolean
+    If meta Is Nothing Then Exit Function
+    IsMetaInvalid = (meta.InternalStatus = rsInvalidInput Or meta.InternalStatus = rsInvalidConfiguration)
+End Function
+
+' Определяет проблемный итог по тому же приоритету, что строковый внешний API.
+' Физический FAIL, численный отказ и ошибка данных сохраняют разные метаданные.
+Public Function IsMetaFailedOverall(ByVal meta As CResultMeta) As Boolean
+    IsMetaFailedOverall = (MetaPriority(meta) > 1)
+End Function
+
+' Отделяет обязательное внимание к неподтверждённому расчёту или ошибке
+' от обычного физического невыполнения. NumFail остаётся численным отказом.
+Public Function MetaRequiresAttention(ByVal meta As CResultMeta) As Boolean
+    MetaRequiresAttention = (MetaPriority(meta) >= 4)
 End Function
 
 ' Проверяет уже заданное внешнее обозначение статуса. Неизвестная строка
@@ -142,7 +197,7 @@ Public Function WorstResultMeta(ByVal fallbackKind As EResultKind, _
             End If
             If selected Is Nothing Then
                 Set selected = candidate
-            ElseIf StatusPriority(ExternalStatus(candidate)) > StatusPriority(ExternalStatus(selected)) Then
+            ElseIf MetaPriority(candidate) > MetaPriority(selected) Then
                 Set selected = candidate
             ElseIf candidate.InternalStatus = rsSuccessWithWarning And selected.InternalStatus = rsSuccess Then
                 Set selected = candidate ' Оба исхода отображаются OK, но значимое предупреждение и его машинный код не должны теряться из-за порядка дочерних ветвей.

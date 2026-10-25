@@ -270,7 +270,7 @@ Public Property Get ReserveFactor() As Double
     If mUtilization <= 0# Then Exit Property
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
-    If Not policy.IsFinished(policy.ExternalStatus(mMeta)) Then Exit Property
+    If Not policy.IsMetaFinished(mMeta) Then Exit Property
     ReserveFactor = 1# / mUtilization
 End Property
 

@@ -41,6 +41,7 @@ Public Function RunWorkbookInterfaceTests() As String
     Dim suiteSheet As Object
     Set suiteSheet = ThisWorkbook.Application.ActiveSheet
     t0 = Timer
+    TestUiClockContract stats
 
     TestAppendLine stats, "RUN: TestButtons"
     TestButtons stats
@@ -240,7 +241,7 @@ Public Function RunWorkbookInterfaceTests() As String
     suiteSheet.Activate
     TestAssertTrue stats, "ui.suite.activeSheetRestored", ThisWorkbook.Application.ActiveSheet Is suiteSheet
     TestAppendLine stats, "TOTAL_WORKBOOK_UI: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
-        "; elapsedSec=" & TestFormatNumberInvariant(Timer - t0)
+        "; elapsedSec=" & TestFormatNumberInvariant(TestUiElapsedSeconds(t0, Timer))
     RunWorkbookInterfaceTests = stats.Report
     Exit Function
 
@@ -253,6 +254,56 @@ Failed:
     RunWorkbookInterfaceTests = stats.Report & "RUNTIME ERROR: " & CStr(failureNumber) & _
         "; source=" & failureSource & "; description=" & failureDescription
 End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет только затронутые сообщения: ошибку ProfileId, импортные единицы
+' и вывод определяющего сочетания. Физические проверки вызываются целиком.
+Public Function RunInputOnlyMessageContractTests() As String
+    On Error GoTo Failed
+    Dim stats As TUiTestStats
+    TestUiClockContract stats
+    TestAppendLine stats, "RUN: TestInvalidProfileIdDoesNotRunPlot"
+    TestInvalidProfileIdDoesNotRunPlot stats
+    TestAppendLine stats, "RUN: TestAudit03ImportedSnapshotUnitChanges"
+    TestAudit03ImportedSnapshotUnitChanges stats
+    TestAppendLine stats, "RUN: TestGoverningCombinationWritesDetailedResults"
+    TestGoverningCombinationWritesDetailedResults stats
+    TestAppendLine stats, "TOTAL_INPUT_ONLY_MESSAGE_CONTRACT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunInputOnlyMessageContractTests = stats.Report
+    Exit Function
+Failed:
+    RunInputOnlyMessageContractTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
+        "; source=" & Err.Source & "; description=" & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Нейтральный итог сохраняет число обработанных сочетаний и отдельное указание
+' Results; причины расчётных проверок и их коды в этот текст не возвращаются.
+Private Function TestCompletedCalculationMessage(ByVal message As String, ByVal expectedCount As Long) As Boolean
+    TestCompletedCalculationMessage = _
+        Left$(message, Len("Расчет завершен." & vbCrLf & vbCrLf)) = "Расчет завершен." & vbCrLf & vbCrLf And _
+        InStr(1, message, vbCrLf & "Обработано сочетаний: " & CStr(expectedCount) & ".", vbBinaryCompare) > 0 And _
+        InStr(1, message, "Результаты и пояснения всех проверок — на листе Results.", vbBinaryCompare) > 0 And _
+        InStr(1, message, "Ошибок ввода:", vbBinaryCompare) = 0 And _
+        InStr(1, message, "Показана только первая ошибка ввода:", vbBinaryCompare) = 0
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Timer обнуляется в полночь; один UI-набор ограничен watchdog и длится меньше
+' суток, поэтому при отрицательной разности добавляются ровно одни сутки.
+Private Function TestUiElapsedSeconds(ByVal started As Double, ByVal finished As Double) As Double
+    TestUiElapsedSeconds = finished - started
+    If TestUiElapsedSeconds < 0# Then TestUiElapsedSeconds = TestUiElapsedSeconds + 86400#
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Детерминированно проверяет обычный интервал, полночь и нулевую длительность.
+Private Sub TestUiClockContract(ByRef stats As TUiTestStats)
+    TestAssertClose stats, "ui.duration.sameDay", TestUiElapsedSeconds(10.25, 11.5), 1.25, 0.000000001
+    TestAssertClose stats, "ui.duration.midnight", TestUiElapsedSeconds(86399.75, 0.5), 0.75, 0.000000001
+    TestAssertClose stats, "ui.duration.zero", TestUiElapsedSeconds(20#, 20#), 0#, 0.000000001
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ДЛЯ ТЕСТОВ
@@ -725,7 +776,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' При пустом ProfileId даже включенное автообновление не запускает вывод НДС.
-' Проверяет сообщение InputErr и отсутствие строк element-results.
+' Проверяет счётчик, собственную причину и адрес ошибки ввода без требования кода InputErr в окне.
 Private Sub TestInvalidProfileIdDoesNotRunPlot(ByRef stats As TUiTestStats)
     TestPrepareCircleInput
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
@@ -737,8 +788,14 @@ Private Sub TestInvalidProfileIdDoesNotRunPlot(ByRef stats As TUiTestStats)
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
 
+    TestAppendLine stats, "INVALID_PROFILE_MESSAGE: " & message
     TestAssertTrue stats, "ui.loads.invalidProfileId.message", _
-        InStr(1, message, "InputErr", vbTextCompare) > 0 And _
+        Left$(message, Len("Расчет завершен с ошибками ввода.")) = "Расчет завершен с ошибками ввода." And _
+        InStr(1, message, "Ошибок ввода: 1.", vbBinaryCompare) > 0 And _
+        InStr(1, message, "Показана только первая ошибка ввода:", vbBinaryCompare) > 0 And _
+        InStr(1, message, "ProfileId", vbTextCompare) > 0 And _
+        InStr(1, message, loads.Cells.Item(2, 5).Address(False, False), vbBinaryCompare) > 0 And _
+        InStr(1, message, "не заполнен", vbTextCompare) > 0 And _
         InStr(1, message, "результатов элементов", vbTextCompare) = 0
     TestAssertTrue stats, "ui.loads.invalidProfileId.noElementRows", _
         TestResultTableRowCount("rngNDMElementResults") = 1
@@ -1925,7 +1982,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Решает безопасное и более тяжелое LC с критерием governing StrengthCapacity.
-' Сверяет выбранный ID с запасами в настоящей сводке и итоговым сообщением.
+' Сверяет определяющий ID в Results; итоговое окно содержит нейтральный счётчик и ссылку на Results.
 Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTestStats)
     TestPrepareCircleInput
     TestSetSystemSetting "General.WorstCombinationCriterion", "StrengthCapacity"
@@ -1970,7 +2027,9 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     TestAppendLine stats, "INFO: ui.governing actual=" & governingID & "; expected=" & expectedID
 
     TestAssertTrue stats, "ui.governing.id", governingID = expectedID
-    TestAssertTrue stats, "ui.governing.message", InStr(1, message, governingID, vbTextCompare) > 0
+    TestAppendLine stats, "GOVERNING_COMPLETION_MESSAGE: " & message
+    TestAssertTrue stats, "ui.governing.message", TestCompletedCalculationMessage(message, 2) And _
+        InStr(1, message, governingID, vbTextCompare) = 0
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -6623,7 +6682,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             loads.Cells(2, 5).Value2 = "PR1": loads.Cells(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
             message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
             TestAppendLine stats, "IMPORTED_CALCULATION_MESSAGE: " & prefix & "|" & message
-            TestAssertTrue stats, prefix & ".run", InStr(1, message, "Расчет завершен. Обработано сочетаний: 1.", vbTextCompare) = 1
+            TestAssertTrue stats, prefix & ".run", TestCompletedCalculationMessage(message, 1)
             TestAssertTrue stats, prefix & ".noImportNotice", InStr(1, message, "импорт", vbTextCompare) = 0 And InStr(1, message, "AutoCAD", vbTextCompare) = 0 ' Сообщения импорта допустимы только при формировании сечения.
             TestAssertTextEquals stats, prefix & ".directState", TestResultsPropertyValue("LC_IMPORT", "DirectStateStatus"), "OK"
             TestAssertClose stats, prefix & ".equilibriumN", CDbl(TestResultsPropertyValue("LC_IMPORT", "Nint")) * forceFactor * signN, -100000#, 0.001
@@ -6699,7 +6758,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     TestSetSystemSetting "Units.Length.Output", "m"
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
     TestAppendLine stats, "IMPORTED_CALCULATION_MESSAGE: invalidOutput.recovery|" & message
-    TestAssertTrue stats, "audit03.importUnits.invalidOutput.recovery", InStr(1, message, "Расчет завершен. Обработано сочетаний: 1.", vbTextCompare) = 1
+    TestAssertTrue stats, "audit03.importUnits.invalidOutput.recovery", TestCompletedCalculationMessage(message, 1)
     TestAssertTrue stats, "audit03.importUnits.invalidOutput.noImportNotice", InStr(1, message, "импорт", vbTextCompare) = 0 And InStr(1, message, "AutoCAD", vbTextCompare) = 0 ' Повторный расчёт не повторяет сообщения этапа импорта.
     TestAssertTextEquals stats, "audit03.importUnits.invalidOutput.directState", TestResultsPropertyValue("LC_IMPORT", "DirectStateStatus"), "OK"
     TestAssertClose stats, "audit03.importUnits.invalidOutput.equilibriumN", CDbl(TestResultsPropertyValue("LC_IMPORT", "Nint")) * 9806.65, -100000#, 0.001 ' Здесь сохраняются выходные tf и положительное растяжение из последнего набора.

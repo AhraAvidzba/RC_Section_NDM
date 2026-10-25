@@ -129,7 +129,7 @@ Public Property Get StrainReserve() As Double
     If Not mState.Converged Then Exit Property
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
-    If Not policy.IsFinished(Status) Then Exit Property
+    If Not policy.IsMetaFinished(mMeta) Then Exit Property
     Dim reserve As Double
     reserve = 1E+100
     AddStrainReserve reserve, mState.HasConcreteCompression, mConcreteCompressionLimit, mState.MinConcreteStrain

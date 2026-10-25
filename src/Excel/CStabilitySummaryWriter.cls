@@ -484,8 +484,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, 2) = CalculationResultMessage(batch, index, batch.ResultAt(index).StabilityMeta)
     data(rowIndex, 3) = statusText
     PutDefaultStatusCells data, rowIndex, policy.NotApplicable
-    If statusText = policy.NotApplicable Then Exit Sub
-    If Not policy.IsFinished(statusText) Then Exit Sub
+    If Not policy.IsMetaFinished(batch.ResultAt(index).StabilityMeta) Then Exit Sub
 
     data(rowIndex, 4) = OptionalValue(batch.ResultAt(index).StabilityResult.Eta1)
     data(rowIndex, 5) = OptionalValue(batch.ResultAt(index).StabilityResult.Eta2)

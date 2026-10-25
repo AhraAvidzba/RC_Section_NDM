@@ -1,0 +1,13 @@
+{
+  "OriginalProbeSHA256": "AA8BD442CB406ADEC7C22AB94F311FD6874CEB6BC70C3188CD9FC741AB30220B",
+  "OldFailedExpectations": [
+    "inputDialog.check.only.no.warning",
+    "inputDialog.check.only.no.details",
+    "inputDialog.batch.check.only.not.in.dialog"
+  ],
+  "ObservedMachineOutcome": "DirectState rsNumericalFailure / SINGULAR_TANGENT",
+  "Reason": "TZ section5 requires an unconfirmed numerical outcome to raise mandatory attention; old expectations deliberately hid every non-input outcome",
+  "NewAssertions": "Machine outcome is CheckFailed or NumericalFailure; mandatory flag and own numerical notice exactly follow actual numerical outcome, physical-only details remain in Results, no aggregate-comment substitution",
+  "NumericalAlgorithmsChanged": false,
+  "OriginalFailedReportPreserved": true
+}

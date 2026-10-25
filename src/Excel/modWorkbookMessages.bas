@@ -1,4 +1,4 @@
-Attribute VB_Name = "modWorkbookMessages"
+﻿Attribute VB_Name = "modWorkbookMessages"
 Option Explicit
 
 ' ==========================================================================
@@ -109,21 +109,57 @@ Public Function WorkbookMessageParagraph(ByVal message As String, ByVal paragrap
     End If
 End Function
 
-' Собирает итог один раз по готовым результатам: считает только сочетания
-' с ошибками ввода и показывает одну собственную причину вместо общего комментария.
+' Собирает итог один раз по готовым результатам: отдельно считает ошибки ввода,
+' внутренние ошибки и численные отказы; берёт собственную причину каждой категории.
 ' Чтение результатов не запускает solver и не меняет статусы или таблицы.
 Public Function CalculationBatchMessage(ByVal batch As CBatchSectionCalculator, _
-        Optional ByRef hasInputErrors As Boolean = False) As String
+        Optional ByRef hasInputErrors As Boolean = False, Optional ByRef requiresAttention As Boolean = False) As String
     Dim index As Long, count As Long, firstError As String, meta As CResultMeta
+    Dim internalCount As Long, numericalCount As Long, firstInternal As String, firstNumerical As String
     For index = 1 To batch.Count
         Set meta = batch.ResultAt(index).InputErrorMeta
         If Not meta Is Nothing Then
             count = count + 1
-            If Len(firstError) = 0 Then firstError = CalculationResultMessage(batch, index, meta)
+            If Len(firstError) = 0 Then firstError = RequiredAttentionMessage(batch, index, meta)
+        End If
+        Set meta = batch.ResultAt(index).InternalErrorMeta
+        If Not meta Is Nothing Then
+            internalCount = internalCount + 1
+            If Len(firstInternal) = 0 Then firstInternal = RequiredAttentionMessage(batch, index, meta)
+        End If
+        Set meta = batch.ResultAt(index).NumericalFailureMeta
+        If Not meta Is Nothing Then
+            numericalCount = numericalCount + 1
+            If Len(firstNumerical) = 0 Then firstNumerical = RequiredAttentionMessage(batch, index, meta)
         End If
     Next index
     hasInputErrors = (count > 0)
-    CalculationBatchMessage = CalculationCompletionMessage(batch.Count, count, firstError, vbNullString)
+    requiresAttention = hasInputErrors Or internalCount > 0 Or numericalCount > 0
+    Dim text As String
+    text = CalculationCompletionMessage(batch.Count, count, firstError, vbNullString)
+    If internalCount > 0 Then
+        text = WorkbookMessageParagraph(text, "Внутренних ошибок: " & CStr(internalCount) & ".")
+        text = WorkbookMessageParagraph(text, "Первая внутренняя ошибка:" & vbCrLf & firstInternal)
+    End If
+    If numericalCount > 0 Then
+        text = WorkbookMessageParagraph(text, "Сочетаний с неподтверждённым численным результатом: " & CStr(numericalCount) & ".")
+        text = WorkbookMessageParagraph(text, "Первая численная неудача:" & vbCrLf & firstNumerical)
+    End If
+    CalculationBatchMessage = WorkbookDialogText(text)
+End Function
+
+' Сохраняет машинную причину и адрес даже при пустом пользовательском пояснении.
+' Этот запасной текст относится только к уже классифицированному обязательному уведомлению.
+Private Function RequiredAttentionMessage(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal meta As CResultMeta) As String
+    RequiredAttentionMessage = CalculationResultMessage(batch, index, meta)
+    If Len(RequiredAttentionMessage) > 0 Then Exit Function
+    RequiredAttentionMessage = "Сочетание " & batch.CombinationID(index) & ": описание причины не задано. Код причины: " & ResultCodeToText(meta.ResultCode) & "."
+    Dim reference As String
+    reference = batch.SettingReferences(meta.SourceKeys)
+    If Len(reference) > 0 Then RequiredAttentionMessage = RequiredAttentionMessage & " " & reference
+    reference = batch.SourceReference(index)
+    If Len(reference) > 0 Then RequiredAttentionMessage = RequiredAttentionMessage & " Исходная строка сочетания: " & reference & "."
 End Function
 
 ' Строит сводку запуска из готовых счётчиков и собственной причины первой ошибки.

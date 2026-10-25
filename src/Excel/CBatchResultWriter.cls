@@ -645,7 +645,7 @@ Private Sub PutStabilityBranchStatus(ByRef data() As Variant, ByVal rowIndex As 
         ByVal planeIndex As Long, ByVal branchKey As String)
     If Not StabilityBranchApplies(batch, index, planeIndex, branchKey) Then
         data(rowIndex, columnIndex) = policy.NotApplicable
-    ElseIf Not policy.IsFinished(MetaStatus(policy, batch.ResultAt(index).StabilityMeta)) Then
+    ElseIf Not policy.IsMetaFinished(batch.ResultAt(index).StabilityMeta) Then
         data(rowIndex, columnIndex) = MetaStatus(policy, batch.ResultAt(index).StabilityMeta)
     ElseIf StabilityPlanePassed(batch, index, planeIndex) Then
         data(rowIndex, columnIndex) = policy.OK

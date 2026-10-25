@@ -307,7 +307,7 @@ End Property
 Public Property Get SummaryReserve() As Double
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
-    If Not policy.IsFinished(Status) Then Exit Property
+    If Not policy.IsMetaFinished(mMeta) Then Exit Property
     If mPlaneApplicable1 And mReserve1 > 0# Then SummaryReserve = mReserve1
     If mPlaneApplicable2 And mReserve2 > 0# Then
         If SummaryReserve <= 0# Or mReserve2 < SummaryReserve Then SummaryReserve = mReserve2

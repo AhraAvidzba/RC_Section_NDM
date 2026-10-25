@@ -80,6 +80,9 @@ Public Function RunBatchCalculationTests() As String
     On Error GoTo Failed
 
     Dim stats As TBatchTestStats
+    Dim typedPassed As Long, typedFailed As Long
+    stats.Report = modTestAudit02Api.RunTypedStatusPolicyTests(typedPassed, typedFailed)
+    stats.Passed = typedPassed: stats.Failed = typedFailed
     Dim originalPr1Stability As String
     Dim originalPr1CrackWidth As String
     Dim originalCrackCode As String
@@ -8000,6 +8003,9 @@ End Function
 Public Function RunAudit03StatusPaletteTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
+    Dim typedPassed As Long, typedFailed As Long
+    stats.Report = modTestAudit02Api.RunTypedStatusPolicyTests(typedPassed, typedFailed)
+    stats.Passed = typedPassed: stats.Failed = typedFailed
     TestFormationStatusFormatting stats
     TestBatchSummaryWriter stats
     TestAudit03CheckWriterPalette stats, 3, False

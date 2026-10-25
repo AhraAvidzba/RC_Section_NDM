@@ -410,7 +410,7 @@ Public Property Get ReserveFactor() As Double
     If mLambdaCapacity <= 0# Then Exit Property
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
-    If Not policy.IsFinished(Status) Then Exit Property
+    If Not policy.IsMetaFinished(ResultMeta) Then Exit Property
     ReserveFactor = mLambdaCapacity
 End Property
 

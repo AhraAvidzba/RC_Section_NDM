@@ -2110,7 +2110,7 @@ End Property
 Public Property Get InvalidInputCount() As Long
     Dim i As Long
     For i = 1 To mCount
-        If mStatusPolicy.IsInvalid(mResults(i).Status) Then InvalidInputCount = InvalidInputCount + 1
+        If mStatusPolicy.IsMetaInvalid(mResults(i).OverallMeta) Then InvalidInputCount = InvalidInputCount + 1
     Next i
 End Property
 
@@ -2119,7 +2119,7 @@ End Property
 Public Property Get FirstInvalidInputMessage() As String
     Dim i As Long
     For i = 1 To mCount
-        If mStatusPolicy.IsInvalid(mResults(i).Status) Then
+        If mStatusPolicy.IsMetaInvalid(mResults(i).OverallMeta) Then
             FirstInvalidInputMessage = DetailedInvalidInputMessage(i)
             Exit Property
         End If
@@ -2224,6 +2224,15 @@ End Property
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Подставляет готовые метаданные только для синтетической проверки представления.
+' Численный расчёт не вызывается; публичный ResultAt по-прежнему замораживает результат.
+Friend Sub TestStoreResultForPresentation(ByVal index As Long, ByVal result As CCombinationResult)
+    If index < 1 Or index > mCount Or result Is Nothing Then Err.Raise vbObjectError + 3943, _
+        "CBatchSectionCalculator.TestStoreResultForPresentation", "Тестовый результат сочетания вне диапазона или не передан."
+    Set mResults(index) = result
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' возвращает число успешных построений общей области в последнем Execute.

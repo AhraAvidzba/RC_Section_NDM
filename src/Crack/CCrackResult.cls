@@ -116,7 +116,7 @@ Public Property Get NormalMeta() As CResultMeta
         Exit Property
     End If
     Set width = mWidth.ResultMeta
-    If mPolicy.IsFailedOverall(mPolicy.ExternalStatus(mCurrentStateMeta)) Or _
+    If mPolicy.IsMetaFailedOverall(mCurrentStateMeta) Or _
             mCurrentStateMeta.InternalStatus = rsSuccessWithWarning Then Set currentProblem = mCurrentStateMeta
     Dim comment As String
     formation.AppendCommentTo comment

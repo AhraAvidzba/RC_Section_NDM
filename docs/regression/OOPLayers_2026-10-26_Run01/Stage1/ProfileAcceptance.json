@@ -1,0 +1,72 @@
+﻿{
+  "Status": "PASS_STAGE1_PROFILE_NO_YES_ONLY",
+  "At": "2026-10-26T01:07:26.103018+03:00",
+  "CandidateSHA256": "D363F931708CF3C6A514EFEC1383B5D33B8AE3B4D366B0110B230110E20CAF76",
+  "Records": [
+    {
+      "Mode": "No",
+      "Primary": "Probe03_No.txt",
+      "SHA256": "5587C55BACFC208C6EFAB365BDA627F383897E7B8488BD93A1C60DBCEC3C5C3D",
+      "Bytes": 1279746,
+      "CompletedMacros": [
+        "modTestAudit02Api.RunTypedStatusPolicyTests",
+        "modTestAudit02Api.RunInputOnlyDialogTests",
+        "modTestAudit02Api.RunProgramMessagePresentationTests",
+        "modTestBatchCalculation.RunAudit03StatusPaletteTests",
+        "modTestBatchCalculation.RunAudit03LifecycleTests",
+        "modTestBatchCalculation.RunAudit03CommentCompositionTests",
+        "modTestBatchCalculation.RunAudit03BatchInputMessageTests",
+        "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+        "modTestWorkbookInterface.RunInputOnlyMessageContractTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL TYPED STATUS POLICY: passed=13863; failed=0",
+        "TOTAL INPUT ONLY DIALOG: passed=1122; failed=0",
+        "TOTAL MESSAGE PRESENTATION: passed=29; failed=0",
+        "TOTAL TYPED STATUS POLICY: passed=13863; failed=0",
+        "TOTAL_AUDIT03_PALETTE: passed=14238; failed=0",
+        "TOTAL_AUDIT03_LIFECYCLE: passed=172; failed=0",
+        "TOTAL_AUDIT03_COMMENT_COMPOSITION: passed=32; failed=0",
+        "TOTAL_BATCH_INPUT_MESSAGE: passed=14; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=114; failed=0",
+        "TOTAL_INPUT_ONLY_MESSAGE_CONTRACT: passed=284; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.256103515625"
+      ],
+      "Errors": []
+    },
+    {
+      "Mode": "Yes",
+      "Primary": "Probe03_Yes.txt",
+      "SHA256": "02EC4BCCFBF0CF1E7346EED1126436888B0E8D890D064EAA6A92CBD261912F05",
+      "Bytes": 1278999,
+      "CompletedMacros": [
+        "modTestAudit02Api.RunTypedStatusPolicyTests",
+        "modTestAudit02Api.RunInputOnlyDialogTests",
+        "modTestAudit02Api.RunProgramMessagePresentationTests",
+        "modTestBatchCalculation.RunAudit03StatusPaletteTests",
+        "modTestBatchCalculation.RunAudit03LifecycleTests",
+        "modTestBatchCalculation.RunAudit03CommentCompositionTests",
+        "modTestBatchCalculation.RunAudit03BatchInputMessageTests",
+        "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+        "modTestWorkbookInterface.RunInputOnlyMessageContractTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL TYPED STATUS POLICY: passed=13863; failed=0",
+        "TOTAL INPUT ONLY DIALOG: passed=1122; failed=0",
+        "TOTAL MESSAGE PRESENTATION: passed=29; failed=0",
+        "TOTAL TYPED STATUS POLICY: passed=13863; failed=0",
+        "TOTAL_AUDIT03_PALETTE: passed=14238; failed=0",
+        "TOTAL_AUDIT03_LIFECYCLE: passed=172; failed=0",
+        "TOTAL_AUDIT03_COMMENT_COMPOSITION: passed=32; failed=0",
+        "TOTAL_BATCH_INPUT_MESSAGE: passed=14; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=114; failed=0",
+        "TOTAL_INPUT_ONLY_MESSAGE_CONTRACT: passed=284; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.18798828125"
+      ],
+      "Errors": []
+    }
+  ],
+  "FullPass": false
+}

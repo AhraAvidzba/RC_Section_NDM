@@ -129,6 +129,45 @@ Public Property Get InputErrorMeta() As CResultMeta
     Next item
 End Property
 
+
+' Возвращает собственную первопричину внутреннего/не сформированного результата.
+' Общий комментарий OverallMeta не используется, чтобы не смешать независимые причины.
+Public Property Get InternalErrorMeta() As CResultMeta
+    Set InternalErrorMeta = FirstAttentionMeta(rsInternalError)
+End Property
+
+' Возвращает собственную первопричину численного отказа, независимо от наличия
+' физических FAIL или заблокированных зависимых этапов того же сочетания.
+Public Property Get NumericalFailureMeta() As CResultMeta
+    Set NumericalFailureMeta = FirstAttentionMeta(rsNumericalFailure)
+End Property
+
+' Выбирает первый готовый источник внимания в устойчивом порядке этапов.
+' Неизвестный машинный исход остаётся внутренней ошибкой; текст не классифицируется.
+Private Function FirstAttentionMeta(ByVal category As EResultInternalStatus) As CResultMeta
+    Dim item As Variant, meta As CResultMeta, matches As Boolean
+    For Each item In Array(WorkflowMeta, DirectStateMeta, CapacityMeta, CrackFormationMeta, _
+            CrackCurrentStateMeta, CrackWidthMeta, LongitudinalCrackMeta, StabilityMeta)
+        Set meta = item
+        If Not meta Is Nothing Then
+            If Policy.MetaRequiresAttention(meta) Then
+                Select Case meta.InternalStatus
+                    Case rsInvalidInput, rsInvalidConfiguration
+                        matches = (category = rsInvalidInput)
+                    Case rsNumericalFailure
+                        matches = (category = rsNumericalFailure)
+                    Case Else
+                        matches = (category = rsInternalError)
+                End Select
+                If matches Then
+                    Set FirstAttentionMeta = meta.Clone
+                    Exit Function
+                End If
+            End If
+        End If
+    Next item
+End Function
+
 ' Сохраняет статус и причину общей остановки сочетания, не разбирая текст пояснения.
 ' НДС и результаты отдельных инженерных проверок этот метод не заменяет.
 Friend Sub SetWorkflowMeta(ByVal meta As CResultMeta)

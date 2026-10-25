@@ -687,7 +687,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
-    If Not policy.IsFinished(CrackWidthStatusText(batch, index, policy)) Then
+    If Not policy.IsMetaFinished(batch.ResultAt(index).CrackWidthMeta) Then
         data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
         Exit Sub
     End If
@@ -723,7 +723,7 @@ End Sub
 Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
-    If Not policy.IsFinished(LongitudinalStatusText(batch, index, policy)) Then
+    If Not policy.IsMetaFinished(batch.ResultAt(index).LongitudinalCrackMeta) Then
         data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
         Exit Sub
     End If

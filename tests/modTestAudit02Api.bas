@@ -81,7 +81,7 @@ Public Function RunInputOnlyDialogTests() As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim profiles As CCalculationProfileCatalog, section As CSectionModel, i As Long, solves As Long, started As Double
     Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout
-    Dim requiresAttention As Boolean
+    Dim requiresAttention As Boolean, requiresNumerical As Boolean
     For stage = 1 To 8
         For status = rsUnset To rsInternalError
             Set result = New CCombinationResult: Set meta = New CResultMeta
@@ -116,9 +116,10 @@ Public Function RunInputOnlyDialogTests() As String
     meta.SetResult rsInternalError, rcInternalError, rkStability, "Техническая остановка."
     result.SetStabilityMeta meta
     TestCheck "inputDialog.mixed.calcErr.retained", result.Status = "CalcErr" And Not result.InputErrorMeta Is Nothing
+    TestRequiredAttentionMatrix
 
     Set batch = New CBatchSectionCalculator
-    requiresAttention = True: text = CalculationBatchMessage(batch, requiresAttention)
+    requiresAttention = True: text = CalculationBatchMessage(batch, , requiresAttention)
     TestCheck "inputDialog.empty.neutral", InStr(text, "Обработано сочетаний: 0.") > 0 And InStr(text, "Ошибка") = 0
     TestCheck "inputDialog.empty.no.stale.warning", Not requiresAttention
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -136,15 +137,23 @@ Public Function RunInputOnlyDialogTests() As String
     Set section = TestBuildGeneratedSectionModel(mesh, rebars, "Test.InputDialog")
     batch.Initialize section, provider: Set batch.ProfileCatalog = profiles: batch.ApplySettings settings, units
     batch.AddCombination "CHECK_ONLY", 90000000#, 0#, 0#, "PR1", "", "lambda*N"
-    batch.Execute: text = CalculationBatchMessage(batch, requiresAttention)
-    TestCheck "inputDialog.check.only.no.warning", Not requiresAttention
-    TestCheck "inputDialog.check.only.no.details", InStr(text, "CHECK_ONLY") = 0 And InStr(text, "Ошибок ввода:") = 0
+    batch.Execute: text = CalculationBatchMessage(batch, , requiresAttention)
+    mReport = mReport & "CHECK_ONLY_ACTUAL_META: " & batch.ResultAt(1).OverallMeta.DiagnosticText & vbCrLf
+    requiresNumerical = (batch.ResultAt(1).DirectStateMeta.InternalStatus = rsNumericalFailure)
+    TestCheck "inputDialog.largeLoad.actualOutcome", requiresNumerical Or batch.ResultAt(1).DirectStateMeta.InternalStatus = rsCheckFailed
+    TestCheck "inputDialog.largeLoad.typedAttention", requiresAttention = requiresNumerical
+    TestCheck "inputDialog.largeLoad.noInputError", InStr(text, "Ошибок ввода:") = 0
+    If requiresNumerical Then
+        TestCheck "inputDialog.largeLoad.numericalNotice", InStr(text, "CHECK_ONLY") > 0 And InStr(text, "Первая численная неудача:") > 0
+    Else
+        TestCheck "inputDialog.largeLoad.physicalDetailsOnlyInResults", InStr(text, "CHECK_ONLY") = 0
+    End If
     For i = 1 To 4
         batch.AddInvalidCombination "USER_" & CStr(i), "PR1", "", "Введите числовую нагрузку " & CStr(i) & ".", "Auto", i, "Лист ввода!AA" & CStr(40 + i) & ":AG" & CStr(40 + i)
     Next i
     batch.Execute: solves = SectionEquilibriumSolveCount()
     before = batch.ResultAt(1).OverallMeta.DiagnosticText
-    text = CalculationBatchMessage(batch, requiresAttention)
+    text = CalculationBatchMessage(batch, , requiresAttention)
     TestCheck "inputDialog.batch.typed.warning", requiresAttention
     TestCheck "inputDialog.batch.count", InStr(text, "Ошибок ввода: 4.") > 0
     TestCheck "inputDialog.batch.first.notice", InStr(text, "Показана только первая ошибка ввода:") > 0
@@ -152,7 +161,9 @@ Public Function RunInputOnlyDialogTests() As String
     TestCheck "inputDialog.batch.first.address", InStr(text, "Лист ввода!AA41:AG41") > 0
     TestCheck "inputDialog.batch.only.first", InStr(text, "USER_2") = 0 And InStr(text, "нагрузку 2.") = 0
     TestCheck "inputDialog.batch.check.only.in.results", batch.ResultAt(1).Status <> "InputErr" And Len(batch.ResultAt(1).OverallMeta.ResultComment) > 0
-    TestCheck "inputDialog.batch.check.only.not.in.dialog", InStr(text, "CHECK_ONLY") = 0 And InStr(text, batch.ResultAt(1).OverallMeta.ResultComment) = 0
+    TestCheck "inputDialog.batch.largeLoad.sameOutcome", (batch.ResultAt(1).DirectStateMeta.InternalStatus = rsNumericalFailure) = requiresNumerical
+    TestCheck "inputDialog.batch.largeLoad.typedNotice", (InStr(text, "CHECK_ONLY") > 0) = requiresNumerical
+    TestCheck "inputDialog.batch.largeLoad.noAggregateComment", InStr(text, batch.ResultAt(1).OverallMeta.ResultComment) = 0
     TestCheck "inputDialog.batch.results.link", InStr(text, "на листе Results") > 0
     TestCheck "inputDialog.batch.results.unchanged", batch.ResultAt(1).OverallMeta.DiagnosticText = before
     TestCheck "inputDialog.batch.no.solver", SectionEquilibriumSolveCount() = solves
@@ -169,6 +180,103 @@ Failed:
 Finish:
     RunInputOnlyDialogTests = mReport & "TOTAL INPUT ONLY DIALOG: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает typed-операции с неизменным внешним словарём на всей матрице
+' 11статусов ×20причин ×7видов; смена комментария не меняет классификацию.
+Public Function RunTypedStatusPolicyTests(Optional ByRef passedCount As Long = 0, Optional ByRef failedCount As Long = 0) As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim policy As CResultStatusPolicy: Set policy = New CResultStatusPolicy
+    Dim meta As CResultMeta, copy As CResultMeta, status As Long, code As Long, kind As Long
+    Dim expected As Variant, priorities As Variant, expectedStatus As String, priority As Long
+    Dim text As Variant, prefix As String, finished As Boolean, problem As Boolean
+    expected = Array("CalcErr", "N/A", "N/A", "N/A", "OK", "FAIL", "NumFail", "InputErr", "InputErr", "OK", "CalcErr")
+    priorities = Array(6, 0, 0, 0, 1, 2, 4, 5, 5, 1, 6)
+    For status = rsUnset To rsInternalError
+        For code = rcNone To rcSolverDidNotReturnState
+            For kind = rkGeneric To rkStability
+                expectedStatus = CStr(expected(status)): priority = CLng(priorities(status))
+                If status = rsCheckFailed And (kind = rkCapacity Or kind = rkCrackFormation) And _
+                        (code = rcInitialStateBeyondLimit Or code = rcCriterionNotReached) Then
+                    expectedStatus = "BaseFail": priority = 3
+                End If
+                finished = (priority >= 1 And priority <= 3): problem = (priority >= 2)
+                For Each text In Array("Пояснение InputErr NumFail FAIL", "Localized description", "")
+                    Set meta = New CResultMeta: meta.SetResult status, code, kind, CStr(text), "diagnostic"
+                    meta.SourceKeys = "One.Key;Shared.Key"
+                    prefix = "typed.matrix." & status & "." & code & "." & kind & "." & Len(CStr(text))
+                    TestCheck prefix & ".classification", policy.ExternalStatus(meta) = expectedStatus And _
+                        policy.MetaPriority(meta) = priority And policy.IsMetaFinished(meta) = finished And _
+                        policy.IsMetaFailedOverall(meta) = problem And policy.MetaRequiresAttention(meta) = (priority >= 4)
+                    Set copy = policy.WorstResultMeta(rkGeneric, meta)
+                    TestCheck prefix & ".preserved", copy.InternalStatus = meta.InternalStatus And copy.ResultCode = meta.ResultCode And _
+                        copy.ResultKind = meta.ResultKind And copy.ResultComment = CStr(text) And copy.DiagnosticDetails = "diagnostic" And _
+                        copy.SourceKeys = meta.SourceKeys And copy.Applies = meta.Applies And copy.Calculated = meta.Calculated
+                    copy.ResultComment = "Changed clone"
+                    TestCheck prefix & ".independent", meta.ResultComment = CStr(text)
+                Next text
+            Next kind
+        Next code
+    Next status
+    Dim warning As CResultMeta, success As CResultMeta
+    Set success = New CResultMeta: success.SetResult rsSuccess, rcCheckPassed, rkDirectState, "success"
+    success.SourceKeys = "One.Key;Shared.Key"
+    Set warning = New CResultMeta: warning.SetResult rsSuccessWithWarning, rcSearchBoundReached, rkCrackWidth, "warning"
+    warning.SourceKeys = "Two.Key;shared.key"
+    Set copy = policy.WorstResultMeta(rkGeneric, success, warning)
+    TestCheck "typed.warning.forward", copy.InternalStatus = rsSuccessWithWarning And copy.ResultComment = "warning" And copy.SourceKeys = "One.Key;Shared.Key;Two.Key"
+    Set copy = policy.WorstResultMeta(rkGeneric, warning, success)
+    TestCheck "typed.warning.reverse", copy.InternalStatus = rsSuccessWithWarning And copy.ResultCode = rcSearchBoundReached
+    Set meta = Nothing
+    TestCheck "typed.missing", policy.MetaPriority(meta) = 6 And Not policy.IsMetaFinished(meta) And policy.IsMetaFailedOverall(meta) And policy.MetaRequiresAttention(meta)
+    GoTo Finish
+Failed:
+    TestCheck "typed.runtime", False
+    mReport = mReport & "RUNTIME ERROR: " & Err.Number & "; " & Err.Source & "; " & Err.Description & vbCrLf
+Finish:
+    passedCount = mPassed: failedCount = mFailed
+    RunTypedStatusPolicyTests = mReport & "TOTAL TYPED STATUS POLICY: passed=" & mPassed & "; failed=" & mFailed & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет три категории обязательного внимания на каждом источнике результата,
+' включая пустое/изменённое пояснение, адрес, копирование и отсутствие нового solver.
+Private Sub TestRequiredAttentionMatrix()
+    Dim stage As Long, status As Long, reason As Variant, result As CCombinationResult, meta As CResultMeta
+    Dim batch As CBatchSectionCalculator, text As String, inputFlag As Boolean, attention As Boolean
+    Dim expectedAttention As Boolean, expectedInput As Boolean, prefix As String, before As String, solves As Long
+    solves = SectionEquilibriumSolveCount()
+    For stage = 1 To 8
+        For status = rsUnset To rsInternalError
+            expectedInput = (status = rsInvalidInput Or status = rsInvalidConfiguration)
+            expectedAttention = expectedInput Or status = rsInternalError Or status = rsNumericalFailure Or status = rsUnset
+            For Each reason In Array("Причина FAIL InputErr", "Localized text", "")
+                Set result = New CCombinationResult: Set meta = New CResultMeta
+                meta.SetResult status, rcInternalError, rkGeneric, CStr(reason)
+                meta.SourceKeys = "Solver.Method"
+                TestSetInputDialogMeta result, stage, meta
+                Set batch = New CBatchSectionCalculator
+                batch.AddCombination "TYPED_CASE", -1#, 0#, 0#, "PR1", "", "Auto", 1, "TestInputs!A1:G1"
+                batch.TestStoreResultForPresentation 1, result
+                before = result.OverallMeta.DiagnosticText
+                inputFlag = Not expectedInput: attention = Not expectedAttention
+                text = CalculationBatchMessage(batch, inputFlag, attention)
+                prefix = "attention." & stage & "." & status & "." & Len(CStr(reason))
+                TestCheck prefix & ".flags", inputFlag = expectedInput And attention = expectedAttention
+                TestCheck prefix & ".state", result.OverallMeta.DiagnosticText = before
+                If expectedAttention Then
+                    TestCheck prefix & ".address", InStr(1, text, "TestInputs!A1:G1", vbBinaryCompare) > 0
+                    If Len(CStr(reason)) > 0 Then TestCheck prefix & ".ownReason", InStr(1, text, CStr(reason), vbBinaryCompare) > 0
+                Else
+                    TestCheck prefix & ".neutral", InStr(1, text, "TYPED_CASE", vbBinaryCompare) = 0
+                End If
+            Next reason
+        Next status
+    Next stage
+    TestCheck "attention.no.solver", SectionEquilibriumSolveCount() = solves
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Заполняет один результат через штатные контейнеры; solver и разбор текста не используются.

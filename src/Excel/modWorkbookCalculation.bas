@@ -431,7 +431,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
-    RunSectionCalculationForWorkbook = CalculationBatchMessage(batch, requiresAttention)
+    RunSectionCalculationForWorkbook = CalculationBatchMessage(batch, , requiresAttention)
     requiresAttention = requiresAttention Or Len(plotWarning) > 0
     If Len(plotWarning) > 0 Then RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & plotWarning
     If report.Enabled Then
