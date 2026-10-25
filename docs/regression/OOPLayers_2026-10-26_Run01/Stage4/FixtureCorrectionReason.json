@@ -1,0 +1,13 @@
+﻿{
+  "At": "2026-10-26T01:35:34.737503+03:00",
+  "OriginalPrimary": "Probe01_No.txt",
+  "SHA256": "7760D1C5B854071D9EAA9787E04AB3799DBE9897F4E7F3FB496CA8977A495866",
+  "Cause": "Shared test fixture originally designed for plot reader used per-row Unit=\"-\" plus common unit defaults. Existing export adapter requires explicit row length/curvature units; it failed before metadata comparison.",
+  "Fix": "Provide explicit mm and 1/mm in private test fixture, restore original unit cells afterwards; keep malformed numeric-looking flags as text with @ format so Excel cannot coerce them before reader. No production expectation or formula changed.",
+  "OtherOriginalSuiteTotals": [
+    "snapshot417/0",
+    "AutoCAD config1243/0",
+    "baseline39/0"
+  ],
+  "FullPass": false
+}

@@ -421,17 +421,19 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
                 Case "kappay"
                     kappaY = OutputCurvatureToInternalByUnit(CDbl(data(rowIndex, colValue)), CStr(data(rowIndex, colUnit)))
                 Case "extensionused"
-                    extensionUsed = SafeBoolean(data(rowIndex, colValue))
+                    If Not TryReadSnapshotBoolean(data(rowIndex, colValue), extensionUsed) Then _
+                        RejectExportSnapshotMetadata workbook, rowIndex, colValue, SafeText(data(rowIndex, colParameter))
                 Case "status"
-                    stateStatus = Trim$(SafeText(data(rowIndex, colValue)))
+                    If Not TryReadSnapshotStatus(data(rowIndex, colValue), stateStatus) Then _
+                        RejectExportSnapshotMetadata workbook, rowIndex, colValue, SafeText(data(rowIndex, colParameter))
                 End Select
             End If
         End If
     Next rowIndex
 
-    If extensionUsed Or policy.ToUserStatus(stateStatus) = policy.Fail Then
+    If extensionUsed Or stateStatus = policy.Fail Then
         stateWarningText = EXTENSION_WARNING_TEXT
-    ElseIf policy.ToUserStatus(stateStatus) = policy.NumFail Then
+    ElseIf stateStatus = policy.NumFail Then
         stateWarningText = NUMERICAL_STATE_WARNING_TEXT
     End If
 
@@ -507,19 +509,15 @@ Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
 Failed:
 End Function
 
-' Читает сохранённый логический признак, в том числе из текста Excel.
-' Ошибка ячейки не считается подтверждением использования продолжения диаграммы.
-Private Function SafeBoolean(ByVal value As Variant) As Boolean
-    If IsError(value) Then Exit Function
-    If VarType(value) = vbBoolean Then
-        SafeBoolean = CBool(value)
-        Exit Function
-    End If
-    Select Case LCase$(Trim$(CStr(value)))
-        Case "true", "yes", "да", "1"
-            SafeBoolean = True
-    End Select
-End Function
+' Добавляет фактический адрес именованной таблицы к повреждённому полю снимка.
+' Проверка значения общая со схемой; адаптер не назначает новый инженерный статус.
+Private Sub RejectExportSnapshotMetadata(ByVal workbook As Object, ByVal row As Long, ByVal column As Long, ByVal field As String)
+    Dim anchor As Object: Set anchor = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
+    Err.Raise vbObjectError + 4361, "ReadSectionPropertiesForCombination", _
+        "В сохраненном снимке Results поле " & field & " (" & anchor.Worksheet.Name & "!" & _
+        anchor.Offset(row - 1, column - 1).Address(False, False) & ") содержит недопустимое значение. " & _
+        "Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка."
+End Sub
 
 ' Разрешает Worst через сохраненную сводку/таблицы либо принимает точный LC ID.
 ' Пустой выбор и отсутствие рассчитанных сочетаний отклоняются явно.
@@ -2141,3 +2139,13 @@ Public Sub Audit03EnsureAutoCADLayerForTests(ByVal doc As Object, ByVal name As 
 End Sub
 
 
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Читает метаданные тем же адаптером экспорта без AutoCAD, профилей и повторного расчёта.
+Public Function TestReadStateMetadataForTests(ByVal workbook As Object, ByVal combinationID As String, ByVal stateType As String) As String
+    Dim eps0 As Double, kx As Double, ky As Double, rx As Double, ry As Double, cx As Double, cy As Double, angle As Double
+    Dim extension As Boolean, warning As String
+    ReadSectionPropertiesForCombination workbook, Nothing, combinationID, stateType, "Concrete", _
+        eps0, kx, ky, rx, ry, cx, cy, angle, extension, warning
+    TestReadStateMetadataForTests = CStr(extension) & "|" & warning
+End Function

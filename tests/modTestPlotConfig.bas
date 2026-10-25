@@ -931,6 +931,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
         anchor.Resize(18, 4).Value2 = props
         sheet.Range("A5").Resize(3, 15).Value2 = TestAudit03GeometrySnapshotArray("mm", 1#)
         annotations(2, 2) = -50#: annotations(2, 4) = 50#: annotations(2, 9) = "mm": sheet.Range("A20").Resize(2, 9).Value2 = annotations
+        TestSnapshotMetadataAdapterParity stats, fixture, settings, reader, anchor
         baseline = sheet.Range("A5:X37").Value2
         For Each row In Array(11, 12, 14, 15, 16, 17)
             Set cell = anchor.Cells(row, 3)
@@ -1843,4 +1844,89 @@ End Sub
 ' Добавляет строку только в протокол текущего направленного набора.
 Private Sub TestAppendLine(ByRef stats As TUiTestStats, ByVal value As String)
     stats.Report = stats.Report & value & vbCrLf
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет один снимок всеми пятью состояниями через схему и настоящий адаптер чтения экспорта.
+' Адрес перенесённого Value проверяется по Name; числа и solver не меняются.
+Private Sub TestSnapshotMetadataAdapterParity(ByRef stats As TUiTestStats, ByVal fixture As Object, _
+        ByVal settings As CSystemSettingsReader, ByVal reader As CSectionPlotDataReader, ByVal anchor As Object)
+    Dim state As Variant, value As Variant, flags As Variant, expected As Variant, statuses As Variant, canonical As Variant
+    Dim i As Long, j As Long, row As Long, field As String, prefix As String, code As Long, reason As String, export As String
+    Dim originalUnits As Variant
+    Dim profiles As Object, cell As Object, parsedFlag As Boolean, parsedStatus As String, accepted As Boolean
+    Set profiles = fixture.Names.Item("rngCalculationProfiles").RefersToRange
+    originalUnits = anchor.Cells(1, 4).Resize(18, 1).Value2
+    anchor.Cells(2, 4).Resize(6, 1).Value2 = "mm"
+    anchor.Cells(9, 4).Resize(2, 1).Value2 = "1/mm"
+    anchor.Cells(11, 3).Resize(2, 1).NumberFormat = "@" ' Неверные числовые строки должны оставаться строками, а не преобразовываться Excel при записи.
+
+    flags = Array(True, False, "TRUE", "false", "YeS", "nO", "ДА", "Нет", 1, 0, " 1 ", "0")
+    expected = Array(True, False, True, False, True, False, True, False, True, False, True, False)
+    statuses = Array("OK", "FAIL", "BaseFail", "NumFail", "InputErr", "CalcErr", "N/A", "nUmFaIl", " inputerr ")
+    canonical = Array("OK", "FAIL", "BaseFail", "NumFail", "InputErr", "CalcErr", "N/A", "NumFail", "InputErr")
+    For Each value In Array(Empty, Null, CVErr(2015), "", "TODO", Array(1, 2))
+        parsedFlag = True: parsedStatus = "OK"
+        accepted = TryReadSnapshotBoolean(value, parsedFlag)
+        TestAssertTrue stats, "snapshot.shared.boolean.invalid", Not accepted And Not parsedFlag
+        accepted = TryReadSnapshotStatus(value, parsedStatus)
+        TestAssertTrue stats, "snapshot.shared.status.invalid", Not accepted And parsedStatus = ""
+    Next value
+    For Each state In Array("StrengthState", "CapacityState", "PreCrackState", "PostCrackState", "CrackedState")
+        For row = 8 To 12
+            field = Choose(row - 7, "Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
+            anchor.Cells(row, 2).Value2 = "State." & CStr(state) & "." & field
+        Next row
+        fixture.Worksheets("Results").Range("T36:T37").Value2 = state
+        For row = 2 To profiles.Rows.Count
+            If CStr(profiles.Cells(row, 2).Value2) = "Visualization.State" Then profiles.Cells(row, 3).Value2 = state
+        Next row
+        prefix = "snapshot.parity." & CStr(state) & "." & anchor.Address(False, False)
+        For i = 0 To UBound(flags)
+            anchor.Cells(11, 3).Value2 = flags(i): anchor.Cells(12, 3).Value2 = "OK"
+            reader.LoadFromWorkbook fixture, settings
+            export = TestReadStateMetadataForTests(fixture, "PLOT", CStr(state))
+            TestAssertTrue stats, prefix & ".boolean." & CStr(i), reader.ExtensionUsed = CBool(expected(i)) And _
+                Left$(export, InStr(export, "|") - 1) = CStr(expected(i))
+            TestAssertTrue stats, prefix & ".physicalWarning." & CStr(i), reader.PhysicalDiagramWarningRequired = CBool(expected(i)) And _
+                (Len(Mid$(export, InStr(export, "|") + 1)) > 0) = CBool(expected(i))
+        Next i
+        anchor.Cells(11, 3).Value2 = False
+        For i = 0 To UBound(statuses)
+            anchor.Cells(12, 3).Value2 = statuses(i)
+            reader.LoadFromWorkbook fixture, settings
+            export = TestReadStateMetadataForTests(fixture, "PLOT", CStr(state))
+            TestAssertTrue stats, prefix & ".status." & CStr(i), reader.DirectStateStatus = CStr(canonical(i))
+            TestAssertTrue stats, prefix & ".statusWarning." & CStr(i), (Len(Mid$(export, InStr(export, "|") + 1)) > 0) = _
+                (CStr(canonical(i)) = "FAIL" Or CStr(canonical(i)) = "NumFail")
+        Next i
+        For j = 11 To 12
+            Set cell = anchor.Cells(j, 3)
+            For Each value In Array(Empty, Null, CVErr(2015), "", "TODO", "INVALID", "1,0", "2")
+                If IsNull(value) Or IsEmpty(value) Then cell.ClearContents Else cell.Value2 = value
+                TestAudit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+                TestAssertTrue stats, prefix & ".invalid.plot." & CStr(j), code <> 0 And _
+                    InStr(reason, "Results!" & cell.Address(False, False)) > 0
+                On Error Resume Next
+                Err.Clear
+                export = TestReadStateMetadataForTests(fixture, "PLOT", CStr(state))
+                code = Err.Number: reason = Err.Description
+                Err.Clear
+                On Error GoTo 0
+                TestAssertTrue stats, prefix & ".invalid.export." & CStr(j), code <> 0 And _
+                    InStr(reason, "Results!" & cell.Address(False, False)) > 0 And InStr(reason, CStr(anchor.Cells(j, 2).Value2)) > 0
+            Next value
+            anchor.Cells(11, 3).Value2 = False: anchor.Cells(12, 3).Value2 = "OK"
+        Next j
+    Next state
+    For row = 8 To 12
+        field = Choose(row - 7, "Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
+        anchor.Cells(row, 2).Value2 = "State.StrengthState." & field
+    Next row
+    fixture.Worksheets("Results").Range("T36:T37").Value2 = "StrengthState"
+    For row = 2 To profiles.Rows.Count
+        If CStr(profiles.Cells(row, 2).Value2) = "Visualization.State" Then profiles.Cells(row, 3).Value2 = "StrengthState"
+    Next row
+    anchor.Cells(1, 4).Resize(18, 1).Value2 = originalUnits
+    anchor.Cells(11, 3).Resize(2, 1).NumberFormat = "General"
 End Sub

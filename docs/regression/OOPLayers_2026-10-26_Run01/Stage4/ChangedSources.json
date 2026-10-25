@@ -1,0 +1,6 @@
+﻿{
+  "CSectionPlotDataReader": "src/Excel/CSectionPlotDataReader.cls",
+  "modAutoCADStressExport": "src/Excel/modAutoCADStressExport.bas",
+  "modSectionSnapshot": "src/Excel/modSectionSnapshot.bas",
+  "modTestPlotConfig": "tests/modTestPlotConfig.bas"
+}

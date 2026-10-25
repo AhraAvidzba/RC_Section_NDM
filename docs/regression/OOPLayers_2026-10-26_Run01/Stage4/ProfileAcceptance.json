@@ -1,0 +1,44 @@
+﻿{
+  "Status": "PASS_STAGE4_PROFILE_NO_YES_ONLY",
+  "At": "2026-10-26T01:42:19.269263+03:00",
+  "Records": [
+    {
+      "Mode": "No",
+      "SHA256": "97C02A459BDBBDB0B39688B4D0D2E5B11BA65E6B7488DEAB0CE4FA6285A08964",
+      "Primary": "Probe02_No.txt",
+      "CompletedMacros": [
+        "modTestPlotConfig.RunAudit03SnapshotMetadataTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestAutoCADConfig.RunAudit03AutoCADConfigTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1235; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_AUTOCAD_CONFIG: passed=1243; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.31982421875"
+      ],
+      "BaselineExactExceptElapsedTime": true
+    },
+    {
+      "Mode": "Yes",
+      "SHA256": "23035CAD7C0B26C28FA64F423929B88A1D4B3EF67880703C6E02D75CFCE4AE39",
+      "Primary": "Probe02_Yes.txt",
+      "CompletedMacros": [
+        "modTestPlotConfig.RunAudit03SnapshotMetadataTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestAutoCADConfig.RunAudit03AutoCADConfigTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1235; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_AUTOCAD_CONFIG: passed=1243; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.08203125"
+      ],
+      "BaselineExactExceptElapsedTime": true
+    }
+  ],
+  "CandidateSHA256": "B259D537292244187A98206D29A2C43B6C72B7DF996249027E1E6C9BFBEB30AC",
+  "FullPass": false
+}

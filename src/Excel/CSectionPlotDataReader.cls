@@ -992,22 +992,10 @@ End Function
 ' False. Допускает Boolean и явные текстовые/числовые пары Yes/No, True/False.
 Private Function ReadSnapshotBoolean(ByVal value As Variant, ByVal anchor As Object, _
         ByVal row As Long, ByVal column As Long, ByVal field As String) As Boolean
-    If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
-    If VarType(value) = vbBoolean Then
-        ReadSnapshotBoolean = CBool(value)
-    Else
-        Select Case LCase$(Trim$(CStr(value)))
-            Case "true", "yes", "да", "1"
-                ReadSnapshotBoolean = True
-            Case "false", "no", "нет", "0"
-                ReadSnapshotBoolean = False
-            Case Else
-                GoTo InvalidValue
-        End Select
-    End If
-    Exit Function
-InvalidValue:
-    Err.Raise vbObjectError + 4720, "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
+    Dim parsed As Boolean
+    If Not TryReadSnapshotBoolean(value, parsed) Then Err.Raise vbObjectError + 4720, _
+        "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
+    ReadSnapshotBoolean = parsed
 End Function
 
 ' Проверяет сохранённое обозначение статуса по общему словарю.
@@ -1015,12 +1003,10 @@ End Function
 ' а не новый инженерный результат или самостоятельно назначенный N/A.
 Private Function ReadSnapshotStatus(ByVal value As Variant, ByVal anchor As Object, _
         ByVal row As Long, ByVal column As Long, ByVal field As String) As String
-    Dim text As String, policy As CResultStatusPolicy
-    text = Trim$(ReadSnapshotText(value, anchor, row, column, field))
-    Set policy = New CResultStatusPolicy
-    ReadSnapshotStatus = policy.ToUserStatus(text)
-    If Len(text) = 0 Or StrComp(text, ReadSnapshotStatus, vbTextCompare) <> 0 Then _
-        Err.Raise vbObjectError + 4720, "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
+    Dim parsed As String
+    If Not TryReadSnapshotStatus(value, parsed) Then Err.Raise vbObjectError + 4720, _
+        "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
+    ReadSnapshotStatus = parsed
 End Function
 
 ' Читает служебный текст с адресной диагностикой Excel-ошибки/Null. Пустая

@@ -675,3 +675,42 @@ Public Function TestSectionSnapshotReadDiagnostics() As String
     TestSectionSnapshotReadDiagnostics = "tables=" & CStr(mSnapshotTableReadCount) & ";released=" & _
         CStr(mSnapshotReadTables Is Nothing And mSnapshotReadWorkbook Is Nothing)
 End Function
+
+' Строго распознаёт сохранённый Boolean без Excel/AutoCAD и без подстановки False при повреждении.
+' Поддерживает только прежние пары True/False, Yes/No, Да/Нет, 1/0 и Boolean.
+Public Function TryReadSnapshotBoolean(ByVal value As Variant, ByRef parsed As Boolean) As Boolean
+    parsed = False
+    On Error GoTo InvalidValue
+    If IsError(value) Or IsNull(value) Or IsEmpty(value) Or IsObject(value) Or IsArray(value) Then Exit Function
+    If VarType(value) = vbBoolean Then
+        parsed = CBool(value)
+    Else
+        Select Case LCase$(Trim$(CStr(value)))
+            Case "true", "yes", "да", "1": parsed = True
+            Case "false", "no", "нет", "0": parsed = False
+            Case Else: Exit Function
+        End Select
+    End If
+    TryReadSnapshotBoolean = True
+InvalidValue:
+End Function
+
+' Проверяет семь внешних кодов сохранённого результата; неизвестная строка не становится CalcErr.
+' Возвращает каноническое написание; адрес и ошибку чтения добавляет вызывающий адаптер.
+Public Function TryReadSnapshotStatus(ByVal value As Variant, ByRef parsed As String) As Boolean
+    parsed = vbNullString
+    On Error GoTo InvalidValue
+    If IsError(value) Or IsNull(value) Or IsEmpty(value) Or IsObject(value) Or IsArray(value) Then Exit Function
+    Select Case LCase$(Trim$(CStr(value)))
+        Case "ok": parsed = "OK"
+        Case "fail": parsed = "FAIL"
+        Case "basefail": parsed = "BaseFail"
+        Case "numfail": parsed = "NumFail"
+        Case "inputerr": parsed = "InputErr"
+        Case "calcerr": parsed = "CalcErr"
+        Case "n/a": parsed = "N/A"
+        Case Else: Exit Function
+    End Select
+    TryReadSnapshotStatus = True
+InvalidValue:
+End Function
