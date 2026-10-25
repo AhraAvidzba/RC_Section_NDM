@@ -1,0 +1,16 @@
+{
+  "Status": "PASS_STAGE6_ONLY",
+  "At": "2026-10-26T02:57:43.365730+03:00",
+  "BookSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "AllCodeSHA256": "2688FF2C07BC4A903811F900C2E35E8655FB967FCB0B98677E90288ABDD79D67",
+  "NativeSourceEquality": true,
+  "Components": 178,
+  "ChangedProductionComponents": 2,
+  "ChangedTestComponents": 1,
+  "UnchangedComponents": 175,
+  "UnchangedNonVbaParts": 106,
+  "MathHelperCopiedExactly": true,
+  "NewClasses": 0,
+  "NewModules": 0,
+  "FullPass": false
+}

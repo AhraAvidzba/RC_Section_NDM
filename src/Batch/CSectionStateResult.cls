@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -579,3 +579,58 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CSectionStateResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
+
+' Возвращает геометрический смысл сохранённого поля деформаций без нового решения НДС.
+' Не меняет даже frozen-состояние; при нулевой кривизне прежний h отсутствует, x определён и равен нулю.
+' При Nothing сечения обе величины не определены; writer получает готовые флаги записи, а не выбирает критерии.
+Public Sub GetGeometryDepths(ByVal section As CSectionModel, ByRef depthH As Double, _
+        ByRef compressedDepth As Double, ByRef hasH As Boolean, ByRef hasX As Boolean)
+    depthH = 0#: compressedDepth = 0#: hasH = False: hasX = False
+    If section Is Nothing Then Exit Sub
+    CalculateDepthsPerpendicularToNeutral section, mEpsilon0, mKappaX, mKappaY, depthH, compressedDepth
+    hasH = (depthH > 0#): hasX = (compressedDepth >= 0#)
+End Sub
+
+' Определяет габарит h и глубину сжатой зоны x вдоль нормали к нейтральной линии.
+Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel, ByVal eps0 As Double, _
+        ByVal kappaX As Double, ByVal kappaY As Double, ByRef depthH As Double, ByRef compressedDepth As Double)
+    Dim normValue As Double
+    normValue = Sqr(kappaX * kappaX + kappaY * kappaY)
+    If normValue <= 0.000000000000001 Then Exit Sub
+
+    Dim nx As Double
+    Dim ny As Double
+    nx = kappaY / normValue ' Нормаль поля epsilon = eps0 + kappaX*y + kappaY*x направлена к росту деформации.
+    ny = kappaX / normValue
+
+    Dim minS As Double
+    Dim maxS As Double
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateProjection section, nx, ny, False, minS, maxS
+
+    depthH = maxS - minS
+    If depthH <= 0# Then Exit Sub
+
+    Dim neutralS As Double
+    neutralS = -eps0 / normValue ' Координата нулевой деформации по единичной нормали, мм.
+
+    If eps0 + normValue * minS < 0# And eps0 + normValue * maxS < 0# Then
+        compressedDepth = depthH
+    ElseIf eps0 + normValue * minS >= 0# And eps0 + normValue * maxS >= 0# Then
+        compressedDepth = 0#
+    Else
+        compressedDepth = MaxDouble(0#, MinDouble(maxS, neutralS) - minS)
+    End If
+End Sub
+
+' Возвращает максимум двух чисел для геометрических величин таблицы.
+Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
+    If a >= b Then MaxDouble = a Else MaxDouble = b
+End Function
+
+' Возвращает минимум двух чисел для геометрических величин таблицы.
+Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
+    If a <= b Then MinDouble = a Else MinDouble = b
+End Function

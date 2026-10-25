@@ -350,6 +350,10 @@ Public Function RunBatchCalculationTests() As String
     stats.Report = stats.Report & RunLocaleSavedContractTests(searchPassed, searchFailed) & vbCrLf
     stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
 
+    TestAppendLine stats, "RUN: RunStateDepthGeometryTests"
+    stats.Report = stats.Report & RunStateDepthGeometryTests(searchPassed, searchFailed) & vbCrLf
+    stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
+
     Dim elapsed As Double: elapsed = Timer - t0
     If elapsed < 0# Then elapsed = elapsed + 86400#
     TestAppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
@@ -10770,4 +10774,138 @@ Failed:
     TestAssertTrue stats, "postAudit03.snapshot.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     RunPostAudit03SnapshotOwnerTests = stats.Report & "TOTAL_POSTAUDIT03_SNAPSHOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает перенесённую операцию с дословным прежним oracle writer-а для 48 полей
+' на круге, прямоугольнике, повёрнутом/смещённом и пустотелом сечении, включая frozen-state.
+Public Function RunStateDepthGeometryTests(Optional ByRef passed As Long = 0, Optional ByRef failed As Long = 0) As String
+    Dim stats As TBatchTestStats, section As CSectionModel, solver As CSectionSolver, state As CSectionStateResult
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, spec As CMaterialModelSpec
+    Dim strains(1 To 3) As Double, stresses(1 To 3) As Double, shape As Long, plane As Variant, planes As Variant
+    Dim h As Double, x As Double, expectedH As Double, expectedX As Double, repeatedH As Double, repeatedX As Double
+    Dim hasH As Boolean, hasX As Boolean, repeatedHasH As Boolean, repeatedHasX As Boolean, prefix As String, cases As Long, solves As Long
+    Dim capturedEps As Double, capturedKx As Double, capturedKy As Double
+    On Error GoTo FailedRun
+    solves = SectionEquilibriumSolveCount()
+    strains(1) = -2#: strains(2) = 0#: strains(3) = 2#
+    stresses(1) = -2000#: stresses(2) = 0#: stresses(3) = 2000# ' Искусственный линейный материал теста; нормативные параметры не задаются.
+    Set concrete = New CMaterialDiagram: concrete.InitializeFromArrays strains, stresses, 3, -2#, 2#, True, True
+    Set steel = New CMaterialDiagram: steel.InitializeFromArrays strains, stresses, 3, -2#, 2#, True, True
+    Set spec = New CMaterialModelSpec: spec.Initialize "ULS(I)", "ThreeLine", "UseDiagram", "TwoLine"
+    planes = Array(Array(-0.001, 0#, 0#), Array(0.001, 0#, 0#), Array(0#, 0#, 0#), _
+        Array(-0.001, 0.000001, 0#), Array(0.001, 0.000001, 0#), Array(0#, 0.000001, 0#), _
+        Array(0#, 0#, 0.000001), Array(-0.0001, 0.000001, -0.0000005), Array(0.0001, -0.000002, 0.000001), _
+        Array(0#, 1E-16, 0#), Array(0#, 1E-15, 0#), Array(0#, 1.1E-15, -9E-16))
+    For shape = 0 To 3
+        Set section = TestBuildDepthShape(shape)
+        For Each plane In planes
+            cases = cases + 1: prefix = "state.depth." & shape & "." & cases
+            Set solver = New CSectionSolver
+            solver.EvaluateStrainPlane section, concrete, steel, CDbl(plane(0)), CDbl(plane(1)), CDbl(plane(2))
+            Set state = New CSectionStateResult: state.InitializeFromSolver sstStrengthState, cpStrength, spec, solver
+            capturedEps = state.Epsilon0: capturedKx = state.KappaX: capturedKy = state.KappaY
+            state.Freeze
+            h = -123#: x = -456#: hasH = True: hasX = False
+            state.GetGeometryDepths section, h, x, hasH, hasX
+            expectedH = 0#: expectedX = 0#
+            TestOriginalDepthsPerpendicularToNeutral section, capturedEps, capturedKx, capturedKy, expectedH, expectedX
+            TestAssertTrue stats, prefix & ".hExact", h = expectedH
+            TestAssertTrue stats, prefix & ".xExact", x = expectedX
+            TestAssertTrue stats, prefix & ".hDefined", hasH = (expectedH > 0#)
+            TestAssertTrue stats, prefix & ".xDefined", hasX = (expectedX >= 0#)
+            TestAssertTrue stats, prefix & ".frozenPlane", state.Epsilon0 = capturedEps And state.KappaX = capturedKx And state.KappaY = capturedKy
+            state.GetGeometryDepths section, repeatedH, repeatedX, repeatedHasH, repeatedHasX
+            TestAssertTrue stats, prefix & ".repeat", repeatedH = h And repeatedX = x And repeatedHasH = hasH And repeatedHasX = hasX
+            TestAppendLine stats, "STATE_DEPTH|case=" & cases & "|shape=" & shape & "|h=" & TestFormatNumberInvariant(h) & "|x=" & TestFormatNumberInvariant(x) & "|hasH=" & hasH & "|hasX=" & hasX
+        Next plane
+    Next shape
+    h = 12#: x = 34#: hasH = True: hasX = True
+    state.GetGeometryDepths Nothing, h, x, hasH, hasX
+    TestAssertTrue stats, "state.depth.noSection", Not hasH And Not hasX And h = 0# And x = 0#
+    TestAssertTrue stats, "state.depth.noAdditionalSolve", SectionEquilibriumSolveCount() = solves
+    GoTo Finished
+FailedRun:
+    TestAssertTrue stats, "state.depth.runtime." & Err.Number & "." & Err.Description, False
+Finished:
+    passed = stats.Passed: failed = stats.Failed
+    RunStateDepthGeometryTests = stats.Report & "TOTAL STATE DEPTH GEOMETRY: passed=" & stats.Passed & "; failed=" & stats.Failed & "; cases=" & cases
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит разные контуры общими существующими builder/mesh, без отдельного рецепта и solver.
+Private Function TestBuildDepthShape(ByVal kind As Long) As CSectionModel
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
+    Dim builder As CSectionBuilder, mesh As TSectionMeshOptions, outerID As String
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "TestDepthFixture" & kind
+    If kind = 0 Then
+        Set path = facade.CirclePath("Concrete", 0#, 0#, 200#)
+    Else
+        Set path = facade.RectanglePath("Concrete", -200#, -300#, 400#, 600#)
+    End If
+    outerID = "Concrete"
+    If kind = 2 Then Set path = facade.Transform("Rotated", "Concrete", 80#, -45#, 0.37): outerID = "Rotated"
+    facade.Outer "Outer", outerID
+    If kind = 3 Then
+        Set path = facade.RectanglePath("Hole", -100#, -200#, 200#, 400#)
+        facade.Opening "Opening", "Hole", "Outer"
+    End If
+    Set path = facade.LinePath("BarBase", 150#, -50#, 150#, 50#)
+    If kind = 2 Then
+        Set path = facade.Transform("BarRotated", "BarBase", 80#, -45#, 0.37)
+        facade.RebarByCount "TestBars", "BarRotated", 1, 10#
+    Else
+        facade.RebarByCount "TestBars", "BarBase", 1, 10#
+    End If
+    Set definition = facade.Finish
+    mesh.StepX = 100#: mesh.StepY = 100#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
+    Set builder = New CSectionBuilder: Set TestBuildDepthShape = builder.Build(definition, mesh)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Дословная прежняя операция writer-а, зафиксированная до переноса; независимый oracle только тестов.
+' Определяет габарит h и глубину сжатой зоны x вдоль нормали к нейтральной линии.
+Private Sub TestOriginalDepthsPerpendicularToNeutral(ByVal section As CSectionModel, ByVal eps0 As Double, _
+        ByVal kappaX As Double, ByVal kappaY As Double, ByRef depthH As Double, ByRef compressedDepth As Double)
+    Dim normValue As Double
+    normValue = Sqr(kappaX * kappaX + kappaY * kappaY)
+    If normValue <= 0.000000000000001 Then Exit Sub
+
+    Dim nx As Double
+    Dim ny As Double
+    nx = kappaY / normValue ' Нормаль поля epsilon = eps0 + kappaX*y + kappaY*x направлена к росту деформации.
+    ny = kappaX / normValue
+
+    Dim minS As Double
+    Dim maxS As Double
+    Dim props As CSectionPropertiesCalculator
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateProjection section, nx, ny, False, minS, maxS
+
+    depthH = maxS - minS
+    If depthH <= 0# Then Exit Sub
+
+    Dim neutralS As Double
+    neutralS = -eps0 / normValue ' Координата нулевой деформации по единичной нормали, мм.
+
+    If eps0 + normValue * minS < 0# And eps0 + normValue * maxS < 0# Then
+        compressedDepth = depthH
+    ElseIf eps0 + normValue * minS >= 0# And eps0 + normValue * maxS >= 0# Then
+        compressedDepth = 0#
+    Else
+        compressedDepth = TestDepthMax(0#, TestDepthMin(maxS, neutralS) - minS)
+    End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет прежнее сравнение максимума в oracle.
+Private Function TestDepthMax(ByVal a As Double, ByVal b As Double) As Double
+    If a >= b Then TestDepthMax = a Else TestDepthMax = b
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет прежнее сравнение минимума в oracle.
+Private Function TestDepthMin(ByVal a As Double, ByVal b As Double) As Double
+    If a <= b Then TestDepthMin = a Else TestDepthMin = b
 End Function

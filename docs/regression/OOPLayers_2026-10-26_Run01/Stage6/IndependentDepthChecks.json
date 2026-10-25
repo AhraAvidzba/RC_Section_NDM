@@ -1,0 +1,17 @@
+{
+  "Status": "PASS_KNOWN_GEOMETRY_AND_ZERO_SEMANTICS",
+  "Checks": [
+    {
+      "Mode": "No",
+      "IndependentKnownGeometryChecks": 32,
+      "All48ExactToOriginalWriter": true,
+      "OriginalZeroCurvatureSemanticsPreserved": true
+    },
+    {
+      "Mode": "Yes",
+      "IndependentKnownGeometryChecks": 32,
+      "All48ExactToOriginalWriter": true,
+      "OriginalZeroCurvatureSemanticsPreserved": true
+    }
+  ]
+}

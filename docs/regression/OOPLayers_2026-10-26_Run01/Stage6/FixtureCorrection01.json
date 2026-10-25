@@ -1,0 +1,6 @@
+{
+  "Status": "FIXTURE_CORRECTION_ONLY",
+  "PreservedPrimary": "Probe01_No.txt",
+  "Reason": "CSectionBuilder requires at least one rebar. Added one 10mm bar to each artificial geometry, transformed with the rotated body; h/x expressions and oracle unchanged.",
+  "ExpectedFailureCount": 1
+}

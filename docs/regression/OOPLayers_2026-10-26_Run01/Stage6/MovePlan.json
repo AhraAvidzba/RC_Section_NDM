@@ -1,0 +1,9 @@
+{
+  "Status": "ISOLATED_NOT_APPLIED",
+  "OriginalHelperSHA256": "8B6F5310557E99325C26D3F6F95B213C765C234CAE207BD94C893CE5625B399D",
+  "MathHelperCopiedExactly": true,
+  "ZeroCurvature": "h blank, x 0 preserved",
+  "NoSection": "both blank preserved",
+  "NewClasses": 0,
+  "NewModules": 0
+}

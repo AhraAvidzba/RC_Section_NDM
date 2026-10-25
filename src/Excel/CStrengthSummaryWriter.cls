@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -595,14 +595,10 @@ End Sub
 Private Sub PutStateGeometry(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal units As CUnitSystem, _
         ByVal section As CSectionModel, ByVal colH As Long, ByVal colX As Long)
-    If section Is Nothing Then Exit Sub
-
-    Dim depthH As Double
-    Dim compressedDepth As Double
-    CalculateDepthsPerpendicularToNeutral section, stateResult.Epsilon0, stateResult.KappaX, stateResult.KappaY, _
-        depthH, compressedDepth
-    If depthH > 0# Then data(rowIndex, colH) = OutputLength(depthH, units)
-    If compressedDepth >= 0# Then data(rowIndex, colX) = OutputLength(compressedDepth, units)
+    Dim depthH As Double, compressedDepth As Double, hasH As Boolean, hasX As Boolean
+    stateResult.GetGeometryDepths section, depthH, compressedDepth, hasH, hasX
+    If hasH Then data(rowIndex, colH) = OutputLength(depthH, units)
+    If hasX Then data(rowIndex, colX) = OutputLength(compressedDepth, units)
 End Sub
 
 ' Оформляет подробную таблицу прочности: шапку, рамки, числа и статусы.
@@ -764,38 +760,7 @@ Private Sub MergeRange(ByVal target As Object, ByVal firstRow As Long, ByVal fir
     target.Worksheet.Range(target.Cells(firstRow, firstCol), target.Cells(lastRow, lastCol)).Merge
 End Sub
 
-' Определяет габарит h и глубину сжатой зоны x вдоль нормали к нейтральной линии.
-Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel, ByVal eps0 As Double, _
-        ByVal kappaX As Double, ByVal kappaY As Double, ByRef depthH As Double, ByRef compressedDepth As Double)
-    Dim normValue As Double
-    normValue = Sqr(kappaX * kappaX + kappaY * kappaY)
-    If normValue <= 0.000000000000001 Then Exit Sub
 
-    Dim nx As Double
-    Dim ny As Double
-    nx = kappaY / normValue ' Нормаль поля epsilon = eps0 + kappaX*y + kappaY*x направлена к росту деформации.
-    ny = kappaX / normValue
-
-    Dim minS As Double
-    Dim maxS As Double
-    Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateProjection section, nx, ny, False, minS, maxS
-
-    depthH = maxS - minS
-    If depthH <= 0# Then Exit Sub
-
-    Dim neutralS As Double
-    neutralS = -eps0 / normValue ' Координата нулевой деформации по единичной нормали, мм.
-
-    If eps0 + normValue * minS < 0# And eps0 + normValue * maxS < 0# Then
-        compressedDepth = depthH
-    ElseIf eps0 + normValue * minS >= 0# And eps0 + normValue * maxS >= 0# Then
-        compressedDepth = 0#
-    Else
-        compressedDepth = MaxDouble(0#, MinDouble(maxS, neutralS) - minS)
-    End If
-End Sub
 
 ' Переводит длину из внутренних мм в выходную единицу пользователя.
 ' Если CUnitSystem не передан, возвращает исходное значение в мм.
@@ -856,15 +821,9 @@ Private Function StatusPolicy() As CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
 
-' Возвращает максимум двух чисел для геометрических величин таблицы.
-Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
-    If a >= b Then MaxDouble = a Else MaxDouble = b
-End Function
 
-' Возвращает минимум двух чисел для геометрических величин таблицы.
-Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
-    If a <= b Then MinDouble = a Else MinDouble = b
-End Function
+
+
 
 ' Передаёт отдельный приёмник готовых массивов; при Nothing сохраняется обычный вывод.
 Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)

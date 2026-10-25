@@ -1,0 +1,54 @@
+{
+  "Status": "PASS_STAGE6_PROFILE_NO_YES_ONLY",
+  "Records": [
+    {
+      "Mode": "No",
+      "Primary": "Probe02_No.txt",
+      "SHA256": "68C34AA79EAE19B6E94A2DC014841C98436B64A4CF9E3A2E29384BBD8A1819A6",
+      "Totals": [
+        "TOTAL STATE DEPTH GEOMETRY: passed=290; failed=0; cases=48",
+        "TOTAL_AUDIT03_LIFECYCLE: passed=172; failed=0",
+        "TOTAL_POSTAUDIT03_SNAPSHOT: passed=38; failed=0",
+        "TOTAL_WORKFLOW_SNAPSHOT: passed=151; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=112; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.14453125"
+      ],
+      "CompletedMacros": [
+        "modTestBatchCalculation.RunStateDepthGeometryTests",
+        "modTestBatchCalculation.RunAudit03LifecycleTests",
+        "modTestBatchCalculation.RunPostAudit03SnapshotOwnerTests",
+        "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage5d": true
+    },
+    {
+      "Mode": "Yes",
+      "Primary": "Probe02_Yes.txt",
+      "SHA256": "865208E5675BAE4DE002DB507DC96C5419A19D8A4B5B9612577900A627F5E329",
+      "Totals": [
+        "TOTAL STATE DEPTH GEOMETRY: passed=290; failed=0; cases=48",
+        "TOTAL_AUDIT03_LIFECYCLE: passed=172; failed=0",
+        "TOTAL_POSTAUDIT03_SNAPSHOT: passed=38; failed=0",
+        "TOTAL_WORKFLOW_SNAPSHOT: passed=151; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=112; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.2333984375"
+      ],
+      "CompletedMacros": [
+        "modTestBatchCalculation.RunStateDepthGeometryTests",
+        "modTestBatchCalculation.RunAudit03LifecycleTests",
+        "modTestBatchCalculation.RunPostAudit03SnapshotOwnerTests",
+        "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage5d": true
+    }
+  ],
+  "FullPass": false
+}
