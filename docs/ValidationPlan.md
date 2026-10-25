@@ -31,6 +31,15 @@ RunConfigPresentationTests и RunResultsFormattingTests в обоих режим
 
 ## Объем
 
+При изменениях итогового окна использовать
+`modTestAudit02Api.RunInputOnlyDialogTests` и `RunProgramMessagePresentationTests`,
+а также `modTestBatchCalculation.RunAudit03CommentCompositionTests`,
+`RunAudit03BatchInputMessageTests` и
+`modTestWorkbookInterface.RunSectionWorkflowCalculationTests` в No/Yes.
+Отдельно проверять смешанный результат проверки и InputErr: подробности проверки
+сохраняются в Results, окно берёт только собственную ошибку ввода, а его тип
+определяется переданным признаком, без поиска слов в тексте.
+
 Документация требует проверки ссылок и Git diff. Оформление и локальное поведение - направленных проверок. Расчетные изменения проверяются с учетом влияния на НДС, поиск предела, материалы, геометрию, единицы, знаки и результаты.
 
 Не запускать тяжелый полный набор после каждой мелкой правки. Самые долгие полные on/off и Excel UI прогоны требуют отдельного явного согласия пользователя в чате с указанием состава и длительности.

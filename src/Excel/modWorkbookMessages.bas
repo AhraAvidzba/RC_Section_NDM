@@ -109,7 +109,24 @@ Public Function WorkbookMessageParagraph(ByVal message As String, ByVal paragrap
     End If
 End Function
 
-' Строит сводку запуска из готовых счётчиков и причины первой ошибки.
+' Собирает итог один раз по готовым результатам: считает только сочетания
+' с ошибками ввода и показывает одну собственную причину вместо общего комментария.
+' Чтение результатов не запускает solver и не меняет статусы или таблицы.
+Public Function CalculationBatchMessage(ByVal batch As CBatchSectionCalculator, _
+        Optional ByRef hasInputErrors As Boolean = False) As String
+    Dim index As Long, count As Long, firstError As String, meta As CResultMeta
+    For index = 1 To batch.Count
+        Set meta = batch.ResultAt(index).InputErrorMeta
+        If Not meta Is Nothing Then
+            count = count + 1
+            If Len(firstError) = 0 Then firstError = CalculationResultMessage(batch, index, meta)
+        End If
+    Next index
+    hasInputErrors = (count > 0)
+    CalculationBatchMessage = CalculationCompletionMessage(batch.Count, count, firstError, vbNullString)
+End Function
+
+' Строит сводку запуска из готовых счётчиков и собственной причины первой ошибки.
 ' Не определяет расчётный статус и не заменяет исходную диагностику кратким кодом.
 Public Function CalculationCompletionMessage(ByVal combinationCount As Long, ByVal inputErrorCount As Long, _
         ByVal firstInputError As String, ByVal governingCombinationID As String) As String
@@ -119,12 +136,13 @@ Public Function CalculationCompletionMessage(ByVal combinationCount As Long, ByV
         text = "Расчет завершен с ошибками ввода."
         summary = summary & vbCrLf & "Ошибок ввода: " & CStr(inputErrorCount) & "."
         text = WorkbookMessageParagraph(text, summary)
-        text = WorkbookMessageParagraph(text, "Проверьте строки со статусом InputErr на листе Results.")
+        text = WorkbookMessageParagraph(text, "Результаты и пояснения всех проверок — на листе Results.")
         detail = firstInputError
         If Left$(detail, Len("CombinationID=")) = "CombinationID=" Then detail = "Сочетание " & Mid$(detail, Len("CombinationID=") + 1)
-        If Len(Trim$(detail)) > 0 Then text = WorkbookMessageParagraph(text, "Первая ошибка:" & vbCrLf & WorkbookDialogText(detail))
+        If Len(Trim$(detail)) > 0 Then text = WorkbookMessageParagraph(text, "Показана только первая ошибка ввода:" & vbCrLf & WorkbookDialogText(detail))
     Else
         text = WorkbookMessageParagraph("Расчет завершен.", summary)
+        text = WorkbookMessageParagraph(text, "Результаты и пояснения всех проверок — на листе Results.")
         If Len(governingCombinationID) > 0 Then text = WorkbookMessageParagraph(text, "Определяющее сочетание: " & governingCombinationID)
     End If
     CalculationCompletionMessage = WorkbookDialogText(text)

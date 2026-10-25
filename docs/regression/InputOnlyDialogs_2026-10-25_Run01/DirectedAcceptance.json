@@ -1,0 +1,42 @@
+{
+  "Status": "PASS_DIRECTED_INPUT_ONLY_DIALOGS",
+  "FullRegressionPass": false,
+  "Reports": [
+    {
+      "File": "Directed_Accepted_No.txt",
+      "SHA256": "EC4FED1D86569DCEA6E74CBF007D4DD8D0350DC8AA9BD06CB62512EF4408B588",
+      "Mode": "No",
+      "Totals": [
+        245,
+        29,
+        38,
+        32,
+        14,
+        114
+      ],
+      "Passed": 472,
+      "Failed": 0,
+      "PrimaryRead": true,
+      "Summary100Seconds": 0.08203125
+    },
+    {
+      "File": "Directed_Accepted_Yes.txt",
+      "SHA256": "047F7015CADE749C112196274D05B7A06733243BBDA9FE281262B28252444053",
+      "Mode": "Yes",
+      "Totals": [
+        245,
+        29,
+        38,
+        32,
+        14,
+        114
+      ],
+      "Passed": 472,
+      "Failed": 0,
+      "PrimaryRead": true,
+      "Summary100Seconds": 0.125
+    }
+  ],
+  "Passed": 944,
+  "Failed": 0
+}

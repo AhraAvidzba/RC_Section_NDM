@@ -1,0 +1,24 @@
+{
+  "Status": "PASS_TYPED_INPUT_SELECTION",
+  "ChangedComponents": [
+    "CCombinationResult",
+    "modWorkbookMessages",
+    "modWorkbookCalculation",
+    "modTestAudit02Api"
+  ],
+  "OtherComponentsUnchanged": 174,
+  "NewComponents": 0,
+  "StatusesPerStage": 11,
+  "Stages": 8,
+  "SelectionUsesInternalStatus": true,
+  "SelectedStatuses": [
+    "rsInvalidInput",
+    "rsInvalidConfiguration"
+  ],
+  "DialogReadsOverallComment": false,
+  "ButtonScansMessageText": false,
+  "CommentsAndStatusesPreserved": true,
+  "EventTemplateUnchanged": true,
+  "AllCodeNativeEquality": true,
+  "FullRegressionPass": false
+}

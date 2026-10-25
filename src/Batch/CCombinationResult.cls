@@ -111,6 +111,24 @@ Public Property Get WorkflowMeta() As CResultMeta
     Set WorkflowMeta = mWorkflowMeta.Clone
 End Property
 
+' Возвращает первую собственную ошибку ввода или настройки, отдельно от
+' объединённых пояснений проверок. Порядок устойчив: общая ошибка, затем этапы.
+' Физическое невыполнение и численная несходимость остаются в своих результатах.
+Public Property Get InputErrorMeta() As CResultMeta
+    Dim item As Variant, meta As CResultMeta
+    For Each item In Array(WorkflowMeta, DirectStateMeta, CapacityMeta, CrackFormationMeta, _
+            CrackCurrentStateMeta, CrackWidthMeta, LongitudinalCrackMeta, StabilityMeta)
+        Set meta = item
+        If Not meta Is Nothing Then
+            Select Case meta.InternalStatus
+                Case rsInvalidInput, rsInvalidConfiguration
+                    Set InputErrorMeta = meta.Clone
+                    Exit Property
+            End Select
+        End If
+    Next item
+End Property
+
 ' Сохраняет статус и причину общей остановки сочетания, не разбирая текст пояснения.
 ' НДС и результаты отдельных инженерных проверок этот метод не заменяет.
 Friend Sub SetWorkflowMeta(ByVal meta As CResultMeta)

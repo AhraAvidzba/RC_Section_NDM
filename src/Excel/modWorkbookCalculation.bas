@@ -16,11 +16,10 @@ Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых �
 Public Sub RunSectionCalculation()
     On Error GoTo Failed
     Dim startedAt As Double: startedAt = Timer
-    Dim informationEnabled As Boolean
+    Dim informationEnabled As Boolean, requiresAttention As Boolean
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, True, startedAt, informationEnabled)
-    If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Or _
-            InStr(1, message, "Предупреждение:", vbTextCompare) > 0 Then
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, True, startedAt, informationEnabled, requiresAttention)
+    If requiresAttention Then
         ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
     ElseIf informationEnabled Then
         ShowWorkbookMessage message, vbInformation, "RC Section NDM"
@@ -282,8 +281,10 @@ End Function
 ' Подготавливает материалы один раз, рассчитывает сочетания и записывает Results.
 ' Возвращает итоговое сообщение; временные настройки Excel сохраняет CExcelAppStateGuard.
 Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False, _
-        Optional ByVal startedAt As Double = -1#, Optional ByRef informationEnabled As Boolean = False) As String
+        Optional ByVal startedAt As Double = -1#, Optional ByRef informationEnabled As Boolean = False, _
+        Optional ByRef requiresAttention As Boolean = False) As String
     On Error GoTo Failed
+    requiresAttention = False
     Dim runStart As Double
     runStart = startedAt
     If runStart < 0# Then runStart = Timer
@@ -430,7 +431,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
-    RunSectionCalculationForWorkbook = BuildCalculationMessage(batch)
+    RunSectionCalculationForWorkbook = CalculationBatchMessage(batch, requiresAttention)
+    requiresAttention = requiresAttention Or Len(plotWarning) > 0
     If Len(plotWarning) > 0 Then RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & plotWarning
     If report.Enabled Then
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."
@@ -837,17 +839,6 @@ Private Sub CalculateResultsSheet(ByVal workbook As Object)
     workbook.Worksheets.Item("Results").Calculate
 SafeExit:
 End Sub
-
-' Готовит итоговое сообщение о запуске, отдельно выделяя ошибки входных строк.
-' Берёт инженерные статусы из готовых результатов расчёта сочетаний.
-Private Function BuildCalculationMessage(ByVal batch As CBatchSectionCalculator) As String
-    If batch.InvalidInputCount > 0 Then
-        BuildCalculationMessage = CalculationCompletionMessage(batch.Count, batch.InvalidInputCount, _
-            batch.FirstInvalidInputMessage, vbNullString)
-    Else
-        BuildCalculationMessage = CalculationCompletionMessage(batch.Count, 0, vbNullString, batch.WorstCombinationID)
-    End If
-End Function
 
 ' Формирует список всех сочетаний, принятых для расчёта.
 ' В отчёте усилия показываются в пользовательских выходных единицах

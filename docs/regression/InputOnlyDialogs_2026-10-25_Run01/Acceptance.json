@@ -1,0 +1,47 @@
+{
+  "Status": "PASS_DIRECTED_INPUT_ONLY_DIALOGS",
+  "At": "2026-10-25T16:33:50.359459+03:00",
+  "FullRegressionPass": false,
+  "PublishedSHA256": "C04396E498E10DEE9B8908503638D8FE1579BB3B781863C17152ADAF721C7305",
+  "AllCodeSHA256": "8BE6F421C8F6299204B6416B8D0349FBA2DA2839575CB55743BE8CF9F27F3B58",
+  "NativeComponents": 178,
+  "SourceComponents": 172,
+  "SourceEquality": true,
+  "ChangedComponents": [
+    "CCombinationResult",
+    "modWorkbookMessages",
+    "modWorkbookCalculation",
+    "modTestAudit02Api"
+  ],
+  "OtherComponentsUnchanged": 174,
+  "UnchangedNonVBAParts": 106,
+  "CandidatePassed": 944,
+  "PublishedPassed": 548,
+  "TotalPassed": 1492,
+  "Failed": 0,
+  "Reports": [
+    {
+      "File": "Published_No.txt",
+      "SHA256": "D6A9E102227509E803E2C6F61B709F37F7CA4409347BC2F2587BBF87DE4CCDB3",
+      "Mode": "No",
+      "Passed": 274,
+      "Failed": 0,
+      "PrimaryRead": true,
+      "ImportPerformed": false,
+      "SourceUnchanged": true
+    },
+    {
+      "File": "Published_Yes.txt",
+      "SHA256": "8793996FFC1E87038B68FCB82F4EFB71F7AA232792D75F7E64EAEB5B165B1504",
+      "Mode": "Yes",
+      "Passed": 274,
+      "Failed": 0,
+      "PrimaryRead": true,
+      "ImportPerformed": false,
+      "SourceUnchanged": true
+    }
+  ],
+  "LogsSHA256": "C5052C06CFB4626DD1BB258C07BE196D7BB0131A9FDFC08D304E39DA55D034DE",
+  "NoFullOrLongUI": true,
+  "DeletedAutomationRecreated": false
+}

@@ -21,8 +21,8 @@ Public Function RunProgramMessagePresentationTests() As String
     message = CalculationCompletionMessage(30, 29, reason, "")
     TestCheck "presentation.summary.heading", Left$(message, Len("Расчет завершен с ошибками ввода." & vbCrLf & vbCrLf)) = "Расчет завершен с ошибками ввода." & vbCrLf & vbCrLf
     TestCheck "presentation.summary.counts", InStr(message, "Обработано сочетаний: 30." & vbCrLf & "Ошибок ввода: 29.") > 0
-    TestCheck "presentation.summary.action", InStr(message, vbCrLf & vbCrLf & "Проверьте строки со статусом InputErr на листе Results.") > 0
-    TestCheck "presentation.summary.first", InStr(message, vbCrLf & vbCrLf & "Первая ошибка:" & vbCrLf & "Сочетание 2:") > 0
+    TestCheck "presentation.summary.action", InStr(message, vbCrLf & vbCrLf & "Результаты и пояснения всех проверок — на листе Results.") > 0
+    TestCheck "presentation.summary.first", InStr(message, vbCrLf & vbCrLf & "Показана только первая ошибка ввода:" & vbCrLf & "Сочетание 2:") > 0
     TestCheck "presentation.summary.longitudinal", InStr(message, vbCrLf & vbCrLf & "Продольные трещины:" & vbCrLf & "Проверка продольных трещин") > 0
     TestCheck "presentation.summary.stability", InStr(message, vbCrLf & vbCrLf & "Устойчивость:" & vbCrLf & "Для сочетания 2") > 0
     TestCheck "presentation.summary.values", InStr(message, "17.550") > 0 And InStr(message, "14.600") > 0 And InStr(message, "Rb,mc2") > 0
@@ -51,8 +51,8 @@ Public Function RunProgramMessagePresentationTests() As String
     expected = text
     TestCheck "presentation.geometry.stable", WorkbookDialogText(text) = expected
     text = CalculationCompletionMessage(2, 0, "", "LC:2." & ChrW$(&H3B1))
-    TestCheck "presentation.success.blocks", text = "Расчет завершен." & vbCrLf & vbCrLf & "Обработано сочетаний: 2." & vbCrLf & vbCrLf & "Определяющее сочетание: LC:2." & ChrW$(&H3B1)
-    TestCheck "presentation.empty.detail", InStr(CalculationCompletionMessage(2, 1, "", ""), "Первая ошибка:") = 0
+    TestCheck "presentation.success.blocks", text = "Расчет завершен." & vbCrLf & vbCrLf & "Обработано сочетаний: 2." & vbCrLf & vbCrLf & "Результаты и пояснения всех проверок — на листе Results." & vbCrLf & vbCrLf & "Определяющее сочетание: LC:2." & ChrW$(&H3B1)
+    TestCheck "presentation.empty.detail", InStr(CalculationCompletionMessage(2, 1, "", ""), "Показана только первая ошибка ввода:") = 0
     TestCheck "presentation.empty.paragraph", WorkbookMessageParagraph("Текст", "") = "Текст" And WorkbookMessageParagraph("", "Текст") = "Текст"
     text = WorkbookDialogText(vbCrLf & vbLf & "Первый" & vbCr & vbCrLf & vbLf & "Второй" & vbCrLf)
     TestCheck "presentation.newlines.normalized", text = "Первый" & vbCrLf & vbCrLf & "Второй"
@@ -68,6 +68,146 @@ Failed:
 Finish:
     RunProgramMessagePresentationTests = mReport & "TOTAL MESSAGE PRESENTATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет все типизированные статусы каждого этапа, смешанный отказ и InputErr,
+' а также настоящий пакет с результатом проверки и четырьмя ошибками ввода.
+' Повторное формирование сообщения не должно вызывать solver.
+Public Function RunInputOnlyDialogTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim stage As Long, status As Long, result As CCombinationResult, meta As CResultMeta, selected As CResultMeta
+    Dim before As String, expected As Boolean, prefix As String, batch As CBatchSectionCalculator, text As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim profiles As CCalculationProfileCatalog, section As CSectionModel, i As Long, solves As Long, started As Double
+    Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    Dim requiresAttention As Boolean
+    For stage = 1 To 8
+        For status = rsUnset To rsInternalError
+            Set result = New CCombinationResult: Set meta = New CResultMeta
+            meta.SetResult status, rcInvalidInput, rkGeneric, "Причина InputErr/FAIL: " & CStr(stage) & "/" & CStr(status)
+            meta.SourceKeys = "Solver.Method"
+            TestSetInputDialogMeta result, stage, meta
+            before = result.OverallMeta.DiagnosticText
+            Set selected = result.InputErrorMeta
+            expected = (status = rsInvalidInput Or status = rsInvalidConfiguration)
+            prefix = "inputDialog.stage." & CStr(stage) & ".status." & CStr(status)
+            TestCheck prefix & ".classification", (Not selected Is Nothing) = expected
+            If Not selected Is Nothing Then
+                TestCheck prefix & ".reason", selected.ResultComment = meta.ResultComment
+                TestCheck prefix & ".keys", selected.SourceKeys = meta.SourceKeys
+                selected.ResultComment = "Изменена только копия"
+                TestCheck prefix & ".independent", result.InputErrorMeta.ResultComment = meta.ResultComment
+            End If
+            TestCheck prefix & ".unchanged", result.OverallMeta.DiagnosticText = before
+        Next status
+    Next stage
+    Set result = New CCombinationResult: Set meta = New CResultMeta
+    meta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkDirectState, "Физические пределы превышены."
+    result.SetDirectStateMeta meta
+    meta.SetResult rsInvalidInput, rcInvalidInput, rkCapacity, "Для выбранного LoadPath соответствующая нагрузка должна быть ненулевой."
+    TestSetInputDialogMeta result, 3, meta
+    before = result.OverallMeta.ResultComment
+    TestCheck "inputDialog.mixed.results.physical", InStr(before, "Физические пределы") > 0
+    TestCheck "inputDialog.mixed.results.input", InStr(before, "LoadPath") > 0
+    TestCheck "inputDialog.mixed.own.reason", result.InputErrorMeta.ResultComment = meta.ResultComment
+    TestCheck "inputDialog.mixed.no.physical", InStr(result.InputErrorMeta.ResultComment, "Физические пределы") = 0
+    TestCheck "inputDialog.mixed.results.unchanged", result.OverallMeta.ResultComment = before
+    meta.SetResult rsInternalError, rcInternalError, rkStability, "Техническая остановка."
+    result.SetStabilityMeta meta
+    TestCheck "inputDialog.mixed.calcErr.retained", result.Status = "CalcErr" And Not result.InputErrorMeta Is Nothing
+
+    Set batch = New CBatchSectionCalculator
+    requiresAttention = True: text = CalculationBatchMessage(batch, requiresAttention)
+    TestCheck "inputDialog.empty.neutral", InStr(text, "Обработано сочетаний: 0.") > 0 And InStr(text, "Ошибка") = 0
+    TestCheck "inputDialog.empty.no.stale.warning", Not requiresAttention
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook, False
+    profiles.ProfileById("PR1").Initialize "PR1", "Проверка вывода", "", True, False, False, False
+    Set geometry = TestFixtureBox(300#, 200#): Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geometry, 30#, 20#, 1
+    Set rebars = New CRebarLayout
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geometry
+    Set section = TestBuildGeneratedSectionModel(mesh, rebars, "Test.InputDialog")
+    batch.Initialize section, provider: Set batch.ProfileCatalog = profiles: batch.ApplySettings settings, units
+    batch.AddCombination "CHECK_ONLY", 90000000#, 0#, 0#, "PR1", "", "lambda*N"
+    batch.Execute: text = CalculationBatchMessage(batch, requiresAttention)
+    TestCheck "inputDialog.check.only.no.warning", Not requiresAttention
+    TestCheck "inputDialog.check.only.no.details", InStr(text, "CHECK_ONLY") = 0 And InStr(text, "Ошибок ввода:") = 0
+    For i = 1 To 4
+        batch.AddInvalidCombination "USER_" & CStr(i), "PR1", "", "Введите числовую нагрузку " & CStr(i) & ".", "Auto", i, "Лист ввода!AA" & CStr(40 + i) & ":AG" & CStr(40 + i)
+    Next i
+    batch.Execute: solves = SectionEquilibriumSolveCount()
+    before = batch.ResultAt(1).OverallMeta.DiagnosticText
+    text = CalculationBatchMessage(batch, requiresAttention)
+    TestCheck "inputDialog.batch.typed.warning", requiresAttention
+    TestCheck "inputDialog.batch.count", InStr(text, "Ошибок ввода: 4.") > 0
+    TestCheck "inputDialog.batch.first.notice", InStr(text, "Показана только первая ошибка ввода:") > 0
+    TestCheck "inputDialog.batch.first.reason", InStr(text, "Введите числовую нагрузку 1.") > 0
+    TestCheck "inputDialog.batch.first.address", InStr(text, "Лист ввода!AA41:AG41") > 0
+    TestCheck "inputDialog.batch.only.first", InStr(text, "USER_2") = 0 And InStr(text, "нагрузку 2.") = 0
+    TestCheck "inputDialog.batch.check.only.in.results", batch.ResultAt(1).Status <> "InputErr" And Len(batch.ResultAt(1).OverallMeta.ResultComment) > 0
+    TestCheck "inputDialog.batch.check.only.not.in.dialog", InStr(text, "CHECK_ONLY") = 0 And InStr(text, batch.ResultAt(1).OverallMeta.ResultComment) = 0
+    TestCheck "inputDialog.batch.results.link", InStr(text, "на листе Results") > 0
+    TestCheck "inputDialog.batch.results.unchanged", batch.ResultAt(1).OverallMeta.DiagnosticText = before
+    TestCheck "inputDialog.batch.no.solver", SectionEquilibriumSolveCount() = solves
+    mReport = mReport & "INPUT_ONLY_DIALOG_EXAMPLE:" & vbCrLf & text & vbCrLf & "END_INPUT_ONLY_DIALOG_EXAMPLE" & vbCrLf
+    started = Timer
+    For i = 1 To 100
+        text = CalculationBatchMessage(batch)
+    Next i
+    mReport = mReport & "INPUT_ONLY_DIALOG_100_SUMMARIES_SECONDS: " & CStr(Timer - started) & vbCrLf
+    GoTo Finish
+Failed:
+    TestCheck "inputDialog.runtime", False
+    mReport = mReport & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finish:
+    RunInputOnlyDialogTests = mReport & "TOTAL INPUT ONLY DIALOG: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Заполняет один результат через штатные контейнеры; solver и разбор текста не используются.
+Private Sub TestSetInputDialogMeta(ByVal result As CCombinationResult, ByVal stage As Long, ByVal meta As CResultMeta)
+    Dim capacity As CCapacityResult, search As CLimitSearchResult, path As CLoadPathDescriptor
+    Dim formation As CCrackFormationResult, width As CCrackWidthResult, longitudinal As CLongitudinalCrackResult
+    Dim crack As CCrackResult
+    Dim uncalculated As CResultMeta
+    Select Case stage
+        Case 1: result.SetWorkflowMeta meta
+        Case 2: result.SetDirectStateMeta meta
+        Case 3
+            meta.SetResult meta.InternalStatus, meta.ResultCode, rkCapacity, meta.ResultComment
+            meta.SourceKeys = "Solver.Method"
+            Set search = New CLimitSearchResult: search.Initialize meta, "Auto", "LoadMultiplier", False, 0#, 0#, 0#, 0#, Nothing, "", ""
+            Set path = New CLoadPathDescriptor: Set capacity = New CCapacityResult
+            capacity.InitializeFromSearch search, path, False, 0#, 0#, Nothing, 0#, 0#
+            result.StoreCapacityResult capacity
+        Case 4, 5, 6, 7
+            Set crack = New CCrackResult
+            Select Case stage
+                Case 4
+                    Set uncalculated = New CResultMeta
+                    uncalculated.SetResult meta.InternalStatus, meta.ResultCode, meta.ResultKind, meta.ResultComment, "", meta.Applies, False
+                    uncalculated.SourceKeys = meta.SourceKeys
+                    Set formation = New CCrackFormationResult: formation.InitializeUncalculated uncalculated
+                    crack.Initialize formation, Nothing, Nothing, Nothing
+                Case 5: crack.Initialize Nothing, meta, Nothing, Nothing
+                Case 6
+                    Set width = New CCrackWidthResult: width.InitializeFromCalculator Nothing, meta
+                    crack.Initialize Nothing, Nothing, width, Nothing
+                Case 7
+                    Set longitudinal = New CLongitudinalCrackResult: longitudinal.Initialize meta, 0#, 0#, 0#
+                    crack.Initialize Nothing, Nothing, Nothing, longitudinal
+            End Select
+            result.StoreCrackAggregateResult crack
+        Case 8: result.SetStabilityMeta meta
+    End Select
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Прогоняет все извлечённые сообщения рабочих компонентов через настоящий

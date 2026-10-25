@@ -1,0 +1,22 @@
+[
+  {
+    "File": "src/Batch/CCombinationResult.cls",
+    "Methods": 46,
+    "MissingHeaders": []
+  },
+  {
+    "File": "src/Excel/modWorkbookMessages.bas",
+    "Methods": 11,
+    "MissingHeaders": []
+  },
+  {
+    "File": "src/Excel/modWorkbookCalculation.bas",
+    "Methods": 48,
+    "MissingHeaders": []
+  },
+  {
+    "File": "tests/modTestAudit02Api.bas",
+    "Methods": 51,
+    "MissingHeaders": []
+  }
+]

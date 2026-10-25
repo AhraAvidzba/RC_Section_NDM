@@ -1,0 +1,63 @@
+{
+  "At": "2026-10-25T16:33:56.1668003+03:00",
+  "Passed": true,
+  "Processes": [
+    {
+      "PID": 66360,
+      "StartTicks": "639285309026369454",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 89680,
+      "StartTicks": "639285315455064591",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 97848,
+      "StartTicks": "639285314499640054",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 99664,
+      "StartTicks": "639285307165339814",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 109232,
+      "StartTicks": "639285311410954705",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 114496,
+      "StartTicks": "639285317473591565",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 147540,
+      "StartTicks": "639285311119199943",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 163664,
+      "StartTicks": "639285315771703043",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 189460,
+      "StartTicks": "639285316922651335",
+      "ExactIdentityAlive": false
+    },
+    {
+      "PID": 202972,
+      "StartTicks": "639285317575910176",
+      "ExactIdentityAlive": false
+    }
+  ],
+  "ClosedUserProcesses": false,
+  "StillOpenExcel": [
+    {
+      "StartTicks": "639285176020847936",
+      "PID": 174804
+    }
+  ]
+}
