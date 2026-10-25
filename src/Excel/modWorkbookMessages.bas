@@ -29,15 +29,123 @@ Public Const CONTOUR_MESH_GENERATION_NOTICE As String = "БЕТОННАЯ СЕТ
 Public Function ShowWorkbookMessage(ByVal message As String, _
         Optional ByVal style As VbMsgBoxStyle = vbInformation, _
         Optional ByVal title As String = "RC Section NDM") As VbMsgBoxResult
-    Dim response As Long
+    Dim response As Long, displayText As String
+    displayText = WorkbookDialogText(message)
 #If VBA7 Then
-    response = MessageBoxUnicode(CLngPtr(Application.hWnd), StrPtr(message), StrPtr(title), CLng(style))
+    response = MessageBoxUnicode(CLngPtr(Application.hWnd), StrPtr(displayText), StrPtr(title), CLng(style))
 #Else
-    response = MessageBoxUnicode(Application.hWnd, StrPtr(message), StrPtr(title), CLng(style))
+    response = MessageBoxUnicode(Application.hWnd, StrPtr(displayText), StrPtr(title), CLng(style))
 #End If
     If response = 0 Then Err.Raise vbObjectError + 4250, "ShowWorkbookMessage", _
         "Не удалось показать сообщение Excel. Код системной ошибки: " & CStr(Err.LastDllError) & "."
     ShowWorkbookMessage = response
+End Function
+
+' Разделяет готовый текст окна на смысловые блоки, сохраняя причины, числа,
+' идентификаторы и фактические адреса. Пояснения ячеек Results здесь не меняются.
+' Повторное оформление не добавляет пустые строки; точки в числах и путях не разбиваются.
+Public Function WorkbookDialogText(ByVal message As String) As String
+    Dim text As String, caption As Variant, action As Variant, lines As Variant, i As Long
+    text = message
+    For Each caption In Array("Прочность:", "Устойчивость:", "Трещинообразование:", _
+            "Ширина трещин:", "Продольные трещины:", "НДС:")
+        text = ReplaceWorkbookMessageFragment(text, "; " & CStr(caption), vbCrLf & vbCrLf & CStr(caption))
+        text = ReplaceWorkbookMessageFragment(text, " " & CStr(caption), vbCrLf & vbCrLf & CStr(caption))
+        text = ReplaceWorkbookMessageFragment(text, CStr(caption) & " ", CStr(caption) & vbCrLf)
+    Next caption
+    text = ReplaceWorkbookMessageFragment(text, " Настройка ", vbCrLf & vbCrLf & "Настройка ")
+    text = ReplaceWorkbookMessageFragment(text, " Исходная строка сочетания:", vbCrLf & vbCrLf & "Исходная строка сочетания:")
+    text = ReplaceWorkbookMessageFragment(text, "Исходная строка сочетания: ", "Исходная строка сочетания:" & vbCrLf)
+    text = ReplaceWorkbookMessageFragment(text, " (статус ", vbCrLf & "(статус ")
+    text = Replace$(Replace$(text, vbCrLf, vbLf), vbCr, vbLf)
+    lines = Split(text, vbLf)
+    For i = LBound(lines) To UBound(lines)
+        If Left$(CStr(lines(i)), Len("Настройка ")) = "Настройка " Then lines(i) = ErrorReasonParagraphs(CStr(lines(i)))
+    Next i
+    text = Join(lines, vbCrLf)
+    text = ReplaceWorkbookMessageFragment(text, " Введённое значение:", vbCrLf & "Введённое значение:")
+    For Each action In Array("Введите ", "Выберите ", "Исправьте ", "Восстановите ", _
+            "Уменьшите ", "Увеличьте ", "Измените ", "Проверьте ", "Укажите ", "Задайте ", _
+            "Удалите ", "Заполните ", "Повторите ", "Сохраните ", "Закройте ", "Откройте ", "Обновите ", _
+            "Добавьте ", "Установите ", "Используйте ")
+        text = ReplaceWorkbookMessageFragment(text, ". " & CStr(action), "." & vbCrLf & vbCrLf & CStr(action))
+    Next action
+    WorkbookDialogText = TrimWorkbookMessage(text)
+End Function
+
+' Разделяет только пояснения программы: фразы внутри кавычек остаются точными
+' пользовательскими значениями, именами слоёв или цитатами, а не командами.
+Private Function ReplaceWorkbookMessageFragment(ByVal text As String, ByVal fragment As String, ByVal replacement As String) As String
+    If InStr(1, text, fragment, vbBinaryCompare) = 0 Then ReplaceWorkbookMessageFragment = text: Exit Function
+    Dim position As Long, start As Long, quoted As Boolean, brackets As Long, character As String, result As String
+    position = 1: start = 1
+    Do While position <= Len(text)
+        character = Mid$(text, position, 1)
+        If character = Chr$(34) Then quoted = Not quoted
+        If Not quoted Then
+            If character = "«" Then brackets = brackets + 1
+            If character = "»" And brackets > 0 Then brackets = brackets - 1
+        End If
+        If Not quoted And brackets = 0 And Mid$(text, position, Len(fragment)) = fragment Then
+            result = result & Mid$(text, start, position - start) & replacement
+            position = position + Len(fragment): start = position
+        Else
+            position = position + 1
+        End If
+    Loop
+    ReplaceWorkbookMessageFragment = result & Mid$(text, start)
+End Function
+
+' Добавляет непустой смысловой блок через одну пустую строку; пустой отчёт
+' или предупреждение не оставляют лишнего разделителя в итоговом окне.
+Public Function WorkbookMessageParagraph(ByVal message As String, ByVal paragraph As String) As String
+    message = TrimWorkbookMessage(message): paragraph = TrimWorkbookMessage(paragraph)
+    WorkbookMessageParagraph = message
+    If Len(paragraph) = 0 Then Exit Function
+    If Len(message) = 0 Then
+        WorkbookMessageParagraph = paragraph
+    Else
+        WorkbookMessageParagraph = message & vbCrLf & vbCrLf & paragraph
+    End If
+End Function
+
+' Строит сводку запуска из готовых счётчиков и причины первой ошибки.
+' Не определяет расчётный статус и не заменяет исходную диагностику кратким кодом.
+Public Function CalculationCompletionMessage(ByVal combinationCount As Long, ByVal inputErrorCount As Long, _
+        ByVal firstInputError As String, ByVal governingCombinationID As String) As String
+    Dim text As String, summary As String, detail As String
+    summary = "Обработано сочетаний: " & CStr(combinationCount) & "."
+    If inputErrorCount > 0 Then
+        text = "Расчет завершен с ошибками ввода."
+        summary = summary & vbCrLf & "Ошибок ввода: " & CStr(inputErrorCount) & "."
+        text = WorkbookMessageParagraph(text, summary)
+        text = WorkbookMessageParagraph(text, "Проверьте строки со статусом InputErr на листе Results.")
+        detail = firstInputError
+        If Left$(detail, Len("CombinationID=")) = "CombinationID=" Then detail = "Сочетание " & Mid$(detail, Len("CombinationID=") + 1)
+        If Len(Trim$(detail)) > 0 Then text = WorkbookMessageParagraph(text, "Первая ошибка:" & vbCrLf & WorkbookDialogText(detail))
+    Else
+        text = WorkbookMessageParagraph("Расчет завершен.", summary)
+        If Len(governingCombinationID) > 0 Then text = WorkbookMessageParagraph(text, "Определяющее сочетание: " & governingCombinationID)
+    End If
+    CalculationCompletionMessage = WorkbookDialogText(text)
+End Function
+
+' Нормализует переводы строк и убирает только внешние разделители и лишние
+' пустые строки. Содержимое строк, пути, единицы и точные числа сохраняются.
+Private Function TrimWorkbookMessage(ByVal text As String) As String
+    text = Trim$(Replace$(Replace$(text, vbCrLf, vbLf), vbCr, vbLf))
+    Do While Len(text) > 0
+        If Left$(text, 1) <> vbLf Then Exit Do
+        text = Mid$(text, 2)
+    Loop
+    Do While Len(text) > 0
+        If Right$(text, 1) <> vbLf Then Exit Do
+        text = Left$(text, Len(text) - 1)
+    Loop
+    Do While InStr(1, text, vbLf & vbLf & vbLf, vbBinaryCompare) > 0
+        text = Replace$(text, vbLf & vbLf & vbLf, vbLf & vbLf)
+    Loop
+    TrimWorkbookMessage = Replace$(Trim$(text), vbLf, vbCrLf)
 End Function
 
 ' Дополняет готовое пояснение проверки номером сочетания и сохранённым адресом ввода.
@@ -69,6 +177,7 @@ Public Function WorkbookErrorMessage(ByVal operation As String, ByVal number As 
     End If
     If Len(source) > 0 Then WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & vbCrLf & "Источник ошибки: " & source & "."
     WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & "Код ошибки: " & CStr(number) & "."
+    WorkbookErrorMessage = WorkbookDialogText(WorkbookErrorMessage)
 End Function
 
 

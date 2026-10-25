@@ -1,0 +1,41 @@
+{
+  "Status": "PASS_DIRECTED_MESSAGE_PRESENTATION_ONLY",
+  "At": "2026-10-25T14:12:36.937838+03:00",
+  "FullRegressionPass": false,
+  "PublishedSHA256": "6652CA0CF8FDBDF71AE5AB9BBDA0144389FBCF65664CDCA973B37675EA1FB753",
+  "AllCodeSHA256": "DAC634A2512EA57D872934275BA9929FFB05B1850DAA7C5B8CF63E21D85B3A03",
+  "NativeComponents": 178,
+  "SourceComponents": 172,
+  "SourceEquality": true,
+  "EventTemplateEquality": true,
+  "OtherComponentsUnchanged": 174,
+  "UnchangedNonVBAParts": 106,
+  "DirectedPassed": 12120,
+  "PublishedPassed": 58,
+  "TotalPassed": 12178,
+  "Failed": 0,
+  "PublishedReports": [
+    {
+      "File": "Published_No.txt",
+      "SHA256": "A6740A69BE856239EFD4A176ED942BB051ADE30B65FCD4CCE2D602E02FE9456F",
+      "Mode": "No",
+      "Passed": 29,
+      "Failed": 0,
+      "ImportPerformed": false,
+      "SourceUnchanged": true
+    },
+    {
+      "File": "Published_Yes.txt",
+      "SHA256": "664FF112FB32497229902B876295DB5CDCCB7CBF77509ACDA33FAC01186AD8C2",
+      "Mode": "Yes",
+      "Passed": 29,
+      "Failed": 0,
+      "ImportPerformed": false,
+      "SourceUnchanged": true
+    }
+  ],
+  "LogsSHA256": "40550EA90BD94FF40C40856E6DD71FBC122A5D9D7F89AD8FD3B0718048C3ABD3",
+  "StaticReviewSHA256": "A428F87CD2D56F8B7475FAD52A4F377342C125B7F33D9D90A0F981919F328969",
+  "OriginalFullRun": "REVIEW_REQUIRED/INCOMPLETE_OR_FAILED on immutable SHA1F; not replaced by these checks",
+  "NoNewFullOrLongUIRun": true
+}

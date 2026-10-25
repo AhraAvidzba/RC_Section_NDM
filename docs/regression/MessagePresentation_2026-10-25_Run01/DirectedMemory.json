@@ -1,0 +1,14 @@
+﻿[
+    {
+        "Mode":  "No",
+        "At":  "2026-10-25T14:05:37.7420921+03:00",
+        "FreePhysicalGiB":  11.131,
+        "FreeCommitGiB":  3.904
+    },
+    {
+        "Mode":  "Yes",
+        "At":  "2026-10-25T14:06:32.9186765+03:00",
+        "FreePhysicalGiB":  11.109,
+        "FreeCommitGiB":  3.937
+    }
+]

@@ -23,7 +23,7 @@ Private Sub Workbook_AfterSave(ByVal Success As Boolean)
     mLastWorkbookFolder = ThisWorkbook.Path
     Exit Sub
 Failed:
-    MsgBox Err.Description, vbExclamation, "Снимок расчёта"
+    ShowWorkbookMessage WorkbookErrorMessage("Снимок расчёта не перенесён", Err.Number, Err.Source, Err.Description), vbExclamation, "Снимок расчёта"
 End Sub
 
 ' Единое начальное состояние outline-групп для открытия книги.

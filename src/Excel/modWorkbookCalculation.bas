@@ -436,8 +436,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."
         report.Save RunSectionCalculationForWorkbook
         summaryWriter.UpdateElapsedSeconds workbook, ElapsedSecondsFrom(runStart)
-        RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & _
-            "Пошаговый отчет сохранен: " & report.FilePath
+        RunSectionCalculationForWorkbook = WorkbookMessageParagraph(RunSectionCalculationForWorkbook, _
+            "Пошаговый отчет сохранен:" & vbCrLf & report.FilePath)
     End If
     CalculateResultsSheet workbook
     savedSnapshot.ElapsedSeconds = ElapsedSecondsFrom(runStart)
@@ -842,13 +842,10 @@ End Sub
 ' Берёт инженерные статусы из готовых результатов расчёта сочетаний.
 Private Function BuildCalculationMessage(ByVal batch As CBatchSectionCalculator) As String
     If batch.InvalidInputCount > 0 Then
-        BuildCalculationMessage = "Расчет завершен с ошибками ввода. Обработано сочетаний: " & _
-            CStr(batch.Count) & "; ошибок ввода: " & CStr(batch.InvalidInputCount) & "." & vbCrLf & _
-            "Проверьте строки со статусом InputErr на листе Results." & vbCrLf & _
-            "Первая ошибка: " & batch.FirstInvalidInputMessage
+        BuildCalculationMessage = CalculationCompletionMessage(batch.Count, batch.InvalidInputCount, _
+            batch.FirstInvalidInputMessage, vbNullString)
     Else
-        BuildCalculationMessage = "Расчет завершен. Обработано сочетаний: " & CStr(batch.Count) & _
-            ". Определяющее сочетание: " & batch.WorstCombinationID
+        BuildCalculationMessage = CalculationCompletionMessage(batch.Count, 0, vbNullString, batch.WorstCombinationID)
     End If
 End Function
 

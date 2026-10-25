@@ -1,0 +1,50 @@
+{
+  "Status": "PASS_DIRECTED_MESSAGE_PRESENTATION_ONLY",
+  "FullRegressionPass": false,
+  "Reports": [
+    {
+      "File": "Directed_Final_No.txt",
+      "SHA256": "9F0DFDADC05F205F10A3E0C45B115D4E4064230B0902134BB80C517F3A12B962",
+      "Mode": "No",
+      "Totals": [
+        29,
+        38,
+        65,
+        40,
+        1973,
+        114
+      ],
+      "Passed": 2259,
+      "Failed": 0,
+      "PrimaryRead": true,
+      "FinishedSuites": 6
+    },
+    {
+      "File": "Directed_Final_Yes.txt",
+      "SHA256": "69F6D953D216622174C2D6227E46F013B89ED85818F816C4ECABB5444F5645D4",
+      "Mode": "Yes",
+      "Totals": [
+        29,
+        38,
+        65,
+        40,
+        1973,
+        114
+      ],
+      "Passed": 2259,
+      "Failed": 0,
+      "PrimaryRead": true,
+      "FinishedSuites": 6
+    },
+    {
+      "File": "Corpus_Final_No.txt",
+      "SHA256": "9BECA0A74EDD5357B9E6C9438439AACCC0F752FBAF65BD28DB028585BBBFDE4E",
+      "Passed": 7602,
+      "Failed": 0,
+      "Cases": 2534,
+      "PrimaryRead": true
+    }
+  ],
+  "Passed": 12120,
+  "Failed": 0
+}

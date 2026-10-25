@@ -7,6 +7,118 @@ Option Explicit
 Private mPassed As Long, mFailed As Long, mReport As String
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет разбиение итогового окна, вложенных ошибок и длинного пути отчёта;
+' расчёт не запускается, исходные причины и численные значения не подменяются.
+Public Function RunProgramMessagePresentationTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim reason As String, message As String, path As String, text As String, expected As String
+    reason = "CombinationID=2: Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. " & _
+        "Максимальное сжатие бетона 17.550 МПа; допускаемое Rb,mc2 = 14.600 МПа.; Устойчивость: " & _
+        "Для сочетания 2 в таблице «Нагрузки для устойчивости» (rngStabilityDurationLoads, Config!P70:S100) не найдена строка с этим номером. " & _
+        "Добавьте строку или исправьте номер сочетания. Если дополнительных нагрузок нет, оставьте N, Mx и My пустыми либо укажите 0. " & _
+        "(статус InputErr) Исходная строка сочетания: Config!H72:N72."
+    message = CalculationCompletionMessage(30, 29, reason, "")
+    TestCheck "presentation.summary.heading", Left$(message, Len("Расчет завершен с ошибками ввода." & vbCrLf & vbCrLf)) = "Расчет завершен с ошибками ввода." & vbCrLf & vbCrLf
+    TestCheck "presentation.summary.counts", InStr(message, "Обработано сочетаний: 30." & vbCrLf & "Ошибок ввода: 29.") > 0
+    TestCheck "presentation.summary.action", InStr(message, vbCrLf & vbCrLf & "Проверьте строки со статусом InputErr на листе Results.") > 0
+    TestCheck "presentation.summary.first", InStr(message, vbCrLf & vbCrLf & "Первая ошибка:" & vbCrLf & "Сочетание 2:") > 0
+    TestCheck "presentation.summary.longitudinal", InStr(message, vbCrLf & vbCrLf & "Продольные трещины:" & vbCrLf & "Проверка продольных трещин") > 0
+    TestCheck "presentation.summary.stability", InStr(message, vbCrLf & vbCrLf & "Устойчивость:" & vbCrLf & "Для сочетания 2") > 0
+    TestCheck "presentation.summary.values", InStr(message, "17.550") > 0 And InStr(message, "14.600") > 0 And InStr(message, "Rb,mc2") > 0
+    TestCheck "presentation.summary.addresses", InStr(message, "rngStabilityDurationLoads, Config!P70:S100") > 0 And InStr(message, "Исходная строка сочетания:" & vbCrLf & "Config!H72:N72.") > 0
+    TestCheck "presentation.summary.reason.unchanged", Left$(reason, Len("CombinationID=2:")) = "CombinationID=2:"
+    TestCheck "presentation.summary.idempotent", WorkbookDialogText(message) = message
+    path = "C:\Проверки НДС\Расчёт.2026\Сечение_" & ChrW$(&H3B1) & "_2\RC_Section_NDM_execution_report.txt"
+    message = WorkbookMessageParagraph(message, "Пошаговый отчет сохранен:" & vbCrLf & path)
+    message = WorkbookMessageParagraph(message, "Время расчёта: 9.50 с.")
+    TestCheck "presentation.report.paragraph", InStr(message, vbCrLf & vbCrLf & "Пошаговый отчет сохранен:" & vbCrLf & path & vbCrLf & vbCrLf & "Время расчёта: 9.50 с.") > 0
+    TestCheck "presentation.report.path.exact", InStr(message, path) > 0
+    TestCheck "presentation.report.idempotent", WorkbookDialogText(message) = message
+    mReport = mReport & "MESSAGE_LAYOUT_EXAMPLE:" & vbCrLf & message & vbCrLf & "END_MESSAGE_LAYOUT_EXAMPLE" & vbCrLf
+    text = WorkbookErrorMessage("Расчёт не выполнен", 12345, "Probe.Stage.2", "Неизвестный вариант. Проверьте " & ChrW$(&H3BB) & " = 0.125 и " & ChrW$(&H3B5) & " = 1.0E-8.")
+    TestCheck "presentation.runtime.blocks", InStr(text, "Расчёт не выполнен:" & vbCrLf & vbCrLf & "Неизвестный вариант." & vbCrLf & vbCrLf & "Проверьте") > 0
+    TestCheck "presentation.runtime.technical", InStr(text, vbCrLf & vbCrLf & "Источник ошибки: Probe.Stage.2." & vbCrLf & "Код ошибки: 12345.") > 0
+    TestCheck "presentation.runtime.math", InStr(text, ChrW$(&H3BB) & " = 0.125") > 0 And InStr(text, ChrW$(&H3B5) & " = 1.0E-8") > 0
+    TestCheck "presentation.runtime.idempotent", WorkbookDialogText(text) = text
+    text = WorkbookErrorMessage("Расчёт не выполнен", 91, "Reader", "")
+    TestCheck "presentation.runtime.empty.reason", InStr(text, "без описания причины") > 0 And InStr(text, "Код ошибки: 91.") > 0
+    text = WorkbookErrorMessage("Расчёт не выполнен", 17, "Settings", "Настройка Solver.Method (лист Config, ячейка B15): Неизвестный метод. Выберите Newton или Secant.")
+    TestCheck "presentation.settings.address", InStr(text, "Адреса ячеек:" & vbCrLf & "Config!B15") > 0
+    TestCheck "presentation.settings.solution", InStr(text, "Возможное решение:" & vbCrLf & "Выберите Newton или Secant.") > 0
+    TestCheck "presentation.settings.idempotent", WorkbookDialogText(text) = text
+    text = SectionRecipeErrorText("Неверный отступ. Уменьшите значение.", "Сечения!C123", "Арматура: верхний ряд.")
+    expected = text
+    TestCheck "presentation.geometry.stable", WorkbookDialogText(text) = expected
+    text = CalculationCompletionMessage(2, 0, "", "LC:2." & ChrW$(&H3B1))
+    TestCheck "presentation.success.blocks", text = "Расчет завершен." & vbCrLf & vbCrLf & "Обработано сочетаний: 2." & vbCrLf & vbCrLf & "Определяющее сочетание: LC:2." & ChrW$(&H3B1)
+    TestCheck "presentation.empty.detail", InStr(CalculationCompletionMessage(2, 1, "", ""), "Первая ошибка:") = 0
+    TestCheck "presentation.empty.paragraph", WorkbookMessageParagraph("Текст", "") = "Текст" And WorkbookMessageParagraph("", "Текст") = "Текст"
+    text = WorkbookDialogText(vbCrLf & vbLf & "Первый" & vbCr & vbCrLf & vbLf & "Второй" & vbCrLf)
+    TestCheck "presentation.newlines.normalized", text = "Первый" & vbCrLf & vbCrLf & "Второй"
+    TestCheck "presentation.blank", WorkbookDialogText(vbCrLf & " " & vbLf) = ""
+    text = "Введённое значение: ""Прочность: 2. Проверьте имя"". Выберите допустимый вариант."
+    TestCheck "presentation.quoted.value", InStr(WorkbookDialogText(text), """Прочность: 2. Проверьте имя""") > 0
+    text = "Слой «Устойчивость: 3. Проверьте имя» не найден. Откройте чертёж."
+    TestCheck "presentation.quoted.layer", InStr(WorkbookDialogText(text), "«Устойчивость: 3. Проверьте имя»") > 0
+    GoTo Finish
+Failed:
+    TestCheck "presentation.runtime", False
+    mReport = mReport & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finish:
+    RunProgramMessagePresentationTests = mReport & "TOTAL MESSAGE PRESENTATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Прогоняет все извлечённые сообщения рабочих компонентов через настоящий
+' форматтер: повторный вызов устойчив, численные токены не теряются и не меняются.
+Public Function RunProgramMessageCorpusTests(ByVal corpusPath As String) As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim file As Object, source As String, formatted As String, index As Long, expression As Object
+    Set expression = CreateObject("VBScript.RegExp")
+    expression.Global = True: expression.Pattern = "[+-]?[0-9]+([.,][0-9]+)?([Ee][+-]?[0-9]+)?"
+    Set file = CreateObject("Scripting.FileSystemObject").OpenTextFile(corpusPath, 1, False, -1)
+    Do Until file.AtEndOfStream
+        source = file.ReadLine: index = index + 1
+        formatted = WorkbookDialogText(source)
+        TestCheck "presentation.corpus.idempotent." & CStr(index), WorkbookDialogText(formatted) = formatted
+        TestCheck "presentation.corpus.numbers." & CStr(index), TestMessageNumberTokensEqual(source, formatted, expression)
+        TestCheck "presentation.corpus.no.extra.blank." & CStr(index), InStr(formatted, vbCrLf & vbCrLf & vbCrLf) = 0
+    Loop
+    GoTo Finish
+Failed:
+    TestCheck "presentation.corpus.runtime", False
+    mReport = mReport & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finish:
+    If Not file Is Nothing Then file.Close
+    RunProgramMessageCorpusTests = mReport & "MESSAGE_CORPUS_CASES: " & CStr(index) & vbCrLf & _
+        "TOTAL MESSAGE CORPUS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает числа с учётом повторов, но без требования прежнего порядка:
+' форматтер настройки переносит адрес перед причиной, сохраняя оба значения.
+Private Function TestMessageNumberTokensEqual(ByVal before As String, ByVal after As String, ByVal expression As Object) As Boolean
+    Dim counts As Object, item As Object, key As Variant
+    Set counts = CreateObject("Scripting.Dictionary")
+    For Each item In expression.Execute(before)
+        key = item.Value
+        If Not counts.Exists(key) Then counts.Add key, 0
+        counts(key) = counts(key) + 1
+    Next item
+    For Each item In expression.Execute(after)
+        key = item.Value
+        If Not counts.Exists(key) Then Exit Function
+        counts(key) = counts(key) - 1
+    Next item
+    For Each key In counts.Keys
+        If counts(key) <> 0 Then Exit Function
+    Next key
+    TestMessageNumberTokensEqual = True
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' повторное использование spec, атомарная регистрация и политика имён без зависимости от типа.
 Public Function RunAudit02PolygonApiTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
