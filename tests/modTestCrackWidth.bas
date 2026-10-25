@@ -24,6 +24,7 @@ Public Function RunCrackWidthTests() As String
     Dim t0 As Double
     t0 = Timer
 
+    TestCrackStopReasonContract stats
     TestConcreteTensionBranches stats
     TestCrackWidthFormulaCalculatorPure stats
     TestCrackUserPsiMx stats
@@ -2128,4 +2129,38 @@ Private Sub TestNearUniformCrackTranslations(ByRef stats As TCrackTestStats)
             Next shift
         Next axis
     Next center
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Пустое/изменённое пояснение не отменяет первый машинный исход и не создаёт новую попытку.
+Private Sub TestCrackStopReasonContract(ByRef stats As TCrackTestStats)
+    Dim calculator As CCrackFormationCalculator, before As CResultMeta, after As CResultMeta
+    Dim failure As Long, reason As Variant, prefix As String, solves As Long
+    solves = SectionEquilibriumSolveCount()
+    For Each reason In Array("Первичная причина.", "Localized cause.", "")
+        For failure = sfcNumericalFailure To sfcInternalError
+            Set calculator = New CCrackFormationCalculator
+            calculator.LimitSearchSetFailure failure, CStr(reason)
+            Set before = calculator.ResultMeta
+            calculator.LimitSearchSetStopReasonIfEmpty "Резервное описание не заменяет уже записанный исход."
+            Set after = calculator.ResultMeta
+            prefix = "crack.stopReason." & CStr(failure) & "." & CStr(Len(CStr(reason)))
+            TestAssertTrue stats, prefix & ".classification", after.InternalStatus = before.InternalStatus And after.ResultCode = before.ResultCode
+            TestAssertTrue stats, prefix & ".cause", after.ResultComment = before.ResultComment And after.SourceKeys = before.SourceKeys
+        Next failure
+        Set calculator = New CCrackFormationCalculator
+        calculator.LimitSearchFinishNoCrack CStr(reason)
+        calculator.LimitSearchSetStopReasonIfEmpty "Резервное описание."
+        TestAssertTrue stats, "crack.stopReason.noCrack." & Len(CStr(reason)), calculator.Converged And _
+            calculator.ResultMeta.InternalStatus = rsSuccess And calculator.ResultMeta.ResultCode = rcCriterionNotReached
+        Set calculator = New CCrackFormationCalculator
+        calculator.LimitSearchSetCrackFormationSearchBoundReached CStr(reason)
+        calculator.LimitSearchSetStopReasonIfEmpty "Резервное описание."
+        TestAssertTrue stats, "crack.stopReason.physical." & Len(CStr(reason)), calculator.ResultMeta.InternalStatus = rsCheckFailed And _
+            calculator.ResultMeta.ResultCode = rcSearchBoundReached
+    Next reason
+    calculator.LimitSearchClearStopReason
+    calculator.LimitSearchSetStopReasonIfEmpty "Численная попытка без собственного исхода."
+    TestAssertTrue stats, "crack.stopReason.unset", calculator.ResultMeta.InternalStatus = rsNumericalFailure And calculator.ResultMeta.ResultCode = rcNumericalFailure
+    TestAssertTrue stats, "crack.stopReason.noNewSolve", SectionEquilibriumSolveCount() = solves
 End Sub

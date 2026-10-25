@@ -65,6 +65,7 @@ Private mDsEquivalent As Double ' Эквивалентный диаметр вы
 Private mLsRaw As Double ' Нормативная длина ls до ограничений 10ds/100/40ds/400, мм.
 Private mLs As Double ' Итоговое расстояние между трещинами после ограничений, мм.
 Private mSpacingLimitWarning As String ' Объяснение несовместимых границ ls; публикуется только при выполненной формуле.
+Private mHasSpacingLimitWarning As Boolean ' Фактический конфликт нижнего/верхнего ограничения, независимо от текста.
 Private mPsiS As Double ' Коэффициент неравномерности деформаций арматуры между трещинами.
 Private mPhi1 As Double ' Коэффициент длительности действия нагрузки.
 Private mPhi2 As Double ' Пользовательский коэффициент, учитывающий поверхность арматуры.
@@ -140,7 +141,7 @@ Private Sub ClearResult()
     mDsEquivalent = 0#
     mLsRaw = 0#
     mLs = 0#
-    mSpacingLimitWarning = vbNullString
+    mSpacingLimitWarning = vbNullString: mHasSpacingLimitWarning = False
     mPsiS = mPsiSInput
     mPhi1 = mPhi1Input
     mPhi2 = mPhi2Input
@@ -399,7 +400,7 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionStateResult, 
     mAbt = mInteractionRegion.Area
     mAs = SelectedRebarArea(section, selected)
     CompleteCrackFormula currentSolver, section, materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected
-    If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
+    If mWidthInternalStatus <> rsUnset And Not mCrackFormed Then Exit Sub
     If Not FinalizeWithPsiMode(section, materialProvider, selected, _
             "Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона.") Then Exit Sub
 End Sub
@@ -477,7 +478,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
     End If
 
     CompleteCrackFormula currentSolver, section, materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected
-    If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
+    If mWidthInternalStatus <> rsUnset And Not mCrackFormed Then Exit Sub
     If Not FinalizeWithPsiMode(section, materialProvider, selected, _
             "Расчет выполнен для произвольного сечения по общей НДМ-ветке.") Then Exit Sub
 End Sub
@@ -685,7 +686,7 @@ Private Sub FinalizeWidth(ByVal reason As String)
             "Раскрытие нормальной трещины " & FormatNumberInvariant(mCrackWidth) & _
             " мм превышает допускаемое " & FormatNumberInvariant(mAllowableCrackWidth) & " мм. " & reason
     Else
-        If mFallbackPsi1 Or Len(mSpacingLimitWarning) > 0 Then
+        If mFallbackPsi1 Or mHasSpacingLimitWarning Then
             SetWidthResult rsSuccessWithWarning, rcCheckPassed, reason
         Else
             SetWidthResult rsSuccess, rcCheckPassed, reason
@@ -1028,6 +1029,7 @@ Private Function LimitedCrackSpacing(ByVal rawLs As Double, ByVal ds As Double) 
     lower = MaxDouble(10# * ds, 100#)
     upper = MinDouble(40# * ds, 400#)
     If lower > upper Then
+        mHasSpacingLimitWarning = True
         mSpacingLimitWarning = "Предупреждение: ограничения расстояния между трещинами противоречат друг другу: " & _
             "нижняя граница " & FormatNumberInvariant(lower) & " мм выше верхней " & _
             FormatNumberInvariant(upper) & " мм при d_s,eq = " & FormatNumberInvariant(ds) & _
@@ -1606,3 +1608,11 @@ End Property
 Public Function Audit02AutoPsiForTests(ByVal sigmaS As Double, ByVal sigmaSCrc As Double) As Double
     Audit02AutoPsiForTests = AutoPsi(sigmaS, sigmaSCrc)
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Повторяет только завершение готовой формулы с другим пояснением события;
+' НДС, коэффициенты, напряжения, расстояние ls и машинный признак не подменяются.
+Friend Sub TestRefinalizeWithSpacingText(ByVal text As String)
+    mSpacingLimitWarning = text
+    FinalizeWidth "Контроль представления готовой формулы."
+End Sub

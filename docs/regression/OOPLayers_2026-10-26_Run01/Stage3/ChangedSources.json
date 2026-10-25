@@ -1,0 +1,6 @@
+﻿{
+  "CCrackFormationCalculator": "src/Crack/CCrackFormationCalculator.cls",
+  "CCrackWidthCalculator": "src/Crack/CCrackWidthCalculator.cls",
+  "modTestBatchCalculation": "tests/modTestBatchCalculation.bas",
+  "modTestCrackWidth": "tests/modTestCrackWidth.bas"
+}

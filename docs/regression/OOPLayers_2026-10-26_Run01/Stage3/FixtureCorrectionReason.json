@@ -1,0 +1,18 @@
+﻿{
+  "At": "2026-10-26T01:24:18.878868+03:00",
+  "Cause": "Isolated SP63 crack-spacing test did not set SLS.Crack.Code and inherited active SP35 from saved workbook. SP35 intentionally has no SP63 ds/ls fields or 10ds>400 warning.",
+  "OriginalStage3Primary": {
+    "Name": "Probe01_No.txt",
+    "SHA256": "6435A29DD9DB49B9DEE5E3D443CEA8AF7E50BC25F6FBD63DA3D6020E464FA3D3",
+    "FailedAssertions": 48
+  },
+  "IndependentEarlierCodeReproduction": {
+    "Candidate": "Stage2/Candidate/RC_Section_NDM.xlsm",
+    "Primary": "BaselineSpacing_No.txt",
+    "SHA256": "43D86DFBB831EAFB8D16326483B229A9811C1CF3903019E08DA7BD4F088AF76A",
+    "FailedAssertions": 30,
+    "ActualReport": "СП 35: раскрытие проверено по текущему НДС; ls=0"
+  },
+  "Fix": "Explicit SP63 fixture setting plus assertion of selected code; no numerical expected value changed.",
+  "FullPass": false
+}

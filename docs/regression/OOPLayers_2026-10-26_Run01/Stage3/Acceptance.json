@@ -1,0 +1,21 @@
+﻿{
+  "Status": "PASS_STAGE3_ONLY",
+  "At": "2026-10-26T01:30:50.111166+03:00",
+  "BookSHA256": "BECF60239FCF88568F5BE2691BF7FC610F732908EFB39DD19F637DAF97291B5B",
+  "AllCodeSHA256": "CFB49A95C2DC66EDB34AA67C6B45F429A7653BE7B8E7E9419105A98AFFE1FB79",
+  "NativeSourceEquality": true,
+  "UnchangedDocumentModules": 6,
+  "UnchangedNonVbaParts": 106,
+  "NewClasses": 0,
+  "NewModules": 0,
+  "ProfileModes": [
+    "No",
+    "Yes"
+  ],
+  "BaselineNumericalRowsExactToStage2": true,
+  "PreservedEarlierFailures": [
+    "Probe01_No.txt",
+    "BaselineSpacing_No.txt"
+  ],
+  "FullPass": false
+}

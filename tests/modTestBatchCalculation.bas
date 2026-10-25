@@ -9660,6 +9660,7 @@ Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
     Dim steelArea As Double, expectedSpacing As Double, lower As Double, upper As Double
     Dim i As Long, outputRow As Long, prefix As String, warningText As String, solveCount As Long
     Dim sheet As Object, anchor As Object
+    Dim changedText As Variant, beforeMeta As CResultMeta, originalWidth As Double
     Dim calculator As CCrackWidthCalculator, currentState As CSectionStateResult, loadState As CSectionLoadState
     Dim materials As CMaterialModelProvider, firstSection As CSectionModel, firstResult As CCombinationResult
     On Error GoTo Failed
@@ -9670,6 +9671,7 @@ Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
     TestSetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
     TestSetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
     TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    TestSetSystemSetting "SLS.Crack.Code", "SP63"
     TestSetSystemSetting "General.DiagramExtension", "No"
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     TestSetSystemSetting "SLS.Crack.PsiMode", "User"
@@ -9701,6 +9703,7 @@ Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
             Set sheet = ThisWorkbook.Worksheets.Item("Results")
             Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
             Set result = batch.ResultAt(1): Set width = result.CrackResult.Width
+            TestAssertEquals stats, "audit03.spacingWarning.standard", width.StandardCode, "SP63"
             If CDbl(barDiameter) = 20# Then
                 Set firstSection = section: Set firstResult = result
             End If
@@ -9723,6 +9726,17 @@ Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
             calculator.Calculate currentState, section, materials, currentState.MaterialSpec, result.CrackResult.Formation, loadState
             TestAssertEquals stats, prefix & ".reusedCalculatorComment", calculator.ResultMeta.ResultComment, result.CrackWidthMeta.ResultComment
             TestAssertTrue stats, prefix & ".formulaNoSolve", SectionEquilibriumSolveCount() = solveCount
+            Set beforeMeta = calculator.ResultMeta: originalWidth = calculator.CrackWidth
+            For Each changedText In Array("", "Localized explanation.", "Предупреждение: произвольный текст.")
+                calculator.TestRefinalizeWithSpacingText CStr(changedText)
+                TestAssertTrue stats, prefix & ".textInvariant.status." & Len(CStr(changedText)), calculator.ResultMeta.InternalStatus = beforeMeta.InternalStatus And _
+                    calculator.ResultMeta.ResultCode = beforeMeta.ResultCode
+                TestAssertClose stats, prefix & ".textInvariant.width." & Len(CStr(changedText)), calculator.CrackWidth, originalWidth, 0#
+            Next changedText
+            calculator.Calculate currentState, section, materials, currentState.MaterialSpec, result.CrackResult.Formation, loadState
+            TestAssertEquals stats, prefix & ".textInvariant.restored", calculator.ResultMeta.ResultComment, result.CrackWidthMeta.ResultComment
+            TestAssertTrue stats, prefix & ".textInvariant.noSolve", SectionEquilibriumSolveCount() = solveCount
+
             If lower > upper Then
                 TestAssertTrue stats, prefix & ".warningTyped", result.CrackWidthMeta.InternalStatus = rsSuccessWithWarning
                 TestAssertTrue stats, prefix & ".warningComment", InStr(1, result.CrackWidthMeta.ResultComment, warningText, vbTextCompare) > 0

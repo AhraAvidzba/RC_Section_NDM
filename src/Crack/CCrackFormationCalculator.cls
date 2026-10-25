@@ -508,9 +508,10 @@ Public Sub LimitSearchClearStopReason()
     mFailureSettingKeys = vbNullString
 End Sub
 
-' Возвращает прежнюю причину, если дополнительный способ решения не записал своей.
+' Возвращает прежнюю причину только при отсутствии машинного исхода дополнительной попытки.
+' Пустой/локализованный комментарий уже зафиксированного исхода не отменяет его.
 Public Sub LimitSearchSetStopReasonIfEmpty(ByVal text As String)
-    If Len(mStopReason) = 0 Then SetFormationNumericalFailure text
+    If mFormationInternalStatus = rsUnset Then SetFormationNumericalFailure text
 End Sub
 
 ' Запускает поиск образования трещины по предельной деформации UltimateStrain.
@@ -893,7 +894,7 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
         Exit Function
     End If
     If Not formationStart.Converged Then
-        If Len(mStopReason) = 0 Then SetFormationNumericalFailure firstStopReason
+        If mFormationInternalStatus = rsUnset Then SetFormationNumericalFailure firstStopReason
         Exit Function
     End If
 
@@ -901,7 +902,7 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
             targetN, momentMxAtReference, momentMyAtReference, referenceX, referenceY) Then
         AppendDiagnostic "UltimateStrain: дополнительный старт от полного НДС успешно нашел точку образования трещины."
         CalculateLambdaCrcByUltimateStrain = True
-    ElseIf Len(mStopReason) = 0 Then
+    ElseIf mFormationInternalStatus = rsUnset Then
         AppendDiagnostic "UltimateStrain: дополнительный старт от полного НДС также не дал точку образования трещины."
         SetFormationNumericalFailure firstStopReason
     End If

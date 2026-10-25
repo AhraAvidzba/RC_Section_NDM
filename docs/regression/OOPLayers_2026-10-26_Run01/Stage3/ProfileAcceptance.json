@@ -1,0 +1,56 @@
+﻿{
+  "Status": "PASS_STAGE3_PROFILE_NO_YES_ONLY",
+  "At": "2026-10-26T01:28:46.023766+03:00",
+  "Records": [
+    {
+      "Mode": "No",
+      "SHA256": "E72956F566E1A2DA6F782B9EAC3679341509FB449BAE6ED79560FA0428EC61A5",
+      "Primary": "Probe02_No.txt",
+      "CompletedMacros": [
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestCrackWidth.RunAudit03FormationAdapterFailuresTests",
+        "modTestBatchCalculation.RunAudit03CrackSpacingWarningTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestBatchCalculation.RunAudit03LifecycleTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL_CRACK: passed=2604; failed=0; elapsedSec=61.64111328125",
+        "TOTAL_FORMATION_ADAPTER_FAILURES: passed=39; failed=0",
+        "TOTAL_AUDIT03_SPACING_WARNING: passed=310; failed=0",
+        "TOTAL_SP35_PIPELINE: passed=34; failed=0",
+        "TOTAL_SP35_FORMULA: passed=27; failed=0",
+        "TOTAL_AUDIT03_LIFECYCLE: passed=172; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.3173828125"
+      ],
+      "BaselineExactExceptElapsedTime": true
+    },
+    {
+      "Mode": "Yes",
+      "SHA256": "C2A2841D3E8EA83DD95E9C8ADAAB53A7B34607DB68467E8F83F97F605685BEEF",
+      "Primary": "Probe02_Yes.txt",
+      "CompletedMacros": [
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestCrackWidth.RunAudit03FormationAdapterFailuresTests",
+        "modTestBatchCalculation.RunAudit03CrackSpacingWarningTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestBatchCalculation.RunAudit03LifecycleTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL_CRACK: passed=2604; failed=0; elapsedSec=58.208984375",
+        "TOTAL_FORMATION_ADAPTER_FAILURES: passed=39; failed=0",
+        "TOTAL_AUDIT03_SPACING_WARNING: passed=310; failed=0",
+        "TOTAL_SP35_PIPELINE: passed=34; failed=0",
+        "TOTAL_SP35_FORMULA: passed=27; failed=0",
+        "TOTAL_AUDIT03_LIFECYCLE: passed=172; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.14501953125"
+      ],
+      "BaselineExactExceptElapsedTime": true
+    }
+  ],
+  "CandidateSHA256": "3A421B4A0B5042ED4AACEE78D8FDF22AE3C67364C6ACBCA4FBADACBFCE7A3494",
+  "FullPass": false
+}
