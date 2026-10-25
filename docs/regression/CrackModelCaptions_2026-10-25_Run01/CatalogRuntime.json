@@ -1,0 +1,11 @@
+﻿{
+    "Checked":  "2026-10-25T13:15:33.4451754+03:00",
+    "PowerShellVersion":  "5.1.19041.6456",
+    "RowCount":  30,
+    "ExpectedCaptions":  [
+                             "[Модель начала трещинообразования]",
+                             "[Модель НДС с раскрытыми трещинами]"
+                         ],
+    "OldCaptionsAbsent":  true,
+    "BuilderUsesCatalog":  true
+}

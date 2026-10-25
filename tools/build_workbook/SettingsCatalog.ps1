@@ -227,13 +227,13 @@ function Get-CalculationProfilesCatalog {
         @{ Caption = "Растянутый бетон"; Key = "MaterialModel.Strength.ConcreteTension"; PR1 = "Ignore"; PR2 = "Ignore"; PR3 = "Ignore"; PR4 = "Ignore"; Comment = "СП 63, п. 8.1.20: при расчете прочности растянутый бетон допускается не учитывать." },
         @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.Strength.SteelDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "СП 63, п. 6.2.13: TwoLine для физического предела текучести, ThreeLine для условного." },
 
-        @{ Caption = "[Модель образования трещин]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "[Модель начала трещинообразования]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
         @{ Caption = "Характеристики материалов"; Key = "MaterialModel.CrackInitiation.ValueSet"; PR1 = "SLS(II)"; PR2 = "SLS(II)"; PR3 = "SLS(II)"; PR4 = "SLS(II)"; Comment = "Для проверки образования нормальной трещины используются характеристики II ГПС: Rb,ser/Rbt,ser и Rs,ser." },
         @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.CrackInitiation.ConcreteDiagram"; PR1 = "ThreeLine"; PR2 = "ThreeLine"; PR3 = "ThreeLine"; PR4 = "ThreeLine"; Comment = "СП 63, п. 6.1.24: для образования трещин основная модель бетона - ThreeLine с растяжением." },
         @{ Caption = "Растянутый бетон"; Key = "MaterialModel.CrackInitiation.ConcreteTension"; PR1 = "UseDiagram"; PR2 = "UseDiagram"; PR3 = "UseDiagram"; PR4 = "UseDiagram"; Comment = "Для стадии образования трещины растянутая ветвь бетона должна учитываться; иначе критерий εbt,ult не определяется по этой модели." },
         @{ Caption = "Диаграмма арматуры"; Key = "MaterialModel.CrackInitiation.SteelDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "СП 63, п. 6.2.13: TwoLine для физического предела текучести, ThreeLine для условного." },
 
-        @{ Caption = "[Модель НДС с трещинами]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
+        @{ Caption = "[Модель НДС с раскрытыми трещинами]"; Key = ""; PR1 = ""; PR2 = ""; PR3 = ""; PR4 = ""; Comment = "" },
         @{ Caption = "Характеристики материалов"; Key = "MaterialModel.CrackedState.ValueSet"; PR1 = "SLS(II)"; PR2 = "SLS(II)"; PR3 = "SLS(II)"; PR4 = "SLS(II)"; Comment = "Для раскрытия трещин по СП используются характеристики II ГПС." },
         @{ Caption = "Диаграмма бетона"; Key = "MaterialModel.CrackedState.ConcreteDiagram"; PR1 = "TwoLine"; PR2 = "TwoLine"; PR3 = "TwoLine"; PR4 = "TwoLine"; Comment = "СП 63, п. 6.1.26: после образования трещин НДС допускается считать по TwoLine или ThreeLine." },
         @{ Caption = "Растянутый бетон"; Key = "MaterialModel.CrackedState.ConcreteTension"; PR1 = "Ignore"; PR2 = "Ignore"; PR3 = "Ignore"; PR4 = "Ignore"; Comment = "Для уже образовавшейся трещины растянутый бетон в НДС не учитывается." },

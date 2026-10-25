@@ -1,0 +1,25 @@
+{
+  "Started": "2026-10-25T13:15:33.8696314+03:00",
+  "Status": "PASS_TWO_CAPTIONS_NATIVE_READONLY",
+  "FreeCommitBeforeGiB": 3.89,
+  "FreePhysicalBeforeGiB": 11.28,
+  "MacrosRun": false,
+  "FullRegressionPass": false,
+  "PID": 179260,
+  "StartTicksUtc": "639285201339798454",
+  "Captions": [
+    "[Модель начала трещинообразования]",
+    "[Модель НДС с раскрытыми трещинами]"
+  ],
+  "ReadOnly": true,
+  "MacroSecurity": 3,
+  "VBAComponents": 178,
+  "NeighborHeaderCellsEmpty": true,
+  "NativeViewPDF": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\CrackModelCaptions_2026-10-25_Run01\\Captions_Native.pdf",
+  "OwnWorkbookClosed": true,
+  "SourceUnchanged": true,
+  "Finished": "2026-10-25T13:16:01.3472773+03:00",
+  "VisualReview": "Both requested headings fully visible in the native Excel PDF; no title truncation",
+  "OwnExcelExitConfirmed": true,
+  "ReviewChecked": "2026-10-25T13:19:46.639187+03:00"
+}

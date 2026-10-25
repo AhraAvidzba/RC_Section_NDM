@@ -1,0 +1,21 @@
+{
+  "Checked": "2026-10-25T13:12:51.869646+03:00",
+  "Scope": "Two crack-model subsection captions only; not full regression acceptance",
+  "BeforeSHA256": "1F17823483798C8549275285B0C8696736EC90277B28D543A4EF95731937367A",
+  "AfterSHA256": "A59160D78E4EEB37EEB0104F0717104DF79F2C4A5D8D1D4B991D4E6E5C1EE404",
+  "WorkbookParts": 107,
+  "OnlyChangedPart": "xl/sharedStrings.xml",
+  "UnchangedParts": 106,
+  "ExactlyTwoSharedStringReplacements": true,
+  "Headers": {
+    "H53": "[Модель начала трещинообразования]",
+    "H58": "[Модель НДС с раскрытыми трещинами]"
+  },
+  "VbaProjectUnchanged": true,
+  "VbaProjectSHA256": "CA76AF6A609A03DD50F3238EF2A04BE890434A55C4D5B8A0488E450CDA3637AD",
+  "AllCodeUnchanged": true,
+  "AllCodeSHA256": "A50AFDB444C19D8DF55F96327BD50E0791ACBF7724312FB4A57C057E13B48C9A",
+  "CatalogExactlyTwoCaptionChanges": true,
+  "CatalogSHA256": "A1B020C5E1AB24570BA66D4A82D0AD1CBC4BF2EBA64968707B6C17232B0B2CF1",
+  "OriginalFullRegressionPass": false
+}
