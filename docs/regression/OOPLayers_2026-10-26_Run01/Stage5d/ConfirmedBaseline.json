@@ -1,0 +1,9 @@
+{
+  "Status": "CONFIRMED_BEFORE_FIX",
+  "Primary": "Baseline02_No.txt",
+  "SHA256": "D7E4245FEA612380C3024DE00F43D551D8E37AA24C5AE584E6D9657311231A81",
+  "Passed": 9,
+  "Failed": 15,
+  "Confirmed": "ExplicitStations malformed groups and optional MaterialID grouping/fraction rounding or missing address",
+  "FullPass": false
+}

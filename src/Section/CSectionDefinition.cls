@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -185,22 +185,25 @@ Friend Sub AddRule(ByRef value As TRebarRule)
     RequireMutable
     If value.DistributionScope <> PerPath Then DefinitionError "Правило '" & value.RuleID & "': поддерживается DistributionScope=PerPath."
     If Len(Trim$(value.RuleID)) = 0 Then DefinitionError "Не задан ID правила арматуры."
-    Dim i As Long
+    Dim i As Long, parsedStation As Double, stations As Variant
     For i = 1 To mRuleCount
         If mRules(i).RuleID = value.RuleID Then DefinitionError "Повторный ID правила '" & value.RuleID & "'."
     Next i
     If IsArray(value.ExplicitStations) Then
+        stations = value.ExplicitStations
         For i = LBound(value.ExplicitStations) To UBound(value.ExplicitStations)
             If IsObject(value.ExplicitStations(i)) Or IsArray(value.ExplicitStations(i)) Then _
                 DefinitionError "Явные позиции должны содержать только числа."
-            If VarType(value.ExplicitStations(i)) = vbBoolean Or Not IsNumeric(value.ExplicitStations(i)) Then _
-                DefinitionError "Расстояние от начала линии до места установки стержня должно быть числом."
+            If Not TryReadStrictDouble(value.ExplicitStations(i), parsedStation) Then _
+                DefinitionError "Расстояние от начала линии до места установки стержня должно быть числом без разделителей разрядов."
+            stations(i) = parsedStation ' Каноническая копия не оставляет локализованный текст для повторного CDbl в исполнителе и не меняет массив вызывающего кода.
         Next i
     ElseIf Not IsEmpty(value.ExplicitStations) Then
         DefinitionError "Положения стержней должны задаваться массивом числовых расстояний от начала линии."
     End If
     mRuleCount = mRuleCount + 1: ReDim Preserve mRules(1 To mRuleCount)
     mRules(mRuleCount) = value
+    If IsArray(stations) Then mRules(mRuleCount).ExplicitStations = stations
 End Sub
 
 ' Добавляет декларативное описание размера или подписи без дублирования бетонного контура.

@@ -1,0 +1,15 @@
+{
+  "Status": "PASS_STAGE5D_ONLY",
+  "At": "2026-10-26T02:48:16.680121+03:00",
+  "BookSHA256": "55380C8A3249872F3AF859316DE567458A49C1BEE56C791FA3BA892723BA5FB8",
+  "AllCodeSHA256": "1F3783C97EA33D943CBC8BA630DB097D8C2A32B31C5EECE329BC6CE538C56860",
+  "NativeSourceEquality": true,
+  "Components": 178,
+  "ChangedProductionComponents": 2,
+  "ChangedTestComponents": 2,
+  "UnchangedComponents": 174,
+  "UnchangedNonVbaParts": 106,
+  "NewClasses": 0,
+  "NewModules": 0,
+  "FullPass": false
+}

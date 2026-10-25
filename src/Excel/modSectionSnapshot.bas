@@ -64,7 +64,7 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
                 If extraColumn > 0 Then Set info = ReadSnapshotOptionalRecord(data, anchor, row, extraColumn)
                 sourceName = SectionOptionalText(info, "SourceName"): handle = SectionOptionalText(info, "SourceHandle")
                 steelClass = SectionOptionalText(info, "SteelClass")
-                If info.Exists("MaterialID") Then materialID = CLng(SectionOptionalText(info, "MaterialID"))
+                If info.Exists("MaterialID") Then materialID = ReadSnapshotMaterialID(SectionOptionalText(info, "MaterialID"), anchor, row, extraColumn)
                 If colComment > 0 Then comment = ReadSavedAnnotationText(data, anchor, row, colComment)
             End If
             If StrComp(kind, "Concrete", vbTextCompare) = 0 Then
@@ -306,6 +306,24 @@ Public Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal combina
         End If
     Next rowIndex
 Failed:
+End Function
+
+
+' Читает сохранённый целочисленный ID материала без округления дроби или группировки разрядов.
+' Число остаётся Long прежнего формата; повреждённое поле указывает свою ячейку ExtraData.
+Private Function ReadSnapshotMaterialID(ByVal text As String, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long) As Long
+    Dim parsed As Double
+    If Not TryReadStrictDouble(text, parsed) Then GoTo InvalidNumber
+    If parsed < -2147483648# Or parsed > 2147483647# Then GoTo InvalidNumber
+    If Fix(parsed) <> parsed Then GoTo InvalidNumber
+    ReadSnapshotMaterialID = CLng(parsed)
+    Exit Function
+InvalidNumber:
+    Err.Raise vbObjectError + 4382, "ReadSectionGeometryFromResults", _
+        "В сохранённых сведениях сечения MaterialID должен быть целым числом без разделителей разрядов: " & _
+        anchor.Worksheet.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False) & _
+        ". Заново сформируйте сечение для восстановления этих сведений."
 End Function
 
 ' Читает численное поле готовой геометрии. Только разрешенная пустота означает

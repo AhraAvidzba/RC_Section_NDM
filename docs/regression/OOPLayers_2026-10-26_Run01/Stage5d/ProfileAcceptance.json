@@ -1,0 +1,54 @@
+{
+  "Status": "PASS_STAGE5D_PROFILE_NO_YES_ONLY",
+  "Records": [
+    {
+      "Mode": "No",
+      "Primary": "Probe01_No.txt",
+      "SHA256": "B090B495C6234E58F11F1C76C2CE5E0F2B95601DB779448500AB879312C805A5",
+      "Totals": [
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL LOCALE SAVED CONTRACTS: passed=24; failed=0",
+        "TOTAL ADVANCED GUIDE EXAMPLES: passed=16; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=112; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.1953125"
+      ],
+      "CompletedMacros": [
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunLocaleBoundaryTests",
+        "modTestConfiguration.RunLocaleSavedContractTests",
+        "modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage5c": true
+    },
+    {
+      "Mode": "Yes",
+      "Primary": "Probe01_Yes.txt",
+      "SHA256": "9AC109E0D3446FD46BCB77BD09FE862971DE5F30EEEA2E0D66EB9A1D9FC2A703",
+      "Totals": [
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL LOCALE SAVED CONTRACTS: passed=24; failed=0",
+        "TOTAL ADVANCED GUIDE EXAMPLES: passed=16; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=112; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.14453125"
+      ],
+      "CompletedMacros": [
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunLocaleBoundaryTests",
+        "modTestConfiguration.RunLocaleSavedContractTests",
+        "modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage5c": true
+    }
+  ],
+  "FullPass": false
+}

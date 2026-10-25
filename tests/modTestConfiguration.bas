@@ -2684,3 +2684,84 @@ Private Sub TestReadLocaleBoundary(ByVal kind As Long, ByVal value As Variant, B
 Failed:
     code = Err.Number: reason = Err.Description
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет Variant-массив позиций и числовое происхождение готовой геометрии.
+' Затрагивает только собственную тестовую книгу; solver не вызывается.
+Public Function RunLocaleSavedContractTests(Optional ByRef passedCount As Long = 0, Optional ByRef failedCount As Long = 0) As String
+    Dim stats As TConfigTestStats, value As Variant, valid As Boolean, code As Long, reason As String
+    Dim actual As Double, expected As Double, prefix As String, kind As Long
+    Dim data As Variant, anchor As Object, cell As Object, extra As Long, original As Variant, solveCount As Long
+    Dim sheet As Object, fixture As Object, writer As CNDMResultsWriter, model As CSectionModel
+    Dim names As Variant, columns As Variant, i As Long, oldAlerts As Boolean
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    oldAlerts = Application.DisplayAlerts
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMSectionContours")
+    columns = Array(1, 12, 49, 57, 70, 30)
+    For i = 0 To UBound(names)
+        fixture.Names.Add CStr(names(i)), "='Results'!" & sheet.Cells(20, CLng(columns(i))).Address
+    Next i
+    Set model = New CSectionModel
+    model.AddConcreteElement 0#, 0#, 10000#, 1, , , "Rectangle", 100#, 100#, 0#, , 123456#, 654321#, 12#
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview fixture, model, PrepareSectionSnapshot(model)
+    data = ReadAnchoredResultTable(fixture, "rngNDMSectionGeometry")
+    extra = ResultColumn(data, "ExtraData")
+    Set anchor = fixture.Names.Item("rngNDMSectionGeometry").RefersToRange
+    Set cell = anchor.Cells(2, extra): original = cell.Value2
+    For kind = 0 To 1
+        For Each value In Array("1.5", "1,5", "2", "1 2", "12 34", "1 234.5", "1,234.5", "1.234,5")
+            valid = value = "1.5" Or value = "1,5" Or value = "2"
+            If kind = 1 Then valid = value = "2"
+            expected = 1.5: If value = "2" Then expected = 2#
+            TestReadLocaleSavedContract kind, value, fixture, cell, actual, code, reason
+            prefix = "locale.savedContract." & kind & "." & CStr(value)
+            If valid Then
+                TestCheck stats, prefix & ".value", code = 0 And actual = expected
+            Else
+                TestCheck stats, prefix & ".rejected", code <> 0
+                If kind = 1 Then TestCheck stats, prefix & ".address", InStr(reason, cell.Address(False, False)) > 0
+            End If
+            TestLogLine stats, "LOCALE_SAVED_CONTRACT: " & prefix & "; actual=" & actual & "; code=" & code & "; reason=" & reason
+        Next value
+    Next kind
+    TestCheck stats, "locale.savedContract.noSolver", SectionEquilibriumSolveCount() = solveCount
+    GoTo Cleanup
+Failed:
+    TestCheck stats, "locale.savedContract.runtime." & Err.Number & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not cell Is Nothing Then cell.Value2 = original
+    If Not fixture Is Nothing Then fixture.Close False
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+    passedCount = stats.Passed: failedCount = stats.Failed
+    RunLocaleSavedContractTests = stats.Report & "TOTAL LOCALE SAVED CONTRACTS: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Читает реальное сохранённое правило/полную модель; не моделирует конвертацию вместо рабочего кода.
+Private Sub TestReadLocaleSavedContract(ByVal kind As Long, ByVal value As Variant, ByVal fixture As Object, ByVal cell As Object, _
+        ByRef actual As Double, ByRef code As Long, ByRef reason As String)
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
+    Dim rule As TRebarRule, model As CSectionModel, stations As Variant
+    actual = 0#: code = 0: reason = vbNullString
+    On Error GoTo Failed
+    If kind = 0 Then
+        Set facade = New CSectionDefinitionBuilder: facade.Initialize "LocaleStations"
+        Set path = facade.RectanglePath("Concrete", 0#, 0#, 2000#, 1000#): facade.Outer "Outer", "Concrete"
+        Set path = facade.LinePath("Bars", 0#, 500#, 2000#, 500#)
+        stations = Array(value): facade.RebarAtStations "Rule", "Bars", stations, 1.5
+        Set definition = facade.Finish: definition.CopyRule 1, rule
+        actual = CDbl(rule.ExplicitStations(0))
+        If VarType(stations(0)) <> VarType(value) Or CStr(stations(0)) <> CStr(value) Then Err.Raise 5, , "Caller input mutated"
+    Else
+        cell.Value2 = SectionOptionalJson("MaterialID", CStr(value))
+        Set model = ReadSectionGeometryFromResults(fixture, "LocaleTest", True)
+        actual = model.ConcreteMaterialID(1)
+    End If
+    Exit Sub
+Failed:
+    code = Err.Number: reason = Err.Description
+End Sub

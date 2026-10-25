@@ -1,0 +1,5 @@
+{
+  "Status": "FIXTURE_CORRECTION_ONLY",
+  "Preserved": "Baseline01_No.txt",
+  "Reason": "Baseline input workbook has no formed geometry; new fixture uses existing WriteGeometryPreview and own workbook. No production change."
+}
