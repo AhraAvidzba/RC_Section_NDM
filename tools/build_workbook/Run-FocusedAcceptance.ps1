@@ -18,7 +18,8 @@ $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression'))+[IO.Path]::
 if (-not $directory.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -or (Test-Path -LiteralPath $directory)) {throw 'A new evidence directory inside docs/regression is required.'}
 [void][IO.Directory]::CreateDirectory($directory)
 $source=(Resolve-Path -LiteralPath $SourceWorkbook).Path
-$protected=@($source,(Join-Path $root 'workbook/output/VBA_All_Code.txt'),(Join-Path $root 'workbook/output/RC_Section_NDM_execution_report.txt')) | Where-Object {Test-Path -LiteralPath $_}
+# Пользовательский execution_report — производный вывод, не исполняемый вход приёмки.
+$protected=@($source,(Join-Path $root 'workbook/output/VBA_All_Code.txt')) | Where-Object {Test-Path -LiteralPath $_}
 $integrity=@($protected | ForEach-Object {@{Path=$_;SHA256=(Get-FileHash -LiteralPath $_).Hash}})
 $started=[DateTimeOffset]::UtcNow
 $deadline=$started.AddSeconds($MaxSeconds)

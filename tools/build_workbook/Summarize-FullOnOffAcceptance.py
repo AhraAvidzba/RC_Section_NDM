@@ -37,6 +37,13 @@ SNAPSHOT_ACCELERATION_MACROS = {
     'modTestDiscreteForces.RunDiscreteForceTests',
 }
 
+MESSAGE_PRESENTATION_GROUP_COUNTS = {**INDIVIDUAL_ROW_GROUP_COUNTS, 'CurrentFeatures': 6}
+MESSAGE_PRESENTATION_MACROS = SNAPSHOT_ACCELERATION_MACROS | {
+    'modTestAudit02Api.RunProgramMessageTests',
+    'modTestAudit02Api.RunProgramMessagePresentationTests',
+    'modTestAudit02Api.RunInputOnlyDialogTests',
+}
+
 
 def coverage_errors(manifest):
     """Исторические запуски читаются в прежнем объёме; новый полный набор обязателен целиком."""
@@ -44,9 +51,9 @@ def coverage_errors(manifest):
         return []
     errors=[]
     version=manifest.get('CoverageVersion',1)
-    if version not in (1,2,3,4):
+    if version not in (1,2,3,4,5):
         errors.append('Unsupported full coverage version')
-    counts=SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
+    counts=MESSAGE_PRESENTATION_GROUP_COUNTS if version==5 else SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
     if manifest.get('IncludesFocusedAcceptance') is not True:
         errors.append('The current full definition requires focused acceptance')
     expected={(group,mode) for group in counts for mode in ('No','Yes')}
@@ -61,10 +68,11 @@ def coverage_errors(manifest):
             macros = job.get('Macro', [])
             if len(macros) != counts['Geometry'] or len(macros) != len(set(macros)) or not INDIVIDUAL_ROW_MACROS <= set(macros):
                 errors.append('Individual row coverage is incomplete or duplicated')
-        if version == 4 and job['Group'] == 'CurrentFeatures':
+        if version >= 4 and job['Group'] == 'CurrentFeatures':
             macros = job.get('Macro', [])
-            if len(macros) != 3 or set(macros) != SNAPSHOT_ACCELERATION_MACROS:
-                errors.append('Automatic mesh, complete snapshot and discrete force coverage are all mandatory')
+            required = MESSAGE_PRESENTATION_MACROS if version == 5 else SNAPSHOT_ACCELERATION_MACROS
+            if len(macros) != len(required) or set(macros) != required:
+                errors.append('Every feature declared for this coverage version is mandatory')
     return errors
 
 def load_logs():

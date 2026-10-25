@@ -4337,32 +4337,32 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     TestAssertTrue stats, "batch.writer.worst.noNa", Not TestBatchSummaryWorstRowContainsText(resultsSheet, "N/A")
     TestAssertTrue stats, "batch.writer.worst.bold", resultsSheet.Cells.Item(summaryRow + 11, 1).Font.Bold And _
         resultsSheet.Cells.Item(summaryRow + 11, 17).Font.Bold
-    TestAssertTrue stats, "batch.writer.statusLegend.title", TestBatchSummaryCellText(resultsSheet, summaryRow + 5, 28) = "Расшифровка статусов"
+    TestAssertTrue stats, "batch.writer.statusLegend.title", TestBatchSummaryCellText(resultsSheet, summaryRow + 5, 35) = "Расшифровка статусов"
     TestAssertTrue stats, "batch.writer.statusLegend.header", _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 28) = "Статус" And _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 29) = "Описание"
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 35) = "Статус" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 36) = "Описание"
     TestAssertTrue stats, "batch.writer.statusLegend.values", _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 7, 28) = "OK" And _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 9, 28) = "BaseFail" And _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 11, 28) = "InputErr" And _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 12, 28) = "CalcErr"
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 7, 35) = "OK" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 9, 35) = "BaseFail" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 11, 35) = "InputErr" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 12, 35) = "CalcErr"
     TestAssertTrue stats, "batch.writer.statusLegend.mergeOnlyTitle", _
-        resultsSheet.Cells.Item(summaryRow + 5, 28).MergeArea.Columns.Count = 2 And _
-        Not resultsSheet.Cells.Item(summaryRow + 6, 28).MergeCells And _
-        Not resultsSheet.Cells.Item(summaryRow + 7, 29).MergeCells
+        resultsSheet.Cells.Item(summaryRow + 5, 35).MergeArea.Columns.Count = 2 And _
+        Not resultsSheet.Cells.Item(summaryRow + 6, 35).MergeCells And _
+        Not resultsSheet.Cells.Item(summaryRow + 7, 36).MergeCells
     TestAssertTrue stats, "batch.writer.statusLegend.noWrap", _
-        Not resultsSheet.Cells.Item(summaryRow + 7, 29).WrapText
+        Not resultsSheet.Cells.Item(summaryRow + 7, 36).WrapText
     TestAssertTrue stats, "batch.writer.statusLegend.italicValues", _
-        resultsSheet.Cells.Item(summaryRow + 7, 28).Font.Italic And _
-        resultsSheet.Cells.Item(summaryRow + 13, 29).Font.Italic
+        resultsSheet.Cells.Item(summaryRow + 7, 35).Font.Italic And _
+        resultsSheet.Cells.Item(summaryRow + 13, 36).Font.Italic
     TestAssertTrue stats, "batch.writer.statusLegend.colors", _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 28) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 28) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 28) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 28) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 28) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 28) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 13, 28)
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 35) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 35) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 35) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 35) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 35) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 35) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 13, 35)
     TestAssertTrue stats, "batch.writer.reserve.dataNotHeaderFill", _
         resultsSheet.Cells.Item(summaryRow + 12, 17).Interior.ColorIndex = -4142
     TestAssertWorstSummaryRowMatchesData stats, resultsSheet
@@ -8104,7 +8104,7 @@ Private Sub TestAudit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal 
         Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
         For rowIndex = 7 To 13
             TestAssertTrue stats, "audit03.palette.legend." & CStr(rowIndex), _
-                TestStatusCellHasExpectedFill(anchor.Worksheet, anchor.Row + rowIndex, anchor.Column + 27)
+                TestStatusCellHasExpectedFill(anchor.Worksheet, anchor.Row + rowIndex, anchor.Column + 34)
         Next rowIndex
     End If
 End Sub

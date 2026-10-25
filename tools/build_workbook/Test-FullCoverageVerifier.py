@@ -50,6 +50,19 @@ class TestFullCoverage(unittest.TestCase):
         broken['Jobs'][-1]['Macro'][0] = broken['Jobs'][-1]['Macro'][1]
         self.assertTrue(coverage.coverage_errors(broken))
 
+    def test_message_presentation_is_required_in_new_full_runs(self):
+        current = copy.deepcopy(self.current)
+        current['CoverageVersion'] = 5
+        for job in current['Jobs']:
+            if job['Group'] == 'CurrentFeatures':
+                job.update(ExpectedSuites=6, Macro=sorted(coverage.MESSAGE_PRESENTATION_MACROS))
+        self.assertEqual(coverage.coverage_errors(current), [])
+        for macro in coverage.MESSAGE_PRESENTATION_MACROS:
+            broken = copy.deepcopy(current)
+            broken['Jobs'][-1]['Macro'].remove(macro)
+            broken['Jobs'][-1]['Macro'].append('modTestCoverage.TestOther')
+            self.assertTrue(coverage.coverage_errors(broken), macro)
+
     def test_focused_plan_cannot_be_omitted(self):
         broken = copy.deepcopy(self.current)
         broken['IncludesFocusedAcceptance'] = False

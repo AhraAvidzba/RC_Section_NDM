@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestWorkbookInterface"
+﻿Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -169,8 +169,9 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestProfileConfig.RunAudit03PresentationConfigTests(presentationPassed, presentationFailed)
     stats.Passed = stats.Passed + presentationPassed
     stats.Failed = stats.Failed + presentationFailed
-    TestAppendLine stats, "RUN: TestPartialCombinationIsInvalid"
-    TestPartialCombinationIsInvalid stats
+    TestAppendLine stats, "RUN: TestBlankCombinationIDSkipsCalculation"
+    TestBlankCombinationIDSkipsCalculation stats
+    TestNoActiveLoadsPreserveResults stats
     TestInvalidProfileIdDoesNotRunPlot stats
     TestCalculationRequiresFormedSection stats
     TestResultsFormatting stats
@@ -702,29 +703,24 @@ Failed:
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Удаляет ID из строки с заданными усилиями: строка сохраняется как InputErr,
-' а пользовательский макрос выводит понятный итог ошибки ввода.
-Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
+' Пустой ID отключает строку, сохраняя нагрузки и исключая вызов решателя.
+' Штатная команда сообщает об отсутствии активных сочетаний без InputErr.
+Private Sub TestBlankCombinationIDSkipsCalculation(ByRef stats As TUiTestStats)
     TestPrepareCircleInput
-    Dim loads As Object
-    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    Dim loads As Object: Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
     loads.Cells.Item(2, 1).ClearContents
-
-    Dim batch As CBatchSectionCalculator
-    Set batch = TestBuildUiBatch()
-
-    Dim reader As CLoadCombinationReader
-    Set reader = New CLoadCombinationReader
+    Dim original As Variant: original = loads.Formula
+    Dim batch As CBatchSectionCalculator: Set batch = TestBuildUiBatch()
+    Dim reader As CLoadCombinationReader: Set reader = New CLoadCombinationReader
     reader.LoadFromWorkbook ThisWorkbook, batch
-    batch.Execute
-
-    TestAssertTrue stats, "ui.loads.partial.count", batch.Count = 1
-    TestAssertTrue stats, "ui.loads.partial.invalid", batch.ResultAt(1).Status = "InputErr"
-
-    Dim message As String
-    message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
-    TestAssertTrue stats, "ui.loads.partial.message", InStr(1, message, "ошиб", vbTextCompare) > 0 And _
-        InStr(1, message, "InputErr", vbTextCompare) > 0
+    TestAssertTrue stats, "ui.loads.disabled.count", batch.Count = 0
+    TestAssertTrue stats, "ui.loads.disabled.readerNoSolve", batch.SolverCallCount = 0
+    Dim solves As Long: solves = SectionEquilibriumSolveCount()
+    Dim message As String: message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
+    TestAssertTrue stats, "ui.loads.disabled.message", InStr(1, message, "Расчёт не запускался", vbBinaryCompare) > 0 And _
+        InStr(1, message, "InputErr", vbBinaryCompare) = 0
+    TestAssertTrue stats, "ui.loads.disabled.commandNoSolve", SectionEquilibriumSolveCount() = solves
+    TestAssertTrue stats, "ui.loads.disabled.inputsKept", TestWorkflowSameTable(original, loads.Formula)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -4541,11 +4537,13 @@ Private Sub TestAudit03ReaderRows(ByRef stats As TUiTestStats, ByVal sheet As Ob
     Set batch = TestBuildUiBatch()
     reader.LoadFromRange sheet.Range("A1:G13"), batch
     batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
-    TestAssertTrue stats, "audit03.reader.rows.count", batch.Count = 10
-    If batch.Count <> 10 Then Exit Sub
+    TestAssertTrue stats, "audit03.reader.rows.count", batch.Count = 9
+    If batch.Count <> 9 Then Exit Sub
     TestAssertTrue stats, "audit03.reader.rows.sourceGap", batch.SourceDataOffset(5) = 7
-    TestAssertTextEquals stats, "audit03.reader.rows.lastId", batch.CombinationID(10), "VALID_LAST"
-    TestAssertTrue stats, "audit03.reader.rows.lastSlot", batch.SourceDataOffset(10) = 12
+    TestAssertTrue stats, "audit03.reader.rows.disabledSkipped", batch.SourceDataOffset(7) = 10 And batch.SourceDataOffset(8) = 11
+    TestAssertTrue stats, "audit03.reader.rows.disabledLoadsKept", CStr(sheet.Cells(10, 1).Value2) = " " And CDbl(sheet.Cells(10, 2).Value2) = 1000#
+    TestAssertTextEquals stats, "audit03.reader.rows.lastId", batch.CombinationID(9), "VALID_LAST"
+    TestAssertTrue stats, "audit03.reader.rows.lastSlot", batch.SourceDataOffset(9) = 12
     TestAssertClose stats, "audit03.reader.rows.numericString", batch.N(5), 42.5, 0#
     TestAssertClose stats, "audit03.reader.rows.numericFormula", batch.N(6), 5#, 0#
     batch.Execute
@@ -4553,11 +4551,11 @@ Private Sub TestAudit03ReaderRows(ByRef stats As TUiTestStats, ByVal sheet As Ob
         TestAssertTextEquals stats, "audit03.reader.rows.invalid." & CStr(r), batch.ResultAt(r).Status, "InputErr"
         TestAssertTrue stats, "audit03.reader.rows.comment." & CStr(r), Len(batch.ResultAt(r).OverallMeta.ResultComment) > 0
     Next r
-    For r = 7 To 9
+    For r = 7 To 8
         TestAssertTextEquals stats, "audit03.reader.rows.invalid." & CStr(r), batch.ResultAt(r).Status, "InputErr"
     Next r
-    TestAppendLine stats, "COMMENT: audit03.reader.rows.valid; " & batch.ResultAt(10).OverallMeta.ResultComment
-    TestAssertTrue stats, "audit03.reader.rows.validReachedResults", batch.ResultAt(10).Status <> "InputErr"
+    TestAppendLine stats, "COMMENT: audit03.reader.rows.valid; " & batch.ResultAt(9).OverallMeta.ResultComment
+    TestAssertTrue stats, "audit03.reader.rows.validReachedResults", batch.ResultAt(9).Status <> "InputErr"
     Exit Sub
 Failed:
     TestAssertTrue stats, "audit03.reader.rows.runtime." & CStr(Err.Number) & "." & Err.Description, False
@@ -9151,6 +9149,7 @@ End Function
 ' Полностью отключённые LC не запускают решатель и сохраняют показанный снимок в обоих хранилищах.
 Public Function RunLoadActivationWorkflowTests() As String
     Dim stats As TUiTestStats
+    TestBlankCombinationIDSkipsCalculation stats
     TestNoActiveLoadsPreserveResults stats
     RunLoadActivationWorkflowTests = stats.Report & "TOTAL LOAD ACTIVATION WORKFLOW: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
 End Function

@@ -1,0 +1,38 @@
+{
+  "Status": "PASS_DIRECTED_PRE_FULL_ONLY",
+  "FullPass": false,
+  "Records": [
+    {
+      "Report": "CorrectedTests_No.txt",
+      "SHA256": "8A52DE789DC1D89BF5BF51FF143236D0B7D4AB40B9E3451E1B11DD5C7DB04E06",
+      "Mode": "No",
+      "Passed": true,
+      "PrimaryRead": true,
+      "SavedCases": null
+    },
+    {
+      "Report": "CorrectedTests_Yes.txt",
+      "SHA256": "4DBDBAD49ECB2E9E27E45F18E71FF639CE7762AF0DE7405A9AF36E46172F8F7F",
+      "Mode": "Yes",
+      "Passed": true,
+      "PrimaryRead": true,
+      "SavedCases": null
+    },
+    {
+      "Report": "SavedCorrected_No.txt",
+      "SHA256": "B344A0FA3E9091778B2765FD64BE328EE7CA400C4BC87C1215A33C61D0EEAD0D",
+      "Mode": "No",
+      "Passed": true,
+      "PrimaryRead": true,
+      "SavedCases": 23
+    },
+    {
+      "Report": "SavedCorrected_Yes.txt",
+      "SHA256": "C3F004B911429F23EFC433C1E583B97B0CA3FE45D992E37456B424CBB71E4F9F",
+      "Mode": "Yes",
+      "Passed": true,
+      "PrimaryRead": true,
+      "SavedCases": 23
+    }
+  ]
+}

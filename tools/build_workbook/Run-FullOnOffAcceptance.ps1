@@ -104,7 +104,7 @@ $recipes=@(
     'modTestWorkbookInterface.RunConfigComparisonContractTests'
 )
 $savedOffsets=@('modTestRecipeOperations.RunSavedPointedOffsetTests','modTestRecipeOperations.RunSavedOffsetCalculationTests')
-$currentFeatures=@('modTestContourMesh.RunAutomaticMeshTests','modTestCalculationSnapshot.RunCalculationSnapshotTests','modTestDiscreteForces.RunDiscreteForceTests')
+$currentFeatures=@('modTestContourMesh.RunAutomaticMeshTests','modTestCalculationSnapshot.RunCalculationSnapshotTests','modTestDiscreteForces.RunDiscreteForceTests','modTestAudit02Api.RunProgramMessageTests','modTestAudit02Api.RunProgramMessagePresentationTests','modTestAudit02Api.RunInputOnlyDialogTests')
 $jobs=@()
 foreach ($mode in @('No','Yes')) {
     $label=if($mode -eq 'No') {'Off'} else {'On'}
@@ -120,7 +120,7 @@ $manifest=[ordered]@{Status='RUNNING';StartedUTC=[DateTimeOffset]::UtcNow.ToStri
     RunnerSHA256=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash;
     ModeRunnerSHA256=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Algorithm SHA256).Hash;
     GeometryTypeInTestCopies='Rectangles';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false;
-    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=4;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
+    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=5;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
 $manifestPath=Join-Path $directory 'Run.json'
 function Save-Run {$manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding UTF8}
 Save-Run

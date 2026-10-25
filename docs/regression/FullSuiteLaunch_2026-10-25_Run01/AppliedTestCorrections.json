@@ -1,0 +1,25 @@
+{
+  "Status": "APPLIED_BEFORE_NEW_FULL",
+  "At": "2026-10-25T20:08:43.089753+03:00",
+  "ProductionCodeChanged": false,
+  "Files": [
+    {
+      "Path": "tests\\modTestWorkbookInterface.bas",
+      "BeforeSHA256": "43DC9A0E5E47F0823BBA5A2295C1C5D6B03E31F93C498871A77C9EECB72B3D83",
+      "AfterSHA256": "A0EE23EFE0AFAFD21C5F6C55A7C92B0014AABD25CB9DF3E188429FFFA6DF091B",
+      "Origin": "docs\\regression\\SummaryLoadsFullLaunch_2026-10-24_Run01\\ParallelFix02\\Source\\modTestWorkbookInterface.Candidate.bas"
+    },
+    {
+      "Path": "tests\\modTestBatchCalculation.bas",
+      "BeforeSHA256": "BCD21943AA00E5551644E2184F39D64F077AC8515451653A940905473A18A018",
+      "AfterSHA256": "BE382B5386E53BE77D80BE9C68D1C4B5157C3DDA7860E245A17D073E3DC19A18",
+      "Origin": "docs\\regression\\SummaryLoadsFullLaunch_2026-10-24_Run01\\ParallelFix02\\Source\\modTestBatchCalculation.Candidate.bas"
+    },
+    {
+      "Path": "tools\\build_workbook\\FocusedAcceptanceProbe.bas",
+      "BeforeSHA256": "2A56DDD41AA601998321AF35F08844913B9FEB8E911443AC281CDF385DD52209",
+      "AfterSHA256": "3D9529B81522B341242A093C2D3E1515220272E8DCB38AB3AACF1175266F9905",
+      "Origin": "docs\\regression\\SummaryLoadsFullLaunch_2026-10-24_Run01\\ParallelFix03\\Source\\FocusedAcceptanceProbe.Candidate.bas"
+    }
+  ]
+}

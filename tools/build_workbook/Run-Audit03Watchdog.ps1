@@ -64,6 +64,17 @@ if ($VerifyResultsReopen) { $arguments += "-VerifyResultsReopen" }
 if ($VerifyStatusReopen) { $arguments += "-VerifyStatusReopen" }
 if ($FailFast) { $arguments += "-FailFast" }
 $arguments = $arguments -join " "
+# ДЛЯ ТЕСТОВ: перед новым Excel оставляет запас для Codex и пика проверки.
+# Во время ожидания не запускает дочерний процесс и не закрывает чужие приложения.
+$memoryGateStarted=[DateTimeOffset]::UtcNow
+while($true){
+    $memory=Get-CimInstance Win32_OperatingSystem
+    $ready=$memory.FreePhysicalMemory*1KB -ge 4GB -and $memory.FreeVirtualMemory*1KB -ge 8GB
+    [ordered]@{CheckedUTC=[DateTimeOffset]::UtcNow.ToString('o');Ready=$ready;FreePhysicalGiB=[math]::Round($memory.FreePhysicalMemory*1KB/1GB,3);FreeCommitGiB=[math]::Round($memory.FreeVirtualMemory*1KB/1GB,3);RequiredPhysicalGiB=4;RequiredCommitGiB=8;NewExcelStarted=$false}|ConvertTo-Json|Set-Content -LiteralPath ($report+'.memory.json') -Encoding UTF8
+    if($ready){break}
+    if(([DateTimeOffset]::UtcNow-$memoryGateStarted).TotalSeconds -ge 300){Add-Content -LiteralPath $report -Encoding UTF8 -Value 'WATCHDOG_FAILURE: memory reserve below 4 GiB physical or 8 GiB commit for five minutes; no test Excel started';throw 'Memory reserve insufficient; no test Excel started.'}
+    Start-Sleep -Seconds 10
+}
 $process = Start-Process -FilePath (Join-Path $PSHOME "powershell.exe") `
     -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru `
     -RedirectStandardOutput ($report + ".stdout.log") -RedirectStandardError ($report + ".stderr.log")

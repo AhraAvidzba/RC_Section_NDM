@@ -1,0 +1,21 @@
+{
+  "Status": "READY_FOR_NEW_AUTHORIZED_FULL_NOT_A_FULL_PASS",
+  "At": "2026-10-25T20:23:34.376266+03:00",
+  "PublishedSHA256": "1D7EA9527DAF0B655492C8C2425C0F5392F81D5A5220D36BA7BF16C48E3E9AF9",
+  "AllCodeSHA256": "FC57D49886BFE580C872DB4919933CDABB17269558E2C9C100901B701F275C71",
+  "ChangedVBAModules": [
+    "modTestBatchCalculation",
+    "modTestWorkbookInterface"
+  ],
+  "Other176ModulesUnchangedExceptVBECase": true,
+  "ProductionVBAChanged": false,
+  "RootSourceEquality": true,
+  "ExpectedCoreSuites": 168,
+  "FocusedSingles": 122,
+  "FocusedBatchCasesPerMode": 15,
+  "FocusedNativeCAD": true,
+  "IndependentControl": true,
+  "RequiredPhysicalGiB": 4,
+  "RequiredCommitGiB": 8,
+  "NewFullStarted": false
+}

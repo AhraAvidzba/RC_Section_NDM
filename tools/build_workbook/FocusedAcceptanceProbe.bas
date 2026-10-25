@@ -255,19 +255,42 @@ Private Function TestFocusedNameIn(ByVal name As String, ByVal names As Variant)
     Next item
 End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Требует отказа полностью нулевой нагрузки до запуска решателя; отсутствие результата не принимается за нулевое НДС.
+' Требует штатного пропуска полностью нулевой нагрузки без solver и изменения прежних результатов или исходной таблицы.
 Private Sub TestFocusedCheckZeroInput(ByRef stats As TBatchTestStats, ByVal prefix As String)
-    On Error GoTo Rejected
+    Dim resultRange As Object, loadRange As Object
+    Set resultRange = ThisWorkbook.Worksheets("Results").UsedRange
+    Set loadRange = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    Dim resultsBefore As Variant, loadsBefore As Variant
+    resultsBefore = resultRange.Formula: loadsBefore = loadRange.Formula
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
-    TestAssertTrue stats, prefix & ".zeroRejected", False
-    Exit Sub
-Rejected:
-    Dim errorNumber As Long
-    errorNumber = Err.Number: Err.Clear
-    TestAssertTrue stats, prefix & ".zeroRejectedBeforeSolve", errorNumber = vbObjectError + 4101
+    TestAssertTrue stats, prefix & ".zeroSkippedWithMessage", _
+        InStr(1, message, "Расчёт не запускался:", vbBinaryCompare) = 1 And _
+        InStr(1, message, "Прежние результаты сохранены.", vbBinaryCompare) > 0
     TestAssertTrue stats, prefix & ".zeroNoSolverCalls", SectionEquilibriumSolveCount() = 0
+    TestAssertTrue stats, prefix & ".zeroNoCapturedCalculation", mFocusedBatch Is Nothing
+    TestAssertTrue stats, prefix & ".zeroResultsPreserved", TestFocusedCellMatricesEqual(resultsBefore, resultRange.Formula)
+    TestAssertTrue stats, prefix & ".zeroLoadsPreserved", TestFocusedCellMatricesEqual(loadsBefore, loadRange.Formula)
 End Sub
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Побуквенно сравнивает формулы и точные значения двух прямоугольных снимков, включая пустые ячейки и ошибки Excel.
+Private Function TestFocusedCellMatricesEqual(ByVal expected As Variant, ByVal actual As Variant) As Boolean
+    If LBound(expected, 1) <> LBound(actual, 1) Or UBound(expected, 1) <> UBound(actual, 1) Or _
+            LBound(expected, 2) <> LBound(actual, 2) Or UBound(expected, 2) <> UBound(actual, 2) Then Exit Function
+    Dim row As Long, column As Long, expectedValue As Variant, actualValue As Variant
+    For row = LBound(expected, 1) To UBound(expected, 1)
+        For column = LBound(expected, 2) To UBound(expected, 2)
+            expectedValue = expected(row, column): actualValue = actual(row, column)
+            If VarType(expectedValue) <> VarType(actualValue) Then Exit Function
+            If IsError(expectedValue) Or VarType(expectedValue) = vbString Then
+                If StrComp(CStr(expectedValue), CStr(actualValue), vbBinaryCompare) <> 0 Then Exit Function
+            ElseIf Not IsNull(expectedValue) Then
+                If expectedValue <> actualValue Then Exit Function
+            End If
+        Next column
+    Next row
+    TestFocusedCellMatricesEqual = True
+End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимо интегрирует сохранённые диаграммы и плоскость деформаций, проверяя равновесие в WCS и относительно бетонного центра.
 Private Sub TestFocusedCheckStates(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _

@@ -1,0 +1,920 @@
+﻿{
+    "At":  "2026-10-25T20:20:26.0558918+03:00",
+    "Status":  "PASS_NATIVE_READONLY_EXPORT",
+    "SourceSHA256":  "1D7EA9527DAF0B655492C8C2425C0F5392F81D5A5220D36BA7BF16C48E3E9AF9",
+    "FreePhysicalGiB":  20.324,
+    "FreeCommitGiB":  30.109,
+    "ImportPerformed":  false,
+    "MacrosRun":  false,
+    "SavePerformed":  false,
+    "PID":  23548,
+    "StartTicksUtc":  "639285456260741169",
+    "ReadOnly":  true,
+    "ComponentCount":  178,
+    "NamesCount":  28,
+    "Sheets":  [
+                   "Config",
+                   "Сечения",
+                   "Справка",
+                   "Расчет",
+                   "Results"
+               ],
+    "CaptionH53":  "[Модель начала трещинообразования]",
+    "CaptionH58":  "[Модель НДС с раскрытыми трещинами]",
+    "SourceEventTemplate":  "tools/build_workbook/WorkbookHelpEvents.vba",
+    "DocumentModuleName":  "ЭтаКнига",
+    "Components":  [
+                       {
+                           "Lines":  86,
+                           "Name":  "ЭтаКнига",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист1",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист2",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист3",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист4",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист5",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  291,
+                           "Name":  "CLoadPathDescriptor",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  306,
+                           "Name":  "CLoadPathMath",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  92,
+                           "Name":  "CLoadPathVector",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  52,
+                           "Name":  "CMomentZeroFilter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  225,
+                           "Name":  "CResultMeta",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  200,
+                           "Name":  "CResultStatusPolicy",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  161,
+                           "Name":  "CSectionLoadState",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  318,
+                           "Name":  "modCalculationPurpose",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  256,
+                           "Name":  "modGeometryPrimitives",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  128,
+                           "Name":  "modGeometryTypes",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  133,
+                           "Name":  "modResultStatus",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  3640,
+                           "Name":  "modSectionRecipeApiGuide",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  301,
+                           "Name":  "modSectionRecipeTypes",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  60,
+                           "Name":  "modSolverWorkStats",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  270,
+                           "Name":  "ILimitSearchProblem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  287,
+                           "Name":  "CFiberMeshBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  35,
+                           "Name":  "CGeometryDiagnostic",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  587,
+                           "Name":  "CGeometryPath",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  105,
+                           "Name":  "CGeometryRegion",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  149,
+                           "Name":  "CGeometryVariableOffset",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  155,
+                           "Name":  "CPolygonSpec",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  122,
+                           "Name":  "CSectionRecipeCircle",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  302,
+                           "Name":  "CSectionRecipeHollowRectangle",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  234,
+                           "Name":  "CSectionRecipePointedSection",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  215,
+                           "Name":  "CSectionRecipeRectangles",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  146,
+                           "Name":  "CConcreteRegion",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  102,
+                           "Name":  "CRebarContactBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  81,
+                           "Name":  "CRebarGroupAnnotationBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  281,
+                           "Name":  "CRebarLayout",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  417,
+                           "Name":  "CRebarOffsetContours",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  990,
+                           "Name":  "CRebarRuleExecutor",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  122,
+                           "Name":  "CRebarRuleOptions",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  398,
+                           "Name":  "CSectionAnnotationBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  186,
+                           "Name":  "CSectionAnnotations",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  76,
+                           "Name":  "CSectionBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  173,
+                           "Name":  "CSectionContours",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  424,
+                           "Name":  "CSectionDefinition",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  527,
+                           "Name":  "CSectionDefinitionBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1887,
+                           "Name":  "CSectionGeometryQuery",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  219,
+                           "Name":  "CSectionInputReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  271,
+                           "Name":  "CSectionInputTable",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1094,
+                           "Name":  "CSectionModel",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  57,
+                           "Name":  "CSectionModelBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  818,
+                           "Name":  "CSectionPropertiesCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  61,
+                           "Name":  "CSectionRecipeContext",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  13,
+                           "Name":  "ISectionRecipe",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  191,
+                           "Name":  "CConcreteMaterialParameters",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  542,
+                           "Name":  "CMaterialDiagram",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  971,
+                           "Name":  "CMaterialModelProvider",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  98,
+                           "Name":  "CMaterialModelSpec",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  163,
+                           "Name":  "CSteelMaterialParameters",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  47,
+                           "Name":  "CTestLinearConcreteMaterial",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  47,
+                           "Name":  "CTestLinearSteelMaterial",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  320,
+                           "Name":  "CCapacityCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  526,
+                           "Name":  "CCapacityLimitSearchProblem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  422,
+                           "Name":  "CCapacityResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2170,
+                           "Name":  "CCapacitySolver",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  414,
+                           "Name":  "CCrackLimitSearchProblem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  150,
+                           "Name":  "CDiscreteForceIntegrator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  288,
+                           "Name":  "CLimitSearchCoordinator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  326,
+                           "Name":  "CLimitSearchRequest",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  227,
+                           "Name":  "CLimitSearchResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  201,
+                           "Name":  "CLinearSystem3x3",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  809,
+                           "Name":  "CLoadMultiplierSearch",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  107,
+                           "Name":  "CSectionNumericalFrame",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1681,
+                           "Name":  "CSectionSolver",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  132,
+                           "Name":  "CSectionStrainLimits",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  662,
+                           "Name":  "CStateGuessBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  798,
+                           "Name":  "CStateSolutionRunner",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1014,
+                           "Name":  "CUltimateStrainSearch",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  43,
+                           "Name":  "modLimitSearchRequestFactory",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  46,
+                           "Name":  "modNonlinearStepControl",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2150,
+                           "Name":  "CCrackFormationCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  244,
+                           "Name":  "CCrackFormationResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  187,
+                           "Name":  "CCrackResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1600,
+                           "Name":  "CCrackWidthCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  313,
+                           "Name":  "CCrackWidthResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  85,
+                           "Name":  "CLongitudinalCrackCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  92,
+                           "Name":  "CLongitudinalCrackResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  659,
+                           "Name":  "CSP35CrackData",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1706,
+                           "Name":  "CStabilityCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  695,
+                           "Name":  "CStabilityResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2252,
+                           "Name":  "CBatchSectionCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  331,
+                           "Name":  "CCalculationProfile",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  340,
+                           "Name":  "CCalculationProfileCatalog",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  375,
+                           "Name":  "CCombinationResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  160,
+                           "Name":  "CDirectStateResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  573,
+                           "Name":  "CSectionStateResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  244,
+                           "Name":  "CStateProvider",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  187,
+                           "Name":  "CStateRepository",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  103,
+                           "Name":  "CStateRequest",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  129,
+                           "Name":  "CStrengthResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  176,
+                           "Name":  "CAutoCADContourReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  925,
+                           "Name":  "CAutoCADSectionModelImporter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1034,
+                           "Name":  "CBatchResultWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  232,
+                           "Name":  "CBinarySnapshotFile",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  371,
+                           "Name":  "CCalculationSnapshot",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  516,
+                           "Name":  "CCalculationSnapshotStore",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1124,
+                           "Name":  "CCrackSummaryWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  112,
+                           "Name":  "CExcelAppStateGuard",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  664,
+                           "Name":  "CExecutionReport",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  45,
+                           "Name":  "CFileChecksum",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  171,
+                           "Name":  "CLoadCombinationReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1856,
+                           "Name":  "CNDMResultsWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  535,
+                           "Name":  "CPlotAnnotationLayout",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  51,
+                           "Name":  "CSectionInputSnapshotReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1322,
+                           "Name":  "CSectionPlotDataReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2092,
+                           "Name":  "CSectionPlotter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  69,
+                           "Name":  "CSectionTypeRegistry",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  953,
+                           "Name":  "CStabilitySummaryWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  882,
+                           "Name":  "CStrengthSummaryWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  869,
+                           "Name":  "CSystemSettingsReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  468,
+                           "Name":  "CUnitSystem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2141,
+                           "Name":  "modAutoCADStressExport",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  227,
+                           "Name":  "modCalculationSnapshot",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  77,
+                           "Name":  "modMeshConfiguration",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  60,
+                           "Name":  "modResultsFormatting",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  152,
+                           "Name":  "modSectionOptionalData",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  68,
+                           "Name":  "modSectionRecipeSetup",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  677,
+                           "Name":  "modSectionSnapshot",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  121,
+                           "Name":  "modStatusFormatting",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1263,
+                           "Name":  "modWorkbookCalculation",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  252,
+                           "Name":  "modWorkbookMessages",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  125,
+                           "Name":  "CTestExcelApplicationState",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  213,
+                           "Name":  "CTestFakeAcadContour",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  204,
+                           "Name":  "CTestFakeAcadContourExport",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  73,
+                           "Name":  "CTestFakeAcadDocument",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  65,
+                           "Name":  "CTestFakeAcadLine",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  135,
+                           "Name":  "CTestFakeAcadRegion",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  873,
+                           "Name":  "CTestLimitSearchProblem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  54,
+                           "Name":  "CTestWorkflowWorkbook",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1882,
+                           "Name":  "modTestAudit02Api",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  302,
+                           "Name":  "modTestAudit02Snapshots",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1325,
+                           "Name":  "modTestAutoCADConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2336,
+                           "Name":  "modTestAutoCADContours",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  10743,
+                           "Name":  "modTestBatchCalculation",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1134,
+                           "Name":  "modTestCalculationSnapshot",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  4444,
+                           "Name":  "modTestCapacitySolver",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2486,
+                           "Name":  "modTestConfiguration",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  824,
+                           "Name":  "modTestContourMesh",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2131,
+                           "Name":  "modTestCrackWidth",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  139,
+                           "Name":  "modTestDeclarativeExamples",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  872,
+                           "Name":  "modTestDeclarativeGeometry",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  167,
+                           "Name":  "modTestDiscreteForces",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  607,
+                           "Name":  "modTestGeneralGeometryConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  3754,
+                           "Name":  "modTestGeometry",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1710,
+                           "Name":  "modTestGeometryConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  586,
+                           "Name":  "modTestGeometryFixtures",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  291,
+                           "Name":  "modTestGeometryPublication",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  949,
+                           "Name":  "modTestGeometryQuery",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  855,
+                           "Name":  "modTestGeometryReview",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  132,
+                           "Name":  "modTestGeometrySolidSnapshots",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  861,
+                           "Name":  "modTestIndividualContours",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1000,
+                           "Name":  "modTestLoadTableConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1651,
+                           "Name":  "modTestMaterialDiagrams",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1323,
+                           "Name":  "modTestPerformance",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1846,
+                           "Name":  "modTestPlotConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  351,
+                           "Name":  "modTestPolygonSpec",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1876,
+                           "Name":  "modTestProfileConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  315,
+                           "Name":  "modTestRecipeAnnotations",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  295,
+                           "Name":  "modTestRecipeApiCatalogue",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  644,
+                           "Name":  "modTestRecipeOperations",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  310,
+                           "Name":  "modTestRecipeSetbacks",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  401,
+                           "Name":  "modTestRegressionBaseline",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  184,
+                           "Name":  "modTestSectionInputReader",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1662,
+                           "Name":  "modTestSectionRecipes",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2177,
+                           "Name":  "modTestSectionSolver",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  483,
+                           "Name":  "modTestSectionWorkflow",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  850,
+                           "Name":  "modTestShapeArchitecture",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1433,
+                           "Name":  "modTestSP35CrackWidth",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  9203,
+                           "Name":  "modTestWorkbookInterface",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  91,
+                           "Name":  "modTestZeroContourParity",
+                           "Type":  1
+                       }
+                   ],
+    "SourceUnchanged":  true,
+    "FullRegressionPass":  false
+}
