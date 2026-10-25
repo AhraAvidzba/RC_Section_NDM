@@ -652,7 +652,7 @@ End Sub
 ' скрытый default для явно заданной пустой/TODO ячейки, но не для отсутствующего key.
 Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Double = 0#, _
         Optional ByVal allowBlankValue As Boolean = True) As Double
-    Dim textValue As String
+    Dim textValue As String, parsed As Double
     If Not allowBlankValue And HasKey(key) Then
         textValue = Trim$(GetRawString(key))
         If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
@@ -666,7 +666,8 @@ Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Do
         GetDouble = defaultValue
     Else
         On Error GoTo InvalidNumber
-        GetDouble = CDbl(Replace$(textValue, ".", ApplicationDecimalSeparator()))
+        If Not TryReadStrictDouble(textValue, parsed) Then GoTo InvalidNumber
+        GetDouble = parsed
     End If
     Exit Function
 
@@ -680,14 +681,15 @@ End Function
 ' Используется для обязательных исходных данных. Пустая ячейка и потерянная
 ' строка различаются в сообщении; обе причины остаются ошибкой ввода без default.
 Public Function GetRequiredDouble(ByVal key As String) As Double
-    Dim textValue As String
+    Dim textValue As String, parsed As Double
     textValue = Trim$(GetRawString(key, vbNullString))
     If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
         Err.Raise vbObjectError + 4310, "CSystemSettingsReader", _
             InputErrorMessage(key, "Обязательное числовое значение не задано.", RequiredInputCorrection(key, True))
     End If
     On Error GoTo InvalidNumber
-    GetRequiredDouble = CDbl(Replace$(textValue, ".", ApplicationDecimalSeparator()))
+    If Not TryReadStrictDouble(textValue, parsed) Then GoTo InvalidNumber
+    GetRequiredDouble = parsed
     Exit Function
 
 InvalidNumber:
@@ -798,7 +800,7 @@ Public Function GetRequiredRgbColor(ByVal key As String) As Long
     If UBound(parts) <> 2 Then GoTo InvalidColor
     For index = 0 To 2
         If Len(Trim$(CStr(parts(index)))) = 0 Then GoTo InvalidColor
-        value = CDbl(Trim$(CStr(parts(index))))
+        If Not TryReadStrictDouble(CStr(parts(index)), value) Then GoTo InvalidColor
         If value < 0# Or value > 255# Then GoTo InvalidColor
         If value <> Fix(value) Then GoTo InvalidColor
         channels(index) = CLng(value)
@@ -861,12 +863,6 @@ Private Function FindKey(ByVal key As String) As Long
         End If
     Next i
     FindKey = 0
-End Function
-
-' Возвращает десятичный разделитель числового преобразования VBA
-' в текущей локали для разбора пользовательского числа.
-Private Function ApplicationDecimalSeparator() As String
-    ApplicationDecimalSeparator = Mid$(CStr(1.1), 2, 1)
 End Function
 
 ' Возвращает ключ по порядковому номеру 1..KeyCount. Рабочий пакетный

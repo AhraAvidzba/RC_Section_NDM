@@ -1,0 +1,50 @@
+{
+  "Status": "PASS_STAGE5A_PROFILE_NO_YES_ONLY",
+  "Records": [
+    {
+      "Mode": "No",
+      "Primary": "Probe01_No.txt",
+      "SHA256": "AD31A1685338389D47A7D81DCF36C82788A87DF3E78AD5432E98A71B91815F5D",
+      "Totals": [
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=152; failed=0",
+        "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=583; failed=0",
+        "TOTAL_AUDIT03_PROFILE_CONFIG: passed=8860; failed=0; cases=292",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.27294921875"
+      ],
+      "CompletedMacros": [
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunAudit03GeneralRunConfigTests",
+        "modTestConfiguration.RunAudit03SettingsTableGuardTests",
+        "modTestProfileConfig.RunAudit03ProfileConfigTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage4": true
+    },
+    {
+      "Mode": "Yes",
+      "Primary": "Probe01_Yes.txt",
+      "SHA256": "E678D18F143BDAF3479031E9E96C5E0BB75503B7C95BCECD34D4464B32A8B21D",
+      "Totals": [
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=152; failed=0",
+        "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=583; failed=0",
+        "TOTAL_AUDIT03_PROFILE_CONFIG: passed=8860; failed=0; cases=292",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.0791015625"
+      ],
+      "CompletedMacros": [
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunAudit03GeneralRunConfigTests",
+        "modTestConfiguration.RunAudit03SettingsTableGuardTests",
+        "modTestProfileConfig.RunAudit03ProfileConfigTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "BaselineNumericalRowsExactToStage4": true
+    }
+  ],
+  "FullPass": false
+}

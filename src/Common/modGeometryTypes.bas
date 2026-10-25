@@ -85,6 +85,63 @@ Public Function GeomMin(ByVal A As Double, ByVal B As Double) As Double
     End If
 End Function
 
+' Проверяет инженерное число целиком: точка или запятая означают десятичный разделитель,
+' E/e задаёт степень десяти; группировка разрядов, валюты, суффиксы и числовые префиксы не принимаются.
+' Числовой Variant не проходит через строку и не теряет точность. Excel и COM здесь не вызываются.
+Public Function TryReadStrictDouble(ByVal value As Variant, ByRef parsed As Double, _
+        Optional ByVal allowDecimalComma As Boolean = True) As Boolean
+    parsed = 0#
+    On Error GoTo InvalidValue
+    If IsError(value) Or IsNull(value) Or IsEmpty(value) Or IsObject(value) Or IsArray(value) Then Exit Function
+    If VarType(value) = vbBoolean Or VarType(value) = vbDate Then Exit Function
+    If VarType(value) <> vbString Then
+        If Not IsNumeric(value) Then Exit Function
+        parsed = CDbl(value)
+        TryReadStrictDouble = True
+        Exit Function
+    End If
+    Dim text As String, index As Long, digits As Long, character As String
+    text = Trim$(CStr(value))
+    If Len(text) = 0 Then Exit Function
+    If Not allowDecimalComma And InStr(text, ",") > 0 Then Exit Function
+    index = 1: character = Mid$(text, index, 1)
+    If character = "+" Or character = "-" Then index = index + 1
+    Do While index <= Len(text)
+        character = Mid$(text, index, 1)
+        If character < "0" Or character > "9" Then Exit Do
+        digits = digits + 1: index = index + 1
+    Loop
+    character = Mid$(text, index, 1)
+    If character = "." Or character = "," Then
+        index = index + 1
+        Do While index <= Len(text)
+            character = Mid$(text, index, 1)
+            If character < "0" Or character > "9" Then Exit Do
+            digits = digits + 1: index = index + 1
+        Loop
+    End If
+    If digits = 0 Then Exit Function
+    character = Mid$(text, index, 1)
+    If character = "E" Or character = "e" Then
+        index = index + 1: character = Mid$(text, index, 1)
+        If character = "+" Or character = "-" Then index = index + 1
+        digits = 0
+        Do While index <= Len(text)
+            character = Mid$(text, index, 1)
+            If character < "0" Or character > "9" Then Exit Do
+            digits = digits + 1: index = index + 1
+        Loop
+        If digits = 0 Then Exit Function
+    End If
+    If index <= Len(text) Then Exit Function
+    text = Replace$(text, ",", ".")
+    parsed = CDbl(Replace$(text, ".", Mid$(CStr(0.5), 2, 1))) ' После полной проверки переводим только десятичный знак в локаль функций VBA, без распознавания группировки.
+    TryReadStrictDouble = True
+    Exit Function
+InvalidValue:
+    parsed = 0#
+End Function
+
 ' Читает весь текст угла обхода дуги со знаком. Принимает точку, запятую
 ' и запись с E, но не извлекает численный префикс из произвольного текста.
 ' Угол меньше полного оборота; для окружности используется CONTOUR_CIRCLE.

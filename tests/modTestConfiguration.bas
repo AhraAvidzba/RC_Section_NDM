@@ -2484,3 +2484,94 @@ Private Sub TestCheckStabilityLengthRange(ByRef stats As TConfigTestStats, ByVal
     Next code
     table.Formula = configured
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет строгий ввод обоих десятичных знаков и E, отказ от случайных групп разрядов,
+' прежние optional-defaults/RGB и чтение снимка настроек после изменения и закрытия исходной книги.
+Public Function RunLocaleNumberTests(Optional ByRef passedCount As Long = 0, Optional ByRef failedCount As Long = 0) As String
+    Dim stats As TConfigTestStats, fixture As Object, area As Object, settings As CSystemSettingsReader
+    Dim oldUse As Boolean, oldDecimal As String, oldThousands As String, separator As Variant
+    Dim good As Variant, expected As Variant, bad As Variant, i As Long, value As Double, parsed As Double
+    Dim code As Long, reason As String, prefix As String, originalLocation As String, accepted As Boolean
+    oldUse = Application.UseSystemSeparators: oldDecimal = Application.DecimalSeparator: oldThousands = Application.ThousandsSeparator
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167): fixture.Worksheets(1).Name = "LocaleInputs"
+    Set area = fixture.Worksheets(1).Range("D7:F8")
+    area.Cells(1, 1).Value2 = "Key": area.Cells(1, 2).Value2 = "Value": area.Cells(1, 3).Value2 = "Default"
+    area.Cells(2, 1).Value2 = "Locale.TestNumber": area.Cells(2, 2).NumberFormat = "@"
+    good = Array(1.5, 1234.5, "1.5", "1,5", ".5", ",5", "5.", "5,", "+1.25E+3", "-1,25e-3", " 12.50 ", "0", "1E-200")
+    expected = Array(1.5, 1234.5, 1.5, 1.5, 0.5, 0.5, 5#, 5#, 1250#, -0.00125, 12.5, 0#, 1E-200)
+    Set settings = New CSystemSettingsReader
+    For Each separator In Array(".", ",")
+        Application.UseSystemSeparators = False: Application.DecimalSeparator = CStr(separator)
+        If CStr(separator) = "." Then Application.ThousandsSeparator = "," Else Application.ThousandsSeparator = "."
+        For i = 0 To UBound(good)
+            area.Cells(2, 2).Value2 = good(i)
+            TestReadLocaleSetting settings, area, value, code, reason
+            prefix = "locale.number." & CStr(separator) & "." & CStr(i)
+            TestCheck stats, prefix & ".required", code = 0 And value = CDbl(expected(i))
+            TestCheck stats, prefix & ".optional", settings.GetDouble("Locale.TestNumber") = CDbl(expected(i))
+            accepted = TryReadStrictDouble(good(i), parsed)
+            TestCheck stats, prefix & ".pure", accepted And parsed = CDbl(expected(i))
+        Next i
+        i = 0
+        For Each bad In Array("1 2", "12 34", "1 234.5", "1 234,5", "1,234.5", "1.234,5", "1,,5", "1..5", "1E", "E3", "+-1", "12%", "$1", "&H10", "NaN", "Infinity", "1" & ChrW$(160) & "234", "1'234", "1_234", "1E9999", Empty, CVErr(2015))
+            i = i + 1
+            If IsEmpty(bad) Then area.Cells(2, 2).ClearContents Else area.Cells(2, 2).Value2 = bad
+            TestReadLocaleSetting settings, area, value, code, reason
+            prefix = "locale.invalid." & CStr(separator) & "." & CStr(i)
+            TestCheck stats, prefix & ".rejected", code <> 0
+            TestCheck stats, prefix & ".address", InStr(reason, area.Worksheet.Name) > 0 And InStr(reason, area.Cells(2, 2).Address(False, False)) > 0
+        Next bad
+        area.Cells(2, 2).ClearContents: settings.LoadFromRange area
+        TestCheck stats, "locale.optional.blank." & CStr(separator), settings.GetDouble("Locale.TestNumber", 7#) = 7#
+        TestCheck stats, "locale.optional.missing." & CStr(separator), settings.GetDouble("Missing.Numeric.Key", 9#) = 9#
+        area.Cells(2, 2).Value2 = "255,242,230": settings.LoadFromRange area
+        TestCheck stats, "locale.rgb.valid." & CStr(separator), settings.GetRequiredRgbColor("Locale.TestNumber") = RGB(255, 242, 230)
+        area.Cells(2, 2).Value2 = "1 2,3,4": settings.LoadFromRange area
+        On Error Resume Next
+        Err.Clear: value = settings.GetRequiredRgbColor("Locale.TestNumber")
+        code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo Failed
+        TestCheck stats, "locale.rgb.groupingRejected." & CStr(separator), code <> 0 And InStr(reason, area.Cells(2, 2).Address(False, False)) > 0
+        TestLogLine stats, "LOCALE_EXCEL_CASE: separator=" & CStr(separator) & "; actualVba=" & CStr(1.5)
+    Next separator
+    For Each bad In Array(Null, Empty, CVErr(2015), True, #1/2/2020#, Array(1, 2))
+        parsed = 12#: accepted = TryReadStrictDouble(bad, parsed)
+        TestCheck stats, "locale.pure.invalidType", Not accepted And parsed = 0#
+    Next bad
+    value = 1.23456789012345 + 0.00000000000000666133814775094
+    accepted = TryReadStrictDouble(value, parsed)
+    TestCheck stats, "locale.pure.typedNoStringRounding", accepted And parsed = value
+    area.Cells(2, 2).Value2 = "123,5": settings.LoadFromRange area
+    originalLocation = settings.InputLocation("Locale.TestNumber")
+    area.Cells(2, 2).Value2 = "Changed input after capture"
+    TestCheck stats, "locale.snapshot.unchangedAfterEdit", settings.GetRequiredDouble("Locale.TestNumber") = 123.5
+    fixture.Close False: Set fixture = Nothing: Set area = Nothing
+    TestCheck stats, "locale.snapshot.readAfterClose", settings.GetRequiredDouble("Locale.TestNumber") = 123.5
+    TestCheck stats, "locale.snapshot.addressAfterClose", settings.InputLocation("Locale.TestNumber") = originalLocation
+    GoTo Cleanup
+Failed:
+    TestCheck stats, "locale.runtime." & Err.Number & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    Application.UseSystemSeparators = False: Application.DecimalSeparator = oldDecimal
+    Application.ThousandsSeparator = oldThousands: Application.UseSystemSeparators = oldUse
+    On Error GoTo 0
+    passedCount = stats.Passed: failedCount = stats.Failed
+    RunLocaleNumberTests = stats.Report & "TOTAL LOCALE NUMBERS: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет первую ошибку загрузки/чтения, не заменяя её вторичной ошибкой пустого reader-а.
+Private Sub TestReadLocaleSetting(ByVal settings As CSystemSettingsReader, ByVal area As Object, _
+        ByRef value As Double, ByRef code As Long, ByRef reason As String)
+    value = 0#: code = 0: reason = vbNullString
+    On Error GoTo Failed
+    settings.LoadFromRange area
+    value = settings.GetRequiredDouble("Locale.TestNumber")
+    Exit Sub
+Failed:
+    code = Err.Number: reason = Err.Description
+End Sub

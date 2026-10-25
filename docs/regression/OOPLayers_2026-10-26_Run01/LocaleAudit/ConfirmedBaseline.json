@@ -1,0 +1,19 @@
+﻿{
+  "At": "2026-10-26T01:55:59.522768+03:00",
+  "Status": "CONFIRMED_TEXT_NUMBER_GROUPING_BASELINE_NOT_ACCEPTANCE",
+  "Primary": "Baseline02_No.txt",
+  "SHA256": "84ECD1D5203FF457A9EA4710B3788EAFAB1F07AC243CB461C794659ACAA03C4A",
+  "SourceSHA256": "8BAC4B9B566D377D8D52B65BF5ED44570A7C955A0B472BB308D74D798DA49538",
+  "RawInputVerified": "ValueType=8 (String), RawString identical to source text",
+  "Confirmed": [
+    "CSystemSettingsReader.GetRequiredDouble accepts malformed grouped text 1 2 as12 and12 34 as1234",
+    "Both point/comma forms of spaced groups are accepted as grouped numbers",
+    "GetDouble/GetRequiredDouble rely on locale-aware conversion without a complete input grammar"
+  ],
+  "NotConfirmed": [
+    "A point/comma numeric difference was not reproduced in this process: 1.5 and1,5 both returned1.5",
+    "SetThreadLocale changed actual LCID1033/1049 but did not change CStr/Format output; this is not proof of both VBA runtime regional formats"
+  ],
+  "EnvironmentRestore": "Primary confirms LCID1049 restored and previous Excel separators/UseSystem restored in own Excel; user Windows locale not changed",
+  "FullPass": false
+}

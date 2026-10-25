@@ -1,0 +1,5 @@
+﻿{
+  "modGeometryTypes": "src/Common/modGeometryTypes.bas",
+  "CSystemSettingsReader": "src/Excel/CSystemSettingsReader.cls",
+  "modTestConfiguration": "tests/modTestConfiguration.bas"
+}
