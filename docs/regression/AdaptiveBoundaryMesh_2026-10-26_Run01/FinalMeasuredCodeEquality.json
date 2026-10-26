@@ -1,0 +1,31 @@
+{
+  "Status": "MEASURED_PRODUCTION_AND_BENCHMARK_CODE_UNCHANGED",
+  "Checks": [
+    {
+      "File": "src/Geometry/CFiberMeshBuilder.cls",
+      "ExecutableIdenticalToBenchmark": true,
+      "SHA256": "5AF5C4E9C497954D055DAC1C44D46855EE844E0E76F0782B5DEAD3CF4F9C681E"
+    },
+    {
+      "File": "src/Geometry/CGeometryRegion.cls",
+      "ExecutableIdenticalToBenchmark": true,
+      "SHA256": "5A6B3B6EDDA89FCA4DDECB81A6B45B61BD0DDA19DF7FED2B132D25AE482F464E"
+    },
+    {
+      "File": "src/Section/CSectionGeometryQuery.cls",
+      "ExecutableIdenticalToBenchmark": true,
+      "SHA256": "5060A1C214E5AAC8913A81CC06DF3FAF8944BB3CB10FC605B0122F0602BE8E0A"
+    },
+    {
+      "File": "src/Common/modSectionRecipeTypes.bas",
+      "ExecutableIdenticalToBenchmark": true,
+      "SHA256": "D355A3C6F26798EEC8AA587F21CD66D772C437EFA3F216415835554F49D77918"
+    },
+    {
+      "File": "tests/modTestContourMesh.bas",
+      "ExecutableIdenticalToBenchmark": true,
+      "SHA256": "A287801988E161EA7EA8D426E2B55098EDB6623BFDFE47D3AAAF097587F8BB93"
+    }
+  ],
+  "LaterChanges": "TestGeometry fixtures/convergence and two Help layout heights only"
+}

@@ -1,0 +1,453 @@
+﻿{
+    "Status":  "ALL_OWN_IDENTITIES_CLOSED",
+    "CheckedUTC":  "2026-10-26T11:24:57.6967977+00:00",
+    "OwnIdentityCount":  49,
+    "Checks":  [
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Candidate_NativeVerification.json",
+                       "PID":  26188,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286087504626594",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "639286106186659850",
+                       "Source":  "Final_NativeVerification.json",
+                       "PID":  17784,
+                       "Name":  "SearchFilterHost.exe",
+                       "UTCStartTicks":  "639286095568721968",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Fresh02_NativeVerification.json",
+                       "PID":  26564,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286102024122720",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "FreshBuild.json",
+                       "PID":  26192,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286096235621166",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "FreshBuild02.json",
+                       "PID":  25052,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286100210189637",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Fresh_NativeVerification.json",
+                       "PID":  25028,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286098139009263",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Published_NativeVerification.json",
+                       "PID":  25828,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286105565194646",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Ownership.json",
+                       "PID":  23604,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286076107032738",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Ownership.json",
+                       "PID":  1852,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286076548415720",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Ownership.json",
+                       "PID":  2828,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286076887368120",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Ownership.json",
+                       "PID":  22296,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286077965423287",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Ownership.json",
+                       "PID":  22792,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286078269164860",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Ownership.json",
+                       "PID":  25712,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286086662834408",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Ownership.json",
+                       "PID":  4920,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286091061599385",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Run.json",
+                       "PID":  26356,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286078705959567",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Directed01_No.txt",
+                       "PID":  10068,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286087702650798",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Directed02_No.txt",
+                       "PID":  10756,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286088754231131",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Directed03_No.txt",
+                       "PID":  25748,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286091834511694",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Directed03_Yes.txt",
+                       "PID":  22200,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286093226636836",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "FinalSmoke_No.txt",
+                       "PID":  26504,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286104495525558",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "FinalSmoke_Yes.txt",
+                       "PID":  24172,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286104630611742",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Probe01_No.txt",
+                       "PID":  22064,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286077334368004",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Reopen01_No.txt",
+                       "PID":  23500,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286094592908583",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Reopen01_Yes.txt",
+                       "PID":  25996,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286095086593062",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Circle_16_Old.txt",
+                       "PID":  25580,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286080916295160",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Circle_2_New.txt",
+                       "PID":  23124,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286080318832368",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Circle_2_Old.txt",
+                       "PID":  23856,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286080192535920",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Circle_4_New.txt",
+                       "PID":  11500,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286080462498189",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Circle_4_Old.txt",
+                       "PID":  24936,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286080754649293",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "HollowRectangle_16_Old.txt",
+                       "PID":  12400,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286082612444753",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "HollowRectangle_2_New.txt",
+                       "PID":  3412,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286081875044940",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "HollowRectangle_2_Old.txt",
+                       "PID":  25548,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286081716010739",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "HollowRectangle_4_New.txt",
+                       "PID":  26240,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286082053128913",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "HollowRectangle_4_Old.txt",
+                       "PID":  24172,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286082386714203",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "OneRect_16_Old.txt",
+                       "PID":  25716,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286079257198178",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "OneRect_2_New.txt",
+                       "PID":  25728,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286078850552420",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "OneRect_2_Old.txt",
+                       "PID":  16720,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286078724329873",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "OneRect_4_New.txt",
+                       "PID":  15656,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286078967381157",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "OneRect_4_Old.txt",
+                       "PID":  6188,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286079126260253",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "PointedSection_16_Old.txt",
+                       "PID":  24516,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286084942774042",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "PointedSection_2_New.txt",
+                       "PID":  7988,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286084326876476",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "PointedSection_2_Old.txt",
+                       "PID":  9944,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286084152626921",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "PointedSection_4_New.txt",
+                       "PID":  5960,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286084496942037",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "PointedSection_4_Old.txt",
+                       "PID":  10092,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286084757474815",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Rectangles_16_Old.txt",
+                       "PID":  8432,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286079925969283",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Rectangles_2_New.txt",
+                       "PID":  19964,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286079538448652",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Rectangles_2_Old.txt",
+                       "PID":  26488,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286079408000355",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Rectangles_4_New.txt",
+                       "PID":  16736,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286079658935160",
+                       "ExactIdentityLive":  false
+                   },
+                   {
+                       "Unverifiable":  false,
+                       "CurrentWmiStartTicks":  "",
+                       "Source":  "Rectangles_4_Old.txt",
+                       "PID":  11244,
+                       "Name":  "",
+                       "UTCStartTicks":  "639286079797600339",
+                       "ExactIdentityLive":  false
+                   }
+               ],
+    "UserExcelPID":  12016,
+    "UserExcelUTCStartTicks":  "",
+    "UserExcelStoppedByAgent":  false,
+    "FreePhysicalGiB":  17.776180267333984,
+    "FreeCommitGiB":  24.217681884765625
+}

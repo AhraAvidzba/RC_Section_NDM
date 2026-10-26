@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Path": "src/Common/modSectionRecipeTypes.bas",
+      "SHA256": "D355A3C6F26798EEC8AA587F21CD66D772C437EFA3F216415835554F49D77918"
+    },
+    {
+      "Path": "src/Geometry/CFiberMeshBuilder.cls",
+      "SHA256": "5AF5C4E9C497954D055DAC1C44D46855EE844E0E76F0782B5DEAD3CF4F9C681E"
+    },
+    {
+      "Path": "src/Geometry/CGeometryRegion.cls",
+      "SHA256": "5A6B3B6EDDA89FCA4DDECB81A6B45B61BD0DDA19DF7FED2B132D25AE482F464E"
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "5060A1C214E5AAC8913A81CC06DF3FAF8944BB3CB10FC605B0122F0602BE8E0A"
+    },
+    {
+      "Path": "tests/modTestContourMesh.bas",
+      "SHA256": "A287801988E161EA7EA8D426E2B55098EDB6623BFDFE47D3AAAF097587F8BB93"
+    },
+    {
+      "Path": "tests/modTestGeneralGeometryConfig.bas",
+      "SHA256": "C08A63DB546857F73498FAD5D873779CC29574F86B37FA550FEFF2D6B0AB0B7A"
+    },
+    {
+      "Path": "tests/modTestGeometry.bas",
+      "SHA256": "8AA29BB623F77C94486DA5D217087809DA10E8274DEA513AA9499D1299DA9E74"
+    },
+    {
+      "Path": "tools/build_workbook/SettingsCatalog.ps1",
+      "SHA256": "4DC53E63AB0FF86674DF8BC36096C471F02578352DE9326F3BE8CEECA534E558"
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookLayout.json",
+      "SHA256": "1320D41F739F8079EFAF1583FBF6334061CB6C3B33862172848B5CCDB5AABD9E"
+    }
+  ],
+  "NewVBAComponents": 0
+}

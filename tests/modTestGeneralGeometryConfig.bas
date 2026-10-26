@@ -156,10 +156,10 @@ Private Sub TestCheckGeometryAndMesh(ByRef stats As TGeneralConfigStats, ByVal s
     Set baseline = TestBuildModel(stats)
     TestSetValue system, "Mesh.BoundarySubdivisions", 4
     Set changed = TestBuildModel(stats)
-    ' Независимая квадратура окружности: 22 центра шага 55 мм и 378 центров
-    ' шага 13.75 мм внутри x^2+y^2 <= 150^2, включая последние неполные клетки.
-    TestCheckClose stats, "generalGeometry.Mesh.BoundarySubdivisions.coarseArea", TestConcreteArea(baseline), 66550#, 0.00000001
-    TestCheckClose stats, "generalGeometry.Mesh.BoundarySubdivisions.fineArea", TestConcreteArea(changed), 71465.625, 0.00000001
+    ' Независимая квадратура окружности: 97 центров шага 27.5 мм и 5983 центра
+    ' шага 3.4375 мм внутри x^2+y^2 <= 150^2; уровни 1 и 4 означают h/2 и h/16.
+    TestCheckClose stats, "generalGeometry.Mesh.BoundarySubdivisions.coarseArea", TestConcreteArea(baseline), 73356.25, 0.00000001
+    TestCheckClose stats, "generalGeometry.Mesh.BoundarySubdivisions.fineArea", TestConcreteArea(changed), 70697.55859375, 0.00000001
     TestCheck stats, "generalGeometry.Mesh.BoundarySubdivisions.boundaryChanged", _
         Abs(TestConcreteArea(changed) - TestConcreteArea(baseline)) > 1#
     TestCheck stats, "generalGeometry.Mesh.BoundarySubdivisions.accuracy", _

@@ -1,0 +1,12 @@
+{
+  "Status": "PASS_PUBLISHED_EXACT_BOOK",
+  "Branch": "codex/adaptive-boundary-mesh",
+  "WorkbookSHA256": "53919E6CF11018B769191059E17977D60F3201D5857991FFE49E9326E1CC613A",
+  "AllCodeSHA256": "AF8D7795E855B8236928F33CCCFA6A90094062570171A3AFCEA219A37D20C447",
+  "AllCodeIsExactNativeExport": true,
+  "UserReportPreserved": true,
+  "NativeNoImport": true,
+  "InputAndReadyResultsPreserved": true,
+  "FullRegressionPass": false,
+  "Checked": "2026-10-26T14:22:52.5811392+03:00"
+}

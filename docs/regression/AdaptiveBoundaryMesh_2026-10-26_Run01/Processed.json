@@ -1,0 +1,12 @@
+{
+  "Status": "COMPLETE_DIRECTED_IMPLEMENTATION_AND_VERIFICATION",
+  "Branch": "codex/adaptive-boundary-mesh",
+  "WorkbookSHA256": "53919E6CF11018B769191059E17977D60F3201D5857991FFE49E9326E1CC613A",
+  "AllCodeSHA256": "AF8D7795E855B8236928F33CCCFA6A90094062570171A3AFCEA219A37D20C447",
+  "ComparisonCases": 25,
+  "NativeComponents": 178,
+  "OwnProcessesClosed": 49,
+  "DataPreserved": true,
+  "FullRegressionPass": false,
+  "Report": "docs/reports/AdaptiveBoundaryMesh_2026-10-26.md"
+}

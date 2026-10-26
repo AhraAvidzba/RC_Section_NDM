@@ -1641,7 +1641,7 @@ Private Sub TestBoundarySubcellMesh(ByRef stats As TTestStats)
     TestAssertTrue stats, "boundary.subcell.fibers.more", subcellMesh.FiberCount > centerMesh.FiberCount
     TestAssertTrue stats, "boundary.subcell.area.better", Abs(subcellProps.Area - targetArea) < Abs(centerProps.Area - targetArea)
     TestAssertTrue stats, "boundary.subcell.has.small.fibers", TestMeshHasSmallFibers(subcellMesh, 40#)
-    TestAssertClose stats, "boundary.subcell.small.width", TestFirstSmallFiberWidth(subcellMesh, 40#), 10#, 0.000001
+    TestAssertClose stats, "boundary.subcell.minimum.width", TestMinimumSmallFiberWidth(subcellMesh, 40#), 2.5, 0.000001
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -2440,21 +2440,21 @@ Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     Dim p25 As CSectionPropertiesCalculator
     Dim p125 As CSectionPropertiesCalculator
 
-    Set p50 = TestMeshProps(geom, 50#, 50#)
-    Set p25 = TestMeshProps(geom, 25#, 25#)
-    Set p125 = TestMeshProps(geom, 12.5, 12.5)
+    Set p50 = TestMeshProps(geom, 50#, 50#, 2)
+    Set p25 = TestMeshProps(geom, 25#, 25#, 2)
+    Set p125 = TestMeshProps(geom, 12.5, 12.5, 2)
 
-    TestAppendLine stats, "CONVERGENCE: step=50 area=" & TestFormatNumberInvariant(p50.Area) & _
+    TestAppendLine stats, "CONVERGENCE: levels=2; step=50 area=" & TestFormatNumberInvariant(p50.Area) & _
         "; cx=" & TestFormatNumberInvariant(p50.CentroidX) & "; cy=" & TestFormatNumberInvariant(p50.CentroidY) & _
         "; Ix=" & TestFormatNumberInvariant(p50.Ixc) & "; Iy=" & TestFormatNumberInvariant(p50.Iyc) & _
         "; Ixy=" & TestFormatNumberInvariant(p50.Ixyc) & "; I1=" & TestFormatNumberInvariant(p50.PrincipalI1) & _
         "; I2=" & TestFormatNumberInvariant(p50.PrincipalI2)
-    TestAppendLine stats, "CONVERGENCE: step=25 area=" & TestFormatNumberInvariant(p25.Area) & _
+    TestAppendLine stats, "CONVERGENCE: levels=2; step=25 area=" & TestFormatNumberInvariant(p25.Area) & _
         "; cx=" & TestFormatNumberInvariant(p25.CentroidX) & "; cy=" & TestFormatNumberInvariant(p25.CentroidY) & _
         "; Ix=" & TestFormatNumberInvariant(p25.Ixc) & "; Iy=" & TestFormatNumberInvariant(p25.Iyc) & _
         "; Ixy=" & TestFormatNumberInvariant(p25.Ixyc) & "; I1=" & TestFormatNumberInvariant(p25.PrincipalI1) & _
         "; I2=" & TestFormatNumberInvariant(p25.PrincipalI2)
-    TestAppendLine stats, "CONVERGENCE: step=12.5 area=" & TestFormatNumberInvariant(p125.Area) & _
+    TestAppendLine stats, "CONVERGENCE: levels=2; step=12.5 area=" & TestFormatNumberInvariant(p125.Area) & _
         "; cx=" & TestFormatNumberInvariant(p125.CentroidX) & "; cy=" & TestFormatNumberInvariant(p125.CentroidY) & _
         "; Ix=" & TestFormatNumberInvariant(p125.Ixc) & "; Iy=" & TestFormatNumberInvariant(p125.Iyc) & _
         "; Ixy=" & TestFormatNumberInvariant(p125.Ixyc) & "; I1=" & TestFormatNumberInvariant(p125.PrincipalI1) & _
@@ -2463,6 +2463,10 @@ Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     TestAssertRelative stats, "conv.area.25.12", p125.Area, p25.Area, 0.03
     TestAssertRelative stats, "conv.Ix.25.12", p125.Ixc, p25.Ixc, 0.05
     TestAssertRelative stats, "conv.Iy.25.12", p125.Iyc, p25.Iyc, 0.05
+    Dim coarse As CSectionPropertiesCalculator
+    Set coarse = TestMeshProps(geom, 25#, 25#, 1)
+    TestAssertClose stats, "conv.level1.independentRasterArea", coarse.Area, 88750#, 0.000001
+    TestAssertRelative stats, "conv.level1.independentRasterIx", coarse.Ixc, 366297131.748829, 0.000000000001
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -2527,12 +2531,13 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Строит сетку общими геометрическими классами и вычисляет площадь, центр
 ' и моменты инерции бетона. В ошибке сохраняет шаги сетки и число элементов.
-Private Function TestMeshProps(ByVal geom As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double) As CSectionPropertiesCalculator
+Private Function TestMeshProps(ByVal geom As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _
+        Optional ByVal boundaryLevels As Long = 1) As CSectionPropertiesCalculator
     On Error GoTo Failed
 
     Dim builder As CFiberMeshBuilder
     Set builder = New CFiberMeshBuilder
-    builder.BuildMesh geom, stepX, stepY, 1
+    builder.BuildMesh geom, stepX, stepY, 1, boundaryLevels
     If builder.FiberCount <= 0 Then
         Err.Raise vbObjectError + 2310, "MeshProps", "Mesh is empty; stepX=" & CStr(stepX) & "; stepY=" & CStr(stepY)
     End If
@@ -2566,16 +2571,14 @@ Private Function TestMeshHasSmallFibers(ByVal mesh As CFiberMeshBuilder, ByVal b
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Читает ширину первой уменьшенной по X подячейки; ноль означает отсутствие такой ячейки.
-Private Function TestFirstSmallFiberWidth(ByVal mesh As CFiberMeshBuilder, ByVal baseStep As Double) As Double
-    Dim i As Long
+' Читает минимальную ширину уменьшенной ячейки: при адаптивном уточнении размеры разных уровней сосуществуют.
+Private Function TestMinimumSmallFiberWidth(ByVal mesh As CFiberMeshBuilder, ByVal baseStep As Double) As Double
+    Dim i As Long, minimum As Double
+    minimum = baseStep
     For i = 1 To mesh.FiberCount
-        If mesh.FiberWidth(i) < baseStep Then
-            TestFirstSmallFiberWidth = mesh.FiberWidth(i)
-            Exit Function
-        End If
+        If mesh.FiberWidth(i) < minimum Then minimum = mesh.FiberWidth(i)
     Next i
-    TestFirstSmallFiberWidth = 0#
+    If minimum < baseStep Then TestMinimumSmallFiberWidth = minimum
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -3197,10 +3200,11 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
     Dim expectedArea As Double, openingArea As Double, cx As Double, cy As Double
     Dim prefix As String
     Set mesh = New CFiberMeshBuilder
+    ' Размеры и смещения кратны h/16: требование точной аналитической площади и инерции не ослабляется.
     For scenario = 0 To 2
-        openingWidth = 40#: openingHeight = 40#: offsetX = 50#: offsetY = 50#
+        openingWidth = 50#: openingHeight = 50#: offsetX = 50#: offsetY = 50#
         If scenario = 1 Then
-            openingWidth = 20#: openingHeight = 40#: offsetX = 70#: offsetY = 30#
+            openingWidth = 25#: openingHeight = 50#: offsetX = 62.5: offsetY = 37.5
         ElseIf scenario = 2 Then
             offsetX = 0#: offsetY = 0#
         End If
@@ -3209,7 +3213,7 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
         Set path = facade.RectanglePath("Void", offsetX - openingWidth / 2#, offsetY - openingHeight / 2#, openingWidth, openingHeight)
         facade.Opening "VOID", path.ID, "OUTER"
         Set definition = facade.Finish: Set hollow = TestFixtureGeometry(definition.ConcreteDomain)
-        mesh.BuildMesh hollow, 100#, 100#, 2, 10
+        mesh.BuildMesh hollow, 100#, 100#, 2, 4
         area = 0#: invalidCenters = 0#: sx = 0#: sy = 0#: ix = 0#: iy = 0#: ixy = 0#
         For i = 1 To mesh.FiberCount
             fiberArea = mesh.FiberArea(i)
@@ -3240,7 +3244,7 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
     Next scenario
     Dim rectangle As CGeometryRegion
     Set rectangle = TestFixtureBox(200#, 200#)
-    mesh.BuildMesh rectangle, 100#, 100#, 2, 10
+    mesh.BuildMesh rectangle, 100#, 100#, 2, 4
     Dim fullCellCount As Long
     For i = 1 To mesh.FiberCount
         If mesh.FiberWidth(i) = 100# And mesh.FiberHeight(i) = 100# Then fullCellCount = fullCellCount + 1

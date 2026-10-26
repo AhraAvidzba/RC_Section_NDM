@@ -22,8 +22,10 @@ Private mFiberCount As Long ' Число заполненных элементо
 Private mBuildSeconds As Double ' Время создания только сетки; не полное время расчёта сочетания.
 
 ' Разбивает бетонную область регулярной сеткой. Полностью внутренние ячейки
-' добавляет целиком, а пограничные при необходимости делит на более мелкие
-' по настройке Mesh.BoundarySubdivisions. При autoStepFactor > 0 одинаковый
+' добавляет целиком, а пограничные уточняет последовательно на заданное
+' число уровней Mesh.BoundarySubdivisions.
+' Каждый уровень делит пересечённую ячейку пополам по обеим осям;
+' внутренние ячейки остаются крупными. При autoStepFactor > 0 одинаковый
 ' шаг по X/Y равен этой доле меньшего точного габарита области в WCS.
 Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1, _
@@ -74,78 +76,25 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     nx = CLng(Fix((maxX - minX) / stepX)) + 1
     ny = CLng(Fix((maxY - minY) / stepY)) + 1
     If nx < 1 Or ny < 1 Then Err.Raise vbObjectError + 2104, "CFiberMeshBuilder", "Габаритный прямоугольник сетки пуст."
-    If CDbl(nx) * CDbl(ny) * CDbl(boundarySubdivisions) * CDbl(boundarySubdivisions) > 2147483646# Then
-        Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
-            "Верхняя оценка числа бетонных элементов с учетом Mesh.BoundarySubdivisions не помещается в Long. " & _
-            "Увеличьте шаг сетки или уменьшите число подъячеек границы."
-    End If
+    Dim upperCount As Double, level As Long
+    upperCount = CDbl(nx) * CDbl(ny)
+    For level = 1 To boundarySubdivisions
+        If upperCount > 2147483646# / 4# Then
+            Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
+                "Верхняя оценка числа бетонных элементов с учетом уровней Mesh.BoundarySubdivisions не помещается в Long. " & _
+                "Увеличьте шаг сетки или уменьшите число уровней уточнения границы."
+        End If
+        upperCount = upperCount * 4# ' Проверяем до умножения, не вычисляя переполняющуюся степень 4^N.
+    Next level
 
     ReDim mFibers(1 To nx * ny)
-    mFiberCount = 0
-
-    Dim ix As Long
-    Dim iy As Long
-    Dim x As Double
-    Dim y As Double
-    Dim cellMinX As Double
-    Dim cellMinY As Double
-    Dim allCornersInside As Boolean
-    Dim lowerLeft As Boolean, lowerRight As Boolean, upperLeft As Boolean, upperRight As Boolean
-    Dim topLeft() As Boolean, topRight() As Boolean
-    Dim previousRightX As Double, previousTopY As Double, sameX As Boolean, sameY As Boolean
-    Dim openingBounds() As Double, openingCount As Long, openingIndex As Long
-    Dim contours As CSectionContours, query As CSectionGeometryQuery
-    Dim outerEdges() As TRegionEdge, outerEdgeCount As Long
-    If boundarySubdivisions > 1 Then ' Даже если четыре угла лежат в бетоне, внутри ячейки может быть отверстие. Один раз получаем габариты всех отверстий и уточняем такие ячейки проверкой принадлежности точек бетону через ContainsPoint.
-        ReDim topLeft(0 To nx - 1): ReDim topRight(0 To nx - 1)
-        Set contours = New CSectionContours: geometry.BuildContours contours
-        Set query = New CSectionGeometryQuery
-        query.OpeningBounds contours, openingBounds, openingCount
-        query.CopyMeshOuterEdges contours, outerEdges, outerEdgeCount
-    End If
-
+    Dim ix As Long, iy As Long, cellMinX As Double, cellMinY As Double
     For iy = 0 To ny - 1
         cellMinY = minY + iy * stepY
-        y = cellMinY + stepY / 2#
-        sameY = (iy > 0 And cellMinY = previousTopY)
         For ix = 0 To nx - 1
             cellMinX = minX + ix * stepX
-            x = cellMinX + stepX / 2#
-            If boundarySubdivisions = 1 Then ' Центр последней базовой ячейки может быть за габаритом, хотя часть ее подъячеек находится в бетоне. Отбор выполняет форма по центрам фактических элементов, не по центру базовой ячейки.
-                If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
-            Else
-                sameX = (ix > 0 And cellMinX = previousRightX) ' У соседних ячеек общие углы. Повторно используем проверку только при точном совпадении координат, без округления и изменения допуска.
-                If sameY Then
-                    lowerLeft = topLeft(ix): lowerRight = topRight(ix)
-                Else
-                    If sameX Then lowerLeft = lowerRight Else lowerLeft = geometry.ContainsPoint(cellMinX, cellMinY)
-                    lowerRight = geometry.ContainsPoint(cellMinX + stepX, cellMinY)
-                End If
-                If sameX Then upperLeft = upperRight Else upperLeft = geometry.ContainsPoint(cellMinX, cellMinY + stepY)
-                upperRight = geometry.ContainsPoint(cellMinX + stepX, cellMinY + stepY)
-                topLeft(ix) = upperLeft: topRight(ix) = upperRight
-                previousRightX = cellMinX + stepX
-                allCornersInside = lowerLeft And lowerRight And upperLeft And upperRight
-                If allCornersInside Then
-                    For openingIndex = 1 To openingCount
-                        If cellMinX < openingBounds(openingIndex, 2) - GEOM_TOLERANCE And cellMinX + stepX > openingBounds(openingIndex, 1) + GEOM_TOLERANCE And _
-                                cellMinY < openingBounds(openingIndex, 4) - GEOM_TOLERANCE And cellMinY + stepY > openingBounds(openingIndex, 3) + GEOM_TOLERANCE Then ' Касание габарита без пересечения площади не требует дробления ячейки. Так малая погрешность координат дуги не вызывает лишнее уточнение сетки.
-                            allCornersInside = False
-                            Exit For
-                        End If
-                    Next openingIndex
-                End If
-                If allCornersInside Then
-                    If query.MeshBoundaryCrossesCell(outerEdges, outerEdgeCount, cellMinX, cellMinY, cellMinX + stepX, cellMinY + stepY) Then allCornersInside = False
-                End If
-                If allCornersInside Then
-                    AddFiber x, y, stepX, stepY, materialID
-                Else
-                    AddSubcellFibers geometry, cellMinX, cellMinY, stepX, stepY, boundarySubdivisions, materialID
-                End If
-            End If
+            AddAdaptiveCell geometry, cellMinX, cellMinY, stepX, stepY, boundarySubdivisions, materialID
         Next ix
-        previousTopY = cellMinY + stepY
     Next iy
 
     If mFiberCount <= 0 Then
@@ -168,26 +117,27 @@ FailedBuild:
     Err.Raise number, source, reason
 End Sub
 
-' Дробит пограничную ячейку на более мелкие прямоугольники и добавляет только
-' те центры подъячеек, которые попали внутрь исходной геометрии.
-Private Sub AddSubcellFibers(ByVal geometry As CGeometryRegion, ByVal cellMinX As Double, ByVal cellMinY As Double, _
-        ByVal stepX As Double, ByVal stepY As Double, ByVal boundarySubdivisions As Long, ByVal materialID As Long)
-    Dim subX As Double
-    Dim subY As Double
-    subX = stepX / CDbl(boundarySubdivisions)
-    subY = stepY / CDbl(boundarySubdivisions)
 
-    Dim ix As Long
-    Dim iy As Long
-    Dim x As Double
-    Dim y As Double
-    For iy = 0 To boundarySubdivisions - 1
-        y = cellMinY + subY / 2# + iy * subY
-        For ix = 0 To boundarySubdivisions - 1
-            x = cellMinX + subX / 2# + ix * subX
-            If geometry.ContainsPoint(x, y) Then AddFiber x, y, subX, subY, materialID
-        Next ix
-    Next iy
+' Уточняет только ячейку, через открытую внутренность которой проходит точная
+' граница бетона или отверстия. Без пересечения принадлежность центра определяет
+' всю ячейку; на последнем уровне центр остаётся квадратурной аппроксимацией.
+Private Sub AddAdaptiveCell(ByVal geometry As CGeometryRegion, ByVal cellMinX As Double, ByVal cellMinY As Double, _
+        ByVal stepX As Double, ByVal stepY As Double, ByVal remainingLevels As Long, ByVal materialID As Long)
+    Dim x As Double, y As Double
+    x = cellMinX + stepX / 2#: y = cellMinY + stepY / 2#
+    If remainingLevels > 0 Then
+        If geometry.MeshBoundaryCrossesCell(cellMinX, cellMinY, cellMinX + stepX, cellMinY + stepY) Then
+            Dim halfX As Double, halfY As Double, ix As Long, iy As Long
+            halfX = stepX / 2#: halfY = stepY / 2#
+            For iy = 0 To 1
+                For ix = 0 To 1
+                    AddAdaptiveCell geometry, cellMinX + ix * halfX, cellMinY + iy * halfY, halfX, halfY, remainingLevels - 1, materialID
+                Next ix
+            Next iy
+            Exit Sub
+        End If
+    End If
+    If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
 End Sub
 
 ' Добавляет прямоугольный бетонный элемент в подготовленную сетку.

@@ -1,6 +1,14 @@
 Attribute VB_Name = "modTestContourMesh"
 Option Explicit
 
+#If VBA7 Then
+Private Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
+Private Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (ByRef value As Currency) As Long
+#Else
+Private Declare Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
+Private Declare Function QueryPerformanceFrequency Lib "kernel32" (ByRef value As Currency) As Long
+#End If
+
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ: общая сетка параметрических и импортированных контуров
 ' ==========================================================================
@@ -389,7 +397,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет передачу AutoStepFactor через полноценный CSectionBuilder:
-' ручные шаги при Auto не требуются, дробление 2 сохраняется, ожидаемый шаг 30 мм.
+' ручные шаги при Auto не требуются, два уровня сохраняются; основной шаг 30 мм, минимальный 7.5 мм.
 Private Sub TestAutomaticSectionBuilder()
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Dim builder As CSectionBuilder, options As TSectionMeshOptions, model As CSectionModel, mesh As CFiberMeshBuilder
@@ -403,7 +411,7 @@ Private Sub TestAutomaticSectionBuilder()
     TestCheck "autoMesh.sectionBuilder.mainStep", mesh.FiberWidth(1) = 30# And mesh.FiberHeight(1) = 30#
     Dim i As Long, refined As Boolean
     For i = 1 To mesh.FiberCount
-        If mesh.FiberWidth(i) = 15# And mesh.FiberHeight(i) = 15# Then refined = True
+        If mesh.FiberWidth(i) = 7.5 And mesh.FiberHeight(i) = 7.5 Then refined = True
     Next i
     TestCheck "autoMesh.sectionBuilder.refined", refined
 End Sub
@@ -674,8 +682,8 @@ Private Sub TestCheckArbitraryDomains()
     Set query = New CSectionGeometryQuery
     Set region = TestFlatPolygon(Array(0#, 0#, 100#, 0#, 100#, 100#, 60#, 100#, 60#, 40#, 40#, 40#, 40#, 100#, 0#, 100#))
     Set geometry = New CGeometryRegion: geometry.Initialize region
-    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 100#, 100#, 1, 10
-    TestCheck "concave.subcells", mesh.FiberCount = 88 ' Из 100 квадратов 10x10 мм вырез 20x60 мм исключает ровно 12.
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 100#, 100#, 1, 3
+    TestNear "concave.subcells.area", TestAdaptiveMeshArea(mesh), 8437.5 ' Независимый растр 8x8: 64 - 10 центров выреза, каждый элемент площадью 156.25 мм2.
     TestCheckCellCenters "concave", mesh, geometry
     Set region = TestFlatPolygon(Array(0#, 0#, 300#, 0#, 300#, 200#, 0#, 200#))
     Set region = query.SubtractContainedRegion(region, query.CircleRegion(70#, 70#, 23#))
@@ -823,3 +831,182 @@ Private Sub TestCheck(ByVal label As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & label & vbCrLf
     End If
 End Sub
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет уровни 1/2/4 по независимому равномерному растру h/2^N:
+' каждый конечный пиксель покрыт ровно один раз и только при центре в бетоне.
+Public Function RunAdaptiveBoundaryMeshTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Dim shape As Long, depth As Variant, geometry As CGeometryRegion, query As CSectionGeometryQuery
+    Dim region As CConcreteRegion, parts As Collection, mesh As CFiberMeshBuilder
+    For shape = 1 To 6
+        If shape <= 3 Then
+            Set geometry = TestControlGeometry(Choose(shape, 1, 3, 6))
+        Else
+            Set query = New CSectionGeometryQuery
+            Set region = TestFlatPolygon(Array(0#, 0#, 100#, 0#, 100#, 100#, 0#, 100#))
+            If shape = 4 Then
+                Set region = query.SubtractContainedRegion(region, query.CircleRegion(13#, 17#, 3#))
+                Set region = query.SubtractContainedRegion(region, query.CircleRegion(73#, 81#, 7#))
+            ElseIf shape = 5 Then
+                Set parts = New Collection: parts.Add region
+                parts.Add query.CircleRegion(173#, 31#, 3#): Set region = query.MergeDisjointRegions(parts)
+            Else
+                Set region = TestFlatPolygon(Array(0#, 0#, 100#, 0#, 100#, 100#, 60#, 100#, 60#, 40#, 40#, 40#, 40#, 100#, 0#, 100#))
+            End If
+            Set geometry = TestFixtureGeometry(region)
+        End If
+        For Each depth In Array(1, 2, 4)
+            Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 100#, 80#, 7, CLng(depth)
+            TestAdaptiveCoverage geometry, mesh, 100#, 80#, CLng(depth), "adaptive." & CStr(shape) & "." & CStr(depth)
+        Next depth
+    Next shape
+    Dim number As Long, reason As String
+    On Error Resume Next
+    mesh.BuildMesh geometry, 100#, 80#, 1, 2147483647, "Config!TestDepth"
+    number = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo Failed
+    TestCheck "adaptive.depthOverflow.beforePower", number <> 0 And InStr(reason, "TestDepth") > 0 And mesh.FiberCount = 0
+    GoTo Finish
+Failed:
+    TestCheck "adaptive.runtime." & CStr(Err.Number) & "; " & Err.Source & "; " & Err.Description, False
+Finish:
+    RunAdaptiveBoundaryMeshTests = mReport & "TOTAL_ADAPTIVE_BOUNDARY_MESH: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сопоставляет все мелкие клетки с покрытием прямоугольниками адаптивной сетки;
+' отдельно сверяет площадь и моменты интегрирования, включая собственную инерцию.
+Private Sub TestAdaptiveCoverage(ByVal geometry As CGeometryRegion, ByVal mesh As CFiberMeshBuilder, _
+        ByVal stepX As Double, ByVal stepY As Double, ByVal depth As Long, ByVal label As String)
+    Dim fineScale As Long, nx As Long, ny As Long, i As Long, ix As Long, iy As Long, firstX As Long, firstY As Long
+    Dim width As Long, height As Long, occupied As Object, key As String, overlaps As Boolean, valid As Boolean
+    Dim hx As Double, hy As Double, x As Double, y As Double, area As Double, expectedArea As Double
+    Dim expectedIx As Double, expectedIy As Double, actualIx As Double, actualIy As Double
+    fineScale = CLng(2# ^ depth): hx = stepX / fineScale: hy = stepY / fineScale
+    nx = (CLng(Fix(geometry.Width / stepX)) + 1) * fineScale
+    ny = (CLng(Fix(geometry.Height / stepY)) + 1) * fineScale
+    Set occupied = CreateObject("Scripting.Dictionary"): valid = True
+    For i = 1 To mesh.FiberCount
+        width = CLng(mesh.FiberWidth(i) / hx): height = CLng(mesh.FiberHeight(i) / hy)
+        valid = valid And width >= 1 And height >= 1 And mesh.FiberMaterialID(i) = 7
+        valid = valid And Abs(mesh.FiberWidth(i) - width * hx) < 0.0000001 And Abs(mesh.FiberHeight(i) - height * hy) < 0.0000001
+        firstX = CLng((mesh.FiberX(i) - mesh.FiberWidth(i) / 2# - geometry.MinX) / hx)
+        firstY = CLng((mesh.FiberY(i) - mesh.FiberHeight(i) / 2# - geometry.MinY) / hy)
+        For iy = firstY To firstY + height - 1
+            For ix = firstX To firstX + width - 1
+                key = CStr(ix) & ":" & CStr(iy)
+                If occupied.Exists(key) Then overlaps = True Else occupied.Add key, True
+            Next ix
+        Next iy
+        area = mesh.FiberArea(i)
+        actualIx = actualIx + area * (mesh.FiberY(i) ^ 2 + mesh.FiberHeight(i) ^ 2 / 12#)
+        actualIy = actualIy + area * (mesh.FiberX(i) ^ 2 + mesh.FiberWidth(i) ^ 2 / 12#)
+    Next i
+    TestCheck label & ".positiveAlignedMaterial", valid
+    TestCheck label & ".noOverlap", Not overlaps
+    Dim identical As Boolean: identical = True
+    For iy = 0 To ny - 1
+        y = geometry.MinY + (iy + 0.5) * hy
+        For ix = 0 To nx - 1
+            x = geometry.MinX + (ix + 0.5) * hx: key = CStr(ix) & ":" & CStr(iy)
+            If geometry.ContainsPoint(x, y) <> occupied.Exists(key) Then identical = False
+            If geometry.ContainsPoint(x, y) Then
+                area = hx * hy: expectedArea = expectedArea + area
+                expectedIx = expectedIx + area * (y * y + hy * hy / 12#)
+                expectedIy = expectedIy + area * (x * x + hx * hx / 12#)
+            End If
+        Next ix
+    Next iy
+    TestCheck label & ".uniformPixelsExact", identical
+    TestNear label & ".area", TestAdaptiveMeshArea(mesh), expectedArea, 0.000001
+    TestNear label & ".IxOrigin", actualIx, expectedIx, 0.000001 + Abs(expectedIx) * 0.000000000001
+    TestNear label & ".IyOrigin", actualIy, expectedIy, 0.000001 + Abs(expectedIy) * 0.000000000001
+    mReport = mReport & "ADAPTIVE " & label & "; concrete=" & CStr(mesh.FiberCount) & "; minStepX=" & CStr(hx) & "; area=" & CStr(expectedArea) & vbCrLf
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Суммирует фактические площади элементов без округления или восстановления по контуру.
+Private Function TestAdaptiveMeshArea(ByVal mesh As CFiberMeshBuilder) As Double
+    Dim i As Long
+    For i = 1 To mesh.FiberCount
+        TestAdaptiveMeshArea = TestAdaptiveMeshArea + mesh.FiberArea(i)
+    Next i
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнительный стенд: настройка не входит в замер. Сетка измеряется пакетами
+' по 20 построений, штатное формирование — со схемой, Results и восстановлением Excel.
+Public Function TestMeasureAdaptiveMeshBenchmark(ByVal shape As String, ByVal subdivisions As String) As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition, geometry As CGeometryRegion
+    Dim mesh As CFiberMeshBuilder, options As TSectionMeshOptions, section As CSectionModel, props As CSectionPropertiesCalculator
+    Dim builder As CSectionBuilder, r As Long, repeat As Long, started As Double, seconds As Double, message As String, report As String
+    TestAdaptiveSetSetting "Geometry.Source", "Generated"
+    TestAdaptiveSetSetting "Geometry.Type", IIf(shape = "OneRect", "Rectangles", shape)
+    TestAdaptiveSetSetting "Mesh.StepMode", "Auto 0.1"
+    TestAdaptiveSetSetting "Mesh.BoundarySubdivisions", CLng(subdivisions)
+    TestAdaptiveSetSetting "General.NonCriticalMessagesEnabled", "No"
+    Dim table As Object, row As Long
+    Set table = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    For row = 1 To table.Rows.Count
+        If CStr(table.Cells(row, 1).Value2) = "Length" Then table.Cells(row, 3).Value2 = "mm"
+    Next row
+    Set table = ThisWorkbook.Names.Item("rngRectanglesGeometry").RefersToRange
+    For row = 1 To table.Rows.Count
+        If CStr(table.Cells(row, 1).Value2) = "Shape" Then table.Cells(row, 3).Value2 = IIf(shape = "OneRect", "OneRect", "TwoRect")
+    Next row
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    Set geometry = TestFixtureGeometry(definition.ConcreteDomain): options = ReadSectionMeshOptions(settings, units)
+    Set builder = New CSectionBuilder: Set section = builder.Build(definition, options)
+    Set props = New CSectionPropertiesCalculator: props.CalculateConcrete section
+    Dim analyticAvailable As Boolean
+    report = "BENCH_INFO|" & shape & "|" & subdivisions & "|" & CStr(section.ConcreteCount) & "|" & CStr(section.RebarCount) & "|" & TestAdaptiveNumber(geometry.Width) & "|" & TestAdaptiveNumber(geometry.Height) & "|" & TestAdaptiveNumber(0.1 * IIf(geometry.Width < geometry.Height, geometry.Width, geometry.Height)) & "|" & TestAdaptiveNumber(props.Area) & "|" & TestAdaptiveNumber(geometry.AnalyticalArea(analyticAvailable)) & "|" & TestAdaptiveNumber(props.Ixc) & "|" & TestAdaptiveNumber(props.Iyc) & vbCrLf
+    For r = 0 To 5
+        started = TestAdaptiveClock()
+        For repeat = 1 To 20
+            Set mesh = New CFiberMeshBuilder
+            mesh.BuildMesh geometry, options.StepX, options.StepY, options.MaterialID, options.BoundarySubdivisions, options.SourceReference, options.AutoStepFactor
+        Next repeat
+        seconds = (TestAdaptiveClock() - started) / 20#
+        If r > 0 Then report = report & "BENCH_MESH|" & shape & "|" & subdivisions & "|" & CStr(r) & "|" & TestAdaptiveNumber(seconds) & vbCrLf
+    Next r
+    For r = 0 To 5
+        started = TestAdaptiveClock(): message = FormSectionForWorkbook(ThisWorkbook)
+        seconds = TestAdaptiveClock() - started
+        If InStr(message, "Предупреждение:") > 0 Then Err.Raise vbObjectError + 5295, "TestMeasureAdaptiveMeshBenchmark", message
+        If r > 0 Then report = report & "BENCH_FORM|" & shape & "|" & subdivisions & "|" & CStr(r) & "|" & TestAdaptiveNumber(seconds) & vbCrLf
+    Next r
+    Dim restored As CSectionModel
+    Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
+    If restored.ConcreteCount <> section.ConcreteCount Or restored.RebarCount <> section.RebarCount Then Err.Raise vbObjectError + 5295, "TestMeasureAdaptiveMeshBenchmark", "Повторное чтение Results изменило количество элементов."
+    TestMeasureAdaptiveMeshBenchmark = report & "TOTAL_ADAPTIVE_BENCHMARK: passed=1; failed=0"
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет только значение найденного ключа в тестовой книге; отсутствие строки является ошибкой стенда.
+Private Sub TestAdaptiveSetSetting(ByVal key As String, ByVal value As Variant)
+    Dim table As Object, row As Long
+    Set table = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    For row = 2 To table.Rows.Count
+        If CStr(table.Cells(row, 1).Value2) = key Then table.Cells(row, 2).Value2 = value: Exit Sub
+    Next row
+    Err.Raise vbObjectError + 5295, "TestAdaptiveSetSetting", "Отсутствует ключ " & key
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Монотонный счётчик Windows для коротких участков, где разрешения VBA.Timer недостаточно.
+Private Function TestAdaptiveClock() As Double
+    Dim counter As Currency, frequency As Currency
+    QueryPerformanceCounter counter: QueryPerformanceFrequency frequency
+    TestAdaptiveClock = counter / frequency
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Пишет дробные секунды с точкой независимо от разделителя локали Excel.
+Private Function TestAdaptiveNumber(ByVal value As Double) As String
+    TestAdaptiveNumber = Replace$(Format$(value, "0.000000000"), ",", ".")
+End Function

@@ -1,0 +1,21 @@
+{
+  "Status": "HELP_LAYOUT_SNAPSHOT_SYNCHRONIZED",
+  "OriginalFullBuild": "FreshBuild.json",
+  "CurrentBuildScriptMatchesOriginalFullBuild": true,
+  "OriginalAutoFitPreserved": true,
+  "DiscardedPreserveExistingHeightsAttempt": "FreshLayout02.json",
+  "TwoIntentionalHelpRows": [
+    {
+      "Sheet": "Справка",
+      "Row": 841,
+      "Before": 38.25,
+      "After": 25.5
+    },
+    {
+      "Sheet": "Справка",
+      "Row": 842,
+      "Before": 38.25,
+      "After": 25.5
+    }
+  ]
+}

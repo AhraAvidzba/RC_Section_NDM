@@ -1,0 +1,155 @@
+{
+  "Status": "PASS_DIRECTED_ADAPTIVE_BRANCH",
+  "WorkbookSHA256": "53919E6CF11018B769191059E17977D60F3201D5857991FFE49E9326E1CC613A",
+  "ComputationalPrimaryBookSHA256": "12D76D85671C237836AA821C32552DB9F2D131D186962ABC954F4CA8B9408E45",
+  "FinalVBAIdenticalToComputationalPrimaries": true,
+  "ComparisonCases": 25,
+  "Comparison": "Comparison.json",
+  "PrimaryReviews": [
+    {
+      "Primary": "Directed03_No.txt",
+      "SHA256": "DB29BD9DA1FA9164412B07B33BA0422D11368573C271B2E7C98851B315F4FE78",
+      "Bytes": 755844,
+      "Mode": "No",
+      "Macros": [
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestGeometry.RunGeometryTests",
+        "modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL_ADAPTIVE_BOUNDARY_MESH: passed=109; failed=0",
+        "TOTAL_AUTO_MESH: passed=131161; failed=0",
+        "TOTAL: passed=4053; failed=0",
+        "TOTAL_GENERAL_GEOMETRY_CONFIG: passed=2293; failed=0",
+        "TOTAL_CONTOUR_MESH: passed=47347; failed=0",
+        "TOTAL_WORKFLOW_SNAPSHOT: passed=151; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=1.33984375"
+      ],
+      "Errors": [],
+      "FullPrimaryRead": true
+    },
+    {
+      "Primary": "Reopen01_No.txt",
+      "SHA256": "614D50CC827B1D3E9F9674BC88A210A08D2E769B7E59E8236FF86C9DF0CF6C50",
+      "Bytes": 6569,
+      "Mode": "No",
+      "Macros": [
+        "modTestWorkbookInterface.RunSectionWorkflowCalculationTests"
+      ],
+      "Totals": [
+        "TOTAL_WORKFLOW_CALCULATION: passed=116; failed=0"
+      ],
+      "Errors": [],
+      "FullPrimaryRead": true
+    },
+    {
+      "Primary": "Directed03_Yes.txt",
+      "SHA256": "C76DC1B8BA9BDD9F1CF96DCF1E9838C4386AB0F718EE4779CB254C60000215B0",
+      "Bytes": 756020,
+      "Mode": "Yes",
+      "Macros": [
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestGeometry.RunGeometryTests",
+        "modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL_ADAPTIVE_BOUNDARY_MESH: passed=109; failed=0",
+        "TOTAL_AUTO_MESH: passed=131161; failed=0",
+        "TOTAL: passed=4053; failed=0",
+        "TOTAL_GENERAL_GEOMETRY_CONFIG: passed=2293; failed=0",
+        "TOTAL_CONTOUR_MESH: passed=47347; failed=0",
+        "TOTAL_WORKFLOW_SNAPSHOT: passed=151; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=1.3125"
+      ],
+      "Errors": [],
+      "FullPrimaryRead": true
+    },
+    {
+      "Primary": "Reopen01_Yes.txt",
+      "SHA256": "179EA5B31BD81C5E56752B80C5D0BB08FED14C4B4528E50F5A8AA82ED94AEC5C",
+      "Bytes": 6574,
+      "Mode": "Yes",
+      "Macros": [
+        "modTestWorkbookInterface.RunSectionWorkflowCalculationTests"
+      ],
+      "Totals": [
+        "TOTAL_WORKFLOW_CALCULATION: passed=116; failed=0"
+      ],
+      "Errors": [],
+      "FullPrimaryRead": true
+    }
+  ],
+  "FinalBookSmoke": [
+    {
+      "Primary": "FinalSmoke_No.txt",
+      "SHA256": "309143E2C701AC5982A2B0A1691E1AAC7851F20F841F6753FCE521D8E46469D6",
+      "Mode": "No",
+      "Passed": true,
+      "FullPrimaryRead": true
+    },
+    {
+      "Primary": "FinalSmoke_Yes.txt",
+      "SHA256": "4C316E32B12B5D807BD22E77E9D7741BF63AA5EFADEB7A6BDC15692E2D700531",
+      "Mode": "Yes",
+      "Passed": true,
+      "FullPrimaryRead": true
+    }
+  ],
+  "FullNativeSourceEquality": true,
+  "FreshFullBuild": true,
+  "FreshLayoutPassed": true,
+  "FinalBookLayoutPassed": true,
+  "HelpCatalogAndBooksSynchronized": true,
+  "Settings": [
+    {
+      "File": "Before_RC_Section_NDM.xlsm",
+      "Values": {
+        "General.ReformatResultsEnabled": "Yes",
+        "Mesh.StepMode": "Auto 0.1",
+        "Mesh.BoundarySubdivisions": "2",
+        "Plot.Enabled": "Yes"
+      }
+    },
+    {
+      "File": "FreshBuild\\RC_Section_NDM.xlsm",
+      "Values": {
+        "General.ReformatResultsEnabled": "Yes",
+        "Mesh.StepMode": "Auto 0.1",
+        "Mesh.BoundarySubdivisions": "2",
+        "Plot.Enabled": "Yes"
+      }
+    },
+    {
+      "File": "ReleaseCandidate03\\RC_Section_NDM.xlsm",
+      "Values": {
+        "General.ReformatResultsEnabled": "Yes",
+        "Mesh.StepMode": "Auto 0.1",
+        "Mesh.BoundarySubdivisions": "2",
+        "Plot.Enabled": "Yes"
+      }
+    }
+  ],
+  "PartsPreserved": 104,
+  "FullOnOffFocusedRun": false,
+  "RealAutoCADSessionRun": false,
+  "ExistingStaticFinding": "CommentAuditTriage.json",
+  "FailuresPreserved": [
+    "Directed01_No.txt",
+    "Directed02_No.txt",
+    "Build02_New/CompileFailure.json",
+    "FreshLayout.json",
+    "FreshLayout02.json"
+  ]
+}

@@ -72,6 +72,15 @@ Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ContainsPoint = mQuery.ContainsMeshPoint(mRegion, mEdges, mEdgeCount, X, Y)
 End Function
 
+
+' Проверяет все подготовленные границы, включая отверстие целиком внутри
+' ячейки и отдельный остров бетона. Касание стороны без захода внутрь не дробит.
+Friend Function MeshBoundaryCrossesCell(ByVal minX As Double, ByVal minY As Double, _
+        ByVal maxX As Double, ByVal maxY As Double) As Boolean
+    If mRegion Is Nothing Then Exit Function
+    MeshBoundaryCrossesCell = mQuery.MeshBoundaryCrossesCell(mEdges, mEdgeCount, minX, minY, maxX, maxY)
+End Function
+
 ' Проверяет, создана ли область и превышают ли её ширина и высота геометрический допуск.
 ' При ошибке возвращает False и понятную причину в message.
 Public Function IsValid(ByRef message As String) As Boolean

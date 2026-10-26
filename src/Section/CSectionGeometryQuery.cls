@@ -1191,7 +1191,7 @@ Friend Function ContainsMeshPoint(ByVal region As CConcreteRegion, ByRef edges()
 End Function
 
 ' Копирует точные наружные отрезки и дуги один раз для последующих проверок пересечения ячеек.
-' Отверстия в этот массив не входят: генератор отдельно проверяет их габариты.
+' Отверстия в этот массив не входят; адаптивная сетка использует все рёбра CGeometryRegion.
 Friend Sub CopyMeshOuterEdges(ByVal contours As CSectionContours, ByRef edges() As TRegionEdge, ByRef count As Long)
     Dim holes() As TRegionEdge, holeCount As Long
     Erase edges: count = 0
@@ -1221,7 +1221,8 @@ Friend Sub MeshExtremePoints(ByRef edges() As TRegionEdge, ByVal count As Long, 
     ReDim Preserve pointX(1 To n): ReDim Preserve pointY(1 To n)
 End Sub
 
-' Проверяет заход наружного ребра в открытую ячейку. Совпадение с ее
+' Проверяет заход переданных наружных рёбер и отверстий в открытую ячейку.
+' Малая замкнутая граница внутри ячейки тоже пересекает её внутренность. Совпадение с её
 ' стороной не требует дробления. Линии и дуги используют прежние пересечения.
 Friend Function MeshBoundaryCrossesCell(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal minX As Double, ByVal minY As Double, ByVal maxX As Double, ByVal maxY As Double) As Boolean

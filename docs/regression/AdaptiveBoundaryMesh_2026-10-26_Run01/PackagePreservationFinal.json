@@ -1,0 +1,28 @@
+{
+  "Status": "PASS_VBA_10_TEXTS_AND_TWO_HELP_ROW_HEIGHTS",
+  "Parts": 107,
+  "UnchangedParts": 104,
+  "ChangedParts": [
+    "xl/worksheets/sheet3.xml",
+    "xl/vbaProject.bin",
+    "xl/sharedStrings.xml"
+  ],
+  "HelpRows": [
+    {
+      "Sheet": "Справка",
+      "Row": 841,
+      "Before": 38.25,
+      "After": 25.5
+    },
+    {
+      "Sheet": "Справка",
+      "Row": 842,
+      "Before": 38.25,
+      "After": 25.5
+    }
+  ],
+  "DataResultsFormulasNamesListsPreserved": true,
+  "VBAIdenticalToDirectedAcceptedBook": true,
+  "DirectedAcceptedBookSHA256": "12D76D85671C237836AA821C32552DB9F2D131D186962ABC954F4CA8B9408E45",
+  "ReleaseSHA256": "53919E6CF11018B769191059E17977D60F3201D5857991FFE49E9326E1CC613A"
+}

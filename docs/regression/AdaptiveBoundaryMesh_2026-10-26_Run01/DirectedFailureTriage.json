@@ -1,0 +1,28 @@
+{
+  "Status": "CONFIRMED_TEST_FIXTURES_UPDATED_WITHOUT_RELAXING_TOLERANCES",
+  "Primary": "Directed02_No.txt",
+  "PrimarySHA256": "58E7E5EF2A209F222B6E1E5A05066C47B4F107337F6112BA15349B7C1F2B8F88",
+  "OriginalErrors": [
+    "FAIL: audit03.hollow.containedOpening.0.area; actual=158396.873474121; expected=158400.; absDiff=3.126525878906\r",
+    "FAIL: audit03.hollow.containedOpening.0.centroidX; actual=-0.506047401921; expected=-0.505050505051; absDiff=0.00099689687\r",
+    "FAIL: audit03.hollow.containedOpening.0.centroidY; actual=-0.506047401921; expected=-0.505050505051; absDiff=0.00099689687\r",
+    "FAIL: audit03.hollow.containedOpening.0.Ix; actual=2129070786.22981; expected=2129079595.9596; absDiff=8809.72978782654\r",
+    "FAIL: audit03.hollow.containedOpening.0.Iy; actual=2129070786.22981; expected=2129079595.9596; absDiff=8809.72978782654\r",
+    "FAIL: audit03.hollow.containedOpening.0.Ixy; actual=-4048379.21536583; expected=-4040404.04040404; absDiff=7975.17496178625\r",
+    "FAIL: audit03.hollow.containedOpening.1.area; actual=159198.436737061; expected=159200.; absDiff=1.563262939453\r",
+    "FAIL: audit03.hollow.containedOpening.1.centroidX; actual=-0.352302109597; expected=-0.35175879397; absDiff=0.000543315627\r",
+    "FAIL: audit03.hollow.containedOpening.1.centroidY; actual=-0.150951497064; expected=-0.150753768844; absDiff=0.00019772822\r",
+    "FAIL: audit03.hollow.containedOpening.1.Ix; actual=2132502153.92677; expected=2132503048.57621; absDiff=894.649444818497\r",
+    "FAIL: audit03.hollow.containedOpening.1.Iy; actual=2129362430.13594; expected=2129366968.1742; absDiff=4538.03826260567\r",
+    "FAIL: audit03.hollow.containedOpening.1.Ixy; actual=-1689949.18197411; expected=-1688442.21105528; absDiff=1506.97091883188\r",
+    "FAIL: audit03.hollow.containedOpening.2.area; actual=158396.873474121; expected=158400.; absDiff=3.126525878906\r",
+    "FAIL: audit03.hollow.containedOpening.2.Ix; actual=2133119165.44524; expected=2133120000.; absDiff=834.554762601852\r",
+    "FAIL: audit03.hollow.containedOpening.2.Iy; actual=2133119165.44524; expected=2133120000.; absDiff=834.554762601852\r",
+    "FAIL: conv.Ix.25.12; actual=339124552.408851; expected=366297131.748824; relDiff=0.074181796648\r"
+  ],
+  "OriginalFailureCount": 16,
+  "ContainedHoles": "Old exact 40/20 mm dimensions aligned to h/10; new 50/25 mm dimensions and dyadic offsets align to h/16. Still includes wholly contained offset openings and an opening crossing four base cells. Exact analytical A/centroid/Ix/Iy/Ixy tolerances retained.",
+  "Convergence": "Independent uniform raster reproduces old level-1 area=88750 and Ix=366297131.748829, and finer area=86562.5, Ix=339124552.408865. Existing step-convergence test now explicitly uses configured default depth=2; same 3% area/5% inertia bounds retained; depth-1 independent numerical reference added.",
+  "ProductionChangeAfterBenchmark": false,
+  "BaselineUnchanged": true
+}

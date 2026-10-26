@@ -1,0 +1,90 @@
+{
+  "Status": "NATIVE_LEVEL1_REPRODUCED_BY_INDEPENDENT_RASTER",
+  "Shape": "Rounded rectangle 400x220 R35",
+  "Records": [
+    {
+      "Level": 1,
+      "Base": 50.0,
+      "Area": 88750.0,
+      "CentroidX": 0.0,
+      "CentroidY": 1.091549295774648,
+      "Ixc": 366946339.4953058,
+      "Iyc": 1155989583.3333342
+    },
+    {
+      "Level": 1,
+      "Base": 25.0,
+      "Area": 88750.0,
+      "CentroidX": 0.0,
+      "CentroidY": 1.795774647887324,
+      "Ixc": 366297131.74882877,
+      "Iyc": 1154524739.5833373
+    },
+    {
+      "Level": 1,
+      "Base": 12.5,
+      "Area": 86562.5,
+      "CentroidX": 0.0,
+      "CentroidY": -0.625,
+      "Ixc": 339124552.40886515,
+      "Iyc": 1131827799.4791896
+    },
+    {
+      "Level": 2,
+      "Base": 50.0,
+      "Area": 88750.0,
+      "CentroidX": 0.0,
+      "CentroidY": 1.795774647887324,
+      "Ixc": 366297131.74882877,
+      "Iyc": 1154524739.5833373
+    },
+    {
+      "Level": 2,
+      "Base": 25.0,
+      "Area": 86562.5,
+      "CentroidX": 0.0,
+      "CentroidY": -0.625,
+      "Ixc": 339124552.40886515,
+      "Iyc": 1131827799.4791896
+    },
+    {
+      "Level": 2,
+      "Base": 12.5,
+      "Area": 86523.4375,
+      "CentroidX": 0.0,
+      "CentroidY": -0.5368227990970654,
+      "Ixc": 338747241.8935511,
+      "Iyc": 1130444463.09417
+    },
+    {
+      "Level": 4,
+      "Base": 50.0,
+      "Area": 86523.4375,
+      "CentroidX": 0.0,
+      "CentroidY": -0.5368227990970654,
+      "Ixc": 338747241.8935511,
+      "Iyc": 1130444463.09417
+    },
+    {
+      "Level": 4,
+      "Base": 25.0,
+      "Area": 87050.78125,
+      "CentroidX": 0.0,
+      "CentroidY": 0.12206921696208212,
+      "Ixc": 345148147.76370096,
+      "Iyc": 1135351355.870921
+    },
+    {
+      "Level": 4,
+      "Base": 12.5,
+      "Area": 87055.6640625,
+      "CentroidX": 0.0,
+      "CentroidY": 0.13068157916877,
+      "Ixc": 345199966.14363337,
+      "Iyc": 1135522446.0377347
+    }
+  ],
+  "AnalyticalArea": 86948.4510006475,
+  "OldNative": "Directed02_No.txt",
+  "ThresholdsNotRelaxed": true
+}
