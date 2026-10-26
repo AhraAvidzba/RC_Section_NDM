@@ -1,5 +1,5 @@
 {
-  "Status": "ALL_CODE_TEST_NATIVE_GATES_PASS_PUBLICATION_PENDING",
+  "Status": "COMPLETE_ALL_EXPLICIT_REQUIREMENTS_PROVEN_PUBLISHED",
   "GoalActive": true,
   "OriginalFullPassSHA": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
   "NewCandidateSHA": "4AC5C3512A167F5E421E8CFDE861A3642CD23AEE22C3F4E3C64CC6EEB2318966",
@@ -23,7 +23,7 @@
         "RunCapacitySolverTests",
         "RunCrackWidthTests"
       ],
-      "State": "PROVEN_BY_PRIMARY_AND_SOURCE"
+      "State": "PROVEN_COMPLETE"
     },
     {
       "ID": "2",
@@ -42,7 +42,7 @@
         "RunExplicitInputOutcomeTests",
         "private blank-message mutation"
       ],
-      "State": "PROVEN_BY_PRIMARY_AND_SOURCE"
+      "State": "PROVEN_COMPLETE"
     },
     {
       "ID": "3",
@@ -55,7 +55,7 @@
         "RunAudit03SnapshotMetadataTests (all 5 states, relocated anchor, delete each key, both consumers, geometry and recovery)",
         "RunCalculationSnapshotTests (417, legacy file formats)"
       ],
-      "State": "PROVEN_BY_PRIMARY_AND_SOURCE"
+      "State": "PROVEN_COMPLETE"
     },
     {
       "ID": "LOCALE",
@@ -65,12 +65,12 @@
         "TestActualVbaLocale CStr/Format/native CDbl",
         "InternationalBefore.clixml and Restoration.json"
       ],
-      "State": "PROVEN_BY_PRIMARY_AND_SOURCE"
+      "State": "PROVEN_COMPLETE"
     },
     {
       "ID": "RELEASE",
       "Requirement": "No new VBA components/math/search order/schema changes; source/build sync; exact native book/178 components/AllCode; user data unchanged; commit/push verified.",
-      "State": "NATIVE_PACKAGE_PROVEN_GIT_PUBLICATION_PENDING"
+      "State": "PROVEN_COMPLETE"
     }
   ],
   "FinalCandidateSHA256": "BE2D741603E2CF17B55A86AE078FD99C34B16DD9D85DEDE3C7C02D6AA00C95AE",
@@ -80,5 +80,35 @@
   "OriginalSettingsRestoredExactly": true,
   "OwnProcessesClosed": 32,
   "OriginalFullRunPreserved": true,
-  "NewLongFullRunStarted": false
+  "NewLongFullRunStarted": false,
+  "ImplementationCommit": "4485f73f45b219c06e9f424201384fcc8477cd62",
+  "RemoteVerified": true,
+  "MainSourceEqualityPassed": true,
+  "EvidenceByRequirement": {
+    "1": [
+      "Confirmation.json",
+      "StaticContractReview.json",
+      "Acceptance.json SelectedNoYesProfiles and BlankMessageMutation"
+    ],
+    "2": [
+      "StaticContractReview.json",
+      "Acceptance.json explicit input/duration tests, blank-message mutation, actual locale row diagnostics"
+    ],
+    "3": [
+      "Acceptance.json 1745 metadata assertions and 417 snapshot checks; all five states, both consumers, deletion, geometry-only, File/legacy round trips"
+    ],
+    "LOCALE": [
+      "WindowsLocalesAcceptance.json 52 profile macros",
+      "Acceptance.json 32 exact final-candidate macros, CStr/Format/effective Excel decimal",
+      "Logs.zip WindowsLocales04/Restoration.json exact original keys/values/kinds"
+    ],
+    "RELEASE": [
+      "PackagePreservation.json 106 parts",
+      "OutputFileGate.json",
+      "SourceEquality.json",
+      "SourceEquality_Main.json",
+      "ProcessClosure.json 32 closed identities",
+      "PublicationVerification.json remote commit and protected foreign SHA"
+    ]
+  }
 }

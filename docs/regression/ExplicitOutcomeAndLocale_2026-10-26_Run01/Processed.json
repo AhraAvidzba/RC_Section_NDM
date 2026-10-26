@@ -1,5 +1,5 @@
 {
-  "Status": "PROCESSED_DIRECTED_TESTS_NATIVE_PASS",
+  "Status": "COMPLETE_PUBLISHED_DIRECTED_GOAL",
   "SourceCommitBeforeChanges": "e5fa63d339232c2d6e9830157429d27ef571cdee",
   "WorkbookSHA256": "567FFFCE85A63C777DD1C36C58AE2E8B8CF3F0103184CFF39794942DD61D2F5F",
   "AllCodeSHA256": "DBBEBADB8A4CBC9380923EF941EF1C6EEB0186B73982E0997C1710237F0EC9EE",
@@ -8,5 +8,9 @@
   "NdmChanged": false,
   "NewFullRunStarted": false,
   "MathAlgorithmsUnitsSearchOrderRecipesAndSnapshotSchemaUnchanged": true,
-  "UserDataAndFormattingPreserved": true
+  "UserDataAndFormattingPreserved": true,
+  "ImplementationCommit": "4485f73f45b219c06e9f424201384fcc8477cd62",
+  "RemoteVerified": true,
+  "ActualBothWindowsVbaLocalesTested": true,
+  "OriginalRegionalSettingsRestored": true
 }

@@ -1,0 +1,20 @@
+{
+  "Status": "VERIFIED_IMPLEMENTATION_PUBLISHED",
+  "ImplementationCommit": "4485f73f45b219c06e9f424201384fcc8477cd62",
+  "RemoteBranch": "codex/linked-rebar-row-offsets",
+  "VerifiedRemoteHEAD": "4485f73f45b219c06e9f424201384fcc8477cd62",
+  "MainWorkbookSHA256": "567FFFCE85A63C777DD1C36C58AE2E8B8CF3F0103184CFF39794942DD61D2F5F",
+  "MainAllCodeSHA256": "DBBEBADB8A4CBC9380923EF941EF1C6EEB0186B73982E0997C1710237F0EC9EE",
+  "MainSourceEquality": "172 source + 6 document modules PASS",
+  "ForeignReportSHA256": "1607509323BAB20C9AE8E70886F4AE9F037EFC9881C8493EDD63B5750C162732",
+  "ForeignReportPreserved": true,
+  "ExcludedFromCommits": [
+    "outputs/",
+    "norms/",
+    "reference/",
+    "control_examples/",
+    "workbook/output/RC_Section_NDM_execution_report.txt"
+  ],
+  "NewFullRunStarted": false,
+  "NdmChanged": false
+}
