@@ -107,8 +107,9 @@ Private Function ExecuteLoadPaths(ByVal request As CLimitSearchRequest) As CLimi
     Dim diagnosticHistory As String, attemptDiagnostics As String
     Dim result As CLimitSearchResult
     Dim meta As CResultMeta
-    Dim i As Long
+    Dim i As Long, hadPreviousAttempts As Boolean
     For i = LBound(paths) To UBound(paths)
+        hadPreviousAttempts = (i > LBound(paths)) ' Факт пройденных путей устанавливает владелец цикла независимо от журналов.
         request.SelectLoadPath CStr(paths(i))
         request.Problem.BeginLoadPath request
         If Not request.SelectedLoadPath.HasScaledLoad Then
@@ -148,8 +149,8 @@ Private Function ExecuteLoadPaths(ByVal request As CLimitSearchRequest) As CLimi
             End If
         End If
     Next i
-    request.Problem.FinishLoadPath request, history
-    result.AddLoadPathHistory history, request.SelectedLoadPath.DisplayName, diagnosticHistory
+    request.Problem.FinishLoadPath request, history, hadPreviousAttempts
+    result.AddLoadPathHistory history, request.SelectedLoadPath.DisplayName, hadPreviousAttempts, diagnosticHistory
     Set ExecuteLoadPaths = result
 End Function
 

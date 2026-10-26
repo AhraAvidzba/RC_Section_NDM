@@ -276,7 +276,7 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' история попыток хранится в настоящем CLimitSearchResult.
 Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
-        ByVal previousPathComments As String)
+        ByVal previousPathComments As String, ByVal hadPreviousAttempts As Boolean)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

@@ -1,0 +1,19 @@
+{
+  "CCrackFormationCalculator": "src/Crack/CCrackFormationCalculator.cls",
+  "CLoadCombinationReader": "src/Excel/CLoadCombinationReader.cls",
+  "CSectionPlotDataReader": "src/Excel/CSectionPlotDataReader.cls",
+  "CSystemSettingsReader": "src/Excel/CSystemSettingsReader.cls",
+  "modAutoCADStressExport": "src/Excel/modAutoCADStressExport.bas",
+  "modWorkbookCalculation": "src/Excel/modWorkbookCalculation.bas",
+  "ILimitSearchProblem": "src/Interfaces/ILimitSearchProblem.cls",
+  "CCapacityLimitSearchProblem": "src/Solver/CCapacityLimitSearchProblem.cls",
+  "CCrackLimitSearchProblem": "src/Solver/CCrackLimitSearchProblem.cls",
+  "CLimitSearchCoordinator": "src/Solver/CLimitSearchCoordinator.cls",
+  "CLimitSearchResult": "src/Solver/CLimitSearchResult.cls",
+  "CTestLimitSearchProblem": "tests/CTestLimitSearchProblem.cls",
+  "modTestAudit02Api": "tests/modTestAudit02Api.bas",
+  "modTestConfiguration": "tests/modTestConfiguration.bas",
+  "modTestPlotConfig": "tests/modTestPlotConfig.bas",
+  "modTestBatchCalculation": "tests/modTestBatchCalculation.bas",
+  "modTestProfileConfig": "tests/modTestProfileConfig.bas"
+}

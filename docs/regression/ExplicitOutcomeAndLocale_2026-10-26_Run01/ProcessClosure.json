@@ -1,0 +1,236 @@
+﻿{
+    "Status":  "ALL_OWN_IDENTITIES_CLOSED",
+    "CheckedUTC":  "2026-10-26T07:37:53.6734762+00:00",
+    "OwnIdentityCount":  32,
+    "Checks":  [
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  12988,
+                       "UTCStartTicks":  "639285943980962378",
+                       "Source":  "CandidateOwnership.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  10428,
+                       "UTCStartTicks":  "639285969199881555",
+                       "Source":  "NativeVerification.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  15408,
+                       "UTCStartTicks":  "639285956325037732",
+                       "Source":  "Profile01_No_Run.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  19200,
+                       "UTCStartTicks":  "639285960369619368",
+                       "Source":  "Profile01_Yes_Run.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  7752,
+                       "UTCStartTicks":  "639285965301651853",
+                       "Source":  "Blank01_No_Run.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  6940,
+                       "UTCStartTicks":  "639285965412735488",
+                       "Source":  "Blank01_Yes_Run.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  20088,
+                       "UTCStartTicks":  "639285964440708858",
+                       "Source":  "CandidateOwnership.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  15020,
+                       "UTCStartTicks":  "639285944723014011",
+                       "Source":  "CandidateOwnership.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  25104,
+                       "UTCStartTicks":  "639285947462126983",
+                       "Source":  "CandidateOwnership.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  21564,
+                       "UTCStartTicks":  "639285955615354095",
+                       "Source":  "CandidateOwnership.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  25284,
+                       "UTCStartTicks":  "639285945866853017",
+                       "Source":  "en-US_No.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  20880,
+                       "UTCStartTicks":  "639285945853945775",
+                       "Source":  "Owner.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  21516,
+                       "UTCStartTicks":  "639285945858411543",
+                       "Source":  "Owner.json guard",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  1100,
+                       "UTCStartTicks":  "639285946387231168",
+                       "Source":  "en-US_No.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  18112,
+                       "UTCStartTicks":  "639285946374809630",
+                       "Source":  "Owner.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  22756,
+                       "UTCStartTicks":  "639285946378881512",
+                       "Source":  "Owner.json guard",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  15608,
+                       "UTCStartTicks":  "639285947806635027",
+                       "Source":  "en-US_No.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  24052,
+                       "UTCStartTicks":  "639285949609646395",
+                       "Source":  "en-US_Yes.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  22108,
+                       "UTCStartTicks":  "639285947793480894",
+                       "Source":  "Owner.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  21360,
+                       "UTCStartTicks":  "639285947797730744",
+                       "Source":  "Owner.json guard",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  25452,
+                       "UTCStartTicks":  "639285951287445510",
+                       "Source":  "ru-RU_No.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  23664,
+                       "UTCStartTicks":  "639285953099977285",
+                       "Source":  "ru-RU_Yes.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  25300,
+                       "UTCStartTicks":  "639285966319074767",
+                       "Source":  "en-US_No.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  21232,
+                       "UTCStartTicks":  "639285966785658196",
+                       "Source":  "en-US_Yes.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  4260,
+                       "UTCStartTicks":  "639285966305374793",
+                       "Source":  "Owner.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  25476,
+                       "UTCStartTicks":  "639285966309811181",
+                       "Source":  "Owner.json guard",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  20556,
+                       "UTCStartTicks":  "639285967283423047",
+                       "Source":  "ru-RU_No.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  5680,
+                       "UTCStartTicks":  "639285967786804959",
+                       "Source":  "ru-RU_Yes.json",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  25556,
+                       "UTCStartTicks":  "639285956342047937",
+                       "Source":  "Profile01_No.txt",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  3968,
+                       "UTCStartTicks":  "639285960386348312",
+                       "Source":  "Profile01_Yes.txt",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  23528,
+                       "UTCStartTicks":  "639285965319267288",
+                       "Source":  "Blank01_No.txt",
+                       "Name":  ""
+                   },
+                   {
+                       "ExactIdentityLive":  false,
+                       "PID":  5960,
+                       "UTCStartTicks":  "639285965429152156",
+                       "Source":  "Blank01_Yes.txt",
+                       "Name":  ""
+                   }
+               ],
+    "UserExcelPID":  3712,
+    "UserExcelUTCStartTicks":  "639285451789199985",
+    "UserExcelStoppedByAgent":  false,
+    "FreePhysicalGiB":  18.940376281738281,
+    "FreeCommitGiB":  28.768924713134766
+}

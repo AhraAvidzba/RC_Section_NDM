@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modAutoCADStressExport"
+Attribute VB_Name = "modAutoCADStressExport"
 Option Explicit
 
 ' ==========================================================================
@@ -394,6 +394,7 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
     Dim anchor As Object: Set anchor = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim foundState As Boolean
+    Dim stateFields As Object: Set stateFields = CreateObject("Scripting.Dictionary")
     Dim stateStatus As String
     Dim policy As CResultStatusPolicy
     Dim rowIndex As Long
@@ -430,6 +431,7 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
             key = LCase$(Trim$(SafeText(data(rowIndex, colParameter))))
             prefix = "state." & LCase$(stateType) & "."
             If Left$(key, Len(prefix)) = prefix Then
+                stateFields(key) = True
                 Select Case Mid$(key, Len(prefix) + 1)
                 Case "epsilon0"
                     epsilon0 = ReadExportSnapshotNumber(data, anchor, rowIndex, colValue)
@@ -448,6 +450,14 @@ Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal 
             End If
         End If
     Next rowIndex
+
+    Dim field As Variant, requiredKey As String
+    For Each field In Array("Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
+        requiredKey = "State." & stateType & "." & CStr(field)
+        If Not stateFields.Exists(LCase$(requiredKey)) Then Err.Raise vbObjectError + 4361, "ReadSectionPropertiesForCombination", _
+            "В сохраненном снимке Results для сочетания " & combinationID & " отсутствует обязательное поле " & requiredKey & _
+            " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет/импорт для восстановления снимка."
+    Next field
 
     If extensionUsed Or stateStatus = policy.Fail Then
         stateWarningText = EXTENSION_WARNING_TEXT

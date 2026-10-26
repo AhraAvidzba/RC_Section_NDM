@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -59,41 +59,41 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     Dim profileId As String
     Dim loadPathText As String
     Dim comment As String
-    Dim errorText As String
+    Dim errorText As String, hasError As Boolean
     Dim pathLocation As String
     pathLocation = "LoadPath"
     If UBound(data, 2) >= 6 Then pathLocation = CellLocation(source, rowIndex, 6, "LoadPath")
-    combinationID = ReadCellText(data(rowIndex, 1), CellLocation(source, rowIndex, 1, "CombinationID"), errorText)
+    combinationID = ReadCellText(data(rowIndex, 1), CellLocation(source, rowIndex, 1, "CombinationID"), errorText, hasError)
     Dim nValue As Double, mxValue As Double, myValue As Double
-    nValue = ReadOptionalLoadDouble(data(rowIndex, 2), CellLocation(source, rowIndex, 2, "N"), errorText)
-    mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText)
-    myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText)
-    If Len(errorText) = 0 Then ' Точно нулевой LC не использует профиль, путь и комментарий; ненулевые малые нагрузки сохраняются.
-        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, source, rowIndex
-        If Len(errorText) = 0 Then
+    nValue = ReadOptionalLoadDouble(data(rowIndex, 2), CellLocation(source, rowIndex, 2, "N"), errorText, hasError)
+    mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText, hasError)
+    myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText, hasError)
+    If Not hasError Then ' Точно нулевой LC не использует профиль, путь и комментарий; ненулевые малые нагрузки сохраняются.
+        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, hasError, source, rowIndex
+        If Not hasError Then
             If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub
         End If
     End If
-    profileId = ReadCellText(data(rowIndex, 5), CellLocation(source, rowIndex, 5, "ProfileId"), errorText)
+    profileId = ReadCellText(data(rowIndex, 5), CellLocation(source, rowIndex, 5, "ProfileId"), errorText, hasError)
     If UBound(data, 2) >= 7 Then
-        loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText)
-        comment = ReadCellText(data(rowIndex, 7), CellLocation(source, rowIndex, 7, "Комментарий"), errorText)
+        loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText, hasError)
+        comment = ReadCellText(data(rowIndex, 7), CellLocation(source, rowIndex, 7, "Комментарий"), errorText, hasError)
     ElseIf UBound(data, 2) = 6 Then
         If StrComp(CStr(data(1, 6)), "LoadPath", vbTextCompare) = 0 Then
-            loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText)
+            loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText, hasError)
         Else
-            comment = ReadCellText(data(rowIndex, 6), CellLocation(source, rowIndex, 6, "Комментарий"), errorText)
+            comment = ReadCellText(data(rowIndex, 6), CellLocation(source, rowIndex, 6, "Комментарий"), errorText, hasError)
         End If
     End If
     Dim pathDescriptor As CLoadPathDescriptor
     Set pathDescriptor = New CLoadPathDescriptor
     If Len(pathDescriptor.NormalizeKey(loadPathText)) = 0 Then _
-        AppendError errorText, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy"
+        AppendError errorText, hasError, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy"
 
-    If Len(Trim$(combinationID)) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 1, "CombinationID") & " не заполнен"
-    If Len(profileId) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 5, "ProfileId") & " не заполнен"
+    If Len(Trim$(combinationID)) = 0 Then AppendError errorText, hasError, CellLocation(source, rowIndex, 1, "CombinationID") & " не заполнен"
+    If Len(profileId) = 0 Then AppendError errorText, hasError, CellLocation(source, rowIndex, 5, "ProfileId") & " не заполнен"
 
-    If Len(errorText) > 0 Then
+    If hasError Then
         batch.AddInvalidCombination combinationID, profileId, comment, errorText, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
     Else
         batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
@@ -102,23 +102,23 @@ End Sub
 
 ' Читает нагрузку, где пустая ячейка означает 0.
 ' Это позволяет задавать одноосный изгиб как N + Mx при пустом My.
-Private Function ReadOptionalLoadDouble(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String) As Double
+Private Function ReadOptionalLoadDouble(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String, ByRef hasError As Boolean) As Double
     Dim parsed As Double
     If IsError(value) Then
-        AppendError errorText, fieldName & " содержит ошибку формулы Excel"
+        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel"
     ElseIf IsNull(value) Then
-        AppendError errorText, fieldName & " содержит недопустимое значение Null"
+        AppendError errorText, hasError, fieldName & " содержит недопустимое значение Null"
     ElseIf IsBlankCell(value) Then
         Exit Function
     ElseIf Not TryReadStrictDouble(value, parsed) Then
-        AppendError errorText, fieldName & " должен быть числом без разделителей разрядов"
+        AppendError errorText, hasError, fieldName & " должен быть числом без разделителей разрядов"
     Else
         On Error GoTo ConversionFailed
         ReadOptionalLoadDouble = parsed
     End If
     Exit Function
 ConversionFailed:
-    AppendError errorText, fieldName & " не помещается в допустимый числовой диапазон"
+    AppendError errorText, hasError, fieldName & " не помещается в допустимый числовой диапазон"
 End Function
 
 ' Отличает пустую ячейку/пробелы от нуля, ошибки Excel и Null.
@@ -133,11 +133,11 @@ End Function
 
 ' Читает текстовые поля строки, сохраняя ошибки формул как ошибки LC.
 ' Null недопустим, тогда как пустой optional-комментарий разрешен.
-Private Function ReadCellText(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String) As String
+Private Function ReadCellText(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String, ByRef hasError As Boolean) As String
     If IsError(value) Then
-        AppendError errorText, fieldName & " содержит ошибку формулы Excel"
+        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel"
     ElseIf IsNull(value) Then
-        AppendError errorText, fieldName & " содержит недопустимое значение Null"
+        AppendError errorText, hasError, fieldName & " содержит недопустимое значение Null"
     Else
         ReadCellText = Trim$(CStr(value))
     End If
@@ -146,7 +146,7 @@ End Function
 ' Переводит успешно прочитанные нагрузки через единый адаптер единиц.
 ' Переполнение конкретной компоненты является ошибкой строки, не всего пакета.
 Private Sub ConvertLoadsToInternal(ByVal units As CUnitSystem, ByRef nValue As Double, _
-        ByRef mxValue As Double, ByRef myValue As Double, ByRef errorText As String, _
+        ByRef mxValue As Double, ByRef myValue As Double, ByRef errorText As String, ByRef hasError As Boolean, _
         ByVal source As Object, ByVal rowIndex As Long)
     If units Is Nothing Then Exit Sub
     On Error GoTo ConversionFailed
@@ -156,7 +156,7 @@ Private Sub ConvertLoadsToInternal(ByVal units As CUnitSystem, ByRef nValue As D
     fieldName = CellLocation(source, rowIndex, 4, "My"): myValue = units.InputMomentMyToInternal(myValue)
     Exit Sub
 ConversionFailed:
-    AppendError errorText, fieldName & " не может быть переведено во внутренние единицы: числовой диапазон превышен"
+    AppendError errorText, hasError, fieldName & " не может быть переведено во внутренние единицы: числовой диапазон превышен"
 End Sub
 
 ' Передаёт адрес прочитанной строки вместе с сочетанием, чтобы сообщения
@@ -174,7 +174,8 @@ Private Function CellLocation(ByVal source As Object, ByVal rowIndex As Long, _
 End Function
 
 ' Добавляет текст ошибки в одну строку через точку с запятой.
-Private Sub AppendError(ByRef errorText As String, ByVal item As String)
+Private Sub AppendError(ByRef errorText As String, ByRef hasError As Boolean, ByVal item As String)
+    hasError = True ' Факт ошибки сохраняется независимо от оформления или наличия пояснения.
     If Len(errorText) > 0 Then errorText = errorText & "; "
     errorText = errorText & item
 End Sub

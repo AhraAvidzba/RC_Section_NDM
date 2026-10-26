@@ -65,7 +65,7 @@ End Sub
 
 ' Сохраняет выбранный путь и причины прежних попыток в результате задачи.
 ' При записи на лист пояснения не собираются заново и не определяют код статуса.
-Public Sub FinishLoadPath(ByVal request As CLimitSearchRequest, ByVal previousPathComments As String)
+Public Sub FinishLoadPath(ByVal request As CLimitSearchRequest, ByVal previousPathComments As String, ByVal hadPreviousAttempts As Boolean)
 End Sub
 
 ' Готовит материалы, критерий и рабочие данные задачи перед LoadMultiplier.

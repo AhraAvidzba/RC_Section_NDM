@@ -114,20 +114,20 @@ End Function
 ' Сохраняет причины прежних неудачных путей и их журналы в общем результате.
 ' При успехе после смены пути добавляет предупреждение. Фактическая причина
 ' последней попытки сохраняется; текст не превращает отсутствие точки в успех.
-' Ранее накопленные сообщения не повторяются.
+' Ранее накопленные сообщения не повторяются. Статус определяет факт предыдущих попыток, а не текст.
 Public Sub AddLoadPathHistory(ByVal history As String, ByVal pathDisplayName As String, _
-        Optional ByVal diagnosticHistory As String = vbNullString)
+        ByVal hadPreviousAttempts As Boolean, Optional ByVal diagnosticHistory As String = vbNullString)
     If Len(diagnosticHistory) > 0 Then
         If StrComp(Left$(mDiagnosticLog, Len(diagnosticHistory)), diagnosticHistory, vbBinaryCompare) <> 0 Then _
             mDiagnosticLog = diagnosticHistory & vbCrLf & mDiagnosticLog
     End If
-    If Len(Trim$(history)) = 0 Then Exit Sub
-    Dim status As EResultInternalStatus, sourceKeys As String
+    Dim status As EResultInternalStatus, sourceKeys As String, comment As String
     status = mMeta.InternalStatus
     sourceKeys = mMeta.SourceKeys
-    If status = rsSuccess Then status = rsSuccessWithWarning
-    mMeta.SetResult status, mMeta.ResultCode, mMeta.ResultKind, _
-        Trim$(history) & " Итоговый путь " & pathDisplayName & ": " & mMeta.ResultComment, _
+    If hadPreviousAttempts And status = rsSuccess Then status = rsSuccessWithWarning
+    comment = mMeta.ResultComment
+    If Len(Trim$(history)) > 0 Then comment = Trim$(history) & " Итоговый путь " & pathDisplayName & ": " & comment
+    mMeta.SetResult status, mMeta.ResultCode, mMeta.ResultKind, comment, _
         mMeta.DiagnosticDetails, mMeta.Applies, mMeta.Calculated
     mMeta.SourceKeys = sourceKeys
 End Sub

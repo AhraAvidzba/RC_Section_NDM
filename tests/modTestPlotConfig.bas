@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestPlotConfig"
+Attribute VB_Name = "modTestPlotConfig"
 Option Explicit
 
 ' ==========================================================================
@@ -1901,6 +1901,26 @@ Private Sub TestSnapshotMetadataAdapterParity(ByRef stats As TUiTestStats, ByVal
             TestAssertTrue stats, prefix & ".statusWarning." & CStr(i), (Len(Mid$(export, InStr(export, "|") + 1)) > 0) = _
                 (CStr(canonical(i)) = "FAIL" Or CStr(canonical(i)) = "NumFail")
         Next i
+        For j = 8 To 12
+            field = CStr(anchor.Cells(j, 2).Value2)
+            anchor.Cells(j, 2).Value2 = "Removed." & field
+            TestAudit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+            TestAssertTrue stats, prefix & ".missing.plot." & CStr(j), code <> 0 And InStr(reason, field) > 0 And _
+                InStr(reason, "rngNDMSectionProperties") > 0 And reader.Count = 0
+            On Error Resume Next
+            Err.Clear
+            export = TestReadStateMetadataForTests(fixture, "PLOT", CStr(state))
+            code = Err.Number: reason = Err.Description
+            Err.Clear
+            On Error GoTo 0
+            TestAssertTrue stats, prefix & ".missing.export." & CStr(j), code <> 0 And InStr(reason, field) > 0 And _
+                InStr(reason, "rngNDMSectionProperties") > 0
+            TestAudit03ReadLifecycleLoad reader, fixture, settings, 1, code, reason
+            TestAssertTrue stats, prefix & ".missing.geometry." & CStr(j), code = 0 And reader.Count = 2
+            anchor.Cells(j, 2).Value2 = field
+            reader.LoadFromWorkbook fixture, settings
+            TestAssertTrue stats, prefix & ".missing.restored." & CStr(j), reader.Count = 2
+        Next j
         For j = 11 To 12
             Set cell = anchor.Cells(j, 3)
             For Each value In Array(Empty, Null, CVErr(2015), "", "TODO", "INVALID", "1,0", "2")

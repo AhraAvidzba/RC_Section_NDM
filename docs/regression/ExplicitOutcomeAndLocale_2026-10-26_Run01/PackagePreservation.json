@@ -1,0 +1,544 @@
+{
+  "Status": "PASS_PACKAGE_ONLY_VBA_CHANGED",
+  "BeforeSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "CandidateSHA256": "BE2D741603E2CF17B55A86AE078FD99C34B16DD9D85DEDE3C7C02D6AA00C95AE",
+  "PublishedSHA256": "567FFFCE85A63C777DD1C36C58AE2E8B8CF3F0103184CFF39794942DD61D2F5F",
+  "PreservedNonVbaParts": 106,
+  "Parts": [
+    {
+      "Part": "[Content_Types].xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "_rels/.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/_rels/workbook.xml.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/workbook.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/worksheets/sheet4.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image56.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image55.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image54.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image53.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image57.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image58.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image59.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image60.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image61.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image62.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image52.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image51.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image50.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/worksheets/sheet1.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image42.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image43.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image44.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image45.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image46.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image47.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image48.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image49.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image63.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image64.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image65.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/worksheets/_rels/sheet1.xml.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/worksheets/sheet2.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/worksheets/sheet3.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/vbaProject.bin",
+      "EqualOriginal": false,
+      "VBA": true
+    },
+    {
+      "Part": "xl/worksheets/_rels/sheet2.xml.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/worksheets/_rels/sheet3.xml.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/worksheets/_rels/sheet4.xml.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/drawings/_rels/drawing1.xml.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/drawings/_rels/drawing2.xml.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/drawings/_rels/drawing3.xml.rels",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/charts/chart3.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/drawings/drawing3.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image75.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image66.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image67.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image68.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image69.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image70.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image71.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image72.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image73.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image74.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image40.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image41.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image38.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image5.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image6.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image7.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image8.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image9.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image10.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image11.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image39.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image13.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image4.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image3.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image2.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/worksheets/sheet5.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/theme/theme1.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/styles.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/sharedStrings.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/drawings/drawing1.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/charts/chart1.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/charts/chart2.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/drawings/drawing2.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image1.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image14.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image12.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image16.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image15.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image30.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image31.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image32.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image33.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image34.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image35.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image36.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image37.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image28.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image29.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image17.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image22.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image21.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image20.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image19.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image18.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image27.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image23.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image24.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image26.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/media/image25.png",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "docProps/app.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/printerSettings/printerSettings3.bin",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/calcChain.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/printerSettings/printerSettings1.bin",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "docProps/core.xml",
+      "EqualOriginal": true,
+      "VBA": false
+    },
+    {
+      "Part": "xl/printerSettings/printerSettings2.bin",
+      "EqualOriginal": true,
+      "VBA": false
+    }
+  ]
+}

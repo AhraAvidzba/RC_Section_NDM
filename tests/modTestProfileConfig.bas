@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestProfileConfig"
+Attribute VB_Name = "modTestProfileConfig"
 Option Explicit
 
 ' ==========================================================================
@@ -744,7 +744,7 @@ End Sub
 ' приложения и адреса после перемещения имени. Формулы/Names восстанавливаются.
 Public Function RunAudit03DurationConfigTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0, Optional ByVal matchingOnly As Boolean = False, _
-        Optional ByVal localeOnly As Boolean = False) As String
+        Optional ByVal localeOnly As Boolean = False, Optional ByVal explicitOutcomeOnly As Boolean = False) As String
     Dim stats As TProfileStats, names As Variant, saved(0 To 5) As Variant, i As Long
     Dim profiles As Object, system As Object, loads As Object, duration As Object
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
@@ -780,6 +780,8 @@ Public Function RunAudit03DurationConfigTests(Optional ByRef passed As Long = 0,
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     TestBuildDurationFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
+    TestDurationErrorTextOutcome stats, loads, duration, section, provider, settings, units
+    If explicitOutcomeOnly Then GoTo Restore
     If localeOnly Then
         TestDurationInvalidRows stats, profiles, loads, duration, section, provider, settings, units, 1
         TestDurationLocaleValid stats, loads, duration, section, provider, settings, units
@@ -1928,3 +1930,25 @@ Cleanup:
     Application.ThousandsSeparator = oldThousands: Application.UseSystemSeparators = oldUse
     On Error GoTo 0
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет исход настоящего duration-reader и batch независимо от текста
+' отдельной ошибки; valid/blank строки сохраняют прежние правила.
+Private Sub TestDurationErrorTextOutcome(ByRef stats As TProfileStats, ByVal loads As Object, ByVal duration As Object, _
+        ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim bad As Variant, data As Variant, batch As CBatchSectionCalculator
+    For Each bad In Array(CVErr(2015), "not a number", "1 2")
+        TestPrepareDurationLoads loads, duration, 1
+        data = duration.Value2: data(2, 2) = bad: duration.Value2 = data
+        Set batch = TestExecuteFixture(section, provider, settings, units, True)
+        TestCheck stats, "explicitInput.durationTypedInvalid", batch.ResultAt(1).StabilityMeta.InternalStatus = rsInvalidInput
+        TestCheck stats, "explicitInput.durationNoZeroFallback", Not batch.ResultAt(1).StabilityMeta.Calculated
+    Next bad
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Короткая независимая проверка машинного исхода чтения дополнительных нагрузок.
+Public Function RunExplicitDurationOutcomeTests() As String
+    RunExplicitDurationOutcomeTests = RunAudit03DurationConfigTests(explicitOutcomeOnly:=True)
+End Function

@@ -1,0 +1,530 @@
+{
+  "Passed": true,
+  "EarlierRealLocaleCandidateSHA256": "4AC5C3512A167F5E421E8CFDE861A3642CD23AEE22C3F4E3C64CC6EEB2318966",
+  "FinalCandidateSHA256": "BE2D741603E2CF17B55A86AE078FD99C34B16DD9D85DEDE3C7C02D6AA00C95AE",
+  "Normalization": "VBE identifier case and line endings only; exact string literals/comments",
+  "Components": [
+    {
+      "Component": "CBatchSectionCalculator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCalculationProfile",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCalculationProfileCatalog",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCombinationResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CDirectStateResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionStateResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStateProvider",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStateRepository",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStateRequest",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStrengthResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLoadPathDescriptor",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLoadPathMath",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLoadPathVector",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CMomentZeroFilter",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CResultMeta",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CResultStatusPolicy",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionLoadState",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modCalculationPurpose",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modGeometryPrimitives",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modGeometryTypes",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modResultStatus",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modSectionRecipeApiGuide",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modSectionRecipeTypes",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modSolverWorkStats",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCrackFormationCalculator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCrackFormationResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCrackResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCrackWidthResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLongitudinalCrackCalculator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLongitudinalCrackResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSP35CrackData",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CAutoCADContourReader",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CAutoCADSectionModelImporter",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CBatchResultWriter",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CBinarySnapshotFile",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCalculationSnapshot",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCalculationSnapshotStore",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCrackSummaryWriter",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CExcelAppStateGuard",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CExecutionReport",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CFileChecksum",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLoadCombinationReader",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CNDMResultsWriter",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CPlotAnnotationLayout",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionInputSnapshotReader",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionPlotDataReader",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionPlotter",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionTypeRegistry",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStabilitySummaryWriter",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStrengthSummaryWriter",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSystemSettingsReader",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CUnitSystem",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modAutoCADStressExport",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modCalculationSnapshot",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modMeshConfiguration",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modResultsFormatting",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modSectionOptionalData",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modSectionRecipeSetup",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modSectionSnapshot",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modStatusFormatting",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modWorkbookCalculation",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modWorkbookMessages",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CFiberMeshBuilder",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CGeometryDiagnostic",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CGeometryPath",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CGeometryRegion",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CGeometryVariableOffset",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CPolygonSpec",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionRecipeCircle",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionRecipeHollowRectangle",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionRecipePointedSection",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionRecipeRectangles",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "ILimitSearchProblem",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CConcreteMaterialParameters",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CMaterialDiagram",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CMaterialModelProvider",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CMaterialModelSpec",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSteelMaterialParameters",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CTestLinearConcreteMaterial",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CTestLinearSteelMaterial",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CConcreteRegion",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CRebarContactBuilder",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CRebarGroupAnnotationBuilder",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CRebarLayout",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CRebarOffsetContours",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CRebarRuleExecutor",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CRebarRuleOptions",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionAnnotationBuilder",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionAnnotations",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionBuilder",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionContours",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionDefinition",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionDefinitionBuilder",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionGeometryQuery",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionInputReader",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionInputTable",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionModel",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionModelBuilder",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionPropertiesCalculator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionRecipeContext",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "ISectionRecipe",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCapacityCalculator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCapacityLimitSearchProblem",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCapacityResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCapacitySolver",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CCrackLimitSearchProblem",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CDiscreteForceIntegrator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLimitSearchCoordinator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLimitSearchRequest",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLimitSearchResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLinearSystem3x3",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CLoadMultiplierSearch",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionNumericalFrame",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionSolver",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CSectionStrainLimits",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStateGuessBuilder",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStateSolutionRunner",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CUltimateStrainSearch",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modLimitSearchRequestFactory",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "modNonlinearStepControl",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "CStabilityResult",
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "ЭтаКнига",
+      "Document": true,
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "Лист1",
+      "Document": true,
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "Лист2",
+      "Document": true,
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "Лист3",
+      "Document": true,
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "Лист4",
+      "Document": true,
+      "EqualWorkingCode": true
+    },
+    {
+      "Component": "Лист5",
+      "Document": true,
+      "EqualWorkingCode": true
+    }
+  ]
+}

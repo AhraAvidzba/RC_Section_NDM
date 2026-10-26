@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestBatchCalculation"
+Attribute VB_Name = "modTestBatchCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -9888,6 +9888,7 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
     Dim previous As Double, nextNode As Double, shift As Double, query As Double, expected As Double
     Dim covered As Long
     On Error GoTo Failed
+    TestLocaleSP35Interpolation stats
     Set tableRange = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange
     saved = tableRange.Formula: original = tableRange.Value2
     Set section = TestBuildCircleStabilitySection(500#, 4, 12#)
@@ -10908,4 +10909,52 @@ End Function
 ' Сохраняет прежнее сравнение минимума в oracle.
 Private Function TestDepthMin(ByVal a As Double, ByVal b As Double) As Double
     If a <= b Then TestDepthMin = a Else TestDepthMin = b
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает реальную интерполяцию СП35 для Double и обоих текстовых десятичных
+' знаков; исходная матрица не должна меняться при подготовке локальной копии.
+Private Sub TestLocaleSP35Interpolation(ByRef stats As TBatchTestStats)
+    Dim section As CSectionModel, provider As CMaterialModelProvider
+    Dim props As CSectionPropertiesCalculator, baseline As CStabilityCalculator, actual As CStabilityCalculator
+    Dim numeric As Variant, textTable As Variant, separator As Variant, q As Variant, slenderness As Variant
+    Dim row As Long, column As Long, original As String, prefix As String
+    On Error GoTo Failed
+    Set section = TestBuildCircleStabilitySection(500#, 4, 12#): Set provider = TestMaterialProvider()
+    Set props = New CSectionPropertiesCalculator: props.CalculateTransformedByModuli section, 32500#, 200000#
+    numeric = TestSP35InterpolationTable()
+    For Each separator In Array(".", ",")
+        For Each q In Array(0.125, 0.5, 0.75)
+            For Each slenderness In Array(10#, 15#, 20#)
+                textTable = numeric
+                For row = 2 To UBound(textTable, 1)
+                    For column = 3 To 8
+                        textTable(row, column) = Replace$(CStr(textTable(row, column)), Mid$(CStr(0.5), 2, 1), CStr(separator))
+                    Next column
+                Next row
+                original = CStr(textTable(2, 8))
+                Set baseline = TestAudit03SP35TableProbe(section, provider, props, numeric, CDbl(slenderness), CDbl(q))
+                Set actual = TestAudit03SP35TableProbe(section, provider, props, textTable, CDbl(slenderness), CDbl(q))
+                prefix = "locale.sp35." & CStr(separator) & "." & CStr(q) & "." & CStr(slenderness)
+                TestAssertTrue stats, prefix & ".calculated", baseline.ResultMeta.Calculated And actual.ResultMeta.Calculated
+                TestAssertClose stats, prefix & ".phiM1", actual.PhiM1, baseline.PhiM1, 0#
+                TestAssertClose stats, prefix & ".phiM2", actual.PhiM2, baseline.PhiM2, 0#
+                TestAssertClose stats, prefix & ".phiL1", actual.PhiLTable1, baseline.PhiLTable1, 0#
+                TestAssertClose stats, prefix & ".phiL2", actual.PhiLTable2, baseline.PhiLTable2, 0#
+                TestAssertTrue stats, prefix & ".sourceUnchanged", VarType(textTable(2, 8)) = vbString And CStr(textTable(2, 8)) = original
+            Next slenderness
+        Next q
+    Next separator
+    GoTo Finished
+Failed:
+    TestAssertTrue stats, "locale.sp35.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отдельный короткий запуск того же контракта, который включён в штатную регрессию.
+Public Function RunLocaleSP35InterpolationTests() As String
+    Dim stats As TBatchTestStats
+    TestLocaleSP35Interpolation stats
+    RunLocaleSP35InterpolationTests = stats.Report & "TOTAL LOCALE SP35 INTERPOLATION: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function

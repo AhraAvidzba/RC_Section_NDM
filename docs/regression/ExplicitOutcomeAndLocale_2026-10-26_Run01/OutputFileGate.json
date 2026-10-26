@@ -1,0 +1,15 @@
+{
+  "Status": "PASS_NATIVE_EXACT_PUBLISHED_BOOK_AND_ALLCODE",
+  "WorkbookSHA256": "567FFFCE85A63C777DD1C36C58AE2E8B8CF3F0103184CFF39794942DD61D2F5F",
+  "CandidateVBA_SHA256": "F064B28A19115B1EB106F824CC99F72F9D90526A726DF95ADA2A7FA73DB47D8F",
+  "AllCodeSHA256": "DBBEBADB8A4CBC9380923EF941EF1C6EEB0186B73982E0997C1710237F0EC9EE",
+  "AllCodeEqualsNativeExport": true,
+  "ComponentCount": 178,
+  "SourceComponents": 172,
+  "DocumentModules": 6,
+  "ImportPerformed": false,
+  "MacrosRunInNativeExport": false,
+  "NonVbaPartsPreserved": 106,
+  "DataFormattingFormulasNamedRangesValidationAndStoredResultsPreserved": true,
+  "NewFullRun": false
+}

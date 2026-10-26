@@ -1,0 +1,5 @@
+{
+  "Kind": "TEST_ORACLE_LOCALE_DEFECT",
+  "Evidence": "RunLocaleBoundaryTests validation succeeded, then test itself performed CDbl on unnormalized original string. Production InterpolateSP35Table validates and normalizes its private copy with TryReadStrictDouble before formulas.",
+  "TestFix": "Strict read of validated value; add real production Calculate numerical-vs-string interpolation parity."
+}

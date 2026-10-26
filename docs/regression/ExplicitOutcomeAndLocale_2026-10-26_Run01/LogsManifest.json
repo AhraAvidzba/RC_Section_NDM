@@ -1,0 +1,557 @@
+{
+  "Archive": "Logs.zip",
+  "SHA256": "1494782E4DA9844FDF1B79B89E2052638E5F8076F1A7E9F8D9DE55C6CF368893",
+  "Bytes": 730691,
+  "Files": [
+    {
+      "Path": "Acceptance.json",
+      "Bytes": 10666,
+      "SHA256": "4494DE28F3AB9C00402A67FD9ACCB8CB8D5AEAA6AC3E0715EAD773E7C385960C"
+    },
+    {
+      "Path": "BaselineComparison_Working.json",
+      "Bytes": 741,
+      "SHA256": "C840C4674D14FADC04462229B98670B8BF7E6F5589AFA14DF3E5E16B16FE9211"
+    },
+    {
+      "Path": "BlankMessages/Blank01_No.txt",
+      "Bytes": 6401,
+      "SHA256": "AC8054326E0A490ED78ED52C63AF6D84684EBFEFB7427A11BC343FD51B23F26B"
+    },
+    {
+      "Path": "BlankMessages/Blank01_No.txt.memory.json",
+      "Bytes": 243,
+      "SHA256": "B1F55C27667F9BE420B3E7B0848ABE311504827D7ACE77E07D08CB0116916497"
+    },
+    {
+      "Path": "BlankMessages/Blank01_No.txt.progress.txt",
+      "Bytes": 381,
+      "SHA256": "5AC3B3063D415502335580B9854812BACA4B4FF0DD12D398E272BD44548094F8"
+    },
+    {
+      "Path": "BlankMessages/Blank01_No_Run.json",
+      "Bytes": 572,
+      "SHA256": "A5C8A190C375F94A247EB371C06A0EAE83C9E9C419E5A5008F777F9C5BF8D26C"
+    },
+    {
+      "Path": "BlankMessages/Blank01_Yes.txt",
+      "Bytes": 6400,
+      "SHA256": "9E671A08AD730074309B108901937934D7243FCA7BB8EF8DECC7E551C98DECC1"
+    },
+    {
+      "Path": "BlankMessages/Blank01_Yes.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "32E08721665E6F1CBB3C88722686E4B1CDBE1C5D35151225CC01A44CA210DEE9"
+    },
+    {
+      "Path": "BlankMessages/Blank01_Yes.txt.progress.txt",
+      "Bytes": 381,
+      "SHA256": "5AC3B3063D415502335580B9854812BACA4B4FF0DD12D398E272BD44548094F8"
+    },
+    {
+      "Path": "BlankMessages/Blank01_Yes_Run.json",
+      "Bytes": 574,
+      "SHA256": "335F324F9A1032F2E0495CE972BC5FB12A526272281C5408389618F7D22D045D"
+    },
+    {
+      "Path": "BlankMessages/CandidateOwnership.json",
+      "Bytes": 196,
+      "SHA256": "DC2C380D2CCE91410DC8769D0D3B0816F110A00C028DE7DF9CA74EE9865E09E8"
+    },
+    {
+      "Path": "BlankMessages/CandidatePreparation.json",
+      "Bytes": 1771,
+      "SHA256": "0824FB7C30BF8CE1DF83BC367B6DC5D1D9232EF07EB476F4A7885D70C1C6F1A9"
+    },
+    {
+      "Path": "BlankMessages/MutationManifest.json",
+      "Bytes": 1707,
+      "SHA256": "D06A70A5A7E50BF64C9AF7D93CEA1EF2D73C467B9486345987A931099F9417DA"
+    },
+    {
+      "Path": "BlankMessages/TestPrepareCandidate.ps1",
+      "Bytes": 6030,
+      "SHA256": "C1540FE065418EC0128070BC5202650BBD127904F4133B704E456422997F0D95"
+    },
+    {
+      "Path": "BlankMessages/TestRunMutation.ps1",
+      "Bytes": 2048,
+      "SHA256": "48CD256152207043FBB9665C96C3D2B3B72BB608404FB861A310B20050D1E3C6"
+    },
+    {
+      "Path": "Build02/Candidate/Audit03_Search_Progress.txt",
+      "Bytes": 26978,
+      "SHA256": "7C345D59BF6FB3DBA25670A7ADEB0776347D1A482436EF7C1CF9F6570ED5774B"
+    },
+    {
+      "Path": "Build02/CandidateOwnership.json",
+      "Bytes": 196,
+      "SHA256": "AE80C79FB435FC03B8F540CCB1012226391E54531B4DFCBC18C8BDC2E2CFC7B6"
+    },
+    {
+      "Path": "Build02/CandidatePreparation.json",
+      "Bytes": 8201,
+      "SHA256": "6C970F47C12183578CDE05D5EABD0CAA96BCD1E6C54759A72A11FFF38D51954C"
+    },
+    {
+      "Path": "Build02/TestPrepareCandidate.ps1",
+      "Bytes": 6570,
+      "SHA256": "03C252739ECB0F6205425A8E8BF3EF9A32C9438DA4794E9B2CE21DA9EBC30E37"
+    },
+    {
+      "Path": "Build03/Candidate/Audit03_Search_Progress.txt",
+      "Bytes": 80750,
+      "SHA256": "352B13198F498131D7DA908029067975DECC610C299C03DF812214797670FBA8"
+    },
+    {
+      "Path": "Build03/Candidate/RC_NDM_ui_test_progress.txt",
+      "Bytes": 22402,
+      "SHA256": "B3B8DA76199FD3B08C5ED197D6E4DD7815B8B19BA0A6F4D0A7F3BA68F1F297F6"
+    },
+    {
+      "Path": "Build03/CandidateOwnership.json",
+      "Bytes": 196,
+      "SHA256": "6EC4949F2A1E5F7DBBBBDD898F83FD4CEC26074801B3F09A073EBE1F57DC42A8"
+    },
+    {
+      "Path": "Build03/CandidatePreparation.json",
+      "Bytes": 7803,
+      "SHA256": "CCAB6176E578DBA99ACFBE7C849DE654643CC01C04DAB8192ACB0562DD9ECF62"
+    },
+    {
+      "Path": "Build03/TestPrepareCandidate.ps1",
+      "Bytes": 6632,
+      "SHA256": "DCDD1A8BA33A44A9EBA5FC1B0FFA9807786D321164539DBCE1CC7F9F726C700B"
+    },
+    {
+      "Path": "Build04/Candidate/Audit03_Search_Progress.txt",
+      "Bytes": 5982,
+      "SHA256": "073457B8E12719085A6D6CF67AE7EA832BDD3EEBBA3CA383F0F2D18D30B11135"
+    },
+    {
+      "Path": "Build04/CandidateOwnership.json",
+      "Bytes": 196,
+      "SHA256": "D7F830A48BA4644D25EA54D649E8FA01033CF010701EDFC7F74F0057E8B1B0D0"
+    },
+    {
+      "Path": "Build04/CandidatePreparation.json",
+      "Bytes": 8588,
+      "SHA256": "E5D7776723AD9C2964789A3953C0E3FAD74ABC4AD4B41BB47EBFC2537C58AB26"
+    },
+    {
+      "Path": "Build04/TestPrepareCandidate.ps1",
+      "Bytes": 6688,
+      "SHA256": "AA87E9E060BE70B1D79CFEA7225B7F94D198B1E2AF0B952F441756A4B4CDFD5F"
+    },
+    {
+      "Path": "CandidateOwnership.json",
+      "Bytes": 196,
+      "SHA256": "5B3E23A03A924E238D83674A268DAD6D8B61074456B24E2F6F6E71A5245F653F"
+    },
+    {
+      "Path": "CandidatePreparation.json",
+      "Bytes": 8201,
+      "SHA256": "AF7D4422A91C14F5075A2495D524B17D381260DD25FCA2FBDA2CEA7E0619C40D"
+    },
+    {
+      "Path": "ChangedSources.json",
+      "Bytes": 1143,
+      "SHA256": "048F463001F04369331C5E71E890B4821D1FC4F8D670A7E9576FBC7F9FAB0B33"
+    },
+    {
+      "Path": "Confirmation.json",
+      "Bytes": 1670,
+      "SHA256": "E2047D34E7F9978ACB55F37C4A6FB83BAAF101A952D2DCF74049838F0D4A902D"
+    },
+    {
+      "Path": "CultureProcessClosure.json",
+      "Bytes": 677,
+      "SHA256": "1E53D909508DC6265F44709367CDDFC07EC70EC487546936F55C87CD3182D62F"
+    },
+    {
+      "Path": "NativeVerification.json",
+      "Bytes": 36002,
+      "SHA256": "53D6FC0B06BDAF5C632578AE0EEF48CE7F760EA1CD5A906CA1C6A26F53FD8293"
+    },
+    {
+      "Path": "OutputFileGate.json",
+      "Bytes": 655,
+      "SHA256": "1C8049C7719CB17177F45B9EEC4D728063E7A7E785211DA1E0596833D8AAF79A"
+    },
+    {
+      "Path": "PackagePreservation.json",
+      "Bytes": 11649,
+      "SHA256": "65E2A63CF66936157BB84ABEBB4B65CD1DE23F077A228974FAF2A2CD5ECCE457"
+    },
+    {
+      "Path": "PendingInputOutcomeTests.py",
+      "Bytes": 5894,
+      "SHA256": "892FCCD568B9E16D6990D2DDB20A317AFBFF40526435414AF4FABB9273501A02"
+    },
+    {
+      "Path": "PendingIntegration.py",
+      "Bytes": 2410,
+      "SHA256": "0B0ECD05960D9F804BF0E8FC1B048E0D73DE41FBF6CB2053414003261E71722C"
+    },
+    {
+      "Path": "PreFinalCultureGate.json",
+      "Bytes": 1479,
+      "SHA256": "2F943B4B36B8A025C7EA5C869F3CE56A4BA1C70FA7060914AF92EBB6EE11C8B6"
+    },
+    {
+      "Path": "ProcessClosure.json",
+      "Bytes": 9731,
+      "SHA256": "BA691E59BC4E757F7BEF5450850DF94ECE2BFACACB5093C0727E03145D20C3B6"
+    },
+    {
+      "Path": "Processed.json",
+      "Bytes": 556,
+      "SHA256": "ADAA6CE4CB8DABB1D46EDFE4DCD9633885B163AE7FE2B310B00D6C10D29DBFB5"
+    },
+    {
+      "Path": "ProductionEqualityAcrossCandidates.json",
+      "Bytes": 12131,
+      "SHA256": "19D2015B948D14D25B874D0F94F71BD252C22744103B059600FB3D5AD7DF9696"
+    },
+    {
+      "Path": "Profile01_No.txt",
+      "Bytes": 948856,
+      "SHA256": "FA120D04AEA7059F6E68909A4F3A9CC23C49F5DC1D65D86E6F1F71476F9AD873"
+    },
+    {
+      "Path": "Profile01_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "B91038D3B200BD8BCAB32EBA4A3D6F29E48785DE970DD629EB20D78EB9C37772"
+    },
+    {
+      "Path": "Profile01_No.txt.progress.txt",
+      "Bytes": 248607,
+      "SHA256": "8A1E454440A9F6171FFD2CFD48868AA7CF7622CF92FB1AC4A5F132A21039575C"
+    },
+    {
+      "Path": "Profile01_No_Run.json",
+      "Bytes": 560,
+      "SHA256": "7A8DBBD2F0787D93D77072860B1E98BFC8B3A724023CA53D145B86EA527C6B67"
+    },
+    {
+      "Path": "Profile01_Yes.txt",
+      "Bytes": 948864,
+      "SHA256": "AD77A6AE44AA9D34C555AA19952C89DAABC1D41CD9C3D5924B4E02A27677ABAC"
+    },
+    {
+      "Path": "Profile01_Yes.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "766C1B69455752956D50F7B93E1EE126B5EA0F9A286AA9DC2458B63A6E48651F"
+    },
+    {
+      "Path": "Profile01_Yes.txt.progress.txt",
+      "Bytes": 248605,
+      "SHA256": "CC2222072F06EADB3D1D009BDC4EBFD1CAF96FEEA0803F433DB6D4572DAA9574"
+    },
+    {
+      "Path": "Profile01_Yes_Run.json",
+      "Bytes": 562,
+      "SHA256": "4AFD6BF086C3A05E7578D163DF917266A2075B7A6E116E2946310A7F6CEF16D6"
+    },
+    {
+      "Path": "RequirementsAudit.json",
+      "Bytes": 3453,
+      "SHA256": "6D897E93D4B7401B67C213938CF3281EFC9CDFFB03721F8B361E839E6F941CF1"
+    },
+    {
+      "Path": "SourceEquality.json",
+      "Bytes": 83203,
+      "SHA256": "C7BE1C96F9065918C627F3E3AD5AC2632C32ECEBBD8F1D0AD6CC3A2A6D11BF4B"
+    },
+    {
+      "Path": "SP35TestTriage.json",
+      "Bytes": 408,
+      "SHA256": "F10364957FD490CA7483C630AF653388D1ABCC231336AEC36CBD380248D6E007"
+    },
+    {
+      "Path": "StaticContractReview.json",
+      "Bytes": 743,
+      "SHA256": "7D383A5325CE08F460ACAA9FF4224AACE68E81A60CE8CF94418AB70A1D875BA9"
+    },
+    {
+      "Path": "TestPrepareCandidate.ps1",
+      "Bytes": 6567,
+      "SHA256": "AFB24E8988895A43ECB25D93E07E6FA488154F9FBCC43331F820FEE471CEA149"
+    },
+    {
+      "Path": "TestProcessClosure.ps1",
+      "Bytes": 2620,
+      "SHA256": "8BA8878253F69745482F00D2AD16E709E5D58F72E4F27C5C54BF7279E25C40BC"
+    },
+    {
+      "Path": "TestPublishPackage.py",
+      "Bytes": 1949,
+      "SHA256": "B10EDAE888088BF258EFB28A36EFE1A66CC326E69708C524ED00A982B003654C"
+    },
+    {
+      "Path": "TestReviewEvidence.py",
+      "Bytes": 3544,
+      "SHA256": "C059660FE90FA33FB708B75EE47C9A33094B553BFF49E27BD4F7FB954BDED1E1"
+    },
+    {
+      "Path": "TestReviewFinalGates.py",
+      "Bytes": 3714,
+      "SHA256": "B5F6EA07315A054FEA064F3E4B793CF50CDB5F5E8E9C8712B80BDF53BAB17A69"
+    },
+    {
+      "Path": "TestRunProfiles.ps1",
+      "Bytes": 2461,
+      "SHA256": "16629041E708C91897DB1004EA5D47C5FD5520BACD6E16AC1B3606F615490E77"
+    },
+    {
+      "Path": "TestVerifyNative.ps1",
+      "Bytes": 4576,
+      "SHA256": "F79971ED2982A55FAAEF20670AC04EF62AAA8231AB474DF11574B6E7438D3926"
+    },
+    {
+      "Path": "TestVerifySourceEquality.ps1",
+      "Bytes": 8904,
+      "SHA256": "4D621C091FF0DA93CD2B209365AA853AEF0FFD209023FDC2184780B96E162759"
+    },
+    {
+      "Path": "WindowsLocales/en-US_No.json",
+      "Bytes": 1031,
+      "SHA256": "7126EE031AC43C4712035A2EEC4517A68DB33BCBF2F3B7289F2EED0E30157161"
+    },
+    {
+      "Path": "WindowsLocales/InternationalBefore.clixml",
+      "Bytes": 128522,
+      "SHA256": "F9CB653BFB0A5571887C4099AD57F2075BC8F2A240FF71EF1DC1D965DB6B56AA"
+    },
+    {
+      "Path": "WindowsLocales/Owner.json",
+      "Bytes": 171,
+      "SHA256": "03580FDCFBF99094781DCE7383A1BF7E3BE7763CA93EA01D382023DC2D659A8E"
+    },
+    {
+      "Path": "WindowsLocales/Restoration.json",
+      "Bytes": 1933,
+      "SHA256": "CCB8A2E0D73C0A64D7CDDB852A6998171F15FF96561842C06B81BD0761EDE96F"
+    },
+    {
+      "Path": "WindowsLocales/Restore-OriginalCulture.ps1",
+      "Bytes": 2949,
+      "SHA256": "DC5F42210D4470E56FBDC43E2C6BC457886737E2C97E8FADFCDC612A80072DC1"
+    },
+    {
+      "Path": "WindowsLocales/Restored.ok",
+      "Bytes": 33,
+      "SHA256": "646C5473C81170A5EE2BEE2D9A9093B4854C69B2C1F226C1B59B0F76C7D4BBCD"
+    },
+    {
+      "Path": "WindowsLocales/TestActualCulture.ps1",
+      "Bytes": 5460,
+      "SHA256": "CA555115B9C2EDFE19E5E2A11722365A0F3C48BA9030257C34BDFE62F279244C"
+    },
+    {
+      "Path": "WindowsLocales/TestBothWindowsCultures.ps1",
+      "Bytes": 2203,
+      "SHA256": "120F3EF89C34BF01A281BD0E240414645057F266196B3227F1B209E584191B31"
+    },
+    {
+      "Path": "WindowsLocales02/en-US_No.json",
+      "Bytes": 1623,
+      "SHA256": "2B862FA89479DD05F198D0338FBDD49E0DFA6D1598C4ACBA97F30BF5D4D5A395"
+    },
+    {
+      "Path": "WindowsLocales02/en-US_No.txt",
+      "Bytes": 42808,
+      "SHA256": "15B638221780ED21C89B22CA005CAA8C68F3EEFF854382FE6A9C69BBEA49E22F"
+    },
+    {
+      "Path": "WindowsLocales02/InternationalBefore.clixml",
+      "Bytes": 128522,
+      "SHA256": "E532A7385E3C55CAB51B1A4057ADA711F3B42667DA7A53D6153EB0B621F5E98E"
+    },
+    {
+      "Path": "WindowsLocales02/Owner.json",
+      "Bytes": 171,
+      "SHA256": "9CA84364978954010E14476256E00A3479DC58445B8054F46BF52AFA5EFF7BD5"
+    },
+    {
+      "Path": "WindowsLocales02/Restoration.json",
+      "Bytes": 1933,
+      "SHA256": "DB49D8C9D5E3981535F65AD47673B82CEFDCA9FD4D36C2B5C7B6B80813C3F3D8"
+    },
+    {
+      "Path": "WindowsLocales02/Restore-OriginalCulture.ps1",
+      "Bytes": 2949,
+      "SHA256": "DC5F42210D4470E56FBDC43E2C6BC457886737E2C97E8FADFCDC612A80072DC1"
+    },
+    {
+      "Path": "WindowsLocales02/Restored.ok",
+      "Bytes": 33,
+      "SHA256": "39D1A2C1DBF899CE07F0FD6C12C941E92DB314A2E0213E44D0520332DD5DBFF2"
+    },
+    {
+      "Path": "WindowsLocales02/TestActualCulture.ps1",
+      "Bytes": 5571,
+      "SHA256": "B2B607AEB56934F3C40A9A975824FC726BD500D8A524C6921C64E041487A7571"
+    },
+    {
+      "Path": "WindowsLocales02/TestBothWindowsCultures.ps1",
+      "Bytes": 2203,
+      "SHA256": "120F3EF89C34BF01A281BD0E240414645057F266196B3227F1B209E584191B31"
+    },
+    {
+      "Path": "WindowsLocales03/en-US_No.json",
+      "Bytes": 3698,
+      "SHA256": "E12214CFF4A53362B6B25B66FFA6D79D92B7B367234ADF93E5B511C08EA68991"
+    },
+    {
+      "Path": "WindowsLocales03/en-US_No.txt",
+      "Bytes": 1217859,
+      "SHA256": "8B612DE9D40812D335D2B38061FE0FF1EC05849037F9C541A9BD09F0FA85D826"
+    },
+    {
+      "Path": "WindowsLocales03/en-US_Yes.json",
+      "Bytes": 3712,
+      "SHA256": "8EA0D61D2E32F4F69754BF3219430538129B45E2E0BE827434EE2908B79A72B2"
+    },
+    {
+      "Path": "WindowsLocales03/en-US_Yes.txt",
+      "Bytes": 1217992,
+      "SHA256": "DCC5ABCE7C96C676DA9D2F4FBC423B0841641925A22A84C5A476BF6D9409FC9A"
+    },
+    {
+      "Path": "WindowsLocales03/InternationalBefore.clixml",
+      "Bytes": 128522,
+      "SHA256": "E27A15825545BCB68E92AE724DF7E4D74589CF01395AF26F9A2B512D3D902EAC"
+    },
+    {
+      "Path": "WindowsLocales03/Owner.json",
+      "Bytes": 171,
+      "SHA256": "A89E91D3229B5D993C91589F9C49D4BB9BB799CBD2C37206A3AF91D7A47EAAF6"
+    },
+    {
+      "Path": "WindowsLocales03/Restoration.json",
+      "Bytes": 1933,
+      "SHA256": "5DE6818DFC1234364D0C630F16827C34F8BD5A62BE8F747401C16858B892F05B"
+    },
+    {
+      "Path": "WindowsLocales03/Restore-OriginalCulture.ps1",
+      "Bytes": 2949,
+      "SHA256": "DC5F42210D4470E56FBDC43E2C6BC457886737E2C97E8FADFCDC612A80072DC1"
+    },
+    {
+      "Path": "WindowsLocales03/Restored.ok",
+      "Bytes": 33,
+      "SHA256": "6D4605457A7F50CE4CFE5ACFBA6E234F6F7788732D44D841CD60556C47E63C66"
+    },
+    {
+      "Path": "WindowsLocales03/ru-RU_No.json",
+      "Bytes": 3699,
+      "SHA256": "57527EB6C18BED3DAEEC1D5008C0303561360099988062D49AD0CD3A6636A55F"
+    },
+    {
+      "Path": "WindowsLocales03/ru-RU_No.txt",
+      "Bytes": 1217858,
+      "SHA256": "9371A1811904C15656CD1A228B228F820E97CCA46731452D0EE66AAFA4856BFD"
+    },
+    {
+      "Path": "WindowsLocales03/ru-RU_Yes.json",
+      "Bytes": 3713,
+      "SHA256": "FF9AF66E2D26AB90FE0FCEFEFCC0BD9B76482AEB1560A15CCFE9FA27FF590146"
+    },
+    {
+      "Path": "WindowsLocales03/ru-RU_Yes.txt",
+      "Bytes": 1217990,
+      "SHA256": "061EFDAA81B86CF22D69706F6A039047A42736D12A503A441D4FC6280D8DD13D"
+    },
+    {
+      "Path": "WindowsLocales03/TestActualCulture.ps1",
+      "Bytes": 5629,
+      "SHA256": "A24A2FFCA6A73319FA880FD7931C2BFB2674F8F54BDB2C2501A8CB3F63C3A9F1"
+    },
+    {
+      "Path": "WindowsLocales03/TestBothWindowsCultures.ps1",
+      "Bytes": 2203,
+      "SHA256": "120F3EF89C34BF01A281BD0E240414645057F266196B3227F1B209E584191B31"
+    },
+    {
+      "Path": "WindowsLocales04/en-US_No.json",
+      "Bytes": 2644,
+      "SHA256": "806C2C2B1E9D67A0B7C0237B27AF29F672402A02263F60599249EBE4756ADA18"
+    },
+    {
+      "Path": "WindowsLocales04/en-US_No.txt",
+      "Bytes": 149729,
+      "SHA256": "A04B2BBD061B400120D1BEF8C7B5B12874BE651815754ECDCADF7FFD26ED499F"
+    },
+    {
+      "Path": "WindowsLocales04/en-US_Yes.json",
+      "Bytes": 2653,
+      "SHA256": "A64266C76735FD7071C8C628A89B86D9CE2B98050DF324A4F6A6156F6344AD2F"
+    },
+    {
+      "Path": "WindowsLocales04/en-US_Yes.txt",
+      "Bytes": 149734,
+      "SHA256": "A7A8801FE473A7F7C4D535B11E09593C1B6725FAD1D27AA49D67849B011F6510"
+    },
+    {
+      "Path": "WindowsLocales04/InternationalBefore.clixml",
+      "Bytes": 128522,
+      "SHA256": "77ED352E59458801E63EFFE3DF372F439825529DCA97FE85C6BECA8DF525DB7B"
+    },
+    {
+      "Path": "WindowsLocales04/Owner.json",
+      "Bytes": 170,
+      "SHA256": "E457ABE89B5775A74C81C83C94C1DDE35DE639E104478BA09A1EAC4B72A3A72C"
+    },
+    {
+      "Path": "WindowsLocales04/Restoration.json",
+      "Bytes": 1933,
+      "SHA256": "42EB7E8E13CF4967EDA936150C1E6F1FB1DDF72D2B0FE1D79FD1DBBA715DBE82"
+    },
+    {
+      "Path": "WindowsLocales04/Restore-OriginalCulture.ps1",
+      "Bytes": 2949,
+      "SHA256": "DC5F42210D4470E56FBDC43E2C6BC457886737E2C97E8FADFCDC612A80072DC1"
+    },
+    {
+      "Path": "WindowsLocales04/Restored.ok",
+      "Bytes": 33,
+      "SHA256": "561A81AF9F844A3D8DAB6AD64162DD17818097014025A8338844DF407CFF3997"
+    },
+    {
+      "Path": "WindowsLocales04/ru-RU_No.json",
+      "Bytes": 2644,
+      "SHA256": "F3EE00116FC143A657706D4334F5D9395FD0CFCF6C46BD39D1B983E716DBAE97"
+    },
+    {
+      "Path": "WindowsLocales04/ru-RU_No.txt",
+      "Bytes": 149728,
+      "SHA256": "7525F6097C7340F6C0DE48A90A9CB3B6D273086A0F7A98346640BE202DBBA70C"
+    },
+    {
+      "Path": "WindowsLocales04/ru-RU_Yes.json",
+      "Bytes": 2653,
+      "SHA256": "44BD78D24D0A692184CC0999BEB92779B24CCFB90EF8C49EE1AE05DA849C81CF"
+    },
+    {
+      "Path": "WindowsLocales04/ru-RU_Yes.txt",
+      "Bytes": 149727,
+      "SHA256": "F904E405CF9615F6823EB31EB20AC79872C3B766CEE98939F53C1A2EC6D40C7E"
+    },
+    {
+      "Path": "WindowsLocales04/TestActualCulture.ps1",
+      "Bytes": 5371,
+      "SHA256": "FDE3126FC3702A90A301929BA4C8D1F21C2C4E1F1FA3AA151F04C183C84E48A8"
+    },
+    {
+      "Path": "WindowsLocales04/TestBothWindowsCultures.ps1",
+      "Bytes": 2203,
+      "SHA256": "120F3EF89C34BF01A281BD0E240414645057F266196B3227F1B209E584191B31"
+    },
+    {
+      "Path": "WindowsLocalesAcceptance.json",
+      "Bytes": 10502,
+      "SHA256": "3BCB5C19851E297687EC66D7A0FD196D76A06E55D7A7C8B851B383FDE8EA77B0"
+    }
+  ]
+}

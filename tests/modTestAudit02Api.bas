@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestAudit02Api"
+Attribute VB_Name = "modTestAudit02Api"
 Option Explicit
 
 ' ==========================================================================
@@ -1902,7 +1902,7 @@ Public Function RunProgramMessageTests() As String
     TestCheck "messages.keys.merge.noDuplicates", UBound(Split(merged.SourceKeys, ";")) = 1
     Set searchResult = New CLimitSearchResult
     searchResult.Initialize meta, "Auto", "LoadMultiplier", False, 0#, 0#, 0#, 0#, Nothing, "InvalidInput", "", vbNullString, False
-    searchResult.AddLoadPathHistory "Первая попытка не завершена.", "lambda*N"
+    searchResult.AddLoadPathHistory "Первая попытка не завершена.", "lambda*N", True
     TestCheck "messages.keys.pathHistory", searchResult.Meta.SourceKeys = "Solver.Method"
     Set profile = New CCalculationProfile
     profile.Initialize "Message.Profile", "", "", True, False, False

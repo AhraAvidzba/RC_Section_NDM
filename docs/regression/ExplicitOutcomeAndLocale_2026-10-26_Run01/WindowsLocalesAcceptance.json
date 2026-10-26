@@ -1,0 +1,226 @@
+{
+  "Status": "PASS_ACTUAL_BOTH_WINDOWS_VBA_NO_YES",
+  "Records": [
+    {
+      "Culture": "en-US",
+      "Mode": "No",
+      "Passed": true,
+      "SourceSHA256": "4AC5C3512A167F5E421E8CFDE861A3642CD23AEE22C3F4E3C64CC6EEB2318966",
+      "FullPrimaryRead": true,
+      "Bytes": 1217859,
+      "SHA256": "8B612DE9D40812D335D2B38061FE0FF1EC05849037F9C541A9BD09F0FA85D826",
+      "MacroOrder": [
+        "modTestConfiguration.RunExplicitPathOutcomeTests",
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunLocaleBoundaryTests",
+        "modTestConfiguration.RunLocaleSavedContractTests",
+        "modTestBatchCalculation.RunLocaleSP35InterpolationTests",
+        "modTestConfiguration.RunAudit03SettingsTableGuardTests",
+        "modTestLoadTableConfig.RunLoadActivationTests",
+        "modTestLoadTableConfig.RunAudit03LoadTableDiagnosticTests",
+        "modTestProfileConfig.RunLocaleDurationTests",
+        "modTestProfileConfig.RunStabilityDurationMatchingTests",
+        "modTestPlotConfig.RunAudit03SnapshotMetadataTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL EXPLICIT PATH OUTCOME: passed=96; failed=0",
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL LOCALE SAVED CONTRACTS: passed=24; failed=0",
+        "TOTAL LOCALE SP35 INTERPOLATION: passed=108; failed=0",
+        "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=583; failed=0",
+        "TOTAL LOAD ACTIVATION: passed=44; failed=0",
+        "TOTAL_AUDIT03_LOAD_TABLE: passed=11813; failed=0; cases=880",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=417; failed=0; cases=21",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=384; failed=0; cases=24",
+        "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1745; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.13671875"
+      ],
+      "Errors": [],
+      "VBA": "CStr=0.5|Format=0.5|SystemSeparators=True|ExcelDecimal=.|CDblNative=0.5",
+      "BaselineRecords": 11,
+      "AllBaselineNumericsEqualExceptElapsed": true
+    },
+    {
+      "Culture": "en-US",
+      "Mode": "Yes",
+      "Passed": true,
+      "SourceSHA256": "4AC5C3512A167F5E421E8CFDE861A3642CD23AEE22C3F4E3C64CC6EEB2318966",
+      "FullPrimaryRead": true,
+      "Bytes": 1217992,
+      "SHA256": "DCC5ABCE7C96C676DA9D2F4FBC423B0841641925A22A84C5A476BF6D9409FC9A",
+      "MacroOrder": [
+        "modTestConfiguration.RunExplicitPathOutcomeTests",
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunLocaleBoundaryTests",
+        "modTestConfiguration.RunLocaleSavedContractTests",
+        "modTestBatchCalculation.RunLocaleSP35InterpolationTests",
+        "modTestConfiguration.RunAudit03SettingsTableGuardTests",
+        "modTestLoadTableConfig.RunLoadActivationTests",
+        "modTestLoadTableConfig.RunAudit03LoadTableDiagnosticTests",
+        "modTestProfileConfig.RunLocaleDurationTests",
+        "modTestProfileConfig.RunStabilityDurationMatchingTests",
+        "modTestPlotConfig.RunAudit03SnapshotMetadataTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL EXPLICIT PATH OUTCOME: passed=96; failed=0",
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL LOCALE SAVED CONTRACTS: passed=24; failed=0",
+        "TOTAL LOCALE SP35 INTERPOLATION: passed=108; failed=0",
+        "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=583; failed=0",
+        "TOTAL LOAD ACTIVATION: passed=44; failed=0",
+        "TOTAL_AUDIT03_LOAD_TABLE: passed=11813; failed=0; cases=880",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=417; failed=0; cases=21",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=384; failed=0; cases=24",
+        "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1745; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.05859375"
+      ],
+      "Errors": [],
+      "VBA": "CStr=0.5|Format=0.5|SystemSeparators=True|ExcelDecimal=.|CDblNative=0.5",
+      "BaselineRecords": 11,
+      "AllBaselineNumericsEqualExceptElapsed": true
+    },
+    {
+      "Culture": "ru-RU",
+      "Mode": "No",
+      "Passed": true,
+      "SourceSHA256": "4AC5C3512A167F5E421E8CFDE861A3642CD23AEE22C3F4E3C64CC6EEB2318966",
+      "FullPrimaryRead": true,
+      "Bytes": 1217858,
+      "SHA256": "9371A1811904C15656CD1A228B228F820E97CCA46731452D0EE66AAFA4856BFD",
+      "MacroOrder": [
+        "modTestConfiguration.RunExplicitPathOutcomeTests",
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunLocaleBoundaryTests",
+        "modTestConfiguration.RunLocaleSavedContractTests",
+        "modTestBatchCalculation.RunLocaleSP35InterpolationTests",
+        "modTestConfiguration.RunAudit03SettingsTableGuardTests",
+        "modTestLoadTableConfig.RunLoadActivationTests",
+        "modTestLoadTableConfig.RunAudit03LoadTableDiagnosticTests",
+        "modTestProfileConfig.RunLocaleDurationTests",
+        "modTestProfileConfig.RunStabilityDurationMatchingTests",
+        "modTestPlotConfig.RunAudit03SnapshotMetadataTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL EXPLICIT PATH OUTCOME: passed=96; failed=0",
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL LOCALE SAVED CONTRACTS: passed=24; failed=0",
+        "TOTAL LOCALE SP35 INTERPOLATION: passed=108; failed=0",
+        "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=583; failed=0",
+        "TOTAL LOAD ACTIVATION: passed=44; failed=0",
+        "TOTAL_AUDIT03_LOAD_TABLE: passed=11813; failed=0; cases=880",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=417; failed=0; cases=21",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=384; failed=0; cases=24",
+        "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1745; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.2109375"
+      ],
+      "Errors": [],
+      "VBA": "CStr=0,5|Format=0,5|SystemSeparators=True|ExcelDecimal=.|CDblNative=0,5",
+      "BaselineRecords": 11,
+      "AllBaselineNumericsEqualExceptElapsed": true
+    },
+    {
+      "Culture": "ru-RU",
+      "Mode": "Yes",
+      "Passed": true,
+      "SourceSHA256": "4AC5C3512A167F5E421E8CFDE861A3642CD23AEE22C3F4E3C64CC6EEB2318966",
+      "FullPrimaryRead": true,
+      "Bytes": 1217990,
+      "SHA256": "061EFDAA81B86CF22D69706F6A039047A42736D12A503A441D4FC6280D8DD13D",
+      "MacroOrder": [
+        "modTestConfiguration.RunExplicitPathOutcomeTests",
+        "modTestConfiguration.RunLocaleNumberTests",
+        "modTestConfiguration.RunLocaleBoundaryTests",
+        "modTestConfiguration.RunLocaleSavedContractTests",
+        "modTestBatchCalculation.RunLocaleSP35InterpolationTests",
+        "modTestConfiguration.RunAudit03SettingsTableGuardTests",
+        "modTestLoadTableConfig.RunLoadActivationTests",
+        "modTestLoadTableConfig.RunAudit03LoadTableDiagnosticTests",
+        "modTestProfileConfig.RunLocaleDurationTests",
+        "modTestProfileConfig.RunStabilityDurationMatchingTests",
+        "modTestPlotConfig.RunAudit03SnapshotMetadataTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Totals": [
+        "TOTAL EXPLICIT PATH OUTCOME: passed=96; failed=0",
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL LOCALE SAVED CONTRACTS: passed=24; failed=0",
+        "TOTAL LOCALE SP35 INTERPOLATION: passed=108; failed=0",
+        "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=583; failed=0",
+        "TOTAL LOAD ACTIVATION: passed=44; failed=0",
+        "TOTAL_AUDIT03_LOAD_TABLE: passed=11813; failed=0; cases=880",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=417; failed=0; cases=21",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=384; failed=0; cases=24",
+        "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=1745; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=417; failed=0",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.30859375"
+      ],
+      "Errors": [],
+      "VBA": "CStr=0,5|Format=0,5|SystemSeparators=True|ExcelDecimal=.|CDblNative=0,5",
+      "BaselineRecords": 11,
+      "AllBaselineNumericsEqualExceptElapsed": true
+    }
+  ],
+  "Restoration": {
+    "Status": "RESTORED_EXACT",
+    "Guard": false,
+    "CheckedUTC": "2026-10-26T07:11:15.2194298+00:00",
+    "OriginalCulture": "ru-RU",
+    "Keys": [
+      {
+        "Path": "Control Panel\\International",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\Geo",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\LanguageComponentsAvailable",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\User Profile",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\User Profile\\en-US",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\User Profile\\ru",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\User Profile System Backup",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\User Profile System Backup\\en-US",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\User Profile System Backup\\ru",
+        "ExactValuesAndKinds": true
+      },
+      {
+        "Path": "Control Panel\\International\\🌎🌏🌍",
+        "ExactValuesAndKinds": true
+      }
+    ]
+  },
+  "NewFullPass": false
+}

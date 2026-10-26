@@ -19,6 +19,7 @@ Option Explicit
 
 Private mKeys() As String ' Имена настроек Config: Solver.Method, Capacity.SolutionStrategy и т.п.
 Private mValues() As String ' Значения, которые ввел пользователь или подставили формулы таблицы.
+Private mValueHasError() As Boolean ' Факт ошибочной ячейки хранится независимо от пояснения.
 Private mValueErrors() As String ' Отложенные ошибки условных полей: выдаются при запросе активного параметра без подстановки значения.
 Private mDefaults() As String ' Сопутствующий текст, переданный при AppendSetting; сам по себе не заменяет пустое значение настройки.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
@@ -498,15 +499,16 @@ End Function
 ' и автоматический шаг сетки не требуют чтения неиспользуемых ручных полей.
 Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String, _
         ByVal rowIndex As Long, ByVal columnIndex As Long, Optional ByVal source As String = vbNullString)
-    Dim value As String, valueError As String
+    Dim value As String, valueError As String, valueHasError As Boolean
     If IsError(data(rowIndex, columnIndex)) Then
+        valueHasError = True
         valueError = "Настройка " & key & " (" & InputCellLocation(rowIndex, columnIndex) & _
             ") содержит ошибку Excel в колонке ""значение"". " & _
             "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
     Else
         value = ConfigCellText(data(rowIndex, columnIndex), "значение", rowIndex, key, False, columnIndex)
     End If
-    AppendSetting key, value, value, source, rowIndex, columnIndex, valueError
+    AppendSetting key, value, value, source, rowIndex, columnIndex, valueError, valueHasError
 End Sub
 
 ' Добавляет имя настройки и значение в общие массивы. Для небольшого
@@ -515,16 +517,18 @@ End Sub
 Private Sub AppendSetting(ByVal keyValue As String, ByVal settingValue As String, _
         ByVal defaultValue As String, ByVal sourceValue As String, _
         Optional ByVal valueRow As Long = 0, Optional ByVal valueColumn As Long = 0, _
-        Optional ByVal valueError As String = vbNullString)
+        Optional ByVal valueError As String = vbNullString, Optional ByVal valueHasError As Boolean = False)
     mCount = mCount + 1
     ReDim Preserve mKeys(1 To mCount)
     ReDim Preserve mValues(1 To mCount)
+    ReDim Preserve mValueHasError(1 To mCount)
     ReDim Preserve mValueErrors(1 To mCount)
     ReDim Preserve mDefaults(1 To mCount)
     ReDim Preserve mSources(1 To mCount)
     ReDim Preserve mLocations(1 To mCount)
     mKeys(mCount) = keyValue
     mValues(mCount) = settingValue
+    mValueHasError(mCount) = valueHasError
     mValueErrors(mCount) = valueError
     mDefaults(mCount) = defaultValue
     mSources(mCount) = sourceValue
@@ -600,6 +604,7 @@ End Function
 Public Sub Clear()
     Erase mKeys
     Erase mValues
+    Erase mValueHasError
     Erase mValueErrors
     Erase mDefaults
     Erase mSources
@@ -643,7 +648,7 @@ End Function
 ' Индекс 0 означает отсутствующий ключ; его обязательность проверяет вызывающий API.
 Private Sub AssertValueReadable(ByVal index As Long)
     If index = 0 Then Exit Sub
-    If Len(mValueErrors(index)) > 0 Then Err.Raise vbObjectError + 4309, _
+    If mValueHasError(index) Then Err.Raise vbObjectError + 4309, _
         "CSystemSettingsReader", mValueErrors(index)
 End Sub
 

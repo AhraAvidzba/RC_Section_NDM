@@ -1,0 +1,20 @@
+{
+  "Passed": true,
+  "Checks": {
+    "LoadPathWarningUsesExplicitFlag": true,
+    "FormationFlagBeforeTextGuard": true,
+    "LoadRowUsesBoolean": true,
+    "LoadErrorFlagAtDetection": true,
+    "DeferredSettingsUsesBoolean": true,
+    "DurationErrorFlagAtDetection": true,
+    "ReadSectionPropertiesFiveRequiredFields": true,
+    "ReadSectionPropertiesForCombinationFiveRequiredFields": true,
+    "FileReadsLogicalSnapshot": true,
+    "GeometryOnlyBypassesStatePresence": true,
+    "NewTestsInStandardEntrypoints": true
+  },
+  "NewVBAComponents": 0,
+  "NewGlobalManagers": 0,
+  "BinaryFormatChanged": false,
+  "BuildSourceImport": "tools/build_workbook/Build-Workbook.ps1 Import-VbaSourceTree reads current src and tests"
+}

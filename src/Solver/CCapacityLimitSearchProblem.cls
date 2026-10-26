@@ -28,7 +28,7 @@ End Sub
 ' Передаёт расчёту несущей способности итоговую причину и историю пробовавшихся путей.
 ' История сохраняется в CLimitSearchResult без параллельного составления того же текста.
 Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
-        ByVal previousPathComments As String)
+        ByVal previousPathComments As String, ByVal hadPreviousAttempts As Boolean)
 End Sub
 
 ' Подключает настроенный CCapacitySolver для оценки пробных нагрузок

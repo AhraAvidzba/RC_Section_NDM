@@ -1,0 +1,84 @@
+{
+  "Status": "ALL_CODE_TEST_NATIVE_GATES_PASS_PUBLICATION_PENDING",
+  "GoalActive": true,
+  "OriginalFullPassSHA": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "NewCandidateSHA": "4AC5C3512A167F5E421E8CFDE861A3642CD23AEE22C3F4E3C64CC6EEB2318966",
+  "NewFullRunStarted": false,
+  "NdmStatus": "PAUSED_NO_NEW_FULL_RUN",
+  "Items": [
+    {
+      "ID": "1",
+      "Requirement": "LoadPath warning derives from prior-attempt Boolean supplied by coordinator; history and diagnostics do not decide status.",
+      "Source": [
+        "CLimitSearchCoordinator",
+        "ILimitSearchProblem",
+        "CCapacityLimitSearchProblem",
+        "CCrackLimitSearchProblem",
+        "CLimitSearchResult",
+        "CCrackFormationCalculator"
+      ],
+      "Tests": [
+        "RunExplicitPathOutcomeTests",
+        "RunAudit03UniversalLoadPathTests",
+        "RunCapacitySolverTests",
+        "RunCrackWidthTests"
+      ],
+      "State": "PROVEN_BY_PRIMARY_AND_SOURCE"
+    },
+    {
+      "ID": "2",
+      "Requirement": "Loads, duration rows and deferred settings hold typed error flags at detection; preserve blank input rules, reasons and addresses.",
+      "Source": [
+        "CLoadCombinationReader",
+        "modWorkbookCalculation",
+        "CSystemSettingsReader"
+      ],
+      "Tests": [
+        "RunLoadActivationTests",
+        "RunAudit03LoadTableDiagnosticTests",
+        "RunLocaleDurationTests",
+        "RunStabilityDurationMatchingTests",
+        "RunAudit03SettingsTableGuardTests",
+        "RunExplicitInputOutcomeTests",
+        "private blank-message mutation"
+      ],
+      "State": "PROVEN_BY_PRIMARY_AND_SOURCE"
+    },
+    {
+      "ID": "3",
+      "Requirement": "Both selected-state consumers reject absent Epsilon0/KappaX/KappaY/ExtensionUsed/Status; geometry-only and correct snapshots remain valid.",
+      "Source": [
+        "CSectionPlotDataReader",
+        "modAutoCADStressExport"
+      ],
+      "Tests": [
+        "RunAudit03SnapshotMetadataTests (all 5 states, relocated anchor, delete each key, both consumers, geometry and recovery)",
+        "RunCalculationSnapshotTests (417, legacy file formats)"
+      ],
+      "State": "PROVEN_BY_PRIMARY_AND_SOURCE"
+    },
+    {
+      "ID": "LOCALE",
+      "Requirement": "Actual Windows/VBA en-US dot and ru-RU comma, both No/Yes and persistence; restore exact original settings.",
+      "Tests": [
+        "WindowsLocales03/TestBothWindowsCultures.ps1",
+        "TestActualVbaLocale CStr/Format/native CDbl",
+        "InternationalBefore.clixml and Restoration.json"
+      ],
+      "State": "PROVEN_BY_PRIMARY_AND_SOURCE"
+    },
+    {
+      "ID": "RELEASE",
+      "Requirement": "No new VBA components/math/search order/schema changes; source/build sync; exact native book/178 components/AllCode; user data unchanged; commit/push verified.",
+      "State": "NATIVE_PACKAGE_PROVEN_GIT_PUBLICATION_PENDING"
+    }
+  ],
+  "FinalCandidateSHA256": "BE2D741603E2CF17B55A86AE078FD99C34B16DD9D85DEDE3C7C02D6AA00C95AE",
+  "PublishedWorkbookSHA256": "567FFFCE85A63C777DD1C36C58AE2E8B8CF3F0103184CFF39794942DD61D2F5F",
+  "AllCodeSHA256": "DBBEBADB8A4CBC9380923EF941EF1C6EEB0186B73982E0997C1710237F0EC9EE",
+  "BothActualWindowsVbaLocalesTested": true,
+  "OriginalSettingsRestoredExactly": true,
+  "OwnProcessesClosed": 32,
+  "OriginalFullRunPreserved": true,
+  "NewLongFullRunStarted": false
+}

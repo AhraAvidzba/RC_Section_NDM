@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -396,6 +396,7 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
 
     Dim rowIndex As Long
     Dim parameter As String, loadCase As String
+    Dim stateFields As Object: Set stateFields = CreateObject("Scripting.Dictionary")
     For rowIndex = 2 To UBound(data, 1) ' Сначала читаем единицы результата, чтобы порядок строк свойств не влиял на перевод величин без отдельно указанной единицы.
         parameter = Trim$(ReadSnapshotText(data(rowIndex, colParameter), anchor, rowIndex, colParameter, "Parameter"))
         loadCase = Trim$(ReadSnapshotText(data(rowIndex, colLoadCase), anchor, rowIndex, colLoadCase, "LoadCase"))
@@ -417,11 +418,23 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
                 If Left$(LCase$(parameter), 7) <> "output." Then _
                     ReadCommonProperty parameter, data(rowIndex, colValue), data(rowIndex, colUnit), anchor, rowIndex, colValue, colUnit
             ElseIf StrComp(loadCase, mLoadCase, vbTextCompare) = 0 Then
-                If Not mGeometryOnly Or mGeometryReferenceItemsEnabled Then _
+                If Not mGeometryOnly Or mGeometryReferenceItemsEnabled Then
                     ReadLoadCaseProperty parameter, data(rowIndex, colValue), data(rowIndex, colUnit), anchor, rowIndex, colValue, colUnit
+                    stateFields(LCase$(parameter)) = True
+                End If
             End If
         End If
     Next rowIndex
+
+    If Not mGeometryOnly Then
+        Dim field As Variant, requiredKey As String
+        For Each field In Array("Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
+            requiredKey = "State." & mStateType & "." & CStr(field)
+            If Not stateFields.Exists(LCase$(requiredKey)) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+                "В сохраненном снимке Results для сочетания " & mLoadCase & " отсутствует обязательное поле " & requiredKey & _
+                " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет/импорт для восстановления снимка."
+        Next field
+    End If
 
     If Len(mSnapshotLengthUnit) = 0 Then mSnapshotLengthUnit = "mm"
     If Len(mSnapshotAreaUnit) = 0 Then mSnapshotAreaUnit = mSnapshotLengthUnit & "2"

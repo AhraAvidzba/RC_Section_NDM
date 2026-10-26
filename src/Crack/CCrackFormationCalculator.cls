@@ -472,10 +472,10 @@ End Sub
 
 ' Сохраняет фактически выбранный путь и причины переходов Auto.
 ' При последующей проверке наличия трещины эта история остаётся в ResultComment.
-Public Sub LimitSearchFinishLoadPath(ByVal pathKey As String, ByVal history As String)
+Public Sub LimitSearchFinishLoadPath(ByVal pathKey As String, ByVal history As String, ByVal hadPreviousAttempts As Boolean)
     mResolvedCrackFormationPath = pathKey
+    If hadPreviousAttempts And mFormationInternalStatus = rsSuccess Then mFormationInternalStatus = rsSuccessWithWarning
     If Len(Trim$(history)) = 0 Then Exit Sub
-    If mFormationInternalStatus = rsSuccess Then mFormationInternalStatus = rsSuccessWithWarning
     mStopReason = Trim$(history) & " Итоговый путь " & CrackFormationPathDisplayNameForKey(pathKey) & ": " & mStopReason
 End Sub
 

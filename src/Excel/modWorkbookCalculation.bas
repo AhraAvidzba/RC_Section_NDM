@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modWorkbookCalculation"
+Attribute VB_Name = "modWorkbookCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -1000,17 +1000,18 @@ Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
         combinationID = Trim$(CStr(values(rowIndex, 1)))
         If activeIDs.Exists(combinationID) Then
             activeIDs(combinationID) = True
-            Dim component As Long, loads(2 To 4) As Double, rowError As String, componentError As String
-            rowError = vbNullString
+            Dim component As Long, loads(2 To 4) As Double, rowError As String, componentError As String, rowHasError As Boolean
+            rowError = vbNullString: rowHasError = False
             For component = 2 To 4
                 componentError = vbNullString
                 If Not TryReadDurationLoad(values(rowIndex, component), component, units, loads(component), componentError) Then
+                    rowHasError = True ' Ошибка компоненты определяется исходом чтения, а не текстом.
                     If Len(rowError) > 0 Then rowError = rowError & "; "
                     rowError = rowError & DurationLoadComponentName(component) & " (" & _
                         range.Worksheet.Name & "!" & range.Cells(rowIndex, component).Address(False, False) & "): " & componentError
                 End If
             Next component
-            If Len(rowError) > 0 Then
+            If rowHasError Then
                 batch.AddInvalidStabilityDurationLoad combinationID, _
                     "Дополнительные нагрузки устойчивости для сочетания " & combinationID & _
                     " в таблице rngStabilityDurationLoads: " & rowError & _

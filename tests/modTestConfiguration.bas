@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestConfiguration"
+Attribute VB_Name = "modTestConfiguration"
 Option Explicit
 
 ' ==========================================================================
@@ -546,6 +546,7 @@ Public Function RunAudit03UniversalLoadPathTests(Optional ByRef passed As Long =
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim profiles As CCalculationProfileCatalog, section As CSectionModel
     On Error GoTo FailedRun
+    TestExplicitPathOutcome stats
     TestCheckUniversalPathMath stats
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
@@ -796,12 +797,12 @@ Private Sub TestCheckUniversalPathMath(ByRef stats As TConfigTestStats)
     meta.SetResult rsNumericalFailure, rcSingularTangent, rkCapacity, "Точная причина последнего поиска."
     search.Initialize meta, "Auto", "LoadMultiplier", False, 0#, 0#, 0#, 0#, Nothing, _
         vbNullString, "Последняя численная попытка."
-    search.AddLoadPathHistory "Предыдущий путь не дал точку.", "lambda*N", "Первая численная попытка."
+    search.AddLoadPathHistory "Предыдущий путь не дал точку.", "lambda*N", True, "Первая численная попытка."
     TestCheck stats, "universalPath.history.keepsBothDiagnostics", search.DiagnosticLog = _
         "Первая численная попытка." & vbCrLf & "Последняя численная попытка."
     TestCheck stats, "universalPath.history.keepsTypedCause", search.Meta.InternalStatus = rsNumericalFailure And _
         search.Meta.ResultCode = rcSingularTangent
-    search.AddLoadPathHistory vbNullString, "lambda*N", "Первая численная попытка."
+    search.AddLoadPathHistory vbNullString, "lambda*N", True, "Первая численная попытка."
     TestCheck stats, "universalPath.history.noDuplicatePrefix", search.DiagnosticLog = _
         "Первая численная попытка." & vbCrLf & "Последняя численная попытка."
     Dim capacity As CCapacityResult, historyComment As String ' Инженерный FAIL ниже текущего LC не теряет историю успешного Auto-search.
@@ -840,6 +841,7 @@ End Function
 Public Function RunAudit03SettingsTableGuardTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim stats As TConfigTestStats
+    TestExplicitInputOutcome stats
     TestAudit03SettingsTableGuards stats
     TestAudit03ProgressFileFailure stats
     TestLogLine stats, "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
@@ -2670,7 +2672,7 @@ Private Sub TestReadLocaleBoundary(ByVal kind As Long, ByVal value As Variant, B
             sp35 = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
             sp35(2, 4) = value: Set validator = New CStabilityCalculator
             If Not validator.TryValidateSP35Table721(sp35, invalidRow, invalidColumn, reason) Then Err.Raise 5, , reason
-            actual = CDbl(sp35(2, 4))
+            If Not TryReadStrictDouble(sp35(2, 4), actual) Then Err.Raise 5, , "Проверенная строка таблицы не прочитана."
         Case 5
             Set area = fixture.Worksheets(1).Range("D7:H8"): area.NumberFormat = "@"
             data(1, 1) = "CombinationID": data(1, 2) = "N": data(1, 3) = "Mx": data(1, 4) = "My": data(1, 5) = "ProfileId"
@@ -2765,3 +2767,117 @@ Private Sub TestReadLocaleSavedContract(ByVal kind As Long, ByVal value As Varia
 Failed:
     code = Err.Number: reason = Err.Description
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет только пояснения и журнал при неизменном факте предыдущей попытки;
+' числа поиска, код и адресные ключи должны сохраняться.
+Private Sub TestExplicitPathOutcome(ByRef stats As TConfigTestStats)
+    Dim search As CLimitSearchResult, meta As CResultMeta
+    Dim history As Variant, diagnostic As Variant, prior As Variant, expected As EResultInternalStatus
+    Dim formation As CCrackFormationCalculator, originalSolves As Long
+    originalSolves = SectionEquilibriumSolveCount()
+    On Error GoTo Failed
+    Set meta = New CResultMeta
+    For Each prior In Array(False, True)
+        For Each history In Array("", "Пояснение прежней попытки.", "Другое пояснение.")
+            For Each diagnostic In Array("", "Техническая диагностика.")
+                Set search = New CLimitSearchResult
+                meta.SetResult rsSuccess, rcCheckPassed, rkCapacity, "Исходное пояснение.", "", True, True
+                meta.SourceKeys = "Capacity.MaxLambda"
+                search.Initialize meta, "Auto", "LoadMultiplier", True, 0.5, 1#, 2#, 3#, Nothing, "Limit", "", "", True
+                search.AddLoadPathHistory CStr(history), "lambda*N", CBool(prior), CStr(diagnostic)
+                expected = rsSuccess: If CBool(prior) Then expected = rsSuccessWithWarning
+                TestCheck stats, "explicitPath.status", search.Meta.InternalStatus = expected
+                Set formation = New CCrackFormationCalculator
+                formation.LimitSearchFinishNoCrack "Исходное пояснение."
+                formation.LimitSearchAppendDiagnostic CStr(diagnostic)
+                formation.LimitSearchFinishLoadPath "LambdaN", CStr(history), CBool(prior)
+                TestCheck stats, "explicitPath.formationStatus", formation.ResultMeta.InternalStatus = expected
+                TestCheck stats, "explicitPath.formationCode", formation.ResultMeta.ResultCode = rcCriterionNotReached
+                TestCheck stats, "explicitPath.formationPhysical", formation.Converged And Not formation.CrackFormed
+                TestCheck stats, "explicitPath.noSolverFromText", SectionEquilibriumSolveCount() = originalSolves
+                TestCheck stats, "explicitPath.code", search.Meta.ResultCode = rcCheckPassed
+                TestCheck stats, "explicitPath.source", search.Meta.SourceKeys = "Capacity.MaxLambda"
+                TestCheck stats, "explicitPath.point", search.HasLimitPoint And search.LambdaUltimate = 0.5 And _
+                    search.NUltimate = 1# And search.MxUltimate = 2# And search.MyUltimate = 3#
+            Next diagnostic
+        Next history
+    Next prior
+    GoTo Finished
+Failed:
+    TestCheck stats, "explicitPath.runtime." & Err.Number & "." & Err.Description, False
+Finished:
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отдельный короткий запуск того же контракта, который включён в штатную регрессию.
+Public Function RunExplicitPathOutcomeTests() As String
+    Dim stats As TConfigTestStats
+    TestExplicitPathOutcome stats
+    RunExplicitPathOutcomeTests = stats.Report & "TOTAL EXPLICIT PATH OUTCOME: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Наблюдает собственный VBA runtime без изменения разделителей Excel или локали потока.
+Public Function TestActualVbaLocale() As String
+    TestActualVbaLocale = "CStr=" & CStr(0.5) & "|Format=" & Format$(0.5, "0.0") & _
+        "|SystemSeparators=" & CStr(Application.UseSystemSeparators) & "|ExcelDecimal=" & Application.DecimalSeparator & _
+        "|CDblNative=" & CStr(CDbl(CStr(0.5))) & "|EffectiveExcelDecimal=" & Application.International(3)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет ошибочные значения до оформления пояснений: ошибочный ноль не
+' выключает LC, ошибочная отложенная настройка не подменяется default.
+Private Sub TestExplicitInputOutcome(ByRef stats As TConfigTestStats)
+    Dim fixture As Object, area As Object, reader As CLoadCombinationReader
+    Dim settings As CSystemSettingsReader, batch As CBatchSectionCalculator, data(1 To 2, 1 To 7) As Variant
+    Dim bad As Variant, code As Long, actual As String, value As Double, row As Long, column As Long
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167): fixture.Worksheets(1).Name = "ExplicitInput"
+    Set area = fixture.Worksheets(1).Range("D5:J6"): area.NumberFormat = "@"
+    data(1, 1) = "CombinationID": data(1, 2) = "N": data(1, 3) = "Mx": data(1, 4) = "My"
+    data(1, 5) = "ProfileId": data(1, 6) = "LoadPath": data(1, 7) = "Comment"
+    data(2, 1) = "BAD_ZERO": data(2, 5) = "PR1"
+    Set reader = New CLoadCombinationReader
+    For Each bad In Array(CVErr(2015), "not a number", "1 2")
+        data(2, 2) = bad: area.Value2 = data
+        Set batch = New CBatchSectionCalculator: reader.LoadFromRange area, batch
+        TestCheck stats, "explicitInput.invalidNotZero", batch.Count = 1
+        If batch.Count = 1 Then TestCheck stats, "explicitInput.typedInvalid", Not batch.OriginalLoadsAvailable(1)
+    Next bad
+    data(2, 1) = "": area.Value2 = data
+    Set batch = New CBatchSectionCalculator: reader.LoadFromRange area, batch
+    TestCheck stats, "explicitInput.blankIdDisabled", batch.Count = 0
+    data(2, 1) = "ZERO": data(2, 2) = 0#: data(2, 5) = CVErr(2015): area.Value2 = data
+    Set batch = New CBatchSectionCalculator: reader.LoadFromRange area, batch
+    TestCheck stats, "explicitInput.exactZeroDisabled", batch.Count = 0
+    Set area = fixture.Worksheets(1).Range("A20:D21")
+    area.Cells(1, 1).Value2 = "Parameter": area.Cells(1, 2).Value2 = "Value"
+    area.Cells(2, 1).Value2 = "Plot.ContourLineWeight": area.Cells(2, 2).Value2 = CVErr(2015)
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange area
+    On Error Resume Next
+    Err.Clear: actual = settings.GetRawString("Plot.ContourLineWeight", "Unexpected default")
+    code = Err.Number: Err.Clear
+    On Error GoTo Failed
+    TestCheck stats, "explicitInput.deferredTypedError", code = vbObjectError + 4309
+    On Error Resume Next
+    Err.Clear: value = settings.GetDouble("Plot.ContourLineWeight", 999#)
+    code = Err.Number: Err.Clear
+    On Error GoTo Failed
+    TestCheck stats, "explicitInput.noDefaultForFormulaError", code = vbObjectError + 4309
+    area.Cells(2, 2).Value2 = 15#: settings.LoadFromRange area
+    TestCheck stats, "explicitInput.recovered", settings.GetRequiredDouble("Plot.ContourLineWeight") = 15#
+    GoTo Finished
+Failed:
+    TestCheck stats, "explicitInput.runtime." & Err.Number & "." & Err.Description, False
+Finished:
+    If Not fixture Is Nothing Then fixture.Close False
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отдельный короткий запуск того же контракта, который включён в штатную регрессию.
+Public Function RunExplicitInputOutcomeTests() As String
+    Dim stats As TConfigTestStats
+    TestExplicitInputOutcome stats
+    RunExplicitInputOutcomeTests = stats.Report & "TOTAL EXPLICIT INPUT OUTCOME: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function

@@ -36,8 +36,8 @@ End Sub
 ' Передаёт расчёту образования трещины выбранный путь и причины прежних попыток
 ' для сохранения в окончательном результате.
 Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
-        ByVal previousPathComments As String)
-    mCrack.LimitSearchFinishLoadPath request.SelectedLoadPath.Key, previousPathComments
+        ByVal previousPathComments As String, ByVal hadPreviousAttempts As Boolean)
+    mCrack.LimitSearchFinishLoadPath request.SelectedLoadPath.Key, previousPathComments, hadPreviousAttempts
 End Sub
 
 ' Подключает существующий расчетчик трещин без изменения его настроек.
