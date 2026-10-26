@@ -22,3 +22,7 @@
 AllCode SHA256 `2688FF2C07BC4A903811F900C2E35E8655FB967FCB0B98677E90288ABDD79D67`. Финальная книга: `workbook/output/RC_Section_NDM.xlsm`. Отчёт по изменениям, поэтапным тестам и ограничениям локали: `NDM_OOP_Layers_Status_Refactoring_2026-10-26.md`. Новых VBA-классов/модулей 0; математика/единицы/форматы снимков не менялись.
 
 Основные доказательства: CompleteCurrentAcceptance.json и Focused/Acceptance.json исходного полного каталога, ClosedPrimaryReview/FocusedPrimaryReview, RunnerFooterFix, FinalReleaseGate. Архив FullRequiredLogs.zip сохраняет оригинальные raw/metadata и ошибочный outer exit; manifest Processed.json перечисляет SHA и точный состав. Публикация выполняется в codex/linked-rebar-row-offsets после этой приёмки; успешный push подтверждается отдельной сверкой remote.
+
+## Подтверждение публикации
+
+Изменения опубликованы в codex/linked-rebar-row-offsets: a9372807, remote HEAD совпал. Книга AFF и AllCode2688 совпали с проверенными, исходный ТЗ025C сохранён точно; пользовательский execution_report/outputs не затронуты. Существующее ndm подтверждено PAUSED после полной приёмки/отчёта/push, расписание и prompt сохранены. Собственная одноразовая Windows-задача RC_NDM_OOP_20261026_Run01 удалена. PublicationVerification.json хранит подтверждение; следующий коммит содержит только эти итоговые метаданные.

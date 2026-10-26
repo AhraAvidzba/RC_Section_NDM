@@ -1,6 +1,6 @@
 {
   "At": "2026-10-26T06:49:26.622060+03:00",
-  "Status": "PASS_CODE_TESTS_AND_EXACT_NATIVE_ARTIFACT",
+  "Status": "COMPLETE_CODE_TESTS_NATIVE_PUBLICATION_AND_MONITOR",
   "BookSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
   "Requirements": [
     {
@@ -91,6 +91,14 @@
         "FinalReleaseGate/ProcessClosureBeforeNative.json",
         "Observations/CoreProcessClosure_20261026_0621.json"
       ]
+    },
+    {
+      "Requirement": "Публикация/remote, пользовательские файлы, завершение ndm и очистка своей одноразовой задачи",
+      "Verified": true,
+      "Evidence": [
+        "PublicationVerification.json",
+        "../FullSuiteLaunch_2026-10-26_OOP_Run01/TaskRemoval.json"
+      ]
     }
   ],
   "NewVBAClasses": 0,
@@ -100,5 +108,8 @@
   "TrueSecondWindowsLocaleLimitationDocumented": true,
   "OriginalOuterExit1Preserved": true,
   "FooterFailureReproducedFixedAndRetested": true,
-  "PublicationAndNdmPausePending": true
+  "PublicationAndNdmPausePending": false,
+  "VerifiedPublishedCommit": "a9372807f8acf70e0dde30c019ebcaab1fbb1342",
+  "NdmStatus": "PAUSED",
+  "OneShotTaskRemoved": true
 }
