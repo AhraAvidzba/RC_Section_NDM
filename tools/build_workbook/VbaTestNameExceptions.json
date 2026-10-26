@@ -643,5 +643,25 @@
     "Module": "CTestExcelApplicationState",
     "Method": "Calculate",
     "Reason": "Обязательное имя Excel COM API в явно тестовом прокси: сохраняет рабочий late-bound вызов и позволяет наблюдать порядок чтения/пересчёта без изменения рабочего API."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Normal",
+    "Reason": "Обязательное свойство AutoCAD COM API в явно тестовом классе: чтение и присваивание нормали проверяют экспорт геометрии в WCS без изменения рабочего контракта."
+  },
+  {
+    "Module": "CTestFakeAcadContourExport",
+    "Method": "Elevation",
+    "Reason": "Обязательное свойство AutoCAD COM API в явно тестовом классе: чтение и присваивание отметки проверяют экспорт плоской геометрии в WCS без изменения рабочего контракта."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Normal",
+    "Reason": "Обязательное свойство AutoCAD Region COM API в явно тестовом классе: импортёр читает нормаль исходной области через неизменённый внешний контракт."
+  },
+  {
+    "Module": "CTestFakeAcadRegion",
+    "Method": "Document",
+    "Reason": "Обязательное свойство AutoCAD Entity COM API в явно тестовом классе: общий считыватель контура запрашивает документ через неизменённый внешний контракт."
   }
 ]

@@ -1,0 +1,28 @@
+{
+  "Status": "PASS_SCOPED_DIRECTED_CONTOUR_CELL_ACCEPTANCE",
+  "ObservedUTC": "2026-10-26T16:52:43.673849+00:00",
+  "WorkbookSHA256": "44C63ECF5C69C783A9455ACA1314FF0FFBEC5F825D0585F58636967D155AD4E5",
+  "AllCodeSHA256": "252089A0A3CB25EB21A9C2A291646D33B1BAFB96A6CE08CD8EE1BB6A1A30C82D",
+  "DirectedNoYes": [
+    4527,
+    4527
+  ],
+  "SourceComponents": 175,
+  "DocumentComponents": 6,
+  "NativePublishedChecks": 85,
+  "WorkflowCases": 5,
+  "WorkflowAssertions": 4298,
+  "NativeCADAssertions": 127,
+  "DecimalAssertions": 2392,
+  "FullBuildLayoutChecks": 1219,
+  "UserDataPreserved": true,
+  "ForeignReportPreserved": true,
+  "OwnIdentitiesClosed": 46,
+  "MainUnchanged": true,
+  "FullRegressionRun": false,
+  "FullRegressionPass": false,
+  "UnapprovedLongSuiteStarted": false,
+  "HyperlinkStrictDiagnostic": "REVIEW_REQUIRED_164_XML_NORMALIZATION_DIFFERENCES",
+  "HyperlinkVisibleAppearanceVerified": true,
+  "Scope": "Directed acceptance of feature branch; no 178+Focused full-suite claim"
+}

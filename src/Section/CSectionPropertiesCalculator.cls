@@ -94,7 +94,7 @@ Public Sub ValidateSnapshot(ByVal section As CSectionModel, Optional ByVal requi
     If requireTransformed And mTransformedSnapshot Is Nothing Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Приведенные характеристики снимка не подготовлены."
 End Sub
 
-' MinX/MaxX/MinY/MaxY по прежним оболочкам элементов.
+' MinX/MaxX/MinY/MaxY по фактическим границам либо прежним оболочкам элементов.
 Public Property Get SnapshotBounds() As Variant
     SnapshotBounds = mSnapshotBounds
 End Property
@@ -283,9 +283,14 @@ Public Sub CalculateProjection(ByVal section As CSectionModel, ByVal axisX As Do
     Dim initialized As Boolean
     Dim i As Long
     For i = 1 To section.ConcreteCount
-        ExtendProjection initialized, minProjection, maxProjection, _
-            nx * section.ConcreteX(i) + ny * section.ConcreteY(i), _
-            ConcreteHalfProjection(section, i, nx, ny)
+        Dim cellMinimum As Double, cellMaximum As Double
+        section.ConcreteProjectionBounds i, nx, ny, cellMinimum, cellMaximum
+        If Not initialized Then
+            minProjection = cellMinimum: maxProjection = cellMaximum: initialized = True
+        Else
+            If cellMinimum < minProjection Then minProjection = cellMinimum
+            If cellMaximum > maxProjection Then maxProjection = cellMaximum
+        End If
     Next i
 
     If includeRebar And section.RebarCount > 0 Then
@@ -569,9 +574,14 @@ Private Sub CalculateLinearProjection(ByVal section As CSectionModel, ByVal axis
     Dim initialized As Boolean
     Dim i As Long
     For i = 1 To section.ConcreteCount
-        ExtendProjection initialized, minProjection, maxProjection, _
-            axisX * section.ConcreteX(i) + axisY * section.ConcreteY(i), _
-            ConcreteHalfProjection(section, i, axisX, axisY)
+        Dim cellMinimum As Double, cellMaximum As Double
+        section.ConcreteProjectionBounds i, axisX, axisY, cellMinimum, cellMaximum
+        If Not initialized Then
+            minProjection = cellMinimum: maxProjection = cellMaximum: initialized = True
+        Else
+            If cellMinimum < minProjection Then minProjection = cellMinimum
+            If cellMaximum > maxProjection Then maxProjection = cellMaximum
+        End If
     Next i
 
     If includeRebar And section.RebarCount > 0 Then

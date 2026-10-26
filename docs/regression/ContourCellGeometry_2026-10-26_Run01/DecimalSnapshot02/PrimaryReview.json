@@ -1,0 +1,774 @@
+{
+  "Status": "PASS_DIRECTED_DECIMAL_SNAPSHOT02_PRIMARY_REVIEW",
+  "ReviewedUTC": "2026-10-26T16:18:55.141350+00:00",
+  "AllTwoPrimariesReadEntirely": true,
+  "TotalPrimaryBytesRead": 121538,
+  "TotalPrimaryLinesRead": 2410,
+  "AssertionsPassed": 2392,
+  "AssertionsFailed": 0,
+  "Cases": [
+    {
+      "CaseID": "01_Dot_File",
+      "SeparatorProfile": {
+        "UseSystem": false,
+        "Decimal": ".",
+        "Thousands": ",",
+        "WindowsLocaleChanged": false
+      },
+      "PrimaryReadEntirely": true,
+      "PrimaryBytesRead": 60768,
+      "PrimaryLinesRead": 1205,
+      "PrimarySHA256": "7CF57A88455CFF316BF0E34A50723EBDF7560834C3291274399C2F9DEC6B94D4",
+      "AssertionsPassed": 1196,
+      "AssertionsFailed": 0,
+      "Checks": {
+        "TerminalCountsMatch": true,
+        "NoPrimaryFailures": true,
+        "RequiredCheckGroupsPresent": true,
+        "AllRequiredNumericGroupsComplete": true,
+        "ExpectedIDsOwnersTopologyAnd111NumericFrames": true,
+        "BothTablesClearedBeforeBothRestoreStages": true,
+        "SeparatorProfileMatches": true,
+        "ActualFile05MagicAndHashMatch": true,
+        "PrimaryAndGeometryHashesMatch": true,
+        "ActualReopenFingerprintBytesMatch": true
+      },
+      "NumericAssertionCounts": {
+        "matrix.requiredType": 222,
+        "matrix.requiredParse": 222,
+        "matrix.requiredBits": 222,
+        "matrix.numeric": 222,
+        "matrix.bits": 222
+      },
+      "RequiredNumericScalarFieldsPerSweep": 111,
+      "NumericSweeps": 2,
+      "GeometryColumnsIncludingRunID": 16,
+      "BoundaryColumnsIncludingRunID": 18,
+      "ElementIDs": [
+        "C1",
+        "C2",
+        "R1",
+        "R2"
+      ],
+      "BoundaryOwnerRowCounts": {
+        "C1": 5,
+        "C2": 8
+      },
+      "SegmentTypeRowCounts": {
+        "CONTOUR_ARC": 12,
+        "CONTOUR_LINE": 1
+      },
+      "LoopRoleRowCounts": {
+        "Outer": 9,
+        "Opening": 4
+      },
+      "NumericIEEE754Frames": 111,
+      "ModelProperties": [
+        {
+          "Stage": "preview",
+          "Property": "A",
+          "ElementID": "C1",
+          "Actual": 1214.67601587175,
+          "Expected": 1214.67601587175
+        },
+        {
+          "Stage": "preview",
+          "Property": "X",
+          "ElementID": "C1",
+          "Actual": -1.37238972419412,
+          "Expected": -1.37238972419412
+        },
+        {
+          "Stage": "preview",
+          "Property": "Y",
+          "ElementID": "C1",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "preview",
+          "Property": "Ix",
+          "ElementID": "C1",
+          "Actual": 134437.561608994,
+          "Expected": 134437.561608994
+        },
+        {
+          "Stage": "preview",
+          "Property": "Iy",
+          "ElementID": "C1",
+          "Actual": 104431.393449416,
+          "Expected": 104431.393449416
+        },
+        {
+          "Stage": "preview",
+          "Property": "Ixy",
+          "ElementID": "C1",
+          "Actual": 2.27373675443232e-12,
+          "Expected": 2.27373675443232e-12
+        },
+        {
+          "Stage": "preview",
+          "Property": "A",
+          "ElementID": "C2",
+          "Actual": 816.961352088983,
+          "Expected": 816.961352088983
+        },
+        {
+          "Stage": "preview",
+          "Property": "X",
+          "ElementID": "C2",
+          "Actual": 75.125,
+          "Expected": 75.125
+        },
+        {
+          "Stage": "preview",
+          "Property": "Y",
+          "ElementID": "C2",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "preview",
+          "Property": "Ix",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "preview",
+          "Property": "Iy",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "preview",
+          "Property": "Ixy",
+          "ElementID": "C2",
+          "Actual": -3.5811353882309e-12,
+          "Expected": -3.5811353882309e-12
+        },
+        {
+          "Stage": "fileView",
+          "Property": "A",
+          "ElementID": "C1",
+          "Actual": 1214.67601587175,
+          "Expected": 1214.67601587175
+        },
+        {
+          "Stage": "fileView",
+          "Property": "X",
+          "ElementID": "C1",
+          "Actual": -1.37238972419412,
+          "Expected": -1.37238972419412
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Y",
+          "ElementID": "C1",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Ix",
+          "ElementID": "C1",
+          "Actual": 134437.561608994,
+          "Expected": 134437.561608994
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Iy",
+          "ElementID": "C1",
+          "Actual": 104431.393449416,
+          "Expected": 104431.393449416
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Ixy",
+          "ElementID": "C1",
+          "Actual": 2.27373675443232e-12,
+          "Expected": 2.27373675443232e-12
+        },
+        {
+          "Stage": "fileView",
+          "Property": "A",
+          "ElementID": "C2",
+          "Actual": 816.961352088983,
+          "Expected": 816.961352088983
+        },
+        {
+          "Stage": "fileView",
+          "Property": "X",
+          "ElementID": "C2",
+          "Actual": 75.125,
+          "Expected": 75.125
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Y",
+          "ElementID": "C2",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Ix",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Iy",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Ixy",
+          "ElementID": "C2",
+          "Actual": -3.5811353882309e-12,
+          "Expected": -3.5811353882309e-12
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "A",
+          "ElementID": "C1",
+          "Actual": 1214.67601587175,
+          "Expected": 1214.67601587175
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "X",
+          "ElementID": "C1",
+          "Actual": -1.37238972419412,
+          "Expected": -1.37238972419412
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Y",
+          "ElementID": "C1",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Ix",
+          "ElementID": "C1",
+          "Actual": 134437.561608994,
+          "Expected": 134437.561608994
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Iy",
+          "ElementID": "C1",
+          "Actual": 104431.393449416,
+          "Expected": 104431.393449416
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Ixy",
+          "ElementID": "C1",
+          "Actual": 2.27373675443232e-12,
+          "Expected": 2.27373675443232e-12
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "A",
+          "ElementID": "C2",
+          "Actual": 816.961352088983,
+          "Expected": 816.961352088983
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "X",
+          "ElementID": "C2",
+          "Actual": 75.125,
+          "Expected": 75.125
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Y",
+          "ElementID": "C2",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Ix",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Iy",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Ixy",
+          "ElementID": "C2",
+          "Actual": -3.5811353882309e-12,
+          "Expected": -3.5811353882309e-12
+        }
+      ],
+      "AllParserAndSettingsChecks": [
+        "strict.accept.1.25",
+        "strict.value.1.25; actual=1.25; expected=1.25",
+        "strict.accept.1,25",
+        "strict.value.1,25; actual=1.25; expected=1.25",
+        "strict.accept.+1.25E0",
+        "strict.value.+1.25E0; actual=1.25; expected=1.25",
+        "strict.accept.+1,25E0",
+        "strict.value.+1,25E0; actual=1.25; expected=1.25",
+        "strict.numericVariant",
+        "strict.numericVariant.value; actual=1.25; expected=1.25",
+        "strict.singleCommaDecimal",
+        "strict.noAccidentalThousands; actual=1.234; expected=1.234",
+        "strict.rejectGrouping.1,234.5",
+        "strict.rejectGrouping.1.234,5",
+        "strict.rejectGrouping.1 234,5",
+        "strict.rejectGrouping.1'234.5",
+        "strict.rejectGrouping.1.234.567",
+        "strict.rejectGrouping.1,234,567",
+        "strict.rejectGrouping.12.5mm",
+        "settings.GetDouble.dot; actual=25.5; expected=25.5",
+        "settings.GetRequiredDouble.comma; actual=50.25; expected=50.25"
+      ],
+      "PhysicalTableClearCounts": {
+        "rngNDMSectionGeometry": 2,
+        "rngNDMElementGeometry": 2
+      },
+      "SnapshotFile": "ContourDecimalDot.ndm",
+      "SnapshotBytesRead": 78587,
+      "SnapshotMagic": "NDMSNP05",
+      "SnapshotSHA256": "6644F98467FCD2A37CCA9C3C9BE8103B15266A80BB85DB99CB271F8C1A619674",
+      "GeometrySHA256": "C09B13BAA3FC461D4C68BA876892D3E864E7396D4A6FE543E99D757195350099",
+      "GeometryBytesRead": 3783,
+      "ReopenFingerprintBytesRead": 182630,
+      "ReopenBeforeSHA256": "E7C946E7C5E975C355FD84D87BCAECF6E747B3A0B7D4D2EA381D41405417DB71",
+      "ReopenAfterSHA256": "E7C946E7C5E975C355FD84D87BCAECF6E747B3A0B7D4D2EA381D41405417DB71",
+      "MacroInvocationSeconds": 2.3537056
+    },
+    {
+      "CaseID": "02_Comma_File",
+      "SeparatorProfile": {
+        "UseSystem": false,
+        "Decimal": ",",
+        "Thousands": ".",
+        "WindowsLocaleChanged": false
+      },
+      "PrimaryReadEntirely": true,
+      "PrimaryBytesRead": 60770,
+      "PrimaryLinesRead": 1205,
+      "PrimarySHA256": "BB692F3E2A1A992ED837CD76B2B773C32BB82B4D912DA36F7786A03843995646",
+      "AssertionsPassed": 1196,
+      "AssertionsFailed": 0,
+      "Checks": {
+        "TerminalCountsMatch": true,
+        "NoPrimaryFailures": true,
+        "RequiredCheckGroupsPresent": true,
+        "AllRequiredNumericGroupsComplete": true,
+        "ExpectedIDsOwnersTopologyAnd111NumericFrames": true,
+        "BothTablesClearedBeforeBothRestoreStages": true,
+        "SeparatorProfileMatches": true,
+        "ActualFile05MagicAndHashMatch": true,
+        "PrimaryAndGeometryHashesMatch": true,
+        "ActualReopenFingerprintBytesMatch": true
+      },
+      "NumericAssertionCounts": {
+        "matrix.requiredType": 222,
+        "matrix.requiredParse": 222,
+        "matrix.requiredBits": 222,
+        "matrix.numeric": 222,
+        "matrix.bits": 222
+      },
+      "RequiredNumericScalarFieldsPerSweep": 111,
+      "NumericSweeps": 2,
+      "GeometryColumnsIncludingRunID": 16,
+      "BoundaryColumnsIncludingRunID": 18,
+      "ElementIDs": [
+        "C1",
+        "C2",
+        "R1",
+        "R2"
+      ],
+      "BoundaryOwnerRowCounts": {
+        "C1": 5,
+        "C2": 8
+      },
+      "SegmentTypeRowCounts": {
+        "CONTOUR_ARC": 12,
+        "CONTOUR_LINE": 1
+      },
+      "LoopRoleRowCounts": {
+        "Outer": 9,
+        "Opening": 4
+      },
+      "NumericIEEE754Frames": 111,
+      "ModelProperties": [
+        {
+          "Stage": "preview",
+          "Property": "A",
+          "ElementID": "C1",
+          "Actual": 1214.67601587175,
+          "Expected": 1214.67601587175
+        },
+        {
+          "Stage": "preview",
+          "Property": "X",
+          "ElementID": "C1",
+          "Actual": -1.37238972419412,
+          "Expected": -1.37238972419412
+        },
+        {
+          "Stage": "preview",
+          "Property": "Y",
+          "ElementID": "C1",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "preview",
+          "Property": "Ix",
+          "ElementID": "C1",
+          "Actual": 134437.561608994,
+          "Expected": 134437.561608994
+        },
+        {
+          "Stage": "preview",
+          "Property": "Iy",
+          "ElementID": "C1",
+          "Actual": 104431.393449416,
+          "Expected": 104431.393449416
+        },
+        {
+          "Stage": "preview",
+          "Property": "Ixy",
+          "ElementID": "C1",
+          "Actual": 2.27373675443232e-12,
+          "Expected": 2.27373675443232e-12
+        },
+        {
+          "Stage": "preview",
+          "Property": "A",
+          "ElementID": "C2",
+          "Actual": 816.961352088983,
+          "Expected": 816.961352088983
+        },
+        {
+          "Stage": "preview",
+          "Property": "X",
+          "ElementID": "C2",
+          "Actual": 75.125,
+          "Expected": 75.125
+        },
+        {
+          "Stage": "preview",
+          "Property": "Y",
+          "ElementID": "C2",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "preview",
+          "Property": "Ix",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "preview",
+          "Property": "Iy",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "preview",
+          "Property": "Ixy",
+          "ElementID": "C2",
+          "Actual": -3.5811353882309e-12,
+          "Expected": -3.5811353882309e-12
+        },
+        {
+          "Stage": "fileView",
+          "Property": "A",
+          "ElementID": "C1",
+          "Actual": 1214.67601587175,
+          "Expected": 1214.67601587175
+        },
+        {
+          "Stage": "fileView",
+          "Property": "X",
+          "ElementID": "C1",
+          "Actual": -1.37238972419412,
+          "Expected": -1.37238972419412
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Y",
+          "ElementID": "C1",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Ix",
+          "ElementID": "C1",
+          "Actual": 134437.561608994,
+          "Expected": 134437.561608994
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Iy",
+          "ElementID": "C1",
+          "Actual": 104431.393449416,
+          "Expected": 104431.393449416
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Ixy",
+          "ElementID": "C1",
+          "Actual": 2.27373675443232e-12,
+          "Expected": 2.27373675443232e-12
+        },
+        {
+          "Stage": "fileView",
+          "Property": "A",
+          "ElementID": "C2",
+          "Actual": 816.961352088983,
+          "Expected": 816.961352088983
+        },
+        {
+          "Stage": "fileView",
+          "Property": "X",
+          "ElementID": "C2",
+          "Actual": 75.125,
+          "Expected": 75.125
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Y",
+          "ElementID": "C2",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Ix",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Iy",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "fileView",
+          "Property": "Ixy",
+          "ElementID": "C2",
+          "Actual": -3.5811353882309e-12,
+          "Expected": -3.5811353882309e-12
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "A",
+          "ElementID": "C1",
+          "Actual": 1214.67601587175,
+          "Expected": 1214.67601587175
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "X",
+          "ElementID": "C1",
+          "Actual": -1.37238972419412,
+          "Expected": -1.37238972419412
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Y",
+          "ElementID": "C1",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Ix",
+          "ElementID": "C1",
+          "Actual": 134437.561608994,
+          "Expected": 134437.561608994
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Iy",
+          "ElementID": "C1",
+          "Actual": 104431.393449416,
+          "Expected": 104431.393449416
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Ixy",
+          "ElementID": "C1",
+          "Actual": 2.27373675443232e-12,
+          "Expected": 2.27373675443232e-12
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "A",
+          "ElementID": "C2",
+          "Actual": 816.961352088983,
+          "Expected": 816.961352088983
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "X",
+          "ElementID": "C2",
+          "Actual": 75.125,
+          "Expected": 75.125
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Y",
+          "ElementID": "C2",
+          "Actual": -0.374999999999999,
+          "Expected": -0.374999999999999
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Ix",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Iy",
+          "ElementID": "C2",
+          "Actual": 68436.4695138603,
+          "Expected": 68436.4695138603
+        },
+        {
+          "Stage": "sheetRestore",
+          "Property": "Ixy",
+          "ElementID": "C2",
+          "Actual": -3.5811353882309e-12,
+          "Expected": -3.5811353882309e-12
+        }
+      ],
+      "AllParserAndSettingsChecks": [
+        "strict.accept.1.25",
+        "strict.value.1.25; actual=1.25; expected=1.25",
+        "strict.accept.1,25",
+        "strict.value.1,25; actual=1.25; expected=1.25",
+        "strict.accept.+1.25E0",
+        "strict.value.+1.25E0; actual=1.25; expected=1.25",
+        "strict.accept.+1,25E0",
+        "strict.value.+1,25E0; actual=1.25; expected=1.25",
+        "strict.numericVariant",
+        "strict.numericVariant.value; actual=1.25; expected=1.25",
+        "strict.singleCommaDecimal",
+        "strict.noAccidentalThousands; actual=1.234; expected=1.234",
+        "strict.rejectGrouping.1,234.5",
+        "strict.rejectGrouping.1.234,5",
+        "strict.rejectGrouping.1 234,5",
+        "strict.rejectGrouping.1'234.5",
+        "strict.rejectGrouping.1.234.567",
+        "strict.rejectGrouping.1,234,567",
+        "strict.rejectGrouping.12.5mm",
+        "settings.GetDouble.dot; actual=25.5; expected=25.5",
+        "settings.GetRequiredDouble.comma; actual=50.25; expected=50.25"
+      ],
+      "PhysicalTableClearCounts": {
+        "rngNDMSectionGeometry": 2,
+        "rngNDMElementGeometry": 2
+      },
+      "SnapshotFile": "ContourDecimalComma.ndm",
+      "SnapshotBytesRead": 78587,
+      "SnapshotMagic": "NDMSNP05",
+      "SnapshotSHA256": "BB224ECE0FF3E016207A4DBA6FB878B04C4D364B849177464C0F1FE448C1F060",
+      "GeometrySHA256": "C09B13BAA3FC461D4C68BA876892D3E864E7396D4A6FE543E99D757195350099",
+      "GeometryBytesRead": 3783,
+      "ReopenFingerprintBytesRead": 182630,
+      "ReopenBeforeSHA256": "8741D73E3DEB682A947B74A5A418A7C0E00FC8D508C4A43EE7D7A0E7D1A790B6",
+      "ReopenAfterSHA256": "8741D73E3DEB682A947B74A5A418A7C0E00FC8D508C4A43EE7D7A0E7D1A790B6",
+      "MacroInvocationSeconds": 1.4725902
+    }
+  ],
+  "SourceWorkbookSHA256": "86368D1AE3A8DAF0C734DB7573F4ACAC1406C59A95671D2A501B8C6CC96F285F",
+  "SourceWorkbookHashRechecked": true,
+  "SourceHelperSHA256": "87F40DB18D6AED202DCE8EC740BC75C8699A64F3E7F4D0ABF3FB28F23877303F",
+  "SourceHelperHashRechecked": true,
+  "ActualCrossSeparatorGeometryBytesEqual": true,
+  "CrossSeparatorGeometrySHA256": "C09B13BAA3FC461D4C68BA876892D3E864E7396D4A6FE543E99D757195350099",
+  "AllFourActualReopenFingerprintFilesReadAndCompared": true,
+  "BothActualFile05ArchivesReadAndHashed": true,
+  "OwnApplicationSeparatorsRestoredExactly": true,
+  "SeparatorRestoration": {
+    "Passed": true,
+    "UseSystem": false,
+    "Decimal": ".",
+    "Thousands": " ",
+    "Original": {
+      "UseSystem": false,
+      "Decimal": ".",
+      "Thousands": " "
+    },
+    "WindowsLocaleChanged": false
+  },
+  "WindowsLocaleChanged": false,
+  "Scope": "Two custom Excel separator profiles, not two Windows locales and not DiagramExtension No/Yes.",
+  "HistoricalDecimalSnapshot01All122FailuresPreserved": true,
+  "RequiredNumericMethodUnchangedByPrivateEmptyGuardFix": true,
+  "WatchdogCompletion": {
+    "Status": "DECIMAL_SNAPSHOT_WORKER_COMPLETED_REVIEW_PRIMARY",
+    "ObservedUTC": "2026-10-26T16:14:25.1674764+00:00",
+    "TimedOut": false,
+    "ElapsedSeconds": 131.7129787,
+    "WorkerExitCode": 0,
+    "SourceUnchanged": true,
+    "SourceSHA256": "86368D1AE3A8DAF0C734DB7573F4ACAC1406C59A95671D2A501B8C6CC96F285F",
+    "OrphansAfterWorkerExit": [],
+    "WorkflowAcceptance": {
+      "Status": "PASS_DIRECTED_CONTOUR_DECIMAL_SNAPSHOTS",
+      "Passed": true,
+      "CompletedCases": 2,
+      "ExpectedCases": 2,
+      "SourceUnchanged": true,
+      "SourceSHA256": "86368D1AE3A8DAF0C734DB7573F4ACAC1406C59A95671D2A501B8C6CC96F285F",
+      "PrivateTemplateUnchanged": true,
+      "AllOwnedProcessesClosed": true,
+      "OwnApplicationSeparatorsRestored": true,
+      "CrossSeparatorGeometryEqual": true,
+      "WindowsLocaleChanged": false,
+      "FullRegressionPass": false,
+      "Failure": null
+    },
+    "PrimaryReviewStillRequired": true,
+    "FullRegressionPass": false
+  },
+  "ProcessClosure": {
+    "PID": 34384,
+    "StartTicksUTC": "639286279345527723",
+    "Owned": true,
+    "ResidualForceKilled": false,
+    "ExactIdentityAbsent": true
+  },
+  "WorkerStderrBytes": 0,
+  "AllMemoryGatesReady": true,
+  "MinimumObservedFreeRAMGiB": 14.8642578125,
+  "MinimumObservedFreeCommitGiB": 17.009410858154297,
+  "Issues": [],
+  "ReadOnlyReview": true,
+  "ExcelOrCADStartedByReview": false,
+  "FullRegressionPass": false
+}

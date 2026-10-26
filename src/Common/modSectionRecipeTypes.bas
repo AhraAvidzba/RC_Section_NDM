@@ -165,6 +165,7 @@ Public Type TSectionAnnotation
 End Type
 
 Public Type TSectionMeshOptions
+    CellGeometry As String ' Adaptive — прежние прямоугольники; Contour — фактическое пересечение базовой ячейки с бетоном.
     StepX As Double ' Ширина основной ячейки бетонной сетки, мм.
     StepY As Double ' Высота основной ячейки бетонной сетки, мм.
     AutoStepFactor As Double ' 0 — использовать StepX/StepY; >0 — одинаковый шаг как доля меньшего габарита бетонной области.

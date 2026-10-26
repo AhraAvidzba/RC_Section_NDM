@@ -44,6 +44,15 @@ MESSAGE_PRESENTATION_MACROS = SNAPSHOT_ACCELERATION_MACROS | {
     'modTestAudit02Api.RunInputOnlyDialogTests',
 }
 
+CONTOUR_ELEMENT_GROUP_COUNTS = {**INDIVIDUAL_ROW_GROUP_COUNTS, 'CurrentFeatures': 11}
+CONTOUR_ELEMENT_MACROS = MESSAGE_PRESENTATION_MACROS | {
+    'modTestContourMesh.RunAdaptiveBoundaryMeshTests',
+    'modTestElementGeometry.RunElementGeometryTests',
+    'modTestElementGeometry.RunContourCellMeshTests',
+    'modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests',
+    'modTestElementGeometryViews.RunElementGeometryViewTests',
+}
+
 
 def coverage_errors(manifest):
     """Исторические запуски читаются в прежнем объёме; новый полный набор обязателен целиком."""
@@ -51,9 +60,9 @@ def coverage_errors(manifest):
         return []
     errors=[]
     version=manifest.get('CoverageVersion',1)
-    if version not in (1,2,3,4,5):
-        errors.append('Unsupported full coverage version')
-    counts=MESSAGE_PRESENTATION_GROUP_COUNTS if version==5 else SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
+    if version not in (1,2,3,4,5,6):
+        return ['Unsupported full coverage version']
+    counts=CONTOUR_ELEMENT_GROUP_COUNTS if version==6 else MESSAGE_PRESENTATION_GROUP_COUNTS if version==5 else SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
     if manifest.get('IncludesFocusedAcceptance') is not True:
         errors.append('The current full definition requires focused acceptance')
     expected={(group,mode) for group in counts for mode in ('No','Yes')}
@@ -70,9 +79,23 @@ def coverage_errors(manifest):
                 errors.append('Individual row coverage is incomplete or duplicated')
         if version >= 4 and job['Group'] == 'CurrentFeatures':
             macros = job.get('Macro', [])
-            required = MESSAGE_PRESENTATION_MACROS if version == 5 else SNAPSHOT_ACCELERATION_MACROS
+            required = CONTOUR_ELEMENT_MACROS if version == 6 else MESSAGE_PRESENTATION_MACROS if version == 5 else SNAPSHOT_ACCELERATION_MACROS
             if len(macros) != len(required) or set(macros) != required:
                 errors.append('Every feature declared for this coverage version is mandatory')
+    return errors
+
+
+def runner_coverage_errors(manifest, runner_text):
+    """Связывает новую версию с реально сохранённым runner, не меняя исторические планы."""
+    versions = {int(value) for value in re.findall(r'\bCoverageVersion\s*=\s*(\d+)\b', runner_text)}
+    declared = manifest.get('CoverageVersion', 1)
+    if declared != 6 and not any(version >= 6 for version in versions):
+        return []
+    errors = []
+    if versions != {declared}:
+        errors.append('Full runner snapshot and manifest coverage versions differ')
+    if manifest.get('CoverageDefinition') != 'AllActiveAcceptanceIncludingFocused':
+        errors.append('The version 6 runner requires the complete current coverage definition')
     return errors
 
 def load_logs():
@@ -138,6 +161,8 @@ def summarize(directory):
         snapshot=directory/name
         if not snapshot.is_file() or hashlib.sha256(snapshot.read_bytes()).hexdigest()!=manifest.get(key,'').lower():
             errors.append('Executed runner snapshot does not match: '+name)
+        if name == 'FullRunner.ps1' and snapshot.is_file():
+            errors.extend(runner_coverage_errors(manifest, snapshot.read_text(encoding='utf-8-sig')))
     finished=manifest.get('FinishedUTC')
     if not finished or datetime.fromisoformat(finished)>datetime.fromisoformat(manifest['Deadline']):
         errors.append('Completion before the requested deadline is not confirmed')
@@ -164,6 +189,7 @@ def summarize(directory):
         'runnerSHA256':manifest['RunnerSHA256'],
         'modeRunnerSHA256':manifest.get('ModeRunnerSHA256'),
         'coverageDefinition':manifest.get('CoverageDefinition','HistoricalCoreSuitesOnly'),
+        'coverageVersion':manifest.get('CoverageVersion',1),
         'includesFocusedAcceptance':bool(manifest.get('IncludesFocusedAcceptance')),
         'focusedAcceptance':focused,
         'inputProvenance':provenance,

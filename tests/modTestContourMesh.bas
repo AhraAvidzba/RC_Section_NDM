@@ -1,6 +1,12 @@
 Attribute VB_Name = "modTestContourMesh"
 Option Explicit
 
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: общая сетка параметрических и импортированных контуров
+' ==========================================================================
+' Проверяет построение сетки и решение НДС рабочим ядром и диаграммами книги.
+' Сравнивает каждый элемент. Config и Results изменяет только в отдельной тестовой копии.
+
 #If VBA7 Then
 Private Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
 Private Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (ByRef value As Currency) As Long
@@ -8,12 +14,6 @@ Private Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (ByRef
 Private Declare Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
 Private Declare Function QueryPerformanceFrequency Lib "kernel32" (ByRef value As Currency) As Long
 #End If
-
-' ==========================================================================
-' ДЛЯ ТЕСТОВ: общая сетка параметрических и импортированных контуров
-' ==========================================================================
-' Проверяет построение сетки и решение НДС рабочим ядром и диаграммами книги.
-' Сравнивает каждый элемент. Config и Results изменяет только в отдельной тестовой копии.
 
 Private mPassed As Long, mFailed As Long, mReport As String
 Private mFixture As Object, mConfig As Object
@@ -797,8 +797,8 @@ Private Sub TestCheckSnapshot()
     Set importer = New CAutoCADSectionModelImporter
     Set model = importer.ImportFromModelSpace(TestFakeSpace(contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", TestFakeLayers(), settings)
     Set sheet = mFixture.Worksheets.Add: sheet.Name = "Results"
-    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-    columns = Array(1, 12, 29, 48, 56, 69)
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+    columns = Array(1, 12, 29, 48, 56, 69, 96)
     For i = 0 To UBound(names)
         mFixture.Names.Add CStr(names(i)), "=Results!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i

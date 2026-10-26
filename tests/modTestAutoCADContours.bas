@@ -76,6 +76,7 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Dim props As CSectionPropertiesCalculator, anchor As Object, unitText As Variant, marker As Object
     Dim solves As Long, path As String, value As Variant, number As Long, description As String, i As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, unitSheet As Object
+    Dim geometryAnchor As Object, contourAnchor As Object, geometryData As Variant, geometryRows As Long, geometryColumns As Long
     On Error GoTo Failed
     solves = SectionEquilibriumSolveCount()
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
@@ -100,8 +101,27 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     contours.AddContourLine "LINE4", 400#, 100#, 400#, 0#, "Прямая 4", "O3", "Outer", "TEST"
     Set props = PrepareSectionSnapshot(model)
     writer.WriteGeometryPreview fixture, model, props
-    Set marker = sheet.Cells(22, 46): marker.Value2 = "USER-GAP"
-    TestCheck "postAudit03.contours.geometry15", sheet.Cells(20, 27).Value2 = vbNullString
+    Set geometryAnchor = fixture.Names.Item("rngNDMSectionGeometry").RefersToRange
+    Set contourAnchor = fixture.Names.Item("rngNDMSectionContours").RefersToRange
+    geometryColumns = writer.OutputColumnCount("rngNDMSectionGeometry"): geometryRows = model.ConcreteCount + model.RebarCount + 1
+    geometryData = geometryAnchor.Resize(geometryRows, geometryColumns).Value2
+    Set marker = sheet.Cells(geometryAnchor.Row + 2, contourAnchor.Column + writer.OutputColumnCount("rngNDMSectionContours") + 1)
+    marker.Value2 = "USER-GAP"
+    TestCheck "postAudit03.contours.markerOutside17Columns", writer.OutputColumnCount("rngNDMSectionContours") = 17 And _
+        marker.Column > contourAnchor.Column + 16 And marker.Column < fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column
+    TestCheck "postAudit03.contours.geometry16", geometryColumns = 16 And AnchoredColumnCount(geometryAnchor) = 16 And _
+        Len(CStr(geometryAnchor.Offset(0, geometryColumns).Value2)) = 0
+    TestCheck "postAudit03.contours.geometry16.localIxyHeader", ResultColumn(geometryData, "LocalIxy") = 14
+    Set restored = ReadSectionGeometryFromResults(fixture)
+    TestCheckArea "postAudit03.contours.geometry16.localIxyRoundTrip", restored.ConcreteLocalIxy(1), 12#
+    geometryAnchor.Offset(0, geometryColumns - 1).Resize(geometryRows, 1).ClearContents
+    TestCheck "postAudit03.contours.legacy15.width", AnchoredColumnCount(geometryAnchor) = 15
+    Set restored = ReadSectionGeometryFromResults(fixture, "Legacy15", True)
+    TestCheckArea "postAudit03.contours.legacy15.area", restored.ConcreteArea(1), 10000#
+    TestCheckArea "postAudit03.contours.legacy15.localIx", restored.ConcreteLocalIx(1), 123456#
+    TestCheckArea "postAudit03.contours.legacy15.localIy", restored.ConcreteLocalIy(1), 654321#
+    TestCheckArea "postAudit03.contours.legacy15.localIxy", restored.ConcreteLocalIxy(1), 12#
+    geometryAnchor.Resize(geometryRows, geometryColumns).Value2 = geometryData
     TestCheck "postAudit03.contours.geometryOnlyElements", sheet.Cells(23, 14).Value2 = vbNullString
     For Each unitText In Array("mm", "cm", "m")
         unitSheet.Cells(2, 2).Value2 = CStr(unitText)
@@ -113,6 +133,7 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
         Set restored = ReadSectionGeometryFromResults(fixture)
         TestCheckArea "postAudit03.contours.mechanicalA." & CStr(unitText), restored.ConcreteArea(1), 10000#
         TestCheckArea "postAudit03.contours.mechanicalIx." & CStr(unitText), restored.ConcreteLocalIx(1), 123456#
+        TestCheckArea "postAudit03.contours.mechanicalIxy." & CStr(unitText), restored.ConcreteLocalIxy(1), 12#
         Set query = New CSectionGeometryQuery: query.Initialize restored
         TestCheckArea "postAudit03.contours.domain." & CStr(unitText), query.ConcreteDomain.Area, 12000# * GEOM_PI + 10000#
         TestCheck "postAudit03.contours.marker." & CStr(unitText), marker.Value2 = "USER-GAP"
@@ -120,6 +141,7 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     path = ThisWorkbook.Path & "\PostAudit03_Contour_RoundTrip.xlsm"
     Application.DisplayAlerts = False: fixture.SaveAs path, 52: fixture.Close False
     Set fixture = Application.Workbooks.Open(path): Set sheet = fixture.Worksheets("Results")
+    Set geometryAnchor = fixture.Names.Item("rngNDMSectionGeometry").RefersToRange
     Set readBack = ReadSavedSectionContours(fixture)
     TestCheckPostAudit03ContoursEqual "postAudit03.contours.reopen", contours, readBack
     Set anchor = fixture.Names.Item("rngNDMSectionContours").RefersToRange
@@ -170,11 +192,18 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     TestCheck "postAudit03.contours.missingTableRejected", number = vbObjectError + 4376
     TestCheck "postAudit03.contours.missingTableDoesNotInsert", fixture.Names.Count = 6 And _
         fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 49
-    sheet.Cells(20, 27).Value2 = "EndX, mm"
+    fixture.Names.Add "rngNDMSectionContours", "=Results!$GR$20"
+    Set readBack = New CSectionContours: writer.WriteSectionContours fixture, readBack, Empty
+    geometryAnchor.Offset(0, geometryColumns).Value2 = "UnexpectedGeometryField"
+    TestCheck "postAudit03.contours.expandedGeometryIs17", AnchoredColumnCount(geometryAnchor) = 17
     On Error Resume Next
-    Set restored = ReadSectionGeometryFromResults(fixture): number = Err.Number: Err.Clear
+    Set restored = ReadSectionGeometryFromResults(fixture): number = Err.Number: description = Err.Description: Err.Clear
     On Error GoTo Failed
     TestCheck "postAudit03.contours.expandedGeometryRejected", number = vbObjectError + 4355
+    TestCheck "postAudit03.contours.expandedGeometryAddress", InStr(description, geometryAnchor.Resize(1, 17).Address(False, False)) > 0
+    geometryAnchor.Offset(0, geometryColumns).ClearContents
+    Set restored = ReadSectionGeometryFromResults(fixture)
+    TestCheckArea "postAudit03.contours.geometry16.restoredIxy", restored.ConcreteLocalIxy(1), 12#
     fixture.Close False: Set fixture = Nothing
     TestCheck "postAudit03.contours.noSolve", SectionEquilibriumSolveCount() = solves
     GoTo Finished
@@ -191,8 +220,8 @@ End Function
 ' Создает только тестовые якоря нижнего ряда; ширины не переназначаются.
 Private Sub TestCreatePostAudit03SnapshotAnchors(ByVal workbook As Object, ByVal sheet As Object)
     Dim names As Variant, columns As Variant, i As Long
-    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-    columns = Array(1, 12, 49, 57, 70)
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+    columns = Array(1, 12, 49, 57, 70, 96)
     For i = 0 To UBound(names)
         workbook.Names.Add CStr(names(i)), "='" & sheet.Name & "'!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i

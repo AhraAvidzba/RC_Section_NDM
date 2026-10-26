@@ -533,16 +533,26 @@ try {
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$S$156'
     Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AA$156'
     Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BR$156'
+    Add-WorkbookName $workbook "rngNDMElementGeometry" $results '$CR$156'
     $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
     # Постоянные подписи создаются один раз при сборке шаблона.
     # Поэлементная запись обходит ограничение COM-адаптера PowerShell для этой шапки.
     for ($i = 0; $i -lt $contourHeaders.Count; $i++) {
         $results.Cells.Item(156, 51 + $i).Value2 = [string]$contourHeaders[$i]
     }
+    # Фактические границы элементов отделены от общих контуров сечения; ElementID связывает их с основной геометрией.
+    $elementGeometryHeaders = $contourHeaders + @('ElementID')
+    for ($i = 0; $i -lt $elementGeometryHeaders.Count; $i++) {
+        $results.Cells.Item(156, 96 + $i).Value2 = [string]$elementGeometryHeaders[$i]
+    }
     $results.Range('AY155:BO155').Merge()
     $results.Cells.Item(155, 51).Value2 = 'Достоверные контуры и отверстия сечения'
     $results.Range('AY155:BO156').Font.Bold = $true
     Set-Border $results.Range('AY156:BO156')
+    $results.Range('CR155:DI155').Merge()
+    $results.Cells.Item(155, 96).Value2 = 'Фактические границы бетонных элементов'
+    $results.Range('CR155:DI156').Font.Bold = $true
+    Set-Border $results.Range('CR156:DI156')
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

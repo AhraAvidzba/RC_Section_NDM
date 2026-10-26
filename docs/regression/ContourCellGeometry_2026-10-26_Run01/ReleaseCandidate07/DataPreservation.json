@@ -1,0 +1,1040 @@
+{
+  "Status": "PASS",
+  "Before": "docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\Compile08\\AcceptedMain.xlsm",
+  "After": "docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\ReleaseCandidate07\\RC_Section_NDM.xlsm",
+  "BeforeSHA256": "53919E6CF11018B769191059E17977D60F3201D5857991FFE49E9326E1CC613A",
+  "AfterSHA256": "44C63ECF5C69C783A9455ACA1314FF0FFBEC5F825D0585F58636967D155AD4E5",
+  "ReadOnlyOpenXML": true,
+  "ExcelStarted": false,
+  "ConfigShiftAtoE": 1,
+  "ConfigHAndLaterShift": 0,
+  "ProtectedSheetChecks": {
+    "Config": {
+      "Cells": 34524,
+      "FormulaCells": 184,
+      "Styles": 34524
+    },
+    "Сечения": {
+      "Cells": 1331,
+      "FormulaCells": 54,
+      "Styles": 1331
+    },
+    "Расчет": {
+      "Cells": 2160,
+      "FormulaCells": 0,
+      "Styles": 2160
+    },
+    "Results": {
+      "Cells": 224,
+      "FormulaCells": 0,
+      "Styles": 224
+    }
+  },
+  "NamedRanges": [
+    {
+      "Name": "Print_Area",
+      "Before": "Сечения!$A$1:$K$132",
+      "After": "Сечения!$A$1:$K$132",
+      "RowsBefore": 132,
+      "ColumnsBefore": 11,
+      "LogicalCellsCompared": 1452,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "C2BC4E18ACC76970184478B65D563DE3E624E63574873A86E9C7CE31BDBC5127",
+      "AfterDataSHA256": "C2BC4E18ACC76970184478B65D563DE3E624E63574873A86E9C7CE31BDBC5127"
+    },
+    {
+      "Name": "rngBatchSummary",
+      "Before": "Results!$A$1",
+      "After": "Results!$A$1",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngCalculationProfiles",
+      "Before": "Config!$H$36:$N$67",
+      "After": "Config!$H$36:$N$67",
+      "RowsBefore": 32,
+      "ColumnsBefore": 7,
+      "LogicalCellsCompared": 224,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "C9B8469A1CA592C4A9C4261DF732697C27C3CF34B1300EE72EAAB27A6A4F84A5",
+      "AfterDataSHA256": "C9B8469A1CA592C4A9C4261DF732697C27C3CF34B1300EE72EAAB27A6A4F84A5"
+    },
+    {
+      "Name": "rngCircleGeometry",
+      "Before": "Сечения!$A$3:$K$18",
+      "After": "Сечения!$A$3:$K$18",
+      "RowsBefore": 16,
+      "ColumnsBefore": 11,
+      "LogicalCellsCompared": 176,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1E6E71CEDA90FA77EBFB355D725732DD03B5A2595134E2342C1B9D09E27C1992",
+      "AfterDataSHA256": "1E6E71CEDA90FA77EBFB355D725732DD03B5A2595134E2342C1B9D09E27C1992"
+    },
+    {
+      "Name": "rngConcreteMaterialParameters",
+      "Before": "Config!$H$26:$M$33",
+      "After": "Config!$H$26:$M$33",
+      "RowsBefore": 8,
+      "ColumnsBefore": 6,
+      "LogicalCellsCompared": 48,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "F56C37731C8A4C92783E5EC58EB742DC8577EB628F525CF1608F9D167DADA492",
+      "AfterDataSHA256": "F56C37731C8A4C92783E5EC58EB742DC8577EB628F525CF1608F9D167DADA492"
+    },
+    {
+      "Name": "rngCrackSummaryAnchor",
+      "Before": "Results!$A$85",
+      "After": "Results!$A$85",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngHollowRectangleGeometry",
+      "Before": "Сечения!$A$92:$K$128",
+      "After": "Сечения!$A$92:$K$128",
+      "RowsBefore": 37,
+      "ColumnsBefore": 11,
+      "LogicalCellsCompared": 407,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "17B1B8D8F3DF12C94F4A016A57436B3F6EFE0C2C44A743D567E2B0C721776047",
+      "AfterDataSHA256": "17B1B8D8F3DF12C94F4A016A57436B3F6EFE0C2C44A743D567E2B0C721776047"
+    },
+    {
+      "Name": "rngLoadCombinations",
+      "Before": "Config!$H$70:$N$100",
+      "After": "Config!$H$70:$N$100",
+      "RowsBefore": 31,
+      "ColumnsBefore": 7,
+      "LogicalCellsCompared": 217,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "75C8EFFEB7BB83E5689019832A2F477B0E34AAD2BA72B3A8E52143FCBE47920F",
+      "AfterDataSHA256": "75C8EFFEB7BB83E5689019832A2F477B0E34AAD2BA72B3A8E52143FCBE47920F"
+    },
+    {
+      "Name": "rngNDMElementResults",
+      "Before": "Results!$AN$156",
+      "After": "Results!$AN$156",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngNDMMaterialDiagrams",
+      "Before": "Results!$AA$156",
+      "After": "Results!$AA$156",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngNDMSectionAnnotations",
+      "Before": "Results!$BR$156",
+      "After": "Results!$BR$156",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngNDMSectionContours",
+      "Before": "Results!$AY$156",
+      "After": "Results!$AY$156",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "D218EC63CB47AC8500DB81D5A0D55CABEF79165078488A515C19D19224CC9A2C",
+      "AfterDataSHA256": "D218EC63CB47AC8500DB81D5A0D55CABEF79165078488A515C19D19224CC9A2C"
+    },
+    {
+      "Name": "rngNDMSectionGeometry",
+      "Before": "Results!$A$156",
+      "After": "Results!$A$156",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngNDMSectionProperties",
+      "Before": "Results!$S$156",
+      "After": "Results!$S$156",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngPlotAnnotationSettings",
+      "Before": "Config!$H$103:$M$117",
+      "After": "Config!$H$103:$M$117",
+      "RowsBefore": 15,
+      "ColumnsBefore": 6,
+      "LogicalCellsCompared": 90,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "FEBBFCA1F629F1263441AB4922AE26EE360614C5EE4B8A5086E65E20AF5BFEAB",
+      "AfterDataSHA256": "FEBBFCA1F629F1263441AB4922AE26EE360614C5EE4B8A5086E65E20AF5BFEAB"
+    },
+    {
+      "Name": "rngPointedSectionGeometry",
+      "Before": "Сечения!$A$60:$K$88",
+      "After": "Сечения!$A$60:$K$88",
+      "RowsBefore": 29,
+      "ColumnsBefore": 11,
+      "LogicalCellsCompared": 319,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "DB27F6658F89FBAE138826EF3E94C53CEC5204FC2833A3BAC9B1EB5C2EC0AAC4",
+      "AfterDataSHA256": "DB27F6658F89FBAE138826EF3E94C53CEC5204FC2833A3BAC9B1EB5C2EC0AAC4"
+    },
+    {
+      "Name": "rngRectanglesGeometry",
+      "Before": "Сечения!$A$22:$K$56",
+      "After": "Сечения!$A$22:$K$56",
+      "RowsBefore": 35,
+      "ColumnsBefore": 11,
+      "LogicalCellsCompared": 385,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "3BD3E724C7741DE92EB0D2F60A8EC6DFA10A2410C59649E4D01E56CDC58B9AFD",
+      "AfterDataSHA256": "3BD3E724C7741DE92EB0D2F60A8EC6DFA10A2410C59649E4D01E56CDC58B9AFD"
+    },
+    {
+      "Name": "rngSectionRecipeTypes",
+      "Before": "Config!$BQ$1:$BQ$4",
+      "After": "Config!$BQ$1:$BQ$4",
+      "RowsBefore": 4,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 4,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1EB069F4B5E04886F894ADE8CFF5A0F16815C89DAF89B674B1834A27E9213784",
+      "AfterDataSHA256": "1EB069F4B5E04886F894ADE8CFF5A0F16815C89DAF89B674B1834A27E9213784"
+    },
+    {
+      "Name": "rngSignConventionSettings",
+      "Before": "Config!$H$12:$J$15",
+      "After": "Config!$H$12:$J$15",
+      "RowsBefore": 4,
+      "ColumnsBefore": 3,
+      "LogicalCellsCompared": 12,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "F72B23376F78B65EE91C2E4C837FCBCDF83D952C75667585FFD2A2E4188465CE",
+      "AfterDataSHA256": "F72B23376F78B65EE91C2E4C837FCBCDF83D952C75667585FFD2A2E4188465CE"
+    },
+    {
+      "Name": "rngSP35Table721",
+      "Before": "Config!$X$60:$AE$78",
+      "After": "Config!$X$60:$AE$78",
+      "RowsBefore": 19,
+      "ColumnsBefore": 8,
+      "LogicalCellsCompared": 152,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "AF3F8B949F591F85398E2E8F909EB814DD7670BB89B4530CF5EC47804633775C",
+      "AfterDataSHA256": "AF3F8B949F591F85398E2E8F909EB814DD7670BB89B4530CF5EC47804633775C"
+    },
+    {
+      "Name": "rngStabilityDurationLoads",
+      "Before": "Config!$P$70:$S$100",
+      "After": "Config!$P$70:$S$100",
+      "RowsBefore": 31,
+      "ColumnsBefore": 4,
+      "LogicalCellsCompared": 124,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "CE724BB47C580606B066F781F3B7FDD4364BA07E26BE01034D0E2C861EA520D5",
+      "AfterDataSHA256": "CE724BB47C580606B066F781F3B7FDD4364BA07E26BE01034D0E2C861EA520D5"
+    },
+    {
+      "Name": "rngStabilitySummaryAnchor",
+      "Before": "Results!$A$122",
+      "After": "Results!$A$122",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngSteelMaterialParameters",
+      "Before": "Config!$H$18:$M$23",
+      "After": "Config!$H$18:$M$23",
+      "RowsBefore": 6,
+      "ColumnsBefore": 6,
+      "LogicalCellsCompared": 36,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "FB0D25396E80ECB3235987432406EF61628B4B8DB20F2EA037234311009DD43B",
+      "AfterDataSHA256": "FB0D25396E80ECB3235987432406EF61628B4B8DB20F2EA037234311009DD43B"
+    },
+    {
+      "Name": "rngStrengthSummaryAnchor",
+      "Before": "Results!$A$49",
+      "After": "Results!$A$49",
+      "RowsBefore": 1,
+      "ColumnsBefore": 1,
+      "LogicalCellsCompared": 1,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD",
+      "AfterDataSHA256": "1D8FC6CEB1F94C6326D6D5483D258FCB2E179E9869325B245D105C2219BF69FD"
+    },
+    {
+      "Name": "rngSystemSettings",
+      "Before": "Config!$A$3:$E$142",
+      "After": "Config!$A$3:$E$143",
+      "RowsBefore": 140,
+      "ColumnsBefore": 5,
+      "LogicalCellsCompared": 700,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "900E5B1E8BF873710060EB24B0EA0153BE3BF3C2E67A833AB55EC7811F4D3571",
+      "AfterDataSHA256": "900E5B1E8BF873710060EB24B0EA0153BE3BF3C2E67A833AB55EC7811F4D3571"
+    },
+    {
+      "Name": "rngUnitSettings",
+      "Before": "Config!$H$3:$K$9",
+      "After": "Config!$H$3:$K$9",
+      "RowsBefore": 7,
+      "ColumnsBefore": 4,
+      "LogicalCellsCompared": 28,
+      "DataAndFormulasPreserved": true,
+      "NormalizedStylesPreserved": true,
+      "BeforeDataSHA256": "5393D4F4619B6C8BADC1DA64BF87700D8549AC61B6000D038F9E77F6FDD9F297",
+      "AfterDataSHA256": "5393D4F4619B6C8BADC1DA64BF87700D8549AC61B6000D038F9E77F6FDD9F297"
+    }
+  ],
+  "ConfigKeyPairs": [
+    {
+      "Key": "AutoCAD.Color.ConcreteCompression",
+      "BeforeRow": 119,
+      "AfterRow": 120
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteTension",
+      "BeforeRow": 118,
+      "AfterRow": 119
+    },
+    {
+      "Key": "AutoCAD.Color.Neutral",
+      "BeforeRow": 122,
+      "AfterRow": 123
+    },
+    {
+      "Key": "AutoCAD.Color.RebarCompression",
+      "BeforeRow": 121,
+      "AfterRow": 122
+    },
+    {
+      "Key": "AutoCAD.Color.RebarTension",
+      "BeforeRow": 120,
+      "AfterRow": 121
+    },
+    {
+      "Key": "AutoCAD.Common.ConcreteLayer",
+      "BeforeRow": 98,
+      "AfterRow": 99
+    },
+    {
+      "Key": "AutoCAD.Common.OpeningContourLayer",
+      "BeforeRow": 101,
+      "AfterRow": 102
+    },
+    {
+      "Key": "AutoCAD.Common.RebarLayer",
+      "BeforeRow": 99,
+      "AfterRow": 100
+    },
+    {
+      "Key": "AutoCAD.Common.SectionContourLayer",
+      "BeforeRow": 100,
+      "AfterRow": 101
+    },
+    {
+      "Key": "AutoCAD.Export.CombinationID",
+      "BeforeRow": 105,
+      "AfterRow": 106
+    },
+    {
+      "Key": "AutoCAD.Export.ContourEnabled",
+      "BeforeRow": 109,
+      "AfterRow": 110
+    },
+    {
+      "Key": "AutoCAD.Export.ContourFormat",
+      "BeforeRow": 110,
+      "AfterRow": 111
+    },
+    {
+      "Key": "AutoCAD.Export.CrackInteractionLayer",
+      "BeforeRow": 113,
+      "AfterRow": 114
+    },
+    {
+      "Key": "AutoCAD.Export.ExportCrackInteractionContour",
+      "BeforeRow": 111,
+      "AfterRow": 112
+    },
+    {
+      "Key": "AutoCAD.Export.LabelMode",
+      "BeforeRow": 112,
+      "AfterRow": 113
+    },
+    {
+      "Key": "AutoCAD.Export.LoadPointEnabled",
+      "BeforeRow": 108,
+      "AfterRow": 109
+    },
+    {
+      "Key": "AutoCAD.Export.NeutralLineEnabled",
+      "BeforeRow": 106,
+      "AfterRow": 107
+    },
+    {
+      "Key": "AutoCAD.Export.PrincipalAxesMode",
+      "BeforeRow": 107,
+      "AfterRow": 108
+    },
+    {
+      "Key": "AutoCAD.Import.MinArea",
+      "BeforeRow": 103,
+      "AfterRow": 104
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteCompression",
+      "BeforeRow": 115,
+      "AfterRow": 116
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteTension",
+      "BeforeRow": 114,
+      "AfterRow": 115
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarCompression",
+      "BeforeRow": 117,
+      "AfterRow": 118
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarTension",
+      "BeforeRow": 116,
+      "AfterRow": 117
+    },
+    {
+      "Key": "Calculation.ZeroMomentPerDepth",
+      "BeforeRow": 13,
+      "AfterRow": 13
+    },
+    {
+      "Key": "Capacity.BaseLoadSteps",
+      "BeforeRow": 48,
+      "AfterRow": 49
+    },
+    {
+      "Key": "Capacity.InitialLambda",
+      "BeforeRow": 45,
+      "AfterRow": 46
+    },
+    {
+      "Key": "Capacity.MaxLambda",
+      "BeforeRow": 43,
+      "AfterRow": 44
+    },
+    {
+      "Key": "Capacity.MaxRetries",
+      "BeforeRow": 47,
+      "AfterRow": 48
+    },
+    {
+      "Key": "Capacity.SearchMethod",
+      "BeforeRow": 44,
+      "AfterRow": 45
+    },
+    {
+      "Key": "Capacity.SolutionStrategy",
+      "BeforeRow": 38,
+      "AfterRow": 39
+    },
+    {
+      "Key": "Capacity.SolverMaxIterations",
+      "BeforeRow": 39,
+      "AfterRow": 40
+    },
+    {
+      "Key": "Capacity.ToleranceLambda",
+      "BeforeRow": 46,
+      "AfterRow": 47
+    },
+    {
+      "Key": "Capacity.ToleranceStrain",
+      "BeforeRow": 41,
+      "AfterRow": 42
+    },
+    {
+      "Key": "General.DiagramExtension",
+      "BeforeRow": 12,
+      "AfterRow": 12
+    },
+    {
+      "Key": "General.ExecutionReportEnabled",
+      "BeforeRow": 5,
+      "AfterRow": 5
+    },
+    {
+      "Key": "General.NonCriticalMessagesEnabled",
+      "BeforeRow": 6,
+      "AfterRow": 6
+    },
+    {
+      "Key": "General.PlateauSlopeFactor",
+      "BeforeRow": 11,
+      "AfterRow": 11
+    },
+    {
+      "Key": "General.ReformatResultsEnabled",
+      "BeforeRow": 7,
+      "AfterRow": 7
+    },
+    {
+      "Key": "General.WorstCombinationCriterion",
+      "BeforeRow": 10,
+      "AfterRow": 10
+    },
+    {
+      "Key": "Geometry.Source",
+      "BeforeRow": 16,
+      "AfterRow": 16
+    },
+    {
+      "Key": "Geometry.Type",
+      "BeforeRow": 17,
+      "AfterRow": 17
+    },
+    {
+      "Key": "Load.ReferenceOffsetX",
+      "BeforeRow": 22,
+      "AfterRow": 23
+    },
+    {
+      "Key": "Load.ReferenceOffsetY",
+      "BeforeRow": 23,
+      "AfterRow": 24
+    },
+    {
+      "Key": "Mesh.BoundarySubdivisions",
+      "BeforeRow": 21,
+      "AfterRow": 22
+    },
+    {
+      "Key": "Mesh.StepMode",
+      "BeforeRow": 18,
+      "AfterRow": 19
+    },
+    {
+      "Key": "Mesh.StepX",
+      "BeforeRow": 19,
+      "AfterRow": 20
+    },
+    {
+      "Key": "Mesh.StepY",
+      "BeforeRow": 20,
+      "AfterRow": 21
+    },
+    {
+      "Key": "Plot.AutoUpdateAfterCalculation",
+      "BeforeRow": 126,
+      "AfterRow": 127
+    },
+    {
+      "Key": "Plot.AxisLabelsEnabled",
+      "BeforeRow": 134,
+      "AfterRow": 135
+    },
+    {
+      "Key": "Plot.AxisLabelsFontSize",
+      "BeforeRow": 135,
+      "AfterRow": 136
+    },
+    {
+      "Key": "Plot.Color.ConcreteCompression",
+      "BeforeRow": 141,
+      "AfterRow": 142
+    },
+    {
+      "Key": "Plot.Color.ConcreteTension",
+      "BeforeRow": 142,
+      "AfterRow": 143
+    },
+    {
+      "Key": "Plot.Color.RebarCompression",
+      "BeforeRow": 139,
+      "AfterRow": 140
+    },
+    {
+      "Key": "Plot.Color.RebarTension",
+      "BeforeRow": 140,
+      "AfterRow": 141
+    },
+    {
+      "Key": "Plot.ContourEnabled",
+      "BeforeRow": 136,
+      "AfterRow": 137
+    },
+    {
+      "Key": "Plot.Enabled",
+      "BeforeRow": 125,
+      "AfterRow": 126
+    },
+    {
+      "Key": "Plot.LegendEnabled",
+      "BeforeRow": 137,
+      "AfterRow": 138
+    },
+    {
+      "Key": "Plot.LegendMode",
+      "BeforeRow": 138,
+      "AfterRow": 139
+    },
+    {
+      "Key": "Plot.LoadApplicationPointEnabled",
+      "BeforeRow": 133,
+      "AfterRow": 134
+    },
+    {
+      "Key": "Plot.LoadCase",
+      "BeforeRow": 127,
+      "AfterRow": 128
+    },
+    {
+      "Key": "Plot.NeutralLineEnabled",
+      "BeforeRow": 131,
+      "AfterRow": 132
+    },
+    {
+      "Key": "Plot.PrincipalAxesMode",
+      "BeforeRow": 132,
+      "AfterRow": 133
+    },
+    {
+      "Key": "Plot.ResultGradient",
+      "BeforeRow": 128,
+      "AfterRow": 129
+    },
+    {
+      "Key": "Plot.ResultLabelSpacing",
+      "BeforeRow": 130,
+      "AfterRow": 131
+    },
+    {
+      "Key": "Plot.ResultLabelsEnabled",
+      "BeforeRow": 129,
+      "AfterRow": 130
+    },
+    {
+      "Key": "Results.SnapshotName",
+      "BeforeRow": 9,
+      "AfterRow": 9
+    },
+    {
+      "Key": "Results.SnapshotStorage",
+      "BeforeRow": 8,
+      "AfterRow": 8
+    },
+    {
+      "Key": "SLS.Crack.Allowable",
+      "BeforeRow": 75,
+      "AfterRow": 76
+    },
+    {
+      "Key": "SLS.Crack.Code",
+      "BeforeRow": 74,
+      "AfterRow": 75
+    },
+    {
+      "Key": "SLS.Crack.CoverDistanceMode",
+      "BeforeRow": 80,
+      "AfterRow": 81
+    },
+    {
+      "Key": "SLS.Crack.InitiationSolutionStrategy",
+      "BeforeRow": 76,
+      "AfterRow": 77
+    },
+    {
+      "Key": "SLS.Crack.Phi1",
+      "BeforeRow": 81,
+      "AfterRow": 82
+    },
+    {
+      "Key": "SLS.Crack.Phi2",
+      "BeforeRow": 82,
+      "AfterRow": 83
+    },
+    {
+      "Key": "SLS.Crack.Phi3",
+      "BeforeRow": 84,
+      "AfterRow": 85
+    },
+    {
+      "Key": "SLS.Crack.Phi3Mode",
+      "BeforeRow": 83,
+      "AfterRow": 84
+    },
+    {
+      "Key": "SLS.Crack.PsiMode",
+      "BeforeRow": 85,
+      "AfterRow": 86
+    },
+    {
+      "Key": "SLS.Crack.PsiS",
+      "BeforeRow": 87,
+      "AfterRow": 88
+    },
+    {
+      "Key": "SLS.Crack.SP35.GroupGapTolerance",
+      "BeforeRow": 89,
+      "AfterRow": 90
+    },
+    {
+      "Key": "SLS.Crack.SP35.InteractionRadiusMode",
+      "BeforeRow": 93,
+      "AfterRow": 94
+    },
+    {
+      "Key": "SLS.Crack.SP35.NeighborRatioLimit",
+      "BeforeRow": 91,
+      "AfterRow": 92
+    },
+    {
+      "Key": "SLS.Crack.SP35.RadiusDiameterMode",
+      "BeforeRow": 92,
+      "AfterRow": 93
+    },
+    {
+      "Key": "SLS.Crack.SP35.RebarProfile",
+      "BeforeRow": 94,
+      "AfterRow": 95
+    },
+    {
+      "Key": "SLS.Crack.SP35.RowTolerance",
+      "BeforeRow": 90,
+      "AfterRow": 91
+    },
+    {
+      "Key": "SLS.Crack.SigmaSCrcAveragingMode",
+      "BeforeRow": 86,
+      "AfterRow": 87
+    },
+    {
+      "Key": "SLS.Crack.TensionZoneMode",
+      "BeforeRow": 79,
+      "AfterRow": 80
+    },
+    {
+      "Key": "SLS.Crack.ToleranceLambda",
+      "BeforeRow": 77,
+      "AfterRow": 78
+    },
+    {
+      "Key": "Solver.LoadSteps",
+      "BeforeRow": 29,
+      "AfterRow": 30
+    },
+    {
+      "Key": "Solver.MaxIterations",
+      "BeforeRow": 28,
+      "AfterRow": 29
+    },
+    {
+      "Key": "Solver.Method",
+      "BeforeRow": 27,
+      "AfterRow": 28
+    },
+    {
+      "Key": "Solver.SecantMaxRestarts",
+      "BeforeRow": 34,
+      "AfterRow": 35
+    },
+    {
+      "Key": "Solver.ToleranceMx",
+      "BeforeRow": 31,
+      "AfterRow": 32
+    },
+    {
+      "Key": "Solver.ToleranceMy",
+      "BeforeRow": 32,
+      "AfterRow": 33
+    },
+    {
+      "Key": "Solver.ToleranceN",
+      "BeforeRow": 30,
+      "AfterRow": 31
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityMode",
+      "BeforeRow": 59,
+      "AfterRow": 60
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityPlanes",
+      "BeforeRow": 62,
+      "AfterRow": 63
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser1",
+      "BeforeRow": 60,
+      "AfterRow": 61
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser2",
+      "BeforeRow": 61,
+      "AfterRow": 62
+    },
+    {
+      "Key": "Stability.Code",
+      "BeforeRow": 52,
+      "AfterRow": 53
+    },
+    {
+      "Key": "Stability.ElementLength",
+      "BeforeRow": 53,
+      "AfterRow": 54
+    },
+    {
+      "Key": "Stability.Mu1",
+      "BeforeRow": 54,
+      "AfterRow": 55
+    },
+    {
+      "Key": "Stability.Mu2",
+      "BeforeRow": 55,
+      "AfterRow": 56
+    },
+    {
+      "Key": "Stability.PhiLMode",
+      "BeforeRow": 63,
+      "AfterRow": 64
+    },
+    {
+      "Key": "Stability.SP35.NOverNcrLimit",
+      "BeforeRow": 70,
+      "AfterRow": 71
+    },
+    {
+      "Key": "Stability.SP35.PhiP",
+      "BeforeRow": 69,
+      "AfterRow": 70
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMax",
+      "BeforeRow": 67,
+      "AfterRow": 68
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMin",
+      "BeforeRow": 66,
+      "AfterRow": 67
+    },
+    {
+      "Key": "Stability.SP63.Ks",
+      "BeforeRow": 65,
+      "AfterRow": 66
+    },
+    {
+      "Key": "Stability.SystemType",
+      "BeforeRow": 56,
+      "AfterRow": 57
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign1",
+      "BeforeRow": 57,
+      "AfterRow": 58
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign2",
+      "BeforeRow": 58,
+      "AfterRow": 59
+    },
+    {
+      "Key": "Параметр",
+      "BeforeRow": 3,
+      "AfterRow": 3
+    }
+  ],
+  "AddedNames": [
+    "rngNDMElementGeometry"
+  ],
+  "AddedSettings": [
+    "Mesh.CellGeometry"
+  ],
+  "AllowedCatalogDescriptions": [
+    {
+      "Kind": "CatalogDescription",
+      "Key": "Mesh.BoundarySubdivisions",
+      "BeforeCell": "D21",
+      "AfterCell": "D22",
+      "Before": "Уровни уточнения границы: делятся только пересечённые ячейки пополам по X/Y; N = 2 даёт h/4. Auto/User, Generated/контуры AutoCAD.",
+      "After": "Только Mesh.CellGeometry = Adaptive: уровни деления пересечённых ячеек пополам по X/Y; N = 2 даёт h/4. В Contour сохраняется, но не используется."
+    }
+  ],
+  "IntentionalExclusions": [
+    "Справка regenerated from catalogs",
+    "Results!CR155:DI156 new header",
+    "Config new Mesh.CellGeometry A:E row"
+  ],
+  "ZIPParts": {
+    "BeforeCount": 107,
+    "AfterCount": 110,
+    "UnchangedCount": 93,
+    "Differences": [
+      {
+        "Part": "docProps/app.xml",
+        "Change": "changed",
+        "BeforeSHA256": "3C5817CC1FB889E796DE0B22BBA87D4FFBE5B9383E83A1170E58945A8634EEA3",
+        "AfterSHA256": "E3DCD30E00DC9D816FE33E6806592AA31919A716CF64E7E442E4ABEC52D40E92"
+      },
+      {
+        "Part": "docProps/core.xml",
+        "Change": "changed",
+        "BeforeSHA256": "FD3BE8E6636E08DAE75CF9837F3D67004FB0E463FD67CB2DB848CB6AFB01485D",
+        "AfterSHA256": "EA33B9618967E6B1D2407DA2D5EACEA6EABF52FF1B35D22300D9E1B8979C7D3F"
+      },
+      {
+        "Part": "xl/calcChain.xml",
+        "Change": "changed",
+        "BeforeSHA256": "8F60584A7F4864EE1BE62C99AE8FC731B6CFC06672F48DA99EADDBAFBC21F1F4",
+        "AfterSHA256": "FD3024B50684F2B40B33C678B8E98C526CFBDDC1EB63838F01F47F849B50EFA5"
+      },
+      {
+        "Part": "xl/drawings/drawing2.xml",
+        "Change": "changed",
+        "BeforeSHA256": "44B69D947693800534F60B270089DC5A2A4C0089FD17BC32618F05DD40E1B705",
+        "AfterSHA256": "022F66A0C79E31DAC152AAE9DD8998C73040782FD82504B9C2EE6F6F18C2D8AD"
+      },
+      {
+        "Part": "xl/printerSettings/printerSettings4.bin",
+        "Change": "added",
+        "BeforeSHA256": null,
+        "AfterSHA256": "C1E43723EC1344125BC7702DCE8FAD352486B7ACFF8FEFE036BB42B2D3FED502"
+      },
+      {
+        "Part": "xl/printerSettings/printerSettings5.bin",
+        "Change": "added",
+        "BeforeSHA256": null,
+        "AfterSHA256": "C1E43723EC1344125BC7702DCE8FAD352486B7ACFF8FEFE036BB42B2D3FED502"
+      },
+      {
+        "Part": "xl/sharedStrings.xml",
+        "Change": "changed",
+        "BeforeSHA256": "6EF3F217D38279C0D06042547046F6073DF1EFAB06E40C5487725E81BD6CD077",
+        "AfterSHA256": "EE7C0E2AE791FF36F7D09D720FE94A90092C3F4E9BE31147587E646DF90F3797"
+      },
+      {
+        "Part": "xl/styles.xml",
+        "Change": "changed",
+        "BeforeSHA256": "973C2C204002B3214D4F3F4267F0B31826291D01E41D1C5A4FDEACF43B742D42",
+        "AfterSHA256": "E504AD3A7705C85AAF41B1E59730BEF146CA10DEBBE07A86974D700C8E618109"
+      },
+      {
+        "Part": "xl/vbaProject.bin",
+        "Change": "changed",
+        "BeforeSHA256": "7DA515B6C0F968A2D0EA8678D6BBA67581FFEC69EB1705723F30B5F38A3290B5",
+        "AfterSHA256": "64C3A143BE1436864FE95ACB216B6265686D62EE27997038DB40E999FC15F639"
+      },
+      {
+        "Part": "xl/workbook.xml",
+        "Change": "changed",
+        "BeforeSHA256": "54CCCF534208F2AC05664ED96F11FA3C8ACDCE8BC90E6B3180FF71C7AC76B8EA",
+        "AfterSHA256": "A7AD0B9C5051FA338111E719A93440154DC662BC5F99104C749B1913219FB16F"
+      },
+      {
+        "Part": "xl/worksheets/_rels/sheet3.xml.rels",
+        "Change": "changed",
+        "BeforeSHA256": "8CBF659667DC36CE4CE997B47AB3CCBCEE31E619E4909ECD7C03625203C7784B",
+        "AfterSHA256": "26561AD75CADD0DEE236CCBA88CD300FBD98B1878F90CCF14DC6D42D4B8AFAC9"
+      },
+      {
+        "Part": "xl/worksheets/_rels/sheet4.xml.rels",
+        "Change": "changed",
+        "BeforeSHA256": "0DA1AA08A01D65DB9C1263A1F68D65F90733A64CE020AF4F113388737DF272B4",
+        "AfterSHA256": "A34AA0B03E59B553C8C0CAC829326A9ACAD95DEBC033DD215571F81A8B375FB8"
+      },
+      {
+        "Part": "xl/worksheets/_rels/sheet5.xml.rels",
+        "Change": "added",
+        "BeforeSHA256": null,
+        "AfterSHA256": "E5FF5E7CA6D52C4B1D0F88B5A214642250A64161743925ACD2934D3FADBE5016"
+      },
+      {
+        "Part": "xl/worksheets/sheet1.xml",
+        "Change": "changed",
+        "BeforeSHA256": "671A64A8F6767B8A6AEFFE2161206EF2BDA6632068A80CFC138E2C120B79762E",
+        "AfterSHA256": "C04CF07390F46FC3EDDC31B0344A9B5E94B40D9C0F94A81B1C75709E82FECD9A"
+      },
+      {
+        "Part": "xl/worksheets/sheet2.xml",
+        "Change": "changed",
+        "BeforeSHA256": "1749FAA677A8AEC70B357E0B27B7CD4BC6C03AE45041E3F19C9E7FA8FD00D5FE",
+        "AfterSHA256": "A35A8BF86C3EF1728991F2854BB67DEDE9FEF7254701CF35D8656DE28A845B07"
+      },
+      {
+        "Part": "xl/worksheets/sheet3.xml",
+        "Change": "changed",
+        "BeforeSHA256": "197E45C718F619C30206A8922E160B5E5B172EDD398744705E7B3E3B45C36338",
+        "AfterSHA256": "4762C5567FECC9E87A41D9379B768494B2411E03BF97D72125B53810E480555D"
+      },
+      {
+        "Part": "xl/worksheets/sheet5.xml",
+        "Change": "changed",
+        "BeforeSHA256": "293EBA51935E392DCFBEAE35E6B5CF5F42BD3C38D4CA71623DD58A7180828DD1",
+        "AfterSHA256": "F30371531C236689D52C26D919250ECD96B3677C5F4C0F547B9D7A2BD3B99284"
+      }
+    ]
+  },
+  "Errors": [],
+  "Limitations": [
+    "Drawings, controls, hyperlinks and validation UI require the separate native/layout gates; this check proves stored cell data/formulas, normalized cell styles and dimensions.",
+    "Formula expressions are compared exactly, so a legitimate changed address is reported for review rather than silently treated as equal.",
+    "A ZIP-part change is reported, not claimed byte-for-byte preservation of that part."
+  ]
+}

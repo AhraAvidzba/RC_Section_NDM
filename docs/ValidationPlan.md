@@ -61,6 +61,26 @@ RunConfigPresentationTests и RunResultsFormattingTests в обоих режим
 `docs/reports/AdaptiveBoundaryMesh_2026-10-26.md`. Замеры и адресная приёмка
 не заменяют полный ON/OFF + Focused.
 
+Для `Mesh.CellGeometry=Contour` выполнять в No/Yes
+`modTestElementGeometry.RunElementGeometryTests`, `RunContourCellMeshTests`,
+`modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests`,
+`RunCalculationSnapshotTests` и
+`modTestElementGeometryViews.RunElementGeometryViewTests`.
+Обязательны сохранение прежнего Adaptive, аналитический баланс A/c/I,
+тонкие дуговые ячейки, отверстия, несвязные части, независимость возвращённой
+геометрии, точная привязка ElementID и отказ до изменения Results при потере
+`rngNDMElementGeometry` или единиц. Снимки прежней геометрии сохраняют формат
+04; фактические границы требуют 05, читаются из `.ndm` и прежнего `.ndms`.
+Для блочного чтения отдельно выполнять `RunWorkflowSnapshotTests`,
+`RunCompactSnapshotTests` и `RunWorkflowReadPerformanceTests` из
+`modTestSectionWorkflow`: четыре обязательные матрицы и одна необязательная
+матрица аннотаций, с освобождением контекста и независимостью числа чтений
+от 100/1000/5000 элементов. Старое количество чтений не описывает новую таблицу.
+Настоящие Excel/AutoCAD и повторное открытие проверяются на собственных копиях
+с точными PID/временем запуска; fake-проверки не заменяют настоящий Boolean.
+Будущая полная приёмка CoverageVersion 6 включает 178 основных наборов
+и весь Focused; версии 1–5 сохраняют свой исторический состав.
+
 ## Команды
 
 Сохранённое расположение и оформление книги, 19.10.2026:

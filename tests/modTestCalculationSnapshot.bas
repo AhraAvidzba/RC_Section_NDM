@@ -47,6 +47,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotNativeLayout original
     TestSnapshotValidationReuse original
     TestSnapshotElementIndex
+    TestSnapshotBoundaryFileCodec original, store
     Dim originalPlot As String: originalPlot = TestSnapshotPlot()
     TestSnapshotSetting "AutoCAD.Export.CombinationID", "Сочетание_" & ChrW$(&H3B1) & "_01"
     Dim originalExport As String: originalExport = Audit02ReadExportSnapshotForTests(ThisWorkbook)
@@ -163,6 +164,294 @@ Finished:
     On Error GoTo 0
     RunCalculationSnapshotTests = mTestReport & "TOTAL CALCULATION SNAPSHOT: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет обязательные контуры элементов без нового расчёта: линии, дуги,
+' отверстия, раздельные loops, три единицы, метаданные и повреждения матриц.
+Public Function RunConcreteGeometrySnapshotTests() As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    On Error GoTo Failed
+    Dim geometry As Variant, boundaries As Variant, expected As Collection, unit As Variant, map As Object
+    Dim i As Long, query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    For Each unit In Array("mm", "cm", "m")
+        TestSnapshotBoundaryFixture CStr(unit), geometry, boundaries, expected
+        Set map = ReadConcreteBoundaryMap(boundaries, geometry)
+        TestSnapshotCheck "boundary." & CStr(unit) & ".count", map.Count = 4
+        For i = 1 To expected.Count
+            TestSnapshotCheck "boundary." & CStr(unit) & ".geometry.C" & CStr(i), query.RegionsCoincide(expected(i), map.Item("C" & CStr(i)))
+            TestSnapshotCheck "boundary." & CStr(unit) & ".loops.C" & CStr(i), expected(i).LoopCount = map.Item("C" & CStr(i)).LoopCount
+        Next i
+        TestSnapshotCheck "boundary." & CStr(unit) & ".quarterArea", Abs(map.Item("C1").Area - GEOM_PI * 2500#) < 0.000001
+        TestSnapshotCheck "boundary." & CStr(unit) & ".holeArea", Abs(map.Item("C2").Area - (10000# - GEOM_PI * 225#)) < 0.000001
+        TestSnapshotCheck "boundary." & CStr(unit) & ".islandsArea", Abs(map.Item("C3").Area - GEOM_PI * 244#) < 0.000001
+        TestSnapshotCheck "boundary." & CStr(unit) & ".rectangleArea", Abs(map.Item("C4").Area - 2400#) < 0.000001
+        TestSnapshotBoundaryDamage geometry, boundaries
+    Next unit
+    GoTo Finished
+Failed:
+    TestSnapshotCheck "boundary.runtime " & CStr(Err.Number) & ": " & Err.Description, False
+Finished:
+    RunConcreteGeometrySnapshotTests = mTestReport & "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт независимый набор записей публичного формата, не вызывая writer.
+' Аналитические области включают четверть круга, отверстие, два острова
+' внутри одного элемента и повёрнутый прямоугольник.
+Private Sub TestSnapshotBoundaryFixture(ByVal unit As String, ByRef geometry As Variant, ByRef boundaries As Variant, ByRef expected As Collection)
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Set expected = New Collection
+    expected.Add query.ClipWindow(query.CircleRegion(0#, 0#, 100#), 1#, 0#, 0#, 100#, 0#, 100#)
+    expected.Add query.SubtractContainedRegion(query.RectangleRegion(300#, 0#, 100#, 100#), query.CircleRegion(300#, 0#, 15#))
+    Dim islands As Collection: Set islands = New Collection
+    islands.Add query.CircleRegion(500#, 0#, 10#): islands.Add query.CircleRegion(550#, 0#, 12#)
+    expected.Add query.MergeDisjointRegions(islands)
+    expected.Add query.RectangleRegion(700#, 0#, 80#, 30#, 0.2)
+    Dim factor As Double
+    Select Case unit
+        Case "mm": factor = 1#
+        Case "cm": factor = 0.1
+        Case "m": factor = 0.001
+        Case Else: Err.Raise 5, , "Неизвестная единица тестовой матрицы."
+    End Select
+    Dim data() As Variant, edges() As Variant, headers As Variant, i As Long, j As Long, total As Long, row As Long
+    ReDim data(1 To 5, 1 To 16)
+    headers = Array("RunID", "ElementID", "MaterialType", "X, " & unit, "Y, " & unit, "Area, " & unit & "2", _
+        "GeometryInterpretationStatus", "Width, " & unit, "Height, " & unit, "Diameter, " & unit, "Rotation, rad", _
+        "LocalIx, " & unit & "4", "LocalIy, " & unit & "4", "LocalIxy, " & unit & "4", "Comment", "ExtraData")
+    For i = 1 To 16: data(1, i) = headers(i - 1): Next i
+    Dim groups As Collection: Set groups = New Collection
+    Dim contour As CSectionContours, region As CConcreteRegion, props As TGeometryProperties
+    Dim minX As Double, maxX As Double, minY As Double, maxY As Double
+    For i = 1 To expected.Count
+        Set region = expected(i): query.RegionProperties region, props
+        query.ProjectionBounds region, 1#, 0#, minX, maxX: query.ProjectionBounds region, 0#, 1#, minY, maxY
+        row = i + 1
+        data(row, 1) = 45000#: data(row, 2) = "C" & CStr(i): data(row, 3) = "Concrete"
+        data(row, 4) = props.CentroidX * factor: data(row, 5) = props.CentroidY * factor
+        data(row, 6) = props.Area * factor ^ 2: data(row, 7) = "Contour"
+        data(row, 8) = 0#: data(row, 9) = 0#: data(row, 11) = 0#
+        If i = 4 Then data(row, 8) = 80# * factor: data(row, 9) = 30# * factor: data(row, 11) = 0.2 ' Только настоящий прямоугольник имеет эти параметры вместо обязательного контура.
+        data(row, 12) = props.Ixc * factor ^ 4: data(row, 13) = props.Iyc * factor ^ 4: data(row, 14) = props.Ixyc * factor ^ 4
+        data(row, 15) = "Пример " & ChrW$(&H3B1): data(row, 16) = "{}"
+        Set contour = New CSectionContours: contour.AddMaterialRegion region, "C" & CStr(i), ""
+        groups.Add contour: total = total + contour.Count
+    Next i
+    headers = Array("RunID", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", "StartX", "StartY", _
+        "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", "SourceID", "Comment", "LengthUnit (SectionXY)", "ElementID")
+    ReDim edges(1 To total + 1, 1 To 18)
+    For i = 1 To 18: edges(1, i) = headers(i - 1): Next i
+    row = 1
+    For i = 1 To groups.Count
+        Set contour = groups(i)
+        For j = 1 To contour.Count
+            row = row + 1
+            edges(row, 1) = 45000#: edges(row, 2) = contour.LoopID(j): edges(row, 3) = contour.ContourID(j)
+            edges(row, 4) = row - 1: edges(row, 5) = contour.LoopRole(j): edges(row, 6) = contour.SegmentType(j)
+            edges(row, 7) = contour.StartX(j) * factor: edges(row, 8) = contour.StartY(j) * factor
+            If contour.SegmentType(j) = "CONTOUR_LINE" Then
+                edges(row, 9) = contour.EndX(j) * factor: edges(row, 10) = contour.EndY(j) * factor
+            ElseIf contour.SegmentType(j) = "CONTOUR_CIRCLE" Then
+                edges(row, 13) = contour.Radius(j) * factor
+            Else
+                edges(row, 11) = contour.CenterX(j) * factor: edges(row, 12) = contour.CenterY(j) * factor: edges(row, 14) = contour.SweepAngle(j)
+            End If
+            edges(row, 15) = contour.SourceID(j): edges(row, 16) = contour.Comment(j): edges(row, 17) = unit: edges(row, 18) = "C" & CStr(i)
+        Next j
+    Next i
+    geometry = data: boundaries = edges
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Изменяет по одному обязательному полю и требует адресного отказа.
+' Повреждённые дополнительные подписи и JSON намеренно не влияют на форму.
+Private Sub TestSnapshotBoundaryDamage(ByRef geometry As Variant, ByRef boundaries As Variant)
+    Dim changed As Variant, changedGeometry As Variant, missingData As Variant, test As Long, map As Object
+    TestSnapshotCheck "boundary.requiredTable", TestSnapshotBoundaryRejected(missingData, geometry)
+    For test = 1 To 24
+        changed = boundaries: changedGeometry = geometry
+        Select Case test
+            Case 1: changed(2, 18) = "R1"
+            Case 2: changed(3, 3) = changed(2, 3)
+            Case 3: changed(2, 4) = 2#
+            Case 4: changed(2, 1) = 45001#
+            Case 5: changed(2, 5) = "Opening"
+            Case 6: changed(2, 17) = "unknown"
+            Case 7: changed(2, 6) = "Spline"
+            Case 8: changed(2, 7) = "1 234.5"
+            Case 9: changed(2, 7) = CVErr(2015)
+            Case 10: changedGeometry(2, 6) = changedGeometry(2, 6) * 1.01
+            Case 11: changedGeometry(2, 4) = changedGeometry(2, 4) + 100#
+            Case 12: changedGeometry(2, 12) = changedGeometry(2, 12) * 1.01
+            Case 13: changedGeometry(2, 7) = "Region"
+            Case 14: changed(2, 2) = "DifferentLoop"
+            Case 15: changed(2, 18) = vbNullString
+            Case 16: changed(1, 18) = "OptionalElementID"
+            Case 17: changedGeometry(2, 8) = -1#
+            Case 18: changed(2, 7) = changed(2, 7) + 1#
+            Case 19
+                Dim arc As Long
+                For arc = 2 To UBound(changed, 1)
+                    If CStr(changed(arc, 6)) = "CONTOUR_ARC" Then changed(arc, 14) = False: Exit For
+                Next arc
+            Case 20: changedGeometry(2, 14) = changedGeometry(2, 14) + changedGeometry(2, 12)
+            Case 21: changed(2, 17) = vbNullString
+            Case 22: changedGeometry(1, 4) = "X"
+            Case 23: changedGeometry(1, 13) = "LocalIy, unknown4"
+            Case 24: changedGeometry(1, 11) = "Rotation, deg"
+        End Select
+        TestSnapshotCheck "boundary.damage." & CStr(test), TestSnapshotBoundaryRejected(changed, changedGeometry)
+    Next test
+    changed = boundaries: changedGeometry = geometry
+    For test = 2 To UBound(changedGeometry, 1): changedGeometry(test, 1) = CDate(45000#): Next test
+    For test = 2 To UBound(changed, 1): changed(test, 1) = CDate(45000#): Next test
+    Set map = ReadConcreteBoundaryMap(changed, changedGeometry)
+    TestSnapshotCheck "boundary.nativeDateRunID", map.Count = 4
+    changed = boundaries: changedGeometry = geometry
+    For test = 2 To UBound(changedGeometry, 1)
+        changedGeometry(test, 15) = CVErr(2015): changedGeometry(test, 16) = "{broken optional JSON"
+    Next test
+    For test = 2 To UBound(changed, 1): changed(test, 15) = CVErr(2015): changed(test, 16) = Null: Next test
+    Set map = ReadConcreteBoundaryMap(changed, changedGeometry)
+    TestSnapshotCheck "boundary.optionalIgnored", map.Count = 4
+    For test = 2 To UBound(changedGeometry, 1): changedGeometry(test, 7) = "Region": Next test
+    Set map = ReadConcreteBoundaryMap(missingData, changedGeometry)
+    TestSnapshotCheck "boundary.legacyRegionWithoutTable", map.Count = 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отличает договорной отказ повреждённой геометрии от посторонней runtime-ошибки.
+Private Function TestSnapshotBoundaryRejected(ByRef boundaries As Variant, ByRef geometry As Variant) As Boolean
+    On Error GoTo Rejected
+    Dim map As Object: Set map = ReadConcreteBoundaryMap(boundaries, geometry)
+    Exit Function
+Rejected:
+    TestSnapshotBoundaryRejected = Err.Number = vbObjectError + 4383 And InStr(Err.Description, "rngNDM") > 0
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет новую матрицу двоичным кодеком .ndm и прежним расширением .ndms.
+' Остальные матрицы берутся из настоящего расчёта: тест меняет только записи
+' геометрии для проверки хранения, новых напряжений по этому набору не считает.
+Private Sub TestSnapshotBoundaryFileCodec(ByVal original As CCalculationSnapshot, ByVal store As CCalculationSnapshotStore)
+    Dim geometry As Variant, boundaries As Variant, expected As Collection, sample As CCalculationSnapshot, key As Variant
+    TestSnapshotBoundaryFixture "m", geometry, boundaries, expected
+    Dim row As Long
+    For row = 2 To UBound(geometry, 1): geometry(row, 1) = original.RunID: Next row
+    For row = 2 To UBound(boundaries, 1): boundaries(row, 1) = original.RunID: Next row
+    Set sample = New CCalculationSnapshot: sample.RunID = original.RunID: sample.ElapsedSeconds = original.ElapsedSeconds
+    For Each key In original.Keys()
+        Select Case CStr(key)
+            Case "rngNDMSectionGeometry": sample.AddTable CStr(key), geometry
+            Case "rngNDMElementGeometry"
+            Case Else: sample.AddTable CStr(key), original.Table(CStr(key))
+        End Select
+    Next key
+    sample.AddTable "rngNDMElementGeometry", boundaries
+    Dim missing As CCalculationSnapshot: Set missing = New CCalculationSnapshot
+    missing.RunID = sample.RunID: missing.ElapsedSeconds = sample.ElapsedSeconds
+    For Each key In sample.Keys()
+        If CStr(key) <> "rngNDMElementGeometry" Then missing.AddTable CStr(key), sample.Table(CStr(key))
+    Next key
+    TestSnapshotDirectBoundaryRejection missing, original
+    Dim savedPath As String: savedPath = store.SnapshotPath(ThisWorkbook)
+    Dim legacyPath As String: legacyPath = Left$(savedPath, Len(savedPath) - 4) & ".ndms"
+    Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
+    Dim ownsLegacy As Boolean
+    If fileSystem.FileExists(legacyPath) Then Err.Raise 5, , "Чужой файл занимает путь проверки .ndms."
+    On Error GoTo Failed
+    Dim legacy As CCalculationSnapshot: Set legacy = New CCalculationSnapshot
+    legacy.RunID = original.RunID: legacy.ElapsedSeconds = original.ElapsedSeconds
+    Dim legacyGeometry As Variant: legacyGeometry = original.Table("rngNDMSectionGeometry")
+    For row = 2 To UBound(legacyGeometry, 1)
+        If CStr(legacyGeometry(row, 3)) = "Concrete" Then legacyGeometry(row, 7) = "Region"
+    Next row
+    For Each key In original.Keys()
+        Select Case CStr(key)
+            Case "rngNDMSectionGeometry": legacy.AddTable CStr(key), legacyGeometry
+            Case "rngNDMElementGeometry"
+            Case Else: legacy.AddTable CStr(key), original.Table(CStr(key))
+        End Select
+    Next key
+    store.SaveFile ThisWorkbook, legacy
+    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
+    file.OpenRead savedPath
+    TestSnapshotCheck "boundary.file.legacy04Header", file.ReadASCII(8) = "NDMSNP04" And file.ReadLong() = 4
+    file.CloseFile
+    Dim loaded As CCalculationSnapshot: Set loaded = store.LoadFile(ThisWorkbook)
+    TestSnapshotCheck "boundary.file.legacy04Read", Not loaded.HasTable("rngNDMElementGeometry") And TestSnapshotSameMatrix(legacyGeometry, loaded.Table("rngNDMSectionGeometry"))
+    store.SaveFile ThisWorkbook, sample
+    file.OpenRead savedPath
+    Dim signature As String: signature = file.ReadASCII(8)
+    Dim version As Long: version = file.ReadLong()
+    TestSnapshotCheck "boundary.file.new05Header", signature = "NDMSNP05" And version = 5
+    TestSnapshotCheck "boundary.file.old04ReaderRejectsNew", signature <> "NDMSNP04" And version <> 4
+    file.Position = file.Size - 8
+    TestSnapshotCheck "boundary.file.new05Footer", file.ReadASCII(8) = signature
+    file.CloseFile
+    store.UpdateSavedElapsed ThisWorkbook, sample
+    Set loaded = store.LoadFile(ThisWorkbook)
+    TestSnapshotCheck "boundary.file.ndmMatrixExact", TestSnapshotSameMatrix(boundaries, loaded.Table("rngNDMElementGeometry"))
+    TestSnapshotCheck "boundary.file.elapsed05", loaded.ElapsedSeconds = sample.ElapsedSeconds
+    Dim map As Object, loadedGeometry As Variant, loadedBoundaries As Variant
+    loadedGeometry = loaded.Table("rngNDMSectionGeometry"): loadedBoundaries = loaded.Table("rngNDMElementGeometry")
+    Set map = ReadConcreteBoundaryMap(loadedBoundaries, loadedGeometry)
+    TestSnapshotCheck "boundary.file.ndmGeometry", map.Count = 4
+    fileSystem.MoveFile savedPath, legacyPath: ownsLegacy = True ' Как в TestSnapshotLegacyFile: BSTR-путь сохраняет символ α независимо от системной ANSI-страницы.
+    Set loaded = store.LoadFile(ThisWorkbook)
+    TestSnapshotCheck "boundary.file.ndmsMatrixExact", TestSnapshotSameMatrix(boundaries, loaded.Table("rngNDMElementGeometry"))
+    fileSystem.MoveFile legacyPath, savedPath: ownsLegacy = False
+    file.OpenUpdate savedPath: file.Position = file.Size - 8: file.WriteASCII "NDMSNP04": file.CloseFile
+    TestSnapshotCheck "boundary.file.mismatchedFooterRejected", TestSnapshotFileRejected(store)
+    store.SaveFile ThisWorkbook, original
+    store.LinkFile ThisWorkbook
+    Exit Sub
+Failed:
+    Dim number As Long, reason As String: number = Err.Number: reason = Err.Description
+    On Error Resume Next
+    If ownsLegacy And fileSystem.FileExists(legacyPath) Then
+        If Not fileSystem.FileExists(savedPath) Then fileSystem.MoveFile legacyPath, savedPath
+    End If
+    store.SaveFile ThisWorkbook, original
+    store.LinkFile ThisWorkbook
+    On Error GoTo 0
+    Err.Raise number, "TestSnapshotBoundaryFileCodec", reason
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Напрямую вызывает публичное восстановление с настоящим Contour-снимком,
+' у которого удалена обязательная матрица. Все семь прежних таблиц Results
+' должны остаться побитно прежними; при регрессии тест восстанавливает оригинал.
+Private Sub TestSnapshotDirectBoundaryRejection(ByVal invalid As CCalculationSnapshot, ByVal original As CCalculationSnapshot)
+    Dim names As Variant: names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
+        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+    Dim before As Collection: Set before = New Collection
+    Dim i As Long, values As Variant
+    For i = 0 To UBound(names)
+        values = ReadPhysicalResultTable(ThisWorkbook, CStr(names(i))): before.Add values
+    Next i
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    Dim number As Long, reason As String
+    On Error Resume Next
+    writer.RestoreSnapshotBase ThisWorkbook, invalid
+    number = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestSnapshotCheck "boundary.restore.missingRejected", number = vbObjectError + 4383 And InStr(reason, "rngNDMElementGeometry") > 0
+    Dim unchanged As Boolean, allUnchanged As Boolean, expected As Variant: allUnchanged = True
+    For i = 0 To UBound(names)
+        values = ReadPhysicalResultTable(ThisWorkbook, CStr(names(i)))
+        expected = before.Item(i + 1)
+        If IsEmpty(expected) Or IsEmpty(values) Then
+            unchanged = IsEmpty(expected) And IsEmpty(values) ' В File физическая таблица состояний отсутствует; отсутствие с обеих сторон также должно сохраниться точно.
+            mTestReport = mTestReport & "STATE boundary.restore." & CStr(names(i)) & "; expectedEmpty=" & CStr(IsEmpty(expected)) & "; actualEmpty=" & CStr(IsEmpty(values)) & vbCrLf
+        Else
+            unchanged = TestSnapshotSameMatrix(expected, values)
+        End If
+        TestSnapshotCheck "boundary.restore.keeps." & CStr(names(i)), unchanged
+        allUnchanged = allUnchanged And unchanged
+    Next i
+    If number = 0 Or Not allUnchanged Then UpdateSectionResultsForWorkbook ThisWorkbook, original
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет границы старого и нового листа, большие оценки и точную классификацию ошибки объединения.
@@ -860,7 +1149,7 @@ Public Function TestSnapshotReopenFingerprint() As String
     Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(ThisWorkbook)
     Dim keys As Variant
     If snapshot Is Nothing Then
-        keys = Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMElementResults", "rngNDMSectionContours", "rngNDMSectionAnnotations")
+        keys = Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMElementResults", "rngNDMSectionContours", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
     Else
         keys = snapshot.Keys()
     End If
@@ -1117,7 +1406,7 @@ End Sub
 ' Проверяет заданный горизонтальный порядок, не фиксируя адреса верхних таблиц.
 Private Function TestSnapshotLowerOrder() As Boolean
     Dim name As Variant, last As Long, column As Long
-    For Each name In Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMElementResults", "rngNDMSectionContours", "rngNDMSectionAnnotations")
+    For Each name In Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMElementResults", "rngNDMSectionContours", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
         column = ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Column
         If column <= last Then Exit Function
         last = column

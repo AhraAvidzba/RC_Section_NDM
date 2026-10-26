@@ -1,0 +1,2807 @@
+﻿{
+    "Status":  "PASS_NATIVE_READONLY_FINAL_STRUCTURE",
+    "Passed":  true,
+    "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "44C63ECF5C69C783A9455ACA1314FF0FFBEC5F825D0585F58636967D155AD4E5",
+    "SourceUnchanged":  true,
+    "TemplateUnchanged":  true,
+    "LayoutUnchanged":  true,
+    "ReferenceUnchanged":  true,
+    "ImportPerformed":  false,
+    "MacrosRun":  false,
+    "SavePerformed":  false,
+    "FullRegressionPass":  false,
+    "FailedChecks":  [
+
+                     ],
+    "CheckCount":  85,
+    "Checks":  [
+                   {
+                       "Check":  "workbook.readOnly",
+                       "Passed":  true,
+                       "Details":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm"
+                   },
+                   {
+                       "Check":  "workbook.sheets",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Actual":  [
+                                                      "Config",
+                                                      "Сечения",
+                                                      "Справка",
+                                                      "Расчет",
+                                                      "Results"
+                                                  ],
+                                       "ExpectedFromWorkbookLayout":  [
+                                                                          "Config",
+                                                                          "Сечения",
+                                                                          "Справка",
+                                                                          "Расчет",
+                                                                          "Results"
+                                                                      ]
+                                   }
+                   },
+                   {
+                       "Check":  "setting.uniqueKey",
+                       "Passed":  true,
+                       "Details":  [
+                                       16
+                                   ]
+                   },
+                   {
+                       "Check":  "setting.defaultAdaptive",
+                       "Passed":  true,
+                       "Details":  "Adaptive"
+                   },
+                   {
+                       "Check":  "setting.literalList",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Type":  3,
+                                       "Formula":  "Adaptive;Contour",
+                                       "Items":  [
+                                                     "Adaptive",
+                                                     "Contour"
+                                                 ],
+                                       "InCellDropdown":  true
+                                   }
+                   },
+                   {
+                       "Check":  "setting.dropdownVisible",
+                       "Passed":  true,
+                       "Details":  null
+                   },
+                   {
+                       "Check":  "setting.editableFill",
+                       "Passed":  true,
+                       "Details":  15135487
+                   },
+                   {
+                       "Check":  "setting.centeredInput",
+                       "Passed":  true,
+                       "Details":  -4108
+                   },
+                   {
+                       "Check":  "setting.rowBorders",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Passed":  true,
+                                       "Row":  18,
+                                       "First":  1,
+                                       "Last":  5,
+                                       "Cells":  [
+                                                     {
+                                                         "Column":  1,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  -4115
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  2,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  -4115
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  3,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  -4115
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  4,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  -4115
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  5,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  -4115
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  -4115
+                                                                       }
+                                                                   ]
+                                                     }
+                                                 ]
+                                   }
+                   },
+                   {
+                       "Check":  "setting.helpLinkCount",
+                       "Passed":  true,
+                       "Details":  1
+                   },
+                   {
+                       "Check":  "setting.helpTargetSheet",
+                       "Passed":  true,
+                       "Details":  "\u0027Справка\u0027!A821"
+                   },
+                   {
+                       "Check":  "setting.helpHeading",
+                       "Passed":  true,
+                       "Details":  "Mesh.CellGeometry"
+                   },
+                   {
+                       "Check":  "setting.helpModeAndStorage",
+                       "Passed":  true,
+                       "Details":  {
+                                       "RangeAddress":  "B822:B829",
+                                       "ValueType":  "System.Object[,]",
+                                       "Paragraphs":  [
+                                                          "Выберите способ геометрии бетонных элементов: Adaptive сохраняет прежнюю адаптивную прямоугольную сетку; Contour строит фактические пересечения базовых ячеек с бетонным сечением. По умолчанию Adaptive.",
+                                                          "В обоих способах Mesh.StepMode определяет базовый шаг: Auto выбирает его по полным габаритам, User читает независимые Mesh.StepX и Mesh.StepY. Внутренние ячейки остаются прямоугольными, внешние отбрасываются.",
+                                                          "В Adaptive граничная ячейка делится на четыре дочерние до Mesh.BoundarySubdivisions уровней; на последнем уровне принадлежность центру определяет включение. Существующие настройки и эквивалентные оболочки импортированных Region сохраняют прежний смысл.",
+                                                          "В Contour граничного дробления нет: программа обрезает базовый прямоугольник по точным прямым и круговым дугам, сохраняя все отверстия. Несвязные части одной ячейки становятся разными элементами. Mesh.BoundarySubdivisions не используется и не перезаписывается.",
+                                                          "В Contour фактическая геометрия обязательна для каждого элемента, включая импорт готовых бетонных Region AutoCAD. Неподдерживаемая или повреждённая граница отклоняется; эквивалентный прямоугольник вместо неё не подставляется.",
+                                                          "Общие свойства и расчётные имена C1, C2 и далее сохраняются в rngNDMSectionGeometry. Фактические линии, дуги и замкнутые контуры этих элементов связаны по ElementID в последней таблице Results rngNDMElementGeometry и сохраняются в расчётном снимке.",
+                                                          "Точная форма ячейки не заменяет проверку сходимости НДС по основному шагу. Площадь и инерции вычисляются по фактической области; численное интегрирование напряжений сохраняет принятую волоконную постановку. На схеме уменьшается только рисунок, расчётная площадь не уменьшается.",
+                                                          "После изменения способа или шага заново нажмите «Сформировать сечение». Сохранённая геометрия Results и ранее записанные файлы сами не перестраиваются."
+                                                      ]
+                                   }
+                   },
+                   {
+                       "Check":  "help.rightBorder",
+                       "Passed":  true,
+                       "Details":  [
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  821
+                                       },
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  822
+                                       },
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  823
+                                       },
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  824
+                                       },
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  825
+                                       },
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  826
+                                       },
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  827
+                                       },
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  828
+                                       },
+                                       {
+                                           "RightBorder":  1,
+                                           "Row":  829
+                                       }
+                                   ]
+                   },
+                   {
+                       "Check":  "rngNDMSectionGeometry.sheet",
+                       "Passed":  true,
+                       "Details":  "Results"
+                   },
+                   {
+                       "Check":  "rngNDMSectionGeometry.emptyPreservedFromReference",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ReferenceRequired":  true,
+                                       "PhysicalHeaderWasNotFabricated":  true,
+                                       "ContractWidth":  16,
+                                       "Reference":  {
+                                                         "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\Compile08\\AcceptedMain.xlsm",
+                                                         "SHA256":  "53919E6CF11018B769191059E17977D60F3201D5857991FFE49E9326E1CC613A",
+                                                         "NamedAnchor":  "Results!$A$156",
+                                                         "PhysicalHeaderCellCount":  0,
+                                                         "PhysicalGeometryValueOrFormulaCells":  0,
+                                                         "OccupiedCells":  [
+
+                                                                           ],
+                                                         "Empty":  true
+                                                     },
+                                       "Source":  {
+                                                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+                                                      "SHA256":  "44C63ECF5C69C783A9455ACA1314FF0FFBEC5F825D0585F58636967D155AD4E5",
+                                                      "NamedAnchor":  "Results!$A$156",
+                                                      "PhysicalHeaderCellCount":  0,
+                                                      "PhysicalGeometryValueOrFormulaCells":  0,
+                                                      "OccupiedCells":  [
+
+                                                                        ],
+                                                      "Empty":  true
+                                                  }
+                                   }
+                   },
+                   {
+                       "Check":  "rngNDMSectionContours.sheet",
+                       "Passed":  true,
+                       "Details":  "Results"
+                   },
+                   {
+                       "Check":  "rngNDMSectionContours.headerWidth",
+                       "Passed":  true,
+                       "Details":  [
+                                       "RunID",
+                                       "LoopID",
+                                       "SegmentID",
+                                       "Sequence",
+                                       "LoopRole",
+                                       "SegmentType",
+                                       "StartX",
+                                       "StartY",
+                                       "EndX",
+                                       "EndY",
+                                       "CenterX",
+                                       "CenterY",
+                                       "Radius",
+                                       "SweepAngle, rad",
+                                       "SourceID",
+                                       "Comment",
+                                       "LengthUnit (SectionXY)"
+                                   ]
+                   },
+                   {
+                       "Check":  "rngNDMSectionContours.exactHeaders",
+                       "Passed":  true,
+                       "Details":  [
+                                       "RunID",
+                                       "LoopID",
+                                       "SegmentID",
+                                       "Sequence",
+                                       "LoopRole",
+                                       "SegmentType",
+                                       "StartX",
+                                       "StartY",
+                                       "EndX",
+                                       "EndY",
+                                       "CenterX",
+                                       "CenterY",
+                                       "Radius",
+                                       "SweepAngle, rad",
+                                       "SourceID",
+                                       "Comment",
+                                       "LengthUnit (SectionXY)"
+                                   ]
+                   },
+                   {
+                       "Check":  "rngNDMSectionContours.allHeaderBorders",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Passed":  true,
+                                       "Row":  156,
+                                       "First":  51,
+                                       "Last":  67,
+                                       "Cells":  [
+                                                     {
+                                                         "Column":  51,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  52,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  53,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  54,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  55,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  56,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  57,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  58,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  59,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  60,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  61,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  62,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  63,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  64,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  65,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  66,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  67,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     }
+                                                 ]
+                                   }
+                   },
+                   {
+                       "Check":  "rngNDMElementGeometry.sheet",
+                       "Passed":  true,
+                       "Details":  "Results"
+                   },
+                   {
+                       "Check":  "rngNDMElementGeometry.headerWidth",
+                       "Passed":  true,
+                       "Details":  [
+                                       "RunID",
+                                       "LoopID",
+                                       "SegmentID",
+                                       "Sequence",
+                                       "LoopRole",
+                                       "SegmentType",
+                                       "StartX",
+                                       "StartY",
+                                       "EndX",
+                                       "EndY",
+                                       "CenterX",
+                                       "CenterY",
+                                       "Radius",
+                                       "SweepAngle, rad",
+                                       "SourceID",
+                                       "Comment",
+                                       "LengthUnit (SectionXY)",
+                                       "ElementID"
+                                   ]
+                   },
+                   {
+                       "Check":  "rngNDMElementGeometry.exactHeaders",
+                       "Passed":  true,
+                       "Details":  [
+                                       "RunID",
+                                       "LoopID",
+                                       "SegmentID",
+                                       "Sequence",
+                                       "LoopRole",
+                                       "SegmentType",
+                                       "StartX",
+                                       "StartY",
+                                       "EndX",
+                                       "EndY",
+                                       "CenterX",
+                                       "CenterY",
+                                       "Radius",
+                                       "SweepAngle, rad",
+                                       "SourceID",
+                                       "Comment",
+                                       "LengthUnit (SectionXY)",
+                                       "ElementID"
+                                   ]
+                   },
+                   {
+                       "Check":  "rngNDMElementGeometry.allHeaderBorders",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Passed":  true,
+                                       "Row":  156,
+                                       "First":  96,
+                                       "Last":  113,
+                                       "Cells":  [
+                                                     {
+                                                         "Column":  96,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  97,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  98,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  99,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  100,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  101,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  102,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  103,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  104,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  105,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  106,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  107,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  108,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  109,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  110,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  111,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  112,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     },
+                                                     {
+                                                         "Column":  113,
+                                                         "Edges":  [
+                                                                       {
+                                                                           "Edge":  7,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  8,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  9,
+                                                                           "LineStyle":  1
+                                                                       },
+                                                                       {
+                                                                           "Edge":  10,
+                                                                           "LineStyle":  1
+                                                                       }
+                                                                   ]
+                                                     }
+                                                 ]
+                                   }
+                   },
+                   {
+                       "Check":  "elementGeometry.CR156",
+                       "Passed":  true,
+                       "Details":  {
+                                       "LastColumn":  113,
+                                       "Name":  "rngNDMElementGeometry",
+                                       "Column":  96,
+                                       "Row":  156,
+                                       "Address":  "CR156",
+                                       "Columns":  18
+                                   }
+                   },
+                   {
+                       "Check":  "elementGeometry.lastTechnicalTable",
+                       "Passed":  true,
+                       "Details":  {
+                                       "PreviousRightmostColumn":  93,
+                                       "NewFirstColumn":  96,
+                                       "OtherTables":  [
+                                                           {
+                                                               "RightColumn":  93,
+                                                               "Name":  "rngNDMSectionAnnotations",
+                                                               "Address":  "BR156"
+                                                           },
+                                                           {
+                                                               "RightColumn":  48,
+                                                               "Name":  "rngNDMElementResults",
+                                                               "Address":  "AN156"
+                                                           },
+                                                           {
+                                                               "RightColumn":  16,
+                                                               "Name":  "rngNDMSectionGeometry",
+                                                               "Address":  "A156"
+                                                           },
+                                                           {
+                                                               "RightColumn":  37,
+                                                               "Name":  "rngNDMMaterialDiagrams",
+                                                               "Address":  "AA156"
+                                                           },
+                                                           {
+                                                               "RightColumn":  67,
+                                                               "Name":  "rngNDMSectionContours",
+                                                               "Address":  "AY156"
+                                                           },
+                                                           {
+                                                               "RightColumn":  24,
+                                                               "Name":  "rngNDMSectionProperties",
+                                                               "Address":  "S156"
+                                                           }
+                                                       ]
+                                   }
+                   },
+                   {
+                       "Check":  "elementGeometry.titleMerge",
+                       "Passed":  true,
+                       "Details":  "CR155:DI155"
+                   },
+                   {
+                       "Check":  "elementGeometry.title",
+                       "Passed":  true,
+                       "Details":  "Фактические границы бетонных элементов"
+                   },
+                   {
+                       "Check":  "column.Config.1",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  34,
+                                       "ActualWidth":  34,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.2",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  18,
+                                       "ActualWidth":  18,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.3",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  12,
+                                       "ActualWidth":  12,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.4",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  20,
+                                       "ActualWidth":  20,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.5",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  11,
+                                       "ActualWidth":  11,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.6",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  11,
+                                       "ActualWidth":  11,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.7",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  11,
+                                       "ActualWidth":  11,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.8",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  24.29,
+                                       "ActualWidth":  24.29,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.9",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.10",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.11",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.12",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.13",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.14",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  27.43,
+                                       "ActualWidth":  27.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.15",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.16",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.17",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.18",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.19",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.20",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.21",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.22",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.23",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  17,
+                                       "ActualWidth":  17,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Config.24",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Справка.1",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  34,
+                                       "ActualWidth":  34,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Справка.2",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  118,
+                                       "ActualWidth":  118,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Справка.3",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  18,
+                                       "ActualWidth":  18,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Справка.4",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  18,
+                                       "ActualWidth":  18,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Справка.5",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  26,
+                                       "ActualWidth":  26,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Справка.6",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  26,
+                                       "ActualWidth":  26,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.96",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.97",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.98",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.57,
+                                       "ActualWidth":  8.57,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.99",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.100",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.101",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.102",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.57,
+                                       "ActualWidth":  8.57,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.103",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.57,
+                                       "ActualWidth":  8.57,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.104",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.57,
+                                       "ActualWidth":  8.57,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.105",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  9,
+                                       "ActualWidth":  9,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.106",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.107",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.57,
+                                       "ActualWidth":  8.57,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.108",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.109",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.110",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.111",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.112",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "column.Results.113",
+                       "Passed":  true,
+                       "Details":  {
+                                       "ExpectedWidth":  8.43,
+                                       "ActualWidth":  8.43,
+                                       "ExpectedHidden":  false,
+                                       "ActualHidden":  false
+                                   }
+                   },
+                   {
+                       "Check":  "vba.componentCount",
+                       "Passed":  true,
+                       "Details":  181
+                   },
+                   {
+                       "Check":  "documentModule.ЭтаКнига",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Name":  "ЭтаКнига",
+                                       "IsWorkbook":  true,
+                                       "EqualToBuildTemplate":  true,
+                                       "ActualCodeSHA256":  "D80D5AAD88B3DB533DFF56807D762807FE3678CBAD2FF107043A70DFAAA7F4E9",
+                                       "ExpectedCodeSHA256":  "8FCEE6BEF74B7903C9F7E1E902D084DDA8655E91A3A4654CBB301BF5280CF8EB",
+                                       "Lines":  86
+                                   }
+                   },
+                   {
+                       "Check":  "documentModule.Лист1",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Name":  "Лист1",
+                                       "IsWorkbook":  false,
+                                       "EqualToBuildTemplate":  true,
+                                       "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "Lines":  3
+                                   }
+                   },
+                   {
+                       "Check":  "documentModule.Лист2",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Name":  "Лист2",
+                                       "IsWorkbook":  false,
+                                       "EqualToBuildTemplate":  true,
+                                       "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "Lines":  3
+                                   }
+                   },
+                   {
+                       "Check":  "documentModule.Лист3",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Name":  "Лист3",
+                                       "IsWorkbook":  false,
+                                       "EqualToBuildTemplate":  true,
+                                       "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "Lines":  3
+                                   }
+                   },
+                   {
+                       "Check":  "documentModule.Лист4",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Name":  "Лист4",
+                                       "IsWorkbook":  false,
+                                       "EqualToBuildTemplate":  true,
+                                       "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "Lines":  3
+                                   }
+                   },
+                   {
+                       "Check":  "documentModule.Лист5",
+                       "Passed":  true,
+                       "Details":  {
+                                       "Name":  "Лист5",
+                                       "IsWorkbook":  false,
+                                       "EqualToBuildTemplate":  true,
+                                       "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                       "Lines":  3
+                                   }
+                   },
+                   {
+                       "Check":  "vba.sixDocumentModules",
+                       "Passed":  true,
+                       "Details":  [
+                                       "ЭтаКнига",
+                                       "Лист1",
+                                       "Лист2",
+                                       "Лист3",
+                                       "Лист4",
+                                       "Лист5"
+                                   ]
+                   },
+                   {
+                       "Check":  "vba.oneWorkbookEventModule",
+                       "Passed":  true,
+                       "Details":  "ЭтаКнига"
+                   }
+               ],
+    "DocumentModules":  [
+                            {
+                                "Name":  "ЭтаКнига",
+                                "IsWorkbook":  true,
+                                "EqualToBuildTemplate":  true,
+                                "ActualCodeSHA256":  "D80D5AAD88B3DB533DFF56807D762807FE3678CBAD2FF107043A70DFAAA7F4E9",
+                                "ExpectedCodeSHA256":  "8FCEE6BEF74B7903C9F7E1E902D084DDA8655E91A3A4654CBB301BF5280CF8EB",
+                                "Lines":  86
+                            },
+                            {
+                                "Name":  "Лист1",
+                                "IsWorkbook":  false,
+                                "EqualToBuildTemplate":  true,
+                                "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "Lines":  3
+                            },
+                            {
+                                "Name":  "Лист2",
+                                "IsWorkbook":  false,
+                                "EqualToBuildTemplate":  true,
+                                "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "Lines":  3
+                            },
+                            {
+                                "Name":  "Лист3",
+                                "IsWorkbook":  false,
+                                "EqualToBuildTemplate":  true,
+                                "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "Lines":  3
+                            },
+                            {
+                                "Name":  "Лист4",
+                                "IsWorkbook":  false,
+                                "EqualToBuildTemplate":  true,
+                                "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "Lines":  3
+                            },
+                            {
+                                "Name":  "Лист5",
+                                "IsWorkbook":  false,
+                                "EqualToBuildTemplate":  true,
+                                "ActualCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "ExpectedCodeSHA256":  "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0",
+                                "Lines":  3
+                            }
+                        ],
+    "Components":  [
+                       {
+                           "Lines":  86,
+                           "Name":  "ЭтаКнига",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист1",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист2",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист3",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист4",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  3,
+                           "Name":  "Лист5",
+                           "Type":  100
+                       },
+                       {
+                           "Lines":  291,
+                           "Name":  "CLoadPathDescriptor",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  306,
+                           "Name":  "CLoadPathMath",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  92,
+                           "Name":  "CLoadPathVector",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  52,
+                           "Name":  "CMomentZeroFilter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  225,
+                           "Name":  "CResultMeta",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  255,
+                           "Name":  "CResultStatusPolicy",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  161,
+                           "Name":  "CSectionLoadState",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  318,
+                           "Name":  "modCalculationPurpose",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  256,
+                           "Name":  "modGeometryPrimitives",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  188,
+                           "Name":  "modGeometryTypes",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  133,
+                           "Name":  "modResultStatus",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  3640,
+                           "Name":  "modSectionRecipeApiGuide",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  302,
+                           "Name":  "modSectionRecipeTypes",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  60,
+                           "Name":  "modSolverWorkStats",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  270,
+                           "Name":  "ILimitSearchProblem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  290,
+                           "Name":  "CFiberMeshBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  35,
+                           "Name":  "CGeometryDiagnostic",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  587,
+                           "Name":  "CGeometryPath",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  125,
+                           "Name":  "CGeometryRegion",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  149,
+                           "Name":  "CGeometryVariableOffset",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  155,
+                           "Name":  "CPolygonSpec",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  122,
+                           "Name":  "CSectionRecipeCircle",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  302,
+                           "Name":  "CSectionRecipeHollowRectangle",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  234,
+                           "Name":  "CSectionRecipePointedSection",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  215,
+                           "Name":  "CSectionRecipeRectangles",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  185,
+                           "Name":  "CConcreteElement",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  146,
+                           "Name":  "CConcreteRegion",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  102,
+                           "Name":  "CRebarContactBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  81,
+                           "Name":  "CRebarGroupAnnotationBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  281,
+                           "Name":  "CRebarLayout",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  417,
+                           "Name":  "CRebarOffsetContours",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1014,
+                           "Name":  "CRebarRuleExecutor",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  122,
+                           "Name":  "CRebarRuleOptions",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  398,
+                           "Name":  "CSectionAnnotationBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  186,
+                           "Name":  "CSectionAnnotations",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  77,
+                           "Name":  "CSectionBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  173,
+                           "Name":  "CSectionContours",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  427,
+                           "Name":  "CSectionDefinition",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  527,
+                           "Name":  "CSectionDefinitionBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2172,
+                           "Name":  "CSectionGeometryQuery",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  219,
+                           "Name":  "CSectionInputReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  272,
+                           "Name":  "CSectionInputTable",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1169,
+                           "Name":  "CSectionModel",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  63,
+                           "Name":  "CSectionModelBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  828,
+                           "Name":  "CSectionPropertiesCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  61,
+                           "Name":  "CSectionRecipeContext",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  13,
+                           "Name":  "ISectionRecipe",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  191,
+                           "Name":  "CConcreteMaterialParameters",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  542,
+                           "Name":  "CMaterialDiagram",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  971,
+                           "Name":  "CMaterialModelProvider",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  98,
+                           "Name":  "CMaterialModelSpec",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  163,
+                           "Name":  "CSteelMaterialParameters",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  47,
+                           "Name":  "CTestLinearConcreteMaterial",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  47,
+                           "Name":  "CTestLinearSteelMaterial",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  320,
+                           "Name":  "CCapacityCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  526,
+                           "Name":  "CCapacityLimitSearchProblem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  422,
+                           "Name":  "CCapacityResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2170,
+                           "Name":  "CCapacitySolver",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  414,
+                           "Name":  "CCrackLimitSearchProblem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  150,
+                           "Name":  "CDiscreteForceIntegrator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  289,
+                           "Name":  "CLimitSearchCoordinator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  326,
+                           "Name":  "CLimitSearchRequest",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  227,
+                           "Name":  "CLimitSearchResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  201,
+                           "Name":  "CLinearSystem3x3",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  809,
+                           "Name":  "CLoadMultiplierSearch",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  107,
+                           "Name":  "CSectionNumericalFrame",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1681,
+                           "Name":  "CSectionSolver",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  132,
+                           "Name":  "CSectionStrainLimits",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  662,
+                           "Name":  "CStateGuessBuilder",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  798,
+                           "Name":  "CStateSolutionRunner",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1014,
+                           "Name":  "CUltimateStrainSearch",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  43,
+                           "Name":  "modLimitSearchRequestFactory",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  46,
+                           "Name":  "modNonlinearStepControl",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2151,
+                           "Name":  "CCrackFormationCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  244,
+                           "Name":  "CCrackFormationResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  187,
+                           "Name":  "CCrackResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1610,
+                           "Name":  "CCrackWidthCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  313,
+                           "Name":  "CCrackWidthResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  85,
+                           "Name":  "CLongitudinalCrackCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  92,
+                           "Name":  "CLongitudinalCrackResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  659,
+                           "Name":  "CSP35CrackData",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1711,
+                           "Name":  "CStabilityCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  695,
+                           "Name":  "CStabilityResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2261,
+                           "Name":  "CBatchSectionCalculator",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  329,
+                           "Name":  "CCalculationProfile",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  340,
+                           "Name":  "CCalculationProfileCatalog",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  413,
+                           "Name":  "CCombinationResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  160,
+                           "Name":  "CDirectStateResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  628,
+                           "Name":  "CSectionStateResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  244,
+                           "Name":  "CStateProvider",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  187,
+                           "Name":  "CStateRepository",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  103,
+                           "Name":  "CStateRequest",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  129,
+                           "Name":  "CStrengthResult",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  176,
+                           "Name":  "CAutoCADContourReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  968,
+                           "Name":  "CAutoCADSectionModelImporter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1033,
+                           "Name":  "CBatchResultWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  232,
+                           "Name":  "CBinarySnapshotFile",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  385,
+                           "Name":  "CCalculationSnapshot",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  532,
+                           "Name":  "CCalculationSnapshotStore",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1124,
+                           "Name":  "CCrackSummaryWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  112,
+                           "Name":  "CExcelAppStateGuard",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  664,
+                           "Name":  "CExecutionReport",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  45,
+                           "Name":  "CFileChecksum",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  173,
+                           "Name":  "CLoadCombinationReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1966,
+                           "Name":  "CNDMResultsWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  535,
+                           "Name":  "CPlotAnnotationLayout",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  51,
+                           "Name":  "CSectionInputSnapshotReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1354,
+                           "Name":  "CSectionPlotDataReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2202,
+                           "Name":  "CSectionPlotter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  69,
+                           "Name":  "CSectionTypeRegistry",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  952,
+                           "Name":  "CStabilitySummaryWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  841,
+                           "Name":  "CStrengthSummaryWriter",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  870,
+                           "Name":  "CSystemSettingsReader",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  468,
+                           "Name":  "CUnitSystem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  2349,
+                           "Name":  "modAutoCADStressExport",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  233,
+                           "Name":  "modCalculationSnapshot",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  89,
+                           "Name":  "modMeshConfiguration",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  60,
+                           "Name":  "modResultsFormatting",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  150,
+                           "Name":  "modSectionOptionalData",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  68,
+                           "Name":  "modSectionRecipeSetup",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1059,
+                           "Name":  "modSectionSnapshot",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  121,
+                           "Name":  "modStatusFormatting",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1270,
+                           "Name":  "modWorkbookCalculation",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  287,
+                           "Name":  "modWorkbookMessages",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  125,
+                           "Name":  "CTestExcelApplicationState",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  213,
+                           "Name":  "CTestFakeAcadContour",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  229,
+                           "Name":  "CTestFakeAcadContourExport",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  73,
+                           "Name":  "CTestFakeAcadDocument",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  65,
+                           "Name":  "CTestFakeAcadLine",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  186,
+                           "Name":  "CTestFakeAcadRegion",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  873,
+                           "Name":  "CTestLimitSearchProblem",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  54,
+                           "Name":  "CTestWorkflowWorkbook",
+                           "Type":  2
+                       },
+                       {
+                           "Lines":  1989,
+                           "Name":  "modTestAudit02Api",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  302,
+                           "Name":  "modTestAudit02Snapshots",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1325,
+                           "Name":  "modTestAutoCADConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2367,
+                           "Name":  "modTestAutoCADContours",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  10960,
+                           "Name":  "modTestBatchCalculation",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1422,
+                           "Name":  "modTestCalculationSnapshot",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  4444,
+                           "Name":  "modTestCapacitySolver",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2883,
+                           "Name":  "modTestConfiguration",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1012,
+                           "Name":  "modTestContourMesh",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2166,
+                           "Name":  "modTestCrackWidth",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  139,
+                           "Name":  "modTestDeclarativeExamples",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  872,
+                           "Name":  "modTestDeclarativeGeometry",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  167,
+                           "Name":  "modTestDiscreteForces",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  701,
+                           "Name":  "modTestElementGeometry",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  191,
+                           "Name":  "modTestElementGeometryViews",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  607,
+                           "Name":  "modTestGeneralGeometryConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  3758,
+                           "Name":  "modTestGeometry",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1710,
+                           "Name":  "modTestGeometryConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  586,
+                           "Name":  "modTestGeometryFixtures",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  291,
+                           "Name":  "modTestGeometryPublication",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  949,
+                           "Name":  "modTestGeometryQuery",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  855,
+                           "Name":  "modTestGeometryReview",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  132,
+                           "Name":  "modTestGeometrySolidSnapshots",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  861,
+                           "Name":  "modTestIndividualContours",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1000,
+                           "Name":  "modTestLoadTableConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1651,
+                           "Name":  "modTestMaterialDiagrams",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1323,
+                           "Name":  "modTestPerformance",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2029,
+                           "Name":  "modTestPlotConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  351,
+                           "Name":  "modTestPolygonSpec",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1954,
+                           "Name":  "modTestProfileConfig",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  315,
+                           "Name":  "modTestRecipeAnnotations",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  295,
+                           "Name":  "modTestRecipeApiCatalogue",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  662,
+                           "Name":  "modTestRecipeOperations",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  310,
+                           "Name":  "modTestRecipeSetbacks",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  401,
+                           "Name":  "modTestRegressionBaseline",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  184,
+                           "Name":  "modTestSectionInputReader",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1662,
+                           "Name":  "modTestSectionRecipes",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  2177,
+                           "Name":  "modTestSectionSolver",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  487,
+                           "Name":  "modTestSectionWorkflow",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  850,
+                           "Name":  "modTestShapeArchitecture",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  1433,
+                           "Name":  "modTestSP35CrackWidth",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  9269,
+                           "Name":  "modTestWorkbookInterface",
+                           "Type":  1
+                       },
+                       {
+                           "Lines":  91,
+                           "Name":  "modTestZeroContourParity",
+                           "Type":  1
+                       }
+                   ],
+    "Tables":  [
+                   {
+                       "InheritedEmptyProven":  true,
+                       "Row":  156,
+                       "Name":  "rngNDMSectionGeometry",
+                       "PhysicalHeaderPresent":  false,
+                       "Columns":  16,
+                       "LastColumn":  16,
+                       "Column":  1,
+                       "Address":  "A156"
+                   },
+                   {
+                       "LastColumn":  67,
+                       "Name":  "rngNDMSectionContours",
+                       "Column":  51,
+                       "Row":  156,
+                       "Address":  "AY156",
+                       "Columns":  17
+                   },
+                   {
+                       "LastColumn":  113,
+                       "Name":  "rngNDMElementGeometry",
+                       "Column":  96,
+                       "Row":  156,
+                       "Address":  "CR156",
+                       "Columns":  18
+                   }
+               ],
+    "ProcessClosure":  {
+                           "PID":  12708,
+                           "StartTicksUTC":  "639286300817645378",
+                           "Owned":  true,
+                           "ResidualForceKilled":  false,
+                           "ExactIdentityAbsent":  true,
+                           "MacrosRun":  false,
+                           "SavePerformed":  false
+                       },
+    "Failure":  null
+}

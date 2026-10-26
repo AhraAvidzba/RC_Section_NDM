@@ -42,6 +42,9 @@ Public Type TFiber
     Area As Double
     FillFactor As Double
     MaterialID As Long
+    LocalIx As Double ' Собственный момент фактической ячейки относительно её центра, мм4.
+    LocalIy As Double ' Собственный момент фактической ячейки относительно её центра, мм4.
+    LocalIxy As Double ' Собственный центробежный момент; положительный интеграл x*y, мм4.
 End Type
 
 Public Type TGeometryProperties

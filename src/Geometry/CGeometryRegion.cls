@@ -81,6 +81,17 @@ Friend Function MeshBoundaryCrossesCell(ByVal minX As Double, ByVal minY As Doub
     MeshBoundaryCrossesCell = mQuery.MeshBoundaryCrossesCell(mEdges, mEdgeCount, minX, minY, maxX, maxY)
 End Function
 
+' Возвращает все связные части пересечения бетонной области с исходной ячейкой.
+' Отверстия и дуги сохраняются аналитически; центр ячейки не определяет отбор.
+Friend Function ClipCell(ByVal minX As Double, ByVal minY As Double, _
+        ByVal maxX As Double, ByVal maxY As Double) As Collection
+    If mRegion Is Nothing Then Err.Raise vbObjectError + 5290, "CGeometryRegion", "Точный контур бетонной области ещё не подготовлен."
+    If maxX <= minX Or maxY <= minY Then Err.Raise vbObjectError + 5290, "CGeometryRegion", "Прямоугольная ячейка должна иметь положительные размеры."
+    Dim clipped As CConcreteRegion
+    Set clipped = mQuery.ClipWindow(mRegion, 1#, 0#, minX, maxX, minY, maxY)
+    Set ClipCell = mQuery.ConnectedRegions(clipped)
+End Function
+
 ' Проверяет, создана ли область и превышают ли её ширина и высота геометрический допуск.
 ' При ошибке возвращает False и понятную причину в message.
 Public Function IsValid(ByRef message As String) As Boolean

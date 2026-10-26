@@ -1,0 +1,216 @@
+{
+  "Passed": true,
+  "FullRegressionPass": false,
+  "Reports": [
+    {
+      "Path": "docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\FinalDirected04_No.txt",
+      "SHA256": "1BCBAED6343C8451340BC391760BD0E360F41DD9185D5D9C46D4E8996F62BE91",
+      "Bytes": 290365,
+      "FullPrimaryRead": true,
+      "Started": [
+        "modTestElementGeometry.RunElementGeometryTests",
+        "modTestElementGeometry.RunContourCellMeshTests",
+        "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+        "modTestElementGeometryViews.RunElementGeometryViewTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+        "modTestSectionWorkflow.RunCompactSnapshotTests",
+        "modTestSectionWorkflow.RunWorkflowReadPerformanceTests",
+        "modTestAutoCADContours.RunAutoCADContourTests",
+        "modTestAutoCADContours.RunPostAudit03ContourSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests"
+      ],
+      "Finished": [
+        "modTestElementGeometry.RunElementGeometryTests",
+        "modTestElementGeometry.RunContourCellMeshTests",
+        "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+        "modTestElementGeometryViews.RunElementGeometryViewTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+        "modTestSectionWorkflow.RunCompactSnapshotTests",
+        "modTestSectionWorkflow.RunWorkflowReadPerformanceTests",
+        "modTestAutoCADContours.RunAutoCADContourTests",
+        "modTestAutoCADContours.RunPostAudit03ContourSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests"
+      ],
+      "SourceSHA256": "44C63ECF5C69C783A9455ACA1314FF0FFBEC5F825D0585F58636967D155AD4E5",
+      "Totals": [
+        {
+          "Name": "TOTAL",
+          "Passed": 124,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL",
+          "Passed": 2621,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT",
+          "Passed": 123,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_ELEMENT_GEOMETRY_VIEWS",
+          "Passed": 33,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL CALCULATION SNAPSHOT",
+          "Passed": 446,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_WORKFLOW_SNAPSHOT",
+          "Passed": 151,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_COMPACT_SNAPSHOT",
+          "Passed": 95,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_WORKFLOW_READ",
+          "Passed": 27,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_AUTOCAD_CONTOURS",
+          "Passed": 627,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_POSTAUDIT03_CONTOURS",
+          "Passed": 245,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL IMPORTED DIMENSIONS",
+          "Passed": 23,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL ANNOTATION SECTION SCALE",
+          "Passed": 12,
+          "Failed": 0
+        }
+      ],
+      "Errors": [],
+      "TerminalWatchdog": [
+        [
+          "0",
+          "True"
+        ]
+      ],
+      "Passed": true
+    },
+    {
+      "Path": "docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\FinalDirected04_Yes.txt",
+      "SHA256": "9C0F868F7131B156C8F12F1FCA8B7365D7F45F80F2B9072B2EC72EE5D4478E68",
+      "Bytes": 290292,
+      "FullPrimaryRead": true,
+      "Started": [
+        "modTestElementGeometry.RunElementGeometryTests",
+        "modTestElementGeometry.RunContourCellMeshTests",
+        "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+        "modTestElementGeometryViews.RunElementGeometryViewTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+        "modTestSectionWorkflow.RunCompactSnapshotTests",
+        "modTestSectionWorkflow.RunWorkflowReadPerformanceTests",
+        "modTestAutoCADContours.RunAutoCADContourTests",
+        "modTestAutoCADContours.RunPostAudit03ContourSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests"
+      ],
+      "Finished": [
+        "modTestElementGeometry.RunElementGeometryTests",
+        "modTestElementGeometry.RunContourCellMeshTests",
+        "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+        "modTestElementGeometryViews.RunElementGeometryViewTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+        "modTestSectionWorkflow.RunCompactSnapshotTests",
+        "modTestSectionWorkflow.RunWorkflowReadPerformanceTests",
+        "modTestAutoCADContours.RunAutoCADContourTests",
+        "modTestAutoCADContours.RunPostAudit03ContourSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests"
+      ],
+      "SourceSHA256": "44C63ECF5C69C783A9455ACA1314FF0FFBEC5F825D0585F58636967D155AD4E5",
+      "Totals": [
+        {
+          "Name": "TOTAL",
+          "Passed": 124,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL",
+          "Passed": 2621,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT",
+          "Passed": 123,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_ELEMENT_GEOMETRY_VIEWS",
+          "Passed": 33,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL CALCULATION SNAPSHOT",
+          "Passed": 446,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_WORKFLOW_SNAPSHOT",
+          "Passed": 151,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_COMPACT_SNAPSHOT",
+          "Passed": 95,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_WORKFLOW_READ",
+          "Passed": 27,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_AUTOCAD_CONTOURS",
+          "Passed": 627,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_POSTAUDIT03_CONTOURS",
+          "Passed": 245,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL IMPORTED DIMENSIONS",
+          "Passed": 23,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL ANNOTATION SECTION SCALE",
+          "Passed": 12,
+          "Failed": 0
+        }
+      ],
+      "Errors": [],
+      "TerminalWatchdog": [
+        [
+          "0",
+          "True"
+        ]
+      ],
+      "Passed": true
+    }
+  ]
+}

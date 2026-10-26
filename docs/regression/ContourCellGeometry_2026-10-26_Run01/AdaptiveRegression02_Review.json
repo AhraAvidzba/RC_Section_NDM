@@ -1,0 +1,174 @@
+{
+  "Passed": true,
+  "FullRegressionPass": false,
+  "Reports": [
+    {
+      "Path": "docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\AdaptiveRegression02_No.txt",
+      "SHA256": "17F247A2B2F4C0D8385FFC1C4EEC068B2739D810D270B2D4F29C565FF70F49F5",
+      "Bytes": 1241507,
+      "FullPrimaryRead": true,
+      "Started": [
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestGeometryQuery.RunTangentClipRegressionTests",
+        "modTestGeometryQuery.RunGeneratedContourOwnershipTests",
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestGeometry.RunGeometryTests",
+        "modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Finished": [
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestGeometryQuery.RunTangentClipRegressionTests",
+        "modTestGeometryQuery.RunGeneratedContourOwnershipTests",
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestGeometry.RunGeometryTests",
+        "modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "SourceSHA256": "4B6121298B6197BC42A7DC3EF76FB9B062C6F48970D5D50CA9423BD7FC2F7ACB",
+      "Totals": [
+        {
+          "Name": "TOTAL",
+          "Passed": 1319,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_TANGENT_CLIP",
+          "Passed": 3874,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_GENERATED_CONTOURS",
+          "Passed": 588,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_ADAPTIVE_BOUNDARY_MESH",
+          "Passed": 109,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_AUTO_MESH",
+          "Passed": 131161,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL",
+          "Passed": 4053,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_GENERAL_GEOMETRY_CONFIG",
+          "Passed": 2293,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_CONTOUR_MESH",
+          "Passed": 47347,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_REGRESSION_BASELINE",
+          "Passed": 39,
+          "Failed": 0
+        }
+      ],
+      "Errors": [],
+      "TerminalWatchdog": [
+        [
+          "0",
+          "True"
+        ]
+      ],
+      "Passed": true
+    },
+    {
+      "Path": "docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\AdaptiveRegression02_Yes.txt",
+      "SHA256": "EE222FD64DCB9F27B30889DDCFE6E029E4E56504DF52957F5D90EA29B0E68F3E",
+      "Bytes": 1241696,
+      "FullPrimaryRead": true,
+      "Started": [
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestGeometryQuery.RunTangentClipRegressionTests",
+        "modTestGeometryQuery.RunGeneratedContourOwnershipTests",
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestGeometry.RunGeometryTests",
+        "modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Finished": [
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestGeometryQuery.RunTangentClipRegressionTests",
+        "modTestGeometryQuery.RunGeneratedContourOwnershipTests",
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestGeometry.RunGeometryTests",
+        "modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "SourceSHA256": "4B6121298B6197BC42A7DC3EF76FB9B062C6F48970D5D50CA9423BD7FC2F7ACB",
+      "Totals": [
+        {
+          "Name": "TOTAL",
+          "Passed": 1319,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_TANGENT_CLIP",
+          "Passed": 3874,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_GENERATED_CONTOURS",
+          "Passed": 588,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_ADAPTIVE_BOUNDARY_MESH",
+          "Passed": 109,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_AUTO_MESH",
+          "Passed": 131161,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL",
+          "Passed": 4053,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_GENERAL_GEOMETRY_CONFIG",
+          "Passed": 2293,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_CONTOUR_MESH",
+          "Passed": 47347,
+          "Failed": 0
+        },
+        {
+          "Name": "TOTAL_REGRESSION_BASELINE",
+          "Passed": 39,
+          "Failed": 0
+        }
+      ],
+      "Errors": [],
+      "TerminalWatchdog": [
+        [
+          "0",
+          "True"
+        ]
+      ],
+      "Passed": true
+    }
+  ]
+}

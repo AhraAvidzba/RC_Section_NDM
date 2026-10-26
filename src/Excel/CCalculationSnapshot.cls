@@ -237,10 +237,16 @@ Public Function Keys() As Variant
     Keys = mTables.Keys
 End Function
 
-' Перечисляет шесть прежних технических таблиц Results; отдельного архива на листе нет.
+' Перечисляет прежние таблицы Results и собственные границы, если они сохранены.
+' Старые файлы без седьмой таблицы остаются читаемыми для прежней геометрии.
 Public Function BaseKeys() As Variant
-    BaseKeys = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
+    Dim keys As Variant
+    keys = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
         "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+    If HasTable("rngNDMElementGeometry") Then
+        ReDim Preserve keys(0 To 6): keys(6) = "rngNDMElementGeometry"
+    End If
+    BaseKeys = keys
 End Function
 
 ' Отличает существующие нижние таблицы от дополнительных матриц сводок.
@@ -276,6 +282,9 @@ Public Sub Validate()
             values = Table(CStr(key)): ValidateTableShape CStr(key), values
         End If
     Next key
+    If HasTable("rngNDMElementGeometry") Then
+        values = Table("rngNDMElementGeometry"): ValidateTableShape "rngNDMElementGeometry", values
+    End If
     For Each key In BaseKeys()
         If CStr(key) = "rngNDMElementResults" Then
             ValidateRunID mElements, CStr(key)
@@ -289,6 +298,10 @@ Public Sub Validate()
             If CDbl(values(i, 1)) <> mRunID Then Err.Raise 5, "CCalculationSnapshot", "LC относятся к другому запуску: " & CStr(key)
         Next i
     Next key
+    Dim geometry As Variant, boundaries As Variant, boundaryMap As Object
+    geometry = Table("rngNDMSectionGeometry")
+    If HasTable("rngNDMElementGeometry") Then boundaries = Table("rngNDMElementGeometry")
+    Set boundaryMap = ReadConcreteBoundaryMap(boundaries, geometry)
     mValidated = True
 End Sub
 
@@ -309,6 +322,7 @@ Private Sub ValidateTableShape(ByVal key As String, ByRef values As Variant)
         Case "rngNDMElementResults": columns = 9
         Case "rngNDMSectionGeometry": columns = 16
         Case "rngNDMSectionContours": columns = 17
+        Case "rngNDMElementGeometry": columns = 18
         Case "rngNDMSectionProperties", "LoadCase.Properties": columns = 6
         Case "rngNDMMaterialDiagrams": columns = 11
         Case "rngNDMSectionAnnotations", "LoadCase.Annotations": columns = 24

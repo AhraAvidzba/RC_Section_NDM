@@ -2700,8 +2700,8 @@ Public Function RunLocaleSavedContractTests(Optional ByRef passedCount As Long =
     solveCount = SectionEquilibriumSolveCount()
     oldAlerts = Application.DisplayAlerts
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
-    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMSectionContours")
-    columns = Array(1, 12, 49, 57, 70, 30)
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMSectionContours", "rngNDMElementGeometry")
+    columns = Array(1, 12, 49, 57, 70, 30, 96)
     For i = 0 To UBound(names)
         fixture.Names.Add CStr(names(i)), "='Results'!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i

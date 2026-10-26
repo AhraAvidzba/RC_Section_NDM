@@ -19,6 +19,7 @@ Private Declare PtrSafe Function MoveFileExW Lib "kernel32" (ByVal source As Lon
 Private Declare PtrSafe Sub CopySnapshotBits Lib "kernel32" Alias "RtlMoveMemory" (ByRef target As Currency, ByRef source As Double, ByVal count As LongPtr)
 Private Declare PtrSafe Sub CopyPackedBytes Lib "kernel32" Alias "RtlMoveMemory" (ByVal target As LongPtr, ByVal source As LongPtr, ByVal count As LongPtr)
 Private Const MAGIC As String = "NDMSNP04" ' Контракт плотных колонок и точных повторяющихся серий версии 4.
+Private Const BOUNDARY_MAGIC As String = "NDMSNP05" ' Версия 5 запрещает прежнему читателю потерять обязательную фактическую границу элемента.
 Private Const FILE_EXTENSION As String = ".ndm" ' Имя в Config не требует расширения; новые снимки получают один общий суффикс.
 Private Const LEGACY_FILE_EXTENSION As String = ".ndms" ' Прежние файлы доступны для чтения без изменения их содержимого или имени.
 Private Const LINK_PREFIX As String = "NDM.CalculationSnapshot." ' Привязка показанных результатов к уже загруженному файлу.
@@ -156,29 +157,38 @@ Public Function LoadFile(ByVal workbook As Object) As CCalculationSnapshot
     Set LoadFile = snapshot
 End Function
 
-' Записывает все матрицы полного снимка прежним двоичным кодеком версии 4.
+' Записывает все матрицы прежним плотным кодеком. Обязательная фактическая
+' граница включает версию 5; компактный прежний режим сохраняет версию 4.
 Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot)
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim count As Long, key As Variant, hash As String
+    Dim count As Long, key As Variant, hash As String, signature As String, version As Long
     On Error GoTo Failed
     For Each key In snapshot.Keys()
         count = count + 1
     Next key
+    signature = MAGIC: version = 4
+    If HasConcreteBoundaries(snapshot) Then signature = BOUNDARY_MAGIC: version = 5
     file.OpenWrite path
-    file.WriteASCII MAGIC: file.WriteLong 4: file.WriteDouble snapshot.RunID: file.WriteDouble snapshot.ElapsedSeconds: file.WriteLong count
+    file.WriteASCII signature: file.WriteLong version: file.WriteDouble snapshot.RunID: file.WriteDouble snapshot.ElapsedSeconds: file.WriteLong count
     For Each key In snapshot.Keys()
         PutText file, CStr(key): snapshot.WritePreparedTable CStr(key), Me, file
     Next key
     file.CloseFile
     Dim digest As CFileChecksum: Set digest = New CFileChecksum: hash = digest.FileSHA256(path)
     file.OpenUpdate path: file.Position = file.Size
-    file.WriteASCII hash: file.WriteASCII MAGIC: file.CloseFile
+    file.WriteASCII hash: file.WriteASCII signature: file.CloseFile
     Exit Sub
 Failed:
     Dim reason As String: reason = Err.Description
     file.CloseFile
     Err.Raise vbObjectError + 4953, "CCalculationSnapshotStore.WriteBinary", reason
 End Sub
+
+' Отличает новую обязательную геометрию от пустой дополнительной шапки.
+' Наличие строки Contour без границ раньше отклоняет snapshot.Validate.
+Private Function HasConcreteBoundaries(ByVal snapshot As CCalculationSnapshot) As Boolean
+    If snapshot.HasTable("rngNDMElementGeometry") Then HasConcreteBoundaries = snapshot.TableRowCount("rngNDMElementGeometry") > 1
+End Function
 
 ' Записывает переданный снимком массив без копирования большой матрицы элементов.
 ' Таблица остаётся собственностью снимка; ни значения, ни порядок строк не меняются.
@@ -189,21 +199,23 @@ End Sub
 ' Проверяет контрольную сумму до выделения матриц и чтения значений.
 Private Function ReadBinary(ByVal path As String) As CCalculationSnapshot
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim signature As String, hash As String, version As Long, count As Long, i As Long, key As String, values As Variant
+    Dim signature As String, footer As String, hash As String, version As Long, count As Long, i As Long, key As String, values As Variant
     On Error GoTo Failed
     file.OpenRead path
     If file.Size < 104 Then Err.Raise 5, , "Файл снимка оборван."
-    file.Position = file.Size - 72: hash = file.ReadASCII(64): signature = file.ReadASCII(8)
+    file.Position = file.Size - 72: hash = file.ReadASCII(64): footer = file.ReadASCII(8)
     Dim digest As CFileChecksum: Set digest = New CFileChecksum
-    If signature <> MAGIC Or digest.FileSHA256(path, file.Size - 72) <> hash Then Err.Raise 5, , "Контрольная сумма снимка не совпадает."
+    If (footer <> MAGIC And footer <> BOUNDARY_MAGIC) Or digest.FileSHA256(path, file.Size - 72) <> hash Then Err.Raise 5, , "Контрольная сумма снимка не совпадает."
     file.Position = 0
     signature = file.ReadASCII(8): version = file.ReadLong
     Dim snapshot As CCalculationSnapshot: Set snapshot = New CCalculationSnapshot
     snapshot.RunID = file.ReadDouble: snapshot.ElapsedSeconds = file.ReadDouble: count = file.ReadLong
-    If signature <> MAGIC Or version <> 4 Or count < 1 Or count > 64 Then Err.Raise 5, , "Неизвестный формат снимка."
+    If signature <> footer Or count < 1 Or count > 64 Then Err.Raise 5, , "Неизвестный формат снимка."
+    If Not ((signature = MAGIC And version = 4) Or (signature = BOUNDARY_MAGIC And version = 5)) Then Err.Raise 5, , "Неизвестная версия формата снимка."
     For i = 1 To count
         key = GetText(file): values = ReadMatrix(file): snapshot.AddTable key, values
     Next i
+    If version = 4 And HasConcreteBoundaries(snapshot) Then Err.Raise 5, , "Обязательные границы элементов требуют версии снимка 5."
     If file.Position <> file.Size - 72 Then Err.Raise 5, , "Неверная длина снимка."
     file.CloseFile
     Set ReadBinary = snapshot
@@ -491,16 +503,20 @@ Public Sub UpdateSavedElapsed(ByVal workbook As Object, ByVal snapshot As CCalcu
     If StorageMode(workbook) = "Excel" Then Exit Sub
     Dim target As String: target = SnapshotPath(workbook)
     Dim temporary As String: temporary = target & ".part"
-    Dim ownsTemporary As Boolean, elapsed As Double, hash As String
+    Dim ownsTemporary As Boolean, elapsed As Double, hash As String, signature As String, version As Long, footer As String
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
     On Error GoTo Failed
     If FileExists(temporary) Then Err.Raise 5, , "Временный файл снимка занят: " & temporary
     ownsTemporary = True: CreateObject("Scripting.FileSystemObject").CopyFile target, temporary, False
+    file.OpenRead temporary: signature = file.ReadASCII(8): version = file.ReadLong
+    file.Position = file.Size - 8: footer = file.ReadASCII(8): file.CloseFile
+    If signature <> footer Or Not ((signature = MAGIC And version = 4) Or (signature = BOUNDARY_MAGIC And version = 5)) Then _
+        Err.Raise 5, , "Неизвестная версия формата снимка при обновлении времени."
     file.OpenUpdate temporary: file.Position = 20: file.WriteDouble snapshot.ElapsedSeconds
     Dim size As Long: size = file.Size: file.CloseFile
     Dim digest As CFileChecksum: Set digest = New CFileChecksum: hash = digest.FileSHA256(temporary, size - 72)
     file.OpenUpdate temporary: file.Position = size - 72
-    file.WriteASCII hash: file.WriteASCII MAGIC: file.CloseFile
+    file.WriteASCII hash: file.WriteASCII signature: file.CloseFile
     If MoveFileExW(StrPtr(temporary), StrPtr(target), 9) = 0 Then Err.Raise 5, , "Не удалось обновить время снимка: " & target
     LinkFile workbook
     Exit Sub

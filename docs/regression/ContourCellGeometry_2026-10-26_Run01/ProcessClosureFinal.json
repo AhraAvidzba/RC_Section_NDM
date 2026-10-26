@@ -1,0 +1,1640 @@
+﻿{
+    "Status":  "PASS_ALL_RECORDED_OWN_IDENTITIES_ABSENT",
+    "ObservedUTC":  "2026-10-26T16:50:22.4909964+00:00",
+    "EvidenceDirectory":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ContourCellGeometry_2026-10-26_Run01",
+    "ScriptSHA256":  "101164499B61E55BB2592020B36E99C2E53B2B6E4ED159041CCF9CC8A9D4037A",
+    "ReadOnlyObservation":  true,
+    "ProcessesStarted":  0,
+    "ProcessesStopped":  0,
+    "OnlyOutputWritten":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\ProcessClosureFinal.json",
+    "InputsExcluded":  true,
+    "NestedPriorExistingArraysInspected":  false,
+    "ProtectedExternalPIDs":  [
+                                  34980,
+                                  22916
+                              ],
+    "ProofFilesRead":  [
+                           {
+                               "File":  "Compile02\\Ownership.json",
+                               "Bytes":  219,
+                               "SHA256":  "75065F04AEFB2BA760197822A6B7FD664A8A2C7C703B8B62CE434DD48F8F1360"
+                           },
+                           {
+                               "File":  "Compile03\\Ownership.json",
+                               "Bytes":  219,
+                               "SHA256":  "FD355DED9E693CE4395C706745A5DEA7F7599851DCA0C72378D524DFC86418A9"
+                           },
+                           {
+                               "File":  "Compile04\\Ownership.json",
+                               "Bytes":  220,
+                               "SHA256":  "BE1822B80B7C5231FFA077B11C430AF55FDACCC826B028360EBC89146FA657C9"
+                           },
+                           {
+                               "File":  "Compile05\\Ownership.json",
+                               "Bytes":  220,
+                               "SHA256":  "61A718307C38ADA431AA2AD57804ED9DE8CC4A27B267F0F5C340FAF3FF913609"
+                           },
+                           {
+                               "File":  "Compile06\\Ownership.json",
+                               "Bytes":  220,
+                               "SHA256":  "9CD8906E47FE090479F302B60C8B27F83FC0FB585097D85263C995FEB09261BA"
+                           },
+                           {
+                               "File":  "Compile07\\Ownership.json",
+                               "Bytes":  220,
+                               "SHA256":  "9C0C9382A2F2212D813ECFB64338526166AC7F5E80CFA82C229CE55E9DC5797D"
+                           },
+                           {
+                               "File":  "Compile08\\Ownership.json",
+                               "Bytes":  220,
+                               "SHA256":  "DAC972076659984E07320CC7E7AB3650D5A8BF77C2DE58CE8AF945E555B72931"
+                           },
+                           {
+                               "File":  "Compile09\\Ownership.json",
+                               "Bytes":  220,
+                               "SHA256":  "A12421D8E90CF771858FA4B38201B03E73B4A65393B9428FAFF42625E096A5BF"
+                           },
+                           {
+                               "File":  "Compile10\\Ownership.json",
+                               "Bytes":  220,
+                               "SHA256":  "1C36F8CD834B5CF5DC435EEC16DAF4150ECE9D63BFF33D3762E3EB5E36C55508"
+                           },
+                           {
+                               "File":  "Compile11\\Ownership.json",
+                               "Bytes":  220,
+                               "SHA256":  "82037E9ABB4C9F3B105F44CD7B5078ED3F612D532CD7755F8E59196E26EF968A"
+                           },
+                           {
+                               "File":  "DecimalSnapshot01\\Ownership.json",
+                               "Bytes":  499,
+                               "SHA256":  "684EC3809AA0EC61E313650FE4778F6A9A3C211F0D8B9D542FF209ABF754F9CC"
+                           },
+                           {
+                               "File":  "DecimalSnapshot01\\ProcessClosure.json",
+                               "Bytes":  165,
+                               "SHA256":  "20EF760CF66D29976827EC59885CE043D625F2A9083E0270E2532F3C0EE8C4DB"
+                           },
+                           {
+                               "File":  "DecimalSnapshot02\\Ownership.json",
+                               "Bytes":  503,
+                               "SHA256":  "3B3A9339CB743293BE90EC9CD3863BBF5932805A8FA5D62E0AA78358FE2C7499"
+                           },
+                           {
+                               "File":  "DecimalSnapshot02\\ProcessClosure.json",
+                               "Bytes":  165,
+                               "SHA256":  "B152C46644D3778D0A1FCDE7105C8FF0904BB478C166D813A36CE3100F65150E"
+                           },
+                           {
+                               "File":  "FinalCandidate05_NativeVerification.json",
+                               "Bytes":  36598,
+                               "SHA256":  "766FB7753F721AC92B075D63A2B9D1628B13B352D487FC7AF47C30E6DB857441"
+                           },
+                           {
+                               "File":  "FinalCandidate07_NativeVerification.json",
+                               "Bytes":  36598,
+                               "SHA256":  "DA4ED90A1E361187D09E730A3EE3DABA3C559F6BF519BCA221F6785059C01987"
+                           },
+                           {
+                               "File":  "FinalStructure01\\Ownership.json",
+                               "Bytes":  179,
+                               "SHA256":  "C2A8F9B59BE2C4936F0368A0E113022CBBD4A71E8D36D0835612BB9E946B7C0B"
+                           },
+                           {
+                               "File":  "FinalStructure01\\ProcessClosure.json",
+                               "Bytes":  221,
+                               "SHA256":  "5182FEAA860FCC1898B4D9E1F241FDFE3B425A4E3DAB3F8A0908D2CDFD57126B"
+                           },
+                           {
+                               "File":  "FinalStructure02\\Ownership.json",
+                               "Bytes":  179,
+                               "SHA256":  "C06AFCFFAAF0362ADBEC2166E29D4ABC7F12B10FEB9711826F5769BE35406208"
+                           },
+                           {
+                               "File":  "FinalStructure02\\ProcessClosure.json",
+                               "Bytes":  221,
+                               "SHA256":  "238CED75AB04273DF151C57AEFCAD52BC475BD3D8A6908D1B29BCE4701E59966"
+                           },
+                           {
+                               "File":  "FinalStructure03\\Ownership.json",
+                               "Bytes":  179,
+                               "SHA256":  "24E2A87344531D1941FFED75A73D28F5C9211F0649A87F02B583CFD65C41D223"
+                           },
+                           {
+                               "File":  "FinalStructure03\\ProcessClosure.json",
+                               "Bytes":  221,
+                               "SHA256":  "4D29EC7F3D627681D0287B38321E27A28C919CE5F6A38D6F872FDCDC1488EF47"
+                           },
+                           {
+                               "File":  "FinalStructure04\\Ownership.json",
+                               "Bytes":  179,
+                               "SHA256":  "B865CD6E0E0BB316119E0942C0900F25003B9A37AFB42088F8CDA20045B147CD"
+                           },
+                           {
+                               "File":  "FinalStructure04\\ProcessClosure.json",
+                               "Bytes":  221,
+                               "SHA256":  "376D2C7D3836A0DA1069A9C43EF9485EB88E8F05E8B494A3A4774F67C4F25B57"
+                           },
+                           {
+                               "File":  "FreshBuild01.json",
+                               "Bytes":  506,
+                               "SHA256":  "EA4F480B3C816BB1E1322EB297FD577BDD6564D62EC380FE0DAC710DAA0AAB06"
+                           },
+                           {
+                               "File":  "FreshBuild02.json",
+                               "Bytes":  506,
+                               "SHA256":  "2E7D6AACB71BAACE66D54403C9752B1B8A20BA59583D4C50BCF334B364E446BA"
+                           },
+                           {
+                               "File":  "FreshBuild03.json",
+                               "Bytes":  507,
+                               "SHA256":  "3CB6D85FA8C80D4E64EC85750F8FABC299DF3DD5B8AC2C7F51C1F54379FE71E6"
+                           },
+                           {
+                               "File":  "FreshBuild04_TestSync\\Ownership.json",
+                               "Bytes":  437,
+                               "SHA256":  "DE3EC40B80FBA4588C8CE31845E27AEBE7B703C6B0F720543EDF9058A09D3903"
+                           },
+                           {
+                               "File":  "FreshBuild04_TestSync\\ProcessClosure.json",
+                               "Bytes":  191,
+                               "SHA256":  "1A25DA7C5BC691CA89E1A31013B2B8B7325425554F8449A6DECB66EF6BD518AE"
+                           },
+                           {
+                               "File":  "HyperlinkAddControl01\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "62322C815397A2B496FF8AB13A3E0AD316994C6DACAD2DF47F01CC7BFB236678"
+                           },
+                           {
+                               "File":  "HyperlinkCaptureControl01\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "19A07E0B9AA4CD9A62BDF2DA0322DA915C93DD8FDE7A998BB9F7FB5E0663CE90"
+                           },
+                           {
+                               "File":  "HyperlinkNative01\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "33AE7913EFD2127E9C4F494CAABBE168AE47E9DB3BF000F91A5D21D5E8466833"
+                           },
+                           {
+                               "File":  "HyperlinkNative02\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "D22A37609800D35F68C988DD6FEF4E1DC415B141133B69B6C36AF16A0CA660E9"
+                           },
+                           {
+                               "File":  "HyperlinkNative03\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "53637E1476386303384E6A51657E213A3B7EF34130CAB88DB2CFC267765A8278"
+                           },
+                           {
+                               "File":  "HyperlinkNative04\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "274DA7EFD4C4AA6DD16AE967FA131C8B05CA12AE18EE850B1FE42B243F211DF3"
+                           },
+                           {
+                               "File":  "HyperlinkNative05\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "C7E06A11533F2221A3925FD06EFA883D9E4A64292D5E77F6ECD5BEEA5A1AA271"
+                           },
+                           {
+                               "File":  "HyperlinkNative06\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "DF01985F990A54E881446B6C585E69C3A6433F560E957C86237D8F9E1BEC0BFC"
+                           },
+                           {
+                               "File":  "HyperlinkSaveControl01\\Ownership.json",
+                               "Bytes":  193,
+                               "SHA256":  "47671547639E056A6A19248B6AD379A3B14FDC1C7A0824E932A15509F3FFD130"
+                           },
+                           {
+                               "File":  "NativeCAD03\\Ownership.json",
+                               "Bytes":  300,
+                               "SHA256":  "21B2DACD20BF5817711A825B24ABF60EC3F0DF79661BC424203BA691DB8C40E2"
+                           },
+                           {
+                               "File":  "NativeCAD03\\ProcessClosure.json",
+                               "Bytes":  423,
+                               "SHA256":  "1C46BDE13A299E77FD7F82BAE2978DDF93FB2EEE93B503C5AB4FB00BD29615F1"
+                           },
+                           {
+                               "File":  "NativeCAD04\\Ownership.json",
+                               "Bytes":  503,
+                               "SHA256":  "FBD9C312D98386EBE8D5C46912F1BE6827CCD6461C4862F7E909A721F1231AF9"
+                           },
+                           {
+                               "File":  "NativeCAD04\\ProcessClosure.json",
+                               "Bytes":  443,
+                               "SHA256":  "FFC9B7E6BBB05DF3B721A0BA6C9D0A2DCA9D1AE502695B162AE28E6BDA9DA625"
+                           },
+                           {
+                               "File":  "NativeCAD05\\Ownership.json",
+                               "Bytes":  503,
+                               "SHA256":  "A7AFE33EA9577D9E63AE14AE865B1ADB98C12ADCBEDAEAEE6EA1275D14C9DBA6"
+                           },
+                           {
+                               "File":  "NativeCAD05\\ProcessClosure.json",
+                               "Bytes":  443,
+                               "SHA256":  "540E45FBEDE0DB9CC8BDC66E111E957FE6C94BDCF1C9FCF1395E6696EFC7EEF7"
+                           },
+                           {
+                               "File":  "NativeCAD06\\Ownership.json",
+                               "Bytes":  502,
+                               "SHA256":  "048F5D82FA1A235FD394D49F700842128D0AE7D83E0B22CB8E2CC66E28A50E9E"
+                           },
+                           {
+                               "File":  "NativeCAD06\\ProcessClosure.json",
+                               "Bytes":  442,
+                               "SHA256":  "D21D093548A4784D7CEE319F7189A6FAEFD9CE8C9CD5C5D0AEFFA48E3CF3543A"
+                           },
+                           {
+                               "File":  "NativeCAD07\\Ownership.json",
+                               "Bytes":  503,
+                               "SHA256":  "6478196BFE1B8E4DB82E4347F1F0B77368C3A589C8B417EE9FC48BBB647E17FC"
+                           },
+                           {
+                               "File":  "NativeCAD07\\ProcessClosure.json",
+                               "Bytes":  443,
+                               "SHA256":  "12C211719129E47C23A7C5567E55F69345419DEF3F0272BC140A1EE2554FC7DB"
+                           },
+                           {
+                               "File":  "PublishedStructure01\\Ownership.json",
+                               "Bytes":  179,
+                               "SHA256":  "C0599D5B0097C42498BA887F4FAA5C91AE329453AC04ACFA36905BFA47D43F05"
+                           },
+                           {
+                               "File":  "PublishedStructure01\\ProcessClosure.json",
+                               "Bytes":  221,
+                               "SHA256":  "4455CADC4276F7E6753FCB6952089EBBC83FB4A90B717CD3D7FB5A1C18094D87"
+                           },
+                           {
+                               "File":  "ReleaseCandidate01\\Ownership.json",
+                               "Bytes":  239,
+                               "SHA256":  "C7CE93B46DB169350C2EBE6307259D1BAA8612B065B0F3B627072472CE16507E"
+                           },
+                           {
+                               "File":  "ReleaseCandidate02\\Ownership.json",
+                               "Bytes":  238,
+                               "SHA256":  "A32DD6222EC4E63C3E71D1001C13B200409427C5110C24A9690E28359F307791"
+                           },
+                           {
+                               "File":  "Workflow01\\Ownership.json",
+                               "Bytes":  293,
+                               "SHA256":  "9326FF0B27A1618F5E25E691925B4CFF70DE30D4FAC8E922C4BB4E18EC685FA6"
+                           },
+                           {
+                               "File":  "Workflow01\\ProcessClosure.json",
+                               "Bytes":  165,
+                               "SHA256":  "3FABDE154138560FA8319553BFA4B4378998940E5161D33274337A8328CFB187"
+                           },
+                           {
+                               "File":  "Workflow02\\Ownership.json",
+                               "Bytes":  515,
+                               "SHA256":  "4BFC4EB709BF5B4E5B74E6AFA1FA0DF9B5FC1432B77C20562683E0D51011A3A6"
+                           },
+                           {
+                               "File":  "Workflow02\\ProcessClosure.json",
+                               "Bytes":  164,
+                               "SHA256":  "E9C37F1758F1553D036815DFCA0CBDB04F686EDEA203A3FA4A59CFCF529FB696"
+                           },
+                           {
+                               "File":  "Workflow03\\Ownership.json",
+                               "Bytes":  498,
+                               "SHA256":  "F83B162C0C3CCC55EAE1795A56642CC9044EE75C1247A29E8FFFED8A498E10A0"
+                           },
+                           {
+                               "File":  "Workflow03\\ProcessClosure.json",
+                               "Bytes":  165,
+                               "SHA256":  "F6D8C0F486993B345296B5E898752BA0B47476FFE82D4BEC70F57A5B5CF119F2"
+                           }
+                       ],
+    "ProofFilesReadCount":  58,
+    "UniqueOwnIdentityCount":  46,
+    "LiveOwnIdentityCount":  0,
+    "UnknownIdentityCount":  0,
+    "AllRecordedOwnedIdentitiesAbsent":  true,
+    "Observations":  [
+                         {
+                             "PID":  8520,
+                             "StartTicksUTC":  "639286260780276638",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Workflow02\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "Workflow02\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  29612,
+                             "StartTicksUTC":  "639286238843574563",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile06\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  24672,
+                             "StartTicksUTC":  "639286257084909404",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Workflow01\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "Workflow01\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  29712,
+                             "StartTicksUTC":  "639286291275356106",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD07\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD07\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  29036,
+                             "StartTicksUTC":  "639286289912404935",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile11\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  31788,
+                             "StartTicksUTC":  "639286268969772318",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile10\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  35352,
+                             "StartTicksUTC":  "639286284393478870",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkNative06\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  35328,
+                             "StartTicksUTC":  "639286281608417604",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FinalCandidate05_NativeVerification.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  9332,
+                             "StartTicksUTC":  "639286232828698289",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile02\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  26488,
+                             "StartTicksUTC":  "639286278394401146",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkSaveControl01\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  26368,
+                             "StartTicksUTC":  "639286288255267015",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkAddControl01\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  32780,
+                             "StartTicksUTC":  "639286273063435920",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkNative03\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  21972,
+                             "StartTicksUTC":  "639286276347402066",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "DecimalSnapshot01\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "DecimalSnapshot01\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  30440,
+                             "StartTicksUTC":  "639286237944696893",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile05\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  27960,
+                             "StartTicksUTC":  "639286253008844742",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD03\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD03\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  1672,
+                             "StartTicksUTC":  "639286251314697923",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "ReleaseCandidate02\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  17300,
+                             "StartTicksUTC":  "639286297716361891",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FinalCandidate07_NativeVerification.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  19708,
+                             "StartTicksUTC":  "639286291789472126",
+                             "ExpectedName":  "acad",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD07\\Ownership.json",
+                                                  "Kind":  "CAD",
+                                                  "PIDKey":  "CADPID",
+                                                  "StartTicksKey":  "CADStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD07\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  31832,
+                             "StartTicksUTC":  "639286255236651429",
+                             "ExpectedName":  "acad",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD04\\Ownership.json",
+                                                  "Kind":  "CAD",
+                                                  "PIDKey":  "CADPID",
+                                                  "StartTicksKey":  "CADStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD04\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  30352,
+                             "StartTicksUTC":  "639286299106262214",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FinalStructure04\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "FinalStructure04\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  32720,
+                             "StartTicksUTC":  "639286260653681561",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD05\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD05\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  9440,
+                             "StartTicksUTC":  "639286233809114575",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile03\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  7608,
+                             "StartTicksUTC":  "639286275393818914",
+                             "ExpectedName":  "acad",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD06\\Ownership.json",
+                                                  "Kind":  "CAD",
+                                                  "PIDKey":  "CADPID",
+                                                  "StartTicksKey":  "CADStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD06\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  31356,
+                             "StartTicksUTC":  "639286248027220364",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile08\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  14244,
+                             "StartTicksUTC":  "639286254815416545",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "PID_REUSED_OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  "chrome",
+                             "ObservedStartTicksUTC":  "639286271884559963",
+                             "CPUSeconds":  3.734375,
+                             "WorkingSetBytes":  155680768,
+                             "PrivateBytes":  86061056,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD04\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD04\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  19200,
+                             "StartTicksUTC":  "639286295763649215",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FreshBuild04_TestSync\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "FreshBuild04_TestSync\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  12708,
+                             "StartTicksUTC":  "639286300817645378",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "PublishedStructure01\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "PublishedStructure01\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  29208,
+                             "StartTicksUTC":  "639286267216550738",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkNative01\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  34844,
+                             "StartTicksUTC":  "639286279219597873",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkNative05\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  31088,
+                             "StartTicksUTC":  "639286289920878809",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FreshBuild03.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  32140,
+                             "StartTicksUTC":  "639286279997055379",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FreshBuild01.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  35248,
+                             "StartTicksUTC":  "639286275529983533",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkNative04\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  29600,
+                             "StartTicksUTC":  "639286249396989360",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "ReleaseCandidate01\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  12208,
+                             "StartTicksUTC":  "639286245726604160",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile07\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  34636,
+                             "StartTicksUTC":  "639286269090489281",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkNative02\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  25992,
+                             "StartTicksUTC":  "639286288228969806",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "HyperlinkCaptureControl01\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  29932,
+                             "StartTicksUTC":  "639286259220238783",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile09\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  26676,
+                             "StartTicksUTC":  "639286235446337124",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Compile04\\Ownership.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  35172,
+                             "StartTicksUTC":  "639286277317502266",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FinalStructure01\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "FinalStructure01\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  31360,
+                             "StartTicksUTC":  "639286261195523439",
+                             "ExpectedName":  "acad",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD05\\Ownership.json",
+                                                  "Kind":  "CAD",
+                                                  "PIDKey":  "CADPID",
+                                                  "StartTicksKey":  "CADStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD05\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  33664,
+                             "StartTicksUTC":  "639286278476273514",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FinalStructure02\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "FinalStructure02\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  28804,
+                             "StartTicksUTC":  "639286281486371227",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FinalStructure03\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "FinalStructure03\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  30416,
+                             "StartTicksUTC":  "639286271185746065",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "Workflow03\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "Workflow03\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  32944,
+                             "StartTicksUTC":  "639286274839275475",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "NativeCAD06\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "NativeCAD06\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  34384,
+                             "StartTicksUTC":  "639286279345527723",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "DecimalSnapshot02\\Ownership.json",
+                                                  "Kind":  "Excel",
+                                                  "PIDKey":  "ExcelPID",
+                                                  "StartTicksKey":  "ExcelStartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              },
+                                              {
+                                                  "File":  "DecimalSnapshot02\\ProcessClosure.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  true,
+                                                  "RecordedResidualForceKilled":  false
+                                              }
+                                          ]
+                         },
+                         {
+                             "PID":  23140,
+                             "StartTicksUTC":  "639286284519066074",
+                             "ExpectedName":  "EXCEL",
+                             "State":  "OWN_IDENTITY_ABSENT",
+                             "ExactIdentityLive":  false,
+                             "ExactIdentityAbsent":  true,
+                             "ObservedName":  null,
+                             "ObservedStartTicksUTC":  null,
+                             "CPUSeconds":  null,
+                             "WorkingSetBytes":  null,
+                             "PrivateBytes":  null,
+                             "ObservationError":  null,
+                             "Evidence":  [
+                                              {
+                                                  "File":  "FreshBuild02.json",
+                                                  "Kind":  "Generic",
+                                                  "PIDKey":  "PID",
+                                                  "StartTicksKey":  "StartTicksUTC",
+                                                  "RecordedClosed":  null,
+                                                  "RecordedResidualForceKilled":  null
+                                              }
+                                          ]
+                         }
+                     ],
+    "IgnoredDirectRecords":  [
+                                 {
+                                     "File":  "DecimalSnapshot01\\Ownership.json",
+                                     "Kind":  "CAD",
+                                     "Reason":  "Process was not created",
+                                     "PID":  0,
+                                     "StartTicksUTC":  "0"
+                                 },
+                                 {
+                                     "File":  "DecimalSnapshot02\\Ownership.json",
+                                     "Kind":  "CAD",
+                                     "Reason":  "Process was not created",
+                                     "PID":  0,
+                                     "StartTicksUTC":  "0"
+                                 },
+                                 {
+                                     "File":  "NativeCAD03\\Ownership.json",
+                                     "Kind":  "CAD",
+                                     "Reason":  "Process was not created",
+                                     "PID":  0,
+                                     "StartTicksUTC":  "0"
+                                 },
+                                 {
+                                     "File":  "Workflow01\\Ownership.json",
+                                     "Kind":  "CAD",
+                                     "Reason":  "Process was not created",
+                                     "PID":  0,
+                                     "StartTicksUTC":  "0"
+                                 },
+                                 {
+                                     "File":  "Workflow02\\Ownership.json",
+                                     "Kind":  "CAD",
+                                     "Reason":  "Process was not created",
+                                     "PID":  0,
+                                     "StartTicksUTC":  "0"
+                                 },
+                                 {
+                                     "File":  "Workflow03\\Ownership.json",
+                                     "Kind":  "CAD",
+                                     "Reason":  "Process was not created",
+                                     "PID":  0,
+                                     "StartTicksUTC":  "0"
+                                 }
+                             ],
+    "Memory":  {
+                   "ObservedUTC":  "2026-10-26T16:50:22.4570857+00:00",
+                   "PhysicalTotalBytes":  34295091200,
+                   "AvailablePhysicalBytes":  18236477440,
+                   "AvailablePhysicalGiB":  16.9833984375,
+                   "CommittedBytes":  24665882624,
+                   "CommitLimitBytes":  46643122176,
+                   "FreeCommitBytes":  21977239552,
+                   "FreeCommitGiB":  20.467899322509766,
+                   "CommitPercent":  52.882143118394666,
+                   "Source":  "Win32_PerfFormattedData_PerfOS_Memory + Win32_OperatingSystem"
+               },
+    "Issues":  [
+
+               ],
+    "FullRegressionPass":  false,
+    "Scope":  "Only direct own identities in allowlisted evidence files; no claim about unrecorded processes or full regression acceptance."
+}

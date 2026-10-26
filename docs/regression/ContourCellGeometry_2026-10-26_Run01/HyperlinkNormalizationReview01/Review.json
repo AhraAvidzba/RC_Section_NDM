@@ -1,0 +1,78 @@
+{
+  "Status": "READ_ONLY_STRICT_REVIEW_REQUIRED",
+  "NoOverallPASS": true,
+  "Native05StrictStatus": "REVIEW_REQUIRED",
+  "Native06StrictStatus": "REVIEW_REQUIRED",
+  "NormalizedStyleDifferences": 164,
+  "IdenticalCellRowsAndStyleFingerprints": true,
+  "PriorReadOnlyAnalysis": "../HyperlinkBorderSemanticsFix05/Native05Analysis.json",
+  "FontFillBaseNumberFormatAlignmentApplyFlagDifferences": 0,
+  "RemainingKinds": "Border ownership and equivalent RGB-black/palette-black representation, not applyFont defaults",
+  "GetterOrHyperlinkCausality": "CaptureOnly PASS0 differences; LinkOnly233 style differences, proving getter-only not causal and Hyperlink API format effects require restore.",
+  "PrivateControls": {
+    "Script": "../TestHyperlinkControlNative.ps1",
+    "SHA256": "8CB95673D7A9316DD2069ABEB7713A46C2B249DD226999D3CBFEE91B680C10BF",
+    "PowerShell51ParseErrors": 0,
+    "ExcelStarted": false,
+    "Modes": [
+      "CaptureOnly: capture format twice without mutation",
+      "LinkOnly: Delete/Value2/Add without capture/restore/font"
+    ]
+  },
+  "FrozenProductionSourceUnchangedSHA256": "38DC197C560B6EDA65B3C446440731D65135CEC891B49D3CA76B6970439ED67B",
+  "Candidate05UserDataPreservation": {
+    "Status": "PASS",
+    "BeforeSHA256": "53919E6CF11018B769191059E17977D60F3201D5857991FFE49E9326E1CC613A",
+    "AfterSHA256": "86368D1AE3A8DAF0C734DB7573F4ACAC1406C59A95671D2A501B8C6CC96F285F"
+  },
+  "StrictVerifierChanged": false,
+  "Limit": "Byte/style-ID identity after recreating already existing hyperlinks is not proven. A native success exit and visually equivalent borders do not erase strict REVIEW_REQUIRED. New full-regression PASS is not assigned.",
+  "VisibleBorderProofs": [
+    {
+      "Status": "PASS_SHARED_EDGE_APPEARANCE",
+      "PhysicalEdgesCompared": 501,
+      "ChangedPhysicalEdges": 0,
+      "ConflictingSideStyleEdges": 0,
+      "Index8ResolvedRGB": {
+        "Before": "FF000000",
+        "After": "FF000000"
+      }
+    },
+    {
+      "Status": "PASS_SHARED_EDGE_APPEARANCE",
+      "PhysicalEdgesCompared": 501,
+      "ChangedPhysicalEdges": 0,
+      "ConflictingSideStyleEdges": 0,
+      "Index8ResolvedRGB": {
+        "Before": "FF000000",
+        "After": "FF000000"
+      }
+    }
+  ],
+  "RichText": {
+    "Proof": "RichTextAppearance.json",
+    "RawChangedRichStringsPerBook": 4,
+    "EffectivePerCharacterDifferencesPerBook": 0,
+    "StrictByteIdentityClaimed": false
+  },
+  "ScopeAndLimitations": "ScopeAndLimitations.md",
+  "ControlResults": {
+    "CaptureOnly": {
+      "Status": "PASS",
+      "StyleDifferences": 0,
+      "SourceUnchanged": true
+    },
+    "LinkOnly": {
+      "Status": "REVIEW_REQUIRED",
+      "StyleDifferences": 233,
+      "ChangedComponents": {
+        "Attributes": 233,
+        "Children": 181,
+        "fonts": 233,
+        "borders": 181,
+        "fills": 54
+      },
+      "SourceUnchanged": true
+    }
+  }
+}

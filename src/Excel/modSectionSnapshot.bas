@@ -24,8 +24,9 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Dim data As Variant: data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4350, "ReadSectionGeometryFromResults", _
         "На листе Results нет сформированной геометрии. Нажмите «Сформировать сечение»."
-    If UBound(data, 2) < 14 Then Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
-        "Неверная структура rngNDMSectionGeometry. Нажмите «Сформировать сечение»."
+    If UBound(data, 2) < 14 Or UBound(data, 2) > 16 Then Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
+        "Неверная структура rngNDMSectionGeometry: " & anchor.Parent.Name & "!" & _
+        anchor.Resize(1, UBound(data, 2)).Address(False, False) & ". Допустимы 14 обязательных полей и только Comment/ExtraData после них. Нажмите «Сформировать сечение»."
     Dim colID As Long: colID = ResultColumn(data, "ElementID")
     Dim colType As Long: colType = ResultColumn(data, "MaterialType")
     Dim colX As Long: colX = ResultColumn(data, "X")
@@ -69,6 +70,7 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
             End If
             If StrComp(kind, "Concrete", vbTextCompare) = 0 Then
                 Dim localIx As Double, localIy As Double, localIxy As Double
+                Dim shape As String: shape = ReadSavedAnnotationText(data, anchor, row, colShape)
                 localIx = ReadPositiveGeometryNumber(data, anchor, row, colLocalIx)
                 localIy = ReadPositiveGeometryNumber(data, anchor, row, colLocalIy)
                 localIxy = ReadGeometryNumber(data, anchor, row, colLocalIxy)
@@ -78,9 +80,9 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
                 model.AddConcreteElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX), lengthUnit), _
                     OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY), lengthUnit), _
                     OutputAreaToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colArea), areaUnit), materialID, sourceName, handle, _
-                    ReadSavedAnnotationText(data, anchor, row, colShape), _
-                    OutputLengthToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colWidth), lengthUnit), _
-                    OutputLengthToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colHeight), lengthUnit), _
+                    shape, _
+                    OutputLengthToInternalByUnit(ReadConcreteSnapshotDimension(data, anchor, row, colWidth, shape), lengthUnit), _
+                    OutputLengthToInternalByUnit(ReadConcreteSnapshotDimension(data, anchor, row, colHeight, shape), lengthUnit), _
                     ReadGeometryNumber(data, anchor, row, colRotation), comment, _
                     OutputFourthPowerLengthToInternalByUnit(localIx, fourthUnit), _
                     OutputFourthPowerLengthToInternalByUnit(localIy, fourthUnit), _
@@ -100,12 +102,323 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Next row
     If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4351, "ReadSectionGeometryFromResults", "В Results нет бетонных элементов."
     ReadSavedSectionContours workbook, model.Contours
+    Dim boundaries As Object: Set boundaries = ReadSavedConcreteBoundaries(workbook, data)
+    Dim concrete As Long
+    For concrete = 1 To model.ConcreteCount
+        If boundaries.Exists(model.ConcreteID(concrete)) Then model.SetConcreteGeometry concrete, boundaries.Item(model.ConcreteID(concrete))
+    Next concrete
     Set ReadSectionGeometryFromResults = model
     Exit Function
 InvalidElementID:
     Err.Raise vbObjectError + 4381, "ReadSectionGeometryFromResults", _
         "Нарушены тип, порядок или имя элемента: " & anchor.Parent.Name & "!" & _
         anchor.Offset(row - 1, colID - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
+End Function
+
+' Читает собственную геометрию один раз блочными таблицами Results.
+' Текущий Config, дополнительные JSON и внешний AutoCAD не участвуют;
+' отсутствие новой таблицы допустимо только для прежней прямоугольной модели.
+Public Function ReadSavedConcreteBoundaries(ByVal workbook As Object, Optional ByRef geometryData As Variant) As Object
+    Dim data As Variant
+    If IsArray(geometryData) Then data = geometryData Else data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    Dim boundaryData As Variant, anchor As Object, geometryAnchor As Object
+    Set geometryAnchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
+    On Error Resume Next
+    Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange
+    On Error GoTo 0
+    If Not anchor Is Nothing Then boundaryData = ReadAnchoredResultTable(workbook, "rngNDMElementGeometry")
+    Set ReadSavedConcreteBoundaries = ReadConcreteBoundaryMap(boundaryData, data, "rngNDMElementGeometry", anchor, geometryAnchor)
+End Function
+
+' Разбирает обязательные собственные границы из матриц Excel или файла.
+' Contour требует точной связанной области; старые Region/Rectangle не
+' получают выдуманный контур. Возвращаемые координаты и инерции всегда в мм.
+Public Function ReadConcreteBoundaryMap(ByRef boundaryData As Variant, ByRef geometryData As Variant, _
+        Optional ByVal sourceReference As String = "rngNDMElementGeometry", _
+        Optional ByVal boundaryAnchor As Object = Nothing, Optional ByVal geometryAnchor As Object = Nothing) As Object
+    Dim result As Object: Set result = CreateObject("Scripting.Dictionary"): result.CompareMode = vbBinaryCompare
+    Dim rows As Object: Set rows = CreateObject("Scripting.Dictionary"): rows.CompareMode = vbBinaryCompare
+    Dim row As Long, id As String, kind As String, required As Object
+    Set required = CreateObject("Scripting.Dictionary"): required.CompareMode = vbBinaryCompare
+    If Not HasResultTableRows(geometryData) Then Err.Raise vbObjectError + 4383, "ReadConcreteBoundaryMap", "В снимке отсутствует основная геометрия элементов."
+    Dim idColumn As Long: idColumn = ResultColumn(geometryData, "ElementID")
+    Dim kindColumn As Long: kindColumn = ResultColumn(geometryData, "MaterialType")
+    Dim shapeColumn As Long: shapeColumn = ResultColumn(geometryData, "GeometryInterpretationStatus")
+    For row = 2 To UBound(geometryData, 1)
+        id = SavedBoundaryText(geometryData, row, idColumn, "rngNDMSectionGeometry", geometryAnchor)
+        If Len(id) > 0 Then
+            If rows.Exists(id) Then SavedBoundaryError "Повторное имя элемента.", "rngNDMSectionGeometry", row, idColumn, geometryAnchor
+            rows.Add id, row
+            kind = SavedBoundaryText(geometryData, row, kindColumn, "rngNDMSectionGeometry", geometryAnchor)
+            If StrComp(SavedBoundaryText(geometryData, row, shapeColumn, "rngNDMSectionGeometry", geometryAnchor), "Contour", vbTextCompare) = 0 Then
+                If StrComp(kind, "Concrete", vbTextCompare) <> 0 Then SavedBoundaryError "Фактическая граница назначена не бетонному элементу.", "rngNDMSectionGeometry", row, kindColumn, geometryAnchor
+                required.Add id, True
+            End If
+        End If
+    Next row
+    If Not IsArray(boundaryData) Then
+        If required.Count > 0 Then SavedBoundaryError "Отсутствует обязательная таблица фактических границ бетонных элементов.", sourceReference, 1, 1, boundaryAnchor
+        Set ReadConcreteBoundaryMap = result
+        Exit Function
+    End If
+    Dim headers As Variant, column As Long
+    headers = Array("RunID", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+        "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", "SourceID", "Comment", "LengthUnit (SectionXY)", "ElementID")
+    If UBound(boundaryData, 2) <> 18 Then SavedBoundaryError "Неверная ширина таблицы фактических границ.", sourceReference, 1, 1, boundaryAnchor
+    For column = 1 To 18
+        If SavedBoundaryText(boundaryData, 1, column, sourceReference, boundaryAnchor) <> CStr(headers(column - 1)) Then _
+            SavedBoundaryError "Неверный заголовок таблицы фактических границ.", sourceReference, 1, column, boundaryAnchor
+    Next column
+    Dim groups As Object: Set groups = CreateObject("Scripting.Dictionary"): groups.CompareMode = vbBinaryCompare
+    Dim firstRows As Object: Set firstRows = CreateObject("Scripting.Dictionary"): firstRows.CompareMode = vbBinaryCompare
+    Dim ids As Object: Set ids = CreateObject("Scripting.Dictionary"): ids.CompareMode = vbBinaryCompare
+    Dim contours As CSectionContours, segmentID As String, loopID As String, role As String, owner As String, key As String, unitText As String
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, radius As Double, sweep As Double, geometryRow As Long
+    On Error GoTo InvalidContourRow
+    For row = 2 To UBound(boundaryData, 1)
+        owner = SavedBoundaryText(boundaryData, row, 18, sourceReference, boundaryAnchor)
+        If Not required.Exists(owner) Then SavedBoundaryError "Граница не связана с существующим бетонным элементом типа Contour.", sourceReference, row, 18, boundaryAnchor
+        geometryRow = CLng(rows.Item(owner))
+        If SavedBoundaryRunID(boundaryData, row, sourceReference, boundaryAnchor) <> _
+                SavedBoundaryRunID(geometryData, geometryRow, "rngNDMSectionGeometry", geometryAnchor) Then _
+            SavedBoundaryError "Граница относится к другому расчётному снимку.", sourceReference, row, 1, boundaryAnchor
+        If SavedBoundaryNumber(boundaryData, row, 4, sourceReference, boundaryAnchor) <> row - 1 Then _
+            SavedBoundaryError "Нарушена последовательность сегментов фактической границы.", sourceReference, row, 4, boundaryAnchor
+        segmentID = SavedBoundaryText(boundaryData, row, 3, sourceReference, boundaryAnchor)
+        loopID = SavedBoundaryText(boundaryData, row, 2, sourceReference, boundaryAnchor)
+        role = SavedBoundaryText(boundaryData, row, 5, sourceReference, boundaryAnchor)
+        If StrComp(role, "Outer", vbTextCompare) <> 0 And StrComp(role, "Opening", vbTextCompare) <> 0 Then _
+            SavedBoundaryError "Роль фактической границы должна быть Outer или Opening.", sourceReference, row, 5, boundaryAnchor
+        If Len(Trim$(segmentID)) = 0 Or Len(Trim$(loopID)) = 0 Then SavedBoundaryError "Не задано имя сегмента или замкнутого контура.", sourceReference, row, 3, boundaryAnchor
+        key = CStr(Len(owner)) & ":" & owner & segmentID
+        If ids.Exists(key) Then SavedBoundaryError "Повторный сегмент фактической границы.", sourceReference, row, 3, boundaryAnchor
+        ids.Add key, True
+        If Not groups.Exists(owner) Then
+            Set contours = New CSectionContours: groups.Add owner, contours: firstRows.Add owner, row
+        Else
+            Set contours = groups.Item(owner)
+        End If
+        unitText = SavedBoundaryText(boundaryData, row, 17, sourceReference, boundaryAnchor)
+        If Len(Trim$(unitText)) = 0 Then SavedBoundaryError "Не указана обязательная единица длины фактической границы.", sourceReference, row, 17, boundaryAnchor
+        x1 = OutputLengthToInternalByUnit(SavedBoundaryNumber(boundaryData, row, 7, sourceReference, boundaryAnchor), unitText)
+        y1 = OutputLengthToInternalByUnit(SavedBoundaryNumber(boundaryData, row, 8, sourceReference, boundaryAnchor), unitText)
+        kind = SavedBoundaryText(boundaryData, row, 6, sourceReference, boundaryAnchor)
+        Select Case kind
+            Case "CONTOUR_LINE"
+                x2 = OutputLengthToInternalByUnit(SavedBoundaryNumber(boundaryData, row, 9, sourceReference, boundaryAnchor), unitText)
+                y2 = OutputLengthToInternalByUnit(SavedBoundaryNumber(boundaryData, row, 10, sourceReference, boundaryAnchor), unitText)
+                contours.AddContourLine segmentID, x1, y1, x2, y2, vbNullString, loopID, role
+            Case "CONTOUR_CIRCLE"
+                radius = OutputLengthToInternalByUnit(SavedBoundaryNumber(boundaryData, row, 13, sourceReference, boundaryAnchor), unitText)
+                contours.AddContourCircle segmentID, x1, y1, radius, vbNullString, loopID, role
+            Case "CONTOUR_ARC"
+                cx = OutputLengthToInternalByUnit(SavedBoundaryNumber(boundaryData, row, 11, sourceReference, boundaryAnchor), unitText)
+                cy = OutputLengthToInternalByUnit(SavedBoundaryNumber(boundaryData, row, 12, sourceReference, boundaryAnchor), unitText)
+                sweep = ReadContourArcSweep(boundaryData(row, 14), SavedBoundaryAddress(sourceReference, row, 14, boundaryAnchor))
+                radius = Sqr((x1 - cx) ^ 2 + (y1 - cy) ^ 2)
+                x2 = cx + (x1 - cx) * Cos(sweep) - (y1 - cy) * Sin(sweep)
+                y2 = cy + (x1 - cx) * Sin(sweep) + (y1 - cy) * Cos(sweep)
+                contours.AddContourArc segmentID, x1, y1, x2, y2, cx, cy, radius, sweep, vbNullString, loopID, role
+            Case Else
+                SavedBoundaryError "Неизвестный тип сегмента фактической границы.", sourceReference, row, 6, boundaryAnchor
+        End Select
+    Next row
+    On Error GoTo 0
+    Dim item As Variant, region As CConcreteRegion, query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    For Each item In required.Keys
+        If Not groups.Exists(CStr(item)) Then SavedBoundaryError "Для бетонного элемента " & CStr(item) & " отсутствует обязательная фактическая граница.", sourceReference, 1, 18, boundaryAnchor
+        Set contours = groups.Item(CStr(item))
+        On Error GoTo InvalidBoundary
+        Set region = SavedConcreteRegion(contours, query)
+        ValidateSavedBoundaryProperties region, geometryData, CLng(rows.Item(CStr(item))), geometryAnchor
+        On Error GoTo 0
+        result.Add CStr(item), region
+    Next item
+    Set ReadConcreteBoundaryMap = result
+    Exit Function
+InvalidBoundary:
+    Dim reason As String: reason = Err.Description
+    SavedBoundaryError "Некорректная фактическая граница элемента " & CStr(item) & ": " & reason, _
+        sourceReference, CLng(firstRows.Item(CStr(item))), 18, boundaryAnchor
+    Exit Function
+InvalidContourRow:
+    reason = Err.Description
+    SavedBoundaryError reason, sourceReference, row, 1, boundaryAnchor
+End Function
+
+' Дата запуска до записи в Excel может иметь тип Date. Только эта колонка
+' допускает Date и преобразует его числовое представление без текста локали;
+' координаты, площади и остальные физические числа по-прежнему отвергают Date.
+Private Function SavedBoundaryRunID(ByRef values As Variant, ByVal row As Long, ByVal reference As String, ByVal anchor As Object) As Double
+    If VarType(values(row, 1)) = vbDate Then
+        SavedBoundaryRunID = CDbl(values(row, 1))
+    Else
+        SavedBoundaryRunID = SavedBoundaryNumber(values, row, 1, reference, anchor)
+    End If
+End Function
+
+' Читает строгое число из уже загруженной матрицы без CDbl текстовой локали.
+' В файловом снимке адрес задаётся именем таблицы и относительной позицией.
+Private Function SavedBoundaryNumber(ByRef values As Variant, ByVal row As Long, ByVal column As Long, _
+        ByVal reference As String, ByVal anchor As Object) As Double
+    Dim value As Variant: value = values(row, column)
+    If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo InvalidNumber
+    If VarType(value) = vbBoolean Or VarType(value) = vbDate Then GoTo InvalidNumber
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed) Then GoTo InvalidNumber
+    SavedBoundaryNumber = parsed
+    Exit Function
+InvalidNumber:
+    SavedBoundaryError "Обязательное поле фактической геометрии содержит нечисловое значение.", reference, row, column, anchor
+End Function
+
+' Не скрывает ошибку формулы или Null под пустым ID либо ролью границы.
+Private Function SavedBoundaryText(ByRef values As Variant, ByVal row As Long, ByVal column As Long, _
+        ByVal reference As String, ByVal anchor As Object) As String
+    If IsError(values(row, column)) Or IsNull(values(row, column)) Then _
+        SavedBoundaryError "Поле фактической геометрии содержит ошибку.", reference, row, column, anchor
+    SavedBoundaryText = CStr(values(row, column))
+End Function
+
+' Возвращает фактическую ячейку через именованный якорь, без жёсткой раскладки.
+' Для матрицы файла сохраняется точная относительная строка и колонка.
+Private Function SavedBoundaryAddress(ByVal reference As String, ByVal row As Long, ByVal column As Long, ByVal anchor As Object) As String
+    If anchor Is Nothing Then
+        SavedBoundaryAddress = reference & " [строка " & CStr(row) & ", столбец " & CStr(column) & "]"
+    Else
+        SavedBoundaryAddress = anchor.Parent.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False)
+    End If
+End Function
+
+' Выдаёт единую адресную диагностику обязательной геометрии до изменения Results.
+Private Sub SavedBoundaryError(ByVal reason As String, ByVal reference As String, ByVal row As Long, ByVal column As Long, ByVal anchor As Object)
+    Err.Raise vbObjectError + 4383, "ReadConcreteBoundaryMap", reason & " " & SavedBoundaryAddress(reference, row, column, anchor) & ". Нажмите «Сформировать сечение» или выберите исправный снимок."
+End Sub
+
+' Собирает область строгим общим валидатором, без нормализации повреждений.
+' Сохранённые LoopID и роли сверяются с фактической вложенностью замкнутых
+' границ; окружность разворачивается общим ядром в четыре точные дуги.
+Private Function SavedConcreteRegion(ByVal contours As CSectionContours, ByVal query As CSectionGeometryQuery) As CConcreteRegion
+    Dim edges() As TRegionEdge, sourceLoop() As String, sourceRole() As String, count As Long
+    ReDim edges(1 To contours.Count * 4): ReDim sourceLoop(1 To contours.Count * 4): ReDim sourceRole(1 To contours.Count * 4)
+    Dim i As Long, j As Long, circleEdges() As TRegionEdge, circleCount As Long, circleRegion As CConcreteRegion
+    For i = 1 To contours.Count
+        If contours.SegmentType(i) = "CONTOUR_CIRCLE" Then
+            Set circleRegion = query.CircleRegion(contours.StartX(i), contours.StartY(i), contours.Radius(i))
+            circleRegion.CopyEdges circleEdges, circleCount
+            For j = 1 To circleCount
+                count = count + 1: LSet edges(count) = circleEdges(j)
+                sourceLoop(count) = contours.LoopID(i): sourceRole(count) = contours.LoopRole(i)
+            Next j
+        Else
+            count = count + 1
+            With edges(count)
+                .X1 = contours.StartX(i): .Y1 = contours.StartY(i): .X2 = contours.EndX(i): .Y2 = contours.EndY(i)
+                If contours.SegmentType(i) = "CONTOUR_ARC" Then
+                    .CenterX = contours.CenterX(i): .CenterY = contours.CenterY(i): .Sweep = contours.SweepAngle(i)
+                End If
+            End With
+            sourceLoop(count) = contours.LoopID(i): sourceRole(count) = contours.LoopRole(i)
+        End If
+    Next i
+    Dim region As CConcreteRegion: Set region = query.BoundaryRegion(edges, count, "SavedConcreteBoundary")
+    Dim loops As Object: Set loops = CreateObject("Scripting.Dictionary"): loops.CompareMode = vbBinaryCompare
+    Dim actualLoops As Object: Set actualLoops = CreateObject("Scripting.Dictionary"): actualLoops.CompareMode = vbBinaryCompare
+    Dim actual() As TRegionEdge, actualCount As Long, loopID As Long, matched As Boolean, tolerance As Double
+    region.CopyEdges actual, actualCount
+    If actualCount <> count Then Err.Raise vbObjectError + 4383, "SavedConcreteRegion", "Число сегментов изменилось при проверке фактической границы."
+    For i = 1 To count
+        matched = False
+        tolerance = GEOM_TOLERANCE + 0.000000000001 * GeomMax(GeomMax(Abs(edges(i).X1), Abs(edges(i).Y1)), GeomMax(Abs(edges(i).X2), Abs(edges(i).Y2)))
+        For j = 1 To actualCount
+            If SavedBoundarySameEdge(edges(i), actual(j), tolerance) Then
+                loopID = actual(j).LoopID: matched = True
+                Exit For
+            End If
+        Next j
+        If Not matched Then Err.Raise vbObjectError + 4383, "SavedConcreteRegion", "Сегмент не принадлежит проверенной замкнутой границе."
+        If (StrComp(sourceRole(i), "Opening", vbTextCompare) = 0) <> region.LoopIsOpening(loopID) Then _
+            Err.Raise vbObjectError + 4383, "SavedConcreteRegion", "Роль Outer/Opening не соответствует вложенности фактической границы."
+        If loops.Exists(sourceLoop(i)) Then
+            If CLng(loops.Item(sourceLoop(i))) <> loopID Then Err.Raise vbObjectError + 4383, "SavedConcreteRegion", "Одним LoopID обозначены раздельные замкнутые границы."
+        Else
+            loops.Add sourceLoop(i), loopID
+        End If
+        If actualLoops.Exists(CStr(loopID)) Then
+            If CStr(actualLoops.Item(CStr(loopID))) <> sourceLoop(i) Then Err.Raise vbObjectError + 4383, "SavedConcreteRegion", "Одна замкнутая граница разделена между разными LoopID."
+        Else
+            actualLoops.Add CStr(loopID), sourceLoop(i)
+        End If
+    Next i
+    Set SavedConcreteRegion = region
+End Function
+
+' Узнаёт тот же аналитический сегмент после разрешённого изменения обхода.
+' Одни совпавшие концы недостаточны: дополнительно совпадают центр и угол дуги.
+Private Function SavedBoundarySameEdge(ByRef first As TRegionEdge, ByRef second As TRegionEdge, ByVal tolerance As Double) As Boolean
+    Dim forward As Boolean, backward As Boolean
+    forward = Abs(first.X1 - second.X1) <= tolerance And Abs(first.Y1 - second.Y1) <= tolerance And _
+        Abs(first.X2 - second.X2) <= tolerance And Abs(first.Y2 - second.Y2) <= tolerance And Abs(first.Sweep - second.Sweep) <= 0.0000000001
+    backward = Abs(first.X1 - second.X2) <= tolerance And Abs(first.Y1 - second.Y2) <= tolerance And _
+        Abs(first.X2 - second.X1) <= tolerance And Abs(first.Y2 - second.Y1) <= tolerance And Abs(first.Sweep + second.Sweep) <= 0.0000000001
+    If Not forward And Not backward Then Exit Function
+    If Abs(first.Sweep) > 0.0000000001 Then
+        If Abs(first.CenterX - second.CenterX) > tolerance Or Abs(first.CenterY - second.CenterY) > tolerance Then Exit Function
+    End If
+    SavedBoundarySameEdge = True
+End Function
+
+' Сверяет A, центр и собственные инерции тем же контрактом модели, который
+' принимает генератор и AutoCAD. Временный элемент не содержит метаданных
+' и не обращается к Excel; наружный обработчик добавляет адрес границы.
+Private Sub ValidateSavedBoundaryProperties(ByVal region As CConcreteRegion, ByRef data As Variant, ByVal row As Long, ByVal anchor As Object)
+    Dim model As CSectionModel: Set model = New CSectionModel
+    Dim xColumn As Long: xColumn = ResultColumn(data, "X")
+    Dim yColumn As Long: yColumn = ResultColumn(data, "Y")
+    Dim areaColumn As Long: areaColumn = ResultColumn(data, "Area")
+    Dim ixColumn As Long: ixColumn = ResultColumn(data, "LocalIx")
+    Dim iyColumn As Long: iyColumn = ResultColumn(data, "LocalIy")
+    Dim ixyColumn As Long: ixyColumn = ResultColumn(data, "LocalIxy")
+    Dim widthColumn As Long: widthColumn = ResultColumn(data, "Width")
+    Dim heightColumn As Long: heightColumn = ResultColumn(data, "Height")
+    Dim rotationColumn As Long: rotationColumn = ResultColumn(data, "Rotation")
+    Dim lengthUnit As String: lengthUnit = SavedBoundaryHeaderUnit(data, xColumn, anchor)
+    Dim areaUnit As String: areaUnit = SavedBoundaryHeaderUnit(data, areaColumn, anchor)
+    Dim inertiaUnit As String: inertiaUnit = SavedBoundaryHeaderUnit(data, ixColumn, anchor)
+    If Right$(inertiaUnit, 1) <> "4" Then SavedBoundaryError "Собственная инерция требует единицы длины в четвёртой степени.", "rngNDMSectionGeometry", 1, ixColumn, anchor
+    Call SavedBoundaryHeaderUnit(data, yColumn, anchor, lengthUnit)
+    Call SavedBoundaryHeaderUnit(data, widthColumn, anchor, lengthUnit)
+    Call SavedBoundaryHeaderUnit(data, heightColumn, anchor, lengthUnit)
+    Call SavedBoundaryHeaderUnit(data, iyColumn, anchor, inertiaUnit)
+    Call SavedBoundaryHeaderUnit(data, ixyColumn, anchor, inertiaUnit)
+    Call SavedBoundaryHeaderUnit(data, rotationColumn, anchor, "rad")
+    If SavedBoundaryNumber(data, row, widthColumn, "rngNDMSectionGeometry", anchor) < 0# Then _
+        SavedBoundaryError "Ширина точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, widthColumn, anchor
+    If SavedBoundaryNumber(data, row, heightColumn, "rngNDMSectionGeometry", anchor) < 0# Then _
+        SavedBoundaryError "Высота точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, heightColumn, anchor
+    model.AddConcreteElement OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, xColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
+        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, yColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
+        OutputAreaToInternalByUnit(SavedBoundaryNumber(data, row, areaColumn, "rngNDMSectionGeometry", anchor), areaUnit), _
+        1, vbNullString, vbNullString, "Contour", _
+        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, widthColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
+        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, heightColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
+        SavedBoundaryNumber(data, row, rotationColumn, "rngNDMSectionGeometry", anchor), vbNullString, _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, ixColumn, "rngNDMSectionGeometry", anchor), inertiaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, iyColumn, "rngNDMSectionGeometry", anchor), inertiaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, ixyColumn, "rngNDMSectionGeometry", anchor), inertiaUnit), True
+    model.SetConcreteGeometry 1, region
+End Sub
+
+' Точная геометрия запрещает подстановку текущих единиц при пустой шапке.
+' Парные координаты и компоненты одного тензора имеют единый формат writer;
+' отдельный выбор единицы площади остаётся допустимым.
+Private Function SavedBoundaryHeaderUnit(ByRef data As Variant, ByVal column As Long, ByVal anchor As Object, Optional ByVal expected As String = vbNullString) As String
+    Dim unit As String: unit = ResultHeaderUnit(data, column, vbNullString)
+    If Len(unit) = 0 Then SavedBoundaryError "Не указана единица обязательного свойства точного элемента.", "rngNDMSectionGeometry", 1, column, anchor
+    If Len(expected) > 0 Then
+        If StrComp(unit, expected, vbTextCompare) <> 0 Then SavedBoundaryError "Несогласованные единицы свойств точного элемента.", "rngNDMSectionGeometry", 1, column, anchor
+    End If
+    SavedBoundaryHeaderUnit = unit
 End Function
 
 ' Разбирает JSON из уже прочитанного массива. Адрес ячейки запрашивается
@@ -138,6 +451,17 @@ Private Function ReadPositiveGeometryNumber(ByRef data As Variant, ByVal anchor 
     If ReadPositiveGeometryNumber <= 0# Then Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
         "Значение " & CStr(data(1, column)) & " должно быть положительным: " & anchor.Parent.Name & "!" & _
         anchor.Offset(row - 1, column - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
+End Function
+
+' Нулевые Width/Height допустимы только у точного непрямоугольного Contour:
+' его настоящая граница обязательна в отдельной таблице. Прежние размеры
+' прямоугольника остаются строго положительными, отрицательные запрещены всем.
+Private Function ReadConcreteSnapshotDimension(ByRef data As Variant, ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal shape As String) As Double
+    Dim value As Double: value = ReadGeometryNumber(data, anchor, row, column)
+    If value < 0# Or (value = 0# And StrComp(shape, "Contour", vbTextCompare) <> 0) Then _
+        Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", "Неверный размер сохранённого бетонного элемента: " & _
+            anchor.Parent.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
+    ReadConcreteSnapshotDimension = value
 End Function
 
 ' Читает единственный 17-колоночный формат достоверных контуров.
@@ -688,13 +1012,6 @@ Public Function ResultSnapshotStatusRows(ByVal target As Object, ByVal headerRow
     ReDim Preserve rows(1 To used): ResultSnapshotStatusRows = rows
 End Function
 
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Показывает число блочных чтений и освобождение таблиц после операции.
-Public Function TestSectionSnapshotReadDiagnostics() As String
-    TestSectionSnapshotReadDiagnostics = "tables=" & CStr(mSnapshotTableReadCount) & ";released=" & _
-        CStr(mSnapshotReadTables Is Nothing And mSnapshotReadWorkbook Is Nothing)
-End Function
-
 ' Строго распознаёт сохранённый Boolean без Excel/AutoCAD и без подстановки False при повреждении.
 ' Поддерживает только прежние пары True/False, Yes/No, Да/Нет, 1/0 и Boolean.
 Public Function TryReadSnapshotBoolean(ByVal value As Variant, ByRef parsed As Boolean) As Boolean
@@ -732,4 +1049,11 @@ Public Function TryReadSnapshotStatus(ByVal value As Variant, ByRef parsed As St
     End Select
     TryReadSnapshotStatus = True
 InvalidValue:
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Показывает число блочных чтений и освобождение таблиц после операции.
+Public Function TestSectionSnapshotReadDiagnostics() As String
+    TestSectionSnapshotReadDiagnostics = "tables=" & CStr(mSnapshotTableReadCount) & ";released=" & _
+        CStr(mSnapshotReadTables Is Nothing And mSnapshotReadWorkbook Is Nothing)
 End Function

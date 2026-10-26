@@ -300,6 +300,28 @@ Public Function PolygonRegion(ByVal coordinates As Variant) As CConcreteRegion
     Set PolygonRegion = MakeRegion(edges, count, "ExplicitContour", 0)
 End Function
 
+' Создаёт точный прямоугольник по центру, настоящим размерам и повороту в радианах.
+' Используется как общее представление прежних прямоугольных элементов без
+' сохранения лишней копии четырёх вершин в каждом потребителе.
+Public Function RectangleRegion(ByVal centerX As Double, ByVal centerY As Double, ByVal width As Double, _
+        ByVal height As Double, Optional ByVal rotationRad As Double = 0#) As CConcreteRegion
+    If width <= 0# Or height <= 0# Then GeometryError "Ширина и высота прямоугольной области должны быть положительными."
+    Dim coordinates(1 To 4, 1 To 2) As Double, i As Long, localX As Double, localY As Double
+    Dim cosine As Double, sine As Double
+    cosine = Cos(rotationRad): sine = Sin(rotationRad)
+    For i = 1 To 4
+        Select Case i
+            Case 1: localX = -width / 2#: localY = -height / 2#
+            Case 2: localX = width / 2#: localY = -height / 2#
+            Case 3: localX = width / 2#: localY = height / 2#
+            Case 4: localX = -width / 2#: localY = height / 2#
+        End Select
+        coordinates(i, 1) = centerX + localX * cosine - localY * sine
+        coordinates(i, 2) = centerY + localX * sine + localY * cosine
+    Next i
+    Set RectangleRegion = PolygonRegion(coordinates)
+End Function
+
 ' Создаёт точную круглую область четырьмя дугами. Окружность не заменяется
 ' многоугольником ни при расчёте площади, ни при дальнейшей обрезке области.
 Public Function CircleRegion(ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double) As CConcreteRegion
@@ -433,6 +455,44 @@ Public Function ConnectedRegionAtPoint(ByVal region As CConcreteRegion, ByVal x 
     End If
     Set ConnectedRegionAtPoint = MakeRegion(selected, selectedCount, region.Source, region.SectionRevision)
     ConnectedRegionAtPoint.SetOwner region.OwnerID, region.Standard, region.AnchorID
+End Function
+
+' Разделяет область на связные компоненты: каждый наружный контур получает только
+' свои отверстия. Центр тяжести не используется как пробная точка, поскольку у
+' вогнутой области или кольца он может находиться вне бетона.
+Public Function ConnectedRegions(ByVal region As CConcreteRegion) As Collection
+    RequireRegion region
+    Dim result As Collection, edges() As TRegionEdge, count As Long
+    Dim selected() As TRegionEdge, selectedCount As Long, outerLoop As Long, loopID As Long
+    Dim i As Long, sampleX As Double, sampleY As Double, keepLoop As Boolean, component As CConcreteRegion
+    Set result = New Collection
+    region.CopyEdges edges, count
+    For outerLoop = 1 To region.LoopCount
+        If Not region.LoopIsOpening(outerLoop) Then
+            Erase selected: selectedCount = 0
+            For loopID = 1 To region.LoopCount
+                keepLoop = (loopID = outerLoop)
+                If region.LoopIsOpening(loopID) Then
+                    For i = 1 To count
+                        If edges(i).LoopID = loopID Then
+                            modGeometryPrimitives.EdgePoint edges(i), 0.5, sampleX, sampleY
+                            Exit For
+                        End If
+                    Next i
+                    keepLoop = (ContainingOuterLoop(edges, count, region.LoopCount, sampleX, sampleY) = outerLoop)
+                End If
+                If keepLoop Then
+                    For i = 1 To count
+                        If edges(i).LoopID = loopID Then AppendEdge selected, selectedCount, edges(i)
+                    Next i
+                End If
+            Next loopID
+            Set component = MakeRegion(selected, selectedCount, region.Source, region.SectionRevision)
+            component.SetOwner region.OwnerID, region.Standard, region.AnchorID
+            result.Add component
+        End If
+    Next outerLoop
+    Set ConnectedRegions = result
 End Function
 
 ' Находит ближайшую наружную границу, охватывающую выбранный контур.
@@ -1439,7 +1499,8 @@ Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef outer
     Next i
 End Sub
 
-' Восстанавливает границу по прямоугольным оболочкам бетонных элементов.
+' Восстанавливает границу по настоящим областям бетонных элементов; прежние
+' прямоугольники используют быстрый путь без создания промежуточных объектов.
 ' Сразу удаляет полностью совпавшие внутренние рёбра, затем разделяет
 ' и удаляет частичные общие участки, включая Т-образные стыки.
 Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRegionEdge, ByRef count As Long)
@@ -1447,9 +1508,25 @@ Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRe
     Set dictionary = CreateObject("Scripting.Dictionary")
     Dim edges() As TRegionEdge, edgeCount As Long, i As Long, j As Long, k As Long
     Dim width As Double, height As Double, angle As Double, px(1 To 4) As Double, py(1 To 4) As Double
-    Dim lx As Double, ly As Double, edge As TRegionEdge, key As String, reverseKey As String, oldIndex As Long
+    Dim lx As Double, ly As Double, edge As TRegionEdge, geometry As CConcreteRegion
+    Dim rectangleX As Double, rectangleY As Double, isRectangle As Boolean
+    Dim elementEdges() As TRegionEdge, elementCount As Long
     For i = 1 To section.ConcreteCount
-        If Not section.ConcreteBoundaryRectangle(i, width, height, angle) Then GeometryError "Не удалось получить границу бетонного элемента " & section.ConcreteID(i) & "."
+        If section.ConcreteHasBoundary(i) Then
+            Set geometry = section.ConcreteGeometry(i)
+            If geometry Is Nothing Then GeometryError "Не задана точная граница бетонного элемента " & section.ConcreteID(i) & "."
+            isRectangle = TryRectangle(geometry, rectangleX, rectangleY, width, height, angle)
+            If Not isRectangle Then
+                geometry.CopyEdges elementEdges, elementCount
+                For j = 1 To elementCount
+                    AppendMeshBoundaryEdge edges, edgeCount, elementEdges(j), dictionary
+                Next j
+                GoTo NextConcreteElement
+            End If
+        Else
+            If Not section.ConcreteBoundaryRectangle(i, width, height, angle) Then GeometryError "Не удалось получить границу бетонного элемента " & section.ConcreteID(i) & "."
+            rectangleX = section.ConcreteX(i): rectangleY = section.ConcreteY(i)
+        End If
         For j = 1 To 4
             Select Case j
                 Case 1: lx = -width / 2#: ly = -height / 2#
@@ -1457,23 +1534,16 @@ Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRe
                 Case 3: lx = width / 2#: ly = height / 2#
                 Case 4: lx = -width / 2#: ly = height / 2#
             End Select
-            px(j) = section.ConcreteX(i) + lx * Cos(angle) - ly * Sin(angle)
-            py(j) = section.ConcreteY(i) + lx * Sin(angle) + ly * Cos(angle)
+            px(j) = rectangleX + lx * Cos(angle) - ly * Sin(angle)
+            py(j) = rectangleY + lx * Sin(angle) + ly * Cos(angle)
         Next j
         For j = 1 To 4
             k = j + 1: If k = 5 Then k = 1
             edge.X1 = px(j): edge.Y1 = py(j): edge.X2 = px(k): edge.Y2 = py(k)
-            key = PointKey(edge.X1, edge.Y1) & "/" & PointKey(edge.X2, edge.Y2)
-            reverseKey = PointKey(edge.X2, edge.Y2) & "/" & PointKey(edge.X1, edge.Y1)
-            If dictionary.Exists(reverseKey) Then
-                oldIndex = CLng(dictionary(reverseKey))
-                edges(oldIndex).X2 = edges(oldIndex).X1: edges(oldIndex).Y2 = edges(oldIndex).Y1
-                dictionary.Remove reverseKey
-            ElseIf Not dictionary.Exists(key) Then
-                AppendEdge edges, edgeCount, edge
-                dictionary.Add key, edgeCount
-            End If
+            edge.Sweep = 0#: edge.CenterX = 0#: edge.CenterY = 0#: edge.LoopID = 0
+            AppendMeshBoundaryEdge edges, edgeCount, edge, dictionary
         Next j
+NextConcreteElement:
     Next i
     Dim remaining() As TRegionEdge, remainingCount As Long
     For i = 1 To edgeCount
@@ -1483,6 +1553,24 @@ Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRe
     Dim ordered() As TRegionEdge, loopCount As Long
     StitchLoops boundary, count, ordered, loopCount, False
     CopyArray ordered, count, boundary
+End Sub
+
+' Сразу удаляет противоположные общие рёбра. Ключ дуги содержит её центр и угол,
+' поэтому дуга и хорда с одинаковыми концами не уничтожают друг друга.
+Private Sub AppendMeshBoundaryEdge(ByRef edges() As TRegionEdge, ByRef count As Long, _
+        ByRef edge As TRegionEdge, ByVal dictionary As Object)
+    Dim key As String, reverseKey As String, suffix As String, oldIndex As Long
+    If Abs(edge.Sweep) > PARAM_TOLERANCE Then suffix = "/A/" & PointKey(edge.CenterX, edge.CenterY) & "/" & CStr(Abs(edge.Sweep))
+    key = PointKey(edge.X1, edge.Y1) & "/" & PointKey(edge.X2, edge.Y2) & suffix
+    reverseKey = PointKey(edge.X2, edge.Y2) & "/" & PointKey(edge.X1, edge.Y1) & suffix
+    If dictionary.Exists(reverseKey) Then
+        oldIndex = CLng(dictionary(reverseKey))
+        edges(oldIndex).X2 = edges(oldIndex).X1: edges(oldIndex).Y2 = edges(oldIndex).Y1: edges(oldIndex).Sweep = 0#
+        dictionary.Remove reverseKey
+    ElseIf Not dictionary.Exists(key) Then
+        AppendEdge edges, count, edge
+        dictionary.Add key, count
+    End If
 End Sub
 
 ' Готовит область непосредственно по классифицированным контурам формы,
@@ -1540,6 +1628,197 @@ Public Sub RegionCentroid(ByVal region As CConcreteRegion, ByRef x As Double, By
     If area <= QUERY_TOLERANCE Then GeometryError "Нельзя определить центр тяжести области нулевой площади."
     x = originX + momentX / area: y = originY + momentY / area
 End Sub
+
+' Вычисляет характеристики точной области по прямым и круговым дугам, мм/мм2/мм4.
+' Ixy имеет знак интеграла x*y dA. Собственные моменты повторно интегрируются
+' около центра тяжести, поэтому большой перенос WCS не вычитается из больших Ix/Iy.
+Public Sub RegionProperties(ByVal region As CConcreteRegion, ByRef properties As TGeometryProperties)
+    RequireRegion region
+    If region.SegmentCount = 0 Then GeometryError "Нельзя определить характеристики пустой бетонной области."
+    Dim edges() As TRegionEdge, count As Long, values(1 To 6) As Double
+    Dim originX As Double, originY As Double, localX As Double, localY As Double
+    Dim minX As Double, maxX As Double, minY As Double, maxY As Double
+    region.CopyEdges edges, count
+    ProjectionBounds region, 1#, 0#, minX, maxX
+    ProjectionBounds region, 0#, 1#, minY, maxY
+    originX = minX + (maxX - minX) / 2#: originY = minY + (maxY - minY) / 2#
+    RegionIntegralMoments edges, count, originX, originY, values
+    If values(1) <= 0# Then GeometryError "Точная бетонная область должна иметь положительную площадь."
+    properties.Area = values(1)
+    localX = values(2) / values(1): localY = values(3) / values(1)
+    properties.CentroidX = originX + localX: properties.CentroidY = originY + localY
+    RegionIntegralMoments edges, count, properties.CentroidX, properties.CentroidY, values
+    localX = values(2) / values(1): localY = values(3) / values(1)
+    properties.Ixc = values(4) - values(1) * localY * localY
+    properties.Iyc = values(5) - values(1) * localX * localX
+    properties.Ixyc = values(6) - values(1) * localX * localY
+    If properties.Ixc < 0# Or properties.Iyc < 0# Then GeometryError "Не удалось получить положительные собственные моменты точной бетонной области."
+    properties.CentroidX = properties.CentroidX + localX
+    properties.CentroidY = properties.CentroidY + localY
+    properties.StaticMomentX = properties.Area * properties.CentroidY
+    properties.StaticMomentY = properties.Area * properties.CentroidX
+    properties.Ix = properties.Ixc + properties.Area * properties.CentroidY ^ 2
+    properties.Iy = properties.Iyc + properties.Area * properties.CentroidX ^ 2
+    properties.Ixy = properties.Ixyc + properties.Area * properties.CentroidX * properties.CentroidY
+    Dim averageI As Double, radiusI As Double, inertiaReference As Double, angleReference As Double
+    averageI = (properties.Ixc + properties.Iyc) / 2#
+    radiusI = Sqr(((properties.Ixc - properties.Iyc) / 2#) ^ 2 + properties.Ixyc ^ 2)
+    properties.PrincipalI1 = averageI + radiusI
+    properties.PrincipalI2 = averageI - radiusI
+    properties.PrincipalAngleRad = 0#
+    inertiaReference = GeomMax(GeomMax(Abs(properties.Ixc), Abs(properties.Iyc)), 1#)
+    If Abs(properties.Ixc - properties.Iyc) / inertiaReference > 0.0000000001 Or _
+            Abs(properties.Ixyc) / inertiaReference > 0.0000000001 Then
+        angleReference = GeomMax(Abs(properties.Ixc - properties.Iyc), Abs(2# * properties.Ixyc))
+        properties.PrincipalAngleRad = 0.5 * modGeometryPrimitives.AngleOf((properties.Ixc - properties.Iyc) / angleReference, -2# * properties.Ixyc / angleReference)
+    End If
+    properties.RadiusX = Sqr(properties.Ixc / properties.Area)
+    properties.RadiusY = Sqr(properties.Iyc / properties.Area)
+    properties.PrincipalRadius1 = Sqr(GeomMax(properties.PrincipalI1, 0#) / properties.Area)
+    properties.PrincipalRadius2 = Sqr(GeomMax(properties.PrincipalI2, 0#) / properties.Area)
+End Sub
+
+' Суммирует ориентированные моменты границы: хордовый многоугольник плюс точные
+' круговые сегменты. Компенсация сложения сохраняет малые вклады возле отверстий.
+Private Sub RegionIntegralMoments(ByRef edges() As TRegionEdge, ByVal count As Long, _
+        ByVal originX As Double, ByVal originY As Double, ByRef values() As Double)
+    Dim correction(1 To 6) As Double, i As Long, k As Long, edge As TRegionEdge
+    Dim x1 As Double, x2 As Double, y1 As Double, y2 As Double, cross As Double
+    Dim area As Double, centerX As Double, centerY As Double, ix As Double, iy As Double, ixy As Double
+    For k = 1 To 6: values(k) = 0#: Next k
+    For i = 1 To count
+        LSet edge = edges(i)
+        x1 = edge.X1 - originX: x2 = edge.X2 - originX
+        y1 = edge.Y1 - originY: y2 = edge.Y2 - originY
+        cross = x1 * y2 - x2 * y1
+        AddIntegralMoment values, correction, 1, cross / 2#
+        AddIntegralMoment values, correction, 2, cross * (x1 + x2) / 6#
+        AddIntegralMoment values, correction, 3, cross * (y1 + y2) / 6#
+        AddIntegralMoment values, correction, 4, cross * (y1 * y1 + y1 * y2 + y2 * y2) / 12#
+        AddIntegralMoment values, correction, 5, cross * (x1 * x1 + x1 * x2 + x2 * x2) / 12#
+        AddIntegralMoment values, correction, 6, cross * (2# * x1 * y1 + x1 * y2 + x2 * y1 + 2# * x2 * y2) / 24#
+        If Abs(edge.Sweep) > PARAM_TOLERANCE Then
+            ArcSegmentMoments edge, originX, originY, area, centerX, centerY, ix, iy, ixy
+            AddIntegralMoment values, correction, 1, area
+            AddIntegralMoment values, correction, 2, area * centerX
+            AddIntegralMoment values, correction, 3, area * centerY
+            AddIntegralMoment values, correction, 4, ix + area * centerY * centerY
+            AddIntegralMoment values, correction, 5, iy + area * centerX * centerX
+            AddIntegralMoment values, correction, 6, ixy + area * centerX * centerY
+        End If
+    Next i
+End Sub
+
+' Добавляет один интеграл с компенсацией округления; индексы обозначают
+' A, интеграл x, интеграл y, интеграл y2, интеграл x2 и интеграл xy.
+Private Sub AddIntegralMoment(ByRef values() As Double, ByRef correction() As Double, _
+        ByVal index As Long, ByVal contribution As Double)
+    Dim adjusted As Double, combined As Double
+    adjusted = contribution - correction(index)
+    combined = values(index) + adjusted
+    correction(index) = (combined - values(index)) - adjusted
+    values(index) = combined
+End Sub
+
+' Возвращает подписанные A, центр и собственные моменты сегмента между дугой
+' и хордой. Для малых углов аналитические ряды исключают потери в theta-sin(theta)
+' и в центральном радиальном моменте порядка theta7; геометрия не аппроксимируется ломаной.
+Private Sub ArcSegmentMoments(ByRef edge As TRegionEdge, ByVal originX As Double, ByVal originY As Double, _
+        ByRef area As Double, ByRef centerX As Double, ByRef centerY As Double, _
+        ByRef ix As Double, ByRef iy As Double, ByRef ixy As Double)
+    Dim radius As Double, theta As Double, square As Double, difference As Double
+    Dim halfSine As Double, halfCosine As Double, directionX As Double, directionY As Double
+    Dim middleAngle As Double, radialOffset As Double, transverseI As Double, radialI As Double
+    radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
+    theta = edge.Sweep: square = theta * theta
+    halfSine = Sin(theta / 2#): halfCosine = Cos(theta / 2#)
+    If Abs(theta) < 0.1 Then
+        ' Полиномы записаны последовательными шагами Горнера: большие вложенные
+        ' выражения превышают стек вычисления VBA только при исполнении этой ветви.
+        difference = -1# / 6227020800#
+        difference = 1# / 39916800# + square * difference
+        difference = -1# / 362880# + square * difference
+        difference = 1# / 5040# + square * difference
+        difference = -1# / 120# + square * difference
+        difference = 1# / 6# + square * difference
+        difference = theta * square * difference
+        radialOffset = -120019# / 232475443200000#
+        radialOffset = -719# / 12418560000# + square * radialOffset
+        radialOffset = 29# / 4032000# + square * radialOffset
+        radialOffset = -13# / 16800# + square * radialOffset
+        radialOffset = 1# / 20# + square * radialOffset
+        radialOffset = square * radialOffset
+        transverseI = -1# / 1916006400#
+        transverseI = 31# / 1132185600# + square * transverseI
+        transverseI = -17# / 15966720# + square * transverseI
+        transverseI = 1# / 34560# + square * transverseI
+        transverseI = -1# / 2016# + square * transverseI
+        transverseI = 1# / 240# + square * transverseI
+        transverseI = theta * square * square * transverseI
+        radialI = 175907# / 1017080064000000#
+        radialI = -2711# / 302702400000# + square * radialI
+        radialI = 173# / 517440000# + square * radialI
+        radialI = -1# / 126000# + square * radialI
+        radialI = 1# / 11200# + square * radialI
+        radialI = theta * square * square * square * radialI
+    Else
+        difference = theta - Sin(theta)
+        radialOffset = 4# * halfSine ^ 3 / (3# * difference) - halfCosine
+        transverseI = (3# * theta - 4# * Sin(theta) + Sin(theta) * Cos(theta)) / 24#
+        radialI = (theta - Sin(theta) * Cos(theta)) / 8# - 8# * halfSine ^ 6 / (9# * difference)
+    End If
+    area = radius * radius * difference / 2#
+    middleAngle = modGeometryPrimitives.AngleOf(edge.X1 - edge.CenterX, edge.Y1 - edge.CenterY) + theta / 2#
+    directionX = Cos(middleAngle): directionY = Sin(middleAngle)
+    centerX = (edge.X1 - originX) / 2# + (edge.X2 - originX) / 2# + radius * radialOffset * directionX
+    centerY = (edge.Y1 - originY) / 2# + (edge.Y2 - originY) / 2# + radius * radialOffset * directionY
+    transverseI = transverseI * radius ^ 4: radialI = radialI * radius ^ 4
+    ix = radialI * directionY ^ 2 + transverseI * directionX ^ 2
+    iy = radialI * directionX ^ 2 + transverseI * directionY ^ 2
+    ixy = (radialI - transverseI) * directionX * directionY
+End Sub
+
+' Распознаёт единственный настоящий прямоугольник без отверстий. Оболочка
+' произвольного элемента прямоугольником не считается; дуги не спрямляются.
+Public Function TryRectangle(ByVal region As CConcreteRegion, ByRef centerX As Double, ByRef centerY As Double, _
+        ByRef width As Double, ByRef height As Double, ByRef rotation As Double) As Boolean
+    centerX = 0#: centerY = 0#: width = 0#: height = 0#: rotation = 0#
+    If region Is Nothing Then Exit Function
+    If region.LoopCount <> 1 Or region.SegmentCount <> 4 Then Exit Function
+    Dim edges() As TRegionEdge, count As Long, i As Long, j As Long
+    Dim dx As Double, dy As Double, nx As Double, ny As Double, localX As Double, localY As Double
+    Dim minX As Double, maxX As Double, minY As Double, maxY As Double, tolerance As Double
+    region.CopyEdges edges, count
+    For i = 1 To count
+        If Abs(edges(i).Sweep) > PARAM_TOLERANCE Then Exit Function
+    Next i
+    dx = edges(1).X2 - edges(1).X1: dy = edges(1).Y2 - edges(1).Y1
+    width = Sqr(dx * dx + dy * dy)
+    If width <= QUERY_TOLERANCE Then GoTo NotRectangle
+    nx = dx / width: ny = dy / width
+    ProjectionBounds region, nx, ny, minX, maxX
+    ProjectionBounds region, -ny, nx, minY, maxY
+    width = maxX - minX: height = maxY - minY
+    If height <= QUERY_TOLERANCE Then GoTo NotRectangle
+    tolerance = QUERY_TOLERANCE + 0.0000000001 * GeomMax(width, height)
+    For i = 1 To count
+        localX = nx * edges(i).X1 + ny * edges(i).Y1
+        localY = -ny * edges(i).X1 + nx * edges(i).Y1
+        If GeomMin(Abs(localX - minX), Abs(localX - maxX)) > tolerance Then GoTo NotRectangle
+        If GeomMin(Abs(localY - minY), Abs(localY - maxY)) > tolerance Then GoTo NotRectangle
+        j = i + 1: If j > count Then j = 1
+        dx = edges(j).X2 - edges(j).X1: dy = edges(j).Y2 - edges(j).Y1
+        If Abs(nx * dx + ny * dy) > tolerance And Abs(-ny * dx + nx * dy) > tolerance Then GoTo NotRectangle
+    Next i
+    If Abs(region.Area - width * height) > tolerance * (width + height) Then GoTo NotRectangle
+    localX = minX + width / 2#: localY = minY + height / 2#
+    centerX = nx * localX - ny * localY: centerY = ny * localX + nx * localY
+    rotation = modGeometryPrimitives.AngleOf(nx, ny)
+    TryRectangle = True
+    Exit Function
+NotRectangle:
+    centerX = 0#: centerY = 0#: width = 0#: height = 0#: rotation = 0#
+End Function
 
 ' При явно заданных отверстиях сетка задает только наружные границы.
 ' Ее внутренние пустоты не добавляются к достоверному списку Opening;
@@ -1772,10 +2051,15 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
                     modGeometryPrimitives.EdgePoint edges(i), u, px, py
                     modGeometryPrimitives.EdgeTangent edges(i), u, tx, ty
                     dy = ty
-                    If px > x And Abs(dy) > QUERY_TOLERANCE Then ' Как у отрезков, учитываем нижний конец и исключаем верхний. Просто [0,1) для дуги неверно при стыке с направленным вниз отрезком и может заполнить пустоту.
-                        If (u > PARAM_TOLERANCE And u < 1# - PARAM_TOLERANCE) Or _
-                                (u <= PARAM_TOLERANCE And dy > 0#) Or _
-                                (u >= 1# - PARAM_TOLERANCE And dy < 0#) Then winding = winding + Sgn(dy)
+                    If px > x Then
+                        If Abs(dy) > QUERY_TOLERANCE Then ' Как у отрезков, учитываем нижний конец и исключаем верхний. Просто [0,1) для дуги неверно при стыке с направленным вниз отрезком и может заполнить пустоту.
+                            If (u > PARAM_TOLERANCE And u < 1# - PARAM_TOLERANCE) Or _
+                                    (u <= PARAM_TOLERANCE And dy > 0#) Or _
+                                    (u >= 1# - PARAM_TOLERANCE And dy < 0#) Then winding = winding + Sgn(dy)
+                        ElseIf py < edges(i).CenterY Then ' В нижнем касательном конце dy равен нулю, но внутренняя часть дуги выше луча: начало даёт +1, конец -1 независимо от знака Sweep. Верхние концы и внутреннее касание не пересекают полуоткрытый луч.
+                            If u <= PARAM_TOLERANCE Then winding = winding + 1
+                            If u >= 1# - PARAM_TOLERANCE Then winding = winding - 1
+                        End If
                     End If
                 End If
 NextCrossing:

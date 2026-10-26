@@ -399,8 +399,8 @@ Public Function RunPostAudit03SnapshotRepeatTests() As String
     solves = SectionEquilibriumSolveCount()
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
-        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-    columns = Array(1, 12, 29, 48, 56, 69)
+        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+    columns = Array(1, 12, 29, 48, 56, 69, 96)
     For i = 0 To UBound(names)
         fixture.Names.Add CStr(names(i)), "=Results!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i
@@ -467,8 +467,8 @@ Public Function RunPlateauResultsDiagramTests() As String
     TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
-        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-    columns = Array(1, 12, 29, 48, 56, 69)
+        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+    columns = Array(1, 12, 29, 48, 56, 69, 96)
     For i = 0 To UBound(names)
         fixture.Names.Add CStr(names(i)), "=Results!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i
@@ -575,8 +575,8 @@ Public Function RunUnboundedDiagramResultsTests() As String
     Next i
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
-        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-    columns = Array(1, 12, 29, 48, 56, 69)
+        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+    columns = Array(1, 12, 29, 48, 56, 69, 96)
     For i = 0 To UBound(names)
         fixture.Names.Add CStr(names(i)), "=Results!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i

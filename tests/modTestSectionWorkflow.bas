@@ -90,7 +90,8 @@ Private Sub TestCompleteModel(ByRef stats As TWorkflowStats)
         Set expected = TestExampleModel(): Set writer = New CNDMResultsWriter
         writer.WriteGeometryPreview ThisWorkbook, expected, PrepareSectionSnapshot(expected), units
         Set actual = ReadFormedSectionFromResults(ThisWorkbook, True)
-        TestCheck stats, "snapshot." & unit & ".bulkReads", TestSectionSnapshotReadDiagnostics() = "tables=4;released=True"
+        stats.Report = stats.Report & "WORKFLOW_SNAPSHOT_READ: unit=" & CStr(unit) & "; " & TestSectionSnapshotReadDiagnostics() & vbCrLf
+        TestCheck stats, "snapshot." & unit & ".bulkReads", TestSectionSnapshotReadDiagnostics() = "tables=5;released=True"
         TestCheck stats, "snapshot." & unit & ".counts", actual.ConcreteCount = 2 And actual.RebarCount = 2 And actual.AnnotationCount = 5
         TestCheck stats, "snapshot." & unit & ".source", actual.SourceType = expected.SourceType And actual.ConcreteMeshSource = expected.ConcreteMeshSource
         TestCheck stats, "snapshot." & unit & ".diagnostics", actual.GeometryDiagnosticsText = expected.GeometryDiagnosticsText
@@ -227,7 +228,8 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ДЛЯ ТЕСТОВ
 ' Замеряет только чтение готового снимка; подготовка и запись в замер не входят.
-' Все обращения к данным проверяются по счётчику блочных чтений.
+' Четыре обязательные таблицы (свойства, элементы, общие контуры и границы элементов)
+' читаются по одному разу независимо от количества стержней; аннотации дают пятое чтение.
 Public Function RunWorkflowReadPerformanceTests() As String
     Dim stats As TWorkflowStats, saved As Variant, count As Variant
     saved = TestFixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
@@ -254,7 +256,7 @@ Public Function RunWorkflowReadPerformanceTests() As String
             Set actual = ReadFormedSectionFromResults(ThisWorkbook)
             elapsed = Timer - start: If elapsed < 0# Then elapsed = elapsed + 86400#
             TestCheck stats, "read." & count & "." & pass & ".count", actual.RebarCount = CLng(count)
-            TestCheck stats, "read." & count & "." & pass & ".tables", TestSectionSnapshotReadDiagnostics() = "tables=3;released=True"
+            TestCheck stats, "read." & count & "." & pass & ".tables", TestSectionSnapshotReadDiagnostics() = "tables=4;released=True"
             TestNear stats, "read." & count & "." & pass & ".lastX", actual.RebarX(CLng(count)), model.RebarX(CLng(count))
             stats.Report = stats.Report & "WORKFLOW_READ: rebars=" & count & "; seconds=" & _
                 Replace$(CStr(elapsed), ",", ".") & "; " & TestSectionSnapshotReadDiagnostics() & vbCrLf
@@ -288,10 +290,12 @@ Public Function RunCompactSnapshotTests() As String
         Set expected = TestExampleModel(): Set writer = New CNDMResultsWriter
         writer.WriteGeometryPreview ThisWorkbook, expected, PrepareSectionSnapshot(expected), units
         Set actual = ReadFormedSectionFromResults(ThisWorkbook)
-        TestCheck stats, "compact." & unit & ".minimumTables", TestSectionSnapshotReadDiagnostics() = "tables=3;released=True"
+        stats.Report = stats.Report & "WORKFLOW_COMPACT_READ: mode=minimum; unit=" & CStr(unit) & "; " & TestSectionSnapshotReadDiagnostics() & vbCrLf
+        TestCheck stats, "compact." & unit & ".minimumTables", TestSectionSnapshotReadDiagnostics() = "tables=4;released=True"
         TestCheck stats, "compact." & unit & ".noPresentation", actual.AnnotationCount = 0 And Len(actual.GeometryDiagnosticsText) = 0 And Len(actual.RebarRecipeTrace(1)) = 0
         Set full = ReadFormedSectionFromResults(ThisWorkbook, True)
-        TestCheck stats, "compact." & unit & ".fullTables", TestSectionSnapshotReadDiagnostics() = "tables=4;released=True"
+        stats.Report = stats.Report & "WORKFLOW_COMPACT_READ: mode=full; unit=" & CStr(unit) & "; " & TestSectionSnapshotReadDiagnostics() & vbCrLf
+        TestCheck stats, "compact." & unit & ".fullTables", TestSectionSnapshotReadDiagnostics() = "tables=5;released=True"
         TestCheck stats, "compact." & unit & ".trace", full.RebarRecipeTrace(1) = expected.RebarRecipeTrace(1)
         TestCheck stats, "compact." & unit & ".source", full.ConcreteSourceName(1) = "00123" And full.ConcreteSourceHandle(1) = "1E2"
         TestCheck stats, "compact." & unit & ".annotation", full.Annotations.Text(1) = "B" And full.Annotations.Unit(1) = "Length"

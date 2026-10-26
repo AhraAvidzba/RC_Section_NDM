@@ -1,0 +1,224 @@
+{
+  "Status": "PASS_PYTHON_VERIFIER_SELFTESTS_ONLY",
+  "CoverageVersion": 6,
+  "ExpectedCoreSuites": 178,
+  "CurrentFeaturesPerMode": 11,
+  "AddedMandatoryMacros": [
+    "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+    "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+    "modTestElementGeometry.RunContourCellMeshTests",
+    "modTestElementGeometry.RunElementGeometryTests",
+    "modTestElementGeometryViews.RunElementGeometryViewTests"
+  ],
+  "FullCoverageSelfTests": {
+    "Tests": 17,
+    "Failures": 0,
+    "Errors": 0,
+    "Passed": true,
+    "Log": "FullCoverage.stdout.txt"
+  },
+  "ExistingFocusedVerifierSelfTests": {
+    "Tests": 15,
+    "ExitCode": 0,
+    "Log": "FocusedVerifier.stdout.txt"
+  },
+  "HistoricalVersionExpectedSuites": {
+    "1": 132,
+    "2": 144,
+    "3": 156,
+    "4": 162,
+    "5": 168
+  },
+  "NegativeCases": [
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+      "Mode": "No",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+      "Mode": "Yes",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+      "Mode": "No",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+      "Mode": "Yes",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestElementGeometry.RunContourCellMeshTests",
+      "Mode": "No",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestElementGeometry.RunContourCellMeshTests",
+      "Mode": "Yes",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestElementGeometry.RunElementGeometryTests",
+      "Mode": "No",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestElementGeometry.RunElementGeometryTests",
+      "Mode": "Yes",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestElementGeometryViews.RunElementGeometryViewTests",
+      "Mode": "No",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "MissingNewMacroAndLoweredCount",
+      "Macro": "modTestElementGeometryViews.RunElementGeometryViewTests",
+      "Mode": "Yes",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "duplicate_macro",
+      "Rejected": true,
+      "Errors": [
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "extra_macro",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "duplicate_group",
+      "Rejected": true,
+      "Errors": [
+        "The full plan requires every declared canonical ON/OFF group"
+      ]
+    },
+    {
+      "Mutation": "extra_group",
+      "Rejected": true,
+      "Errors": [
+        "The full plan requires every declared canonical ON/OFF group",
+        "Canonical suite coverage differs: UnexpectedGroup"
+      ]
+    },
+    {
+      "Mutation": "version_5_only",
+      "Rejected": true,
+      "Errors": [
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory",
+        "Canonical suite coverage differs: CurrentFeatures",
+        "Every feature declared for this coverage version is mandatory"
+      ]
+    },
+    {
+      "Mutation": "version_7",
+      "Rejected": true,
+      "Errors": [
+        "Unsupported full coverage version"
+      ]
+    },
+    {
+      "Mutation": "version_string",
+      "Rejected": true,
+      "Errors": [
+        "Unsupported full coverage version"
+      ]
+    },
+    {
+      "Mutation": "DowngradeToV5AndRemoveAllNewMacros",
+      "HistoricalV5PlanIndependentlyValid": true,
+      "ActualRunnerSnapshotVersion": 6,
+      "Rejected": true,
+      "Errors": [
+        "Full runner snapshot and manifest coverage versions differ"
+      ]
+    }
+  ],
+  "RunnerSnapshotVersionBinding": true,
+  "Finalize": {
+    "Modified": false,
+    "LineEndingNormalizationForGitComparison": true,
+    "SupportsDynamic178Suites": true,
+    "CompositionUnitTestUsesMockedPrimaryVerifiers": true,
+    "Missing177SuitesRejected": true,
+    "SHA256": "6E3065606E0002ADADB52387AA40039B4B9666D4684A79BE9D12309B52260230"
+  },
+  "SourceFiles": [
+    {
+      "Path": "tools/build_workbook/Run-FullOnOffAcceptance.ps1",
+      "SHA256": "EF1CBAAEC032481D1042087C1A8A948676B2A2394884DAFFCCB3D19B6E40CFF0"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-FullOnOffAcceptance.py",
+      "SHA256": "CFFA94D00B06F1480CC5E239CB68952E785B47CDE88C41D91996D4A4A8F4ECF7"
+    },
+    {
+      "Path": "tools/build_workbook/Test-FullCoverageVerifier.py",
+      "SHA256": "4C1A4C7FB7B34BB933D66246D02F8128F04D2E9C62A3F913B4486454818EC917"
+    }
+  ],
+  "ExcelLaunched": false,
+  "FullRegressionLaunched": false,
+  "VbaSourceOrTestsModified": false,
+  "FullRegressionPass": false
+}

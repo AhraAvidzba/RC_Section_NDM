@@ -12,33 +12,38 @@ Option Explicit
 ' ==========================================================================
 ' Построение бетонной расчётной сетки
 ' ==========================================================================
-' Разбивает бетонную область на прямоугольные элементы заданного шага.
-' Подготавливает их центры, размеры и площади для переноса в CSectionModel.
+' Разбивает бетонную область ячейками заданного шага: прежними адаптивными
+' прямоугольниками либо точными пересечениями с контуром. Подготавливает
+' центры, площади, инерции и необязательные границы для CSectionModel.
 ' Класс отвечает за геометрию сетки; нагрузки и материалы обрабатываются отдельно.
 
 Private mFibers() As TFiber ' Единственный массив готовых бетонных элементов: координаты, размеры, площади и материал.
+Private mFiberGeometry() As CConcreteRegion ' Точные области нового режима; старый режим хранит прежние компактные прямоугольники.
 Private mReadOnly As Boolean ' Готовая сетка общей сборки только читается, без копирования массива.
 Private mFiberCount As Long ' Число заполненных элементов; не размер зарезервированного массива.
 Private mBuildSeconds As Double ' Время создания только сетки; не полное время расчёта сочетания.
 
 ' Разбивает бетонную область регулярной сеткой. Полностью внутренние ячейки
-' добавляет целиком, а пограничные уточняет последовательно на заданное
-' число уровней Mesh.BoundarySubdivisions.
+' добавляет целиком. Adaptive уточняет пограничные ячейки последовательно
+' на Mesh.BoundarySubdivisions уровней; Contour сохраняет точное пересечение.
 ' Каждый уровень делит пересечённую ячейку пополам по обеим осям;
 ' внутренние ячейки остаются крупными. При autoStepFactor > 0 одинаковый
 ' шаг по X/Y равен этой доле меньшего точного габарита области в WCS.
 Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1, _
-        Optional ByVal sourceReference As String = vbNullString, Optional ByVal autoStepFactor As Double = 0#)
+        Optional ByVal sourceReference As String = vbNullString, Optional ByVal autoStepFactor As Double = 0#, _
+        Optional ByVal cellGeometry As String = "Adaptive")
 
     On Error GoTo FailedBuild
     If mReadOnly Then Err.Raise vbObjectError + 2111, "CFiberMeshBuilder", "Опубликованную сетку нельзя перестроить. Создайте новый построитель."
-    mFiberCount = 0: mBuildSeconds = 0#: Erase mFibers ' Ошибочная новая попытка не должна оставлять доступной сетку прежнего запуска.
+    mFiberCount = 0: mBuildSeconds = 0#: Erase mFibers: Erase mFiberGeometry ' Ошибочная попытка не оставляет прежнюю сетку или её точные границы.
+    If Len(cellGeometry) = 0 Then cellGeometry = "Adaptive" ' Старые программные TSectionMeshOptions остаются совместимы; пользовательский ввод проверяется до ядра.
+    If cellGeometry <> "Adaptive" And cellGeometry <> "Contour" Then Err.Raise vbObjectError + 2109, "CFiberMeshBuilder", "Неизвестный способ геометрии ячеек Mesh.CellGeometry."
     Dim message As String
     If geometry Is Nothing Then Err.Raise vbObjectError + 2107, "CFiberMeshBuilder", "Геометрия бетонного сечения не передана."
     If Not geometry.IsValid(message) Then Err.Raise vbObjectError + 2100, "CFiberMeshBuilder", message
     If autoStepFactor < 0# Then Err.Raise vbObjectError + 2101, "CFiberMeshBuilder", "Коэффициент автоматического шага не может быть отрицательным."
-    If boundarySubdivisions < 1 Then Err.Raise vbObjectError + 2109, "CFiberMeshBuilder", _
+    If cellGeometry = "Adaptive" And boundarySubdivisions < 1 Then Err.Raise vbObjectError + 2109, "CFiberMeshBuilder", _
         "Mesh.BoundarySubdivisions должен быть целым числом не меньше 1."
 
     Dim t0 As Double
@@ -78,7 +83,10 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     If nx < 1 Or ny < 1 Then Err.Raise vbObjectError + 2104, "CFiberMeshBuilder", "Габаритный прямоугольник сетки пуст."
     Dim upperCount As Double, level As Long
     upperCount = CDbl(nx) * CDbl(ny)
-    For level = 1 To boundarySubdivisions
+    If upperCount > 2147483646# Then Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", "Число базовых ячеек бетонной сетки не помещается в Long. Увеличьте шаг сетки."
+    Dim subdivisionLevels As Long
+    If cellGeometry = "Adaptive" Then subdivisionLevels = boundarySubdivisions
+    For level = 1 To subdivisionLevels
         If upperCount > 2147483646# / 4# Then
             Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
                 "Верхняя оценка числа бетонных элементов с учетом уровней Mesh.BoundarySubdivisions не помещается в Long. " & _
@@ -88,12 +96,17 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     Next level
 
     ReDim mFibers(1 To nx * ny)
+    ReDim mFiberGeometry(1 To nx * ny)
     Dim ix As Long, iy As Long, cellMinX As Double, cellMinY As Double
     For iy = 0 To ny - 1
         cellMinY = minY + iy * stepY
         For ix = 0 To nx - 1
             cellMinX = minX + ix * stepX
-            AddAdaptiveCell geometry, cellMinX, cellMinY, stepX, stepY, boundarySubdivisions, materialID
+            If cellGeometry = "Contour" Then
+                AddContourCell geometry, cellMinX, cellMinY, stepX, stepY, materialID
+            Else
+                AddAdaptiveCell geometry, cellMinX, cellMinY, stepX, stepY, boundarySubdivisions, materialID
+            End If
         Next ix
     Next iy
 
@@ -111,7 +124,7 @@ FailedBuild:
     Dim number As Long, source As String, reason As String
     number = Err.Number: source = Err.Source: reason = Err.Description
     If Not mReadOnly Then
-        mFiberCount = 0: mBuildSeconds = 0#: Erase mFibers ' Не публикуем частично собранные элементы; отказ изменения Frozen-сетки её не очищает.
+        mFiberCount = 0: mBuildSeconds = 0#: Erase mFibers: Erase mFiberGeometry ' Не публикуем частичную сетку; отказ изменения Frozen-сетки её не очищает.
     End If
     If Len(sourceReference) > 0 Then reason = reason & " Параметры бетонной сетки: " & sourceReference & "."
     Err.Raise number, source, reason
@@ -140,6 +153,30 @@ Private Sub AddAdaptiveCell(ByVal geometry As CGeometryRegion, ByVal cellMinX As
     If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
 End Sub
 
+' Пересекает только пограничную базовую ячейку с точной бетонной областью.
+' Несвязные части становятся отдельными элементами; принадлежность центра
+' не используется как замена пересечению. Внутренний прямоугольник тоже имеет точную область.
+Private Sub AddContourCell(ByVal geometry As CGeometryRegion, ByVal minX As Double, ByVal minY As Double, _
+        ByVal stepX As Double, ByVal stepY As Double, ByVal materialID As Long)
+    Dim pieces As Collection, region As CConcreteRegion, query As CSectionGeometryQuery
+    Set query = New CSectionGeometryQuery
+    If geometry.MeshBoundaryCrossesCell(minX, minY, minX + stepX, minY + stepY) Then
+        Set pieces = geometry.ClipCell(minX, minY, minX + stepX, minY + stepY)
+    Else
+        Set pieces = New Collection
+        If geometry.ContainsPoint(minX + stepX / 2#, minY + stepY / 2#) Then _
+            pieces.Add query.RectangleRegion(minX + stepX / 2#, minY + stepY / 2#, stepX, stepY)
+    End If
+    Dim properties As TGeometryProperties
+    For Each region In pieces
+        query.RegionProperties region, properties
+        AddFiber properties.CentroidX, properties.CentroidY, stepX, stepY, materialID
+        mFibers(mFiberCount).Area = properties.Area
+        mFibers(mFiberCount).LocalIx = properties.Ixc: mFibers(mFiberCount).LocalIy = properties.Iyc: mFibers(mFiberCount).LocalIxy = properties.Ixyc
+        Set mFiberGeometry(mFiberCount) = region
+    Next region
+End Sub
+
 ' Добавляет прямоугольный бетонный элемент в подготовленную сетку.
 ' Его Width и Height сохраняются для определения границ, расстояний
 ' до края бетона и отрисовки фактических размеров элемента.
@@ -155,6 +192,7 @@ Private Sub AddFiber(ByVal x As Double, ByVal y As Double, ByVal width As Double
             newCapacity = UBound(mFibers) * 2
         End If
         ReDim Preserve mFibers(1 To newCapacity)
+        ReDim Preserve mFiberGeometry(1 To newCapacity)
     End If
     mFibers(mFiberCount).X = x
     mFibers(mFiberCount).Y = y
@@ -163,6 +201,21 @@ Private Sub AddFiber(ByVal x As Double, ByVal y As Double, ByVal width As Double
     mFibers(mFiberCount).Area = width * height
     mFibers(mFiberCount).FillFactor = 1#
     mFibers(mFiberCount).MaterialID = materialID
+    mFibers(mFiberCount).LocalIx = mFibers(mFiberCount).Area * height * height / 12#
+    mFibers(mFiberCount).LocalIy = mFibers(mFiberCount).Area * width * width / 12#
+    mFibers(mFiberCount).LocalIxy = 0#
+End Sub
+
+' Возвращает фактическую область точного элемента; Nothing обозначает старое компактное представление.
+Public Function FiberGeometry(ByVal index As Long) As CConcreteRegion
+    CheckFiberIndex index
+    Set FiberGeometry = mFiberGeometry(index)
+End Function
+
+' Возвращает собственные инерции уже подготовленной ячейки без повторного интегрирования границы.
+Public Sub FiberLocalInertia(ByVal index As Long, ByRef localIx As Double, ByRef localIy As Double, ByRef localIxy As Double)
+    CheckFiberIndex index
+    localIx = mFibers(index).LocalIx: localIy = mFibers(index).LocalIy: localIxy = mFibers(index).LocalIxy
 End Sub
 
 ' Количество подготовленных бетонных ячеек сетки.
@@ -194,7 +247,7 @@ Public Property Get FiberHeight(ByVal index As Long) As Double
     FiberHeight = mFibers(index).Height
 End Property
 
-' Возвращает площадь прямоугольной ячейки бетонного элемента: ширина * высота, мм2.
+' Возвращает фактическую площадь ячейки; у прежнего прямоугольника это Width * Height, мм2.
 Public Property Get FiberArea(ByVal index As Long) As Double
     CheckFiberIndex index
     FiberArea = mFibers(index).Area

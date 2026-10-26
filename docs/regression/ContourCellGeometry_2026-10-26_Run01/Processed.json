@@ -1,0 +1,10 @@
+{
+  "Status": "PROCESSED_SCOPED_DIRECTED_ACCEPTANCE",
+  "WorkbookSHA256": "44C63ECF5C69C783A9455ACA1314FF0FFBEC5F825D0585F58636967D155AD4E5",
+  "AllCodeSHA256": "252089A0A3CB25EB21A9C2A291646D33B1BAFB96A6CE08CD8EE1BB6A1A30C82D",
+  "Report": "docs/reports/ContourCellGeometry_2026-10-26.md",
+  "Branch": "codex/contour-cell-geometry",
+  "MainUnchanged": true,
+  "OriginalFailuresRetained": true,
+  "FullRegressionPass": false
+}

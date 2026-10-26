@@ -27,10 +27,11 @@ function Get-SystemSettingsCatalog {
         @{ Name = "GeometrySettings"; Title = "[Геометрия и сетка]"; Rows = @(
             @("Geometry.Source", "Generated", "-", "Generated - встроенная геометрия; AutoCAD - импорт Region или генерация бетона по точным контурам при пустом слое бетона. Арматура импортируется из Region. Геометрия AutoCAD всегда в мм."),
             @("Geometry.Type", "Rectangles", "-", "Тип сечения для Geometry.Source = Generated. Поддерживается: PointedSection, HollowRectangle, Circle или Rectangles."),
+            @("Mesh.CellGeometry", "Adaptive", "-", "Adaptive — прежнее уточнение прямоугольников у границы. Contour — точное обрезание базовых ячеек по наружным контурам и отверстиям без граничного дробления; фактическая геометрия обязательна."),
             @("Mesh.StepMode", "Auto 0.1", "-", "Выбор шага сетки: Auto — доля меньшего габарита сечения по X/Y; User — ручные Mesh.StepX и Mesh.StepY. Дробление у контура работает в обоих режимах."),
             @("Mesh.StepX", "50", "мм", "Ручной шаг бетонной сетки по X при Mesh.StepMode = User. В Auto сохраняется, но не используется."),
             @("Mesh.StepY", "50", "мм", "Ручной шаг бетонной сетки по Y при Mesh.StepMode = User. В Auto сохраняется, но не используется; автоматические шаги X/Y одинаковы."),
-            @("Mesh.BoundarySubdivisions", "2", "шт", "Уровни уточнения границы: делятся только пересечённые ячейки пополам по X/Y; N = 2 даёт h/4. Auto/User, Generated/контуры AutoCAD."),
+            @("Mesh.BoundarySubdivisions", "2", "шт", "Только Mesh.CellGeometry = Adaptive: уровни деления пересечённых ячеек пополам по X/Y; N = 2 даёт h/4. В Contour сохраняется, но не используется."),
             @("Load.ReferenceOffsetX", "0", "мм", "Смещение точки приложения нагрузок по X относительно центра тяжести бетонного сечения. 0 означает, что N, Mx и My заданы относительно центра бетона без учета арматуры."),
             @("Load.ReferenceOffsetY", "0", "мм", "Смещение точки приложения нагрузок по Y относительно центра тяжести бетонного сечения. Рабочие моменты для решателя автоматически переносятся к координатам расчетных элементов.")
         )},
@@ -725,12 +726,22 @@ function Get-SettingInstructionLines {
             "Не используется при Geometry.Source = AutoCAD: форму задают импортированные элементы либо точные наружные контуры и отверстия.",
             "Если для выбранной формы нет специальных аннотаций, расчет все равно выполняется. На схеме будут показаны геометрия и расчетные значения без этих дополнительных подписей."
         ) }
+        "Mesh.CellGeometry" { return @(
+            "Выберите способ геометрии бетонных элементов: Adaptive сохраняет прежнюю адаптивную прямоугольную сетку; Contour строит фактические пересечения базовых ячеек с бетонным сечением. По умолчанию Adaptive.",
+            "В обоих способах Mesh.StepMode определяет базовый шаг: Auto выбирает его по полным габаритам, User читает независимые Mesh.StepX и Mesh.StepY. Внутренние ячейки остаются прямоугольными, внешние отбрасываются.",
+            "В Adaptive граничная ячейка делится на четыре дочерние до Mesh.BoundarySubdivisions уровней; на последнем уровне принадлежность центру определяет включение. Существующие настройки и эквивалентные оболочки импортированных Region сохраняют прежний смысл.",
+            "В Contour граничного дробления нет: программа обрезает базовый прямоугольник по точным прямым и круговым дугам, сохраняя все отверстия. Несвязные части одной ячейки становятся разными элементами. Mesh.BoundarySubdivisions не используется и не перезаписывается.",
+            "В Contour фактическая геометрия обязательна для каждого элемента, включая импорт готовых бетонных Region AutoCAD. Неподдерживаемая или повреждённая граница отклоняется; эквивалентный прямоугольник вместо неё не подставляется.",
+            "Общие свойства и расчётные имена C1, C2 и далее сохраняются в rngNDMSectionGeometry. Фактические линии, дуги и замкнутые контуры этих элементов связаны по ElementID в последней таблице Results rngNDMElementGeometry и сохраняются в расчётном снимке.",
+            "Точная форма ячейки не заменяет проверку сходимости НДС по основному шагу. Площадь и инерции вычисляются по фактической области; численное интегрирование напряжений сохраняет принятую волоконную постановку. На схеме уменьшается только рисунок, расчётная площадь не уменьшается.",
+            "После изменения способа или шага заново нажмите «Сформировать сечение». Сохранённая геометрия Results и ранее записанные файлы сами не перестраиваются."
+        ) }
         "Mesh.StepMode" { return @(
             "Выберите Auto 0.05, Auto 0.1, Auto 0.2 или User. По умолчанию установлен Auto 0.1. Настройка применяется при формировании сечения по параметрам и при создании сетки по контурам AutoCAD; готовые бетонные элементы AutoCAD не разбиваются заново.",
             "В Auto программа берёт меньший из двух полных габаритов бетонного сечения по осям X и Y и умножает его на выбранный коэффициент. Шаг одинаков по обеим осям: h = min(B, H) · k. Например, для габаритов 300 × 500 мм режим Auto 0.1 даёт шаг 30 × 30 мм.",
             "Габариты определяются по точным наружным контурам с учётом положения и поворота сечения, а не по отверстию или отдельной стенке. Ручные Mesh.StepX и Mesh.StepY в Auto не используются и не перезаписываются.",
             "В режиме User программа использует именно два ручных шага Mesh.StepX и Mesh.StepY в единицах INPUT Length. Задайте оба положительными числами; они могут различаться.",
-            "Mesh.BoundarySubdivisions работает в Auto и User одинаково. Это число уровней уточнения только пересечённых контуром ячеек. По умолчанию 2: минимальный размер равен четверти основного шага; внутренние ячейки остаются крупными.",
+            "При Mesh.CellGeometry = Adaptive параметр Mesh.BoundarySubdivisions работает в Auto и User одинаково. По умолчанию 2: минимальный размер равен четверти основного шага. При Contour граничные ячейки обрезаются по фактическому контуру без дробления.",
             "Меньший коэффициент создаёт более мелкую сетку и обычно увеличивает время расчёта. Это способ выбора дискретизации, а не нормативный коэффициент. После изменения режима или размеров заново нажмите «Сформировать сечение»."
         ) }
         "Mesh.StepX" { return @(
@@ -740,6 +751,7 @@ function Get-SettingInstructionLines {
             "Пустое или неверное значение в режиме User нужно исправить: программа не копирует шаг из другой оси и не подставляет значение шаблона."
         ) }
         "Mesh.BoundarySubdivisions" { return @(
+            "Параметр используется только при Mesh.CellGeometry = Adaptive. В Contour он сохраняется без чтения и не влияет на точное обрезание базовых ячеек.",
             "При Generated и генерации по контурам AutoCAD обязательно целое число уровней не меньше 1. По умолчанию 2. Работает в Auto и User. Отсутствующая строка, пустота, TODO, ошибка формулы, дробное, нулевое или отрицательное значение — ошибка ввода.",
             "Значение N — число последовательных уровней. Каждый уровень делит только пересечённую границей ячейку пополам по X и Y, на четыре дочерние. Затем проверяются уже дочерние ячейки.",
             "Минимальные размеры равны h_x/2^N и h_y/2^N: при N = 1 это h/2, при 2 — h/4, при 4 — h/16. Параметр больше не означает число подъячеек вдоль всей стороны исходной ячейки.",
@@ -3786,12 +3798,133 @@ function Add-NamedRangeInstructionLinks {
     }
 }
 
+# Читает только значения свойств COM-формата, не сохраняя живые ссылки на Font/Interior.
+# Theme-свойства для обычного RGB могут отсутствовать; Null обозначает смешанный шрифт.
+function Get-InstructionFormatProperties {
+    param([object]$Target, [string[]]$Names)
+    $values = [ordered]@{}
+    foreach ($name in $Names) {
+        try { $values[$name] = $Target.$name } catch {}
+    }
+    return $values
+}
+
+# Восстанавливает сохранённые атрибуты в явном порядке: тема после RGB,
+# LineStyle/Pattern последними, чтобы заливка «нет» и невидимая рамка не включились.
+function Set-InstructionFormatProperties {
+    param([object]$Target, [System.Collections.IDictionary]$Values, [string[]]$Names)
+    foreach ($name in $Names) {
+        if (-not $Values.Contains($name) -or $null -eq $Values[$name] -or $Values[$name] -is [DBNull]) { continue }
+        $indexName = if ($name -eq 'Color') { 'ColorIndex' } elseif ($name -eq 'PatternColor') { 'PatternColorIndex' } else { '' }
+        $themeName = if ($name -eq 'Color') { 'ThemeColor' } else { 'PatternThemeColor' }
+        $hasTheme = $Values.Contains($themeName) -and $null -ne $Values[$themeName] -and $Values[$themeName] -isnot [DBNull] -and [int]$Values[$themeName] -gt 0
+        if ($indexName -and $Values.Contains($indexName) -and [int]$Values[$indexName] -lt 0 -and -not $hasTheme) { continue }
+        if ($name -in @('ThemeColor','PatternThemeColor') -and [int]$Values[$name] -lt 1) { continue }
+        $propertyTarget = if ($name -in @('Locked','FormulaHidden')) { $Target.MergeArea } else { $Target } # Excel запрещает менять защиту отдельной части объединённой ячейки.
+        try {
+            $actual = $propertyTarget.$name
+            if ($null -ne $actual -and $actual -isnot [DBNull] -and $actual -eq $Values[$name]) { continue } # Неизменённые грани не переписываем: Excel делит их с соседями; лишние setter-ы также включают apply* для прежних defaults.
+        } catch {}
+        $propertyTarget.$name = $Values[$name]
+    }
+}
+
+# Сохраняет фактическое оформление всех ячеек MergeArea до изменения Hyperlink.
+# Rich text копируется по сериям только при смешанном шрифте; листы, стили и clipboard не создаются.
+function Save-InstructionCellFormat {
+    param([object]$Cell)
+    $fontNames = @('Name','Size','Bold','Italic','Strikethrough','Superscript','Subscript','OutlineFont','Shadow','ThemeFont','ColorIndex','Color','ThemeColor','TintAndShade','Underline')
+    $cellNames = @('NumberFormat','HorizontalAlignment','VerticalAlignment','WrapText','ShrinkToFit','Orientation','AddIndent','IndentLevel','ReadingOrder','Locked','FormulaHidden')
+    $fillNames = @('ColorIndex','Color','ThemeColor','TintAndShade','PatternColorIndex','PatternColor','PatternThemeColor','PatternTintAndShade','Pattern')
+    $borderNames = @('ColorIndex','Color','ThemeColor','TintAndShade','Weight','LineStyle')
+    foreach ($part in $Cell.MergeArea.Cells) {
+        $style = $part.Style
+        $styleName = if ($style -is [string]) { [string]$style } else { [string]$style.NameLocal }
+        $font = Get-InstructionFormatProperties $part.Font $fontNames
+        $fill = Get-InstructionFormatProperties $part.Interior $fillNames
+        if ([int]$fill['Pattern'] -in @(4000,4001)) { throw 'Градиентная заливка ссылки требует отдельного сохранения; гиперссылка не изменена.' }
+        $record = [pscustomobject]@{
+            Row=[int]$part.Row; Column=[int]$part.Column; Style=$styleName
+            Text=[string]$part.Value2; Font=$font; Interior=$fill
+            Cell=(Get-InstructionFormatProperties $part $cellNames); Borders=@(); Runs=@()
+        }
+        foreach ($index in @(5,6,7,8,9,10,11,12)) {
+            $record.Borders += [pscustomobject]@{Index=$index; Values=(Get-InstructionFormatProperties $part.Borders.Item($index) $borderNames)}
+        }
+        $mixed = @($font.Values | Where-Object {$null -eq $_ -or $_ -is [DBNull]}).Count -gt 0
+        if ($mixed -and $record.Text.Length -gt 0) {
+            $record.Font = Get-InstructionFormatProperties $part.Characters(1,1).Font $fontNames
+            $lastKey = ''; $lastRun = $null
+            for ($index = 1; $index -le $record.Text.Length; $index++) {
+                $characterFont = Get-InstructionFormatProperties $part.Characters($index,1).Font $fontNames
+                $key = ConvertTo-Json -InputObject $characterFont -Compress
+                if ($lastRun -and $key -eq $lastKey) {
+                    $lastRun.Length++
+                } else {
+                    $lastRun = [pscustomobject]@{Start=$index; Length=1; Font=$characterFont}
+                    $record.Runs += $lastRun; $lastKey = $key
+                }
+            }
+        }
+        $record
+    }
+}
+
+# Возвращает фактический формат перед намеренной ссылочной раскраской.
+# Серии rich text восстанавливаются только для неизменившегося текстового префикса.
+# Имя Style служит диагностикой: его назначение части MergeArea запрещено Excel;
+# полное оформление восстанавливается сохранёнными фактическими атрибутами ниже.
+function Restore-InstructionCellFormat {
+    param([object]$Cell, [object[]]$Records)
+    $fontNames = @('Name','Size','Bold','Italic','Strikethrough','Superscript','Subscript','OutlineFont','Shadow','ThemeFont','ColorIndex','Color','ThemeColor','TintAndShade','Underline')
+    $cellNames = @('NumberFormat','HorizontalAlignment','VerticalAlignment','WrapText','ShrinkToFit','Orientation','AddIndent','IndentLevel','ReadingOrder','Locked','FormulaHidden')
+    $fillNames = @('ColorIndex','Color','ThemeColor','TintAndShade','PatternColorIndex','PatternColor','PatternThemeColor','PatternTintAndShade','Pattern')
+    $borderNames = @('ColorIndex','Color','ThemeColor','TintAndShade','Weight','LineStyle')
+    foreach ($record in $Records) {
+        $part = $Cell.Parent.Cells.Item($record.Row,$record.Column)
+        Set-InstructionFormatProperties $part $record.Cell $cellNames
+        Set-InstructionFormatProperties $part.Interior $record.Interior $fillNames
+        Set-InstructionFormatProperties $part.Font $record.Font $fontNames
+        foreach ($border in $record.Borders) {
+            $borderTarget = $part.Borders.Item($border.Index)
+            $actualBorder = Get-InstructionFormatProperties $borderTarget $borderNames
+            if (-not $border.Values.Contains('LineStyle') -or $null -eq $border.Values['LineStyle'] -or $border.Values['LineStyle'] -is [DBNull]) { continue }
+            if ([int]$border.Values['LineStyle'] -eq -4142) {
+                if (-not $actualBorder.Contains('LineStyle') -or $null -eq $actualBorder['LineStyle'] -or $actualBorder['LineStyle'] -is [DBNull] -or [int]$actualBorder['LineStyle'] -ne -4142) { $borderTarget.LineStyle = -4142 }
+                continue # У невидимой грани Color/ColorIndex/Weight не влияют на вид; их setter-ы способны создать линию и перераспределить рамку соседям.
+            }
+            $sameBorder = $true
+            foreach ($name in @('LineStyle','Weight','Color','TintAndShade')) {
+                if ($border.Values.Contains($name) -and $null -ne $border.Values[$name] -and $border.Values[$name] -isnot [DBNull]) {
+                    if (-not $actualBorder.Contains($name) -or $null -eq $actualBorder[$name] -or $actualBorder[$name] -is [DBNull] -or $actualBorder[$name] -ne $border.Values[$name]) { $sameBorder = $false }
+                }
+            }
+            $savedTheme = if ($border.Values.Contains('ThemeColor') -and $null -ne $border.Values['ThemeColor'] -and $border.Values['ThemeColor'] -isnot [DBNull]) { [int]$border.Values['ThemeColor'] } else { 0 }
+            $actualTheme = if ($actualBorder.Contains('ThemeColor') -and $null -ne $actualBorder['ThemeColor'] -and $actualBorder['ThemeColor'] -isnot [DBNull]) { [int]$actualBorder['ThemeColor'] } else { 0 }
+            if (($savedTheme -gt 0 -or $actualTheme -gt 0) -and $savedTheme -ne $actualTheme) { $sameBorder = $false }
+            if ($sameBorder) { continue } # ColorIndex не различает исходный RGB и эквивалентный palette black; одинаковую видимую грань не переписываем.
+            Set-InstructionFormatProperties $borderTarget $border.Values $borderNames
+        }
+        $text = [string]$part.Value2; $common = 0
+        while ($common -lt $record.Text.Length -and $common -lt $text.Length -and $record.Text[$common] -ceq $text[$common]) { $common++ }
+        foreach ($run in $record.Runs) {
+            $length = [Math]::Min([int]$run.Length, $common - [int]$run.Start + 1)
+            if ($length -gt 0) { Set-InstructionFormatProperties $part.Characters($run.Start,$length).Font $run.Font $fontNames }
+        }
+    }
+}
+
 # Создает прямую ссылку на ячейку листа "Справка" без использования именованных диапазонов.
 function Add-InstructionHyperlink {
     param([object]$Cell, [string]$SheetName, [int]$TargetRow)
-    $Cell.Hyperlinks.Delete()
-    $Cell.Value2 = "Подробнее"
-    $Cell.Parent.Hyperlinks.Add($Cell, "", "'" + $SheetName + "'!A" + $TargetRow, "", "Подробнее") | Out-Null
+    $format = @(Save-InstructionCellFormat $Cell)
+    try {
+        $Cell.Hyperlinks.Delete()
+        $Cell.Value2 = "Подробнее"
+        $Cell.Parent.Hyperlinks.Add($Cell, "", "'" + $SheetName + "'!A" + $TargetRow, "", "Подробнее") | Out-Null
+    } finally {
+        Restore-InstructionCellFormat $Cell $format
+    }
     Set-InstructionHyperlinkFont $Cell
 }
 
@@ -3837,9 +3970,14 @@ function Fit-SettingsInstructionRows {
 function Add-HeaderInstructionHyperlink {
     param([object]$Cell, [string]$Caption, [string]$SheetName, [int]$TargetRow)
     $displayText = $Caption + " (Подробнее)"
-    $Cell.Hyperlinks.Delete()
-    $Cell.Value2 = $displayText
-    $Cell.Parent.Hyperlinks.Add($Cell, "", "'" + $SheetName + "'!A" + $TargetRow, "", $displayText) | Out-Null
+    $format = @(Save-InstructionCellFormat $Cell)
+    try {
+        $Cell.Hyperlinks.Delete()
+        $Cell.Value2 = $displayText
+        $Cell.Parent.Hyperlinks.Add($Cell, "", "'" + $SheetName + "'!A" + $TargetRow, "", $displayText) | Out-Null
+    } finally {
+        Restore-InstructionCellFormat $Cell $format
+    }
     try {
         $linkText = "(Подробнее)"
         $linkStart = $displayText.IndexOf($linkText) + 1
@@ -4575,6 +4713,7 @@ function Apply-SystemSettingsLayout {
     $mu = [char]0x03BC
     $validationLists = [ordered]@{
         "Geometry.Source" = @("Generated", "AutoCAD")
+        "Mesh.CellGeometry" = @("Adaptive", "Contour")
         "Mesh.StepMode" = @("Auto 0.05", "Auto 0.1", "Auto 0.2", "User")
         "General.ExecutionReportEnabled" = @("Yes", "No")
         "General.NonCriticalMessagesEnabled" = @("Yes", "No")

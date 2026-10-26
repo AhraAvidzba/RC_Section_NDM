@@ -37,6 +37,8 @@ Private Const MSO_TEXT_ORIENTATION_HORIZONTAL As Long = 1 ' Код горизо�
 Private Const MSO_TEXT_ORIENTATION_UPWARD As Long = 2 ' Код текста с чтением снизу вверх.
 Private Const MSO_TEXT_ORIENTATION_DOWNWARD As Long = 3 ' Код текста с чтением сверху вниз.
 Private Const MSO_SEGMENT_LINE As Long = 0 ' Код прямолинейного участка фигуры.
+Private Const MSO_SEGMENT_CURVE As Long = 1 ' Код кубической кривой Безье в свободной фигуре Excel.
+Private Const MSO_EDITING_CORNER As Long = 1 ' Контрольные точки дуги задаются явно, без автоматического сглаживания соседних ребер.
 Private Const MSO_EDITING_AUTO As Long = 0 ' Код автоматического соединения узлов фигуры.
 Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2 ' Код треугольной стрелки.
 Private Const MSO_ARROWHEAD_STEALTH As Long = 3 ' Код стрелки с выемкой.
@@ -533,6 +535,11 @@ End Sub
 ' количестве объектов.
 Private Function ShouldDrawElementShapeLayer(ByVal data As CSectionPlotDataReader) As Boolean
     ShouldDrawElementShapeLayer = (data.Count <= ELEMENT_SHAPE_RENDER_MAX_COUNT)
+    If ShouldDrawElementShapeLayer Then Exit Function
+    Dim i As Long
+    For i = 1 To data.Count ' Аналитическую границу нельзя заменить квадратным маркером большой сетки.
+        If data.ConcreteHasBoundary(i) Then ShouldDrawElementShapeLayer = True: Exit Function
+    Next i
 End Function
 
 ' Рисует каждый бетонный элемент и стержень отдельной фигурой без усреднения размеров.
@@ -553,6 +560,7 @@ Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
         Else
             Set shapeObject = AddConcreteElementShape(data, itemIndex, fallbackSquareRotation, colorValue)
             key = "C:" & CStr(colorValue)
+            If data.ConcreteHasBoundary(itemIndex) Then key = "F:" & CStr(colorValue)
         End If
         If Not shapeObject Is Nothing Then
             shapeIndex = shapeIndex + 1
@@ -574,7 +582,17 @@ Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
             lineColor = colorValue: weight = 0.15
         End If
         FormatElementShapes groups.Item(groupKey), colorValue, lineColor, weight
+        If Left$(CStr(groupKey), 1) = "F" Then HideElementShapeLines groups.Item(groupKey) ' Двойные нулевые перемычки составной фигуры не должны рисовать цветные швы через отверстия.
     Next groupKey
+End Sub
+
+' Убирает только обводку заполненных составных областей: отверстия задаются
+' противоположным обходом, а двойные мосты соединяют loops без дополнительной площади.
+Private Sub HideElementShapeLines(ByVal indexes As Collection)
+    Dim values() As Variant, i As Long
+    ReDim values(1 To indexes.Count)
+    For i = 1 To indexes.Count: values(i) = CLng(indexes(i)): Next i
+    mChart.Shapes.Range(values).Line.Visible = False
 End Sub
 
 ' Применяет прежние заливку и обводку ко всем фигурам одного оформления.
@@ -594,6 +612,18 @@ End Sub
 ' с сохранённой средней ориентацией сетки.
 Private Function AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
         ByVal fallbackSquareRotation As Double, ByVal colorValue As Long) As Object
+    If data.ConcreteHasBoundary(index) Then
+        Dim geometry As CConcreteRegion, query As CSectionGeometryQuery
+        Dim cx As Double, cy As Double, rectangleWidth As Double, rectangleHeight As Double, rectangleRotation As Double
+        Set geometry = data.ConcreteGeometry(index): Set query = New CSectionGeometryQuery
+        If query.TryRectangle(geometry, cx, cy, rectangleWidth, rectangleHeight, rectangleRotation) Then
+            Set AddConcreteElementShape = DrawModelRectangleCentered(cx, cy, rectangleWidth * CONCRETE_SHAPE_FILL_RATIO, _
+                rectangleHeight * CONCRETE_SHAPE_FILL_RATIO, rectangleRotation, colorValue, colorValue, 0.15, "ElementConcrete", True)
+        Else
+            Set AddConcreteElementShape = DrawConcreteRegionShape(geometry, data.X(index), data.Y(index))
+        End If
+        Exit Function
+    End If
     Dim widthValue As Double
     Dim heightValue As Double
     widthValue = ConcreteElementWidth(data, index) * CONCRETE_SHAPE_FILL_RATIO
@@ -604,6 +634,71 @@ Private Function AddConcreteElementShape(ByVal data As CSectionPlotDataReader, B
     rotationValue = ConcreteElementVisualRotation(data, index, fallbackSquareRotation)
     Set AddConcreteElementShape = DrawModelRectangleCentered(data.X(index), data.Y(index), widthValue, heightValue, _
         rotationValue, colorValue, colorValue, 0.15, "ElementConcrete", True)
+End Function
+
+' Выводит всю область одним заполненным Shape с визуальным коэффициентом 0,7.
+' Противоположные обходы отверстий соединены двойными мостами нулевой площади;
+' расчетные границы, центры и свойства при этом не изменяются.
+Private Function DrawConcreteRegionShape(ByVal region As CConcreteRegion, ByVal centerX As Double, ByVal centerY As Double) As Object
+    If region Is Nothing Then Err.Raise vbObjectError + 4813, "CSectionPlotter", "Не передана граница бетонного элемента."
+    Dim edges() As TRegionEdge, count As Long, i As Long, previousLoop As Long
+    region.CopyEdges edges, count
+    If count = 0 Then Err.Raise vbObjectError + 4813, "CSectionPlotter", "Бетонный элемент имеет пустую границу."
+    Dim anchorX As Double, anchorY As Double, builder As Object
+    anchorX = edges(1).X1: anchorY = edges(1).Y1
+    Set builder = mChart.Shapes.BuildFreeform(MSO_EDITING_CORNER, _
+        RegionChartX(anchorX, centerX), RegionChartY(anchorY, centerY))
+    For i = 1 To count
+        If edges(i).LoopID <> previousLoop Then
+            If previousLoop > 0 Then
+                builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_CORNER, RegionChartX(anchorX, centerX), RegionChartY(anchorY, centerY)
+                builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_CORNER, RegionChartX(edges(i).X1, centerX), RegionChartY(edges(i).Y1, centerY)
+            End If
+            previousLoop = edges(i).LoopID
+        End If
+        AppendRegionShapeEdge builder, edges(i), centerX, centerY
+    Next i
+    If region.LoopCount > 1 Then builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_CORNER, RegionChartX(anchorX, centerX), RegionChartY(anchorY, centerY)
+    Dim shape As Object: Set shape = builder.ConvertToShape
+    shape.Name = SHAPE_PREFIX & "ElementConcrete" & CStr(mChart.Shapes.Count)
+    Set DrawConcreteRegionShape = shape
+End Function
+
+' Передает прямую либо кубические участки аналитической дуги в Freeform.
+' Каждый участок не длиннее четверти окружности; аппроксимация касается только рисунка.
+Private Sub AppendRegionShapeEdge(ByVal builder As Object, ByRef edge As TRegionEdge, _
+        ByVal centerX As Double, ByVal centerY As Double)
+    If Abs(edge.Sweep) <= 0.000000000001 Then
+        builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_CORNER, RegionChartX(edge.X2, centerX), RegionChartY(edge.Y2, centerY)
+        Exit Sub
+    End If
+    Dim pieces As Long, i As Long, radius As Double, startAngle As Double, angle As Double, following As Double
+    Dim sweep As Double, tangent As Double, x As Double, y As Double, nextX As Double, nextY As Double
+    pieces = CLng(-Int(-Abs(edge.Sweep) / (GEOM_PI / 2#)))
+    If pieces < 1 Then pieces = 1
+    radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
+    startAngle = Atn2Local(edge.Y1 - edge.CenterY, edge.X1 - edge.CenterX)
+    sweep = edge.Sweep / CDbl(pieces): tangent = 4# / 3# * Tan(sweep / 4#)
+    For i = 0 To pieces - 1
+        angle = startAngle + CDbl(i) * sweep: following = angle + sweep
+        x = edge.CenterX + radius * Cos(angle): y = edge.CenterY + radius * Sin(angle)
+        nextX = edge.CenterX + radius * Cos(following): nextY = edge.CenterY + radius * Sin(following)
+        If i = pieces - 1 Then nextX = edge.X2: nextY = edge.Y2
+        builder.AddNodes MSO_SEGMENT_CURVE, MSO_EDITING_CORNER, _
+            RegionChartX(x - radius * tangent * Sin(angle), centerX), RegionChartY(y + radius * tangent * Cos(angle), centerY), _
+            RegionChartX(nextX + radius * tangent * Sin(following), centerX), RegionChartY(nextY - radius * tangent * Cos(following), centerY), _
+            RegionChartX(nextX, centerX), RegionChartY(nextY, centerY)
+    Next i
+End Sub
+
+' Масштабирует только рисунок относительно центра элемента, затем переводит X в Chart.
+Private Function RegionChartX(ByVal x As Double, ByVal centerX As Double) As Double
+    RegionChartX = ModelToChartX(centerX + (x - centerX) * CONCRETE_SHAPE_FILL_RATIO)
+End Function
+
+' Масштабирует только рисунок относительно центра элемента, затем переводит Y в Chart.
+Private Function RegionChartY(ByVal y As Double, ByVal centerY As Double) As Double
+    RegionChartY = ModelToChartY(centerY + (y - centerY) * CONCRETE_SHAPE_FILL_RATIO)
 End Function
 
 ' Рисует арматурный стержень по диаметру из Results; если диаметр не сохранен,
@@ -2097,4 +2192,19 @@ End Function
 ' Утилитарный минимум без WorksheetFunction в коде схемы.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Рисует рабочую аналитическую область в фиксированной рамке 200 на 200 пунктов.
+' Переданный Chart принадлежит тесту; Config, Results и расчет не затрагиваются.
+Public Function TestDrawConcreteRegionShape(ByVal chart As Object, ByVal region As CConcreteRegion, _
+        ByVal centerX As Double, ByVal centerY As Double) As Object
+    Set mChart = chart
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    query.ProjectionBounds region, 1#, 0#, mMinX, mMaxX
+    query.ProjectionBounds region, 0#, 1#, mMinY, mMaxY
+    mPlotLeft = 0#: mPlotTop = 0#: mPlotWidth = 200#: mPlotHeight = 200#: mPlotMetricsCaptured = True
+    Dim shape As Object: Set shape = DrawConcreteRegionShape(region, centerX, centerY)
+    shape.Fill.ForeColor.RGB = RGB(210, 20, 40): shape.Line.Visible = False
+    Set TestDrawConcreteRegionShape = shape
 End Function

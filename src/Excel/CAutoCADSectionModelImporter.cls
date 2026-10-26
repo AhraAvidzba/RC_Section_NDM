@@ -193,10 +193,12 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
         If Len(contourLayer) > 0 And SameLayer(entityLayer, contourLayer) Then outerEntities.Add entity
         If Len(openingLayer) > 0 And SameLayer(entityLayer, openingLayer) Then openingEntities.Add entity
     Next entity
+    Dim exactCellGeometry As Boolean
+    If Not meshSettings Is Nothing Then exactCellGeometry = (ReadMeshCellGeometry(meshSettings) = "Contour")
     For i = 1 To materialEntities.Count
         Set entity = materialEntities(i): entityLayer = CStr(materialLayers(i))
         If SameLayer(entityLayer, concreteLayer) Then
-            AddConcreteRegionEntity model, entity, minArea, units, entityLayer
+            AddConcreteRegionEntity model, entity, minArea, units, entityLayer, exactCellGeometry
         Else
             AddRebarRegionEntity model, entity, steelClass, minArea, units, entityLayer
         End If
@@ -469,14 +471,18 @@ Private Function FindMatchingBoundaryLoop(ByVal domain As CConcreteRegion, ByVal
     Next loopID
 End Function
 
-' Читает один бетонный Region из AutoCAD: площадь, центр тяжести, реальные
-' центральные инерции и, только для почти изотропного случая, подсказку угла
-' по первой прямой грани. Width/Height здесь не восстанавливаются.
+' Читает реальные A/C/I одного бетонного Region. Контурный адаптер дополнительно
+' требует точную аналитическую границу, без эквивалентной подмены; прежний
+' адаптер сохраняет прежнюю оболочку и способ определения ориентации.
 Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, _
-        ByVal units As CUnitSystem, ByVal sourceLayer As String)
+        ByVal units As CUnitSystem, ByVal sourceLayer As String, Optional ByVal exactGeometry As Boolean = False)
     Dim area As Double
     area = InputArea(CDbl(entity.Area), units)
     If area < minArea Then Exit Sub
+    If exactGeometry Then
+        AddConcreteContourEntity model, entity, area, sourceLayer
+        Exit Sub
+    End If
 
     Dim centroid As Variant
     centroid = entity.Centroid
@@ -491,14 +497,43 @@ Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity A
     Dim localIxy As Double
     ReadCentralRegionInertia entity, area, xCoord, yCoord, units, localIx, localIy, localIxy
 
-    Dim rotationHint As Double
-    Dim rotationKnown As Boolean
+    Dim rotationHint As Double, rotationKnown As Boolean
     If model.LocalInertiaIsNearlySquare(localIx, localIy, localIxy, LOCAL_INERTIA_SQUARE_REL_TOLERANCE) Then
         rotationKnown = TryReadFirstStraightEdgeRotation(entity, units, rotationHint)
     End If
-
     AddConcreteRegion model, area, xCoord, yCoord, localIx, localIy, localIxy, _
         0#, 0#, rotationHint, sourceLayer, EntityHandle(entity), rotationKnown
+End Sub
+
+' Подготавливает точную ячейку из аналитической границы, включая тонкие сегменты.
+' A/c/I интегрируются общим запросом около собственного центра; прежние размерные
+' пороги эквивалентной оболочки и вычитание больших WCS-инерций здесь не применяются.
+Private Sub AddConcreteContourEntity(ByVal model As CSectionModel, ByVal entity As Object, _
+        ByVal cadArea As Double, ByVal sourceLayer As String)
+    On Error GoTo Failed
+    Dim reader As CAutoCADContourReader: Set reader = New CAutoCADContourReader
+    Dim geometry As CConcreteRegion: Set geometry = reader.ReadRegion(entity)
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim properties As TGeometryProperties: query.RegionProperties geometry, properties
+    If Abs(properties.Area - cadArea) > GEOM_TOLERANCE + 0.0000001 * properties.Area Then _
+        Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", "Слой '" & sourceLayer & "', объект " & EntityHandle(entity) & _
+            ": площадь AutoCAD Region не согласована с его фактической аналитической границей. Проверьте исходный объект."
+    Dim components As Collection, component As CConcreteRegion
+    Set components = query.ConnectedRegions(geometry) ' Каждый связный участок является отдельной универсальной ячейкой, как при контурном построении сетки.
+    For Each component In components
+        query.RegionProperties component, properties
+        model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, 1, sourceLayer, EntityHandle(entity), _
+            "Contour", 0#, 0#, 0#, "AutoCAD Region: сохранена связная фактическая граница из прямых и круговых дуг; площадь, центр и инерции вычислены по ней.", _
+            properties.Ixc, properties.Iyc, properties.Ixyc, True
+        model.SetConcreteGeometry model.ConcreteCount, component ' Имена Cn назначает модель; один исходный CAD handle может дать несколько отдельных бетонных частей.
+    Next component
+    Exit Sub
+Failed:
+    Dim number As Long, description As String, source As String, context As String
+    number = Err.Number: description = Err.Description: source = Err.Source
+    context = "Слой '" & sourceLayer & "', объект " & EntityHandle(entity) & ": "
+    If InStr(1, description, context, vbBinaryCompare) <> 1 Then description = context & description
+    Err.Raise number, source, description
 End Sub
 
 ' Читает один арматурный Region. Для арматуры программа хранит площадь и

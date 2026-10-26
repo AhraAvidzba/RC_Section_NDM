@@ -1,0 +1,12 @@
+﻿{
+    "Status":  "PASS_DIRECTED_CONTOUR_WORKFLOW",
+    "Passed":  true,
+    "CompletedCases":  5,
+    "ExpectedCases":  5,
+    "SourceUnchanged":  true,
+    "SourceSHA256":  "4B6121298B6197BC42A7DC3EF76FB9B062C6F48970D5D50CA9423BD7FC2F7ACB",
+    "PrivateTemplateUnchanged":  true,
+    "AllOwnedProcessesClosed":  true,
+    "FullRegressionPass":  false,
+    "Failure":  null
+}

@@ -51,6 +51,7 @@ Private mShapeType() As String ' Статус интерпретации обо�
 Private mWidth() As Double ' Ширина бетонного элемента в мм, если она сохранена в Results.
 Private mHeight() As Double ' Высота бетонного элемента в мм, если она сохранена в Results.
 Private mRotation() As Double ' Угол прямоугольного бетонного элемента, рад; для эквивалентного квадрата может быть принят средний угол сетки.
+Private mElementGeometry() As CConcreteRegion ' Явные аналитические границы Contour; прямоугольные оболочки восстанавливаются по компактным полям только при запросе.
 Private mResultValue() As Double ' Значение Stress или Strain для выбранного LC.
 Private mPhysicalState() As String ' Физическое состояние: сжатие, растяжение, неработающий растянутый бетон или почти нулевое напряжение.
 Private mMinX As Double ' Левая граница бетонной расчётной модели в мм.
@@ -521,6 +522,7 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
     Dim geom As Variant
     geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    Dim boundaries As Object: Set boundaries = ReadSavedConcreteBoundaries(workbook, geom)
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
         "На листе Results нет расчетной геометрии."
 
@@ -582,6 +584,7 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
                 OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colDiameter, StrComp(CStr(geom(rowIndex, colType)), "Concrete", vbTextCompare) = 0), lengthUnit), CStr(geom(rowIndex, colShape)), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colWidth, True), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colHeight, True), lengthUnit), _
                 ReadGeometryNumber(geom, anchor, rowIndex, colRotation, True), resultMap(elementID)
+            If boundaries.Exists(elementID) Then Set mElementGeometry(mCount) = boundaries.Item(elementID)
         End If
     Next rowIndex
 End Sub
@@ -594,6 +597,7 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
     Dim geom As Variant
     geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    Dim boundaries As Object: Set boundaries = ReadSavedConcreteBoundaries(workbook, geom)
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
         "На листе Results нет расчетной геометрии."
     If UBound(geom, 2) < 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
@@ -626,6 +630,7 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
                 OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colDiameter, StrComp(CStr(geom(rowIndex, colType)), "Concrete", vbTextCompare) = 0), lengthUnit), CStr(geom(rowIndex, colShape)), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colWidth, True), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colHeight, True), lengthUnit), _
                 ReadGeometryNumber(geom, anchor, rowIndex, colRotation, True), neutralResult
+            If boundaries.Exists(elementID) Then Set mElementGeometry(mCount) = boundaries.Item(elementID)
         End If
     Next rowIndex
 End Sub
@@ -713,6 +718,7 @@ Private Sub EnsureElementCapacity(ByVal required As Long)
     ReDim Preserve mWidth(1 To capacity)
     ReDim Preserve mHeight(1 To capacity)
     ReDim Preserve mRotation(1 To capacity)
+    ReDim Preserve mElementGeometry(1 To capacity)
     ReDim Preserve mResultValue(1 To capacity)
     ReDim Preserve mPhysicalState(1 To capacity)
     mElementCapacity = capacity
@@ -922,6 +928,7 @@ Private Sub ResetReaderState()
     Erase mWidth
     Erase mHeight
     Erase mRotation
+    Erase mElementGeometry
     Erase mResultValue
     Erase mPhysicalState
     Erase mAnnotationType
@@ -1186,6 +1193,30 @@ Public Property Get Height(ByVal index As Long) As Double: Height = mHeight(inde
 ' Возвращает угол прямоугольного элемента, рад; для эквивалентного квадрата
 ' может быть сохранён средний угол сетки.
 Public Property Get Rotation(ByVal index As Long) As Double: Rotation = mRotation(index): End Property
+
+' Возвращает одну универсальную бетонную область во внутренних мм.
+' Сохраненный Contour не заменяется прямоугольником; старые снимки получают
+' прежнюю визуальную оболочку с переданной общей ориентацией эквивалентных квадратов.
+Public Function ConcreteGeometry(ByVal index As Long, Optional ByVal fallbackRotation As Double = 0#) As CConcreteRegion
+    If Not mElementGeometry(index) Is Nothing Then
+        Set ConcreteGeometry = mElementGeometry(index)
+        Exit Function
+    End If
+    Dim width As Double, height As Double, rotation As Double, status As String
+    width = mWidth(index): height = mHeight(index): rotation = mRotation(index)
+    If width <= 0# Then width = Sqr(mArea(index))
+    If height <= 0# Then height = Sqr(mArea(index))
+    status = Replace$(Trim$(mShapeType(index)), " ", vbNullString)
+    If StrComp(status, "EquivalentSquare", vbTextCompare) = 0 Then rotation = fallbackRotation
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Set ConcreteGeometry = query.RectangleRegion(mX(index), mY(index), width, height, rotation)
+End Function
+
+' Показывает наличие явной области, чтобы большая схема не заменяла ее
+' квадратным маркером. Это свойство представления, а не режим формирования сетки.
+Public Property Get ConcreteHasBoundary(ByVal index As Long) As Boolean
+    ConcreteHasBoundary = Not mElementGeometry(index) Is Nothing
+End Property
 ' Значение Stress или Strain для выбранного LC.
 Public Property Get ResultValue(ByVal index As Long) As Double: ResultValue = mResultValue(index): End Property
 ' Сохранённое текстовое описание физической пригодности выбранного состояния НДС.

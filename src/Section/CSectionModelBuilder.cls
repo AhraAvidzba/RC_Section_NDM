@@ -55,11 +55,17 @@ Public Sub AppendConcreteMesh(ByVal model As CSectionModel, ByVal mesh As CFiber
     model.ReserveElements mesh.FiberCount, model.RebarCount
     Dim i As Long
     For i = 1 To mesh.FiberCount
+        Dim localIx As Double, localIy As Double, localIxy As Double, region As CConcreteRegion
+        mesh.FiberLocalInertia i, localIx, localIy, localIxy
+        Set region = mesh.FiberGeometry(i)
+        Dim shapeType As String
+        shapeType = "Rectangle"
+        If Not region Is Nothing Then shapeType = "Contour"
         model.AddConcreteElement mesh.FiberX(i), mesh.FiberY(i), _
             mesh.FiberArea(i) * mesh.FiberFillFactor(i), mesh.FiberMaterialID(i), _
-            "Бетонный КЭ " & CStr(i), vbNullString, "Rectangle", _
+            "Бетонный КЭ " & CStr(i), vbNullString, shapeType, _
             mesh.FiberWidth(i), mesh.FiberHeight(i), 0#, comment, _
-            mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberHeight(i) * mesh.FiberHeight(i) / 12#, _
-            mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberWidth(i) * mesh.FiberWidth(i) / 12#, 0#
+            localIx, localIy, localIxy
+        If Not region Is Nothing Then model.SetConcreteGeometry model.ConcreteCount, region
     Next i
 End Sub

@@ -657,20 +657,16 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         Dim concreteWidth As Double
         Dim concreteHeight As Double
         Dim concreteRotation As Double
-        concreteWidth = ConcreteDrawWidth(section, i)
-        concreteHeight = ConcreteDrawHeight(section, i)
-        concreteRotation = ConcreteDrawRotation(section, i)
+        Dim labelX As Double
+        Dim labelY As Double
+        ReadConcretePresentation section, i, concreteWidth, concreteHeight, concreteRotation, labelX, labelY
         resultValue = LookupResultValue(resultByID, section.ConcreteID(i))
         physicalState = ResultPhysicalState(physicalStateByID, section.ConcreteID(i))
         textHeight = 0.22 * MinDouble(concreteWidth, concreteHeight)
         If textHeight <= 0# Then textHeight = 1#
-        AddAcadRectangleRegion ms, section.ConcreteX(i), section.ConcreteY(i), concreteWidth, concreteHeight, concreteRotation, _
-            exportSettings.ConcreteLayer, ResultColorByPhysicalState("Concrete", physicalState, exportSettings), temporarySources
+        AddAcadConcreteElement ms, section, i, exportSettings.ConcreteLayer, _
+            ResultColorByPhysicalState("Concrete", physicalState, exportSettings), temporarySources
 
-        Dim labelX As Double
-        Dim labelY As Double
-        ConcreteLabelPoint section.ConcreteX(i), section.ConcreteY(i), concreteWidth, concreteHeight, concreteRotation, _
-            labelX, labelY
         AddAcadText ms, ResultLabelText(section.ConcreteID(i), resultValue, exportSettings.IncludeElementNames, resultPrecision), _
             labelX, labelY, textHeight, _
             ResultAnnotationLayerByPhysicalState("Concrete", physicalState, exportSettings), _
@@ -1545,6 +1541,30 @@ Private Function ConcreteDrawRotation(ByVal section As CSectionModel, ByVal inde
     ConcreteDrawRotation = section.ConcreteRotation(index)
 End Function
 
+' Готовит размеры шрифта и подпись по той же сущности, которая выводится в DWG.
+' Точные произвольные элементы используют реальные проекции и центр тяжести;
+' эквивалентная оболочка остается только у записей прежнего адаптера.
+Private Sub ReadConcretePresentation(ByVal section As CSectionModel, ByVal index As Long, _
+        ByRef width As Double, ByRef height As Double, ByRef rotation As Double, _
+        ByRef labelX As Double, ByRef labelY As Double)
+    If section.ConcreteHasBoundary(index) Then
+        Dim geometry As CConcreteRegion, query As CSectionGeometryQuery, centerX As Double, centerY As Double
+        Set geometry = section.ConcreteGeometry(index): Set query = New CSectionGeometryQuery
+        If Not query.TryRectangle(geometry, centerX, centerY, width, height, rotation) Then
+            Dim minX As Double, maxX As Double, minY As Double, maxY As Double
+            query.ProjectionBounds geometry, 1#, 0#, minX, maxX
+            query.ProjectionBounds geometry, 0#, 1#, minY, maxY
+            width = maxX - minX: height = maxY - minY: rotation = 0#
+            labelX = section.ConcreteX(index): labelY = section.ConcreteY(index)
+            Exit Sub
+        End If
+    Else
+        width = ConcreteDrawWidth(section, index): height = ConcreteDrawHeight(section, index)
+        rotation = ConcreteDrawRotation(section, index)
+    End If
+    ConcreteLabelPoint section.ConcreteX(index), section.ConcreteY(index), width, height, rotation, labelX, labelY
+End Sub
+
 ' Возвращает координаты подписи бетонного элемента в WCS, мм.
 ' Смещение сначала задаётся относительно локального угла элемента,
 ' затем поворачивается вместе с ним; глобальный габарит не подменяет локальные оси.
@@ -1567,6 +1587,20 @@ End Sub
 Private Sub ExpandSectionBoundsByConcreteElement(ByVal section As CSectionModel, ByVal index As Long, _
         ByRef minX As Double, ByRef maxX As Double, ByRef minY As Double, ByRef maxY As Double, _
         ByRef hasBounds As Boolean)
+    If section.ConcreteHasBoundary(index) Then
+        Dim region As CConcreteRegion, query As CSectionGeometryQuery
+        Dim firstX As Double, lastX As Double, firstY As Double, lastY As Double
+        Set region = section.ConcreteGeometry(index): Set query = New CSectionGeometryQuery
+        query.ProjectionBounds region, 1#, 0#, firstX, lastX
+        query.ProjectionBounds region, 0#, 1#, firstY, lastY
+        If Not hasBounds Then
+            minX = firstX: maxX = lastX: minY = firstY: maxY = lastY: hasBounds = True
+        Else
+            minX = MinDouble(minX, firstX): maxX = MaxDouble(maxX, lastX)
+            minY = MinDouble(minY, firstY): maxY = MaxDouble(maxY, lastY)
+        End If
+        Exit Sub
+    End If
     Dim width As Double
     Dim height As Double
     Dim rotationRad As Double
@@ -1765,6 +1799,123 @@ Private Sub AppendNeutralIntersection(ByRef pointX() As Double, ByRef pointY() A
     pointX(pointCount) = x
     pointY(pointCount) = y
 End Sub
+
+' Выгружает одну универсальную бетонную ячейку по ее фактическим границам.
+' Прямоугольная специализация сохраняет прежний быстрый WCS-путь; криволинейная
+' область сохраняет дуги, отверстия и все несвязные части без изменения площади.
+Private Sub AddAcadConcreteElement(ByVal ms As Object, ByVal section As CSectionModel, ByVal index As Long, _
+        ByVal layerName As String, ByVal colorIndex As Long, ByVal temporarySources As Collection)
+    If Not section.ConcreteHasBoundary(index) Then
+        AddAcadRectangleRegion ms, section.ConcreteX(index), section.ConcreteY(index), ConcreteDrawWidth(section, index), _
+            ConcreteDrawHeight(section, index), ConcreteDrawRotation(section, index), layerName, colorIndex, temporarySources
+        Exit Sub
+    End If
+    Dim region As CConcreteRegion, query As CSectionGeometryQuery
+    Dim x As Double, y As Double, width As Double, height As Double, rotation As Double, ignored As Long
+    Set region = section.ConcreteGeometry(index): Set query = New CSectionGeometryQuery
+    If query.TryRectangle(region, x, y, width, height, rotation) Then
+        AddAcadRectangleRegion ms, x, y, width, height, rotation, layerName, colorIndex, temporarySources
+    Else
+        ignored = AddAcadConcreteGeometry(ms, region, layerName, colorIndex, temporarySources)
+    End If
+End Sub
+
+' Создает Region для каждого outer и вычитает только его ближайшие openings.
+' Работает исключительно с новыми объектами; при отказе удаляет собственные
+' результаты этого элемента, а временные полилинии убирает общий владелец экспорта.
+Private Function AddAcadConcreteGeometry(ByVal ms As Object, ByVal geometry As CConcreteRegion, _
+        ByVal layerName As String, ByVal colorIndex As Long, ByVal temporarySources As Collection) As Long
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim edges() As TRegionEdge, count As Long, loopID As Long, other As Long, i As Long
+    geometry.CopyEdges edges, count
+    Dim loops As Object, parents As Object, regions As Object
+    Set loops = CreateObject("Scripting.Dictionary"): Set parents = CreateObject("Scripting.Dictionary")
+    Set regions = CreateObject("Scripting.Dictionary")
+    Dim one() As TRegionEdge, selectedCount As Long, loopRegion As CConcreteRegion, outer As CConcreteRegion
+    For loopID = 1 To geometry.LoopCount
+        selectedCount = 0: Erase one
+        For i = 1 To count
+            If edges(i).LoopID = loopID Then
+                selectedCount = selectedCount + 1: ReDim Preserve one(1 To selectedCount)
+                LSet one(selectedCount) = edges(i): one(selectedCount).LoopID = 0
+            End If
+        Next i
+        Set loopRegion = query.BoundaryRegion(one, selectedCount, "ConcreteElementLoop")
+        loops.Add CStr(loopID), loopRegion
+    Next loopID
+    Dim best As Long, bestArea As Double, x1 As Double, y1 As Double, x2 As Double, y2 As Double
+    Dim cx As Double, cy As Double, sweep As Double, ignoredLoop As Long
+    For loopID = 1 To geometry.LoopCount
+        If geometry.LoopIsOpening(loopID) Then
+            Set loopRegion = loops.Item(CStr(loopID))
+            loopRegion.GetSegment 1, x1, y1, x2, y2, cx, cy, sweep, ignoredLoop
+            best = 0: bestArea = 1E+100
+            For other = 1 To geometry.LoopCount
+                If Not geometry.LoopIsOpening(other) Then
+                    Set outer = loops.Item(CStr(other))
+                    If outer.Area < bestArea Then
+                        If query.ContainsPoint(outer, x1, y1, False) Then best = other: bestArea = outer.Area
+                    End If
+                End If
+            Next other
+            If best = 0 Then Err.Raise vbObjectError + 4371, "AddAcadConcreteGeometry", "У отверстия бетонного элемента не найдена наружная область."
+            parents.Add CStr(loopID), CStr(best)
+        End If
+    Next loopID
+    Dim entity As Object, parent As Object, created As Collection, actualArea As Double, number As Long, description As String
+    Set created = New Collection
+    On Error GoTo Failed
+    For loopID = 1 To geometry.LoopCount
+        Set loopRegion = loops.Item(CStr(loopID))
+        Set entity = AddAcadConcreteLoop(ms, loopRegion, layerName, colorIndex, temporarySources)
+        created.Add entity: regions.Add CStr(loopID), entity
+    Next loopID
+    Dim key As Variant
+    For Each key In parents.Keys
+        Set parent = regions.Item(parents.Item(key)): Set entity = regions.Item(key)
+        parent.Boolean 2, entity ' AutoCAD вычитает только созданную этим элементом область отверстия.
+    Next key
+    For loopID = 1 To geometry.LoopCount
+        If Not geometry.LoopIsOpening(loopID) Then
+            Set entity = regions.Item(CStr(loopID))
+            actualArea = actualArea + CDbl(entity.Area)
+            entity.Layer = layerName: entity.Color = colorIndex
+            AddAcadConcreteGeometry = AddAcadConcreteGeometry + 1
+        End If
+    Next loopID
+    If Abs(actualArea - geometry.Area) > MaxDouble(0.0001, geometry.Area * 0.0000001) Then _
+        Err.Raise vbObjectError + 4371, "AddAcadConcreteGeometry", "Площадь выгруженного бетонного элемента не совпадает с сохраненным фактическим контуром."
+    Exit Function
+Failed:
+    number = Err.Number: description = Err.Description
+    Resume FailureCleanup ' Выходит из активного обработчика до COM-очистки уже поглощённых Boolean объектов.
+FailureCleanup:
+    On Error Resume Next
+    For Each entity In created: entity.Delete: Next entity
+    On Error GoTo 0
+    Err.Raise number, "AddAcadConcreteGeometry", description
+End Function
+
+' Передает один проверенный loop как WCS LWPOLYLINE с точными bulge дуг.
+' Список источников принадлежит общей операции: в нем нет исходных объектов DWG.
+Private Function AddAcadConcreteLoop(ByVal ms As Object, ByVal region As CConcreteRegion, _
+        ByVal layerName As String, ByVal colorIndex As Long, ByVal temporarySources As Collection) As Object
+    Dim edges() As TRegionEdge, count As Long, i As Long, points() As Double, source As Object
+    region.CopyEdges edges, count
+    ReDim points(0 To count * 2 - 1)
+    For i = 1 To count
+        points((i - 1) * 2) = edges(i).X1: points((i - 1) * 2 + 1) = edges(i).Y1
+    Next i
+    Set source = AddAcadLightWeightPolyline(ms, points, layerName, colorIndex)
+    temporarySources.Add source
+    Dim normal(0 To 2) As Double: normal(2) = 1#
+    source.Normal = normal: source.Elevation = 0# ' WCS XY не зависит от текущей высоты плоских объектов в чертеже.
+    For i = 1 To count
+        If Abs(edges(i).Sweep) > 0.000000000001 Then source.SetBulge i - 1, Tan(edges(i).Sweep / 4#)
+    Next i
+    source.Closed = True
+    Set AddAcadConcreteLoop = AddAcadRegionFromCurve(ms, source, layerName, colorIndex)
+End Function
 
 ' Строит прямоугольный Region по вершинам в мировых координатах.
 ' Вершины задаются в WCS независимо от UCS/OCS активного чертежа;
@@ -1995,6 +2146,25 @@ End Function
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Вызывает рабочий вывод аналитической ячейки на переданном ModelSpace.
+' Не ищет DWG и не запускает расчет; убирает только созданные временные кривые.
+Public Function TestExportConcreteElementGeometry(ByVal ms As Object, ByVal geometry As CConcreteRegion) As Long
+    Dim sources As Collection: Set sources = New Collection
+    Dim source As Object, number As Long, description As String
+    On Error GoTo Failed
+    TestExportConcreteElementGeometry = AddAcadConcreteGeometry(ms, geometry, "TEST_CONCRETE", 8, sources)
+Cleanup:
+    On Error Resume Next
+    For Each source In sources: source.Delete: Next source
+    On Error GoTo 0
+    If number <> 0 Then Err.Raise number, "TestExportConcreteElementGeometry", description
+    Exit Function
+Failed:
+    number = Err.Number: description = Err.Description
+    Resume Cleanup
+End Function
 
 ' ============================== ДЛЯ ТЕСТОВ ==============================
 

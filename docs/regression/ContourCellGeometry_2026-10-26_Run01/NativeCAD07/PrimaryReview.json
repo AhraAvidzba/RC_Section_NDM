@@ -1,0 +1,991 @@
+{
+  "Status": "PASS_DIRECTED_NATIVE_CAD07_PRIMARY_REVIEW",
+  "ReviewedUTC": "2026-10-26T16:39:37.050800+00:00",
+  "PrimaryReadEntirely": true,
+  "PrimaryBytesRead": 16887,
+  "PrimaryLinesRead": 191,
+  "PrimarySHA256": "15FF294F89C505E5EAD04B7508322690DC63BE4F9C5A81AAFAFFC1A5E4DC8B3E",
+  "AssertionsPassed": 127,
+  "AssertionsFailed": 0,
+  "Failures": [],
+  "RequiredCheckGroupsMissing": [],
+  "TerminalCountsMatch": true,
+  "SourceWorkbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ContourCellGeometry_2026-10-26_Run01\\ReleaseCandidate06\\RC_Section_NDM.xlsm",
+  "SourceWorkbookSHA256": "BABC73AC9F190190FAC1E00D466BCFF6249B94E623325EB5DA6AA6894A845E96",
+  "SourceWorkbookHashRechecked": true,
+  "SourceHelperSHA256": "CD80101930619A38F5FEE52BFB091B54E64A95974E29CC05C479AB64D6AC5039",
+  "SourceHelperHashRechecked": true,
+  "PrivateProbeSHA256": "0F2ACDC243AD39FDFD7DCD3F1D29668B0F8E90F006C7C0FD83EF09331AFF6041",
+  "PrivateProbeHashRechecked": true,
+  "SourceJSONFilesRead": [
+    "Acceptance.json",
+    "Input.json",
+    "Memory_BeforeAutoCAD.json",
+    "Memory_BeforeExcel.json",
+    "NativeRun.json",
+    "Ownership.json",
+    "ProcessClosure.json"
+  ],
+  "WatchdogJSONFilesRead": [
+    "Completion.json",
+    "Launch.json",
+    "WatchdogLast.json",
+    "WorkerIdentity.json"
+  ],
+  "SourceJSONChecksConsistent": true,
+  "MacroInvocationSeconds": 2.2962181999999998,
+  "WorkerElapsedSeconds": 77.73182469999999,
+  "Models": [
+    {
+      "ElementID": "C1",
+      "SnapshotProperties": {
+        "A": 18655.5953702463,
+        "X": -5.29464290218328,
+        "Y": 3.90014763387707e-15,
+        "Ix": 31330573.3265903,
+        "Iy": 24881113.5428697,
+        "Ixy": 3.49245965480804e-10,
+        "loops": 1.0,
+        "segments": 5.0
+      },
+      "CADProperties": {
+        "A": 18655.5953702463,
+        "X": -5.29464290218331,
+        "Y": 7.76647206301694e-16,
+        "Ix": 31330573.3265903,
+        "Iy": 24881113.5428696,
+        "Ixy": 3.61430283269648e-09,
+        "loops": 1.0,
+        "segments": 5.0
+      },
+      "Difference": {
+        "A": 0.0,
+        "X": -3.019806626980426e-14,
+        "Y": -3.1235004275753756e-15,
+        "Ix": 0.0,
+        "Iy": -9.685754776000977e-08,
+        "Ixy": 3.265056867215676e-09
+      },
+      "ActualIxyTolerance": 4.4523422569165036e-07,
+      "TrueRegionParityPassed": true,
+      "SnapshotEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 60.0,
+          "y1": 52.9150262212918,
+          "x2": 2.66453525910038e-15,
+          "y2": 80.0,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.848062078981481
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 4.89842541528951e-15,
+          "y1": 80.0,
+          "x2": -80.0,
+          "y2": -2.74420243473461e-13,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": -80.0,
+          "y1": 9.79685083057902e-15,
+          "x2": 2.69521818058172e-13,
+          "y2": -80.0,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 4.89842541528951e-15,
+          "y1": -80.0,
+          "x2": 60.0,
+          "y2": -52.9150262212918,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.848062078981481
+        },
+        {
+          "segment": 5.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 60.0,
+          "y1": -52.9150262212918,
+          "x2": 60.0,
+          "y2": 52.9150262212918,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        }
+      ],
+      "CADEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 60.0,
+          "y1": 52.9150262212918,
+          "x2": -9.31226751861259e-15,
+          "y2": 80.0,
+          "cx": -1.4210854715202e-14,
+          "cy": 0.0,
+          "sweep": 0.848062078981481
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 4.89858719658903e-15,
+          "y1": 80.0,
+          "x2": -80.0,
+          "y2": -4.41368032202284e-15,
+          "cx": -1.77635683940025e-13,
+          "cy": 1.63424829224823e-13,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": -80.0,
+          "y1": -1.32311372758841e-13,
+          "x2": 1.27412785562251e-13,
+          "y2": -80.0,
+          "cx": -1.4210854715202e-13,
+          "cy": -1.4210854715202e-13,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": -2.18011889473692e-14,
+          "y1": -80.0,
+          "x2": 59.9999999999999,
+          "y2": -52.9150262212918,
+          "cx": -7.8159700933611e-14,
+          "cy": 7.105427357601e-14,
+          "sweep": 0.84806207898148
+        },
+        {
+          "segment": 5.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 60.0,
+          "y1": -52.9150262212918,
+          "x2": 60.0,
+          "y2": 52.9150262212918,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        }
+      ],
+      "Topology": {
+        "LoopCount": 1,
+        "Segments": 5,
+        "LineCount": 1,
+        "ArcCount": 4,
+        "OuterLoopCount": 1,
+        "OpeningLoopCount": 0
+      }
+    },
+    {
+      "ElementID": "C2",
+      "SnapshotProperties": {
+        "A": 12016.591899981,
+        "X": 250.0,
+        "Y": 3.34913100889411e-15,
+        "Ix": 13894184.384353,
+        "Iy": 13894184.384353,
+        "Ixy": -6.91215973347425e-10,
+        "loops": 2.0,
+        "segments": 8.0
+      },
+      "CADProperties": {
+        "A": 12016.591899981,
+        "X": 250.0,
+        "Y": 1.02933744002169e-14,
+        "Ix": 13894184.384353,
+        "Iy": 13894184.384353,
+        "Ixy": -1.39698386192322e-09,
+        "loops": 2.0,
+        "segments": 8.0
+      },
+      "Difference": {
+        "A": 0.0,
+        "X": 0.0,
+        "Y": 6.94424339132279e-15,
+        "Ix": 0.0,
+        "Iy": 0.0,
+        "Ixy": -7.05767888575795e-10
+      },
+      "ActualIxyTolerance": 1.9744823567918105e-07,
+      "TrueRegionParityPassed": true,
+      "SnapshotEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 315.0,
+          "y1": 0.0,
+          "x2": 250.0,
+          "y2": 65.0,
+          "cx": 250.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 250.0,
+          "y1": 65.0,
+          "x2": 185.0,
+          "y2": -2.2694641847211e-13,
+          "cx": 250.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 185.0,
+          "y1": 7.95994129984545e-15,
+          "x2": 250.0,
+          "y2": -65.0,
+          "cx": 250.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 250.0,
+          "y1": -65.0,
+          "x2": 315.0,
+          "y2": 2.2694641847211e-13,
+          "cx": 250.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 5.0,
+          "loop": 2.0,
+          "opening": true,
+          "x1": 250.0,
+          "y1": 20.0,
+          "x2": 270.0,
+          "y2": -6.98296672221876e-14,
+          "cx": 250.0,
+          "cy": 0.0,
+          "sweep": -1.5707963267949
+        },
+        {
+          "segment": 6.0,
+          "loop": 2.0,
+          "opening": true,
+          "x1": 270.0,
+          "y1": -4.89842541528951e-15,
+          "x2": 250.0,
+          "y2": -20.0,
+          "cx": 250.0,
+          "cy": 0.0,
+          "sweep": -1.5707963267949
+        },
+        {
+          "segment": 7.0,
+          "loop": 2.0,
+          "opening": true,
+          "x1": 250.0,
+          "y1": -20.0,
+          "x2": 230.0,
+          "y2": 6.98296672221876e-14,
+          "cx": 250.0,
+          "cy": 0.0,
+          "sweep": -1.5707963267949
+        },
+        {
+          "segment": 8.0,
+          "loop": 2.0,
+          "opening": true,
+          "x1": 230.0,
+          "y1": 2.44921270764475e-15,
+          "x2": 250.0,
+          "y2": 20.0,
+          "cx": 250.0,
+          "cy": 0.0,
+          "sweep": -1.5707963267949
+        }
+      ],
+      "CADEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": true,
+          "x1": 250.0,
+          "y1": 20.0,
+          "x2": 270.0,
+          "y2": -1.77635683940025e-15,
+          "cx": 250.0,
+          "cy": -1.77635683940025e-15,
+          "sweep": -1.5707963267949
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": true,
+          "x1": 270.0,
+          "y1": -6.67478225468976e-15,
+          "x2": 250.0,
+          "y2": -20.0,
+          "cx": 250.0,
+          "cy": -1.77635683940025e-15,
+          "sweep": -1.5707963267949
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": true,
+          "x1": 250.0,
+          "y1": -20.0,
+          "x2": 230.0,
+          "y2": 6.72855868244504e-16,
+          "cx": 250.0,
+          "cy": -1.77635683940025e-15,
+          "sweep": -1.5707963267949
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": true,
+          "x1": 230.0,
+          "y1": 6.72855868244504e-16,
+          "x2": 250.0,
+          "y2": 20.0,
+          "cx": 250.0,
+          "cy": -1.77635683940025e-15,
+          "sweep": -1.5707963267949
+        },
+        {
+          "segment": 5.0,
+          "loop": 2.0,
+          "opening": false,
+          "x1": 315.0,
+          "y1": 1.06581410364015e-13,
+          "x2": 250.0,
+          "y2": 65.0,
+          "cx": 250.0,
+          "cy": 1.06581410364015e-13,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 6.0,
+          "loop": 2.0,
+          "opening": false,
+          "x1": 250.0,
+          "y1": 65.0,
+          "x2": 185.0,
+          "y2": -2.97873786427973e-14,
+          "cx": 250.0,
+          "cy": 1.06581410364015e-13,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 7.0,
+          "loop": 2.0,
+          "opening": false,
+          "x1": 185.0,
+          "y1": -7.01994967391532e-14,
+          "x2": 250.0,
+          "y2": -65.0,
+          "cx": 250.0,
+          "cy": -7.8159700933611e-14,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 8.0,
+          "loop": 2.0,
+          "opening": false,
+          "x1": 250.0,
+          "y1": -65.0,
+          "x2": 315.0,
+          "y2": 4.5297099404706e-14,
+          "cx": 250.0,
+          "cy": -1.27897692436818e-13,
+          "sweep": 1.5707963267949
+        }
+      ],
+      "Topology": {
+        "LoopCount": 2,
+        "Segments": 8,
+        "LineCount": 0,
+        "ArcCount": 8,
+        "OuterLoopCount": 1,
+        "OpeningLoopCount": 1
+      }
+    },
+    {
+      "ElementID": "C3",
+      "SnapshotProperties": {
+        "A": 0.001,
+        "X": 500.0,
+        "Y": 0.0,
+        "Ix": 8.33333333333333e-13,
+        "Iy": 0.00833333333333333,
+        "Ixy": 0.0,
+        "loops": 1.0,
+        "segments": 4.0
+      },
+      "CADProperties": {
+        "A": 0.001,
+        "X": 500.0,
+        "Y": 0.0,
+        "Ix": 8.33333333333333e-13,
+        "Iy": 0.00833333333333333,
+        "Ixy": 0.0,
+        "loops": 1.0,
+        "segments": 4.0
+      },
+      "Difference": {
+        "A": 0.0,
+        "X": 0.0,
+        "Y": 0.0,
+        "Ix": 0.0,
+        "Iy": 0.0,
+        "Ixy": 0.0
+      },
+      "ActualIxyTolerance": 1e-15,
+      "TrueRegionParityPassed": true,
+      "SnapshotEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 495.0,
+          "y1": -5e-05,
+          "x2": 505.0,
+          "y2": -5e-05,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 505.0,
+          "y1": -5e-05,
+          "x2": 505.0,
+          "y2": 5e-05,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 505.0,
+          "y1": 5e-05,
+          "x2": 495.0,
+          "y2": 5e-05,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 495.0,
+          "y1": 5e-05,
+          "x2": 495.0,
+          "y2": -5e-05,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        }
+      ],
+      "CADEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 505.0,
+          "y1": -5e-05,
+          "x2": 505.0,
+          "y2": 5e-05,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 505.0,
+          "y1": 5e-05,
+          "x2": 495.0,
+          "y2": 5e-05,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 495.0,
+          "y1": 5e-05,
+          "x2": 495.0,
+          "y2": -5e-05,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 495.0,
+          "y1": -5e-05,
+          "x2": 505.0,
+          "y2": -5e-05,
+          "cx": 0.0,
+          "cy": 0.0,
+          "sweep": 0.0
+        }
+      ],
+      "Topology": {
+        "LoopCount": 1,
+        "Segments": 4,
+        "LineCount": 4,
+        "ArcCount": 0,
+        "OuterLoopCount": 1,
+        "OpeningLoopCount": 0
+      }
+    },
+    {
+      "ElementID": "C4",
+      "SnapshotProperties": {
+        "A": 1963.49540849362,
+        "X": 700.0,
+        "Y": 0.0,
+        "Ix": 306796.157577128,
+        "Iy": 306796.157577128,
+        "Ixy": -3.63797880709171e-11,
+        "loops": 1.0,
+        "segments": 4.0
+      },
+      "CADProperties": {
+        "A": 1963.49540849362,
+        "X": 700.0,
+        "Y": 1.77635683940025e-15,
+        "Ix": 306796.157577129,
+        "Iy": 306796.157577128,
+        "Ixy": 4.00177668780088e-10,
+        "loops": 1.0,
+        "segments": 4.0
+      },
+      "Difference": {
+        "A": 0.0,
+        "X": 0.0,
+        "Y": 1.77635683940025e-15,
+        "Ix": 1.0477378964424133e-09,
+        "Iy": 0.0,
+        "Ixy": 4.365574568510051e-10
+      },
+      "ActualIxyTolerance": 4.359835622874584e-09,
+      "TrueRegionParityPassed": true,
+      "SnapshotEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 725.0,
+          "y1": 0.0,
+          "x2": 700.0,
+          "y2": 25.0,
+          "cx": 700.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 700.0,
+          "y1": 25.0,
+          "x2": 675.0,
+          "y2": -8.72870840277346e-14,
+          "cx": 700.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 675.0,
+          "y1": 3.06151588455594e-15,
+          "x2": 700.0,
+          "y2": -25.0,
+          "cx": 700.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 700.0,
+          "y1": -25.0,
+          "x2": 725.0,
+          "y2": 8.72870840277346e-14,
+          "cx": 700.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        }
+      ],
+      "CADEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 725.0,
+          "y1": 1.03028696685215e-13,
+          "x2": 700.0,
+          "y2": 25.0,
+          "cx": 700.0,
+          "cy": 1.03028696685215e-13,
+          "sweep": 1.57079632679491
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 700.0,
+          "y1": 25.0,
+          "x2": 675.0,
+          "y2": -1.33696837665839e-14,
+          "cx": 700.0,
+          "cy": 3.90798504668055e-14,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 675.0,
+          "y1": -9.28616523297452e-14,
+          "x2": 700.0,
+          "y2": -25.0,
+          "cx": 700.0,
+          "cy": -9.59232693276135e-14,
+          "sweep": 1.57079632679491
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 700.0,
+          "y1": -25.0,
+          "x2": 725.0,
+          "y2": 1.77635683940017e-15,
+          "cx": 700.0,
+          "cy": -4.2632564145606e-14,
+          "sweep": 1.5707963267949
+        }
+      ],
+      "Topology": {
+        "LoopCount": 1,
+        "Segments": 4,
+        "LineCount": 0,
+        "ArcCount": 4,
+        "OuterLoopCount": 1,
+        "OpeningLoopCount": 0
+      }
+    },
+    {
+      "ElementID": "C5",
+      "SnapshotProperties": {
+        "A": 1963.49540849362,
+        "X": 850.0,
+        "Y": 0.0,
+        "Ix": 306796.157577128,
+        "Iy": 306796.157577128,
+        "Ixy": -3.63797880709171e-11,
+        "loops": 1.0,
+        "segments": 4.0
+      },
+      "CADProperties": {
+        "A": 1963.49540849362,
+        "X": 850.0,
+        "Y": 1.77635683940025e-15,
+        "Ix": 306796.157577129,
+        "Iy": 306796.157577128,
+        "Ixy": 4.00177668780088e-10,
+        "loops": 1.0,
+        "segments": 4.0
+      },
+      "Difference": {
+        "A": 0.0,
+        "X": 0.0,
+        "Y": 1.77635683940025e-15,
+        "Ix": 1.0477378964424133e-09,
+        "Iy": 0.0,
+        "Ixy": 4.365574568510051e-10
+      },
+      "ActualIxyTolerance": 4.359835622874584e-09,
+      "TrueRegionParityPassed": true,
+      "SnapshotEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 875.0,
+          "y1": 0.0,
+          "x2": 850.0,
+          "y2": 25.0,
+          "cx": 850.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 850.0,
+          "y1": 25.0,
+          "x2": 825.0,
+          "y2": -8.72870840277346e-14,
+          "cx": 850.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 825.0,
+          "y1": 3.06151588455594e-15,
+          "x2": 850.0,
+          "y2": -25.0,
+          "cx": 850.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 850.0,
+          "y1": -25.0,
+          "x2": 875.0,
+          "y2": 8.72870840277346e-14,
+          "cx": 850.0,
+          "cy": 0.0,
+          "sweep": 1.5707963267949
+        }
+      ],
+      "CADEdges": [
+        {
+          "segment": 1.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 875.0,
+          "y1": 1.03028696685215e-13,
+          "x2": 850.0,
+          "y2": 25.0,
+          "cx": 850.0,
+          "cy": 1.03028696685215e-13,
+          "sweep": 1.57079632679491
+        },
+        {
+          "segment": 2.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 850.0,
+          "y1": 25.0,
+          "x2": 825.0,
+          "y2": -1.33696837665839e-14,
+          "cx": 850.0,
+          "cy": 3.90798504668055e-14,
+          "sweep": 1.5707963267949
+        },
+        {
+          "segment": 3.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 825.0,
+          "y1": -9.28616523297452e-14,
+          "x2": 850.0,
+          "y2": -25.0,
+          "cx": 850.0,
+          "cy": -9.59232693276135e-14,
+          "sweep": 1.57079632679491
+        },
+        {
+          "segment": 4.0,
+          "loop": 1.0,
+          "opening": false,
+          "x1": 850.0,
+          "y1": -25.0,
+          "x2": 875.0,
+          "y2": 1.77635683940017e-15,
+          "cx": 850.0,
+          "cy": -4.2632564145606e-14,
+          "sweep": 1.5707963267949
+        }
+      ],
+      "Topology": {
+        "LoopCount": 1,
+        "Segments": 4,
+        "LineCount": 0,
+        "ArcCount": 4,
+        "OuterLoopCount": 1,
+        "OpeningLoopCount": 0
+      }
+    }
+  ],
+  "ThinC3IxPreserved": true,
+  "OpeningInC2": true,
+  "DisconnectedC4C5Preserved": true,
+  "BooleanFailureRegression": {
+    "ExpectedGeometryErrorCode": -2147217133,
+    "PrimaryLine": "NATIVE_BOOLEAN_INJECTED_FAILURE: -2147217133; Площадь выгруженного бетонного элемента не совпадает с сохраненным фактическим контуром.",
+    "OwnedEntityCountRestored": true,
+    "ResumeFailureCleanupConfirmedOnRealAutoCAD": true
+  },
+  "WCS": {
+    "InitialWorldPassed": true,
+    "LocalUCSRejected": true,
+    "ActionPresent": true,
+    "SourceEntitiesPreserved": true
+  },
+  "StateChecks": [
+    "native.state.sameStatus",
+    "native.state.sameDirectStatus",
+    "native.state.convergedAgain",
+    "native.state.Nint",
+    "native.state.Mxint",
+    "native.state.Myint"
+  ],
+  "ExpectedOptionalContourDiagnostic": "NATIVE_IMPORT_DIAGNOSTIC: Дополнительный слой 'NDM_NATIVE_OUT' отсутствует в чертеже; контуры с него не импортировались. Дополнительный слой 'NDM_NATIVE_HOLE' отсутствует в чертеже; контуры с него не импортировались. Границы для расчета трещин определяются по бетонной сетке.",
+  "ResultsPreservationChecks": [
+    "native.ResultsUnchanged.rngNDMSectionGeometry",
+    "native.ResultsUnchanged.rngNDMElementGeometry",
+    "native.ResultsUnchanged.rngNDMElementResults",
+    "native.ResultsUnchanged.rngNDMSectionProperties"
+  ],
+  "ProcessClosure": [
+    {
+      "PID": 29712,
+      "StartTicksUTC": "639286291275356106",
+      "Name": "EXCEL",
+      "Owned": true,
+      "ResidualForceKilled": false,
+      "ExactIdentityAbsent": true
+    },
+    {
+      "PID": 19708,
+      "StartTicksUTC": "639286291789472126",
+      "Name": "acad",
+      "Owned": true,
+      "ResidualForceKilled": false,
+      "ExactIdentityAbsent": true
+    }
+  ],
+  "FreshProcessObservation": [
+    {
+      "PID": 29712,
+      "ExpectedStartTicksUTC": "639286291275356106",
+      "ObservedStartTicksUTC": null,
+      "ExactIdentityLive": false
+    },
+    {
+      "PID": 19708,
+      "ExpectedStartTicksUTC": "639286291789472126",
+      "ObservedStartTicksUTC": null,
+      "ExactIdentityLive": false
+    },
+    {
+      "PID": 22652,
+      "ExpectedStartTicksUTC": "639286291263322168",
+      "ObservedStartTicksUTC": null,
+      "ExactIdentityLive": false
+    }
+  ],
+  "WatchdogCompletion": {
+    "Status": "NATIVE_WORKER_COMPLETED_REVIEW_PRIMARY",
+    "ObservedUTC": "2026-10-26T16:33:24.1862081+00:00",
+    "TimedOut": false,
+    "ElapsedSeconds": 77.73182469999999,
+    "WorkerExitCode": 0,
+    "SourceUnchanged": true,
+    "SourceSHA256": "BABC73AC9F190190FAC1E00D466BCFF6249B94E623325EB5DA6AA6894A845E96",
+    "OrphansAfterWorkerExit": [],
+    "NativeAcceptance": {
+      "Status": "PASS_DIRECTED_NATIVE_CONTOUR_CELLS",
+      "Passed": true,
+      "SourceUnchanged": true,
+      "SourceSHA256": "BABC73AC9F190190FAC1E00D466BCFF6249B94E623325EB5DA6AA6894A845E96",
+      "PrivateProbeUnchanged": true,
+      "PrivateProbeSHA256": "0F2ACDC243AD39FDFD7DCD3F1D29668B0F8E90F006C7C0FD83EF09331AFF6041",
+      "AllOwnedProcessesClosed": true,
+      "FullRegressionPass": false,
+      "Failure": null
+    },
+    "PrimaryReviewStillRequired": true,
+    "FullRegressionPass": false
+  },
+  "SourceUserAppsNotOwned": {
+    "ExistingExcel": [
+      {
+        "PID": 30608,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286291144516426"
+      },
+      {
+        "PID": 31088,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286289920878809"
+      },
+      {
+        "PID": 34980,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286271499844205"
+      }
+    ],
+    "ExistingCAD": {
+      "PID": 22916,
+      "Name": "acad",
+      "StartTicksUTC": "639285979675188454"
+    }
+  },
+  "AllMemoryGatesReady": true,
+  "MinimumObservedFreeRAMGiB": 14.6533203125,
+  "MinimumObservedFreeCommitGiB": 16.747825622558594,
+  "WorkerStdoutAcceptanceMatches": true,
+  "WorkerStderrBytes": 0,
+  "PrimaryByteEqualNativeCAD06": true,
+  "ReadOnlyReview": true,
+  "ExcelOrCADStartedByReview": false,
+  "Issues": [],
+  "FullRegressionPass": false,
+  "ScopeLimitation": "Real AutoCAD controlled line/arc/hole/thin/disconnected cells, failure cleanup and WCS; directed verification only. No full ON/OFF + Focused claim."
+}

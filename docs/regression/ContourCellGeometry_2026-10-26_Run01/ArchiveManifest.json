@@ -1,0 +1,2930 @@
+{
+  "Status": "ARCHIVED_TEXT_EVIDENCE_SHA256_VERIFIED",
+  "ProducedBy": "TestArchiveEvidence.py",
+  "CreatedUTC": "2026-10-26T16:53:48.289598+00:00",
+  "EvidenceDirectory": "ContourCellGeometry_2026-10-26_Run01",
+  "Archive": "Logs.zip",
+  "ArchiveBytes": 12318763,
+  "ArchiveSHA256": "01133D6D74D6318F01E0E00C759B6FD8484DD69414E7BA6E609C898F4E172D83",
+  "Compression": "DEFLATE level 9",
+  "EntryCount": 578,
+  "UncompressedBytes": 88441994,
+  "AllowedSuffixes": [
+    ".bas",
+    ".diff",
+    ".json",
+    ".log",
+    ".md",
+    ".ps1",
+    ".py",
+    ".txt"
+  ],
+  "ExcludedDirectoriesAnyLevel": [
+    "__pycache__",
+    "inputs"
+  ],
+  "ExcludedFilenameSuffixes": [
+    "_NativeCode.json"
+  ],
+  "ExcludedRootFinalStems": [
+    "acceptance",
+    "archivemanifest",
+    "processed"
+  ],
+  "HistoricalNestedAcceptanceIncluded": true,
+  "ResultBasedFiltering": false,
+  "SourceFilesChanged": false,
+  "FullRegressionPassAssigned": false,
+  "Entries": [
+    {
+      "Path": "AdaptiveRegression01_No.txt",
+      "Bytes": 741922,
+      "SHA256": "DEACA444BA6603EE7DFD8A13E7DAE10EDF11CE85DD24628C4662F6335D1D5336"
+    },
+    {
+      "Path": "AdaptiveRegression01_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "89EE4D0DE297EDBFD21F56919C6A7F5EE8CF0009984197B180B561207F634B0B"
+    },
+    {
+      "Path": "AdaptiveRegression01_No.txt.progress.txt",
+      "Bytes": 303022,
+      "SHA256": "F6FDD781DC4DE2DDA37D7617F5DDD8F04F24C5F57BA425E4B41B6EB97FC6BB28"
+    },
+    {
+      "Path": "AdaptiveRegression01_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "AdaptiveRegression01_No.txt.stdout.log",
+      "Bytes": 1031,
+      "SHA256": "A2F288674B4F81D26DC9AAC024E13204DC9B4A342533E13D4186289AEEDB82D2"
+    },
+    {
+      "Path": "AdaptiveRegression01_Review.json",
+      "Bytes": 4767,
+      "SHA256": "7DB5A147CE887EA8BD07C0C6E26AFFE2E3EA868322B493F643934C350FF49465"
+    },
+    {
+      "Path": "AdaptiveRegression01_Yes.txt",
+      "Bytes": 741643,
+      "SHA256": "3E3B5F003F5653E04241B874F6741573F45184C4461AA636653C8DBFD186B7E1"
+    },
+    {
+      "Path": "AdaptiveRegression01_Yes.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "D5EC7243254ED58629AB339AFF37E2B1F60FAAA4A2ADDD0235ADAC3A711DC24B"
+    },
+    {
+      "Path": "AdaptiveRegression01_Yes.txt.progress.txt",
+      "Bytes": 303022,
+      "SHA256": "F6FDD781DC4DE2DDA37D7617F5DDD8F04F24C5F57BA425E4B41B6EB97FC6BB28"
+    },
+    {
+      "Path": "AdaptiveRegression01_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "AdaptiveRegression01_Yes.txt.stdout.log",
+      "Bytes": 1040,
+      "SHA256": "7C6B4BFDDDD4086F162554BF492150D401C2317AE79496565110C6E55BB8EE99"
+    },
+    {
+      "Path": "AdaptiveRegression02_No.txt",
+      "Bytes": 1241507,
+      "SHA256": "17F247A2B2F4C0D8385FFC1C4EEC068B2739D810D270B2D4F29C565FF70F49F5"
+    },
+    {
+      "Path": "AdaptiveRegression02_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "7E68BB4C2A81C0C1FD084CBE79CDDF27019DF9EB18388E78A0050721E986F685"
+    },
+    {
+      "Path": "AdaptiveRegression02_No.txt.progress.txt",
+      "Bytes": 303022,
+      "SHA256": "F6FDD781DC4DE2DDA37D7617F5DDD8F04F24C5F57BA425E4B41B6EB97FC6BB28"
+    },
+    {
+      "Path": "AdaptiveRegression02_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "AdaptiveRegression02_No.txt.stdout.log",
+      "Bytes": 1064,
+      "SHA256": "B47AAD6BB15546E4E2FEBAB98A243282033865478F9ABA3200DC83FA38715582"
+    },
+    {
+      "Path": "AdaptiveRegression02_Review.json",
+      "Bytes": 5434,
+      "SHA256": "A93B4BA6C503F179ACB4F768D89FFD293904E9EB74D4143026219176EE760F35"
+    },
+    {
+      "Path": "AdaptiveRegression02_Yes.txt",
+      "Bytes": 1241696,
+      "SHA256": "EE222FD64DCB9F27B30889DDCFE6E029E4E56504DF52957F5D90EA29B0E68F3E"
+    },
+    {
+      "Path": "AdaptiveRegression02_Yes.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "62CD5E9282D552ED180A08F79AB2EB39FC1EE76EC81BCFA7F91F359D2B7C6DE9"
+    },
+    {
+      "Path": "AdaptiveRegression02_Yes.txt.progress.txt",
+      "Bytes": 303022,
+      "SHA256": "F6FDD781DC4DE2DDA37D7617F5DDD8F04F24C5F57BA425E4B41B6EB97FC6BB28"
+    },
+    {
+      "Path": "AdaptiveRegression02_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "AdaptiveRegression02_Yes.txt.stdout.log",
+      "Bytes": 1074,
+      "SHA256": "5EF24BC77A7E2A59AC3A826D0C3A5B0B6E4B1D5C08FD61FEB619ECC3DFACA734"
+    },
+    {
+      "Path": "BeforePublication.json",
+      "Bytes": 705,
+      "SHA256": "D7F44CB9BAA1A52A7FB00AC9485CBECCE2CA7408E51767033D908BCF930C4198"
+    },
+    {
+      "Path": "BeforePublicationAllCode.txt",
+      "Bytes": 8615167,
+      "SHA256": "AF8D7795E855B8236928F33CCCFA6A90094062570171A3AFCEA219A37D20C447"
+    },
+    {
+      "Path": "ClassCommentsFinal01.json",
+      "Bytes": 2478336,
+      "SHA256": "9A23D7BC0C02E0E1433F6612C131F9233DF37F3B40732770496AC0E48475B13A"
+    },
+    {
+      "Path": "CoincidentClipFix01/Diagnostic.json",
+      "Bytes": 4133,
+      "SHA256": "209B00F4B2849ECB90FA5927611917E731F7570188ED87F7D6856F1D976E925F"
+    },
+    {
+      "Path": "CoincidentClipFix01/EndpointVerification.json",
+      "Bytes": 5698,
+      "SHA256": "E3A7EA3E2793FC7ACBE45FA76582F30D22BB4E1B06FBD83B8D2B3A5F861ECB47"
+    },
+    {
+      "Path": "CoincidentClipFix01/modTestElementGeometry.Before.bas",
+      "Bytes": 41324,
+      "SHA256": "D3F9E26981F9D1E859D3084B7F9A182EF3FCA931FD5DE88CB6724EA0C66CD97E"
+    },
+    {
+      "Path": "CoincidentClipFix01/Preparation.json",
+      "Bytes": 7671,
+      "SHA256": "FD347FC5934C9BC352D7547BBC6302B12926F2E07CC20960297C983D22A41CA5"
+    },
+    {
+      "Path": "CoincidentClipFix01/PreparedPatch.diff",
+      "Bytes": 11971,
+      "SHA256": "9B6C8DC6F04E605DDC2D5311D124A906073B4A5BC5F5FF30C983616501B273CC"
+    },
+    {
+      "Path": "CoincidentClipFix01/TestReproduceClip.py",
+      "Bytes": 7271,
+      "SHA256": "5919E4B7408782CDC7F843C9857849FB61983B4E3D0ED3502CE440DD51BED327"
+    },
+    {
+      "Path": "CoincidentClipFix01/TestVerifyEndpointFix.py",
+      "Bytes": 6019,
+      "SHA256": "62B05EAE6C803F1354D155D12C43C292C7321F1ACA3536C3E4C958C4D1D5CF0E"
+    },
+    {
+      "Path": "Compile02/CompileFailure.json",
+      "Bytes": 518,
+      "SHA256": "41CDDB177151D29EBFDF254CBA4B1AFC233E633995CE809112559B7F0C07A875"
+    },
+    {
+      "Path": "Compile02/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile02/MemoryGate.json",
+      "Bytes": 170,
+      "SHA256": "8D767BD5B46F78A10FB2CC1CF6A2D4E41FDDD60E7DA59C61C00B7A436E8DE1B5"
+    },
+    {
+      "Path": "Compile02/Ownership.json",
+      "Bytes": 219,
+      "SHA256": "75065F04AEFB2BA760197822A6B7FD664A8A2C7C703B8B62CE434DD48F8F1360"
+    },
+    {
+      "Path": "Compile03/CompileFailure.json",
+      "Bytes": 758,
+      "SHA256": "69646478EF0C2D93BC3B635A7C49D8A327DF92EFB521566960B10B6F1F9E1A66"
+    },
+    {
+      "Path": "Compile03/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile03/MemoryGate.json",
+      "Bytes": 170,
+      "SHA256": "952A8F31CFA3BE773858AF84BFF02C78AF48A9439F3CDA10B4A2F7EB8D0DFF0B"
+    },
+    {
+      "Path": "Compile03/Ownership.json",
+      "Bytes": 219,
+      "SHA256": "FD355DED9E693CE4395C706745A5DEA7F7599851DCA0C72378D524DFC86418A9"
+    },
+    {
+      "Path": "Compile04/CompileFailure.json",
+      "Bytes": 756,
+      "SHA256": "52ABE2E82D2FC2CA2C5E1774D07A8B5079D13859094B423CB341F3CACDB00E58"
+    },
+    {
+      "Path": "Compile04/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile04/MemoryGate.json",
+      "Bytes": 169,
+      "SHA256": "230253F4A471636424816980485343A821DC4BC1CB2D4C70D53F854E870AC0A6"
+    },
+    {
+      "Path": "Compile04/Ownership.json",
+      "Bytes": 220,
+      "SHA256": "BE1822B80B7C5231FFA077B11C430AF55FDACCC826B028360EBC89146FA657C9"
+    },
+    {
+      "Path": "Compile05/CompileFailure.json",
+      "Bytes": 601,
+      "SHA256": "96F8C575B89F8164F25FE11AB1C8515F4FC5B864E4CC31BBC987487F4199F848"
+    },
+    {
+      "Path": "Compile05/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile05/MemoryGate.json",
+      "Bytes": 169,
+      "SHA256": "99E0EF892BBC3EEFFB74FD9663E35113BFC54A6350CBDE2E2249717BFA708EEF"
+    },
+    {
+      "Path": "Compile05/Ownership.json",
+      "Bytes": 220,
+      "SHA256": "61A718307C38ADA431AA2AD57804ED9DE8CC4A27B267F0F5C340FAF3FF913609"
+    },
+    {
+      "Path": "Compile06/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile06/MemoryGate.json",
+      "Bytes": 170,
+      "SHA256": "68237DD601FD339BBC0E247E0E16D16CAE7A78DBD0D1B534E67C3825744E1F80"
+    },
+    {
+      "Path": "Compile06/Ownership.json",
+      "Bytes": 220,
+      "SHA256": "9CD8906E47FE090479F302B60C8B27F83FC0FB585097D85263C995FEB09261BA"
+    },
+    {
+      "Path": "Compile06/Preparation.json",
+      "Bytes": 8527,
+      "SHA256": "18153AD30B62CAA52C70587A34A08BFEF3E3A896FB2A8BA58BE870370D28179D"
+    },
+    {
+      "Path": "Compile07/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile07/MemoryGate.json",
+      "Bytes": 170,
+      "SHA256": "9160196F65354615C647B0D0F6A989D78E3A3165CACD1231D4367C5E70BC31C6"
+    },
+    {
+      "Path": "Compile07/Ownership.json",
+      "Bytes": 220,
+      "SHA256": "9C0C9382A2F2212D813ECFB64338526166AC7F5E80CFA82C229CE55E9DC5797D"
+    },
+    {
+      "Path": "Compile07/Preparation.json",
+      "Bytes": 8527,
+      "SHA256": "EC5315783A5EAB5F417633398E9BFDDE6B463D9EC911219EF06F5DB34B458F18"
+    },
+    {
+      "Path": "Compile08/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile08/MemoryGate.json",
+      "Bytes": 169,
+      "SHA256": "64FB6780F3BE9E5B5D3F2AE863B715069D29300B7FB00F163BBFC096ADD204B2"
+    },
+    {
+      "Path": "Compile08/Ownership.json",
+      "Bytes": 220,
+      "SHA256": "DAC972076659984E07320CC7E7AB3650D5A8BF77C2DE58CE8AF945E555B72931"
+    },
+    {
+      "Path": "Compile08/Preparation.json",
+      "Bytes": 8527,
+      "SHA256": "891B0BB5C22A51547E4FC100A6E385307AB527CD771147C86319E7B60496E5D1"
+    },
+    {
+      "Path": "Compile09/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile09/MemoryGate.json",
+      "Bytes": 170,
+      "SHA256": "72A01D0A535D863CC5EDE1AFFD10AC272CFFECEB163DA6446D907D4A24BBB771"
+    },
+    {
+      "Path": "Compile09/Ownership.json",
+      "Bytes": 220,
+      "SHA256": "A12421D8E90CF771858FA4B38201B03E73B4A65393B9428FAFF42625E096A5BF"
+    },
+    {
+      "Path": "Compile09/Preparation.json",
+      "Bytes": 8802,
+      "SHA256": "9CC9CFDBF28EBAC7C95A7AAB8647D3F7D47BEFA77B81F1E5366EF9338AF612F5"
+    },
+    {
+      "Path": "Compile10/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile10/MemoryGate.json",
+      "Bytes": 170,
+      "SHA256": "9D3E3AF7752805787AD5D89ADF82C3BE369017B24A947C64A56CD03425130045"
+    },
+    {
+      "Path": "Compile10/Ownership.json",
+      "Bytes": 220,
+      "SHA256": "1C36F8CD834B5CF5DC435EEC16DAF4150ECE9D63BFF33D3762E3EB5E36C55508"
+    },
+    {
+      "Path": "Compile10/Preparation.json",
+      "Bytes": 8802,
+      "SHA256": "ECC374B6D9DA9D725F4F763BEBD24C2587B08C5EA465A9DE4B19BF63BCD3037F"
+    },
+    {
+      "Path": "Compile11/ExtractAccepted.py",
+      "Bytes": 189,
+      "SHA256": "6666938FD76E1CD6118C9BBB6D8073B6234A8A440ACB0895352E811476C5BD51"
+    },
+    {
+      "Path": "Compile11/MemoryGate.json",
+      "Bytes": 169,
+      "SHA256": "90E3DBBF0574D195F996D3FEDC8969946AACD0893696E6F1AB13D63095E27CE9"
+    },
+    {
+      "Path": "Compile11/Ownership.json",
+      "Bytes": 220,
+      "SHA256": "82037E9ABB4C9F3B105F44CD7B5078ED3F612D532CD7755F8E59196E26EF968A"
+    },
+    {
+      "Path": "Compile11/Preparation.json",
+      "Bytes": 8802,
+      "SHA256": "284E71F206DF7E5AF088ACC042E338FBE01D5BC9CB63EE909BDC85E2CEE9099B"
+    },
+    {
+      "Path": "DecimalSnapshot01.Watchdog/Completion.json",
+      "Bytes": 1459,
+      "SHA256": "50E7EFD646DC6C168EDEBCAC733B138FC76B6F62A1857FA360C72455FECD20A3"
+    },
+    {
+      "Path": "DecimalSnapshot01.Watchdog/Launch.json",
+      "Bytes": 1387,
+      "SHA256": "E565221A36B472060C2DC31BB5A2C7A98EA659D41A4B33CA202E3C5208F5FDA4"
+    },
+    {
+      "Path": "DecimalSnapshot01.Watchdog/WatchdogLast.json",
+      "Bytes": 927,
+      "SHA256": "A6A223E3CA09556C450C974064B433F28640F3E69ED343AF6BB53017748D7AD1"
+    },
+    {
+      "Path": "DecimalSnapshot01.Watchdog/Worker.stderr.log",
+      "Bytes": 632,
+      "SHA256": "56304681288297C17E79D57AFB68B271591B113673A46F9CE5D91C66625F76C9"
+    },
+    {
+      "Path": "DecimalSnapshot01.Watchdog/Worker.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DecimalSnapshot01.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "E50953229978E1C18BAF0B93D33A8F5ECB8303AD75BDF1F29480C9AB3E00C886"
+    },
+    {
+      "Path": "DecimalSnapshot01/01_Dot_File.Separators.json",
+      "Bytes": 117,
+      "SHA256": "A3FF05CCD51E29ED28FF71FF8D479EF5DDE4DD30EA8421F8BE19D2146EA138ED"
+    },
+    {
+      "Path": "DecimalSnapshot01/01_Dot_File.txt",
+      "Bytes": 72132,
+      "SHA256": "41A470227005627766D0A4CCAD3558F9D8FB695CAE8281F9282C63B17C074C4E"
+    },
+    {
+      "Path": "DecimalSnapshot01/Acceptance.json",
+      "Bytes": 598,
+      "SHA256": "759D72750CB49B13387EBEB9716B59F54A56ECD142A259C58A81D7214FA619C1"
+    },
+    {
+      "Path": "DecimalSnapshot01/Cases.json",
+      "Bytes": 357,
+      "SHA256": "D2AF5DA41D96FCC22228453980D24D9189EE22C51813B45118F3B061A9E00A93"
+    },
+    {
+      "Path": "DecimalSnapshot01/CrossSeparatorGeometry.json",
+      "Bytes": 136,
+      "SHA256": "F1C513FC05BE3E52C4436F0784BCFCBE894540BF76BA8A49C21E1E9572F40476"
+    },
+    {
+      "Path": "DecimalSnapshot01/Failure.json",
+      "Bytes": 180,
+      "SHA256": "7D511A017311D314C9DDC826AE372B42780D01729DC3A530C187D03214C0810D"
+    },
+    {
+      "Path": "DecimalSnapshot01/Input.json",
+      "Bytes": 1485,
+      "SHA256": "A07BEEB9F4DCD9E39C14F436C13A72490469AAE6A536A6A81B2A4E192790AF1B"
+    },
+    {
+      "Path": "DecimalSnapshot01/Memory_01_Dot_File.json",
+      "Bytes": 254,
+      "SHA256": "DC6CEDF2630988DE293C4904E355117BE4A0D719984E2EE90351638B055B4980"
+    },
+    {
+      "Path": "DecimalSnapshot01/Memory_BeforeExcel.json",
+      "Bytes": 254,
+      "SHA256": "C74ECEA89BF60227D6A2A5027AAE5CB7F89A571D88513D0393D29B91314B60C3"
+    },
+    {
+      "Path": "DecimalSnapshot01/Ownership.json",
+      "Bytes": 499,
+      "SHA256": "684EC3809AA0EC61E313650FE4778F6A9A3C211F0D8B9D542FF209ABF754F9CC"
+    },
+    {
+      "Path": "DecimalSnapshot01/ProcessClosure.json",
+      "Bytes": 165,
+      "SHA256": "20EF760CF66D29976827EC59885CE043D625F2A9083E0270E2532F3C0EE8C4DB"
+    },
+    {
+      "Path": "DecimalSnapshot01/SeparatorRestoration.json",
+      "Bytes": 304,
+      "SHA256": "C6D50BD5D2ABAD72615A76E0B491216FB2738E058FB429F1B575859A7AE5C993"
+    },
+    {
+      "Path": "DecimalSnapshot01/SeparatorsBefore.json",
+      "Bytes": 81,
+      "SHA256": "0EB07D88AD823BA871D36E896681F4C7EAF31253F5ECD9E1AF73575814AFAAEE"
+    },
+    {
+      "Path": "DecimalSnapshot02.Watchdog/Completion.json",
+      "Bytes": 1423,
+      "SHA256": "4D0962675B696A71C594EAFFD8B4F7969D96033D2EAA53938A9B8BD5565F9705"
+    },
+    {
+      "Path": "DecimalSnapshot02.Watchdog/Launch.json",
+      "Bytes": 1422,
+      "SHA256": "3F146868B9A0F72C4FFA0D45D40A89648AEFF79DBD11B603EB20B6B895B7EFDA"
+    },
+    {
+      "Path": "DecimalSnapshot02.Watchdog/WatchdogLast.json",
+      "Bytes": 931,
+      "SHA256": "2BF6C2C657745F40868EF32F0C921EFD3D5679D7EE0472AB6A37F265BA85721E"
+    },
+    {
+      "Path": "DecimalSnapshot02.Watchdog/Worker.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DecimalSnapshot02.Watchdog/Worker.stdout.log",
+      "Bytes": 527,
+      "SHA256": "6C0AD992FB934FAE5873E8203DF687F43409C051A9EA79AB3DF229C88D655E53"
+    },
+    {
+      "Path": "DecimalSnapshot02.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "E01C7DB8B34A935893B78971964EB396C1CAE89564AF6F9BCB510CD1EB9BC1DB"
+    },
+    {
+      "Path": "DecimalSnapshot02/01_Dot_File.After.txt",
+      "Bytes": 91315,
+      "SHA256": "E7C946E7C5E975C355FD84D87BCAECF6E747B3A0B7D4D2EA381D41405417DB71"
+    },
+    {
+      "Path": "DecimalSnapshot02/01_Dot_File.Before.txt",
+      "Bytes": 91315,
+      "SHA256": "E7C946E7C5E975C355FD84D87BCAECF6E747B3A0B7D4D2EA381D41405417DB71"
+    },
+    {
+      "Path": "DecimalSnapshot02/01_Dot_File.Geometry.txt",
+      "Bytes": 3783,
+      "SHA256": "C09B13BAA3FC461D4C68BA876892D3E864E7396D4A6FE543E99D757195350099"
+    },
+    {
+      "Path": "DecimalSnapshot02/01_Dot_File.Separators.json",
+      "Bytes": 117,
+      "SHA256": "A3FF05CCD51E29ED28FF71FF8D479EF5DDE4DD30EA8421F8BE19D2146EA138ED"
+    },
+    {
+      "Path": "DecimalSnapshot02/01_Dot_File.txt",
+      "Bytes": 60768,
+      "SHA256": "7CF57A88455CFF316BF0E34A50723EBDF7560834C3291274399C2F9DEC6B94D4"
+    },
+    {
+      "Path": "DecimalSnapshot02/02_Comma_File.After.txt",
+      "Bytes": 91315,
+      "SHA256": "8741D73E3DEB682A947B74A5A418A7C0E00FC8D508C4A43EE7D7A0E7D1A790B6"
+    },
+    {
+      "Path": "DecimalSnapshot02/02_Comma_File.Before.txt",
+      "Bytes": 91315,
+      "SHA256": "8741D73E3DEB682A947B74A5A418A7C0E00FC8D508C4A43EE7D7A0E7D1A790B6"
+    },
+    {
+      "Path": "DecimalSnapshot02/02_Comma_File.Geometry.txt",
+      "Bytes": 3783,
+      "SHA256": "C09B13BAA3FC461D4C68BA876892D3E864E7396D4A6FE543E99D757195350099"
+    },
+    {
+      "Path": "DecimalSnapshot02/02_Comma_File.Separators.json",
+      "Bytes": 117,
+      "SHA256": "D0C3FCF32CEF90E69CB9F23298616EE9D23D98978A2E27986CD4B1156786289A"
+    },
+    {
+      "Path": "DecimalSnapshot02/02_Comma_File.txt",
+      "Bytes": 60770,
+      "SHA256": "BB692F3E2A1A992ED837CD76B2B773C32BB82B4D912DA36F7786A03843995646"
+    },
+    {
+      "Path": "DecimalSnapshot02/Acceptance.json",
+      "Bytes": 528,
+      "SHA256": "8B7B4E2FD2B8D2A1CE139EC11BC7F6E0BA9D02201FE595A628FB0C209BAD8023"
+    },
+    {
+      "Path": "DecimalSnapshot02/Cases.json",
+      "Bytes": 1730,
+      "SHA256": "92F143CD60512FA60EFD9D748CFFC008744E1FD5F3A8D510B23CB9B9A658C83B"
+    },
+    {
+      "Path": "DecimalSnapshot02/CrossSeparatorGeometry.json",
+      "Bytes": 135,
+      "SHA256": "531398A76EBD1A53E9461DCCEA9FA014A940008FD082B9DDE7D1FC36CF99D11C"
+    },
+    {
+      "Path": "DecimalSnapshot02/Input.json",
+      "Bytes": 1660,
+      "SHA256": "27DC72CA0A375B0F47EB6AC93A5D243E8255FE2B254D725CE8441596F98E99AB"
+    },
+    {
+      "Path": "DecimalSnapshot02/Memory_01_Dot_File.json",
+      "Bytes": 253,
+      "SHA256": "98C7076436FACC538B70C741149FA911440BC5D4E4A87BB4A0A8569C713B108A"
+    },
+    {
+      "Path": "DecimalSnapshot02/Memory_02_Comma_File.json",
+      "Bytes": 256,
+      "SHA256": "7A75E2CE318BA65710B49A0262C87E77AD840E0D493C060F1C4C38655A5991E1"
+    },
+    {
+      "Path": "DecimalSnapshot02/Memory_BeforeExcel.json",
+      "Bytes": 254,
+      "SHA256": "CD34BBC28E8C510E8ADC65B0B2CBE8CBE87822E8F1EB1F2D86817F6B5EF5CB46"
+    },
+    {
+      "Path": "DecimalSnapshot02/Ownership.json",
+      "Bytes": 503,
+      "SHA256": "3B3A9339CB743293BE90EC9CD3863BBF5932805A8FA5D62E0AA78358FE2C7499"
+    },
+    {
+      "Path": "DecimalSnapshot02/PrimaryReview.json",
+      "Bytes": 24074,
+      "SHA256": "3A42DFB6FB67D955990CAE93BDC31E1694658E96C235CE530F685693B82BDDEB"
+    },
+    {
+      "Path": "DecimalSnapshot02/ProcessClosure.json",
+      "Bytes": 165,
+      "SHA256": "B152C46644D3778D0A1FCDE7105C8FF0904BB478C166D813A36CE3100F65150E"
+    },
+    {
+      "Path": "DecimalSnapshot02/SeparatorRestoration.json",
+      "Bytes": 304,
+      "SHA256": "C6D50BD5D2ABAD72615A76E0B491216FB2738E058FB429F1B575859A7AE5C993"
+    },
+    {
+      "Path": "DecimalSnapshot02/SeparatorsBefore.json",
+      "Bytes": 81,
+      "SHA256": "0EB07D88AD823BA871D36E896681F4C7EAF31253F5ECD9E1AF73575814AFAAEE"
+    },
+    {
+      "Path": "DecimalSnapshot02/TestReviewPrimary.py",
+      "Bytes": 10683,
+      "SHA256": "E7D14E49E84AA424C962AE1EE29B9F9839545597AE42F13FEFD4EA75C9FF053C"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/EmptyNumericSweepFailure01Fix.diff",
+      "Bytes": 1863,
+      "SHA256": "5F334539A00876765C3498CF61244FA0B07E032FDD3FBDCF54862BBCFA03DB56"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/EmptyNumericSweepFailure01Proof.json",
+      "Bytes": 23235,
+      "SHA256": "3FDE599450E5A0852E81838DE2ADCB188660FAD32DFB204ABC8B3F08DD1549CE"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/PS51Parse.json",
+      "Bytes": 512,
+      "SHA256": "348F16AF1DB1162CA1003DDBF69B57C95C61B1521F93FB54B5860FA26F9340E7"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/PS7Parse.json",
+      "Bytes": 397,
+      "SHA256": "CA888CC6A7F114AB16C212858F5552187C99FA0FF96900DB424A30D53A3B5C21"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/README.md",
+      "Bytes": 1850,
+      "SHA256": "F90DD7D812DCFB0E2E1BAAF4F5C7F3E9FCFD8530684F2245F9D99EFD1FEA3C0E"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/StaticReview.json",
+      "Bytes": 11223,
+      "SHA256": "8D8BAA57D7219C86B53052E61B99800B3EEC55BD8F427944561591715B80EA2D"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/Test-RunContourDecimalSnapshots.ps1",
+      "Bytes": 14037,
+      "SHA256": "7B3FBA2593C9A0A491085D532F7DD1F8D36D2A0BF4427DAC409D3D721F1A6B53"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/Test-StaticPreflight.ps1",
+      "Bytes": 946,
+      "SHA256": "A2229AE6F95763F374B697DB113EA687ED8FFB66B432D971F0CFAFFC0539FCA7"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/Test-WatchContourDecimalSnapshots.ps1",
+      "Bytes": 9220,
+      "SHA256": "2173A9FC94689150B54F6C4DA300608AF8E0B40293DF0590CD70E74E89742A2A"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/TestContourDecimalSnapshot.bas",
+      "Bytes": 18662,
+      "SHA256": "87F40DB18D6AED202DCE8EC740BC75C8699A64F3E7F4D0ABF3FB28F23877303F"
+    },
+    {
+      "Path": "DecimalSnapshotPlan/TestContourDecimalSnapshot.PreEmptyGuardFix.bas",
+      "Bytes": 18493,
+      "SHA256": "20E5CB8E0B502E3B2ADB1EC836C0933C887E260E6DAFAB578B489740733BEB9A"
+    },
+    {
+      "Path": "DeferredContourSnapshotFix01/Applied.json",
+      "Bytes": 991,
+      "SHA256": "0F03070C05008F24DF9E3BBDC01F4A2450ACAFE90B552A7163117182595E4C13"
+    },
+    {
+      "Path": "DeferredContourSnapshotFix01/Candidate/src/Excel/modSectionSnapshot.bas",
+      "Bytes": 76860,
+      "SHA256": "9B0F2AEB003393FDC0D012D2E23AE26B6D957531394C92D4064250FE340D638E"
+    },
+    {
+      "Path": "DeferredContourSnapshotFix01/Candidate/tests/modTestAutoCADContours.bas",
+      "Bytes": 173530,
+      "SHA256": "C809FFB25187A01E4A96A61F393E5E64C558284043BB13BFA75C0B7A7117BBAA"
+    },
+    {
+      "Path": "DeferredContourSnapshotFix01/DeferredPatch.diff",
+      "Bytes": 7006,
+      "SHA256": "E40922D7499C5855E1E0DC4A54BADD5E55A5EDAB0DB034AFC636C28B3CFBA854"
+    },
+    {
+      "Path": "DeferredContourSnapshotFix01/DeferredSourceManifest.json",
+      "Bytes": 2898,
+      "SHA256": "3DD042C6E5BBAE3676BBD0D51D06602997009ADCC07D666689558F2A5DC3AD4D"
+    },
+    {
+      "Path": "DeferredContourSnapshotReopenFix02/Applied.json",
+      "Bytes": 252,
+      "SHA256": "77FFB0748DCFFDBD43F97BD9EE048C6F998923CF0A8EF9FE0C574BD3BDC0F01E"
+    },
+    {
+      "Path": "DeferredContourSnapshotReopenFix02/DeferredPatch.diff",
+      "Bytes": 668,
+      "SHA256": "3D5F9F02ADD7815999BE2F37920D81AEA6CB7407EF7B18D39D53827F2FB21AA3"
+    },
+    {
+      "Path": "DeferredContourSnapshotReopenFix02/DeferredSourceManifest.json",
+      "Bytes": 2320,
+      "SHA256": "1F376F655B4156EC1CF1AF90AF2C98579DF9D78BB482AF0AC080315E8B1DF661"
+    },
+    {
+      "Path": "DeferredContourSnapshotReopenFix02/modTestAutoCADContours.Candidate.bas",
+      "Bytes": 173614,
+      "SHA256": "B0A8CF25094AF6190B9EB5C755D4D34C21879E3A795ED36537028FA632377977"
+    },
+    {
+      "Path": "DeferredWorkflowReadCounts/DeferredPatch.diff",
+      "Bytes": 4688,
+      "SHA256": "67232C2AD31AFE14D794DDABBB62E0377BD8C0A57251C0DE7EBCC6AA69414FF1"
+    },
+    {
+      "Path": "DeferredWorkflowReadCounts/DeferredSourceManifest.json",
+      "Bytes": 2827,
+      "SHA256": "5290747F79A465BA6D85A5C93710543D584FAEA658151E4F18594454C2FB4637"
+    },
+    {
+      "Path": "DeferredWorkflowReadCounts/modTestSectionWorkflow.Candidate.bas",
+      "Bytes": 34627,
+      "SHA256": "F1ABDC0BE85A69F91F5CC000788308629A423E0B0A0EFECED89F229B95F3CB7D"
+    },
+    {
+      "Path": "DeferredWorkflowReadCounts/ValidationPlanAddition.md",
+      "Bytes": 967,
+      "SHA256": "A168785927A476313028D21080B64E600BBABBED9B3734ABE29D0D6E6D7251EA"
+    },
+    {
+      "Path": "DocumentationFinal01.json",
+      "Bytes": 3729763,
+      "SHA256": "66C55AFB75F6A46DBF007E9FBA3E93EE22E068827DCE7D35E0D0FD8D19429383"
+    },
+    {
+      "Path": "DocumentationFinal02.json",
+      "Bytes": 3729763,
+      "SHA256": "64B44455EC7BF9AF1F9D8D81FB2A9AA29126BB284C72E3963F73D0B6208CDC61"
+    },
+    {
+      "Path": "FinalCandidate05_NativeSnapshot.txt",
+      "Bytes": 8813119,
+      "SHA256": "DFD96AFACEB38E96233C707BBE6F85ADBF90A1DB1CE798240790E8FDAADF7AE5"
+    },
+    {
+      "Path": "FinalCandidate05_NativeVerification.json",
+      "Bytes": 36598,
+      "SHA256": "766FB7753F721AC92B075D63A2B9D1628B13B352D487FC7AF47C30E6DB857441"
+    },
+    {
+      "Path": "FinalCandidate05_SourceEquality.json",
+      "Bytes": 84576,
+      "SHA256": "9FF54D7AC8767244281A78C3C24844CCCCB54C66C8D9480D83BF4BCF7BD02FD2"
+    },
+    {
+      "Path": "FinalCandidate07_NativeSnapshot.txt",
+      "Bytes": 8816059,
+      "SHA256": "252089A0A3CB25EB21A9C2A291646D33B1BAFB96A6CE08CD8EE1BB6A1A30C82D"
+    },
+    {
+      "Path": "FinalCandidate07_NativeVerification.json",
+      "Bytes": 36598,
+      "SHA256": "DA4ED90A1E361187D09E730A3EE3DABA3C559F6BF519BCA221F6785059C01987"
+    },
+    {
+      "Path": "FinalCandidate07_SourceEquality.json",
+      "Bytes": 84576,
+      "SHA256": "9B4321E5ECEE50B9757CAF553334FF5299C7756B7963099E1890390DF6806F43"
+    },
+    {
+      "Path": "FinalDirected01_No.txt",
+      "Bytes": 248426,
+      "SHA256": "411F28FE5AEA65D1BDC290D44A8271168ABFA9F074FF8A3538782BE342730325"
+    },
+    {
+      "Path": "FinalDirected01_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "329DEBC5764179D5DA273C41CE6E092E5B138CECB199987344904D549F5B2C4B"
+    },
+    {
+      "Path": "FinalDirected01_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "FinalDirected01_No.txt.stdout.log",
+      "Bytes": 978,
+      "SHA256": "6788EA6991B7EBDE4AD637A0F61A8A5ABDF9FC6991D17F656EA629BFC0F43C64"
+    },
+    {
+      "Path": "FinalDirected01_Review.json",
+      "Bytes": 5092,
+      "SHA256": "B21E897DFA68A2C2321745B33F8D920539459CE39A9555E4C9F80754AB58A60B"
+    },
+    {
+      "Path": "FinalDirected01_Yes.txt",
+      "Bytes": 248272,
+      "SHA256": "E518117D1BA74E20AC040437286C78E72871F25237A0F5D2A6B9BAB044F83059"
+    },
+    {
+      "Path": "FinalDirected01_Yes.txt.memory.json",
+      "Bytes": 243,
+      "SHA256": "42B0502F7684315E8AD46345EB88483FE9028BA4920329654775951673DC319F"
+    },
+    {
+      "Path": "FinalDirected01_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "FinalDirected01_Yes.txt.stdout.log",
+      "Bytes": 987,
+      "SHA256": "2CA4EEF93DBC91FE0CBF6399D43C9659852804C5F0C29677154D0BE82237DFE7"
+    },
+    {
+      "Path": "FinalDirected02_No.txt",
+      "Bytes": 248771,
+      "SHA256": "1CF370C6988B7A029E437A7FF6C2EC4B17C734C9EDCBE7AE75E0006DE329CAA3"
+    },
+    {
+      "Path": "FinalDirected02_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "9A1C9361FC96AE8093BA777A67C9B0B067FA0750C43094A1C5C9D1C3E3ECD830"
+    },
+    {
+      "Path": "FinalDirected02_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "FinalDirected02_No.txt.stdout.log",
+      "Bytes": 979,
+      "SHA256": "35B5A25317B7F9D0AB308A57F22B39AAB8A3242965AFADB5E9D2169B3F127251"
+    },
+    {
+      "Path": "FinalDirected02_Review.json",
+      "Bytes": 5094,
+      "SHA256": "9902C670DF7FECF9635F32370542A3EFAB6C3D5AA804C2A68F1DA60E8A88EEA8"
+    },
+    {
+      "Path": "FinalDirected02_Yes.txt",
+      "Bytes": 249123,
+      "SHA256": "5502E2A38DF96F5FE257D000CADAEA647EFADA44020940FC35AEAE406AAA766F"
+    },
+    {
+      "Path": "FinalDirected02_Yes.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "002A5909197373DB7702C0B19BE433588E344EE5758854176D253938EFFA8A48"
+    },
+    {
+      "Path": "FinalDirected02_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "FinalDirected02_Yes.txt.stdout.log",
+      "Bytes": 988,
+      "SHA256": "52B1F9C809E5414C8F5AD116F19BA283232315BBC12AB92F30012AA47A2C7D02"
+    },
+    {
+      "Path": "FinalDirected03_No.txt",
+      "Bytes": 290535,
+      "SHA256": "C3DC659ADA6A8E3E736853FCCD7E5D7AAA631846C127F15060805842ABF54D83"
+    },
+    {
+      "Path": "FinalDirected03_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "563373670B1B2F0642A85B0633F1F3E2129FC66E9F6AD986AD7586E3B1B3DB02"
+    },
+    {
+      "Path": "FinalDirected03_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "FinalDirected03_No.txt.stdout.log",
+      "Bytes": 1329,
+      "SHA256": "1CDCF7979EDAFD8746133304A372C9ED9FF11009DCABC16D3BB258E74055F583"
+    },
+    {
+      "Path": "FinalDirected04_No.txt",
+      "Bytes": 290365,
+      "SHA256": "1BCBAED6343C8451340BC391760BD0E360F41DD9185D5D9C46D4E8996F62BE91"
+    },
+    {
+      "Path": "FinalDirected04_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "8E4D645C4DDFA09B38CD09551A5DAD869FDD2D9CCFFB6EB05D63220B416802A8"
+    },
+    {
+      "Path": "FinalDirected04_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "FinalDirected04_No.txt.stdout.log",
+      "Bytes": 1273,
+      "SHA256": "09B432BBB2771543327FB0793380F02041A8D0212E953A553B23110ADD08433C"
+    },
+    {
+      "Path": "FinalDirected04_Review.json",
+      "Bytes": 7076,
+      "SHA256": "D29377CDB8784DE0C5B34E5304ACDA0BCA42D2C1A81E7B5E1AA73144CD00AE65"
+    },
+    {
+      "Path": "FinalDirected04_Yes.txt",
+      "Bytes": 290292,
+      "SHA256": "9C0F868F7131B156C8F12F1FCA8B7365D7F45F80F2B9072B2EC72EE5D4478E68"
+    },
+    {
+      "Path": "FinalDirected04_Yes.txt.memory.json",
+      "Bytes": 243,
+      "SHA256": "7486964CFB7A9678C5530CF4B2A805D718D982FE258FED65590BD5F82EDCB57F"
+    },
+    {
+      "Path": "FinalDirected04_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "FinalDirected04_Yes.txt.stdout.log",
+      "Bytes": 1286,
+      "SHA256": "B6F0CE90BF1CAF1059E74AC2971854F1F903AF394BC4F72DF9B93F7DB4EE0ACC"
+    },
+    {
+      "Path": "FinalStructure01/Acceptance.json",
+      "Bytes": 2153,
+      "SHA256": "8CFCE7A092B509DEF3EA0F2D19F693D208D022A79CAC43A1BC8E533676A76075"
+    },
+    {
+      "Path": "FinalStructure01/Failure.json",
+      "Bytes": 964,
+      "SHA256": "BAA68B7A905E2887673F997B9D144A7FF18D65744DC606B582477CA76FF3C370"
+    },
+    {
+      "Path": "FinalStructure01/Input.json",
+      "Bytes": 974,
+      "SHA256": "DD06D178F7FEAC0604922AA47F89086DEDBEF47A9D6FD900705575C3308D612B"
+    },
+    {
+      "Path": "FinalStructure01/MemoryBeforeExcel.json",
+      "Bytes": 221,
+      "SHA256": "7143EE7F54FE7072E966DAABE67A015D6EE6367358920307DDC78987D155A0D3"
+    },
+    {
+      "Path": "FinalStructure01/Ownership.json",
+      "Bytes": 179,
+      "SHA256": "C2A8F9B59BE2C4936F0368A0E113022CBBD4A71E8D36D0835612BB9E946B7C0B"
+    },
+    {
+      "Path": "FinalStructure01/ProcessClosure.json",
+      "Bytes": 221,
+      "SHA256": "5182FEAA860FCC1898B4D9E1F241FDFE3B425A4E3DAB3F8A0908D2CDFD57126B"
+    },
+    {
+      "Path": "FinalStructure01/TestVerifyFinalStructure.FailedOriginal.ps1",
+      "Bytes": 18659,
+      "SHA256": "8B5AA6D2C2BB3859B8496667801A92344332ED8A7224FAD0AA8E4AFC1D7A1CB0"
+    },
+    {
+      "Path": "FinalStructure02/Acceptance.json",
+      "Bytes": 209437,
+      "SHA256": "C4129920076FC3B264C681E000CAA01D3E74BAC1C9038219568028736F3D1836"
+    },
+    {
+      "Path": "FinalStructure02/HelperCorrectionReview.json",
+      "Bytes": 5692,
+      "SHA256": "212AC8A7E93D1592E853F2086C6D7410AF14A12ADF9897A7FA22881FB4375B74"
+    },
+    {
+      "Path": "FinalStructure02/Input.json",
+      "Bytes": 1149,
+      "SHA256": "27C95CD7E0ADAF3789D8753361B78B852B2B02EA25478D568AE89AE79A85E212"
+    },
+    {
+      "Path": "FinalStructure02/MemoryBeforeExcel.json",
+      "Bytes": 224,
+      "SHA256": "6B4171FCA187627F3DC3DC235B950835D56ACB9D6C918E96F8613F131F75917E"
+    },
+    {
+      "Path": "FinalStructure02/Ownership.json",
+      "Bytes": 179,
+      "SHA256": "C06AFCFFAAF0362ADBEC2166E29D4ABC7F12B10FEB9711826F5769BE35406208"
+    },
+    {
+      "Path": "FinalStructure02/ProcessClosure.json",
+      "Bytes": 221,
+      "SHA256": "238CED75AB04273DF151C57AEFCAD52BC475BD3D8A6908D1B29BCE4701E59966"
+    },
+    {
+      "Path": "FinalStructure02/TestVerifyFinalStructure.FailedOriginal.ps1",
+      "Bytes": 18632,
+      "SHA256": "DEF84BF68345F959B2B7AEB522C41FAD4F09CA5F42FBF9773F65416B03C91893"
+    },
+    {
+      "Path": "FinalStructure03/Acceptance.json",
+      "Bytes": 157921,
+      "SHA256": "165DED572DA93D06137724AF44EA262215236BB81E75B24A6F5FFC7711F51956"
+    },
+    {
+      "Path": "FinalStructure03/Input.json",
+      "Bytes": 1444,
+      "SHA256": "30C26AEBAEA18CDA8DDC428B567E5DD6BFF69CD85C6818CA6479A668D7869941"
+    },
+    {
+      "Path": "FinalStructure03/MemoryBeforeExcel.json",
+      "Bytes": 222,
+      "SHA256": "A86E426996BAF2479FCBDBF9F190B81D0BC5C38AA305C13534D9A1BFDBFC14B6"
+    },
+    {
+      "Path": "FinalStructure03/Ownership.json",
+      "Bytes": 179,
+      "SHA256": "24E2A87344531D1941FFED75A73D28F5C9211F0649A87F02B583CFD65C41D223"
+    },
+    {
+      "Path": "FinalStructure03/ProcessClosure.json",
+      "Bytes": 221,
+      "SHA256": "4D29EC7F3D627681D0287B38321E27A28C919CE5F6A38D6F872FDCDC1488EF47"
+    },
+    {
+      "Path": "FinalStructure04/Acceptance.json",
+      "Bytes": 157921,
+      "SHA256": "55E15D56ACD4B5EF901D8AF0930CBF09F3EF2E9F14F21066755EEC10FE4B828D"
+    },
+    {
+      "Path": "FinalStructure04/Input.json",
+      "Bytes": 1269,
+      "SHA256": "D249954958500E8D4F2D4B5232481D6AFA109394F9517AEA81712434201ADFD4"
+    },
+    {
+      "Path": "FinalStructure04/MemoryBeforeExcel.json",
+      "Bytes": 224,
+      "SHA256": "F43CF3BFEC0751F330DEB4F94DE681C49DAF65B67E62F89DD3046B19FFA54EA5"
+    },
+    {
+      "Path": "FinalStructure04/Ownership.json",
+      "Bytes": 179,
+      "SHA256": "B865CD6E0E0BB316119E0942C0900F25003B9A37AFB42088F8CDA20045B147CD"
+    },
+    {
+      "Path": "FinalStructure04/ProcessClosure.json",
+      "Bytes": 221,
+      "SHA256": "376D2C7D3836A0DA1069A9C43EF9485EB88E8F05E8B494A3A4774F67C4F25B57"
+    },
+    {
+      "Path": "FinalViews02_No.txt",
+      "Bytes": 40608,
+      "SHA256": "94B7350B23A14611E3B949649A35A07BC23A545AF8F59DD795FB62150E8A5974"
+    },
+    {
+      "Path": "FinalViews02_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "25DE7FC9269433C67BA5B416411FF53F4B1DA95E9127468C56119D5DAF38F3AC"
+    },
+    {
+      "Path": "FinalViews02_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "FinalViews02_No.txt.stdout.log",
+      "Bytes": 952,
+      "SHA256": "8A477A3842C35ECC86D60FA32413AB9DFC6C630BB7683E8D8AB8CCDDF07E1E58"
+    },
+    {
+      "Path": "FollowupPatchApplication01.json",
+      "Bytes": 347,
+      "SHA256": "A0C2296EF22E09EF3C5A2866DDB008BA2454F79CB62B45B163965AC04B19CB08"
+    },
+    {
+      "Path": "FreshBuild01.json",
+      "Bytes": 506,
+      "SHA256": "EA4F480B3C816BB1E1322EB297FD577BDD6564D62EC380FE0DAC710DAA0AAB06"
+    },
+    {
+      "Path": "FreshBuild01/LayoutVerification.json",
+      "Bytes": 523928,
+      "SHA256": "96ECE05A4F25E359EC111576C69F450E2E0B9FA6ED850F9A25CE5133D49AC978"
+    },
+    {
+      "Path": "FreshBuild02.json",
+      "Bytes": 506,
+      "SHA256": "2E7D6AACB71BAACE66D54403C9752B1B8A20BA59583D4C50BCF334B364E446BA"
+    },
+    {
+      "Path": "FreshBuild03.json",
+      "Bytes": 507,
+      "SHA256": "3CB6D85FA8C80D4E64EC85750F8FABC299DF3DD5B8AC2C7F51C1F54379FE71E6"
+    },
+    {
+      "Path": "FreshBuild03/LayoutVerification.json",
+      "Bytes": 523928,
+      "SHA256": "5F24297D0893676F59B206065AC71775C987EF8833947E03AF0F5134F6E1219D"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/DataPreservation.json",
+      "Bytes": 52378,
+      "SHA256": "FEB911B3C8A9E91E3569320A2367911B1A2A8026BC3E97C99C96EC9EAA733789"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/DataPreservation.stdout.txt",
+      "Bytes": 2108,
+      "SHA256": "6C77CF304F0E17B7470D7BA5B43CAFDBEE64C46384E0E7620CB00B6AD207E168"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/Input.json",
+      "Bytes": 1374,
+      "SHA256": "2B486B3FAE77B7A47F9C55FF6C28D55078BAD2B5E2E9265F016701AD0D274A7B"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/MemoryBeforeExcel.json",
+      "Bytes": 223,
+      "SHA256": "A1ED87419A97A6FCFC8E01DA55DEF9F99122E5F622B149797F923AEDC7EDB112"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/Ownership.json",
+      "Bytes": 437,
+      "SHA256": "DE3EC40B80FBA4588C8CE31845E27AEBE7B703C6B0F720543EDF9058A09D3903"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/Preparation.json",
+      "Bytes": 24537,
+      "SHA256": "675C22A0B9604D48D0F86A0C3B779A843F1DDD8BE5CCD76A7CD6A9A756F9DBEA"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/ProcessClosure.json",
+      "Bytes": 191,
+      "SHA256": "1A25DA7C5BC691CA89E1A31013B2B8B7325425554F8449A6DECB66EF6BD518AE"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/TargetModule.After.bas",
+      "Bytes": 173568,
+      "SHA256": "460D3EFEB8105B20DF72ADBA89FAB1C84FBF569135EF31DB1211C82FDC61D7DC"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/TargetModule.Before.bas",
+      "Bytes": 173484,
+      "SHA256": "3725803B9B2A1E7CB6E954E74EA77188C77E3D9D9BD89D537E61D1E6FFF121A5"
+    },
+    {
+      "Path": "FreshBuild04_TestSync/ZIPNonVBAReview.json",
+      "Bytes": 7670,
+      "SHA256": "00FC224A1486FB1D7D74CAF8FF4812CF420C5F68EE97727925A4F6D7D14C0B9C"
+    },
+    {
+      "Path": "FullCoverageV6Selftests01/FocusedVerifier.stdout.txt",
+      "Bytes": 1947,
+      "SHA256": "9ADFB8DD7ACC3B16E52334FC33337B12ED6EE1599CBB4BC8F00DAD7E89972FDF"
+    },
+    {
+      "Path": "FullCoverageV6Selftests01/FullCoverage.stdout.txt",
+      "Bytes": 2596,
+      "SHA256": "2F1DFACE20FB884AA9E4EB5CA013F6393CABE22DE8D04961E9BFD49B7B1D35DE"
+    },
+    {
+      "Path": "FullCoverageV6Selftests01/Proof.json",
+      "Bytes": 7194,
+      "SHA256": "AD250AE2D216084FF0AC32E9573BA54DA32FAB741AF42964EEB508A892B108C4"
+    },
+    {
+      "Path": "HyperlinkAddControl01/NativeActions.json",
+      "Bytes": 37076,
+      "SHA256": "8F0AA48C873DA9BBA77617873CE92C87451492AE12674E057D4390A204426E9A"
+    },
+    {
+      "Path": "HyperlinkAddControl01/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "62322C815397A2B496FF8AB13A3E0AD316994C6DACAD2DF47F01CC7BFB236678"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/BorderEdgeCasesResult.json",
+      "Bytes": 256,
+      "SHA256": "FB317493CDC033E99877AC05955E005DACFCC1F103C7B3FAA58F4622D1ADCE23"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/DamagedBordersResult.json",
+      "Bytes": 194,
+      "SHA256": "341C3A8B0783820C3CA1D06EA982676DB209E918B6609389E010B2F6E6C4F5DF"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/Native05Analysis.json",
+      "Bytes": 30653,
+      "SHA256": "AAEDB0366AFFBAF532C29F6EA7057451CA802E5875066711640039CAF5646AC9"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/Preparation.json",
+      "Bytes": 1422,
+      "SHA256": "56EAB1DD1C45DD9DE804A40E324D41AF3E766F3F338F26C75FAF3376B7DECE9B"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/PreparedPatch.diff",
+      "Bytes": 2883,
+      "SHA256": "343A1D3015EB1EBDB14053B2AB4A1387A2CF9ACED5C949F5D06FCED5150BB9CB"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/SettingsCatalog.Before.ps1",
+      "Bytes": 563769,
+      "SHA256": "7AAE3455099A1779D7663EFF9DEB97DF16293C185B370D49DE0E5BFF8FA52AD1"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/SettingsCatalog.Candidate.ps1",
+      "Bytes": 565865,
+      "SHA256": "38DC197C560B6EDA65B3C446440731D65135CEC891B49D3CA76B6970439ED67B"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/TestBorderEdgeCases.ps1",
+      "Bytes": 1959,
+      "SHA256": "6E30488FEB80CE7D7C359EC8B8F709EF8B0E0C135692980599B7545FEBD90902"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/TestDamagedBorders.ps1",
+      "Bytes": 6060,
+      "SHA256": "93F4385360A36D4B029319891311148AE5D82E451336BE4FAC0E2E5544A3D1B0"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/TestUnchangedBorders.ps1",
+      "Bytes": 6644,
+      "SHA256": "68FB44A934E9506C7879CBDA589616BA69A7C4EE68D6203280D9376FEA37EC80"
+    },
+    {
+      "Path": "HyperlinkBorderSemanticsFix05/UnchangedBordersResult.json",
+      "Bytes": 200,
+      "SHA256": "BF516411380B0BE551B3B25B8F4E122333CCE30AA84D9A8074D87BF581893008"
+    },
+    {
+      "Path": "HyperlinkCaptureControl01/NativeActions.json",
+      "Bytes": 37080,
+      "SHA256": "F4E9770D99541E1234124D7DFEDE05970506C2A8214EF6D403CDB3AA74016765"
+    },
+    {
+      "Path": "HyperlinkCaptureControl01/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "19A07E0B9AA4CD9A62BDF2DA0322DA915C93DD8FDE7A998BB9F7FB5E0663CE90"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/Candidate05ToSaveOnly.json",
+      "Bytes": 29186,
+      "SHA256": "D10A473924F8B423717804FD5312ADA5BD308671F50735944A62A713B7774CBA"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/ChangedFormatMockResult.json",
+      "Bytes": 194,
+      "SHA256": "341C3A8B0783820C3CA1D06EA982676DB209E918B6609389E010B2F6E6C4F5DF"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/MockResult.json",
+      "Bytes": 200,
+      "SHA256": "BF516411380B0BE551B3B25B8F4E122333CCE30AA84D9A8074D87BF581893008"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/Native04PreservationCopy.json",
+      "Bytes": 134183,
+      "SHA256": "18FBBA70701B02EB40141B225C576780EB6DA48AD5B33A62E48F32032144F1F8"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/Preparation.json",
+      "Bytes": 2690,
+      "SHA256": "8002C67366C479823846A697DE28420DF921A21AFDFAA3034364E85D5BE4CDA5"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/PreparedPatch.diff",
+      "Bytes": 1538,
+      "SHA256": "627369FC37698D610F3D7D1DFA8894E2A46360237F1AE3A98F4EC6EEEC5A62F6"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/SaveOnlyToNative04.json",
+      "Bytes": 133913,
+      "SHA256": "1DCDDAC9BFC89DA0B2DAE9992D4A883E32BD1AFB36D5ABFACE91154F02616ADF"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/SettingsCatalog.Before.ps1",
+      "Bytes": 563401,
+      "SHA256": "EDA204EA8535507550F7A0A0B3E553B716C2EC630015BB0A981D7245204E0AA8"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/TestChangedFormat.ps1",
+      "Bytes": 6066,
+      "SHA256": "D576ABE6E7E410F707583AE6788E2A9C6ECE2E3322AB82FCFFCB72F186787198"
+    },
+    {
+      "Path": "HyperlinkConditionalFormatFix04/TestConditionalFormat.ps1",
+      "Bytes": 6635,
+      "SHA256": "B7C600E831A6E192AC39711998D36A3E3E150BEA95CC6AC93B77B8D4013071CD"
+    },
+    {
+      "Path": "HyperlinkFormatFix01/Application.json",
+      "Bytes": 165,
+      "SHA256": "BBD47ACE45B0A9B92EE581F15D2D4FC16B7F807361F7AE2CC30922AEC973B5CA"
+    },
+    {
+      "Path": "HyperlinkFormatFix01/MockResult.json",
+      "Bytes": 171,
+      "SHA256": "09BEE15F47B402C08D496F671307EADDA17817AD6EF0EF91F7AA4A0478D53A7B"
+    },
+    {
+      "Path": "HyperlinkFormatFix01/Proposal.json",
+      "Bytes": 2466,
+      "SHA256": "4633510EE722C0F7E07A354C783C00E0A63323FBDB02C6594A00F4D1E8480E0F"
+    },
+    {
+      "Path": "HyperlinkFormatFix01/SettingsCatalog.Candidate.ps1",
+      "Bytes": 562892,
+      "SHA256": "B6AFD0B5750E29358FC66864FB13F35AFECA513901521FE54EA8C363FA4A944B"
+    },
+    {
+      "Path": "HyperlinkFormatFix01/TestProposal.ps1",
+      "Bytes": 5296,
+      "SHA256": "55CC0AA0670B23851488CB75CC4C9E2F925F12363E758BD2B8944B8001C094FE"
+    },
+    {
+      "Path": "HyperlinkMergedStyleFix03/MockResult.json",
+      "Bytes": 194,
+      "SHA256": "341C3A8B0783820C3CA1D06EA982676DB209E918B6609389E010B2F6E6C4F5DF"
+    },
+    {
+      "Path": "HyperlinkMergedStyleFix03/Native03FailureCopy.json",
+      "Bytes": 1476,
+      "SHA256": "30075FFE9773690E638B7A02D942355049C82CBB3AA507091882EE6BA4F2A117"
+    },
+    {
+      "Path": "HyperlinkMergedStyleFix03/Preparation.json",
+      "Bytes": 2953,
+      "SHA256": "6E6B7A762210791E0EE7985EE4F41F03CAAAD1F4394C9D6050F2FC06EE13039C"
+    },
+    {
+      "Path": "HyperlinkMergedStyleFix03/PreparedPatch.diff",
+      "Bytes": 1815,
+      "SHA256": "D148E9BDCF11439C6D79B4EB0E56EE4F20E0CA8545BC7A74DB76D23E3388862F"
+    },
+    {
+      "Path": "HyperlinkMergedStyleFix03/SettingsCatalog.Before.ps1",
+      "Bytes": 563484,
+      "SHA256": "38F842028437E2CDF3B29C3C7DF9776A513B7ED2FC1BE0ACFC74EAAEABF2F8DC"
+    },
+    {
+      "Path": "HyperlinkMergedStyleFix03/TestMergedStyle.ps1",
+      "Bytes": 6053,
+      "SHA256": "CFAE8AFAB166BAA482DC3F6009BDEB22F609A991AD2E8CD783853BDA24FAE1EF"
+    },
+    {
+      "Path": "HyperlinkNative01/Failure.json",
+      "Bytes": 1373,
+      "SHA256": "480D1F1F508F4373AA89F9934F6D091744014CB88865B54BD1FC5ABAF42BDCFA"
+    },
+    {
+      "Path": "HyperlinkNative01/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "33AE7913EFD2127E9C4F494CAABBE168AE47E9DB3BF000F91A5D21D5E8466833"
+    },
+    {
+      "Path": "HyperlinkNative02/Failure.json",
+      "Bytes": 1385,
+      "SHA256": "183B3DBED20879D48625ADFFF4331AA95C7C1BA8E550DB6AD590119DFA2F2DA1"
+    },
+    {
+      "Path": "HyperlinkNative02/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "D22A37609800D35F68C988DD6FEF4E1DC415B141133B69B6C36AF16A0CA660E9"
+    },
+    {
+      "Path": "HyperlinkNative03/Failure.json",
+      "Bytes": 1476,
+      "SHA256": "30075FFE9773690E638B7A02D942355049C82CBB3AA507091882EE6BA4F2A117"
+    },
+    {
+      "Path": "HyperlinkNative03/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "53637E1476386303384E6A51657E213A3B7EF34130CAB88DB2CFC267765A8278"
+    },
+    {
+      "Path": "HyperlinkNative04/NativeActions.json",
+      "Bytes": 36974,
+      "SHA256": "776D766DD567EE7E1BC88CF929EDD7B480C25C2208FD6AEA6B1ADE34E253F2C2"
+    },
+    {
+      "Path": "HyperlinkNative04/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "274DA7EFD4C4AA6DD16AE967FA131C8B05CA12AE18EE850B1FE42B243F211DF3"
+    },
+    {
+      "Path": "HyperlinkNative04/Preservation.json",
+      "Bytes": 134183,
+      "SHA256": "18FBBA70701B02EB40141B225C576780EB6DA48AD5B33A62E48F32032144F1F8"
+    },
+    {
+      "Path": "HyperlinkNative04/SharedEdgeDiagnosis.json",
+      "Bytes": 2051571,
+      "SHA256": "2A8D8032053B6149821CCFD714C905A93CA7BC9054F6E7EA36B9EFB8B01CCEAA"
+    },
+    {
+      "Path": "HyperlinkNative04/StyleDiagnosis.json",
+      "Bytes": 573428,
+      "SHA256": "3D7A6B4C0B5A76E825531C4D9EB4E952EFA4CAC66E3E8B12089F2F52378045AF"
+    },
+    {
+      "Path": "HyperlinkNative05/NativeActions.json",
+      "Bytes": 36999,
+      "SHA256": "F52DB9BA549B0634936F15394CFF35C5F7ECBDEEC4D7F4642E4B74FC4D626BE7"
+    },
+    {
+      "Path": "HyperlinkNative05/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "C7E06A11533F2221A3925FD06EFA883D9E4A64292D5E77F6ECD5BEEA5A1AA271"
+    },
+    {
+      "Path": "HyperlinkNative05/Preservation.json",
+      "Bytes": 78833,
+      "SHA256": "E7CAC9C292F1C0B5E502C3A88B7A6362CBA4A5F9037D9C36439DA0CE94D66A3C"
+    },
+    {
+      "Path": "HyperlinkNative05/RichTextEffectiveFontDiagnosis.json",
+      "Bytes": 4866,
+      "SHA256": "E7EFEB881706512E73F3C6942DAD1DE11C0B5973E9F9FAE7893F6BBF36A68A38"
+    },
+    {
+      "Path": "HyperlinkNative05/SharedEdgePaletteDiagnosis.json",
+      "Bytes": 1155565,
+      "SHA256": "D70EDF07F1A3BE0AA6736E06F174D33D41693274314E3B723548E2FA0B6D67D6"
+    },
+    {
+      "Path": "HyperlinkNative05/StyleDiagnosis.json",
+      "Bytes": 163974,
+      "SHA256": "FEB616599F794FB3A1E17F6C70C44CB0DDCD1927945CE84E4CE513E0929D9334"
+    },
+    {
+      "Path": "HyperlinkNative06/NativeActions.json",
+      "Bytes": 36999,
+      "SHA256": "A438FCE08EC3857D24E05CF5BE9FCF4B583A11081C68C126F2C609ED88AF4B02"
+    },
+    {
+      "Path": "HyperlinkNative06/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "DF01985F990A54E881446B6C585E69C3A6433F560E957C86237D8F9E1BEC0BFC"
+    },
+    {
+      "Path": "HyperlinkNative06/Preservation.json",
+      "Bytes": 78833,
+      "SHA256": "3E4391A0E1FD4FF0AF4BF05304D1ADFA7847A619D5EFEF3FDA2D713D19790B5A"
+    },
+    {
+      "Path": "HyperlinkNative06/RichTextEffectiveFontDiagnosis.json",
+      "Bytes": 4866,
+      "SHA256": "2A754D02E508BAD2756FA75B0742F9200D5E7BCCD96702F5DE0D4E66EADAD5C2"
+    },
+    {
+      "Path": "HyperlinkNative06/SharedEdgePaletteDiagnosis.json",
+      "Bytes": 1155565,
+      "SHA256": "3CF81B09A4D56957B683E3B1707D14A3467308BF365BFAB2C0C6B6F0D82E56D8"
+    },
+    {
+      "Path": "HyperlinkNative06/StyleDiagnosis.json",
+      "Bytes": 163974,
+      "SHA256": "B4C1A613041555522FBA2A6CE774B1B81D8F95DEF78DE8CB78F7B81879933F25"
+    },
+    {
+      "Path": "HyperlinkNormalizationReview01/HyperlinkAddControl01.Preservation.json",
+      "Bytes": 100016,
+      "SHA256": "E9F724E158E119DCAAE60135E2B71A4EAA30B6C669DA10B06D4DA1BC069AB47E"
+    },
+    {
+      "Path": "HyperlinkNormalizationReview01/HyperlinkCaptureControl01.Preservation.json",
+      "Bytes": 29189,
+      "SHA256": "8CA05AB405A23863B929CEB028B6B0A546F14D77B079105A9926EB6223DB4D82"
+    },
+    {
+      "Path": "HyperlinkNormalizationReview01/LinkOnlyStyleDiagnosis.json",
+      "Bytes": 150644,
+      "SHA256": "87760D244CC262557028313F9C89A24E3E12412F6144FBE35BF8BF43238438EC"
+    },
+    {
+      "Path": "HyperlinkNormalizationReview01/Review.json",
+      "Bytes": 2965,
+      "SHA256": "2F746E68D0876ED9BBEFE6951E00F54ECFD21E986931539B1D9F3851AE2937CA"
+    },
+    {
+      "Path": "HyperlinkNormalizationReview01/RichTextAppearance.json",
+      "Bytes": 3465,
+      "SHA256": "703CB52CADBC65C407402309C131324B9D1378B9008A16AB239D37C6CA2200FC"
+    },
+    {
+      "Path": "HyperlinkNormalizationReview01/ScopeAndLimitations.md",
+      "Bytes": 5604,
+      "SHA256": "5283E8DC42CE8F8EBE7B82CA2E13B00750B3CF5B7C721CDFC35351C8FE26287C"
+    },
+    {
+      "Path": "HyperlinkNormalizationReview01/TestReadRichTextEquivalence.py",
+      "Bytes": 5142,
+      "SHA256": "ACD06DE83A34923258FCE94174E4B732C79BF3701A50D41918F9458C12919175"
+    },
+    {
+      "Path": "HyperlinkSaveControl01/BaseToSaveOnly.SharedEdges.json",
+      "Bytes": 776,
+      "SHA256": "9144F2608FD237AF6DDF7ED18E4144B5C191D29CC6E277A55B0361F5CB05F920"
+    },
+    {
+      "Path": "HyperlinkSaveControl01/BaseToSaveOnly.StyleDiagnosis.json",
+      "Bytes": 368,
+      "SHA256": "9AABFD136143107CD54FE40B3CC4ACB81B5942949CF348080E1413C44DD774DD"
+    },
+    {
+      "Path": "HyperlinkSaveControl01/ControlVsHyperlinkDiagnosis.json",
+      "Bytes": 1186,
+      "SHA256": "825A8D842791435BCB75C105E43A340C1AE147B47355B799BC7CBEA22C1D94C9"
+    },
+    {
+      "Path": "HyperlinkSaveControl01/NativeActions.json",
+      "Bytes": 36998,
+      "SHA256": "05636DC213A67AF56C7361C9EC961581DA081369664EB9BAD4128D2A96ACA51A"
+    },
+    {
+      "Path": "HyperlinkSaveControl01/Ownership.json",
+      "Bytes": 193,
+      "SHA256": "47671547639E056A6A19248B6AD379A3B14FDC1C7A0824E932A15509F3FFD130"
+    },
+    {
+      "Path": "HyperlinkSaveControl01/SaveOnlyToHyperlink04.SharedEdges.json",
+      "Bytes": 2051571,
+      "SHA256": "15949F60D7E3134DC6DC928AE5DE061BC2A3E7DC27DC94BB32707E30C3CB1924"
+    },
+    {
+      "Path": "HyperlinkSaveControl01/SaveOnlyToHyperlink04.StyleDiagnosis.json",
+      "Bytes": 573432,
+      "SHA256": "7E41D21CE5FE078A74DA47CD8036E4D135C5CADBE955CC848CCEC9FD25FD5B42"
+    },
+    {
+      "Path": "HyperlinkStyleDispatchFix02/Checks.json",
+      "Bytes": 314,
+      "SHA256": "56F5A0C57FF0ED2BF6C53BB02F223303F4564CDB92C58756FED557F62E7419DE"
+    },
+    {
+      "Path": "HyperlinkStyleDispatchFix02/Preparation.json",
+      "Bytes": 1372,
+      "SHA256": "CFBD3087FDC336C0982EBE53FB7B731D36C543BEB06B885035CB83D677569D5C"
+    },
+    {
+      "Path": "HyperlinkStyleDispatchFix02/PreparedPatch.diff",
+      "Bytes": 971,
+      "SHA256": "283DF7F7031C544F4BF2568353DC5D5484590F0AE678A29E8A2128F9293208C6"
+    },
+    {
+      "Path": "HyperlinkStyleDispatchFix02/SettingsCatalog.Before.ps1",
+      "Bytes": 563155,
+      "SHA256": "E7249D4CEBBAAB4B2433B1072E425378C26FA975A744510FE52EF251ACFA6CA2"
+    },
+    {
+      "Path": "HyperlinkStyleDispatchFix02/TestStyleDispatch.ps1",
+      "Bytes": 2012,
+      "SHA256": "3D200F3FF0C60BF389ACD7FA4BBDB603AA06432DDCAD0A40005EFC6B6ABBDE53"
+    },
+    {
+      "Path": "IndependentGeometryReview01/Review.json",
+      "Bytes": 10267,
+      "SHA256": "803159D0491B5EA81657E21249BCD33FEA6749A8F9C2A3C393B8BE8B716EDAF3"
+    },
+    {
+      "Path": "MathRuntime16Fix01/Preparation.json",
+      "Bytes": 2200,
+      "SHA256": "CA543851618D0F7350B694FAF5DBDBCE81E8D73ABCFCB9C42C25EEAC7589130F"
+    },
+    {
+      "Path": "MathRuntime16Fix01/PreparedPatch.diff",
+      "Bytes": 10445,
+      "SHA256": "28D78C2D6377FCD9783856615A309D7DB83FEB84920FC7671D9EA65F5F022B63"
+    },
+    {
+      "Path": "NativeCAD02.Watchdog/Completion.json",
+      "Bytes": 492,
+      "SHA256": "C839D1987D21771189DCEB059B767547A857E654A5B6C298849B509C0019F2D5"
+    },
+    {
+      "Path": "NativeCAD02.Watchdog/Launch.json",
+      "Bytes": 1450,
+      "SHA256": "0103A08042DFBF399C34744331E155B663D54076C6503A1373B95EFF324A0438"
+    },
+    {
+      "Path": "NativeCAD02.Watchdog/Worker.stderr.log",
+      "Bytes": 456,
+      "SHA256": "917997FA37CEA7953DAE4F60358AA67706464C0E5A13B6E70A8D109C2A88869E"
+    },
+    {
+      "Path": "NativeCAD02.Watchdog/Worker.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NativeCAD02.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "8E41D949188F3566DAC01FD9AF590DC81997B4E7F4A12D66C8A135C4AC56D916"
+    },
+    {
+      "Path": "NativeCAD03.Watchdog/Completion.json",
+      "Bytes": 1164,
+      "SHA256": "36EDFA79BD639BC28969888648B7BB7E261411D8C0FDD68051682912ACC20BBC"
+    },
+    {
+      "Path": "NativeCAD03.Watchdog/Launch.json",
+      "Bytes": 1416,
+      "SHA256": "881873BD17ABBE96F84CE0229D5BFB3CAB015982843DA455F9CED48379AB9303"
+    },
+    {
+      "Path": "NativeCAD03.Watchdog/WatchdogLast.json",
+      "Bytes": 710,
+      "SHA256": "39F981B909B97763398F804C397D307206209EF0982557E6FCB6F94FE6E2D91D"
+    },
+    {
+      "Path": "NativeCAD03.Watchdog/Worker.stderr.log",
+      "Bytes": 647,
+      "SHA256": "4AF48830B22E2E3278CD30E9AAA19B5977E34944ACEBF07BD206ED107633FB94"
+    },
+    {
+      "Path": "NativeCAD03.Watchdog/Worker.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NativeCAD03.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "26EE2CB22612AED91FE82569B0B35AEBBBA4919CE671A4BDDD3F31A2429F4679"
+    },
+    {
+      "Path": "NativeCAD03/Acceptance.json",
+      "Bytes": 433,
+      "SHA256": "75F6165F972F27FCEC7A9E92A17FBBC41DB2D5DE2C8CB3BEA01F2E3AC41E866C"
+    },
+    {
+      "Path": "NativeCAD03/Failure.json",
+      "Bytes": 193,
+      "SHA256": "2DB4A6E9F03D1AB7C13DA31D1130CABAB98B68BAF54AB6DFC9431A6A651D6138"
+    },
+    {
+      "Path": "NativeCAD03/HelperCompileFailure.json",
+      "Bytes": 540,
+      "SHA256": "99322622E7D28A4E42798F6DB20929A428466B972BC1AD2E6C698EA34237CE15"
+    },
+    {
+      "Path": "NativeCAD03/Input.json",
+      "Bytes": 1820,
+      "SHA256": "426677500A80FA6E8D6C80106A543C7E39ADE04ADD54E3ACBCE0BDDBD597E390"
+    },
+    {
+      "Path": "NativeCAD03/Memory_BeforeExcel.json",
+      "Bytes": 390,
+      "SHA256": "023E66F48D26E0F68B38C47C0BABA038F7D47ACF790616B1E09F7754304A776A"
+    },
+    {
+      "Path": "NativeCAD03/Ownership.json",
+      "Bytes": 300,
+      "SHA256": "21B2DACD20BF5817711A825B24ABF60EC3F0DF79661BC424203BA691DB8C40E2"
+    },
+    {
+      "Path": "NativeCAD03/ProcessClosure.json",
+      "Bytes": 423,
+      "SHA256": "1C46BDE13A299E77FD7F82BAE2978DDF93FB2EEE93B503C5AB4FB00BD29615F1"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/Completion.json",
+      "Bytes": 1258,
+      "SHA256": "07F98199F9E160F668BDE9E6DA3450ED1FFFDC0FE6ECFAFD8D1C8CF79F38C8C2"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/Launch.json",
+      "Bytes": 1356,
+      "SHA256": "75AB39609A44D88FEAAE1A5841315E08D1725C49619751FAFB914D103585F614"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/WatchdogLast.json",
+      "Bytes": 967,
+      "SHA256": "E1F101F59D48B8EF5CD120EB287FB33297801BBD73FE01A2D7912F773C83528A"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/Worker.stderr.log",
+      "Bytes": 647,
+      "SHA256": "4AF48830B22E2E3278CD30E9AAA19B5977E34944ACEBF07BD206ED107633FB94"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/Worker.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "9FD744B80AC8B19C718B2E88948347C5303D4D071B54AE8511F6BF36B3B96301"
+    },
+    {
+      "Path": "NativeCAD04/Acceptance.json",
+      "Bytes": 519,
+      "SHA256": "2BCF76B303E570D3345CD8CE735F23DBCB40DA28E56B0A9C3C602920D0181C05"
+    },
+    {
+      "Path": "NativeCAD04/Failure.json",
+      "Bytes": 218,
+      "SHA256": "95B1939335A23576F83B1693DD25D4543E6C2CF97CD027A5DBC719C39205B753"
+    },
+    {
+      "Path": "NativeCAD04/Input.json",
+      "Bytes": 1302,
+      "SHA256": "648FB3B148F70EC7816E6DCD551DA23CA3889E069141E4156024081C076052ED"
+    },
+    {
+      "Path": "NativeCAD04/Memory_BeforeAutoCAD.json",
+      "Bytes": 388,
+      "SHA256": "1993D59B22D0FC28549E9756C1A1CDFD1F0D1381C786F0CBDF663F0AF9DF2B32"
+    },
+    {
+      "Path": "NativeCAD04/Memory_BeforeExcel.json",
+      "Bytes": 390,
+      "SHA256": "A79E9E72C2B645567A7073C7D68077C78B85C40E145A6551943C652C8ACD771B"
+    },
+    {
+      "Path": "NativeCAD04/NativeContourCells.txt",
+      "Bytes": 16407,
+      "SHA256": "EBC90B9F1BC584537F315B9688A27BCA066DDB9BDB8422A4EBDE83AB4398F098"
+    },
+    {
+      "Path": "NativeCAD04/NativeRun.json",
+      "Bytes": 319,
+      "SHA256": "55939352FE245E4CA6B3A2BF13EBFA8B244F96543A80F743F6F4D6D8439DD867"
+    },
+    {
+      "Path": "NativeCAD04/Ownership.json",
+      "Bytes": 503,
+      "SHA256": "FBD9C312D98386EBE8D5C46912F1BE6827CCD6461C4862F7E909A721F1231AF9"
+    },
+    {
+      "Path": "NativeCAD04/ProcessClosure.json",
+      "Bytes": 443,
+      "SHA256": "FFC9B7E6BBB05DF3B721A0BA6C9D0A2DCA9D1AE502695B162AE28E6BDA9DA625"
+    },
+    {
+      "Path": "NativeCAD05.Watchdog/Completion.json",
+      "Bytes": 1189,
+      "SHA256": "B71DC5DB004D8B9D91EC075D78669A003B2655E605FC3282B37ECE50DFB37F3E"
+    },
+    {
+      "Path": "NativeCAD05.Watchdog/Launch.json",
+      "Bytes": 1358,
+      "SHA256": "115A296D6921CF22F3A6E52F7FE59ADCBF457FF12D098AE1E7255E45B15B67E0"
+    },
+    {
+      "Path": "NativeCAD05.Watchdog/WatchdogLast.json",
+      "Bytes": 959,
+      "SHA256": "2D853B3EBBF546800FAF9929185E68A38B67705C94E85B88DC5AE7208D0C2E55"
+    },
+    {
+      "Path": "NativeCAD05.Watchdog/Worker.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NativeCAD05.Watchdog/Worker.stdout.log",
+      "Bytes": 434,
+      "SHA256": "4179912F0D4048A13D795F6F74D292CCA1192B1D455FC16C40E92834FEF60996"
+    },
+    {
+      "Path": "NativeCAD05.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "28B40615E0941DF90E92F16BB15A63A8ADCB1A37A6D27A4EBEF3E9B3BF683B43"
+    },
+    {
+      "Path": "NativeCAD05/Acceptance.json",
+      "Bytes": 435,
+      "SHA256": "C3822709435B18978E2ACF8EDC125081E02D2298F0DD4D89ED0CF6244E1C5A58"
+    },
+    {
+      "Path": "NativeCAD05/Input.json",
+      "Bytes": 1302,
+      "SHA256": "150E7626B8675868385A28B20C3DADFCA1588DE8C41BDFB6EE1E94A65F4631F4"
+    },
+    {
+      "Path": "NativeCAD05/Memory_BeforeAutoCAD.json",
+      "Bytes": 391,
+      "SHA256": "E81F4675158CE53D428ECE2E22A38CFB6FA7003F6363A8FFC428A2F6B84A9866"
+    },
+    {
+      "Path": "NativeCAD05/Memory_BeforeExcel.json",
+      "Bytes": 390,
+      "SHA256": "D9C9ADD80F53E756461DA96F72CFC5C4BD06BEF6199A2BD0D87FFCEAC185C1ED"
+    },
+    {
+      "Path": "NativeCAD05/NativeContourCells.txt",
+      "Bytes": 16887,
+      "SHA256": "15FF294F89C505E5EAD04B7508322690DC63BE4F9C5A81AAFAFFC1A5E4DC8B3E"
+    },
+    {
+      "Path": "NativeCAD05/NativeRun.json",
+      "Bytes": 328,
+      "SHA256": "7721083B43B6D9EF23E980879B0ADE793619C9489E5AF1C814C683C7A9515907"
+    },
+    {
+      "Path": "NativeCAD05/Ownership.json",
+      "Bytes": 503,
+      "SHA256": "A7AFE33EA9577D9E63AE14AE865B1ADB98C12ADCBEDAEAEE6EA1275D14C9DBA6"
+    },
+    {
+      "Path": "NativeCAD05/ProcessClosure.json",
+      "Bytes": 443,
+      "SHA256": "540E45FBEDE0DB9CC8BDC66E111E957FE6C94BDCF1C9FCF1395E6696EFC7EEF7"
+    },
+    {
+      "Path": "NativeCAD06.Watchdog/Completion.json",
+      "Bytes": 1189,
+      "SHA256": "2D3EB9DDF940011CBA99503E70ECDFBE78A7A7E3B3CE86194AE6AC7D13375661"
+    },
+    {
+      "Path": "NativeCAD06.Watchdog/Launch.json",
+      "Bytes": 1389,
+      "SHA256": "735C1FE711A619771CB38E6C1223D1AE7E7B54A57A89198DB1A3A52EDE576DBA"
+    },
+    {
+      "Path": "NativeCAD06.Watchdog/WatchdogLast.json",
+      "Bytes": 966,
+      "SHA256": "E21A9A73EA5EDE67CEE28690E5D46A8F0E24BE45FEC35C0B6FA44F0F4986D63D"
+    },
+    {
+      "Path": "NativeCAD06.Watchdog/Worker.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NativeCAD06.Watchdog/Worker.stdout.log",
+      "Bytes": 434,
+      "SHA256": "78DB63AF120ECB49C9778BE336EEDDA1B09B54E2E54E1CF6591BAA1B39645688"
+    },
+    {
+      "Path": "NativeCAD06.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "25BAFD2293E5E70453858678B12AC7A322D0D8D1827D8A6DB572155CA58AEC9D"
+    },
+    {
+      "Path": "NativeCAD06/Acceptance.json",
+      "Bytes": 435,
+      "SHA256": "DE8FAED7591D9ECD29F0A5A0B1E288B60FD02424E9310C1E95B597AE9121FB57"
+    },
+    {
+      "Path": "NativeCAD06/Input.json",
+      "Bytes": 1596,
+      "SHA256": "1FB30E9533E50033376DF3022F2195CD47250F75D7D446DFF7F32689DF649BA8"
+    },
+    {
+      "Path": "NativeCAD06/Memory_BeforeAutoCAD.json",
+      "Bytes": 393,
+      "SHA256": "FB5A817B3FCA8CC4F7AA8B027F8CF6404B42D71967DA72F3A18DFB362003ADAB"
+    },
+    {
+      "Path": "NativeCAD06/Memory_BeforeExcel.json",
+      "Bytes": 390,
+      "SHA256": "3DD5D9C1C762E0FF6E1ED498E78F651DF8F6E446DBF50866E37F460BA8D13453"
+    },
+    {
+      "Path": "NativeCAD06/NativeContourCells.txt",
+      "Bytes": 16887,
+      "SHA256": "15FF294F89C505E5EAD04B7508322690DC63BE4F9C5A81AAFAFFC1A5E4DC8B3E"
+    },
+    {
+      "Path": "NativeCAD06/NativeRun.json",
+      "Bytes": 319,
+      "SHA256": "0A5DB76C7F0B856FE57A7A431D9363E26F420DAA9E85B83D891BBFAB63E2498C"
+    },
+    {
+      "Path": "NativeCAD06/Ownership.json",
+      "Bytes": 502,
+      "SHA256": "048F5D82FA1A235FD394D49F700842128D0AE7D83E0B22CB8E2CC66E28A50E9E"
+    },
+    {
+      "Path": "NativeCAD06/PrimaryReview.json",
+      "Bytes": 26516,
+      "SHA256": "F1F4B693755587F908FD9A5EA3B3BB96316B5A57A63B41776EBD288D3739C67F"
+    },
+    {
+      "Path": "NativeCAD06/ProcessClosure.json",
+      "Bytes": 442,
+      "SHA256": "D21D093548A4784D7CEE319F7189A6FAEFD9CE8C9CD5C5D0AEFFA48E3CF3543A"
+    },
+    {
+      "Path": "NativeCAD07.Watchdog/Completion.json",
+      "Bytes": 1196,
+      "SHA256": "E15229A4EF304199F1FF9CDA612DF84BBE2E6145DE57BF83725514BE8E034AE4"
+    },
+    {
+      "Path": "NativeCAD07.Watchdog/Launch.json",
+      "Bytes": 1430,
+      "SHA256": "882265EB1B6234E6D672F8BD0BC0125EB6CF8BEC5F8DCC41765A92B84EEF2115"
+    },
+    {
+      "Path": "NativeCAD07.Watchdog/WatchdogLast.json",
+      "Bytes": 967,
+      "SHA256": "4C9F966463FE9FFE4C2826060466B4FA6BC53690F4C953ACA552D7AAA3682101"
+    },
+    {
+      "Path": "NativeCAD07.Watchdog/Worker.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NativeCAD07.Watchdog/Worker.stdout.log",
+      "Bytes": 434,
+      "SHA256": "CEA4AC388AA6FFCD96F62CAF5BBEDE5AEB7D4648BC7AE6632AC2051E1455222A"
+    },
+    {
+      "Path": "NativeCAD07.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "D7735A72E0DBC2498CE404183921B64B7A5D04C09CDC1EE1FFDC39383CF51D06"
+    },
+    {
+      "Path": "NativeCAD07/Acceptance.json",
+      "Bytes": 435,
+      "SHA256": "58ABFD764AB85355667FDC18CD26E863F9E69C9CCAC037DF2ECD14958444D3D5"
+    },
+    {
+      "Path": "NativeCAD07/Input.json",
+      "Bytes": 1829,
+      "SHA256": "4894CDF21D9D67B0A7080F36C819D6D7BECBF61AA13EA0CF10765665A2FBAEE8"
+    },
+    {
+      "Path": "NativeCAD07/Memory_BeforeAutoCAD.json",
+      "Bytes": 393,
+      "SHA256": "7CF8D60DAFEAC4892EA86B3A098154D1D94C8933FFBC2EC683160721A142ED69"
+    },
+    {
+      "Path": "NativeCAD07/Memory_BeforeExcel.json",
+      "Bytes": 391,
+      "SHA256": "FD8D6F37D5A23F99F76CA044F870495B460AF99886156185B4254982F1B9C37D"
+    },
+    {
+      "Path": "NativeCAD07/NativeContourCells.txt",
+      "Bytes": 16887,
+      "SHA256": "15FF294F89C505E5EAD04B7508322690DC63BE4F9C5A81AAFAFFC1A5E4DC8B3E"
+    },
+    {
+      "Path": "NativeCAD07/NativeRun.json",
+      "Bytes": 328,
+      "SHA256": "8A6B06374D057FB24A4033F165885A5C46D918FDC5DB766E1221CC7F88DFC37F"
+    },
+    {
+      "Path": "NativeCAD07/Ownership.json",
+      "Bytes": 503,
+      "SHA256": "6478196BFE1B8E4DB82E4347F1F0B77368C3A589C8B417EE9FC48BBB647E17FC"
+    },
+    {
+      "Path": "NativeCAD07/PrimaryReview.json",
+      "Bytes": 26715,
+      "SHA256": "3284024AB14EF8B29D60A0BF7CBF7D36009FF75FE2BC9B210F5B4C95808268A0"
+    },
+    {
+      "Path": "NativeCAD07/ProcessClosure.json",
+      "Bytes": 443,
+      "SHA256": "12C211719129E47C23A7C5567E55F69345419DEF3F0272BC140A1EE2554FC7DB"
+    },
+    {
+      "Path": "NativeCAD07/TestReviewPrimary.py",
+      "Bytes": 12228,
+      "SHA256": "EE7AED93B5F3CBDFF836703E0837FD508225BBB9C9E880F3548A8E2D99707BB0"
+    },
+    {
+      "Path": "NativeCADPlan/DeferredConnectedImport.diff",
+      "Bytes": 2452,
+      "SHA256": "B156FCC1908EA209D60143D2BA2E3A7EDD57D7960C54802D648D51C8C593B401"
+    },
+    {
+      "Path": "NativeCADPlan/DeferredConnectedImport.json",
+      "Bytes": 799,
+      "SHA256": "758A5F5237311539F25058BB1B800DF4462E6987133362AB6A3B551AEF540162"
+    },
+    {
+      "Path": "NativeCADPlan/Failure04FixCandidate/FixProof.json",
+      "Bytes": 2242,
+      "SHA256": "B076759EADEB0C972CEFF6C56B794C95DB08EED1E6DBF30D21E0D29B41832037"
+    },
+    {
+      "Path": "NativeCADPlan/Failure04FixCandidate/HelperIxyTolerance.diff",
+      "Bytes": 3552,
+      "SHA256": "DC32D8AE69DFB57709CE8569379AC696D1A62502E08E4CAC9D97D937952164FD"
+    },
+    {
+      "Path": "NativeCADPlan/Failure04FixCandidate/modAutoCADStressExport.Candidate.bas",
+      "Bytes": 144102,
+      "SHA256": "08C3BB2549909DDAC7A757B961ADA8775CF6D6F3BF4C100512FB71AFE80145D2"
+    },
+    {
+      "Path": "NativeCADPlan/Failure04FixCandidate/ProductionCleanup.diff",
+      "Bytes": 1618,
+      "SHA256": "1987F1E79A0F9278F64359A04D8AC6F8F6C1A1A66E40667CE6A3FBC6E9A70989"
+    },
+    {
+      "Path": "NativeCADPlan/Failure04FixCandidate/TestNativeContourCellProbe.Candidate.bas",
+      "Bytes": 24120,
+      "SHA256": "CD80101930619A38F5FEE52BFB091B54E64A95974E29CC05C479AB64D6AC5039"
+    },
+    {
+      "Path": "NativeCADPlan/HelperCompileFailure03Fix.diff",
+      "Bytes": 2744,
+      "SHA256": "FAAA7728B68A272F7DF7719B3975333FA2E3111C733653B924BF927977A0DF5E"
+    },
+    {
+      "Path": "NativeCADPlan/HelperCompileFailure03Fix.json",
+      "Bytes": 1574,
+      "SHA256": "885956AE8AB3A5A32417DC826D141E96A96496AE3E64510B4BC1C1FADD62651F"
+    },
+    {
+      "Path": "NativeCADPlan/HelperStaticReview.json",
+      "Bytes": 362,
+      "SHA256": "F3DFA37A15717335069B0322E9CA26E08CBB43EEF60363B797DA590E4BFE1B35"
+    },
+    {
+      "Path": "NativeCADPlan/LaunchFailure01.json",
+      "Bytes": 2018,
+      "SHA256": "418DDDA9F1253051E0C887C3E1BE891AA4CE5E52509E8D7C89BC4E35AADE0D5D"
+    },
+    {
+      "Path": "NativeCADPlan/LaunchFailure02.diff",
+      "Bytes": 13632,
+      "SHA256": "BEE1FA752AC77ADDC8D46D53DD28891A61911ED4C5BE0A26D0CDFED65620421C"
+    },
+    {
+      "Path": "NativeCADPlan/LaunchFailure02.json",
+      "Bytes": 2622,
+      "SHA256": "A88CE41BC52FDC2AE2310507785B0A98258B5C23AAB6BC9E53F45732EA369111"
+    },
+    {
+      "Path": "NativeCADPlan/LaunchFailure02_PreFix/Test-RunContourWorkflow.ps1",
+      "Bytes": 10633,
+      "SHA256": "B71BCCFE94B47B1A468C74CCA7048350F72E847A27DAB61B61120F36617CD654"
+    },
+    {
+      "Path": "NativeCADPlan/LaunchFailure02_PreFix/Test-RunNativeContourCells.ps1",
+      "Bytes": 12488,
+      "SHA256": "754413BB20A8F299CB3DA89F0443F88D9707D482760460AAD4183DE53D53F817"
+    },
+    {
+      "Path": "NativeCADPlan/LaunchFailure02_PreFix/Test-WatchContourWorkflow.ps1",
+      "Bytes": 8804,
+      "SHA256": "1238FD1664A2CCA57C1196B43A3AB4F900308A66DEBF24EC172F8A95C7A8DC4D"
+    },
+    {
+      "Path": "NativeCADPlan/LaunchFailure02_PreFix/Test-WatchNativeContourCells.ps1",
+      "Bytes": 8778,
+      "SHA256": "438F00EDDF8FB801A3EE0798D8A2C0E4B7608C5550E239A523BE5FE8777A3321"
+    },
+    {
+      "Path": "NativeCADPlan/LaunchFailure02PathChecks.json",
+      "Bytes": 775,
+      "SHA256": "7EE5E1A2ACC615012334DEF78633347E17B289B7696A390C48926F97DC0DC761"
+    },
+    {
+      "Path": "NativeCADPlan/Test-RunNativeContourCells.ps1",
+      "Bytes": 12596,
+      "SHA256": "E46588F916D8A2E1E5954AFBA11670438553C3FA99A9286339B776CF03A91879"
+    },
+    {
+      "Path": "NativeCADPlan/Test-WatchNativeContourCells.ps1",
+      "Bytes": 9028,
+      "SHA256": "9408295BE024AE7DF2DE8F663262648221CB9DA1BD5B29D391D95BFA2715F064"
+    },
+    {
+      "Path": "NativeCADPlan/TestNativeContourCellProbe.bas",
+      "Bytes": 24120,
+      "SHA256": "CD80101930619A38F5FEE52BFB091B54E64A95974E29CC05C479AB64D6AC5039"
+    },
+    {
+      "Path": "NativeCADPlan/TestNativeContourCellProbe.PreLocalFix.bas",
+      "Bytes": 23570,
+      "SHA256": "E157215D1A2649D536ADE7F79B6C3761A3FD2160CC2CC0E79742C44704DCB4E3"
+    },
+    {
+      "Path": "NewContracts01_No.txt",
+      "Bytes": 213804,
+      "SHA256": "655F44F8EA1530E008A8A8F58DCF7856E2C89D520FC1116B43A1DEA0B7A79AD7"
+    },
+    {
+      "Path": "NewContracts01_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "293583392FE8D32B47D89627DC33D7DE958577AEE4B278D0A33F5454D92A49AC"
+    },
+    {
+      "Path": "NewContracts01_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NewContracts01_No.txt.stdout.log",
+      "Bytes": 910,
+      "SHA256": "A6A65B2B7340F00FA7C6EA8020A709DB01587CC885D89A9D0F91D84A627D5434"
+    },
+    {
+      "Path": "NewContracts02_No.txt",
+      "Bytes": 235253,
+      "SHA256": "BA44AAF56496B14F0E418D46A4A2669490582E030681E324D764CA33EBC62191"
+    },
+    {
+      "Path": "NewContracts02_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "3821325A147612B7773BC956C9F833EA535DB66996C20BA35BE56E665B7662D6"
+    },
+    {
+      "Path": "NewContracts02_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NewContracts02_No.txt.stdout.log",
+      "Bytes": 828,
+      "SHA256": "763A14A35F7630F2228B2C12C3D26A92ED25E73D5C9E3961EF247AAC8707300E"
+    },
+    {
+      "Path": "NewContracts02_NoReview.json",
+      "Bytes": 1935,
+      "SHA256": "2A56C089411DEF262C2BEC9CC6A80D49EB6B49567A3F93B7A293C5AEE6A7251C"
+    },
+    {
+      "Path": "NewContracts03_No.txt",
+      "Bytes": 235774,
+      "SHA256": "42EBBDAE408F5C57B3BF77F7B5F71CB115C8B4085A9516E853FD51E6A2364F9C"
+    },
+    {
+      "Path": "NewContracts03_No.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "A44B17D358D3B4C004FFD073CBEFD46D9081C7442FF9CBCBE4186514D64A9573"
+    },
+    {
+      "Path": "NewContracts03_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NewContracts03_No.txt.stdout.log",
+      "Bytes": 778,
+      "SHA256": "1C96B339B15517052496C5B60FF371F3D1F0CC5502215E0540C7857BAA8D304E"
+    },
+    {
+      "Path": "NewContracts03_Review.json",
+      "Bytes": 3652,
+      "SHA256": "2EC732E81F9058AAA5B536B2D74E8E599988E88DE9B88D9DA05585021693A018"
+    },
+    {
+      "Path": "NewContracts03_Yes.txt",
+      "Bytes": 235786,
+      "SHA256": "C911F51041BCD2BAC627AEF5910012F3FC8F3357741B8F89E37FBBE4B7BF6D98"
+    },
+    {
+      "Path": "NewContracts03_Yes.txt.memory.json",
+      "Bytes": 244,
+      "SHA256": "D22ECB76B1D9118DD5D68E8670FD9A69AAAA6AD786AB61C73C5D418641E43891"
+    },
+    {
+      "Path": "NewContracts03_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "NewContracts03_Yes.txt.stdout.log",
+      "Bytes": 784,
+      "SHA256": "29ED225884A506295128B83B6631FCB24C96E4AF9F55879DF49E7B05BA26D8BF"
+    },
+    {
+      "Path": "OpenXmlInputStyleAvailability02.json",
+      "Bytes": 126614,
+      "SHA256": "74BADAED8A0948D1EA49D8750DA4F181327A827AA7F8547CF563AA4D5384572A"
+    },
+    {
+      "Path": "OpenXmlInputStyleComponents02.json",
+      "Bytes": 9358,
+      "SHA256": "27416473B8E594862AD740DA6ACF89795A2B0C5C340C1C79FC2113FFA15CBC0C"
+    },
+    {
+      "Path": "OpenXmlPreservationCompile08ToRelease02.json",
+      "Bytes": 102620,
+      "SHA256": "942405EA4EF37170A01C6F213332A3F6285953D2ED4BC5540ED8964D8D9C6C02"
+    },
+    {
+      "Path": "OpenXmlPreservationMainToRelease02.json",
+      "Bytes": 101878,
+      "SHA256": "6D262FADC87D665A9F637AB7D3B34EE1AC6D9136D8065194903B84567E427AF6"
+    },
+    {
+      "Path": "PrePublicationFinal.json",
+      "Bytes": 384,
+      "SHA256": "47F799BAE5E34D5994D02EF898138B4A8FB604E7384A555891AAEF2ADDA9D931"
+    },
+    {
+      "Path": "ProcessClosureFinal.json",
+      "Bytes": 98485,
+      "SHA256": "21546CF48D35B1D0692699806687B0D114DC6DAD001AEB9E6246498FB646A400"
+    },
+    {
+      "Path": "Publication.json",
+      "Bytes": 465,
+      "SHA256": "696CF3AC1F68F3025DC6912B8E8A299877283B7DD9BA375688E238DBF52C4774"
+    },
+    {
+      "Path": "PublishedStructure01.stdout.txt",
+      "Bytes": 157746,
+      "SHA256": "81256FBDE7B280394B45E0447E6744805A99A66704A2AF8F9A90FD1324F1C914"
+    },
+    {
+      "Path": "PublishedStructure01/Acceptance.json",
+      "Bytes": 157747,
+      "SHA256": "488158E7AE4238B59983CC633B1BE7672DBBDDCB1E43680008C24813BE148DF0"
+    },
+    {
+      "Path": "PublishedStructure01/Input.json",
+      "Bytes": 1211,
+      "SHA256": "D133478D1486C8826569DA03BD8BC64DF4827E6745AC20151B9D16C00D2C546A"
+    },
+    {
+      "Path": "PublishedStructure01/MemoryBeforeExcel.json",
+      "Bytes": 220,
+      "SHA256": "47461639951BC5EF02EA26CDD8B8F48B9A6955EA4DCA4ADD1D242F6FC504BD24"
+    },
+    {
+      "Path": "PublishedStructure01/Ownership.json",
+      "Bytes": 179,
+      "SHA256": "C0599D5B0097C42498BA887F4FAA5C91AE329453AC04ACFA36905BFA47D43F05"
+    },
+    {
+      "Path": "PublishedStructure01/ProcessClosure.json",
+      "Bytes": 221,
+      "SHA256": "4455CADC4276F7E6753FCB6952089EBBC83FB4A90B717CD3D7FB5A1C18094D87"
+    },
+    {
+      "Path": "Refactor-ElementModel.py",
+      "Bytes": 7736,
+      "SHA256": "75B905095201E00A80BF34B05D899FBED1AFFA8D8FB935DFED8716D863F3C4FE"
+    },
+    {
+      "Path": "ReleaseCandidate01/Failure.json",
+      "Bytes": 284,
+      "SHA256": "73B1D5F93ADE3A2F8EB3B634183444437439AFC879375D27E45D602D6EA54951"
+    },
+    {
+      "Path": "ReleaseCandidate01/Ownership.json",
+      "Bytes": 239,
+      "SHA256": "C7CE93B46DB169350C2EBE6307259D1BAA8612B065B0F3B627072472CE16507E"
+    },
+    {
+      "Path": "ReleaseCandidate02/Layout.json",
+      "Bytes": 257175,
+      "SHA256": "56C8B7A791E1A7CAC386B664116CC728ECEC327BF0D6DB2A933940F5EEFD8E13"
+    },
+    {
+      "Path": "ReleaseCandidate02/Ownership.json",
+      "Bytes": 238,
+      "SHA256": "A32DD6222EC4E63C3E71D1001C13B200409427C5110C24A9690E28359F307791"
+    },
+    {
+      "Path": "ReleaseCandidate02/Preparation.json",
+      "Bytes": 364,
+      "SHA256": "29C9AA54C0A832FA5B0D08EDD70C4896132C3C7F7895D8F0CE0EA0AB77DBFE8B"
+    },
+    {
+      "Path": "ReleaseCandidate04/DataPreservation.json",
+      "Bytes": 31350,
+      "SHA256": "9763C3C4869C23506F94AB130CE6B8CF4E9E94EC385ED8761B011C080A722D1C"
+    },
+    {
+      "Path": "ReleaseCandidate04/PackageProof.json",
+      "Bytes": 439,
+      "SHA256": "F890EE690D240500AAF8E6398C69414A5BF2C0B753F0B99035F73E323A473C58"
+    },
+    {
+      "Path": "ReleaseCandidate05/DataPreservation.json",
+      "Bytes": 31350,
+      "SHA256": "8B9D22A5A2459A48B28887DA06C9D35ED22EB1316B921F8360BE8BF9476802F2"
+    },
+    {
+      "Path": "ReleaseCandidate05/DataPreservation_InputPathError.json",
+      "Bytes": 120,
+      "SHA256": "829360CB81B5D46A9471413AD76819BE32A74ED9D09DA0857A1814BD233E6879"
+    },
+    {
+      "Path": "ReleaseCandidate05/Layout.json",
+      "Bytes": 257175,
+      "SHA256": "AED68D11F18332C35A69A0B8D68AE8080373D743A540A521555FAE5C9AD3BBB1"
+    },
+    {
+      "Path": "ReleaseCandidate05/PackageProof.json",
+      "Bytes": 439,
+      "SHA256": "1A625D85C8F7B46264C8F7542144729088D734F57A25E2F3563FDB241F4AC887"
+    },
+    {
+      "Path": "ReleaseCandidate06/PackageProof.json",
+      "Bytes": 439,
+      "SHA256": "3513CC121B5FBB93D0A1F2A0231CE08A6236FA101D75943852DF5D116C61E56A"
+    },
+    {
+      "Path": "ReleaseCandidate07/DataPreservation.json",
+      "Bytes": 31350,
+      "SHA256": "EC1582194C6C7DF2EEAA1F3121E80BA20A10F15D3F8FCC2F01B2B496B68377E5"
+    },
+    {
+      "Path": "ReleaseCandidate07/PackageProof.json",
+      "Bytes": 439,
+      "SHA256": "FD5C73DDC20F3DF4E9146C8BCBD8D74FFACB1ADB7BCE45E36E6550F1C3A0BACC"
+    },
+    {
+      "Path": "ReviewFinal01.json",
+      "Bytes": 12254,
+      "SHA256": "BF149FAE51E6D58D3F9490D2C4B73AF293BA1C8E57A70FDE54CA41BEBE541D3A"
+    },
+    {
+      "Path": "StaticSnapshotReview01/ClassComments.json",
+      "Bytes": 2478513,
+      "SHA256": "250183F5E80789260F8EAD26043D37C380248F03D693FAA73100DDCB0D788D58"
+    },
+    {
+      "Path": "StaticSnapshotReview01/ClassCommentsFinal.json",
+      "Bytes": 2478336,
+      "SHA256": "ACE6A9F62BB586F842A3F11E5E053B23156F5599F3CF2D6BE0E01BCB228742F5"
+    },
+    {
+      "Path": "StaticSnapshotReview01/SnapshotContractReview.json",
+      "Bytes": 6220,
+      "SHA256": "DA77A73D091B02B58D7DAFD29394B7F70B0428820499417BE4ED0FC0E38C1970"
+    },
+    {
+      "Path": "StaticSnapshotReview01/VbaDocumentation.json",
+      "Bytes": 3724863,
+      "SHA256": "7CBA2C8035DF82DA6A7B161FB84371EDD93A0ABD75697E230C21F75FBDBC4894"
+    },
+    {
+      "Path": "StaticSnapshotReview01/VbaDocumentationFinal.json",
+      "Bytes": 3727441,
+      "SHA256": "6B00A115D6719EB27B7E8520ED65A2EBE30D21703180BBDFF89B80E9CB4BB9FD"
+    },
+    {
+      "Path": "StaticSnapshotReview01/VbaDocumentationResolved.json",
+      "Bytes": 3726752,
+      "SHA256": "FECE6FAB3232980633AC020C8DD6AB349210E0A86800B82094BEB4AFDC63BEAA"
+    },
+    {
+      "Path": "StyleFixedRelease03/FormattingRestoration.json",
+      "Bytes": 29178,
+      "SHA256": "506CB9BAA3A1615E85D1A84D912D4F610F46E1497C583CB45D90D52BC7132ECC"
+    },
+    {
+      "Path": "StyleFixedRelease03/OpenXmlPreservationCompile08ToStyleFixed03.json",
+      "Bytes": 31790,
+      "SHA256": "308A77ED45F2E27619304D4A540F2B1C04645071617360E39AAE427632EDF989"
+    },
+    {
+      "Path": "StyleFixedRelease03/OpenXmlPreservationMainToStyleFixed03.json",
+      "Bytes": 31351,
+      "SHA256": "B009A5DDB5307951FDE2ED9ACECDFD9847C88B5673862280316206CB10BF5444"
+    },
+    {
+      "Path": "StyleFixedRelease03/ZIPPartProof.json",
+      "Bytes": 29528,
+      "SHA256": "FFF9C758DA7B22D74B00A99FCE93D20923293169FC84FB94DB67432141994070"
+    },
+    {
+      "Path": "TestArchiveEvidence.py",
+      "Bytes": 7709,
+      "SHA256": "5A7E8A6D148C20C635B9D56F1F38BDB842CEFA9E72174EC07EB1E5E95E68233F"
+    },
+    {
+      "Path": "TestCompareSharedCellEdges.py",
+      "Bytes": 7725,
+      "SHA256": "C7FDB878B2FE00F293E529BBD56BA9DE3DFC1886110D87F89780C323D81A023F"
+    },
+    {
+      "Path": "TestDiagnoseHyperlinkStyles.py",
+      "Bytes": 4706,
+      "SHA256": "142550E2832BFAF8FEE774C4FADC014F0CF5F644FC88C332F4850CCF70A098F8"
+    },
+    {
+      "Path": "TestFinalizeDirected.py",
+      "Bytes": 4044,
+      "SHA256": "8BBA1B5697F2DB161F1F603D54B25DC12E89F17D772BB4A130A0146664084465"
+    },
+    {
+      "Path": "TestFreshBuild01.ps1",
+      "Bytes": 1765,
+      "SHA256": "58B5F7061414E9699DEF4A13D152326EA4C3001A6126F2302C2D26B57D0944BE"
+    },
+    {
+      "Path": "TestHyperlinkControlNative.ps1",
+      "Bytes": 5082,
+      "SHA256": "8CB95673D7A9316DD2069ABEB7713A46C2B249DD226999D3CBFEE91B680C10BF"
+    },
+    {
+      "Path": "TestHyperlinkFormatNative.ps1",
+      "Bytes": 4396,
+      "SHA256": "65A1B9F204EFF0E081F155859736A7882DE9EB32D33C2C640400BCC5C61C3DEE"
+    },
+    {
+      "Path": "TestPackageFinal.py",
+      "Bytes": 2023,
+      "SHA256": "F935941CB1CDC4E53C40AA356ADD8759A11E64B0D8B364863F8D5C2D33FF375E"
+    },
+    {
+      "Path": "TestPrepareContourSnapshotPatch.py",
+      "Bytes": 9846,
+      "SHA256": "3C5CADD0DC5A2EA31F8D44610B22761A029934E03A9C98984D3B9FB3AF384B53"
+    },
+    {
+      "Path": "TestPrepareProbe.ps1",
+      "Bytes": 8232,
+      "SHA256": "01A1881518100832421E86773E4886E48F5696A20168B7585CA0967455C0CC9F"
+    },
+    {
+      "Path": "TestPrepareRelease.ps1",
+      "Bytes": 5149,
+      "SHA256": "FF2B4BD8C741510BAC3B293560F9CD00971639A7CCF7E9E7797DF03230FA3C3A"
+    },
+    {
+      "Path": "TestRestoreInputXmlFormatting.py",
+      "Bytes": 14972,
+      "SHA256": "357D050F15B0B3AF1F35FDB6D142305A972F61A2B92664C3163583F5A9B65E47"
+    },
+    {
+      "Path": "TestReviewDirected.py",
+      "Bytes": 2017,
+      "SHA256": "91B1C346BB18B7CBC31C70F407F3598AF7FB3766C6DF31E3CFBD31E317486CEB"
+    },
+    {
+      "Path": "TestReviewOwnClosure.ps1",
+      "Bytes": 11695,
+      "SHA256": "101164499B61E55BB2592020B36E99C2E53B2B6E4ED159041CCF9CC8A9D4037A"
+    },
+    {
+      "Path": "TestSyncFinalTest.ps1",
+      "Bytes": 13334,
+      "SHA256": "44DF73A3CBE93EE54BC12385211D384CCA6F352ECFE4012AF4107A1C80E5A124"
+    },
+    {
+      "Path": "TestVerifyFinalStructure.ps1",
+      "Bytes": 24103,
+      "SHA256": "6BC80105AAA4B6264D80E6BB6B2D7907FEFCC5D84F4568E51BE8EFF6BDC5D387"
+    },
+    {
+      "Path": "TestVerifyNative.ps1",
+      "Bytes": 4717,
+      "SHA256": "29E828008FB505FD47590A0C09E984F6D6BC36DAD19546CC784C0DEE9765F91A"
+    },
+    {
+      "Path": "TestVerifyOpenXmlPreservation.py",
+      "Bytes": 17198,
+      "SHA256": "A0EDA59A0B7891A70BF8CAF1BAEDC3C3F90968895D9635C57C07BC0D6A1A2AA4"
+    },
+    {
+      "Path": "TestVerifySourceEquality.ps1",
+      "Bytes": 8904,
+      "SHA256": "4D621C091FF0DA93CD2B209365AA853AEF0FFD209023FDC2184780B96E162759"
+    },
+    {
+      "Path": "ViewsCommentAudit.json",
+      "Bytes": 2462789,
+      "SHA256": "2709C99685A2FAB0B4B6A593B3C9798A6B79C80354096DC616E83DF78FBDE742"
+    },
+    {
+      "Path": "ViewsVbaDocumentationAudit.json",
+      "Bytes": 3726752,
+      "SHA256": "ED676B9991A02600C16396EF266C053721B9B0F6C4B6617011F55209EA33D1EA"
+    },
+    {
+      "Path": "Workflow01.Watchdog/Completion.json",
+      "Bytes": 1245,
+      "SHA256": "DC6B621903CD08FB3F81FC625D7252D9C23AE096D13E0CAE6F23CD743B4896A8"
+    },
+    {
+      "Path": "Workflow01.Watchdog/Launch.json",
+      "Bytes": 1359,
+      "SHA256": "5B349BE15A2FBBF90EEC13CB858605076AC177125B205DC014F979E524147CC8"
+    },
+    {
+      "Path": "Workflow01.Watchdog/WatchdogLast.json",
+      "Bytes": 695,
+      "SHA256": "6047EC60F1A7C65B24A799EA7F86ACCF1B61F5E70B7086C3650C14264F014CD1"
+    },
+    {
+      "Path": "Workflow01.Watchdog/Worker.stderr.log",
+      "Bytes": 601,
+      "SHA256": "43249ACA5248EC6E0079CAC2D7D0A8FB3150A1A62313BBCB3A41E336C225AB86"
+    },
+    {
+      "Path": "Workflow01.Watchdog/Worker.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Workflow01.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "34DF55839DA73E415BD610EDC2A5FF333FEAB413B838C1F7A432A3A13C0D9260"
+    },
+    {
+      "Path": "Workflow01/Acceptance.json",
+      "Bytes": 457,
+      "SHA256": "9102D17F364F39E4C14DCD2AD853D6C88808DE0DBF0BE149D3FB70997113B882"
+    },
+    {
+      "Path": "Workflow01/Failure.json",
+      "Bytes": 167,
+      "SHA256": "6B2485B131D6AEE3C5680819F8250314A9F8094CEC6594AD8A14083A38FAC398"
+    },
+    {
+      "Path": "Workflow01/HelperCompileFailure.json",
+      "Bytes": 487,
+      "SHA256": "63DA368ABC68325F66558CABC83EAAEDDC1E4920459B9CC2CAB1273B2A04A699"
+    },
+    {
+      "Path": "Workflow01/Input.json",
+      "Bytes": 1447,
+      "SHA256": "AA9BE43D4239CD5F2B8E9F592C53A53CF1A47D3F70538A5F7056E60154087488"
+    },
+    {
+      "Path": "Workflow01/Memory_BeforeExcel.json",
+      "Bytes": 253,
+      "SHA256": "E57AD6CB1AEB790CE80DE60A00049A56657AACFFE37216666C899DA48618D9E9"
+    },
+    {
+      "Path": "Workflow01/Ownership.json",
+      "Bytes": 293,
+      "SHA256": "9326FF0B27A1618F5E25E691925B4CFF70DE30D4FAC8E922C4BB4E18EC685FA6"
+    },
+    {
+      "Path": "Workflow01/ProcessClosure.json",
+      "Bytes": 165,
+      "SHA256": "3FABDE154138560FA8319553BFA4B4378998940E5161D33274337A8328CFB187"
+    },
+    {
+      "Path": "Workflow02.Watchdog/Completion.json",
+      "Bytes": 1261,
+      "SHA256": "052951D37A1F0A4D60912AC50FC95712B237B8CA0462CBCED1B72F4F3E93A11E"
+    },
+    {
+      "Path": "Workflow02.Watchdog/Launch.json",
+      "Bytes": 1381,
+      "SHA256": "6A138CC654890F83080DD5ACF89AEB58FFE8B6D708BFF6F0B9ABEDF59EE2F66A"
+    },
+    {
+      "Path": "Workflow02.Watchdog/WatchdogLast.json",
+      "Bytes": 943,
+      "SHA256": "F8875B61B2A6D7348BBB9FE9CCBB0C37784F03A4739977D373C3F5181D78C788"
+    },
+    {
+      "Path": "Workflow02.Watchdog/Worker.stderr.log",
+      "Bytes": 601,
+      "SHA256": "43249ACA5248EC6E0079CAC2D7D0A8FB3150A1A62313BBCB3A41E336C225AB86"
+    },
+    {
+      "Path": "Workflow02.Watchdog/Worker.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Workflow02.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "AB5005CFB5F9FCF2FE42A5FC111CA6A8F0395F83F44521688C208B90F6CA327B"
+    },
+    {
+      "Path": "Workflow02/01_Circle_Excel.After.txt",
+      "Bytes": 152365,
+      "SHA256": "E3FC4A1A5DBBA025843ACDFCC648EF4CAB3D7E640ED69F9248E1DAB7EC2098A9"
+    },
+    {
+      "Path": "Workflow02/01_Circle_Excel.Before.txt",
+      "Bytes": 152365,
+      "SHA256": "E3FC4A1A5DBBA025843ACDFCC648EF4CAB3D7E640ED69F9248E1DAB7EC2098A9"
+    },
+    {
+      "Path": "Workflow02/01_Circle_Excel.txt",
+      "Bytes": 28148,
+      "SHA256": "3B3495A31DD2B69E820CE55AA84D1FAC4CBBA890C869E5FF786ECBB3C05AB782"
+    },
+    {
+      "Path": "Workflow02/02_RoundedSimple_File.After.txt",
+      "Bytes": 181421,
+      "SHA256": "E78F4D34687AEC61980363357C51D66A9022E4E3676E4E0279827EC56AC49F0A"
+    },
+    {
+      "Path": "Workflow02/02_RoundedSimple_File.Before.txt",
+      "Bytes": 181421,
+      "SHA256": "E78F4D34687AEC61980363357C51D66A9022E4E3676E4E0279827EC56AC49F0A"
+    },
+    {
+      "Path": "Workflow02/02_RoundedSimple_File.txt",
+      "Bytes": 19067,
+      "SHA256": "83452625EDE1F487380F41FBBCF1818769EE8F12E646E6445FD738A6922E8F3D"
+    },
+    {
+      "Path": "Workflow02/03_HollowCentered_Excel.txt",
+      "Bytes": 72520,
+      "SHA256": "43F248B0CD9FBE51C51F14F2EA987AA48CA9224D97A4F3F0D18CD05B0309B08F"
+    },
+    {
+      "Path": "Workflow02/Acceptance.json",
+      "Bytes": 473,
+      "SHA256": "2F85BEEB36333C9360BC63D74D0AD7F1AC74BEFD8D377E2C8427AF9E7F8FDEBE"
+    },
+    {
+      "Path": "Workflow02/Cases.json",
+      "Bytes": 1665,
+      "SHA256": "F45C2B7C414BFEB76F75128D618097F3E894A3068666D586EA92E2C1F23F8C4F"
+    },
+    {
+      "Path": "Workflow02/Failure.json",
+      "Bytes": 184,
+      "SHA256": "CA9A51B17566504DBB5545F12C82768DA25845D74502C0BF819913168D9766A8"
+    },
+    {
+      "Path": "Workflow02/Input.json",
+      "Bytes": 1613,
+      "SHA256": "91CCAC73396AF9B2C016B281F806A174D2A62599F32E36025C0C2824462B87CC"
+    },
+    {
+      "Path": "Workflow02/Memory_01_Circle_Excel.json",
+      "Bytes": 257,
+      "SHA256": "511DA8828DAD8E6BA8FA1A9A098821871906C840903396875A1D6E08823C8368"
+    },
+    {
+      "Path": "Workflow02/Memory_02_RoundedSimple_File.json",
+      "Bytes": 263,
+      "SHA256": "AA7FAAE77AAF9ED58A10EB39B9A08647E4E157BEB046FF32B3EA7DE0DE06A41F"
+    },
+    {
+      "Path": "Workflow02/Memory_03_HollowCentered_Excel.json",
+      "Bytes": 265,
+      "SHA256": "BF6BF68AB9681DD723EA31470B03ACC08FDA33D7C50321ED53741370CA980E32"
+    },
+    {
+      "Path": "Workflow02/Memory_BeforeExcel.json",
+      "Bytes": 253,
+      "SHA256": "C69233C8452BA450E62A38A79F89716A60FDE3699BEE0CCCADE987C23F327D92"
+    },
+    {
+      "Path": "Workflow02/Ownership.json",
+      "Bytes": 515,
+      "SHA256": "4BFC4EB709BF5B4E5B74E6AFA1FA0DF9B5FC1432B77C20562683E0D51011A3A6"
+    },
+    {
+      "Path": "Workflow02/ProcessClosure.json",
+      "Bytes": 164,
+      "SHA256": "E9C37F1758F1553D036815DFCA0CBDB04F686EDEA203A3FA4A59CFCF529FB696"
+    },
+    {
+      "Path": "Workflow03.Watchdog/Completion.json",
+      "Bytes": 1197,
+      "SHA256": "05702F8577EE9889AB35B0A55049AE271AEC5088F3CD62BE80D6DDBFC9B7FD0D"
+    },
+    {
+      "Path": "Workflow03.Watchdog/Launch.json",
+      "Bytes": 1325,
+      "SHA256": "2B478D323D2D27E54A0FF518720F4BFA69994134B5630A427EF889A40E4C17F0"
+    },
+    {
+      "Path": "Workflow03.Watchdog/WatchdogLast.json",
+      "Bytes": 919,
+      "SHA256": "CD5816C4D945BE099404A44B9CE62B1E607812E1D56080D4219A674769AE8E86"
+    },
+    {
+      "Path": "Workflow03.Watchdog/Worker.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Workflow03.Watchdog/Worker.stdout.log",
+      "Bytes": 390,
+      "SHA256": "1C229F13B30A7D1439B12C08F27E05BA5D7E8A62F43ECDCFD05C085FE43DDF4E"
+    },
+    {
+      "Path": "Workflow03.Watchdog/WorkerIdentity.json",
+      "Bytes": 253,
+      "SHA256": "1B9926FD84547A7BDC0AE44C1CF8102578B7A7EEA6C1DEB203AEEA92A9678388"
+    },
+    {
+      "Path": "Workflow03/01_Circle_Excel.After.txt",
+      "Bytes": 152365,
+      "SHA256": "4D0BB94A281933FB5CD2F871BC3F8AF8AE91DA8C7BDADD83B89946BA20C7FF1B"
+    },
+    {
+      "Path": "Workflow03/01_Circle_Excel.Before.txt",
+      "Bytes": 152365,
+      "SHA256": "4D0BB94A281933FB5CD2F871BC3F8AF8AE91DA8C7BDADD83B89946BA20C7FF1B"
+    },
+    {
+      "Path": "Workflow03/01_Circle_Excel.txt",
+      "Bytes": 28149,
+      "SHA256": "B69EB661374ACE0B8DDAB88178CC23155352054CFD62206B4E40C1EB2797FC7A"
+    },
+    {
+      "Path": "Workflow03/02_RoundedSimple_File.After.txt",
+      "Bytes": 181421,
+      "SHA256": "0FD8C2699F440550E577132C66B6D97A55DEC4D35F06F741EC6F09072B701CE2"
+    },
+    {
+      "Path": "Workflow03/02_RoundedSimple_File.Before.txt",
+      "Bytes": 181421,
+      "SHA256": "0FD8C2699F440550E577132C66B6D97A55DEC4D35F06F741EC6F09072B701CE2"
+    },
+    {
+      "Path": "Workflow03/02_RoundedSimple_File.txt",
+      "Bytes": 19072,
+      "SHA256": "0D7B52EA0F3597E5827A5D59A811F9298FD377088A04D82AD0EDAD320DD18507"
+    },
+    {
+      "Path": "Workflow03/03_HollowCentered_Excel.After.txt",
+      "Bytes": 376704,
+      "SHA256": "37AFA56AA2120EC381B95B9EF06CBF1E93C013240CD5F0F76FF00888EB46AEA0"
+    },
+    {
+      "Path": "Workflow03/03_HollowCentered_Excel.Before.txt",
+      "Bytes": 376704,
+      "SHA256": "37AFA56AA2120EC381B95B9EF06CBF1E93C013240CD5F0F76FF00888EB46AEA0"
+    },
+    {
+      "Path": "Workflow03/03_HollowCentered_Excel.txt",
+      "Bytes": 72913,
+      "SHA256": "139B5814C3A99B42EAFBE7B2B9FB7DDF920EA826DF3578F920B017024DC8C58E"
+    },
+    {
+      "Path": "Workflow03/04_LSection_File.After.txt",
+      "Bytes": 185517,
+      "SHA256": "B49BFB4E6DBF71C1A1FD66A287A3983CED83AAFA6D6AFFCD8FF74051EC190DB0"
+    },
+    {
+      "Path": "Workflow03/04_LSection_File.Before.txt",
+      "Bytes": 185517,
+      "SHA256": "B49BFB4E6DBF71C1A1FD66A287A3983CED83AAFA6D6AFFCD8FF74051EC190DB0"
+    },
+    {
+      "Path": "Workflow03/04_LSection_File.txt",
+      "Bytes": 18459,
+      "SHA256": "A33E2A4FA67DE37992E60DAB9E33D52A523B54DE0801A2E9F5865C8D146F8D4C"
+    },
+    {
+      "Path": "Workflow03/05_Circle_File.After.txt",
+      "Bytes": 237475,
+      "SHA256": "388264105F457FA78332EA79F5479EBCD5C41E5A05D0880A37F67EF30BF5FDCF"
+    },
+    {
+      "Path": "Workflow03/05_Circle_File.Before.txt",
+      "Bytes": 237475,
+      "SHA256": "388264105F457FA78332EA79F5479EBCD5C41E5A05D0880A37F67EF30BF5FDCF"
+    },
+    {
+      "Path": "Workflow03/05_Circle_File.txt",
+      "Bytes": 34493,
+      "SHA256": "08536487FC2AE0639FAEAB701B06101DB007B1F099429ABD1CCA0D71556A9B44"
+    },
+    {
+      "Path": "Workflow03/Acceptance.json",
+      "Bytes": 391,
+      "SHA256": "BE080D5F51329E1A1566542ADFFF4F5744737DF9AE214B49E6F5E618CBA97815"
+    },
+    {
+      "Path": "Workflow03/Cases.json",
+      "Bytes": 3104,
+      "SHA256": "48388257279A3A9CEA608B4D3A8938E8D5D4C434F1A26269F2CA8B0969AE425C"
+    },
+    {
+      "Path": "Workflow03/Input.json",
+      "Bytes": 1266,
+      "SHA256": "DCA7B8994FC9026730C67FF3AAB2F1B93E14D702453346D717BB1C8745ED98E2"
+    },
+    {
+      "Path": "Workflow03/Memory_01_Circle_Excel.json",
+      "Bytes": 257,
+      "SHA256": "966576380BEB4DB331239DDB99E0CB59D8320359D7A87605CBA54F385DD8DD94"
+    },
+    {
+      "Path": "Workflow03/Memory_02_RoundedSimple_File.json",
+      "Bytes": 264,
+      "SHA256": "EB0102167E2E20A039E755482769C19445D198EB7FA9A7009E55F5A85B2B05F4"
+    },
+    {
+      "Path": "Workflow03/Memory_03_HollowCentered_Excel.json",
+      "Bytes": 264,
+      "SHA256": "2E960DBA7967D0A504129A642D77C1D4BDFA396D0F2A7DD72DFE3E6C2CCB0070"
+    },
+    {
+      "Path": "Workflow03/Memory_04_LSection_File.json",
+      "Bytes": 259,
+      "SHA256": "DF7E234F8A93F7D07466680C555736F1B31C483D997A55535DAC9C1220903135"
+    },
+    {
+      "Path": "Workflow03/Memory_05_Circle_File.json",
+      "Bytes": 256,
+      "SHA256": "EE45286B962D64178917FFC5C5CB4E5B0EB360BEA477B237710F2CF514EC38ED"
+    },
+    {
+      "Path": "Workflow03/Memory_BeforeExcel.json",
+      "Bytes": 254,
+      "SHA256": "FC087227CAE235BD833D02330A1B93A89E40BE17129C0D614B36D77B75673613"
+    },
+    {
+      "Path": "Workflow03/Ownership.json",
+      "Bytes": 498,
+      "SHA256": "F83B162C0C3CCC55EAE1795A56642CC9044EE75C1247A29E8FFFED8A498E10A0"
+    },
+    {
+      "Path": "Workflow03/ProcessClosure.json",
+      "Bytes": 165,
+      "SHA256": "F6D8C0F486993B345296B5E898752BA0B47476FFE82D4BEC70F57A5B5CF119F2"
+    },
+    {
+      "Path": "WorkflowPlan/ApiVisibilityAudit.json",
+      "Bytes": 22291,
+      "SHA256": "9408D90020F173A02DC5721CDBA9FFAD0DAD8C143A9C4E21F313ED74317CBD08"
+    },
+    {
+      "Path": "WorkflowPlan/ComparisonPrepared01.json",
+      "Bytes": 16704,
+      "SHA256": "6C128A3D3114E45DDE65C3FC738093AAFF3CCB8A4B8FC91F0B531446A476B9D2"
+    },
+    {
+      "Path": "WorkflowPlan/ComparisonPrepared01.md",
+      "Bytes": 4921,
+      "SHA256": "1101FDFF0ED0B1665F90CC3C271751E156BAA7534B1EE1274682633F87C71372"
+    },
+    {
+      "Path": "WorkflowPlan/ComparisonPrepared02.json",
+      "Bytes": 31500,
+      "SHA256": "26D4E839B9BEEB9F3EBF4DDECE9210CE59E1079F2DE5BD926F244DFC4F868B63"
+    },
+    {
+      "Path": "WorkflowPlan/ComparisonPrepared02.md",
+      "Bytes": 4479,
+      "SHA256": "9A85BB305EC565FC92AE3894F5E8637531562FB4353E4CD8032A1AD3B7B67D5E"
+    },
+    {
+      "Path": "WorkflowPlan/HelperCompileFailure01Fix.diff",
+      "Bytes": 5449,
+      "SHA256": "276F5F850BAE97AD8394B48B36EAE420931C55B1CB2379907C03E21F22C502D2"
+    },
+    {
+      "Path": "WorkflowPlan/HelperCompileFailure01Fix.json",
+      "Bytes": 1106,
+      "SHA256": "0497F8923C20BC51A7AA9286A6C076051FC31E2DCA6C5AA4DEFF3B740C3D8E59"
+    },
+    {
+      "Path": "WorkflowPlan/HelperStaticReview.json",
+      "Bytes": 423,
+      "SHA256": "AD9608F0802E669A3A89DB434D332B14064CA4C36440E3D4151B3EFEEC1CF4AC"
+    },
+    {
+      "Path": "WorkflowPlan/HollowClipFailure02/ActualSavedWorkbookInputs.json",
+      "Bytes": 63050,
+      "SHA256": "C277A2247DA528986FA0DBC70BC52DD006832802B8E352ADBBAB6760ABEF069C"
+    },
+    {
+      "Path": "WorkflowPlan/HollowClipFailure02/PrimaryFullRead.json",
+      "Bytes": 2035,
+      "SHA256": "1A4E7215B78ABDB9A157D59B1A8351238A9AB47FEE479D9005D9A5C15C3B7868"
+    },
+    {
+      "Path": "WorkflowPlan/HollowClipFailure02/PureFixture.json",
+      "Bytes": 2116,
+      "SHA256": "CED80B6AFCC752565BF7B88C6A31E1D0EACB703E0AD607EE86A4049AB1E060D3"
+    },
+    {
+      "Path": "WorkflowPlan/HollowClipFailure02/TestHollowCenteredPureFixture.bas",
+      "Bytes": 3628,
+      "SHA256": "B8C14EE58ABF67B48392C497023CBAB21A580D56C3B9827C059CB1A9AE1E1941"
+    },
+    {
+      "Path": "WorkflowPlan/PreflightSettingsColumnFix.diff",
+      "Bytes": 1776,
+      "SHA256": "EC7B782EBA2D087D8E0393C27BAA748EF24C593A506C44ACC842D96FD277E5CE"
+    },
+    {
+      "Path": "WorkflowPlan/PreflightTestCorrection01.diff",
+      "Bytes": 1189,
+      "SHA256": "694170C89C9719E7EC5EDB6651228C5AD973C5E8E0A876FBEB1A06A3B9340FF8"
+    },
+    {
+      "Path": "WorkflowPlan/PreflightTestCorrection01.json",
+      "Bytes": 575,
+      "SHA256": "7885045997FF25850B5E9BE4AB7BF41FD13A42810392C9F9E8E41A789044F71D"
+    },
+    {
+      "Path": "WorkflowPlan/Test-RunContourWorkflow.ps1",
+      "Bytes": 10741,
+      "SHA256": "0FB8DEAFFFD17EB5A8CB93A81452C35BBABBDFA676C71B375D331F194A8590F1"
+    },
+    {
+      "Path": "WorkflowPlan/Test-WatchContourWorkflow.ps1",
+      "Bytes": 9054,
+      "SHA256": "58073C0583B1E0DEC614D44B2D57218DE0EEFF33B3045DEADBB6D0272EF02DA4"
+    },
+    {
+      "Path": "WorkflowPlan/TestContourWorkflowProbe.bas",
+      "Bytes": 21427,
+      "SHA256": "690FCDC42E8173776CEE8D97063C8D98B7AD404240D87C17BECE514904568B74"
+    },
+    {
+      "Path": "WorkflowPlan/TestContourWorkflowProbe.PreElapsedFix.bas",
+      "Bytes": 20789,
+      "SHA256": "52D0355AF31422B8A1D630B0042DA82BC1CA38BA30A6AC8D01A1E7695AD4C359"
+    },
+    {
+      "Path": "WorkflowPlan/TestContourWorkflowProbe.PreSettingsColumnFix.bas",
+      "Bytes": 20789,
+      "SHA256": "B0A6CE7F5FCD128807CE37A8D4A06DC433F40BE623F0697A3289D50665C4E7E4"
+    },
+    {
+      "Path": "WorkflowPlan/Workflow03PrimaryReview.json",
+      "Bytes": 31422,
+      "SHA256": "C3D241B3B1C759743EC872226F3FB23FD184ACBDBAB79357BF416D20968DFDBF"
+    }
+  ]
+}

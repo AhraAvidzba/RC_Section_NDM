@@ -25,6 +25,7 @@ Private mCodes As Variant, mValues As Variant ' Коды и значения р�
 Private mForbiddenReads As Long ' Число запрещённых обращений к исходным объектам чертежа.
 Private mObjectName As String, mArea As Double ' Имя вида тестового объекта и его площадь в мм2.
 Private mRegionCalls As Long, mFailRegionAt As Long ' Число попыток создания Region и номер попытки, на которой нужно имитировать отказ.
+Private mNormal As Variant, mElevation As Double ' Плоскость новой полилинии, заданная экспортером в WCS.
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' создает пустой ModelSpace или отдельную полилинию.
@@ -85,6 +86,30 @@ End Sub
 ' Площадь выбранного элемента, мм^2.
 Public Property Get Area() As Double
     Area = mArea
+End Property
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет нормаль новой полилинии без обращения к пользовательскому DWG.
+Public Property Let Normal(ByVal value As Variant)
+    mNormal = value
+End Property
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает фактическую нормаль, заданную рабочим экспортером.
+Public Property Get Normal() As Variant
+    Normal = mNormal
+End Property
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет WCS-высоту новой полилинии для проверки независимости от чертежа.
+Public Property Let Elevation(ByVal value As Double)
+    mElevation = value
+End Property
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает WCS-высоту новой полилинии, мм.
+Public Property Get Elevation() As Double
+    Elevation = mElevation
 End Property
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' тип имитируемого объекта AutoCAD.
