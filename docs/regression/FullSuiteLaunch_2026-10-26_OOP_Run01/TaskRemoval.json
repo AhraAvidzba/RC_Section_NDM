@@ -1,0 +1,9 @@
+{
+  "At": "2026-10-26T06:51:05.4761694+03:00",
+  "TaskName": "RC_NDM_OOP_20261026_Run01",
+  "RemovedOnlyThisTask": true,
+  "AlreadyAbsent": false,
+  "VerifiedAbsent": true,
+  "OriginalLastTaskResult": 1,
+  "OriginalExit1ExplainedBy": "RunnerFooterFix/ExitReconciliation.json"
+}

@@ -1,0 +1,16 @@
+﻿{
+    "At":  "2026-10-26T06:36:18.0698926+03:00",
+    "Status":  "PASS_FOOTER_ONLY",
+    "PSVersion":  "5.1.19041.6456",
+    "OriginalFailureReproduced":  true,
+    "OriginalError":  "GenericMeasurePropertyNotFound,Microsoft.PowerShell.Commands.MeasureObjectCommand",
+    "ActualJobCount":  12,
+    "FixedExpectedSuites":  168,
+    "JsonManifestExpectedSuites":  168,
+    "HashtableSample50":  50,
+    "CorrectedFooterSerializes":  true,
+    "RunnerParses":  true,
+    "NoExcelStarted":  true,
+    "NoFullRerun":  true,
+    "BookSHA256":  "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698"
+}

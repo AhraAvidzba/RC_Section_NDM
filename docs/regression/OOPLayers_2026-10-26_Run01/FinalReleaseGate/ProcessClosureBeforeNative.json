@@ -1,0 +1,309 @@
+{
+  "At": "2026-10-26T06:35:55.0919162+03:00",
+  "SourceSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "AllOwnedIdentitiesClosed": true,
+  "Identities": [
+    {
+      "Role": "Driver",
+      "PID": 13204,
+      "StartTicks": "639285701355624489",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Host",
+      "PID": 21784,
+      "StartTicks": "639285701351665636",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_Full_No",
+      "PID": 3544,
+      "StartTicks": "639285701398655736",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_Geometry_No",
+      "PID": 20704,
+      "StartTicks": "639285750489054012",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_SP35_No",
+      "PID": 24500,
+      "StartTicks": "639285752999726139",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_Recipes_No",
+      "PID": 8140,
+      "StartTicks": "639285753192384075",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_SavedOffsets_No",
+      "PID": 22568,
+      "StartTicks": "639285756071448501",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_CurrentFeatures_No",
+      "PID": 12260,
+      "StartTicks": "639285756256856154",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_Full_Yes",
+      "PID": 6512,
+      "StartTicks": "639285757270247379",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_Geometry_Yes",
+      "PID": 23880,
+      "StartTicks": "639285805853239715",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_SP35_Yes",
+      "PID": 22896,
+      "StartTicks": "639285808395597369",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_Recipes_Yes",
+      "PID": 22028,
+      "StartTicks": "639285808589861798",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_SavedOffsets_Yes",
+      "PID": 23372,
+      "StartTicks": "639285811462849762",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Core_CurrentFeatures_Yes",
+      "PID": 18760,
+      "StartTicks": "639285811643065863",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Rectangles_Generated_No",
+      "PID": 24400,
+      "StartTicks": "639285812915121083",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Rectangles_Generated_Yes",
+      "PID": 10400,
+      "StartTicks": "639285813331480498",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Circle_Generated_No",
+      "PID": 21972,
+      "StartTicks": "639285813739255300",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Circle_Generated_Yes",
+      "PID": 23668,
+      "StartTicks": "639285814135208877",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_PointedSection_Generated_No",
+      "PID": 17144,
+      "StartTicks": "639285814530323392",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_PointedSection_Generated_Yes",
+      "PID": 2904,
+      "StartTicks": "639285814968290296",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_HollowRectangle_Generated_No",
+      "PID": 21128,
+      "StartTicks": "639285815402318334",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_HollowRectangle_Generated_Yes",
+      "PID": 15924,
+      "StartTicks": "639285815832691606",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_SavedWorkbook_Saved_No",
+      "PID": 9944,
+      "StartTicks": "639285816263695733",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_SavedWorkbook_Saved_Yes",
+      "PID": 6520,
+      "StartTicks": "639285816815287491",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_SavedWorkbook_Paths_No",
+      "PID": 23056,
+      "StartTicks": "639285817261409962",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_SavedWorkbook_Paths_Yes",
+      "PID": 10568,
+      "StartTicks": "639285817617464184",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Batch15_No",
+      "PID": 23360,
+      "StartTicks": "639285817978691057",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Stability_No",
+      "PID": 23120,
+      "StartTicks": "639285818326152176",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_AsymmetricSteel_No",
+      "PID": 20664,
+      "StartTicks": "639285818655139454",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Batch15_Yes",
+      "PID": 23440,
+      "StartTicks": "639285818982778463",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Stability_Yes",
+      "PID": 22584,
+      "StartTicks": "639285819332102367",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_AsymmetricSteel_Yes",
+      "PID": 22200,
+      "StartTicks": "639285819667872467",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Model_Rectangles",
+      "PID": 22056,
+      "StartTicks": "639285820001091542",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Model_Circle",
+      "PID": 24048,
+      "StartTicks": "639285820078180109",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Model_PointedSection",
+      "PID": 9260,
+      "StartTicks": "639285820152386427",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Model_HollowRectangle",
+      "PID": 9400,
+      "StartTicks": "639285820230940186",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_Model_SavedWorkbook",
+      "PID": 23672,
+      "StartTicks": "639285820308615907",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "Focused_OutputPresentation",
+      "PID": 8868,
+      "StartTicks": "639285820391781508",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeCADOwnership.json",
+      "PID": 25304,
+      "StartTicks": "639285820758751025",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeExcelOwnership.json",
+      "PID": 16768,
+      "StartTicks": "639285820871601765",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\NativeCADOwnership.json",
+      "PID": 24556,
+      "StartTicks": "639285820474358054",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Role": "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\NativeExcelOwnership.json",
+      "PID": 13200,
+      "StartTicks": "639285820692121888",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    }
+  ],
+  "InputMonitorSHA256": "722AE44EA434968FF27301F502AF6E29CF5FF8984467B7347FE3DD1B5106369A",
+  "CurrentExcelCAD": [
+    {
+      "PID": 3712,
+      "Name": "EXCEL",
+      "StartTicks": "639285451789199985"
+    }
+  ]
+}

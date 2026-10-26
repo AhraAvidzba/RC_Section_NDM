@@ -1,0 +1,21 @@
+{
+  "Status": "PASS_FULL_REQUIRED_COMPOSITION_AND_NATIVE_FOOTER_RECONCILED",
+  "SourceCommit": "75de262f80e60c638b1c7cc8cd91e861495bc844",
+  "BookSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "AllCodeSHA256": "2688FF2C07BC4A903811F900C2E35E8655FB967FCB0B98677E90288ABDD79D67",
+  "CoreSuites": 168,
+  "FocusedCases": 122,
+  "CoreReports": 12,
+  "FocusedRecords": 26,
+  "NativeChildReports": 2,
+  "IndependentIntegrals": 562,
+  "ReviewedNumFailStates": 10,
+  "Unsupported": 0,
+  "OriginalOuterExit": 1,
+  "OriginalOuterStatus": "REVIEW_REQUIRED",
+  "FooterFixAndReevaluation": "OOPLayers_2026-10-26_Run01/RunnerFooterFix/ExitReconciliation.json",
+  "NativeReleaseProof": "OOPLayers_2026-10-26_Run01/FinalReleaseGate/Acceptance.json",
+  "Report": "docs/reports/FullAcceptance_2026-10-26_OOP.md",
+  "SingleInvocation": true,
+  "OriginalEvidencePreserved": true
+}

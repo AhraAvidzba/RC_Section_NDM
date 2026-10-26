@@ -1,0 +1,9 @@
+{
+  "At": "2026-10-26T06:36:17.5885218+03:00",
+  "Scope": "Post-run PowerShell5.1 summary footer only",
+  "Path": "tools/build_workbook/Run-FullOnOffAcceptance.ps1",
+  "BeforeSHA256": "E9992EE5E77556C905CE7611A752DE67C1E75FE64BB580219DED13C83FE8DDB4",
+  "AfterSHA256": "6429247B6A578411716210EBFFA4774A256AD38A640CEBA6B519F899086CB886",
+  "BookChanged": false,
+  "PrimaryLogsChanged": false
+}

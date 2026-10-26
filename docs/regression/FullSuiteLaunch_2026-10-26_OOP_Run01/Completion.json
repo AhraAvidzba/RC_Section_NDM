@@ -1,0 +1,16 @@
+﻿{
+    "Status":  "REVIEW_REQUIRED",
+    "FinishedUTC":  "2026-10-26T03:28:40.3033282+00:00",
+    "SourceSHA256":  "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+    "SourceCommit":  "75de262f80e60c638b1c7cc8cd91e861495bc844",
+    "RunnerExit":  1,
+    "SummaryExit":  0,
+    "FinalizeExit":  0,
+    "CompleteAcceptancePassed":  true,
+    "ChangedInputs":  [
+
+                      ],
+    "HeadChanged":  false,
+    "DriverError":  "",
+    "EvidenceDirectory":  "docs/regression/FullOnOff_2026-10-26_OOP_Run01"
+}

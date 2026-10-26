@@ -1,0 +1,690 @@
+{
+  "At": "2026-10-26T06:34:28.297486+03:00",
+  "Status": "FOCUSED_PRIMARY_OBSERVATION_NOT_ACCEPTANCE",
+  "SourceSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "RunStatus": "COMPLETED_PENDING_REVIEW",
+  "Records": [
+    {
+      "ID": "Rectangles_Generated_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "75102CD495AA25CB4F484CF4AC64E1050B6E61AAC22E734B5C2885A24F7F8AAE",
+      "Bytes": 78068,
+      "LineCount": 878,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 24400,
+        "StartTicks": "639285812915121083"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Rectangles; group=Generated; cases=8; maxSeconds=3.4140625; passed=714; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "mixedC1_-1"
+      ]
+    },
+    {
+      "ID": "Rectangles_Generated_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "4CE50FDBE3CC338AA1644C5588438DD42CF50EBA116BD4036924AC76A5EC7387",
+      "Bytes": 76467,
+      "LineCount": 847,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 10400,
+        "StartTicks": "639285813331480498"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Rectangles; group=Generated; cases=8; maxSeconds=3.41796875; passed=683; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "mixedC1_-1"
+      ]
+    },
+    {
+      "ID": "Circle_Generated_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "0DBCF4B0C9032B2C9A6CE7A2AB1C42D57CA689938C89FB6EBA8C3C0F5369A7F3",
+      "Bytes": 75725,
+      "LineCount": 878,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 21972,
+        "StartTicks": "639285813739255300"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Circle; group=Generated; cases=8; maxSeconds=3.3984375; passed=714; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "mixedC1_-1"
+      ]
+    },
+    {
+      "ID": "Circle_Generated_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "AE0675A12717468F55B93638D985C954DF91465471DE39A8360F2003FAE205D7",
+      "Bytes": 74285,
+      "LineCount": 847,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 23668,
+        "StartTicks": "639285814135208877"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Circle; group=Generated; cases=8; maxSeconds=3.46484375; passed=683; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "mixedC1_-1"
+      ]
+    },
+    {
+      "ID": "PointedSection_Generated_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "E977B84FAD84D401E91717785A8DB16EBB409AF39B1883D7F08B3C6E5F3E69EC",
+      "Bytes": 81486,
+      "LineCount": 891,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 17144,
+        "StartTicks": "639285814530323392"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=PointedSection; group=Generated; cases=8; maxSeconds=3.89453125; passed=726; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "mixedC1_-1"
+      ]
+    },
+    {
+      "ID": "PointedSection_Generated_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "7614BFB0888F82DCBF65D3EC2FDD891DB95CFEC8AF96D59A91BA9DF42AB4F996",
+      "Bytes": 79687,
+      "LineCount": 859,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 2904,
+        "StartTicks": "639285814968290296"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=PointedSection; group=Generated; cases=8; maxSeconds=3.94140625; passed=694; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "mixedC1_-1"
+      ]
+    },
+    {
+      "ID": "HollowRectangle_Generated_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "6457D9AF8212C3FE6D5C01386CD11E0BBFCD5058135280DB47EA9BDAF1DA242C",
+      "Bytes": 80659,
+      "LineCount": 878,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 21128,
+        "StartTicks": "639285815402318334"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=HollowRectangle; group=Generated; cases=8; maxSeconds=3.703125; passed=714; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "mixedC1_-1"
+      ]
+    },
+    {
+      "ID": "HollowRectangle_Generated_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "D2B99BACB8245B7D10D229136A6DFF47F605EE14D34C42C55F9B35911B754B93",
+      "Bytes": 78908,
+      "LineCount": 847,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 15924,
+        "StartTicks": "639285815832691606"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=HollowRectangle; group=Generated; cases=8; maxSeconds=3.828125; passed=683; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "mixedC1_-1"
+      ]
+    },
+    {
+      "ID": "SavedWorkbook_Saved_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "B9A0499852EF735BA0020B0B527AFB6C8F388520AA5C7BBF7B4CF8D09764A2D6",
+      "Bytes": 265337,
+      "LineCount": 2377,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 9944,
+        "StartTicks": "639285816263695733"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=23; maxSeconds=6.7109375; passed=1950; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "tinyMx1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "biaxial1_-1_10",
+        "biaxial1_-1_1000000",
+        "biaxial1_-1_0.000001",
+        "mixedC1_-1",
+        "axialC0.95",
+        "axialC1",
+        "overloadMixed1",
+        "axialC1.05",
+        "axialC2",
+        "overloadMixed1000000",
+        "N500",
+        "N1000",
+        "N2098Plateau",
+        "N500TinyMoment"
+      ]
+    },
+    {
+      "ID": "SavedWorkbook_Saved_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "09116232A8C0E83F02DB3C62F69810D30F8CE4335DC059493B16FA9770023B18",
+      "Bytes": 255329,
+      "LineCount": 2343,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 6520,
+        "StartTicks": "639285816815287491"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=23; maxSeconds=2.453125; passed=1931; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "axialSmall-1",
+        "Mx-1",
+        "My-1",
+        "mixedT-1_1",
+        "tinyMx1",
+        "axialSmall1",
+        "Mx1",
+        "My1",
+        "biaxial1_-1_10",
+        "biaxial1_-1_1000000",
+        "biaxial1_-1_0.000001",
+        "mixedC1_-1",
+        "axialC0.95",
+        "axialC1",
+        "overloadMixed1",
+        "axialC1.05",
+        "axialC2",
+        "overloadMixed1000000",
+        "N500",
+        "N1000",
+        "N2098Plateau",
+        "N500TinyMoment"
+      ]
+    },
+    {
+      "ID": "SavedWorkbook_Paths_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "5176F53C820FB6AE00E375595A3B988C3D5D5AA79B7C1C9DAD9EC3D551CCBDD6",
+      "Bytes": 61434,
+      "LineCount": 661,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 23056,
+        "StartTicks": "639285817261409962"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Paths; cases=6; maxSeconds=2.96484375; passed=533; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "pathAuto",
+        "pathMx",
+        "pathMy",
+        "pathMxy",
+        "pathN",
+        "pathNMxy"
+      ]
+    },
+    {
+      "ID": "SavedWorkbook_Paths_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "FF4B97EE93C1C6100225F40F0720340465038031CC506CC86BED828DEF1EC5C9",
+      "Bytes": 60187,
+      "LineCount": 638,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "OwnedExcel": {
+        "PID": 10568,
+        "StartTicks": "639285817617464184"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Paths; cases=6; maxSeconds=2.92578125; passed=510; failed=0"
+      ],
+      "FocusedResultIDs": [
+        "pathAuto",
+        "pathMx",
+        "pathMy",
+        "pathMxy",
+        "pathN",
+        "pathNMxy"
+      ]
+    },
+    {
+      "ID": "Batch15_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "B5015BAA232FD9FC46ED72A90207339BEFFB64B1D74B7D9EBF7803B159DFE09C",
+      "Bytes": 116316,
+      "LineCount": 1122,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunCoreRegressionBatch15"
+      ],
+      "OwnedExcel": {
+        "PID": 23360,
+        "StartTicks": "639285817978691057"
+      },
+      "Totals": [
+        "TOTAL_CORE_BATCH15: seconds=3.89453125; passed=910; failed=0"
+      ],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "Stability_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "C326354D15573B69C7ACCBE6CBE57295582A279B5055AA130B8A809592D6450E",
+      "Bytes": 11115,
+      "LineCount": 126,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "OwnedExcel": {
+        "PID": 23120,
+        "StartTicks": "639285818326152176"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_SPECIAL: case=Stability; elapsedSec=2.9375; passed=92; failed=0"
+      ],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "AsymmetricSteel_No",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_No.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "1489A6AE0544AAE62A9C42F82995984A11AF82A8635BAB7D40AA7E8F579F3CC9",
+      "Bytes": 11579,
+      "LineCount": 126,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "OwnedExcel": {
+        "PID": 20664,
+        "StartTicks": "639285818655139454"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_SPECIAL: case=AsymmetricSteel; elapsedSec=2.916015625; passed=92; failed=0"
+      ],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "Batch15_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "3C4E798997EF4FFD3006708ACF8DF3ABB081E58EEFA534FE7D086F5FA65F0C7E",
+      "Bytes": 114607,
+      "LineCount": 1073,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunCoreRegressionBatch15"
+      ],
+      "OwnedExcel": {
+        "PID": 23440,
+        "StartTicks": "639285818982778463"
+      },
+      "Totals": [
+        "TOTAL_CORE_BATCH15: seconds=3.53125; passed=861; failed=0"
+      ],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "Stability_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "1D6A67EF405C5421C5CE5C2B1409D8E83386BE2EAB3B7F04E7A400433D3DFB91",
+      "Bytes": 10905,
+      "LineCount": 121,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "OwnedExcel": {
+        "PID": 22584,
+        "StartTicks": "639285819332102367"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_SPECIAL: case=Stability; elapsedSec=2.931640625; passed=87; failed=0"
+      ],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "AsymmetricSteel_Yes",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_Yes.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "FE9CF8ACC3A0B5D0C132B94BE2A42866A58478AF1C7BAD8B1C272E5A023B95C4",
+      "Bytes": 11340,
+      "LineCount": 121,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "OwnedExcel": {
+        "PID": 22200,
+        "StartTicks": "639285819667872467"
+      },
+      "Totals": [
+        "TOTAL_FOCUSED_SPECIAL: case=AsymmetricSteel; elapsedSec=2.93359375; passed=87; failed=0"
+      ],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "Model_Rectangles",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Rectangles.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "47B3A7CC973BE322E945FDF6A8465699EE08A18C92262F201932EEB6E86C7AED",
+      "Bytes": 19440,
+      "LineCount": 211,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "OwnedExcel": {
+        "PID": 22056,
+        "StartTicks": "639285820001091542"
+      },
+      "Totals": [],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "Model_Circle",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Circle.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "A59D118F40BF2C77F645BFD35BEF1E33876B2E93E6B6DA44147862FAF278CB3D",
+      "Bytes": 22191,
+      "LineCount": 243,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "OwnedExcel": {
+        "PID": 24048,
+        "StartTicks": "639285820078180109"
+      },
+      "Totals": [],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "Model_PointedSection",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_PointedSection.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "B6AC39A648EE963DBE09C77AE9F596BDAAEBBD6A431262B8F821B8A4E6BBE0C8",
+      "Bytes": 45413,
+      "LineCount": 513,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "OwnedExcel": {
+        "PID": 9260,
+        "StartTicks": "639285820152386427"
+      },
+      "Totals": [],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "Model_HollowRectangle",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_HollowRectangle.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "7FF3AB32F27784C39AB2816FBC7D99FAF78AA60463BDCB09D48504112B47FCCB",
+      "Bytes": 36299,
+      "LineCount": 407,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "OwnedExcel": {
+        "PID": 9400,
+        "StartTicks": "639285820230940186"
+      },
+      "Totals": [],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "Model_SavedWorkbook",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_SavedWorkbook.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "87292FD96A9590F2D6E58631B9063E9510FDB965C2F3001FDCBD2061A5EBB9C2",
+      "Bytes": 15402,
+      "LineCount": 164,
+      "FinishedMacros": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "OwnedExcel": {
+        "PID": 23672,
+        "StartTicks": "639285820308615907"
+      },
+      "Totals": [],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "OutputPresentation",
+      "Kind": "VBA",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/OutputPresentation.txt",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": true,
+      "SHA256": "4D3BC3014EC7C76C26606B09FC27EB72051F3274E111B342CE8CF2709AA5369C",
+      "Bytes": 66303,
+      "LineCount": 1355,
+      "FinishedMacros": [
+        "RunConfigPresentationTests"
+      ],
+      "OwnedExcel": {
+        "PID": 8868,
+        "StartTicks": "639285820391781508"
+      },
+      "Totals": [
+        "TOTAL_CONFIG_PRESENTATION: passed=1336; failed=0"
+      ],
+      "FocusedResultIDs": []
+    },
+    {
+      "ID": "NativeCAD",
+      "Kind": "NativeCAD",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/Stage.json",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": false,
+      "SHA256": "6254107F7A095761AE692663C4E71843E0DF16E36BCC8B47EE95DF5C8BAEBB90",
+      "Bytes": 786,
+      "LineCount": 19,
+      "NativeRootSummary": {
+        "Passed": true
+      }
+    },
+    {
+      "ID": "Independent",
+      "Kind": "Python",
+      "Report": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Independent.json",
+      "RecordPassed": true,
+      "Errors": [],
+      "DigestRecordedInRun": false,
+      "SHA256": "CE34133EB0E743943EECCFDF5044462C45304F247EBA818443E5482F5BBFAF1B",
+      "Bytes": 194078,
+      "LineCount": 7608,
+      "NativeRootSummary": {
+        "Passed": true,
+        "SourceSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698"
+      }
+    }
+  ],
+  "ReadRecords": 26,
+  "ReportsWithErrors": [],
+  "FullPass": false
+}

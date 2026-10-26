@@ -1,0 +1,27 @@
+{
+  "At": "2026-10-26T06:43:05.783770+03:00",
+  "Status": "PASS_NATIVE_EXACT_BOOK_AND_PACKAGE",
+  "BookSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "AllCodeSHA256": "2688FF2C07BC4A903811F900C2E35E8655FB967FCB0B98677E90288ABDD79D67",
+  "NativeComponents": 178,
+  "SourceComponents": 172,
+  "DocumentModules": 6,
+  "All178NativeBodiesExactToPreFullStage6": true,
+  "AllCodeAll178BodiesExactToNative": true,
+  "SourceEquality": true,
+  "UnchangedNonVBAParts": 106,
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "ImportPerformed": false,
+  "SavePerformed": false,
+  "MacrosRun": false,
+  "NativePID": 25440,
+  "NativeStartTicks": "639285828217667396",
+  "Captions": {
+    "H53": "[Модель начала трещинообразования]",
+    "H58": "[Модель НДС с раскрытыми трещинами]"
+  },
+  "NativeSnapshotSHA256": "A0AD7733B4DB6A19EB73CAAF8DCB135644FD269D5BCE4527A13A6EE0929FA5CE",
+  "SourceEqualitySHA256": "EF1CEB58AA192DA87DA1CD308D61822CB617837FC51290BC91C1F7C92EB1D49D"
+}

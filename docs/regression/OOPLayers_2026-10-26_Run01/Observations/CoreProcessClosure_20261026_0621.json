@@ -1,0 +1,104 @@
+{
+  "At": "2026-10-26T06:21:24.7262342+03:00",
+  "Scope": "All 12 closed core groups only; Focused remains running",
+  "SourceSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "Identities": [
+    {
+      "Group": "Full",
+      "Mode": "No",
+      "PID": 3544,
+      "StartTicks": "639285701398655736",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "Geometry",
+      "Mode": "No",
+      "PID": 20704,
+      "StartTicks": "639285750489054012",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "SP35",
+      "Mode": "No",
+      "PID": 24500,
+      "StartTicks": "639285752999726139",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "Recipes",
+      "Mode": "No",
+      "PID": 8140,
+      "StartTicks": "639285753192384075",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "SavedOffsets",
+      "Mode": "No",
+      "PID": 22568,
+      "StartTicks": "639285756071448501",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "CurrentFeatures",
+      "Mode": "No",
+      "PID": 12260,
+      "StartTicks": "639285756256856154",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "Full",
+      "Mode": "Yes",
+      "PID": 6512,
+      "StartTicks": "639285757270247379",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "Geometry",
+      "Mode": "Yes",
+      "PID": 23880,
+      "StartTicks": "639285805853239715",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "SP35",
+      "Mode": "Yes",
+      "PID": 22896,
+      "StartTicks": "639285808395597369",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "Recipes",
+      "Mode": "Yes",
+      "PID": 22028,
+      "StartTicks": "639285808589861798",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "SavedOffsets",
+      "Mode": "Yes",
+      "PID": 23372,
+      "StartTicks": "639285811462849762",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    },
+    {
+      "Group": "CurrentFeatures",
+      "Mode": "Yes",
+      "PID": 18760,
+      "StartTicks": "639285811643065863",
+      "ObservedTicks": "",
+      "ExactIdentityLive": false
+    }
+  ],
+  "AllCoreIdentitiesClosed": true
+}

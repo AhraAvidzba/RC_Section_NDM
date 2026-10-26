@@ -1,0 +1,104 @@
+{
+  "At": "2026-10-26T06:49:26.622060+03:00",
+  "Status": "PASS_CODE_TESTS_AND_EXACT_NATIVE_ARTIFACT",
+  "BookSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "Requirements": [
+    {
+      "Requirement": "ТЗ скопировано без изменения",
+      "Verified": true,
+      "Evidence": [
+        "docs/NDM_OOP_Layers_Status_Refactoring_TZ.md",
+        "docs/regression/OOPLayers_2026-10-26_Run01/Baseline.json"
+      ]
+    },
+    {
+      "Requirement": "Типизированные статусы и обязательные пакетные сообщения",
+      "Verified": true,
+      "Evidence": [
+        "Stage1/Acceptance.json",
+        "Stage1/ProfileAcceptance.json"
+      ]
+    },
+    {
+      "Requirement": "Предупреждения по событиям",
+      "Verified": true,
+      "Evidence": [
+        "Stage2/Acceptance.json",
+        "Stage2/ProfileAcceptance.json"
+      ]
+    },
+    {
+      "Requirement": "Crack stop/spacing без текстового управления",
+      "Verified": true,
+      "Evidence": [
+        "Stage3/Acceptance.json",
+        "Stage3/ProfileAcceptance.json"
+      ]
+    },
+    {
+      "Requirement": "Строгие сохранённые metadata",
+      "Verified": true,
+      "Evidence": [
+        "Stage4/Acceptance.json",
+        "Stage5c/ProfileAcceptance.json"
+      ]
+    },
+    {
+      "Requirement": "Подготовленные настройки без нового класса",
+      "Verified": true,
+      "Evidence": [
+        "Stage5a/Acceptance.json",
+        "LocaleAudit/Classification.md"
+      ]
+    },
+    {
+      "Requirement": "Подтверждённые locale-границы/roundtrip",
+      "Verified": true,
+      "Evidence": [
+        "Stage5a/Acceptance.json",
+        "Stage5b/Acceptance.json",
+        "Stage5c/Acceptance.json",
+        "Stage5d/Acceptance.json",
+        "LocaleAudit/SnapshotSeparators.json"
+      ]
+    },
+    {
+      "Requirement": "h/x и неизменность математики",
+      "Verified": true,
+      "Evidence": [
+        "Stage6/Acceptance.json",
+        "Stage6/ProfileAcceptance.json"
+      ]
+    },
+    {
+      "Requirement": "Весь168+122+CAD+независимый контроль",
+      "Verified": true,
+      "Evidence": [
+        "RunnerFooterFix/ExitReconciliation.json"
+      ]
+    },
+    {
+      "Requirement": "Готовая книга/сборка/AllCode/данные",
+      "Verified": true,
+      "Evidence": [
+        "FinalReleaseGate/Acceptance.json"
+      ]
+    },
+    {
+      "Requirement": "Память/владение процессами",
+      "Verified": true,
+      "Evidence": [
+        "FinalReleaseGate/ProcessClosureBeforeNative.json",
+        "Observations/CoreProcessClosure_20261026_0621.json"
+      ]
+    }
+  ],
+  "NewVBAClasses": 0,
+  "NewVBAModules": 0,
+  "SourceMathHelperExact": true,
+  "TrueSecondWindowsLocaleTested": false,
+  "TrueSecondWindowsLocaleLimitationDocumented": true,
+  "OriginalOuterExit1Preserved": true,
+  "FooterFailureReproducedFixedAndRetested": true,
+  "PublicationAndNdmPausePending": true
+}

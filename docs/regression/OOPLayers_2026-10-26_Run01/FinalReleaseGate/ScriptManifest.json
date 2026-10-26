@@ -1,0 +1,14 @@
+{
+  "At": "2026-10-26T06:53:02.298285+03:00",
+  "ReasonForPostPreparationGateUpdate": "Original driver footer exit reconciled by complete primary review and PS5.1 reproduction; ownership safeguards unchanged.",
+  "Scripts": [
+    {
+      "Path": "TestVerifyNative.ps1",
+      "SHA256": "F54096A545EE4D30CBE71F00551FE08C2D2CEDD5CA4EF11AB579C7967D8F6D74"
+    },
+    {
+      "Path": "TestVerifySourceEquality.ps1",
+      "SHA256": "D9A0984BD5A373F9D2080A87AA4A4A192BE35E6E8DD212370C11468A3E40D2AA"
+    }
+  ]
+}

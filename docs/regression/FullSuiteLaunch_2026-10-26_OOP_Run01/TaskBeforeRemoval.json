@@ -1,0 +1,14 @@
+{
+  "Name": "RC_NDM_OOP_20261026_Run01",
+  "State": "Ready",
+  "LastRunTime": "2026-10-26T03:08:08.0000000+03:00",
+  "LastTaskResult": 1,
+  "Actions": [
+    {
+      "Execute": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "Arguments": "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \"C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-26_OOP_Run01\\FullDriverHost.ps1\"",
+      "WorkingDirectory": "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM"
+    }
+  ],
+  "TriggerCount": 1
+}

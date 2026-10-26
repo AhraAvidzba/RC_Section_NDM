@@ -1,0 +1,12 @@
+{
+  "At": "2026-10-26T06:53:02.297315+03:00",
+  "InputCount": 498,
+  "ChangedAfterAll42OwnProcessesClosed": [
+    "tools/build_workbook/Run-FullOnOffAcceptance.ps1"
+  ],
+  "ChangesDuringRun": [],
+  "EvidenceBeforePatch": "Observations/PreFooterFix_All498Monitor.json",
+  "SourcePatch": "RunnerFooterFix/SourcePatch.json",
+  "VBAOrBookOrAllCodeChangedAfterFull": false,
+  "SourceSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698"
+}

@@ -181,7 +181,7 @@ if($summaryCode -eq 0 -and $finalizeCode -eq 0){
     Copy-Item -LiteralPath (Join-Path $root ($focusedDirectory+'/CombinedAcceptance.json')) -Destination (Join-Path $directory 'CompleteCurrentAcceptance.json')
 }
 [ordered]@{Status=if(-not $failed -and $summaryCode -eq 0 -and $finalizeCode -eq 0){'COMPLETED_PENDING_LOG_REVIEW'}else{'REVIEW_REQUIRED'};
-    FinishedUTC=[DateTimeOffset]::UtcNow.ToString('o');SourceSHA256=$sourceHash;ExpectedSuites=($jobs|Measure-Object ExpectedSuites -Sum).Sum;
+    FinishedUTC=[DateTimeOffset]::UtcNow.ToString('o');SourceSHA256=$sourceHash;ExpectedSuites=($jobs|ForEach-Object {[int]$_.ExpectedSuites}|Measure-Object -Sum).Sum;
     SummarizeExitCode=$summaryCode;FinalizeExitCode=$finalizeCode;CompleteAcceptance='CompleteCurrentAcceptance.json'}|
     ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $directory 'Completion.json') -Encoding UTF8
 if($summaryCode -ne 0 -or $finalizeCode -ne 0){$failed=$true}

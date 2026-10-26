@@ -1,0 +1,16 @@
+﻿{
+    "Created":  "2026-10-26T06:14:43.8849538+03:00",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Source\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+    "ProbeWorkbookSHA256":  "03C7D01CB1A414C790A9AC1B2CA25CC75DD4FF910797FA7BF38AD6799E0DBCF0",
+    "HelperSHA256":  "3D9529B81522B341242A093C2D3E1515220272E8DCB38AB3AACF1175266F9905",
+    "ExtraHelperSHA256":  "5CB182225F470633ADEE4E746B0BDB6246EBF4E8B8F55FFC4146E2AEB9ED6600",
+    "SavedFixtureSHA256":  "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F",
+    "Compiled":  true,
+    "ModifiedComponents":  [
+                               "modWorkbookCalculation",
+                               "modTestBatchCalculation"
+                           ],
+    "CalculationExecuted":  false,
+    "ProductionChanged":  false
+}

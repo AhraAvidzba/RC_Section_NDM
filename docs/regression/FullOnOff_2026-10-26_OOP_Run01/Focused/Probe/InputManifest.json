@@ -1,0 +1,54 @@
+﻿{
+    "Passed":  true,
+    "Created":  "2026-10-26T06:14:48.5075611+03:00",
+    "SourceSHA256":  "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+    "ProbeSHA256":  "03C7D01CB1A414C790A9AC1B2CA25CC75DD4FF910797FA7BF38AD6799E0DBCF0",
+    "Groups":  [
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\Probe\\Rectangles_Generated_Manifest.txt",
+                       "Shape":  "Rectangles",
+                       "ReportSHA256":  "FBDB23C9531B5FCBDAA29ABD1773BBA58C0F3F93002C7683AB35430121C2ECA0",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\Probe\\Circle_Generated_Manifest.txt",
+                       "Shape":  "Circle",
+                       "ReportSHA256":  "A45B902B0C48B82EE7BAA25881795EFB2C9926EFA4203E072AB9FC6CA567079C",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\Probe\\PointedSection_Generated_Manifest.txt",
+                       "Shape":  "PointedSection",
+                       "ReportSHA256":  "B28F88F483F6409D7F182F4540B75CF421CF674444B7F58098218B1633AF5620",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\Probe\\HollowRectangle_Generated_Manifest.txt",
+                       "Shape":  "HollowRectangle",
+                       "ReportSHA256":  "22D95EA13B00C72F35AAF6BF72ABF5CFE4600953C9C0723CF73E610F75B940BB",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Saved",
+                       "Report":  "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\Probe\\SavedWorkbook_Saved_Manifest.txt",
+                       "Shape":  "SavedWorkbook",
+                       "ReportSHA256":  "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23",
+                       "CasesPerMode":  23
+                   },
+                   {
+                       "Group":  "Paths",
+                       "Report":  "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\Focused\\Probe\\SavedWorkbook_Paths_Manifest.txt",
+                       "Shape":  "SavedWorkbook",
+                       "ReportSHA256":  "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70",
+                       "CasesPerMode":  6
+                   }
+               ],
+    "SingleCasesTwoModes":  122,
+    "SolverExecuted":  false,
+    "AcceptanceExecuted":  false,
+    "ProductionChanged":  false
+}

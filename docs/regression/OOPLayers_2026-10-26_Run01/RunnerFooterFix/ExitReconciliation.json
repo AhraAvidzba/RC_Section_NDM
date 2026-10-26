@@ -1,0 +1,48 @@
+{
+  "At": "2026-10-26T06:40:20.754691+03:00",
+  "Status": "PASS_POST_ACCEPTANCE_FOOTER_RECONCILED",
+  "SourceSHA256": "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+  "AllMandatoryTestStagesPassed": true,
+  "AllPrimaryReportsRead": true,
+  "CoreSuites": 168,
+  "FocusedCases": 122,
+  "CorePrimaryReports": 12,
+  "FocusedPrimaryReports": 26,
+  "NativeReports": [
+    {
+      "Macro": "RunRealAutoCADFarOriginTests",
+      "SHA256": "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A",
+      "Bytes": 20600,
+      "Totals": [
+        "TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=447; failed=0"
+      ],
+      "Errors": []
+    },
+    {
+      "Macro": "RunRealAutoCADFarCapacityTests",
+      "SHA256": "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3",
+      "Bytes": 29560,
+      "Totals": [
+        "TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=503; failed=0"
+      ],
+      "Errors": []
+    }
+  ],
+  "IndependentIntegrals": 562,
+  "ReviewedNumFailStates": 10,
+  "Unsupported": 0,
+  "OriginalDriverCompletionSHA256": "490C1027ED4D11082D64E656D47FFB71BCBCBB3F2A81DF5255998D29351B1061",
+  "OriginalDriverExitCode": 1,
+  "OriginalDriverStatus": "REVIEW_REQUIRED",
+  "OriginalArtifactsPreserved": true,
+  "Cause": "PS5.1 Measure-Object cannot see Hashtable ExpectedSuites keys when serializing the final metadata footer after all test verifiers had passed.",
+  "AffectedStepRetested": "Footer serialization on all 12 actual job hashtables returns 168; PS5.1 reproduction and fix passed; no calculation repeated.",
+  "FooterTestSHA256": "D51D2BC9C145EE1D5EA4714B80A3DC238A504B26778B0FE5E565E565D7B5C5CC",
+  "SummaryReverifiedSHA256": "210D19132298DA577F5F91C9C310FA6F4DC10A8930FE560DA652557C054569C2",
+  "FinalizedReverifiedSHA256": "639E7BD0BEA88E80B1EB07F9A03CC00E083B24B7A3E733989C6A83546803D6D3",
+  "OriginalRunnerSnapshotSHA256": "E9992EE5E77556C905CE7611A752DE67C1E75FE64BB580219DED13C83FE8DDB4",
+  "PatchedRunnerSHA256": "6429247B6A578411716210EBFFA4774A256AD38A640CEBA6B519F899086CB886",
+  "ProcessClosureSHA256": "6DEF855E0335FF205287C266816B1A042BE65F3BDC673E114441ECFBD30DDDE6",
+  "NativeReleaseGateAndPublicationPending": true,
+  "NewFullRunStarted": false
+}

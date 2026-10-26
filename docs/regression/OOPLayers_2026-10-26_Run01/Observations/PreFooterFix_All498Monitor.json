@@ -1,0 +1,163 @@
+﻿{
+    "Checked":  "2026-10-26T06:30:34.1405742+03:00",
+    "ReadStarted":  "2026-10-26T06:30:33.1715104+03:00",
+    "Driver":  {
+                   "PID":  13204,
+                   "Live":  false,
+                   "IdentityMatches":  false
+               },
+    "CurrentJob":  "CurrentFeatures_On",
+    "RunStatus":  "COMPLETED_PENDING_LOG_REVIEW",
+    "CompletedJobs":  12,
+    "FailedCompletedJobs":  [
+
+                            ],
+    "ExpectedSuites":  168,
+    "CurrentLog":  "C:\\Users\\avidzba\\.codex\\worktrees\\ndm-oop-status\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-26_OOP_Run01\\CurrentFeatures_On.txt",
+    "CompletedSuitesInCurrentLog":  [
+                                        "SUITE_FINISHED: modTestContourMesh.RunAutomaticMeshTests; 2026-10-26T06:12:53",
+                                        "SUITE_FINISHED: modTestCalculationSnapshot.RunCalculationSnapshotTests; 2026-10-26T06:13:20",
+                                        "SUITE_FINISHED: modTestDiscreteForces.RunDiscreteForceTests; 2026-10-26T06:14:16",
+                                        "SUITE_FINISHED: modTestAudit02Api.RunProgramMessageTests; 2026-10-26T06:14:17",
+                                        "SUITE_FINISHED: modTestAudit02Api.RunProgramMessagePresentationTests; 2026-10-26T06:14:18",
+                                        "SUITE_FINISHED: modTestAudit02Api.RunInputOnlyDialogTests; 2026-10-26T06:14:21"
+                                    ],
+    "ErrorsInCurrentLog":  [
+
+                           ],
+    "ErrorsInProgressFiles":  [
+
+                              ],
+    "OwnedExcel":  {
+                       "PID":  18760,
+                       "Live":  false,
+                       "IdentityMatches":  false
+                   },
+    "ProgressFiles":  [
+
+                      ],
+    "LastActivity":  "2026-10-26T06:28:39.5701554+03:00",
+    "LogTail":  [
+                    "TOTAL INPUT ONLY DIALOG: passed=1122; failed=0",
+                    "COM_WORKBOOK_AFTER_SUITE: path=C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_4e0a0b0e51b04029bc3447942ac114b5\\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True",
+                    "MODE_AFTER_SUITE: Yes",
+                    "SUITE_FINISHED: modTestAudit02Api.RunInputOnlyDialogTests; 2026-10-26T06:14:21",
+                    "SOURCE_UNCHANGED: True",
+                    "WATCHDOG_COMPLETED: exit=0; source unchanged=True"
+                ],
+    "InputsChecked":  498,
+    "ChangedInputs":  [
+
+                      ],
+    "HEADUnchanged":  true,
+    "FrozenSourceSHA256":  "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+    "Deadline":  "2026-10-26T11:08:53.4190492+03:00",
+    "Completion":  {
+                       "Status":  "REVIEW_REQUIRED",
+                       "FinishedUTC":  "2026-10-26T03:28:40.3033282+00:00",
+                       "SourceSHA256":  "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+                       "SourceCommit":  "75de262f80e60c638b1c7cc8cd91e861495bc844",
+                       "RunnerExit":  1,
+                       "SummaryExit":  0,
+                       "FinalizeExit":  0,
+                       "CompleteAcceptancePassed":  true,
+                       "ChangedInputs":  [
+
+                                         ],
+                       "HeadChanged":  false,
+                       "DriverError":  "",
+                       "EvidenceDirectory":  "docs/regression/FullOnOff_2026-10-26_OOP_Run01"
+                   },
+    "Memory":  {
+                   "FreePhysicalGiB":  19.073,
+                   "FreeCommitGiB":  29.054,
+                   "CommitLimitGiB":  43.44
+               },
+    "Focused":  {
+                    "Status":  "COMPLETED_PENDING_REVIEW",
+                    "StartedUTC":  "2026-10-26T03:14:24.4142262+00:00",
+                    "DeadlineUTC":  "2026-10-26T04:14:24.4142262+00:00",
+                    "CompletedRecords":  26,
+                    "FailedRecords":  [
+
+                                      ],
+                    "LastRecord":  "Independent",
+                    "SourceSHA256":  "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698"
+                },
+    "FocusedRecentFiles":  [
+                               {
+                                   "Path":  "CombinedAcceptance.json",
+                                   "Bytes":  831,
+                                   "LastWrite":  "2026-10-26T06:28:39.5701554+03:00"
+                               },
+                               {
+                                   "Path":  "Acceptance.json",
+                                   "Bytes":  1656,
+                                   "LastWrite":  "2026-10-26T06:28:26.7687473+03:00"
+                               },
+                               {
+                                   "Path":  "Run.json",
+                                   "Bytes":  18533,
+                                   "LastWrite":  "2026-10-26T06:28:26.5180785+03:00"
+                               },
+                               {
+                                   "Path":  "Independent.json",
+                                   "Bytes":  194078,
+                                   "LastWrite":  "2026-10-26T06:28:26.3784695+03:00"
+                               },
+                               {
+                                   "Path":  "NativeCAD\\Stage.json",
+                                   "Bytes":  786,
+                                   "LastWrite":  "2026-10-26T06:28:25.4727396+03:00"
+                               },
+                               {
+                                   "Path":  "NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeInvocation.json",
+                                   "Bytes":  571,
+                                   "LastWrite":  "2026-10-26T06:28:24.6941298+03:00"
+                               },
+                               {
+                                   "Path":  "NativeCAD\\RunRealAutoCADFarCapacityTests\\stdout.log",
+                                   "Bytes":  304,
+                                   "LastWrite":  "2026-10-26T06:28:24.4489709+03:00"
+                               },
+                               {
+                                   "Path":  "NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeCADIdentity.json",
+                                   "Bytes":  228,
+                                   "LastWrite":  "2026-10-26T06:28:24.4187379+03:00"
+                               }
+                           ],
+    "OwnedNativeProcesses":  [
+                                 {
+                                     "IdentityFile":  "NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeCADOwnership.json",
+                                     "Process":  {
+                                                     "PID":  25304,
+                                                     "Live":  false,
+                                                     "IdentityMatches":  false
+                                                 }
+                                 },
+                                 {
+                                     "IdentityFile":  "NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeExcelOwnership.json",
+                                     "Process":  {
+                                                     "PID":  16768,
+                                                     "Live":  false,
+                                                     "IdentityMatches":  false
+                                                 }
+                                 },
+                                 {
+                                     "IdentityFile":  "NativeCAD\\RunRealAutoCADFarOriginTests\\NativeCADOwnership.json",
+                                     "Process":  {
+                                                     "PID":  24556,
+                                                     "Live":  false,
+                                                     "IdentityMatches":  false
+                                                 }
+                                 },
+                                 {
+                                     "IdentityFile":  "NativeCAD\\RunRealAutoCADFarOriginTests\\NativeExcelOwnership.json",
+                                     "Process":  {
+                                                     "PID":  13200,
+                                                     "Live":  false,
+                                                     "IdentityMatches":  false
+                                                 }
+                                 }
+                             ]
+}

@@ -1,0 +1,903 @@
+{
+  "Archive": "FullRequiredLogs.zip",
+  "ArchiveSHA256": "6C7EFDFF854F31D17364992EA2F5960CC3D121F03992D4C185E4B306E12C5C56",
+  "ArchiveBytes": 3007673,
+  "Files": [
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CompleteCurrentAcceptance.json",
+      "SHA256": "476D15B6D9CA20C8BD0C6073CB5807D00E0174B6BDDF57EC192509E00BE7EED2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CurrentFeatures_Off.txt",
+      "SHA256": "BD545112C1D06CA12559E1A554946B0B4CAF6BF41B2A2BDB899A16FECF2DCDEA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CurrentFeatures_Off.txt.memory.json",
+      "SHA256": "FF4E574023FD9F24C2CC3981A1215E4FB2A3816E63ADFDF3573365A95C89E5A9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CurrentFeatures_Off.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CurrentFeatures_Off.txt.stdout.log",
+      "SHA256": "5F18773C90CD9ACB850C0DBC92C40FFE28817754A7960B3D59357995B1F1B540"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CurrentFeatures_On.txt",
+      "SHA256": "78595FD7FCDFF31DB999A644373F4811FA823FAE5C3395A90D3947101733253C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CurrentFeatures_On.txt.memory.json",
+      "SHA256": "536CFDA738C2B8BD471CF451F590AEAACC9F252B9D7ACE931CEA08842E59C426"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CurrentFeatures_On.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/CurrentFeatures_On.txt.stdout.log",
+      "SHA256": "5015F2A2D5AA8EBDE49CD494EFB4BCD675644633FD110C20925FCE26EE33B3BE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Finalize.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Finalize.stdout.json",
+      "SHA256": "227E18BB5960F47115018E490B124108F5BDE1FA12A465C17C1852889580C33C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Acceptance.json",
+      "SHA256": "E4F5B350260D19A526C6AFD469F82D72B818AD52D852F41D521B3A9BC11C30F1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_No.txt",
+      "SHA256": "1489A6AE0544AAE62A9C42F82995984A11AF82A8635BAB7D40AA7E8F579F3CC9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_No.txt.memory.json",
+      "SHA256": "860C3FC9785A5B1C0787C6203BDE9B6C2C4ACFC4E7ADBD2E8491822C4A647F06"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_No.txt.stdout.log",
+      "SHA256": "17CC992771EF14FA09BDD2562D5F0C7B2A31E98A55D500EB4F6D2CE00B684BC2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_Yes.txt",
+      "SHA256": "FE9CF8ACC3A0B5D0C132B94BE2A42866A58478AF1C7BAD8B1C272E5A023B95C4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_Yes.txt.memory.json",
+      "SHA256": "1CDACEAB932D662B35FD10BCA877CF88AFCA2D7A218DB51C9AEDCECAE167C4C8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/AsymmetricSteel_Yes.txt.stdout.log",
+      "SHA256": "B30ECC2D7722EB71688B64BFDA3873D2ACE42774E080AF35F91BD738A115D95C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_No.txt",
+      "SHA256": "B5015BAA232FD9FC46ED72A90207339BEFFB64B1D74B7D9EBF7803B159DFE09C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_No.txt.memory.json",
+      "SHA256": "8883CBCE8C46DB80CB3FA2DE1C61867C094E2B21CA1DF08C6F9BC40963BB5110"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_No.txt.stdout.log",
+      "SHA256": "C2CB330FB09C168CA76307968C208C8CF699CE7454D7C2C1654718ACA1A82641"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_Yes.txt",
+      "SHA256": "3C4E798997EF4FFD3006708ACF8DF3ABB081E58EEFA534FE7D086F5FA65F0C7E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_Yes.txt.memory.json",
+      "SHA256": "ED4F72BC28DF7B0F665F78CD532266AF888D5B127A64AD746A00B28FDE8A5C6F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Batch15_Yes.txt.stdout.log",
+      "SHA256": "B60E75FC28258FED34D22689E572D7576A00CBAA3BD265DDA9D04F773EDE4316"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_No.txt",
+      "SHA256": "0DBCF4B0C9032B2C9A6CE7A2AB1C42D57CA689938C89FB6EBA8C3C0F5369A7F3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_No.txt.memory.json",
+      "SHA256": "AF0EC5AE6983FDA199057BAAA18925BE80EF07F511FE04BA3C094DE81C4DE7A1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_No.txt.progress.txt",
+      "SHA256": "68D0ECC4CCC0AAB132083FF5D72B7C9565A86C36BF6526535B3B97BC9973F485"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_No.txt.stdout.log",
+      "SHA256": "960465530A0B3D889419A39F8397AFCAD5DC2D202A4833BC6E171E929B311A7A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_Yes.txt",
+      "SHA256": "AE0675A12717468F55B93638D985C954DF91465471DE39A8360F2003FAE205D7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_Yes.txt.memory.json",
+      "SHA256": "D305D3B8531325811E74CDE51F0838E7E71FEC4DBD3A59756A9AD7034F271A86"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_Yes.txt.progress.txt",
+      "SHA256": "844C5A15B8F486FC5AE0ECD7C46F8E3C6090809CACE4D055BEB3409186D2E1DA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Circle_Generated_Yes.txt.stdout.log",
+      "SHA256": "07D3E0A2F2BACBE04B009B894B929D887901DCAAB34065DED9EDAE2CDF354095"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Combined.bas",
+      "SHA256": "5CB182225F470633ADEE4E746B0BDB6246EBF4E8B8F55FFC4146E2AEB9ED6600"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/CombinedAcceptance.json",
+      "SHA256": "CF5412FBB118CA669A2C692DAA47AB4815517CCC9D15FBA778CA961C693D1C84"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/CoreRegressionBatchProbe.bas",
+      "SHA256": "8793B7501A04B3D71F9F84DE354E4D04805D93CE906996E9F2A47CA90BE8A24E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/FocusedAcceptanceProbe.bas",
+      "SHA256": "3D9529B81522B341242A093C2D3E1515220272E8DCB38AB3AACF1175266F9905"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/FocusedForceBounds.bas",
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/FocusedRunner.ps1",
+      "SHA256": "007ABE6085742407E82358C028089EA8220D3B72B18C28373D8B68844643BBE5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/FocusedSpecialProbe.bas",
+      "SHA256": "91E93175339D42162A805C7730782813DAB172ECCB2F71342BB7E7D02475B6C9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_No.txt",
+      "SHA256": "6457D9AF8212C3FE6D5C01386CD11E0BBFCD5058135280DB47EA9BDAF1DA242C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_No.txt.memory.json",
+      "SHA256": "242821223D981025623DA24EC7D0BA54F1E8CC7722AEB257CD663360A419BBF2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_No.txt.progress.txt",
+      "SHA256": "C5D068605192C8474B53DCE8C4A9A12300F4C79EFA4A449ECAF1BB81B9E8D877"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_No.txt.stdout.log",
+      "SHA256": "515CB508E53B945FFE145421F453872091CB24BBAE26E40BE760DB13B9E85C42"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_Yes.txt",
+      "SHA256": "D2B99BACB8245B7D10D229136A6DFF47F605EE14D34C42C55F9B35911B754B93"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_Yes.txt.memory.json",
+      "SHA256": "EE701BBF82DB5D28D7CB9DF42B243DD5F88651C9A52E6DBE9A28A9C39272A469"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_Yes.txt.progress.txt",
+      "SHA256": "F057B0ABAC2235E09D7A0C64056B8DE71C1C291BD7FD5CEC290359697D73EAE8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/HollowRectangle_Generated_Yes.txt.stdout.log",
+      "SHA256": "77E80C1ED8192ACD57598AE46D1B19234B579276BC20145884BFA44ECEC7BCED"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Independent.json",
+      "SHA256": "CE34133EB0E743943EECCFDF5044462C45304F247EBA818443E5482F5BBFAF1B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/IndependentVerifier.py",
+      "SHA256": "6E172E9670213A3F7F9ECA59D7F730377D447F03023682E9A30782F8AAFF5E5F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Circle.txt",
+      "SHA256": "A59D118F40BF2C77F645BFD35BEF1E33876B2E93E6B6DA44147862FAF278CB3D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Circle.txt.memory.json",
+      "SHA256": "D7EC8033F5224BE945F32E7BC5344A52CFF39CAF681B905EEB56B577BD1C7D86"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Circle.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Circle.txt.stdout.log",
+      "SHA256": "5AFF66922CFED6E5AF142C43F6CA0AE3AD4C798B0C7374274B828EAAF470FCC1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_HollowRectangle.txt",
+      "SHA256": "7FF3AB32F27784C39AB2816FBC7D99FAF78AA60463BDCB09D48504112B47FCCB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_HollowRectangle.txt.memory.json",
+      "SHA256": "F92003D53340FE3605AABF26768E201E98E62A1726EAA4C61621EC9AED24A2B6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_HollowRectangle.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_HollowRectangle.txt.stdout.log",
+      "SHA256": "D9E4BD322B3F2585B530F5D636E47F2B79961B13ABC33AA1A7FA283BC6D288AC"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_PointedSection.txt",
+      "SHA256": "B6AC39A648EE963DBE09C77AE9F596BDAAEBBD6A431262B8F821B8A4E6BBE0C8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_PointedSection.txt.memory.json",
+      "SHA256": "E6B054553F9E5B9D302DF48AEE0523AD4D01E10CC0AC0D46F2272D110558BCC2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_PointedSection.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_PointedSection.txt.stdout.log",
+      "SHA256": "FCC4869D273BE8F78226CF0B0B9F73A70DE6ADA564892E19B658785C9D5BD54A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Rectangles.txt",
+      "SHA256": "47B3A7CC973BE322E945FDF6A8465699EE08A18C92262F201932EEB6E86C7AED"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Rectangles.txt.memory.json",
+      "SHA256": "D56419010A19D2B192D98C06CD52D2207759A8162D9F511334DDC865728AC3A9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Rectangles.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_Rectangles.txt.stdout.log",
+      "SHA256": "45EF7BF0A850B8E0487B37C556A5F6142B13000C3907869BA3C8EC7C923170A8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_SavedWorkbook.txt",
+      "SHA256": "87292FD96A9590F2D6E58631B9063E9510FDB965C2F3001FDCBD2061A5EBB9C2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_SavedWorkbook.txt.memory.json",
+      "SHA256": "CB0D1C4549EC4C3CC5AE3FD8DA3E3D2CC7718A67073CE49BEEE50DB5C396F983"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_SavedWorkbook.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Model_SavedWorkbook.txt.stdout.log",
+      "SHA256": "D1A18FC7D390C0833C345202853F1935826F9A99F0E0B532E81F277ACD10A5A2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/NativeRunner.ps1",
+      "SHA256": "4EA00B483E3E2B428E66942953EB3F1C0BC1C8D3AFC3C69A6996C2B08B802076"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.progress.txt",
+      "SHA256": "D5F19236F52F67966066EF213502C2C8E9E9CB382819F87070BB1CC8A3C2FD34"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "SHA256": "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+      "SHA256": "5691D1B695B9E582EFD8A9E037322324BE98C17A2BBC1761D7A80BD3CF502ADF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+      "SHA256": "6C7203FEC1AA2F2D274160EB664357053CFFA42B0AE36A7CEFE77F6A27799DB5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+      "SHA256": "7E1C049B4DC05EA19323A12076C301E4158FEC183CBEC61452797E25053FE34D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+      "SHA256": "8B6BDA9A1DA416341B758D7D7CB144F88DA13845612BDF9BD7427F9BCB59CC0B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stdout.log",
+      "SHA256": "DF57502DC099995ADE493085629C56B49D8E661B43C0810FC9983A0436C99F2A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.progress.txt",
+      "SHA256": "245BD6F53CC1F104153E9B6732A32DF9F2D928D137450330913392025AAD7EF1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "SHA256": "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+      "SHA256": "B771DAF7AD7651091ABA2A0C0F1B141C1C3A907F36841328DA0B86D3D8ADF20E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+      "SHA256": "9F74C5DB3415B36420265AD78D0354AB6EDADF8C50122925D4859ED7EB23A5F8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+      "SHA256": "B95DEE160CE82C514C5E69CC1BBEE47F8188D042F3A894272AA6266ED2A9C39B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+      "SHA256": "EBBE6B6CEE5EADC4F2A412D3E2ADE3B68F2B00CA57F1D83D432678E04551A018"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/stdout.log",
+      "SHA256": "59E1DC4A63C5C406C5E5E30BB7D390E7ADB5D66F40CF5C71DB1C5EF5665C7145"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/NativeCAD/Stage.json",
+      "SHA256": "6254107F7A095761AE692663C4E71843E0DF16E36BCC8B47EE95DF5C8BAEBB90"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/OutputPresentation.txt",
+      "SHA256": "4D3BC3014EC7C76C26606B09FC27EB72051F3274E111B342CE8CF2709AA5369C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/OutputPresentation.txt.memory.json",
+      "SHA256": "48312D0244F80A3AB601C2EED1AAA8038B7BAD8C17630463A23EA0A0DE124709"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/OutputPresentation.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/OutputPresentation.txt.stdout.log",
+      "SHA256": "0A698DB8388EF734DA3655FF08B232A9D6E0A354A685C0E0B49FC7C3EA924787"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_No.txt",
+      "SHA256": "E977B84FAD84D401E91717785A8DB16EBB409AF39B1883D7F08B3C6E5F3E69EC"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_No.txt.memory.json",
+      "SHA256": "EC3CB9713FF16DE058DE615BF534BC4CA73F53B397BE5FCF89EDFA2040AD838C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_No.txt.progress.txt",
+      "SHA256": "7937F3C62AB8A73DC24C2EBD4FEABF357DF60CF5832B01EBD8CD717FDA66B7FE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_No.txt.stdout.log",
+      "SHA256": "B0E1511BDF1CF751B14F5B2BD86221A51636ADB10D02F32E752A8A875F2EF5D8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_Yes.txt",
+      "SHA256": "7614BFB0888F82DCBF65D3EC2FDD891DB95CFEC8AF96D59A91BA9DF42AB4F996"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_Yes.txt.memory.json",
+      "SHA256": "69058FCCEB14A3230776F4BE9062D5B67023555B051E597DFB02557FAFF8B2BE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_Yes.txt.progress.txt",
+      "SHA256": "C1D9AF173CEFF3EA5F446045DD37721460FB1E32449549B656FE45A1204F98C0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/PointedSection_Generated_Yes.txt.stdout.log",
+      "SHA256": "D8284109B28519A141F068D1603CDD8685E69EB6C152982CB6DE0BA687B664DB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Probe/Circle_Generated_Manifest.txt",
+      "SHA256": "A45B902B0C48B82EE7BAA25881795EFB2C9926EFA4203E072AB9FC6CA567079C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Probe/HollowRectangle_Generated_Manifest.txt",
+      "SHA256": "22D95EA13B00C72F35AAF6BF72ABF5CFE4600953C9C0723CF73E610F75B940BB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Probe/InputManifest.json",
+      "SHA256": "2614AC04EFB8494861DABA11CB5816C8D1E3F12BEA2D63F344886EA78D3614F0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Probe/PointedSection_Generated_Manifest.txt",
+      "SHA256": "B28F88F483F6409D7F182F4540B75CF421CF674444B7F58098218B1633AF5620"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Probe/Preparation.json",
+      "SHA256": "75265365624015E012BEB19C959CC45A617126543149B249EBDB1241AC115167"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Probe/Rectangles_Generated_Manifest.txt",
+      "SHA256": "FBDB23C9531B5FCBDAA29ABD1773BBA58C0F3F93002C7683AB35430121C2ECA0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Probe/SavedWorkbook_Paths_Manifest.txt",
+      "SHA256": "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Probe/SavedWorkbook_Saved_Manifest.txt",
+      "SHA256": "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_No.txt",
+      "SHA256": "75102CD495AA25CB4F484CF4AC64E1050B6E61AAC22E734B5C2885A24F7F8AAE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_No.txt.memory.json",
+      "SHA256": "59A6F6EA261AF9297E28BA1ADA6F12138B43512864B3691D756298151F5B3BBA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_No.txt.progress.txt",
+      "SHA256": "194385D190C03905414FDDECBB1EF6E856C6FE41B3A60648209411625867CBDB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_No.txt.stdout.log",
+      "SHA256": "05E1254E9E02E966B249147506B5CDE2601549D4DEFF089EC8B4F7CDF3C22195"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_Yes.txt",
+      "SHA256": "4CE50FDBE3CC338AA1644C5588438DD42CF50EBA116BD4036924AC76A5EC7387"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_Yes.txt.memory.json",
+      "SHA256": "E71A75AF3E66ED9649AF403E3BAFF1AFDC44565B33CCD514DCB450A001E1C630"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_Yes.txt.progress.txt",
+      "SHA256": "647C54916E8E8D7A1407182236AC3E22186776326A3343C8899779A1805562D8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Rectangles_Generated_Yes.txt.stdout.log",
+      "SHA256": "2227CAAC3D68C1013C8F5ABF9EC298B4B9F0A1F7D956597BEDC2826BA5249014"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Run.json",
+      "SHA256": "CB1C4EB1394D60501D3F0ABDDB209975881BAEF5A03027FE50B1A38F5DB06735"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedSectionFixture.json",
+      "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_No.txt",
+      "SHA256": "5176F53C820FB6AE00E375595A3B988C3D5D5AA79B7C1C9DAD9EC3D551CCBDD6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_No.txt.memory.json",
+      "SHA256": "DFE33F920135A6C9BAE8E42E813D7D2AFDC631CCB06B7410E4786483120C5401"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_No.txt.progress.txt",
+      "SHA256": "F36FEB98FF24317B17D06611980E7B777B69CE77D445537F2B3E8F5BCAB2261C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_No.txt.stdout.log",
+      "SHA256": "D5B05EE77680867E5DA959138AE269B19B29A9BE40AD6B6FB85CEC1159FC18D6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_Yes.txt",
+      "SHA256": "FF4B97EE93C1C6100225F40F0720340465038031CC506CC86BED828DEF1EC5C9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_Yes.txt.memory.json",
+      "SHA256": "21498F5933B08A2D2BA1AE0C6D7954A0AAB2EDA024C6842A52BA630BEC74D11D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "SHA256": "07C195DAAB690BEA5102A02D1FFD89D34052B7368C0CFDA8176183B7B99A915B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Paths_Yes.txt.stdout.log",
+      "SHA256": "F9123C7EB2ABCADDA697EF4C435EA761D8239ED1E14FDF522596117F66DF9BEF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_No.txt",
+      "SHA256": "B9A0499852EF735BA0020B0B527AFB6C8F388520AA5C7BBF7B4CF8D09764A2D6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_No.txt.memory.json",
+      "SHA256": "9787A1F10B756D0AE3517E283469923B3CB06E737F80C79D3C4E89169FC3425B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_No.txt.progress.txt",
+      "SHA256": "5DEBE35B5F2A3E67D079B53ACB0807BC4BB7EA2A903B85073AEBE9C7C7D9BCF5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_No.txt.stdout.log",
+      "SHA256": "CCAEE9DE6CC63D0BC94C53B4093977518E6F5AB1A9F83287D19AC5E637AA8A9E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_Yes.txt",
+      "SHA256": "09116232A8C0E83F02DB3C62F69810D30F8CE4335DC059493B16FA9770023B18"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_Yes.txt.memory.json",
+      "SHA256": "8124D2FC9591393CDDA9DB043C16458E8BA0B43E0CB32CEFA1DE286E6AE7140B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "SHA256": "B014B6328AEFAB9AE4C396467B15C314A1E694848645BEF4845938D08763E477"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/SavedWorkbook_Saved_Yes.txt.stdout.log",
+      "SHA256": "BD45D519452597C385113269DDF9376376B1749387AA387C6212498E288BA55D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_No.txt",
+      "SHA256": "C326354D15573B69C7ACCBE6CBE57295582A279B5055AA130B8A809592D6450E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_No.txt.memory.json",
+      "SHA256": "293C96F802FFC1658D1ACC5A8091E163F24F939B594194028988AEF3DA7F8C4C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_No.txt.stdout.log",
+      "SHA256": "2B29CA6BAFA53EE1A97FE0DE0B7159C824C452474C86087F36B9D68C35AF63B3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_Yes.txt",
+      "SHA256": "1D6A67EF405C5421C5CE5C2B1409D8E83386BE2EAB3B7F04E7A400433D3DFB91"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_Yes.txt.memory.json",
+      "SHA256": "ACB4C3F735DFDC75BFCCD4032F48E69225ACC08F26D25D678F4733C33375E4F5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Focused/Stability_Yes.txt.stdout.log",
+      "SHA256": "CE3C18AB5388568714FE07D64B276FA975AC56CFC215665C4A511E27B978A2FE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_Off.txt",
+      "SHA256": "ECF49CAAB9F4EE6E4300A185FF9F68BD800D4B28602AEBC2FA3EEF5D23751016"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_Off.txt.memory.json",
+      "SHA256": "338D49F2A8A387ED80674815CF4CD6F265DEDAAECB5C611B04D61E107269345F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_Off.txt.progress.txt",
+      "SHA256": "360D2749DA885741DCFC2BA12922369C6E7CF7196F44CAEDB4403CB086790FF9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_Off.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_Off.txt.stdout.log",
+      "SHA256": "6105C5BB8D729FF92571DEBE92E74B05A7AE36C3F874D40C9370BAB812DE629A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_On.txt",
+      "SHA256": "C60FD897B1DAC9A4D09398EFE77D4C6EB2437F99EEB6E8F9D707D95833AA58EF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_On.txt.memory.json",
+      "SHA256": "588B7CB18A37221B8381BC54AC6FA0EC507D163DFA2092382A5FDDE636E84336"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_On.txt.progress.txt",
+      "SHA256": "360D2749DA885741DCFC2BA12922369C6E7CF7196F44CAEDB4403CB086790FF9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_On.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Full_On.txt.stdout.log",
+      "SHA256": "01CA89CE37AF62CEC7A0E66CC448B2C7F4FCB86FD58F8A4C1F34F7D8BD9B3E32"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/FullRunner.ps1",
+      "SHA256": "E9992EE5E77556C905CE7611A752DE67C1E75FE64BB580219DED13C83FE8DDB4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Geometry_Off.txt",
+      "SHA256": "1C04CFB904DC12D32E3E693D706980A143A6CDB95909DB0E26AC50E33166C7FC"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Geometry_Off.txt.memory.json",
+      "SHA256": "F4946393736F56D3B61122CFB6330943B870B0E24D0C96EE7DA5FA2D4F2C9BB7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Geometry_Off.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Geometry_Off.txt.stdout.log",
+      "SHA256": "A289467BC4EA3E1C49474D77DB48A68C67A6D0D3DDAEFD06869199205A25AFF0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Geometry_On.txt",
+      "SHA256": "E7AF1BBE63DC500A1CE9EA7A0C98D4BDCD3789F7C8F288C65445214D9C7D9693"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Geometry_On.txt.memory.json",
+      "SHA256": "185075C0E427554F191A747F75FDF656FF6B7212224C7E5B49946017E09E6874"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Geometry_On.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Geometry_On.txt.stdout.log",
+      "SHA256": "A4C77F4A9621A90F7632F8C328EC1E12B1A4269AA7726EE5279651976D780FB8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/ModeRunner.ps1",
+      "SHA256": "03C92CF14A8CE1F94110F0C670815BA07DCF74705E4CF6E74643B853B3D04CB7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Recipes_Off.txt",
+      "SHA256": "F5B87417F3840954B038DE0B24BA5B4C83509EE1F4CF3AB5C59519D22D640FB5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Recipes_Off.txt.memory.json",
+      "SHA256": "B4D25FEA527A14719AE092989FA57C5AF89E3C262AB9FBE80D493311EADE4FC6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Recipes_Off.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Recipes_Off.txt.stdout.log",
+      "SHA256": "828C968EAFA7DF33E9DCFAD0720C8F2DF584246F43D28984B6306E870BB19507"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Recipes_On.txt",
+      "SHA256": "783DAE5D30EFB7FC58618C22549E4C2FBAC70CA329300FFE762C0FDE83174926"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Recipes_On.txt.memory.json",
+      "SHA256": "0A9BA7B7548FA366E2DAF45980258707AE723F6F8A8BCC691173112F63675245"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Recipes_On.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Recipes_On.txt.stdout.log",
+      "SHA256": "31E0BE0BA30BF1D82FF8BF58BA0103ACF8D62EF7370A80370CF05CD8CB657567"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Run.json",
+      "SHA256": "07838F57A759631A7839E537DC0722E92D24429831899CFBA8FD37AFEDE51917"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SavedOffsets_Off.txt",
+      "SHA256": "99044753E8061E48BFD2C2C0691B77887B902410A7FA996DE0B01B02C5E0765B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SavedOffsets_Off.txt.memory.json",
+      "SHA256": "BCF134C1C63BCEA0C35910AE5399DC241490B405E51CBA275CC46BFB37F194EF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SavedOffsets_Off.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SavedOffsets_Off.txt.stdout.log",
+      "SHA256": "E8AFAA59FFDCEB75A2C23D6722AA13ED23F0A1802A07EC876DF65B48F2666631"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SavedOffsets_On.txt",
+      "SHA256": "F895CAD8213C0CD33C8A72C256DA9233443045FBFAEAD206A8F25639F30CE4E4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SavedOffsets_On.txt.memory.json",
+      "SHA256": "C0C5EBB469C88329B9B856F9AD3A17E29238761C752BFC22CF3CE11B411CB534"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SavedOffsets_On.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SavedOffsets_On.txt.stdout.log",
+      "SHA256": "073C8198632008E62444FAFE2332D8DEB834A57A507B360C2F75BE50C8C74030"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SP35_Off.txt",
+      "SHA256": "6C24EAB68A32C0A9B4436E1E36581720C404899134C1DDEBD0DBBA9B559DF426"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SP35_Off.txt.memory.json",
+      "SHA256": "2BC649C30A0BB097B30A4BEC8CDF4D5929F94803D0ECE15E76341A3B49FC04F0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SP35_Off.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SP35_Off.txt.stdout.log",
+      "SHA256": "05048FE3E9D49436AF45C20F657DA5C148C8C83DA6614EC3CDC8CA44ECA1A0B0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SP35_On.txt",
+      "SHA256": "2F26F6B99342194D20A58C74E746F74CF2594D536C4ED9F227A5A456A0602004"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SP35_On.txt.memory.json",
+      "SHA256": "915530EAE59218BADF08E5291B724DB7988F3CB359602F2E15D10FF987C835F4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SP35_On.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/SP35_On.txt.stdout.log",
+      "SHA256": "325FD6065024291463ED46015E82110D71C14CA79639A875EA2EC8B05DA5A547"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Summary.json",
+      "SHA256": "39EA2D55A2E578560D9DE6178B5BFBCE2C39EB52E577C7701AF850134EB880AE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Summary.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-26_OOP_Run01/Summary.stdout.json",
+      "SHA256": "47E6B1A264A08B0EB1FEAA6CCB431BA2080C56D6CB58F494DF11AA537918B9B4"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/AllClosedJobsReview.json",
+      "SHA256": "CDD79EBF5C6855F71F46C1B471BA41CF05BD991434E95230B45574BC3151792D"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/Completion.json",
+      "SHA256": "490C1027ED4D11082D64E656D47FFB71BCBCBB3F2A81DF5255998D29351B1061"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/DriverRun.json",
+      "SHA256": "9BC882CC6255983ABF4FCCD903A12DE863A070A3C8C90F1A61C5687B7624669D"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/EnvironmentPreflight.json",
+      "SHA256": "E1D3BCFBA5FFEAAB3BA5F8D8039D9182401EB9A68D2BFA3346D5F9F122FBB236"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/FullDriver.ps1",
+      "SHA256": "28E136D651B5A9EC6B798C48FC42C067A3C085DE90DBB56C0A682C9A9961B37A"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/FullDriverHost.ps1",
+      "SHA256": "69A36061E8791E999AF94B5A7A1B7071BBA07079AEE3501E8FB01A41DD88A300"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/FullLaunch.json",
+      "SHA256": "0121FFB49784A35F271723E23CABC6236662B94E952942097052CD80C47754F4"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/FullLaunch.stderr.log",
+      "SHA256": "28AEF97631BA73DEAD27B3CE4E3E3258958C2C751DD2A393227C30132891CB16"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/FullLaunch.stdout.log",
+      "SHA256": "E5E7D480D9DA77DC2144976F5D10ECE9A508D06C95DC36EFA811EB389E31D947"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/HostCompletion.json",
+      "SHA256": "C50CC37213F240AF82E3399442B4758684847666B2C850318E4B51DB841A8767"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/HostRun.json",
+      "SHA256": "AF38F07F03F3B7CB67CBEA34462A0651F2F0A50375213E9D0F8A7DBCF748A894"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/Launch.ps1",
+      "SHA256": "20A69B3663BE84EB44629FAE585EE7038FAA7FDF287766752C1EC5210B00525A"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/LaunchRequest.json",
+      "SHA256": "FFC10810098F74B6D326E5918462915AA043E93BA657960500F61FD9DA05E8FE"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/MonitorLast.json",
+      "SHA256": "722AE44EA434968FF27301F502AF6E29CF5FF8984467B7347FE3DD1B5106369A"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/Processed.json",
+      "SHA256": "1975E041514D150216BD8F2DCB0393FF04ADF4903D9FC7CD05F995DA3BA7783A"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/Read-CurrentStatus.ps1",
+      "SHA256": "2087B036654778F49306CC846AD403D15B9EB239CF59B09BC42A44A52D8E1577"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/TaskBeforeRemoval.json",
+      "SHA256": "BB6DC05F032153DD70B04DCD170B466A8870154E63BF9B43AF95D16429059078"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/TaskRemoval.json",
+      "SHA256": "7A77A93D8228A40C6833F4980F21278B2D8A1F6E0AED7DA3067FEA1A5DBF3678"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-26_OOP_Run01/TestObserveCompleted.py",
+      "SHA256": "C1BDCC37507FFAAA71507ABD687EEBBE7A1D2601CD80E1055F09CB9FE9020688"
+    }
+  ]
+}
