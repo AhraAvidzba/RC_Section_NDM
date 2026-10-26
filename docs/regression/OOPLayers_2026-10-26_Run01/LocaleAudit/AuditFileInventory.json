@@ -1,0 +1,2516 @@
+{
+  "Status": "DIRECTED_AUDIT_COMPLETE_FULL_PENDING",
+  "SourceAndHelperFiles": 186,
+  "SourceComponents": 172,
+  "DocumentModules": [
+    {
+      "Name": "\u042d\u0442\u0430\u041a\u043d\u0438\u0433\u0430",
+      "SHA256": "EBC81D84EC9EE148CF25EDCC96D743C0B05685118A72A0ADCD0BD903323765AE"
+    },
+    {
+      "Name": "\u041b\u0438\u0441\u04421",
+      "SHA256": "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0"
+    },
+    {
+      "Name": "\u041b\u0438\u0441\u04422",
+      "SHA256": "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0"
+    },
+    {
+      "Name": "\u041b\u0438\u0441\u04423",
+      "SHA256": "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0"
+    },
+    {
+      "Name": "\u041b\u0438\u0441\u04424",
+      "SHA256": "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0"
+    },
+    {
+      "Name": "\u041b\u0438\u0441\u04425",
+      "SHA256": "3B55C4EB3FCDCE0B1A2BFC2AC2DF5A52674DB6D3CDBFFCA4D2AFDA4BB99E8FB0"
+    }
+  ],
+  "Files": [
+    {
+      "Path": "src/Batch/CBatchSectionCalculator.cls",
+      "SHA256": "D226F1D1A5313623D6CB4C5709FF27A5540E8AA33274D451F687F4C9D12DC85D",
+      "ConversionLines": [
+        1763
+      ]
+    },
+    {
+      "Path": "src/Batch/CCalculationProfile.cls",
+      "SHA256": "EA7B4CD68A4A7F4EBBDBEBA54F7270DC4FBC014CA27CAC9E2A245ACEB8D7FC37",
+      "ConversionLines": [
+        336
+      ]
+    },
+    {
+      "Path": "src/Batch/CCalculationProfileCatalog.cls",
+      "SHA256": "5918111035AA297BCF1E04BFE843CF9047BB292790F4E6C8994692385B157B66",
+      "ConversionLines": [
+        273
+      ]
+    },
+    {
+      "Path": "src/Batch/CCombinationResult.cls",
+      "SHA256": "1995EB25F68AF952037230E5ED1B082E7748C86EC224B8864EBF260B5956C10E",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Batch/CDirectStateResult.cls",
+      "SHA256": "0AA544ACBEC77FA7E1561674F80DEC63A007C7BD76E39181BE0C09AA7B98BA65",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Batch/CSectionStateResult.cls",
+      "SHA256": "4A0BB05EA438351430EB75521596BFD55776C55F21B9E4E274E46BFEF96C56B7",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Batch/CStateProvider.cls",
+      "SHA256": "7054B0266A78FED445D0DDB31E0B54B204394733E7EC428F63931AD9E1526072",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Batch/CStateRepository.cls",
+      "SHA256": "CBF68CFABD01B8BA3ECC1E54654EF9490FABF97DAF640162AEFC83BFEA2E208A",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Batch/CStateRequest.cls",
+      "SHA256": "FF9A785CE7953411996336EAC21BFB90D6665A9F983D73BABDB4E4B870DC8AA4",
+      "ConversionLines": [
+        52,
+        53,
+        64
+      ]
+    },
+    {
+      "Path": "src/Batch/CStrengthResult.cls",
+      "SHA256": "E7E359CCDEBB2DEB90700DDE93CDBFDCF8B859F7D38E57D53638FE0697040D8E",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/CLoadPathDescriptor.cls",
+      "SHA256": "62CEF9812972105D87A78D44D3E6ED0F6C0180D2313ABEB631DABA720AD71F19",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/CLoadPathMath.cls",
+      "SHA256": "9C4352A7CDD0174B7DF9884A923E447CB60DA73CE66F976703A34FFA2892DB2A",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/CLoadPathVector.cls",
+      "SHA256": "0787D5AC0370717F70D5DCF91C37D138A4EF67B34698B79751CD6014071C28CB",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/CMomentZeroFilter.cls",
+      "SHA256": "D99286776B550877E34316F34327226B31169CBFC39D1D09BBE4EBE597AD2C97",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/CResultMeta.cls",
+      "SHA256": "CB16997F094F4A11CF9FE21ADC3BF9943759823EB6928A5776E79D2A2569EF90",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/CResultStatusPolicy.cls",
+      "SHA256": "483EF11F76F589579D65BF4EE905418CFEA1DE824F984BA5EBF9D63056B8CB51",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/CSectionLoadState.cls",
+      "SHA256": "FA7CDA72CC31DA6CA5DE087D25318926C44191D7F7A4D9AEB7110B03171FFA66",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/modCalculationPurpose.bas",
+      "SHA256": "54E696BE0C8DE34E5037EB1FB874F255DBFA7ACBC23351E5688F71DC69716D8F",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/modGeometryPrimitives.bas",
+      "SHA256": "54B8875F6B1004E159792FC3FC0ECE43F7B0EF324F8B4060BF20271E418CD18A",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/modGeometryTypes.bas",
+      "SHA256": "8A59797B1975700892015DD6F2540A9C89DFD0D78DE5370FFC70E17F0DDA021A",
+      "ConversionLines": [
+        98,
+        99,
+        138,
+        153,
+        160,
+        161,
+        162,
+        163
+      ]
+    },
+    {
+      "Path": "src/Common/modResultStatus.bas",
+      "SHA256": "A91C9356A2927B8352F64C22C7449818E765CA910B30D67FB9CE0290BF69E1A1",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/modSectionRecipeApiGuide.bas",
+      "SHA256": "CBCA439945F4B37344F29E9DC95FEF5DF6DA2E4AB5033884D702961C44DA1356",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/modSectionRecipeTypes.bas",
+      "SHA256": "82643B79943B3A76422A0721467183EC630CAEC0F018BA5564428B3C8B8B30FA",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Common/modSolverWorkStats.bas",
+      "SHA256": "F411D5E7FBBA340FFDE3B7FF91EB9DE6D7392E3293DCF37453245D7EE2F0FA02",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Crack/CCrackFormationCalculator.cls",
+      "SHA256": "C8CCB9F83B56294FA7BF597EFFA7EE6FA63B187AB4DFA1F62BE86153BEBCB221",
+      "ConversionLines": [
+        1945
+      ]
+    },
+    {
+      "Path": "src/Crack/CCrackFormationResult.cls",
+      "SHA256": "A2A6B179580FAC60345B4559617680C9534FBED461C39D518AEDBA7545BE5B30",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Crack/CCrackResult.cls",
+      "SHA256": "D18149C0B349118EAC196C0C7C7B126943002CC7DDA78899261CC44AA792B387",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Crack/CCrackWidthCalculator.cls",
+      "SHA256": "8C45DDDC0A9689EB3FA90DDD70C8B27C84D313DCD75BD89C87EC8993667F6180",
+      "ConversionLines": [
+        339,
+        341,
+        1250
+      ]
+    },
+    {
+      "Path": "src/Crack/CCrackWidthResult.cls",
+      "SHA256": "82FA0B2C54706BFCA3C155D603F2E7BB8CCCF8A27C485BEC60C08637810CE43D",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Crack/CLongitudinalCrackCalculator.cls",
+      "SHA256": "D1E08F145DA875E355E0E62EDD39D384021F7B2AEB9BADC1434846EDCBFC4A18",
+      "ConversionLines": [
+        78
+      ]
+    },
+    {
+      "Path": "src/Crack/CLongitudinalCrackResult.cls",
+      "SHA256": "672A25EBFF08FD61CD35FD96FAFA6D7CC5B7C82F4AB16C0049549175AFF6876D",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Crack/CSP35CrackData.cls",
+      "SHA256": "94C4554D8424BF5247FF8FD6EDFED1CEF6B1DC60A26E3D4A12C477844390B821",
+      "ConversionLines": [
+        183
+      ]
+    },
+    {
+      "Path": "src/Excel/CAutoCADContourReader.cls",
+      "SHA256": "9ED0B0A05FA3A23C2B06C576BF4C3190BFA84E9BCB19C57B2AA54690A7AB2A86",
+      "ConversionLines": [
+        45,
+        85,
+        86,
+        107,
+        108,
+        116,
+        119,
+        120,
+        122,
+        124,
+        129,
+        130,
+        133,
+        152,
+        153,
+        154,
+        162
+      ]
+    },
+    {
+      "Path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "SHA256": "F049660F760B6E163D8C33CDE2E37D3D28C63DEEE8D2898DF89829A43123A8BC",
+      "ConversionLines": [
+        478,
+        486,
+        487,
+        510,
+        515,
+        516,
+        579,
+        580,
+        607,
+        609,
+        663,
+        664,
+        665,
+        666,
+        829,
+        831,
+        853,
+        855,
+        889
+      ]
+    },
+    {
+      "Path": "src/Excel/CBatchResultWriter.cls",
+      "SHA256": "BC4E5C1A171A2BACAB44135C42E75A5FEBFD3C734CDD68D3FE819B04F338824D",
+      "ConversionLines": [
+        298,
+        299,
+        304,
+        760,
+        970
+      ]
+    },
+    {
+      "Path": "src/Excel/CBinarySnapshotFile.cls",
+      "SHA256": "BFD0E234C228A8E6C09BA0C04AF59E700F7B4B6B283AE6C8CBF01260F2BE4E5F",
+      "ConversionLines": [
+        123,
+        216,
+        228
+      ]
+    },
+    {
+      "Path": "src/Excel/CCalculationSnapshot.cls",
+      "SHA256": "F8562267F207D2B5A93675599546F4B13D07AAE789D4D8611527D84735983F5E",
+      "ConversionLines": [
+        159,
+        289,
+        300
+      ]
+    },
+    {
+      "Path": "src/Excel/CCalculationSnapshotStore.cls",
+      "SHA256": "40CF6D66F9A1DA2B42E766FAB65546F4E6EF56E7D62B5E208C5B50E81C8C681D",
+      "ConversionLines": [
+        246,
+        253,
+        307,
+        326,
+        328,
+        362,
+        369,
+        370,
+        382,
+        384,
+        395
+      ]
+    },
+    {
+      "Path": "src/Excel/CCrackSummaryWriter.cls",
+      "SHA256": "B9A95904760A930E5F72D8351C2612F155D0092649F20D19B40C2727370E9555",
+      "ConversionLines": [
+        457,
+        773,
+        879,
+        882,
+        883,
+        885,
+        892,
+        894,
+        910,
+        922,
+        923,
+        929
+      ]
+    },
+    {
+      "Path": "src/Excel/CExcelAppStateGuard.cls",
+      "SHA256": "6E96B1B357131069049005A6424C71D9DAC07832E9757C8DB5A797528D6E4F67",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/CExecutionReport.cls",
+      "SHA256": "FCC84866C5894D623A552B882573AB206C8900DD7F2757E471DA696170FBCB29",
+      "ConversionLines": [
+        56,
+        112,
+        113,
+        154,
+        186
+      ]
+    },
+    {
+      "Path": "src/Excel/CFileChecksum.cls",
+      "SHA256": "F9954D417C4EF21A40F5F3CD71FFE0D41E72AC4DC21526971FF87D3CDCC192C3",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/CLoadCombinationReader.cls",
+      "SHA256": "00F5E482B65E02824BA58E133D2476861631347C436B7975154AAA888A2FF2F9",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/CNDMResultsWriter.cls",
+      "SHA256": "AA0FAD6D61A15EF29B15A7FBE624FA19AAFBA764B304C39A0F989E0BA16FDFCA",
+      "ConversionLines": [
+        64,
+        168,
+        672,
+        673,
+        718,
+        719,
+        967,
+        1157,
+        1340,
+        1450,
+        1479,
+        1480,
+        1746,
+        1785,
+        1795,
+        1847
+      ]
+    },
+    {
+      "Path": "src/Excel/CPlotAnnotationLayout.cls",
+      "SHA256": "E6427B49EE7F7B731668086EF186E4D8A6FF04E665D5919A349F573F5D20BF29",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "SHA256": "D7AAF59C813510C4AD5B66220A90C17AB80146742073B9CDA8594D282285A95F",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/CSectionPlotDataReader.cls",
+      "SHA256": "ECDEAECADC4A141A0CC3548932EBA0AD867720BAD7073E11C5D9B50F59CE36C6",
+      "ConversionLines": [
+        462,
+        463,
+        464,
+        465,
+        466,
+        467,
+        468,
+        469,
+        470,
+        471,
+        472,
+        473,
+        675,
+        677
+      ]
+    },
+    {
+      "Path": "src/Excel/CSectionPlotter.cls",
+      "SHA256": "C250D0714548E73E8C477C72F857A02F4AC9D1590A8CEAB3DEF04DD09D438D9C",
+      "ConversionLines": [
+        570,
+        585,
+        666,
+        667,
+        668,
+        677,
+        808,
+        979,
+        989,
+        1406,
+        1415,
+        1452,
+        1668,
+        1669,
+        2076,
+        2082
+      ]
+    },
+    {
+      "Path": "src/Excel/CSectionTypeRegistry.cls",
+      "SHA256": "B4C7E7E060E33A77E455B0C69A9D497A0EB5C7513869E81A49133B961A66DE8D",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/CStabilitySummaryWriter.cls",
+      "SHA256": "85B56271022A713A243A4783E6584574810EA4E563E7E20ECE39937490BA194A",
+      "ConversionLines": [
+        394
+      ]
+    },
+    {
+      "Path": "src/Excel/CStrengthSummaryWriter.cls",
+      "SHA256": "7136DCC3EBE3B3DFD4099A6375362B9FDA717211CB351B8BED233C2BB96C80A9",
+      "ConversionLines": [
+        392,
+        713,
+        714,
+        715,
+        716,
+        717
+      ]
+    },
+    {
+      "Path": "src/Excel/CSystemSettingsReader.cls",
+      "SHA256": "44ED530208562B16F090D40914E2C83FDDF6F67CA815E57B6CE9184CE96FB0B0",
+      "ConversionLines": [
+        746,
+        762,
+        806
+      ]
+    },
+    {
+      "Path": "src/Excel/CUnitSystem.cls",
+      "SHA256": "ACDCC7657CB0AC8AA82C62F4B047EA1E4DB5C40FB16A805A5BF1D42364D30DD1",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/modAutoCADStressExport.bas",
+      "SHA256": "C0BB847C32D7D043B765A134950E696D92CE6B5B6C6D20925EC785FD76DA53FD",
+      "ConversionLines": [
+        844,
+        916,
+        925,
+        963,
+        993,
+        1005,
+        1011,
+        1035,
+        1044,
+        1251,
+        1292,
+        1873,
+        2074
+      ]
+    },
+    {
+      "Path": "src/Excel/modCalculationSnapshot.bas",
+      "SHA256": "83F1BAED36A1994BCA20E54945DF97C784B78715996733D73B85FCD97B023E08",
+      "ConversionLines": [
+        126,
+        135,
+        140,
+        141,
+        208
+      ]
+    },
+    {
+      "Path": "src/Excel/modMeshConfiguration.bas",
+      "SHA256": "C7CEB1C32F9D3DEE8C48AF6683CC9A8A645404E57E86861EF13195ED5A127BC6",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/modResultsFormatting.bas",
+      "SHA256": "B249CD30E16C448006C6C52DDA8F6F8AD7D70BD6B43F7F4ED7F9A12189FE4623",
+      "ConversionLines": [
+        36,
+        38,
+        39,
+        44
+      ]
+    },
+    {
+      "Path": "src/Excel/modSectionOptionalData.bas",
+      "SHA256": "3CD7EFB59CB8F0E37DFD3496AF281859E8DEBEF62022D6CD9E0905A93D7790A7",
+      "ConversionLines": [
+        67,
+        75,
+        129
+      ]
+    },
+    {
+      "Path": "src/Excel/modSectionRecipeSetup.bas",
+      "SHA256": "A9D0EE75390E74F485FEDB5124366C46A0FE5F6631753E98F280EFD07ABABD5B",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Excel/modSectionSnapshot.bas",
+      "SHA256": "FDE982EEF98B22EF94BD68AC99E99AE2960A9386CFABA37D0665CA5E14930183",
+      "ConversionLines": [
+        67,
+        453
+      ]
+    },
+    {
+      "Path": "src/Excel/modStatusFormatting.bas",
+      "SHA256": "76CE4092DE55A93EE8FDE5CD094541A396B823AB6AA01145ED79BD04FB7D8CAC",
+      "ConversionLines": [
+        66,
+        75,
+        77,
+        97,
+        109
+      ]
+    },
+    {
+      "Path": "src/Excel/modWorkbookCalculation.bas",
+      "SHA256": "49C294144AF6CF761C6F57DF2864C14987EDD58AAE3B30CCE5B6BADB178E723A",
+      "ConversionLines": [
+        259,
+        397,
+        454,
+        1226
+      ]
+    },
+    {
+      "Path": "src/Excel/modWorkbookMessages.bas",
+      "SHA256": "40C8F44B6E5DB754E6EF5D81494B20773B4E23C61DA219027BEDB335A71E7E81",
+      "ConversionLines": [
+        35,
+        37
+      ]
+    },
+    {
+      "Path": "src/Geometry/CFiberMeshBuilder.cls",
+      "SHA256": "3C859EE4A286D249AB791BFF77251E7665BD58B1E85C499DE943809440D6D382",
+      "ConversionLines": [
+        74,
+        75,
+        77,
+        177,
+        178
+      ]
+    },
+    {
+      "Path": "src/Geometry/CGeometryDiagnostic.cls",
+      "SHA256": "8946153D9883BC493BB4015304782921F4E281D52C51C58FDD5A90C60ECFD49B",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Geometry/CGeometryPath.cls",
+      "SHA256": "097A1BFE5E558BB3760D3229EDA4B20E316525A1A458BEBE8E92212325C762B2",
+      "ConversionLines": [
+        535
+      ]
+    },
+    {
+      "Path": "src/Geometry/CGeometryRegion.cls",
+      "SHA256": "B5C9E7E1ADBB99CB7FF9F9131B34C96D19B7AED7AF175AD84FA9221710DB3EE7",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Geometry/CGeometryVariableOffset.cls",
+      "SHA256": "A4C66D435F33573C0F8C566C3E230DBAC9DA030E5D2744BCC8931B59B9A905DA",
+      "ConversionLines": [
+        96
+      ]
+    },
+    {
+      "Path": "src/Geometry/CPolygonSpec.cls",
+      "SHA256": "3DAE51CAC0089249FB9E6BB7A7692778C113AB04B6F8562400A65C74CAD9C4C8",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeCircle.cls",
+      "SHA256": "A3DEA88974246C72C591ADB15EE9BECBE083CCF39B889736E9FDD55739D0488E",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "SHA256": "C873F8C1FFE4791BF727B3B8D2C66072B03B3127012D3C1E667C4153DEE08BF3",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipePointedSection.cls",
+      "SHA256": "D1BE9CB8EA5D308CA7FA8333C9329D6BDF1DB0389CD7FD962A9993DD80010EA9",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRectangles.cls",
+      "SHA256": "E94682ABFE8CD614695D083DB7AFF198ED6054433D090B992652F0567A022505",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Interfaces/ILimitSearchProblem.cls",
+      "SHA256": "86C849666BC5042CE16B6CDF89325596C63C07B9181963F7AE84EC40CDEA7397",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Materials/CConcreteMaterialParameters.cls",
+      "SHA256": "9D9A9B2E62060EB32CCDCF8C56FF27C8C26C56292B2DB825E4BC55A6564889E3",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Materials/CMaterialDiagram.cls",
+      "SHA256": "01B6A495A838AC84C408F68D14C00A601A1FC79DB88577B36692C5388D178DAE",
+      "ConversionLines": [
+        72,
+        77,
+        85,
+        90,
+        548
+      ]
+    },
+    {
+      "Path": "src/Materials/CMaterialModelProvider.cls",
+      "SHA256": "81A645F00F53E9E498CF64BB1BD5E284E1587551B63FB3716B14B1F8B48FFE13",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Materials/CMaterialModelSpec.cls",
+      "SHA256": "E9999EE79D6E94352717821EC5D544AD78876FB4A55398F30FB7EBB9C77D6183",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Materials/CSteelMaterialParameters.cls",
+      "SHA256": "4892B7954916023BF325536ACD4F075189D56776B0B57F5787A9C67D860E7045",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Materials/CTestLinearConcreteMaterial.cls",
+      "SHA256": "351F58E83EFDBCDDF4F0BC0B1166D47A8EEA0A00456D47D2C0D850E72FFAAA8E",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Materials/CTestLinearSteelMaterial.cls",
+      "SHA256": "154E0FE1C86379ECC5AF5B0B30B88F798EB49293F305BEA0A36958A655534BDD",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CConcreteRegion.cls",
+      "SHA256": "BFC6F341E90483978620556698EE3AFEDCBC9224217592A458974F7502919B77",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CRebarContactBuilder.cls",
+      "SHA256": "FE783D4EC67DCFA33FCB9176701079440125CEC3BB2D498D2655805220AFB1CC",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "SHA256": "96A02A8D2F9955753610AD4F295AFC4DF2021C2CD86D496E071719C7D6E82257",
+      "ConversionLines": [
+        41,
+        83
+      ]
+    },
+    {
+      "Path": "src/Section/CRebarLayout.cls",
+      "SHA256": "7309484E00E81FCF7338C0FCE7337C1A490DC61B9A67E742A67AE20C8488DA0A",
+      "ConversionLines": [
+        66,
+        113,
+        137,
+        167
+      ]
+    },
+    {
+      "Path": "src/Section/CRebarOffsetContours.cls",
+      "SHA256": "3675DBA660FEB30A9C7E76BF4351E05268610DE68C874B718EF198D5F25C170A",
+      "ConversionLines": [
+        147,
+        200,
+        212,
+        312,
+        419
+      ]
+    },
+    {
+      "Path": "src/Section/CRebarRuleExecutor.cls",
+      "SHA256": "A2D2656408CB75BF5400472E9FD4EEF12BE3B39BBD7E81FEA2B8D71355ABD626",
+      "ConversionLines": [
+        117,
+        118,
+        127,
+        128,
+        309,
+        313,
+        397,
+        401,
+        424,
+        432,
+        574,
+        575,
+        791,
+        792,
+        793,
+        816,
+        830,
+        849,
+        859,
+        860,
+        930
+      ]
+    },
+    {
+      "Path": "src/Section/CRebarRuleOptions.cls",
+      "SHA256": "5DD52F9C2943224D069BD02D2BA651EAF54CEE16BB1448A81BF4C3BCDE48A95B",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CSectionAnnotationBuilder.cls",
+      "SHA256": "4E43E5470D49C18510502252A92BF642C456778B08A8753199D4C463864D130F",
+      "ConversionLines": [
+        388
+      ]
+    },
+    {
+      "Path": "src/Section/CSectionAnnotations.cls",
+      "SHA256": "D06653F64D8F167074BE5C377CB2B491BAACAEA0ED26350929D1C5CD500D1080",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CSectionBuilder.cls",
+      "SHA256": "204B030A6080FA41661EAE37651DCD760DA690D8CAA52E2D41B26501BEDBD7D2",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CSectionContours.cls",
+      "SHA256": "149D74A7FF734822325F2ED14AC092D4834EEDD7A1BE7B92290F02451BC4FC9B",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CSectionDefinition.cls",
+      "SHA256": "78964C7C87D373648022123D4F807A39263047D044FC5888D1C96018F3652B9C",
+      "ConversionLines": [
+        60,
+        196,
+        226
+      ]
+    },
+    {
+      "Path": "src/Section/CSectionDefinitionBuilder.cls",
+      "SHA256": "104928A202BEDCBC4563FD9B9D8978A865F05CDD0B64C1E9F4F2DBE5E883ADC5",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "B1D60F982E0BD79A2DE23360D23655476D8914BB10671B2FE52E34C0E5E509ED",
+      "ConversionLines": [
+        296,
+        297,
+        829,
+        1096,
+        1097,
+        1098,
+        1099,
+        1143,
+        1144,
+        1330,
+        1468,
+        1597,
+        1868
+      ]
+    },
+    {
+      "Path": "src/Section/CSectionInputReader.cls",
+      "SHA256": "9810C06F5760D32752CB69F0A87DF650C5F210558A12B63B1A328A097ECB680A",
+      "ConversionLines": [
+        63,
+        64,
+        70,
+        71,
+        181,
+        182,
+        202
+      ]
+    },
+    {
+      "Path": "src/Section/CSectionInputTable.cls",
+      "SHA256": "4B317AC9172B03494AFD9C972B0CABE0C87BE2130833395621CB581BD9081C5A",
+      "ConversionLines": [
+        130
+      ]
+    },
+    {
+      "Path": "src/Section/CSectionModel.cls",
+      "SHA256": "7A903E18E1C7CEFAFAAA0A8A82C6D9E9C7A08D824D53A8E7A96A5625B80E6FCC",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CSectionModelBuilder.cls",
+      "SHA256": "816625FF0147A85B92329E471CDC1BB25BD2D25C097850CD768DE0E8500F52DB",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CSectionPropertiesCalculator.cls",
+      "SHA256": "CFA3CDD5EDB18595E8EFDBE21B5B8A792C8C2F1CC30A8B9182E1C2B1176C29DA",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/CSectionRecipeContext.cls",
+      "SHA256": "1088CDE1E89361A750946BA69BB0DDA8B8F78259E5C9001D668DFF1097E04DC0",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Section/ISectionRecipe.cls",
+      "SHA256": "D963BC8C3C3F105FED9825B07DB11A0258E275604286FEA66D7322488AD5EDF0",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CCapacityCalculator.cls",
+      "SHA256": "8A00B333019203F67EE987A9D6AF906B641AF9F852FFF5D6BB79BC6798E141BD",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CCapacityLimitSearchProblem.cls",
+      "SHA256": "5167764EE7454DE0F6B5A1FD5C0C971A7EE72CE2CBCEAF908E858FA7F69B1728",
+      "ConversionLines": [
+        533
+      ]
+    },
+    {
+      "Path": "src/Solver/CCapacityResult.cls",
+      "SHA256": "2941243C3BF4A219FEDB3B8556D9AD6B638AFD8BDCCEEDAC4F1C012BDDF3FDAE",
+      "ConversionLines": [
+        81
+      ]
+    },
+    {
+      "Path": "src/Solver/CCapacitySolver.cls",
+      "SHA256": "B4CB938478C3BAEFC9F8507242B3C8E4CA605AAFE5B6F5690CB06A53932D7A84",
+      "ConversionLines": [
+        1258,
+        1838
+      ]
+    },
+    {
+      "Path": "src/Solver/CCrackLimitSearchProblem.cls",
+      "SHA256": "55FD022C0FD15F0C0A4D00B7A41E8509854C89E87796ACA1EE4FD43C1C54BBA7",
+      "ConversionLines": [
+        419
+      ]
+    },
+    {
+      "Path": "src/Solver/CDiscreteForceIntegrator.cls",
+      "SHA256": "BA7E368425ED94AEC16274D70F4693EADECB39CC0F745E24B54359F04877E007",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CLimitSearchCoordinator.cls",
+      "SHA256": "133141A901D972D09252945F5FAF8AE97914C5EE8D23B4BFB632869A877B5485",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CLimitSearchRequest.cls",
+      "SHA256": "F49C67F26783D8F9E4A06CEB786279A3A75148A05353E496CA471F2A212DBFA7",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CLimitSearchResult.cls",
+      "SHA256": "DC7932258180C7F695FC8A637BFA4BE642B526086DEC9CD9DC33F08869D0B2F7",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CLinearSystem3x3.cls",
+      "SHA256": "F2DF0773DB7859288569D01F00C95CA4D4BC55DB955E694C0752B3C462A291AE",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CLoadMultiplierSearch.cls",
+      "SHA256": "90527B1731FFC336AFFA73CFC83F72350880DF794CC0AFAC05AEEAA9F47541FB",
+      "ConversionLines": [
+        803,
+        805
+      ]
+    },
+    {
+      "Path": "src/Solver/CSectionNumericalFrame.cls",
+      "SHA256": "EA5CBA6B4F477E640EB23E730ACE870E630670695BEC3849044712DDFAA544E5",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CSectionSolver.cls",
+      "SHA256": "9EFA3C7B2CF436BE590F523D62948970CFA371D7F61A4120EE6049B587C7A07E",
+      "ConversionLines": [
+        1398
+      ]
+    },
+    {
+      "Path": "src/Solver/CSectionStrainLimits.cls",
+      "SHA256": "FA12A050783C5C752EC5BF92ABB6800E93E7A416026CE099BA2372052F2592BD",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CStateGuessBuilder.cls",
+      "SHA256": "199DE0864CF1154E24904AD2A2AC0FFD92E9CE90A0F601E35D96261A242214EE",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/CStateSolutionRunner.cls",
+      "SHA256": "86ECCA62429BB6F3D4F33F125F727C246BF3D9C0CE218B4A475C7917DAB44D78",
+      "ConversionLines": [
+        696
+      ]
+    },
+    {
+      "Path": "src/Solver/CUltimateStrainSearch.cls",
+      "SHA256": "9B40DE8DBFA0F8BA247129CEC937A043E38CA175FBBB732594D55EFD4CBCDACB",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/modLimitSearchRequestFactory.bas",
+      "SHA256": "680EE52AC8589CED2A84C78C4FAC8F4CCF1311BE11051A9A513610E655DCE942",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Solver/modNonlinearStepControl.bas",
+      "SHA256": "625519B63D01CE15340D857387CEEAC576AF4C9AF8CB7055E68066A95D40C874",
+      "ConversionLines": []
+    },
+    {
+      "Path": "src/Stability/CStabilityCalculator.cls",
+      "SHA256": "73DD6AEDFC12FADBDF8A9FF048029E8A8BC4F14EBE03E54547C701BA4940DEDF",
+      "ConversionLines": [
+        711,
+        1121,
+        1122,
+        1128,
+        1129,
+        1219,
+        1220,
+        1225,
+        1226,
+        1234,
+        1238,
+        1247,
+        1248
+      ]
+    },
+    {
+      "Path": "src/Stability/CStabilityResult.cls",
+      "SHA256": "CBEC0AECC45E04C09FBE13B3D374963F32E731ECD2F3EEB20707F0AC46C25066",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/CTestExcelApplicationState.cls",
+      "SHA256": "A21F487490C202DCB8F155D22F7EF7568456B908CF721515E08E3565E7CCFFBB",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/CTestFakeAcadContour.cls",
+      "SHA256": "921E16E106E89DB241E485D89C5E2E34C86A6484B9E9F95A778262705C5F96B7",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/CTestFakeAcadContourExport.cls",
+      "SHA256": "9E5AC446D8C62112E3E3066CF8843E2AF1778C8E26015547F20668C10B25EA67",
+      "ConversionLines": [
+        71,
+        72
+      ]
+    },
+    {
+      "Path": "tests/CTestFakeAcadDocument.cls",
+      "SHA256": "8EFA36329F286AF9D8B8D24B789CA567175A991DB456039733DABE1F29B40A9B",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/CTestFakeAcadLine.cls",
+      "SHA256": "11BEBD758C1EF636908649388BB7F51C0720FB5AED4A50406B0818078A38A4C7",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/CTestFakeAcadRegion.cls",
+      "SHA256": "4909E46C1BA2A9F9745D37A702D38A1FAC9FA3521F874DF2F9478FB20A964D78",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/CTestLimitSearchProblem.cls",
+      "SHA256": "4F491861C60DBAAB09A17A45EC2DEB5D1518682A664ACD00AA6E020732251592",
+      "ConversionLines": [
+        785
+      ]
+    },
+    {
+      "Path": "tests/CTestWorkflowWorkbook.cls",
+      "SHA256": "E1588EADC051E34FDCEC119CDF3CE8D038471B5C99B3B328EA55EF4D12D994DE",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/modTestAudit02Api.bas",
+      "SHA256": "4A974B134D929F77FD1399F5D8FCC7947BFBC990AB3DB6830E863A0F6FAE34C9",
+      "ConversionLines": [
+        200,
+        381,
+        382,
+        387,
+        463,
+        464,
+        466,
+        467,
+        468,
+        469,
+        524,
+        528,
+        530,
+        795,
+        908,
+        917,
+        918,
+        919,
+        922,
+        926,
+        930,
+        1118,
+        1120,
+        1122,
+        1124,
+        1126,
+        1366,
+        1405,
+        1407,
+        1410,
+        1414,
+        1735
+      ]
+    },
+    {
+      "Path": "tests/modTestAudit02Snapshots.bas",
+      "SHA256": "2811B162146BCF3AF44B4CA323B6E72F73F27B1FBD5AA1FEEC53107631030F41",
+      "ConversionLines": [
+        236,
+        290,
+        296
+      ]
+    },
+    {
+      "Path": "tests/modTestAutoCADConfig.bas",
+      "SHA256": "6C0799AD7C18F30F0531F9314D9A9DAC869CA0EB98972D803AEB09DC20B252B8",
+      "ConversionLines": [
+        151,
+        152,
+        179,
+        318,
+        732,
+        746,
+        775,
+        776,
+        846,
+        849,
+        850,
+        953,
+        955,
+        956,
+        1145,
+        1147,
+        1215,
+        1218,
+        1222,
+        1251,
+        1252,
+        1254,
+        1322
+      ]
+    },
+    {
+      "Path": "tests/modTestAutoCADContours.bas",
+      "SHA256": "1EF6A75BF44855796CC14FCAD663CA19B8AD74B1C1F5A28D4D0CD9D3D85F96CE",
+      "ConversionLines": [
+        197,
+        377,
+        645,
+        1021,
+        1135,
+        1138,
+        1140,
+        1289,
+        1338,
+        1366,
+        1369,
+        1374,
+        1401,
+        1544,
+        1548,
+        1571,
+        1582,
+        1592,
+        1662,
+        1696,
+        1710,
+        2130,
+        2142,
+        2243,
+        2282,
+        2283,
+        2292,
+        2294,
+        2307,
+        2320,
+        2321
+      ]
+    },
+    {
+      "Path": "tests/modTestBatchCalculation.bas",
+      "SHA256": "66F556547DBDA02E152F063670C25953F18A0610266B542323947F9A425E4E6F",
+      "ConversionLines": [
+        55,
+        56,
+        57,
+        58,
+        397,
+        465,
+        501,
+        502,
+        503,
+        552,
+        573,
+        583,
+        595,
+        596,
+        1910,
+        1986,
+        2084,
+        2086,
+        2088,
+        2130,
+        2132,
+        4290,
+        4291,
+        4294,
+        4299,
+        4300,
+        4381,
+        4449,
+        4477,
+        4481,
+        4482,
+        4483,
+        4484,
+        4487,
+        4716,
+        4717,
+        4723,
+        4741,
+        4762,
+        4763,
+        4771,
+        5720,
+        5822,
+        5823,
+        5824,
+        5883,
+        5884,
+        6293,
+        6606,
+        6607,
+        6608,
+        6609,
+        6639,
+        6648,
+        6657,
+        6806,
+        6866,
+        6911,
+        7027,
+        7051,
+        7087,
+        7089,
+        7091,
+        7093,
+        7098,
+        7130,
+        7152,
+        7182,
+        7183,
+        7184,
+        7185,
+        7186,
+        7592,
+        7610,
+        7611,
+        7844,
+        7846,
+        7849,
+        7858,
+        7859,
+        7860,
+        8030,
+        8031,
+        8039,
+        8042,
+        8101,
+        8215,
+        8255,
+        8409,
+        8454,
+        8461,
+        8463,
+        8465,
+        8559,
+        8858,
+        8860,
+        9031,
+        9132,
+        9693,
+        9714,
+        9717,
+        9722,
+        9723,
+        9824,
+        9890,
+        9912,
+        9913,
+        9916,
+        9920,
+        9922,
+        9925,
+        9929,
+        9939,
+        9944,
+        9946,
+        9994,
+        9996,
+        9998,
+        10000,
+        10146,
+        10287,
+        10632,
+        10676,
+        10681,
+        10732,
+        10733,
+        10740
+      ]
+    },
+    {
+      "Path": "tests/modTestCalculationSnapshot.bas",
+      "SHA256": "A2DA2478298BD4A90B19CEFBADFD8ACDD148E633826B66577B4204492F4D06C7",
+      "ConversionLines": [
+        33,
+        172,
+        173,
+        174,
+        175,
+        255,
+        329,
+        350,
+        392,
+        396,
+        473,
+        500,
+        520,
+        630,
+        676,
+        680,
+        771,
+        783,
+        881,
+        939,
+        1065,
+        1067,
+        1069
+      ]
+    },
+    {
+      "Path": "tests/modTestCapacitySolver.bas",
+      "SHA256": "A18BDFA49A43A5A2A24C6B46C12C8913F7DA383E269C61AFF3A0B8226C969EB8",
+      "ConversionLines": [
+        281,
+        282,
+        283,
+        284,
+        290,
+        291,
+        300,
+        301,
+        302,
+        303,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        342,
+        343,
+        345,
+        346,
+        357,
+        391,
+        392,
+        420,
+        421,
+        422,
+        423,
+        424,
+        425,
+        432,
+        495,
+        496,
+        823,
+        826,
+        827,
+        828,
+        829,
+        834,
+        836,
+        838,
+        883,
+        886,
+        887,
+        888,
+        889,
+        894,
+        951,
+        956,
+        960,
+        962,
+        1065,
+        1068,
+        1069,
+        1070,
+        1071,
+        1117,
+        1120,
+        1121,
+        1122,
+        1123,
+        1132,
+        1133,
+        1140,
+        1141,
+        1143,
+        2092,
+        2095,
+        2117,
+        2120,
+        2381,
+        2391,
+        2475,
+        2480,
+        2914,
+        2949,
+        2952,
+        2954,
+        3109,
+        3118,
+        3120,
+        3253,
+        3256,
+        3263,
+        3266,
+        3275,
+        3283,
+        3286,
+        3310,
+        3314,
+        3533,
+        3560,
+        3595,
+        3596,
+        3637,
+        3640,
+        3678,
+        3688,
+        3725,
+        3728,
+        3729,
+        3730,
+        3731,
+        3738,
+        3743,
+        3745,
+        3865,
+        3866,
+        3880,
+        4010,
+        4307,
+        4308,
+        4355
+      ]
+    },
+    {
+      "Path": "tests/modTestConfiguration.bas",
+      "SHA256": "00EE1C282D350626F5DA7447BBF94FED7E3F94BE1BAD34A78111123F1D215FC0",
+      "ConversionLines": [
+        307,
+        632,
+        633,
+        635,
+        756,
+        771,
+        772,
+        773,
+        774,
+        783,
+        789,
+        790,
+        791,
+        907,
+        909,
+        916,
+        945,
+        946,
+        962,
+        964,
+        1141,
+        1341,
+        1656,
+        1671,
+        2375,
+        2457,
+        2496,
+        2506,
+        2507,
+        2512,
+        2513,
+        2515,
+        2559,
+        2560,
+        2587,
+        2591,
+        2592,
+        2610,
+        2611,
+        2616,
+        2619,
+        2641,
+        2642,
+        2673
+      ]
+    },
+    {
+      "Path": "tests/modTestContourMesh.bas",
+      "SHA256": "F62267CE447FB3AC3BE1E4FCE65EEC6D421268D8D0C3B321B54B97E147487E14",
+      "ConversionLines": [
+        24,
+        163,
+        304,
+        484,
+        651,
+        652,
+        795
+      ]
+    },
+    {
+      "Path": "tests/modTestCrackWidth.bas",
+      "SHA256": "D7E23D957A1F5D7887441FE9520DC58491DCD60E41E503A7A0BF02DC8B0B08FB",
+      "ConversionLines": [
+        475,
+        478,
+        526,
+        529,
+        537,
+        1153,
+        1534,
+        1535,
+        1669,
+        1923,
+        1924,
+        1925,
+        1926,
+        1927,
+        1928,
+        2061,
+        2067,
+        2071,
+        2076,
+        2100
+      ]
+    },
+    {
+      "Path": "tests/modTestDeclarativeExamples.bas",
+      "SHA256": "00195FF7EF036C7C4B140D05E92EAFB2402725F04324D4B81707ABFE48BAF619",
+      "ConversionLines": [
+        69,
+        71,
+        73,
+        75,
+        81,
+        83,
+        85,
+        87,
+        93,
+        95,
+        97,
+        99,
+        108,
+        110,
+        112,
+        114
+      ]
+    },
+    {
+      "Path": "tests/modTestDeclarativeGeometry.bas",
+      "SHA256": "AB2628C336E2257BE5A4DDF3B904D84A532670A5B2A044914557DA5855D65A0A",
+      "ConversionLines": [
+        291,
+        292,
+        293,
+        294,
+        298,
+        299,
+        300,
+        301,
+        313,
+        314,
+        315,
+        316,
+        322,
+        323,
+        324,
+        325,
+        342,
+        343,
+        344,
+        345,
+        355,
+        357,
+        359,
+        361,
+        363,
+        365,
+        371,
+        373,
+        375,
+        377,
+        379,
+        381,
+        395,
+        397,
+        399,
+        401,
+        768,
+        773,
+        774,
+        860
+      ]
+    },
+    {
+      "Path": "tests/modTestDiscreteForces.bas",
+      "SHA256": "EBAF309C1ED41F6B98E1AF5670078164C7DCAE6E3D81DB98382951C377C1183D",
+      "ConversionLines": [
+        22
+      ]
+    },
+    {
+      "Path": "tests/modTestGeneralGeometryConfig.bas",
+      "SHA256": "C5484E4BBEEACF375C5A5713EC80C4CDA0ADFE8B7276991FBCE8033DC3E5F057",
+      "ConversionLines": [
+        256,
+        257,
+        258,
+        259,
+        260,
+        287,
+        291,
+        292,
+        293
+      ]
+    },
+    {
+      "Path": "tests/modTestGeometry.bas",
+      "SHA256": "DC93347A323DB2747963F90BD4D5D7E569B1D54E2AF0A4084FF0C1A8922862B4",
+      "ConversionLines": [
+        161,
+        162,
+        165,
+        166,
+        169,
+        170,
+        175,
+        177,
+        178,
+        190,
+        191,
+        192,
+        195,
+        196,
+        207,
+        210,
+        211,
+        240,
+        242,
+        248,
+        250,
+        251,
+        252,
+        253,
+        306,
+        340,
+        433,
+        434,
+        801,
+        1599,
+        2929,
+        2991,
+        3000,
+        3329,
+        3358,
+        3489,
+        3490,
+        3495,
+        3498,
+        3499,
+        3553,
+        3555,
+        3557,
+        3562,
+        3565,
+        3689
+      ]
+    },
+    {
+      "Path": "tests/modTestGeometryConfig.bas",
+      "SHA256": "3E5AB7A21585103F2DD917802D7AB27B51131FE327A5AC1E6A4627CEF35BB3B1",
+      "ConversionLines": [
+        314,
+        315,
+        523,
+        540,
+        545,
+        566,
+        567,
+        568,
+        573,
+        574,
+        575,
+        577,
+        578,
+        592,
+        605,
+        645,
+        948,
+        957,
+        1052,
+        1073,
+        1093,
+        1104,
+        1114,
+        1125,
+        1292,
+        1311,
+        1334,
+        1395,
+        1438,
+        1466,
+        1470,
+        1487,
+        1488,
+        1489,
+        1491,
+        1492,
+        1493,
+        1494,
+        1496,
+        1499,
+        1500,
+        1501,
+        1505,
+        1507,
+        1515,
+        1525,
+        1529,
+        1543,
+        1582,
+        1583,
+        1667
+      ]
+    },
+    {
+      "Path": "tests/modTestGeometryFixtures.bas",
+      "SHA256": "2D51C5A04CF4837DFC02DE4613B7BEC29E7DD656F228E5114340480CE2CD5E41",
+      "ConversionLines": [
+        284,
+        286,
+        289,
+        412,
+        533
+      ]
+    },
+    {
+      "Path": "tests/modTestGeometryPublication.bas",
+      "SHA256": "E67E77B2601CB0038F8BFA7082E765E5B8755087CC6A7BBC04D62DBCC3A6C1E6",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/modTestGeometryQuery.bas",
+      "SHA256": "6E4853A511F8174F4EBFBB66589FC1BA5B92313640D415917973F25B4D19C149",
+      "ConversionLines": [
+        44,
+        47,
+        50,
+        317,
+        318,
+        321,
+        322,
+        557,
+        560,
+        561,
+        566,
+        567,
+        568,
+        867,
+        868,
+        872,
+        889,
+        892,
+        894,
+        895,
+        896,
+        905
+      ]
+    },
+    {
+      "Path": "tests/modTestGeometryReview.bas",
+      "SHA256": "46E73B343DA39CEBA0B28A35427A5E76F9C2316FC7915C6B5EB578FDE4F84FD5",
+      "ConversionLines": [
+        617,
+        814,
+        816,
+        817
+      ]
+    },
+    {
+      "Path": "tests/modTestGeometrySolidSnapshots.bas",
+      "SHA256": "2565A6706FB02659B36313BDDCE4BECC05FA134EA682945358DED333D4CF34D2",
+      "ConversionLines": [
+        89
+      ]
+    },
+    {
+      "Path": "tests/modTestIndividualContours.bas",
+      "SHA256": "10E121B6B4C9B8C82B6A60DF6B47184E157DB8809B938A48AC35A0898CA973CB",
+      "ConversionLines": [
+        61,
+        62,
+        64,
+        73,
+        376,
+        389,
+        399,
+        409,
+        462,
+        468,
+        473,
+        480,
+        490
+      ]
+    },
+    {
+      "Path": "tests/modTestLoadTableConfig.bas",
+      "SHA256": "25EBE6E8671F8D5BFADC4B689E8E858FD46A3F1366B163BA115FB28BDA57E931",
+      "ConversionLines": [
+        45,
+        48,
+        56,
+        355,
+        410,
+        411,
+        412,
+        413,
+        490,
+        491,
+        492,
+        498,
+        599,
+        751,
+        760,
+        825,
+        835,
+        880
+      ]
+    },
+    {
+      "Path": "tests/modTestMaterialDiagrams.bas",
+      "SHA256": "7B69915DFB1E7FD0CB757388EB23524C3D8BE2C5F543A5D64A6F64A6F34C57B9",
+      "ConversionLines": [
+        89,
+        181,
+        185,
+        288,
+        293,
+        295,
+        296,
+        363,
+        375,
+        376,
+        379,
+        546,
+        548,
+        551,
+        553,
+        556,
+        557,
+        558,
+        561,
+        563,
+        567,
+        569,
+        570,
+        571,
+        588,
+        589,
+        725,
+        1051,
+        1056,
+        1058,
+        1094,
+        1100,
+        1101,
+        1202,
+        1203,
+        1218,
+        1222,
+        1223,
+        1227,
+        1228,
+        1232,
+        1233,
+        1238,
+        1239,
+        1243,
+        1246,
+        1256,
+        1258,
+        1260,
+        1261,
+        1264,
+        1265,
+        1321,
+        1359,
+        1360,
+        1367,
+        1399,
+        1444,
+        1448,
+        1450,
+        1455,
+        1479,
+        1565,
+        1568
+      ]
+    },
+    {
+      "Path": "tests/modTestPerformance.bas",
+      "SHA256": "5F4A301223F5A87B94DADD3BC74533FC187BE968B07F522011568593D49838B6",
+      "ConversionLines": [
+        53,
+        78,
+        101,
+        102,
+        107,
+        108,
+        110,
+        111,
+        177,
+        232,
+        242,
+        272,
+        381,
+        448,
+        482,
+        565,
+        986,
+        1030,
+        1157,
+        1226,
+        1273,
+        1317
+      ]
+    },
+    {
+      "Path": "tests/modTestPlotConfig.bas",
+      "SHA256": "93A4F7DD115085FADEFC10397704D93F46C535FD32020DAC79C9B4E303D04A46",
+      "ConversionLines": [
+        210,
+        317,
+        387,
+        403,
+        404,
+        410,
+        419,
+        459,
+        470,
+        473,
+        506,
+        623,
+        703,
+        904,
+        908,
+        1378,
+        1395,
+        1611,
+        1612,
+        1613,
+        1614,
+        1616,
+        1624,
+        1944,
+        1952,
+        1953,
+        2006,
+        2007
+      ]
+    },
+    {
+      "Path": "tests/modTestPolygonSpec.bas",
+      "SHA256": "5A638015E80B850ED4505A5DEE4AF9309CE06FC1683E2F490606B2CE242CB286",
+      "ConversionLines": [
+        26,
+        29,
+        32,
+        44,
+        160,
+        162,
+        176,
+        178,
+        179,
+        181,
+        186,
+        190
+      ]
+    },
+    {
+      "Path": "tests/modTestProfileConfig.bas",
+      "SHA256": "829B3DD2BE4428FD938569AEFB8E7CB1A080ACE7F75561BA1C3E91931C56A297",
+      "ConversionLines": [
+        137,
+        140,
+        146,
+        848,
+        854,
+        1168,
+        1169,
+        1170,
+        1325,
+        1335,
+        1487,
+        1770
+      ]
+    },
+    {
+      "Path": "tests/modTestRecipeAnnotations.bas",
+      "SHA256": "B8EC7FDE2F3DBB58BB23121659C7AD52C16854C575E3B6C2E7DDB62BE55DF801",
+      "ConversionLines": [
+        22
+      ]
+    },
+    {
+      "Path": "tests/modTestRecipeApiCatalogue.bas",
+      "SHA256": "89CA4E4CBB615831A03B988C57243F402872F32247CF2497B71E0B3C08F1382D",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/modTestRecipeOperations.bas",
+      "SHA256": "CC44985A06B1E194C085105FA3397D50B1DB4A71B5A6AEF77071D1577D3ECE3E",
+      "ConversionLines": [
+        163,
+        394,
+        398,
+        399,
+        401,
+        445,
+        453,
+        455,
+        457,
+        458,
+        460,
+        462,
+        463,
+        465,
+        570,
+        623
+      ]
+    },
+    {
+      "Path": "tests/modTestRecipeSetbacks.bas",
+      "SHA256": "5145FF8A9AADFBA389C8F6078BBF400258235E4E84F30E20F6D1EDBBCCEDED46",
+      "ConversionLines": [
+        40,
+        53
+      ]
+    },
+    {
+      "Path": "tests/modTestRegressionBaseline.bas",
+      "SHA256": "D620409D45B2942229B880E796F35AA576B7A2984DA82180182813DEE0B5DA78",
+      "ConversionLines": [
+        400
+      ]
+    },
+    {
+      "Path": "tests/modTestSectionInputReader.bas",
+      "SHA256": "D7EA646F51E40A197D42511269D095B183FCDC186A84F3E46B7CC540D1CDF211",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tests/modTestSectionRecipes.bas",
+      "SHA256": "BA2E8F296601BAEE7BA13A4C60C27798188DF01E58C6A043769EF4DDB763F211",
+      "ConversionLines": [
+        79,
+        82,
+        142,
+        194,
+        407,
+        482,
+        521,
+        526,
+        754,
+        827,
+        882,
+        1071,
+        1190,
+        1194,
+        1392
+      ]
+    },
+    {
+      "Path": "tests/modTestSectionSolver.bas",
+      "SHA256": "833BB2A9633C3ADFA5B952B6E6514258F3870957B4A411E15F7BE6D9E1DB0DD1",
+      "ConversionLines": [
+        117,
+        176,
+        179,
+        184,
+        185,
+        191,
+        192,
+        193,
+        194,
+        195,
+        266,
+        273,
+        962,
+        1380,
+        1381,
+        1921,
+        1950,
+        1977,
+        2076,
+        2131,
+        2135,
+        2136,
+        2137,
+        2138,
+        2139,
+        2140
+      ]
+    },
+    {
+      "Path": "tests/modTestSectionWorkflow.bas",
+      "SHA256": "07D7934BB957790C69FA1C305694546025AD04994D454E490A2C7D2037F9E4E3",
+      "ConversionLines": [
+        244,
+        247,
+        248,
+        256,
+        258
+      ]
+    },
+    {
+      "Path": "tests/modTestShapeArchitecture.bas",
+      "SHA256": "7FFE59E0AAA7A360B472686D0F2916470D5F4B28711A0BA0E38C3805222BF210",
+      "ConversionLines": [
+        231,
+        346,
+        364,
+        439,
+        522,
+        523,
+        624,
+        633,
+        768,
+        774,
+        777,
+        778,
+        812
+      ]
+    },
+    {
+      "Path": "tests/modTestSP35CrackWidth.bas",
+      "SHA256": "BB10735AA0E03BCF083E2FD7BFA61824B7A5DD0811D15105417764191837C434",
+      "ConversionLines": [
+        109,
+        111,
+        305,
+        341,
+        342,
+        351,
+        422,
+        423,
+        455,
+        456,
+        524,
+        525,
+        545,
+        568,
+        619,
+        640,
+        645,
+        659,
+        660,
+        693,
+        701,
+        702,
+        721,
+        722,
+        727,
+        772,
+        773,
+        774,
+        775,
+        777,
+        783,
+        834,
+        835,
+        836,
+        838,
+        839,
+        840,
+        867,
+        892,
+        894,
+        899,
+        901,
+        904,
+        905,
+        952,
+        953,
+        954,
+        955,
+        957,
+        960,
+        968,
+        1006,
+        1007,
+        1088,
+        1156,
+        1180,
+        1181,
+        1210,
+        1243,
+        1245,
+        1251,
+        1258,
+        1370,
+        1382,
+        1403,
+        1405,
+        1406,
+        1407
+      ]
+    },
+    {
+      "Path": "tests/modTestWorkbookInterface.bas",
+      "SHA256": "E148FC1EACB912DC5E5BF0D36389EDD8B38057A8F29B7D489BBA4C4B94379995",
+      "ConversionLines": [
+        540,
+        545,
+        554,
+        566,
+        1077,
+        1078,
+        1079,
+        1080,
+        1083,
+        1084,
+        1085,
+        1091,
+        1092,
+        1093,
+        1094,
+        1095,
+        1096,
+        1097,
+        1098,
+        1115,
+        1116,
+        1210,
+        1381,
+        1382,
+        1383,
+        1395,
+        1504,
+        1655,
+        1688,
+        1776,
+        1778,
+        1817,
+        1818,
+        1820,
+        1821,
+        1871,
+        2056,
+        2057,
+        2072,
+        2073,
+        2202,
+        2328,
+        2494,
+        2532,
+        2576,
+        2577,
+        2589,
+        2590,
+        2591,
+        2592,
+        2599,
+        2600,
+        2601,
+        2602,
+        2683,
+        2689,
+        2710,
+        2711,
+        2747,
+        2748,
+        2755,
+        2756,
+        2757,
+        2758,
+        2759,
+        2760,
+        2783,
+        2784,
+        2785,
+        2786,
+        2787,
+        2788,
+        2830,
+        2912,
+        2981,
+        4069,
+        4153,
+        4161,
+        4393,
+        4491,
+        4603,
+        4709,
+        4711,
+        4714,
+        5485,
+        5488,
+        5489,
+        5745,
+        5746,
+        5747,
+        5751,
+        5752,
+        5753,
+        5768,
+        5769,
+        5770,
+        5782,
+        5783,
+        5784,
+        5807,
+        5811,
+        5815,
+        5934,
+        5935,
+        6008,
+        6009,
+        6042,
+        6164,
+        6290,
+        6308,
+        6309,
+        6316,
+        6317,
+        6363,
+        6364,
+        6365,
+        6443,
+        6451,
+        6629,
+        6630,
+        6635,
+        6636,
+        6688,
+        6691,
+        6696,
+        6705,
+        6708,
+        6711,
+        6724,
+        6725,
+        6733,
+        6734,
+        6735,
+        6736,
+        6764,
+        6852,
+        6901,
+        7154,
+        7181,
+        7186,
+        7187,
+        7188,
+        7192,
+        7194,
+        7199,
+        7210,
+        7212,
+        7213,
+        7225,
+        7230,
+        7922,
+        7956,
+        7967,
+        8244,
+        8266,
+        8279,
+        8296,
+        8297,
+        8415,
+        8416,
+        8460,
+        8470,
+        8477,
+        8483,
+        8490,
+        8626,
+        8635,
+        8636,
+        8637,
+        8640,
+        8715,
+        8717,
+        8737,
+        8742,
+        8845,
+        8846,
+        8853,
+        8855,
+        8918,
+        8924,
+        8926,
+        9109,
+        9128,
+        9134,
+        9135,
+        9136,
+        9137,
+        9162,
+        9165,
+        9240
+      ]
+    },
+    {
+      "Path": "tests/modTestZeroContourParity.bas",
+      "SHA256": "0EE110859C0D76081A69CD101EDFC15173D5F4EBF5D022D6029CA9EDE7F493E8",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tools/build_workbook/CoreRegressionBatchProbe.bas",
+      "SHA256": "8793B7501A04B3D71F9F84DE354E4D04805D93CE906996E9F2A47CA90BE8A24E",
+      "ConversionLines": [
+        51,
+        52,
+        53
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/FocusedAcceptanceProbe.bas",
+      "SHA256": "3D9529B81522B341242A093C2D3E1515220272E8DCB38AB3AACF1175266F9905",
+      "ConversionLines": [
+        28,
+        29,
+        95,
+        96,
+        97,
+        103,
+        186
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/FocusedBatch15Probe.bas",
+      "SHA256": "82D96B5155BB12A39E20B1D680C7A812994CF3717D76F05EB8A356B78F86D315",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tools/build_workbook/FocusedForceBounds.bas",
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D",
+      "ConversionLines": [
+        79
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/FocusedSnapshotDiagnostic.bas",
+      "SHA256": "010F4F5792628BE9F45B64D9616D283FFCEC463F8B6E55A0D2BD2DB508DC92A7",
+      "ConversionLines": [
+        26,
+        89
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/FocusedSpecialProbe.bas",
+      "SHA256": "91E93175339D42162A805C7730782813DAB172ECCB2F71342BB7E7D02475B6C9",
+      "ConversionLines": [
+        52
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/OpenIssuesProbe.bas",
+      "SHA256": "98C34885E6250C91F6B43008FE27854729385423AFE5B9E640375E68BFC02126",
+      "ConversionLines": [
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/OverloadTimingProbe.bas",
+      "SHA256": "0E4AC354391FAD22AA9ED46934E5AE4F908175DAF0EB6B37C3854CA5B979CF74",
+      "ConversionLines": [
+        32,
+        33,
+        34
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/PlateauFactorControlProbe.bas",
+      "SHA256": "586F71AE677F2538AA0F87DA4CE2ABA67E97FAECA1F7446C29DD3B511E6757EB",
+      "ConversionLines": []
+    },
+    {
+      "Path": "tools/build_workbook/PlateauSlopeBatchProbe.bas",
+      "SHA256": "CDBDCE073802DD87E66B1C02586DA8FD4112535F39631CAFA972FBF3E1247872",
+      "ConversionLines": [
+        12,
+        17
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/PlateauSlopeExtendedProbe.bas",
+      "SHA256": "C32F0C233BE7E38B6230E2216FE69569F25DBD3DC859316B7C7C57E59F17D468",
+      "ConversionLines": [
+        51,
+        52,
+        53
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/PlateauSlopeProbe.bas",
+      "SHA256": "19F42945C33E9DFD76D4AE7B71CD405F71732C8383A297E1C4F2AC054BC1986D",
+      "ConversionLines": [
+        109,
+        125,
+        133,
+        134,
+        142,
+        143,
+        232,
+        246,
+        247,
+        249,
+        250,
+        254
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/RectanglesOffsetProbe.bas",
+      "SHA256": "A271791CE2F30CD2D36BFA22FC390AF31C59183D55A87E3DF97EC25995F360C9",
+      "ConversionLines": [
+        36,
+        40,
+        45,
+        47,
+        48,
+        53,
+        54
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookHelpEvents.vba",
+      "SHA256": "8FCEE6BEF74B7903C9F7E1E902D084DDA8655E91A3A4654CBB301BF5280CF8EB",
+      "ConversionLines": []
+    }
+  ],
+  "FullPass": false
+}

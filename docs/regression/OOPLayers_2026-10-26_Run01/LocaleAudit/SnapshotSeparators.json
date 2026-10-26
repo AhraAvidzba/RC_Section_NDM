@@ -1,0 +1,23 @@
+﻿{
+    "Status":  "PASS_SNAPSHOT_DOT_COMMA_NATIVE_EXACT_BOOK",
+    "SourceSHA256":  "AFF765CB9D7126158534C1752DDF0BEE475C3C3765111C66CFD84B4C4AC38698",
+    "MacrosImported":  false,
+    "WindowsLocaleChanged":  false,
+    "Records":  [
+                    {
+                        "ExpectedChecks":  417,
+                        "ExcelDecimalSeparator":  ".",
+                        "Passed":  true
+                    },
+                    {
+                        "ExpectedChecks":  417,
+                        "ExcelDecimalSeparator":  ",",
+                        "Passed":  true
+                    }
+                ],
+    "PID":  23000,
+    "StartTicks":  "639285697436120195",
+    "SourceUnchanged":  true,
+    "Finished":  "2026-10-26T03:03:14.4734972+03:00",
+    "OwnIdentityStillLive":  true
+}

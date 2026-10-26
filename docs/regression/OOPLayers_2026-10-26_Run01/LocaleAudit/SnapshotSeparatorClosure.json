@@ -1,0 +1,8 @@
+{
+  "Status": "OWN_IDENTITY_ABSENT_POST_EXIT",
+  "PID": 23000,
+  "StartTicks": "639285697436120195",
+  "ObservedAt": "2026-10-26T03:07:16.465157+03:00",
+  "InitialImmediatePostQuitLiveWasTransient": true,
+  "SourceUnchanged": true
+}

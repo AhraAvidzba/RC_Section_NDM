@@ -1,0 +1,14 @@
+{
+  "Status": "PASS_ENVIRONMENT_PREREQUISITES",
+  "At": "2026-10-26T03:00:11.444497+03:00",
+  "Python": "C:\\Users\\avidzba\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+  "PythonVersion": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "ScipyVersion": "1.18.1",
+  "NumpyVersion": "2.3.5",
+  "ScipyRestoredFromCachedWheel": true,
+  "NumpyUnchanged": true,
+  "PriorVersionEvidence": "FullOnOff_2026-10-24_SummaryLoads_Run01/Focused/Independent.json",
+  "FocusedVerifierTests": 15,
+  "FullCoverageVerifierTests": 7,
+  "BeforeFailure": "SciPy absent: 2 of 15 focused verifier tests could not import scipy.optimize; no numerical acceptance bypassed."
+}
