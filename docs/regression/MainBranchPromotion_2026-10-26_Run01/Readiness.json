@@ -1,0 +1,63 @@
+{
+  "Status": "VERIFIED_ACCEPTED_BASE_READY_FOR_MAIN_PUBLICATION",
+  "ObservedAtUTC": "2026-10-26T13:59:21.8365850Z",
+  "Repository": "AhraAvidzba/RC_Section_NDM",
+  "TargetBranch": "main",
+  "PreviousGitHubDefaultBranch": "codex/material-diagram-architecture",
+  "AcceptedCodeCommit": "eefa60e70d503798552430e9d5efa004b13dd5a7",
+  "IncludedAncestorBranches": [
+    {
+      "Branch": "master",
+      "SHA": "afc34681e78443243954ebb9284e199dfbb2dcb0",
+      "Included": true
+    },
+    {
+      "Branch": "codex/material-diagram-architecture",
+      "SHA": "f88e960d22ee4b20372ccf08d40b7338182b74e7",
+      "Included": true
+    },
+    {
+      "Branch": "codex/linked-rebar-row-offsets",
+      "SHA": "b7819a488bca3fe3465bf412114a067d703d7ca1",
+      "Included": true
+    },
+    {
+      "Branch": "codex/concrete-legend",
+      "SHA": "e002ed70dcf31133178c54f54f28ffc55f125d07",
+      "Included": true
+    },
+    {
+      "Branch": "codex/ndm-oop-status",
+      "SHA": "b7819a488bca3fe3465bf412114a067d703d7ca1",
+      "Included": true
+    }
+  ],
+  "PreservedScreenshotOnlyBranch": "codex/section-help-previews-2026-10-22",
+  "AcceptedTrees": {
+    "src": "40a8c71fa44119cf111ae0240ab1b77ea225c5c1",
+    "tests": "ec042c91095268303c48f7b63001306dfaecb6df",
+    "tools": "e50e1a08c0358937adc6449e640dc708c026ea46",
+    "workbook": "279d6262868ee4bba7496fc22e6b07e6b09a0d0b",
+    "norms": "cff66d5faf60a65bad65b2a95c595e53a586a65f",
+    "reference": "859e7edda6d461e96faed898ead91c3f3203aad2",
+    "control_examples": "ABSENT_FROM_ACCEPTED_COMMIT"
+  },
+  "WorkbookSHA256": "53919E6CF11018B769191059E17977D60F3201D5857991FFE49E9326E1CC613A",
+  "AllCodeSHA256": "AF8D7795E855B8236928F33CCCFA6A90094062570171A3AFCEA219A37D20C447",
+  "NativeSourceEquality": {
+    "DocumentModules": 6,
+    "SourceComponents": 172,
+    "Passed": true,
+    "ExportComponents": 178
+  },
+  "RuntimeDiffPaths": [],
+  "Evidence": "docs/regression/AdaptiveBoundaryMesh_2026-10-26_Run01/Acceptance.json",
+  "ExistingAcceptanceStatus": "PASS_DIRECTED_ADAPTIVE_BRANCH",
+  "NewCalculationTestsRun": false,
+  "FullPassClaimAdded": false,
+  "ExcludedLocalTrackedPath": "workbook/output/RC_Section_NDM_execution_report.txt",
+  "ExcludedLocalReportSHA256": "07DD18850E14E3306599D00DAA17A3D909B0FAFD530D149D4EDD62C972F3A340",
+  "ExcludedUntrackedRoot": "outputs/",
+  "HistoryRewritten": false,
+  "ExistingBranchesDeleted": false
+}
