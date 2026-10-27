@@ -30,6 +30,7 @@ Private mEdgeProbeCount As Long ' ДЛЯ ТЕСТОВ: сколько раз и�
 Private mImportComment As String ' Диагностика достоверных контуров, сформированная ответственным importer-ом.
 Private mImportWarnings As String ' Только предупреждения для краткого итогового окна.
 Private mHasImportWarnings As Boolean ' Факт значимого события импорта, включая автоматическую генерацию сетки.
+Private mSourceDrawingName As String ' Имя фактически прочитанного DWG; прямой импорт ModelSpace не имеет имени документа.
 
 ' Возвращает подробную диагностику импорта, не предназначенную для итогового окна.
 Public Property Get ImportComment() As String
@@ -58,6 +59,8 @@ Public Function ResultMessage(ByVal model As CSectionModel) As String
     ResultMessage = "Импорт из AutoCAD выполнен." & vbCrLf & _
         "Бетонных элементов: " & CStr(model.ConcreteCount) & "; стержней: " & CStr(model.RebarCount) & "." & vbCrLf & _
         "Наружных контуров: " & CStr(outerCount) & "; отверстий: " & CStr(openingCount) & "."
+    If Len(mSourceDrawingName) > 0 Then ResultMessage = ResultMessage & vbCrLf & vbCrLf & _
+        "Сечение импортировано из чертежа AutoCAD «" & mSourceDrawingName & "»."
     If Len(mImportWarnings) > 0 Then ResultMessage = ResultMessage & vbCrLf & vbCrLf & "Предупреждения:" & vbCrLf & mImportWarnings
     If model.ConcreteMeshSource = "AutoCADContours" Then _
         ResultMessage = ResultMessage & vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE
@@ -96,8 +99,50 @@ Public Function ImportFromDocument(ByVal document As Object, ByVal settings As C
         Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If document Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", "Документ AutoCAD не передан."
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
+    mSourceDrawingName = vbNullString
     RequireWorldCoordinateSystem document
+    Dim drawingName As String: drawingName = DrawingDocumentName(document)
+    On Error GoTo ImportFailed
     Set ImportFromDocument = ImportConfiguredModelSpace(document.ModelSpace, settings, units, document.Layers)
+    mSourceDrawingName = drawingName
+    Exit Function
+ImportFailed:
+    Dim number As Long, source As String, description As String, missing As String, context As String
+    number = Err.Number: source = Err.Source: description = Err.Description
+    If Len(drawingName) > 0 Then
+        context = "Чертёж AutoCAD «" & drawingName & "»."
+        If number = vbObjectError + 4405 Or number = vbObjectError + 4406 Or number = vbObjectError + 4411 Then _
+            missing = MissingDrawingLayerNames(document, settings)
+        If Len(missing) > 0 Then context = "В чертеже AutoCAD «" & drawingName & "» отсутствуют указанные в Config слои: " & missing & "."
+        description = context & vbCrLf & vbCrLf & description
+    End If
+    Err.Raise number, source, description
+End Function
+
+' Читает необязательное имя документа для сообщения, не заменяя ошибку геометрии ошибкой метаданных.
+Private Function DrawingDocumentName(ByVal document As Object) As String
+    On Error Resume Next
+    DrawingDocumentName = CStr(document.Name)
+    On Error GoTo 0
+End Function
+
+' При отказе импорта перечисляет только доказанно отсутствующие материальные слои.
+' Сбой чтения таблицы слоёв оставляет исходную причину; необязательные контуры не объявляются обязательными.
+Private Function MissingDrawingLayerNames(ByVal document As Object, ByVal settings As CSystemSettingsReader) As String
+    On Error GoTo Unavailable
+    Dim names As Object: Set names = CreateObject("Scripting.Dictionary")
+    names.CompareMode = vbTextCompare
+    Dim layer As Object, key As Variant, name As String, result As String
+    For Each layer In document.Layers: names(CStr(layer.Name)) = True: Next layer
+    For Each key In Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer")
+        name = settings.GetRequiredString(CStr(key))
+        If Len(name) > 0 And Not names.Exists(name) Then
+            If Len(result) > 0 Then result = result & ", "
+            result = result & "«" & name & "»"
+        End If
+    Next key
+    MissingDrawingLayerNames = result
+Unavailable:
 End Function
 
 ' WORLDUCS проверяет совпадение текущей ПСК с МСК, в том числе для
@@ -153,6 +198,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
         Optional ByVal contourLayer As String = "", Optional ByVal openingLayer As String = "", Optional ByVal drawingLayers As Object = Nothing, _
         Optional ByVal meshSettings As CSystemSettingsReader = Nothing) As CSectionModel
     mImportComment = vbNullString
+    mSourceDrawingName = vbNullString
     mImportWarnings = vbNullString: mHasImportWarnings = False
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
     If Len(Trim$(concreteLayer)) = 0 Or Len(Trim$(rebarLayer)) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _

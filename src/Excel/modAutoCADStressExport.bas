@@ -34,7 +34,7 @@ End Type
 
 Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
-Private Const GEOMETRY_ONLY_EXPORT_WARNING As String = "В AutoCAD передано только сечение, без рассчитанного состояния."
+Private Const GEOMETRY_ONLY_EXPORT_WARNING As String = "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения."
 Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
 Private Const SECTION_CONTOUR_COLOR_INDEX As Long = 30 ' Наружная граница бетона: оранжевый ACI 30.
 Private Const OPENING_CONTOUR_COLOR_INDEX As Long = 4 ' Контуры отверстий: голубой ACI 4.
@@ -58,11 +58,13 @@ Public Sub ExportSectionStressToAutoCAD()
     ReadResultsExportState ThisWorkbook, settings, units, vbNullString, section, resultByID, physicalStateByID, combinationID, _
         profileId, stateType, quantity, resultPrecision, epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
         centroidX, centroidY, principalAngle, extensionUsed, stateWarningText, geometryOnly
-    Dim contourExportCount As Long
+    Dim contourExportCount As Long, acad As Object, exportDocument As Object, destinationMessage As String
     If geometryOnly Then
         exportSettings = ReadGeometryExportSettings(settings, section.Contours)
-        DrawFormedGeometryExport ThisWorkbook, section, exportSettings, contourExportCount
-        ShowWorkbookMessage GEOMETRY_ONLY_EXPORT_WARNING, vbExclamation, "RC Section NDM"
+        Set acad = ConnectToRunningAutoCAD(): Set exportDocument = ActiveAutoCADDocument(acad)
+        destinationMessage = AutoCADExportDestinationMessage(exportDocument)
+        DrawFormedGeometryExport ThisWorkbook, section, exportSettings, contourExportCount, exportDocument
+        ShowWorkbookMessage GEOMETRY_ONLY_EXPORT_WARNING & vbCrLf & vbCrLf & destinationMessage, vbExclamation, "RC Section NDM"
         Exit Sub
     End If
     Dim informationEnabled As Boolean: informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
@@ -72,21 +74,29 @@ Public Sub ExportSectionStressToAutoCAD()
         Set crackRows = CurrentCrackRegionRows(ThisWorkbook, combinationID)
         Set crackSweeps = ReadSavedContourArcSweeps(ThisWorkbook, crackRows, "CRACK_REGION_")
     End If
+    Set acad = ConnectToRunningAutoCAD(): Set exportDocument = ActiveAutoCADDocument(acad)
+    destinationMessage = AutoCADExportDestinationMessage(exportDocument)
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, resultPrecision, stateWarningText, exportSettings, _
-        contourExportCount, , crackRows, crackSweeps
+        contourExportCount, exportDocument, crackRows, crackSweeps
     If informationEnabled Then
         Dim message As String
         message = "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
             "; стержней арматуры: " & CStr(section.RebarCount) & _
             "; объектов контура: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
-            "; сочетание: " & combinationID & "; профиль: " & profileId & "; состояние: " & stateType & "; величина: " & quantity
+            "; сочетание: " & combinationID & "; профиль: " & profileId & "; состояние: " & stateType & "; величина: " & quantity & vbCrLf & vbCrLf & destinationMessage
         ShowWorkbookMessage message, vbInformation, "RC Section NDM"
     End If
     Exit Sub
 Failed:
     ShowWorkbookMessage WorkbookErrorMessage("Экспорт в AutoCAD не выполнен", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
+
+' Называет фактический DWG без пути и место вывода. Оба рабочих экспортёра
+' добавляют объекты в ModelSpace, независимо от открытого пользователем листа.
+Private Function AutoCADExportDestinationMessage(ByVal document As Object) As String
+    AutoCADExportDestinationMessage = "Сечение выгружено в чертёж «" & CStr(document.Name) & "» — в модель."
+End Function
 
 ' Очищает активный чертеж AutoCAD от объектов оформления, созданных NDM-export.
 ' Геометрия бетона, арматуры, наружных границ и отверстий остается. Удаляются
@@ -116,7 +126,7 @@ Public Sub ClearAutoCADDrawing()
     deletedCount = DeleteAutoCADDocumentAnnotations(doc, layers, hadLayers)
     If Not hadLayers Then
         If informationEnabled Then ShowWorkbookMessage _
-            "В активном чертеже AutoCAD нет слоёв с подписями и оформлением RC Section NDM." & vbCrLf & vbCrLf & _
+            "В активном чертеже AutoCAD «" & CStr(doc.Name) & "» нет слоёв с подписями и оформлением RC Section NDM." & vbCrLf & vbCrLf & _
             "Очистка не требуется.", vbInformation, "RC Section NDM"
         Exit Sub
     End If
@@ -2388,7 +2398,7 @@ End Function
 ' выполняет обычный экспорт в переданный собственный тестовый чертёж.
 ' Возвращает число добавленных объектов для проверки их свойств и геометрии.
 Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object, _
-        Optional ByRef geometryOnlyWarning As String = "") As Long
+        Optional ByRef geometryOnlyWarning As String = "", Optional ByRef destinationMessage As String = "") As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, options As TAutoCADExportSettings
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Dim section As CSectionModel, values As Object, physicalStates As Object
@@ -2399,6 +2409,7 @@ Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object, _
     ReadResultsExportState ThisWorkbook, settings, units, vbNullString, section, values, physicalStates, _
         combinationID, profileID, stateType, quantity, precision, eps0, kx, ky, referenceX, referenceY, _
         centroidX, centroidY, angle, extended, warning, geometryOnly
+    destinationMessage = AutoCADExportDestinationMessage(doc)
     Dim before As Long, contours As Long: before = doc.ModelSpace.Count
     If geometryOnly Then
         options = ReadGeometryExportSettings(settings, section.Contours)

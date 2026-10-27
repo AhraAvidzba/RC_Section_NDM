@@ -307,7 +307,7 @@ Private Sub TestCheckGeometryOnlyExportSource()
         For Each key In names: savedTables.Add CStr(key), ReadPhysicalResultTable(ThisWorkbook, CStr(key)): Next key
         status = Audit02ReadExportSnapshotForTests(ThisWorkbook)
         TestCheck "geometryOnly.mode." & CStr(mode), Left$(status, 13) = "GeometryOnly|"
-        TestCheck "geometryOnly.warning." & CStr(mode), InStr(status, "В AutoCAD передано только сечение, без рассчитанного состояния.") > 0
+        TestCheck "geometryOnly.warning." & CStr(mode), InStr(status, "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения.") > 0
         TestCheck "geometryOnly.counts." & CStr(mode), Right$(status, 4) = "|1|1"
         For Each key In names
             actual = ReadPhysicalResultTable(ThisWorkbook, CStr(key))
@@ -2595,7 +2595,7 @@ Public Function RunNativeGeometryOnlyExportTests(ByVal document As Object) As St
     Dim properties As TGeometryProperties: query.RegionProperties region, properties
     Dim model As CSectionModel, writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
     Dim names As Variant: names = Array("rngNDMSectionGeometry", "rngNDMElementGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMElementResults")
-    Dim tables As Object, key As Variant, values As Variant, warning As String, prefix As String
+    Dim tables As Object, key As Variant, values As Variant, warning As String, prefix As String, destination As String
     Dim solves As Long: solves = SectionEquilibriumSolveCount()
     Dim number As Long, description As String, concreteCount As Long, rebarCount As Long, contourCount As Long
     On Error GoTo Failed
@@ -2625,10 +2625,11 @@ Public Function RunNativeGeometryOnlyExportTests(ByVal document As Object) As St
             Set tables = CreateObject("Scripting.Dictionary")
             For Each key In names: tables.Add CStr(key), ReadPhysicalResultTable(ThisWorkbook, CStr(key)): Next key
             before = document.ModelSpace.Count: warning = vbNullString
-            added = Audit03ExportAutoCADDocumentForTests(document, warning)
+            added = Audit03ExportAutoCADDocumentForTests(document, warning, destination)
             Set owned = New Collection
             For index = before To document.ModelSpace.Count - 1: owned.Add document.ModelSpace.Item(index): Next index
-            TestCheck prefix & ".warningAlways", warning = "В AutoCAD передано только сечение, без рассчитанного состояния."
+            TestCheck prefix & ".warningAlways", warning = "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения."
+            TestCheck prefix & ".destination", destination = "Сечение выгружено в чертёж «" & CStr(document.Name) & "» — в модель."
             TestCheck prefix & ".objectCount", added = 2 + contourMode And owned.Count = added
             concreteCount = 0: rebarCount = 0: contourCount = 0
             For Each entity In owned

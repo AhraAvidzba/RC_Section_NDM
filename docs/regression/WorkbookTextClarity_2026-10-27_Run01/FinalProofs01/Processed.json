@@ -1,0 +1,76 @@
+{
+  "Status": "PASS_SCOPED_TEXT_AND_CAD_MESSAGES_ONLY",
+  "Requirements": [
+    {
+      "Requirement": "Geometry-only reason and outcome wording",
+      "Passed": true,
+      "Evidence": "NativeCAD04/Main/No.txt; Yes.txt; native module"
+    },
+    {
+      "Requirement": "SnapshotStorage explanation",
+      "Passed": true,
+      "Evidence": "Both native Config D8; Catalog/FreshBuild03; PackageProof02"
+    },
+    {
+      "Requirement": "Adaptive faster and coarse boundary after subdivision",
+      "Passed": true,
+      "Evidence": "Both native Config D25, Guide B846/B848; Catalog/FreshBuild03"
+    },
+    {
+      "Requirement": "SnapshotName states .ndm format without automatic-extension phrase",
+      "Passed": true,
+      "Evidence": "Both native Config D9; Catalog/FreshBuild03"
+    },
+    {
+      "Requirement": "Export names actual DWG and ModelSpace for preview and calculated state",
+      "Passed": true,
+      "Evidence": "NativeCAD04/Main/No.txt, Yes.txt, Ready/No.txt; PaperSpace active"
+    },
+    {
+      "Requirement": "Import success names actual source DWG",
+      "Passed": true,
+      "Evidence": "NativeCAD04/Main/No.txt; Yes.txt"
+    },
+    {
+      "Requirement": "Missing-layer/cleanup messages name DWG without confusing empty layers",
+      "Passed": true,
+      "Evidence": "NativeCAD04/Main/No.txt; Yes.txt"
+    },
+    {
+      "Requirement": "Clear no-open-document import error before geometry",
+      "Passed": true,
+      "Evidence": "NativeCAD04/Main/No.txt; Yes.txt; actual own CAD Documents.Count=0"
+    }
+  ],
+  "SourceFilesChanged": 4,
+  "NativeComponents": 181,
+  "LiteralUnchangedNativeComponents": 178,
+  "Source175Plus6VerifiedInBothBooks": true,
+  "FreshBuildAndCompile": "FreshBuild03",
+  "NativeCAD": {
+    "Passed": 1492,
+    "Failed": 0,
+    "OwnQuitNoKillInAcceptedRun": true
+  },
+  "OutputFiles": [
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "AA7B7380DB4F759C4B3EA18F191B0F884CB6A87AF2F834EC4C4A887FE476C474"
+    },
+    {
+      "Path": "workbook/output/NDM_Test_1232_30/RC_Section_NDM.xlsm",
+      "SHA256": "0E75EC1EA040A60360EBFA0ADA1052ECFA17D5BBEBB4270BB00E41FA93731725"
+    },
+    {
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "0A90F1C53E2E9E4C51C543076EF0534D1394ACEC8D17FF9489EBDF9A5C1E6547"
+    }
+  ],
+  "MainPreservedParts": 103,
+  "ReadyPreservedParts": 107,
+  "UserDataAndReadyResultsPreserved": true,
+  "FullRunAuthorizedOrStarted": false,
+  "OriginalFullReviewRequiredRetained": true,
+  "MainMergePerformed": false,
+  "ForeignExecutionReportsAndOutputsExcluded": true
+}

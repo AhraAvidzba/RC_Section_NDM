@@ -1,0 +1,222 @@
+{
+  "ArchiveSHA256": "380E0423078433E77A52B854D9C0A8CC8165B1BA2376848F36FE2327EEAABA35",
+  "ArchiveBytes": 1752430,
+  "Count": 43,
+  "Files": [
+    {
+      "Path": "Changes.json",
+      "Bytes": 6322,
+      "SHA256": "1CEF59C5D1BB71C0D624CEE906269F388D2CB5C47567C39834981D31B8F8FD62"
+    },
+    {
+      "Path": "TextMap.json",
+      "Bytes": 4114,
+      "SHA256": "B46A45087BB81EF69A75A62790A6688EB02864F23A03F89F69773ADF606BBD6B"
+    },
+    {
+      "Path": "FreshBuild03.Build.json",
+      "Bytes": 390,
+      "SHA256": "9E2E8FDFBBB6985F2EFE9F10690D01C32CEEF2C73A922AAA7E167769F0A37B07"
+    },
+    {
+      "Path": "Build03Closure.json",
+      "Bytes": 86,
+      "SHA256": "B367888827E8AFF5F4AC33991DBA1862F81D7950EF86A27153D82661C45EECCE"
+    },
+    {
+      "Path": "PackageProof02.json",
+      "Bytes": 17168,
+      "SHA256": "B94BF1488F180E27C59BC0D7DF17A64474A604B047BBD5D89A2C9BCA01D65549"
+    },
+    {
+      "Path": "CodeAndPackageReview.json",
+      "Bytes": 1394,
+      "SHA256": "13FF096886365C9203034E4D87159E47E6D3FEDB44529624217F6D4ECBF884D0"
+    },
+    {
+      "Path": "Publication.json",
+      "Bytes": 3018,
+      "SHA256": "3C877B70C4ECC8BD8E9ED87AAB09CE8FD0329D4283482353C27668784FD92DB7"
+    },
+    {
+      "Path": "Native02/Main/VBA_All_Code.txt",
+      "Bytes": 8976720,
+      "SHA256": "0A90F1C53E2E9E4C51C543076EF0534D1394ACEC8D17FF9489EBDF9A5C1E6547"
+    },
+    {
+      "Path": "Native02/Main/SourceEquality.json",
+      "Bytes": 117153,
+      "SHA256": "94DCD0127BDD411E1E30E66D28FF6D8DFCFDCEB750ADC98F32CD2726B4D0EE95"
+    },
+    {
+      "Path": "Native02/SavedExcelWarm2/SourceEquality.json",
+      "Bytes": 117153,
+      "SHA256": "A8566465D6FD4089101662C47DC86EFD601F765CE732EA9F277712925523C438"
+    },
+    {
+      "Path": "Native02/RawNativeComponentComparison.json",
+      "Bytes": 335,
+      "SHA256": "0E5E2EEADBD51D7E94610C673A4A1FAED574527CD2A76ECB75AB6522F410D173"
+    },
+    {
+      "Path": "Native02.Watchdog/Completion.json",
+      "Bytes": 5253,
+      "SHA256": "2D880F43C941361840FE46D8A8AFA26C69411F87F37221956459980A41818A99"
+    },
+    {
+      "Path": "NativeCAD04/Main/No.txt",
+      "Bytes": 33132,
+      "SHA256": "36DF8CC577D2A150BA5CE0C7528E1CE922581C32309D8AFF6B7F5B218211FE1E"
+    },
+    {
+      "Path": "NativeCAD04/Main/Yes.txt",
+      "Bytes": 33146,
+      "SHA256": "2AC8E72D6F64930C92FBA9A91C66CD4F64AA9376250BF2A9BB1F07D19C876913"
+    },
+    {
+      "Path": "NativeCAD04/Ready/No.txt",
+      "Bytes": 504,
+      "SHA256": "C14A31C9E19A9E46B31612EDBDDD8DAC3DA4CF38142B43D20A499DDD80770956"
+    },
+    {
+      "Path": "NativeCAD04/Acceptance.json",
+      "Bytes": 1884,
+      "SHA256": "8D43D08210CCABEDB1E142A563E0C518A60847CECBC9022B658D878BAE3D8FE1"
+    },
+    {
+      "Path": "NativeCAD04/OwnClosure.json",
+      "Bytes": 356,
+      "SHA256": "78D426F5B7315F09C90213F75E6AF404B562D8F2B74021AF05824115E3766B7D"
+    },
+    {
+      "Path": "NativeCAD04/OwnROTBinding.json",
+      "Bytes": 498,
+      "SHA256": "4300C285615CBD24C0133094E36EBF7167D6EDD7261FCA0C86121ABF8CBDCBE1"
+    },
+    {
+      "Path": "NativeCAD04/Ownership.json",
+      "Bytes": 276,
+      "SHA256": "697A72A90E7E0C1577544532C0D5A9BB8F783F77F2EE03D065C463B77A2B387B"
+    },
+    {
+      "Path": "NativeCAD04/MemoryBeforeExcel.json",
+      "Bytes": 74,
+      "SHA256": "B8CAAAD62020A0B07CD95A3AA08F97BEF8288DF3067A34D5E09D2F80C74DBFA4"
+    },
+    {
+      "Path": "NativeCAD04/MemoryBeforeCAD.json",
+      "Bytes": 75,
+      "SHA256": "9B8834E410FCC5E10AB8B95721A2D40C6622A2BAF87C66D6803ED2DBE38493A3"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/WorkerIdentity.json",
+      "Bytes": 251,
+      "SHA256": "D7A86E6DC18904C8CFA85961F84861FBC010D883B507A6E615FA81220DEA4297"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/Completion.json",
+      "Bytes": 3296,
+      "SHA256": "893478B611E55802CF72A2CE8494314761965D0F3C129DA610C1C600B9A5721D"
+    },
+    {
+      "Path": "NativeCAD04.Watchdog/WatchdogCleanup.json",
+      "Bytes": 9,
+      "SHA256": "F1D4ED4A75237E4878028E6B6010C6BBEF26A0046C58DE51825558342883B19F"
+    },
+    {
+      "Path": "TestCADText.bas",
+      "Bytes": 8436,
+      "SHA256": "5EEE32F40DC2C3D59DFF8779D7C7D3F328E21F119CC5BA8D5528766A147D41CA"
+    },
+    {
+      "Path": "Test-RunNativeCAD.ps1",
+      "Bytes": 11555,
+      "SHA256": "056C04FB270C67503EC715FEB3A65F271103573A920DC09867CD316E57D70DD7"
+    },
+    {
+      "Path": "Test-Build.ps1",
+      "Bytes": 2391,
+      "SHA256": "C70D243F419C46C8F654B4F12BFC281872D93122EE3F36BDE07751F49E930E36"
+    },
+    {
+      "Path": "Test-Package.py",
+      "Bytes": 8817,
+      "SHA256": "086A4B075E02D19281D4CC9887A57FF537CCBEECCF434A1C79174FEA5FE06A7D"
+    },
+    {
+      "Path": "Test-SetupNative.ps1",
+      "Bytes": 3136,
+      "SHA256": "BBA427F77F9ED77DAD00A891419073BA859081236B2CD9AD0105DD3C0ED9428E"
+    },
+    {
+      "Path": "Test-Review.py",
+      "Bytes": 5691,
+      "SHA256": "D4D1502EF66E5904EE8AF68FCFD0A40F38ACDB6918FF029494C58BADC7492E5C"
+    },
+    {
+      "Path": "Test-Publish.ps1",
+      "Bytes": 3343,
+      "SHA256": "2BAA4E153131C9D5D173BC0C0C4F217D82E7AF456655D2D890A2DACE401BE255"
+    },
+    {
+      "Path": "Test-Finalize.py",
+      "Bytes": 6531,
+      "SHA256": "F5C446960D999B6C8D8788B09657E857F3385CBFEB583D8DA9E5CE07617B8428"
+    },
+    {
+      "Path": "NativeCAD01/Failure.json",
+      "Bytes": 333,
+      "SHA256": "17E56DE335EA2B02E8151133A5575C0220B12F5C00DF54689D32B9EC5899ECB6"
+    },
+    {
+      "Path": "NativeCAD01.Watchdog/Completion.json",
+      "Bytes": 1434,
+      "SHA256": "00579AB7653C849A95D1F40B85CE69B928D1C860EFC6FAFD8CAF1107FD5D6136"
+    },
+    {
+      "Path": "NativeCAD01.Watchdog/WatchdogCleanup.json",
+      "Bytes": 9,
+      "SHA256": "F1D4ED4A75237E4878028E6B6010C6BBEF26A0046C58DE51825558342883B19F"
+    },
+    {
+      "Path": "NativeCAD02/Failure.json",
+      "Bytes": 354,
+      "SHA256": "33877883C7396F6ABB76D34A463273645E28C060B9F5BDE63A8F8064EF5B6814"
+    },
+    {
+      "Path": "NativeCAD02.Watchdog/Completion.json",
+      "Bytes": 1992,
+      "SHA256": "FC7B110950CFFC98ACD9F81CDBD3613DCE3ED9C6AA94BEA3481B6D6AF217BAD2"
+    },
+    {
+      "Path": "NativeCAD02.Watchdog/WatchdogCleanup.json",
+      "Bytes": 758,
+      "SHA256": "AA250EDFD23719F8AB0500A2BBAFABC0495CBF74BFADD60062C6667FBFE99AE7"
+    },
+    {
+      "Path": "NativeCAD03/Failure.json",
+      "Bytes": 348,
+      "SHA256": "C7F089B4955205BBFD4FE326F1FA2D425603E44B4FA8C1A209578242430C5E47"
+    },
+    {
+      "Path": "NativeCAD03.Watchdog/Completion.json",
+      "Bytes": 2861,
+      "SHA256": "ED63B8E88A62A89603D629415C271F8B1BADD16BCFB505D14DB6A657D103FD2C"
+    },
+    {
+      "Path": "NativeCAD03.Watchdog/WatchdogCleanup.json",
+      "Bytes": 1508,
+      "SHA256": "C9B8DD4E9C8B89C5F2F79138B5FC9EBA29E2D851CB6E9A856E551317BEDEBE0C"
+    },
+    {
+      "Path": "NativeCAD03/Main/No.txt",
+      "Bytes": 31477,
+      "SHA256": "7437E09E45561503FFE39175411FDCDBFDA36F73C9B0135B83E8D6F74541AAA5"
+    },
+    {
+      "Path": "FinalProofs01/Processed.json",
+      "Bytes": 2662,
+      "SHA256": "4FBF8BA61006D2AF7832EC1A41AEC76037AF79FB1B19FD0961C7FC1D57DD6C67"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-27 10:40:29
+Date: 2026-10-27 14:50:35
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -43691,7 +43691,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CAutoCADSectionModelImporter
 TYPE: 2
-LINES: 957
+LINES: 1003
 ====================================================================================================
 Option Explicit
 
@@ -43716,6 +43716,7 @@ Private mEdgeProbeCount As Long ' ДЛЯ ТЕСТОВ: сколько раз и�
 Private mImportComment As String ' Диагностика достоверных контуров, сформированная ответственным importer-ом.
 Private mImportWarnings As String ' Только предупреждения для краткого итогового окна.
 Private mHasImportWarnings As Boolean ' Факт значимого события импорта, включая автоматическую генерацию сетки.
+Private mSourceDrawingName As String ' Имя фактически прочитанного DWG; прямой импорт ModelSpace не имеет имени документа.
 
 ' Возвращает подробную диагностику импорта, не предназначенную для итогового окна.
 Public Property Get ImportComment() As String
@@ -43744,6 +43745,8 @@ Public Function ResultMessage(ByVal model As CSectionModel) As String
     ResultMessage = "Импорт из AutoCAD выполнен." & vbCrLf & _
         "Бетонных элементов: " & CStr(model.concreteCount) & "; стержней: " & CStr(model.rebarCount) & "." & vbCrLf & _
         "Наружных контуров: " & CStr(outerCount) & "; отверстий: " & CStr(openingCount) & "."
+    If Len(mSourceDrawingName) > 0 Then ResultMessage = ResultMessage & vbCrLf & vbCrLf & _
+        "Сечение импортировано из чертежа AutoCAD «" & mSourceDrawingName & "»."
     If Len(mImportWarnings) > 0 Then ResultMessage = ResultMessage & vbCrLf & vbCrLf & "Предупреждения:" & vbCrLf & mImportWarnings
     If model.ConcreteMeshSource = "AutoCADContours" Then _
         ResultMessage = ResultMessage & vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE
@@ -43782,8 +43785,50 @@ Public Function ImportFromDocument(ByVal document As Object, ByVal settings As C
         Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If document Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", "Документ AutoCAD не передан."
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
+    mSourceDrawingName = vbNullString
     RequireWorldCoordinateSystem document
+    Dim drawingName As String: drawingName = DrawingDocumentName(document)
+    On Error GoTo ImportFailed
     Set ImportFromDocument = ImportConfiguredModelSpace(document.modelSpace, settings, units, document.layers)
+    mSourceDrawingName = drawingName
+    Exit Function
+ImportFailed:
+    Dim number As Long, source As String, description As String, Missing As String, context As String
+    number = Err.number: source = Err.source: description = Err.description
+    If Len(drawingName) > 0 Then
+        context = "Чертёж AutoCAD «" & drawingName & "»."
+        If number = vbObjectError + 4405 Or number = vbObjectError + 4406 Or number = vbObjectError + 4411 Then _
+            Missing = MissingDrawingLayerNames(document, settings)
+        If Len(Missing) > 0 Then context = "В чертеже AutoCAD «" & drawingName & "» отсутствуют указанные в Config слои: " & Missing & "."
+        description = context & vbCrLf & vbCrLf & description
+    End If
+    Err.Raise number, source, description
+End Function
+
+' Читает необязательное имя документа для сообщения, не заменяя ошибку геометрии ошибкой метаданных.
+Private Function DrawingDocumentName(ByVal document As Object) As String
+    On Error Resume Next
+    DrawingDocumentName = CStr(document.name)
+    On Error GoTo 0
+End Function
+
+' При отказе импорта перечисляет только доказанно отсутствующие материальные слои.
+' Сбой чтения таблицы слоёв оставляет исходную причину; необязательные контуры не объявляются обязательными.
+Private Function MissingDrawingLayerNames(ByVal document As Object, ByVal settings As CSystemSettingsReader) As String
+    On Error GoTo Unavailable
+    Dim names As Object: Set names = CreateObject("Scripting.Dictionary")
+    names.CompareMode = vbTextCompare
+    Dim layer As Object, key As Variant, name As String, result As String
+    For Each layer In document.layers: names(CStr(layer.name)) = True: Next layer
+    For Each key In Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer")
+        name = settings.GetRequiredString(CStr(key))
+        If Len(name) > 0 And Not names.Exists(name) Then
+            If Len(result) > 0 Then result = result & ", "
+            result = result & "«" & name & "»"
+        End If
+    Next key
+    MissingDrawingLayerNames = result
+Unavailable:
 End Function
 
 ' WORLDUCS проверяет совпадение текущей ПСК с МСК, в том числе для
@@ -43839,6 +43884,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
         Optional ByVal contourLayer As String = "", Optional ByVal openingLayer As String = "", Optional ByVal drawingLayers As Object = Nothing, _
         Optional ByVal meshSettings As CSystemSettingsReader = Nothing) As CSectionModel
     mImportComment = vbNullString
+    mSourceDrawingName = vbNullString
     mImportWarnings = vbNullString: mHasImportWarnings = False
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
     If Len(Trim$(concreteLayer)) = 0 Or Len(Trim$(rebarLayer)) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
@@ -58662,7 +58708,7 @@ End Function
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
 TYPE: 1
-LINES: 2432
+LINES: 2443
 ====================================================================================================
 Option Explicit
 
@@ -58699,7 +58745,7 @@ End Type
 
 Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
-Private Const GEOMETRY_ONLY_EXPORT_WARNING As String = "В AutoCAD передано только сечение, без рассчитанного состояния."
+Private Const GEOMETRY_ONLY_EXPORT_WARNING As String = "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения."
 Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
 Private Const SECTION_CONTOUR_COLOR_INDEX As Long = 30 ' Наружная граница бетона: оранжевый ACI 30.
 Private Const OPENING_CONTOUR_COLOR_INDEX As Long = 4 ' Контуры отверстий: голубой ACI 4.
@@ -58723,11 +58769,13 @@ Public Sub ExportSectionStressToAutoCAD()
     ReadResultsExportState ThisWorkbook, settings, units, vbNullString, section, resultByID, physicalStateByID, combinationID, _
         profileID, stateType, quantity, resultPrecision, epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
         centroidX, centroidY, principalAngle, extensionUsed, stateWarningText, geometryOnly
-    Dim contourExportCount As Long
+    Dim contourExportCount As Long, acad As Object, exportDocument As Object, destinationMessage As String
     If geometryOnly Then
         exportSettings = ReadGeometryExportSettings(settings, section.contours)
-        DrawFormedGeometryExport ThisWorkbook, section, exportSettings, contourExportCount
-        ShowWorkbookMessage GEOMETRY_ONLY_EXPORT_WARNING, vbExclamation, "RC Section NDM"
+        Set acad = ConnectToRunningAutoCAD(): Set exportDocument = ActiveAutoCADDocument(acad)
+        destinationMessage = AutoCADExportDestinationMessage(exportDocument)
+        DrawFormedGeometryExport ThisWorkbook, section, exportSettings, contourExportCount, exportDocument
+        ShowWorkbookMessage GEOMETRY_ONLY_EXPORT_WARNING & vbCrLf & vbCrLf & destinationMessage, vbExclamation, "RC Section NDM"
         Exit Sub
     End If
     Dim informationEnabled As Boolean: informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
@@ -58737,21 +58785,29 @@ Public Sub ExportSectionStressToAutoCAD()
         Set crackRows = CurrentCrackRegionRows(ThisWorkbook, combinationID)
         Set crackSweeps = ReadSavedContourArcSweeps(ThisWorkbook, crackRows, "CRACK_REGION_")
     End If
+    Set acad = ConnectToRunningAutoCAD(): Set exportDocument = ActiveAutoCADDocument(acad)
+    destinationMessage = AutoCADExportDestinationMessage(exportDocument)
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, resultPrecision, stateWarningText, exportSettings, _
-        contourExportCount, , crackRows, crackSweeps
+        contourExportCount, exportDocument, crackRows, crackSweeps
     If informationEnabled Then
         Dim message As String
         message = "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.concreteCount) & _
             "; стержней арматуры: " & CStr(section.rebarCount) & _
             "; объектов контура: " & ContourExportStatusText(exportSettings.contourEnabled, contourExportCount) & _
-            "; сочетание: " & combinationID & "; профиль: " & profileID & "; состояние: " & stateType & "; величина: " & quantity
+            "; сочетание: " & combinationID & "; профиль: " & profileID & "; состояние: " & stateType & "; величина: " & quantity & vbCrLf & vbCrLf & destinationMessage
         ShowWorkbookMessage message, vbInformation, "RC Section NDM"
     End If
     Exit Sub
 Failed:
     ShowWorkbookMessage WorkbookErrorMessage("Экспорт в AutoCAD не выполнен", Err.number, Err.source, Err.description), vbExclamation, "RC Section NDM"
 End Sub
+
+' Называет фактический DWG без пути и место вывода. Оба рабочих экспортёра
+' добавляют объекты в ModelSpace, независимо от открытого пользователем листа.
+Private Function AutoCADExportDestinationMessage(ByVal document As Object) As String
+    AutoCADExportDestinationMessage = "Сечение выгружено в чертёж «" & CStr(document.name) & "» — в модель."
+End Function
 
 ' Очищает активный чертеж AutoCAD от объектов оформления, созданных NDM-export.
 ' Геометрия бетона, арматуры, наружных границ и отверстий остается. Удаляются
@@ -58781,7 +58837,7 @@ Public Sub ClearAutoCADDrawing()
     deletedCount = DeleteAutoCADDocumentAnnotations(doc, layers, hadLayers)
     If Not hadLayers Then
         If informationEnabled Then ShowWorkbookMessage _
-            "В активном чертеже AutoCAD нет слоёв с подписями и оформлением RC Section NDM." & vbCrLf & vbCrLf & _
+            "В активном чертеже AutoCAD «" & CStr(doc.name) & "» нет слоёв с подписями и оформлением RC Section NDM." & vbCrLf & vbCrLf & _
             "Очистка не требуется.", vbInformation, "RC Section NDM"
         Exit Sub
     End If
@@ -61053,7 +61109,7 @@ End Function
 ' выполняет обычный экспорт в переданный собственный тестовый чертёж.
 ' Возвращает число добавленных объектов для проверки их свойств и геометрии.
 Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object, _
-        Optional ByRef geometryOnlyWarning As String = "") As Long
+        Optional ByRef geometryOnlyWarning As String = "", Optional ByRef destinationMessage As String = "") As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, options As TAutoCADExportSettings
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Dim section As CSectionModel, values As Object, physicalStates As Object
@@ -61064,6 +61120,7 @@ Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object, _
     ReadResultsExportState ThisWorkbook, settings, units, vbNullString, section, values, physicalStates, _
         combinationID, profileID, stateType, quantity, precision, eps0, kx, ky, referenceX, referenceY, _
         centroidX, centroidY, angle, extended, warning, geometryOnly
+    destinationMessage = AutoCADExportDestinationMessage(doc)
     Dim before As Long, contours As Long: before = doc.modelSpace.count
     If geometryOnly Then
         options = ReadGeometryExportSettings(settings, section.contours)
@@ -70154,7 +70211,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestAutoCADContours
 TYPE: 1
-LINES: 2675
+LINES: 2676
 ====================================================================================================
 Option Explicit
 
@@ -70464,7 +70521,7 @@ Private Sub TestCheckGeometryOnlyExportSource()
         For Each key In names: savedTables.Add CStr(key), ReadPhysicalResultTable(ThisWorkbook, CStr(key)): Next key
         status = Audit02ReadExportSnapshotForTests(ThisWorkbook)
         TestCheck "geometryOnly.mode." & CStr(mode), left$(status, 13) = "GeometryOnly|"
-        TestCheck "geometryOnly.warning." & CStr(mode), InStr(status, "В AutoCAD передано только сечение, без рассчитанного состояния.") > 0
+        TestCheck "geometryOnly.warning." & CStr(mode), InStr(status, "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения.") > 0
         TestCheck "geometryOnly.counts." & CStr(mode), right$(status, 4) = "|1|1"
         For Each key In names
             actual = ReadPhysicalResultTable(ThisWorkbook, CStr(key))
@@ -72752,7 +72809,7 @@ Public Function RunNativeGeometryOnlyExportTests(ByVal document As Object) As St
     Dim properties As TGeometryProperties: query.RegionProperties region, properties
     Dim model As CSectionModel, writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
     Dim names As Variant: names = Array("rngNDMSectionGeometry", "rngNDMElementGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMElementResults")
-    Dim tables As Object, key As Variant, values As Variant, warning As String, prefix As String
+    Dim tables As Object, key As Variant, values As Variant, warning As String, prefix As String, destination As String
     Dim solves As Long: solves = SectionEquilibriumSolveCount()
     Dim number As Long, description As String, concreteCount As Long, rebarCount As Long, contourCount As Long
     On Error GoTo Failed
@@ -72782,10 +72839,11 @@ Public Function RunNativeGeometryOnlyExportTests(ByVal document As Object) As St
             Set tables = CreateObject("Scripting.Dictionary")
             For Each key In names: tables.Add CStr(key), ReadPhysicalResultTable(ThisWorkbook, CStr(key)): Next key
             before = document.modelSpace.count: warning = vbNullString
-            added = Audit03ExportAutoCADDocumentForTests(document, warning)
+            added = Audit03ExportAutoCADDocumentForTests(document, warning, destination)
             Set owned = New Collection
             For index = before To document.modelSpace.count - 1: owned.Add document.modelSpace.item(index): Next index
-            TestCheck prefix & ".warningAlways", warning = "В AutoCAD передано только сечение, без рассчитанного состояния."
+            TestCheck prefix & ".warningAlways", warning = "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения."
+            TestCheck prefix & ".destination", destination = "Сечение выгружено в чертёж «" & CStr(document.name) & "» — в модель."
             TestCheck prefix & ".objectCount", added = 2 + contourMode And owned.count = added
             concreteCount = 0: rebarCount = 0: contourCount = 0
             For Each entity In owned
