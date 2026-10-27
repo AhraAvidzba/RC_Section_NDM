@@ -587,7 +587,7 @@ Private Function TryProjectedTrustRegion(ByVal context As ILimitSearchProblem, B
 End Function
 
 ' Улучшившая норму, но полностью горизонтальная проба может запереть
-' следующий шаг на плато. Тогда оставляем прежнее восстановление; достигнутое
+' следующий шаг на плато. Тогда продолжаем восстановление состояния; достигнутое
 ' равновесие выше принимается независимо от касательной материалов.
 Private Function ProjectedMaterialsAreFlat(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal epsCenter As Double, ByVal kx As Double, ByVal ky As Double) As Boolean

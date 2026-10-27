@@ -1,0 +1,29 @@
+{
+  "Status": "PUBLISHED_CLEAN_FULL_ACCEPTANCE_PENDING",
+  "ObservedUTC": "2026-10-27T01:50:46.8803455+00:00",
+  "Files": [
+    {
+      "After": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07\\RC_Section_NDM.xlsm",
+      "Backup": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalPublication01\\Backup\\RC_Section_NDM.xlsm",
+      "Before": "0F6F142FB1665A6A7BF31DBFAA724EB8237A35DD117EBF312E36561442245062",
+      "Target": "workbook/output/RC_Section_NDM.xlsm"
+    },
+    {
+      "After": "6F4B5701E0ED8EE3FAB90210DCD50AE65FA75E45C76790B12AB2B62E2BAD90E4",
+      "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeRelease04\\VBA_All_Code.txt",
+      "Backup": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalPublication01\\Backup\\VBA_All_Code.txt",
+      "Before": "252089A0A3CB25EB21A9C2A291646D33B1BAFB96A6CE08CD8EE1BB6A1A30C82D",
+      "Target": "workbook/output/VBA_All_Code.txt"
+    }
+  ],
+  "CleanFullRebuild": "FreshBuild07",
+  "NativeSourceEquality": "NativeRelease04/SourceEquality.json",
+  "CleanlinessProof": "NativeCleanlinessPlan/FreshBuild07Cleanliness.json",
+  "MainBookHasNoUserDataTransfer": true,
+  "UserBookPreserved": "UserBook_BeforeChanges.xlsm",
+  "FullRegressionPass": false,
+  "AutoLispProductionIntegrated": false,
+  "ForeignReportsOrOutputsChanged": false,
+  "CompletedUTC": "2026-10-27T01:50:47.0009308+00:00"
+}

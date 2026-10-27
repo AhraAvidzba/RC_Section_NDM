@@ -80,7 +80,8 @@ Private Sub TestConfigureFixture(ByVal system As Object)
         "AUDIT_C", "AUDIT_R", "AUDIT_CONTOUR", "AUDIT_CT", "AUDIT_CC", "AUDIT_RT", "AUDIT_RC", _
         9, 5, 1, 6, 8)
     For i = 0 To UBound(keys): TestSetValue system, CStr(keys(i)), values(i): Next i
-    TestSetValue system, "AutoCAD.Import.MinArea", 0#
+    TestSetValue system, "Mesh.MinElementArea", 0#
+    TestSetValue system, "Mesh.CellGeometry", "Adaptive"
     TestSetValue system, "General.NonCriticalMessagesEnabled", "No"
     TestSetValue system, "Calculation.ZeroMomentPerDepth", 0#
 End Sub
@@ -127,7 +128,7 @@ Private Sub TestPrepareResults(ByRef stats As TCadStats, ByVal system As Object,
     TestCheck stats, "autoCADConfig.snapshot.state1", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
     TestCheck stats, "autoCADConfig.snapshot.state2", batch.ResultAt(2).DirectStateMeta.InternalStatus = rsSuccess
     ' Определяющее сочетание Worst должно относиться к текущим тестовым результатам,
-    ' а не к прежнему пользовательскому расчёту или другому тесту.
+    ' а не к сохранённому пользовательскому расчёту или другому тесту.
     Set summaryWriter = New CBatchResultWriter: summaryWriter.WriteSummary ThisWorkbook, batch
     Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
 End Sub
@@ -786,7 +787,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Отделяет численную погрешность CAD-интеграции от инженерного расхождения.
-' Абсолютный допуск 1e-6 фиксирован до запуска и не меняет старые oracle ядра.
+' Абсолютный допуск 1e-6 фиксирован до запуска и не меняет независимые эталоны ядра.
 Private Sub TestCheckNativeInertiaClose(ByRef stats As TCadStats, ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestLogLine stats, "AUTOCAD_INERTIA_NUMBER: " & name & "|actual=" & TestNativeNumber(actual) & _
         "|expected=" & TestNativeNumber(expected) & "|tolerance=0.000001"

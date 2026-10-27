@@ -39,7 +39,7 @@ Private mRetryAttemptFailures As Collection ' Краткие итоги точн
 Private mRetryContextSection As CSectionModel ' Модель и материалы текущего поиска для проверки применимости сохранённых попыток; конечные НДС здесь не хранятся.
 Private mRetryContextConcrete As Object ' Свойства диаграммы бетона для проверки точного совпадения повторной попытки.
 Private mRetryContextSteel As Object ' Свойства диаграммы арматуры для проверки точного совпадения повторной попытки.
-Private mRetrySectionRevision As Long ' Изменение модели запрещает использование прежних попыток.
+Private mRetrySectionRevision As Long ' Изменение модели запрещает использование сохранённых попыток.
 
 ' Задает безопасные настройки по умолчанию для unit-тестов и вызовов без Config.
 Private Sub Class_Initialize()
@@ -514,7 +514,7 @@ Private Function RetryResidualIsComparable(ByVal value As Double) As Boolean
     RetryResidualIsComparable = (value = value And Abs(value) < 1E+100)
 End Function
 
-' Проверяет модель, её версию и материалы перед чтением прежних повторных попыток.
+' Проверяет модель, её версию и материалы перед чтением сохранённых повторных попыток.
 ' При несовпадении завершает их учёт, но разрешает обычное решение новой задачи.
 Private Function RetryAttemptContextMatches(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean

@@ -1,0 +1,73 @@
+{
+  "SchemaVersion": 1,
+  "Status": "STATIC_INTEGRATION_REVIEW",
+  "ObservedUtc": "2026-10-26T18:39:57.1849107Z",
+  "ContourLiteralAddCalls": [
+    {
+      "Path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Line": 514,
+      "Statement": "model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, 1, sourceLayer, EntityHandle(entity),  \"Contour\", 0#, 0#, 0#, \"AutoCAD Region: сохранена связная фактическая граница из прямых и круговых дуг; площадь, центр и инерции вычислены по ней.\",  properties.Ixc, properties.Iyc, properties.Ixyc, True, component"
+    },
+    {
+      "Path": "tests/modTestAutoCADContours.bas",
+      "Line": 297,
+      "Statement": "model.AddConcreteElement 0#, 0#, 8000#, 1, , , \"Contour\", , , , , properties.Ixc, properties.Iyc, properties.Ixyc, True, geometry"
+    },
+    {
+      "Path": "tests/modTestElementGeometry.bas",
+      "Line": 341,
+      "Statement": "model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, 1, \"\", \"\", \"Contour\",  0#, 0#, 0#, \"\", properties.Ixc, properties.Iyc, properties.Ixyc, True, region"
+    },
+    {
+      "Path": "tests/modTestElementGeometry.bas",
+      "Line": 477,
+      "Statement": "model.AddConcreteElement 0#, 0#, 800#, 1, vbNullString, vbNullString, \"Contour\", 40#, 20#, 0#, vbNullString, properties.Ixc, properties.Iyc, properties.Ixyc"
+    },
+    {
+      "Path": "tests/modTestElementGeometry.bas",
+      "Line": 521,
+      "Statement": "model.AddConcreteElement x, y, area, 2, \"Rejected\", \"Rejected\", \"Contour\", 0#, 0#, 0#, \"\", localIx, localIy, localIxy, True, candidate"
+    },
+    {
+      "Path": "tests/modTestElementGeometry.bas",
+      "Line": 537,
+      "Statement": "model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, 2, \"Accepted\", \"Handle2\", \"Contour\",  0#, 0#, 0#, \"\", properties.Ixc, properties.Iyc, properties.Ixyc, True, region"
+    },
+    {
+      "Path": "tests/modTestElementGeometryViews.bas",
+      "Line": 199,
+      "Statement": "model.AddConcreteElement props.CentroidX, props.CentroidY, props.Area, 1, shapeType:=\"Contour\",  localIx:=props.Ixc, localIy:=props.Iyc, localIxy:=props.Ixyc, rotationKnown:=True, exactRegion:=region"
+    }
+  ],
+  "RemainingGeometrySetterCalls": [
+    {
+      "Path": "tests/modTestElementGeometry.bas",
+      "Line": 469,
+      "Statement": "model.SetConcreteGeometry 1, region"
+    }
+  ],
+  "SetterConclusion": "Единственный рабочий вызов setter в src/tests/tools — отрицательный тест отказа несогласованного replacement; production add+setter цепочки отсутствуют.",
+  "ProductionAtomicSites": [
+    "CSectionModelBuilder.AppendConcreteMesh passes region last after rotationKnown.",
+    "CAutoCADSectionModelImporter.AddConcreteContourEntity passes each accepted component last.",
+    "modSectionSnapshot.ReadSectionGeometryFromResults resolves boundary before atomic add, no filtering on restore."
+  ],
+  "MinAreaPipeline": [
+    "modMeshConfiguration.ReadMinimumElementArea: required General.MinElementArea, nonnegative, CUnitSystem.InputAreaToInternal.",
+    "ReadSectionMeshOptions.MinArea -> BuildConfiguredConcreteMesh.BuildMesh or CSectionBuilder.Build -> mesh.BuildMesh and rules.Build.",
+    "CRebarRuleExecutor marks each rule area strictly below minArea and skips only final physical positions; == retained."
+  ],
+  "MinimalFixtures": [
+    "modTestContourMesh.TestMeshSettings includes General.MinElementArea=0 and Units.Area.Input, defaults to supported compact Adaptive when CellGeometry absent.",
+    "modTestElementGeometryViews/TestCheckExactComponentAreaFilter minimal Mesh.CellGeometry-only settings call ImportFromModelSpace with explicit minArea; they do not invoke required minimum-area reader.",
+    "Active tools/*.bas read complete workbook settings, no own AddConcreteElement/SetConcreteGeometry sites."
+  ],
+  "CorrectedFixture": {
+    "Path": "tests/modTestGeneralGeometryConfig.bas",
+    "Change": "Explicit Mesh.CellGeometry=Adaptive for existing depth1/4 quadrature expectations and General.MinElementArea=0 for pure geometry/unit comparisons.",
+    "SHA256": "62F6AD39E0D202F291F0801C0B025A4BCC301F2863F8492BA98A2999ABDD1586"
+  },
+  "CatalogDefault": "SettingsCatalog.ps1 Mesh.CellGeometry=Contour; direct BuildMesh/ReadMeshCellGeometry missing-key fallback=Adaptive.",
+  "RiskSentToRoot": "CSectionBuilder validation still checks BoundarySubdivisions<1 without CellGeometry guard. UI reader supplies1 for Contour; direct Contour/0 should skip this unused field. Root-owned correction pending at observation.",
+  "NativeCompileOrTestsRun": false
+}

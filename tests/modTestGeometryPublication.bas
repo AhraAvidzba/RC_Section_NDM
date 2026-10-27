@@ -7,7 +7,7 @@ Option Explicit
 Private mPassed As Long, mFailed As Long, mReport As String
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' повторное построение и смена направления подписи не меняют арматуру и не используют старые привязки.
+' повторное построение и смена направления подписи не меняют арматуру и не используют привязки предыдущего построения.
 Public Function RunAnnotationIsolationTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed

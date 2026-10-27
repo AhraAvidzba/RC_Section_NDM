@@ -193,7 +193,7 @@ Private Sub TestCenteredNumericalFrame(ByRef stats As TSectionSolverTestStats)
                     TestAssertClose stats, prefix & ".N", (solver.Nint - n) / CDbl(size) ^ 2, 0#, 0.00001
                     TestAssertClose stats, prefix & ".Mx", (solver.Mxint - mx) / CDbl(size) ^ 2, 0#, 0.1
                     TestAssertClose stats, prefix & ".My", (solver.Myint - my) / CDbl(size) ^ 2, 0#, 0.1
-                    Dim expectedK22 As Double, i As Long ' Публичная K по-прежнему должна быть производной исходных усилий.
+                    Dim expectedK22 As Double, i As Long ' Публичная K должна быть производной исходных усилий.
                     For i = 1 To section.ConcreteCount
                         expectedK22 = expectedK22 + 30000# * section.ConcreteArea(i) * section.ConcreteY(i) ^ 2
                     Next i
@@ -442,7 +442,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "AutoCAD.Color.ConcreteTension", "AutoCAD.Color.ConcreteCompression", _
         "AutoCAD.Color.RebarTension", "AutoCAD.Color.RebarCompression", _
         "AutoCAD.Color.Neutral", _
-        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Export.CrackInteractionLayer", "AutoCAD.Import.MinArea")
+        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Export.CrackInteractionLayer", "Mesh.MinElementArea")
     TestAssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
@@ -1424,7 +1424,7 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Повторная неудача запоминается только при полном совпадении численной попытки.
 ' Новые старты, параметры, сечение, материалы, сеанс и успешное решение
-' не блокируются прежним отказом.
+' не блокируются отказом предыдущей попытки.
 Public Function RunAudit03RetryAttemptSessionTests() As String
     On Error GoTo Failed
     Dim stats As TSectionSolverTestStats
@@ -1886,7 +1886,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет причины отказа настоящего линейного решения. Большая сумма
 ' правых частей допускает нормировку; непредставимая поправка остаётся
-' численной ошибкой. Следующий корректный запуск должен очищать прежний код отказа.
+' численной ошибкой. Следующий корректный запуск должен очищать код отказа предыдущего запуска.
 Private Sub TestAudit03LinearFailureCodes(ByRef stats As TSectionSolverTestStats)
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
@@ -2014,7 +2014,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Измеряет только общий линейный шаг на одинаковой известной системе.
-' Пять повторов позволяют сравнить старый и исправленный helper отдельно
+' Пять повторов позволяют сравнить эталонный и проверяемый варианты интегрирования отдельно
 ' от Excel IO и создания геометрии; это не итоговый benchmark всего НДС.
 Public Function TestRunAudit03LinearSystemBenchmark() As String
     Dim system As CLinearSystem3x3, repetition As Long, i As Long

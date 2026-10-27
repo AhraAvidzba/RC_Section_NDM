@@ -1295,7 +1295,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 124,
+      "line": 125,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Count",
       "anchor": "api-csectioninputtable-count"
@@ -1340,7 +1340,7 @@
         }
       ],
       "resultType": "String",
-      "line": 134,
+      "line": 135,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Choice",
       "anchor": "api-csectioninputtable-choice"
@@ -1377,7 +1377,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 145,
+      "line": 146,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Length",
       "anchor": "api-csectioninputtable-length"
@@ -1414,7 +1414,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 156,
+      "line": 157,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.PositiveLength",
       "anchor": "api-csectioninputtable-positivelength"
@@ -1451,7 +1451,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 162,
+      "line": 163,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.NonNegativeLength",
       "anchor": "api-csectioninputtable-nonnegativelength"
@@ -1488,7 +1488,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 169,
+      "line": 170,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.OptionalDiameter",
       "anchor": "api-csectioninputtable-optionaldiameter"
@@ -1525,7 +1525,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 179,
+      "line": 180,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.OptionalRowOffset",
       "anchor": "api-csectioninputtable-optionalrowoffset"
@@ -1554,7 +1554,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 190,
+      "line": 191,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.ColumnByCaption",
       "anchor": "api-csectioninputtable-columnbycaption"
@@ -1599,7 +1599,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 206,
+      "line": 207,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByKey",
       "anchor": "api-csectioninputtable-rowbykey"
@@ -1644,7 +1644,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 213,
+      "line": 214,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByAnyKey",
       "anchor": "api-csectioninputtable-rowbyanykey"

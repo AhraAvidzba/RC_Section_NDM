@@ -622,7 +622,7 @@ Private Function TestInvalidPolygonRejected(ByVal scenario As Long) As Boolean
     Exit Function
 Rejected:
     If scenario = 0 Or scenario = 2 Or scenario = 4 Then
-        TestInvalidPolygonRejected = (Err.Source = "CPolygonSpec" And Err.Number = vbObjectError + 5470) ' Структура теперь проверяется описателем до передачи геометрическому ядру.
+        TestInvalidPolygonRejected = (Err.Source = "CPolygonSpec" And Err.Number = vbObjectError + 5470) ' Структура проверяется описателем до передачи геометрическому ядру.
     Else
         TestInvalidPolygonRejected = (Err.Source = "CSectionGeometryQuery" And Err.Number = vbObjectError + 5401)
     End If

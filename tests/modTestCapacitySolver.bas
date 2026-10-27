@@ -621,7 +621,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Смена изменяемого пути, ревизии геометрии или допуска не переиспользует
-' прежний численный контекст; отдельная оценка совпадает с новым calculator-ом.
+' численный контекст предыдущего запроса; отдельная оценка совпадает с новым calculator-ом.
 Private Sub TestUltimateNumericalContextCache(ByRef stats As TCapacityTestStats)
     Dim section As CSectionModel, cap As CCapacitySolver, fresh As CCapacitySolver, path As CLoadPathVector
     Dim solver As CSectionSolver, reference As CSectionSolver, phase As Long, prefix As String
@@ -3118,7 +3118,7 @@ Private Sub TestAudit02InitialOffsetBoundary(ByRef stats As TCapacityTestStats)
         If CDbl(ratio) < 1# Then
             TestAssertTrue stats, prefix & ".acceptable", cap.LimitSearchCapacityStateIsAcceptable(state)
         ElseIf CDbl(ratio) = 1# Then
-            ' Равновесие решается с прежним абсолютным допуском усилий.
+            ' Равновесие решается с заданным абсолютным допуском усилий.
             ' Уточненная плоскость может оказаться по любую сторону точной
             ' аналитической границы; классификация должна отражать именно ее,
             ' а не объявлять превышение по одному значению входной нагрузки.
@@ -3174,7 +3174,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что найденный предел является успехом Search, а непрохождение
-' текущего сочетания определяет только Capacity. Числа старого сценария и
+' текущего сочетания определяет только Capacity. Числа контрольного сценария и
 ' его допуски не изменяются; отдельно проверяется изоляция выданной meta.
 Private Sub TestCheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
         ByVal cap As CCapacitySolver, ByVal section As CSectionModel, _
@@ -3581,7 +3581,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Предел противоположного направления не принимается как несущая. После
-' его отказа пригодная точка того же пути принимается без прежнего failure-code.
+' его отказа пригодная точка того же пути принимается без кода отказа отклонённой пробы.
 Private Sub TestCapacityRejectedDirectionRecovery(ByRef stats As TCapacityTestStats)
     Dim shift As Variant, x As Variant, y As Variant, section As CSectionModel
     Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, tension As CSectionSolver
@@ -4103,7 +4103,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' оба численных метода действительно ищут предел, а невалидные
 ' допуски/бюджет и отсутствующая зависимость останавливаются до Search.
-' При повторе старый результат должен сохранять независимый факт выполнения.
+' При повторе уже выданный результат должен сохранять независимый факт выполнения.
 Private Sub TestAudit03CapacitySearchLifecycle(ByRef stats As TCapacityTestStats)
     Dim problem As CCapacityLimitSearchProblem, result As CLimitSearchResult
     Set problem = New CCapacityLimitSearchProblem
@@ -4392,7 +4392,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет только повторное заполнение request без решения равновесия.
-' Инициализация трещин должна убрать данные прежнего запроса несущей способности.
+' Инициализация трещин должна убрать данные предыдущего запроса несущей способности.
 Public Function RunLimitRequestLifecycleTests() As String
     On Error GoTo Failed
     Dim stats As TCapacityTestStats
@@ -4405,7 +4405,7 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сопоставляет переиспользованный запрос со свежим для трех прежних осевых
+' Сопоставляет переиспользованный запрос со свежим для трёх контрольных осевых
 ' режимов. Настройки/объекты нового расчета сохраняются точно; solver не вызывается.
 Private Sub TestRequestReinitialization(ByRef stats As TCapacityTestStats)
     Dim problem As CTestLimitSearchProblem, request As CLimitSearchRequest, fresh As CLimitSearchRequest

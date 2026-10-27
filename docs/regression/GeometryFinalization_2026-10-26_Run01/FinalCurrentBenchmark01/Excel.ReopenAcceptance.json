@@ -1,0 +1,286 @@
+﻿{
+    "Case":  "Excel",
+    "Trial":  "Warm2",
+    "Passed":  true,
+    "ActualCloseOpen":  true,
+    "OutsideAllThreeModeTimings":  true,
+    "NewExcelCreated":  false,
+    "ProductionCalculationInvoked":  false,
+    "Stage":  "Complete",
+    "Failure":  null,
+    "ArtifactPath":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2\\RC_Section_NDM.xlsm",
+    "ArtifactSHA256":  "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8",
+    "RepairModePropertySupported":  true,
+    "RepairModeObserved":  false,
+    "ReadOnly":  true,
+    "InputMatricesUnchanged":  true,
+    "GeometryFingerprintUnchanged":  true,
+    "GeometryFingerprintSHA256":  "0A7DE5F23C40947F544860F80A4EC9A490DC053F689719FE86BFFDA449057352",
+    "PositiveControls":  {
+                             "LoadCasesChecked":  30,
+                             "SummaryAndStrengthIDsInExactInputOrder":  true,
+                             "PhysicalElementStateRows":  114080,
+                             "StatesReadFrom":  "Physical rngNDMElementResults.Value2",
+                             "PhysicalElementStateRowsOnSheet":  114080,
+                             "All30LoadCasesProcessedIncludingFourExpectedInputErr":  true,
+                             "InputErrIDs":  [
+                                                 "PERF_14",
+                                                 "PERF_21",
+                                                 "PERF_27",
+                                                 "PERF_28"
+                                             ],
+                             "EveryExistingPhysicalStateHasAllExpectedElementIDs":  true,
+                             "EveryLCProfileStateHas1240UniqueElements":  true,
+                             "LCProfileStateGroups":  92,
+                             "EveryPhysicalRowHasNumericStrainAndStress":  true,
+                             "RunID":  46322.204293981478,
+                             "Details":  [
+                                             {
+                                                 "LoadCase":  "PERF_01",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_02",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_03",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_04",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_05",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_06",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_07",
+                                                 "OverallStatus":  "OK",
+                                                 "HistoricalStatus":  "OK",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  2,
+                                                 "NumericStrengthFields":  19
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_08",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_09",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_10",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_11",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_12",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_13",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_14",
+                                                 "OverallStatus":  "InputErr",
+                                                 "HistoricalStatus":  "InputErr",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  2,
+                                                 "NumericStrengthFields":  19
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_15",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_16",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_17",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_18",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_19",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_20",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_21",
+                                                 "OverallStatus":  "InputErr",
+                                                 "HistoricalStatus":  "InputErr",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  2,
+                                                 "NumericStrengthFields":  19
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_22",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_23",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_24",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_25",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_26",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_27",
+                                                 "OverallStatus":  "InputErr",
+                                                 "HistoricalStatus":  "InputErr",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_28",
+                                                 "OverallStatus":  "InputErr",
+                                                 "HistoricalStatus":  "InputErr",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  2,
+                                                 "NumericStrengthFields":  19
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_29",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_30",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             }
+                                         ]
+                         },
+    "PhysicalFileBodyProbe":  null,
+    "SerializedSameFolderLink":  null,
+    "ActualSavedArtifactReadSucceeded":  true,
+    "ConcreteShapes":  1232,
+    "RebarShapes":  8,
+    "ArtifactUnchanged":  true
+}

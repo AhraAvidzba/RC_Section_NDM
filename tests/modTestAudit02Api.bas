@@ -345,7 +345,7 @@ Finish:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает числа с учётом повторов, но без требования прежнего порядка:
+' Сравнивает числа с учётом повторов, но без требования одинакового порядка:
 ' форматтер настройки переносит адрес перед причиной, сохраняя оба значения.
 Private Function TestMessageNumberTokensEqual(ByVal before As String, ByVal after As String, ByVal expression As Object) As Boolean
     Dim counts As Object, item As Object, key As Variant
@@ -517,7 +517,7 @@ Public Function RunAudit02OptionsTests() As String
     options.SkipMissingProjection = True: options.NewPublicationRoot = True
     options.AnnotationGroup = "Group" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, добавленный первым.
     TestCheck "R08.publication.only", options.StartSetback = 100# And options.EndMode = ExcludeBoth And options.SourceNormalSign = -1#
     For Each axis In Array(RowNormal, RowTangent)
         For Each sign In Array(-1#, 1#)
@@ -698,7 +698,7 @@ Private Function TestBuildAudit02DemoDefinition() As CSectionDefinition
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "H.Right" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, добавленный первым.
     options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
     options.IncomingTangentAtJoint = True
     facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
@@ -731,12 +731,12 @@ Private Function TestBuildAudit02OperationsDefinition() As CSectionDefinition
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, добавленный первым.
     facade.RebarByCount "Main", "MainAxis", 5, 20#, options
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, добавленный первым.
     options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
     facade.RebarDependent "Contact", "Main", 16#, options
     Set options = New CRebarRuleOptions
@@ -785,7 +785,7 @@ Public Function RunAudit02CloseoutContactTests() As String
     options.SourceReference = "Program.Contact": options.StartSetback = 100#: options.EndSetback = 150#
     options.AnnotationGroup = "Group" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, добавленный первым.
     options.NormalOffset = 12#: options.TangentOffset = 34#: options.EverySecond = True
     cases = Array(Array(0#, 16#, RowNormal, 1#, 0#), Array(-20#, 16#, RowNormal, 1#, 0#), _
         Array(20#, 0#, RowNormal, 1#, 0#), Array(20#, -16#, RowNormal, 1#, 0#), _
@@ -976,7 +976,7 @@ Private Function TestInputContractRow(ByVal unit As String, ByVal fixture As Str
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Исходный квадрат в прежнем CCW-порядке; имена не являются автоматическими anchors.
+' Исходный квадрат в заданном CCW-порядке; имена не являются автоматическими anchors.
 
 Private Function TestRectangleSpec(ByVal radius As Double) As CPolygonSpec
     Dim polygon As CPolygonSpec: Set polygon = New CPolygonSpec
@@ -1417,7 +1417,7 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
     TestCheck "offset.input.formula.explicit.changedLayout", Not TestOffsetBarsEqual(actual, expected)
     mReport = mReport & "OFFSET_MANUAL_FORMULA: stage=explicitCalculate; a2=" & CStr(cell.Value2) & vbCrLf
     cell.Value2 = 100#: Set definition = TestReadOffsetWorkbookDefinition(): Set bars = TestFixtureLayout(definition)
-    TestCheck "offset.input.formula.manual.cachedLayout", TestOffsetBarsEqual(actual, TestOffsetBarsSnapshot(bars)) ' Проверяем полный состав, порядок, координаты и диаметры при прежнем a2=100.
+    TestCheck "offset.input.formula.manual.cachedLayout", TestOffsetBarsEqual(actual, TestOffsetBarsSnapshot(bars)) ' Проверяем полный состав, порядок, координаты и диаметры при исходном a2=100.
     cell.Value2 = 120#: Set definition = TestReadOffsetWorkbookDefinition(): Set bars = TestFixtureLayout(definition)
     TestCheck "offset.input.formula.manual.recalculated", TestOffsetBarsEqual(expected, TestOffsetBarsSnapshot(bars))
     TestCheck "offset.input.formula.explicit.modeUnchanged", Application.Calculation = xlCalculationManual

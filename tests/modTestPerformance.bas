@@ -29,7 +29,7 @@ Private Type TDoubleBytes
 End Type
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет рост/очистку массивов и прежнее правило первой пустой ячейки.
+' Проверяет рост/очистку массивов и правило остановки на первой пустой ячейке.
 Public Function RunPerformanceStorageTests() As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     On Error GoTo Failed
@@ -64,7 +64,7 @@ Public Function TestMeasurePerformanceModel(ByVal count As Long) As String
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает прежнее поячеечное и обычное блочное чтение одного диапазона.
+' Сравнивает поячеечное эталонное и рабочее блочное чтение одного диапазона.
 ' Данные и размер одинаковы; временный лист удаляется также при ошибке.
 Public Function TestMeasurePerformanceExtent(ByVal optimized As Boolean, ByVal count As Long) As String
     On Error GoTo Failed
@@ -170,7 +170,7 @@ Failed:
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает блочное определение занятой области с прежним поклеточным эталоном при одинаковом ограничении поиска.
+' Сравнивает блочное определение занятой области с независимым поклеточным эталоном при одинаковом ограничении поиска.
 Private Sub TestCheckExtent(ByVal anchor As Object, ByVal columns As Boolean, ByVal limit As Long, ByVal label As String)
     Dim actual As Long, expected As Long
     expected = TestOldExtent(anchor, columns, limit)
@@ -179,7 +179,7 @@ Private Sub TestCheckExtent(ByVal anchor As Object, ByVal columns As Boolean, By
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Независимый прежний oracle: именно первая Trim/CStr-пустая, не UsedRange.
+' Независимый поячеечный эталон: именно первая Trim/CStr-пустая, не UsedRange.
 Private Function TestOldExtent(ByVal anchor As Object, ByVal columns As Boolean, ByVal limit As Long) As Long
     Dim available As Long, i As Long, value As Variant
     If columns Then available = anchor.Worksheet.Columns.Count - anchor.Column + 1 Else available = anchor.Worksheet.Rows.Count - anchor.Row + 1
@@ -1097,7 +1097,7 @@ Public Sub TestPrepareNativeCADPerformance(ByVal rotated As Boolean)
     TestPerformanceSetting "Plot.AutoUpdateAfterCalculation", "No"
     TestPerformanceSetting "General.ExecutionReportEnabled", "No"
     TestPerformanceSetting "AutoCAD.Export.CombinationID", "PERF_01"
-    TestPerformanceSetting "AutoCAD.Import.MinArea", "0"
+    TestPerformanceSetting "Mesh.MinElementArea", "0"
     Dim table As Object, row As Long
     Set table = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     For row = 1 To table.Rows.Count
@@ -1208,7 +1208,7 @@ Public Sub TestPrepareNativeCADRoundoffFixture()
     TestPerformanceSetting "Plot.Enabled", "No": TestPerformanceSetting "Plot.AutoUpdateAfterCalculation", "No"
     TestPerformanceSetting "General.ExecutionReportEnabled", "No"
     TestPerformanceSetting "AutoCAD.Export.CombinationID", "PERF_01"
-    TestPerformanceSetting "AutoCAD.Import.MinArea", "0"
+    TestPerformanceSetting "Mesh.MinElementArea", "0"
     Dim section As CSectionModel, i As Long, j As Long, x As Double, y As Double, c As Double, s As Double
     Dim points As Variant, point As Variant, path As CGeometryPath, query As CSectionGeometryQuery
     Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CNDMResultsWriter, table As Object

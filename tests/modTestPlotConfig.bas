@@ -131,7 +131,7 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет углы дуг сохраненного контура через reader и настоящий preview.
 ' Рисунок и Results принадлежат отдельной книге; ошибочный текст должен
-' отклоняться до очистки прежней схемы, а не превращаться в нулевую дугу.
+' отклоняться до очистки существующей схемы, а не превращаться в нулевую дугу.
 Public Function RunAudit03ContourArcTests() As String
     Dim stats As TUiTestStats
     TestAudit03ContourArcContracts stats
@@ -693,7 +693,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет независимость расчёта от настроек автообновления схемы.
 ' Ошибки оформления возвращаются с адресом после сохранения результатов;
-' отключённая схема не читает неактивный AutoUpdate и сохраняет прежний Chart.
+' отключённая схема не читает неактивный AutoUpdate и сохраняет существующий Chart.
 Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     Dim fixture As Object, config As Object, table As Object, cell As Object, profiles As Object, loads As Object, durationLoads As Object
     Dim chart As Object, marker As Object, baseline As Variant, bad As Variant, key As Variant
@@ -1025,7 +1025,7 @@ Cleanup:
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Неверный активный ввод не должен очищать прежний рисунок. Проверяем
+' Неверный активный ввод не должен очищать существующий рисунок. Проверяем
 ' восстановление, перенос таблицы, выключенные потребители и положительный
 ' мелкий шаг подписей, для которого номер ячейки сетки выходит за Long.
 Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)

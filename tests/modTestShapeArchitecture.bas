@@ -100,7 +100,7 @@ Private Function TestShapeSnapshot(ByVal fixture As String, Optional ByVal suppl
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' только фактический результат новой сборки, без прежних builders.
+' только фактический результат новой сборки, без отдельных построителей типов.
 Public Function TestPreparedShapeSnapshot(ByVal fixture As String, ByVal model As CSectionModel, _
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout) As String
     If model Is Nothing Or mesh Is Nothing Or rebars Is Nothing Then Err.Raise vbObjectError + 5292, "modTestShapeArchitecture", "Неполный prepared snapshot."
@@ -294,7 +294,7 @@ InactiveSide:
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' выполняет прежнюю сборку сечения в отдельной эталонной книге.
+' Выполняет сборку сечения в отдельной эталонной книге.
 Public Function TestDumpRectanglesGeometryMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
@@ -467,7 +467,7 @@ Public Sub TestConfigureHollowScenario(ByVal scenario As Long)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' старая геометрия/проекции до переноса HollowRectangle.
+' Выводит контрольную геометрию и проекции HollowRectangle для сравнения реализаций.
 Public Function TestDumpHollowGeometryMatrix() As String
     TestDumpHollowGeometryMatrix = TestHollowGeometryMatrix(0, 7)
 End Function
@@ -544,13 +544,13 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' исходный расчет четырех PointedSection, включая точные
-' контуры и прежние позиции арматуры. Вторая проба активирует радиусные пути.
+' контуры и контрольные позиции арматуры. Вторая проба активирует радиусные пути.
 Public Function TestDumpRoundedSourceCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
     TestDumpRoundedSourceCalculations = TestSourceCalculations(Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, scenario)
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' отдельная эталонная книга с прежней рабочей сборкой пустотелого прямоугольника.
+' отдельная эталонная книга с контрольной рабочей сборкой пустотелого прямоугольника.
 Public Function TestDumpHollowSourceCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
     TestDumpHollowSourceCalculations = TestSourceCalculations(Array("HollowCentered", "HollowOffset"), crackCode, 0, scenario)
 End Function
@@ -681,7 +681,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' строит настоящую диаграмму, фигуры и PNG геометрических эталонов.
 ' Results меняет только в отдельной тестовой копии, закрываемой без сохранения.
-' Прежний вид пустотелого прямоугольника нужен для сравнения длинных подписей.
+' Контрольный вид пустотелого прямоугольника нужен для сравнения длинных подписей.
 Public Function TestDumpHollowSourcePreview(ByVal outputDirectory As String, Optional ByVal scenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel

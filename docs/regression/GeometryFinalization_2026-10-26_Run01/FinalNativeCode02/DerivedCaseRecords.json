@@ -1,0 +1,52 @@
+{
+  "Status": "DERIVED_RECORDS_NOT_REPLACEMENT_PRIMARY",
+  "Primary": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalNativeCode02\\Cases.json",
+  "PrimarySHA256": "629AA089788CA0BBFB781B72314E9F5AF0A56C8777903D67D156E45029E481C6",
+  "ReportingShape": "Each original case array contains verifier stdout and one record; recursive extraction keeps exactly the two real case records.",
+  "Cases": [
+    {
+      "Case": "Main",
+      "Passed": true,
+      "Book": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "BookSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "Components": 181,
+      "SourceComponents": 175,
+      "DocumentModules": 6,
+      "ImportedComponents": 0,
+      "CompileRequested": false,
+      "CalculationOrRunRequested": false,
+      "SettingsReadOrModified": false,
+      "ReadOnly": true,
+      "SourceEquality": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalNativeCode02\\Main\\SourceEquality.json",
+      "ExportSHA256": "B2F5EF9D99E92C9C3C3D302BF18BD8D8F9B65AB669ABE838DFB4DEAC321F18D8",
+      "AllCodeComparison": {
+        "Passed": true,
+        "ActualRawSHA256": "B2F5EF9D99E92C9C3C3D302BF18BD8D8F9B65AB669ABE838DFB4DEAC321F18D8",
+        "ReferenceRawSHA256": "6F4B5701E0ED8EE3FAB90210DCD50AE65FA75E45C76790B12AB2B62E2BAD90E4",
+        "ActualDate": "Date: 2026-10-27 05:20:28",
+        "ReferenceDate": "Date: 2026-10-27 02:55:00",
+        "NativeDatePreserved": true,
+        "OnlyExcludedHeader": "Date",
+        "WorkbookHeaderAndAllBodyBytesEqual": true,
+        "CodeCaseOrNumberOrWhitespaceNormalizationUsed": false
+      }
+    },
+    {
+      "Case": "SavedExcelWarm2",
+      "Passed": true,
+      "Book": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2\\RC_Section_NDM.xlsm",
+      "BookSHA256": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8",
+      "Components": 181,
+      "SourceComponents": 175,
+      "DocumentModules": 6,
+      "ImportedComponents": 0,
+      "CompileRequested": false,
+      "CalculationOrRunRequested": false,
+      "SettingsReadOrModified": false,
+      "ReadOnly": true,
+      "SourceEquality": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalNativeCode02\\SavedExcelWarm2\\SourceEquality.json",
+      "ExportSHA256": "C307CE01DF28D89634EF401FC2BED3A58E33AA1897A4D86B2F1529443ECE5270",
+      "AllCodeComparison": null
+    }
+  ]
+}

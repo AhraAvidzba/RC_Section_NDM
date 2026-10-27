@@ -207,7 +207,7 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     DrawPlotTitleOverlay PlotTitleText(data)
 End Sub
 
-' Очищает прежние элементы, подписи и заголовок, сохраняя саму диаграмму,
+' Очищает элементы, подписи и заголовок текущей схемы, сохраняя саму диаграмму,
 ' её положение и размер. Устаревший расчёт не должен выглядеть текущим.
 Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
@@ -251,7 +251,7 @@ Private Function EnsureChart(ByVal sheet As Object) As Object
 End Function
 
 ' Подготавливает Chart к новой отрисовке, сохраняя сам ChartObject.
-' Старые series удаляются, но размеры и положение окна схемы остаются как у пользователя.
+' Существующие series удаляются, но размеры и положение окна схемы остаются как у пользователя.
 Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
     mPlotMetricsCaptured = False
     mPlotLeft = 0#
@@ -595,7 +595,7 @@ Private Sub HideElementShapeLines(ByVal indexes As Collection)
     mChart.Shapes.Range(values).Line.Visible = False
 End Sub
 
-' Применяет прежние заливку и обводку ко всем фигурам одного оформления.
+' Применяет заданные заливку и обводку ко всем фигурам одного оформления.
 ' ShapeRange не объединяет фигуры и не меняет их имена, геометрию или порядок.
 Private Sub FormatElementShapes(ByVal indexes As Collection, ByVal fillColor As Long, ByVal lineColor As Long, ByVal weight As Double)
     Dim values() As Variant, i As Long, shapes As Object

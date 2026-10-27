@@ -71,7 +71,7 @@ Public Enum ERebarPlacementCheck
 End Enum
 
 ' Контакт допустим. Отрицательный геометрический зазор всегда диагностируется;
-' запрет задается явно, чтобы не изменить исторические зависимые ряды.
+' запрет задается явно для каждого правила зависимых рядов.
 Public Enum ERebarOverlapPolicy
     ReportOverlap = 1
     RejectOverlap = 2
@@ -165,13 +165,14 @@ Public Type TSectionAnnotation
 End Type
 
 Public Type TSectionMeshOptions
-    CellGeometry As String ' Adaptive — прежние прямоугольники; Contour — фактическое пересечение базовой ячейки с бетоном.
+    CellGeometry As String ' Adaptive — уточняемые прямоугольники; Contour — фактическое пересечение базовой ячейки с бетоном.
     StepX As Double ' Ширина основной ячейки бетонной сетки, мм.
     StepY As Double ' Высота основной ячейки бетонной сетки, мм.
     AutoStepFactor As Double ' 0 — использовать StepX/StepY; >0 — одинаковый шаг как доля меньшего габарита бетонной области.
     BoundarySubdivisions As Long ' Число уровней деления только пересечённых границей ячеек пополам по обеим осям.
     MaterialID As Long ' Номер материала создаваемых бетонных элементов.
     SourceReference As String ' Сохранённые адреса параметров сетки для пояснения ошибок построения.
+    MinArea As Double ' Минимальная площадь конечного бетонного элемента, мм2; ноль отключает фильтр, равенство сохраняет элемент.
 End Type
 
 Public Type TRebarPosition

@@ -31,21 +31,27 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     If definition Is Nothing Then SectionRecipeError "CSectionBuilder", "Не передано описание геометрии и армирования сечения."
     If Not definition.IsSealed Then SectionRecipeError "CSectionBuilder", "Описание сечения ещё не завершено. Перед сборкой завершите его методом Finish."
     If meshOptions.AutoStepFactor < 0# Or (meshOptions.AutoStepFactor = 0# And (meshOptions.StepX <= 0# Or meshOptions.StepY <= 0#)) Or _
-            meshOptions.BoundarySubdivisions < 1 Or meshOptions.MaterialID < 1 Then _
+            ((Len(meshOptions.CellGeometry) = 0 Or meshOptions.CellGeometry = "Adaptive") And meshOptions.BoundarySubdivisions < 1) Or meshOptions.MaterialID < 1 Then _
         SectionRecipeError "CSectionBuilder", "Недопустимые внутренние настройки бетонной сетки."
+    If meshOptions.MinArea < 0# Then SectionRecipeError "CSectionBuilder", "Mesh.MinElementArea не может быть отрицательной.", meshOptions.SourceReference
     Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout, rules As CRebarRuleExecutor
     Dim modelBuilder As CSectionModelBuilder, annotationBuilder As CSectionAnnotationBuilder, model As CSectionModel
     Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
-    Set rules = New CRebarRuleExecutor: Set rebars = rules.Build(definition, geometry) ' Сначала проверяем арматуру общим исполнителем правил, затем строим бетонную сетку.
-    If rebars.Count = 0 Then SectionRecipeError "CSectionBuilder", "После построения сечения не получен ни один стержень. Проверьте количества и диаметры в исходной таблице выбранного сечения."
+    Set rules = New CRebarRuleExecutor: Set rebars = rules.Build(definition, geometry, meshOptions.MinArea) ' Сначала проверяем арматуру общим исполнителем правил, затем строим бетонную сетку.
+    If rebars.Count = 0 Then
+        If rules.FilteredByArea > 0 Then SectionRecipeError "CSectionBuilder", _
+            "После применения Mesh.MinElementArea не осталось арматурных стержней. Уменьшите порог площади или проверьте диаметры арматуры.", meshOptions.SourceReference
+        SectionRecipeError "CSectionBuilder", "После построения сечения не получен ни один стержень. Проверьте количества и диаметры в исходной таблице выбранного сечения."
+    End If
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geometry, meshOptions.StepX, meshOptions.StepY, meshOptions.MaterialID, meshOptions.BoundarySubdivisions, meshOptions.SourceReference, meshOptions.AutoStepFactor, meshOptions.CellGeometry
+    mesh.BuildMesh geometry, meshOptions.StepX, meshOptions.StepY, meshOptions.MaterialID, meshOptions.BoundarySubdivisions, meshOptions.SourceReference, meshOptions.AutoStepFactor, meshOptions.CellGeometry, meshOptions.MinArea
     Set modelBuilder = New CSectionModelBuilder: Set model = modelBuilder.BuildFromGenerated(mesh, rebars)
     model.GeometryDiagnosticsText = rules.DiagnosticsText
     model.SetGeometryWarnings rules.HasGeometryWarnings, rules.GeometryWarningText
     Dim i As Long
     For i = 1 To rules.PositionCount
-        model.AppendRebarRecipeTrace rules.PositionPhysicalOwner(i), rules.PositionRuleID(i), rules.PositionPathID(i), rules.PositionSourceID(i)
+        If rules.PositionPhysicalOwner(i) > 0 Then _
+            model.AppendRebarRecipeTrace rules.PositionPhysicalOwner(i), rules.PositionRuleID(i), rules.PositionPathID(i), rules.PositionSourceID(i)
     Next i
     definition.WriteContours model.Contours
     Set annotationBuilder = New CSectionAnnotationBuilder
@@ -81,5 +87,5 @@ End Property
 ' После изменения её геометрии требует новую сборку; большие массивы не копирует.
 Private Sub RequireCurrentModel()
     If mModel Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной модели."
-    If mModel.Revision <> mModelRevision Then SectionRecipeError "CSectionBuilder", "После сборки геометрия модели изменилась; прежние сетка, арматура и правила больше не соответствуют модели. Выполните новую сборку."
+    If mModel.Revision <> mModelRevision Then SectionRecipeError "CSectionBuilder", "После сборки геометрия модели изменилась; сохранённые сетка, арматура и правила больше не соответствуют модели. Выполните новую сборку."
 End Sub

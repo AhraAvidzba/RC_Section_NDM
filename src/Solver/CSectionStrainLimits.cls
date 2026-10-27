@@ -36,7 +36,7 @@ Public Sub Configure(ByVal concreteCompression As Double, ByVal concreteTension 
 End Sub
 
 ' Максимальное отношение деформации к своему пределу определяет ближайшую
-' границу. При равенстве сохраняется прежний порядок: бетон, затем арматура.
+' границу. При равенстве учитывается порядок элементов: бетон, затем арматура.
 Public Sub Evaluate(ByVal section As CSectionModel, ByVal solver As CSectionSolver)
     mUtilization = 0#: mStrain = 0#: mElement = vbNullString
     mState = "NumericalFailure": mDescription = vbNullString
@@ -59,7 +59,7 @@ Public Sub Evaluate(ByVal section As CSectionModel, ByVal solver As CSectionSolv
         Next i
         Exit Sub
     End If
-    If cMinIndex <= cMaxIndex Then ' При равных отношениях действует прежний порядок элементов, а не приоритет сжатия или растяжения; бетон по-прежнему предшествует стали.
+    If cMinIndex <= cMaxIndex Then ' При равных отношениях действует порядок элементов, а не приоритет сжатия или растяжения; бетон предшествует стали.
         EvaluateConcrete section, cMinIndex, cMin
         EvaluateConcrete section, cMaxIndex, cMax
     Else

@@ -703,7 +703,7 @@ Private Sub TestOffsetNeighborMerge(ByVal kind As Long, ByVal rightFirst As Bool
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Противоположные грани не являются соседними: их пересекающиеся ряды по-прежнему отклоняются.
+' Противоположные грани не являются соседними: их пересекающиеся ряды отклоняются.
 Private Sub TestNonAdjacentRows()
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim definition As CSectionDefinition, executor As CRebarRuleExecutor, layout As CRebarLayout, i As Long, id As String, reason As String
@@ -811,7 +811,7 @@ Private Sub TestContactVariants(ByVal sideBySide As Boolean, ByVal everySecond A
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Объявляет оба ряда от Main с независимыми базовыми отступами и прежним контактом.
+' Объявляет оба ряда от Main с независимыми базовыми отступами и заданным контактом.
 Private Sub TestAddRows(ByVal facade As CSectionDefinitionBuilder, ByVal id As String, ByVal sign As Double, _
         ByVal a2 As Double, ByVal a3 As Double, ByVal everySecond As Boolean)
     Dim contact As CRebarContactBuilder, options As CRebarRuleOptions, binding As String

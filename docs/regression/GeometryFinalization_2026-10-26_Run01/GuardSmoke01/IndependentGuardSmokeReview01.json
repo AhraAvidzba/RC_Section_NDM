@@ -1,0 +1,360 @@
+﻿{
+    "Status":  "PASS_ISOLATED_GUARD_SMOKE_ONLY",
+    "ObservedUTC":  "2026-10-27T01:20:13.2278892+00:00",
+    "ReviewPowerShell":  "5.1.19041.6456",
+    "ReviewExecutionRequested":  "require_escalated",
+    "ActualAdministratorToken":  false,
+    "PrimaryWholeBytes":  78534,
+    "PrimaryLines":  1338,
+    "Passed":  1319,
+    "Failed":  0,
+    "Mode":  "No",
+    "Macro":  "modTestGeometryQuery.RunGeometryQueryTests",
+    "PrimaryGroups":  [
+                          {
+                              "Name":  "rectangle",
+                              "Count":  15
+                          },
+                          {
+                              "Name":  "regionEquality",
+                              "Count":  3
+                          },
+                          {
+                              "Name":  "circle",
+                              "Count":  15
+                          },
+                          {
+                              "Name":  "copy",
+                              "Count":  3
+                          },
+                          {
+                              "Name":  "prepared",
+                              "Count":  16
+                          },
+                          {
+                              "Name":  "hollow",
+                              "Count":  74
+                          },
+                          {
+                              "Name":  "hole",
+                              "Count":  22
+                          },
+                          {
+                              "Name":  "notch",
+                              "Count":  18
+                          },
+                          {
+                              "Name":  "circleHole",
+                              "Count":  5
+                          },
+                          {
+                              "Name":  "circleNotch",
+                              "Count":  16
+                          },
+                          {
+                              "Name":  "line",
+                              "Count":  6
+                          },
+                          {
+                              "Name":  "ray",
+                              "Count":  2
+                          },
+                          {
+                              "Name":  "segment",
+                              "Count":  2
+                          },
+                          {
+                              "Name":  "reverse",
+                              "Count":  1
+                          },
+                          {
+                              "Name":  "mesh",
+                              "Count":  55
+                          },
+                          {
+                              "Name":  "sp63",
+                              "Count":  429
+                          },
+                          {
+                              "Name":  "knownOuter",
+                              "Count":  33
+                          },
+                          {
+                              "Name":  "resultAnnotation",
+                              "Count":  1
+                          },
+                          {
+                              "Name":  "openingAnnotation",
+                              "Count":  1
+                          },
+                          {
+                              "Name":  "unknownOuter",
+                              "Count":  19
+                          },
+                          {
+                              "Name":  "removedContour",
+                              "Count":  1
+                          },
+                          {
+                              "Name":  "contourSources",
+                              "Count":  143
+                          },
+                          {
+                              "Name":  "openingMeshOuterTopology",
+                              "Count":  62
+                          },
+                          {
+                              "Name":  "rotated",
+                              "Count":  10
+                          },
+                          {
+                              "Name":  "arc",
+                              "Count":  2
+                          },
+                          {
+                              "Name":  "touching",
+                              "Count":  18
+                          },
+                          {
+                              "Name":  "wall",
+                              "Count":  251
+                          },
+                          {
+                              "Name":  "connected",
+                              "Count":  73
+                          },
+                          {
+                              "Name":  "postAudit03",
+                              "Count":  23
+                          }
+                      ],
+    "Memory":  {
+                   "CheckedUTC":  "2026-10-27T01:14:28.8917526+00:00",
+                   "Ready":  true,
+                   "FreePhysicalGiB":  16.177,
+                   "FreeCommitGiB":  21.523,
+                   "CommitLimitBytes":  46643122176,
+                   "CommittedBytes":  23532916736,
+                   "RequiredPhysicalGiB":  4,
+                   "RequiredCommitGiB":  8,
+                   "NewExcelStarted":  false
+               },
+    "OwnerBeforeOpen":  {
+                            "PID":  252,
+                            "StartTicksUTC":  "639286604700274651",
+                            "ProcessName":  "EXCEL",
+                            "VerifiedNewOwner":  true,
+                            "SourceSHA256":  "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+                            "BeforeWorkbookOpen":  true
+                        },
+    "RunnerCleanup":  {
+                          "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+                          "OwnerVerified":  true,
+                          "PID":  252,
+                          "StartTicksUTC":  "639286604700274651",
+                          "CloseRequested":  false,
+                          "CloseSucceeded":  false,
+                          "QuitRequested":  true,
+                          "QuitSucceeded":  true,
+                          "Errors":  [
+
+                                     ],
+                          "Failed":  false,
+                          "FinalExitNotAsserted":  true,
+                          "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+                          "ObservedUTC":  "2026-10-27T01:14:36.7125357+00:00"
+                      },
+    "CloseRequestNote":  "The normal suite closes workbook before finally and clears its reference; finally CloseRequested=False is expected. Quit is explicitly successful; final absence is checked after child exit.",
+    "PostChildClosure":  {
+                             "Stage":  "AFTER_CHILD_EXIT",
+                             "Passed":  true,
+                             "ChildHasExited":  true,
+                             "ChildExitCode":  0,
+                             "Closure":  {
+                                             "Passed":  true,
+                                             "Identity":  {
+                                                              "Valid":  true,
+                                                              "PID":  252,
+                                                              "Ticks":  639286604700274651,
+                                                              "Reason":  "Primary TEST_EXCEL_PROCESS"
+                                                          },
+                                             "FinalState":  {
+                                                                "State":  "Absent",
+                                                                "PID":  252,
+                                                                "StartTicksUTC":  "639286604700274651",
+                                                                "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                "ObservedUTC":  "2026-10-27T01:14:37.3679564+00:00"
+                                                            },
+                                             "Observations":  [
+                                                                  {
+                                                                      "State":  "Absent",
+                                                                      "PID":  252,
+                                                                      "StartTicksUTC":  "639286604700274651",
+                                                                      "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                      "ObservedUTC":  "2026-10-27T01:14:37.3679564+00:00"
+                                                                  }
+                                                              ],
+                                             "GraceMilliseconds":  3000,
+                                             "OrdinaryPathKilledAnything":  false
+                                         },
+                             "RunnerCleanupValid":  true,
+                             "RunnerCleanup":  {
+                                                   "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+                                                   "OwnerVerified":  true,
+                                                   "PID":  252,
+                                                   "StartTicksUTC":  "639286604700274651",
+                                                   "CloseRequested":  false,
+                                                   "CloseSucceeded":  false,
+                                                   "QuitRequested":  true,
+                                                   "QuitSucceeded":  true,
+                                                   "Errors":  [
+
+                                                              ],
+                                                   "Failed":  false,
+                                                   "FinalExitNotAsserted":  true,
+                                                   "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+                                                   "ObservedUTC":  "2026-10-27T01:14:36.7125357+00:00"
+                                               },
+                             "RunnerCleanupReadError":  null,
+                             "OrdinaryPathKilledAnything":  false
+                         },
+    "FreshIdentities":  [
+                            {
+                                "PID":  252,
+                                "ExpectedStartTicksUTC":  "639286604700274651",
+                                "ExpectedName":  "EXCEL",
+                                "State":  "Absent",
+                                "Reason":  "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+                                "ObservedUTC":  "2026-10-27T01:20:13.1417816+00:00"
+                            },
+                            {
+                                "PID":  8436,
+                                "ExpectedStartTicksUTC":  "639286592605420358",
+                                "ExpectedName":  "EXCEL",
+                                "State":  "Absent",
+                                "Reason":  "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+                                "ObservedUTC":  "2026-10-27T01:20:13.1517562+00:00"
+                            },
+                            {
+                                "PID":  31872,
+                                "ExpectedStartTicksUTC":  "639286593101443045",
+                                "ExpectedName":  "acad",
+                                "State":  "Absent",
+                                "Reason":  "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+                                "ObservedUTC":  "2026-10-27T01:20:13.1591084+00:00"
+                            }
+                        ],
+    "SixAppliedSources":  [
+                              {
+                                  "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-26_GeometryFinal_Run01\\Launch.ps1",
+                                  "CurrentSHA256":  "F7886B4115D8CD48CA5A80A8DC5E12150999D9E589EC244A48A7F32B8F07B7F0",
+                                  "CandidateSHA256":  "F7886B4115D8CD48CA5A80A8DC5E12150999D9E589EC244A48A7F32B8F07B7F0",
+                                  "BackupSHA256":  "9AC259340E93FFEC8015961D21B2715366B11FEB8AACA43BE721A33D420116CE",
+                                  "OriginalSHA256":  "9AC259340E93FFEC8015961D21B2715366B11FEB8AACA43BE721A33D420116CE",
+                                  "Exact":  true
+                              },
+                              {
+                                  "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-26_GeometryFinal_Run01\\Read-CurrentStatus.ps1",
+                                  "CurrentSHA256":  "880A538794391FB5F75B367A02EA8542F53848448522D851745E6E8321F14611",
+                                  "CandidateSHA256":  "880A538794391FB5F75B367A02EA8542F53848448522D851745E6E8321F14611",
+                                  "BackupSHA256":  "852D8A27F0D6E5C1F2FDF1E3DB7860072D51B74B3826DB78B48A47B6FFE6FB79",
+                                  "OriginalSHA256":  "852D8A27F0D6E5C1F2FDF1E3DB7860072D51B74B3826DB78B48A47B6FFE6FB79",
+                                  "Exact":  true
+                              },
+                              {
+                                  "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Describe-FocusedAcceptance.ps1",
+                                  "CurrentSHA256":  "92ABDC9410A7226316210475DFCB769205A48B36485B9F6BDC1316615B93A11D",
+                                  "CandidateSHA256":  "92ABDC9410A7226316210475DFCB769205A48B36485B9F6BDC1316615B93A11D",
+                                  "BackupSHA256":  "A1CF4BE197C48A1DBF514A49E2E010BF02A9CEFF982C99C35896C7E5BE27C2E4",
+                                  "OriginalSHA256":  "A1CF4BE197C48A1DBF514A49E2E010BF02A9CEFF982C99C35896C7E5BE27C2E4",
+                                  "Exact":  true
+                              },
+                              {
+                                  "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-FocusedAcceptance.ps1",
+                                  "CurrentSHA256":  "554FA36F994293EE5E4392FEBD39DA1876A816B21BBBA721254BE869FB5B9F5F",
+                                  "CandidateSHA256":  "554FA36F994293EE5E4392FEBD39DA1876A816B21BBBA721254BE869FB5B9F5F",
+                                  "BackupSHA256":  "172A9BC59076F7F15AFC193A6E830A86887EB092DE1BEEF94ED458C5081748D5",
+                                  "OriginalSHA256":  "172A9BC59076F7F15AFC193A6E830A86887EB092DE1BEEF94ED458C5081748D5",
+                                  "Exact":  true
+                              },
+                              {
+                                  "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-Audit02ModeTests.ps1",
+                                  "CurrentSHA256":  "EDFEE7CD7610EB6D70CF227792CEC0EE94CDEABE4B3125A649D384370F2E0363",
+                                  "CandidateSHA256":  "EDFEE7CD7610EB6D70CF227792CEC0EE94CDEABE4B3125A649D384370F2E0363",
+                                  "BackupSHA256":  "03C92CF14A8CE1F94110F0C670815BA07DCF74705E4CF6E74643B853B3D04CB7",
+                                  "OriginalSHA256":  "03C92CF14A8CE1F94110F0C670815BA07DCF74705E4CF6E74643B853B3D04CB7",
+                                  "Exact":  true
+                              },
+                              {
+                                  "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-Audit03Watchdog.ps1",
+                                  "CurrentSHA256":  "526804E8B3923E76F5DB7CDBA33C639F6F4280C79086033314A81C453DDF5F00",
+                                  "CandidateSHA256":  "526804E8B3923E76F5DB7CDBA33C639F6F4280C79086033314A81C453DDF5F00",
+                                  "BackupSHA256":  "23CAD5077A6E136559BAB7E7D0AA2945A90A09C6993D911A302489E691915913",
+                                  "OriginalSHA256":  "23CAD5077A6E136559BAB7E7D0AA2945A90A09C6993D911A302489E691915913",
+                                  "Exact":  true
+                              }
+                          ],
+    "F07SHA256":  "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+    "InputsRead":  [
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\GuardSmoke01\\GeometryQuery_No.txt",
+                           "Bytes":  78534,
+                           "SHA256":  "B665E4CE7CBB7B18E75CB7EB184D325A269F300DB33D5A0B93E605C20787B6FC",
+                           "ReadFully":  true
+                       },
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\GuardSmoke01\\GeometryQuery_No.txt.memory.json",
+                           "Bytes":  320,
+                           "SHA256":  "651BABCB0788D33D003207605E396EA9FF534F01190887A35A7DDC64248DB8AC",
+                           "ReadFully":  true
+                       },
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\GuardSmoke01\\GeometryQuery_No.txt.Ownership.json",
+                           "Bytes":  257,
+                           "SHA256":  "30CE15305571FF9012CA20EC1AF1DDAB51B82FC8D7CA021C80FD58DF4CDDB918",
+                           "ReadFully":  true
+                       },
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\GuardSmoke01\\GeometryQuery_No.txt.RunnerCleanup.json",
+                           "Bytes":  509,
+                           "SHA256":  "5C32B074DE1ED9BDDAD2D8E5C49ECBEA557A3CB945B19A7E066F45B1ADAB4D0C",
+                           "ReadFully":  true
+                       },
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\GuardSmoke01\\GeometryQuery_No.txt.ProcessClosure.json",
+                           "Bytes":  2625,
+                           "SHA256":  "12A7CC2288BC330FED47E017DB5FC15DD1D3FA520778D950FF2E11EEB1156804",
+                           "ReadFully":  true
+                       },
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\GuardSmoke01\\GeometryQuery_No.txt.stdout.log",
+                           "Bytes":  509,
+                           "SHA256":  "F700E719DEE1A2AEAEF4DCCD4B1E95B6643C91EEDD1AC2B4AEB711E3BA3D347E",
+                           "ReadFully":  true
+                       },
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\GuardSmoke01\\GeometryQuery_No.txt.stderr.log",
+                           "Bytes":  0,
+                           "SHA256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                           "ReadFully":  true
+                       },
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\Applied01/ApplyReceipt.json",
+                           "Bytes":  8212,
+                           "SHA256":  "9660482B9FECF891D0F93D6D0BD6B5425A06037BE753B8A2233E13B11B361BF1",
+                           "ReadFully":  true
+                       },
+                       {
+                           "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\BundleManifest02.json",
+                           "Bytes":  6840,
+                           "SHA256":  "CF9A97B97692DE15BF6B2012C0A92873FDAA8EED1AA979E06C4C3E1797FA81AE",
+                           "ReadFully":  true
+                       }
+                   ],
+    "StdoutEncoding":  "OEM codepage 866, decoded without replacing the correct Cyrillic source path",
+    "StdoutWholeRead":  true,
+    "StderrBytes":  0,
+    "AppsStartedOrTerminatedByReview":  false,
+    "FullAcceptancePASS":  false,
+    "Scope":  "One short No-mode GeometryQuery smoke verifies memory/ownership/cleanup/post-child absence and exact six PS apply. It does not replace 178+Focused full acceptance."
+}

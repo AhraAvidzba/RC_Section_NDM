@@ -99,7 +99,7 @@ Public Sub ApplyTableStatusFills(ByVal target As Object, ByRef rowNumbers() As L
 End Sub
 
 ' Объединяет соседние строки одного цвета, не затрагивая пропуски и незаполненные LC.
-' Ограничение длины адреса сохраняет прежнюю совместимость Excel при больших пакетах.
+' Ограничение длины адреса учитывает предел Excel при больших пакетах.
 Private Sub AppendStatusFillSpan(ByVal sheet As Object, ByVal groups As Object, ByVal color As String, _
         ByVal columnText As String, ByVal first As Long, ByVal last As Long)
     Dim address As String: address = columnText & CStr(first)

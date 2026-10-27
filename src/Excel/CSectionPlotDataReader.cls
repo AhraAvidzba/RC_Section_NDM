@@ -47,7 +47,7 @@ Private mX() As Double ' Координата X центра элемента, �
 Private mY() As Double ' Координата Y центра элемента, переведённая из Results во внутренние мм.
 Private mArea() As Double ' Площадь элемента, переведённая из Results во внутренние мм2.
 Private mDiameter() As Double ' Диаметр арматуры в мм; для бетона обычно 0.
-Private mShapeType() As String ' Статус интерпретации оболочки: Rectangle, Equivalent rectangle, Equivalent square.
+Private mShapeType() As String ' Статус сохранённой геометрии: Contour либо компактная прямоугольная интерпретация.
 Private mWidth() As Double ' Ширина бетонного элемента в мм, если она сохранена в Results.
 Private mHeight() As Double ' Высота бетонного элемента в мм, если она сохранена в Results.
 Private mRotation() As Double ' Угол прямоугольного бетонного элемента, рад; для эквивалентного квадрата может быть принят средний угол сетки.
@@ -92,8 +92,9 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Читает данные схемы только из сохранённых результатов. Из Config берёт
-' выбор сочетания и оформление профиля. При ошибке удаляет частично
-' прочитанные данные и возвращает исходную причину.
+' выбор сочетания и оформление профиля. Явный файловый GeometryPreview
+' читает только как геометрию, без LC и расчётного профиля. При ошибке
+' освобождает контекст и возвращает исходную причину.
 Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
@@ -101,6 +102,15 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     On Error GoTo Failed
     Dim snapshotReadEntered As Boolean
     BeginCalculationSnapshotRead workbook: snapshotReadEntered = True
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    If Not snapshot Is Nothing Then
+        If snapshot.IsGeometryPreview Then
+            LoadGeometryPreviewFromWorkbook workbook, settings
+            EndCalculationSnapshotRead
+            snapshotReadEntered = False
+            Exit Sub
+        End If
+    End If
     ResetReaderState
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
@@ -129,6 +139,8 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
     On Error GoTo Failed
+    Dim snapshotReadEntered As Boolean
+    BeginCalculationSnapshotRead workbook: snapshotReadEntered = True
     ResetReaderState
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mGeometryOnly = True
@@ -142,11 +154,14 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     ReadGeometryPreview workbook
     ReadAnnotations workbook
     Set mReadTables = Nothing
+    EndCalculationSnapshotRead
+    snapshotReadEntered = False
     Exit Sub
 Failed:
     Dim errorNumber As Long, description As String, errorSource As String
     errorNumber = Err.Number: description = Err.Description: errorSource = Err.Source
     ResetReaderState
+    If snapshotReadEntered Then EndCalculationSnapshotRead
     Err.Raise errorNumber, errorSource, description
 End Sub
 
@@ -874,7 +889,7 @@ Private Function ReadAnnotationText(ByVal value As Variant, ByVal anchor As Obje
 End Function
 
 ' Возвращает фактический адрес ячейки через текущее именованное начало таблицы.
-' Перемещение блока Results не оставляет в ошибке прежний адрес.
+' Адрес в диагностике определяется фактическим расположением блока Results.
 Private Function AnnotationInputMessage(ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal field As String) As String
     AnnotationInputMessage = "В сохраненной аннотации Results поле " & field & " (" & _
         anchor.Parent.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False) & _
@@ -1166,7 +1181,7 @@ End Function
 ' Переводит кривизну из единицы Results во внутренние 1/мм, чтобы нейтральная
 ' линия строилась в той же системе, что и координаты схемы.
 Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
-    OutputCurvatureToInternalByUnit = value / mUnits.InternalCurvatureToOutput(1#, unitText) ' Деление сохраняет прежний порядок операций для 1/m, без нового округления.
+    OutputCurvatureToInternalByUnit = value / mUnits.InternalCurvatureToOutput(1#, unitText) ' Коэффициент единиц применяется делением, без округления промежуточных величин.
 End Function
 
 ' Возвращает число прочитанных элементов. Для схемы НДС учитывает только
@@ -1184,7 +1199,7 @@ Public Property Get Y(ByVal index As Long) As Double: Y = mY(index): End Propert
 Public Property Get Area(ByVal index As Long) As Double: Area = mArea(index): End Property
 ' Диаметр арматуры в мм; для бетона обычно 0.
 Public Property Get Diameter(ByVal index As Long) As Double: Diameter = mDiameter(index): End Property
-' Статус интерпретации оболочки: Rectangle, Equivalent rectangle, Equivalent square.
+' Статус сохранённой геометрии: Contour либо компактная прямоугольная интерпретация.
 Public Property Get ShapeType(ByVal index As Long) As String: ShapeType = mShapeType(index): End Property
 ' Ширина бетонного элемента в мм, если она сохранена в Results.
 Public Property Get Width(ByVal index As Long) As Double: Width = mWidth(index): End Property
@@ -1195,11 +1210,12 @@ Public Property Get Height(ByVal index As Long) As Double: Height = mHeight(inde
 Public Property Get Rotation(ByVal index As Long) As Double: Rotation = mRotation(index): End Property
 
 ' Возвращает одну универсальную бетонную область во внутренних мм.
-' Сохраненный Contour не заменяется прямоугольником; старые снимки получают
-' прежнюю визуальную оболочку с переданной общей ориентацией эквивалентных квадратов.
+' Contour возвращается независимой копией обязательной сохранённой границы.
+' Компактная запись создаёт отдельный прямоугольник; EquivalentSquare
+' использует переданную общую ориентацию сетки.
 Public Function ConcreteGeometry(ByVal index As Long, Optional ByVal fallbackRotation As Double = 0#) As CConcreteRegion
     If Not mElementGeometry(index) Is Nothing Then
-        Set ConcreteGeometry = mElementGeometry(index)
+        Set ConcreteGeometry = mElementGeometry(index).Clone
         Exit Function
     End If
     Dim width As Double, height As Double, rotation As Double, status As String
@@ -1318,7 +1334,7 @@ Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCoun
 
 ' Отсчёт отступа подписи от сохранённого бетонного контура. На прямой грани
 ' это добавляет as; на дуге определяется действительное расстояние по нормали.
-' Старые Results также читаются без нового расчёта или обращения к геометрии Config.
+' Сохранённые Results читаются без нового расчёта или обращения к геометрии Config.
 Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double
     If mAnnotationType(index) = "REBAR_GLOBAL_ANNOTATION" Then Exit Function ' Общая подпись уже привязана к крайней точке бетона. Пересечение по нормали в середине повёрнутого сечения опустило бы её на контур.
     If mLabelContours Is Nothing Then Exit Function

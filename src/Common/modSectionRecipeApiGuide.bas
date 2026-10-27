@@ -129,7 +129,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 ' отступами всех его участков. Координаты сохраняются; несовпадающие концы дуги и прямой соединяются
 ' отрезком, стык может быть негладким. Если скругление при отступе исчезло, дуга удаляется, а соседние
 ' прямые продолжаются до пересечения. Это само по себе не ошибка. Невозможный или неоднозначный контур
-' даёт адресную ошибку. При a2 = a3 = 0 действует прежний алгоритм.
+' даёт адресную ошибку. При a2 = a3 = 0 строятся контактные ряды без индивидуальных проверочных
+' контуров.
 ' Например: facade.RebarContour "Top.Main", "OUTER", "Boundary", 50#, "Top.Row2", "Top.Row3". Здесь 50
 ' мм — as основного ряда; Boundary — исходная бетонная фигура. Если направление Main известно, передайте
 ' normalSign:=1# или -1#, как в CRebarContactBuilder; это устраняет неоднозначность, когда Main
@@ -177,13 +178,13 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     В конце AddVertex можно задать outgoingEdgeID — имя прямого участка к следующей вершине между
 '     касаниями, и cornerID — имя скругления этой вершины. Например: polygon.AddVertex "TR", 400#, 600#,
 '     40#, outgoingEdgeID:="Right.UpperSlope", cornerID:="Round.TopRight". VertexID при этом остаётся
-'     "TR". Пустые аргументы дают прежние Edge.TR и Corner.TR. OutgoingEdgeID/CornerID возвращают
-'     эффективные имена. Все имена сегментов одного многоугольника уникальны, включая исчезнувшие
-'     участки; при R=0 фиктивная дуга не создаётся.
+'     "TR". Пустые аргументы дают Edge.TR и Corner.TR. OutgoingEdgeID/CornerID возвращают эффективные
+'     имена. Все имена сегментов одного многоугольника уникальны, включая исчезнувшие участки; при R=0
+'     фиктивная дуга не создаётся.
 '     PathID — имя всей линии; SegmentID — локальное имя её отрезка или дуги. В разных линиях
 '     допускаются одинаковые локальные имена. LoopID задаётся в Outer/Opening и обозначает границу
 '     бетона или отверстия. ContourID — имя сегмента при сохранении контура: PreserveSegmentIDs берёт
-'     реальные имена выбранной линии, SequentialByKind использует прежние префиксы _LINE_/_ARC_ с единым
+'     реальные имена выбранной линии, SequentialByKind использует префиксы _LINE_/_ARC_ с единым
 '     счётчиком и порядком. Явный массив contourIDs меняет только публикацию. Ни роль границы, ни
 '     публикация не переименовывают исходную линию.
 '     Chain получает имя исходной линии, локальные имена начального и конечного сегментов, параметры от
@@ -199,7 +200,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     Низ идёт слева направо, правая сторона снизу вверх, верх справа налево, левая сверху вниз. После
 '     Transform имена относятся к исходным сторонам и не назначаются заново по глобальным X/Y. Пример
 '     выбирает часть контура от середины верха до середины низа по прямому обходу через левую сторону.
-'     AdjacentRectangles сохраняет прежние имена: у сложной границы может быть несколько верхних
+'     AdjacentRectangles сохраняет имена исходных сторон: у сложной границы может быть несколько верхних
 '     участков.
 '       Dim facade As CSectionDefinitionBuilder, outline As CGeometryPath, side As CGeometryPath
 '       Set facade = New CSectionDefinitionBuilder: facade.Initialize "NamedRectangle"
@@ -227,8 +228,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       Set rightPath = facade.Chain("Right", path.ID, rightID, 1#, rightID, 0#, False)
 '
 '     Aligned измеряет истинное расстояние, его линия параллельна измеряемому участку. Горизонтальный и
-'     вертикальный размеры измеряют проекции; PathLength суммирует прямые и дуги. Поворот текста
-'     остаётся прежним, 0/90 градусов.
+'     вертикальный размеры измеряют проекции; PathLength суммирует прямые и дуги. Текст размера
+'     параллелен размерной линии и разворачивается для удобного чтения.
 '
 '   ПОЛНЫЙ ПРИМЕР: СКРУГЛЕНИЯ, АРМАТУРА И НАКЛОННЫЙ РАЗМЕР
 '     Это самостоятельная функция; b/h/w и все объекты объявлены внутри. Edge.TR — реальная ненулевая
@@ -254,7 +255,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "H.Right" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, добавленный первым.
 '           options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
 '           options.IncomingTangentAtJoint = True
 '           facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
@@ -290,12 +291,12 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, добавленный первым.
 '           facade.RebarByCount "Main", "MainAxis", 5, 20#, options
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, добавленный первым.
 '           options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
 '           facade.RebarDependent "Contact", "Main", 16#, options
 '           Set options = New CRebarRuleOptions
@@ -730,8 +731,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     CSectionInputReader.OptionalDiameter
 '
 '       Находит поле по ключам блока, строки и столбца. Пустая ячейка или 0 отключают ряд; положительный
-'       диаметр переводится в мм. Текст, включая одиночный дефис и TODO, и отрицательный диаметр
-'       вызывают адресную ошибку ввода.
+'       диаметр переводится в мм. Текст, включая одиночный дефис, и отрицательный диаметр вызывают
+'       адресную ошибку ввода.
 '
 '       Объявление:
 '         Public Function OptionalDiameter(ByVal blockKey As String, ByVal rowKey As String, Optional
@@ -1071,7 +1072,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     CSectionInputTable.OptionalDiameter
 '
 '       Пустая ячейка или 0 отключают ряд; положительный диаметр переводится в мм. Текст, включая
-'       одиночный дефис и TODO, и отрицательный диаметр вызывают адресную ошибку ввода.
+'       одиночный дефис, и отрицательный диаметр вызывают адресную ошибку ввода.
 '
 '       Объявление:
 '         Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal units As
@@ -1383,7 +1384,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     modSectionRecipeTypes.EContourNamingPolicy
 '
 '       PreserveSegmentIDs=0: исходные/явные ID; SequentialByKind=1: технический префикс_LINE_i/ARC_i с
-'       прежним общим номером сегмента.
+'       общим номером сегмента.
 '
 '       Объявление:
 '         Public Enum EContourNamingPolicy
@@ -1480,8 +1481,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       Создаёт замкнутый прямоугольник от (x,y) с положительными width/height. Необязательные имена
 '       относятся к исходным сторонам: низ слева направо, правая снизу вверх, верх справа налево, левая
 '       сверху вниз. Имена сопоставляются фактическим сторонам без перестановки сегментов. Пустые
-'       аргументы сохраняют прежние pathID.i; после поворота или отражения имена сохраняют исходный
-'       смысл.
+'       аргументы задают pathID.i; после поворота или отражения имена сохраняют исходный смысл.
 '
 '       Объявление:
 '         Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double,
@@ -1506,20 +1506,20 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Координата/размер height, мм; размеры width/height положительны.
 '
 '         Optional ByVal bottomEdgeID As String = ""
-'           Имя нижней стороны исходного прямоугольника, направленной слева направо; пустое сохраняет
-'           прежнее pathID.i.
+'           Имя нижней стороны исходного прямоугольника, направленной слева направо; пустое задаёт
+'           pathID.i.
 '
 '         Optional ByVal rightEdgeID As String = ""
-'           Имя правой стороны исходного прямоугольника, направленной снизу вверх; пустое сохраняет
-'           прежнее pathID.i.
+'           Имя правой стороны исходного прямоугольника, направленной снизу вверх; пустое задаёт
+'           pathID.i.
 '
 '         Optional ByVal topEdgeID As String = ""
-'           Имя верхней стороны исходного прямоугольника, направленной справа налево; пустое сохраняет
-'           прежнее pathID.i.
+'           Имя верхней стороны исходного прямоугольника, направленной справа налево; пустое задаёт
+'           pathID.i.
 '
 '         Optional ByVal leftEdgeID As String = ""
-'           Имя левой стороны исходного прямоугольника, направленной сверху вниз; пустое сохраняет
-'           прежнее pathID.i.
+'           Имя левой стороны исходного прямоугольника, направленной сверху вниз; пустое задаёт
+'           pathID.i.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -2082,7 +2082,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       Явно связывает Main, R2 и R3 с бетонной границей, исходной фигурой и заданным as. Нужна при
 '       ненулевом базовом отступе R2/R3. Общий исполнитель строит отдельные замкнутые проверочные
 '       контуры рядов; координаты стержней сохраняются. Разные смещения дуги и прямой соединяются
-'       отрезком без требования касания. Нулевые базовые отступы используют прежнее поведение.
+'       отрезком без требования касания. Нулевые базовые отступы задают контактные ряды без
+'       индивидуального проверочного контура.
 '
 '       Объявление:
 '         Public Sub RebarContour(ByVal mainRuleID As String, ByVal loopID As String, ByVal sourcePathID
@@ -2370,7 +2371,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     CRebarRuleOptions.OverlapPolicy
 '
 '       ReportOverlap или RejectOverlap. Контакт допустим; нормативный минимальный зазор не вводится. В
-'       новом режиме индивидуальных отступов пересекающиеся дополнительные стержни соседних граней
+'       режиме индивидуальных отступов пересекающиеся дополнительные стержни соседних граней
 '       объединяются с предупреждением независимо от этого поля; сохраняются координаты, диаметр и
 '       материал первого добавленного стержня.
 '
@@ -2656,7 +2657,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     modSectionRecipeTypes.ERebarOverlapPolicy
 '
 '       ReportOverlap или RejectOverlap. Контакт допустим; нормативный минимальный зазор не вводится. В
-'       новом режиме индивидуальных отступов пересекающиеся дополнительные стержни соседних граней
+'       режиме индивидуальных отступов пересекающиеся дополнительные стержни соседних граней
 '       объединяются с предупреждением независимо от этого поля; сохраняются координаты, диаметр и
 '       материал первого добавленного стержня.
 '

@@ -530,7 +530,7 @@ Private Sub TestCheckInvalidRows(ByRef stats As TLoadTableStats, ByVal source As
         For caseIndex = 1 To 3
             If caseIndex = 3 And (column < 2 Or column > 4) Then Exit For
             If caseIndex = 2 And column = 7 Then Exit For
-            If caseIndex = 2 And column = 1 Then Exit For ' Пустой ID теперь отключает строку; этот контракт проверяет RunLoadActivationTests.
+            If caseIndex = 2 And column = 1 Then Exit For ' Пустой ID отключает строку; этот контракт проверяет RunLoadActivationTests.
             data = baseline
             For slot = 1 To ROW_COUNT
                 Select Case caseIndex

@@ -160,7 +160,7 @@ Failed:
 End Function
 
 ' Очищает содержимое существующего ChartObject без удаления окна схемы.
-' Прежний рисунок не должен выглядеть как результат нового запуска,
+' Сохранённый рисунок не должен выглядеть как результат нового запуска,
 ' если пригодные данные отсутствуют или обновление схемы ещё не выполнено.
 Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText As String)
     On Error GoTo Done
@@ -192,7 +192,7 @@ End Sub
 
 
 ' Формирует сечение выбранным способом и публикует полный снимок в Results.
-' Не читает сочетания и не выполняет расчёт; прежний снимок сохраняется,
+' Не читает сочетания и не выполняет расчёт; текущий снимок сохраняется,
 ' если получение новой геометрии или подготовка её характеристик завершились ошибкой.
 Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal startedAt As Double = -1#, _
         Optional ByRef informationEnabled As Boolean = False, Optional ByRef requiresAttention As Boolean = False) As String
@@ -227,8 +227,18 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     ValidateSnapshotOutputLayout issues, workbook, workbook.Worksheets.Item("Results"), writer, _
         section.ConcreteCount + section.RebarCount, 0, 0, section.AnnotationCount, section.Contours.Count, 2, writer.EstimatedElementGeometryRows(section)
     If issues.Count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", ResultsOutputLayoutMessage(0, issues)
-    summary.ClearSummary workbook, fullFormatting
-    writer.WriteGeometryPreview workbook, section, snapshot, units, fullFormatting
+    Dim previewStore As CCalculationSnapshotStore: Set previewStore = New CCalculationSnapshotStore
+    If previewStore.StorageMode(workbook) = "File" Then
+        Dim geometryPreview As CCalculationSnapshot
+        Set geometryPreview = writer.PrepareGeometryPreviewSnapshot(workbook, section, snapshot, units)
+        previewStore.SaveFile workbook, geometryPreview ' Capture, проверка A/c/I и сохранение завершаются до очистки прежних Results.
+        writer.RestoreSnapshotBase workbook, geometryPreview, fullFormatting, False
+        summary.ClearSummary workbook, fullFormatting
+        previewStore.LinkFile workbook
+    Else
+        summary.ClearSummary workbook, fullFormatting
+        writer.WriteGeometryPreview workbook, section, snapshot, units, fullFormatting
+    End If
     ClearSectionPlotForNoData workbook, "Сечение сформировано. Схема не обновлена."
     If importer Is Nothing Then
         FormSectionForWorkbook = "Сечение сформировано и сохранено в Results." & vbCrLf & vbCrLf & _
@@ -394,12 +404,11 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Точка приложения нагрузки Y", ReportLengthText(batch.LoadReferenceY, units)
 
     report.AddSection "Проверка вывода Results"
-    OfferExternalCalculationSnapshot workbook, CDbl(section.ConcreteCount + section.RebarCount) * EstimatedNamedStateCountForOutput(batch, profiles), showMessages
+    ValidateResultsOutputLayout workbook, section, batch, profiles, showMessages
     Dim snapshotStore As CCalculationSnapshotStore: Set snapshotStore = New CCalculationSnapshotStore
     If snapshotStore.StorageMode(workbook) = "File" Then
         Dim validatedSnapshotPath As String: validatedSnapshotPath = snapshotStore.SnapshotPath(workbook)
     End If
-    ValidateResultsOutputLayout workbook, section, batch, profiles
     report.AddStep "Проверена раскладка Results для " & CStr(batch.Count) & " сочетаний."
 
     report.AddSection "Подготовка книги"
@@ -476,7 +485,7 @@ End Function
 ' ширину таблиц, блоки сохранённой геометрии и состояний, а также две пустые
 ' строки между крупными блоками. При нехватке места расчёт не запускается.
 Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal batch As CBatchSectionCalculator, ByVal profiles As CCalculationProfileCatalog)
+        ByVal batch As CBatchSectionCalculator, ByVal profiles As CCalculationProfileCatalog, ByVal interactive As Boolean)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4160, "ValidateResultsOutputLayout", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4161, "ValidateResultsOutputLayout", "Модель сечения не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 4162, "ValidateResultsOutputLayout", "Пакетный расчетчик не передан."
@@ -593,8 +602,27 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Dim elementCount As Long
     estimatedStateCount = EstimatedNamedStateCountForOutput(batch, profiles)
     elementCount = section.ConcreteCount + section.RebarCount
+    Dim elementGeometryRows As Double: elementGeometryRows = ndmWriter.EstimatedElementGeometryRows(section) ' Сегменты обходятся один раз для предупреждения и проверки раскладки.
+    Dim mandatoryRows As Variant
+    If WorkbookNameHasRange(workbook, "rngNDMSectionGeometry") And WorkbookNameHasRange(workbook, "rngNDMSectionContours") And _
+            WorkbookNameHasRange(workbook, "rngNDMSectionProperties") And WorkbookNameHasRange(workbook, "rngNDMMaterialDiagrams") And _
+            WorkbookNameHasRange(workbook, "rngNDMSectionAnnotations") And WorkbookNameHasRange(workbook, "rngNDMElementGeometry") Then
+        mandatoryRows = Array( _
+            Array("rngBatchSummary", CDbl(summaryRows), summaryAnchor.Row), _
+            Array("rngStrengthSummaryAnchor", CDbl(strengthRows), strengthTopRow), _
+            Array("rngCrackSummaryAnchor", CDbl(crackRows), crackTopRow), _
+            Array("rngStabilitySummaryAnchor", CDbl(stabilityRows), stabilityTopRow), _
+            Array("rngNDMSectionGeometry", 1# + elementCount, workbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row), _
+            Array("rngNDMSectionContours", 1# + section.Contours.Count, workbook.Names.Item("rngNDMSectionContours").RefersToRange.Row), _
+            Array("rngNDMSectionProperties", CDbl(ndmWriter.EstimatedSectionPropertyRows(0, 0)), workbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row), _
+            Array("rngNDMMaterialDiagrams", 1# + MaxLong(1, estimatedStateCount) * 14#, workbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row), _
+            Array("rngNDMSectionAnnotations", 1# + MaxLong(2, section.AnnotationCount), workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row), _
+            Array("rngNDMElementGeometry", 1#, workbook.Names.Item("rngNDMElementGeometry").RefersToRange.Row))
+        OfferExternalCalculationSnapshot workbook, CDbl(elementCount) * estimatedStateCount, interactive, mandatoryRows, elementGeometryRows
+    End If ' Отсутствующий якорь ниже диагностирует общий проверяющий код, без чтения несуществующего Range ради предупреждения.
     ValidateSnapshotOutputLayout issues, workbook, ws, ndmWriter, elementCount, _
-        estimatedStateCount, batch.Count, section.AnnotationCount, section.Contours.Count, SNAPSHOT_GAP_COLUMNS, ndmWriter.EstimatedElementGeometryRows(section)
+        estimatedStateCount, batch.Count, section.AnnotationCount, section.Contours.Count, SNAPSHOT_GAP_COLUMNS, elementGeometryRows, _
+        CalculationSnapshotOutputPolicy("File", 0#, mandatoryRows, ws.Rows.Count) <> "RowLimit"
 
     If issues.Count > 0 Then
         Err.Raise vbObjectError + 4163, "ValidateResultsOutputLayout", _
@@ -659,7 +687,8 @@ End Function
 Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workbook As Object, _
         ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
-        ByVal annotationCount As Long, ByVal contourCount As Long, ByVal requiredGapColumns As Long, ByVal elementGeometryRows As Double)
+        ByVal annotationCount As Long, ByVal contourCount As Long, ByVal requiredGapColumns As Long, ByVal elementGeometryRows As Double, _
+        Optional ByVal mandatoryOutputRowsFit As Boolean = True)
     Dim names(1 To 7) As String
     Dim rows(1 To 7) As Double
     Dim cols(1 To 7) As Long
@@ -673,17 +702,19 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
 
     rows(1) = ndmWriter.EstimatedElementResultRows(elementCount, estimatedStateCount)
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    Dim fileMode As Boolean: fileMode = False
-    If combinationCount > 0 Then fileMode = store.StorageMode(workbook) = "File"
-    If fileMode Then rows(1) = 1 ' Таблица состояний на лист не выводится; остальные технические таблицы остаются обязательными.
+    Dim fileMode As Boolean: fileMode = store.StorageMode(workbook) = "File"
+    If fileMode Then rows(1) = 1 ' Полные состояния и собственные границы сохраняются только в файле; общие таблицы остаются на листе.
     rows(2) = 1 + elementCount
     rows(3) = 1 + contourCount
     rows(4) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
+    If fileMode Then rows(4) = ndmWriter.EstimatedSectionPropertyRows(0, 0) ' LC-свойства находятся в файле; общие свойства сечения остаются на Results.
     rows(5) = 1 + MaxLong(1, estimatedStateCount) * 14
     rows(6) = 1 + MaxLong(2, annotationCount)
     rows(7) = elementGeometryRows
+    If fileMode Then rows(7) = 1
 
-    Dim index As Long
+    Dim index As Long, stateRowsOverflow As Boolean, mandatoryRowsFit As Boolean
+    mandatoryRowsFit = True
     Dim anchors(1 To 7) As Object
     For index = 1 To 7
         cols(index) = ndmWriter.OutputColumnCount(names(index))
@@ -697,8 +728,8 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
             AddLayoutIssue issues, names(index) & " должен находиться на том же листе Results, что и остальные блоки вывода."
         End If
         CheckFootprintWithinSheet issues, ws, names(index), anchor.Row, anchor.Column, rows(index), cols(index)
-        If index = 1 And Not fileMode Then
-            If Not ResultRowsFitSheet(anchor.Row, rows(index), ws.Rows.Count) Then AddLayoutIssue issues, ExternalSnapshotStorageAdvice(workbook)
+        If Not ResultRowsFitSheet(anchor.Row, rows(index), ws.Rows.Count) Then
+            If index = 1 Or index = 7 Then stateRowsOverflow = True Else mandatoryRowsFit = False
         End If
 
         Set anchors(index) = anchor
@@ -713,6 +744,7 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
                 "Между " & names(other) & " и " & names(index) & " требуется не менее " & CStr(requiredGapColumns) & " пустых столбцов."
         Next other
     Next index
+    If stateRowsOverflow And Not fileMode And mandatoryRowsFit And mandatoryOutputRowsFit Then AddLayoutIssue issues, ExternalSnapshotStorageAdvice(workbook)
     Exit Sub
 
 MissingSnapshotAnchor:

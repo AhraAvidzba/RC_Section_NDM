@@ -2097,7 +2097,7 @@ Private Sub TestNearUniformCrackTranslations(ByRef stats As TCrackTestStats)
                     width.PsiMode = "AlwaysCalc": width.AllowableCrackWidth = 0.001
                     width.Calculate current, section, provider, spec, formation, load
                     If Abs(epsilonCenter) < 0.000001 Then
-                        If CDbl(shift) = 0# Then ' Начало координат в центре воспроизводит прежний критерий; другие WCS обязаны дать тот же результат.
+                        If CDbl(shift) = 0# Then ' Начало координат в центре даёт контрольный критерий; другие WCS обязаны дать тот же результат.
                             baselineStatus(standardIndex) = width.CrackWidthInternalStatus
                             baselineCode(standardIndex) = width.CrackWidthResultCode
                             baselineCalculated(standardIndex) = width.ResultMeta.Calculated

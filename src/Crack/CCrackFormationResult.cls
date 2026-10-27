@@ -80,7 +80,7 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
 End Sub
 
 ' Сохраняет причину, по которой поиск не запускался: отключённая проверка,
-' ошибка ввода или отсутствие обязательных данных. Прежние численные данные
+' ошибка ввода или отсутствие обязательных данных. Сохранённые численные данные
 ' удаляются; вымышленные пробные нагрузки и НДС не создаются.
 Friend Sub InitializeUncalculated(ByVal meta As CResultMeta)
     AssertWritable
@@ -92,7 +92,7 @@ Friend Sub InitializeUncalculated(ByVal meta As CResultMeta)
 End Sub
 
 ' Удаляет все данные предыдущего заполнения; неуспешный повтор не оставляет
-' старую точку, состояния или диагностический журнал доступными потребителям.
+' сохранённую точку, состояния или диагностический журнал доступными потребителям.
 Private Sub ResetResult()
     mMeta.Clear
     mCrackFormed = False
@@ -245,7 +245,7 @@ Friend Sub Freeze()
 End Sub
 
 ' Запрещает изменение результата после передачи потребителям.
-' Для повторного расчёта создаётся новый объект, а прежний результат сохраняется.
+' Для повторного расчёта создаётся отдельный объект; сохранённый результат не изменяется.
 Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCrackFormationResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."

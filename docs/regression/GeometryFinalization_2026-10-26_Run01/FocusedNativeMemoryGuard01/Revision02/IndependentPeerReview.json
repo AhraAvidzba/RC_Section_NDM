@@ -1,0 +1,40 @@
+{
+  "Status": "PASS_BOUNDED_READ_ONLY_PEER_REVIEW_NATIVE_PENDING",
+  "ObservedUTC": "2026-10-27T01:31:39.413691+00:00",
+  "Reviewer": "geometry_persistence",
+  "ManifestSHA256": "25D12CFC37B7132B46F2B4A25FC8FB3EA6032A53A08FBD7F1E7619767E655D3A",
+  "Files": [
+    {
+      "Name": "Run-FocusedAcceptance.ps1",
+      "SourceSHA256": "554FA36F994293EE5E4392FEBD39DA1876A816B21BBBA721254BE869FB5B9F5F",
+      "CandidateSHA256": "1FE70882E03EDDEA764AEDC1538E30C8B157FA86E363C105C7485747F17775FA",
+      "SourceStillOriginal": true
+    },
+    {
+      "Name": "Run-FocusedNativeAcceptance.ps1",
+      "SourceSHA256": "DFD75734E5E36615A0753C9C4EB3259FB2E9F1A68078662F586529A46C9913D4",
+      "CandidateSHA256": "C5504713F4EFF0FF7F0F526A9A6CFA75F867BFCBA23AA2A3BCF4689471DA13D4",
+      "SourceStillOriginal": true
+    },
+    {
+      "Name": "Run-PostAudit03NativeCAD.ps1",
+      "SourceSHA256": "4EA00B483E3E2B428E66942953EB3F1C0BC1C8D3AFC3C69A6996C2B08B802076",
+      "CandidateSHA256": "589EC2D913662BB72A9C060514095CEA8EF2B747B66492BB302469F5B815CB1E",
+      "SourceStillOriginal": true
+    }
+  ],
+  "PriorReviewPreserved": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FocusedNativeMemoryGuard01\\IndependentPeerReview.json",
+  "PriorOwnershipFreshnessObservationResolved": true,
+  "Revision02OnlyAddsPostGuardCADInventoryAndPrerequisiteRechecks": true,
+  "InstalledAndCOMFreshCADPIDInventoryAfterWaitBeforeCreation": true,
+  "ExplicitLaunchAndAcquireInsideExcelNoExistingGateRechecked": true,
+  "ExcelInventoryAlreadyAfterItsGuard": true,
+  "SharedMinDeadlineAndThree4RAM8Commit300SecondGuardsUnchangedFromReviewedV1": true,
+  "ExistingChildFinallyByteExactlyUnchanged": true,
+  "PostCADGuardFailureCleanupRemainsInOriginalTryFinally": true,
+  "ReviewedPS5OfflineCases": 16,
+  "ReviewedPS5ParseErrors": 0,
+  "NoNativeAcceptanceClaimed": true,
+  "NoSourceCandidateOrAppMutationByReview": true,
+  "NewConfirmedBlockers": []
+}

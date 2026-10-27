@@ -92,7 +92,7 @@ Public Sub AddBlock(ByVal title As String, ByVal body As String)
 End Sub
 
 ' Фиксирует ошибку перед сохранением отчета. Ошибка не подавляется: вызывающий
-' код по-прежнему показывает пользователю обычное сообщение Excel.
+' код показывает пользователю обычное сообщение Excel.
 Public Sub AddError(ByVal context As String, ByVal errorText As String)
     If Not mEnabled Then Exit Sub
     AddSection "Ошибка"

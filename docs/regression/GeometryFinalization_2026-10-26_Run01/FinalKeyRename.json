@@ -1,0 +1,23 @@
+{
+  "NewKey": "Mesh.MinElementArea",
+  "Location": "[Сетка геометрии]",
+  "DefaultCellGeometry": "Contour",
+  "ChangedActiveFiles": [
+    "src\\Excel\\CAutoCADSectionModelImporter.cls",
+    "src\\Excel\\modMeshConfiguration.bas",
+    "src\\Geometry\\CFiberMeshBuilder.cls",
+    "src\\Section\\CRebarRuleExecutor.cls",
+    "src\\Section\\CSectionBuilder.cls",
+    "tests\\modTestAutoCADConfig.bas",
+    "tests\\modTestAutoCADContours.bas",
+    "tests\\modTestContourMesh.bas",
+    "tests\\modTestGeneralGeometryConfig.bas",
+    "tests\\modTestPerformance.bas",
+    "tests\\modTestSectionRecipes.bas",
+    "tests\\modTestSectionSolver.bas",
+    "tests\\modTestWorkbookInterface.bas",
+    "tools\\build_workbook\\SettingsCatalog.ps1",
+    "tools\\build_workbook\\Update-Audit03WorkbookHelp.ps1"
+  ],
+  "HistoricalEvidenceUnchanged": true
+}

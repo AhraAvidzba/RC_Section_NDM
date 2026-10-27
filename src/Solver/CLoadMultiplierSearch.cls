@@ -155,7 +155,7 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             FindBracket = True
             Exit Function
         ElseIf request.Problem.IsAcceptableState(probeState) Then
-            lowLambda = highLambda ' Бюджет относится ко всему построению скобки: успешная проба не отменяет прежние неудачи и не разрешает бесконечное recovery.
+            lowLambda = highLambda ' Бюджет относится ко всему построению скобки: успешная проба не отменяет накопленные неудачи и не разрешает бесконечное recovery.
             Set lowSolver = highSolver
             request.Problem.RecordAcceptable loadPath, lowLambda
             If highLambda >= request.Problem.MaxLambda Then Exit Do

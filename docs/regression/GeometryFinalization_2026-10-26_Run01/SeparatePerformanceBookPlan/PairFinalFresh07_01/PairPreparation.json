@@ -1,0 +1,27 @@
+{
+  "Status": "PAIR_PREPARED_NATIVE_PENDING",
+  "SourceOriginSHA256": "C456377A98C1C71D5128DA7E958DE1EA8349CF587E9B9BE96A8E5F42785A042E",
+  "TemplateSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+  "CurrentWorkbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\RC_Section_NDM_Test_1232_30_Current.xlsm",
+  "CurrentSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4",
+  "OldCodeWorkbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\RC_Section_NDM_Test_1232_30_OldCode_SameLayout.xlsm",
+  "OldCodeSHA256": "EF1541565989C3D46A24373AF83604E82B3801C985CB014DB15F529721965B3E",
+  "CodeOnlyZIPDifference": [
+    "xl/vbaProject.bin"
+  ],
+  "OldCodeVBAProjectSHA256": "FC11B41AA45A3B28557F180654A4B80B5F95754851C0F82DD20A58D0D16721AB",
+  "NewCodeVBAProjectSHA256": "67FB9D92D3FB88F6CF1F4A22248B9DC59A76DA347232711A6ED71A6CA2B921F9",
+  "SharedInputsAndResultsAndLayoutIdentical": true,
+  "NativeCompilationOfPrivatePairRequired": true,
+  "HistoricalStorage": "Excel",
+  "SavedLegacyGeometryInterpretation": "Adaptive",
+  "SourceAndTemplateUnchanged": true,
+  "ExcelStarted": false,
+  "NDMSolverRun": false,
+  "CADImportRun": false,
+  "RootWorkbookChanged": false,
+  "InputAliases": {
+    "AutoCAD.Import.MinArea": "Mesh.MinElementArea"
+  },
+  "BenchmarkRule": "RunSectionCalculationForWorkbook(False) cold+2warm; start-to-return includes Results+plot+report, outside Open/Save/export; report each observed full-cycle time without hiding first failure."
+}

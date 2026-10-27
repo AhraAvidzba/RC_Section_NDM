@@ -1,0 +1,11 @@
+﻿{
+    "Status":  "PASS_DIRECTED_NATIVE_FILE_GEOMETRY_PREVIEW",
+    "Passed":  true,
+    "SourceUnchanged":  true,
+    "SourceSHA256":  "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+    "PrivateProbeUnchanged":  true,
+    "PrivateProbeSHA256":  "C73D6E3BDFACA29D7B2A8C1201B8F978BE153C325DA504DDCEB88C0D799877C5",
+    "AllOwnedProcessesClosed":  true,
+    "FullRegressionPass":  false,
+    "Failure":  null
+}

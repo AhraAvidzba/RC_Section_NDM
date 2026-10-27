@@ -1,0 +1,84 @@
+﻿{
+    "Status":  "APPLIED_EXACT_SIX_PS_FILES",
+    "StartedUTC":  "2026-10-27T01:13:59.2777285+00:00",
+    "BundleSHA256":  "CF9A97B97692DE15BF6B2012C0A92873FDAA8EED1AA979E06C4C3E1797FA81AE",
+    "Native07Absence":  [
+                            {
+                                "PID":  8436,
+                                "ExpectedStartTicksUTC":  639286592605420358,
+                                "ExpectedName":  "EXCEL",
+                                "State":  "Absent",
+                                "Evidence":  "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+                                "CheckedUTC":  "2026-10-27T01:13:59.3664652+00:00"
+                            },
+                            {
+                                "PID":  31872,
+                                "ExpectedStartTicksUTC":  639286593101443045,
+                                "ExpectedName":  "acad",
+                                "State":  "Absent",
+                                "Evidence":  "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+                                "CheckedUTC":  "2026-10-27T01:13:59.3744442+00:00"
+                            }
+                        ],
+    "Files":  [
+                  {
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-26_GeometryFinal_Run01\\Launch.ps1",
+                      "RelativeSource":  "docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/Launch.ps1",
+                      "OriginalSHA256":  "9AC259340E93FFEC8015961D21B2715366B11FEB8AACA43BE721A33D420116CE",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\LaunchCandidate\\Launch.ps1",
+                      "CandidateSHA256":  "F7886B4115D8CD48CA5A80A8DC5E12150999D9E589EC244A48A7F32B8F07B7F0",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\Applied01\\Backup\\docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/Launch.ps1",
+                      "Applied":  true
+                  },
+                  {
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-26_GeometryFinal_Run01\\Read-CurrentStatus.ps1",
+                      "RelativeSource":  "docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/Read-CurrentStatus.ps1",
+                      "OriginalSHA256":  "852D8A27F0D6E5C1F2FDF1E3DB7860072D51B74B3826DB78B48A47B6FFE6FB79",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\LaunchCandidate\\Read-CurrentStatus.ps1",
+                      "CandidateSHA256":  "880A538794391FB5F75B367A02EA8542F53848448522D851745E6E8321F14611",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\Applied01\\Backup\\docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/Read-CurrentStatus.ps1",
+                      "Applied":  true
+                  },
+                  {
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Describe-FocusedAcceptance.ps1",
+                      "RelativeSource":  "tools/build_workbook/Describe-FocusedAcceptance.ps1",
+                      "OriginalSHA256":  "A1CF4BE197C48A1DBF514A49E2E010BF02A9CEFF982C99C35896C7E5BE27C2E4",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\PersistenceCandidate\\Describe-FocusedAcceptance.ps1",
+                      "CandidateSHA256":  "92ABDC9410A7226316210475DFCB769205A48B36485B9F6BDC1316615B93A11D",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\Applied01\\Backup\\tools/build_workbook/Describe-FocusedAcceptance.ps1",
+                      "Applied":  true
+                  },
+                  {
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-FocusedAcceptance.ps1",
+                      "RelativeSource":  "tools/build_workbook/Run-FocusedAcceptance.ps1",
+                      "OriginalSHA256":  "172A9BC59076F7F15AFC193A6E830A86887EB092DE1BEEF94ED458C5081748D5",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\PersistenceCandidate\\Run-FocusedAcceptance.ps1",
+                      "CandidateSHA256":  "554FA36F994293EE5E4392FEBD39DA1876A816B21BBBA721254BE869FB5B9F5F",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\Applied01\\Backup\\tools/build_workbook/Run-FocusedAcceptance.ps1",
+                      "Applied":  true
+                  },
+                  {
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-Audit02ModeTests.ps1",
+                      "RelativeSource":  "tools/build_workbook/Run-Audit02ModeTests.ps1",
+                      "OriginalSHA256":  "03C92CF14A8CE1F94110F0C670815BA07DCF74705E4CF6E74643B853B3D04CB7",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\CoreCandidate\\Run-Audit02ModeTests.ps1",
+                      "CandidateSHA256":  "EDFEE7CD7610EB6D70CF227792CEC0EE94CDEABE4B3125A649D384370F2E0363",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\Applied01\\Backup\\tools/build_workbook/Run-Audit02ModeTests.ps1",
+                      "Applied":  true
+                  },
+                  {
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-Audit03Watchdog.ps1",
+                      "RelativeSource":  "tools/build_workbook/Run-Audit03Watchdog.ps1",
+                      "OriginalSHA256":  "23CAD5077A6E136559BAB7E7D0AA2945A90A09C6993D911A302489E691915913",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\CoreCandidate\\Run-Audit03Watchdog.ps1",
+                      "CandidateSHA256":  "526804E8B3923E76F5DB7CDBA33C639F6F4280C79086033314A81C453DDF5F00",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FullLaunchGuardHardening01\\Applied01\\Backup\\tools/build_workbook/Run-Audit03Watchdog.ps1",
+                      "Applied":  true
+                  }
+              ],
+    "ProductionVBAChanged":  false,
+    "WorkbookOrAllCodeChanged":  false,
+    "OfficeLaunched":  false,
+    "Failure":  null,
+    "CompletedUTC":  "2026-10-27T01:13:59.4003754+00:00"
+}

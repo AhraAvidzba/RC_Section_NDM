@@ -224,7 +224,7 @@ Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As L
     Next key
     caption = Join(keys, " / ")
     For row = firstRow To lastRow
-        value = mValues(row, keyColumn) ' Поиск подписи не читает значение каждого параметра в этом столбце. Ошибка Excel в неактивном поле не является искомой подписью; настоящий потребитель поля по-прежнему получает её через CellValue.
+        value = mValues(row, keyColumn) ' Поиск подписи не читает значение каждого параметра в этом столбце. Ошибка Excel в неактивном поле не является искомой подписью; потребитель значения получает её через CellValue.
         If Not IsError(value) Then
             If Not BlankValue(value) Then
                 For Each key In keys

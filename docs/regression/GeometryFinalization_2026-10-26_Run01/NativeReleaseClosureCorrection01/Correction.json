@@ -1,0 +1,54 @@
+{
+  "Status": "PRIOR_RUNTIME_CLOSURE_CLAIM_INVALIDATED",
+  "CorrectedUTC": "2026-10-27T00:36:18.509844+00:00",
+  "NoProcessMutation": true,
+  "Cause": "Default-context Get-Process returned EXCEL14300, but StartTime and CPU were null. An empty catch treated the StartTime getter failure as absence. Process identity lookup must distinguish read failure from confirmed NotFound.",
+  "NativeReleaseLimitation": "NativeRelease04 has no ProcessClosure receipt. The worker calls workbook.Close(false), Application.Quit and FinalReleaseComObject(app), but does not release all intermediate COM wrappers or verify process exit after normal completion. A lingering COM reference is a plausible explanation, not proven by PID/CPU alone.",
+  "EarlierIndependentEvidence": "NativeLayout06 Layout and Structured ownership receipts already include PriorExcel14300 at 23:58 UTC.",
+  "ActualAudit": "NativeReleaseClosureCorrection01/ElevatedIdentityAudit01.json",
+  "ExactIdentityPresent": {
+    "PID": 14300,
+    "Name": "EXCEL",
+    "StartTicksUTC": "639286556882454415",
+    "CPU": 22.421875,
+    "WorkingSetBytes": 127934464,
+    "MainWindowTitle": "",
+    "MainWindowHandle": "0"
+  },
+  "OtherIdentitiesConfirmedNotFound": 9,
+  "NativeResultScopeUnchanged": "Readonly source export/settings/equality/layout and the separate CAD/File/UI primary assertions remain reviewed. Their success is not a claim that every owned process exited.",
+  "CleanupPerformed": false,
+  "CleanupAuthorization": "No closure is performed by this correction or diagnostic reader. The parent coordinates exact-owned cleanup after actual NativeOM/idle observation.",
+  "PreservedOriginals": [
+    {
+      "File": "IndependentFinalNativeClosure01.json",
+      "Bytes": 1752,
+      "SHA256": "2A86BB5000D3956DE95E6E4B5126246F485967B6584C4D4DAE8566EDE1F04A5F",
+      "PreservedAt": "NativeReleaseClosureCorrection01\\Original_IndependentFinalNativeClosure01.json"
+    },
+    {
+      "File": "IndependentReleaseLayoutReview01.json",
+      "Bytes": 9260,
+      "SHA256": "C1C4E398701238B2DE6F61AEE5E2C23F642D7EC75D6E0CDE7195AC9DF4C2D181",
+      "PreservedAt": "NativeReleaseClosureCorrection01\\Original_IndependentReleaseLayoutReview01.json"
+    },
+    {
+      "File": "IndependentNativeRemainingReview01.json",
+      "Bytes": 15475,
+      "SHA256": "4271DE488779DED5F4D0408804EA5C7CC5A6DC4DFD1D935632A96F09121A57F7",
+      "PreservedAt": "NativeReleaseClosureCorrection01\\Original_IndependentNativeRemainingReview01.json"
+    },
+    {
+      "File": "IndependentReleaseLayoutReview01.md",
+      "Bytes": 1855,
+      "SHA256": "4B1B27FACC7238FFB32BEFABC72EBE0598B4A84457B9276CDE633FA389767BC7",
+      "PreservedAt": "NativeReleaseClosureCorrection01\\Original_IndependentReleaseLayoutReview01.md"
+    },
+    {
+      "File": "IndependentNativeRemainingReview01.md",
+      "Bytes": 2317,
+      "SHA256": "DE45AE481C0AE3555050B70EE18AB66DC04CA58E10C068962C73B56F8C44D8FD",
+      "PreservedAt": "NativeReleaseClosureCorrection01\\Original_IndependentNativeRemainingReview01.md"
+    }
+  ]
+}

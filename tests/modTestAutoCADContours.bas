@@ -14,7 +14,7 @@ Private mReport As String
 Private mNativeProgress As Boolean ' ДЛЯ ТЕСТОВ: журнал собственного CAD-прогона до возврата из COM.
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' сохранённая метка старого чертежа не должна влиять на обычный импорт.
+' Сохранённая метка RC_SECTION_NDM не должна влиять на выбор объектов при импорте.
 Private Sub TestSetLegacyContourTag(ByVal entity As Object)
     Dim app As Object, codes(0 To 1) As Integer, values(0 To 1) As Variant
     On Error Resume Next
@@ -27,7 +27,7 @@ Private Sub TestSetLegacyContourTag(ByVal entity As Object)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' новый экспорт не должен записывать прежнюю метку владения.
+' Экспорт не записывает метки владения: все объекты заданных слоёв остаются равноправными.
 Private Function TestHasLegacyContourTag(ByVal entity As Object) As Boolean
     Dim codes As Variant, values As Variant
     entity.GetXData "RC_SECTION_NDM", codes, values
@@ -58,6 +58,8 @@ Public Function RunAutoCADContourTests() As String
     TestCheckPhysicalPolylineClosure
     TestCheckEmptyStandaloneContourSegments
     TestCheckWorldCoordinateGuard
+    TestCheckExactComponentAreaFilter
+    TestCheckGeometryOnlyExportSource
     GoTo Finish
 Failed:
     TestCheck "contour.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
@@ -214,6 +216,146 @@ Finished:
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
     RunPostAudit03ContourSnapshotTests = mReport & "TOTAL_POSTAUDIT03_CONTOURS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Несвязный CAD Region фильтруется после разложения на конечные компоненты.
+' Ровно пороговая площадь сохраняется; отверстие и дуги оставшейся части не меняются.
+Private Sub TestCheckExactComponentAreaFilter()
+    Dim fixture As Object: Set fixture = Application.Workbooks.Add(-4167)
+    Dim number As Long, description As String
+    On Error GoTo Failed
+    Dim table(1 To 2, 1 To 3) As Variant
+    table(1, 1) = "Key": table(1, 2) = "Value": table(1, 3) = "Unit"
+    table(2, 1) = "Mesh.CellGeometry": table(2, 2) = "Contour": table(2, 3) = "-"
+    fixture.Worksheets(1).Range("A1:C2").Value2 = table
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
+    settings.LoadFromRange fixture.Worksheets(1).Range("A1:C2")
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim ring As CConcreteRegion: Set ring = query.SubtractContainedRegion(query.CircleRegion(0#, 0#, 10#), query.CircleRegion(0#, 0#, 3#))
+    Dim parts As Collection: Set parts = New Collection
+    parts.Add ring: parts.Add query.CircleRegion(40#, 0#, 2#)
+    parts.Add query.RectangleRegion(80#, 0#, 4#, 5#)
+    Dim domain As CConcreteRegion: Set domain = query.MergeDisjointRegions(parts)
+    Dim properties As TGeometryProperties: query.RegionProperties domain, properties
+    Dim concrete As CTestFakeAcadRegion: Set concrete = New CTestFakeAcadRegion
+    concrete.TestInitialize properties.Area, properties.CentroidX, properties.CentroidY, properties.Ixc, properties.Iyc, properties.Ixyc, "CONCRETE", "MULTIPART"
+    concrete.TestSetGeometry domain
+    Dim originalSourceArea As Double: originalSourceArea = concrete.Area
+    Dim bar As CTestFakeAcadRegion, space As Collection: Set space = New Collection
+    space.Add concrete
+    Set bar = New CTestFakeAcadRegion: bar.TestInitialize 20#, 0#, -6#, 1#, 1#, 0#, "REBAR", "AT_LIMIT": space.Add bar
+    Set bar = New CTestFakeAcadRegion: bar.TestInitialize 19#, 1#, -6#, 1#, 1#, 0#, "REBAR", "BELOW_LIMIT": space.Add bar
+    Dim importer As CAutoCADSectionModelImporter: Set importer = New CAutoCADSectionModelImporter
+    Dim model As CSectionModel, i As Long, foundRing As Boolean, foundRectangle As Boolean
+    Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 20#, meshSettings:=settings)
+    TestCheck "exactComponentFilter.concreteCount", model.ConcreteCount = 2
+    TestCheck "exactComponentFilter.rebarCount", model.RebarCount = 1 And model.RebarSourceHandle(1) = "AT_LIMIT"
+    For i = 1 To model.ConcreteCount
+        TestCheck "exactComponentFilter.atomicBoundary." & CStr(i), model.ConcreteHasBoundary(i)
+        TestCheck "exactComponentFilter.ids." & CStr(i), model.ConcreteID(i) = "C" & CStr(i)
+        TestCheck "exactComponentFilter.area." & CStr(i), model.ConcreteArea(i) >= 20#
+        If model.ConcreteGeometry(i).LoopCount = 2 Then
+            foundRing = query.RegionsCoincide(model.ConcreteGeometry(i), ring)
+            TestCheck "exactComponentFilter.ringHole", Not query.ContainsPoint(model.ConcreteGeometry(i), 0#, 0#)
+            query.RegionProperties ring, properties
+            TestCheckArea "exactComponentFilter.ringA", model.ConcreteArea(i), properties.Area
+            TestCheckArea "exactComponentFilter.ringIx", model.ConcreteLocalIx(i), properties.Ixc
+            TestCheckArea "exactComponentFilter.ringIy", model.ConcreteLocalIy(i), properties.Iyc
+        ElseIf Abs(model.ConcreteArea(i) - 20#) < 0.00000001 Then
+            foundRectangle = query.RegionsCoincide(model.ConcreteGeometry(i), query.RectangleRegion(80#, 0#, 4#, 5#))
+        End If
+    Next i
+    TestCheck "exactComponentFilter.ringPreserved", foundRing
+    TestCheck "exactComponentFilter.equalThresholdPreserved", foundRectangle
+    TestCheck "exactComponentFilter.noOrientationExplode", importer.TestDebugEdgeProbeCount = 0
+    Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, meshSettings:=settings)
+    TestCheck "exactComponentFilter.zeroDisablesFilter", model.ConcreteCount = 3 And model.RebarCount = 2
+    TestCheck "exactComponentFilter.sourceUnchanged", Not concrete.TestDeleted And Not bar.TestDeleted And _
+        Not space.Item(2).TestDeleted And concrete.Area = originalSourceArea ' Строго сравнивается тот же CAD-источник до/после; domain.Area вычислена другим путём и не является исходным COM Area.
+    fixture.Close False
+    Exit Sub
+Failed:
+    number = Err.Number: description = Err.Description
+    On Error Resume Next: fixture.Close False: On Error GoTo 0
+    Err.Raise number, "TestCheckExactComponentAreaFilter", description
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Preview обоих представлений разрешает геометрический экспорт с обязательным статусом.
+' Записи LC даже без element-results запрещают такой fallback; сохранённые таблицы не меняются.
+Private Sub TestCheckGeometryOnlyExportSource()
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim model As CSectionModel, writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    Dim mode As Long, number As Long, description As String, status As String
+    Dim geometry As CConcreteRegion: Set geometry = query.RectangleRegion(0#, 0#, 100#, 80#)
+    Dim properties As TGeometryProperties: query.RegionProperties geometry, properties
+    Dim solves As Long: solves = SectionEquilibriumSolveCount()
+    Dim names As Variant: names = Array("rngNDMSectionGeometry", "rngNDMElementGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMElementResults")
+    Dim savedTables As Object, key As Variant, actual As Variant
+    For mode = 0 To 1
+        Set model = New CSectionModel: model.SourceType = "Generated"
+        If mode = 0 Then
+            model.AddConcreteElement 0#, 0#, 8000#, 1, , , "Rectangle", 100#, 80#
+        Else
+            model.AddConcreteElement 0#, 0#, 8000#, 1, , , "Contour", , , , , properties.Ixc, properties.Iyc, properties.Ixyc, True, geometry
+        End If
+        model.AddRebarElement 0#, 20#, 10#, 0#, "Rebar"
+        model.Contours.AddMaterialRegion geometry, "OUTER", "Наружная граница тестового сечения."
+        writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model)
+        Set savedTables = CreateObject("Scripting.Dictionary")
+        For Each key In names: savedTables.Add CStr(key), ReadPhysicalResultTable(ThisWorkbook, CStr(key)): Next key
+        status = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+        TestCheck "geometryOnly.mode." & CStr(mode), Left$(status, 13) = "GeometryOnly|"
+        TestCheck "geometryOnly.warning." & CStr(mode), InStr(status, "В AutoCAD передано только сечение, без рассчитанного состояния.") > 0
+        TestCheck "geometryOnly.counts." & CStr(mode), Right$(status, 4) = "|1|1"
+        For Each key In names
+            actual = ReadPhysicalResultTable(ThisWorkbook, CStr(key))
+            TestCheck "geometryOnly.sourceUntouched." & CStr(mode) & "." & CStr(key), TestGeometryExportTablesEqual(savedTables.Item(CStr(key)), actual)
+        Next key
+        TestCheck "geometryOnly.contextReleased." & CStr(mode), TestCalculationSnapshotReadReleased()
+        TestCheck "geometryOnly.noSolve." & CStr(mode), SectionEquilibriumSolveCount() = solves
+        Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange
+        actual = savedTables.Item("rngNDMSectionProperties")
+        anchor.Offset(UBound(actual, 1), 0).Value2 = actual(2, 1)
+        anchor.Offset(UBound(actual, 1), 1).Value2 = "BROKEN_LC"
+        anchor.Offset(UBound(actual, 1), 2).Value2 = "StrengthState.Status"
+        anchor.Offset(UBound(actual, 1), 3).Value2 = "InvalidSavedState"
+        number = 0: description = vbNullString: status = vbNullString
+        On Error Resume Next
+        status = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+        number = Err.Number: description = Err.Description: Err.Clear
+        On Error GoTo 0
+        TestCheck "geometryOnly.calculatedFailureNotHidden." & CStr(mode), number <> 0 And InStr(status, "GeometryOnly|") = 0
+        TestCheck "geometryOnly.failureContextReleased." & CStr(mode), TestCalculationSnapshotReadReleased()
+        writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model)
+    Next mode
+    Dim data As Variant: data = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry")
+    ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Offset(1, 0).Resize(UBound(data, 1) - 1, UBound(data, 2)).ClearContents
+    On Error Resume Next
+    status = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "geometryOnly.notFormed.action", number <> 0 And InStr(description, "Сформировать сечение") > 0
+    TestCheck "geometryOnly.notFormed.contextReleased", TestCalculationSnapshotReadReleased()
+    writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model)
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает физические Variant-матрицы с сохранением типов и числовых значений.
+' Проверка предназначена для малых независимых fixture, не для рабочего вывода Excel.
+Private Function TestGeometryExportTablesEqual(ByVal expected As Variant, ByVal actual As Variant) As Boolean
+    On Error GoTo Different
+    If UBound(expected, 1) <> UBound(actual, 1) Or UBound(expected, 2) <> UBound(actual, 2) Then Exit Function
+    Dim row As Long, column As Long
+    For row = 1 To UBound(expected, 1)
+        For column = 1 To UBound(expected, 2)
+            If VarType(expected(row, column)) <> VarType(actual(row, column)) Then Exit Function
+            If CStr(expected(row, column)) <> CStr(actual(row, column)) Then Exit Function
+        Next column
+    Next row
+    TestGeometryExportTablesEqual = True
+Different:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -374,7 +516,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' настоящий exporter только добавляет выбранные объекты. Даже повторный
-' запуск не читает ModelSpace.Count/Item, не удаляет прежние объекты, сохраняет
+' запуск не читает ModelSpace.Count/Item, не удаляет существующие объекты, сохраняет
 ' разные цвета outer/opening/Ar и реальные дуги в миллиметрах.
 Private Sub TestCheckAdditiveContourExport()
     Dim section As CSectionModel, writer As CNDMResultsWriter, space As CTestFakeAcadContourExport
@@ -434,7 +576,7 @@ Private Sub TestCheckAdditiveContourExport()
     exported = SP35ExportSavedContoursToModelSpaceForTests(space, True, "Region")
     TestCheck "export.polyline.crackUnchanged", exported = 1 And space.TestCreatedEntities(5).ObjectName = "AcDbPolyline" And space.TestCreatedEntities(5).Color = 31
     TestCheck "export.polyline.noExistingRead", space.TestForbiddenReads = 0
-    Set space = New CTestFakeAcadContourExport: space.TestFailRegionAt = 2 ' Ошибка AddRegion не оставляет частичный вывод и не затрагивает прежний.
+    Set space = New CTestFakeAcadContourExport: space.TestFailRegionAt = 2 ' Ошибка AddRegion не оставляет частичный вывод и не затрагивает существующий.
     points = Array(0#, 0#, 1#, 0#, 1#, 1#, 0#, 1#)
     Set entity = space.AddLightWeightPolyline(points)
     On Error Resume Next
@@ -711,7 +853,7 @@ Restore:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' все объекты слоев читаются независимо от прежних меток.
+' Все объекты слоёв читаются независимо от меток RC_SECTION_NDM.
 ' Чистый набор сохраняется в Results; наложенные копии не пропускаются.
 Private Sub TestCheckMixedContourSources()
     Dim space As Collection, layers As Collection, cell As CTestFakeAcadRegion, layer As CTestFakeAcadContour
@@ -1053,7 +1195,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' несколько opening читаются отдельными Region/Polyline как с
-' достоверным outer, так и при прежней внешней границе сетки. Последующий
+' достоверным outer, так и при наружной границе, восстановленной по сетке. Последующий
 ' ошибочный импорт не меняет уже полученную пригодную модель.
 Private Sub TestCheckMultipleOpenings()
     Dim space As Collection, layers As Collection, cell As CTestFakeAcadRegion, layer As CTestFakeAcadContour
@@ -1297,7 +1439,7 @@ Private Sub TestCheckImportedSnapshot()
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' направленный прогон Region/Polyline без старой полной
+' Направленная проверка Region/Polyline без полной
 ' матрицы CAD. Документ и приложение принадлежат внешнему runner-у.
 Public Function RunRealAutoCADContourFormatTests(ByVal ownedApplication As Object, _
         ByVal templatePath As String) As String
@@ -1312,6 +1454,7 @@ Public Function RunRealAutoCADContourFormatTests(ByVal ownedApplication As Objec
     TestWaitForCAD ownedApplication
     Set reader = New CAutoCADContourReader
     TestCheckNativeContourFormatTopology doc
+    TestCheckNativeConcreteComponentExport doc
     TestCheckNativeSavedContours doc, reader
     TestCheckNativeMixedContourRoundTrip doc
     TestCheckNativeSharedContours doc
@@ -1332,7 +1475,7 @@ Cleanup:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' адресная native-проверка новой генерации без полной старой CAD-матрицы.
+' Адресная native-проверка генерации по контуру без остальных CAD-пакетов.
 Public Function RunRealAutoCADContourMeshTests(ByVal ownedApplication As Object, ByVal templatePath As String) As String
     RunRealAutoCADContourMeshTests = modTestContourMesh.RunNativeContourMeshTests(ownedApplication, templatePath)
 End Function
@@ -1367,8 +1510,8 @@ Public Function RunRealAutoCADFarOriginTests(ByVal ownedApplication As Object, _
     TestCheck "far.WCS", CLng(doc.GetVariable("WORLDUCS")) = 1
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1)
     keys = Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
-        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Import.MinArea", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", "Mesh.StepMode")
-    values = Array("FAR_EMPTY", "FAR_REBAR", "FAR_OUTER", "FAR_OPENING", 0#, 100#, 100#, 2, "User")
+        "AutoCAD.Common.OpeningContourLayer", "Mesh.MinElementArea", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", "Mesh.StepMode", "Mesh.CellGeometry")
+    values = Array("FAR_EMPTY", "FAR_REBAR", "FAR_OUTER", "FAR_OPENING", 0#, 100#, 100#, 2, "User", "Adaptive")
     sheet.Cells(1, 1).Value2 = "Key": sheet.Cells(1, 2).Value2 = "Value": sheet.Cells(1, 3).Value2 = "Unit"
     For i = 0 To UBound(keys)
         sheet.Cells(i + 2, 1).Value2 = keys(i): sheet.Cells(i + 2, 2).Value2 = values(i): sheet.Cells(i + 2, 3).Value2 = "-"
@@ -1610,6 +1753,7 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     TestCheck "native.twoOpenings.source", CStr(source.Handle) = handleBefore And doc.ModelSpace.Count = countBefore
     TestCheckArea "native.twoOpenings.sourceArea", CDbl(source.Area), areaBefore
     TestCheckNativeSeparateOpenings doc, reader, query
+    TestCheckNativeConcreteComponentExport doc
     TestCheckNativeSavedContours doc, reader
     TestCheckNativeSharedContours doc
     TestCheckNativeRegionBoundaryDedup doc
@@ -1691,14 +1835,14 @@ Private Sub TestCheckNativeWorldCoordinateGuard(ByVal doc As Object)
     TestCheck "native.worldUCS.initialWorld", CLng(doc.GetVariable("WORLDUCS")) = 1
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1)
     keys = Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
-        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Import.MinArea")
-    values = Array("NDM_WCS_MESH", "NDM_WCS_REBAR", "NDM_WCS_OUTER", "NDM_WCS_OPENING", 0#)
+        "AutoCAD.Common.OpeningContourLayer", "Mesh.MinElementArea", "Mesh.CellGeometry")
+    values = Array("NDM_WCS_MESH", "NDM_WCS_REBAR", "NDM_WCS_OUTER", "NDM_WCS_OPENING", 0#, "Adaptive")
     sheet.Cells(1, 1).Value2 = "Key": sheet.Cells(1, 2).Value2 = "Value": sheet.Cells(1, 3).Value2 = "Unit"
     For i = 0 To UBound(keys)
         sheet.Cells(i + 2, 1).Value2 = keys(i): sheet.Cells(i + 2, 2).Value2 = values(i): sheet.Cells(i + 2, 3).Value2 = "-"
         If i < 4 Then doc.Layers.Add CStr(values(i))
     Next i
-    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("A1:C6")
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("A1:C7")
     Set importer = New CAutoCADSectionModelImporter
     Set polyline = TestNativeRectangle(doc, 100#, 80#, 0#, 5000#, 5000#)
     Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set mesh = regions(LBound(regions))
@@ -2173,7 +2317,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ручная очистка сохраняет все контуры и отверстия;
-' экспорт добавляет объекты без меток и без удаления прежних копий.
+' Экспорт добавляет объекты без меток и без удаления существующих копий.
 Private Sub TestCheckNativeSharedContours(ByVal doc As Object)
     Dim system As Object, saved As Variant, settings As CSystemSettingsReader, i As Long
     Dim original As Object, copy As Object, opening As Object, openingCopy As Object
@@ -2281,7 +2425,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' два opening на одном реальном слое импортируются и сохраняются
-' вместе. Бетонный Region сетки продолжает использовать прежнюю эквивалентную
+' вместе. В Adaptive бетонный Region сетки использует эквивалентную
 ' оболочку; достоверный контур не меняет его фактическую площадь и инерции.
 Private Sub TestCheckNativeSeparateOpenings(ByVal doc As Object, ByVal reader As CAutoCADContourReader, ByVal query As CSectionGeometryQuery)
     Dim outer As Object, mesh As Object, bar As Object, hole As Object, holeCopy As Object, polyline As Object
@@ -2364,4 +2508,168 @@ Private Sub TestWaitForCAD(ByVal acad As Object)
         elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
         If elapsed > 30# Then Err.Raise vbObjectError + 5502, , "AutoCAD не завершил инициализацию за 30 секунд."
     Loop
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Ограниченный настоящий CAD-пакет; документ обязан принадлежать внешнему runner-у.
+' Не создаёт/не закрывает приложения и удаляет только объекты собственного вывода.
+Public Function RunNativeConcreteComponentExportTests(ByVal document As Object) As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    TestCheckNativeConcreteComponentExport document
+    GoTo Finish
+Failed:
+    TestCheck "native.components.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finish:
+    RunNativeConcreteComponentExportTests = mReport & "TOTAL_NATIVE_CONCRETE_COMPONENTS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет принадлежность отверстий внешнему кольцу и острову внутри его пустоты.
+' Третья несвязная область сохраняет дуги; Area/c/I сравниваются после настоящего CAD export/read.
+Private Sub TestCheckNativeConcreteComponentExport(ByVal document As Object)
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim parts As Collection: Set parts = New Collection
+    parts.Add query.SubtractContainedRegion(query.CircleRegion(0#, 0#, 100#), query.CircleRegion(0#, 0#, 60#))
+    parts.Add query.SubtractContainedRegion(query.CircleRegion(0#, 0#, 30#), query.CircleRegion(0#, 0#, 10#))
+    parts.Add query.CircleRegion(300#, 0#, 20#)
+    Dim geometry As CConcreteRegion: Set geometry = query.MergeDisjointRegions(parts)
+    Dim expectedParts As Collection: Set expectedParts = query.ConnectedRegions(geometry)
+    Dim before As Long: before = document.ModelSpace.Count
+    Dim exported As Long, i As Long, j As Long, matched As Boolean, actualArea As Double
+    Dim owned As Collection: Set owned = New Collection
+    Dim entity As Object, actual As CConcreteRegion, expected As CConcreteRegion
+    Dim reader As CAutoCADContourReader: Set reader = New CAutoCADContourReader
+    Dim a As TGeometryProperties, b As TGeometryProperties
+    Dim number As Long, description As String
+    On Error GoTo Failed
+    exported = TestExportConcreteElementGeometry(document.ModelSpace, geometry)
+    For i = before To document.ModelSpace.Count - 1: owned.Add document.ModelSpace.Item(i): Next i
+    TestCheck "native.components.count", exported = 3 And owned.Count = 3
+    For i = 1 To owned.Count
+        Set entity = owned(i): Set actual = reader.ReadRegion(entity)
+        actualArea = actualArea + actual.Area: matched = False
+        For j = 1 To expectedParts.Count
+            Set expected = expectedParts(j)
+            If query.RegionsCoincide(actual, expected) Then
+                matched = True: query.RegionProperties actual, a: query.RegionProperties expected, b
+                TestCheckArea "native.components.A." & CStr(i), a.Area, b.Area
+                TestCheckArea "native.components.X." & CStr(i), a.CentroidX, b.CentroidX
+                TestCheckArea "native.components.Y." & CStr(i), a.CentroidY, b.CentroidY
+                TestCheckArea "native.components.Ix." & CStr(i), a.Ixc, b.Ixc
+                TestCheckArea "native.components.Iy." & CStr(i), a.Iyc, b.Iyc
+                TestCheck "native.components.Ixy." & CStr(i), Abs(a.Ixyc - b.Ixyc) <= _
+                    64# * (2# ^ -52) * (Abs(b.Ixc) + Abs(b.Iyc)) + 0.000000000000001
+                TestCheck "native.components.loops." & CStr(i), actual.LoopCount = expected.LoopCount
+                TestCheck "native.components.arcs." & CStr(i), actual.SegmentCount = expected.SegmentCount
+                Exit For
+            End If
+        Next j
+        TestCheck "native.components.sameBoundary." & CStr(i), matched
+    Next i
+    TestCheckArea "native.components.totalArea", actualArea, 7600# * GEOM_PI
+    GoTo Cleanup
+Failed:
+    number = Err.Number: description = Err.Description
+    Resume Cleanup
+Cleanup:
+    On Error Resume Next
+    For Each entity In owned: entity.Delete: Next entity
+    On Error GoTo 0
+    If number <> 0 Then Err.Raise number, "TestCheckNativeConcreteComponentExport", description
+    TestCheck "native.components.ownedCleanup", document.ModelSpace.Count = before
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Настоящий geometry-only экспорт для Adaptive/Contour и выключенных/включённых контуров.
+' Документ принадлежит внешнему runner; пользовательские приложения не создаются и не закрываются.
+' Неиспользуемые строки намеренно имеют неверный формат; ошибки самих ячеек проверяет общий загрузчик Config.
+Public Function RunNativeGeometryOnlyExportTests(ByVal document As Object) As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    Dim system As Object: Set system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Dim savedSettings As Variant: savedSettings = system.Formula
+    Dim owned As Collection: Set owned = New Collection
+    Dim entity As Object, before As Long, mode As Long, contourMode As Long, added As Long, index As Long
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim region As CConcreteRegion: Set region = query.RectangleRegion(0#, 0#, 100#, 80#)
+    Dim properties As TGeometryProperties: query.RegionProperties region, properties
+    Dim model As CSectionModel, writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    Dim names As Variant: names = Array("rngNDMSectionGeometry", "rngNDMElementGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMElementResults")
+    Dim tables As Object, key As Variant, values As Variant, warning As String, prefix As String
+    Dim solves As Long: solves = SectionEquilibriumSolveCount()
+    Dim number As Long, description As String, concreteCount As Long, rebarCount As Long, contourCount As Long
+    On Error GoTo Failed
+    TestSetGeometryExportSetting system, "AutoCAD.Common.ConcreteLayer", "GEO_ONLY_CONCRETE"
+    TestSetGeometryExportSetting system, "AutoCAD.Common.RebarLayer", "GEO_ONLY_REBAR"
+    TestSetGeometryExportSetting system, "General.NonCriticalMessagesEnabled", "No"
+    TestSetGeometryExportSetting system, "AutoCAD.Color.ConcreteTension", "UNUSED_INVALID"
+    TestSetGeometryExportSetting system, "AutoCAD.Export.NeutralLineEnabled", "UNUSED_INVALID"
+    TestSetGeometryExportSetting system, "AutoCAD.Export.PrincipalAxesMode", "UNUSED_INVALID"
+    TestSetGeometryExportSetting system, "AutoCAD.Export.ExportCrackInteractionContour", "UNUSED_INVALID"
+    For mode = 0 To 1
+        Set model = New CSectionModel: model.SourceType = "Generated"
+        If mode = 0 Then
+            model.AddConcreteElement 0#, 0#, 8000#, 1, , , "Rectangle", 100#, 80#
+        Else
+            model.AddConcreteElement 0#, 0#, 8000#, 1, , , "Contour", , , , , properties.Ixc, properties.Iyc, properties.Ixyc, True, region
+        End If
+        model.AddRebarElement 0#, 20#, 10#, 0#, "Rebar"
+        model.Contours.AddMaterialRegion region, "OUTER", "Наружная граница тестового сечения."
+        writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model)
+        For contourMode = 0 To 1
+            prefix = "native.geometryOnly." & CStr(mode) & "." & CStr(contourMode)
+            TestSetGeometryExportSetting system, "AutoCAD.Export.ContourEnabled", IIf(contourMode = 0, "No", "Yes")
+            TestSetGeometryExportSetting system, "AutoCAD.Export.ContourFormat", IIf(contourMode = 0, "UNUSED_INVALID", "Polyline")
+            TestSetGeometryExportSetting system, "AutoCAD.Common.SectionContourLayer", IIf(contourMode = 0, "*UNUSED_INVALID*", "GEO_ONLY_OUTER")
+            TestSetGeometryExportSetting system, "AutoCAD.Common.OpeningContourLayer", "*UNUSED_NOT_NEEDED*"
+            Set tables = CreateObject("Scripting.Dictionary")
+            For Each key In names: tables.Add CStr(key), ReadPhysicalResultTable(ThisWorkbook, CStr(key)): Next key
+            before = document.ModelSpace.Count: warning = vbNullString
+            added = Audit03ExportAutoCADDocumentForTests(document, warning)
+            Set owned = New Collection
+            For index = before To document.ModelSpace.Count - 1: owned.Add document.ModelSpace.Item(index): Next index
+            TestCheck prefix & ".warningAlways", warning = "В AutoCAD передано только сечение, без рассчитанного состояния."
+            TestCheck prefix & ".objectCount", added = 2 + contourMode And owned.Count = added
+            concreteCount = 0: rebarCount = 0: contourCount = 0
+            For Each entity In owned
+                TestCheck prefix & ".geometryOnlyType", CStr(entity.ObjectName) = "AcDbRegion" Or CStr(entity.ObjectName) = "AcDbPolyline"
+                Select Case CStr(entity.Layer)
+                    Case "GEO_ONLY_CONCRETE": concreteCount = concreteCount + 1: TestCheckArea prefix & ".concreteArea", CDbl(entity.Area), 8000#
+                    Case "GEO_ONLY_REBAR": rebarCount = rebarCount + 1: TestCheckArea prefix & ".rebarArea", CDbl(entity.Area), GEOM_PI * 25#
+                    Case "GEO_ONLY_OUTER": contourCount = contourCount + 1
+                    Case Else: TestCheck prefix & ".unexpectedLayer." & CStr(entity.Layer), False
+                End Select
+            Next entity
+            TestCheck prefix & ".layers", concreteCount = 1 And rebarCount = 1 And contourCount = contourMode
+            For Each key In names
+                values = ReadPhysicalResultTable(ThisWorkbook, CStr(key))
+                TestCheck prefix & ".sourceUntouched." & CStr(key), TestGeometryExportTablesEqual(tables.Item(CStr(key)), values)
+            Next key
+            TestCheck prefix & ".noSolve", SectionEquilibriumSolveCount() = solves
+            For Each entity In owned: entity.Delete: Next entity
+            Set owned = New Collection
+            TestCheck prefix & ".ownedCleanup", document.ModelSpace.Count = before
+        Next contourMode
+    Next mode
+    GoTo Cleanup
+Failed:
+    number = Err.Number: description = Err.Description
+    Resume Cleanup
+Cleanup:
+    On Error Resume Next
+    For Each entity In owned: entity.Delete: Next entity
+    system.Formula = savedSettings
+    On Error GoTo 0
+    If number <> 0 Then TestCheck "native.geometryOnly.runtime; " & CStr(number) & "; " & description, False
+    RunNativeGeometryOnlyExportTests = mReport & "TOTAL_NATIVE_GEOMETRY_ONLY: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет ровно один ключ в частной книге; отсутствие настройки не заменяет молчаливым default.
+Private Sub TestSetGeometryExportSetting(ByVal system As Object, ByVal key As String, ByVal value As Variant)
+    Dim row As Long
+    For row = 2 To system.Rows.Count
+        If CStr(system.Cells(row, 1).Value2) = key Then system.Cells(row, 2).Value2 = value: Exit Sub
+    Next row
+    Err.Raise 5, "modTestAutoCADContours", "В частной книге отсутствует настройка " & key
 End Sub

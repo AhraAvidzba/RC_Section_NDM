@@ -91,7 +91,7 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' перенесенные геометрические fixtures без оставшихся старых builders.
+' перенесенные геометрические fixtures без отдельных построителей конкретных типов.
 Public Function RunRetiredGeometryPrimitiveTests() As String
     Dim stats As TTestStats
     On Error GoTo Failed
@@ -117,7 +117,7 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' аналитические сопряжения и отверстия без старых shape contracts.
+' аналитические сопряжения и отверстия через единый контракт описания геометрии.
 Public Function RunRetiredGeometryArcOpeningTests() As String
     Dim stats As TTestStats
     On Error GoTo Failed
@@ -151,7 +151,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимый центр двух неравных площадей и третьей добавленной площади.
-' Арматура не входит в веса, Clear и новая геометрия не оставляют старый кэш.
+' Арматура не входит в веса, Clear и новая геометрия не оставляют кэш предыдущей ревизии.
 Private Sub TestConcreteMeshCenter(ByRef stats As TTestStats)
     Dim shift As Variant, section As CSectionModel, frame As CSectionNumericalFrame
     Dim props As CSectionPropertiesCalculator, centerX As Double, centerY As Double, area As Double
@@ -315,7 +315,7 @@ Private Sub TestGeometryReviewLocalArcArea(ByRef stats As TTestStats, ByVal radi
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Смещённый квадрат сохраняет точную площадь и обход до WCS=1e10; исходные ребра остаются в прежней системе координат.
+' Смещённый квадрат сохраняет точную площадь и обход до WCS=1e10; исходные ребра остаются в исходной системе координат.
 Private Sub TestGeometryReviewOffsetTranslation(ByRef stats As TTestStats, ByVal side As Double, ByVal shift As Double, ByVal clockwise As Boolean)
     Dim edges() As TRegionEdge, distances(1 To 4) As Double, variable As CGeometryVariableOffset
     Dim region As CConcreteRegion, i As Long, sign As Double, oldX As Double, oldY As Double, prefix As String
@@ -1290,7 +1290,7 @@ Private Sub TestRectanglesGeometry(ByRef stats As TTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет новые режимы Rectangles без изменения старого LSection: один
+' Проверяет режимы Rectangles и независимость генерации LSection: один
 ' прямоугольник, два прямоугольника без смещения и два прямоугольника со
 ' смещением верхнего блока по X.
 Private Sub TestRectanglesGeometryModes(ByRef stats As TTestStats)
@@ -2423,7 +2423,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Строит одно скругленное сечение с шагами 50/25/12.5 мм и записывает A/центр/I.
-' Последнее уточнение проверяется прежними относительными допусками;
+' Последнее уточнение проверяется фиксированными относительными допусками;
 ' численные результаты не заменяются текущей сеткой как новым эталоном.
 Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     Dim filletPolygon As CPolygonSpec
@@ -2937,7 +2937,7 @@ End Function
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
 ' Проверяет, что повторный Initialize заменяет контур, валидность и причину,
-' а запрос точки не принимает прежнюю геометрию после невалидного ввода.
+' а запрос точки не принимает геометрию предыдущей инициализации после невалидного ввода.
 Public Function RunAudit03GeometryLifecycleTests(Optional ByVal includeContourDetails As Boolean = False) As String
     On Error GoTo Failed
     Dim stats As TTestStats
@@ -2965,7 +2965,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Малый радиус делает второй основной стержень почти совпадающим с первым:
-' без ранней защиты старый маршрут быстро отказывает по координатам, а не
+' при отключённой ранней защите контрольный маршрут быстро отказывает по координатам, а не
 ' запускает миллиардный цикл. Oracle требует именно причины количества.
 ' Затем тот же builder строит обычные ряды и сохраняет выключение первого.
 Private Sub TestAudit03CircleCountGuard(ByRef stats As TTestStats)
@@ -3086,7 +3086,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' невалидное описание не должно превращаться в пригодную область
-' или неявно возвращать прежний снимок после повторной инициализации формы.
+' или неявно возвращать снимок предыдущей инициализации после повторной инициализации формы.
 Private Function TestGeometryPreparationFails(ByVal definition As CSectionDefinition) As Boolean
     Dim geometry As CGeometryRegion, number As Long, description As String
     On Error Resume Next
@@ -3284,8 +3284,8 @@ End Function
 
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' готовое описание сечения проверяется общим способом вместо прежнего изменяемого
-' свойства формы IsValid.
+' Проверяет завершённое неизменяемое описание сечения; изменяемое
+' свойство формы IsValid для этого контракта не используется.
 Private Function TestPublishedDefinition(ByVal definition As CSectionDefinition) As Boolean
     If Not definition Is Nothing Then TestPublishedDefinition = definition.IsSealed
 End Function
@@ -3371,7 +3371,7 @@ Private Sub TestGeometryReviewSP35Rectangles(ByRef stats As TTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Ошибка изменяемой повторной сборки сбрасывает старый результат, а отказ перестройки Frozen-сетки сохраняет опубликованные элементы.
+' Ошибка изменяемой повторной сборки сбрасывает результат предыдущей сборки, а отказ перестройки Frozen-сетки сохраняет опубликованные элементы.
 Private Sub TestGeometryReviewMeshFailureState(ByRef stats As TTestStats)
     Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, oldCount As Long, failed As Long
     Dim builder As CSectionModelBuilder, model As CSectionModel
@@ -3485,7 +3485,7 @@ Private Sub TestGeometryReviewConcreteAddFailureState(ByRef stats As TTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' В штатном диапазоне проверяется точное равенство прежнему нормализатору; огромные углы проверяются только на исправленной реализации.
+' В штатном диапазоне проверяется точное равенство независимому ограниченному эталону нормализации; огромные углы проверяются на рабочей реализации с полной защитой диапазона.
 Private Sub TestGeometryReviewLargeAngles(ByRef stats As TTestStats)
     Dim angle As Variant, model As CSectionModel, expected As Double, actual As Double
     For Each angle In Array(-2# * GEOM_PI, -GEOM_PI, -GEOM_PI / 2#, -0.1, 0#, 0.1, GEOM_PI / 2#, GEOM_PI, 2# * GEOM_PI)
@@ -3536,7 +3536,7 @@ Private Sub TestGeometryReviewHugeAngle(ByRef stats As TTestStats, ByVal angle A
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сохраняет прежнюю арифметику только для ограниченных тестовых углов; не вызывается с заведомо зависающим аргументом.
+' Воспроизводит независимую эталонную арифметику только для ограниченных тестовых углов; не вызывается с заведомо зависающим аргументом.
 Private Function TestGeometryReviewLegacyAngle(ByVal angle As Double) As Double
     Do While angle > GEOM_PI / 2#: angle = angle - GEOM_PI: Loop
     Do While angle <= -GEOM_PI / 2#: angle = angle + GEOM_PI: Loop
@@ -3635,7 +3635,7 @@ Private Sub TestGeometryReviewInertiaOracle(ByVal fixtureKind As Long, ByVal es 
         weight(1) = 20000#: x(1) = -100#: y(1) = -40#: ownIx(1) = 20000# * 100# ^ 2 / 12#: ownIy(1) = 20000# * 200# ^ 2 / 12#
         weight(2) = 30000#: x(2) = 150#: y(2) = 90#: ownIx(2) = 30000# * 200# ^ 2 / 12#: ownIy(2) = 30000# * 150# ^ 2 / 12#
         If es > 0# Then
-            count = 4: factor = es / 30000# - 1# ' Сетка содержит бетон в месте стержня: добавочный вес равен прежнему (Es/Eb-1)*As.
+            count = 4: factor = es / 30000# - 1# ' Сетка содержит бетон в месте стержня: добавочный вес равен (Es/Eb-1)*As.
             barArea = 100# * GEOM_PI: weight(3) = factor * barArea: x(3) = -80#: y(3) = -40#
             ownIx(3) = factor * barArea * barArea / (4# * GEOM_PI): ownIy(3) = ownIx(3)
             barArea = 256# * GEOM_PI: weight(4) = factor * barArea: x(4) = 130#: y(4) = 80#
@@ -3654,7 +3654,7 @@ Private Sub TestGeometryReviewInertiaOracle(ByVal fixtureKind As Long, ByVal es 
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет обе явные политики касательной у стыка, близкие станции, открытые концы и прежнюю семантику замыкания.
+' Проверяет обе явные политики касательной у стыка, близкие станции, открытые концы и заданный контракт замыкания.
 Public Function TestRunWorkingCornerJointTests() As String
     On Error GoTo Failed
     Dim stats As TTestStats

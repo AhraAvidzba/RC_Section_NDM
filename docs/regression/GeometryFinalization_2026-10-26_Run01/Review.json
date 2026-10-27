@@ -1,0 +1,206 @@
+{
+  "SchemaVersion": 1,
+  "Status": "STATIC_REVIEW_COMPLETE_NATIVE_VALIDATION_PENDING",
+  "ReviewedAtUtc": "2026-10-26T18:30:41.4166598Z",
+  "CoveredFiles": [
+    {
+      "Path": "src/Geometry/CFiberMeshBuilder.cls",
+      "SHA256": "F448EEE2E18442EAF5D33E31CB49A70443CD433026422E6FD28F7654A44D2BD8",
+      "Lines": 313,
+      "CommentLines": 63
+    },
+    {
+      "Path": "src/Geometry/CGeometryDiagnostic.cls",
+      "SHA256": "8946153D9883BC493BB4015304782921F4E281D52C51C58FDD5A90C60ECFD49B",
+      "Lines": 43,
+      "CommentLines": 16
+    },
+    {
+      "Path": "src/Geometry/CGeometryPath.cls",
+      "SHA256": "097A1BFE5E558BB3760D3229EDA4B20E316525A1A458BEBE8E92212325C762B2",
+      "Lines": 595,
+      "CommentLines": 119
+    },
+    {
+      "Path": "src/Geometry/CGeometryRegion.cls",
+      "SHA256": "ECB70A3363D36A7E50DCA0A3F72AE95E254FBCA8C8F8FBBF2E18C2120DDE53B1",
+      "Lines": 134,
+      "CommentLines": 35
+    },
+    {
+      "Path": "src/Geometry/CGeometryVariableOffset.cls",
+      "SHA256": "02E83329F8AB537AFEB0629252C5EF34324314064A46B37EAC8572C49D231579",
+      "Lines": 157,
+      "CommentLines": 27
+    },
+    {
+      "Path": "src/Geometry/CPolygonSpec.cls",
+      "SHA256": "DBE2CEC2D9A456F01A39FBA31149A80F44D84A3FF4179EE7B4AB434BA1C79564",
+      "Lines": 163,
+      "CommentLines": 51
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeCircle.cls",
+      "SHA256": "A3DEA88974246C72C591ADB15EE9BECBE083CCF39B889736E9FDD55739D0488E",
+      "Lines": 131,
+      "CommentLines": 60
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "SHA256": "7B3810A34EFAFB0754487FCED0A72CFB909795E93630AECA449FD0D177FD18E5",
+      "Lines": 310,
+      "CommentLines": 130
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipePointedSection.cls",
+      "SHA256": "D1BE9CB8EA5D308CA7FA8333C9329D6BDF1DB0389CD7FD962A9993DD80010EA9",
+      "Lines": 242,
+      "CommentLines": 99
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRectangles.cls",
+      "SHA256": "E6353760A443EFA00CF4C1A9F228DDC7A767654ED4046447254FD0E595303FD7",
+      "Lines": 223,
+      "CommentLines": 95
+    },
+    {
+      "Path": "src/Section/CConcreteElement.cls",
+      "SHA256": "E88CF294C5F935EFC094759D7A38CEC12C35F574C111B070A0807890FF37610E",
+      "Lines": 195,
+      "CommentLines": 55
+    },
+    {
+      "Path": "src/Section/CConcreteRegion.cls",
+      "SHA256": "BFC6F341E90483978620556698EE3AFEDCBC9224217592A458974F7502919B77",
+      "Lines": 154,
+      "CommentLines": 48
+    },
+    {
+      "Path": "src/Section/CRebarContactBuilder.cls",
+      "SHA256": "2F767080D38BBBF267C788FF75D112B086D2552F0C5835E4E46FA706764BC43C",
+      "Lines": 111,
+      "CommentLines": 33
+    },
+    {
+      "Path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "SHA256": "96A02A8D2F9955753610AD4F295AFC4DF2021C2CD86D496E071719C7D6E82257",
+      "Lines": 89,
+      "CommentLines": 12
+    },
+    {
+      "Path": "src/Section/CRebarOffsetContours.cls",
+      "SHA256": "8FA8074CC55E87D99794531AC52A9B08D33AD57DF5C56712767C8DA3C2EB3F73",
+      "Lines": 425,
+      "CommentLines": 65
+    },
+    {
+      "Path": "src/Section/CRebarRuleOptions.cls",
+      "SHA256": "5DD52F9C2943224D069BD02D2BA651EAF54CEE16BB1448A81BF4C3BCDE48A95B",
+      "Lines": 130,
+      "CommentLines": 42
+    },
+    {
+      "Path": "src/Section/CSectionAnnotations.cls",
+      "SHA256": "D06653F64D8F167074BE5C377CB2B491BAACAEA0ED26350929D1C5CD500D1080",
+      "Lines": 194,
+      "CommentLines": 43
+    },
+    {
+      "Path": "src/Section/CSectionContours.cls",
+      "SHA256": "149D74A7FF734822325F2ED14AC092D4834EEDD7A1BE7B92290F02451BC4FC9B",
+      "Lines": 181,
+      "CommentLines": 45
+    },
+    {
+      "Path": "src/Section/CSectionDefinition.cls",
+      "SHA256": "78964C7C87D373648022123D4F807A39263047D044FC5888D1C96018F3652B9C",
+      "Lines": 435,
+      "CommentLines": 90
+    },
+    {
+      "Path": "src/Section/CSectionDefinitionBuilder.cls",
+      "SHA256": "104928A202BEDCBC4563FD9B9D8978A865F05CDD0B64C1E9F4F2DBE5E883ADC5",
+      "Lines": 535,
+      "CommentLines": 112
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "7414530A259F86737B82F82F92726C838C6A698095656121223502CFC97D7195",
+      "Lines": 2204,
+      "CommentLines": 278
+    },
+    {
+      "Path": "src/Section/CSectionInputReader.cls",
+      "SHA256": "9810C06F5760D32752CB69F0A87DF650C5F210558A12B63B1A328A097ECB680A",
+      "Lines": 228,
+      "CommentLines": 55
+    },
+    {
+      "Path": "src/Section/CSectionInputTable.cls",
+      "SHA256": "3C7FCB4B4181E0F37179AFA28B018682B9D46401395CC8C7323DACA093A259FD",
+      "Lines": 280,
+      "CommentLines": 49
+    },
+    {
+      "Path": "src/Section/CSectionModel.cls",
+      "SHA256": "43B5A0675B5A7484FD76DC729D074DBF18EADB3A02212474A28C820914004345",
+      "Lines": 1192,
+      "CommentLines": 233
+    },
+    {
+      "Path": "src/Section/CSectionModelBuilder.cls",
+      "SHA256": "8EECC23EF584154694CD9FED6DAFBCD47D0D65BF569BB844AE94BA4193A4F918",
+      "Lines": 70,
+      "CommentLines": 13
+    },
+    {
+      "Path": "src/Section/CSectionPropertiesCalculator.cls",
+      "SHA256": "FC274ED49408723EDC901AF2769259C33505210ABD2887ED6D1F034CB2BB738D",
+      "Lines": 838,
+      "CommentLines": 212
+    },
+    {
+      "Path": "src/Section/CSectionRecipeContext.cls",
+      "SHA256": "1088CDE1E89361A750946BA69BB0DDA8B8F78259E5C9001D668DFF1097E04DC0",
+      "Lines": 70,
+      "CommentLines": 22
+    },
+    {
+      "Path": "src/Section/ISectionRecipe.cls",
+      "SHA256": "D963BC8C3C3F105FED9825B07DB11A0258E275604286FEA66D7322488AD5EDF0",
+      "Lines": 22,
+      "CommentLines": 9
+    }
+  ],
+  "ExcludedOwnedByOtherAgents": [
+    "CRebarRuleExecutor.cls",
+    "CSectionBuilder.cls",
+    "CSectionAnnotationBuilder.cls",
+    "CRebarLayout.cls"
+  ],
+  "CommentFindings": [
+    "Исторические формулировки заменены действующими контрактами Adaptive/Contour и компактного прямоугольного описания.",
+    "CSectionPropertiesCalculator: габариты описаны по фактической границе или компактной оболочке; исходные оси WCS названы явно.",
+    "CGeometryRegion.GetExtremePoints: устранено ложное указание заданного направления; метод возвращает вершины и осевые экстремумы дуг.",
+    "CFiberMeshBuilder: Width/Height описывают опорный прямоугольник; A/c/I и граница Contour относятся к фактической части, FillFactor=1.",
+    "Шапки рецептов, неизменяемых описаний, путей, ввода, контуров и аннотаций сверены с вызываемыми общими построителями и ограничениями Seal/Clone."
+  ],
+  "ForbiddenCommentMatches": 0,
+  "FunctionalChanges": [
+    "Атомарный AddConcreteElement с последним Optional exactRegion после rotationKnown; валидация и клонирование до публикации сущности, ID/count/revision/числовых проекций.",
+    "Query.ValidateBoundaryProperties: единые допуски A/c/I и положительный тензор без размерного нижнего порога; модель и восстановление снимка используют общий контракт.",
+    "CFiberMeshBuilder.FiberGeometry возвращает Clone одной области или Nothing; готовый массив и solver-проекции не копируются.",
+    "General.MinElementArea: strict Area < minArea для каждой конечной бетонной части; равенство сохраняет, ноль отключает; раздельные части и отверстия учитываются до фильтра.",
+    "Оптимизации: один query на BuildMesh Contour; без Collection для внутреннего прямоугольника; Adaptive не разворачивает поддерево, если все его потомки заведомо меньше порога."
+  ],
+  "Tolerances": {
+    "Area": "GEOM_TOLERANCE + 1e-7 * actualArea",
+    "Center": "GEOM_TOLERANCE + 1e-12 * max(abs(expectedX),abs(expectedY))",
+    "Inertia": "GEOM_TOLERANCE + 2e-5 * max(actualIxc,actualIyc)",
+    "Tensor": "Ix>0, Iy>0, abs(Ixy/sqrt(Ix)/sqrt(Iy))<1"
+  },
+  "TestsAddedToExistingEntrypoint": "RunContourCellMeshTests: atomic add failures/IDs/revision/cached domain; MinArea equality/zero/final Adaptive+Contour/disconnected/hole net area; mutable returned FiberGeometry independence",
+  "NativeExcelOrCadStarted": false,
+  "MathematicalIntegrationOrSolverAlgorithmChanged": false,
+  "FullAcceptanceNotClaimed": true
+}

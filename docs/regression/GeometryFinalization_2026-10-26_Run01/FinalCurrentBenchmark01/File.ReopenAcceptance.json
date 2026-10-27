@@ -1,0 +1,616 @@
+﻿{
+    "Case":  "File",
+    "Trial":  "Warm2",
+    "Passed":  true,
+    "ActualCloseOpen":  true,
+    "OutsideAllThreeModeTimings":  true,
+    "NewExcelCreated":  false,
+    "ProductionCalculationInvoked":  false,
+    "Stage":  "Complete",
+    "Failure":  null,
+    "ArtifactPath":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2\\RC_Section_NDM.xlsm",
+    "ArtifactSHA256":  "DEC45221FA3A749D0503D8F853E42590B2C205363E87CB61A523554ABDA1AD66",
+    "RepairModePropertySupported":  true,
+    "RepairModeObserved":  false,
+    "ReadOnly":  true,
+    "InputMatricesUnchanged":  true,
+    "GeometryFingerprintUnchanged":  true,
+    "GeometryFingerprintSHA256":  "0A7DE5F23C40947F544860F80A4EC9A490DC053F689719FE86BFFDA449057352",
+    "PositiveControls":  {
+                             "LoadCasesChecked":  30,
+                             "SummaryAndStrengthIDsInExactInputOrder":  true,
+                             "PhysicalElementStateRows":  114080,
+                             "StatesReadFrom":  "CurrentCalculationSnapshot.ResultTable via public ReadAnchoredResultTable",
+                             "PhysicalElementStateRowsOnSheet":  0,
+                             "All30LoadCasesProcessedIncludingFourExpectedInputErr":  true,
+                             "InputErrIDs":  [
+                                                 "PERF_14",
+                                                 "PERF_21",
+                                                 "PERF_27",
+                                                 "PERF_28"
+                                             ],
+                             "EveryExistingPhysicalStateHasAllExpectedElementIDs":  true,
+                             "EveryLCProfileStateHas1240UniqueElements":  true,
+                             "LCProfileStateGroups":  92,
+                             "EveryPhysicalRowHasNumericStrainAndStress":  true,
+                             "RunID":  46322.204965277779,
+                             "Details":  [
+                                             {
+                                                 "LoadCase":  "PERF_01",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_02",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_03",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_04",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_05",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_06",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_07",
+                                                 "OverallStatus":  "OK",
+                                                 "HistoricalStatus":  "OK",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  2,
+                                                 "NumericStrengthFields":  19
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_08",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_09",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_10",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_11",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_12",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_13",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  3,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_14",
+                                                 "OverallStatus":  "InputErr",
+                                                 "HistoricalStatus":  "InputErr",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  2,
+                                                 "NumericStrengthFields":  19
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_15",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_16",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_17",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_18",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_19",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_20",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_21",
+                                                 "OverallStatus":  "InputErr",
+                                                 "HistoricalStatus":  "InputErr",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  2,
+                                                 "NumericStrengthFields":  19
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_22",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_23",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_24",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_25",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_26",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_27",
+                                                 "OverallStatus":  "InputErr",
+                                                 "HistoricalStatus":  "InputErr",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_28",
+                                                 "OverallStatus":  "InputErr",
+                                                 "HistoricalStatus":  "InputErr",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  2,
+                                                 "NumericStrengthFields":  19
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_29",
+                                                 "OverallStatus":  "BaseFail",
+                                                 "HistoricalStatus":  "BaseFail",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             },
+                                             {
+                                                 "LoadCase":  "PERF_30",
+                                                 "OverallStatus":  "FAIL",
+                                                 "HistoricalStatus":  "FAIL",
+                                                 "StatusClassificationRequired":  false,
+                                                 "NumericSummaryReserves":  1,
+                                                 "NumericStrengthFields":  21
+                                             }
+                                         ]
+                         },
+    "PhysicalFileBodyProbe":  {
+                                  "ObservedUTC":  "2026-10-27T01:55:20.9642471+00:00",
+                                  "RangeName":  "rngNDMElementResults",
+                                  "Sheet":  "Results",
+                                  "AnchorAddress":  "$AN$156",
+                                  "AnchorRow":  156,
+                                  "AnchorColumn":  40,
+                                  "LastRowEnd":  121,
+                                  "LastRowIsBelowHeader":  false,
+                                  "ExpectedPhysicalBodyAddress":  "$AN$157:$AV$114236",
+                                  "ExpectedPhysicalBodyRows":  114080,
+                                  "ExpectedPhysicalBodyColumns":  9,
+                                  "ExpectedPhysicalBodyNonemptyCells":  0,
+                                  "NoPhysicalBodyData":  true,
+                                  "HeaderMayBeEntirelyEmptyInLegacyFile":  true,
+                                  "Samples":  [
+                                                  {
+                                                      "WorksheetRow":  156,
+                                                      "Address":  "$AN$156:$AV$156",
+                                                      "Cells":  [
+                                                                    {
+                                                                        "Column":  40,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  41,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  42,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  43,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  44,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  45,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  46,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  47,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  48,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    }
+                                                                ]
+                                                  },
+                                                  {
+                                                      "WorksheetRow":  1,
+                                                      "Address":  "$AN$1:$AV$1",
+                                                      "Cells":  [
+                                                                    {
+                                                                        "Column":  40,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  41,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  42,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  43,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  44,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  45,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  46,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  47,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  48,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    }
+                                                                ]
+                                                  },
+                                                  {
+                                                      "WorksheetRow":  2,
+                                                      "Address":  "$AN$2:$AV$2",
+                                                      "Cells":  [
+                                                                    {
+                                                                        "Column":  40,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  41,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  42,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  43,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  44,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  45,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  46,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  47,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  48,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    }
+                                                                ]
+                                                  },
+                                                  {
+                                                      "WorksheetRow":  57040,
+                                                      "Address":  "$AN$57040:$AV$57040",
+                                                      "Cells":  [
+                                                                    {
+                                                                        "Column":  40,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  41,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  42,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  43,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  44,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  45,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  46,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  47,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  48,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    }
+                                                                ]
+                                                  },
+                                                  {
+                                                      "WorksheetRow":  114080,
+                                                      "Address":  "$AN$114080:$AV$114080",
+                                                      "Cells":  [
+                                                                    {
+                                                                        "Column":  40,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  41,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  42,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  43,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  44,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  45,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  46,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  47,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    },
+                                                                    {
+                                                                        "Column":  48,
+                                                                        "Value2":  null,
+                                                                        "ValueType":  "Empty"
+                                                                    }
+                                                                ]
+                                                  },
+                                                  {
+                                                      "WorksheetRow":  121,
+                                                      "Address":  "$AN$121:$AV$121",
+                                                      "Cells":  [
+                                                                    {
+                                                                        "Column":  40,
+                                                                        "Value2":  "φm",
+                                                                        "ValueType":  "System.String"
+                                                                    },
+                                                                    {
+                                                                        "Column":  41,
+                                                                        "Value2":  "φ",
+                                                                        "ValueType":  "System.String"
+                                                                    },
+                                                                    {
+                                                                        "Column":  42,
+                                                                        "Value2":  "Nult, tf",
+                                                                        "ValueType":  "System.String"
+                                                                    },
+                                                                    {
+                                                                        "Column":  43,
+                                                                        "Value2":  "Nult/N",
+                                                                        "ValueType":  "System.String"
+                                                                    },
+                                                                    {
+                                                                        "Column":  44,
+                                                                        "Value2":  "статус",
+                                                                        "ValueType":  "System.String"
+                                                                    },
+                                                                    {
+                                                                        "Column":  45,
+                                                                        "Value2":  "ec,sl, m",
+                                                                        "ValueType":  "System.String"
+                                                                    },
+                                                                    {
+                                                                        "Column":  46,
+                                                                        "Value2":  "ec, m",
+                                                                        "ValueType":  "System.String"
+                                                                    },
+                                                                    {
+                                                                        "Column":  47,
+                                                                        "Value2":  "r, m",
+                                                                        "ValueType":  "System.String"
+                                                                    },
+                                                                    {
+                                                                        "Column":  48,
+                                                                        "Value2":  "Ncr, tf",
+                                                                        "ValueType":  "System.String"
+                                                                    }
+                                                                ]
+                                                  }
+                                              ],
+                                  "ReadOutsideMeasuredInterval":  true
+                              },
+    "SerializedSameFolderLink":  {
+                                     "FileName":  "NDM_Test_1232_30.ndm",
+                                     "SHA256":  "983EC065C19F4BCD41672F79E78327320B901CE4D0462BEAC67ED2A31DAB061A",
+                                     "MetadataSource":  "Saved workbook docProps/custom.xml",
+                                     "WorkbookPath":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2\\RC_Section_NDM.xlsm",
+                                     "NoCOMCustomPropertiesBinding":  true
+                                 },
+    "ActualSavedArtifactReadSucceeded":  true,
+    "ConcreteShapes":  1232,
+    "RebarShapes":  8,
+    "ArtifactUnchanged":  true
+}

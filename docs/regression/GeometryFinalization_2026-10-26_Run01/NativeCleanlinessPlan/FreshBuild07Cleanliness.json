@@ -1,0 +1,56 @@
+﻿{
+  "Status": "PASS_CLEAN_PACKAGE_ONLY",
+  "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07\\RC_Section_NDM.xlsm",
+  "SourceSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+  "SourceUnchanged": true,
+  "BuildCompileConfirmedByReceipt": true,
+  "NativeCompiledWithoutImport": false,
+  "NativeReadonlyExportNoImport": true,
+  "Controls": {
+    "ResultsNonemptyBuilderValues": 38,
+    "ExactContourHeaders": 17,
+    "ExactElementHeaders": 18,
+    "OtherFiveTechnicalTablesIncludingHeadersEmpty": true,
+    "FourSummaryBodiesEmpty": true,
+    "UnexpectedResultsData": [],
+    "NoSnapshotCustomProperties": true,
+    "DefaultLoadRows": 30,
+    "FirstProfile": "PR1",
+    "AllLoadPathAuto": true,
+    "IDsN_Mx_My_CommentsEmpty": true,
+    "NoLinkedPathsOpened": true
+  },
+  "NoAppsLaunched": true,
+  "NoUserFilesOrLinkedPathsOpened": true,
+  "FullRegressionPass": false,
+  "Evidence": [
+    {
+      "Path": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07.json",
+      "SHA256": "95C4B9B7046F6E735DC311D46C50C850931A2DF8AE9E9BC6961189B9B54E8DF1"
+    },
+    {
+      "Path": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeRelease04\\NativeRelease.json",
+      "SHA256": "7B7AA5002513EB760C7D59A6EDE070DCCB9F29040A13AB19037980EFB2684758"
+    },
+    {
+      "Path": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeRelease04\\SourceEquality.json",
+      "SHA256": "3AEEA25E28F042476F88171006F865C05036AB7580D6EB6303ABB8A695CE8702"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Build-Workbook.ps1",
+      "SHA256": "DC69F4D835F45F9B094D4FE3CCC329D23A16631FB2025F9C4DACA260CA8A9451"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\SettingsCatalog.ps1",
+      "SHA256": "45BADACB722F594D1818AFF55060A68B2705FD29473073A6B4139F7FD7B37CC7"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\WorkbookLayout.json",
+      "SHA256": "139B36C9AD3FBCB2DCF9D71384FE92FD0DF4F093EEC7472C1EDF70FEF160C93C"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\TestPreparePerformanceBooks.py",
+      "SHA256": "82D289EFADB489B82495A3B0AB7B1C08DB8AEBC1C8346E080408E430907B0FF9"
+    }
+  ]
+}

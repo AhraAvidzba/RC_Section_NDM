@@ -1,0 +1,1149 @@
+{
+  "Status": "FUNCTIONAL_WORKFLOW_REVIEW_PASS_COLD10SECOND_GOAL_NOT_MET_MATH_PENDING",
+  "ObservedUTC": "2026-10-27T02:00:44.748387+00:00",
+  "Calls": [
+    {
+      "Case": "Excel",
+      "Trial": "Cold",
+      "WallSeconds": 12.109655,
+      "AtMostTenSeconds": false,
+      "Positive": {
+        "RunID": 46322.203888888886,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "GeometryUnchangedExceptRunID": true,
+      "SavedGeometryHashNormalizesSignedZeroAsDeclaredByExistingWorker": true,
+      "ActualSavedCopySHA256": "20859FCBAA2FC23571FFB1C76B8D827460A99F0D4F362826CCA65DE5E5A6D6D5",
+      "PlotConcrete": 1232,
+      "PlotRebar": 8,
+      "WholeExecutionReportRead": true,
+      "ReportLines": 3426,
+      "ReportInputErrIDs": [
+        "PERF_14",
+        "PERF_21",
+        "PERF_27",
+        "PERF_28"
+      ],
+      "NoRemeshOrReimport": true
+    },
+    {
+      "Case": "Excel",
+      "Trial": "Warm1",
+      "WallSeconds": 9.4285677,
+      "AtMostTenSeconds": true,
+      "Positive": {
+        "RunID": 46322.20408564815,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "GeometryUnchangedExceptRunID": true,
+      "SavedGeometryHashNormalizesSignedZeroAsDeclaredByExistingWorker": true,
+      "ActualSavedCopySHA256": "97C84F8D993EAE96CAF071BBF085759B6806F9E017AF23219346F03CC1F50B18",
+      "PlotConcrete": 1232,
+      "PlotRebar": 8,
+      "WholeExecutionReportRead": true,
+      "ReportLines": 3426,
+      "ReportInputErrIDs": [
+        "PERF_14",
+        "PERF_21",
+        "PERF_27",
+        "PERF_28"
+      ],
+      "NoRemeshOrReimport": true
+    },
+    {
+      "Case": "Excel",
+      "Trial": "Warm2",
+      "WallSeconds": 8.9722447,
+      "AtMostTenSeconds": true,
+      "Positive": {
+        "RunID": 46322.20429398148,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "GeometryUnchangedExceptRunID": true,
+      "SavedGeometryHashNormalizesSignedZeroAsDeclaredByExistingWorker": true,
+      "ActualSavedCopySHA256": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8",
+      "PlotConcrete": 1232,
+      "PlotRebar": 8,
+      "WholeExecutionReportRead": true,
+      "ReportLines": 3426,
+      "ReportInputErrIDs": [
+        "PERF_14",
+        "PERF_21",
+        "PERF_27",
+        "PERF_28"
+      ],
+      "NoRemeshOrReimport": true
+    },
+    {
+      "Case": "File",
+      "Trial": "Cold",
+      "WallSeconds": 10.425996099999999,
+      "AtMostTenSeconds": false,
+      "Positive": {
+        "RunID": 46322.204618055555,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "GeometryUnchangedExceptRunID": true,
+      "SavedGeometryHashNormalizesSignedZeroAsDeclaredByExistingWorker": true,
+      "ActualSavedCopySHA256": "C5BED10437FA400C0BE13BF9C6E56BECC2F599F186A9CE171C590A9009524CA1",
+      "PlotConcrete": 1232,
+      "PlotRebar": 8,
+      "WholeExecutionReportRead": true,
+      "ReportLines": 3426,
+      "ReportInputErrIDs": [
+        "PERF_14",
+        "PERF_21",
+        "PERF_27",
+        "PERF_28"
+      ],
+      "NoRemeshOrReimport": true
+    },
+    {
+      "Case": "File",
+      "Trial": "Warm1",
+      "WallSeconds": 6.8420404,
+      "AtMostTenSeconds": true,
+      "Positive": {
+        "RunID": 46322.20480324074,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "GeometryUnchangedExceptRunID": true,
+      "SavedGeometryHashNormalizesSignedZeroAsDeclaredByExistingWorker": true,
+      "ActualSavedCopySHA256": "582D1F74B0D769F06BE0A2AC1B7F0775720F43BB8863DACA144100511EAC7052",
+      "PlotConcrete": 1232,
+      "PlotRebar": 8,
+      "WholeExecutionReportRead": true,
+      "ReportLines": 3426,
+      "ReportInputErrIDs": [
+        "PERF_14",
+        "PERF_21",
+        "PERF_27",
+        "PERF_28"
+      ],
+      "NoRemeshOrReimport": true
+    },
+    {
+      "Case": "File",
+      "Trial": "Warm2",
+      "WallSeconds": 6.6303477,
+      "AtMostTenSeconds": true,
+      "Positive": {
+        "RunID": 46322.20496527778,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "GeometryUnchangedExceptRunID": true,
+      "SavedGeometryHashNormalizesSignedZeroAsDeclaredByExistingWorker": true,
+      "ActualSavedCopySHA256": "DEC45221FA3A749D0503D8F853E42590B2C205363E87CB61A523554ABDA1AD66",
+      "PlotConcrete": 1232,
+      "PlotRebar": 8,
+      "WholeExecutionReportRead": true,
+      "ReportLines": 3426,
+      "ReportInputErrIDs": [
+        "PERF_14",
+        "PERF_21",
+        "PERF_27",
+        "PERF_28"
+      ],
+      "NoRemeshOrReimport": true
+    }
+  ],
+  "ActualWarm2Reopen": [
+    {
+      "Case": "Excel",
+      "ActualCloseOpen": true,
+      "Readonly": true,
+      "Positive": {
+        "RunID": 46322.20429398148,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "ArtifactSHA256": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8",
+      "NoNewExcelOrSolve": true
+    },
+    {
+      "Case": "File",
+      "ActualCloseOpen": true,
+      "Readonly": true,
+      "Positive": {
+        "RunID": 46322.20496527778,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "ArtifactSHA256": "DEC45221FA3A749D0503D8F853E42590B2C205363E87CB61A523554ABDA1AD66",
+      "NoNewExcelOrSolve": true
+    }
+  ],
+  "AllSixNativeCallsReviewed": true,
+  "SixDistinctRunIDs": true,
+  "ColdOverTenSecondsPreserved": [
+    {
+      "Case": "Excel",
+      "Trial": "Cold",
+      "WallSeconds": 12.109655,
+      "AtMostTenSeconds": false,
+      "Positive": {
+        "RunID": 46322.203888888886,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "GeometryUnchangedExceptRunID": true,
+      "SavedGeometryHashNormalizesSignedZeroAsDeclaredByExistingWorker": true,
+      "ActualSavedCopySHA256": "20859FCBAA2FC23571FFB1C76B8D827460A99F0D4F362826CCA65DE5E5A6D6D5",
+      "PlotConcrete": 1232,
+      "PlotRebar": 8,
+      "WholeExecutionReportRead": true,
+      "ReportLines": 3426,
+      "ReportInputErrIDs": [
+        "PERF_14",
+        "PERF_21",
+        "PERF_27",
+        "PERF_28"
+      ],
+      "NoRemeshOrReimport": true
+    },
+    {
+      "Case": "File",
+      "Trial": "Cold",
+      "WallSeconds": 10.425996099999999,
+      "AtMostTenSeconds": false,
+      "Positive": {
+        "RunID": 46322.204618055555,
+        "Rows": 114080,
+        "ProfileStateGroups": 92,
+        "ElementsPerGroup": 1240,
+        "LoadCases": 30,
+        "InputErrIDs": [
+          "PERF_14",
+          "PERF_21",
+          "PERF_27",
+          "PERF_28"
+        ],
+        "OverallStatusCounts": {
+          "FAIL": 16,
+          "BaseFail": 9,
+          "OK": 1,
+          "InputErr": 4
+        }
+      },
+      "GeometryUnchangedExceptRunID": true,
+      "SavedGeometryHashNormalizesSignedZeroAsDeclaredByExistingWorker": true,
+      "ActualSavedCopySHA256": "C5BED10437FA400C0BE13BF9C6E56BECC2F599F186A9CE171C590A9009524CA1",
+      "PlotConcrete": 1232,
+      "PlotRebar": 8,
+      "WholeExecutionReportRead": true,
+      "ReportLines": 3426,
+      "ReportInputErrIDs": [
+        "PERF_14",
+        "PERF_21",
+        "PERF_27",
+        "PERF_28"
+      ],
+      "NoRemeshOrReimport": true
+    }
+  ],
+  "FirstLimitMarkerPreserved": {
+    "Case": "Excel",
+    "Trial": "Cold",
+    "Seconds": 12.109655,
+    "InitialPositiveControlsPendingSnapshotIsNotFinalAcceptance": true
+  },
+  "SourcesAndMetadataUnchanged": [
+    {
+      "Kind": "Excel",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\RC_Section_NDM_Test_1232_30_Current.xlsm",
+      "SHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4",
+      "Unchanged": true
+    },
+    {
+      "Kind": "File",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\RC_Section_NDM_Test_1232_30_Current.xlsm",
+      "SHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4",
+      "Unchanged": true
+    },
+    {
+      "Kind": "FinalizedSource",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07\\RC_Section_NDM.xlsm",
+      "SHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "Unchanged": true
+    },
+    {
+      "Kind": "PairProof",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\PairPreparation.json",
+      "SHA256": "8926B1B6EC1B09A7695016143E97CA0ADB04FAFB12D9DC4568F15134BC63B9A3",
+      "Unchanged": true
+    },
+    {
+      "Kind": "OriginControls",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\ExpectedOriginControls.json",
+      "SHA256": "5A68DA53C3DEBB0BA4AC3592B0C9C56A077FB29ACBB98D03976D854B4D6F201B",
+      "Unchanged": true
+    }
+  ],
+  "VBAIdenticalToF07NoInjection": true,
+  "TerminalPostChildClosure": {
+    "Passed": true,
+    "OwnershipComplete": true,
+    "Worker": {
+      "State": "Absent",
+      "PID": 30840,
+      "ExpectedStartTicksUTC": "639286628015502524",
+      "ExpectedName": "powershell",
+      "Error": null
+    },
+    "Excel": [
+      {
+        "Identity": {
+          "PID": 30600,
+          "StartTicksUTC": "639286628028731729",
+          "Name": "EXCEL",
+          "Case": "Excel",
+          "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4"
+        },
+        "State": {
+          "State": "Absent",
+          "PID": 30600,
+          "ExpectedStartTicksUTC": "639286628028731729",
+          "ExpectedName": "EXCEL",
+          "Error": null
+        }
+      },
+      {
+        "Identity": {
+          "PID": 18984,
+          "StartTicksUTC": "639286628694998912",
+          "Name": "EXCEL",
+          "Case": "File",
+          "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4"
+        },
+        "State": {
+          "State": "Absent",
+          "PID": 18984,
+          "ExpectedStartTicksUTC": "639286628694998912",
+          "ExpectedName": "EXCEL",
+          "Error": null
+        }
+      }
+    ],
+    "Observations": [
+      {
+        "ObservedUTC": "2026-10-27T01:55:25.7566814+00:00",
+        "Worker": {
+          "State": "Absent",
+          "PID": 30840,
+          "ExpectedStartTicksUTC": "639286628015502524",
+          "ExpectedName": "powershell",
+          "Error": null
+        },
+        "Excel": [
+          {
+            "Identity": {
+              "PID": 30600,
+              "StartTicksUTC": "639286628028731729",
+              "Name": "EXCEL",
+              "Case": "Excel",
+              "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4"
+            },
+            "State": {
+              "State": "Absent",
+              "PID": 30600,
+              "ExpectedStartTicksUTC": "639286628028731729",
+              "ExpectedName": "EXCEL",
+              "Error": null
+            }
+          },
+          {
+            "Identity": {
+              "PID": 18984,
+              "StartTicksUTC": "639286628694998912",
+              "Name": "EXCEL",
+              "Case": "File",
+              "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4"
+            },
+            "State": {
+              "State": "Live",
+              "PID": 18984,
+              "ExpectedStartTicksUTC": "639286628694998912",
+              "ExpectedName": "EXCEL",
+              "Error": null,
+              "ObservedName": "EXCEL",
+              "ObservedStartTicksUTC": "639286628694998912"
+            }
+          }
+        ]
+      },
+      {
+        "ObservedUTC": "2026-10-27T01:55:26.0006456+00:00",
+        "Worker": {
+          "State": "Absent",
+          "PID": 30840,
+          "ExpectedStartTicksUTC": "639286628015502524",
+          "ExpectedName": "powershell",
+          "Error": null
+        },
+        "Excel": [
+          {
+            "Identity": {
+              "PID": 30600,
+              "StartTicksUTC": "639286628028731729",
+              "Name": "EXCEL",
+              "Case": "Excel",
+              "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4"
+            },
+            "State": {
+              "State": "Absent",
+              "PID": 30600,
+              "ExpectedStartTicksUTC": "639286628028731729",
+              "ExpectedName": "EXCEL",
+              "Error": null
+            }
+          },
+          {
+            "Identity": {
+              "PID": 18984,
+              "StartTicksUTC": "639286628694998912",
+              "Name": "EXCEL",
+              "Case": "File",
+              "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4"
+            },
+            "State": {
+              "State": "Live",
+              "PID": 18984,
+              "ExpectedStartTicksUTC": "639286628694998912",
+              "ExpectedName": "EXCEL",
+              "Error": null,
+              "ObservedName": "EXCEL",
+              "ObservedStartTicksUTC": "639286628694998912"
+            }
+          }
+        ]
+      },
+      {
+        "ObservedUTC": "2026-10-27T01:55:26.2290343+00:00",
+        "Worker": {
+          "State": "Absent",
+          "PID": 30840,
+          "ExpectedStartTicksUTC": "639286628015502524",
+          "ExpectedName": "powershell",
+          "Error": null
+        },
+        "Excel": [
+          {
+            "Identity": {
+              "PID": 30600,
+              "StartTicksUTC": "639286628028731729",
+              "Name": "EXCEL",
+              "Case": "Excel",
+              "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4"
+            },
+            "State": {
+              "State": "Absent",
+              "PID": 30600,
+              "ExpectedStartTicksUTC": "639286628028731729",
+              "ExpectedName": "EXCEL",
+              "Error": null
+            }
+          },
+          {
+            "Identity": {
+              "PID": 18984,
+              "StartTicksUTC": "639286628694998912",
+              "Name": "EXCEL",
+              "Case": "File",
+              "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4"
+            },
+            "State": {
+              "State": "Absent",
+              "PID": 18984,
+              "ExpectedStartTicksUTC": "639286628694998912",
+              "ExpectedName": "EXCEL",
+              "Error": null
+            }
+          }
+        ]
+      }
+    ],
+    "GraceMilliseconds": 3000,
+    "OrdinaryPathKilledAnything": false
+  },
+  "OrdinaryForceKill": false,
+  "StaleProgressRetained": {
+    "Case": "File",
+    "Trial": "Warm2",
+    "Stage": "RUNNING_FULL_PRODUCTION_PIPELINE",
+    "ObservedUTC": "2026-10-27T01:55:04.6048602+00:00"
+  },
+  "TerminalCompletionOverridesProgress": true,
+  "RawMathComparisonPerformed": false,
+  "IndependentMathComparisonRequired": true,
+  "FullRegressionPass": false,
+  "AppsOrRealCIMStartedByReview": false,
+  "InputsReadFully": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Acceptance.json",
+      "Bytes": 267494,
+      "SHA256": "A1C23B44DCEBC42061FF4D2448FDE7BB4E80C0C6084AB9A2F48702A524D96C30",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01.Watchdog\\Completion.json",
+      "Bytes": 345897,
+      "SHA256": "4B7493B1C3BB7C6B2E26ABC96C928B097635B9C0CBC179891FC94267A68AC68F",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01.Watchdog\\PostChildProcessClosure.json",
+      "Bytes": 12257,
+      "SHA256": "EC8BAA241EDA7231036DCA9FCA67D4409901454D942DE11568FC06F26AED7D52",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01.Watchdog\\Inputs.json",
+      "Bytes": 2531,
+      "SHA256": "7F3731AA55FDDC5879ABDB5C63D83525E7A1D07DBA510772FFFAB13DE3728B3A",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Measurements.json",
+      "Bytes": 130058,
+      "SHA256": "C31874BA4A9BE34041FBD31239F2C8CEE8BC9A2AA19A18D141956EE8DFC5E472",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01.Watchdog\\Cleanup.json",
+      "Bytes": 9,
+      "SHA256": "F1D4ED4A75237E4878028E6B6010C6BBEF26A0046C58DE51825558342883B19F",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01.Watchdog\\Worker.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01.Watchdog\\Worker.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01.Watchdog\\Launch.json",
+      "Bytes": 3809,
+      "SHA256": "D3439C4AC2C9D95972A4AADAEACFD377A21F35615E25EFFC552447EB6E04F2CA",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01.Watchdog\\WorkerIdentity.json",
+      "Bytes": 71,
+      "SHA256": "F32E6C06F0E5759FD42D408478BCD948121F95DA25AF4773686575CEEDF171B5",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\RC_Section_NDM_Test_1232_30_Current.xlsm",
+      "Bytes": 15228709,
+      "SHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07\\RC_Section_NDM.xlsm",
+      "Bytes": 9908270,
+      "SHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\PairPreparation.json",
+      "Bytes": 1819,
+      "SHA256": "8926B1B6EC1B09A7695016143E97CA0ADB04FAFB12D9DC4568F15134BC63B9A3",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\ExpectedOriginControls.json",
+      "Bytes": 20574,
+      "SHA256": "5A68DA53C3DEBB0BA4AC3592B0C9C56A077FB29ACBB98D03976D854B4D6F201B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Environment.json",
+      "Bytes": 692,
+      "SHA256": "FB062BD31BB7FA3C6910FDF2826B86AC888997833661CD41E4CA3B91426B1198",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\MemoryBeforeExcel.json",
+      "Bytes": 188,
+      "SHA256": "BF348050BF5341F8C91E512ECE012FEA546CD5B0727E84EAE9C43DDE52884857",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\OpenEvidence.json",
+      "Bytes": 464,
+      "SHA256": "C94FE1112D8D77F4B42370511441E599C0E3074A40AA34485B21062CDA48441B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\InputsBefore.json",
+      "Bytes": 98373,
+      "SHA256": "E7836EA9823B3083824DD39D40D5652CC1694F1336D71226B7A9F7BC9D7A1CD5",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\PrivateConfigDelta.json",
+      "Bytes": 172,
+      "SHA256": "04B24889AFB68982A001B906AAC0A7680FDDEB8F84D31181620933BEB67C2214",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel.Ownership.json",
+      "Bytes": 800,
+      "SHA256": "90BD6329CCDB7E8D4ED4EC6736ADD6BBDF3F08AAC4C8DCBDECAB10E4CD4FDA63",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel.Closure.json",
+      "Bytes": 850,
+      "SHA256": "513880F984A4E9949BF9CA3887879A6F5F7AC6C409C40C1F19C6FD0B57014C45",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Cold.json",
+      "Bytes": 20515,
+      "SHA256": "CA88B94A34C9DC8EFF1D22656EAD6EE548F6B032DD4EE7B360D10C4F1E1082A3",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Cold.PositiveControls.json",
+      "Bytes": 12139,
+      "SHA256": "8775C86F02BAE1B0B7AFCB56337FF45726321344F0E0F37D266D1C32C5853244",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Cold.SavedGeometryProof.json",
+      "Bytes": 275,
+      "SHA256": "551A7E41D1ADE0051263D87E03FA96A077651DA52B94613AAEC9D2CB89963684",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Cold.PlotProof.json",
+      "Bytes": 182,
+      "SHA256": "C0F42A05A391237038CF2C0155986082802C880163EBE26DEB63705583B6C87B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Cold.ResultCopy.json",
+      "Bytes": 638,
+      "SHA256": "3A789FBECE59AD6DA28D6F177C168C5356F75D3FFEC98A602CC227638380F900",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Cold\\RC_Section_NDM.xlsm",
+      "Bytes": 17047420,
+      "SHA256": "20859FCBAA2FC23571FFB1C76B8D827460A99F0D4F362826CCA65DE5E5A6D6D5",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Cold.execution_report.txt",
+      "Bytes": 849646,
+      "SHA256": "640B07A1E8410E7BB9D02576D31E991FDBA9F731487D5490774BDB56108FEDE4",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Cold.SystemBefore.json",
+      "Bytes": 5111,
+      "SHA256": "44D750B578AE28CEE2170E69196E44E6FAABF698125AEF15A2CEA340567330F7",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm1.json",
+      "Bytes": 20503,
+      "SHA256": "3BD2B480785966D62DBFA69F6F57F67C11E949DEC30B9A9997748FA9780CFE3C",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm1.PositiveControls.json",
+      "Bytes": 12139,
+      "SHA256": "F8652B9421BF6C08B1F8B33114F441DC511D6A3A62FC51DC214068EB0E8701BA",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm1.SavedGeometryProof.json",
+      "Bytes": 275,
+      "SHA256": "551A7E41D1ADE0051263D87E03FA96A077651DA52B94613AAEC9D2CB89963684",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm1.PlotProof.json",
+      "Bytes": 182,
+      "SHA256": "C0F42A05A391237038CF2C0155986082802C880163EBE26DEB63705583B6C87B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm1.ResultCopy.json",
+      "Bytes": 639,
+      "SHA256": "B0953E6D3313FA7F65B741B83E15E93ABEC6DC00E8D644EF97365E7B4C99E02A",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm1\\RC_Section_NDM.xlsm",
+      "Bytes": 17048661,
+      "SHA256": "97C84F8D993EAE96CAF071BBF085759B6806F9E017AF23219346F03CC1F50B18",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm1.execution_report.txt",
+      "Bytes": 849652,
+      "SHA256": "4E1B16A895E9C471791C51429720EAAB166F51F012DF2F5D0F2BA274E7D30F57",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm1.SystemBefore.json",
+      "Bytes": 5110,
+      "SHA256": "24E0B2CC0D4C6B847AA874F139B78F9B878D25F7947CC8CD5A0E7A5F0B3987FC",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2.json",
+      "Bytes": 20502,
+      "SHA256": "6EFC4704B511392A38C695CBE9B3183DC46B7A174D1F499B713E2EE47F3DE830",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2.PositiveControls.json",
+      "Bytes": 12139,
+      "SHA256": "6DA4CE64DAA6FD0DBAB3D8620632A382B657CB0DA7773EE8FABF7455776C39BA",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2.SavedGeometryProof.json",
+      "Bytes": 275,
+      "SHA256": "551A7E41D1ADE0051263D87E03FA96A077651DA52B94613AAEC9D2CB89963684",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2.PlotProof.json",
+      "Bytes": 182,
+      "SHA256": "C0F42A05A391237038CF2C0155986082802C880163EBE26DEB63705583B6C87B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2.ResultCopy.json",
+      "Bytes": 639,
+      "SHA256": "74F2E0160747EE29EA97B2E1E672D865D4A06BC8C4FE38D1E4D4F6A2D4A1BCAE",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2\\RC_Section_NDM.xlsm",
+      "Bytes": 17049153,
+      "SHA256": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2.execution_report.txt",
+      "Bytes": 849652,
+      "SHA256": "062825022FEF46EA0610198A579049C8860FABDB668F764FE2F9BAE74A20A9D7",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2.SystemBefore.json",
+      "Bytes": 5104,
+      "SHA256": "E408AC755C86BAA8CC8B21A49B9A0297478E593AD5D3942836CF8B795DA31D35",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel.ReopenAcceptance.json",
+      "Bytes": 19754,
+      "SHA256": "0BCAC0A6C1DF5213A702408AC4F70FFD62E9ADFB7C4370C38CDCA9EB4FC77A19",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Environment.json",
+      "Bytes": 690,
+      "SHA256": "9591F05AB0E4EA32BCB8ACC2207816E658ECDF6D0132B6DA67D1C720AAB5145B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\MemoryBeforeExcel.json",
+      "Bytes": 190,
+      "SHA256": "8C7F5532F50BF37A8B60B55296F000DA0E40F6FD216305BEA3FF74A1FAB022E9",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\OpenEvidence.json",
+      "Bytes": 463,
+      "SHA256": "D324334F4C982D9356C57EE6E5BA142DCB2C815FDB0D47A0C48803D5BB0B5FE9",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\InputsBefore.json",
+      "Bytes": 98372,
+      "SHA256": "50AF04C9753989AE5EB965DC2906D9A0D6F65A566448FF57F0049CB46F5C7943",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\PrivateConfigDelta.json",
+      "Bytes": 170,
+      "SHA256": "884654C7CA0162C45858608C014119EE013BDBEFAE3AFC65AFBA18402D9D0021",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File.Ownership.json",
+      "Bytes": 798,
+      "SHA256": "2EE5AD2F3CFF5E6B87B75D117230D1E2854C75CDA96DE39CDCBA84656362CF29",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File.Closure.json",
+      "Bytes": 849,
+      "SHA256": "D2997CB633096014104E139A1F888277276888981BC94F98DC97583B9684F5DD",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.json",
+      "Bytes": 20555,
+      "SHA256": "B810C11448D7DC43ED3FB06EF61C19B05775BE08FBE006CC05801450A7476805",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.PositiveControls.json",
+      "Bytes": 12171,
+      "SHA256": "4BC109AE6844975DDC049B5EA22FE10B625399B5B3FDC896960CA73EEB45DD9D",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.SavedGeometryProof.json",
+      "Bytes": 275,
+      "SHA256": "551A7E41D1ADE0051263D87E03FA96A077651DA52B94613AAEC9D2CB89963684",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.PlotProof.json",
+      "Bytes": 182,
+      "SHA256": "C0F42A05A391237038CF2C0155986082802C880163EBE26DEB63705583B6C87B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.ResultCopy.json",
+      "Bytes": 973,
+      "SHA256": "779E89591ACF345AB2285B59E90FBA1B326AAF33A52F62F8145DFA03D88F31A2",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold\\RC_Section_NDM.xlsm",
+      "Bytes": 10195243,
+      "SHA256": "C5BED10437FA400C0BE13BF9C6E56BECC2F599F186A9CE171C590A9009524CA1",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.RawPhysicalProbe.json",
+      "Bytes": 16447,
+      "SHA256": "B2F42AFBE1078C04C9DF1FB67A6AB20D6067C822A9605FCD7E92D17B6641BCED",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.SerializedSnapshotLink.json",
+      "Bytes": 460,
+      "SHA256": "51B3149D1D539DE6934F905161E9DC32DA161E69C2459FD0A727C4C078660729",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold\\NDM_Test_1232_30.ndm",
+      "Bytes": 6218687,
+      "SHA256": "8DEE4EEBA3E2A3F2DC2662EB198170C2BD10025AB43087CB0915491254F2F77A",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.execution_report.txt",
+      "Bytes": 849648,
+      "SHA256": "0F7A6F29F5F2B396E27EF2274467847F7A0797D839682B95916329BA7279EE43",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Cold.SystemBefore.json",
+      "Bytes": 5109,
+      "SHA256": "5D7C15F6EBD23094135E3F75436319FCB7F52A5C67D580E6849D904402B5B85D",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.json",
+      "Bytes": 20532,
+      "SHA256": "C425AF081515D0F0413EA423ED6A2BB9F73EDE0E781624A2EA865C6328A8FFA3",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.PositiveControls.json",
+      "Bytes": 12170,
+      "SHA256": "2B1D897B0793D41838EA661C244A7EB57A4A987FDCBB26627EC84EDD8E31012D",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.SavedGeometryProof.json",
+      "Bytes": 275,
+      "SHA256": "551A7E41D1ADE0051263D87E03FA96A077651DA52B94613AAEC9D2CB89963684",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.PlotProof.json",
+      "Bytes": 182,
+      "SHA256": "C0F42A05A391237038CF2C0155986082802C880163EBE26DEB63705583B6C87B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.ResultCopy.json",
+      "Bytes": 975,
+      "SHA256": "EDE76976D620A9FFFDCD0FA4D3FAB14E31E3729D9CA9274F5E4A191EB3544939",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1\\RC_Section_NDM.xlsm",
+      "Bytes": 10195169,
+      "SHA256": "582D1F74B0D769F06BE0A2AC1B7F0775720F43BB8863DACA144100511EAC7052",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.RawPhysicalProbe.json",
+      "Bytes": 16447,
+      "SHA256": "2762F7C48EC2DBE9E5329D4B9C2358442FBC2DEC8C808DA7FCE0610251D1772C",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.SerializedSnapshotLink.json",
+      "Bytes": 461,
+      "SHA256": "A115BBF367A3AEABEBDB2E41A78FBCBCA45C9C2A6476B7060F6138558E1B2ABE",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1\\NDM_Test_1232_30.ndm",
+      "Bytes": 6218687,
+      "SHA256": "18DE16F20EFBF68DA241106F3CA24D6902B543E10913504802CB05B97C49D152",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.execution_report.txt",
+      "Bytes": 849650,
+      "SHA256": "9C533A0546034E68A9944248286190A97CB9AFC532BBA99F819442CDA371BFAB",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm1.SystemBefore.json",
+      "Bytes": 5110,
+      "SHA256": "4A8F19E5928D19B77392F78A02BFEAB4D82BB3CFFD95A674FD40AAE18515475E",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.json",
+      "Bytes": 20533,
+      "SHA256": "CF2C6DFD4DACE114526A45CDB522F9F0338EED277B06BBD041FAEF5528CA09E8",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.PositiveControls.json",
+      "Bytes": 12171,
+      "SHA256": "DB1DC51DF57930603B9954EAD24B18ECF9D0D2CB0975574790BBEE4E38913F36",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.SavedGeometryProof.json",
+      "Bytes": 275,
+      "SHA256": "551A7E41D1ADE0051263D87E03FA96A077651DA52B94613AAEC9D2CB89963684",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.PlotProof.json",
+      "Bytes": 182,
+      "SHA256": "C0F42A05A391237038CF2C0155986082802C880163EBE26DEB63705583B6C87B",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.ResultCopy.json",
+      "Bytes": 975,
+      "SHA256": "1CC84D734933B10B857BA93FD78C791CEED2BB143481A0BCA636274509845704",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2\\RC_Section_NDM.xlsm",
+      "Bytes": 10196019,
+      "SHA256": "DEC45221FA3A749D0503D8F853E42590B2C205363E87CB61A523554ABDA1AD66",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.RawPhysicalProbe.json",
+      "Bytes": 16447,
+      "SHA256": "F0E59A6D0097C89794EA846A06CB6BFFAFA30FBDAA34E2D943ECC24B601AC636",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.SerializedSnapshotLink.json",
+      "Bytes": 461,
+      "SHA256": "E48C537DFBF8545890B74B0BDE6F518B9B048B9DA5E356649769C9546C42B49D",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2\\NDM_Test_1232_30.ndm",
+      "Bytes": 6218687,
+      "SHA256": "983EC065C19F4BCD41672F79E78327320B901CE4D0462BEAC67ED2A31DAB061A",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.execution_report.txt",
+      "Bytes": 849650,
+      "SHA256": "A22C2D51B1D9AED5864ACC554B0E50E92EA6B7E4FC284352F1E74683643875F9",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File\\Warm2.SystemBefore.json",
+      "Bytes": 5146,
+      "SHA256": "B3BDA2B0F7AAE96BC0AD985AC5662486833041BFC99061E39D70966CCFDBE792",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\File.ReopenAcceptance.json",
+      "Bytes": 46596,
+      "SHA256": "5470168D5A9DD271259A0AFBB3CEB959D8A122AE0E7CAAAA5CD23FAA4FA2D9B1",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\FirstLimitExceeded.json",
+      "Bytes": 1851,
+      "SHA256": "89066223FB070B9B2636C034882B93F398A9BF9022E0AEE212DE2B3FD33EA5BD",
+      "ReadFully": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Progress.json",
+      "Bytes": 161,
+      "SHA256": "2E4B7954D93D32186C15B6E53EE06A398F71220080EC254274D3B94BBD68D0AA",
+      "ReadFully": true
+    }
+  ],
+  "Scope": "Functional/workflow proof review only. Native worker proof loops covered114080=92x1240 rows each; this reviewer does not substitute for the separate full numerical/raw-bit comparator."
+}

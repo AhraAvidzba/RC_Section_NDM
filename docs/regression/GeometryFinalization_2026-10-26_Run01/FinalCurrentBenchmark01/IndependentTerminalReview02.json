@@ -1,0 +1,240 @@
+{
+  "Status": "INDEPENDENT_TERMINAL_REVIEW_WORKFLOW_AND_EXISTING_PHYSICS_PROOF_ACCEPTED_COLD_GOAL_NOT_MET",
+  "ObservedUTC": "2026-10-27T02:05:02.196110+00:00",
+  "FunctionalReview": {
+    "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\IndependentFunctionalReview01.json",
+    "SHA256": "C4D3528AE6C39CA7F863E8D2761ACD43558DAA54167E21A4D3635316229778EF",
+    "WholePrimaryReportsRead": 6,
+    "WholeReportLines": 20556,
+    "NativeCalls": 6,
+    "ActualWarm2Reopens": 2
+  },
+  "FullPhysicsProof": {
+    "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\FullPhysicsComparison.json",
+    "SHA256": "EC9A56B0CA7DBAE4B3D15C5A7028231F80C4D4E50EB3C6563688DB4FDE627342",
+    "Status": "PASS_EXACT_PHYSICS_ONLY",
+    "ExistingComparatorResultReviewedNotRerun": true,
+    "Comparisons": [
+      {
+        "Mode": "Excel",
+        "Trial": "Cold",
+        "NumericPhysicsEqual": true,
+        "StatusesAndResultCommentsEqual": true,
+        "PhysicalRows": 114080,
+        "UnclassifiedDifferences": 0
+      },
+      {
+        "Mode": "Excel",
+        "Trial": "Warm1",
+        "NumericPhysicsEqual": true,
+        "StatusesAndResultCommentsEqual": true,
+        "PhysicalRows": 114080,
+        "UnclassifiedDifferences": 0
+      },
+      {
+        "Mode": "Excel",
+        "Trial": "Warm2",
+        "NumericPhysicsEqual": true,
+        "StatusesAndResultCommentsEqual": true,
+        "PhysicalRows": 114080,
+        "UnclassifiedDifferences": 0
+      },
+      {
+        "Mode": "File",
+        "Trial": "Cold",
+        "CompleteCommonFileTables": 16,
+        "CompletePayloadCellsChecked": 1072585,
+        "PhysicalRows": 114080,
+        "RetainedRawDifferences": [
+          {
+            "Table": "Calculation.Profiles",
+            "Row": 18,
+            "Column": 1,
+            "AType": 1,
+            "BType": 1,
+            "A": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00>\\x041\\x04@\\x040\\x047\\x04>\\x042\\x040\\x04=\\x048\\x04O\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x04]\\x00'",
+            "B": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00=\\x040\\x04G\\x040\\x04;\\x040\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x04>\\x04>\\x041\\x04@\\x040\\x047\\x04>\\x042\\x040\\x04=\\x048\\x04O\\x04]\\x00'"
+          },
+          {
+            "Table": "Calculation.Profiles",
+            "Row": 23,
+            "Column": 1,
+            "AType": 1,
+            "BType": 1,
+            "A": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00\\x1d\\x04\\x14\\x04!\\x04 \\x00A\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x040\\x04<\\x048\\x04]\\x00'",
+            "B": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00\\x1d\\x04\\x14\\x04!\\x04 \\x00A\\x04 \\x00@\\x040\\x04A\\x04:\\x04@\\x04K\\x04B\\x04K\\x04<\\x048\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x040\\x04<\\x048\\x04]\\x00'"
+          }
+        ],
+        "OnlyExactTwoAcceptedCaptionCellsDiffer": true,
+        "AllPhysicalAndOtherCommonFieldsEqual": true
+      },
+      {
+        "Mode": "File",
+        "Trial": "Warm1",
+        "CompleteCommonFileTables": 16,
+        "CompletePayloadCellsChecked": 1072585,
+        "PhysicalRows": 114080,
+        "RetainedRawDifferences": [
+          {
+            "Table": "Calculation.Profiles",
+            "Row": 18,
+            "Column": 1,
+            "AType": 1,
+            "BType": 1,
+            "A": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00>\\x041\\x04@\\x040\\x047\\x04>\\x042\\x040\\x04=\\x048\\x04O\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x04]\\x00'",
+            "B": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00=\\x040\\x04G\\x040\\x04;\\x040\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x04>\\x04>\\x041\\x04@\\x040\\x047\\x04>\\x042\\x040\\x04=\\x048\\x04O\\x04]\\x00'"
+          },
+          {
+            "Table": "Calculation.Profiles",
+            "Row": 23,
+            "Column": 1,
+            "AType": 1,
+            "BType": 1,
+            "A": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00\\x1d\\x04\\x14\\x04!\\x04 \\x00A\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x040\\x04<\\x048\\x04]\\x00'",
+            "B": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00\\x1d\\x04\\x14\\x04!\\x04 \\x00A\\x04 \\x00@\\x040\\x04A\\x04:\\x04@\\x04K\\x04B\\x04K\\x04<\\x048\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x040\\x04<\\x048\\x04]\\x00'"
+          }
+        ],
+        "OnlyExactTwoAcceptedCaptionCellsDiffer": true,
+        "AllPhysicalAndOtherCommonFieldsEqual": true
+      },
+      {
+        "Mode": "File",
+        "Trial": "Warm2",
+        "CompleteCommonFileTables": 16,
+        "CompletePayloadCellsChecked": 1072585,
+        "PhysicalRows": 114080,
+        "RetainedRawDifferences": [
+          {
+            "Table": "Calculation.Profiles",
+            "Row": 18,
+            "Column": 1,
+            "AType": 1,
+            "BType": 1,
+            "A": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00>\\x041\\x04@\\x040\\x047\\x04>\\x042\\x040\\x04=\\x048\\x04O\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x04]\\x00'",
+            "B": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00=\\x040\\x04G\\x040\\x04;\\x040\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x04>\\x04>\\x041\\x04@\\x040\\x047\\x04>\\x042\\x040\\x04=\\x048\\x04O\\x04]\\x00'"
+          },
+          {
+            "Table": "Calculation.Profiles",
+            "Row": 23,
+            "Column": 1,
+            "AType": 1,
+            "BType": 1,
+            "A": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00\\x1d\\x04\\x14\\x04!\\x04 \\x00A\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x040\\x04<\\x048\\x04]\\x00'",
+            "B": "b'[\\x00\\x1c\\x04>\\x044\\x045\\x04;\\x04L\\x04 \\x00\\x1d\\x04\\x14\\x04!\\x04 \\x00A\\x04 \\x00@\\x040\\x04A\\x04:\\x04@\\x04K\\x04B\\x04K\\x04<\\x048\\x04 \\x00B\\x04@\\x045\\x04I\\x048\\x04=\\x040\\x04<\\x048\\x04]\\x00'"
+          }
+        ],
+        "OnlyExactTwoAcceptedCaptionCellsDiffer": true,
+        "AllPhysicalAndOtherCommonFieldsEqual": true
+      }
+    ]
+  },
+  "ExistingComparatorScopeReviewed": {
+    "NumericEquivalence": "Existing comparators compare every nonzero Double exactly; only the sign of exact zero is normalized. No tolerance added.",
+    "CrossRunMetadata": "RunID is excluded only after File verifies internal RunID consistency; elapsed header/Summary R4C1 excluded.",
+    "ExcelTechnicalMetadata": {
+      "rngNDMSectionGeometry": "Columns15 Comment and16 ExtraData excluded by existing Excel physics comparator",
+      "rngNDMSectionContours": "Columns15 SourceID and16 Comment excluded by existing Excel physics comparator"
+    },
+    "FileMetadata": "Full common tables, including those metadata columns, compare exactly apart from the two explicit accepted Calculation.Profiles caption cells.",
+    "SummaryExtension": "Old42x26 compared unchanged after Current42x33 is independently checked across all33 columns; column27 empty, columns28..33 load fields exact, only elapsedR4C1 excluded.",
+    "SchemaAddition": "Exactly one new18-column header-only element-boundary table is permitted for this Adaptive benchmark; no physical geometry rows are ignored.",
+    "CaptionClassification": "Only Calculation.Profiles R18C1 andR23C1, typesString and exact before/after accepted labels; other differences remain failures."
+  },
+  "ComparatorSources": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\TestCompareFinalCurrentOutcomes.py",
+      "SHA256": "0CD1A16B50AAB17BFB81748094A02377A15F20CB5A2EAD6679CDD5527E281EDB",
+      "ReadWholeSourceAsTextOnly": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\TestCompareBatchPhysics.py",
+      "SHA256": "06151DFA259EE710782E1B9A856F616EE7019276A92CC5375947E1B7C30C6BAF",
+      "ReadWholeSourceAsTextOnly": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\TestCompareFileBenchmarkPayloads.py",
+      "SHA256": "91EA4C59B5046FF243C817E416981D960CD79DAB8A30393A8053AB05492399C3",
+      "ReadWholeSourceAsTextOnly": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\TestCompareFileBenchmarkPayloadsV2.py",
+      "SHA256": "ED7C83FC24066DF301EA4FF7EE47E0047B83CDEABB4D1E48967DE5DFC2DCDA1E",
+      "ReadWholeSourceAsTextOnly": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Compare-SnapshotPayloads.py",
+      "SHA256": "477CFEC93044AD5DF8A1DC320EF407FB7958E910E16B064F414D9E2F5C5B7732",
+      "ReadWholeSourceAsTextOnly": true
+    }
+  ],
+  "FreshTerminalIdentities": {
+    "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\IndependentTerminalIdentities01.json",
+    "SHA256": "3D3E16D2CC0D0E5DC191DDE6774FE4FA492103BE8E739828585DCEA1A64A41DE",
+    "AllExplicitAbsent": true,
+    "Processes": [
+      {
+        "PID": 30840,
+        "ExpectedStartTicksUTC": "639286628015502524",
+        "ExpectedName": "powershell",
+        "State": "Absent",
+        "Reason": "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+        "ObservedUTC": "2026-10-27T02:03:23.1406162+00:00"
+      },
+      {
+        "PID": 30600,
+        "ExpectedStartTicksUTC": "639286628028731729",
+        "ExpectedName": "EXCEL",
+        "State": "Absent",
+        "Reason": "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+        "ObservedUTC": "2026-10-27T02:03:23.1540588+00:00"
+      },
+      {
+        "PID": 18984,
+        "ExpectedStartTicksUTC": "639286628694998912",
+        "ExpectedName": "EXCEL",
+        "State": "Absent",
+        "Reason": "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+        "ObservedUTC": "2026-10-27T02:03:23.1620384+00:00"
+      }
+    ]
+  },
+  "Timings": [
+    {
+      "Mode": "Excel",
+      "Trial": "Cold",
+      "Seconds": 12.109655
+    },
+    {
+      "Mode": "Excel",
+      "Trial": "Warm1",
+      "Seconds": 9.4285677
+    },
+    {
+      "Mode": "Excel",
+      "Trial": "Warm2",
+      "Seconds": 8.9722447
+    },
+    {
+      "Mode": "File",
+      "Trial": "Cold",
+      "Seconds": 10.425996099999999
+    },
+    {
+      "Mode": "File",
+      "Trial": "Warm1",
+      "Seconds": 6.8420404
+    },
+    {
+      "Mode": "File",
+      "Trial": "Warm2",
+      "Seconds": 6.6303477
+    }
+  ],
+  "AllSixAtMost10Seconds": false,
+  "AllSixUnder5Seconds": false,
+  "ColdOver10SecondsPreserved": 2,
+  "CostlyComparatorRerun": false,
+  "NewNativeAppsOrSourceChanges": false,
+  "FullRegressionPass": false,
+  "NormativeVerificationClaimed": false
+}

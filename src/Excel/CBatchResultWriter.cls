@@ -219,7 +219,7 @@ Private Function SummaryTargetRange(ByVal workbook As Object, Optional ByVal req
 End Function
 
 ' Возвращает область очистки общей сводки до заголовка следующей таблицы.
-' Так старые строки от большего числа LC не остаются после уменьшения rngLoadCombinations.
+' Удаляет строки вне нового диапазона сочетаний после уменьшения rngLoadCombinations.
 Private Function SummaryClearRange(ByVal workbook As Object) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
@@ -245,15 +245,15 @@ UseDefaultHeight:
     Set SummaryClearRange = anchor.Resize(rowsToClear, RequiredSummaryOutputColumns())
 End Function
 
-' При полном оформлении снимает объединения и очищает старую сводку.
+' При полном оформлении снимает объединения и очищает существующую сводку.
 ' В минимальном режиме очищает содержимое, сохраняя готовые форматы ячеек.
 Private Sub PrepareSummaryTarget(ByVal target As Object, ByVal requiredRows As Long)
     If target.Rows.Count < requiredRows Then Set target = target.Resize(requiredRows, target.Columns.Count)
     ClearSummaryBody target
 End Sub
 
-' Очищает данные прежней сводки. В минимальном режиме сохраняет шапку
-' и основные форматы, но убирает прежнюю подсветку статусов.
+' Очищает данные текущей сводки. В минимальном режиме сохраняет шапку
+' и основные форматы, но убирает подсветку статусов рассчитанных строк.
 Private Sub ClearSummaryBody(ByVal target As Object)
     If mMinimalFormatting Then
         target.Cells(1, 1).Resize(META_ROWS, 1).ClearContents
@@ -1007,7 +1007,7 @@ Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculati
     stability.RestoreSummary workbook, snapshot, fullFormatting
 End Sub
 
-' Читает прежние файловые снимки без блока нагрузок, не придумывая исходный ввод.
+' Читает поддерживаемые файловые снимки без блока нагрузок, не придумывая исходный ввод.
 ' Это совместимость внешнего формата: текущий Config и содержимое файла не меняются.
 Private Function SummaryForDisplay(ByVal snapshot As CCalculationSnapshot) As Variant
     Dim saved As Variant: saved = snapshot.Table("Summary")
@@ -1031,7 +1031,7 @@ Private Function SummaryForDisplay(ByVal snapshot As CCalculationSnapshot) As Va
     SummaryForDisplay = data
 End Function
 
-' Получает единицу прежнего файлового снимка, независимо от текущих настроек.
+' Получает сохранённую единицу файлового снимка, независимо от текущих настроек.
 Private Function SavedSummaryUnit(ByVal snapshot As CCalculationSnapshot, ByVal key As String) As String
     Dim data As Variant, row As Long: data = snapshot.Table("rngNDMSectionProperties")
     For row = 2 To UBound(data, 1)

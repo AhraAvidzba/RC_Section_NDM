@@ -1,0 +1,2547 @@
+{
+  "ObservedUTC": "2026-10-26T22:39:28.5848607+00:00",
+  "Status": "PASS_PHASE_OBSERVATION_ONLY",
+  "Trials": [
+    {
+      "Directory": "PerformancePhaseCandidateExcel01",
+      "Mode": "Excel",
+      "Trial": "ProcessCold",
+      "WallSeconds": 12.452867099999999,
+      "Phases": [
+        {
+          "Phase": "Guard.Read|EnableCancelKey",
+          "Seconds": 3.629999991972E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|ScreenUpdating",
+          "Seconds": 3.80999990738928E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|EnableEvents",
+          "Seconds": 2.03000090550631E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|DisplayAlerts",
+          "Seconds": 2.5200002710335E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|Calculation",
+          "Seconds": 2.9500006348826E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|EnableCancelKey",
+          "Seconds": 4.29000065196306E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|ScreenUpdating",
+          "Seconds": 0.000336000011884607,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|EnableEvents",
+          "Seconds": 2.00999929802492E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|DisplayAlerts",
+          "Seconds": 0.000169900013133883,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|Calculation",
+          "Seconds": 2.50114420001046,
+          "Calls": 2
+        },
+        {
+          "Phase": "Initial.GuardEnter",
+          "Seconds": 2.50036360000377,
+          "Calls": 1
+        },
+        {
+          "Phase": "Initial.ApplicationCalculate",
+          "Seconds": 0.00305060000391677,
+          "Calls": 1
+        },
+        {
+          "Phase": "Initial.ReadSettings",
+          "Seconds": 0.0126219999947352,
+          "Calls": 1
+        },
+        {
+          "Phase": "Calculation.BatchExecute",
+          "Seconds": 3.93838789999427,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.Summary",
+          "Seconds": 0.224412299998221,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.AddPrepared|used=114081|allocated=114081",
+          "Seconds": 0.057773399996222,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.ElementResultsTotal",
+          "Seconds": 0.527768799991463,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.WriteResultsWithSectionProperties",
+          "Seconds": 0.719978399996762,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.ValidateSnapshot",
+          "Seconds": 0.0932854999991832,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.ValidateSnapshot",
+          "Seconds": 3.10000905301422E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.ValidateLayout",
+          "Seconds": 0.00429949999670498,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Update.ValidateSnapshot",
+          "Seconds": 4.60000592283905E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Update.ValidateLayout",
+          "Seconds": 0.000926900000195019,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ValidateSnapshot",
+          "Seconds": 3.59999830834568E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ClearFileStates",
+          "Seconds": 2.49998993240297E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMElementResults",
+          "Seconds": 0.0542120000027353,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMElementResults",
+          "Seconds": 0.194929400007823,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMElementResults",
+          "Seconds": 9.69999964581802E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMElementResults",
+          "Seconds": 0.564074099995196,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMElementResults",
+          "Seconds": 1.08268560000579,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|40",
+          "Seconds": 0.251247199994395,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ApplyStyle|40",
+          "Seconds": 0.52291429998877,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|40",
+          "Seconds": 0.0177665000082925,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|40",
+          "Seconds": 0.117009299996425,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|40",
+          "Seconds": 0.0165225000091596,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|40",
+          "Seconds": 0.0076542999886442,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMElementResults",
+          "Seconds": 0.935268300003372,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionGeometry",
+          "Seconds": 0.0437567999906605,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionGeometry",
+          "Seconds": 0.0111602000106359,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionGeometry",
+          "Seconds": 8.77999991644174E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionGeometry",
+          "Seconds": 0.0182350000104634,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionGeometry",
+          "Seconds": 0.0160805000050459,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|1",
+          "Seconds": 4.59999137092382E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|1",
+          "Seconds": 0.000741500000003725,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|1",
+          "Seconds": 0.00496849999763072,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|1",
+          "Seconds": 0.000111500005004928,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|1",
+          "Seconds": 0.00759150000521913,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionGeometry",
+          "Seconds": 0.0638496000028681,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionContours",
+          "Seconds": 0.000549700009287335,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionContours",
+          "Seconds": 0.00769719999516383,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionContours",
+          "Seconds": 7.68000027164817E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionContours",
+          "Seconds": 0.00838379999913741,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionContours",
+          "Seconds": 0.000249600008828565,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|51",
+          "Seconds": 2.28999997489154E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|51",
+          "Seconds": 0.000136000002385117,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|51",
+          "Seconds": 0.000312299991492182,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|51",
+          "Seconds": 9.15999989956617E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|51",
+          "Seconds": 0.00775250000879169,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionContours",
+          "Seconds": 0.0110647999972571,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionProperties",
+          "Seconds": 0.00702659999660682,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionProperties",
+          "Seconds": 0.0115178999985801,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionProperties",
+          "Seconds": 8.90999945113435E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionProperties",
+          "Seconds": 0.0207182000012835,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionProperties",
+          "Seconds": 0.0148799000016879,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|19",
+          "Seconds": 3.61999991582707E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|19",
+          "Seconds": 0.000845499991555698,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|19",
+          "Seconds": 0.00340770000184421,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|19",
+          "Seconds": 5.72000135434791E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|19",
+          "Seconds": 0.00824969999666791,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionProperties",
+          "Seconds": 0.0500459000031697,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMMaterialDiagrams",
+          "Seconds": 0.000805599993327633,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMMaterialDiagrams",
+          "Seconds": 0.00774420000379905,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMMaterialDiagrams",
+          "Seconds": 7.78000103309751E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMMaterialDiagrams",
+          "Seconds": 0.00865410000551492,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMMaterialDiagrams",
+          "Seconds": 0.00059410001267679,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|27",
+          "Seconds": 1.77000038092956E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|27",
+          "Seconds": 0.000138199990033172,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|27",
+          "Seconds": 0.000162500000442378,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|27",
+          "Seconds": 0.00018889999773819,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|27",
+          "Seconds": 0.00764889999118168,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMMaterialDiagrams",
+          "Seconds": 0.0121571999916341,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionAnnotations",
+          "Seconds": 0.00167620000138413,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionAnnotations",
+          "Seconds": 0.00878669999656267,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionAnnotations",
+          "Seconds": 8.61000007716939E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionAnnotations",
+          "Seconds": 0.0109305000078166,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionAnnotations",
+          "Seconds": 0.00466289999894798,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|70",
+          "Seconds": 3.32999916281551E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|70",
+          "Seconds": 0.000193799991393462,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|70",
+          "Seconds": 0.00152890000026673,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|70",
+          "Seconds": 0.000151800006278791,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|70",
+          "Seconds": 0.00765240000328049,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionAnnotations",
+          "Seconds": 0.0224051999975927,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMElementGeometry",
+          "Seconds": 0.000212199985980988,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMElementGeometry",
+          "Seconds": 0.00768500000413042,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMElementGeometry",
+          "Seconds": 7.87000026321039E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMElementGeometry",
+          "Seconds": 0.00824480000301264,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMElementGeometry",
+          "Seconds": 6.46999978926033E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|96",
+          "Seconds": 1.67999969562516E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|96",
+          "Seconds": 0.000132299988763407,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|96",
+          "Seconds": 0.000140500007546507,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|96",
+          "Seconds": 8.17999971332029E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|96",
+          "Seconds": 0.00823099999979604,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMElementGeometry",
+          "Seconds": 0.0110371000046143,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.RestoreSnapshotBase",
+          "Seconds": 2.98417120000522,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.RestoreSummary",
+          "Seconds": 0.329373800006579,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.ReadSavedData",
+          "Seconds": 0.278056399998604,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.PrepareChart",
+          "Seconds": 0.15941130000283,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.EqualScale",
+          "Seconds": 0.0017121999990195,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.ClearShapes",
+          "Seconds": 5.17000007675961E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawElements",
+          "Seconds": 0.303524199989624,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawDecorations",
+          "Seconds": 0.0351121999992756,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawAll",
+          "Seconds": 0.516827200000989,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Plot",
+          "Seconds": 0.821929199999431,
+          "Calls": 1
+        },
+        {
+          "Phase": "Snapshot.SaveAndDisplay",
+          "Seconds": 4.15899630000058,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.ReportSave",
+          "Seconds": 0.017882499989355,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.ResultsCalculate",
+          "Seconds": 0.000140899996040389,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.UpdateElapsed",
+          "Seconds": 0.00652090000221506,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.GuardRestore",
+          "Seconds": 0.262557699999888,
+          "Calls": 1
+        }
+      ],
+      "AllStrongControls": true,
+      "AcceptanceSHA256": "793F646C194E9C92E58708196F070A89AE90BE6D3049D83D59819B3532F3A589",
+      "ProfileSHA256": "5E7E5A282A4F602ED21FECA129B6A83398296E6F6515F80CE99F1AC9A9BDD519"
+    },
+    {
+      "Directory": "PerformancePhaseCandidateExcel01",
+      "Mode": "Excel",
+      "Trial": "Warm1",
+      "WallSeconds": 9.0138559,
+      "Phases": [
+        {
+          "Phase": "Guard.Read|EnableCancelKey",
+          "Seconds": 3.10000032186508E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|ScreenUpdating",
+          "Seconds": 3.45000007655472E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|EnableEvents",
+          "Seconds": 1.25999940792099E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|DisplayAlerts",
+          "Seconds": 1.49000115925446E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|Calculation",
+          "Seconds": 1.34000147227198E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|EnableCancelKey",
+          "Seconds": 2.78000079561025E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|ScreenUpdating",
+          "Seconds": 0.00118720000318717,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|EnableEvents",
+          "Seconds": 1.62000069394708E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|DisplayAlerts",
+          "Seconds": 0.000146500009577721,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|Calculation",
+          "Seconds": 0.00733140000374988,
+          "Calls": 2
+        },
+        {
+          "Phase": "Initial.GuardEnter",
+          "Seconds": 0.0071652000042377,
+          "Calls": 1
+        },
+        {
+          "Phase": "Initial.ApplicationCalculate",
+          "Seconds": 0.00124160000996199,
+          "Calls": 1
+        },
+        {
+          "Phase": "Initial.ReadSettings",
+          "Seconds": 0.00922870000067633,
+          "Calls": 1
+        },
+        {
+          "Phase": "Calculation.BatchExecute",
+          "Seconds": 3.65833839999686,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.Summary",
+          "Seconds": 0.342221400002018,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.AddPrepared|used=114081|allocated=114081",
+          "Seconds": 0.0567102000059094,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.ElementResultsTotal",
+          "Seconds": 0.518581099997391,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.WriteResultsWithSectionProperties",
+          "Seconds": 0.679077199994936,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.ValidateSnapshot",
+          "Seconds": 0.0781037000124343,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.ValidateSnapshot",
+          "Seconds": 3.09999450109899E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.ValidateLayout",
+          "Seconds": 0.00406370000564493,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Update.ValidateSnapshot",
+          "Seconds": 5.60001353733242E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Update.ValidateLayout",
+          "Seconds": 0.000980500000878237,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ValidateSnapshot",
+          "Seconds": 4.10000211559236E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ClearFileStates",
+          "Seconds": 2.59999069385231E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMElementResults",
+          "Seconds": 0.0542909999930998,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMElementResults",
+          "Seconds": 0.177085400006035,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMElementResults",
+          "Seconds": 8.71000083861873E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMElementResults",
+          "Seconds": 0.500313299999107,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMElementResults",
+          "Seconds": 1.05269229999976,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|40",
+          "Seconds": 0.00607319999835454,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ApplyStyle|40",
+          "Seconds": 0.503359800000908,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|40",
+          "Seconds": 0.0233647999993991,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|40",
+          "Seconds": 0.116013499995461,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|40",
+          "Seconds": 0.016832199995406,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|40",
+          "Seconds": 0.00790550000965595,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMElementResults",
+          "Seconds": 0.675137900005211,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionGeometry",
+          "Seconds": 0.0425861999974586,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionGeometry",
+          "Seconds": 0.0107123000052525,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionGeometry",
+          "Seconds": 8.11999925645068E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionGeometry",
+          "Seconds": 0.0175831999949878,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionGeometry",
+          "Seconds": 0.0160795999981929,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|1",
+          "Seconds": 5.59999898541719E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|1",
+          "Seconds": 0.000694000002113171,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|1",
+          "Seconds": 0.00505820001126267,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|1",
+          "Seconds": 0.00010659999679774,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|1",
+          "Seconds": 0.00788199999078643,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionGeometry",
+          "Seconds": 0.061070000010659,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionContours",
+          "Seconds": 0.000566700007766485,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionContours",
+          "Seconds": 0.00762869999743998,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionContours",
+          "Seconds": 7.49000028008595E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionContours",
+          "Seconds": 0.00821780000114813,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionContours",
+          "Seconds": 0.000275999991572462,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|51",
+          "Seconds": 5.40001201443374E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|51",
+          "Seconds": 0.000109300002804957,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|51",
+          "Seconds": 0.000411699991673231,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|51",
+          "Seconds": 0.000108799998997711,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|51",
+          "Seconds": 0.00754239999514539,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionContours",
+          "Seconds": 0.010639700005413,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionProperties",
+          "Seconds": 0.00747409999894444,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionProperties",
+          "Seconds": 0.0114692999923136,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionProperties",
+          "Seconds": 8.37999978102744E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionProperties",
+          "Seconds": 0.0200408999953652,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionProperties",
+          "Seconds": 0.0145232000068063,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|19",
+          "Seconds": 9.00001032277942E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|19",
+          "Seconds": 0.00108709999767598,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|19",
+          "Seconds": 0.0037064000061946,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|19",
+          "Seconds": 4.25000034738332E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|19",
+          "Seconds": 0.00776279999990948,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionProperties",
+          "Seconds": 0.0524735000071814,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMMaterialDiagrams",
+          "Seconds": 0.000840799999423325,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMMaterialDiagrams",
+          "Seconds": 0.0114025000075344,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMMaterialDiagrams",
+          "Seconds": 0.000121300006867386,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMMaterialDiagrams",
+          "Seconds": 0.0124561999982689,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMMaterialDiagrams",
+          "Seconds": 0.00103579999995418,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|27",
+          "Seconds": 9.70000110100955E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|27",
+          "Seconds": 0.000249499993515201,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|27",
+          "Seconds": 0.000324099994031712,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|27",
+          "Seconds": 0.000376600000890903,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|27",
+          "Seconds": 0.00839129999803845,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMMaterialDiagrams",
+          "Seconds": 0.0151250000053551,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionAnnotations",
+          "Seconds": 0.0015657000039937,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionAnnotations",
+          "Seconds": 0.0086829000065336,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionAnnotations",
+          "Seconds": 9.13999974727631E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionAnnotations",
+          "Seconds": 0.0107980000029784,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionAnnotations",
+          "Seconds": 0.00499500001023989,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|70",
+          "Seconds": 5.69999974686652E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|70",
+          "Seconds": 0.00018959998851642,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|70",
+          "Seconds": 0.00167060000239871,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|70",
+          "Seconds": 0.000160700001288205,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|70",
+          "Seconds": 0.00776029999542516,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionAnnotations",
+          "Seconds": 0.0232885000004899,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMElementGeometry",
+          "Seconds": 0.000208499986911193,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMElementGeometry",
+          "Seconds": 0.00791600000229664,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMElementGeometry",
+          "Seconds": 8.37999978102744E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMElementGeometry",
+          "Seconds": 0.00846170001022983,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMElementGeometry",
+          "Seconds": 6.21999934082851E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|96",
+          "Seconds": 4.39998984802514E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|96",
+          "Seconds": 8.54999962029979E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|96",
+          "Seconds": 0.000175799999851733,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|96",
+          "Seconds": 7.01999961165711E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|96",
+          "Seconds": 0.00765590000082739,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMElementGeometry",
+          "Seconds": 0.00998709999839775,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.RestoreSnapshotBase",
+          "Seconds": 2.63457469998684,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.RestoreSummary",
+          "Seconds": 0.426353700007894,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.ReadSavedData",
+          "Seconds": 0.262979299994186,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.PrepareChart",
+          "Seconds": 0.00116970000090078,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.EqualScale",
+          "Seconds": 0.000921700004255399,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.ClearShapes",
+          "Seconds": 0.0716452000051504,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawElements",
+          "Seconds": 0.315245299992966,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawDecorations",
+          "Seconds": 0.0312474000093061,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawAll",
+          "Seconds": 0.434149099994102,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Plot",
+          "Seconds": 0.718412300004275,
+          "Calls": 1
+        },
+        {
+          "Phase": "Snapshot.SaveAndDisplay",
+          "Seconds": 3.80164550000336,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.ReportSave",
+          "Seconds": 0.0157694999943487,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.ResultsCalculate",
+          "Seconds": 0.000212399987503886,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.UpdateElapsed",
+          "Seconds": 0.00613419999717735,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.GuardRestore",
+          "Seconds": 0.114659500002745,
+          "Calls": 1
+        }
+      ],
+      "AllStrongControls": true,
+      "AcceptanceSHA256": "793F646C194E9C92E58708196F070A89AE90BE6D3049D83D59819B3532F3A589",
+      "ProfileSHA256": "1DC94F0A64C64E3DECCB0825E16FA4095BDFF5724FEE3328D033AEE62B1D519A"
+    },
+    {
+      "Directory": "PerformancePhaseCandidateFile01",
+      "Mode": "File",
+      "Trial": "ProcessCold",
+      "WallSeconds": 11.6394787,
+      "Phases": [
+        {
+          "Phase": "Guard.Read|EnableCancelKey",
+          "Seconds": 3.35999939125031E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|ScreenUpdating",
+          "Seconds": 4.45000041509047E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|EnableEvents",
+          "Seconds": 2.18999921344221E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|DisplayAlerts",
+          "Seconds": 2.22999951802194E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|Calculation",
+          "Seconds": 1.69999984791502E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|EnableCancelKey",
+          "Seconds": 3.49999900208786E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|ScreenUpdating",
+          "Seconds": 0.000681199991959147,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|EnableEvents",
+          "Seconds": 2.11999868042767E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|DisplayAlerts",
+          "Seconds": 0.000148400009493344,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|Calculation",
+          "Seconds": 2.55908400000772,
+          "Calls": 2
+        },
+        {
+          "Phase": "Initial.GuardEnter",
+          "Seconds": 2.55872839999211,
+          "Calls": 1
+        },
+        {
+          "Phase": "Initial.ApplicationCalculate",
+          "Seconds": 0.00329750000673812,
+          "Calls": 1
+        },
+        {
+          "Phase": "Initial.ReadSettings",
+          "Seconds": 0.00853420000930782,
+          "Calls": 1
+        },
+        {
+          "Phase": "Calculation.BatchExecute",
+          "Seconds": 3.86779309999838,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.Summary",
+          "Seconds": 0.509516499994788,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.AddPrepared|used=114081|allocated=114081",
+          "Seconds": 0.0576746000006096,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.ElementResultsTotal",
+          "Seconds": 0.53410520000034,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.WriteResultsWithSectionProperties",
+          "Seconds": 0.709264399993117,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.ValidateSnapshot",
+          "Seconds": 0.0837163999967743,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.ValidateSnapshot",
+          "Seconds": 4.00000135414302E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.ValidateLayout",
+          "Seconds": 0.00501700000313576,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Save.Validate",
+          "Seconds": 4.00000135414302E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Summary",
+          "Seconds": 0.0027428999892436,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Strength.Headers",
+          "Seconds": 0.000822499991045333,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Strength.Data",
+          "Seconds": 0.00360050000017509,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Cracks.Headers",
+          "Seconds": 0.00142900001083035,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Cracks.Data",
+          "Seconds": 0.00278070000058506,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Stability.Labels",
+          "Seconds": 0.00031489999673795,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Stability.Data",
+          "Seconds": 0.00179599999682978,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMSectionGeometry",
+          "Seconds": 0.0201238000008743,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMSectionContours",
+          "Seconds": 0.000767299992730841,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMElementGeometry",
+          "Seconds": 0.000127000006614253,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMElementResults",
+          "Seconds": 0.348793199998909,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMSectionProperties",
+          "Seconds": 0.00167650000366848,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|LoadCase.Properties",
+          "Seconds": 0.0205178000032902,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMMaterialDiagrams",
+          "Seconds": 0.00268469999718945,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMSectionAnnotations",
+          "Seconds": 0.000290099997073412,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|LoadCase.Annotations",
+          "Seconds": 0.0183825999993132,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Calculation.Profiles",
+          "Seconds": 0.000956900010351092,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.PayloadHash",
+          "Seconds": 0.0267111999855842,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.WriteBinary",
+          "Seconds": 0.455668299997342,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.AtomicReplace",
+          "Seconds": 0.000527000011061318,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.SaveFile",
+          "Seconds": 0.462157700007083,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Update.ValidateSnapshot",
+          "Seconds": 1.00000033853576E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Update.ValidateLayout",
+          "Seconds": 0.000957500000367872,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ValidateSnapshot",
+          "Seconds": 4.40000439994037E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMElementResults",
+          "Seconds": 0.177427000002353,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMElementResults",
+          "Seconds": 0.000108100008219481,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ClearFileStates",
+          "Seconds": 0.540298499996425,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMElementGeometry",
+          "Seconds": 6.95999915478751E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMElementGeometry",
+          "Seconds": 6.22999941697344E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|96",
+          "Seconds": 7.10001040715724E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|96",
+          "Seconds": 0.00012300000526011,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|96",
+          "Seconds": 0.00839689999702387,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ClearFileBoundaryBody",
+          "Seconds": 0.24983699999575,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionGeometry",
+          "Seconds": 0.00133070000447333,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionGeometry",
+          "Seconds": 0.010506799997529,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionGeometry",
+          "Seconds": 7.43000127840787E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionGeometry",
+          "Seconds": 0.0166125999967335,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionGeometry",
+          "Seconds": 0.0227525999944191,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|1",
+          "Seconds": 3.10000032186508E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|1",
+          "Seconds": 0.000744199991459027,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|1",
+          "Seconds": 0.00447310000890866,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|1",
+          "Seconds": 0.000108100008219481,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|1",
+          "Seconds": 0.0077467999944929,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionGeometry",
+          "Seconds": 0.0613006999919889,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionContours",
+          "Seconds": 0.000439499999629334,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionContours",
+          "Seconds": 0.00786330000846647,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionContours",
+          "Seconds": 7.55000073695555E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionContours",
+          "Seconds": 0.00849120000202674,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionContours",
+          "Seconds": 0.000253999998676591,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|51",
+          "Seconds": 1.43999932333827E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|51",
+          "Seconds": 0.000160099996719509,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|51",
+          "Seconds": 0.000365100000635721,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|51",
+          "Seconds": 0.00010659999679774,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|51",
+          "Seconds": 0.00771459999668878,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionContours",
+          "Seconds": 0.0109127000032458,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionProperties",
+          "Seconds": 0.000125100006698631,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionProperties",
+          "Seconds": 0.0117502999928547,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionProperties",
+          "Seconds": 7.69999896874651E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionProperties",
+          "Seconds": 0.0191201999987243,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionProperties",
+          "Seconds": 0.000564600006327964,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|19",
+          "Seconds": 1.43000070238486E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|19",
+          "Seconds": 0.000142599994433112,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|19",
+          "Seconds": 0.000378800003090873,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|19",
+          "Seconds": 5.08000084664673E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|19",
+          "Seconds": 0.00781679998908658,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionProperties",
+          "Seconds": 0.0119695000030333,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMMaterialDiagrams",
+          "Seconds": 0.000172399988514371,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMMaterialDiagrams",
+          "Seconds": 0.0086713999917265,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMMaterialDiagrams",
+          "Seconds": 0.000128600004245527,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMMaterialDiagrams",
+          "Seconds": 0.00969479999912437,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMMaterialDiagrams",
+          "Seconds": 0.00107280000520404,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|27",
+          "Seconds": 5.30999968759716E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|27",
+          "Seconds": 0.000163899996550754,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|27",
+          "Seconds": 0.000119599993922748,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|27",
+          "Seconds": 0.000202600000193343,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|27",
+          "Seconds": 0.00770420000480954,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMMaterialDiagrams",
+          "Seconds": 0.0121481999958633,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionAnnotations",
+          "Seconds": 5.70999982301146E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionAnnotations",
+          "Seconds": 0.00967400000081398,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionAnnotations",
+          "Seconds": 8.38999985717237E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionAnnotations",
+          "Seconds": 0.0125170999963302,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionAnnotations",
+          "Seconds": 0.000130299988086335,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|70",
+          "Seconds": 3.79999983124435E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|70",
+          "Seconds": 0.000124899990623817,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|70",
+          "Seconds": 0.000471300008939579,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|70",
+          "Seconds": 9.90999978967011E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|70",
+          "Seconds": 0.00782529999560211,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionAnnotations",
+          "Seconds": 0.0107332999905339,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.RestoreSnapshotBase",
+          "Seconds": 1.00135220000811,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.RestoreSummary",
+          "Seconds": 0.33940050000092,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.LinkWholeHash",
+          "Seconds": 0.053102800011402,
+          "Calls": 2
+        },
+        {
+          "Phase": "File.FirstLinkFile",
+          "Seconds": 0.0363306999934139,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.ReadSavedData",
+          "Seconds": 0.311070499999914,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.PrepareChart",
+          "Seconds": 0.151880199991865,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.EqualScale",
+          "Seconds": 0.00216720000025816,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.ClearShapes",
+          "Seconds": 0.00024890000349842,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawElements",
+          "Seconds": 0.305527599994093,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawDecorations",
+          "Seconds": 0.0380548999964958,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawAll",
+          "Seconds": 0.516255299997283,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Plot",
+          "Seconds": 0.850344400008908,
+          "Calls": 1
+        },
+        {
+          "Phase": "Snapshot.SaveAndDisplay",
+          "Seconds": 2.71609800000442,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.ReportSave",
+          "Seconds": 0.0147912000102224,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.ResultsCalculate",
+          "Seconds": 0.000286599999526516,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Elapsed.Copy",
+          "Seconds": 0.00272960000438616,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Elapsed.PayloadHash",
+          "Seconds": 0.0273750999913318,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Elapsed.AtomicReplace",
+          "Seconds": 0.00127030001021922,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Elapsed.LinkFile",
+          "Seconds": 0.0302049000019906,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.UpdateElapsed",
+          "Seconds": 0.0692813999921782,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.GuardRestore",
+          "Seconds": 0.26534269998956,
+          "Calls": 1
+        }
+      ],
+      "AllStrongControls": true,
+      "AcceptanceSHA256": "5907BE8AB460E5B322CB80E834ACD788A70B70FAA69D69C1D652E4A3C94D0746",
+      "ProfileSHA256": "D3731025D59F4996423CD1793085F405A94AEA735EB0667AB6834B24C9ECFC40"
+    },
+    {
+      "Directory": "PerformancePhaseCandidateFile01",
+      "Mode": "File",
+      "Trial": "Warm1",
+      "WallSeconds": 6.7025318,
+      "Phases": [
+        {
+          "Phase": "Guard.Read|EnableCancelKey",
+          "Seconds": 3.040001320187E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|ScreenUpdating",
+          "Seconds": 2.63000110862777E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|EnableEvents",
+          "Seconds": 1.27000093925744E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|DisplayAlerts",
+          "Seconds": 1.58999901032075E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Read|Calculation",
+          "Seconds": 1.47000100696459E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|EnableCancelKey",
+          "Seconds": 2.77999934041873E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|ScreenUpdating",
+          "Seconds": 0.000430200001574121,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|EnableEvents",
+          "Seconds": 1.7899990780279E-05,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|DisplayAlerts",
+          "Seconds": 0.000147200014907867,
+          "Calls": 2
+        },
+        {
+          "Phase": "Guard.Write|Calculation",
+          "Seconds": 0.00587149999046233,
+          "Calls": 2
+        },
+        {
+          "Phase": "Initial.GuardEnter",
+          "Seconds": 0.00464980000106152,
+          "Calls": 1
+        },
+        {
+          "Phase": "Initial.ApplicationCalculate",
+          "Seconds": 0.000782100003561936,
+          "Calls": 1
+        },
+        {
+          "Phase": "Initial.ReadSettings",
+          "Seconds": 0.00738470000214875,
+          "Calls": 1
+        },
+        {
+          "Phase": "Calculation.BatchExecute",
+          "Seconds": 3.29724390000047,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.Summary",
+          "Seconds": 0.569984200003091,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.AddPrepared|used=114081|allocated=114081",
+          "Seconds": 0.0588369999895804,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.ElementResultsTotal",
+          "Seconds": 0.573107300006086,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.WriteResultsWithSectionProperties",
+          "Seconds": 0.742087000005995,
+          "Calls": 1
+        },
+        {
+          "Phase": "Capture.ValidateSnapshot",
+          "Seconds": 0.0787130999960937,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.ValidateSnapshot",
+          "Seconds": 2.60000524576753E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.ValidateLayout",
+          "Seconds": 0.00478879999718629,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Save.Validate",
+          "Seconds": 3.19999526254833E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Summary",
+          "Seconds": 0.00320199999259785,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Strength.Headers",
+          "Seconds": 0.000715500005753711,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Strength.Data",
+          "Seconds": 0.00173410000570584,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Cracks.Headers",
+          "Seconds": 0.00116679999337066,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Cracks.Data",
+          "Seconds": 0.00323260000732262,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Stability.Labels",
+          "Seconds": 0.000482699993881397,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Stability.Data",
+          "Seconds": 0.002346099994611,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMSectionGeometry",
+          "Seconds": 0.0145573999907356,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMSectionContours",
+          "Seconds": 0.000627900008112192,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMElementGeometry",
+          "Seconds": 8.47999908728525E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMElementResults",
+          "Seconds": 0.278234800003702,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMSectionProperties",
+          "Seconds": 0.0018629999976838,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|LoadCase.Properties",
+          "Seconds": 0.0177215000003343,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMMaterialDiagrams",
+          "Seconds": 0.00260079999861773,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|rngNDMSectionAnnotations",
+          "Seconds": 0.000288299997919239,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|LoadCase.Annotations",
+          "Seconds": 0.0178200000082143,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.EncodeTable|Calculation.Profiles",
+          "Seconds": 0.000913600000785664,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.PayloadHash",
+          "Seconds": 0.0268508000008296,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.WriteBinary",
+          "Seconds": 0.375405899991165,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.AtomicReplace",
+          "Seconds": 0.00124409999989439,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.SaveFile",
+          "Seconds": 0.380384199990658,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Update.ValidateSnapshot",
+          "Seconds": 7.09999585524201E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Update.ValidateLayout",
+          "Seconds": 0.000954599992837757,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ValidateSnapshot",
+          "Seconds": 3.79999983124435E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMElementResults",
+          "Seconds": 0.00014970000484027,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMElementResults",
+          "Seconds": 6.29999994998798E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ClearFileStates",
+          "Seconds": 0.000596300000324845,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMElementGeometry",
+          "Seconds": 6.38000055914745E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMElementGeometry",
+          "Seconds": 6.43999956082553E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|96",
+          "Seconds": 5.9000012697652E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|96",
+          "Seconds": 8.35999962873757E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|96",
+          "Seconds": 0.000185199998668395,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.ClearFileBoundaryBody",
+          "Seconds": 0.002687899992452,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionGeometry",
+          "Seconds": 0.00120850000530481,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionGeometry",
+          "Seconds": 0.00264930000412278,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionGeometry",
+          "Seconds": 0.000101099998573773,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionGeometry",
+          "Seconds": 0.00772460000007413,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionGeometry",
+          "Seconds": 0.0159206999960588,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|1",
+          "Seconds": 1.1399999493733E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|1",
+          "Seconds": 0.00103100000706036,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|1",
+          "Seconds": 0.00325169999268837,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|1",
+          "Seconds": 6.03999942541122E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|1",
+          "Seconds": 0.000711999993654899,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionGeometry",
+          "Seconds": 0.0458068000007188,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionContours",
+          "Seconds": 0.000438200004282407,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionContours",
+          "Seconds": 0.000288300012471154,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionContours",
+          "Seconds": 6.64999970467761E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionContours",
+          "Seconds": 0.000786499993409961,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionContours",
+          "Seconds": 0.000254900005529635,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|51",
+          "Seconds": 4.2000028770417E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|51",
+          "Seconds": 0.000103099999250844,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|51",
+          "Seconds": 0.000258300002315082,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|51",
+          "Seconds": 5.85999950999394E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|51",
+          "Seconds": 0.000195500004338101,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionContours",
+          "Seconds": 0.00293089999468066,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionProperties",
+          "Seconds": 8.92000098247081E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionProperties",
+          "Seconds": 0.000358299992512912,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionProperties",
+          "Seconds": 6.56000047456473E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionProperties",
+          "Seconds": 0.00100420000671875,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionProperties",
+          "Seconds": 0.000553499994566664,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|19",
+          "Seconds": 4.40000439994037E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|19",
+          "Seconds": 0.000113100002636202,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|19",
+          "Seconds": 0.000279899992165156,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|19",
+          "Seconds": 2.76000064332038E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|19",
+          "Seconds": 0.000167499994859099,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionProperties",
+          "Seconds": 0.00348719999601599,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMMaterialDiagrams",
+          "Seconds": 0.000102200006949715,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMMaterialDiagrams",
+          "Seconds": 0.000367599990568124,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMMaterialDiagrams",
+          "Seconds": 6.25999964540824E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMMaterialDiagrams",
+          "Seconds": 0.000964699996984564,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMMaterialDiagrams",
+          "Seconds": 0.000576999998884276,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|27",
+          "Seconds": 4.00000135414302E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|27",
+          "Seconds": 0.000125700011267327,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|27",
+          "Seconds": 8.68999923113734E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|27",
+          "Seconds": 0.000154399996972643,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|27",
+          "Seconds": 0.000193800005945377,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMMaterialDiagrams",
+          "Seconds": 0.00357129999611061,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.PrepareMatrix|rngNDMSectionAnnotations",
+          "Seconds": 4.35999972978607E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Body|rngNDMSectionAnnotations",
+          "Seconds": 0.000206099997740239,
+          "Calls": 1
+        },
+        {
+          "Phase": "Clear.Title|rngNDMSectionAnnotations",
+          "Seconds": 6.73000031383708E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Clear|rngNDMSectionAnnotations",
+          "Seconds": 0.000611299998126924,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Value2|rngNDMSectionAnnotations",
+          "Seconds": 0.000124400001368485,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ResolveStyle|70",
+          "Seconds": 4.70000668428838E-06,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.DateColumn|70",
+          "Seconds": 9.46999934967607E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.AlignColumns|70",
+          "Seconds": 0.000438999995822087,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.NumberColumns|70",
+          "Seconds": 9.11000097403303E-05,
+          "Calls": 1
+        },
+        {
+          "Phase": "Format.ClearTitle|70",
+          "Seconds": 0.000212900005863048,
+          "Calls": 1
+        },
+        {
+          "Phase": "Base.Format|rngNDMSectionAnnotations",
+          "Seconds": 0.00288349999755155,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.RestoreSnapshotBase",
+          "Seconds": 0.0959287000005133,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.RestoreSummary",
+          "Seconds": 0.337388600004488,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.LinkWholeHash",
+          "Seconds": 0.0541007999854628,
+          "Calls": 2
+        },
+        {
+          "Phase": "File.FirstLinkFile",
+          "Seconds": 0.0309947000059765,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.ReadSavedData",
+          "Seconds": 0.266667099989718,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.PrepareChart",
+          "Seconds": 0.00114160000521224,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.EqualScale",
+          "Seconds": 0.000856200000271201,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.ClearShapes",
+          "Seconds": 0.0720184999954654,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawElements",
+          "Seconds": 0.293597800002317,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawDecorations",
+          "Seconds": 0.0290634000120917,
+          "Calls": 1
+        },
+        {
+          "Phase": "Plot.DrawAll",
+          "Seconds": 0.409231899990118,
+          "Calls": 1
+        },
+        {
+          "Phase": "Display.Plot",
+          "Seconds": 0.688204500009306,
+          "Calls": 1
+        },
+        {
+          "Phase": "Snapshot.SaveAndDisplay",
+          "Seconds": 1.5602152000065,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.ReportSave",
+          "Seconds": 0.0154095999896526,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.ResultsCalculate",
+          "Seconds": 0.000173299995367415,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Elapsed.Copy",
+          "Seconds": 0.00281409999297466,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Elapsed.PayloadHash",
+          "Seconds": 0.0271422999940114,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Elapsed.AtomicReplace",
+          "Seconds": 0.0011235999991186,
+          "Calls": 1
+        },
+        {
+          "Phase": "File.Elapsed.LinkFile",
+          "Seconds": 0.031387300012284,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.UpdateElapsed",
+          "Seconds": 0.0713370000012219,
+          "Calls": 1
+        },
+        {
+          "Phase": "Final.GuardRestore",
+          "Seconds": 0.117353599998751,
+          "Calls": 1
+        }
+      ],
+      "AllStrongControls": true,
+      "AcceptanceSHA256": "5907BE8AB460E5B322CB80E834ACD788A70B70FAA69D69C1D652E4A3C94D0746",
+      "ProfileSHA256": "649AD0DEBCFB831FC5AF03AE63EEE197CE9349A3FF5A8250573374D5ACAE452B"
+    }
+  ],
+  "SourceUnchanged": true,
+  "InstrumentedBodyEquality": true,
+  "OwnProcessesAbsent": true,
+  "PerformanceAcceptance": false,
+  "FullRegressionPass": false,
+  "Supersedes": "IndependentPhaseReview01.json (invalidated)",
+  "Notes": "Nested phases must not be added. Untouched production benchmarks and physical comparison remain authoritative."
+}

@@ -1,0 +1,69 @@
+{
+  "Status": "READ_ONLY_SOURCE_AND_PACKAGE_REVIEW",
+  "ObservedUTC": "2026-10-26T19:12:51.182296+00:00",
+  "Question": "Does full Focused Saved23+23 require pre-existing saved Results in the clean acceptance source?",
+  "Conclusion": "No extra formation stage is required for the current fixed SavedFixture contract. Source remains the newly built clean workbook; only private Focused Probe receives the explicit fixture matrices.",
+  "CallChain": [
+    "Run-FullOnOffAcceptance.ps1 passes frozen SourceWorkbook to Run-FocusedAcceptance.ps1",
+    "Run-FocusedAcceptance.ps1 explicitly passes fixtures/FocusedSavedSection.json as -SavedFixture",
+    "Prepare-FocusedAcceptance.ps1 copies current source then fills the five named anchors in that private Probe before helper injection",
+    "Describe-FocusedAcceptance.ps1 verifies groups8+8+8+8+23+6 acrossNo/Yes=122",
+    "SavedWorkbook selector requires Geometry.Source AutoCAD and saved Geometry.Source AutoCADImport; no new DWG import occurs during saved-case reading"
+  ],
+  "Fixture": {
+    "Path": "tools\\build_workbook\\fixtures\\FocusedSavedSection.json",
+    "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F",
+    "HistoricalDataSourceSHA256Metadata": "E73E895C8C7C45AC5774BA554FD90AEDE638B9300EDC11CA04CB59CC61627E60",
+    "MetadataNotUsedAsAcceptanceSourceSHA": true,
+    "ConcreteElements": 45,
+    "RebarElements": 20,
+    "Kind": "Explicit fixed legacy saved-input fixture; Rectangle and Equivalent square; does not claim new Contour boundary coverage",
+    "RequiredAnchors": [
+      {
+        "Name": "rngNDMSectionGeometry",
+        "ExistsInFreshBuild02": true,
+        "Reference": "Results!$A$156",
+        "Rows": 66,
+        "Columns": 15
+      },
+      {
+        "Name": "rngNDMSectionContours",
+        "ExistsInFreshBuild02": true,
+        "Reference": "Results!$AY$156",
+        "Rows": 5,
+        "Columns": 17
+      },
+      {
+        "Name": "rngNDMSectionProperties",
+        "ExistsInFreshBuild02": true,
+        "Reference": "Results!$S$156",
+        "Rows": 121,
+        "Columns": 6
+      },
+      {
+        "Name": "rngNDMSectionAnnotations",
+        "ExistsInFreshBuild02": true,
+        "Reference": "Results!$BR$156",
+        "Rows": 4,
+        "Columns": 22
+      },
+      {
+        "Name": "rngNDMMaterialDiagrams",
+        "ExistsInFreshBuild02": true,
+        "Reference": "Results!$AA$156",
+        "Rows": 25,
+        "Columns": 11
+      }
+    ]
+  },
+  "ReviewedPackageOnlyNotAcceptanceSource": {
+    "Path": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild02\\RC_Section_NDM.xlsm",
+    "SHA256": "A15BDC12AD8F539946220518C559F9CF6BFBA9E30F04F46334ECF4970D4E8029",
+    "rngNDMElementGeometryAnchorPresent": true
+  },
+  "Provenance": "Preparation.SourceSHA256 is calculated from current clean workbook; SavedFixtureSHA256 and resulting ProbeWorkbookSHA256 are separate. No old workbook/VBA or historic PASS is reused.",
+  "ContourCoverageLimit": "This existing Saved fixture tests legacy saved geometry. Newly formed exact Contour persistence is covered separately by directed/current-feature/native gates. Replacing Saved fixture with new generated geometry would change the test contract and cannot fake AutoCADImport provenance.",
+  "ChangesMade": [],
+  "NewExcelOrCADProcesses": 0,
+  "FullRegressionPass": false
+}

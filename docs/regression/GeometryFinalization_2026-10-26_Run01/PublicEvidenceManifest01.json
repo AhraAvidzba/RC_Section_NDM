@@ -1,0 +1,266 @@
+﻿{
+  "Status": "REPORT_LINKED_EVIDENCE_INVENTORY_ONLY",
+  "Files": [
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/IntegrationReview.json",
+      "Exists": true,
+      "Bytes": 4882,
+      "SHA256": "5F08582136F3161433679609C2F65C83D7B69EF6B43C931ABE7451126939FF02"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/CAD_RebarReview.json",
+      "Exists": true,
+      "Bytes": 8417,
+      "SHA256": "5CF861FD92E06C50E774878F6E2CBBAA5C0C6CA37227338CA3A41002FBFB7670"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalKeyRename.json",
+      "Exists": true,
+      "Bytes": 872,
+      "SHA256": "665F5542273B231F0060C4F82D6FAE0EB51E5EF84AC3DD7B584767B8858EE10D"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FileGeometryStorageDocumentationReview.json",
+      "Exists": true,
+      "Bytes": 16253,
+      "SHA256": "7F7734987156607F17EC2AADB76B85EEFDE450E9B27F96E4877F630101B102E8"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/NativeCAD02/Acceptance.json",
+      "Exists": true,
+      "Bytes": 443,
+      "SHA256": "250E3AC14E28202612B29BB2533DBFCDCFB96655CBB04D706CCADB970B7A652C"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/Review.json",
+      "Exists": true,
+      "Bytes": 9159,
+      "SHA256": "05A6071DB4AC66309F63DB578CB8C3923D39F641F8880857FCD5AB01272CFCE8"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/ExcelCommentsExecutableProof.json",
+      "Exists": true,
+      "Bytes": 13383,
+      "SHA256": "D353F4321E0938CF4988F396BD809C71BE0300F1A38CEDBE790ECE4D68156D9C"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/BuildCommentReview/Review.json",
+      "Exists": true,
+      "Bytes": 703,
+      "SHA256": "2001433D9FD7ADB2D68BBAAAA54E13E0A86ABD217E11F16FDA7540CBEDA7D6D0"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/GuideGeneratorSync.json",
+      "Exists": true,
+      "Bytes": 6740,
+      "SHA256": "194411FF22A0B91C8B15773BFC11BBC2E3E94D8D560AB17E36D2923E1FAB2B0B"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalSourceApplyPlan01/AppliedFour01/SourceApplyReceipt.json",
+      "Exists": true,
+      "Bytes": 5080,
+      "SHA256": "89F34FB2E23CE334C07BED662DE837B2AADBFC019469A58D2047210C2A9874F8"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/DeferredImportRotationScan01/DecisionFinal01/Decision.md",
+      "Exists": true,
+      "Bytes": 2162,
+      "SHA256": "B5AFDD53367C10908F1B18018698C25D08D78186275E0AED5CDDA07DFD5EDDC5"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FreshBuild07.json",
+      "Exists": true,
+      "Bytes": 563,
+      "SHA256": "95C4B9B7046F6E735DC311D46C50C850931A2DF8AE9E9BC6961189B9B54E8DF1"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/NativeRelease04/SourceEquality.json",
+      "Exists": true,
+      "Bytes": 86178,
+      "SHA256": "3AEEA25E28F042476F88171006F865C05036AB7580D6EB6303ABB8A695CE8702"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/NativeCleanlinessPlan/FreshBuild07Cleanliness.json",
+      "Exists": true,
+      "Bytes": 2716,
+      "SHA256": "1D2D8B9F0BE1EE6C3F836C4CB39928947673776C0BE0FB36DC00BC25ABD0CDCD"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalPublication01/Publication.json",
+      "Exists": true,
+      "Bytes": 1864,
+      "SHA256": "8B791FD4A8151817C0ADD8D0BE8D032D1A84AC578FD457985B45105033F0F60A"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/Directed04/Acceptance.json",
+      "Exists": true,
+      "Bytes": 19573,
+      "SHA256": "EB9A3485D3ABEB8D9CE4185F67B6A35470E02B4D64D11D216C1A9E7396C0E846"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PerformanceReviewDraft02.json",
+      "Exists": true,
+      "Bytes": 21175,
+      "SHA256": "E966AD5E73912A3451FEC279ADE1B0EFF8867CF5F313FD555A100758A008309A"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/IndependentReleaseLayoutReview01.json",
+      "Exists": true,
+      "Bytes": 9727,
+      "SHA256": "DBF6CD0478783281BA1BF8F4E97EC085EF25B6ACD4158B07899547139A3F2B22"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/NativeFilePreview01/Acceptance.json",
+      "Exists": true,
+      "Bytes": 441,
+      "SHA256": "B2758D070B55069BABA35C575583DC72AF657A1E3B1544B9E80A8C97FD1000B6"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/SnapshotOfferUIFile13_02/RootOperatorReview01.json",
+      "Exists": true,
+      "Bytes": 2687,
+      "SHA256": "DD9C74BF4651252F63FD466C982A7E65A74DF1CDCB81427E63FF3B7C057E05E4"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/GuardSmoke01/IndependentGuardSmokeReview01.json",
+      "Exists": true,
+      "Bytes": 22207,
+      "SHA256": "FBCBC5E2B44D6CEFD61962723DFB3C43AD6727F7547FCE63AA275E05889D691F"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/SeparatePerformanceBookPlan/OriginProof.json",
+      "Exists": true,
+      "Bytes": 44080,
+      "SHA256": "A15AC97793FD5D832B149EA17B93A782DCCBF450F50558EC87C207DFC3CC09CB"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalCurrentBenchmark01/FullPhysicsComparison.json",
+      "Exists": true,
+      "Bytes": 39612,
+      "SHA256": "EC9A56B0CA7DBAE4B3D15C5A7028231F80C4D4E50EB3C6563688DB4FDE627342"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalCurrentBenchmark01/Acceptance.json",
+      "Exists": true,
+      "Bytes": 267494,
+      "SHA256": "A1C23B44DCEBC42061FF4D2448FDE7BB4E80C0C6084AB9A2F48702A524D96C30"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalCurrentBenchmark01/Excel.ReopenAcceptance.json",
+      "Exists": true,
+      "Bytes": 19754,
+      "SHA256": "0BCAC0A6C1DF5213A702408AC4F70FFD62E9ADFB7C4370C38CDCA9EB4FC77A19"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalCurrentBenchmark01/File.ReopenAcceptance.json",
+      "Exists": true,
+      "Bytes": 46596,
+      "SHA256": "5470168D5A9DD271259A0AFBB3CEB959D8A122AE0E7CAAAA5CD23FAA4FA2D9B1"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalCurrentBenchmark01.Watchdog/Completion.json",
+      "Exists": true,
+      "Bytes": 345897,
+      "SHA256": "4B7493B1C3BB7C6B2E26ABC96C928B097635B9C0CBC179891FC94267A68AC68F"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/LightABBA01/ExactPhysicsAndTimingReview.json",
+      "Exists": true,
+      "Bytes": 148360,
+      "SHA256": "B1BE6CFE786AC7B92C00904470DE7B51705BD879D1EB9C101BB54D37D941EAEA"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PerformancePhaseProfilePlan/IndependentPhaseReview02.json",
+      "Exists": true,
+      "Bytes": 71063,
+      "SHA256": "E46C14FD9B280AAAE216EC6AE93312C8821C56F0EC4AD71B31882B09BECE47B7"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/AutoLispBatchTransportProbe01/IndependentNative07Review01.json",
+      "Exists": true,
+      "Bytes": 4622,
+      "SHA256": "736D7474AD5FC90FE1539735DD0DE02704A835941CD765B882418F08792CBD0F"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/AutoLispWholeExportNative01/IndependentReview.json",
+      "Exists": true,
+      "Bytes": 126194,
+      "SHA256": "28070AF7F9398DDCC8370D0AC5BDE9FACBA26DD6E5499D2FC27E8F39E6F07B00"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/AutoLispWholeExportNativeOnePair01/IndependentReview.json",
+      "Exists": true,
+      "Bytes": 103763,
+      "SHA256": "4D383931FB51D9CF16889914B9779E77269E68CB77D451CFE3E14F7CC259F580"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/AutoLispWholeExportDecision01.json",
+      "Exists": true,
+      "Bytes": 1940,
+      "SHA256": "137318DD12AC296B4E8A2544BB7794EA053B4239497D1050051A8CD827087BC8"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/NativeReleaseClosureCorrection01/Correction.json",
+      "Exists": true,
+      "Bytes": 3100,
+      "SHA256": "8BA05E919C2A19880CAF074C07CF9B2F548FDEAA17955FE4533A12E9DB891649"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullLaunchGuardHardening01/Applied01/ApplyReceipt.json",
+      "Exists": true,
+      "Bytes": 8212,
+      "SHA256": "9660482B9FECF891D0F93D6D0BD6B5425A06037BE753B8A2233E13B11B361BF1"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FocusedNativeMemoryGuard01/Revision02/Applied01/ApplyReceipt.json",
+      "Exists": true,
+      "Bytes": 3653,
+      "SHA256": "A96D240A8AC09075C1438726178E968358C2B8DF7B17DF01447BE614F06D6740"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/AutoLispImportReadOnlyReview01/Review.md",
+      "Exists": true,
+      "Bytes": 6115,
+      "SHA256": "AC3F1E25CB5F7C79DC4C51E56B52396854B1C98BD16A6DCB0DF15280B491974F"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalNativeCode02/RawNativeComponentComparison.json",
+      "Exists": true,
+      "Bytes": 335,
+      "SHA256": "0E5E2EEADBD51D7E94610C673A4A1FAED574527CD2A76ECB75AB6522F410D173"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalNativeCode02/IndependentReview.json",
+      "Exists": true,
+      "Bytes": 3047,
+      "SHA256": "951D5D5B49568467E0F605DE97CA29DB1CDF970CEB8EBBB96ECF87F06C5DDFAD"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalNativeCode02.Watchdog/Completion.json",
+      "Exists": true,
+      "Bytes": 6452,
+      "SHA256": "E77356CD7364772C146D9216B5ED2EB689D4A16DBE5DB003A3C9F8019E6499CC"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalNativeCode01/Failure.json",
+      "Exists": true,
+      "Bytes": 1147,
+      "SHA256": "268B3B5A729A0EB85DDDDF1019DBB4C15156BB800D15D608EC675213ECDA8DBE"
+    },
+    {
+      "Path": "workbook/output/NDM_Test_1232_30/RC_Section_NDM.xlsm",
+      "Exists": true,
+      "Bytes": 17049153,
+      "SHA256": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8"
+    },
+    {
+      "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalPublication01/TestBookDelivery.json",
+      "Exists": true,
+      "Bytes": 1689,
+      "SHA256": "535C1C6831788D6E872CE77430362D9A5CF29A3C61F6282369BAFDFC47FB3260"
+    }
+  ],
+  "Missing": [],
+  "TotalBytes": 18537503,
+  "FullRegressionPass": false
+}

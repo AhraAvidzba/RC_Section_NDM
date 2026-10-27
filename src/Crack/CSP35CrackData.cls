@@ -123,7 +123,7 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     End If
 End Sub
 
-' Сбрасывает прежнее сочетание до валидации нового, чтобы ошибочный запрос
+' Сбрасывает сохранённое сочетание до валидации следующего, чтобы ошибочный запрос
 ' не мог выдать область или стержни прошлого расчета как актуальный результат.
 Private Sub ResetData()
     Set mSection = Nothing: Set mQuery = Nothing: Set mDomain = Nothing
@@ -218,7 +218,7 @@ Private Function GroupRoot(ByRef parent() As Long, ByVal index As Long) As Long
     GroupRoot = root
 End Function
 
-' Сохраняет прежнее разбиение на ряды по n/t/ID и полному размаху RowTolerance,
+' Разбивает на ряды по n/t/ID и полному размаху RowTolerance,
 ' без цепочного слияния далеких рядов. Нумерует готовые ряды от растянутой
 ' бетонной границы к Н.О.: наружный ряд 1, ближайший к Н.О. - последний.
 ' При центральном растяжении Н.О. нет: один общий ряд.

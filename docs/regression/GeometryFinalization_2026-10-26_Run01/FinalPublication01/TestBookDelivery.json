@@ -1,0 +1,44 @@
+{
+  "Status": "DELIVERED_SEPARATE_CALCULATED_TEST_BOOK_FULL_ACCEPTANCE_PENDING",
+  "Workbook": "workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM.xlsm",
+  "SHA256": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8",
+  "VBASHA256": "8DE003545C14CAA38010CB208F877F464025FB825287AF2B0B8E995D7C46FC35",
+  "ExactSourceArtifact": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalCurrentBenchmark01\\Excel\\Warm2\\RC_Section_NDM.xlsm",
+  "NativeSourceOnlyProof": "FinalNativeCode02/RawNativeComponentComparison.json",
+  "NativeCodeComponentsRawEqual": 181,
+  "MainCleanSourceSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+  "VBAProjectBytesAreNotAssumedEqualAfterNativeSave": true,
+  "Concrete": 1232,
+  "Rebar": 8,
+  "LoadCases": 30,
+  "PreservedInputErrors": [
+    "PERF_14",
+    "PERF_21",
+    "PERF_27",
+    "PERF_28"
+  ],
+  "NoRemeshing": true,
+  "DataAndResultBytesUnchanged": true,
+  "NativeReopenAlreadyPassed": true,
+  "MathComparison": "PASS_EXACT_PHYSICS_ONLY",
+  "FullRegressionPass": false,
+  "RootMainBookChangedByDelivery": false,
+  "Files": [
+    {
+      "Name": "RC_Section_NDM_execution_report.txt",
+      "Bytes": 849652,
+      "SHA256": "062825022FEF46EA0610198A579049C8860FABDB668F764FE2F9BAE74A20A9D7"
+    },
+    {
+      "Name": "RC_Section_NDM.xlsm",
+      "Bytes": 17049153,
+      "SHA256": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8"
+    },
+    {
+      "Name": "README.txt",
+      "Bytes": 1742,
+      "SHA256": "B50547551218AE2FDF4789187FA5B84E0F647D7A9931C9DEE492E9948CE07758"
+    }
+  ],
+  "DocumentationClarifiedWithoutBookChange": true
+}

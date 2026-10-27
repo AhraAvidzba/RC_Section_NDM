@@ -390,7 +390,7 @@ Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSear
         End If
         If mCapacity.LimitSearchHasTerminalFailure Then Exit Function
         ' Численная неудача начальной пробы не доказывает физический отказ.
-        ' Сохраняем прежний Newton и его старты, без переноса пробного состояния.
+        ' Запускаем Newton с заданными начальными приближениями, без переноса пробного состояния.
         If Not mCapacity.LimitSearchPrepareCapacityUltimate( _
                 request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath) Then Exit Function
     End If

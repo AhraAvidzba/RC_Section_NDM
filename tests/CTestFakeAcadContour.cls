@@ -32,11 +32,11 @@ Private mElevation As Double ' Высотная отметка объекта, �
 Private mDeleted As Boolean ' Был ли вызван Delete для тестового объекта.
 Private mLastCopy As CTestFakeAcadContour ' Последняя копия, созданная тестовым вызовом Copy.
 Private mExploded As Collection ' Объекты, полученные последним тестовым разбиением контура.
-Private mLegacyContourTag As Boolean ' ДЛЯ ТЕСТОВ: метаданные прежнего экспорта не влияют на импорт.
+Private mLegacyContourTag As Boolean ' ДЛЯ ТЕСТОВ: метки экспортированного контура не влияют на импорт.
 Private mXDataReads As Long ' Число чтений расширенных данных объекта для проверки импорта.
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' моделирует объект из старого DWG без поддержки старого поведения.
+' Моделирует объект DWG с экспортной меткой, которую импорт не использует для фильтрации.
 Public Sub TestSetLegacyContourTag(ByVal value As Boolean)
     mLegacyContourTag = value
 End Sub

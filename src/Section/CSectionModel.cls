@@ -46,7 +46,7 @@ Private mRebarMaterialID() As Long ' Номер материала стержн�
 Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
 Private mRebarRecipeTrace() As String ' Необязательные сведения о правилах и исходных позициях, из которых получен стержень.
 Private mGeometryDiagnostics As String ' Пояснения и предупреждения, полученные при подготовке геометрии.
-Private mHasGeometryWarnings As Boolean ' Значимое событие текущего построения; исторический текст снимка его не восстанавливает.
+Private mHasGeometryWarnings As Boolean ' Значимое событие текущего построения; пояснительный текст снимка его не восстанавливает.
 Private mGeometryWarnings As String ' Готовая краткая сводка, независимая от подробного текста диагностики.
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 Private mRebarCapacity As Long ' Резерв арматуры живет только вместе с этой моделью.
@@ -59,7 +59,7 @@ Private mConcreteCenterValid As Boolean, mConcreteCenterRevision As Long ' Пр�
 Private mConcreteCenterX As Double, mConcreteCenterY As Double, mConcreteCenterArea As Double ' Координаты центра бетонной сетки в мм и её суммарная площадь в мм2.
 Private mElementRadiusValid As Boolean, mElementRadiusRevision As Long, mElementRadius As Double ' Готовность, версия геометрии и сохранённый максимальный радиус размещения элементов, мм.
 Private mForceIntegrator As CDiscreteForceIntegrator ' Индекс только этой модели; точная ревизия и центр проверяются при каждой пробе усилий.
-Private mTestDisableForceIntegration As Boolean ' ДЛЯ ТЕСТОВ: принудительный прежний обход для независимого сравнения того же solve.
+Private mTestDisableForceIntegration As Boolean ' ДЛЯ ТЕСТОВ: прямой обход элементов для независимого сравнения того же solve.
 Private mForceProbeCount As Long ' Число реальных проб усилий: короткий одиночный solve не оплачивает построение индекса.
 Private mForceBatchCount As Long, mForceProbeRevision As Long ' Объём текущего запуска и ревизия счётчика проб.
 
@@ -106,7 +106,7 @@ Public Sub Clear()
 End Sub
 
 ' Для большой сетки переиспользует геометрический индекс только при точном совпадении
-' ревизии и центра. Малые сетки не выделяют массивов и сохраняют прежний обход.
+' ревизии и центра. Малые сетки не выделяют массивов и обходятся напрямую.
 Friend Function TryConcreteForces(ByVal diagram As CMaterialDiagram, ByVal eps As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal originX As Double, ByVal originY As Double, ByRef n As Double, ByRef mx As Double, ByRef my As Double) As Boolean
     If mConcreteCount <= 5000 Then Exit Function
@@ -169,7 +169,7 @@ Public Property Get GeometryDiagnosticsText() As String
 End Property
 
 ' Возвращает факт значимого события текущего построения, независимо от пояснения.
-' Исторические Results хранят только текст; он не является машинной классификацией.
+' Текстовое пояснение Results не является машинной классификацией события.
 Public Property Get HasGeometryWarnings() As Boolean
     HasGeometryWarnings = mHasGeometryWarnings
 End Property
@@ -223,40 +223,47 @@ Public Function ConcreteElement(ByVal index As Long) As CConcreteElement
     Set ConcreteElement = mConcreteElements(index)
 End Function
 
-' Проверяет положительность точного тензора без размерного нижнего порога старой оболочки.
-' Нормированное произведение избегает переполнения и сохраняет тонкие физические сегменты.
+' Защищает чтение точного тензора без размерного нижнего порога.
+' Нормированное произведение избегает переполнения и сохраняет тонкие сегменты.
 Private Function ExactPositiveInertia(ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double) As Boolean
     If localIx <= 0# Or localIy <= 0# Then Exit Function
     ExactPositiveInertia = Abs(localIxy / Sqr(localIx) / Sqr(localIy)) < 1#
 End Function
 
 ' Добавляет одно бетонное волокно или импортированную бетонную область.
-' Координаты и площадь уже должны быть во внутренних единицах проекта. Метод
-' только проверяет минимальную физическую корректность и присваивает элементу
-' стабильное расчетное имя Cn. rotationKnown отличает известный нулевой угол
-' грани от отсутствующего направления почти изотропной области.
+' Координаты, площадь и инерции заданы во внутренних единицах проекта.
+' Contour требует границу и согласованные A/c/I до публикации сущности Cn:
+' при отказе список, имена, ревизия и подготовленные кэши не изменяются.
+' rotationKnown отличает известный нулевой угол грани от отсутствующего направления.
 Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, ByVal area As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal sourceName As String = vbNullString, _
         Optional ByVal sourceHandle As String = vbNullString, Optional ByVal shapeType As String = "Rectangle", _
         Optional ByVal width As Double = 0#, Optional ByVal height As Double = 0#, _
         Optional ByVal rotation As Double = 0#, Optional ByVal comment As String = vbNullString, _
         Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
-        Optional ByVal localIxy As Double = 0#, Optional ByVal rotationKnown As Boolean = False)
+        Optional ByVal localIxy As Double = 0#, Optional ByVal rotationKnown As Boolean = False, _
+        Optional ByVal exactRegion As CConcreteRegion = Nothing)
     If area <= 0# Then Err.Raise vbObjectError + 5200, "CSectionModel", "Площадь бетонного элемента должна быть положительной."
     If Abs(rotation) > 2# * GEOM_PI Then rotation = NormalizeAnglePi(rotation)
     Dim explicitRectangle As Boolean
     explicitRectangle = StrComp(Trim$(shapeType), "Rectangle", vbTextCompare) = 0 And width > GEOM_TOLERANCE And height > GEOM_TOLERANCE And area > GEOM_TOLERANCE
     If explicitRectangle Then explicitRectangle = Abs(width * height - area) / area <= LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE
     Dim exactBoundary As Boolean
-    exactBoundary = StrComp(shapeType, "Contour", vbTextCompare) = 0
+    exactBoundary = StrComp(Trim$(shapeType), "Contour", vbTextCompare) = 0 Or Not exactRegion Is Nothing
+    Dim query As CSectionGeometryQuery
     If exactBoundary Then
-        If Not ExactPositiveInertia(localIx, localIy, localIxy) Then Err.Raise vbObjectError + 5223, "CSectionModel", "Собственные инерции точного бетонного элемента должны задавать положительный тензор."
+        Set query = New CSectionGeometryQuery
+        ValidateConcreteBoundary query, exactRegion, xCoord, yCoord, area, localIx, localIy, localIxy, "C" & CStr(mConcreteCount + 1)
+        shapeType = "Contour": explicitRectangle = False ' Фактическая граница определяет тип независимо от переданной подсказки формы.
     ElseIf Not IsPositiveDefiniteInertia(localIx, localIy, localIxy) Then
         If explicitRectangle Then RectangleLocalInertiaComponents area, width, height, rotation, localIx, localIy, localIxy
     End If
     Dim displayWidth As Double, displayHeight As Double, displayRotation As Double, statusText As String
     displayWidth = width: displayHeight = height: displayRotation = rotation
-    If Not exactBoundary And Not explicitRectangle Then
+    If exactBoundary Then
+        ConcreteRegionDisplay query, exactRegion, displayWidth, displayHeight, displayRotation
+        rotationKnown = True
+    ElseIf Not explicitRectangle Then
         Dim viewIx As Double, viewIy As Double, viewIxy As Double
         viewIx = localIx: viewIy = localIy: viewIxy = localIxy
         If Not IsPositiveDefiniteInertia(viewIx, viewIy, viewIxy) Then EquivalentSquareLocalInertiaComponents area, viewIx, viewIy, viewIxy
@@ -270,7 +277,7 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     nextIndex = mConcreteCount + 1
     Set element = New CConcreteElement
     element.Initialize "C" & CStr(nextIndex), xCoord, yCoord, area, materialID, sourceName, sourceHandle, shapeType, _
-        displayWidth, displayHeight, displayRotation, rotationKnown Or Abs(rotation) > GEOM_TOLERANCE Or explicitRectangle, comment, localIx, localIy, localIxy, Nothing, explicitRectangle
+        displayWidth, displayHeight, displayRotation, rotationKnown Or Abs(rotation) > GEOM_TOLERANCE Or explicitRectangle, comment, localIx, localIy, localIxy, exactRegion, explicitRectangle
     EnsureConcreteCapacity nextIndex
     Set mConcreteElements(nextIndex) = element
     mConcreteX(nextIndex) = element.X: mConcreteY(nextIndex) = element.Y: mConcreteArea(nextIndex) = element.Area ' Неизменяемая числовая проекция для горячих циклов; источник данных — элемент.
@@ -313,7 +320,7 @@ Private Sub EnsureConcreteCapacity(ByVal required As Long, Optional ByVal exactS
     mConcreteCapacity = capacity
 End Sub
 
-' Арматура сохраняет прежний порядок R1/R2 и проверку фактического Count.
+' Арматура нумеруется в порядке R1/R2; проверяется фактическое число элементов.
 ' Резерв выделяется только при добавлении/явном Reserve и уничтожается Clear.
 Private Sub EnsureRebarCapacity(ByVal required As Long, Optional ByVal exactSize As Boolean = False)
     If required <= mRebarCapacity Then Exit Sub
@@ -477,50 +484,58 @@ End Function
 ' не восстанавливается эквивалентным прямоугольником при потере его границы.
 Public Sub SetConcreteGeometry(ByVal index As Long, ByVal region As CConcreteRegion)
     CheckConcreteIndex index
-    If region Is Nothing Then Err.Raise vbObjectError + 5223, "CSectionModel", "Фактическая граница бетонного элемента не передана."
-    If region.SegmentCount = 0 Or region.Area <= 0# Then Err.Raise vbObjectError + 5223, "CSectionModel", "Фактическая граница бетонного элемента пуста."
-    Dim query As CSectionGeometryQuery, properties As TGeometryProperties
+    Dim query As CSectionGeometryQuery
     Set query = New CSectionGeometryQuery
-    query.RegionProperties region, properties
-    Dim coordinateTolerance As Double, inertiaTolerance As Double
-    coordinateTolerance = GEOM_TOLERANCE + 0.000000000001 * GeomMax(Abs(mConcreteX(index)), Abs(mConcreteY(index))) ' Допуск учитывает представимость больших WCS-координат, а не размер контура.
-    inertiaTolerance = GEOM_TOLERANCE + 0.00002 * GeomMax(properties.Ixc, properties.Iyc) ' AutoCAD отдаёт инерции относительно начала; после переноса возможна потеря младших разрядов.
-    If Abs(properties.Area - mConcreteArea(index)) > GEOM_TOLERANCE + 0.0000001 * properties.Area Or _
-            Abs(properties.CentroidX - mConcreteX(index)) > coordinateTolerance Or _
-            Abs(properties.CentroidY - mConcreteY(index)) > coordinateTolerance Or _
-            Abs(properties.Ixc - mConcreteElements(index).LocalIx) > inertiaTolerance Or _
-            Abs(properties.Iyc - mConcreteElements(index).LocalIy) > inertiaTolerance Or _
-            Abs(properties.Ixyc - mConcreteElements(index).LocalIxy) > inertiaTolerance Then
-        Err.Raise vbObjectError + 5223, "CSectionModel", "Площадь, центр или собственные инерции элемента " & mConcreteElements(index).ElementID & " не согласованы с его фактической границей."
-    End If
-    Dim widthValue As Double, heightValue As Double, rotationValue As Double, centerX As Double, centerY As Double
+    ValidateConcreteBoundary query, region, mConcreteX(index), mConcreteY(index), mConcreteArea(index), _
+        mConcreteElements(index).LocalIx, mConcreteElements(index).LocalIy, mConcreteElements(index).LocalIxy, mConcreteElements(index).ElementID
+    Dim widthValue As Double, heightValue As Double, rotationValue As Double
+    ConcreteRegionDisplay query, region, widthValue, heightValue, rotationValue
+    Set mConcreteElements(index) = mConcreteElements(index).WithGeometry(region, widthValue, heightValue, rotationValue)
+    InvalidateBoundaryCache index
+    mRevision = mRevision + 1
+End Sub
+
+' Добавляет расчётное имя модели к общей диагностике границы; сама проверка
+' принадлежит геометрическому ядру и одинакова для импорта, модели и снимка.
+Private Sub ValidateConcreteBoundary(ByVal query As CSectionGeometryQuery, ByVal region As CConcreteRegion, _
+        ByVal x As Double, ByVal y As Double, ByVal area As Double, ByVal localIx As Double, ByVal localIy As Double, _
+        ByVal localIxy As Double, ByVal elementID As String)
+    On Error GoTo InvalidBoundary
+    query.ValidateBoundaryProperties region, x, y, area, localIx, localIy, localIxy
+    Exit Sub
+InvalidBoundary:
+    Err.Raise vbObjectError + 5223, "CSectionModel", "Элемент " & elementID & ": " & Err.Description
+End Sub
+
+' Подготавливает отображаемые размеры по фактической области. Для произвольной
+' формы это габариты в WCS; точная область остаётся источником геометрии.
+Private Sub ConcreteRegionDisplay(ByVal query As CSectionGeometryQuery, ByVal region As CConcreteRegion, _
+        ByRef widthValue As Double, ByRef heightValue As Double, ByRef rotationValue As Double)
+    Dim centerX As Double, centerY As Double
     If Not query.TryRectangle(region, centerX, centerY, widthValue, heightValue, rotationValue) Then
         Dim minX As Double, maxX As Double, minY As Double, maxY As Double
         query.ProjectionBounds region, 1#, 0#, minX, maxX
         query.ProjectionBounds region, 0#, 1#, minY, maxY
         widthValue = maxX - minX: heightValue = maxY - minY: rotationValue = 0# ' Для произвольной формы это только габарит рисунка; геометрические потребители читают саму область.
     End If
-    Set mConcreteElements(index) = mConcreteElements(index).WithGeometry(region, widthValue, heightValue, rotationValue)
-    InvalidateBoundaryCache index
-    mRevision = mRevision + 1
 End Sub
 
 ' Возвращает единое геометрическое представление элемента. Эквивалентная
-' оболочка допустима только для прежних записей без маркера точной границы.
+' оболочка описывает только компактные записи без маркера точной границы.
 Public Function ConcreteGeometry(ByVal index As Long) As CConcreteRegion
     CheckConcreteIndex index
     Set ConcreteGeometry = mConcreteElements(index).Geometry
 End Function
 
-' Отличает сохранённую фактическую область от компактного описания старого режима.
+' Отличает сохранённую фактическую область от компактного прямоугольного описания.
 ' Результат не определяет способ построения: импорт и оба генератора используют один контракт.
 Public Function ConcreteHasBoundary(ByVal index As Long) As Boolean
     CheckConcreteIndex index
     ConcreteHasBoundary = mConcreteElements(index).HasExactGeometry
 End Function
 
-' Возвращает настоящий прямоугольник точного элемента либо прежнюю оболочку.
-' Произвольная фактическая форма возвращает False. Только старые записи
+' Возвращает настоящий прямоугольник точного элемента либо компактную оболочку.
+' Произвольная фактическая форма возвращает False. Только компактные записи
 ' интерпретируют A/I как Width/Height/Rotation, без обратного пересчёта инерций.
 Public Function ConcreteBoundaryRectangle(ByVal index As Long, ByRef widthValue As Double, _
         ByRef heightValue As Double, ByRef rotationValue As Double) As Boolean
@@ -1164,7 +1179,7 @@ Public Property Get RebarSteelClass(ByVal index As Long) As String
 End Property
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Позволяет сравнить полный поиск с прежним обходом без изменения сетки и материалов.
+' Позволяет сравнить полный поиск с прямым обходом без изменения сетки и материалов.
 Public Sub TestSetForceIntegrationEnabled(ByVal enabled As Boolean)
     mTestDisableForceIntegration = Not enabled
     mForceProbeCount = 0: Set mForceIntegrator = Nothing

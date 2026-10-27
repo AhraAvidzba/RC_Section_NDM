@@ -74,7 +74,7 @@ End Function
 ' Заполняет sizes размерами выбранного варианта в миллиметрах и проверяет их допустимость.
 ' Для одного прямоугольника не читает размеры нижней части; смещение нужно только двум прямоугольникам.
 ' В каждой паре сначала читаются H и B, затем проверяются их знаки. Так текст в B не
-' теряется за ошибкой знака H, а сообщение сохраняет прежний адрес исходной ячейки.
+' теряется за ошибкой знака H, а сообщение содержит адрес исходной ячейки.
 Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As TRectanglesDimensions)
     sizes.Shape = reader.Choice("General", "Shape", Array("TwoRect", "OneRect"))
     sizes.H1 = reader.Length("General", "H1"): sizes.B1 = reader.Length("General", "B1")

@@ -1330,7 +1330,7 @@ Private Sub TestCheck(ByRef stats As TProfileStats, ByVal id As String, ByVal co
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает с прежним компонентным допуском; precision не округляет actual.
+' Сравнивает с фиксированным компонентным допуском; precision не округляет actual.
 Private Sub TestCheckClose(ByRef stats As TProfileStats, ByVal id As String, ByVal actual As Double, ByVal expected As Double, ByVal tolerance As Double)
     TestCheck stats, id & "; actual=" & Trim$(Str$(actual)) & "; expected=" & Trim$(Str$(expected)), Abs(actual - expected) <= tolerance
 End Sub
@@ -1453,7 +1453,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимые численные ожидания: масштаб модели 0.43 pt/mm, visual-scale=1.
 ' Проверяются настоящий цвет 0, направление Inside, толщина и mm/pt, а также
-' повторная инициализация того же layout без накопления старых элементов.
+' повторная инициализация того же layout без накопления элементов предыдущего построения.
 Private Sub TestAnnotationLayoutValues(ByRef stats As TProfileStats, ByVal source As Object)
     Dim column As Long, color As Variant, height As Variant, layout As CPlotAnnotationLayout
     Dim settings As CSystemSettingsReader, prefix As String, base As Long
@@ -1594,7 +1594,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Перемещает существующий Name и проверяет ошибку активного цвета по новому
-' адресу. Отрисовка не должна выдавать старый адрес или молча брать default.
+' адресу. Отрисовка не должна выдавать адрес до перемещения или молча брать default.
 Private Sub TestAnnotationRelocation(ByRef stats As TProfileStats, ByVal source As Object, _
         ByVal reader As CSectionPlotDataReader, ByRef sheet As Object)
     Dim target As Object, cell As Object, code As Long, reason As String, oldRef As String
@@ -1891,13 +1891,13 @@ Private Sub TestDurationMatching(ByRef stats As TProfileStats, ByVal profiles As
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Выполняет только изменённую числовую границу duration; полный набор сохраняет прежний охват всех строк.
+' Выполняет только изменённую числовую границу duration; полный набор сохраняет проверку всех строк.
 Public Function RunLocaleDurationTests(Optional ByRef passed As Long = 0, Optional ByRef failed As Long = 0) As String
     RunLocaleDurationTests = RunAudit03DurationConfigTests(passed, failed, False, True)
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Оба десятичных написания дополнительных нагрузок дают прежние Н/Н*мм, знаки и пояснения.
+' Оба десятичных написания дополнительных нагрузок дают одинаковые Н/Н*мм, знаки и пояснения.
 Private Sub TestDurationLocaleValid(ByRef stats As TProfileStats, ByVal loads As Object, ByVal duration As Object, _
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
@@ -1933,7 +1933,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет исход настоящего duration-reader и batch независимо от текста
-' отдельной ошибки; valid/blank строки сохраняют прежние правила.
+' отдельной ошибки; valid/blank строки соблюдают заданный контракт.
 Private Sub TestDurationErrorTextOutcome(ByRef stats As TProfileStats, ByVal loads As Object, ByVal duration As Object, _
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)

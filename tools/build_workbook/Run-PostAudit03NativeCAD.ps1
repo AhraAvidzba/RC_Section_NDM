@@ -7,7 +7,8 @@ param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
       [ValidateSet('No','Yes')][string]$Mode,
       [switch]$LaunchInstalledAutoCAD,
       [switch]$AcquireInsideExcel,
-      [switch]$ShowOwnedWindow)
+      [switch]$ShowOwnedWindow,
+      [string]$DeadlineUTC='')
 $ErrorActionPreference='Stop'
 Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -46,6 +47,41 @@ function Test-OwnedProcessIdentity {
         $current.StartTime.ToUniversalTime().Ticks -eq $StartTicks)
 }
 
+# -------------------- ДЛЯ ТЕСТОВ --------------------
+# Проверяет фактическую RAM и запас commit перед каждым новым CAD/Excel, включая уже работающий CAD.
+# Ожидание не превышает 300 с и общий deadline; отказ счётчиков запрещает создание приложения.
+function Wait-TestNativeCreationMemory {
+    param([ValidateSet('InstalledCAD','CADCOM','Excel')][string]$CreationKind, [string]$DeadlineUTC='')
+    $started=[DateTimeOffset]::UtcNow
+    $limit=$started.AddSeconds(300)
+    if ($DeadlineUTC) { $outer=[DateTimeOffset]::Parse($DeadlineUTC,[Globalization.CultureInfo]::InvariantCulture); if ($outer -lt $limit) { $limit=$outer } }
+    $proofPath=Join-Path $directory ('MemoryBefore'+$CreationKind+'.json')
+    while ($true) {
+        $proof=[ordered]@{CheckedUTC=[DateTimeOffset]::UtcNow.ToString('o');Status='MEMORY_QUERY_FAILED';Ready=$false;CreationKind=$CreationKind;RequiredPhysicalGiB=4;RequiredCommitGiB=8;WaitLimitUTC=$limit.ToString('o');NewApplicationStarted=$false}
+        try {
+            $memory=Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory -ErrorAction Stop
+            foreach ($name in @('AvailableMBytes','CommitLimit','CommittedBytes')) { if ($null -eq $memory.PSObject.Properties[$name] -or $null -eq $memory.$name) { throw ('Missing memory counter: '+$name) } }
+            $physical=[double]$memory.AvailableMBytes*1MB
+            $commit=[double]$memory.CommitLimit-[double]$memory.CommittedBytes
+            if ([double]::IsNaN($physical) -or [double]::IsInfinity($physical) -or [double]::IsNaN($commit) -or [double]::IsInfinity($commit) -or $physical -lt 0 -or [double]$memory.CommitLimit -le 0 -or [double]$memory.CommittedBytes -lt 0) { throw 'Invalid memory counters.' }
+            $proof['FreePhysicalGiB']=$physical/1GB; $proof['FreeCommitGiB']=$commit/1GB
+            $proof['CommitLimitBytes']=[double]$memory.CommitLimit; $proof['CommittedBytes']=[double]$memory.CommittedBytes
+        } catch {
+            $proof['Error']=$_.Exception.Message
+            $proof | ConvertTo-Json | Set-Content -LiteralPath $proofPath -Encoding UTF8
+            throw ('Memory counters unavailable; no '+$CreationKind+' started.')
+        }
+        $remaining=($limit-[DateTimeOffset]::UtcNow).TotalSeconds
+        $ready=$physical -ge 4GB -and $commit -ge 8GB -and $remaining -gt 0
+        $proof.Ready=$ready; $proof.Status=if ($remaining -le 0) {'MEMORY_WAIT_DEADLINE'} elseif ($ready) {'READY'} else {'WAITING_FOR_MEMORY'}
+        $proof['WaitedSeconds']=([DateTimeOffset]::UtcNow-$started).TotalSeconds
+        $proof | ConvertTo-Json | Set-Content -LiteralPath $proofPath -Encoding UTF8
+        if ($ready) { return }
+        if ($remaining -le 0) { throw ('Memory reserve/deadline insufficient (4 GiB physical, 8 GiB commit); no '+$CreationKind+' started.') }
+        Start-Sleep -Milliseconds ([int][math]::Max(1,[math]::Min(10000,[math]::Ceiling($remaining*1000))))
+    }
+}
+
 $excel=$null; $book=$null; $acad=$null; $owned=$false; $pidValue=0; $cadStartTicks=0
 $ownedExcelPid=0; $ownedExcelTicks=0
 $launchedCad=$null; $launchedTicks=0
@@ -71,6 +107,9 @@ try {
         # ProgID может быть занят SOFiPLUS. Запускаем проверенный acad.exe и
         # подключаемся только к его ROT-объекту, не меняя регистрацию вручную.
         Write-Output ('CAD_EXPLICIT_LAUNCH: ' + $installedAcad + '; registered server=' + $server)
+        Wait-TestNativeCreationMemory -CreationKind 'InstalledCAD' -DeadlineUTC $DeadlineUTC
+        $existing=@([Diagnostics.Process]::GetProcessesByName('acad') | ForEach-Object { $_.Id })
+        if ($existing.Count -gt 0) { throw 'CAD appeared before explicit own launch.' }
         $launchedCad=Start-Process -FilePath $installedAcad -ArgumentList '/nologo' -WindowStyle Hidden -PassThru
         $launchedTicks=$launchedCad.StartTime.ToUniversalTime().Ticks
         [ordered]@{Executable=$installedAcad;OwnedPID=$launchedCad.Id;StartTicks=$launchedTicks;ExistingPIDs=$existing;UserDocumentsUsed=$false} |
@@ -87,6 +126,9 @@ try {
         }
     } else {
         Write-Output ('CAD_ACTIVATE: ' + $server)
+        Wait-TestNativeCreationMemory -CreationKind 'CADCOM' -DeadlineUTC $DeadlineUTC
+        $existing=@([Diagnostics.Process]::GetProcessesByName('acad') | ForEach-Object { $_.Id })
+        if ($AcquireInsideExcel -and $existing.Count -gt 0) { throw 'CAD appeared before own ROT acquisition.' }
         $acad=New-Object -ComObject AutoCAD.Application.24.2
     }
     $fullName=[string](Invoke-CadReady { $acad.GetType().InvokeMember('FullName',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null) })
@@ -120,6 +162,7 @@ try {
         $bootstrap=Invoke-CadReady { $acad.Documents.Add($template) }
     }
     Write-Output ('CAD_BOOTSTRAP_DOCUMENT: ' + [string]$bootstrap.Name)
+    Wait-TestNativeCreationMemory -CreationKind 'Excel' -DeadlineUTC $DeadlineUTC
     $existingExcelIds=@([Diagnostics.Process]::GetProcessesByName('EXCEL') | ForEach-Object { $_.Id })
     $excel=New-Object -ComObject Excel.Application
     [uint32]$excelId=0

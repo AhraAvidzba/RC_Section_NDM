@@ -17,7 +17,7 @@ Option Explicit
 ' знает, что геометрия пришла из AutoCAD: оно видит те же бетонные элементы
 ' и арматуру, что и при автоматической генерации.
 ' При действительно пустом слое бетона точный наружный контур и все
-' отверстия передаются общему генератору прямоугольных волокон.
+' отверстия передаются общему генератору бетонных элементов.
 '
 ' Класс не выполняет расчет и не пишет Results. Его ответственность - только
 ' аккуратно отфильтровать AutoCAD-сущности и заполнить модель сечения.
@@ -91,7 +91,7 @@ End Function
 
 ' Проверяет систему координат документа до чтения сущностей и запускает
 ' общий импорт. Пользовательская ПСК не переключается; при отказе модель
-' не создается и прежний снимок Results остается у вызывающего Excel-слоя.
+' не создается и сохранённый снимок Results остается у вызывающего Excel-слоя.
 Public Function ImportFromDocument(ByVal document As Object, ByVal settings As CSystemSettingsReader, _
         Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If document Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", "Документ AutoCAD не передан."
@@ -137,24 +137,12 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
         importUnits.LoadFromSettings settings
     End If
 
-    Dim minArea As Double
-    minArea = settings.GetRequiredDouble("AutoCAD.Import.MinArea")
-    If minArea < 0# Then Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
-        settings.InputErrorMessage("AutoCAD.Import.MinArea", "Порог площади не может быть отрицательным.", _
-            "Введите ноль для отключения фильтра или положительную площадь в единицах INPUT Area.")
-    On Error GoTo InvalidMinimumArea
-    minArea = importUnits.InputAreaToInternal(minArea)
-    On Error GoTo 0
+    Dim minArea As Double: minArea = ReadMinimumElementArea(settings, importUnits)
     Dim contourLayer As String, openingLayer As String
     contourLayer = OptionalContourLayer(settings, "AutoCAD.Common.SectionContourLayer") ' Точные наружные контуры и отверстия необязательны при наличии готовой сетки. Заданное имя слоя проверяется; пустой существующий слой не превращает необязательный контур в требование.
     openingLayer = OptionalContourLayer(settings, "AutoCAD.Common.OpeningContourLayer")
     Set ImportConfiguredModelSpace = ImportFromModelSpace(modelSpace, _
         concreteLayer, rebarLayer, REBAR_STEEL_CLASS, minArea, importUnits, contourLayer, openingLayer, drawingLayers, settings)
-    Exit Function
-InvalidMinimumArea:
-    Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
-        settings.InputErrorMessage("AutoCAD.Import.MinArea", "Площадь слишком велика для перевода в мм2.", _
-            "Уменьшите число и проверьте выбранную единицу INPUT Area.")
 End Function
 
 ' Читает бетонные Region, арматуру и точные контуры с заданных слоёв ModelSpace.
@@ -205,7 +193,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Next i
 
     If model.ConcreteCount = 0 And concreteObjectCount > 0 Then ValidateImportedModel model, meshSettings ' Непригодные или отфильтрованные объекты не равны пустому слою: ошибки существующей сетки не подменяются новой геометрией.
-    model.ApplyAverageRotationToEquivalentAreaFallbacks
+    If Not exactCellGeometry Then model.ApplyAverageRotationToEquivalentAreaFallbacks
     Dim domain As CConcreteRegion
     Set domain = ImportMaterialContours(model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities, meshSettings)
     If model.ConcreteCount = 0 Then
@@ -297,8 +285,8 @@ Private Function ImportMaterialContours(ByVal model As CSectionModel, ByVal mode
                     "Внутри Region отверстия есть отдельная бетонная часть, но наружный контур не задан. На AutoCAD.Common.SectionContourLayer разместите наружный Region с вырезанным отверстием и отдельный Region этой бетонной части."
             Next j
             openings.Add opening ' Проверяем совместимость заданных отверстий. Общая геометрия затем восстанавливает наружную границу по сетке и учитывает именно эти отверстия, не добавляя неизвестные внутренние пустоты сетки.
-            Set validatedOpenings = query.MergeDisjointRegions(openings)
         Next entity
+        If openings.Count > 0 Then Set validatedOpenings = query.MergeDisjointRegions(openings)
     End If
     If outerEntities.Count > 0 Then
         commentText = "Достоверный контур AutoCAD: реальные линии/дуги и заданные отверстия; координаты в мм. " & _
@@ -350,7 +338,7 @@ Private Function FilterEmptyContourSegments(ByVal entities As Collection, ByVal 
     Set FilterEmptyContourSegments = filtered
 End Function
 
-' Пустое опциональное поле допустимо, но TODO и ошибка Excel не равны
+' Пустое опциональное поле допустимо, но незаполненная подсказка и ошибка Excel не равны
 ' отсутствию запроса. Непустое имя проходит тот же валидатор, что слои сетки.
 Private Function OptionalContourLayer(ByVal settings As CSystemSettingsReader, ByVal key As String) As String
     If Len(Trim$(settings.GetRawString(key))) = 0 Then Exit Function
@@ -472,15 +460,15 @@ Private Function FindMatchingBoundaryLoop(ByVal domain As CConcreteRegion, ByVal
 End Function
 
 ' Читает реальные A/C/I одного бетонного Region. Контурный адаптер дополнительно
-' требует точную аналитическую границу, без эквивалентной подмены; прежний
-' адаптер сохраняет прежнюю оболочку и способ определения ориентации.
+' требует точную аналитическую границу; Adaptive восстанавливает эквивалентную
+' прямоугольную оболочку и её ориентацию по массовым характеристикам Region.
 Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, _
         ByVal units As CUnitSystem, ByVal sourceLayer As String, Optional ByVal exactGeometry As Boolean = False)
     Dim area As Double
     area = InputArea(CDbl(entity.Area), units)
     If area < minArea Then Exit Sub
     If exactGeometry Then
-        AddConcreteContourEntity model, entity, area, sourceLayer
+        AddConcreteContourEntity model, entity, area, sourceLayer, minArea
         Exit Sub
     End If
 
@@ -506,10 +494,10 @@ Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity A
 End Sub
 
 ' Подготавливает точную ячейку из аналитической границы, включая тонкие сегменты.
-' A/c/I интегрируются общим запросом около собственного центра; прежние размерные
-' пороги эквивалентной оболочки и вычитание больших WCS-инерций здесь не применяются.
+' A/c/I интегрируются общим запросом около собственного центра. Проверка не зависит
+' от размерных порогов эквивалентной оболочки и вычитания больших WCS-инерций.
 Private Sub AddConcreteContourEntity(ByVal model As CSectionModel, ByVal entity As Object, _
-        ByVal cadArea As Double, ByVal sourceLayer As String)
+        ByVal cadArea As Double, ByVal sourceLayer As String, ByVal minArea As Double)
     On Error GoTo Failed
     Dim reader As CAutoCADContourReader: Set reader = New CAutoCADContourReader
     Dim geometry As CConcreteRegion: Set geometry = reader.ReadRegion(entity)
@@ -522,10 +510,11 @@ Private Sub AddConcreteContourEntity(ByVal model As CSectionModel, ByVal entity 
     Set components = query.ConnectedRegions(geometry) ' Каждый связный участок является отдельной универсальной ячейкой, как при контурном построении сетки.
     For Each component In components
         query.RegionProperties component, properties
-        model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, 1, sourceLayer, EntityHandle(entity), _
-            "Contour", 0#, 0#, 0#, "AutoCAD Region: сохранена связная фактическая граница из прямых и круговых дуг; площадь, центр и инерции вычислены по ней.", _
-            properties.Ixc, properties.Iyc, properties.Ixyc, True
-        model.SetConcreteGeometry model.ConcreteCount, component ' Имена Cn назначает модель; один исходный CAD handle может дать несколько отдельных бетонных частей.
+        If properties.Area >= minArea Then
+            model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, 1, sourceLayer, EntityHandle(entity), _
+                "Contour", 0#, 0#, 0#, "AutoCAD Region: сохранена связная фактическая граница из прямых и круговых дуг; площадь, центр и инерции вычислены по ней.", _
+                properties.Ixc, properties.Iyc, properties.Ixyc, True, component
+        End If ' Имена Cn назначает модель; один исходный CAD handle может дать несколько отдельных бетонных частей.
     Next component
     Exit Sub
 Failed:
@@ -801,10 +790,10 @@ End Sub
 Private Function MissingImportedMaterialMessage(ByVal layerKey As String, ByVal reason As String, _
         ByVal settings As CSystemSettingsReader) As String
     If settings Is Nothing Then
-        MissingImportedMaterialMessage = reason & " Проверьте объекты слоя " & layerKey & " и порог площади AutoCAD.Import.MinArea."
+        MissingImportedMaterialMessage = reason & " Проверьте объекты слоя " & layerKey & " и порог площади Mesh.MinElementArea."
     Else
         MissingImportedMaterialMessage = settings.InputErrorMessage(layerKey, reason, "Проверьте имя слоя и наличие объектов Region на нём.") & _
-            " " & settings.InputErrorMessage("AutoCAD.Import.MinArea", "Этот порог исключает объекты меньшей площади.", "Проверьте значение фильтра площади.")
+            " " & settings.InputErrorMessage("Mesh.MinElementArea", "Этот порог исключает объекты меньшей площади.", "Проверьте значение фильтра площади.")
     End If
 End Function
 

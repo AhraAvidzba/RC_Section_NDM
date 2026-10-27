@@ -34,7 +34,7 @@ Private Sub Class_Initialize()
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' добавляет новую полилинию, не читая прежние объекты.
+' добавляет новую полилинию, не читая существующие объекты.
 Public Function AddLightWeightPolyline(ByVal coordinates As Variant) As CTestFakeAcadContourExport
     Dim entity As CTestFakeAcadContourExport: Set entity = New CTestFakeAcadContourExport
     entity.TestInitializePolyline coordinates
@@ -50,7 +50,7 @@ Public Sub TestInitializePolyline(ByVal coordinates As Variant)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Region получает геометрию своей новой полилинии, а не прежних объектов.
+' Region получает геометрию своей новой полилинии, без обращения к существующим объектам.
 Public Function AddRegion(ByVal curves As Variant) As Variant
     mRegionCalls = mRegionCalls + 1
     If mFailRegionAt = mRegionCalls Then Err.Raise vbObjectError + 9103, "CTestFakeAcadContourExport", "Injected AddRegion failure."

@@ -5,7 +5,7 @@ Option Explicit
 ' Общая загрузка и восстановление результатов без повторного расчёта
 ' ==========================================================================
 ' После расчёта вывод использует готовые данные в памяти. Кнопка в File
-' восстанавливает полный снимок, в Excel обновляет схему по таблицам Results.
+' читает полный расчёт либо явно сформированную геометрию; Excel материализует ещё привязанный файл.
 ' Кратковременный контекст чтения принадлежит одной операции и одной книге.
 Private mReadSnapshot As CCalculationSnapshot ' Неизменяемый набор только на время одной операции чтения.
 Private mReadWorkbook As Object ' Книга, которой принадлежит текущий контекст.
@@ -30,7 +30,7 @@ Public Sub EndCalculationSnapshotRead()
 End Sub
 
 ' Читает именно показанный расчёт; новый выбор имени применяется кнопкой загрузки.
-' Preview и прежний обычный writer не обязаны иметь полный расчётный снимок.
+' Явный GeometryPreview читается тем же привязанным источником без выдуманных LC.
 Public Function CurrentCalculationSnapshot(ByVal workbook As Object) As CCalculationSnapshot
     If workbook Is mReadWorkbook Then
         If Not mReadSnapshot Is Nothing Then Set CurrentCalculationSnapshot = mReadSnapshot: Exit Function
@@ -38,7 +38,6 @@ Public Function CurrentCalculationSnapshot(ByVal workbook As Object) As CCalcula
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim snapshot As CCalculationSnapshot
     If Not store.HasFileReference(workbook) Then Exit Function
-    If store.StorageMode(workbook) <> "File" Then Exit Function
     Set snapshot = store.LoadLinkedFile(workbook)
     If mReadDepth > 0 And workbook Is mReadWorkbook Then Set mReadSnapshot = snapshot
     Set CurrentCalculationSnapshot = snapshot
@@ -59,8 +58,9 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     If snapshot Is Nothing Then
         If mode = "File" Then
             Set snapshot = store.LoadFile(workbook)
+        ElseIf store.HasFileReference(workbook) Then
+            Set snapshot = store.LoadLinkedFile(workbook) ' File→Excel читает показанный точный источник до снятия ссылки.
         Else
-            store.ClearReference workbook
             UpdateSectionPlotForWorkbook workbook
             guard.Restore True
             Exit Sub
@@ -74,13 +74,19 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook workbook
     Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
     writer.RestoreSnapshotBase workbook, snapshot, fullFormatting, mode = "Excel"
-    summary.RestoreSummary workbook, snapshot, fullFormatting
+    If snapshot.IsGeometryPreview Then
+        summary.ClearSummary workbook, fullFormatting
+    Else
+        summary.RestoreSummary workbook, snapshot, fullFormatting
+    End If
     If mode = "Excel" Then
         store.ClearReference workbook
     Else
         store.LinkFile workbook
     End If
-    If prepared Is Nothing Then
+    If snapshot.IsGeometryPreview Then
+        UpdateSectionGeometryPreviewForWorkbook workbook
+    ElseIf prepared Is Nothing Then
         UpdateSectionPlotForWorkbook workbook, False
     Else
         plotWarning = TryUpdateCalculatedSnapshotPlot(workbook, snapshot, plotHasWarning)
@@ -100,21 +106,27 @@ End Sub
 ' Проверяет вместимость готовых таблиц до очистки; число LC не берётся из текущего Config.
 Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, ByVal includeElements As Boolean)
     Dim key As Variant, values As Variant, anchor As Object, rowCount As Long
+    Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange ' В старом payload её может не быть; текущая книга всё равно выводит шапку до любых очисток.
+    If Not ResultRowsFitSheet(anchor.Row, 1, anchor.Worksheet.Rows.Count) Then Err.Raise 5, "ValidateRestoredSnapshotLayout", "Не помещается шапка rngNDMElementGeometry."
     For Each key In snapshot.BaseKeys()
-        If CStr(key) <> "rngNDMElementResults" Or includeElements Then
-            Set anchor = workbook.Names.Item(CStr(key)).RefersToRange
-            rowCount = snapshot.TableRowCount(CStr(key))
-            If includeElements Then
-                If CStr(key) = "rngNDMSectionProperties" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Properties") - 1
-                If CStr(key) = "rngNDMSectionAnnotations" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Annotations") - 1
+        Set anchor = workbook.Names.Item(CStr(key)).RefersToRange
+        rowCount = snapshot.TableRowCount(CStr(key))
+        If Not includeElements Then
+            If CStr(key) = "rngNDMElementResults" Or CStr(key) = "rngNDMElementGeometry" Then rowCount = 1
+        End If
+        If includeElements And Not snapshot.IsGeometryPreview Then
+            If CStr(key) = "rngNDMSectionProperties" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Properties") - 1
+            If CStr(key) = "rngNDMSectionAnnotations" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Annotations") - 1
+        End If
+        If Not ResultRowsFitSheet(anchor.Row, rowCount, anchor.Worksheet.Rows.Count) Then
+            Dim reason As String: reason = ResultRowLimitDescription(CStr(key), anchor.Row, rowCount, anchor.Worksheet.Rows.Count)
+            If CStr(key) = "rngNDMElementResults" Or CStr(key) = "rngNDMElementGeometry" Then
+                If RestoredSnapshotMandatoryRowsFit(workbook, snapshot) Then reason = reason & vbCrLf & "Что сделать:" & vbCrLf & "1) " & ExternalSnapshotStorageAdvice(workbook) & " Повторите «Обновить схему и результаты»."
             End If
-            If Not ResultRowsFitSheet(anchor.Row, rowCount, anchor.Worksheet.Rows.Count) Then
-                Dim reason As String: reason = ResultRowLimitDescription(CStr(key), anchor.Row, rowCount, anchor.Worksheet.Rows.Count)
-                If CStr(key) = "rngNDMElementResults" Then reason = reason & vbCrLf & "Что сделать:" & vbCrLf & "1) " & ExternalSnapshotStorageAdvice(workbook) & " Повторите «Обновить схему и результаты»."
-                Err.Raise 5, "ValidateRestoredSnapshotLayout", reason
-            End If
+            Err.Raise 5, "ValidateRestoredSnapshotLayout", reason
         End If
     Next key
+    If snapshot.IsGeometryPreview Then Exit Sub
     Dim names As Variant, keys As Variant, nextNames As Variant, headers As Variant, i As Long
     names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
     keys = Array("Summary", "Strength.Data", "Cracks.Data", "Stability.Data")
@@ -128,8 +140,31 @@ Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snaps
     Next i
 End Sub
 
+' Проверяет таблицы, остающиеся на листе при File, без копирования матриц.
+' Используется только при отказе вместимости таблицы состояний: File нельзя
+' предлагать, если общая геометрия или готовые сводки тоже не помещаются.
+Private Function RestoredSnapshotMandatoryRowsFit(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot) As Boolean
+    Dim key As Variant, anchor As Object
+    For Each key In snapshot.BaseKeys()
+        If CStr(key) <> "rngNDMElementResults" And CStr(key) <> "rngNDMElementGeometry" Then
+            Set anchor = workbook.Names.Item(CStr(key)).RefersToRange
+            If Not ResultRowsFitSheet(anchor.Row, snapshot.TableRowCount(CStr(key)), anchor.Worksheet.Rows.Count) Then Exit Function
+        End If
+    Next key
+    If snapshot.IsGeometryPreview Then RestoredSnapshotMandatoryRowsFit = True: Exit Function
+    Dim names As Variant, keys As Variant, headerRows As Variant, i As Long
+    names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+    keys = Array("Summary", "Strength.Data", "Cracks.Data", "Stability.Data")
+    headerRows = Array(0, 4, 4, 5)
+    For i = 0 To 3
+        Set anchor = workbook.Names.Item(CStr(names(i))).RefersToRange
+        If Not ResultRowsFitSheet(anchor.Row - CLng(headerRows(i)), CDbl(snapshot.TableRowCount(CStr(keys(i)))) + CLng(headerRows(i)), anchor.Worksheet.Rows.Count) Then Exit Function
+    Next i
+    RestoredSnapshotMandatoryRowsFit = True
+End Function
+
 ' Проверяет фактическую вместимость листа с учётом первой строки, без переполнения Long.
-' Предел передаётся из Worksheet.Rows.Count: старые форматы Excel имеют другую высоту.
+' Предел передаётся из Worksheet.Rows.Count: .xls и .xlsm имеют разную высоту листа.
 Public Function ResultRowsFitSheet(ByVal firstRow As Long, ByVal rowCount As Double, ByVal rowLimit As Long) As Boolean
     If firstRow < 1 Or rowCount < 1# Or rowLimit < firstRow Then Exit Function
     ResultRowsFitSheet = rowCount <= CDbl(rowLimit) - CDbl(firstRow) + 1#
@@ -168,6 +203,7 @@ Public Function SaveAndDisplayCalculationSnapshot(ByVal workbook As Object, ByVa
     plotHasWarning = False
     snapshot.Validate
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    ValidateRestoredSnapshotLayout workbook, snapshot, store.StorageMode(workbook) = "Excel"
     If store.StorageMode(workbook) = "File" Then
         store.SaveFile workbook, snapshot
     End If
@@ -198,21 +234,72 @@ Failed:
         Err.Description & vbCrLf & "Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется."
 End Function
 
-' Предлагает более подходящее хранение большого снимка, сохраняя выбор Excel при отказе.
-' Оценка не является ограничением расчёта и не выдаётся за точное число конечных строк.
-Public Sub OfferExternalCalculationSnapshot(ByVal workbook As Object, ByVal estimatedRows As Double, ByVal interactive As Boolean)
-    If Not interactive Or estimatedRows <= 60000# Then Exit Sub
+' Выбирает предупреждение по числу строк и фактической вместимости листа.
+' mandatoryRows содержит записи (имя диапазона, число строк, первая строка)
+' всех таблиц, остающихся на Results при File. RowLimit запрещает предложение
+' File: переполнение обязательной геометрии режим хранения не устраняет.
+Public Function CalculationSnapshotOutputPolicy(ByVal storageMode As String, ByVal estimatedRows As Double, _
+        ByRef mandatoryRows As Variant, ByVal rowLimit As Long, Optional ByVal estimatedBoundaryRows As Double = 0#) As String
+    Dim i As Long, entry As Variant, largeMandatory As Boolean
+    If IsArray(mandatoryRows) Then
+        For i = LBound(mandatoryRows) To UBound(mandatoryRows)
+            entry = mandatoryRows(i)
+            If Not ResultRowsFitSheet(CLng(entry(2)), CDbl(entry(1)), rowLimit) Then
+                CalculationSnapshotOutputPolicy = "RowLimit"
+                Exit Function
+            End If
+            If CDbl(entry(1)) > 60000# Then largeMandatory = True
+        Next i
+    End If
+    If storageMode = "Excel" And (estimatedRows > 60000# Or estimatedBoundaryRows > 60000#) Then CalculationSnapshotOutputPolicy = "File"
+    If largeMandatory Then
+        If Len(CalculationSnapshotOutputPolicy) > 0 Then
+            CalculationSnapshotOutputPolicy = "FileAndMandatory"
+        Else
+            CalculationSnapshotOutputPolicy = "Mandatory"
+        End If
+    End If
+End Function
+
+' Предупреждает о крупных обязательных таблицах в Excel и File, независимо
+' от способа формирования сетки. Переключение в File предлагается только
+' для больших состояний или собственных границ и при вместимости остальных таблиц Results.
+Public Sub OfferExternalCalculationSnapshot(ByVal workbook As Object, ByVal estimatedRows As Double, ByVal interactive As Boolean, _
+        Optional ByVal mandatoryRows As Variant, Optional ByVal estimatedBoundaryRows As Double = 0#)
+    If Not interactive Then Exit Sub
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    If store.StorageMode(workbook) <> "Excel" Then Exit Sub
-    Dim answer As VbMsgBoxResult
-    answer = MsgBox("Предварительная оценка объёма снимка — около " & Format$(estimatedRows, "#,##0") & _
-        " строк состояний элементов." & vbCrLf & vbCrLf & _
-        "Для такого объёма рекомендуется внешний файл: книга будет меньше, сохранение и загрузка большого снимка потребуют меньше служебных данных на листе. " & _
-        "Сетка, геометрические характеристики, использованные диаграммы и подробные сводки останутся доступны на Results." & vbCrLf & vbCrLf & _
+    Dim policy As String: policy = CalculationSnapshotOutputPolicy(store.StorageMode(workbook), estimatedRows, _
+        mandatoryRows, workbook.Worksheets.Item("Results").Rows.Count, estimatedBoundaryRows)
+    If Len(policy) = 0 Or policy = "RowLimit" Then Exit Sub ' Отказ по пределу листа сообщает общая предварительная проверка до расчёта.
+    Dim message As String, i As Long, entry As Variant, table As Object
+    If policy = "Mandatory" Or policy = "FileAndMandatory" Then
+        message = "На Results предстоит вывести большие обязательные таблицы."
+        For i = LBound(mandatoryRows) To UBound(mandatoryRows)
+            entry = mandatoryRows(i)
+            If CDbl(entry(1)) > 60000# Then
+                Set table = workbook.Names.Item(CStr(entry(0))).RefersToRange
+                message = message & vbCrLf & CStr(entry(0)) & " (" & table.Parent.Name & "!" & _
+                    table.Address(False, False) & "): около " & Format$(CDbl(entry(1)), "0") & " строк."
+            End If
+        Next i
+        message = message & vbCrLf & vbCrLf & "Эти таблицы сохраняются на листе и при Results.SnapshotStorage = File. " & _
+            "Переключение снимка в файл не уменьшает число строк общей геометрии, общих контуров, характеристик и сводок."
+    End If
+    If policy = "Mandatory" Then
+        ShowWorkbookMessage message, vbExclamation, "Большой объём Results"
+        Exit Sub
+    End If
+    If Len(message) > 0 Then message = message & vbCrLf & vbCrLf
+    message = message & "Предварительная оценка подробных таблиц:" & vbCrLf & _
+        "Состояния элементов: около " & Format$(estimatedRows, "0") & " строк." & vbCrLf & _
+        "Фактические границы элементов: около " & Format$(estimatedBoundaryRows, "0") & " строк." & vbCrLf & vbCrLf & _
+        "Внешний файл .ndm сохранит полные состояния и фактические границы элементов без их вывода на лист. " & _
+        "Общая геометрия, общие контуры, использованные диаграммы и подробные сводки останутся на Results." & vbCrLf & vbCrLf & _
         "Переключить Results.SnapshotStorage на File?" & vbCrLf & _
-        "Да — переключить и продолжить. Нет — продолжить расчёт с хранением в Excel.", vbQuestion Or vbYesNo, "Хранение большого снимка")
+        "Да — переключить и продолжить. Нет — продолжить с хранением в Excel."
+    Dim answer As VbMsgBoxResult: answer = MsgBox(message, vbQuestion Or vbYesNo, "Хранение большого снимка")
     If answer <> vbYes Then Exit Sub
-    Dim table As Object, values As Variant, i As Long
+    Dim values As Variant
     Set table = workbook.Names.Item("rngSystemSettings").RefersToRange: values = table.Value2
     For i = 1 To UBound(values, 1)
         If CStr(values(i, 1)) = "Results.SnapshotStorage" Then table.Cells(i, 2).Value2 = "File": Exit Sub

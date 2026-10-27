@@ -1,0 +1,157 @@
+﻿{
+  "Status": "PASS_INDEPENDENT_PRIVATE_TYPED_PRIMITIVE_ONLY",
+  "PrimarySHA256": "7B24B26BDFAD4B4D903EACE8D189C83C201B71F0582D0FAFE353B0CB55811A09",
+  "PrimaryBytesWholeRead": 45400,
+  "ActualRuntime": "ACADVER24.2s/PROGRAMacad/LISPSYS1/SECURELOAD1",
+  "ChecksPassed": 72,
+  "ChecksFailed": 0,
+  "RawSentinelsExact": 32,
+  "EveryFieldReviews": [
+    {
+      "Doubles": 32,
+      "Stage": "A.before",
+      "Fields": 40,
+      "RawBitMismatches": 0
+    },
+    {
+      "Doubles": 32,
+      "Stage": "B",
+      "Fields": 40,
+      "RawBitMismatches": 0
+    },
+    {
+      "Doubles": 32,
+      "Stage": "A.after",
+      "Fields": 40,
+      "RawBitMismatches": 0
+    },
+    {
+      "Doubles": 1232,
+      "Stage": "A.before",
+      "Fields": 1240,
+      "RawBitMismatches": 0
+    },
+    {
+      "Doubles": 1232,
+      "Stage": "B",
+      "Fields": 1240,
+      "RawBitMismatches": 0
+    },
+    {
+      "Doubles": 1232,
+      "Stage": "A.after",
+      "Fields": 1240,
+      "RawBitMismatches": 0
+    },
+    {
+      "Doubles": 10000,
+      "Stage": "A.before",
+      "Fields": 10008,
+      "RawBitMismatches": 0
+    },
+    {
+      "Doubles": 10000,
+      "Stage": "B",
+      "Fields": 10008,
+      "RawBitMismatches": 0
+    },
+    {
+      "Doubles": 10000,
+      "Stage": "A.after",
+      "Fields": 10008,
+      "RawBitMismatches": 0
+    }
+  ],
+  "TotalFieldComparisons": 33864,
+  "RawDouble64Comparisons": 33792,
+  "SignedZeroSubnormalMaxFinitePreserved": true,
+  "UTF16IncludesCyrillicCJKSurrogatePair": true,
+  "LongMinMaxPreserved": true,
+  "AUnchangedAfterLispAll3Cases": true,
+  "BTypedRoundtripAll3Cases": true,
+  "Journals": [
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\NDM_TestLisp_4d137829a9e64d30b7d174c06f7c1280_32.txt",
+      "BytesWholeRead": 7313,
+      "SHA256": "4435D22057B2D1C5DBD5B4FFCEA9E620540FE8C73D39A07B8E0F8B2F15E30E38",
+      "Phases": 289,
+      "OuterReturned": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\NDM_TestLisp_4d137829a9e64d30b7d174c06f7c1280_1232.txt",
+      "BytesWholeRead": 1173,
+      "SHA256": "8725D1EDECB077C9922639781FB1A5052B119CBFFE7D65CFB0B0A0E628928641",
+      "Phases": 49,
+      "OuterReturned": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\NDM_TestLisp_4d137829a9e64d30b7d174c06f7c1280_10000.txt",
+      "BytesWholeRead": 1173,
+      "SHA256": "8725D1EDECB077C9922639781FB1A5052B119CBFFE7D65CFB0B0A0E628928641",
+      "Phases": 49,
+      "OuterReturned": true
+    }
+  ],
+  "BulkTimingDiagnosticOnly": [
+    [
+      "32",
+      "40",
+      "0.3896484375"
+    ],
+    [
+      "1232",
+      "1240",
+      "0.994140625"
+    ],
+    [
+      "10000",
+      "10008",
+      "0.3623046875"
+    ]
+  ],
+  "SourceProofsWhollyRead": [
+    {
+      "File": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispTransportNative07\\NativeBefore181.Equality.json",
+      "BytesWholeRead": 117153,
+      "Passed175Plus6": true
+    },
+    {
+      "File": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispTransportNative07\\NativeAfterCompile181.Equality.json",
+      "BytesWholeRead": 117153,
+      "Passed175Plus6": true
+    },
+    {
+      "File": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispTransportNative07\\NativeAfterReopen181.Equality.json",
+      "BytesWholeRead": 117153,
+      "Passed175Plus6": true
+    },
+    {
+      "File": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispTransportNative07\\NativeAfterPrimitive181.Equality.json",
+      "BytesWholeRead": 117153,
+      "Passed175Plus6": true
+    }
+  ],
+  "WorkerAndSourceUnchanged": true,
+  "AllOwnTerminalAbsent": true,
+  "ExcelClosure": {
+    "PID": 8436,
+    "StartTicksUTC": "639286592605420358",
+    "Owned": true,
+    "ExactIdentityAbsent": true,
+    "ResidualForceKilled": false
+  },
+  "CADClosure": {
+    "PID": 31872,
+    "StartTicksUTC": "639286593101443045",
+    "Owned": true,
+    "ExactIdentityAbsent": true,
+    "ResidualForceKilled": false
+  },
+  "FramingConclusion": "Short CR-preserved source succeeded in this actual environment; collapsed source prior AV/emptytrace retained. No official universal line limit inferred. No variant-unwrapping/numericoperation changed.",
+  "ProductionSourceChanges": false,
+  "PriorNative01Through06FailuresRetained": true,
+  "NoAppsCreatedByReview": true,
+  "WholeImportOrExportSpeedProven": false,
+  "ProductionIntegrationAccepted": false,
+  "FullRegressionPass": false
+}

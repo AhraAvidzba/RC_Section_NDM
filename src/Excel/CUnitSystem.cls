@@ -32,6 +32,7 @@ Private mInputMoment As String ' Единица вводимых моменто�
 Private mOutputMoment As String ' Единица выводимых моментов.
 Private mInputStress As String ' Единица вводимых напряжений.
 Private mOutputStress As String ' Единица выводимых напряжений.
+Private mOutputStressFactorUnit As String, mOutputStressFactor As Double ' Точный исходный текст и проверенный делитель только для горячего вывода напряжений.
 Private mInputCurvature As String ' Единица вводимых кривизн.
 Private mOutputCurvature As String ' Единица выводимых кривизн.
 Private mSignN As String ' Пользовательский знак продольной силы; внутри растяжение положительно.
@@ -52,7 +53,7 @@ Public Sub InitializeDefaults()
     mSignMy = "+X tension"
 End Sub
 
-' Читает единицы и знаки Config. Пустота, TODO или неизвестный выбор вызывают ошибку.
+' Читает единицы и знаки Config. Пустота, незаполненная подсказка или неизвестный выбор вызывают ошибку.
 ' Значение по умолчанию возможно только при отсутствующем ключе
 ' в отдельно прочитанном неполном наборе настроек.
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader)
@@ -243,9 +244,14 @@ Public Function InputStressToInternal(ByVal value As Double) As Double
     InputStressToInternal = value * StressFactorToMPa(mInputStress)
 End Function
 
-' Переводит внутреннее напряжение в OUTPUT-единицы.
+' Переводит внутреннее напряжение в OUTPUT-единицы. Делитель связан с точным
+' текстом единицы, включая регистр и пробелы; неизвестная единица вызывает ошибку.
 Public Function InternalStressToOutput(ByVal value As Double) As Double
-    InternalStressToOutput = value / StressFactorToMPa(mOutputStress)
+    If StrComp(mOutputStress, mOutputStressFactorUnit, vbBinaryCompare) <> 0 Or mOutputStressFactor = 0# Then
+        mOutputStressFactor = StressFactorToMPa(mOutputStress) ' Неизвестная или ещё не заданная единица вызывает ошибку до деления.
+        mOutputStressFactorUnit = mOutputStress ' Неудачная проверка не публикует ключ; регистр и пробелы входят в точное совпадение.
+    End If
+    InternalStressToOutput = value / mOutputStressFactor ' Деление Double; обратный множитель и округление не используются.
 End Function
 
 ' Переводит напряжение из OUTPUT-единиц обратно во внутренние МПа. Для

@@ -1,0 +1,124 @@
+{
+  "Status": "READY_FOR_ROOT_NATIVE_COMPILE_AND_DIRECTED_GATES",
+  "PreparedUTC": "2026-10-26T18:46:48.752341+00:00",
+  "SourceFiles": [
+    {
+      "Path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "SHA256": "96600E6969E3855221234652185861EAAB71A8058296284E9791805A4169E1EB"
+    },
+    {
+      "Path": "src/Excel/modAutoCADStressExport.bas",
+      "SHA256": "91932264DEF41B4F07F5BD8419CBCD071B74A01B4F8DDC2EAFEC5785A05AF545"
+    },
+    {
+      "Path": "tests/modTestAutoCADContours.bas",
+      "SHA256": "91CB16730ADA1735B726F352576B2207CE458F629AF6A018CA31BBD4085A50D5"
+    },
+    {
+      "Path": "src/Section/CRebarRuleExecutor.cls",
+      "SHA256": "79151116BF5CECC6E3D11755865498D91B885FDA4642E37BC6F12823CA4E8786"
+    },
+    {
+      "Path": "src/Section/CSectionBuilder.cls",
+      "SHA256": "8F808C6A54F6D568AA1389DE8E13806EF0C24F3429F0823273D369F3B9A34C21"
+    },
+    {
+      "Path": "tests/modTestSectionRecipes.bas",
+      "SHA256": "32466B04205C7FA56EAB95F540A809F56C573A2239C8F5899E5435A2BCF26197"
+    }
+  ],
+  "CAD": {
+    "AtomicAdd": "AddConcreteElement(... localIx, localIy, localIxy, rotationKnown, exactRegion); no following SetConcreteGeometry",
+    "MinimumArea": "ReadMinimumElementArea(settings, units); CAD final ConnectedRegions components and rebar use the internal-mm2 minArea contract; strict less-than is skipped, equality retained",
+    "Geometry": "ConnectedRegions owns hole-to-outer classification for exact cell CAD export; exporter only writes analytic loops, applies CAD Boolean, restores style, checks area, cleans owned objects",
+    "Optimizations": [
+      "Contour skips orientation averaging",
+      "Opening-only validation merges the complete collection once instead of validating every growing prefix",
+      "Geometry-only preview skips calculation units/profile/provider/quantity/state settings; disabled contours skip format and contour layers. File snapshot and any saved LC/state remain on strict calculated Results path.",
+      "Prepared geometry contours are passed into the existing contour drawer without re-reading the physical contour matrix."
+    ],
+    "ConfirmedFixes": [
+      "Preview properties cannot return ALL as a calculated LC ID",
+      "General contour export leaves an active VBA error handler with Resume before COM cleanup, preserving the original failure after Boolean consumed an entity"
+    ],
+    "GeneralContourAdapterReview": {
+      "Kept": true,
+      "Method": "PrepareMaterialContourRegions",
+      "Reason": "Role-specific Outer/Opening and opening-only tables must retain original loop keys and distinct output layers. ConnectedRegions requires a complete material region; interpreting opening-only loops as a material domain would invent outer concrete. The adapter uses central ContainsPoint/SubtractContainedRegion/MergeDisjointRegions validation, computes no separate A/c/I and retains source-role rejection for invalid placement.",
+      "MathAndUnitsUnchanged": true
+    },
+    "GeometryOnly": {
+      "AuthorizedBehavior": "Already formed saved preview geometry can export without a calculated state. UI always warns: В AutoCAD передано только сечение, без рассчитанного состояния.",
+      "Classifier": "Full snapshot or nonempty element results or any non-ALL LC/state property disables preview branch; errors from calculated branch are never caught as geometry-only fallback.",
+      "Geometry": "Shared AddAcadConcreteElement/AddAcadCircleRegion and existing analytic material-contour drawer; no solver/import/material provider, no stress or strain/neutral line/principal axes/interaction labels.",
+      "ContourFlag": "Existing ContourEnabled respected; only available Outer/Opening layers are read when needed.",
+      "NotFormed": "Source or geometry absence raises actionable Сформировать сечение error.",
+      "Warning": "Mandatory UI ShowWorkbookMessage outside NonCriticalMessagesEnabled; native worker returns exact warning via optional ByRef.",
+      "SettingsLimit": "Unused values with invalid format are not consumed. Existing CSystemSettingsReader eagerly rejects Excel cell-error values in normal settings; unchanged contract, not claimed to permit broken Config formulas."
+    }
+  },
+  "Rebar": {
+    "FilterStage": "All geometric source/dependent/projected positions are prepared, then area filtering occurs before neighbor/owner/merge/placement and before physical IDs",
+    "Counters": "FilteredByArea and per-rule area counter are separate from geometric/projection/offset skips; Requested is never incremented for an already counted position",
+    "Ownership": "Filtered position owner remains 0; section builder appends trace only for positive owners; empty-rule label bounds/ends are absent",
+    "AreaFormula": "GEOM_PI * diameter * diameter / 4, exactly the physical layout formula; no area operation when minArea=0",
+    "EmptyResult": "SectionRecipeError names General.MinElementArea and meshOptions.SourceReference when every rebar is filtered",
+    "SDKDepth": "Contour BoundarySubdivisions=0 accepted because unused. Explicit/empty SDK Adaptive still requires positive depth."
+  },
+  "Comments": {
+    "Proof": "ExcelCommentsExecutableProof.json",
+    "ReviewedFiles": 22,
+    "CommentOnlyChangedFiles": 13,
+    "AllCommentOnlyExecutableUnchangedFromHEAD": true,
+    "AssignedCADAndRebarCommentsReviewed": true,
+    "NonCommentTODOSentinelsUnchanged": "CSystemSettingsReader still recognizes its supported placeholder literal in executable code; the wording sweep changes only comments"
+  },
+  "PreparedGates": [
+    {
+      "EntryPoint": "RunAutoCADContourTests()",
+      "Covers": "exact CAD components and min-area/equality/zero/rebar; saved preview restored for both representations, mandatory warning status, source matrices/noSolve/context unchanged, saved LC failure cannot become preview fallback; unformed action."
+    },
+    {
+      "EntryPoint": "RunNativeConcreteComponentExportTests(ownedDocument)",
+      "Covers": "real CAD three disconnected components, nested ring/island holes, analytic arcs, A/c/I and owned cleanup"
+    },
+    {
+      "EntryPoint": "RunRecipeMinimumAreaTests()",
+      "Covers": "Contour integration: zero/equality/mixed diameters/dependent+projection/IDs/trace/annotations/coincidence/all-filtered address; direct Contour depth=0 accepted, Adaptive depth=0 rejected."
+    },
+    {
+      "EntryPoint": "RunRecipeRuleTests()",
+      "Covers": "existing complete rules package plus the minimum-area regression"
+    },
+    {
+      "EntryPoint": "existing NativeCAD helper on new candidate",
+      "Covers": "thin Ix, original Boolean failure, WCS guard, true exact geometry roundtrip; historical helpers untouched"
+    },
+    {
+      "EntryPoint": "RunNativeGeometryOnlyExportTests(ownedDocument)",
+      "Covers": "4 cases: compact/exact Rectangle × contour No/Yes. NonCriticalMessages=No still returns mandatory warning; invalid unused calculation options/disabled contour options not consumed; actual CAD type/layers/areas; all 5 source matrices identical/noSolve/owned cleanup."
+    }
+  ],
+  "ChecksPerformed": [
+    "Read review of assigned import/export and rules/builder paths",
+    "API signatures verified by source reads",
+    "git diff --check",
+    "Audit-VbaDocumentation.py --check",
+    "Audit-VbaDocumentation --check after geometry-only additions: 180 modules/6203 methods, all Missing lists empty; API signatures inspected, git diff --check of six owned sources clean."
+  ],
+  "ChecksNotPerformed": [
+    "Native VBA compilation",
+    "Excel tests",
+    "AutoCAD tests",
+    "Full ON/OFF and Focused"
+  ],
+  "ExcelProcessesStarted": 0,
+  "CADProcessesStarted": 0,
+  "CommitCreated": false,
+  "FullRegressionPass": false,
+  "ReviewNotes": [
+    "Initial rejection-only export requirement was explicitly superseded by user. Previous review retained as CAD_RebarReview_PreGeometryOnly.json.",
+    "Parent performs General.MinElementArea→Mesh.MinElementArea rename after this source freeze; proof hashes refer pre-rename sources and will differ intentionally after synchronization.",
+    "No native VBA compilation or Excel/CAD execution performed by this sub-agent. Native geometry-only tests require parent-owned document/runner."
+  ]
+}

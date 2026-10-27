@@ -527,7 +527,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' вывод общей диаграммы охватывает все найденные НДС, включая
-' деформации дальше прежних +/-100. Физические узлы и снимки не изменяются.
+' деформации за пределами контрольного диапазона +/-100. Физические узлы и снимки не изменяются.
 Public Function RunUnboundedDiagramResultsTests() As String
     Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
     Dim savedSystem As Variant, savedProfiles As Variant, fixture As Object, sheet As Object
@@ -3794,7 +3794,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пользовательский режим случайного эксцентриситета: пользователь
-' задает только модуль, а знак по-прежнему выбирается по направлению момента
+' задает только модуль, а знак выбирается по направлению момента
 ' или настройкам для нулевого момента.
 Private Sub TestStabilityAccidentalUserMode(ByRef stats As TBatchTestStats)
     Dim oldEnabled As String
@@ -4160,7 +4160,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет 24 LC, проверяя динамический размер массива результатов,
-' доступность последнего статуса и governing вне прежних малых пакетов.
+' доступность последнего статуса и governing в пакетах более тысячи сочетаний.
 Private Sub TestBatchMoreThanTwentyCombinations(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = TestBuildBatchCalculator()
@@ -4981,7 +4981,7 @@ Private Function TestGetProfileValue(ByVal key As String, ByVal profileId As Str
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Записывает значение в один профильный столбец. Восстановление старого
+' Записывает значение в один профильный столбец. Восстановление исходного
 ' значения остается на вызывающем тесте, чтобы сценарии были изолированными.
 Private Sub TestSetProfileValue(ByVal key As String, ByVal profileId As String, ByVal value As String)
     Dim profiles As Object
@@ -6745,7 +6745,7 @@ Private Sub TestAudit02InitialOffsetOnOffStatuses(ByRef stats As TBatchTestStats
         TestAssertEquals stats, prefix & ".offStatus", offResult.Status, "NumFail"
         TestAssertEquals stats, prefix & ".onStatus", onResult.Status, "BaseFail"
         ' Audit03 F03: сохраняется точная причина касательной системы; внешний
-        ' NumFail, физические усилия и expected/tolerance парного теста прежние.
+        ' NumFail, физические усилия и expected/tolerance парного теста неизменны.
         TestAssertTrue stats, prefix & ".offCode", offResult.ResultMeta.ResultCode = rcSingularTangent
         TestAssertTrue stats, prefix & ".onCode", onResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
         TestAssertTrue stats, prefix & ".offNoPoint", Not offResult.SearchResult.HasLimitPoint
@@ -6816,7 +6816,7 @@ Private Sub TestAudit02ComparePairState(ByRef stats As TBatchTestStats, ByVal ma
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Подготавливает числовые поля НДС с прежними допусками проверок решателя
+' Подготавливает числовые поля НДС с установленными допусками проверок решателя
 ' и деформаций. Служебные различия стратегий поиска не учитываются.
 Private Function TestAudit02PairStateNumbers(ByVal state As CSectionStateResult) As Variant
     TestAudit02PairStateNumbers = Array( _
@@ -8058,7 +8058,7 @@ Public Function RunAudit03StatusPaletteTests() As String
     Next status
 
     ' Доказываем чувствительность проверки к чужому CF, затем удаляем только
-    ' эту тестовую rule. Production-палитра по-прежнему имеет одного владельца.
+    ' эту тестовую rule. Production-палитра имеет одного владельца.
     Set cell = palette.Cells(12, 1)
     cell.Value2 = "FAIL"
     ApplyStatusFill cell, "FAIL"
@@ -8208,7 +8208,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет перегрузки с известным равновесием, в том числе далеко за
-' прежними границами продолжения. Нагрузки получаются по заданной плоскости,
+' контрольными значениями продолжения диаграмм. Нагрузки получаются по заданной плоскости,
 ' а решатель начинает поиск самостоятельно, без передачи этой плоскости.
 Public Function RunAudit03ExtendedOverloadEquilibriumTests(ByVal shapeName As String) As String
     On Error GoTo Failed
@@ -8404,7 +8404,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Опорная точка не ограничивает усилие. Ещё большая осевая нагрузка должна
-' иметь численное равновесие с физическим FAIL, а не прежний отказ из-за обрезки.
+' иметь численное равновесие с физическим FAIL, без искусственного численного отказа из-за обрезки диаграммы.
 Private Sub TestAudit03BeyondExtensionReferenceCases(ByRef stats As TBatchTestStats, _
         ByVal section As CSectionModel, ByVal shapeName As String)
     Dim sign As Variant, materials As CMaterialModelProvider, spec As CMaterialModelSpec
@@ -10254,7 +10254,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет реальный Batch -> Formation -> execution report для отсутствия
 ' трещины, найденной точки и непригодного фиксированного пути. Отчет не должен
-' обещать psi=1 до результата Width или описывать прежний выбор Auto.
+' обещать psi=1 до результата Width или описывать невыбранную траекторию Auto.
 Public Function RunAudit03FormationReportTests() As String
     Dim stats As TBatchTestStats
     TestAudit03FormationReportNarrative stats
@@ -10354,7 +10354,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Возвращает Config после трех нагрузок; цикл записи одного batch не
-' запускает повторно равновесие и проверяет отсутствие старой заливки.
+' запускает повторно равновесие и проверяет отсутствие заливки предыдущего запуска.
 Private Sub TestFormationStatusFormatting(ByRef stats As TBatchTestStats)
     Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
     Dim settings As CSystemSettingsReader, batch As CBatchSectionCalculator, writer As CCrackSummaryWriter
@@ -10446,8 +10446,8 @@ Restore:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Смена модели и поставщика на том же объекте не переиспользует старые центры
-' и состояния. Ранее выданный result сохраняет числа и прежние диаграммы.
+' Смена модели и поставщика на том же объекте не переиспользует центры предыдущей модели
+' и состояния. Ранее выданный result сохраняет числа и диаграммы своего запуска.
 Private Sub TestPostAudit03ModelMaterialLifecycle(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator, fresh As CBatchSectionCalculator, section As CSectionModel
     Dim provider As CMaterialModelProvider, concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
@@ -10482,7 +10482,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Создает повторяемую нагрузку; единственные различия - запрошенное изменение
-' настроек. Прежняя опубликованная ссылка обязана остаться неизменной.
+' настроек. Ранее опубликованная ссылка обязана остаться неизменной.
 Private Sub TestPostAudit03Lifecycle(ByRef stats As TBatchTestStats, ByVal code As String)
     Dim batch As CBatchSectionCalculator, fresh As CBatchSectionCalculator
     Dim settings As CSystemSettingsReader, retained As CCombinationResult
@@ -10779,7 +10779,7 @@ End Function
 
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает перенесённую операцию с дословным прежним oracle writer-а для 48 полей
+' Сравнивает операцию с независимым поэлементным эталоном 48 полей writer-а
 ' на круге, прямоугольнике, повёрнутом/смещённом и пустотелом сечении, включая frozen-state.
 Public Function RunStateDepthGeometryTests(Optional ByRef passed As Long = 0, Optional ByRef failed As Long = 0) As String
     Dim stats As TBatchTestStats, section As CSectionModel, solver As CSectionSolver, state As CSectionStateResult
@@ -10865,7 +10865,7 @@ Private Function TestBuildDepthShape(ByVal kind As Long) As CSectionModel
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Дословная прежняя операция writer-а, зафиксированная до переноса; независимый oracle только тестов.
+' Независимый поэлементный эталон writer-а, зафиксированный в тестах для проверки 48 полей.
 ' Определяет габарит h и глубину сжатой зоны x вдоль нормали к нейтральной линии.
 Private Sub TestOriginalDepthsPerpendicularToNeutral(ByVal section As CSectionModel, ByVal eps0 As Double, _
         ByVal kappaX As Double, ByVal kappaY As Double, ByRef depthH As Double, ByRef compressedDepth As Double)
@@ -10900,13 +10900,13 @@ Private Sub TestOriginalDepthsPerpendicularToNeutral(ByVal section As CSectionMo
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сохраняет прежнее сравнение максимума в oracle.
+' Вычисляет максимум независимого эталона.
 Private Function TestDepthMax(ByVal a As Double, ByVal b As Double) As Double
     If a >= b Then TestDepthMax = a Else TestDepthMax = b
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сохраняет прежнее сравнение минимума в oracle.
+' Вычисляет минимум независимого эталона.
 Private Function TestDepthMin(ByVal a As Double, ByVal b As Double) As Double
     If a <= b Then TestDepthMin = a Else TestDepthMin = b
 End Function

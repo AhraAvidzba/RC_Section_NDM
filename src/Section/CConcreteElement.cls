@@ -24,27 +24,29 @@ Private mArea As Double ' Фактическая расчётная площад
 Private mMaterialID As Long ' Идентификатор подготовленного бетонного материала.
 Private mSourceName As String ' Исходное имя элемента из генератора, файла или чертежа.
 Private mSourceHandle As String ' Handle исходного CAD-объекта без привязки к живому COM.
-Private mShapeType As String ' Contour означает обязательную фактическую границу; старые типы сохраняют прежнюю интерпретацию.
+Private mShapeType As String ' Contour требует фактическую границу; компактные типы используют подготовленное прямоугольное описание.
 Private mWidth As Double ' Настоящая ширина прямоугольника либо только габарит произвольной формы, мм.
 Private mHeight As Double ' Настоящая высота прямоугольника либо только габарит произвольной формы, мм.
 Private mRotation As Double ' Подготовленный угол прямоугольной геометрии в радианах.
-Private mRotationKnown As Boolean ' Отличает известное направление от прежней неопределённой ориентации.
+Private mRotationKnown As Boolean ' Отличает заданное направление от неопределённой ориентации почти изотропной области.
 Private mKnownRectangle As Boolean ' Прямоугольная форма была явно задана исходником до интерпретации Width/Height; эквивалентная оболочка не меняет этот факт.
 Private mComment As String ' Пояснение происхождения и особенностей исходного элемента.
 Private mLocalIx As Double ' Собственный момент вокруг X центра элемента, мм4.
 Private mLocalIy As Double ' Собственный момент вокруг Y центра элемента, мм4.
 Private mLocalIxy As Double ' Подписанный интеграл x*y относительно центра элемента, мм4.
-Private mExactGeometry As CConcreteRegion ' Независимая точная область; Nothing допустим только для прежней компактной записи.
-Private mLegacyGeometry As CConcreteRegion ' Лениво подготовленная прямоугольная область прежнего элемента; не заменяет фактическую геометрию Contour.
+Private mExactGeometry As CConcreteRegion ' Независимая фактическая область; Nothing допустим только для компактной записи.
+Private mLegacyGeometry As CConcreteRegion ' Лениво подготовленный прямоугольник компактного элемента; не заменяет геометрию Contour.
 
 ' Один раз принимает уже проверенные моделью данные и независимо сохраняет
-' точный контур. У прежних элементов размеры/угол уже интерпретированы моделью.
+' точный контур. Размеры и угол компактных элементов уже интерпретированы моделью.
 Friend Sub Initialize(ByVal elementID As String, ByVal x As Double, ByVal y As Double, ByVal area As Double, _
         ByVal materialID As Long, ByVal sourceName As String, ByVal sourceHandle As String, ByVal shapeType As String, _
         ByVal width As Double, ByVal height As Double, ByVal rotation As Double, ByVal rotationKnown As Boolean, _
         ByVal comment As String, ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double, _
         Optional ByVal exactRegion As CConcreteRegion = Nothing, Optional ByVal knownRectangle As Boolean = False)
     If mInitialized Then Err.Raise vbObjectError + 5224, "CConcreteElement", "Данные опубликованного бетонного элемента нельзя переинициализировать."
+    If StrComp(Trim$(shapeType), "Contour", vbTextCompare) = 0 And exactRegion Is Nothing Then _
+        Err.Raise vbObjectError + 5223, "CConcreteElement", "Фактическая граница бетонного элемента Contour не передана."
     Dim geometryCopy As CConcreteRegion
     If Not exactRegion Is Nothing Then Set geometryCopy = exactRegion.Clone
     mElementID = elementID: mX = x: mY = y: mArea = area: mMaterialID = materialID
@@ -142,13 +144,13 @@ Public Property Get LocalIxy() As Double
     LocalIxy = mLocalIxy
 End Property
 
-' Отличает фактическую сохранённую область от ленивой прежней оболочки.
+' Отличает фактическую сохранённую область от ленивой компактной оболочки.
 Public Property Get HasExactGeometry() As Boolean
     HasExactGeometry = Not mExactGeometry Is Nothing
 End Property
 
 ' Выдаёт независимую копию геометрии, чтобы изменение её назначения или
-' границ не меняло опубликованную сущность. Только прежний элемент без
+' границ не меняло опубликованную сущность. Только компактный элемент без
 ' обязательного Contour получает ленивый прямоугольник через общее ядро.
 Public Property Get Geometry() As CConcreteRegion
     If Not mInitialized Then Err.Raise vbObjectError + 5224, "CConcreteElement", "Данные бетонного элемента ещё не подготовлены."
@@ -179,7 +181,7 @@ Friend Function WithGeometry(ByVal region As CConcreteRegion, ByVal width As Dou
     Set WithGeometry = result
 End Function
 
-' Создаёт прежнюю компактную сущность с уточнённой ориентацией её оболочки.
+' Создаёт компактную сущность с уточнённой ориентацией её оболочки.
 ' Фактическую область этим методом поворачивать или заменять запрещено.
 Friend Function WithRotation(ByVal rotation As Double) As CConcreteElement
     If Not mInitialized Then Err.Raise vbObjectError + 5224, "CConcreteElement", "Данные бетонного элемента ещё не подготовлены."

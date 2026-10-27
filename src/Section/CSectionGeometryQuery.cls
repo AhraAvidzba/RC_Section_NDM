@@ -17,7 +17,7 @@ Option Explicit
 ' и отверстия. Геометрия полученной области и её площадь создаются вместе.
 ' Расчёт трещин передаёт сюда геометрические ограничения; нормативные
 ' коэффициенты и группы арматуры определяются вызывающим расчётом.
-' Прежний расчёт характеристик сетки для устойчивости сохраняется отдельно.
+' Характеристики расчётной сетки для устойчивости вычисляются отдельно.
 
 Private Const QUERY_TOLERANCE As Double = GEOM_BOUNDARY_TOLERANCE ' Допуск соединения соседних участков бетона вдоль одной прямой, мм.
 Private Const PARAM_TOLERANCE As Double = GEOM_PARAMETER_TOLERANCE ' Допуск безразмерного положения точки внутри отрезка или дуги.
@@ -301,7 +301,7 @@ Public Function PolygonRegion(ByVal coordinates As Variant) As CConcreteRegion
 End Function
 
 ' Создаёт точный прямоугольник по центру, настоящим размерам и повороту в радианах.
-' Используется как общее представление прежних прямоугольных элементов без
+' Используется как общее представление компактных прямоугольных элементов без
 ' сохранения лишней копии четырёх вершин в каждом потребителе.
 Public Function RectangleRegion(ByVal centerX As Double, ByVal centerY As Double, ByVal width As Double, _
         ByVal height As Double, Optional ByVal rotationRad As Double = 0#) As CConcreteRegion
@@ -1283,7 +1283,7 @@ End Sub
 
 ' Проверяет заход переданных наружных рёбер и отверстий в открытую ячейку.
 ' Малая замкнутая граница внутри ячейки тоже пересекает её внутренность. Совпадение с её
-' стороной не требует дробления. Линии и дуги используют прежние пересечения.
+' стороной не требует дробления. Линии и дуги проверяются общими операциями пересечения.
 Friend Function MeshBoundaryCrossesCell(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal minX As Double, ByVal minY As Double, ByVal maxX As Double, ByVal maxY As Double) As Boolean
     Dim i As Long, j As Long, cuts() As Double, cutCount As Long, x As Double, y As Double
@@ -1499,7 +1499,7 @@ Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef outer
     Next i
 End Sub
 
-' Восстанавливает границу по настоящим областям бетонных элементов; прежние
+' Восстанавливает границу по фактическим областям бетонных элементов; компактные
 ' прямоугольники используют быстрый путь без создания промежуточных объектов.
 ' Сразу удаляет полностью совпавшие внутренние рёбра, затем разделяет
 ' и удаляет частичные общие участки, включая Т-образные стыки.
@@ -1639,8 +1639,16 @@ Public Sub RegionProperties(ByVal region As CConcreteRegion, ByRef properties As
     Dim originX As Double, originY As Double, localX As Double, localY As Double
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
     region.CopyEdges edges, count
-    ProjectionBounds region, 1#, 0#, minX, maxX
-    ProjectionBounds region, 0#, 1#, minY, maxY
+    ' Единичные оси используют уже скопированные границы; порядок X, затем Y сохраняет исходную последовательность вычислений.
+    Dim i As Long
+    minX = 1E+100: maxX = -1E+100
+    For i = 1 To count
+        modGeometryPrimitives.AccumulateEdgeProjection edges(i), 1#, 0#, minX, maxX
+    Next i
+    minY = 1E+100: maxY = -1E+100
+    For i = 1 To count
+        modGeometryPrimitives.AccumulateEdgeProjection edges(i), 0#, 1#, minY, maxY
+    Next i
     originX = minX + (maxX - minX) / 2#: originY = minY + (maxY - minY) / 2#
     RegionIntegralMoments edges, count, originX, originY, values
     If values(1) <= 0# Then GeometryError "Точная бетонная область должна иметь положительную площадь."
@@ -1676,6 +1684,30 @@ Public Sub RegionProperties(ByVal region As CConcreteRegion, ByRef properties As
     properties.RadiusY = Sqr(properties.Iyc / properties.Area)
     properties.PrincipalRadius1 = Sqr(GeomMax(properties.PrincipalI1, 0#) / properties.Area)
     properties.PrincipalRadius2 = Sqr(GeomMax(properties.PrincipalI2, 0#) / properties.Area)
+End Sub
+
+' Проверяет расчётные A/c/I по фактической границе во внутренних мм/мм2/мм4.
+' Допуск центра учитывает представимость WCS-координат; относительный допуск
+' инерций — потерю младших разрядов при переносе характеристик из AutoCAD.
+' Положительность тензора проверяется без размерного нижнего порога, чтобы
+' сохранять физические тонкие сегменты. Проверка не изменяет область и модель.
+Public Sub ValidateBoundaryProperties(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double, _
+        ByVal area As Double, ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double)
+    If region Is Nothing Then Err.Raise vbObjectError + 5223, "CSectionGeometryQuery", "Фактическая граница бетонного элемента не передана."
+    If region.SegmentCount = 0 Or region.Area <= 0# Then Err.Raise vbObjectError + 5223, "CSectionGeometryQuery", "Фактическая граница бетонного элемента пуста."
+    If area <= 0# Then Err.Raise vbObjectError + 5223, "CSectionGeometryQuery", "Площадь точного бетонного элемента должна быть положительной."
+    If localIx <= 0# Or localIy <= 0# Then Err.Raise vbObjectError + 5223, "CSectionGeometryQuery", "Собственные инерции точного бетонного элемента должны задавать положительный тензор."
+    If Abs(localIxy / Sqr(localIx) / Sqr(localIy)) >= 1# Then Err.Raise vbObjectError + 5223, "CSectionGeometryQuery", "Собственные инерции точного бетонного элемента должны задавать положительный тензор."
+    Dim properties As TGeometryProperties, coordinateTolerance As Double, inertiaTolerance As Double
+    RegionProperties region, properties
+    coordinateTolerance = GEOM_TOLERANCE + 0.000000000001 * GeomMax(Abs(x), Abs(y)) ' Допуск относится к координатам, а не к размеру области.
+    inertiaTolerance = GEOM_TOLERANCE + 0.00002 * GeomMax(properties.Ixc, properties.Iyc)
+    If Abs(properties.Area - area) > GEOM_TOLERANCE + 0.0000001 * properties.Area Or _
+            Abs(properties.CentroidX - x) > coordinateTolerance Or Abs(properties.CentroidY - y) > coordinateTolerance Or _
+            Abs(properties.Ixc - localIx) > inertiaTolerance Or Abs(properties.Iyc - localIy) > inertiaTolerance Or _
+            Abs(properties.Ixyc - localIxy) > inertiaTolerance Then
+        Err.Raise vbObjectError + 5223, "CSectionGeometryQuery", "Площадь, центр или собственные инерции бетонного элемента не согласованы с его фактической границей."
+    End If
 End Sub
 
 ' Суммирует ориентированные моменты границы: хордовый многоугольник плюс точные

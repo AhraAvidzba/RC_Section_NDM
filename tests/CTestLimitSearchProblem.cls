@@ -44,7 +44,7 @@ Private mSearchExecuted As Boolean ' ДЛЯ ТЕСТОВ: факт начала 
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
 Private mFailureAt As Double ' ДЛЯ ТЕСТОВ: неудачная проба возвращает True и нулевую невязку-заглушку.
 Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
-Private mRecoveryWithoutProgress As Boolean ' Намеренно неверная операция уменьшения lambda возвращает прежнюю границу для проверки защиты от застоя.
+Private mRecoveryWithoutProgress As Boolean ' Намеренно неверная операция уменьшения lambda возвращает неизменённую границу для проверки защиты от застоя.
 Private mUltimateInitialEps As Double ' ДЛЯ ТЕСТОВ: ненулевой старт для машинной стагнации.
 Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: запрещает уменьшение общей меры невязок при подборе шага.
 Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: управляемая неудача оценки пробной точки.
@@ -847,7 +847,7 @@ End Property
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' возвращает именно аргумент последнего SetFailure. Это позволяет
-' обнаружить потерю причины, даже если прежний текст остался в DiagnosticLog.
+' обнаружить потерю причины, даже если текст предыдущего отказа остался в DiagnosticLog.
 Public Property Get TestFailureReason() As String
     TestFailureReason = mFailureReason
 End Property

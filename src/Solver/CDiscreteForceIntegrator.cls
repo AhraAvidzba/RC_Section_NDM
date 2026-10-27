@@ -15,7 +15,7 @@ Option Explicit
 ' Применяется только к пробам усилий без касательной и физической диагностики.
 ' Сетку и закон материала не меняет. При однородной ветви использует шесть
 ' моментов тех же площадей; неоднородные листья вычисляет штатной диаграммой.
-' Физические экстремумы, критические элементы и матрицу K собирает прежний
+' Физические экстремумы, критические элементы и матрицу K собирает прямой
 ' проход CSectionSolver. Индекс принадлежит одной модели и не удерживает её ссылку.
 Private Type TForceNode
     First As Long ' Начало диапазона индексов исходных волокон.
@@ -120,7 +120,7 @@ Private Sub StrainBounds(ByRef node As TForceNode, ByVal eps As Double, ByVal kx
 End Sub
 
 ' Возвращает усилия по той же сетке. Неоднозначный почти постоянный интервал
-' у перелома сразу отдаёт прежнему обходу, чтобы не оплачивать бесполезное дерево.
+' у перелома сразу передаёт прямому обходу, чтобы не строить бесполезный индекс.
 Public Function TryForces(ByVal diagram As CMaterialDiagram, ByVal eps As Double, ByVal kx As Double, ByVal ky As Double, _
         ByRef n As Double, ByRef mx As Double, ByRef my As Double) As Boolean
     Dim node As TForceNode, low As Double, high As Double, guard As Double, a As Double, b As Double

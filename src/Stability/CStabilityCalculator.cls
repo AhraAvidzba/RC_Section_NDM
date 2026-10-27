@@ -1104,7 +1104,7 @@ Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As
     For numericRow = 2 To rowCount
         For numericColumn = 3 To 8
             If Not TryReadStrictDouble(table721(numericRow, numericColumn), numericValue) Then RaiseInput "Таблица 7.21 СП 35 содержит неверное число."
-            table721(numericRow, numericColumn) = numericValue ' Только локальная копия уже проверенной таблицы: последующая интерполяция получает прежние Double независимо от написания десятичного знака.
+            table721(numericRow, numericColumn) = numericValue ' Только локальная копия проверенной таблицы: интерполяция получает однозначные Double независимо от написания десятичного знака.
         Next numericColumn
     Next numericRow
 

@@ -111,7 +111,7 @@ Private Sub TargetLabelAnchor(ByVal definition As CSectionDefinition, ByRef valu
 End Sub
 
 ' Готовит единичную нормаль и касательную. Порядок концов по X, затем по Y,
-' сохраняет прежние горизонтальные и вертикальные подписи при обеих нормалях.
+' задаёт единый порядок горизонтальных и вертикальных подписей при обеих нормалях.
 Private Sub LabelDirections(ByVal normalX As Double, ByVal normalY As Double, ByRef nx As Double, ByRef ny As Double, _
         ByRef tx As Double, ByRef ty As Double)
     Dim norm As Double
@@ -218,8 +218,8 @@ End Sub
 ' Добавляет общие аннотации импортированного сечения: горизонтальный и вертикальный
 ' габариты и общую подпись арматуры. При наличии точного наружного контура размеры
 ' точные, иначе вычисляются приблизительно по границам бетонных элементов.
-' Эти границы заранее готовит CSectionModel по фактическому прямоугольнику
-' или по эквивалентным размерам элемента; его расчётные площадь и инерции не меняются.
+' Эти границы заранее готовит CSectionModel по фактической области Contour
+' либо компактному прямоугольному описанию; расчётные площадь и инерции элемента не меняются.
 Public Sub PrepareImportedSection(ByVal section As CSectionModel, ByVal bounds As Variant)
     If section Is Nothing Then Exit Sub
     If StrComp(section.SourceType, "AutoCADImport", vbTextCompare) <> 0 Then Exit Sub

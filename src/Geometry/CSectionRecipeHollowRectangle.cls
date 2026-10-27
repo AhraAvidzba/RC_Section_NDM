@@ -107,7 +107,7 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
         "у верхней стороны отверстия", "у нижней стороны отверстия", "у левой стороны отверстия", "у правой стороны отверстия")
     For i = 1 To 8
         With faces(i)
-            .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1)) ' faces нумеруется с 1, а массивы Array — с 0; поля таблицы по-прежнему читаются по ключам.
+            .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1)) ' faces нумеруется с 1, а массивы Array — с 0; поля таблицы читаются по ключам.
             .RowComment = "Пустотелый прямоугольник: арматура " & .Caption & ", ряд "
             key = CStr(keys(i - 1))
             .Source = reader.SourceReference("Main", key, "as")

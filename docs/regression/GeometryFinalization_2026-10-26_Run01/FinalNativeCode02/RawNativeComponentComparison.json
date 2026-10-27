@@ -1,0 +1,15 @@
+﻿{
+    "Passed":  true,
+    "ComponentsCompared":  181,
+    "OrderEqual":  true,
+    "Missing":  [
+
+                ],
+    "RawDifferences":  [
+
+                       ],
+    "NumberNormalization":  false,
+    "IdentifierCaseNormalization":  false,
+    "WhitespaceNormalization":  false,
+    "ActualNativeCRLF":  true
+}

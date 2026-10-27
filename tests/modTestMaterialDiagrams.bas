@@ -71,7 +71,7 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет наклон плато, производные, физические пределы и неизменность старых снимков материалов при разных диаграммах и коэффициентах.
+' Проверяет наклон плато, производные, физические пределы и неизменность выданных снимков материалов при разных диаграммах и коэффициентах.
 Private Sub TestPlateauSlope(ByRef stats As TMaterialTestStats)
     Dim concrete As New CConcreteMaterialParameters, steel As New CSteelMaterialParameters
     Dim reference As CMaterialModelProvider, provider As CMaterialModelProvider, spec As CMaterialModelSpec
@@ -303,7 +303,7 @@ Private Sub TestAssertMaterialTransitions(ByRef stats As TMaterialTestStats, ByV
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Независимый oracle сохраняет прежний поузловой расчет наклонов и расстояний.
+' Независимый эталон выполняет поузловой расчёт наклонов и расстояний.
 Private Sub TestMaterialTransitionOracle(ByVal diagram As CMaterialDiagram, ByVal strain As Double, _
         ByVal delta As Double, ByRef first As Double, ByRef second As Double)
     If delta = 0# Then Exit Sub
@@ -511,7 +511,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Вспомогательное продолжение добавляется только к диаграммам для поиска равновесия.
-' Физические диаграммы прочности и трещин сохраняют прежние точки и пределы.
+' Физические диаграммы прочности и трещин сохраняют заданные точки и пределы.
 Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats)
     Dim provider As CMaterialModelProvider
     Set provider = TestProvider()
@@ -541,7 +541,7 @@ Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats
     TestAssertTrue stats, "state.extension.concrete.reference", stateConcrete.PointStrain(1) < physicalConcrete.PhysicalCompressionStrain
     TestAssertTrue stats, "state.extension.steel.leftReference", stateSteel.PointStrain(1) < physicalSteel.PhysicalCompressionStrain
     TestAssertTrue stats, "state.extension.steel.rightReference", stateSteel.PointStrain(stateSteel.PointCount) > physicalSteel.PhysicalTensionStrain
-    ' Прямая сохраняет наклон 0,01*E и за опорными точками, и за прежними +/-10 и +/-100.
+    ' Прямая сохраняет наклон 0,01*E и за опорными точками, и за контрольными +/-10 и +/-100.
     For Each strain In Array(-1000000#, -1000#, -100#, -10.001, -10#, -9.999, 9.999, 10#, 10.001, 100#, 1000#, 1000000#)
         If CDbl(strain) < 0# Then
             expected = physicalSteel.GetStress(physicalSteel.PhysicalCompressionStrain) + _

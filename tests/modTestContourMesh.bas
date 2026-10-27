@@ -275,7 +275,7 @@ End Function
 Private Function TestMeshSettings(Optional ByVal subdivision As Long = 2, Optional ByVal unit As String = "mm", _
         Optional ByVal stepX As Double = 40#, Optional ByVal stepY As Double = 30#) As CSystemSettingsReader
     mConfig.Cells.ClearContents
-    Dim data(1 To 8, 1 To 3) As Variant
+    Dim data(1 To 10, 1 To 3) As Variant
     data(1, 1) = "Key": data(1, 2) = "Value": data(1, 3) = "Unit"
     data(2, 1) = "Mesh.StepX": data(2, 2) = stepX
     data(3, 1) = "Mesh.StepY": data(3, 2) = stepY
@@ -284,9 +284,11 @@ Private Function TestMeshSettings(Optional ByVal subdivision As Long = 2, Option
     data(6, 1) = "Units.Length.Output": data(6, 2) = unit
     data(7, 1) = "Units.Area.Output": data(7, 2) = unit & "2"
     data(8, 1) = "Mesh.StepMode": data(8, 2) = "User"
-    mConfig.Range("A1:C8").Value2 = data
+    data(9, 1) = "Mesh.MinElementArea": data(9, 2) = 0#
+    data(10, 1) = "Units.Area.Input": data(10, 2) = unit & "2"
+    mConfig.Range("A1:C10").Value2 = data
     Set TestMeshSettings = New CSystemSettingsReader
-    TestMeshSettings.LoadFromRange mConfig.Range("A1:C8")
+    TestMeshSettings.LoadFromRange mConfig.Range("A1:C10")
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -314,6 +316,7 @@ Public Function RunAutomaticMeshTests() As String
         Next subdivision
     Next shape
     TestAutomaticMeshInputs
+    TestMinimumElementAreaInput
     TestAutomaticSectionBuilder
     GoTo Finish
 Failed:
@@ -325,6 +328,59 @@ Finish:
     On Error GoTo 0
     RunAutomaticMeshTests = mReport & "TOTAL_AUTO_MESH: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
 End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет один физический порог в мм2, см2 и м2 при обоих способах ячеек,
+' обе десятичные записи и адресный отказ до построения при ошибочном значении.
+Private Sub TestMinimumElementAreaInput()
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, options As TSectionMeshOptions
+    Dim cellMode As Variant, areaUnit As Variant, areaValue As Double, value As Variant
+    Dim number As Long, description As String, invalidIndex As Long, invalidLabels As Variant
+    For Each cellMode In Array("Adaptive", "Contour")
+        For Each areaUnit In Array("mm2", "cm2", "m2")
+            Set settings = TestMeshSettings()
+            mConfig.Range("A11").Value2 = "Mesh.CellGeometry": mConfig.Range("B11").Value2 = CStr(cellMode)
+            Select Case CStr(areaUnit)
+                Case "mm2": areaValue = 25#
+                Case "cm2": areaValue = 0.25
+                Case "m2": areaValue = 0.000025
+            End Select
+            mConfig.Range("B9").Value2 = areaValue: mConfig.Range("B10").Value2 = CStr(areaUnit)
+            settings.LoadFromRange mConfig.Range("A1:C11"): Set units = TestSettingsUnits(settings)
+            options = ReadSectionMeshOptions(settings, units)
+            TestCheck "minArea.units." & CStr(cellMode) & "." & CStr(areaUnit), Abs(options.MinArea - 25#) <= 0.000000000001
+            TestCheck "minArea.mode." & CStr(cellMode) & "." & CStr(areaUnit), options.CellGeometry = CStr(cellMode)
+        Next areaUnit
+    Next cellMode
+    For Each value In Array("0.25", "0,25", 0.25)
+        Set settings = TestMeshSettings(): mConfig.Range("B9").Value2 = value: mConfig.Range("B10").Value2 = "cm2"
+        settings.LoadFromRange mConfig.Range("A1:C10"): Set units = TestSettingsUnits(settings)
+        TestCheck "minArea.decimal." & CStr(value), Abs(ReadMinimumElementArea(settings, units) - 25#) <= 0.000000000001
+    Next value
+    invalidLabels = Array("negative", "blank", "text", "excelError", "overflow")
+    For Each value In Array(-1#, "", "abc", CVErr(xlErrValue), "1e308")
+        Set settings = TestMeshSettings(): mConfig.Range("B9").Value2 = value: mConfig.Range("B10").Value2 = "m2"
+        On Error Resume Next
+        Err.Clear
+        settings.LoadFromRange mConfig.Range("A1:C10")
+        number = Err.Number: description = Err.Description ' Сохраняем первый отказ: повторный запрос незагруженного ключа уничтожил бы точный адрес исходной ошибки Excel.
+        If number = 0 Then
+            Set units = TestSettingsUnits(settings)
+            number = Err.Number: description = Err.Description
+        End If
+        If number = 0 Then
+            areaValue = ReadMinimumElementArea(settings, units)
+            number = Err.Number: description = Err.Description
+        End If
+        Err.Clear
+        On Error GoTo 0
+        TestCheck "minArea.invalid." & CStr(invalidLabels(invalidIndex)) & ".address; Err=" & CStr(number) & _
+            "; " & Replace(Replace(description, vbCr, " "), vbLf, " "), _
+            number <> 0 And InStr(description, "Mesh.MinElementArea") > 0 And InStr(description, "B9") > 0
+        invalidIndex = invalidIndex + 1
+    Next value
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Строит одну Auto-сетку через рабочее чтение и её ручной эталон; сравнивает каждый
@@ -341,7 +397,7 @@ Private Sub TestAutomaticMeshCase(ByVal geometry As CGeometryRegion, ByVal facto
     Set settings = TestMeshSettings(subdivision, unit)
     mConfig.Range("B8").Value2 = "Auto " & Replace(CStr(factor), ",", ".")
     mConfig.Range("B2").Formula = "=1/0": mConfig.Range("B3").Value2 = "unused"
-    settings.LoadFromRange mConfig.Range("A1:C8"): Set units = TestSettingsUnits(settings)
+    settings.LoadFromRange mConfig.Range("A1:C10"): Set units = TestSettingsUnits(settings)
     Set actual = BuildConfiguredConcreteMesh(geometry, settings, units)
     step = geometry.Width: If geometry.Height < step Then step = geometry.Height
     step = step * factor
@@ -370,7 +426,7 @@ Private Sub TestAutomaticMeshInputs()
     For Each mode In Array(vbNullString, "TODO", "Auto 0.3", CVErr(2015))
         Set settings = TestMeshSettings(): mConfig.Range("B8").Value2 = mode
         On Error Resume Next
-        settings.LoadFromRange mConfig.Range("A1:C8")
+        settings.LoadFromRange mConfig.Range("A1:C10")
         number = Err.Number: description = Err.Description: Err.Clear
         If number = 0 Then
             Set units = TestSettingsUnits(settings): options = ReadSectionMeshOptions(settings, units)
@@ -382,13 +438,13 @@ Private Sub TestAutomaticMeshInputs()
     Set settings = TestMeshSettings(2, "cm", 4#, 3#): Set units = TestSettingsUnits(settings)
     options = ReadSectionMeshOptions(settings, units)
     TestCheck "autoMesh.userExact", options.StepX = 40# And options.StepY = 30# And options.AutoStepFactor = 0# And options.BoundarySubdivisions = 2
-    mConfig.Range("B2").Value2 = 0#: settings.LoadFromRange mConfig.Range("A1:C8")
+    mConfig.Range("B2").Value2 = 0#: settings.LoadFromRange mConfig.Range("A1:C10")
     On Error Resume Next
     options = ReadSectionMeshOptions(settings, units): number = Err.Number: description = Err.Description: Err.Clear
     On Error GoTo 0
     TestCheck "autoMesh.userInvalid", number <> 0 And InStr(description, "B2") > 0
     mConfig.Range("B8").Value2 = "Auto 0.1": mConfig.Range("B4").Value2 = 0#
-    settings.LoadFromRange mConfig.Range("A1:C8")
+    settings.LoadFromRange mConfig.Range("A1:C10")
     On Error Resume Next
     options = ReadSectionMeshOptions(settings, units): number = Err.Number: description = Err.Description: Err.Clear
     On Error GoTo 0
@@ -676,7 +732,7 @@ Private Sub TestCompareSolutions(ByVal label As String, ByVal first As CSectionM
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет сетку вогнутого контура, двух отверстий и раздельных областей, а также очистку прежней области после ошибочной инициализации.
+' Проверяет сетку вогнутого контура, двух отверстий и раздельных областей, а также очистку ранее подготовленной области после ошибочной инициализации.
 Private Sub TestCheckArbitraryDomains()
     Dim query As CSectionGeometryQuery, region As CConcreteRegion, geometry As CGeometryRegion, mesh As CFiberMeshBuilder
     Set query = New CSectionGeometryQuery
@@ -769,7 +825,7 @@ Private Sub TestCheckImportContracts()
             Set contours = New CSectionContours: contours.AddContourCircle "H", 40#, 40#, 10#, "", "H", "Opening"
             Set space = TestFakeSpace(contours, bars)
         End If
-        settings.LoadFromRange mConfig.Range("A1:C8")
+        settings.LoadFromRange mConfig.Range("A1:C10")
         On Error Resume Next
         Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", IIf(mode = 2, 200#, 0#), units, "OUTER", "OPENING", TestFakeLayers(), settings)
         number = Err.Number: description = Err.Description: Err.Clear

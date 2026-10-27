@@ -1,0 +1,25 @@
+{
+  "Status": "PASS_COMMENT_ONLY_STATIC_FREEZE",
+  "Files": [
+    {
+      "File": "Build-Workbook.ps1",
+      "FunctionHeadersRewritten": 10,
+      "CommentDiff": "Build-Workbook.ps1.diff"
+    },
+    {
+      "File": "SettingsCatalog.ps1",
+      "FunctionHeadersRewritten": 12,
+      "CommentDiff": "SettingsCatalog.ps1.diff"
+    }
+  ],
+  "UserHelpStringsChanged": false,
+  "BuildVBECompileAndOwnershipChanged": false,
+  "ProcessesStarted": 0,
+  "PS51ParseErrors": 0,
+  "ExecutableTokenEqualityAll": true,
+  "ASTShapeEqualityAll": true,
+  "Proof": "CompareProof.json",
+  "GitDiffCheck": "PASS",
+  "RemainingGenericPlaceholderCommentMatches": 0,
+  "RuntimeTestsRequired": false
+}

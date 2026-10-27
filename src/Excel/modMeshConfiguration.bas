@@ -15,7 +15,7 @@ Public Function BuildConfiguredConcreteMesh(ByVal geometry As CGeometryRegion, _
     Dim options As TSectionMeshOptions, mesh As CFiberMeshBuilder
     options = ReadSectionMeshOptions(settings, units)
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geometry, options.StepX, options.StepY, options.MaterialID, options.BoundarySubdivisions, options.SourceReference, options.AutoStepFactor, options.CellGeometry
+    mesh.BuildMesh geometry, options.StepX, options.StepY, options.MaterialID, options.BoundarySubdivisions, options.SourceReference, options.AutoStepFactor, options.CellGeometry, options.MinArea
     Set BuildConfiguredConcreteMesh = mesh
 End Function
 
@@ -25,6 +25,7 @@ Public Function ReadSectionMeshOptions(ByVal settings As CSystemSettingsReader, 
     If settings Is Nothing Or units Is Nothing Then Err.Raise vbObjectError + 4139, _
         "modMeshConfiguration", "Настройки и единицы бетонной сетки не переданы."
     Dim options As TSectionMeshOptions, mode As String
+    options.MinArea = ReadMinimumElementArea(settings, units)
     options.CellGeometry = ReadMeshCellGeometry(settings)
     mode = settings.GetRequiredChoice("Mesh.StepMode", Array("Auto 0.05", "Auto 0.1", "Auto 0.2", "User"))
     Select Case mode
@@ -38,7 +39,8 @@ Public Function ReadSectionMeshOptions(ByVal settings As CSystemSettingsReader, 
     options.BoundarySubdivisions = 1
     If options.CellGeometry = "Adaptive" Then options.BoundarySubdivisions = ReadMeshBoundarySubdivisions(settings)
     options.MaterialID = 1
-    options.SourceReference = "Mesh.StepMode: " & settings.InputLocation("Mesh.StepMode")
+    options.SourceReference = "Mesh.MinElementArea: " & settings.InputLocation("Mesh.MinElementArea") & _
+        "; Mesh.StepMode: " & settings.InputLocation("Mesh.StepMode")
     If options.AutoStepFactor = 0# Then options.SourceReference = options.SourceReference & _
         "; Mesh.StepX: " & settings.InputLocation("Mesh.StepX") & "; Mesh.StepY: " & settings.InputLocation("Mesh.StepY")
     If settings.HasKey("Mesh.CellGeometry") Then options.SourceReference = options.SourceReference & "; Mesh.CellGeometry: " & settings.InputLocation("Mesh.CellGeometry")
@@ -46,8 +48,26 @@ Public Function ReadSectionMeshOptions(ByVal settings As CSystemSettingsReader, 
     ReadSectionMeshOptions = options
 End Function
 
+
+' Читает общий порог площади конечных бетонных элементов и стержней.
+' Ввод задан в INPUT Area; снимки и готовый Results этим фильтром не обрабатываются.
+Public Function ReadMinimumElementArea(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As Double
+    If settings Is Nothing Or units Is Nothing Then Err.Raise vbObjectError + 4139, "modMeshConfiguration", "Настройки и единицы порога площади не переданы."
+    Dim value As Double
+    value = settings.GetRequiredDouble("Mesh.MinElementArea")
+    If value < 0# Then Err.Raise vbObjectError + 4404, "modMeshConfiguration", _
+        settings.InputErrorMessage("Mesh.MinElementArea", "Порог площади не может быть отрицательным.", "Введите ноль для отключения фильтра или положительную площадь в INPUT Area.")
+    On Error GoTo InvalidArea
+    ReadMinimumElementArea = units.InputAreaToInternal(value)
+    On Error GoTo 0
+    Exit Function
+InvalidArea:
+    Err.Raise vbObjectError + 4404, "modMeshConfiguration", _
+        settings.InputErrorMessage("Mesh.MinElementArea", "Площадь слишком велика для перевода в мм2.", "Уменьшите число и проверьте выбранную единицу INPUT Area.")
+End Function
+
 ' Читает единый способ получения фактической геометрии для генератора и AutoCAD.
-' Отсутствующий новый ключ в прежнем внешнем снимке сохраняет старый режим;
+' При отсутствии ключа в поддерживаемом внешнем снимке выбирается Adaptive;
 ' присутствующее пустое или неизвестное значение отклоняется адресно.
 Public Function ReadMeshCellGeometry(ByVal settings As CSystemSettingsReader) As String
     If settings Is Nothing Then Err.Raise vbObjectError + 4139, "modMeshConfiguration", "Настройки способа бетонной сетки не переданы."

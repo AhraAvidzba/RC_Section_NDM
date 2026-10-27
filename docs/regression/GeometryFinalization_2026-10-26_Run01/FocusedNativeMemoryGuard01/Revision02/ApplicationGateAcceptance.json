@@ -1,0 +1,111 @@
+﻿{
+    "Status":  "PASS_AST_EXTRACTED_FACTORY_ZERO_APP_AND_POST_CAD_FINALLY_MOCKS",
+    "ObservedUTC":  "2026-10-27T01:36:13.4174991+00:00",
+    "Passed":  14,
+    "Failed":  0,
+    "Cases":  [
+                  {
+                      "Case":  "InstalledCAD_Denied",
+                      "Passed":  true,
+                      "MockApplicationCreations":  0,
+                      "Threw":  true
+                  },
+                  {
+                      "Case":  "InstalledCAD_Expired",
+                      "Passed":  true,
+                      "MockApplicationCreations":  0,
+                      "Threw":  true
+                  },
+                  {
+                      "Case":  "InstalledCAD_Ready",
+                      "Passed":  true,
+                      "MockApplicationCreations":  1,
+                      "Threw":  false
+                  },
+                  {
+                      "Case":  "CADCOM_Denied",
+                      "Passed":  true,
+                      "MockApplicationCreations":  0,
+                      "Threw":  true
+                  },
+                  {
+                      "Case":  "CADCOM_Expired",
+                      "Passed":  true,
+                      "MockApplicationCreations":  0,
+                      "Threw":  true
+                  },
+                  {
+                      "Case":  "CADCOM_Ready",
+                      "Passed":  true,
+                      "MockApplicationCreations":  1,
+                      "Threw":  false
+                  },
+                  {
+                      "Case":  "Excel_Denied",
+                      "Passed":  true,
+                      "MockApplicationCreations":  0,
+                      "Threw":  true
+                  },
+                  {
+                      "Case":  "Excel_Expired",
+                      "Passed":  true,
+                      "MockApplicationCreations":  0,
+                      "Threw":  true
+                  },
+                  {
+                      "Case":  "Excel_Ready",
+                      "Passed":  true,
+                      "MockApplicationCreations":  1,
+                      "Threw":  false
+                  },
+                  {
+                      "Case":  "InstalledCAD_ForeignAppeared",
+                      "Passed":  true,
+                      "MockApplicationCreations":  0,
+                      "Threw":  true
+                  },
+                  {
+                      "Case":  "CADCOM_ForeignAppeared",
+                      "Passed":  true,
+                      "MockApplicationCreations":  0,
+                      "Threw":  true
+                  },
+                  {
+                      "Case":  "PostCAD_ExactOwn",
+                      "Passed":  true,
+                      "MockExcelCreations":  0,
+                      "MockCADQuitCalls":  1,
+                      "MockReleaseCalls":  1,
+                      "FailureReachedActualCADCleanupBranch":  true
+                  },
+                  {
+                      "Case":  "PostCAD_MismatchedIdentity",
+                      "Passed":  true,
+                      "MockExcelCreations":  0,
+                      "MockCADQuitCalls":  0,
+                      "MockReleaseCalls":  1,
+                      "FailureReachedActualCADCleanupBranch":  true
+                  },
+                  {
+                      "Case":  "PostCAD_NotOwned",
+                      "Passed":  true,
+                      "MockExcelCreations":  0,
+                      "MockCADQuitCalls":  0,
+                      "MockReleaseCalls":  1,
+                      "FailureReachedActualCADCleanupBranch":  true
+                  }
+              ],
+    "CandidateSHA256":  "589EC2D913662BB72A9C060514095CEA8EF2B747B66492BB302469F5B815CB1E",
+    "Executed":  "Exact AST memory guard, precreation prefixes, identity guard and CAD cleanup branch",
+    "MockBoundaries":  [
+                           "CIM",
+                           "Start-Sleep",
+                           "COM/process creation factories",
+                           "Process inventory and identity",
+                           "CAD.Quit",
+                           "FinalReleaseComObject on mock"
+                       ],
+    "PreservedControlFlow":  "Guard before factory; post-CAD guard exception enters existing finally; Quit only for exact owned identity",
+    "RealApplicationsOrCIMOrProcessCalls":  0,
+    "NativeAcceptanceClaimed":  false
+}

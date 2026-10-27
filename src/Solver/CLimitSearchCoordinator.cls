@@ -171,7 +171,7 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
 
     Dim firstResult As CLimitSearchResult
     Set firstResult = ultimate.ExecuteCapacity(request)
-    If firstResult.Meta.ResultCode = rcInitialStateBeyondLimit Then ' Подтвержденный физический отказ при lambda=0 не требует другого численного метода. Выбор следующего Auto-пути остается прежним.
+    If firstResult.Meta.ResultCode = rcInitialStateBeyondLimit Then ' Подтверждённый физический отказ при lambda=0 не требует другого численного метода. Следующий Auto-путь выбирает общий координатор.
         Set ExecuteAutoCapacity = firstResult
         Exit Function
     End If

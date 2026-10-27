@@ -1,0 +1,235 @@
+{
+  "Status": "PASS_INDEPENDENT_RELEASE_LAYOUT_PRIMARY_REVIEW_ONLY",
+  "UTC": "2026-10-27T03:19:29.654296+03:00",
+  "SourceSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+  "BuildCompileConfirmed": true,
+  "NativeReleaseCompiledWithoutImport": false,
+  "NativeReleaseReadOnlyExportNoImport": true,
+  "NativeSettings": 111,
+  "SourceComponents": 175,
+  "DocumentModules": 6,
+  "TotalComponents": 181,
+  "AllSourceDocumentAndVerifierChecksPassed": true,
+  "LayoutChecks": 1676,
+  "NamedRanges": 27,
+  "Objects": 84,
+  "StructuredDefaults": 296,
+  "DropdownChoices": 170,
+  "DynamicUnitCells": 54,
+  "AllPrimaryJSONReadInFull": true,
+  "SourceAndDependenciesUnchanged": true,
+  "Ownership": [
+    {
+      "PID": 14300,
+      "StartTicksUTC": "639286556882454415",
+      "Status": "READING"
+    },
+    {
+      "ObservedUTC": "2026-10-27T02:58:20.7775025+03:00",
+      "Stage": "Layout",
+      "SourceWorkbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07\\RC_Section_NDM.xlsm",
+      "SourceSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "ExcelPID": 23864,
+      "ExcelStartTicksUTC": "639286558997213443",
+      "PriorExcel": [
+        14300
+      ],
+      "BeforeWorkbookOpen": true,
+      "ReadOnly": true
+    },
+    {
+      "ObservedUTC": "2026-10-27T02:58:26.4517643+03:00",
+      "Stage": "Structured",
+      "SourceWorkbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07\\RC_Section_NDM.xlsm",
+      "SourceSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "ExcelPID": 33928,
+      "ExcelStartTicksUTC": "639286559057771899",
+      "PriorExcel": [
+        14300
+      ],
+      "BeforeWorkbookOpen": true,
+      "ReadOnly": true
+    }
+  ],
+  "FullRegressionPass": false,
+  "NoAppsLaunched": true,
+  "NoWorkbookOrVBAExportRehash": true,
+  "Proofs": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07.json",
+      "Bytes": 563,
+      "SHA256": "95C4B9B7046F6E735DC311D46C50C850931A2DF8AE9E9BC6961189B9B54E8DF1",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeRelease04\\NativeRelease.json",
+      "Bytes": 573,
+      "SHA256": "7B7AA5002513EB760C7D59A6EDE070DCCB9F29040A13AB19037980EFB2684758",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeRelease04\\SettingsNative.json",
+      "Bytes": 29814,
+      "SHA256": "1B311F5017796296D4DEF1E49833261DBAEA6AF5240F7D9561670685D6D413A3",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeRelease04\\SourceEquality.json",
+      "Bytes": 86178,
+      "SHA256": "3AEEA25E28F042476F88171006F865C05036AB7580D6EB6303ABB8A695CE8702",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\Layout.json",
+      "Bytes": 750755,
+      "SHA256": "9E21D2999CCA6E02776287AF98B2B2706F0489CBB1E0F45599C95A9C95BC3CE0",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\Structured.json",
+      "Bytes": 2661,
+      "SHA256": "726499599EEA86D82A920A5AACC5875C613B291F376A747B79E4862A911530FF",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\Acceptance.json",
+      "Bytes": 1602,
+      "SHA256": "E1EC0291CD3089433B29AFD938DBEE1A85BDC44FEC67F9D8E87B9A28C876DC7B",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06.Watchdog\\Completion.json",
+      "Bytes": 2815,
+      "SHA256": "F05FF2CB5458B73947C0255E5F2D6A59B1801C3CD08DB8A770FC328DD7C3D71D",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\DependencyInputs.json",
+      "Bytes": 847,
+      "SHA256": "73314786E259B6561A1E0B95F4469E94715FE4B8CFD01372FB9599940BAC73E6",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\DependencyInputsAfter.json",
+      "Bytes": 992,
+      "SHA256": "09331DD2EDC9F0994444E484180A7B46C772B346ED18CEC7199A3807252E40D6",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeRelease04\\Ownership.json",
+      "Bytes": 100,
+      "SHA256": "01ADFEED3E8EE028788EF41D39E91931A2033EC5C6BC317CC2F6BC07DB5D75C8",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\Layout.Ownership.json",
+      "Bytes": 590,
+      "SHA256": "9635EABDA2B3EE8974B978492669BC0F4969B1628632AE858CC0D93341371AAD",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\Layout.MemoryBeforeExcel.json",
+      "Bytes": 261,
+      "SHA256": "6A6DF293E94D7D3B29FBE21706204BBDDB5D8C6FD4EFA784DE84D723E496A896",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\Structured.Ownership.json",
+      "Bytes": 594,
+      "SHA256": "CB5DA75B8D9F676A11C4119B815BA133D96328637BA680DBCACC945B659A8286",
+      "EntireFileRead": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\NativeLayout06\\Structured.MemoryBeforeExcel.json",
+      "Bytes": 269,
+      "SHA256": "80DD50CE1BF3777997C83E4A6DEEC1D39D1F679D027B99F6C6F2557082E1DA86",
+      "EntireFileRead": true
+    }
+  ],
+  "FreshIndependentClosure": {
+    "ObservedUTC": "2026-10-27T00:20:14.5034688Z",
+    "NoProcessesChanged": true,
+    "Identities": [
+      {
+        "PID": 14300,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286556882454415",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 23864,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286558997213443",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 33928,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286559057771899",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 26496,
+        "Name": "powershell",
+        "StartTicksUTC": "639286558980425304",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 29984,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286554238955962",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 32536,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286559413237038",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 12808,
+        "Name": "acad",
+        "StartTicksUTC": "639286559708943789",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 24700,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286561244441765",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 9788,
+        "Name": "acad",
+        "StartTicksUTC": "639286561543267847",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      },
+      {
+        "PID": 31988,
+        "Name": "EXCEL",
+        "StartTicksUTC": "639286563028209533",
+        "ExactIdentityAbsent": true,
+        "Actual": null
+      }
+    ],
+    "ObservationValid": false,
+    "AllExactAbsent": false
+  },
+  "RuntimeClosureCorrection": {
+    "Status": "PRIOR_RUNTIME_CLOSURE_CLAIM_INVALIDATED",
+    "PriorFreshClosureObservationValid": false,
+    "AllTenExactIdentitiesAbsent": false,
+    "CorrectionReceipt": "NativeReleaseClosureCorrection01/Correction.json",
+    "AuthoritativeAudit": "NativeReleaseClosureCorrection01/ElevatedIdentityAudit01.json",
+    "ExactIdentity14300PresentAtAudit": true
+  }
+}

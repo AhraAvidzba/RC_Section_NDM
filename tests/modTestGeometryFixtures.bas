@@ -459,7 +459,7 @@ Public Function TestFixtureConfigFieldCell(ByVal key As String) As Object
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Приводит прежний ключ Detail контрольного набора к действующему блоку General; поля left/right становятся частью ключа строки.
+' Приводит поддерживаемый ключ Detail контрольного набора к действующему блоку General; поля left/right становятся частью ключа строки.
 Private Sub TestFixtureNormalizeField(ByRef block As String, ByRef row As String, ByRef column As String)
     If block = "Detail" Then
         block = "General"

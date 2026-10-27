@@ -1,0 +1,132 @@
+{
+  "SchemaVersion": 1,
+  "Status": "PASS_SOURCE_GENERATOR_GUIDE_SYNCHRONIZED",
+  "Files": [
+    {
+      "Path": "tools/build_workbook/Build-SectionRecipeVbeGuide.py",
+      "BeforeSHA256": "E4584019168015632CC42A20300A627AB5AD762B2D9284B46CBAE65E7A0CCC12",
+      "AfterSHA256": "A081B4F9AC452A92C6AEE3E42EDAD5F20EA8FCD9A1E8EB9883DE097B95AA6434",
+      "Edits": [
+        {
+          "Old": "При a2 = a3 = 0 действует прежний алгоритм.",
+          "New": "При a2 = a3 = 0 строятся контактные ряды без индивидуальных проверочных контуров.",
+          "Count": 1
+        },
+        {
+          "Old": "Пустые аргументы дают прежние Edge.TR и Corner.TR.",
+          "New": "Пустые аргументы дают Edge.TR и Corner.TR.",
+          "Count": 1
+        },
+        {
+          "Old": "SequentialByKind использует прежние префиксы",
+          "New": "SequentialByKind использует префиксы",
+          "Count": 1
+        },
+        {
+          "Old": "AdjacentRectangles сохраняет прежние имена:",
+          "New": "AdjacentRectangles сохраняет имена исходных сторон:",
+          "Count": 1
+        },
+        {
+          "Old": "Поворот текста остаётся прежним, 0/90 градусов.",
+          "New": "Текст размера параллелен размерной линии и разворачивается для удобного чтения.",
+          "Count": 1
+        }
+      ]
+    },
+    {
+      "Path": "tools/build_workbook/SectionRecipeApiText.py",
+      "BeforeSHA256": "BCF02EDBC9352CA60B8F8CF5244DBF748FA16A9C210D9EA7F1457C4F19DFE00F",
+      "AfterSHA256": "7C1A5902FF1134180628CFBF8125344B1631182F913F674EA4D03E7E7D285E02",
+      "Edits": [
+        {
+          "Old": "Пустые аргументы сохраняют прежние pathID.i;",
+          "New": "Пустые аргументы задают pathID.i;",
+          "Count": 1
+        },
+        {
+          "Old": "пустое сохраняет прежнее pathID.i.",
+          "New": "пустое задаёт pathID.i.",
+          "Count": 4
+        },
+        {
+          "Old": "Текст, включая одиночный дефис и TODO, и отрицательный диаметр",
+          "New": "Текст, включая одиночный дефис, и отрицательный диаметр",
+          "Count": 1
+        },
+        {
+          "Old": "проверяет прежнее геометрическое ядро",
+          "New": "проверяет общее геометрическое ядро",
+          "Count": 1
+        },
+        {
+          "Old": "снимком прежней сборки",
+          "New": "снимком сохранённой сборки",
+          "Count": 1
+        },
+        {
+          "Old": "В новом режиме индивидуальных отступов",
+          "New": "В режиме индивидуальных отступов",
+          "Count": 1
+        },
+        {
+          "Old": "с прежним общим номером сегмента.",
+          "New": "с общим номером сегмента.",
+          "Count": 1
+        },
+        {
+          "Old": "старый результат после отказа не выдаётся.",
+          "New": "сохранённый результат после отказа не выдаётся.",
+          "Count": 1
+        },
+        {
+          "Old": "Нулевые базовые отступы используют прежнее поведение.",
+          "New": "Нулевые базовые отступы задают контактные ряды без индивидуального проверочного контура.",
+          "Count": 1
+        },
+        {
+          "Old": "BoundarySubdivisions целое≥1, MaterialID≥1 в обоих режимах.",
+          "New": "В Adaptive BoundarySubdivisions задаёт целое число уровней ≥1; Contour не использует это поле и сохраняет точное пересечение базовой ячейки с бетоном. MinArea≥0 задан в мм² и фильтрует каждую конечную бетонную часть и физический стержень; ноль отключает фильтр, равенство сохраняет элемент. MaterialID≥1.",
+          "Count": 1
+        }
+      ]
+    },
+    {
+      "Path": "docs/geometry_refactor/ADDING_SECTION_TYPE.md",
+      "BeforeSHA256": "1C89FC3FF1AE4DA5293A6A8AA7CCBD66DA5ED9235C7D36075E077212CC3B1C9D",
+      "AfterSHA256": "3B4B41CDCBBA05B7D42F390973482B86050F833E707ECC25CA5B0EB90B0A087A",
+      "Edits": [
+        {
+          "Reason": "Текущий контракт режимов и конечного отбора площади."
+        }
+      ]
+    }
+  ],
+  "NativeExcelOrCadStarted": false,
+  "Generation": {
+    "GuideSHA256": "FDF0667C10D742654F154DFD2D1534BAB1088CDB2035D1958F14CC38E2B031B5",
+    "AuthorManifestSHA256": "BCD9DF9580D17671BC75546124FB532B0A557E51AB5B24136DBFA4AC07EB069E",
+    "GuideIdempotent": true,
+    "AuthorManifestIdempotent": true,
+    "Members": 166,
+    "Sections": 9,
+    "Lines": 3641,
+    "HistoricalOrTODOFragments": 0,
+    "MathematicalExecutableTextChanges": 0,
+    "LayoutRegeneration": "Required after final guide source hash; performed by root."
+  },
+  "AdditionalReadOnlyReview": [
+    {
+      "Path": "src/Section/CRebarLayout.cls",
+      "SHA256": "7309484E00E81FCF7338C0FCE7337C1A490DC61B9A67E742A67AE20C8488DA0A",
+      "Conclusion": "Публичные getters, индексы близких координат, memberships и Freeze соответствуют комментариям; изменений не требуется."
+    },
+    {
+      "Path": "src/Section/CSectionAnnotationBuilder.cls",
+      "SHA256": "0EA85EBB7BE4F62503C2D4A55F4751D87F9EC05FA7EE16E207F39F3DCB79C7D9",
+      "Conclusion": "После read-only review root разрешил исправить только две подтверждённые неточности комментариев LabelDirections и PrepareImportedSection; исполняемый текст равен HEAD.",
+      "ExecutableTextEqualsHEAD": true,
+      "CodeSHA256": "99907D2574CEB77B72154A8ACA07694286AA8233DA5C10C5D8A5C32D0EBF6B2F"
+    }
+  ]
+}

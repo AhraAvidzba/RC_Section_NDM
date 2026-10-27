@@ -1,0 +1,93 @@
+﻿{
+  "Status": "PASS_ROOT_NATIVE_KEYBOARD_INTERACTION_8_CASES",
+  "ObservedUTC": "2026-10-27T00:09:30.7623860+00:00",
+  "ExcelPID": 31988,
+  "ExcelStartTicksUTC": "639286563028209533",
+  "WindowID": 8392494,
+  "ComputerTool": "sky via node_repl",
+  "RealKeyboardResponses": true,
+  "ResponseHookOrSubstitutionUsed": false,
+  "Cases": [
+    {
+      "CaseIndex": 1,
+      "Keys": "Return",
+      "ExpectedAnswer": "Yes",
+      "ObservedAnswer": "Yes",
+      "AfterStorageMode": "File",
+      "CaseSHA256": "E6F825D94F06CA05BD738A9CFF3F79AA466D307698BDD6E8EE78DD4D6E92E5DC"
+    },
+    {
+      "CaseIndex": 2,
+      "Keys": [
+        "Right",
+        "Return"
+      ],
+      "ExpectedAnswer": "No",
+      "ObservedAnswer": "No",
+      "AfterStorageMode": "Excel",
+      "CaseSHA256": "5CB71C0003A842F3A1326EF5FFC18E568518F58C9E8E10AFD4CD449173A07F4C"
+    },
+    {
+      "CaseIndex": 3,
+      "Keys": "Return",
+      "ExpectedAnswer": "Yes",
+      "ObservedAnswer": "Yes",
+      "AfterStorageMode": "File",
+      "CaseSHA256": "32D34BF8A71569D01860975D3B7740DFCBAB498DE6C2C5AA999EFADF45AC7AF5"
+    },
+    {
+      "CaseIndex": 4,
+      "Keys": [
+        "Right",
+        "Return"
+      ],
+      "ExpectedAnswer": "No",
+      "ObservedAnswer": "No",
+      "AfterStorageMode": "Excel",
+      "CaseSHA256": "0CC3E7BEBED8D95C4D653A76E29BD210DEEE40745CF052D59608CC3FB1D72D29"
+    },
+    {
+      "CaseIndex": 5,
+      "Keys": "Return",
+      "ExpectedAnswer": "Yes",
+      "ObservedAnswer": "Yes",
+      "AfterStorageMode": "File",
+      "CaseSHA256": "3418BDB73623228EC6D7411E75763C04368871452011A25DEFA40E981558F128"
+    },
+    {
+      "CaseIndex": 6,
+      "Keys": [
+        "Right",
+        "Return"
+      ],
+      "ExpectedAnswer": "No",
+      "ObservedAnswer": "No",
+      "AfterStorageMode": "Excel",
+      "CaseSHA256": "F7C6BCD6FA1C6ED1C24A1F466BD54A4E9B86CE429025C91477478675CD3D18DB"
+    },
+    {
+      "CaseIndex": 7,
+      "Keys": "Return",
+      "ExpectedAnswer": "Yes",
+      "ObservedAnswer": "Yes",
+      "AfterStorageMode": "File",
+      "CaseSHA256": "6465549EF58C72F6B1605A9C8FD36942E911A8A533437EEAD9ADA7BEE0959BC7"
+    },
+    {
+      "CaseIndex": 8,
+      "Keys": [
+        "Right",
+        "Return"
+      ],
+      "ExpectedAnswer": "No",
+      "ObservedAnswer": "No",
+      "AfterStorageMode": "Excel",
+      "CaseSHA256": "F07E4003AE0EC7927C5156CA7F8171807E5232CD14198F09DDC405C4C7FB899D"
+    }
+  ],
+  "AccessibilityTextUnavailable": true,
+  "ScreenshotCaptureTimedOut": true,
+  "VisualDialogLayoutClaimedVerified": false,
+  "SourceUnchanged": true,
+  "FullRegressionPass": false
+}

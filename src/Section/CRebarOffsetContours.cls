@@ -44,10 +44,10 @@ Private mRegions As Object ' Номера подготовленных обла�
 Private mPrepared() As TPreparedContour, mPreparedCount As Long ' Массивы проверенных границ и количество подготовленных областей.
 Private mAdjacency As Object ' Соседство явно связанных семейств по общим концам исходных участков.
 Private mQuery As CSectionGeometryQuery ' Точные операции с областями, включая отверстия и самопересечения.
-Private mOffset As CGeometryVariableOffset ' Отдельный построитель индивидуального контура без изменения прежних Offset.
+Private mOffset As CGeometryVariableOffset ' Построитель индивидуального контура с независимыми смещениями участков.
 Private mReferences As String ' Фактические адреса полей всех участвующих семейств для ошибок построения.
 
-' Подготавливает однозначные связи; семейства без нового режима не меняет.
+' Подготавливает однозначные связи; семейства без индивидуальных смещений участков не изменяет.
 Friend Sub Initialize(ByVal definition As CSectionDefinition, ByRef rules() As TRebarRule)
     On Error GoTo InvalidMetadata
     Dim i As Long, j As Long, main As Long, axis As CGeometryPath, source As CGeometryPath

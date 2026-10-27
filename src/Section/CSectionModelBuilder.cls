@@ -65,7 +65,6 @@ Public Sub AppendConcreteMesh(ByVal model As CSectionModel, ByVal mesh As CFiber
             mesh.FiberArea(i) * mesh.FiberFillFactor(i), mesh.FiberMaterialID(i), _
             "Бетонный КЭ " & CStr(i), vbNullString, shapeType, _
             mesh.FiberWidth(i), mesh.FiberHeight(i), 0#, comment, _
-            localIx, localIy, localIxy
-        If Not region Is Nothing Then model.SetConcreteGeometry model.ConcreteCount, region
+            localIx, localIy, localIxy, False, region ' Точная граница и её A/c/I публикуются одной атомарной операцией.
     Next i
 End Sub

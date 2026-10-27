@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestSectionRecipes"
+Attribute VB_Name = "modTestSectionRecipes"
 Option Explicit
 
 ' ==========================================================================
@@ -277,6 +277,7 @@ Public Function RunRecipeRuleTests() As String
     TestAnnotationMeasurements
     TestRuleJointTangents
     TestProjectionNormalsAndOrdinals
+    TestMinimumRebarArea
     GoTo Finished
 Failed:
     TestCheck "rules.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
@@ -1660,3 +1661,120 @@ Private Function TestRecipeCaptionRejected(ByVal typeID As String, ByVal setting
 Rejected:
     TestRecipeCaptionRejected = InStr(1, Err.Description, caption, vbBinaryCompare) > 0
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Ограниченный пакет общего порога: равенство, отключение, разные диаметры и зависимости.
+' Использует штатные правила и сборщик без Excel/AutoCAD и без расчёта НДС.
+Public Function RunRecipeMinimumAreaTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    TestMinimumRebarArea
+    GoTo Finish
+Failed:
+    TestCheck "minimumArea.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finish:
+    RunRecipeMinimumAreaTests = mReport & "TOTAL_RECIPE_MINIMUM_AREA: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Мелкие исходные стержни остаются геометрической опорой зависимых рядов и проекций,
+' но не получают physical owner/ID. Подписи и trace содержат только принятые стержни.
+Private Sub TestMinimumRebarArea()
+    Dim facade As CSectionDefinitionBuilder: Set facade = TestRuleFacade
+    Dim options As CRebarRuleOptions: Set options = New CRebarRuleOptions
+    options.AnnotationGroup = "Small": options.SourcePrefix = "Seed"
+    facade.RebarByCount "Small", "Row", 3, 8#, options
+    Set options = New CRebarRuleOptions: options.AnnotationGroup = "Equal": options.NormalOffset = 20#
+    facade.RebarDependent "Equal", "Small", 10#, options
+    Dim path As CGeometryPath: Set path = facade.LinePath("ProjectionTarget", 0#, 100#, 100#, 100#)
+    Set options = New CRebarRuleOptions: options.AnnotationGroup = "Large": options.DirectionY = 1#
+    facade.RebarProjected "Large", path.ID, "Small", 12#, options
+    facade.RebarRowLabel "Small", "Small", 0#, -1#
+    facade.RebarRowExtentLabel "Equal", "Equal", 0#, 1#
+    facade.RebarRowExtremeLabel "Large", "Large", 0#, 1#, 0#, 1#
+    Dim definition As CSectionDefinition: Set definition = facade.Finish
+    Dim mesh As TSectionMeshOptions
+    mesh.StepX = 1000#: mesh.StepY = 1000#: mesh.BoundarySubdivisions = 0: mesh.MaterialID = 1: mesh.CellGeometry = "Contour"
+    mesh.SourceReference = "Mesh.MinElementArea: Config!B2"
+    Dim zeroBuilder As CSectionBuilder: Set zeroBuilder = New CSectionBuilder
+    Dim baseline As CSectionModel: Set baseline = zeroBuilder.Build(definition, mesh)
+    TestCheck "minimumArea.contourUnusedDepth", mesh.BoundarySubdivisions = 0 And baseline.ConcreteCount > 0
+    TestCheck "minimumArea.zero.count", baseline.RebarCount = 9 And zeroBuilder.Rules.FilteredByArea = 0
+    Dim builder As CSectionBuilder: Set builder = New CSectionBuilder
+    Dim model As CSectionModel, i As Long, owner As Long, accepted As Long, filtered As Long
+    mesh.MinArea = GEOM_PI * 10# * 10# / 4#
+    Set model = builder.Build(definition, mesh)
+    TestCheck "minimumArea.filtered.count", model.RebarCount = 6 And builder.Rules.FilteredByArea = 3
+    TestCheck "minimumArea.requestedNotDoubled", builder.Rules.RequestedPositions = 9 And builder.Rules.CreatedPositions = 6 And builder.Rules.MergedPositions = 0
+    For i = 1 To builder.Rules.PositionCount
+        owner = builder.Rules.PositionPhysicalOwner(i)
+        If builder.Rules.PositionRuleID(i) = "Small" Then
+            filtered = filtered + 1
+            TestCheck "minimumArea.filtered.ownerZero." & CStr(i), owner = 0
+        Else
+            accepted = accepted + 1
+            TestCheck "minimumArea.accepted.owner." & CStr(i), owner >= 1 And owner <= model.RebarCount
+        End If
+    Next i
+    TestCheck "minimumArea.positionCounts", filtered = 3 And accepted = 6
+    For i = 1 To model.RebarCount
+        TestCheck "minimumArea.contiguousIDs." & CStr(i), model.RebarID(i) = "R" & CStr(i)
+        TestCheck "minimumArea.noSmallDiameter." & CStr(i), model.RebarDiameter(i) >= 10#
+        TestCheck "minimumArea.acceptedTrace." & CStr(i), Len(model.RebarRecipeTrace(i)) > 0
+    Next i
+    For i = 1 To 3
+        TestNear "minimumArea.dependent.x." & CStr(i), model.RebarX(i), baseline.RebarX(i + 3)
+        TestNear "minimumArea.dependent.y." & CStr(i), model.RebarY(i), 20#
+        TestNear "minimumArea.equalThreshold." & CStr(i), model.RebarArea(i), mesh.MinArea
+        TestNear "minimumArea.projected.x." & CStr(i), model.RebarX(i + 3), baseline.RebarX(i + 6)
+        TestNear "minimumArea.projected.y." & CStr(i), model.RebarY(i + 3), 100#
+    Next i
+    TestCheck "minimumArea.annotations.acceptedOnly", TestAnnotatedBarCount(model.Annotations) = 6 And model.Annotations.Count = 2
+    Dim lowX As Double, highX As Double, lowY As Double, highY As Double
+    TestCheck "minimumArea.filteredBoundsAbsent", Not builder.Rules.RuleBounds("Small", lowX, highX, lowY, highY)
+    Dim trace As String: trace = builder.Rules.RuleTrace("Small")
+    TestCheck "minimumArea.ruleCounters", InStr(trace, "Requested=3;") > 0 And InStr(trace, "Skipped=3;") > 0 And InStr(trace, "FilteredArea=3;") > 0
+    TestCheck "minimumArea.totalDiagnostics", InStr(builder.Rules.DiagnosticsText, "Requested=9;") > 0 And _
+        InStr(builder.Rules.DiagnosticsText, "Skipped=3;") > 0 And InStr(builder.Rules.GeometryWarningText, "Mesh.MinElementArea") > 0
+    TestCheck "minimumArea.diagnosticCodes", builder.Rules.DiagnosticCount = 3 And builder.Rules.DiagnosticAt(1).Code = "MIN_ELEMENT_AREA"
+    mesh.MinArea = 0#: Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
+    TestCheck "minimumArea.zeroRestoresAll", model.RebarCount = baseline.RebarCount And builder.Rules.FilteredByArea = 0
+    For i = 1 To baseline.RebarCount
+        TestNear "minimumArea.zero.x." & CStr(i), model.RebarX(i), baseline.RebarX(i)
+        TestNear "minimumArea.zero.y." & CStr(i), model.RebarY(i), baseline.RebarY(i)
+        TestNear "minimumArea.zero.area." & CStr(i), model.RebarArea(i), baseline.RebarArea(i)
+    Next i
+    TestMinimumAreaCoincidenceAndEmpty mesh
+    Dim invalidBuilder As CSectionBuilder: Set invalidBuilder = New CSectionBuilder
+    Dim invalidNumber As Long
+    mesh.CellGeometry = "Adaptive": mesh.MinArea = 0#
+    On Error Resume Next
+    Set model = invalidBuilder.Build(definition, mesh)
+    invalidNumber = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestCheck "minimumArea.adaptiveDepthStillRequired", invalidNumber = vbObjectError + 5530
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отфильтрованный стержень не создаёт ложный конфликт в совпавшей позиции.
+' Если исключены все стержни, сборщик сообщает общий порог и переданный адрес настройки.
+Private Sub TestMinimumAreaCoincidenceAndEmpty(ByRef mesh As TSectionMeshOptions)
+    Dim facade As CSectionDefinitionBuilder: Set facade = TestRuleFacade
+    facade.RebarByCount "Small", "Row", 2, 8#
+    facade.RebarByCount "Kept", "Row", 2, 10#
+    mesh.MinArea = GEOM_PI * 10# * 10# / 4#
+    Dim builder As CSectionBuilder: Set builder = New CSectionBuilder
+    Dim model As CSectionModel: Set model = builder.Build(facade.Finish, mesh)
+    TestCheck "minimumArea.coincidence.filteredBeforeSearch", model.RebarCount = 2 And builder.Rules.FilteredByArea = 2 And builder.Rules.Conflicts = 0
+    TestNear "minimumArea.coincidence.keptDiameter", model.RebarDiameter(1), 10#
+    Set facade = TestRuleFacade: facade.RebarByCount "OnlySmall", "Row", 2, 8#
+    Dim definition As CSectionDefinition: Set definition = facade.Finish
+    Dim number As Long, description As String
+    Set builder = New CSectionBuilder
+    On Error Resume Next
+    Set model = builder.Build(definition, mesh)
+    number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "minimumArea.empty.rejected", number = vbObjectError + 5530
+    TestCheck "minimumArea.empty.address", InStr(description, "Mesh.MinElementArea") > 0 And InStr(description, "Config!B2") > 0 And InStr(description, "не осталось") > 0
+End Sub

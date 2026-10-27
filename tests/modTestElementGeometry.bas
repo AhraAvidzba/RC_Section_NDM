@@ -35,7 +35,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет полный перенос точных ячеек через CFiberMeshBuilder и сборщик модели,
-' а также неизменность старого Adaptive-вызова при двух и четырёх уровнях.
+' а также согласованность компактного Adaptive-вызова при двух и четырёх уровнях.
 Public Function RunContourCellMeshTests() As String
     On Error GoTo Failed
     Dim stats As TTestStats, query As CSectionGeometryQuery, region As CConcreteRegion
@@ -75,6 +75,9 @@ Public Function RunContourCellMeshTests() As String
     TestLegacyAdaptiveMesh stats, 2, 256
     TestLegacyAdaptiveMesh stats, 4, 980
     TestContourSetterContract stats
+    TestContourAtomicAdd stats
+    TestMinimumAreaMesh stats
+    TestFiberGeometryIsolation stats
     TestConcreteElementEntity stats
     TestLegacyEntityInterpretation stats
     TestTinyLinearProjection stats
@@ -180,7 +183,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Полная сетка 25x50 должна замкнуть все ячейки и сохранить A/c/I исходного
-' HollowCentered, а не только пройти прежнюю более крупную сетку 50x100.
+' HollowCentered дополнительно к более крупной сетке 50x100.
 Private Sub TestHollowTangentMesh(ByRef stats As TTestStats)
     Dim query As CSectionGeometryQuery, region As CConcreteRegion, geometry As CGeometryRegion
     Dim mesh As CFiberMeshBuilder, model As CSectionModel, builder As CSectionModelBuilder
@@ -261,7 +264,7 @@ Private Sub TestConcreteElementEntity(ByRef stats As TTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Прямой API Contour не зависит от старого параметра Adaptive: ноль и четыре
+' Прямой API Contour не зависит от параметра глубины Adaptive: ноль и четыре
 ' уровня дают те же центры, площади и собственные инерции каждой точной ячейки.
 Private Sub TestContourIgnoresAdaptiveDepth(ByRef stats As TTestStats)
     Dim query As CSectionGeometryQuery, geometry As CGeometryRegion, region As CConcreteRegion
@@ -286,7 +289,7 @@ Private Sub TestContourIgnoresAdaptiveDepth(ByRef stats As TTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Подготовленная эквивалентная ширина не превращает старую запись Rectangle
+' Подготовленная эквивалентная ширина не превращает компактную запись Rectangle
 ' без raw-размеров в достоверный прямоугольник. Усреднённые направления кругов
 ' остаются неизвестными источнику и не участвуют в следующем усреднении.
 Private Sub TestLegacyEntityInterpretation(ByRef stats As TTestStats)
@@ -336,8 +339,7 @@ Private Sub TestTinyLinearProjection(ByRef stats As TTestStats)
     query.RegionProperties region, properties
     Set model = New CSectionModel
     model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, 1, "", "", "Contour", _
-        0#, 0#, 0#, "", properties.Ixc, properties.Iyc, properties.Ixyc
-    model.SetConcreteGeometry 1, region
+        0#, 0#, 0#, "", properties.Ixc, properties.Iyc, properties.Ixyc, True, region
     model.ConcreteProjectionBounds 1, 0.000000000001, 0#, minimum, maximum
     TestClose stats, "projection.tinyAxis.min", minimum, 0#, 0.00000000000000000001
     TestClose stats, "projection.tinyAxis.max", maximum, 0.0000000001, 0.00000000000000000001
@@ -424,7 +426,7 @@ Private Sub TestContourMeshFixture(ByRef stats As TTestStats, ByVal label As Str
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает старый вызов без нового аргумента с явным Adaptive побитно по
+' Сравнивает вызов с режимом по умолчанию и явным Adaptive побитно по
 ' данным элементов и с ранее принятыми количествами круга D300 при шаге 30.
 Private Sub TestLegacyAdaptiveMesh(ByRef stats As TTestStats, ByVal depth As Long, ByVal expectedCount As Long)
     Dim query As CSectionGeometryQuery, geometry As CGeometryRegion, region As CConcreteRegion
@@ -471,12 +473,160 @@ Private Sub TestContourSetterContract(ByRef stats As TTestStats)
     TestTrue stats, "setter.rejectionKeepsBoundary", Not model.ConcreteHasBoundary(1)
     TestClose stats, "setter.rejectionKeepsRevision", CDbl(model.Revision), CDbl(previousRevision), 0#
     Set model = New CSectionModel
-    model.AddConcreteElement 0#, 0#, 800#, 1, vbNullString, vbNullString, "Contour", 40#, 20#, 0#, vbNullString, properties.Ixc, properties.Iyc, properties.Ixyc
     On Error Resume Next
-    Set region = model.ConcreteGeometry(1)
+    model.AddConcreteElement 0#, 0#, 800#, 1, vbNullString, vbNullString, "Contour", 40#, 20#, 0#, vbNullString, properties.Ixc, properties.Iyc, properties.Ixyc
     errorNumber = Err.Number: Err.Clear
     On Error GoTo 0
-    TestTrue stats, "setter.missingContourRejected", errorNumber <> 0
+    TestTrue stats, "setter.missingContourRejectedBeforePublication", errorNumber <> 0 And model.ConcreteCount = 0 And model.Revision = 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отказы до публикации не расходуют имя Cn, не меняют существующую сущность,
+' числовую проекцию, ревизию и подготовленные центры/границы общей геометрии.
+Private Sub TestContourAtomicAdd(ByRef stats As TTestStats)
+    Dim query As CSectionGeometryQuery, cachedQuery As CSectionGeometryQuery, model As CSectionModel
+    Dim region As CConcreteRegion, candidate As CConcreteRegion, domain As CConcreteRegion, properties As TGeometryProperties
+    Dim original As CConcreteElement, current As CConcreteElement, previousRevision As Long, buildCount As Long
+    Dim caseIndex As Long, errorNumber As Long, x As Double, y As Double, area As Double
+    Dim localIx As Double, localIy As Double, localIxy As Double, cx As Double, cy As Double, totalArea As Double
+    Dim minimum As Double, maximum As Double, prefix As String
+    Set query = New CSectionGeometryQuery: Set model = New CSectionModel
+    model.AddConcreteElement 0#, 0#, 800#, 1, "Existing", "Handle1", "Rectangle", 40#, 20#
+    Set original = model.ConcreteElement(1)
+    model.ConcreteMeshCentroid cx, cy, totalArea
+    model.ConcreteProjectionBounds 1, 1#, 0#, minimum, maximum
+    TestTrue stats, "atomic.initialPreparedBounds", minimum = -20# And maximum = 20#
+    Set cachedQuery = New CSectionGeometryQuery: cachedQuery.Initialize model
+    Set domain = cachedQuery.ConcreteDomain: buildCount = cachedQuery.TestDomainBuildCount
+    previousRevision = model.Revision
+    Set region = query.CircleRegion(70#, 30#, 7#): query.RegionProperties region, properties
+    For caseIndex = 1 To 10
+        Set candidate = region
+        x = properties.CentroidX: y = properties.CentroidY: area = properties.Area
+        localIx = properties.Ixc: localIy = properties.Iyc: localIxy = properties.Ixyc
+        Select Case caseIndex
+            Case 1: Set candidate = Nothing
+            Case 2: Set candidate = New CConcreteRegion
+            Case 3: x = x + 1#
+            Case 4: y = y + 1#
+            Case 5: area = area * 1.1
+            Case 6: localIx = localIx * 1.1
+            Case 7: localIy = localIy * 1.1
+            Case 8: localIxy = Sqr(localIx) * Sqr(localIy) * 2#
+            Case 9: localIx = 0#
+            Case 10: area = 0#
+        End Select
+        errorNumber = 0
+        On Error Resume Next
+        model.AddConcreteElement x, y, area, 2, "Rejected", "Rejected", "Contour", 0#, 0#, 0#, "", localIx, localIy, localIxy, True, candidate
+        errorNumber = Err.Number: Err.Clear
+        On Error GoTo 0
+        prefix = "atomic.case" & CStr(caseIndex)
+        TestTrue stats, prefix & ".reject", errorNumber <> 0
+        TestTrue stats, prefix & ".countRevision", model.ConcreteCount = 1 And model.Revision = previousRevision
+        Set current = model.ConcreteElement(1)
+        TestTrue stats, prefix & ".sameEntity", current Is original
+        TestTrue stats, prefix & ".sameIDAndProjection", model.ConcreteID(1) = "C1" And model.ConcreteX(1) = 0# And model.ConcreteY(1) = 0# And model.ConcreteArea(1) = 800#
+        model.ConcreteMeshCentroid cx, cy, totalArea
+        TestTrue stats, prefix & ".sameCenter", cx = 0# And cy = 0# And totalArea = 800#
+        Set domain = cachedQuery.ConcreteDomain
+        TestTrue stats, prefix & ".sameDomainCache", cachedQuery.TestDomainBuildCount = buildCount And domain.Area = 800#
+        model.ConcreteProjectionBounds 1, 1#, 0#, minimum, maximum
+        TestTrue stats, prefix & ".samePreparedBounds", minimum = -20# And maximum = 20#
+    Next caseIndex
+    model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, 2, "Accepted", "Handle2", "Contour", _
+        0#, 0#, 0#, "", properties.Ixc, properties.Iyc, properties.Ixyc, True, region
+    TestTrue stats, "atomic.acceptUsesNextID", model.ConcreteCount = 2 And model.ConcreteID(2) = "C2"
+    TestTrue stats, "atomic.acceptSingleRevision", model.Revision = previousRevision + 1
+    TestTrue stats, "atomic.acceptHasBoundary", model.ConcreteHasBoundary(2) And model.ConcreteShapeType(2) = "Contour"
+    region.SetOwner "MutatedInput", "", ""
+    Set candidate = model.ConcreteGeometry(2)
+    TestTrue stats, "atomic.acceptOwnsBoundaryCopy", candidate.OwnerID <> "MutatedInput"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Порог относится к площади каждой конечной части: равенство сохраняется,
+' отверстия уменьшают площадь, а несвязные фрагменты проверяются раздельно.
+Private Sub TestMinimumAreaMesh(ByRef stats As TTestStats)
+    Dim query As CSectionGeometryQuery, geometry As CGeometryRegion, region As CConcreteRegion, opening As CConcreteRegion
+    Dim mesh As CFiberMeshBuilder, baseline As CFiberMeshBuilder, filtered As CFiberMeshBuilder
+    Dim modeIndex As Long, modeText As String, errorNumber As Long, i As Long, expectedCount As Long, acceptedIndex As Long
+    Dim coordinates(1 To 8, 1 To 2) As Double
+    Set query = New CSectionGeometryQuery: Set geometry = New CGeometryRegion
+    For modeIndex = 1 To 2
+        modeText = "Adaptive": If modeIndex = 2 Then modeText = "Contour"
+        Set region = query.RectangleRegion(0#, 0#, 20#, 10#): geometry.Initialize region
+        Set mesh = New CFiberMeshBuilder
+        mesh.BuildMesh geometry, 10#, 10#, 1, 1, "Test exact threshold", 0#, modeText, 100#
+        TestClose stats, "minArea." & modeText & ".equalityKeep", CDbl(mesh.FiberCount), 2#, 0#
+        Set mesh = New CFiberMeshBuilder
+        On Error Resume Next
+        mesh.BuildMesh geometry, 10#, 10#, 1, 1, "Test threshold exclusion", 0#, modeText, 100.0001
+        errorNumber = Err.Number: Err.Clear
+        On Error GoTo 0
+        TestTrue stats, "minArea." & modeText & ".smallerRejected", errorNumber <> 0 And mesh.FiberCount = 0
+        Set region = query.CircleRegion(0#, 0#, 15#): geometry.Initialize region
+        Set baseline = New CFiberMeshBuilder: Set filtered = New CFiberMeshBuilder
+        baseline.BuildMesh geometry, 10#, 10#, 1, 1, "Test unfiltered final cells", 0#, modeText, 0#
+        filtered.BuildMesh geometry, 10#, 10#, 1, 1, "Test filtered final cells", 0#, modeText, 100#
+        expectedCount = 0: acceptedIndex = 0
+        For i = 1 To baseline.FiberCount
+            If baseline.FiberArea(i) >= 100# Then
+                expectedCount = expectedCount + 1: acceptedIndex = acceptedIndex + 1
+                If acceptedIndex <= filtered.FiberCount Then
+                    TestTrue stats, "minArea." & modeText & ".acceptedUnchanged." & CStr(i), _
+                        baseline.FiberX(i) = filtered.FiberX(acceptedIndex) And baseline.FiberY(i) = filtered.FiberY(acceptedIndex) And baseline.FiberArea(i) = filtered.FiberArea(acceptedIndex)
+                End If
+            End If
+        Next i
+        TestTrue stats, "minArea." & modeText & ".eachFinalCell", filtered.FiberCount = expectedCount And filtered.FiberCount < baseline.FiberCount
+    Next modeIndex
+    coordinates(1, 1) = -3#: coordinates(1, 2) = -3#: coordinates(2, 1) = 3#: coordinates(2, 2) = -3#
+    coordinates(3, 1) = 3#: coordinates(3, 2) = 3#: coordinates(4, 1) = 2#: coordinates(4, 2) = 3#
+    coordinates(5, 1) = 2#: coordinates(5, 2) = -1#: coordinates(6, 1) = -1#: coordinates(6, 2) = -1#
+    coordinates(7, 1) = -1#: coordinates(7, 2) = 3#: coordinates(8, 1) = -3#: coordinates(8, 2) = 3#
+    Set region = query.PolygonRegion(coordinates): geometry.Initialize region
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 10#, 3#, 1, 2, "Test disconnected threshold", 0#, "Contour", 4#
+    TestClose stats, "minArea.disconnected.independentParts", CDbl(mesh.FiberCount), 2#, 0#
+    TestClose stats, "minArea.disconnected.keptArea", mesh.FiberArea(1) + mesh.FiberArea(2), 21#, 0.000000001
+    Set region = query.RectangleRegion(0#, 0#, 20#, 10#): Set opening = query.CircleRegion(0#, 0#, 2#)
+    Set region = query.SubtractContainedRegion(region, opening): geometry.Initialize region
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 20#, 10#, 1, 2, "Test hole net area", 0#, "Contour", 0#
+    TestClose stats, "minArea.hole.netArea", mesh.FiberArea(1), 200# - 4# * GEOM_PI, 0.000000001
+    Set region = mesh.FiberGeometry(1)
+    TestTrue stats, "minArea.hole.keptBoundary", region.LoopCount = 2
+    Set mesh = New CFiberMeshBuilder
+    On Error Resume Next
+    mesh.BuildMesh geometry, 20#, 10#, 1, 2, "Test hole threshold", 0#, "Contour", 195#
+    errorNumber = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestTrue stats, "minArea.hole.rejectsNetAreaBelowThreshold", errorNumber <> 0 And mesh.FiberCount = 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Изменение выданной области не меняет сетку, её A/c/I и следующие копии;
+' компактный Adaptive-прямоугольник не создаёт область только ради чтения.
+Private Sub TestFiberGeometryIsolation(ByRef stats As TTestStats)
+    Dim query As CSectionGeometryQuery, geometry As CGeometryRegion, mesh As CFiberMeshBuilder
+    Dim region As CConcreteRegion, returned As CConcreteRegion, replacement As CConcreteRegion
+    Dim edges() As TRegionEdge, edgeCount As Long, openingFlags(1 To 1) As Boolean
+    Dim localIx As Double, localIy As Double, localIxy As Double
+    Set query = New CSectionGeometryQuery: Set geometry = New CGeometryRegion
+    Set region = query.RectangleRegion(0#, 0#, 40#, 20#): geometry.Initialize region
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 40#, 20#, 1, 1, "Test getter copy", 0#, "Contour"
+    Set returned = mesh.FiberGeometry(1): Set replacement = query.RectangleRegion(100#, 200#, 10#, 10#)
+    replacement.CopyEdges edges, edgeCount
+    returned.SetGeometry edges, edgeCount, 1, replacement.Area, "MutatedFiberCopy", 99, openingFlags
+    returned.SetOwner "MutatedFiberCopy", "", ""
+    Set returned = mesh.FiberGeometry(1)
+    TestTrue stats, "mesh.copy.preservesBoundary", returned.Area = 800# And returned.OwnerID <> "MutatedFiberCopy"
+    TestClose stats, "mesh.copy.preservesArea", mesh.FiberArea(1), 800#, 0#
+    mesh.FiberLocalInertia 1, localIx, localIy, localIxy
+    query.ValidateBoundaryProperties returned, mesh.FiberX(1), mesh.FiberY(1), mesh.FiberArea(1), localIx, localIy, localIxy
+    TestTrue stats, "mesh.copy.preservesProperties", True
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 40#, 20#, 1, 1, "Test compact getter", 0#, "Adaptive"
+    Set returned = mesh.FiberGeometry(1)
+    TestTrue stats, "mesh.compactGetterNothing", returned Is Nothing
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

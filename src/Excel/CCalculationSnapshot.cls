@@ -10,9 +10,9 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Полный набор готовых таблиц одного расчёта без решателя и объектов Excel
+' Готовые таблицы полного расчёта либо явно объявленной геометрии без объектов Excel
 ' ==========================================================================
-' Содержит прежние технические таблицы и недостающие строки подробных сводок.
+' Полный вид содержит состояния и сводки; GeometryPreview содержит только техническую геометрию.
 ' Числа сохраняются без округления. После подготовки набор только читается;
 ' восстановление не обращается к модели сечения, материалам или AutoCAD.
 Private mTables As Object ' Матрицы значений по стабильным ключам таблиц и шапок.
@@ -71,7 +71,7 @@ Public Sub AddTable(ByVal key As String, ByVal values As Variant)
     mValidated = False
 End Sub
 
-' Удаляет неиспользованный резерв массивов, как блочная запись прежнего writer.
+' Удаляет неиспользованный резерв массивов перед сохранением готовых таблиц.
 ' Пустые строки пользовательских верхних таблиц сохраняются отдельным контрактом.
 Private Sub TrimTechnicalRows(ByRef values As Variant)
     Dim rows As Long: rows = UBound(values, 1)
@@ -143,7 +143,7 @@ Public Function Table(ByVal key As String) As Variant
 End Function
 
 ' Передаёт большую таблицу элементов кодеку по ссылке, без независимой копии для записи.
-' Кодек только читает массив; публичный Table по-прежнему возвращает независимые данные.
+' Кодек только читает массив; публичный Table возвращает независимые данные.
 Friend Sub WritePreparedTable(ByVal key As String, ByVal store As CCalculationSnapshotStore, ByVal file As CBinarySnapshotFile)
     If key = "rngNDMElementResults" Then
         store.WritePreparedMatrix file, mElements, TableRowCount("rngNDMSectionGeometry") - 1
@@ -237,8 +237,8 @@ Public Function Keys() As Variant
     Keys = mTables.Keys
 End Function
 
-' Перечисляет прежние таблицы Results и собственные границы, если они сохранены.
-' Старые файлы без седьмой таблицы остаются читаемыми для прежней геометрии.
+' Перечисляет обязательные таблицы Results и записанные фактические границы.
+' Формат NDMSNP04 допускает шесть таблиц для компактной геометрии без Contour.
 Public Function BaseKeys() As Variant
     Dim keys As Variant
     keys = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
@@ -269,9 +269,54 @@ Public Function OutputLengthUnit() As String
     Err.Raise 5, "CCalculationSnapshot", "В rngNDMSectionProperties нет единицы длины снимка."
 End Function
 
+' Отличает явно объявленное формирование от полного расчёта; отсутствие LC не является признаком preview.
+Public Property Get IsGeometryPreview() As Boolean
+    If Not HasTable("Snapshot.Kind") Then Exit Property
+    Dim kind As Variant: kind = Table("Snapshot.Kind")
+    If UBound(kind, 1) <> 1 Or UBound(kind, 2) <> 1 Then Err.Raise 5, "CCalculationSnapshot", "Повреждён обязательный вид снимка Snapshot.Kind."
+    If VarType(kind(1, 1)) <> vbString Then Err.Raise 5, "CCalculationSnapshot", "В Snapshot.Kind требуется строка GeometryPreview."
+    If CStr(kind(1, 1)) <> "GeometryPreview" Then Err.Raise 5, "CCalculationSnapshot", "Неизвестный вид снимка Snapshot.Kind: " & CStr(kind(1, 1))
+    IsGeometryPreview = True
+End Property
+
+' Проверяет единственный допустимый геометрический payload без выдуманных состояний и сочетаний.
+Private Sub ValidateGeometryPreview()
+    If mTables.Count <> 8 Then Err.Raise 5, "CCalculationSnapshot", "Геометрический снимок требует семь технических таблиц и Snapshot.Kind."
+    Dim key As Variant, values As Variant
+    For Each key In Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+        values = Table(CStr(key)): ValidateTableShape CStr(key), values
+        ValidateRunID values, CStr(key)
+        If CStr(key) = "rngNDMElementResults" Or CStr(key) = "rngNDMMaterialDiagrams" Then
+            If UBound(values, 1) <> 1 Then Err.Raise 5, "CCalculationSnapshot", "Геометрический снимок не содержит расчётных состояний или диаграмм: " & CStr(key)
+        End If
+    Next key
+    Dim geometry As Variant, boundaries As Variant, boundaryMap As Object, row As Long, propertyName As String
+    geometry = Table("rngNDMSectionGeometry"): boundaries = Table("rngNDMElementGeometry")
+    Set boundaryMap = ReadConcreteBoundaryMap(boundaries, geometry)
+    values = Table("rngNDMSectionProperties")
+    For row = 2 To UBound(values, 1)
+        If CStr(values(row, 2)) <> "ALL" Then Err.Raise 5, "CCalculationSnapshot", "Геометрический снимок содержит свойства сочетания."
+        propertyName = LCase$(Trim$(CStr(values(row, 3))))
+        If propertyName = "profileid" Or InStr(propertyName, ".epsilon0") > 0 Or InStr(propertyName, ".kappax") > 0 Or _
+                InStr(propertyName, ".kappay") > 0 Or InStr(propertyName, ".stateavailable") > 0 Or InStr(propertyName, ".statestatus") > 0 Then _
+            Err.Raise 5, "CCalculationSnapshot", "Геометрический снимок содержит свойства НДС: " & CStr(values(row, 3))
+    Next row
+    values = Table("rngNDMSectionAnnotations")
+    For row = 2 To UBound(values, 1)
+        If Left$(CStr(values(row, 2)), 6) = "CRACK_" Then Err.Raise 5, "CCalculationSnapshot", "Геометрический снимок содержит расчётную область трещин."
+    Next row
+    Dim lengthUnit As String: lengthUnit = OutputLengthUnit()
+    If Len(lengthUnit) = 0 Then Err.Raise 5, "CCalculationSnapshot", "Не задана единица длины геометрического снимка."
+End Sub
+
 ' Проверяет полный обязательный состав до изменения листа Results.
 Public Sub Validate()
     If mValidated Then Exit Sub
+    If IsGeometryPreview Then
+        ValidateGeometryPreview
+        mValidated = True
+        Exit Sub
+    End If
     Dim key As Variant, values As Variant, i As Long
     For Each key In Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", _
             "Summary", "Strength.Headers", "Strength.Data", "Cracks.Headers", "Cracks.Data", "Stability.Labels", "Stability.Data", "LoadCase.Properties", "LoadCase.Annotations", "Calculation.Profiles")
@@ -328,7 +373,7 @@ Private Sub ValidateTableShape(ByVal key As String, ByRef values As Variant)
         Case "rngNDMSectionAnnotations", "LoadCase.Annotations": columns = 24
         Case "Summary"
             columns = 33
-            If UBound(values, 2) = 26 Then columns = 26 ' Прежний файловый снимок не содержит отдельного блока исходных нагрузок.
+            If UBound(values, 2) = 26 Then columns = 26 ' Формат сводки из 26 колонок не содержит блока исходных нагрузок.
         Case "Strength.Headers": columns = 49: rows = 4
         Case "Strength.Data": columns = 49
         Case "Cracks.Headers": columns = 72: rows = 4
@@ -343,13 +388,13 @@ Private Sub ValidateTableShape(ByVal key As String, ByRef values As Variant)
     If rows > 0 Then If UBound(values, 1) <> rows Then Err.Raise 5, "CCalculationSnapshot", "Неверная шапка таблицы снимка: " & key
 End Sub
 
-' Восстанавливает прежний контракт технической таблицы для схемы и экспорта.
+' Объединяет общие и LC-зависимые записи для чтения схемой и экспортом.
 ' Физически общие и LC-зависимые строки хранятся раздельно.
 Public Function ResultTable(ByVal key As String) As Variant
     Dim extra As String
     If key = "rngNDMSectionProperties" Then extra = "LoadCase.Properties"
     If key = "rngNDMSectionAnnotations" Then extra = "LoadCase.Annotations"
-    If Len(extra) = 0 Then ResultTable = Table(key): Exit Function
+    If Len(extra) = 0 Or IsGeometryPreview Then ResultTable = Table(key): Exit Function
     Dim common As Variant, cases As Variant, joined() As Variant, i As Long, j As Long
     common = Table(key): cases = Table(extra)
     ReDim joined(1 To UBound(common, 1) + UBound(cases, 1) - 1, 1 To UBound(common, 2))

@@ -22,15 +22,15 @@ Option Explicit
 Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник полного результата до сохранения и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 Private mPreservedWorkbook As Object ' Владелец исходных таблиц, прочитанных до расчёта в пределах одной операции.
-Private mPreservedGeometry As Variant, mPreservedContours As Variant, mPreservedElementGeometry As Variant, mPreservedAnnotations As Variant ' Точные входные строки; новые результаты через лист не передаются.
-Private mPreservedDiagnostics As String ' Прежнее пояснение происхождения геометрии, сохранённое до запуска решателя.
+Private mPreservedGeometry As Variant, mPreservedContours As Variant, mPreservedElementGeometry As Variant, mPreservedAnnotations As Variant ' Точные входные строки; рассчитанные результаты через лист не передаются.
+Private mPreservedDiagnostics As String ' Пояснение происхождения текущей геометрии, прочитанное до запуска решателя.
 
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' Столбцы результата каждого элемента: запуск, сочетание, профиль, вид НДС, имя элемента, материал, деформация, напряжение и состояние работы.
 Private Const GEOMETRY_COLUMNS As Long = 16 ' Только расчетные бетонные элементы и арматура.
 Private Const CONTOUR_COLUMNS As Long = 17 ' Компактные аналитические исходные границы, формат v1.
 Private Const ELEMENT_GEOMETRY_COLUMNS As Long = 18 ' Собственные границы элементов с обязательным ElementID, отдельно от контуров сечения.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
-Private Const ANNOTATION_COLUMNS As Long = 24 ' Аннотации и принадлежность готовой области трещин; старые поля 1..13 сохранены.
+Private Const ANNOTATION_COLUMNS As Long = 24 ' Аннотации и принадлежность готовой области трещин; поля 1..13 имеют единый совместимый порядок.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Список точек всех различных диаграмм, фактически использованных в расчётах.
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 72 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Число строк общих свойств одного сочетания без дополнительных данных отдельных НДС.
@@ -88,7 +88,7 @@ End Function
 ' ------------------------------
 ' Полная запись Results
 ' ------------------------------
-' Очищает прежние расчётные данные и записывает согласованные таблицы:
+' Очищает вычисленные данные текущего расчёта и записывает согласованные таблицы:
 ' геометрию, результаты элементов, свойства сечения, диаграммы материалов и аннотации.
 Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
@@ -146,14 +146,13 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
     If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Для предварительной схемы не переданы подготовленные характеристики сечения."
     snapshot.ValidateSnapshot section
 
-    ClearPublishedCalculationSnapshot workbook
-
-    ClearSnapshotData workbook
-
-    Dim runID As Date
-    runID = Now
-
-    WriteSnapshotTitle workbook
+    If mCapturedSnapshot Is Nothing Then
+        ClearPublishedCalculationSnapshot workbook
+        ClearSnapshotData workbook
+        WriteSnapshotTitle workbook
+    End If
+    Dim runID As Date: runID = Now
+    If Not mCapturedSnapshot Is Nothing Then mCapturedSnapshot.RunID = CDbl(runID)
     WriteSectionGeometry workbook, section, runID, units
     WriteSectionContours workbook, section.Contours, runID, units
     WriteElementGeometry workbook, section, runID, units
@@ -164,8 +163,31 @@ End Sub
 
 
 
+' Собирает обязательную геометрию в памяти, не очищая показанные Results или действующую привязку файла.
+Public Function PrepareGeometryPreviewSnapshot(ByVal workbook As Object, ByVal section As CSectionModel, _
+        ByVal properties As CSectionPropertiesCalculator, ByVal units As CUnitSystem) As CCalculationSnapshot
+    On Error GoTo Failed
+    Dim prepared As CCalculationSnapshot: Set prepared = New CCalculationSnapshot
+    Dim kind(1 To 1, 1 To 1) As Variant: kind(1, 1) = "GeometryPreview"
+    prepared.AddTable "Snapshot.Kind", kind
+    Set mCapturedSnapshot = prepared
+    WriteGeometryPreview workbook, section, properties, units
+    Dim diagrams() As Variant: ReDim diagrams(1 To 1, 1 To MATERIAL_DIAGRAM_COLUMNS)
+    PutMaterialDiagramHeaders diagrams, units
+    prepared.AddTable "rngNDMMaterialDiagrams", diagrams
+    Set mCapturedSnapshot = Nothing
+    prepared.Validate
+    Set PrepareGeometryPreviewSnapshot = prepared
+    Exit Function
+Failed:
+    Dim number As Long, origin As String, reason As String
+    number = Err.Number: origin = Err.Source: reason = Err.Description
+    Set mCapturedSnapshot = Nothing
+    Err.Raise number, origin, reason
+End Function
+
 ' Удаляет только вычисленные данные. Исходная геометрия и её единицы остаются
-' прежними, поэтому повторные расчёты не накапливают погрешности пересохранения.
+' неизменными, поэтому повторные расчёты не накапливают погрешности пересохранения.
 Private Sub ClearCalculationData(ByVal workbook As Object)
     ClearNamedRegion workbook, "rngNDMElementResults"
     ClearNamedRegion workbook, "rngNDMSectionProperties"
@@ -196,7 +218,7 @@ Public Sub ClearResults(ByVal workbook As Object)
     WriteElementGeometry workbook, emptySection, Empty, Nothing
 End Sub
 
-' Контуры очищает их собственный писатель: новый набор заменяет старый один раз.
+' Контуры очищает их собственный писатель: текущий набор целиком заменяется одной операцией.
 Private Sub ClearSnapshotData(ByVal workbook As Object)
     ClearSnapshotTitle workbook
     ClearNamedRegion workbook, "rngNDMElementResults"
@@ -309,7 +331,9 @@ End Function
 ' LC-зависимые результаты элементов
 ' ------------------------------
 ' В этот блок не пишутся координаты и площади: они уже есть в
-' rngNDMSectionGeometry и связываются по ElementID.
+' rngNDMSectionGeometry и связываются по ElementID. При сборке снимка таблица
+' выделяется ровно под сошедшиеся НДС; диагностические состояния остаются
+' в репозитории и описаниях результатов.
 Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
@@ -320,10 +344,27 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     elementCount = section.ConcreteCount + section.RebarCount
 
     Dim stateCount As Long
-    Dim i As Long
-    For i = 1 To batch.Count ' Считаем только конечные расчётные состояния. Для одного сочетания могут сохраняться НДС по прочности, предельное НДС, текущее НДС с трещинами и состояния до и после образования трещины.
+    Dim i As Long, stateIndex As Long
+    For i = 1 To batch.Count ' Общая верхняя граница нужна для короткой очереди ссылок либо прямого вывода на лист.
         stateCount = stateCount + batch.ResultAt(i).StateRepository.StateCount
     Next i
+    Dim preparedStates() As CSectionStateResult, preparedCombinations() As Long
+    Dim preparedCount As Long, preparedIndex As Long, currentState As CSectionStateResult
+    If Not mCapturedSnapshot Is Nothing Then
+        ReDim preparedStates(1 To stateCount + 1): ReDim preparedCombinations(1 To stateCount + 1)
+        For i = 1 To batch.Count
+            For stateIndex = 1 To batch.ResultAt(i).StateRepository.StateCount
+                Set currentState = batch.ResultAt(i).StateRepository.StateAt(stateIndex)
+                If Not currentState Is Nothing Then
+                    If currentState.Converged Then
+                        preparedCount = preparedCount + 1
+                        Set preparedStates(preparedCount) = currentState: preparedCombinations(preparedCount) = i
+                    End If
+                End If
+            Next stateIndex
+        Next i
+        stateCount = preparedCount ' Диагностическое НДС без равновесия не создаёт пустой резерв из тысяч Variant-строк.
+    End If
 
     Dim rowCount As Long
     rowCount = 1 + stateCount * elementCount
@@ -335,13 +376,19 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
 
     Dim rowIndex As Long
     rowIndex = 2
-    For i = 1 To batch.Count ' Все строки собираются в массив VBA и одним присваиванием выгружаются на лист. Это принципиально быстрее и устойчивее построчной записи Cells.
-        Dim stateIndex As Long
-        For stateIndex = 1 To batch.ResultAt(i).StateRepository.StateCount
-            PutCombinationElementResults data, rowIndex, section, batch, i, _
-                batch.ResultAt(i).StateRepository.StateAt(stateIndex), runID, units
-        Next stateIndex
-    Next i
+    If Not mCapturedSnapshot Is Nothing Then
+        For preparedIndex = 1 To preparedCount ' Очередь сохраняет исходный порядок LC и НДС; Repository.StateAt повторно не обходится.
+            PutCombinationElementResults data, rowIndex, section, batch, preparedCombinations(preparedIndex), _
+                preparedStates(preparedIndex), runID, units
+        Next preparedIndex
+    Else
+        For i = 1 To batch.Count ' Прямой вывод использует резерв по числу состояний и оформление листа без очереди сохранения.
+            For stateIndex = 1 To batch.ResultAt(i).StateRepository.StateCount
+                PutCombinationElementResults data, rowIndex, section, batch, i, _
+                    batch.ResultAt(i).StateRepository.StateAt(stateIndex), runID, units
+            Next stateIndex
+        Next i
+    End If
 
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddPreparedElementResults data, rowIndex - 1
@@ -464,7 +511,7 @@ Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSec
 End Sub
 
 ' Сохраняет собственные границы отдельно от общих контуров сечения.
-' Связь ElementID обязательна для Contour; прямоугольники прежнего режима
+' Связь ElementID обязательна для Contour; элементы Adaptive без точной границы
 ' остаются компактными и восстанавливаются из основной таблицы геометрии.
 Private Sub WriteElementGeometry(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
@@ -1140,6 +1187,10 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     PutProperty data, rowIndex, runID, "ALL", "Output.CurvatureUnit", OutputCurvatureUnit(units), "-", "Единица вывода кривизны на момент формирования сечения."
     PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
 
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "rngNDMSectionProperties", data
+        Exit Sub
+    End If
     target.Resize(UBound(data, 1), SECTION_PROPERTY_COLUMNS).Value2 = data
     FormatResultsBlock target, UBound(data, 1), SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
 End Sub
@@ -1164,7 +1215,7 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
     Set fresh = CreateObject("Scripting.Dictionary"): fresh.CompareMode = vbBinaryCompare
     For i = 1 To annotations.Count
         identity = annotations.AnnotationType(i) & Chr$(30) & annotations.AnnotationID(i)
-        fresh.Item(identity) = True ' Автоматические размеры с тем же ID заменяют прежние, а не накапливаются при повторном расчёте.
+        fresh.Item(identity) = True ' Автоматические размеры с тем же ID заменяют существующие и не накапливаются при повторном расчёте.
     Next i
     If IsArray(previous) Then
         ReDim keepPrevious(1 To UBound(previous, 1))
@@ -1226,7 +1277,11 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
 
     Dim textColumn As Variant
     If Not mCapturedSnapshot Is Nothing Then
-        mCapturedSnapshot.AddSeparatedTable "rngNDMSectionAnnotations", data
+        If mCapturedSnapshot.IsGeometryPreview Then
+            mCapturedSnapshot.AddTable "rngNDMSectionAnnotations", data
+        Else
+            mCapturedSnapshot.AddSeparatedTable "rngNDMSectionAnnotations", data
+        End If
         Exit Sub
     End If
     For Each textColumn In Array(2, 3, 10, 12, 13, 23, 24)
@@ -1246,11 +1301,15 @@ Private Sub WriteEmptyElementResults(ByVal workbook As Object, ByVal runID As Va
     ReDim data(1 To 1, 1 To ELEMENT_RESULT_COLUMNS)
     PutElementResultHeaders data, units
 
+    If Not mCapturedSnapshot Is Nothing Then
+        mCapturedSnapshot.AddTable "rngNDMElementResults", data
+        Exit Sub
+    End If
     target.Resize(1, ELEMENT_RESULT_COLUMNS).Value2 = data
     FormatResultsBlock target, 1, ELEMENT_RESULT_COLUMNS, "Результаты элементов по сочетаниям"
 End Sub
 
-' Очищает прежние аннотации, оставляя строку заголовков.
+' Очищает текущие аннотации, оставляя строку заголовков.
 ' Используется, когда в модели нет готовых размеров и подписей.
 Private Sub WriteEmptySectionAnnotations(ByVal workbook As Object, ByVal runID As Variant)
     Dim target As Object
@@ -1284,8 +1343,6 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
     If rowCount > 5000 And Not mMinimalFormatting Then bodyStyle = OutputBodyStyle(target)
     If Len(bodyStyle) > 0 Then
         tableRange.Style = bodyStyle
-        tableRange.Borders.Item(5).LineStyle = -4142
-        tableRange.Borders.Item(6).LineStyle = -4142
     Else
         tableRange.HorizontalAlignment = -4108
         tableRange.VerticalAlignment = -4108
@@ -1330,7 +1387,7 @@ End Sub
 Private Function OutputBodyStyle(ByVal target As Object) As String
     On Error GoTo Unavailable
     Dim style As Object, book As Object, name As String
-    Set book = target.Worksheet.Parent: name = "NDM_OutputBody_v3"
+    Set book = target.Worksheet.Parent: name = "NDM_OutputBody_v4"
     On Error Resume Next
     Set style = book.Styles.Item(name)
     On Error GoTo Unavailable
@@ -1341,6 +1398,7 @@ Private Function OutputBodyStyle(ByVal target As Object) As String
         .HorizontalAlignment = -4108: .VerticalAlignment = -4108: .WrapText = False
         .Font.Name = "Arial": .Font.Size = 9
         .Borders.LineStyle = 1: .Borders.Color = RGB(200, 200, 200)
+        .Borders.Item(5).LineStyle = -4142: .Borders.Item(6).LineStyle = -4142 ' Обе диагонали выключены в стиле до массового применения, без двух проходов по ячейкам.
     End With
     OutputBodyStyle = name
 Unavailable:
@@ -1848,7 +1906,11 @@ Friend Sub PreparePreservedSnapshotSource(ByVal workbook As Object)
     Set mPreservedWorkbook = Nothing ' Неудачное новое чтение не оставляет действительной привязку предыдущего набора.
     mPreservedGeometry = CalculationGeometryTable(ReadPhysicalResultTable(workbook, "rngNDMSectionGeometry"))
     mPreservedContours = ReadPhysicalResultTable(workbook, "rngNDMSectionContours")
-    mPreservedElementGeometry = CalculationElementGeometryTable(ReadPhysicalResultTable(workbook, "rngNDMElementGeometry"))
+    If GeometryRequiresConcreteBoundaries(mPreservedGeometry) Then
+        mPreservedElementGeometry = CalculationElementGeometryTable(ReadAnchoredResultTable(workbook, "rngNDMElementGeometry"))
+    Else
+        mPreservedElementGeometry = CalculationElementGeometryTable(ReadPhysicalResultTable(workbook, "rngNDMElementGeometry"))
+    End If
     mPreservedAnnotations = ReadPhysicalResultTable(workbook, "rngNDMSectionAnnotations")
     mPreservedDiagnostics = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
     Set mPreservedWorkbook = workbook
@@ -1911,7 +1973,7 @@ Private Function CalculationGeometryTable(ByRef source As Variant) As Variant
 End Function
 
 ' Сохраняет все обязательные сегменты без изменения. Ошибка необязательной
-' подписи не блокирует вычисление и двоичную запись; отсутствие прежней таблицы
+' подписи не блокирует вычисление и двоичную запись; отсутствие сохранённой таблицы
 ' становится пустой шапкой, но не восстанавливает отсутствующий Contour.
 Private Function CalculationElementGeometryTable(ByRef source As Variant) As Variant
     Dim data As Variant, headers As Variant, row As Long, column As Long
@@ -1933,19 +1995,24 @@ End Function
 
 ' Выводит общие технические таблицы выбранного сечения, включая сетку,
 ' общие характеристики и диаграммы. В Excel LC-свойства и области трещин
-' остаются читаемыми строками прежних таблиц; File хранит их в полном снимке.
+' остаются читаемыми строками Results; в File состояния и собственные границы остаются только в снимке.
 Public Sub RestoreSnapshotBase(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True, Optional ByVal includeElements As Boolean = True)
     If snapshot Is Nothing Then Err.Raise 5, "CNDMResultsWriter.RestoreSnapshotBase", "Снимок для восстановления не передан."
     snapshot.Validate ' Публичный прямой вызов также отклоняет потерю обязательной границы до очистки первой ячейки Results.
     Set mCapturedSnapshot = Nothing: mMinimalFormatting = Not fullFormatting
     If Not includeElements Then ClearNamedRegion workbook, "rngNDMElementResults"
-    If Not snapshot.HasTable("rngNDMElementGeometry") Then
+    If Not includeElements Or Not snapshot.HasTable("rngNDMElementGeometry") Then
         Dim emptySection As CSectionModel: Set emptySection = New CSectionModel
-        WriteElementGeometry workbook, emptySection, Empty, Nothing ' Прежний файл не должен оставлять границы ранее показанного Contour-снимка.
+        Dim savedMinimalFormatting As Boolean: savedMinimalFormatting = mMinimalFormatting
+        If Not includeElements Then mMinimalFormatting = False ' File удаляет также рамки существующих строк, а не только их значения.
+        WriteElementGeometry workbook, emptySection, Empty, Nothing
+        mMinimalFormatting = savedMinimalFormatting
     End If
     Dim key As Variant, data As Variant, target As Object, title As String
     For Each key In snapshot.BaseKeys()
-        If CStr(key) = "rngNDMElementResults" And Not includeElements Then GoTo NextBaseTable
+        If Not includeElements Then
+            If CStr(key) = "rngNDMElementResults" Or CStr(key) = "rngNDMElementGeometry" Then GoTo NextBaseTable
+        End If
         If includeElements Then data = snapshot.ResultTable(CStr(key)) Else data = snapshot.Table(CStr(key))
         ClearNamedRegion workbook, CStr(key)
         Set target = workbook.Names.Item(CStr(key)).RefersToRange

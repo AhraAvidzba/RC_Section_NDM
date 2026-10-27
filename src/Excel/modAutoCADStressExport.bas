@@ -2,10 +2,10 @@ Attribute VB_Name = "modAutoCADStressExport"
 Option Explicit
 
 ' ==========================================================================
-' Экспорт последнего расчёта в AutoCAD
+' Экспорт сохранённого сечения и рассчитанного НДС в AutoCAD
 ' ==========================================================================
-' Читает сохранённые таблицы Results и строит в AutoCAD области, подписи,
-' главные оси, нейтральную линию и точку приложения нагрузки.
+' Читает сохранённые таблицы Results. Для готового НДС строит области, подписи,
+' оси и нейтральную линию; для сформированной геометрии выводит только сечение.
 ' При экспорте исходная геометрия повторно не импортируется и НДС не пересчитывается.
 
 Private Type TAutoCADExportSettings
@@ -34,6 +34,7 @@ End Type
 
 Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
+Private Const GEOMETRY_ONLY_EXPORT_WARNING As String = "В AutoCAD передано только сечение, без рассчитанного состояния."
 Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
 Private Const SECTION_CONTOUR_COLOR_INDEX As Long = 30 ' Наружная граница бетона: оранжевый ACI 30.
 Private Const OPENING_CONTOUR_COLOR_INDEX As Long = 4 ' Контуры отверстий: голубой ACI 4.
@@ -41,54 +42,36 @@ Private Const CRACK_REGION_COLOR_INDEX As Long = 31 ' Расчетная обл�
 Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001 ' Допуск совпадения соседних вершин при экспорте, мм.
 Private Const TEMPORARY_SOURCE_BATCH_SIZE As Long = 1024 ' Ограничение числа живых исходных кривых одной партии.
 
-' Выгружает выбранное сохранённое НДС в активный чертёж AutoCAD.
-' Читает Results, профиль отображения и единицы. При отсутствии результатов
-' или доступа к чертежу показывает причину; новый расчёт не запускает.
+' Выгружает сохранённое НДС либо только сформированную геометрию в активный DWG.
+' Geometry-only всегда сопровождается предупреждением, независимо от необязательных
+' сообщений. Ошибки сохранённого расчёта не переключают экспорт на геометрию.
 Public Sub ExportSectionStressToAutoCAD()
     On Error GoTo Failed
-
-    Dim settings As CSystemSettingsReader
-    Set settings = New CSystemSettingsReader
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
-    Dim informationEnabled As Boolean
-    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled") ' Неверный флаг сообщения должен быть найден до изменения чертежа.
-    Dim units As CUnitSystem
-    Set units = New CUnitSystem
-    units.LoadFromSettings settings
-
-    Dim exportSettings As TAutoCADExportSettings
+    Dim units As CUnitSystem, exportSettings As TAutoCADExportSettings
+    Dim section As CSectionModel, resultByID As Object, physicalStateByID As Object
+    Dim combinationID As String, profileId As String, stateType As String, quantity As String
+    Dim resultPrecision As Long, epsilon0 As Double, kappaX As Double, kappaY As Double
+    Dim loadReferenceX As Double, loadReferenceY As Double, centroidX As Double, centroidY As Double
+    Dim principalAngle As Double, extensionUsed As Boolean, stateWarningText As String, geometryOnly As Boolean
+    ReadResultsExportState ThisWorkbook, settings, units, vbNullString, section, resultByID, physicalStateByID, combinationID, _
+        profileId, stateType, quantity, resultPrecision, epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
+        centroidX, centroidY, principalAngle, extensionUsed, stateWarningText, geometryOnly
+    Dim contourExportCount As Long
+    If geometryOnly Then
+        exportSettings = ReadGeometryExportSettings(settings, section.Contours)
+        DrawFormedGeometryExport ThisWorkbook, section, exportSettings, contourExportCount
+        ShowWorkbookMessage GEOMETRY_ONLY_EXPORT_WARNING, vbExclamation, "RC Section NDM"
+        Exit Sub
+    End If
+    Dim informationEnabled As Boolean: informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
     exportSettings = ReadAutoCADExportSettings(settings)
-
-    Dim section As CSectionModel
-    Dim resultByID As Object
-    Dim physicalStateByID As Object
-    Dim combinationID As String
-    Dim profileId As String
-    Dim stateType As String
-    Dim quantity As String
-    Dim resultPrecision As Long
-    Dim epsilon0 As Double
-    Dim kappaX As Double
-    Dim kappaY As Double
-    Dim loadReferenceX As Double
-    Dim loadReferenceY As Double
-    Dim centroidX As Double
-    Dim centroidY As Double
-    Dim principalAngle As Double
-    Dim extensionUsed As Boolean
-    Dim stateWarningText As String
-    ReadResultsExportState ThisWorkbook, settings, units, exportSettings.PrincipalAxesMode, section, resultByID, physicalStateByID, combinationID, _
-        profileId, stateType, quantity, resultPrecision, _
-        epsilon0, kappaX, kappaY, loadReferenceX, loadReferenceY, _
-        centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
-
     Dim crackRows As Object, crackSweeps As Object
     If exportSettings.ExportCrackInteractionContour And IsCrackExportState(stateType) Then
         Set crackRows = CurrentCrackRegionRows(ThisWorkbook, combinationID)
         Set crackSweeps = ReadSavedContourArcSweeps(ThisWorkbook, crackRows, "CRACK_REGION_")
     End If
-
-    Dim contourExportCount As Long
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, resultPrecision, stateWarningText, exportSettings, _
         contourExportCount, , crackRows, crackSweeps
@@ -97,14 +80,10 @@ Public Sub ExportSectionStressToAutoCAD()
         message = "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
             "; стержней арматуры: " & CStr(section.RebarCount) & _
             "; объектов контура: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
-            "; сочетание: " & combinationID & _
-            "; профиль: " & profileId & _
-            "; состояние: " & stateType & _
-            "; величина: " & quantity
+            "; сочетание: " & combinationID & "; профиль: " & profileId & "; состояние: " & stateType & "; величина: " & quantity
         ShowWorkbookMessage message, vbInformation, "RC Section NDM"
     End If
     Exit Sub
-
 Failed:
     ShowWorkbookMessage WorkbookErrorMessage("Экспорт в AutoCAD не выполнен", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
@@ -195,7 +174,7 @@ Private Function AutoCADCleanupLayerSet(ByRef exportSettings As TAutoCADExportSe
     AddCleanupLayer layers, "RC_NDM_NeutralLine"
     AddCleanupLayer layers, exportSettings.CrackInteractionLayer
     AddCleanupLayer layers, EXTENSION_WARNING_LAYER
-    If Len(exportSettings.ContourLayer) > 0 Then layers.Item(exportSettings.ContourLayer) = False ' Общие контурные слои защищаются целиком, включая прежний NDM-export, даже при совпадении с другим слоем оформления.
+    If Len(exportSettings.ContourLayer) > 0 Then layers.Item(exportSettings.ContourLayer) = False ' Общие контурные слои защищаются целиком, включая созданные NDM объекты, даже при совпадении с другим слоем оформления.
     If Len(exportSettings.OpeningContourLayer) > 0 Then layers.Item(exportSettings.OpeningContourLayer) = False
 
     Set AutoCADCleanupLayerSet = layers
@@ -235,10 +214,26 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         ByRef epsilon0 As Double, ByRef kappaX As Double, ByRef kappaY As Double, _
         ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
         ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double, _
-        ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
+        ByRef extensionUsed As Boolean, ByRef stateWarningText As String, _
+        Optional ByRef geometryOnly As Boolean = False)
     On Error GoTo Failed
+    geometryOnly = False
     BeginSectionSnapshotRead workbook
-    Set section = ReadSectionGeometryFromResults(workbook, "Results")
+    If IsGeometryOnlyExportSource(workbook) Then
+        Dim geometrySource As String: geometrySource = ResultsGeometrySource(workbook)
+        If Len(geometrySource) = 0 Then Err.Raise vbObjectError + 4380, "ReadResultsExportState", _
+            "В Results нет сформированного сечения. Сначала нажмите «Сформировать сечение», затем повторите экспорт в AutoCAD."
+        Set section = ReadSectionGeometryFromResults(workbook, geometrySource)
+        Set resultByID = CreateObject("Scripting.Dictionary"): Set physicalStateByID = CreateObject("Scripting.Dictionary")
+        geometryOnly = True: stateWarningText = GEOMETRY_ONLY_EXPORT_WARNING
+        combinationID = vbNullString: profileId = vbNullString: stateType = vbNullString: quantity = vbNullString
+        EndSectionSnapshotRead
+        Exit Sub
+    End If
+    If units Is Nothing Then
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+    End If
+    If Len(principalAxesMode) = 0 Then principalAxesMode = AutoCADPrincipalAxesMode(settings)
 
     combinationID = ResolveExportCombinationID(workbook, settings.GetRequiredString("AutoCAD.Export.CombinationID"))
     profileId = ReadProfileIdForLoadCase(workbook, combinationID)
@@ -246,6 +241,7 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         settings.InputErrorMessage("AutoCAD.Export.CombinationID", _
             "В сохраненных Results не найдено сочетание " & combinationID & " с расчетным профилем.", _
             "Выберите Worst или ID сохраненного сочетания; для новых нагрузок сначала выполните расчет.")
+    Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
@@ -277,6 +273,32 @@ Failed:
     EndSectionSnapshotRead
     Err.Raise errorNumber, errorSource, errorText
 End Sub
+
+' Разрешает geometry-only только для preview без результатов и любых записей LC/НДС.
+' Явный файловый GeometryPreview также не содержит состояний. Полный File-снимок
+' и повреждённый сохранённый расчёт остаются на строгом пути чтения.
+Private Function IsGeometryOnlyExportSource(ByVal workbook As Object) As Boolean
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    If Not snapshot Is Nothing Then
+        IsGeometryOnlyExportSource = snapshot.IsGeometryPreview
+        Exit Function
+    End If
+    Dim data As Variant: data = ReadPhysicalResultTable(workbook, "rngNDMElementResults")
+    If HasResultTableRows(data) Then Exit Function
+    data = ReadPhysicalResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(data) Then IsGeometryOnlyExportSource = True: Exit Function
+    Dim caseColumn As Long: caseColumn = ResultColumn(data, "LoadCase")
+    Dim parameterColumn As Long: parameterColumn = ResultColumn(data, "Parameter")
+    Dim row As Long, caseID As String, parameter As String
+    For row = 2 To UBound(data, 1)
+        caseID = Trim$(CStr(data(row, caseColumn)))
+        If Len(caseID) > 0 And StrComp(caseID, "ALL", vbTextCompare) <> 0 Then Exit Function
+        parameter = LCase$(Trim$(CStr(data(row, parameterColumn))))
+        If parameter = "profileid" Or InStr(parameter, ".epsilon0") > 0 Or InStr(parameter, ".kappax") > 0 Or _
+                InStr(parameter, ".kappay") > 0 Or InStr(parameter, ".stateavailable") > 0 Or InStr(parameter, ".statestatus") > 0 Then Exit Function
+    Next row
+    IsGeometryOnlyExportSource = True
+End Function
 
 ' Находит профиль выбранного сочетания в сохранённых Results.
 ' Читает rngNDMElementResults; свойства сочетания нужны для пояснения ошибки,
@@ -578,11 +600,12 @@ Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As
     Dim colLoadCase As Long
     colLoadCase = ResultColumn(data, "LoadCase")
 
-    Dim rowIndex As Long
+    Dim rowIndex As Long, candidateID As String
     For rowIndex = 2 To UBound(data, 1)
-        FirstLoadCaseFromSectionProperties = Trim$(SafeText(data(rowIndex, colLoadCase)))
-        If Len(FirstLoadCaseFromSectionProperties) > 0 And _
-                StrComp(FirstLoadCaseFromSectionProperties, "ALL", vbTextCompare) <> 0 Then Exit Function
+        candidateID = Trim$(SafeText(data(rowIndex, colLoadCase)))
+        If Len(candidateID) > 0 And StrComp(candidateID, "ALL", vbTextCompare) <> 0 Then
+            FirstLoadCaseFromSectionProperties = candidateID: Exit Function
+        End If
     Next rowIndex
 Failed:
 End Function
@@ -717,6 +740,67 @@ DrawingFailed:
     Err.Raise errorNumber, errorSource, errorText
 End Sub
 
+' Передаёт только сохранённую геометрию без напряжений, подписей НДС и расчётных линий.
+' Сечение не формируется повторно; временные кривые принадлежат этой операции.
+Private Sub DrawFormedGeometryExport(ByVal workbook As Object, ByVal section As CSectionModel, _
+        ByRef options As TAutoCADExportSettings, ByRef contourExportCount As Long, _
+        Optional ByVal targetDocument As Object = Nothing)
+    Dim document As Object: Set document = targetDocument
+    If document Is Nothing Then
+        Dim acad As Object: Set acad = ConnectToRunningAutoCAD()
+        Set document = ActiveAutoCADDocument(acad)
+    End If
+    Dim ms As Object: Set ms = document.ModelSpace
+    Dim sources As Collection: Set sources = New Collection
+    Dim index As Long, number As Long, description As String, source As String
+    On Error GoTo Failed
+    EnsureAcadLayer document, options.ConcreteLayer, 8
+    EnsureAcadLayer document, options.RebarLayer, 1
+    For index = 1 To section.ConcreteCount
+        AddAcadConcreteElement ms, section, index, options.ConcreteLayer, 8, sources
+        If sources.Count >= TEMPORARY_SOURCE_BATCH_SIZE Then DeleteAcadTemporarySources document, sources
+    Next index
+    For index = 1 To section.RebarCount
+        AddAcadCircleRegion ms, section.RebarX(index), section.RebarY(index), section.RebarDiameter(index) / 2#, options.RebarLayer, 1, sources
+        If sources.Count >= TEMPORARY_SOURCE_BATCH_SIZE Then DeleteAcadTemporarySources document, sources
+    Next index
+    DeleteAcadTemporarySources document, sources
+    If options.ContourEnabled And section.Contours.Count > 0 Then
+        If Len(options.ContourLayer) > 0 Then EnsureAcadLayer document, options.ContourLayer, SECTION_CONTOUR_COLOR_INDEX
+        If Len(options.OpeningContourLayer) > 0 Then EnsureAcadLayer document, options.OpeningContourLayer, OPENING_CONTOUR_COLOR_INDEX
+        contourExportCount = DrawSavedMaterialContours(workbook, ms, options.ContourLayer, options.OpeningContourLayer, options.ContourFormat, section.Contours)
+    End If
+    document.Regen 1
+    Exit Sub
+Failed:
+    number = Err.Number: description = Err.Description: source = Err.Source
+    Resume Cleanup
+Cleanup:
+    On Error Resume Next
+    DeleteAcadTemporarySources document, sources
+    On Error GoTo 0
+    Err.Raise number, source, description
+End Sub
+
+' Читает только используемые параметры геометрического экспорта.
+' При отключённых/отсутствующих контурах их формат и слои не потребляются.
+Private Function ReadGeometryExportSettings(ByVal settings As CSystemSettingsReader, _
+        ByVal contours As CSectionContours) As TAutoCADExportSettings
+    Dim options As TAutoCADExportSettings
+    ReadAutoCADCommonMaterialLayers settings, options.ConcreteLayer, options.RebarLayer
+    options.ContourEnabled = settings.GetRequiredBoolean("AutoCAD.Export.ContourEnabled")
+    If options.ContourEnabled And contours.Count > 0 Then
+        options.ContourFormat = settings.GetRequiredChoice("AutoCAD.Export.ContourFormat", Array("Region", "Polyline"))
+        Dim index As Long, hasOuter As Boolean, hasOpening As Boolean
+        For index = 1 To contours.Count
+            If contours.LoopRole(index) = "Opening" Then hasOpening = True Else hasOuter = True
+        Next index
+        If hasOuter Then options.ContourLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Common.SectionContourLayer")
+        If hasOpening Then options.OpeningContourLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Common.OpeningContourLayer")
+    End If
+    ReadGeometryExportSettings = options
+End Function
+
 ' Отбирает все контуры актуальной области трещин нужного сочетания.
 ' Если данные устарели или относятся к разным состояниям, вся область пропускается.
 ' Проверяются сведения о состоянии и запуске. Область завершённой проверки
@@ -750,7 +834,7 @@ Private Function CurrentCrackRegionRows(ByVal workbook As Object, ByVal combinat
     For row = 2 To UBound(data, 1)
         If Left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
                 StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
-            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Дата запуска и ревизия исключают смешение с прежним сечением.
+            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Дата запуска и ревизия исключают смешение с другим сечением.
                 selected.RemoveAll: Exit Function
             End If
             rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor) ' Одна область должна принадлежать единому нормативному варианту и опорной группе.
@@ -879,16 +963,17 @@ End Function
 ' или как Region бетона с вырезанными отверстиями.
 ' Отдельные бетонные части получают свои Region. Если известны только отверстия,
 ' выводит их отдельными Region, не придумывая наружную границу по сетке.
-' Временные кривые принадлежат этому вызову; прежние объекты DWG не читаются.
+' Временные кривые принадлежат этому вызову; существующие объекты DWG не читаются.
 Private Function DrawSavedMaterialContours(ByVal workbook As Object, ByVal ms As Object, _
-        ByVal outerLayer As String, ByVal openingLayer As String, ByVal contourFormat As String) As Long
+        ByVal outerLayer As String, ByVal openingLayer As String, ByVal contourFormat As String, _
+        Optional ByVal preparedContours As CSectionContours = Nothing) As Long
     Dim asRegion As Boolean
     asRegion = (StrComp(contourFormat, "Region", vbTextCompare) = 0)
     If Not asRegion And StrComp(contourFormat, "Polyline", vbTextCompare) <> 0 Then _
         Err.Raise vbObjectError + 4371, "DrawSavedMaterialContours", "Формат экспорта контуров должен быть Region или Polyline."
     Dim contours As CSectionContours, loops As Object, indices As Collection
     Dim i As Long, key As String, loopKey As Variant, indexValue As Variant, layer As String, colorIndex As Long
-    Set contours = ReadSavedSectionContours(workbook)
+    If preparedContours Is Nothing Then Set contours = ReadSavedSectionContours(workbook) Else Set contours = preparedContours
     Set loops = CreateObject("Scripting.Dictionary")
     For i = 1 To contours.Count
         key = UCase$(contours.LoopRole(i)) & ":" & contours.LoopID(i)
@@ -978,6 +1063,8 @@ NextMaterialLoop:
     Exit Function
 Failed:
     errorNumber = Err.Number: errorDescription = Err.Description
+    Resume FailureCleanup ' Освобождает активный обработчик до удаления уже поглощённых Boolean объектов.
+FailureCleanup:
     On Error Resume Next ' Удаляем только объекты, созданные этим незавершенным вызовом.
     If Not curve Is Nothing Then curve.Delete
     For Each entity In created: entity.Delete: Next entity
@@ -986,7 +1073,8 @@ Failed:
 End Function
 
 ' До изменения чертежа проверяет, к каким бетонным областям относятся отверстия.
-' Проверки точных контуров выполняет общий CSectionGeometryQuery.
+' Сохраняет ключи и роли отдельных записей для слоёв Outer/Opening и opening-only.
+' Проверки вложенности/вычитания выполняет CSectionGeometryQuery; инерции здесь не вычисляются.
 Private Sub PrepareMaterialContourRegions(ByVal contours As CSectionContours, ByVal loops As Object, _
         ByVal shapes As Object, ByVal parents As Object, ByVal expected As Object)
     Dim query As CSectionGeometryQuery, key As Variant, otherKey As Variant, indices As Collection
@@ -1543,7 +1631,7 @@ End Function
 
 ' Готовит размеры шрифта и подпись по той же сущности, которая выводится в DWG.
 ' Точные произвольные элементы используют реальные проекции и центр тяжести;
-' эквивалентная оболочка остается только у записей прежнего адаптера.
+' эквивалентная оболочка используется у записей Adaptive без точной границы.
 Private Sub ReadConcretePresentation(ByVal section As CSectionModel, ByVal index As Long, _
         ByRef width As Double, ByRef height As Double, ByRef rotation As Double, _
         ByRef labelX As Double, ByRef labelY As Double)
@@ -1801,7 +1889,7 @@ Private Sub AppendNeutralIntersection(ByRef pointX() As Double, ByRef pointY() A
 End Sub
 
 ' Выгружает одну универсальную бетонную ячейку по ее фактическим границам.
-' Прямоугольная специализация сохраняет прежний быстрый WCS-путь; криволинейная
+' Прямоугольная специализация использует компактный WCS-путь; криволинейная
 ' область сохраняет дуги, отверстия и все несвязные части без изменения площади.
 Private Sub AddAcadConcreteElement(ByVal ms As Object, ByVal section As CSectionModel, ByVal index As Long, _
         ByVal layerName As String, ByVal colorIndex As Long, ByVal temporarySources As Collection)
@@ -1820,80 +1908,66 @@ Private Sub AddAcadConcreteElement(ByVal ms As Object, ByVal section As CSection
     End If
 End Sub
 
-' Создает Region для каждого outer и вычитает только его ближайшие openings.
-' Работает исключительно с новыми объектами; при отказе удаляет собственные
-' результаты этого элемента, а временные полилинии убирает общий владелец экспорта.
+' Создаёт CAD Region для связных компонентов, подготовленных общим ядром.
+' Принадлежность отверстий определяет ConnectedRegions; экспорт создаёт объекты,
+' вычитает openings и проверяет площадь. При отказе удаляет только свои Region.
 Private Function AddAcadConcreteGeometry(ByVal ms As Object, ByVal geometry As CConcreteRegion, _
         ByVal layerName As String, ByVal colorIndex As Long, ByVal temporarySources As Collection) As Long
     Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
-    Dim edges() As TRegionEdge, count As Long, loopID As Long, other As Long, i As Long
-    geometry.CopyEdges edges, count
-    Dim loops As Object, parents As Object, regions As Object
-    Set loops = CreateObject("Scripting.Dictionary"): Set parents = CreateObject("Scripting.Dictionary")
-    Set regions = CreateObject("Scripting.Dictionary")
-    Dim one() As TRegionEdge, selectedCount As Long, loopRegion As CConcreteRegion, outer As CConcreteRegion
-    For loopID = 1 To geometry.LoopCount
-        selectedCount = 0: Erase one
-        For i = 1 To count
-            If edges(i).LoopID = loopID Then
-                selectedCount = selectedCount + 1: ReDim Preserve one(1 To selectedCount)
-                LSet one(selectedCount) = edges(i): one(selectedCount).LoopID = 0
-            End If
-        Next i
-        Set loopRegion = query.BoundaryRegion(one, selectedCount, "ConcreteElementLoop")
-        loops.Add CStr(loopID), loopRegion
-    Next loopID
-    Dim best As Long, bestArea As Double, x1 As Double, y1 As Double, x2 As Double, y2 As Double
-    Dim cx As Double, cy As Double, sweep As Double, ignoredLoop As Long
-    For loopID = 1 To geometry.LoopCount
-        If geometry.LoopIsOpening(loopID) Then
-            Set loopRegion = loops.Item(CStr(loopID))
-            loopRegion.GetSegment 1, x1, y1, x2, y2, cx, cy, sweep, ignoredLoop
-            best = 0: bestArea = 1E+100
-            For other = 1 To geometry.LoopCount
-                If Not geometry.LoopIsOpening(other) Then
-                    Set outer = loops.Item(CStr(other))
-                    If outer.Area < bestArea Then
-                        If query.ContainsPoint(outer, x1, y1, False) Then best = other: bestArea = outer.Area
-                    End If
-                End If
-            Next other
-            If best = 0 Then Err.Raise vbObjectError + 4371, "AddAcadConcreteGeometry", "У отверстия бетонного элемента не найдена наружная область."
-            parents.Add CStr(loopID), CStr(best)
-        End If
-    Next loopID
-    Dim entity As Object, parent As Object, created As Collection, actualArea As Double, number As Long, description As String
-    Set created = New Collection
+    Dim components As Collection: Set components = query.ConnectedRegions(geometry)
+    Dim component As CConcreteRegion, loopRegion As CConcreteRegion
+    Dim edges() As TRegionEdge, count As Long
+    Dim loopID As Long, outerLoop As Long, entity As Object, parent As Object
+    Dim created As Collection: Set created = New Collection
+    Dim actualArea As Double, number As Long, description As String
     On Error GoTo Failed
-    For loopID = 1 To geometry.LoopCount
-        Set loopRegion = loops.Item(CStr(loopID))
-        Set entity = AddAcadConcreteLoop(ms, loopRegion, layerName, colorIndex, temporarySources)
-        created.Add entity: regions.Add CStr(loopID), entity
-    Next loopID
-    Dim key As Variant
-    For Each key In parents.Keys
-        Set parent = regions.Item(parents.Item(key)): Set entity = regions.Item(key)
-        parent.Boolean 2, entity ' AutoCAD вычитает только созданную этим элементом область отверстия.
-    Next key
-    For loopID = 1 To geometry.LoopCount
-        If Not geometry.LoopIsOpening(loopID) Then
-            Set entity = regions.Item(CStr(loopID))
-            actualArea = actualArea + CDbl(entity.Area)
-            entity.Layer = layerName: entity.Color = colorIndex
-            AddAcadConcreteGeometry = AddAcadConcreteGeometry + 1
-        End If
-    Next loopID
+    For Each component In components
+        component.CopyEdges edges, count
+        outerLoop = 0
+        For loopID = 1 To component.LoopCount
+            If Not component.LoopIsOpening(loopID) Then outerLoop = loopID: Exit For
+        Next loopID
+        If outerLoop = 0 Then Err.Raise vbObjectError + 4371, "AddAcadConcreteGeometry", "У связного бетонного элемента отсутствует наружная граница."
+        Set loopRegion = AcadConcreteBoundaryLoop(component, outerLoop, edges, count, query)
+        Set parent = AddAcadConcreteLoop(ms, loopRegion, layerName, colorIndex, temporarySources)
+        created.Add parent
+        For loopID = 1 To component.LoopCount
+            If component.LoopIsOpening(loopID) Then
+                Set loopRegion = AcadConcreteBoundaryLoop(component, loopID, edges, count, query)
+                Set entity = AddAcadConcreteLoop(ms, loopRegion, layerName, colorIndex, temporarySources)
+                created.Add entity
+                parent.Boolean 2, entity ' Вычитается только отверстие текущей готовой связной компоненты.
+            End If
+        Next loopID
+        actualArea = actualArea + CDbl(parent.Area)
+        parent.Layer = layerName: parent.Color = colorIndex
+        AddAcadConcreteGeometry = AddAcadConcreteGeometry + 1
+    Next component
     If Abs(actualArea - geometry.Area) > MaxDouble(0.0001, geometry.Area * 0.0000001) Then _
         Err.Raise vbObjectError + 4371, "AddAcadConcreteGeometry", "Площадь выгруженного бетонного элемента не совпадает с сохраненным фактическим контуром."
     Exit Function
 Failed:
     number = Err.Number: description = Err.Description
-    Resume FailureCleanup ' Выходит из активного обработчика до COM-очистки уже поглощённых Boolean объектов.
+    Resume FailureCleanup ' Выходит из активного обработчика до COM-очистки поглощённых Boolean объектов.
 FailureCleanup:
     On Error Resume Next
     For Each entity In created: entity.Delete: Next entity
     On Error GoTo 0
     Err.Raise number, "AddAcadConcreteGeometry", description
+End Function
+
+' Выбирает уже классифицированный ядром loop для создания отдельного CAD Region.
+' Не определяет его владельца: компоненту и роль отверстия передаёт ConnectedRegions.
+Private Function AcadConcreteBoundaryLoop(ByVal component As CConcreteRegion, ByVal loopID As Long, _
+        ByRef edges() As TRegionEdge, ByVal count As Long, ByVal query As CSectionGeometryQuery) As CConcreteRegion
+    Dim one() As TRegionEdge, selectedCount As Long, i As Long
+    For i = 1 To count
+        If edges(i).LoopID = loopID Then
+            selectedCount = selectedCount + 1: ReDim Preserve one(1 To selectedCount)
+            LSet one(selectedCount) = edges(i): one(selectedCount).LoopID = 0
+        End If
+    Next i
+    Set AcadConcreteBoundaryLoop = query.BoundaryRegion(one, selectedCount, component.Source)
 End Function
 
 ' Передает один проверенный loop как WCS LWPOLYLINE с точными bulge дуг.
@@ -1940,7 +2014,7 @@ Private Function AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, B
     px(3) = x - hw * c - hh * s: py(3) = y - hw * s + hh * c
 
     Dim points(0 To 11) As Double, corner As Long, vertex As Long, source As Object
-    For corner = 0 To 3 ' Одна замкнутая полилиния сокращает обращения к AutoCAD. Начало справа внизу сохраняет прежнее направление первого ребра Region при импорте.
+    For corner = 0 To 3 ' Одна замкнутая полилиния сокращает обращения к AutoCAD. Начало справа внизу задаёт воспроизводимое направление первого ребра Region при импорте.
         vertex = (corner + 1) Mod 4
         points(corner * 3) = px(vertex): points(corner * 3 + 1) = py(vertex)
     Next corner
@@ -1985,7 +2059,7 @@ Private Function AddAcadRegionFromCurve(ByVal ms As Object, ByVal source As Obje
     Set AddAcadRegionFromCurve = AddAcadRegionFromCurves(ms, sourceObjects, layerName, colorIndex)
 End Function
 
-' Превращает временные AutoCAD-кривые в Region прежним WCS-способом.
+' Превращает временные AutoCAD-кривые в Region в мировой плоскости XY.
 ' Успешно использованные исходники удаляет владелец всей выгрузки.
 Private Function AddAcadRegionFromCurves(ByVal ms As Object, ByRef sourceObjects() As Object, _
         ByVal layerName As String, ByVal colorIndex As Long) As Object
@@ -2018,7 +2092,7 @@ Private Sub DeleteAcadSourceObjects(ByRef sourceObjects() As Object)
 End Sub
 
 ' Удаляет только исходные кривые, созданные текущей выгрузкой. Собственный
-' SelectionSet никогда не содержит прежние объекты чертежа; он удаляется сразу.
+' SelectionSet никогда не содержит существующие объекты чертежа; он удаляется сразу.
 ' Если пакетный вызов недоступен, сохраняется обычное удаление по тем же ссылкам.
 Private Sub DeleteAcadTemporarySources(ByVal doc As Object, ByRef sources As Collection)
     If sources Is Nothing Then Exit Sub
@@ -2229,8 +2303,6 @@ Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As S
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
     Dim units As CUnitSystem
-    Set units = New CUnitSystem
-    units.LoadFromSettings settings
     Dim section As CSectionModel
     Dim values As Object, physicalStates As Object
     Dim combinationID As String, profileID As String, stateType As String, quantity As String
@@ -2238,10 +2310,14 @@ Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As S
     Dim eps0 As Double, kx As Double, ky As Double
     Dim referenceX As Double, referenceY As Double
     Dim centroidX As Double, centroidY As Double, angle As Double
-    Dim extensionUsed As Boolean, warningText As String
+    Dim extensionUsed As Boolean, warningText As String, geometryOnly As Boolean
     ReadResultsExportState workbook, settings, units, "Concrete", section, values, physicalStates, _
         combinationID, profileID, stateType, quantity, precision, eps0, kx, ky, _
-        referenceX, referenceY, centroidX, centroidY, angle, extensionUsed, warningText
+        referenceX, referenceY, centroidX, centroidY, angle, extensionUsed, warningText, geometryOnly
+    If geometryOnly Then
+        Audit02ReadExportSnapshotForTests = "GeometryOnly|" & warningText & "|" & CStr(section.ConcreteCount) & "|" & CStr(section.RebarCount)
+        Exit Function
+    End If
     Dim result As String
     result = combinationID & "|" & profileID & "|" & stateType & "|" & quantity & "|" & _
         CStr(extensionUsed) & "|" & warningText & "|" & CStr(eps0) & "|" & _
@@ -2311,21 +2387,28 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' выполняет обычный экспорт в переданный собственный тестовый чертёж.
 ' Возвращает число добавленных объектов для проверки их свойств и геометрии.
-Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object) As Long
+Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object, _
+        Optional ByRef geometryOnlyWarning As String = "") As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, options As TAutoCADExportSettings
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    Set units = New CUnitSystem: units.LoadFromSettings settings
-    options = ReadAutoCADExportSettings(settings)
     Dim section As CSectionModel, values As Object, physicalStates As Object
     Dim combinationID As String, profileID As String, stateType As String, quantity As String, precision As Long
     Dim eps0 As Double, kx As Double, ky As Double, referenceX As Double, referenceY As Double
-    Dim centroidX As Double, centroidY As Double, angle As Double, extended As Boolean, warning As String
-    ReadResultsExportState ThisWorkbook, settings, units, options.PrincipalAxesMode, section, values, physicalStates, _
+    Dim centroidX As Double, centroidY As Double, angle As Double, extended As Boolean, warning As String, geometryOnly As Boolean
+    geometryOnlyWarning = vbNullString
+    ReadResultsExportState ThisWorkbook, settings, units, vbNullString, section, values, physicalStates, _
         combinationID, profileID, stateType, quantity, precision, eps0, kx, ky, referenceX, referenceY, _
-        centroidX, centroidY, angle, extended, warning
+        centroidX, centroidY, angle, extended, warning, geometryOnly
     Dim before As Long, contours As Long: before = doc.ModelSpace.Count
-    DrawResultsStressExport section, values, physicalStates, eps0, kx, ky, referenceX, referenceY, _
-        centroidX, centroidY, angle, precision, warning, options, contours, doc
+    If geometryOnly Then
+        options = ReadGeometryExportSettings(settings, section.Contours)
+        DrawFormedGeometryExport ThisWorkbook, section, options, contours, doc
+        geometryOnlyWarning = GEOMETRY_ONLY_EXPORT_WARNING
+    Else
+        options = ReadAutoCADExportSettings(settings)
+        DrawResultsStressExport section, values, physicalStates, eps0, kx, ky, referenceX, referenceY, _
+            centroidX, centroidY, angle, precision, warning, options, contours, doc
+    End If
     Audit03ExportAutoCADDocumentForTests = doc.ModelSpace.Count - before
 End Function
 

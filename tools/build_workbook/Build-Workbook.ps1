@@ -7,7 +7,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
+# Записывает Value2 в одну ячейку; по заданным параметрам включает полужирный шрифт, цвет текста и заливку. Возвращает COM-ячейку.
 function Set-Cell {
     param(
         [object]$Sheet,
@@ -27,7 +27,7 @@ function Set-Cell {
     return $cell
 }
 
-# Устанавливает значение, оформление или именованный диапазон в книге через Excel COM.
+# Обводит внешние и внутренние границы диапазона тонкими сплошными серыми линиями.
 function Set-Border {
     param([object]$Range)
 
@@ -38,7 +38,7 @@ function Set-Border {
     }
 }
 
-# Преобразует техническое представление в формат, удобный для Excel или отчета.
+# Преобразует положительный номер столбца из системы с основанием 26 в буквенный адрес Excel: A, Z, AA.
 function ConvertTo-ExcelColumn {
     param([int]$ColumnNumber)
     $name = ""
@@ -50,7 +50,7 @@ function ConvertTo-ExcelColumn {
     $name
 }
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Создаёт или обновляет имя книги на абсолютную ссылку указанного листа; апострофы в имени листа экранируются.
 function Add-WorkbookName {
     param(
         [object]$Workbook,
@@ -187,7 +187,7 @@ function Add-VbaSourceFile {
     }
 }
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Объединяет первые две строки блока шириной 18 столбцов и оформляет его крупный центрированный заголовок.
 function Add-BlockHeader {
     param(
         [object]$Sheet,
@@ -207,7 +207,7 @@ function Add-BlockHeader {
     $range.VerticalAlignment = -4108
 }
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Объединяет заданные столбцы одной строки и оформляет заголовок раздела белым полужирным текстом на серой заливке.
 function Add-SectionTitle {
     param(
         [object]$Sheet,
@@ -226,7 +226,7 @@ function Add-SectionTitle {
     $range.HorizontalAlignment = -4131
 }
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Выводит четыре поля каждой записи с шагом четыре столбца, обводит таблицу и выделяет первую группу полужирным.
 function Add-KeyValueRows {
     param(
         [object]$Sheet,
@@ -249,7 +249,7 @@ function Add-KeyValueRows {
     $Sheet.Range($Sheet.Cells.Item($StartRow, $StartColumn), $Sheet.Cells.Item($row - 1, $StartColumn + 3)).Font.Bold = $true
 }
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Заменяет проверку данных одной ячейки списком допустимых значений, переданным вызывающим кодом.
 function Add-InputValidationList {
     param(
         [object]$Cell,
@@ -260,7 +260,7 @@ function Add-InputValidationList {
     $Cell.Validation.Add(3, 1, 1, $List)
 }
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Создаёт таблицу сочетаний с заголовками единиц и независимыми списками профилей и LoadPath; вспомогательные столбцы скрывает.
 function Add-MainInputBlock {
     param([object]$Sheet)
 
@@ -326,11 +326,11 @@ function Center-ShapeButtonText {
         $Button.TextFrame2.MarginTop = 0
         $Button.TextFrame2.MarginBottom = 0
     } catch {
-        # В старых Excel TextFrame2 может быть недоступен; TextFrame выше уже достаточно.
+        # При недоступном TextFrame2 сохраняется центрирование через основной TextFrame.
     }
 }
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Создаёт пять кнопок Config с привязками к формированию, расчёту, обновлению схемы, экспорту и очистке подписей AutoCAD.
 function Add-CalculationButtons {
     param([object]$Sheet)
 
@@ -452,6 +452,9 @@ try {
     $createdProcess = Get-Process -Id $createdProcessId -ErrorAction Stop
     $ownedExcelProcessId = [int]$createdProcessId
     $ownedExcelStartTicks = $createdProcess.StartTime.ToUniversalTime().Ticks
+    # Записываем точную собственную идентичность до COM-операций, которые могут ожидать ответа Excel.
+    [ordered]@{Status='BUILDING';PID=$ownedExcelProcessId;StartTicksUTC=[string]$ownedExcelStartTicks;OutputPath=$fullOutputPath;StartedUTC=[DateTimeOffset]::UtcNow.ToString('o')} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $outputDir 'BuildOwnership.json') -Encoding UTF8
     if (-not (Test-BuildExcelIdentity $excel $ownedExcelProcessId $ownedExcelStartTicks)) {
         throw 'New Excel process identity could not be verified before workbook creation.'
     }
@@ -492,7 +495,7 @@ try {
 
     $systemRanges = Add-SystemSettings $system
     Add-SettingsInstructions $workbook $system $instructions
-    # Последний содержательный раздел добавляется после старых формул/рисунков.
+    # Руководство по рецептам добавляется после остальных разделов и формульных изображений справки.
     Update-SectionRecipeGuide $workbook ([string]$root) | Out-Null
     # Hyperlink-стиль Excel может сбросить рамку ячейки Подробнее.
     # Финальную обводку делаем после добавления всех ссылок Config.
@@ -585,6 +588,12 @@ try {
         throw 'Excel process identity changed before saving the new workbook.'
     }
     $excel.Calculation = -4105 # xlCalculationAutomatic: новый шаблон не должен сохранять случайный Manual служебного экземпляра; режим пользовательского Excel здесь не меняется.
+    # Явная компиляция проверяет также методы, которые не требовались для построения шаблона.
+    $excel.VBE.ActiveVBProject = $workbook.VBProject
+    $compileCommand = $excel.VBE.CommandBars.FindControl(1, 578)
+    if ($null -eq $compileCommand) { throw 'Недоступна команда компиляции проекта VBA.' }
+    if ($compileCommand.Enabled) { $compileCommand.Execute() }
+    if ($compileCommand.Enabled) { throw 'Проект VBA не скомпилирован; новая книга не сохранена.' }
     $workbook.SaveAs($fullOutputPath, 52)
     Write-Output "Workbook built: $fullOutputPath"
 }

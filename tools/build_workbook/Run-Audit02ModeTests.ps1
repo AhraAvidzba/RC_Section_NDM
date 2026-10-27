@@ -34,6 +34,9 @@ New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullReport) | Out
 $excel = $null
 $workbook = $null
 $failed = $false
+$cleanupOwnerConfirmed=$false;$cleanupPID=0;$cleanupTicks=0L
+$cleanupErrors=New-Object System.Collections.Generic.List[string]
+$cleanupCloseRequested=$false;$cleanupCloseSucceeded=$false;$cleanupQuitRequested=$false;$cleanupQuitSucceeded=$false
 
 # Определяет PID только созданного COM-экземпляра Excel по его окну.
 # Watchdog использует этот идентификатор, не затрагивая пользовательские книги.
@@ -203,7 +206,11 @@ try {
         throw 'Excel reused an existing user process; no settings or workbooks were changed.'
     }
     if ($testExcelProcessId -eq 0) { throw 'Не удалось определить собственный тестовый процесс Excel.' }
-    $testExcelProcess = Get-Process -Id $testExcelProcessId
+    $testExcelProcess = Get-Process -Id $testExcelProcessId -ErrorAction Stop
+    $cleanupPID=[int]$testExcelProcessId;$cleanupTicks=$testExcelProcess.StartTime.ToUniversalTime().Ticks
+    if($testExcelProcess.ProcessName -ine 'EXCEL' -or $cleanupTicks -le0){throw 'Own Excel identity could not be verified.'}
+    $cleanupOwnerConfirmed=$true
+    [ordered]@{PID=$cleanupPID;StartTicksUTC=[string]$cleanupTicks;ProcessName='EXCEL';VerifiedNewOwner=$true;SourceSHA256=$sourceHash;BeforeWorkbookOpen=$true}|ConvertTo-Json|Set-Content -LiteralPath ($fullReport+'.Ownership.json') -Encoding UTF8
     $lines.Add("TEST_EXCEL_PROCESS: id=$testExcelProcessId; startTicks=$($testExcelProcess.StartTime.ToUniversalTime().Ticks)")
     Save-Progress
     $excel.Visible = [bool]$Visible
@@ -333,17 +340,28 @@ try {
     $lines.Add("SCRIPT_ERROR_POSITION: $($_.InvocationInfo.PositionMessage)")
     $lines.Add("SCRIPT_ERROR_STACK: $($_.ScriptStackTrace)")
 } finally {
-    if ($workbook) {
-        try { $workbook.Close($false) } catch { $lines.Add("CLEANUP ERROR: workbook; $($_.Exception.Message)") }
-        [Runtime.InteropServices.Marshal]::ReleaseComObject($workbook) | Out-Null
+    # Финальный выход Excel проверяет родитель после завершения этого child: RCW ещё могут жить здесь.
+    if($workbook){
+        if($cleanupOwnerConfirmed){
+            $cleanupCloseRequested=$true
+            try{$workbook.Close($false);$cleanupCloseSucceeded=$true}catch{$cleanupErrors.Add('workbook.Close: '+$_.Exception.Message)}
+        }else{$cleanupErrors.Add('Workbook cleanup skipped: own Excel identity is not verified.')}
+        try{[void][Runtime.InteropServices.Marshal]::ReleaseComObject($workbook)}catch{$cleanupErrors.Add('workbook RCW release: '+$_.Exception.Message)}
+        $workbook=$null
     }
-    if ($excel) {
-        try { $excel.Quit() } catch { $lines.Add("CLEANUP ERROR: Excel; $($_.Exception.Message)") }
-        [Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null
+    if($excel){
+        if($cleanupOwnerConfirmed){
+            $cleanupQuitRequested=$true
+            try{$excel.Quit();$cleanupQuitSucceeded=$true}catch{$cleanupErrors.Add('Excel.Quit: '+$_.Exception.Message)}
+        }else{$cleanupErrors.Add('Excel.Quit skipped: own Excel identity is not verified.')}
+        try{[void][Runtime.InteropServices.Marshal]::ReleaseComObject($excel)}catch{$cleanupErrors.Add('Excel RCW release: '+$_.Exception.Message)}
+        $excel=$null
     }
-    [GC]::Collect()
-    [GC]::WaitForPendingFinalizers()
+    [GC]::Collect();[GC]::WaitForPendingFinalizers()
+    foreach($cleanupError in $cleanupErrors){$lines.Add('CLEANUP ERROR: '+$cleanupError);$failed=$true}
+    [ordered]@{Stage='CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED';OwnerVerified=$cleanupOwnerConfirmed;PID=$cleanupPID;StartTicksUTC=[string]$cleanupTicks;CloseRequested=$cleanupCloseRequested;CloseSucceeded=$cleanupCloseSucceeded;QuitRequested=$cleanupQuitRequested;QuitSucceeded=$cleanupQuitSucceeded;Errors=@($cleanupErrors.ToArray());Failed=$failed;FinalExitNotAsserted=$true;FinalClosureAuthority='Run-Audit03Watchdog after actual child exit';ObservedUTC=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath ($fullReport+'.RunnerCleanup.json') -Encoding UTF8
     Save-Progress
-    $lines | Where-Object { $_ -match "^SOURCE|^FIXTURE|^GLOBAL_MODE|^TOTAL|^FAIL(?::| )|^SCRIPT ERROR|^RUNTIME ERROR|^MODE_AFTER" }
+    $lines | Where-Object { $_ -match "^SOURCE|^FIXTURE|^GLOBAL_MODE|^TOTAL|^FAIL(?::| )|^SCRIPT ERROR|^RUNTIME ERROR|^MODE_AFTER|^CLEANUP ERROR" }
 }
+
 if ($failed) { exit 1 }

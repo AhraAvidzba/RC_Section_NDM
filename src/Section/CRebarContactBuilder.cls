@@ -53,7 +53,7 @@ End Sub
 
 ' Возвращает независимые настройки активного ряда: базовый отступ от Main плюс контактная поправка.
 ' Вызывается один раз на ряд в порядке описания. EverySecondBar не уменьшает накопленные расстояния.
-' При ошибке общие настройки и накопленные расстояния остаются прежними.
+' При ошибке общие настройки и накопленные расстояния не изменяются.
 Public Function AppendRow(ByVal diameter As Double, ByVal location As String, ByVal binding As String, ByVal sourceReference As String, Optional ByVal baseOffset As Double = 0#) As CRebarRuleOptions
     On Error GoTo Failed
     If Not mInitialized Then SectionRecipeError "CRebarContactBuilder", "Сначала задайте основной ряд через Initialize.", sourceReference

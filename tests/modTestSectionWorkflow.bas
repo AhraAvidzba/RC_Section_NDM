@@ -78,7 +78,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Записывает и восстанавливает модель при разных выходных единицах.
-' Проверяет данные, которые прежнее чтение только изображения теряло.
+' Сверяет материалы, происхождение, аннотации и характеристики, обязательные при восстановлении модели.
 Private Sub TestCompleteModel(ByRef stats As TWorkflowStats)
     Dim unit As Variant, expected As CSectionModel, actual As CSectionModel
     Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CNDMResultsWriter

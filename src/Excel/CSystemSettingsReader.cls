@@ -593,7 +593,13 @@ Private Function InputSettingsSection(ByVal key As String) As String
         Case Left$(key, 9) = "Capacity.": sectionName = "настройки несущей способности"
         Case Left$(key, 15) = "AutoCAD.Import.": sectionName = "импорт геометрии из AutoCAD"
         Case Left$(key, 5) = "Plot.": sectionName = "оформление Excel-схемы"
-        Case Left$(key, 9) = "Geometry.", Left$(key, 5) = "Mesh.": sectionName = "геометрия и расчетная сетка"
+        Case key = "Load.ReferenceOffsetX", key = "Load.ReferenceOffsetY", _
+                key = "Calculation.ZeroMomentPerDepth", key = "General.WorstCombinationCriterion", _
+                key = "General.PlateauSlopeFactor", key = "General.DiagramExtension"
+            sectionName = "Нагрузки и диаграммы материалов"
+        Case Left$(key, 9) = "Geometry.": sectionName = "Геометрия"
+        Case Left$(key, 5) = "Mesh.": sectionName = "Сетка геометрии"
+        Case Left$(key, 8) = "General.": sectionName = "Общие"
         Case Else: sectionName = "таблица исходных настроек"
     End Select
     InputSettingsSection = "лист Config, раздел """ & sectionName & """"
@@ -616,7 +622,7 @@ Public Sub Clear()
 End Sub
 
 ' Возвращает строковое значение настройки.
-' Пустая строка и TODO трактуются как отсутствие пользовательского значения,
+' Пустая строка и незаполненная текстовая подсказка означают отсутствие пользовательского значения,
 ' поэтому вызывающий код получает свой defaultValue.
 Public Function GetString(ByVal key As String, Optional ByVal defaultValue As String = vbNullString) As String
     Dim index As Long
@@ -652,9 +658,9 @@ Private Sub AssertValueReadable(ByVal index As Long)
         "CSystemSettingsReader", mValueErrors(index)
 End Sub
 
-' Возвращает Double с учетом десятичного разделителя Excel. Для optional
+' Читает Double общей однозначной грамматикой с точкой или запятой. Для необязательных
 ' параметров пустое значение допускается; allowBlankValue=False запрещает
-' скрытый default для явно заданной пустой/TODO ячейки, но не для отсутствующего key.
+' скрытое значение для явно заданной пустой или незаполненной ячейки, но не для отсутствующего ключа.
 Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Double = 0#, _
         Optional ByVal allowBlankValue As Boolean = True) As Double
     Dim textValue As String, parsed As Double
@@ -717,7 +723,7 @@ Public Function GetRequiredString(ByVal key As String) As String
 End Function
 
 ' Читает обязательный вариант из заданного списка и возвращает его принятое написание.
-' Пустота, TODO и неизвестное значение дают ошибку с адресом ячейки,
+' Пустота, незаполненная подсказка и неизвестное значение дают ошибку с адресом ячейки,
 ' а не выбор первого элемента по умолчанию.
 Public Function GetRequiredChoice(ByVal key As String, ByVal choices As Variant) As String
     Dim value As String, choice As Variant

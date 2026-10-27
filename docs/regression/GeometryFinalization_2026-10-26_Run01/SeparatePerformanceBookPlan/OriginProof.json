@@ -1,0 +1,1404 @@
+﻿{
+  "Status": "ORIGIN_REVIEW_ONLY_NO_EXCEL",
+  "Books": [
+    {
+      "Path": "docs\\regression\\GeometryFinalization_2026-10-26_Run01\\UserBook_BeforeChanges.xlsm",
+      "SHA256": "0F6F142FB1665A6A7BF31DBFAA724EB8237A35DD117EBF312E36561442245062",
+      "VBAProjectSHA256": "C9AC6A90BA518A63FB5FEE3904179E9E28B254C31C85977548C493FE633CFE38",
+      "ZipValid": true,
+      "ActiveLoadCases": 1,
+      "LoadIDs": [
+        1.0
+      ],
+      "LoadMatrixSHA256": "D1A085A0D50777540A477ACB58CC598314A735B3949F887CE4D95244E1EBC9BD",
+      "SettingCount": 111,
+      "Settings": {
+        "General.ExecutionReportEnabled": "Yes",
+        "General.NonCriticalMessagesEnabled": "Yes",
+        "General.ReformatResultsEnabled": "Yes",
+        "Results.SnapshotStorage": "Excel",
+        "Results.SnapshotName": "NDM_Snapshot",
+        "General.WorstCombinationCriterion": "StrengthCapacity",
+        "General.PlateauSlopeFactor": 0.001,
+        "General.DiagramExtension": "Yes",
+        "Calculation.ZeroMomentPerDepth": 0.0005,
+        "Geometry.Source": "AutoCAD",
+        "Geometry.Type": "Circle",
+        "Mesh.CellGeometry": "Contour",
+        "Mesh.StepMode": "Auto 0.1",
+        "Mesh.StepX": 50.0,
+        "Mesh.StepY": 50.0,
+        "Mesh.BoundarySubdivisions": 2.0,
+        "Load.ReferenceOffsetX": 0.0,
+        "Load.ReferenceOffsetY": 0.0,
+        "Solver.Method": "Newton",
+        "Solver.MaxIterations": 80.0,
+        "Solver.LoadSteps": 1.0,
+        "Solver.ToleranceN": 0.0001,
+        "Solver.ToleranceMx": 0.0001,
+        "Solver.ToleranceMy": 0.0001,
+        "Solver.SecantMaxRestarts": 2.0,
+        "Capacity.SolutionStrategy": "Auto",
+        "Capacity.SolverMaxIterations": 60.0,
+        "Capacity.ToleranceStrain": 1e-05,
+        "Capacity.MaxLambda": 1024.0,
+        "Capacity.SearchMethod": "Bisection",
+        "Capacity.InitialLambda": 1.0,
+        "Capacity.ToleranceLambda": 0.01,
+        "Capacity.MaxRetries": 0.0,
+        "Capacity.BaseLoadSteps": 1.0,
+        "Stability.Code": "SP35",
+        "Stability.ElementLength": 8000.0,
+        "Stability.Mu1": 2.0,
+        "Stability.Mu2": 2.0,
+        "Stability.SystemType": "Determinate",
+        "Stability.ZeroMomentEccentricitySign1": 1.0,
+        "Stability.ZeroMomentEccentricitySign2": 1.0,
+        "Stability.AccidentalEccentricityMode": "AutoWithμL",
+        "Stability.AccidentalEccentricityUser1": 10.0,
+        "Stability.AccidentalEccentricityUser2": 10.0,
+        "Stability.AccidentalEccentricityPlanes": "OnlyMomentPlane",
+        "Stability.PhiLMode": "Auto",
+        "Stability.SP63.Ks": 0.7,
+        "Stability.SP63.DeltaEMin": 0.15,
+        "Stability.SP63.DeltaEMax": 1.5,
+        "Stability.SP35.PhiP": 1.0,
+        "Stability.SP35.NOverNcrLimit": 0.7,
+        "SLS.Crack.Code": "SP35",
+        "SLS.Crack.Allowable": 0.3,
+        "SLS.Crack.InitiationSolutionStrategy": "Auto",
+        "SLS.Crack.ToleranceLambda": 0.01,
+        "SLS.Crack.TensionZoneMode": "Effective",
+        "SLS.Crack.CoverDistanceMode": "GlobalExtreme",
+        "SLS.Crack.Phi1": 1.4,
+        "SLS.Crack.Phi2": 0.5,
+        "SLS.Crack.Phi3Mode": "Auto",
+        "SLS.Crack.Phi3": 1.0,
+        "SLS.Crack.PsiMode": "AlwaysCalc",
+        "SLS.Crack.SigmaSCrcAveragingMode": "AllSelected",
+        "SLS.Crack.PsiS": 1.0,
+        "SLS.Crack.SP35.GroupGapTolerance": 10.0,
+        "SLS.Crack.SP35.RowTolerance": 50.0,
+        "SLS.Crack.SP35.NeighborRatioLimit": 0.2,
+        "SLS.Crack.SP35.RadiusDiameterMode": "Max",
+        "SLS.Crack.SP35.InteractionRadiusMode": "6d",
+        "SLS.Crack.SP35.RebarProfile": "Periodic",
+        "AutoCAD.Common.ConcreteLayer": "Concrete",
+        "AutoCAD.Common.RebarLayer": "Reinf",
+        "AutoCAD.Common.SectionContourLayer": "RC_NDM_Contour",
+        "AutoCAD.Common.OpeningContourLayer": "RC_NDM_Opening",
+        "AutoCAD.Import.MinArea": 1e-06,
+        "AutoCAD.Export.CombinationID": "Worst",
+        "AutoCAD.Export.NeutralLineEnabled": "Yes",
+        "AutoCAD.Export.PrincipalAxesMode": "Transformed",
+        "AutoCAD.Export.LoadPointEnabled": "Yes",
+        "AutoCAD.Export.ContourEnabled": "Yes",
+        "AutoCAD.Export.ContourFormat": "Region",
+        "AutoCAD.Export.ExportCrackInteractionContour": "Yes",
+        "AutoCAD.Export.LabelMode": "NamesAndValues",
+        "AutoCAD.Export.CrackInteractionLayer": "RC_NDM_CrackArea",
+        "AutoCAD.Layer.ConcreteTension": "Anno_Concrete_Tension",
+        "AutoCAD.Layer.ConcreteCompression": "Anno_Concrete_Compression",
+        "AutoCAD.Layer.RebarTension": "Anno_Rebar_Tension",
+        "AutoCAD.Layer.RebarCompression": "Anno_Rebar_Compression",
+        "AutoCAD.Color.ConcreteTension": 9.0,
+        "AutoCAD.Color.ConcreteCompression": 5.0,
+        "AutoCAD.Color.RebarTension": 1.0,
+        "AutoCAD.Color.RebarCompression": 6.0,
+        "AutoCAD.Color.Neutral": 8.0,
+        "Plot.Enabled": "Yes",
+        "Plot.AutoUpdateAfterCalculation": "Yes",
+        "Plot.LoadCase": "Worst",
+        "Plot.ResultGradient": "Yes",
+        "Plot.ResultLabelsEnabled": "No",
+        "Plot.ResultLabelSpacing": 100.0,
+        "Plot.NeutralLineEnabled": "Yes",
+        "Plot.PrincipalAxesMode": "Transformed",
+        "Plot.LoadApplicationPointEnabled": "Yes",
+        "Plot.AxisLabelsEnabled": "Yes",
+        "Plot.AxisLabelsFontSize": 7.5,
+        "Plot.ContourEnabled": "Yes",
+        "Plot.LegendEnabled": "Yes",
+        "Plot.LegendMode": "Separate",
+        "Plot.Color.RebarCompression": "30,80,220",
+        "Plot.Color.RebarTension": "210,30,20",
+        "Plot.Color.ConcreteCompression": "125,35,210",
+        "Plot.Color.ConcreteTension": "0,155,85"
+      },
+      "NamedResultsAnchors": {
+        "rngBatchSummary": [
+          "Results",
+          1,
+          1,
+          1,
+          1
+        ],
+        "rngStrengthSummaryAnchor": [
+          "Results",
+          49,
+          1,
+          1,
+          1
+        ],
+        "rngCrackSummaryAnchor": [
+          "Results",
+          85,
+          1,
+          1,
+          1
+        ],
+        "rngStabilitySummaryAnchor": [
+          "Results",
+          122,
+          1,
+          1,
+          1
+        ],
+        "rngNDMSectionGeometry": [
+          "Results",
+          156,
+          1,
+          1,
+          1
+        ],
+        "rngNDMSectionContours": [
+          "Results",
+          156,
+          51,
+          1,
+          1
+        ],
+        "rngNDMSectionProperties": [
+          "Results",
+          156,
+          19,
+          1,
+          1
+        ],
+        "rngNDMMaterialDiagrams": [
+          "Results",
+          156,
+          27,
+          1,
+          1
+        ],
+        "rngNDMElementResults": [
+          "Results",
+          156,
+          40,
+          1,
+          1
+        ],
+        "rngNDMSectionAnnotations": [
+          "Results",
+          156,
+          70,
+          1,
+          1
+        ],
+        "rngNDMElementGeometry": [
+          "Results",
+          156,
+          96,
+          1,
+          1
+        ]
+      },
+      "SavedGeometryRows": 96,
+      "GeometryColumns": 16,
+      "GeometrySHA256ExceptRunID": "CF7DDC8F388994BBD17C3D44858884BEBEC9F3F2264892C6709B105047BDB0EE",
+      "MaterialTypeCounts": {
+        "Concrete": 88,
+        "Rebar": 8
+      },
+      "ConcreteShapeCounts": {
+        "Contour": 88
+      },
+      "ContoursRows": 8,
+      "ContoursSHA256ExceptRunID": "A0434C4D170112F2413B1DC6EF24A14CEA7D1C8DF654B0400098190904AA1EEC",
+      "Loops": [
+        {
+          "LoopID": "MATERIAL_1",
+          "Role": "Outer",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              0.0,
+              -0.0
+            ]
+          ],
+          "RadiusMinMM": 149.99999999999997,
+          "RadiusMaxMM": 150.00000000000003,
+          "SweepSumRad": 6.283185307179585,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "MATERIAL_2",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              30.0,
+              30.0
+            ]
+          ],
+          "RadiusMinMM": 42.0267771783657,
+          "RadiusMaxMM": 42.02677717836571,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        }
+      ],
+      "HasExactBoundaryTable": true,
+      "SourceUnchanged": true
+    },
+    {
+      "Path": "outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\RC_Section_NDM_Test_1232_30.xlsm",
+      "SHA256": "D7E038D81D52EF69643A2D13EAF5463F622F96110163DA681E234A881E50E23C",
+      "VBAProjectSHA256": "47A694B98490EFECE7C2B6BF5B0675EE400F6268BE9D9574A11509557CD31339",
+      "ZipValid": true,
+      "ActiveLoadCases": 30,
+      "LoadIDs": [
+        "PERF_01",
+        "PERF_02",
+        "PERF_03",
+        "PERF_04",
+        "PERF_05",
+        "PERF_06",
+        "PERF_07",
+        "PERF_08",
+        "PERF_09",
+        "PERF_10",
+        "PERF_11",
+        "PERF_12",
+        "PERF_13",
+        "PERF_14",
+        "PERF_15",
+        "PERF_16",
+        "PERF_17",
+        "PERF_18",
+        "PERF_19",
+        "PERF_20",
+        "PERF_21",
+        "PERF_22",
+        "PERF_23",
+        "PERF_24",
+        "PERF_25",
+        "PERF_26",
+        "PERF_27",
+        "PERF_28",
+        "PERF_29",
+        "PERF_30"
+      ],
+      "LoadMatrixSHA256": "1AE42AD87F8174E914AC118BF72585DF7E397D34A7A4E80205F7ADE671F006FB",
+      "SettingCount": 110,
+      "Settings": {
+        "General.ExecutionReportEnabled": "Yes",
+        "General.NonCriticalMessagesEnabled": "Yes",
+        "General.ReformatResultsEnabled": "Yes",
+        "Results.SnapshotStorage": "File",
+        "Results.SnapshotName": "NDM_Test_1232_30",
+        "General.WorstCombinationCriterion": "StrengthCapacity",
+        "General.PlateauSlopeFactor": 0.001,
+        "General.DiagramExtension": "Yes",
+        "Calculation.ZeroMomentPerDepth": 0.0,
+        "Geometry.Source": "AutoCAD",
+        "Geometry.Type": "HollowRectangle",
+        "Mesh.StepMode": "Auto 0.1",
+        "Mesh.StepX": 50.0,
+        "Mesh.StepY": 50.0,
+        "Mesh.BoundarySubdivisions": 2.0,
+        "Load.ReferenceOffsetX": 0.0,
+        "Load.ReferenceOffsetY": 0.0,
+        "Solver.Method": "Newton",
+        "Solver.MaxIterations": 80.0,
+        "Solver.LoadSteps": 1.0,
+        "Solver.ToleranceN": 0.0001,
+        "Solver.ToleranceMx": 0.0001,
+        "Solver.ToleranceMy": 0.0001,
+        "Solver.SecantMaxRestarts": 2.0,
+        "Capacity.SolutionStrategy": "Auto",
+        "Capacity.SolverMaxIterations": 60.0,
+        "Capacity.ToleranceStrain": 1e-05,
+        "Capacity.MaxLambda": 1024.0,
+        "Capacity.SearchMethod": "Bisection",
+        "Capacity.InitialLambda": 1.0,
+        "Capacity.ToleranceLambda": 0.01,
+        "Capacity.MaxRetries": 0.0,
+        "Capacity.BaseLoadSteps": 1.0,
+        "Stability.Code": "SP35",
+        "Stability.ElementLength": 8000.0,
+        "Stability.Mu1": 2.0,
+        "Stability.Mu2": 2.0,
+        "Stability.SystemType": "Determinate",
+        "Stability.ZeroMomentEccentricitySign1": 1.0,
+        "Stability.ZeroMomentEccentricitySign2": 1.0,
+        "Stability.AccidentalEccentricityMode": "AutoWithμL",
+        "Stability.AccidentalEccentricityUser1": 10.0,
+        "Stability.AccidentalEccentricityUser2": 10.0,
+        "Stability.AccidentalEccentricityPlanes": "OnlyMomentPlane",
+        "Stability.PhiLMode": "Auto",
+        "Stability.SP63.Ks": 0.7,
+        "Stability.SP63.DeltaEMin": 0.15,
+        "Stability.SP63.DeltaEMax": 1.5,
+        "Stability.SP35.PhiP": 1.0,
+        "Stability.SP35.NOverNcrLimit": 0.7,
+        "SLS.Crack.Code": "SP35",
+        "SLS.Crack.Allowable": 0.3,
+        "SLS.Crack.InitiationSolutionStrategy": "Auto",
+        "SLS.Crack.ToleranceLambda": 0.01,
+        "SLS.Crack.TensionZoneMode": "Effective",
+        "SLS.Crack.CoverDistanceMode": "GlobalExtreme",
+        "SLS.Crack.Phi1": 1.4,
+        "SLS.Crack.Phi2": 0.5,
+        "SLS.Crack.Phi3Mode": "Auto",
+        "SLS.Crack.Phi3": 1.0,
+        "SLS.Crack.PsiMode": "AlwaysCalc",
+        "SLS.Crack.SigmaSCrcAveragingMode": "AllSelected",
+        "SLS.Crack.PsiS": 1.0,
+        "SLS.Crack.SP35.GroupGapTolerance": 10.0,
+        "SLS.Crack.SP35.RowTolerance": 50.0,
+        "SLS.Crack.SP35.NeighborRatioLimit": 0.2,
+        "SLS.Crack.SP35.RadiusDiameterMode": "Max",
+        "SLS.Crack.SP35.InteractionRadiusMode": "6d",
+        "SLS.Crack.SP35.RebarProfile": "Periodic",
+        "AutoCAD.Common.ConcreteLayer": "Concrete",
+        "AutoCAD.Common.RebarLayer": "Reinf",
+        "AutoCAD.Common.SectionContourLayer": "RC_NDM_Contour",
+        "AutoCAD.Common.OpeningContourLayer": "RC_NDM_Opening",
+        "AutoCAD.Import.MinArea": 1e-06,
+        "AutoCAD.Export.CombinationID": "Worst",
+        "AutoCAD.Export.NeutralLineEnabled": "Yes",
+        "AutoCAD.Export.PrincipalAxesMode": "Transformed",
+        "AutoCAD.Export.LoadPointEnabled": "Yes",
+        "AutoCAD.Export.ContourEnabled": "Yes",
+        "AutoCAD.Export.ContourFormat": "Polyline",
+        "AutoCAD.Export.ExportCrackInteractionContour": "Yes",
+        "AutoCAD.Export.LabelMode": "NamesAndValues",
+        "AutoCAD.Export.CrackInteractionLayer": "RC_NDM_CrackArea",
+        "AutoCAD.Layer.ConcreteTension": "Anno_Concrete_Tension",
+        "AutoCAD.Layer.ConcreteCompression": "Anno_Concrete_Compression",
+        "AutoCAD.Layer.RebarTension": "Anno_Rebar_Tension",
+        "AutoCAD.Layer.RebarCompression": "Anno_Rebar_Compression",
+        "AutoCAD.Color.ConcreteTension": 9.0,
+        "AutoCAD.Color.ConcreteCompression": 5.0,
+        "AutoCAD.Color.RebarTension": 1.0,
+        "AutoCAD.Color.RebarCompression": 6.0,
+        "AutoCAD.Color.Neutral": 8.0,
+        "Plot.Enabled": "Yes",
+        "Plot.AutoUpdateAfterCalculation": "Yes",
+        "Plot.LoadCase": "PERF_01",
+        "Plot.ResultGradient": "Yes",
+        "Plot.ResultLabelsEnabled": "No",
+        "Plot.ResultLabelSpacing": 100.0,
+        "Plot.NeutralLineEnabled": "Yes",
+        "Plot.PrincipalAxesMode": "Transformed",
+        "Plot.LoadApplicationPointEnabled": "Yes",
+        "Plot.AxisLabelsEnabled": "Yes",
+        "Plot.AxisLabelsFontSize": 7.5,
+        "Plot.ContourEnabled": "Yes",
+        "Plot.LegendEnabled": "Yes",
+        "Plot.LegendMode": "Separate",
+        "Plot.Color.RebarCompression": "30,80,220",
+        "Plot.Color.RebarTension": "210,30,20",
+        "Plot.Color.ConcreteCompression": "125,35,210",
+        "Plot.Color.ConcreteTension": "0,155,85"
+      },
+      "NamedResultsAnchors": {
+        "rngBatchSummary": [
+          "Results",
+          1,
+          1,
+          1,
+          1
+        ],
+        "rngStrengthSummaryAnchor": [
+          "Results",
+          49,
+          1,
+          1,
+          1
+        ],
+        "rngCrackSummaryAnchor": [
+          "Results",
+          85,
+          1,
+          1,
+          1
+        ],
+        "rngStabilitySummaryAnchor": [
+          "Results",
+          122,
+          1,
+          1,
+          1
+        ],
+        "rngNDMSectionGeometry": [
+          "Results",
+          156,
+          1,
+          1,
+          1
+        ],
+        "rngNDMSectionContours": [
+          "Results",
+          156,
+          55,
+          1,
+          1
+        ],
+        "rngNDMSectionProperties": [
+          "Results",
+          156,
+          19,
+          1,
+          1
+        ],
+        "rngNDMMaterialDiagrams": [
+          "Results",
+          156,
+          27,
+          1,
+          1
+        ],
+        "rngNDMElementResults": [
+          "Results",
+          156,
+          40,
+          1,
+          1
+        ],
+        "rngNDMSectionAnnotations": [
+          "Results",
+          156,
+          74,
+          1,
+          1
+        ]
+      },
+      "SavedGeometryRows": 1240,
+      "GeometryColumns": 16,
+      "GeometrySHA256ExceptRunID": "F7712473FD291A0B8A0125776F550FD92965C01139FED6769C641870739AC709",
+      "MaterialTypeCounts": {
+        "Concrete": 1232,
+        "Rebar": 8
+      },
+      "ConcreteShapeCounts": {
+        "Rectangle": 1232
+      },
+      "ContoursRows": 12,
+      "ContoursSHA256ExceptRunID": "48164A9B7D3FC50382411422591C0CE9777ABEF4AE0718929552EA6474EBD554",
+      "Loops": [
+        {
+          "LoopID": "PERFORMANCE_CAD_1",
+          "Role": "Outer",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "RadiusMinMM": 200.0,
+          "RadiusMaxMM": 200.0,
+          "SweepSumRad": 6.283185307179586,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "PERFORMANCE_CAD_2",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              -45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999993,
+          "RadiusMaxMM": 25.000000000000007,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "PERFORMANCE_CAD_3",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999993,
+          "RadiusMaxMM": 25.000000000000007,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        }
+      ],
+      "HasExactBoundaryTable": false,
+      "SourceUnchanged": true
+    },
+    {
+      "Path": "outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\RC_Section_NDM_Test_1232_30_ExcelFile.xlsm",
+      "SHA256": "C456377A98C1C71D5128DA7E958DE1EA8349CF587E9B9BE96A8E5F42785A042E",
+      "VBAProjectSHA256": "FC11B41AA45A3B28557F180654A4B80B5F95754851C0F82DD20A58D0D16721AB",
+      "ZipValid": true,
+      "ActiveLoadCases": 30,
+      "LoadIDs": [
+        "PERF_01",
+        "PERF_02",
+        "PERF_03",
+        "PERF_04",
+        "PERF_05",
+        "PERF_06",
+        "PERF_07",
+        "PERF_08",
+        "PERF_09",
+        "PERF_10",
+        "PERF_11",
+        "PERF_12",
+        "PERF_13",
+        "PERF_14",
+        "PERF_15",
+        "PERF_16",
+        "PERF_17",
+        "PERF_18",
+        "PERF_19",
+        "PERF_20",
+        "PERF_21",
+        "PERF_22",
+        "PERF_23",
+        "PERF_24",
+        "PERF_25",
+        "PERF_26",
+        "PERF_27",
+        "PERF_28",
+        "PERF_29",
+        "PERF_30"
+      ],
+      "LoadMatrixSHA256": "1AE42AD87F8174E914AC118BF72585DF7E397D34A7A4E80205F7ADE671F006FB",
+      "SettingCount": 110,
+      "Settings": {
+        "General.ExecutionReportEnabled": "Yes",
+        "General.NonCriticalMessagesEnabled": "Yes",
+        "General.ReformatResultsEnabled": "Yes",
+        "Results.SnapshotStorage": "Excel",
+        "Results.SnapshotName": "NDM_Test_1232_30",
+        "General.WorstCombinationCriterion": "StrengthCapacity",
+        "General.PlateauSlopeFactor": 0.001,
+        "General.DiagramExtension": "Yes",
+        "Calculation.ZeroMomentPerDepth": 0.0,
+        "Geometry.Source": "AutoCAD",
+        "Geometry.Type": "HollowRectangle",
+        "Mesh.StepMode": "Auto 0.1",
+        "Mesh.StepX": 50.0,
+        "Mesh.StepY": 50.0,
+        "Mesh.BoundarySubdivisions": 2.0,
+        "Load.ReferenceOffsetX": 0.0,
+        "Load.ReferenceOffsetY": 0.0,
+        "Solver.Method": "Newton",
+        "Solver.MaxIterations": 80.0,
+        "Solver.LoadSteps": 1.0,
+        "Solver.ToleranceN": 0.0001,
+        "Solver.ToleranceMx": 0.0001,
+        "Solver.ToleranceMy": 0.0001,
+        "Solver.SecantMaxRestarts": 2.0,
+        "Capacity.SolutionStrategy": "Auto",
+        "Capacity.SolverMaxIterations": 60.0,
+        "Capacity.ToleranceStrain": 1e-05,
+        "Capacity.MaxLambda": 1024.0,
+        "Capacity.SearchMethod": "Bisection",
+        "Capacity.InitialLambda": 1.0,
+        "Capacity.ToleranceLambda": 0.01,
+        "Capacity.MaxRetries": 0.0,
+        "Capacity.BaseLoadSteps": 1.0,
+        "Stability.Code": "SP35",
+        "Stability.ElementLength": 8000.0,
+        "Stability.Mu1": 2.0,
+        "Stability.Mu2": 2.0,
+        "Stability.SystemType": "Determinate",
+        "Stability.ZeroMomentEccentricitySign1": 1.0,
+        "Stability.ZeroMomentEccentricitySign2": 1.0,
+        "Stability.AccidentalEccentricityMode": "AutoWithμL",
+        "Stability.AccidentalEccentricityUser1": 10.0,
+        "Stability.AccidentalEccentricityUser2": 10.0,
+        "Stability.AccidentalEccentricityPlanes": "OnlyMomentPlane",
+        "Stability.PhiLMode": "Auto",
+        "Stability.SP63.Ks": 0.7,
+        "Stability.SP63.DeltaEMin": 0.15,
+        "Stability.SP63.DeltaEMax": 1.5,
+        "Stability.SP35.PhiP": 1.0,
+        "Stability.SP35.NOverNcrLimit": 0.7,
+        "SLS.Crack.Code": "SP35",
+        "SLS.Crack.Allowable": 0.3,
+        "SLS.Crack.InitiationSolutionStrategy": "Auto",
+        "SLS.Crack.ToleranceLambda": 0.01,
+        "SLS.Crack.TensionZoneMode": "Effective",
+        "SLS.Crack.CoverDistanceMode": "GlobalExtreme",
+        "SLS.Crack.Phi1": 1.4,
+        "SLS.Crack.Phi2": 0.5,
+        "SLS.Crack.Phi3Mode": "Auto",
+        "SLS.Crack.Phi3": 1.0,
+        "SLS.Crack.PsiMode": "AlwaysCalc",
+        "SLS.Crack.SigmaSCrcAveragingMode": "AllSelected",
+        "SLS.Crack.PsiS": 1.0,
+        "SLS.Crack.SP35.GroupGapTolerance": 10.0,
+        "SLS.Crack.SP35.RowTolerance": 50.0,
+        "SLS.Crack.SP35.NeighborRatioLimit": 0.2,
+        "SLS.Crack.SP35.RadiusDiameterMode": "Max",
+        "SLS.Crack.SP35.InteractionRadiusMode": "6d",
+        "SLS.Crack.SP35.RebarProfile": "Periodic",
+        "AutoCAD.Common.ConcreteLayer": "Concrete",
+        "AutoCAD.Common.RebarLayer": "Reinf",
+        "AutoCAD.Common.SectionContourLayer": "RC_NDM_Contour",
+        "AutoCAD.Common.OpeningContourLayer": "RC_NDM_Opening",
+        "AutoCAD.Import.MinArea": 1e-06,
+        "AutoCAD.Export.CombinationID": "Worst",
+        "AutoCAD.Export.NeutralLineEnabled": "Yes",
+        "AutoCAD.Export.PrincipalAxesMode": "Transformed",
+        "AutoCAD.Export.LoadPointEnabled": "Yes",
+        "AutoCAD.Export.ContourEnabled": "Yes",
+        "AutoCAD.Export.ContourFormat": "Polyline",
+        "AutoCAD.Export.ExportCrackInteractionContour": "Yes",
+        "AutoCAD.Export.LabelMode": "NamesAndValues",
+        "AutoCAD.Export.CrackInteractionLayer": "RC_NDM_CrackArea",
+        "AutoCAD.Layer.ConcreteTension": "Anno_Concrete_Tension",
+        "AutoCAD.Layer.ConcreteCompression": "Anno_Concrete_Compression",
+        "AutoCAD.Layer.RebarTension": "Anno_Rebar_Tension",
+        "AutoCAD.Layer.RebarCompression": "Anno_Rebar_Compression",
+        "AutoCAD.Color.ConcreteTension": 9.0,
+        "AutoCAD.Color.ConcreteCompression": 5.0,
+        "AutoCAD.Color.RebarTension": 1.0,
+        "AutoCAD.Color.RebarCompression": 6.0,
+        "AutoCAD.Color.Neutral": 8.0,
+        "Plot.Enabled": "Yes",
+        "Plot.AutoUpdateAfterCalculation": "Yes",
+        "Plot.LoadCase": "PERF_01",
+        "Plot.ResultGradient": "Yes",
+        "Plot.ResultLabelsEnabled": "No",
+        "Plot.ResultLabelSpacing": 100.0,
+        "Plot.NeutralLineEnabled": "Yes",
+        "Plot.PrincipalAxesMode": "Transformed",
+        "Plot.LoadApplicationPointEnabled": "Yes",
+        "Plot.AxisLabelsEnabled": "Yes",
+        "Plot.AxisLabelsFontSize": 7.5,
+        "Plot.ContourEnabled": "Yes",
+        "Plot.LegendEnabled": "Yes",
+        "Plot.LegendMode": "Separate",
+        "Plot.Color.RebarCompression": "30,80,220",
+        "Plot.Color.RebarTension": "210,30,20",
+        "Plot.Color.ConcreteCompression": "125,35,210",
+        "Plot.Color.ConcreteTension": "0,155,85"
+      },
+      "NamedResultsAnchors": {
+        "rngBatchSummary": [
+          "Results",
+          1,
+          1,
+          1,
+          1
+        ],
+        "rngStrengthSummaryAnchor": [
+          "Results",
+          49,
+          1,
+          1,
+          1
+        ],
+        "rngCrackSummaryAnchor": [
+          "Results",
+          85,
+          1,
+          1,
+          1
+        ],
+        "rngStabilitySummaryAnchor": [
+          "Results",
+          122,
+          1,
+          1,
+          1
+        ],
+        "rngNDMSectionGeometry": [
+          "Results",
+          156,
+          1,
+          1,
+          1
+        ],
+        "rngNDMSectionContours": [
+          "Results",
+          156,
+          51,
+          1,
+          1
+        ],
+        "rngNDMSectionProperties": [
+          "Results",
+          156,
+          19,
+          1,
+          1
+        ],
+        "rngNDMMaterialDiagrams": [
+          "Results",
+          156,
+          27,
+          1,
+          1
+        ],
+        "rngNDMElementResults": [
+          "Results",
+          156,
+          40,
+          1,
+          1
+        ],
+        "rngNDMSectionAnnotations": [
+          "Results",
+          156,
+          70,
+          1,
+          1
+        ]
+      },
+      "SavedGeometryRows": 1240,
+      "GeometryColumns": 16,
+      "GeometrySHA256ExceptRunID": "F7712473FD291A0B8A0125776F550FD92965C01139FED6769C641870739AC709",
+      "MaterialTypeCounts": {
+        "Concrete": 1232,
+        "Rebar": 8
+      },
+      "ConcreteShapeCounts": {
+        "Rectangle": 1232
+      },
+      "ContoursRows": 12,
+      "ContoursSHA256ExceptRunID": "48164A9B7D3FC50382411422591C0CE9777ABEF4AE0718929552EA6474EBD554",
+      "Loops": [
+        {
+          "LoopID": "PERFORMANCE_CAD_1",
+          "Role": "Outer",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "RadiusMinMM": 200.0,
+          "RadiusMaxMM": 200.0,
+          "SweepSumRad": 6.283185307179586,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "PERFORMANCE_CAD_2",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              -45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999993,
+          "RadiusMaxMM": 25.000000000000007,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "PERFORMANCE_CAD_3",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999993,
+          "RadiusMaxMM": 25.000000000000007,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        }
+      ],
+      "HasExactBoundaryTable": false,
+      "SourceUnchanged": true
+    },
+    {
+      "Path": "outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\RC_Section_NDM_Test_1232_30_ndm.xlsm",
+      "SHA256": "236045105178BF4BCFCDBBF0D09D64F8EFF4B9802C520907AB22357E7B0DF5F2",
+      "VBAProjectSHA256": "65E048A6368B4330C158019D2FEFBEB82A4FA8E332D768B078B7C4A08772CFAC",
+      "ZipValid": true,
+      "ActiveLoadCases": 30,
+      "LoadIDs": [
+        "PERF_01",
+        "PERF_02",
+        "PERF_03",
+        "PERF_04",
+        "PERF_05",
+        "PERF_06",
+        "PERF_07",
+        "PERF_08",
+        "PERF_09",
+        "PERF_10",
+        "PERF_11",
+        "PERF_12",
+        "PERF_13",
+        "PERF_14",
+        "PERF_15",
+        "PERF_16",
+        "PERF_17",
+        "PERF_18",
+        "PERF_19",
+        "PERF_20",
+        "PERF_21",
+        "PERF_22",
+        "PERF_23",
+        "PERF_24",
+        "PERF_25",
+        "PERF_26",
+        "PERF_27",
+        "PERF_28",
+        "PERF_29",
+        "PERF_30"
+      ],
+      "LoadMatrixSHA256": "1AE42AD87F8174E914AC118BF72585DF7E397D34A7A4E80205F7ADE671F006FB",
+      "SettingCount": 110,
+      "Settings": {
+        "General.ExecutionReportEnabled": "Yes",
+        "General.NonCriticalMessagesEnabled": "Yes",
+        "General.ReformatResultsEnabled": "Yes",
+        "Results.SnapshotStorage": "Excel",
+        "Results.SnapshotName": "NDM_Test_1232_30",
+        "General.WorstCombinationCriterion": "StrengthCapacity",
+        "General.PlateauSlopeFactor": 0.001,
+        "General.DiagramExtension": "Yes",
+        "Calculation.ZeroMomentPerDepth": 0.0,
+        "Geometry.Source": "AutoCAD",
+        "Geometry.Type": "HollowRectangle",
+        "Mesh.StepMode": "Auto 0.1",
+        "Mesh.StepX": 50.0,
+        "Mesh.StepY": 50.0,
+        "Mesh.BoundarySubdivisions": 2.0,
+        "Load.ReferenceOffsetX": 0.0,
+        "Load.ReferenceOffsetY": 0.0,
+        "Solver.Method": "Newton",
+        "Solver.MaxIterations": 80.0,
+        "Solver.LoadSteps": 1.0,
+        "Solver.ToleranceN": 0.0001,
+        "Solver.ToleranceMx": 0.0001,
+        "Solver.ToleranceMy": 0.0001,
+        "Solver.SecantMaxRestarts": 2.0,
+        "Capacity.SolutionStrategy": "Auto",
+        "Capacity.SolverMaxIterations": 60.0,
+        "Capacity.ToleranceStrain": 1e-05,
+        "Capacity.MaxLambda": 1024.0,
+        "Capacity.SearchMethod": "Bisection",
+        "Capacity.InitialLambda": 1.0,
+        "Capacity.ToleranceLambda": 0.01,
+        "Capacity.MaxRetries": 0.0,
+        "Capacity.BaseLoadSteps": 1.0,
+        "Stability.Code": "SP35",
+        "Stability.ElementLength": 8000.0,
+        "Stability.Mu1": 2.0,
+        "Stability.Mu2": 2.0,
+        "Stability.SystemType": "Determinate",
+        "Stability.ZeroMomentEccentricitySign1": 1.0,
+        "Stability.ZeroMomentEccentricitySign2": 1.0,
+        "Stability.AccidentalEccentricityMode": "AutoWithμL",
+        "Stability.AccidentalEccentricityUser1": 10.0,
+        "Stability.AccidentalEccentricityUser2": 10.0,
+        "Stability.AccidentalEccentricityPlanes": "OnlyMomentPlane",
+        "Stability.PhiLMode": "Auto",
+        "Stability.SP63.Ks": 0.7,
+        "Stability.SP63.DeltaEMin": 0.15,
+        "Stability.SP63.DeltaEMax": 1.5,
+        "Stability.SP35.PhiP": 1.0,
+        "Stability.SP35.NOverNcrLimit": 0.7,
+        "SLS.Crack.Code": "SP35",
+        "SLS.Crack.Allowable": 0.3,
+        "SLS.Crack.InitiationSolutionStrategy": "Auto",
+        "SLS.Crack.ToleranceLambda": 0.01,
+        "SLS.Crack.TensionZoneMode": "Effective",
+        "SLS.Crack.CoverDistanceMode": "GlobalExtreme",
+        "SLS.Crack.Phi1": 1.4,
+        "SLS.Crack.Phi2": 0.5,
+        "SLS.Crack.Phi3Mode": "Auto",
+        "SLS.Crack.Phi3": 1.0,
+        "SLS.Crack.PsiMode": "AlwaysCalc",
+        "SLS.Crack.SigmaSCrcAveragingMode": "AllSelected",
+        "SLS.Crack.PsiS": 1.0,
+        "SLS.Crack.SP35.GroupGapTolerance": 10.0,
+        "SLS.Crack.SP35.RowTolerance": 50.0,
+        "SLS.Crack.SP35.NeighborRatioLimit": 0.2,
+        "SLS.Crack.SP35.RadiusDiameterMode": "Max",
+        "SLS.Crack.SP35.InteractionRadiusMode": "6d",
+        "SLS.Crack.SP35.RebarProfile": "Periodic",
+        "AutoCAD.Common.ConcreteLayer": "Concrete",
+        "AutoCAD.Common.RebarLayer": "Reinf",
+        "AutoCAD.Common.SectionContourLayer": "RC_NDM_Contour",
+        "AutoCAD.Common.OpeningContourLayer": "RC_NDM_Opening",
+        "AutoCAD.Import.MinArea": 1e-06,
+        "AutoCAD.Export.CombinationID": "Worst",
+        "AutoCAD.Export.NeutralLineEnabled": "Yes",
+        "AutoCAD.Export.PrincipalAxesMode": "Transformed",
+        "AutoCAD.Export.LoadPointEnabled": "Yes",
+        "AutoCAD.Export.ContourEnabled": "Yes",
+        "AutoCAD.Export.ContourFormat": "Polyline",
+        "AutoCAD.Export.ExportCrackInteractionContour": "Yes",
+        "AutoCAD.Export.LabelMode": "NamesAndValues",
+        "AutoCAD.Export.CrackInteractionLayer": "RC_NDM_CrackArea",
+        "AutoCAD.Layer.ConcreteTension": "Anno_Concrete_Tension",
+        "AutoCAD.Layer.ConcreteCompression": "Anno_Concrete_Compression",
+        "AutoCAD.Layer.RebarTension": "Anno_Rebar_Tension",
+        "AutoCAD.Layer.RebarCompression": "Anno_Rebar_Compression",
+        "AutoCAD.Color.ConcreteTension": 9.0,
+        "AutoCAD.Color.ConcreteCompression": 5.0,
+        "AutoCAD.Color.RebarTension": 1.0,
+        "AutoCAD.Color.RebarCompression": 6.0,
+        "AutoCAD.Color.Neutral": 8.0,
+        "Plot.Enabled": "Yes",
+        "Plot.AutoUpdateAfterCalculation": "Yes",
+        "Plot.LoadCase": "PERF_01",
+        "Plot.ResultGradient": "Yes",
+        "Plot.ResultLabelsEnabled": "No",
+        "Plot.ResultLabelSpacing": 100.0,
+        "Plot.NeutralLineEnabled": "Yes",
+        "Plot.PrincipalAxesMode": "Transformed",
+        "Plot.LoadApplicationPointEnabled": "Yes",
+        "Plot.AxisLabelsEnabled": "Yes",
+        "Plot.AxisLabelsFontSize": 7.5,
+        "Plot.ContourEnabled": "Yes",
+        "Plot.LegendEnabled": "Yes",
+        "Plot.LegendMode": "Separate",
+        "Plot.Color.RebarCompression": "30,80,220",
+        "Plot.Color.RebarTension": "210,30,20",
+        "Plot.Color.ConcreteCompression": "125,35,210",
+        "Plot.Color.ConcreteTension": "0,155,85"
+      },
+      "NamedResultsAnchors": {
+        "rngBatchSummary": [
+          "Results",
+          1,
+          1,
+          1,
+          1
+        ],
+        "rngStrengthSummaryAnchor": [
+          "Results",
+          49,
+          1,
+          1,
+          1
+        ],
+        "rngCrackSummaryAnchor": [
+          "Results",
+          85,
+          1,
+          1,
+          1
+        ],
+        "rngStabilitySummaryAnchor": [
+          "Results",
+          122,
+          1,
+          1,
+          1
+        ],
+        "rngNDMSectionGeometry": [
+          "Results",
+          156,
+          1,
+          1,
+          1
+        ],
+        "rngNDMSectionContours": [
+          "Results",
+          156,
+          55,
+          1,
+          1
+        ],
+        "rngNDMSectionProperties": [
+          "Results",
+          156,
+          19,
+          1,
+          1
+        ],
+        "rngNDMMaterialDiagrams": [
+          "Results",
+          156,
+          27,
+          1,
+          1
+        ],
+        "rngNDMElementResults": [
+          "Results",
+          156,
+          40,
+          1,
+          1
+        ],
+        "rngNDMSectionAnnotations": [
+          "Results",
+          156,
+          74,
+          1,
+          1
+        ]
+      },
+      "SavedGeometryRows": 1240,
+      "GeometryColumns": 16,
+      "GeometrySHA256ExceptRunID": "F7712473FD291A0B8A0125776F550FD92965C01139FED6769C641870739AC709",
+      "MaterialTypeCounts": {
+        "Concrete": 1232,
+        "Rebar": 8
+      },
+      "ConcreteShapeCounts": {
+        "Rectangle": 1232
+      },
+      "ContoursRows": 12,
+      "ContoursSHA256ExceptRunID": "48164A9B7D3FC50382411422591C0CE9777ABEF4AE0718929552EA6474EBD554",
+      "Loops": [
+        {
+          "LoopID": "PERFORMANCE_CAD_1",
+          "Role": "Outer",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "RadiusMinMM": 200.0,
+          "RadiusMaxMM": 200.0,
+          "SweepSumRad": 6.283185307179586,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "PERFORMANCE_CAD_2",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              -45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999993,
+          "RadiusMaxMM": 25.000000000000007,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "PERFORMANCE_CAD_3",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999993,
+          "RadiusMaxMM": 25.000000000000007,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        }
+      ],
+      "HasExactBoundaryTable": false,
+      "SourceUnchanged": true
+    }
+  ],
+  "SnapshotFiles": [
+    {
+      "Path": "outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\NDM_Test_1232_30.ndm",
+      "SHA256": "47983C6FF4DE551A96288F63D140C45F1DFD2CAB994A22880C082653320895FD",
+      "FooterHashValidated": true,
+      "Header": "NDMSNP04",
+      "ElapsedSavedSeconds": 9.89453125,
+      "Tables": {
+        "Summary": [
+          42,
+          26
+        ],
+        "Strength.Headers": [
+          4,
+          49
+        ],
+        "Strength.Data": [
+          30,
+          49
+        ],
+        "Cracks.Headers": [
+          4,
+          72
+        ],
+        "Cracks.Data": [
+          30,
+          72
+        ],
+        "Stability.Labels": [
+          1,
+          84
+        ],
+        "Stability.Data": [
+          30,
+          84
+        ],
+        "rngNDMSectionGeometry": [
+          1241,
+          16
+        ],
+        "rngNDMSectionContours": [
+          13,
+          17
+        ],
+        "rngNDMElementResults": [
+          146321,
+          9
+        ],
+        "rngNDMSectionProperties": [
+          69,
+          6
+        ],
+        "LoadCase.Properties": [
+          2229,
+          6
+        ],
+        "rngNDMMaterialDiagrams": [
+          63,
+          11
+        ],
+        "rngNDMSectionAnnotations": [
+          4,
+          24
+        ],
+        "LoadCase.Annotations": [
+          183,
+          24
+        ],
+        "Calculation.Profiles": [
+          32,
+          7
+        ]
+      },
+      "GeometrySHA256ExceptRunID": "C85C26963658FC9DF880FB28D421227472751D7CF29619EF5C1EDAACC82B9D0B",
+      "MaterialTypeCounts": {
+        "Concrete": 1232,
+        "Rebar": 8
+      },
+      "ContoursSHA256ExceptRunID": "647E8023E68DF48BCB63B7891008384F3E87F8F9AB89C3DA5BD7E307046C4A0D",
+      "Loops": [
+        {
+          "LoopID": "MATERIAL_1",
+          "Role": "Outer",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "RadiusMinMM": 199.99999999999966,
+          "RadiusMaxMM": 199.9999999999997,
+          "SweepSumRad": 6.2831853071796,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "MATERIAL_2",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              -45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999954,
+          "RadiusMaxMM": 24.999999999999968,
+          "SweepSumRad": -6.2831853071796,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "MATERIAL_3",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999954,
+          "RadiusMaxMM": 24.999999999999968,
+          "SweepSumRad": -6.2831853071796,
+          "FullCircle": true
+        }
+      ],
+      "SourceUnchanged": true
+    },
+    {
+      "Path": "outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\NDM_Test_1232_30.ndms",
+      "SHA256": "0766A5B4B40AADAA52CB2DC6B583A21BC1081E9AB04CBC4B0157C841EB866F0B",
+      "FooterHashValidated": true,
+      "Header": "NDMSNP04",
+      "ElapsedSavedSeconds": 9.171875,
+      "Tables": {
+        "Summary": [
+          42,
+          26
+        ],
+        "Strength.Headers": [
+          4,
+          49
+        ],
+        "Strength.Data": [
+          30,
+          49
+        ],
+        "Cracks.Headers": [
+          4,
+          72
+        ],
+        "Cracks.Data": [
+          30,
+          72
+        ],
+        "Stability.Labels": [
+          1,
+          84
+        ],
+        "Stability.Data": [
+          30,
+          84
+        ],
+        "rngNDMSectionGeometry": [
+          1241,
+          16
+        ],
+        "rngNDMSectionContours": [
+          13,
+          17
+        ],
+        "rngNDMElementResults": [
+          114081,
+          9
+        ],
+        "rngNDMSectionProperties": [
+          69,
+          6
+        ],
+        "LoadCase.Properties": [
+          1891,
+          6
+        ],
+        "rngNDMMaterialDiagrams": [
+          51,
+          11
+        ],
+        "rngNDMSectionAnnotations": [
+          4,
+          24
+        ],
+        "LoadCase.Annotations": [
+          222,
+          24
+        ],
+        "Calculation.Profiles": [
+          32,
+          7
+        ]
+      },
+      "GeometrySHA256ExceptRunID": "F7712473FD291A0B8A0125776F550FD92965C01139FED6769C641870739AC709",
+      "MaterialTypeCounts": {
+        "Concrete": 1232,
+        "Rebar": 8
+      },
+      "ContoursSHA256ExceptRunID": "48164A9B7D3FC50382411422591C0CE9777ABEF4AE0718929552EA6474EBD554",
+      "Loops": [
+        {
+          "LoopID": "PERFORMANCE_CAD_1",
+          "Role": "Outer",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "RadiusMinMM": 200.0,
+          "RadiusMaxMM": 200.0,
+          "SweepSumRad": 6.283185307179586,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "PERFORMANCE_CAD_2",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              -45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999993,
+          "RadiusMaxMM": 25.000000000000007,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        },
+        {
+          "LoopID": "PERFORMANCE_CAD_3",
+          "Role": "Opening",
+          "Edges": 4,
+          "AllArc": true,
+          "CentersMM": [
+            [
+              45.0,
+              60.0
+            ]
+          ],
+          "RadiusMinMM": 24.999999999999993,
+          "RadiusMaxMM": 25.000000000000007,
+          "SweepSumRad": -6.283185307179586,
+          "FullCircle": true
+        }
+      ],
+      "SourceUnchanged": true
+    }
+  ],
+  "SelectedOrigin": "outputs/01a12ece-8192-7141-89b3-f83f1176184c/RC_Section_NDM_Test_1232_30_ExcelFile.xlsm",
+  "SelectionReason": "30 saved PERF load cases; complete physical Excel results; compact1232concrete+8rebar; circular Outer and two circular Opening; old anchors match new build and new exact-boundary header can be retained. Backup0F6F has only1activeLC.",
+  "SourceUserBackupSelected": false,
+  "RootOrUserBookChanged": false,
+  "ExcelStarted": false,
+  "SelectedOriginSHA256": "C456377A98C1C71D5128DA7E958DE1EA8349CF587E9B9BE96A8E5F42785A042E",
+  "HistoricalReport": {
+    "Path": "outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\RC_Section_NDM_execution_report.txt",
+    "SHA256": "C89B3D435BC00E78BF29654728C485E4F79258F0D35BED30EA70F7E3AE8CC615",
+    "RelevantLines": [],
+    "BatchSolverSeconds": 4.4609375,
+    "IsFreshBenchmark": false,
+    "MeetsTenSecondFullBatchLimit": false,
+    "SavedSnapshotElapsedNotEquivalentToFullCycle": true,
+    "HistoricalReportElapsedSeconds": 10.87109375,
+    "ExternalWallTimeAvailable": false,
+    "ReportTimerExcludesEarlySettingsAndLateCalculateGuardWork": true
+  }
+}

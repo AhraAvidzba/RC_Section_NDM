@@ -452,7 +452,7 @@ Private Sub TestCheckFormationSelectors(ByRef stats As TConfigTestStats, ByVal s
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Отсутствующая строка, пустая ячейка, TODO и неизвестный выбор должны
+' Отсутствующая строка, пустая ячейка, текстовый заполнитель и неизвестный выбор должны
 ' давать InputErr с местом и действием, без solve и без подстановки дефолта.
 ' После возврата каждого ключа выполняется настоящий успешный расчет.
 Private Sub TestCheckInvalidSelectors(ByRef stats As TConfigTestStats, ByVal systemRange As Object, _
@@ -842,12 +842,39 @@ Public Function RunAudit03SettingsTableGuardTests(Optional ByRef passed As Long 
         Optional ByRef failed As Long = 0) As String
     Dim stats As TConfigTestStats
     TestExplicitInputOutcome stats
+    TestMissingSettingsSectionNavigation stats
     TestAudit03SettingsTableGuards stats
     TestAudit03ProgressFileFailure stats
     TestLogLine stats, "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03SettingsTableGuardTests = stats.Report
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отсутствующий ключ направляет к действующей группе Config без подстановки значения.
+' Проверяются все шесть перенесённых строк и независимые группы геометрии, сетки и общих настроек.
+Private Sub TestMissingSettingsSectionNavigation(ByRef stats As TConfigTestStats)
+    Dim settings As CSystemSettingsReader, keys As Variant, sections As Variant
+    Dim index As Long, location As String, message As String
+    Set settings = New CSystemSettingsReader
+    keys = Array("Geometry.Source", "Geometry.Type", "Mesh.MinElementArea", "Mesh.StepMode", _
+        "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", "Calculation.ZeroMomentPerDepth", _
+        "General.WorstCombinationCriterion", "General.PlateauSlopeFactor", "General.DiagramExtension", _
+        "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.ReformatResultsEnabled")
+    sections = Array("Геометрия", "Геометрия", "Сетка геометрии", "Сетка геометрии", _
+        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", _
+        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", _
+        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", "Общие", "Общие", "Общие")
+    For index = LBound(keys) To UBound(keys)
+        location = settings.InputLocation(CStr(keys(index)))
+        TestCheck stats, "settings.missing.section." & CStr(keys(index)), _
+            location = "лист Config, раздел """ & CStr(sections(index)) & """"
+        message = settings.InputErrorMessage(CStr(keys(index)), "Строка отсутствует.", vbNullString)
+        TestCheck stats, "settings.missing.message." & CStr(keys(index)), _
+            InStr(message, CStr(keys(index))) > 0 And InStr(message, location) > 0 And _
+            InStr(message, "Строка отсутствует.") > 0
+    Next index
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохраняет исходную ошибку reader-а отдельно от успешного recovery.
@@ -1099,7 +1126,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохраняет исходную ошибку чтения без подстановки значений по умолчанию
-' и запуска расчётов. Повторное чтение проверяет очистку прежних данных.
+' и запуска расчётов. Повторное чтение проверяет очистку данных предыдущего чтения.
 Private Sub TestAudit03ReadMultiAreaRange(ByVal settings As CSystemSettingsReader, ByVal table As Object, _
         ByRef code As Long, ByRef reason As String)
     On Error Resume Next
@@ -1129,7 +1156,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает Yes/No с реальным файлом отчета и решением показа сообщения.
 ' Ошибочные значения/удаленные ключи проверяются до и после переноса Name;
-' recovery и повторный Initialize не должны сохранять прежнее состояние.
+' recovery и повторный Initialize не должны сохранять состояние предыдущего запроса.
 Private Sub TestCheckGeneralRunControls(ByRef stats As TConfigTestStats)
     Dim fixture As Object, config As Object, source As Object, table As Object, target As Object, cell As Object
     Dim settings As CSystemSettingsReader, report As CExecutionReport, fso As Object, stream As Object
@@ -1415,7 +1442,7 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Изолирует деформационный допуск в настоящем batch-пути; равновесие имеет
 ' свои явно заданные допуски, длина Newton-шагов выбирается автоматически.
-' Более строгий допуск требует уточнения только пока прежняя точка его не
+' Более строгий допуск требует уточнения только пока найденная точка его не
 ' достигла. Физический контроль и равновесие остаются обязательными.
 Private Sub TestCheckCapacityStrainToleranceBatch(ByRef stats As TConfigTestStats, ByVal prefix As String, _
         ByVal table As Object, ByRef configured As Variant, ByVal section As CSectionModel, _
@@ -2022,7 +2049,7 @@ Private Sub TestCheckStabilityConfigIsolation(ByRef stats As TConfigTestStats, B
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Все обязательные ключи испытываются на blank/TODO/text/CVErr и потерянную
+' Все обязательные ключи испытываются на пустую ячейку, заполнитель, произвольный текст, CVErr и потерянную
 ' строку. Численные диапазоны и selectors должны дать InputErr с действующим
 ' адресом и действием, а не CalcErr, FAIL или скрытое значение по умолчанию.
 Private Sub TestCheckStabilityConfigInput(ByRef stats As TConfigTestStats, ByVal table As Object, _
@@ -2489,7 +2516,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет строгий ввод обоих десятичных знаков и E, отказ от случайных групп разрядов,
-' прежние optional-defaults/RGB и чтение снимка настроек после изменения и закрытия исходной книги.
+' значения по умолчанию необязательных полей, RGB и чтение снимка настроек после изменения и закрытия исходной книги.
 Public Function RunLocaleNumberTests(Optional ByRef passedCount As Long = 0, Optional ByRef failedCount As Long = 0) As String
     Dim stats As TConfigTestStats, fixture As Object, area As Object, settings As CSystemSettingsReader
     Dim oldUse As Boolean, oldDecimal As String, oldThousands As String, separator As Variant
@@ -2595,7 +2622,7 @@ Public Function RunLocaleBoundaryTests(Optional ByRef passedCount As Long = 0, O
         For kind = 0 To 5
             For Each value In Array("1.5", "1,5", "1 2", "12 34", "1 234.5", "1,234.5", "1.234,5", "$1", "1E2", "2 0", "0 2")
                 valid = value = "1.5" Or value = "1,5" Or value = "1E2"
-                If kind = 0 And value = "1,5" Then valid = False ' Необязательный JSON сохраняет прежнюю точку, а не локальный десятичный формат.
+                If kind = 0 And value = "1,5" Then valid = False ' Необязательный JSON использует точку, а не локальный десятичный формат.
                 If kind = 3 Then valid = False ' Точность схемы — целое 0..10; дроби и 100 отвергаются независимо от локали.
                 expected = 1.5: If value = "1E2" Then expected = 100#
                 TestReadLocaleBoundary kind, value, fixture, actual, code, reason

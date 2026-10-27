@@ -1,0 +1,1348 @@
+{
+  "Status": "PASS_READONLY_CASE_SETTINGS_AND_INPUT_XML_ONLY_NATIVE_PENDING",
+  "ObservedUTC": "2026-10-27T00:48:09.467286+00:00",
+  "WholeTransferSourcePlanAndNativeExpectationsRead": true,
+  "AllSourceEntriesMatched": 1003,
+  "AllExpectedInputCellsMatchedActualCurrentXML": 1004,
+  "SourcePlanByteIdenticalToMeasuredBaseline": true,
+  "NativeExpectedCellRecordsIdenticalToMeasuredBaseline": true,
+  "SettingsCopiedByFreshExistingKey": [
+    {
+      "OriginalKey": "General.ExecutionReportEnabled",
+      "FreshKey": "General.ExecutionReportEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B5",
+      "DestinationAddress": "Config!B5"
+    },
+    {
+      "OriginalKey": "General.NonCriticalMessagesEnabled",
+      "FreshKey": "General.NonCriticalMessagesEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B6",
+      "DestinationAddress": "Config!B6"
+    },
+    {
+      "OriginalKey": "General.ReformatResultsEnabled",
+      "FreshKey": "General.ReformatResultsEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B7",
+      "DestinationAddress": "Config!B7"
+    },
+    {
+      "OriginalKey": "Results.SnapshotStorage",
+      "FreshKey": "Results.SnapshotStorage",
+      "CaseToken": [
+        "String",
+        "Excel"
+      ],
+      "SourceAddress": "Config!B8",
+      "DestinationAddress": "Config!B8"
+    },
+    {
+      "OriginalKey": "Results.SnapshotName",
+      "FreshKey": "Results.SnapshotName",
+      "CaseToken": [
+        "String",
+        "NDM_Test_1232_30"
+      ],
+      "SourceAddress": "Config!B9",
+      "DestinationAddress": "Config!B9"
+    },
+    {
+      "OriginalKey": "General.WorstCombinationCriterion",
+      "FreshKey": "General.WorstCombinationCriterion",
+      "CaseToken": [
+        "String",
+        "StrengthCapacity"
+      ],
+      "SourceAddress": "Config!B10",
+      "DestinationAddress": "Config!B15"
+    },
+    {
+      "OriginalKey": "General.PlateauSlopeFactor",
+      "FreshKey": "General.PlateauSlopeFactor",
+      "CaseToken": [
+        "Double",
+        "FCA9F1D24D62503F"
+      ],
+      "SourceAddress": "Config!B11",
+      "DestinationAddress": "Config!B16"
+    },
+    {
+      "OriginalKey": "General.DiagramExtension",
+      "FreshKey": "General.DiagramExtension",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B12",
+      "DestinationAddress": "Config!B17"
+    },
+    {
+      "OriginalKey": "Calculation.ZeroMomentPerDepth",
+      "FreshKey": "Calculation.ZeroMomentPerDepth",
+      "CaseToken": [
+        "Double",
+        "0000000000000000"
+      ],
+      "SourceAddress": "Config!B13",
+      "DestinationAddress": "Config!B14"
+    },
+    {
+      "OriginalKey": "Geometry.Source",
+      "FreshKey": "Geometry.Source",
+      "CaseToken": [
+        "String",
+        "AutoCAD"
+      ],
+      "SourceAddress": "Config!B16",
+      "DestinationAddress": "Config!B20"
+    },
+    {
+      "OriginalKey": "Geometry.Type",
+      "FreshKey": "Geometry.Type",
+      "CaseToken": [
+        "String",
+        "HollowRectangle"
+      ],
+      "SourceAddress": "Config!B17",
+      "DestinationAddress": "Config!B21"
+    },
+    {
+      "OriginalKey": "Mesh.StepMode",
+      "FreshKey": "Mesh.StepMode",
+      "CaseToken": [
+        "String",
+        "Auto 0.1"
+      ],
+      "SourceAddress": "Config!B18",
+      "DestinationAddress": "Config!B26"
+    },
+    {
+      "OriginalKey": "Mesh.StepX",
+      "FreshKey": "Mesh.StepX",
+      "CaseToken": [
+        "Double",
+        "0000000000004940"
+      ],
+      "SourceAddress": "Config!B19",
+      "DestinationAddress": "Config!B27"
+    },
+    {
+      "OriginalKey": "Mesh.StepY",
+      "FreshKey": "Mesh.StepY",
+      "CaseToken": [
+        "Double",
+        "0000000000004940"
+      ],
+      "SourceAddress": "Config!B20",
+      "DestinationAddress": "Config!B28"
+    },
+    {
+      "OriginalKey": "Mesh.BoundarySubdivisions",
+      "FreshKey": "Mesh.BoundarySubdivisions",
+      "CaseToken": [
+        "Double",
+        "0000000000000040"
+      ],
+      "SourceAddress": "Config!B21",
+      "DestinationAddress": "Config!B29"
+    },
+    {
+      "OriginalKey": "Load.ReferenceOffsetX",
+      "FreshKey": "Load.ReferenceOffsetX",
+      "CaseToken": [
+        "Double",
+        "0000000000000000"
+      ],
+      "SourceAddress": "Config!B22",
+      "DestinationAddress": "Config!B12"
+    },
+    {
+      "OriginalKey": "Load.ReferenceOffsetY",
+      "FreshKey": "Load.ReferenceOffsetY",
+      "CaseToken": [
+        "Double",
+        "0000000000000000"
+      ],
+      "SourceAddress": "Config!B23",
+      "DestinationAddress": "Config!B13"
+    },
+    {
+      "OriginalKey": "Solver.Method",
+      "FreshKey": "Solver.Method",
+      "CaseToken": [
+        "String",
+        "Newton"
+      ],
+      "SourceAddress": "Config!B27",
+      "DestinationAddress": "Config!B33"
+    },
+    {
+      "OriginalKey": "Solver.MaxIterations",
+      "FreshKey": "Solver.MaxIterations",
+      "CaseToken": [
+        "Double",
+        "0000000000005440"
+      ],
+      "SourceAddress": "Config!B28",
+      "DestinationAddress": "Config!B34"
+    },
+    {
+      "OriginalKey": "Solver.LoadSteps",
+      "FreshKey": "Solver.LoadSteps",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B29",
+      "DestinationAddress": "Config!B35"
+    },
+    {
+      "OriginalKey": "Solver.ToleranceN",
+      "FreshKey": "Solver.ToleranceN",
+      "CaseToken": [
+        "Double",
+        "2D431CEBE2361A3F"
+      ],
+      "SourceAddress": "Config!B30",
+      "DestinationAddress": "Config!B36"
+    },
+    {
+      "OriginalKey": "Solver.ToleranceMx",
+      "FreshKey": "Solver.ToleranceMx",
+      "CaseToken": [
+        "Double",
+        "2D431CEBE2361A3F"
+      ],
+      "SourceAddress": "Config!B31",
+      "DestinationAddress": "Config!B37"
+    },
+    {
+      "OriginalKey": "Solver.ToleranceMy",
+      "FreshKey": "Solver.ToleranceMy",
+      "CaseToken": [
+        "Double",
+        "2D431CEBE2361A3F"
+      ],
+      "SourceAddress": "Config!B32",
+      "DestinationAddress": "Config!B38"
+    },
+    {
+      "OriginalKey": "Solver.SecantMaxRestarts",
+      "FreshKey": "Solver.SecantMaxRestarts",
+      "CaseToken": [
+        "Double",
+        "0000000000000040"
+      ],
+      "SourceAddress": "Config!B34",
+      "DestinationAddress": "Config!B40"
+    },
+    {
+      "OriginalKey": "Capacity.SolutionStrategy",
+      "FreshKey": "Capacity.SolutionStrategy",
+      "CaseToken": [
+        "String",
+        "Auto"
+      ],
+      "SourceAddress": "Config!B38",
+      "DestinationAddress": "Config!B44"
+    },
+    {
+      "OriginalKey": "Capacity.SolverMaxIterations",
+      "FreshKey": "Capacity.SolverMaxIterations",
+      "CaseToken": [
+        "Double",
+        "0000000000004E40"
+      ],
+      "SourceAddress": "Config!B39",
+      "DestinationAddress": "Config!B45"
+    },
+    {
+      "OriginalKey": "Capacity.ToleranceStrain",
+      "FreshKey": "Capacity.ToleranceStrain",
+      "CaseToken": [
+        "Double",
+        "F168E388B5F8E43E"
+      ],
+      "SourceAddress": "Config!B41",
+      "DestinationAddress": "Config!B47"
+    },
+    {
+      "OriginalKey": "Capacity.MaxLambda",
+      "FreshKey": "Capacity.MaxLambda",
+      "CaseToken": [
+        "Double",
+        "0000000000009040"
+      ],
+      "SourceAddress": "Config!B43",
+      "DestinationAddress": "Config!B49"
+    },
+    {
+      "OriginalKey": "Capacity.SearchMethod",
+      "FreshKey": "Capacity.SearchMethod",
+      "CaseToken": [
+        "String",
+        "Bisection"
+      ],
+      "SourceAddress": "Config!B44",
+      "DestinationAddress": "Config!B50"
+    },
+    {
+      "OriginalKey": "Capacity.InitialLambda",
+      "FreshKey": "Capacity.InitialLambda",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B45",
+      "DestinationAddress": "Config!B51"
+    },
+    {
+      "OriginalKey": "Capacity.ToleranceLambda",
+      "FreshKey": "Capacity.ToleranceLambda",
+      "CaseToken": [
+        "Double",
+        "7B14AE47E17A843F"
+      ],
+      "SourceAddress": "Config!B46",
+      "DestinationAddress": "Config!B52"
+    },
+    {
+      "OriginalKey": "Capacity.MaxRetries",
+      "FreshKey": "Capacity.MaxRetries",
+      "CaseToken": [
+        "Double",
+        "0000000000000000"
+      ],
+      "SourceAddress": "Config!B47",
+      "DestinationAddress": "Config!B53"
+    },
+    {
+      "OriginalKey": "Capacity.BaseLoadSteps",
+      "FreshKey": "Capacity.BaseLoadSteps",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B48",
+      "DestinationAddress": "Config!B54"
+    },
+    {
+      "OriginalKey": "Stability.Code",
+      "FreshKey": "Stability.Code",
+      "CaseToken": [
+        "String",
+        "SP35"
+      ],
+      "SourceAddress": "Config!B52",
+      "DestinationAddress": "Config!B58"
+    },
+    {
+      "OriginalKey": "Stability.ElementLength",
+      "FreshKey": "Stability.ElementLength",
+      "CaseToken": [
+        "Double",
+        "000000000040BF40"
+      ],
+      "SourceAddress": "Config!B53",
+      "DestinationAddress": "Config!B59"
+    },
+    {
+      "OriginalKey": "Stability.Mu1",
+      "FreshKey": "Stability.Mu1",
+      "CaseToken": [
+        "Double",
+        "0000000000000040"
+      ],
+      "SourceAddress": "Config!B54",
+      "DestinationAddress": "Config!B60"
+    },
+    {
+      "OriginalKey": "Stability.Mu2",
+      "FreshKey": "Stability.Mu2",
+      "CaseToken": [
+        "Double",
+        "0000000000000040"
+      ],
+      "SourceAddress": "Config!B55",
+      "DestinationAddress": "Config!B61"
+    },
+    {
+      "OriginalKey": "Stability.SystemType",
+      "FreshKey": "Stability.SystemType",
+      "CaseToken": [
+        "String",
+        "Determinate"
+      ],
+      "SourceAddress": "Config!B56",
+      "DestinationAddress": "Config!B62"
+    },
+    {
+      "OriginalKey": "Stability.ZeroMomentEccentricitySign1",
+      "FreshKey": "Stability.ZeroMomentEccentricitySign1",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B57",
+      "DestinationAddress": "Config!B63"
+    },
+    {
+      "OriginalKey": "Stability.ZeroMomentEccentricitySign2",
+      "FreshKey": "Stability.ZeroMomentEccentricitySign2",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B58",
+      "DestinationAddress": "Config!B64"
+    },
+    {
+      "OriginalKey": "Stability.AccidentalEccentricityMode",
+      "FreshKey": "Stability.AccidentalEccentricityMode",
+      "CaseToken": [
+        "String",
+        "AutoWithμL"
+      ],
+      "SourceAddress": "Config!B59",
+      "DestinationAddress": "Config!B65"
+    },
+    {
+      "OriginalKey": "Stability.AccidentalEccentricityUser1",
+      "FreshKey": "Stability.AccidentalEccentricityUser1",
+      "CaseToken": [
+        "Double",
+        "0000000000002440"
+      ],
+      "SourceAddress": "Config!B60",
+      "DestinationAddress": "Config!B66"
+    },
+    {
+      "OriginalKey": "Stability.AccidentalEccentricityUser2",
+      "FreshKey": "Stability.AccidentalEccentricityUser2",
+      "CaseToken": [
+        "Double",
+        "0000000000002440"
+      ],
+      "SourceAddress": "Config!B61",
+      "DestinationAddress": "Config!B67"
+    },
+    {
+      "OriginalKey": "Stability.AccidentalEccentricityPlanes",
+      "FreshKey": "Stability.AccidentalEccentricityPlanes",
+      "CaseToken": [
+        "String",
+        "OnlyMomentPlane"
+      ],
+      "SourceAddress": "Config!B62",
+      "DestinationAddress": "Config!B68"
+    },
+    {
+      "OriginalKey": "Stability.PhiLMode",
+      "FreshKey": "Stability.PhiLMode",
+      "CaseToken": [
+        "String",
+        "Auto"
+      ],
+      "SourceAddress": "Config!B63",
+      "DestinationAddress": "Config!B69"
+    },
+    {
+      "OriginalKey": "Stability.SP63.Ks",
+      "FreshKey": "Stability.SP63.Ks",
+      "CaseToken": [
+        "Double",
+        "666666666666E63F"
+      ],
+      "SourceAddress": "Config!B65",
+      "DestinationAddress": "Config!B71"
+    },
+    {
+      "OriginalKey": "Stability.SP63.DeltaEMin",
+      "FreshKey": "Stability.SP63.DeltaEMin",
+      "CaseToken": [
+        "Double",
+        "333333333333C33F"
+      ],
+      "SourceAddress": "Config!B66",
+      "DestinationAddress": "Config!B72"
+    },
+    {
+      "OriginalKey": "Stability.SP63.DeltaEMax",
+      "FreshKey": "Stability.SP63.DeltaEMax",
+      "CaseToken": [
+        "Double",
+        "000000000000F83F"
+      ],
+      "SourceAddress": "Config!B67",
+      "DestinationAddress": "Config!B73"
+    },
+    {
+      "OriginalKey": "Stability.SP35.PhiP",
+      "FreshKey": "Stability.SP35.PhiP",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B69",
+      "DestinationAddress": "Config!B75"
+    },
+    {
+      "OriginalKey": "Stability.SP35.NOverNcrLimit",
+      "FreshKey": "Stability.SP35.NOverNcrLimit",
+      "CaseToken": [
+        "Double",
+        "666666666666E63F"
+      ],
+      "SourceAddress": "Config!B70",
+      "DestinationAddress": "Config!B76"
+    },
+    {
+      "OriginalKey": "SLS.Crack.Code",
+      "FreshKey": "SLS.Crack.Code",
+      "CaseToken": [
+        "String",
+        "SP35"
+      ],
+      "SourceAddress": "Config!B74",
+      "DestinationAddress": "Config!B80"
+    },
+    {
+      "OriginalKey": "SLS.Crack.Allowable",
+      "FreshKey": "SLS.Crack.Allowable",
+      "CaseToken": [
+        "Double",
+        "333333333333D33F"
+      ],
+      "SourceAddress": "Config!B75",
+      "DestinationAddress": "Config!B81"
+    },
+    {
+      "OriginalKey": "SLS.Crack.InitiationSolutionStrategy",
+      "FreshKey": "SLS.Crack.InitiationSolutionStrategy",
+      "CaseToken": [
+        "String",
+        "Auto"
+      ],
+      "SourceAddress": "Config!B76",
+      "DestinationAddress": "Config!B82"
+    },
+    {
+      "OriginalKey": "SLS.Crack.ToleranceLambda",
+      "FreshKey": "SLS.Crack.ToleranceLambda",
+      "CaseToken": [
+        "Double",
+        "7B14AE47E17A843F"
+      ],
+      "SourceAddress": "Config!B77",
+      "DestinationAddress": "Config!B83"
+    },
+    {
+      "OriginalKey": "SLS.Crack.TensionZoneMode",
+      "FreshKey": "SLS.Crack.TensionZoneMode",
+      "CaseToken": [
+        "String",
+        "Effective"
+      ],
+      "SourceAddress": "Config!B79",
+      "DestinationAddress": "Config!B85"
+    },
+    {
+      "OriginalKey": "SLS.Crack.CoverDistanceMode",
+      "FreshKey": "SLS.Crack.CoverDistanceMode",
+      "CaseToken": [
+        "String",
+        "GlobalExtreme"
+      ],
+      "SourceAddress": "Config!B80",
+      "DestinationAddress": "Config!B86"
+    },
+    {
+      "OriginalKey": "SLS.Crack.Phi1",
+      "FreshKey": "SLS.Crack.Phi1",
+      "CaseToken": [
+        "Double",
+        "666666666666F63F"
+      ],
+      "SourceAddress": "Config!B81",
+      "DestinationAddress": "Config!B87"
+    },
+    {
+      "OriginalKey": "SLS.Crack.Phi2",
+      "FreshKey": "SLS.Crack.Phi2",
+      "CaseToken": [
+        "Double",
+        "000000000000E03F"
+      ],
+      "SourceAddress": "Config!B82",
+      "DestinationAddress": "Config!B88"
+    },
+    {
+      "OriginalKey": "SLS.Crack.Phi3Mode",
+      "FreshKey": "SLS.Crack.Phi3Mode",
+      "CaseToken": [
+        "String",
+        "Auto"
+      ],
+      "SourceAddress": "Config!B83",
+      "DestinationAddress": "Config!B89"
+    },
+    {
+      "OriginalKey": "SLS.Crack.Phi3",
+      "FreshKey": "SLS.Crack.Phi3",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B84",
+      "DestinationAddress": "Config!B90"
+    },
+    {
+      "OriginalKey": "SLS.Crack.PsiMode",
+      "FreshKey": "SLS.Crack.PsiMode",
+      "CaseToken": [
+        "String",
+        "AlwaysCalc"
+      ],
+      "SourceAddress": "Config!B85",
+      "DestinationAddress": "Config!B91"
+    },
+    {
+      "OriginalKey": "SLS.Crack.SigmaSCrcAveragingMode",
+      "FreshKey": "SLS.Crack.SigmaSCrcAveragingMode",
+      "CaseToken": [
+        "String",
+        "AllSelected"
+      ],
+      "SourceAddress": "Config!B86",
+      "DestinationAddress": "Config!B92"
+    },
+    {
+      "OriginalKey": "SLS.Crack.PsiS",
+      "FreshKey": "SLS.Crack.PsiS",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B87",
+      "DestinationAddress": "Config!B93"
+    },
+    {
+      "OriginalKey": "SLS.Crack.SP35.GroupGapTolerance",
+      "FreshKey": "SLS.Crack.SP35.GroupGapTolerance",
+      "CaseToken": [
+        "Double",
+        "0000000000002440"
+      ],
+      "SourceAddress": "Config!B89",
+      "DestinationAddress": "Config!B95"
+    },
+    {
+      "OriginalKey": "SLS.Crack.SP35.RowTolerance",
+      "FreshKey": "SLS.Crack.SP35.RowTolerance",
+      "CaseToken": [
+        "Double",
+        "0000000000004940"
+      ],
+      "SourceAddress": "Config!B90",
+      "DestinationAddress": "Config!B96"
+    },
+    {
+      "OriginalKey": "SLS.Crack.SP35.NeighborRatioLimit",
+      "FreshKey": "SLS.Crack.SP35.NeighborRatioLimit",
+      "CaseToken": [
+        "Double",
+        "9A9999999999C93F"
+      ],
+      "SourceAddress": "Config!B91",
+      "DestinationAddress": "Config!B97"
+    },
+    {
+      "OriginalKey": "SLS.Crack.SP35.RadiusDiameterMode",
+      "FreshKey": "SLS.Crack.SP35.RadiusDiameterMode",
+      "CaseToken": [
+        "String",
+        "Max"
+      ],
+      "SourceAddress": "Config!B92",
+      "DestinationAddress": "Config!B98"
+    },
+    {
+      "OriginalKey": "SLS.Crack.SP35.InteractionRadiusMode",
+      "FreshKey": "SLS.Crack.SP35.InteractionRadiusMode",
+      "CaseToken": [
+        "String",
+        "6d"
+      ],
+      "SourceAddress": "Config!B93",
+      "DestinationAddress": "Config!B99"
+    },
+    {
+      "OriginalKey": "SLS.Crack.SP35.RebarProfile",
+      "FreshKey": "SLS.Crack.SP35.RebarProfile",
+      "CaseToken": [
+        "String",
+        "Periodic"
+      ],
+      "SourceAddress": "Config!B94",
+      "DestinationAddress": "Config!B100"
+    },
+    {
+      "OriginalKey": "AutoCAD.Common.ConcreteLayer",
+      "FreshKey": "AutoCAD.Common.ConcreteLayer",
+      "CaseToken": [
+        "String",
+        "Concrete"
+      ],
+      "SourceAddress": "Config!B98",
+      "DestinationAddress": "Config!B104"
+    },
+    {
+      "OriginalKey": "AutoCAD.Common.RebarLayer",
+      "FreshKey": "AutoCAD.Common.RebarLayer",
+      "CaseToken": [
+        "String",
+        "Reinf"
+      ],
+      "SourceAddress": "Config!B99",
+      "DestinationAddress": "Config!B105"
+    },
+    {
+      "OriginalKey": "AutoCAD.Common.SectionContourLayer",
+      "FreshKey": "AutoCAD.Common.SectionContourLayer",
+      "CaseToken": [
+        "String",
+        "RC_NDM_Contour"
+      ],
+      "SourceAddress": "Config!B100",
+      "DestinationAddress": "Config!B106"
+    },
+    {
+      "OriginalKey": "AutoCAD.Common.OpeningContourLayer",
+      "FreshKey": "AutoCAD.Common.OpeningContourLayer",
+      "CaseToken": [
+        "String",
+        "RC_NDM_Opening"
+      ],
+      "SourceAddress": "Config!B101",
+      "DestinationAddress": "Config!B107"
+    },
+    {
+      "OriginalKey": "AutoCAD.Import.MinArea",
+      "FreshKey": "Mesh.MinElementArea",
+      "CaseToken": [
+        "Double",
+        "8DEDB5A0F7C6B03E"
+      ],
+      "SourceAddress": "Config!B103",
+      "DestinationAddress": "Config!B24"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.CombinationID",
+      "FreshKey": "AutoCAD.Export.CombinationID",
+      "CaseToken": [
+        "String",
+        "Worst"
+      ],
+      "SourceAddress": "Config!B105",
+      "DestinationAddress": "Config!B110"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.NeutralLineEnabled",
+      "FreshKey": "AutoCAD.Export.NeutralLineEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B106",
+      "DestinationAddress": "Config!B111"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.PrincipalAxesMode",
+      "FreshKey": "AutoCAD.Export.PrincipalAxesMode",
+      "CaseToken": [
+        "String",
+        "Transformed"
+      ],
+      "SourceAddress": "Config!B107",
+      "DestinationAddress": "Config!B112"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.LoadPointEnabled",
+      "FreshKey": "AutoCAD.Export.LoadPointEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B108",
+      "DestinationAddress": "Config!B113"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.ContourEnabled",
+      "FreshKey": "AutoCAD.Export.ContourEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B109",
+      "DestinationAddress": "Config!B114"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.ContourFormat",
+      "FreshKey": "AutoCAD.Export.ContourFormat",
+      "CaseToken": [
+        "String",
+        "Polyline"
+      ],
+      "SourceAddress": "Config!B110",
+      "DestinationAddress": "Config!B115"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.ExportCrackInteractionContour",
+      "FreshKey": "AutoCAD.Export.ExportCrackInteractionContour",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B111",
+      "DestinationAddress": "Config!B116"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.LabelMode",
+      "FreshKey": "AutoCAD.Export.LabelMode",
+      "CaseToken": [
+        "String",
+        "NamesAndValues"
+      ],
+      "SourceAddress": "Config!B112",
+      "DestinationAddress": "Config!B117"
+    },
+    {
+      "OriginalKey": "AutoCAD.Export.CrackInteractionLayer",
+      "FreshKey": "AutoCAD.Export.CrackInteractionLayer",
+      "CaseToken": [
+        "String",
+        "RC_NDM_CrackArea"
+      ],
+      "SourceAddress": "Config!B113",
+      "DestinationAddress": "Config!B118"
+    },
+    {
+      "OriginalKey": "AutoCAD.Layer.ConcreteTension",
+      "FreshKey": "AutoCAD.Layer.ConcreteTension",
+      "CaseToken": [
+        "String",
+        "Anno_Concrete_Tension"
+      ],
+      "SourceAddress": "Config!B114",
+      "DestinationAddress": "Config!B119"
+    },
+    {
+      "OriginalKey": "AutoCAD.Layer.ConcreteCompression",
+      "FreshKey": "AutoCAD.Layer.ConcreteCompression",
+      "CaseToken": [
+        "String",
+        "Anno_Concrete_Compression"
+      ],
+      "SourceAddress": "Config!B115",
+      "DestinationAddress": "Config!B120"
+    },
+    {
+      "OriginalKey": "AutoCAD.Layer.RebarTension",
+      "FreshKey": "AutoCAD.Layer.RebarTension",
+      "CaseToken": [
+        "String",
+        "Anno_Rebar_Tension"
+      ],
+      "SourceAddress": "Config!B116",
+      "DestinationAddress": "Config!B121"
+    },
+    {
+      "OriginalKey": "AutoCAD.Layer.RebarCompression",
+      "FreshKey": "AutoCAD.Layer.RebarCompression",
+      "CaseToken": [
+        "String",
+        "Anno_Rebar_Compression"
+      ],
+      "SourceAddress": "Config!B117",
+      "DestinationAddress": "Config!B122"
+    },
+    {
+      "OriginalKey": "AutoCAD.Color.ConcreteTension",
+      "FreshKey": "AutoCAD.Color.ConcreteTension",
+      "CaseToken": [
+        "Double",
+        "0000000000002240"
+      ],
+      "SourceAddress": "Config!B118",
+      "DestinationAddress": "Config!B123"
+    },
+    {
+      "OriginalKey": "AutoCAD.Color.ConcreteCompression",
+      "FreshKey": "AutoCAD.Color.ConcreteCompression",
+      "CaseToken": [
+        "Double",
+        "0000000000001440"
+      ],
+      "SourceAddress": "Config!B119",
+      "DestinationAddress": "Config!B124"
+    },
+    {
+      "OriginalKey": "AutoCAD.Color.RebarTension",
+      "FreshKey": "AutoCAD.Color.RebarTension",
+      "CaseToken": [
+        "Double",
+        "000000000000F03F"
+      ],
+      "SourceAddress": "Config!B120",
+      "DestinationAddress": "Config!B125"
+    },
+    {
+      "OriginalKey": "AutoCAD.Color.RebarCompression",
+      "FreshKey": "AutoCAD.Color.RebarCompression",
+      "CaseToken": [
+        "Double",
+        "0000000000001840"
+      ],
+      "SourceAddress": "Config!B121",
+      "DestinationAddress": "Config!B126"
+    },
+    {
+      "OriginalKey": "AutoCAD.Color.Neutral",
+      "FreshKey": "AutoCAD.Color.Neutral",
+      "CaseToken": [
+        "Double",
+        "0000000000002040"
+      ],
+      "SourceAddress": "Config!B122",
+      "DestinationAddress": "Config!B127"
+    },
+    {
+      "OriginalKey": "Plot.Enabled",
+      "FreshKey": "Plot.Enabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B125",
+      "DestinationAddress": "Config!B130"
+    },
+    {
+      "OriginalKey": "Plot.AutoUpdateAfterCalculation",
+      "FreshKey": "Plot.AutoUpdateAfterCalculation",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B126",
+      "DestinationAddress": "Config!B131"
+    },
+    {
+      "OriginalKey": "Plot.LoadCase",
+      "FreshKey": "Plot.LoadCase",
+      "CaseToken": [
+        "String",
+        "PERF_01"
+      ],
+      "SourceAddress": "Config!B127",
+      "DestinationAddress": "Config!B132"
+    },
+    {
+      "OriginalKey": "Plot.ResultGradient",
+      "FreshKey": "Plot.ResultGradient",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B128",
+      "DestinationAddress": "Config!B133"
+    },
+    {
+      "OriginalKey": "Plot.ResultLabelsEnabled",
+      "FreshKey": "Plot.ResultLabelsEnabled",
+      "CaseToken": [
+        "String",
+        "No"
+      ],
+      "SourceAddress": "Config!B129",
+      "DestinationAddress": "Config!B134"
+    },
+    {
+      "OriginalKey": "Plot.ResultLabelSpacing",
+      "FreshKey": "Plot.ResultLabelSpacing",
+      "CaseToken": [
+        "Double",
+        "0000000000005940"
+      ],
+      "SourceAddress": "Config!B130",
+      "DestinationAddress": "Config!B135"
+    },
+    {
+      "OriginalKey": "Plot.NeutralLineEnabled",
+      "FreshKey": "Plot.NeutralLineEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B131",
+      "DestinationAddress": "Config!B136"
+    },
+    {
+      "OriginalKey": "Plot.PrincipalAxesMode",
+      "FreshKey": "Plot.PrincipalAxesMode",
+      "CaseToken": [
+        "String",
+        "Transformed"
+      ],
+      "SourceAddress": "Config!B132",
+      "DestinationAddress": "Config!B137"
+    },
+    {
+      "OriginalKey": "Plot.LoadApplicationPointEnabled",
+      "FreshKey": "Plot.LoadApplicationPointEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B133",
+      "DestinationAddress": "Config!B138"
+    },
+    {
+      "OriginalKey": "Plot.AxisLabelsEnabled",
+      "FreshKey": "Plot.AxisLabelsEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B134",
+      "DestinationAddress": "Config!B139"
+    },
+    {
+      "OriginalKey": "Plot.AxisLabelsFontSize",
+      "FreshKey": "Plot.AxisLabelsFontSize",
+      "CaseToken": [
+        "Double",
+        "0000000000001E40"
+      ],
+      "SourceAddress": "Config!B135",
+      "DestinationAddress": "Config!B140"
+    },
+    {
+      "OriginalKey": "Plot.ContourEnabled",
+      "FreshKey": "Plot.ContourEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B136",
+      "DestinationAddress": "Config!B141"
+    },
+    {
+      "OriginalKey": "Plot.LegendEnabled",
+      "FreshKey": "Plot.LegendEnabled",
+      "CaseToken": [
+        "String",
+        "Yes"
+      ],
+      "SourceAddress": "Config!B137",
+      "DestinationAddress": "Config!B142"
+    },
+    {
+      "OriginalKey": "Plot.LegendMode",
+      "FreshKey": "Plot.LegendMode",
+      "CaseToken": [
+        "String",
+        "Separate"
+      ],
+      "SourceAddress": "Config!B138",
+      "DestinationAddress": "Config!B143"
+    },
+    {
+      "OriginalKey": "Plot.Color.RebarCompression",
+      "FreshKey": "Plot.Color.RebarCompression",
+      "CaseToken": [
+        "String",
+        "30,80,220"
+      ],
+      "SourceAddress": "Config!B139",
+      "DestinationAddress": "Config!B144"
+    },
+    {
+      "OriginalKey": "Plot.Color.RebarTension",
+      "FreshKey": "Plot.Color.RebarTension",
+      "CaseToken": [
+        "String",
+        "210,30,20"
+      ],
+      "SourceAddress": "Config!B140",
+      "DestinationAddress": "Config!B145"
+    },
+    {
+      "OriginalKey": "Plot.Color.ConcreteCompression",
+      "FreshKey": "Plot.Color.ConcreteCompression",
+      "CaseToken": [
+        "String",
+        "125,35,210"
+      ],
+      "SourceAddress": "Config!B141",
+      "DestinationAddress": "Config!B146"
+    },
+    {
+      "OriginalKey": "Plot.Color.ConcreteTension",
+      "FreshKey": "Plot.Color.ConcreteTension",
+      "CaseToken": [
+        "String",
+        "0,155,85"
+      ],
+      "SourceAddress": "Config!B142",
+      "DestinationAddress": "Config!B147"
+    }
+  ],
+  "SettingCount": 110,
+  "Aliases": [
+    {
+      "OriginalKey": "AutoCAD.Import.MinArea",
+      "FreshKey": "Mesh.MinElementArea",
+      "CaseToken": [
+        "Double",
+        "8DEDB5A0F7C6B03E"
+      ],
+      "SourceAddress": "Config!B103",
+      "DestinationAddress": "Config!B24"
+    }
+  ],
+  "NewCaseOverrides": [
+    {
+      "Sheet": "Config",
+      "Address": "B25",
+      "Token": [
+        "String",
+        "Adaptive"
+      ],
+      "SourceSheet": null,
+      "SourceAddress": null,
+      "Setting": "Mesh.CellGeometry",
+      "Reason": "New key preserves existing compact saved-grid interpretation; no remeshing."
+    }
+  ],
+  "FreshDefaultToCaseValueChanges": [
+    {
+      "Key": "Results.SnapshotName",
+      "FreshDefaultToken": [
+        "String",
+        "NDM_Snapshot"
+      ],
+      "HistoricalCaseToken": [
+        "String",
+        "NDM_Test_1232_30"
+      ],
+      "CurrentToken": [
+        "String",
+        "NDM_Test_1232_30"
+      ]
+    },
+    {
+      "Key": "Calculation.ZeroMomentPerDepth",
+      "FreshDefaultToken": [
+        "Double",
+        "FCA9F1D24D62403F"
+      ],
+      "HistoricalCaseToken": [
+        "Double",
+        "0000000000000000"
+      ],
+      "CurrentToken": [
+        "Double",
+        "0000000000000000"
+      ]
+    },
+    {
+      "Key": "Geometry.Source",
+      "FreshDefaultToken": [
+        "String",
+        "Generated"
+      ],
+      "HistoricalCaseToken": [
+        "String",
+        "AutoCAD"
+      ],
+      "CurrentToken": [
+        "String",
+        "AutoCAD"
+      ]
+    },
+    {
+      "Key": "Geometry.Type",
+      "FreshDefaultToken": [
+        "String",
+        "Rectangles"
+      ],
+      "HistoricalCaseToken": [
+        "String",
+        "HollowRectangle"
+      ],
+      "CurrentToken": [
+        "String",
+        "HollowRectangle"
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.ContourFormat",
+      "FreshDefaultToken": [
+        "String",
+        "Region"
+      ],
+      "HistoricalCaseToken": [
+        "String",
+        "Polyline"
+      ],
+      "CurrentToken": [
+        "String",
+        "Polyline"
+      ]
+    },
+    {
+      "Key": "Plot.LoadCase",
+      "FreshDefaultToken": [
+        "String",
+        "Worst"
+      ],
+      "HistoricalCaseToken": [
+        "String",
+        "PERF_01"
+      ],
+      "CurrentToken": [
+        "String",
+        "PERF_01"
+      ]
+    },
+    {
+      "Key": "Mesh.CellGeometry",
+      "FreshDefaultToken": [
+        "String",
+        "Contour"
+      ],
+      "HistoricalCaseToken": [
+        "String",
+        "Adaptive"
+      ],
+      "CurrentToken": [
+        "String",
+        "Adaptive"
+      ]
+    }
+  ],
+  "NewDefaultKeysPreserved": [],
+  "FreshAndCurrentSettingKeySetsIdentical": true,
+  "ObsoleteAliasNotRecreated": true,
+  "InputTableCounts": {
+    "rngUnitSettings": 12,
+    "rngSignConventionSettings": 3,
+    "rngCalculationProfiles": 96,
+    "rngLoadCombinations": 210,
+    "rngStabilityDurationLoads": 90,
+    "rngConcreteMaterialParameters": 13,
+    "rngSteelMaterialParameters": 10,
+    "rngSP35Table721": 144,
+    "rngPlotAnnotationSettings": 23,
+    "rngCircleGeometry": 14,
+    "rngRectanglesGeometry": 110,
+    "rngPointedSectionGeometry": 60,
+    "rngHollowRectangleGeometry": 108
+  },
+  "InputTableNamedLocationsEqualFresh": true,
+  "CurrentWorkbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\RC_Section_NDM_Test_1232_30_Current.xlsm",
+  "CurrentSHA256FromImmutablePreparation": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4",
+  "TemplateSHA256FromImmutablePreparation": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+  "ActualCurrentAndFreshVBASHA256": "67FB9D92D3FB88F6CF1F4A22248B9DC59A76DA347232711A6ED71A6CA2B921F9",
+  "OriginSHA256FromMatchedPlans": "C456377A98C1C71D5128DA7E958DE1EA8349CF587E9B9BE96A8E5F42785A042E",
+  "HistoricConcrete": 1232,
+  "HistoricRebar": 8,
+  "LoadCases": 30,
+  "RequiredInputErrIDs": [
+    "PERF_14",
+    "PERF_21",
+    "PERF_27",
+    "PERF_28"
+  ],
+  "OldReadyResultsNotCurrentRecalculation": true,
+  "PackagerReportedResultsCellsChecked": 1073077,
+  "LargeResultsXMLIndependentlyReRead": false,
+  "PackagerReportedFreshCaptionsFormulasLayoutAndStylesPreserved": true,
+  "InputXMLReadParts": [
+    {
+      "Path": "xl/workbook.xml",
+      "Bytes": 4461
+    },
+    {
+      "Path": "xl/_rels/workbook.xml.rels",
+      "Bytes": 1518
+    },
+    {
+      "Path": "xl/sharedStrings.xml",
+      "Bytes": 674253
+    },
+    {
+      "Path": "xl/worksheets/sheet1.xml",
+      "Bytes": 772317
+    },
+    {
+      "Path": "xl/worksheets/sheet2.xml",
+      "Bytes": 56267
+    }
+  ],
+  "FreshInputXMLReadParts": [
+    {
+      "Path": "xl/workbook.xml",
+      "Bytes": 4425
+    },
+    {
+      "Path": "xl/_rels/workbook.xml.rels",
+      "Bytes": 1518
+    },
+    {
+      "Path": "xl/sharedStrings.xml",
+      "Bytes": 384564
+    },
+    {
+      "Path": "xl/worksheets/sheet1.xml",
+      "Bytes": 766862
+    },
+    {
+      "Path": "xl/worksheets/sheet2.xml",
+      "Bytes": 56268
+    }
+  ],
+  "Evidence": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\Transfer.json",
+      "SHA256": "1EE2804E1E281A7058177FD16F234105AEFF242491DBCE99C51050F6552BA702"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\SourcePlan.json",
+      "SHA256": "27AB07374724F2BCF991039C116B07DB9964DF67F98846ABF3DBFB992B47AEA3"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\ExpectedNativeCells.json",
+      "SHA256": "8FA9579C8FE5F2EA5F68E9AA26C667E62FAD430EDDB5A9A4DE0E833BD55A77C1"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\PairPreparation.json",
+      "SHA256": "8926B1B6EC1B09A7695016143E97CA0ADB04FAFB12D9DC4568F15134BC63B9A3"
+    }
+  ],
+  "NativeSourceEqualityAllCodeCalculationSnapshotReopenPending": true,
+  "OfficeLaunched": false,
+  "SourceOrWorkbookChanged": false,
+  "FullRegressionPass": false
+}

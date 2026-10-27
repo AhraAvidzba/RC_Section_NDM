@@ -31,6 +31,8 @@ Private mOffsetContours As CRebarOffsetContours ' Общие индивидуа�
 Private mSkippedOffsets As Long ' Дополнительные позиции вне полного смещённого контура.
 Private mMergedOffsetNeighbors As Long ' Пересекающиеся дополнительные стержни соседних граней, заменённые первым физическим стержнем.
 Private mSkippedProjections As Long ' Проекции без пересечения, пропуск которых явно разрешён.
+Private mFilteredByArea As Long, mFilteredAreaByRule() As Long ' Геометрические позиции, исключённые общим порогом до поиска физического владельца.
+Private mRuleArea() As Double, mRuleBelowMinArea() As Boolean ' Площадь диаметра и готовый признак фильтра, вычисленные один раз для каждого активного правила.
 Private mMergedPositions As Long, mConflicts As Long ' Объединённые позиции и отклонённые конфликты.
 Private mCreatedPhysical As Long ' Количество действительно созданных стержней; совпавшие позиции не считаются повторно.
 Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long ' Число пропущенных позиций, объединённых позиций и созданных стержней по каждому правилу.
@@ -39,7 +41,7 @@ Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long ' С�
 Private mPhysicalRule() As Long, mPhysicalCapacity As Long ' Правило, создавшее каждый стержень, и размер массива этих связей.
 Private mPhysicalOwner() As Long ' Номер фактического стержня для каждой запрошенной позиции, включая объединённые совпадения.
 Private mPhysicalFirstPosition() As Long ' Первая исходная позиция физического стержня для проверки законного общего узла.
-Private mPhysicalOffsetRule() As Long ' Правило нового режима, участвующее в физическом стержне; сохраняется после объединения.
+Private mPhysicalOffsetRule() As Long ' Правило проверки смещённого ряда, участвующее в физическом стержне; сохраняется после объединения.
 Private mDiagnosticRecordsOmitted As Long ' Число событий сверх лимита подробных записей; счётчики остаются полными.
 
 ' Все запрошенные позиции, включая пропуски проекции и смещения; это не число физических стержней.
@@ -48,6 +50,8 @@ Public Property Get RequestedPositions() As Long: RequestedPositions = mPosition
 Public Property Get CreatedPositions() As Long: CreatedPositions = mCreatedPhysical: End Property
 ' Возвращает число позиций без пересечения с целевой линией, пропуск которых разрешён правилом.
 Public Property Get SkippedProjections() As Long: SkippedProjections = mSkippedProjections: End Property
+' Возвращает число подготовленных позиций, исключённых по Mesh.MinElementArea.
+Public Property Get FilteredByArea() As Long: FilteredByArea = mFilteredByArea: End Property
 ' Возвращает число запрошенных позиций, объединённых с уже добавленными стержнями.
 Public Property Get MergedPositions() As Long: MergedPositions = mMergedPositions: End Property
 ' Возвращает число недопустимых совпадений и пересечений, отклонённых по настройкам правила.
@@ -94,7 +98,8 @@ Public Function RuleTrace(ByVal ruleID As String) As String
     RuleStepBounds ruleID, stepCount, minStep, maxStep, minChord, maxChord
     RuleTrace = "Rule=" & ruleID & "; Requested=" & CStr(mCount(index) + mSkippedByRule(index)) & _
         "; Created=" & CStr(mCreatedByRule(index)) & "; Merged=" & CStr(mMergedByRule(index)) & _
-        "; Skipped=" & CStr(mSkippedByRule(index)) & "; StationSteps=" & CStr(stepCount) & _
+        "; Skipped=" & CStr(mSkippedByRule(index) + mFilteredAreaByRule(index)) & _
+        "; FilteredArea=" & CStr(mFilteredAreaByRule(index)) & "; StationSteps=" & CStr(stepCount) & _
         "; StationStepMin=" & CStr(minStep) & "; StationStepMax=" & CStr(maxStep) & _
         "; CenterStepMin=" & CStr(minChord) & "; CenterStepMax=" & CStr(maxChord)
 End Function
@@ -146,7 +151,8 @@ End Sub
 Public Function DiagnosticsText() As String
     Dim i As Long, diagnostic As CGeometryDiagnostic
     DiagnosticsText = "Requested=" & CStr(RequestedPositions) & "; Created=" & CStr(CreatedPositions) & _
-        "; Merged=" & CStr(MergedPositions) & "; Skipped=" & CStr(mSkippedProjections + mSkippedOffsets) & _
+        "; Merged=" & CStr(MergedPositions) & "; Skipped=" & CStr(mSkippedProjections + mSkippedOffsets + mFilteredByArea) & _
+        "; FilteredArea=" & CStr(mFilteredByArea) & _
         "; Conflicts=" & CStr(Conflicts) & "; BarOverlaps=" & CStr(BarOverlaps) & _
         "; DiagnosticRecordsOmitted=" & CStr(DiagnosticRecordsOmitted) & vbCrLf
     If mSkippedOffsets > 0 Then
@@ -160,6 +166,7 @@ Public Function DiagnosticsText() As String
                 diagnostic.EntityID & "; " & diagnostic.RelatedEntityID & ". " & diagnostic.Reason & vbCrLf
         Next diagnostic
     End If
+    If mFilteredByArea > 0 Then DiagnosticsText = DiagnosticsText & FilteredAreaWarning() & vbCrLf
     If mMergedOffsetNeighbors > 0 Then
         DiagnosticsText = DiagnosticsText & MergedOffsetNeighborsWarning() & vbCrLf
         For Each diagnostic In mDiagnostics
@@ -173,15 +180,19 @@ End Function
 
 ' Распознаёт значимые пропуски и объединения по полным счётчикам, включая события сверх лимита записей.
 Public Property Get HasGeometryWarnings() As Boolean
-    HasGeometryWarnings = (mSkippedOffsets > 0 Or mMergedOffsetNeighbors > 0)
+    HasGeometryWarnings = (mSkippedOffsets > 0 Or mMergedOffsetNeighbors > 0 Or mFilteredByArea > 0)
 End Property
 
-' Готовит прежние краткие строки по событиям, не извлекая их из подробного отчёта.
+' Готовит краткие строки по событиям из полных счётчиков без анализа подробного отчёта.
 Public Property Get GeometryWarningText() As String
     If mSkippedOffsets > 0 Then GeometryWarningText = SkippedOffsetsWarning()
     If mMergedOffsetNeighbors > 0 Then
         If mSkippedOffsets > 0 Then GeometryWarningText = GeometryWarningText & vbCrLf
         GeometryWarningText = GeometryWarningText & MergedOffsetNeighborsWarning()
+    End If
+    If mFilteredByArea > 0 Then
+        If Len(GeometryWarningText) > 0 Then GeometryWarningText = GeometryWarningText & vbCrLf
+        GeometryWarningText = GeometryWarningText & FilteredAreaWarning()
     End If
 End Property
 
@@ -191,20 +202,29 @@ Private Function SkippedOffsetsWarning() As String
         ". Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results."
 End Function
 
-' Поясняет объединение соседей, сохраняя прежний текст и число физических стержней.
+' Поясняет объединение соседей с сохранением одного физического стержня.
 Private Function MergedOffsetNeighborsWarning() As String
     MergedOffsetNeighborsWarning = "Предупреждение: объединено дополнительных стержней соседних граней: " & CStr(mMergedOffsetNeighbors) & _
         ". В расчёте и подписях учтён только первый добавленный стержень с его координатами и диаметром."
 End Function
 
+' Сообщает число геометрических позиций, которые не становятся физическими стержнями.
+' Зависимые ряды используют исходные позиции; пропуск не меняет их координаты и порядковые номера.
+Private Function FilteredAreaWarning() As String
+    FilteredAreaWarning = "По настройке Mesh.MinElementArea пропущено стержней: " & CStr(mFilteredByArea) & _
+        ". Площадь каждого из них меньше заданного порога; в расчёте и подписях они не учитываются."
+End Function
+
 ' Размещает стержни по готовому описанию в переданной бетонной области
 ' и возвращает их список. Бетонная сетка строится отдельно.
-Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion) As CRebarLayout
+Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion, _
+        Optional ByVal minArea As Double = 0#) As CRebarLayout
     If mReadOnly Then SectionRecipeError "CRebarRuleExecutor", "Опубликованные правила нельзя выполнять заново в том же объекте. Создайте новый исполнитель."
     mBuilt = False
     Set mDefinition = Nothing ' Даже отказ до подготовки начинает новый отчет, без счетчиков и ID предыдущего успешного запуска того же исполнителя.
     mPositionCount = 0: mCapacity = 0: mSkippedProjections = 0: mSkippedOffsets = 0: Erase mPositions
-    mMergedOffsetNeighbors = 0
+    mMergedOffsetNeighbors = 0: mFilteredByArea = 0
+    Erase mFilteredAreaByRule: Erase mRuleArea: Erase mRuleBelowMinArea
     Erase mTotalNormalOffset
     Set mOffsetContours = Nothing
     mMergedPositions = 0: mConflicts = 0: mBarOverlaps = 0: mPhysicalCapacity = 0: mCreatedPhysical = 0
@@ -214,6 +234,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     Erase mPhysicalFirstPosition: Erase mPhysicalOffsetRule
     Erase mPhysicalOwner: Erase mRules: Erase mState: Erase mStart: Erase mCount
     Erase mSkippedByRule: Erase mMergedByRule: Erase mCreatedByRule
+    If minArea < 0# Then RuleError 0, "Mesh.MinElementArea не может быть отрицательной."
     If definition Is Nothing Or geometry Is Nothing Then RuleError 0, "Определение и бетонная область обязательны."
     If Not definition.IsSealed Then RuleError 0, "Определение еще не опубликовано."
     Set mDefinition = definition
@@ -224,6 +245,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     ReDim mRules(1 To ruleCount): ReDim mState(1 To ruleCount)
     ReDim mStart(1 To ruleCount): ReDim mCount(1 To ruleCount): ReDim mTotalNormalOffset(1 To ruleCount)
     ReDim mSkippedByRule(1 To ruleCount): ReDim mMergedByRule(1 To ruleCount): ReDim mCreatedByRule(1 To ruleCount)
+    ReDim mFilteredAreaByRule(1 To ruleCount): ReDim mRuleArea(1 To ruleCount): ReDim mRuleBelowMinArea(1 To ruleCount)
     For i = 1 To ruleCount: definition.CopyRule i, mRules(i): Next i
     EnableRowOffsetChecks
     mBarBinSize = 1#
@@ -239,6 +261,14 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
         End If
     Next i
     For i = 1 To ruleCount: PrepareRule i: Next i
+    If minArea > 0# Then
+        For i = 1 To ruleCount
+            If mCount(i) > 0 Then
+                mRuleArea(i) = GEOM_PI * mRules(i).Diameter * mRules(i).Diameter / 4#
+                mRuleBelowMinArea(i) = (mRuleArea(i) < minArea)
+            End If
+        Next i
+    End If
     If mPositionCount > 0 Then ReDim mPhysicalOwner(1 To mPositionCount) Else Erase mPhysicalOwner
     Dim order() As Long, scratch() As Long, index As Long, position As TRebarPosition
     Dim region As CConcreteRegion, query As CSectionGeometryQuery, owner As Long, identical As Boolean
@@ -249,6 +279,12 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
         SortOrder order, scratch, 1, mPositionCount
         For i = 1 To mPositionCount
             position = mPositions(order(i)): index = position.RuleIndex
+            If mRuleBelowMinArea(index) Then
+                mFilteredByArea = mFilteredByArea + 1: mFilteredAreaByRule(index) = mFilteredAreaByRule(index) + 1
+                AddDiagnostic index, "MIN_ELEMENT_AREA", position.SourcePositionID, _
+                    "Стержень пропущен: площадь его диаметра меньше Mesh.MinElementArea.", mRuleArea(index), minArea
+                GoTo NextPosition
+            End If
             owner = OffsetNeighborOwner(index, position, result)
             If owner > 0 Then
                 ValidatePlacement OffsetCheckRule(index, owner), result.X(owner), result.Y(owner), result.Diameter(owner), result.BarID(owner), geometry, region, query
@@ -364,7 +400,7 @@ Private Sub EnableRowOffsetChecks()
     Next i
 End Sub
 
-' Возвращает участника нового режима, чтобы ошибка указывала на его фактические исходные поля.
+' Возвращает правило проверки смещённого ряда, чтобы ошибка указывала на его исходные поля.
 Private Function OffsetCheckRule(ByVal index As Long, ByVal owner As Long) As Long
     OffsetCheckRule = index
     If Not mRules(index).ValidateRowOffset And mPhysicalOffsetRule(owner) > 0 Then OffsetCheckRule = mPhysicalOffsetRule(owner)
@@ -624,6 +660,7 @@ Friend Function RuleEnds(ByVal ruleID As String, ByRef startX As Double, ByRef s
     Dim index As Long, last As Long
     index = mDefinition.RuleIndex(ruleID)
     If mCount(index) = 0 Then Exit Function
+    If mFilteredAreaByRule(index) = mCount(index) Then Exit Function
     last = mStart(index) + mCount(index) - 1
     startX = mPositions(mStart(index)).X: startY = mPositions(mStart(index)).Y
     endX = mPositions(last).X: endY = mPositions(last).Y
@@ -632,12 +669,13 @@ End Function
 
 ' Аннотация измеряет подготовленный ряд; зависимые дополнительные позиции
 ' не меняют его базовую привязку. basisX/Y задают единичную ось проекций;
-' без них возвращаются прежние X/Y-границы. Координаты стержней не пересчитываются.
+' без них возвращаются X/Y-границы. Координаты стержней не пересчитываются.
 Friend Function RuleBounds(ByVal ruleID As String, ByRef minX As Double, ByRef maxX As Double, _
         ByRef minY As Double, ByRef maxY As Double, Optional ByVal basisX As Double = 1#, Optional ByVal basisY As Double = 0#) As Boolean
     Dim index As Long, i As Long, along As Double, across As Double
     index = mDefinition.RuleIndex(ruleID)
     If mCount(index) = 0 Then Exit Function
+    If mFilteredAreaByRule(index) = mCount(index) Then Exit Function
     minX = 1E+100: minY = 1E+100: maxX = -1E+100: maxY = -1E+100
     For i = mStart(index) To mStart(index) + mCount(index) - 1
         along = mPositions(i).X * basisX + mPositions(i).Y * basisY
@@ -1015,7 +1053,7 @@ End Property
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Копирует исходную позицию и правило для независимого пересчёта прежней формулы смещения.
+' Копирует исходную позицию и правило для независимого пересчёта формулы смещения.
 Friend Sub TestCopyTransfer(ByVal positionIndex As Long, ByRef source As TRebarPosition, ByRef rule As TRebarRule)
     source = mPositions(mPositions(positionIndex).SourcePositionIndex)
     rule = mRules(mPositions(positionIndex).RuleIndex)

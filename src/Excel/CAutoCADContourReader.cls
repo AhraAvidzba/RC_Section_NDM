@@ -94,7 +94,7 @@ End Function
 ' StartPoint фрагментов Explode заданы в WCS, поэтому OCS-координаты
 ' полилинии и bulge не пересчитываются вручную и не теряют исходный поворот.
 ' Только в полилинии пропускаются пустые прямые сегменты повторных вершин;
-' вырожденные дуги и поврежденные Region по-прежнему отклоняются.
+' вырожденные дуги и повреждённые Region отклоняются.
 Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByRef count As Long, _
         Optional ByVal ignoreRepeatedPolylineVertex As Boolean = False)
     Dim kind As String, edge As TRegionEdge, point As Variant, endpoint As Variant

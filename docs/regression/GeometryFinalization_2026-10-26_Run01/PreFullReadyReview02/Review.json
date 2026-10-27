@@ -1,0 +1,134 @@
+{
+  "Status": "BOUNDED_STATIC_READY_AFTER_KNOWN_PRELAUNCH_PREREQUISITES_NO_NEW_BLOCKERS",
+  "ObservedUTC": "2026-10-27T01:35:34.392518+00:00",
+  "CurrentHEADNotAcceptanceHEAD": "584e89ba364cc76542f2415b2d2fde442d0149ed",
+  "CurrentBranch": "codex/contour-cell-geometry",
+  "Coverage": {
+    "Version": 6,
+    "CoreJobGroups": 12,
+    "PerMode": {
+      "Full": 8,
+      "Geometry": 36,
+      "SP35": 6,
+      "Recipes": 26,
+      "SavedOffsets": 2,
+      "CurrentFeatures": 11
+    },
+    "CoreSuites": 178,
+    "EveryDeclaredVBAEntrypointPresent": true,
+    "FocusedCountsPerMode": [
+      8,
+      8,
+      8,
+      8,
+      23,
+      6
+    ],
+    "FocusedIndividualIDsTwoModes": 122,
+    "FocusedLogicalRecords": 26,
+    "FocusedVBARecords": 24,
+    "FocusedNativeAggregate": 1,
+    "FocusedIndependent": 1,
+    "BothNativeChildPrimariesRequired": [
+      "RunRealAutoCADFarOriginTests",
+      "RunRealAutoCADFarCapacityTests"
+    ],
+    "RuntimeVerifierRequiresExactIDsModesReopenPhysicsAndSameSource": true,
+    "GeometryPreviewAndOutputPolicyAssertionsIncludedInsideExistingCoreEntry": true
+  },
+  "CleanSourceSavedContract": {
+    "SourceMustBeFinalCleanFullBuild": true,
+    "FixedLegacySavedFixtureOnlyInjectedIntoPrivateProbe": true,
+    "FixturePath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\fixtures\\FocusedSavedSection.json",
+    "FixtureSHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F",
+    "Tables": 5,
+    "ConcreteElements": 45,
+    "RebarElements": 20,
+    "HistoricalMetadataSHAIsNotAcceptanceSourceSHA": true,
+    "NoUserDataTransferOrRemeshNeeded": true,
+    "NewContourBoundaryCoverageRemainsSeparateCurrentFeatureAndNativeGates": true,
+    "FocusedInstrumentationBatchExecuteTargetStillUnique": true
+  },
+  "RuntimeHashCapture": {
+    "ActualBookAllCodeHEADBranchAndAllSourceToolsCapturedAtFutureLaunch": true,
+    "NoHardcodedHistoricalBookHashOrCommitInActualLaunch": true,
+    "DriverRechecksAllCapturedInputsBeforeAndAfter": true,
+    "ObserverRequiresRequestHashAndAllInputHashesOnCheckAllHashes": true,
+    "FinalNativeCodeAndAllCodeEqualityStillRequiredBeforePublication": true
+  },
+  "DeadlinesAndLocation": {
+    "ActualStartPlusHours": 8,
+    "ForecastHours": 4.5,
+    "ClockAndCalendarDateAreNotHardcoded": true,
+    "CoreReservesFocusedSeconds": 4200,
+    "PostCoreFocusedReserveSeconds": 600,
+    "FocusedOwnMaxSeconds": 3600,
+    "WorkingDirectoryExplicitRootInTaskHostAndDriver": true,
+    "PathContainmentUsesOrdinalIgnoreCase": true,
+    "EightHoursIsLogicalDeadlineNotIndependentHardKill": true
+  },
+  "Task": {
+    "Name": "RC_NDM_Full_20261026_GeometryFinal_Run01",
+    "ObservedState": "ConfirmedNotFound",
+    "RuntimeLaunchArtifactsPresent": false,
+    "CoreEvidencePresent": false,
+    "RegistrationHasNoTriggerArgumentAndAssertsZeroRegisteredTriggers": true,
+    "OnlyExplicitStartScheduledTask": true,
+    "MultipleInstances": "IgnoreNew",
+    "NoTaskRegisteredOrStartedByReview": true,
+    "SandboxQueryInitiallyAccessDeniedThenSameReadOnlyQueryWithLaunchPrivilegesConfirmedNotFound": true
+  },
+  "TriStateIdentityHardening": {
+    "AppliedLiveLaunchSHA256": "F7886B4115D8CD48CA5A80A8DC5E12150999D9E589EC244A48A7F32B8F07B7F0",
+    "AppliedLiveObserverSHA256": "880A538794391FB5F75B367A02EA8542F53848448522D851745E6E8321F14611",
+    "UnknownAccessOrStartTimeIsNotAbsence": true,
+    "OrdinaryOwnExcelResidualOrCleanupFailureIsFailureWithoutBlindKill": true
+  },
+  "KnownPrelaunchPrerequisites": [
+    {
+      "ID": "G1",
+      "Action": "After all participating native processes are terminal, apply the reviewed three native memory/deadline candidates by both hashes.",
+      "Files": [
+        {
+          "Name": "Run-FocusedAcceptance.ps1",
+          "CurrentSHA256": "554FA36F994293EE5E4392FEBD39DA1876A816B21BBBA721254BE869FB5B9F5F",
+          "ApprovedPrivateSHA256": "1FE70882E03EDDEA764AEDC1538E30C8B157FA86E363C105C7485747F17775FA",
+          "Applied": false
+        },
+        {
+          "Name": "Run-FocusedNativeAcceptance.ps1",
+          "CurrentSHA256": "DFD75734E5E36615A0753C9C4EB3259FB2E9F1A68078662F586529A46C9913D4",
+          "ApprovedPrivateSHA256": "C5504713F4EFF0FF7F0F526A9A6CFA75F867BFCBA23AA2A3BCF4689471DA13D4",
+          "Applied": false
+        },
+        {
+          "Name": "Run-PostAudit03NativeCAD.ps1",
+          "CurrentSHA256": "4EA00B483E3E2B428E66942953EB3F1C0BC1C8D3AFC3C69A6996C2B08B802076",
+          "ApprovedPrivateSHA256": "589EC2D913662BB72A9C060514095CEA8EF2B747B66492BB302469F5B815CB1E",
+          "Applied": false
+        }
+      ]
+    },
+    {
+      "ID": "G2",
+      "Action": "Finish final clean-book gates, publish that exact book and matching AllCode, then commit all participating inputs.",
+      "CurrentParticipatingDirtyPaths": 116,
+      "LauncherCurrentlyIntentionallyRejectsDirtyInputs": true
+    },
+    {
+      "ID": "G3",
+      "Action": "At actual launch recheck aggregate memory/process closure and exact no-existing task/evidence under launch privileges; use the single existing ndm monitor only after actual start.",
+      "CurrentMemoryReadinessNotClaimedDuringNativeWholeTiming": true
+    }
+  ],
+  "NewConfirmedCodeBlockersBeyondKnownPrerequisites": [],
+  "Evidence": {
+    "ReadOnlyCapture": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\PreFullReadyReview02\\ReadOnlyCapture.json",
+    "PS51ParserFiles": 10,
+    "ParserErrors": 0,
+    "NativeMemoryPeerReview": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FocusedNativeMemoryGuard01\\Revision02\\IndependentPeerReview.json"
+  },
+  "NoOfficeCADOrFullRunStarted": true,
+  "NoLiveInputsOrWholeBenchmarkFilesChanged": true,
+  "RegressionPassClaimed": false
+}

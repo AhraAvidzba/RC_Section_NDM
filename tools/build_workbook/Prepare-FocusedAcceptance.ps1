@@ -3,7 +3,8 @@ param(
     [string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
     [string]$OutputDirectory='docs/regression/FocusedAcceptance_2026-10-10',
     [string]$ExtraHelperFile='',
-    [string]$SavedFixture=''
+    [string]$SavedFixture='',
+    [string]$DeadlineUTC=''
 )
 $ErrorActionPreference='Stop'
 Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
@@ -41,9 +42,44 @@ function Test-OwnedProcessIdentity {
         $current.StartTime.ToUniversalTime().Ticks -eq $StartTicks)
 }
 
+
+# ДЛЯ ТЕСТОВ: ждёт запас памяти перед собственным Excel, не продлевая общий deadline.
+function Wait-TestFocusedPrepareMemory {
+    param([string]$EvidenceDirectory, [string]$DeadlineUTC='')
+    $started=[DateTimeOffset]::UtcNow
+    $limit=$started.AddSeconds(300)
+    if ($DeadlineUTC) { $outer=[DateTimeOffset]::Parse($DeadlineUTC,[Globalization.CultureInfo]::InvariantCulture); if ($outer -lt $limit) { $limit=$outer } }
+    $proofPath=Join-Path $EvidenceDirectory 'MemoryBeforeExcel.json'
+    while ($true) {
+        $proof=[ordered]@{CheckedUTC=[DateTimeOffset]::UtcNow.ToString('o');Status='MEMORY_QUERY_FAILED';Ready=$false;RequiredPhysicalGiB=4;RequiredCommitGiB=8;WaitLimitUTC=$limit.ToString('o');NewExcelStarted=$false}
+        try {
+            $memory=Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory -ErrorAction Stop
+            foreach ($name in @('AvailableMBytes','CommitLimit','CommittedBytes')) { if ($null -eq $memory.PSObject.Properties[$name] -or $null -eq $memory.$name) { throw ('Missing memory counter: '+$name) } }
+            $physical=[double]$memory.AvailableMBytes*1MB
+            $commit=[double]$memory.CommitLimit-[double]$memory.CommittedBytes
+            if ([double]::IsNaN($physical) -or [double]::IsInfinity($physical) -or [double]::IsNaN($commit) -or [double]::IsInfinity($commit) -or $physical -lt 0 -or [double]$memory.CommitLimit -le 0 -or [double]$memory.CommittedBytes -lt 0) { throw 'Invalid memory counters.' }
+            $proof['FreePhysicalGiB']=$physical/1GB; $proof['FreeCommitGiB']=$commit/1GB
+            $proof['CommitLimitBytes']=[double]$memory.CommitLimit; $proof['CommittedBytes']=[double]$memory.CommittedBytes
+        } catch {
+            $proof['Error']=$_.Exception.Message
+            $proof | ConvertTo-Json | Set-Content -LiteralPath $proofPath -Encoding UTF8
+            throw 'Memory counters unavailable; no preparation Excel started.'
+        }
+        $remaining=($limit-[DateTimeOffset]::UtcNow).TotalSeconds
+        $ready=$physical -ge 4GB -and $commit -ge 8GB -and $remaining -gt 0
+        $proof.Ready=$ready; $proof.Status=if ($remaining -le 0) {'MEMORY_WAIT_DEADLINE'} elseif ($ready) {'READY'} else {'WAITING_FOR_MEMORY'}
+        $proof['WaitedSeconds']=([DateTimeOffset]::UtcNow-$started).TotalSeconds
+        $proof | ConvertTo-Json | Set-Content -LiteralPath $proofPath -Encoding UTF8
+        if ($ready) { return }
+        if ($remaining -le 0) { throw 'Memory reserve/deadline insufficient (4 GiB physical, 8 GiB commit); no preparation Excel started.' }
+        Start-Sleep -Milliseconds ([int][math]::Max(1,[math]::Min(10000,[math]::Ceiling($remaining*1000))))
+    }
+}
+
 $excel=$null; $book=$null; $ownedPid=0; $ownedTicks=0
 try {
     Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class FocusedPrepareWindow { [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId); }'
+    Wait-TestFocusedPrepareMemory -EvidenceDirectory $directory -DeadlineUTC $DeadlineUTC
     $existingExcelIds=@([Diagnostics.Process]::GetProcessesByName('EXCEL') | ForEach-Object { $_.Id })
     $excel=New-Object -ComObject Excel.Application
     [uint32]$id=0

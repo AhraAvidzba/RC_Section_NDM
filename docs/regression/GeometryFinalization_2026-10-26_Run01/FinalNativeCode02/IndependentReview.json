@@ -1,0 +1,63 @@
+{
+  "Status": "PASS_READONLY_SOURCE_ONLY_INDEPENDENT_REVIEW_NOT_FULL_ACCEPTANCE",
+  "ObservedUTC": "2026-10-27T02:24:50.156194+00:00",
+  "CasesPrimarySHA256": "629AA089788CA0BBFB781B72314E9F5AF0A56C8777903D67D156E45029E481C6",
+  "OriginalNestedCasesPrimaryPreserved": true,
+  "DerivedCases": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalNativeCode02\\DerivedCaseRecords.json",
+  "CaseProofs": [
+    {
+      "Case": "Main",
+      "BookSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "NativeExportSHA256": "B2F5EF9D99E92C9C3C3D302BF18BD8D8F9B65AB669ABE838DFB4DEAC321F18D8",
+      "Source175PlusDocument6Passed": true,
+      "Imports": 0,
+      "ReadOnly": true
+    },
+    {
+      "Case": "SavedExcelWarm2",
+      "BookSHA256": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8",
+      "NativeExportSHA256": "C307CE01DF28D89634EF401FC2BED3A58E33AA1897A4D86B2F1529443ECE5270",
+      "Source175PlusDocument6Passed": true,
+      "Imports": 0,
+      "ReadOnly": true
+    }
+  ],
+  "Raw181MainVsSavedLiteralBodiesTypeCountOrderExactlyEqual": true,
+  "NumberCaseWhitespaceOrG15NormalizationUsedForMainVsSaved": false,
+  "MainAllCodeReferenceRawSHA256StillProtected": "6F4B5701E0ED8EE3FAB90210DCD50AE65FA75E45C76790B12AB2B62E2BAD90E4",
+  "MainNativeRawSHA256": "B2F5EF9D99E92C9C3C3D302BF18BD8D8F9B65AB669ABE838DFB4DEAC321F18D8",
+  "MainNativeDatePreserved": "Date: 2026-10-27 05:20:28",
+  "ReferenceDatePreserved": "Date: 2026-10-27 02:55:00",
+  "OnlyDateHeaderExcludedFromMainReferenceComparison": true,
+  "FrozenInputsReread": 181,
+  "FrozenInputsMatched": 181,
+  "FrozenInputsDifferences": [],
+  "FrozenListSourceSHA256": "AA600C77D8DB234663A3B7E22DE563AA61D64168544F95516B0F32440097491C",
+  "TwoExactIdentitiesOutsideSandboxFresh": [
+    {
+      "PID": 32952,
+      "ExpectedStartTicksUTC": "639286644128439221",
+      "ExpectedName": "powershell",
+      "State": "ConfirmedNotFound",
+      "Error": "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+      "ObservedUTC": "2026-10-27T02:24:49.3127017+00:00"
+    },
+    {
+      "PID": 12264,
+      "ExpectedStartTicksUTC": "639286644144182993",
+      "ExpectedName": "EXCEL",
+      "State": "ConfirmedNotFound",
+      "Error": "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+      "ObservedUTC": "2026-10-27T02:24:49.3371808+00:00"
+    }
+  ],
+  "WatcherPassAndWorkerExitZeroOrdinaryQuitNoKill": true,
+  "Plan02OnlyOneAddedWhitespaceNoExpectationRelaxation": true,
+  "OldNative01FailurePreserved": {
+    "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalNativeCode01",
+    "Passed": false,
+    "ParameterBindingException": true
+  },
+  "NoImportCompileSaveCalculationSettingsOrAppLaunchByReview": true,
+  "FullRegressionPass": false
+}

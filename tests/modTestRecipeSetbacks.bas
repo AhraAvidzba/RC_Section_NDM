@@ -121,7 +121,7 @@ Public Function RunRecipeTypeListTests() As String
     TestCheck "types.occupied.data", TestSameConfigOutsideTypeList(config, expected, Nothing)
     TestCheck "types.occupied.name", ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange.Rows.Count = count - 1
     TestCheck "types.state.failure", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
-    ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=" & list.Resize(count + 1, 1).Address(True, True, xlA1, True) ' Лишняя прежняя запись удаляется только из принадлежащего списку диапазона.
+    ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=" & list.Resize(count + 1, 1).Address(True, True, xlA1, True) ' Лишняя запись удаляется только из принадлежащего списку диапазона.
     list.Cells(count + 1, 1).Value2 = "removed type": modSectionRecipeSetup.UpdateSectionRecipeTypes
     TestCheck "types.shrink", ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange.Rows.Count = count And IsEmpty(list.Cells(count + 1, 1).Value2)
     expected = config.Formula: ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=#REF!": code = 0

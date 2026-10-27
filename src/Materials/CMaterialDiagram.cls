@@ -48,7 +48,7 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
     If mFrozen Then Err.Raise vbObjectError + 3114, "CMaterialDiagram.InitializeFromArrays", _
         "Опубликованная диаграмма материала не может быть изменена. Для другой модели создайте новую диаграмму через CMaterialModelProvider."
     On Error GoTo Failed
-    mInitialized = False ' Ошибочная повторная загрузка не оставляет доступным прежний материал.
+    mInitialized = False ' Ошибочная повторная загрузка не оставляет доступным материал из другой инициализации.
     mPointCount = 0
     If pointCount < 2 Then Err.Raise vbObjectError + 3100, "CMaterialDiagram", "Диаграмма материала должна содержать не менее двух точек."
     ValidateInputArray strains, pointCount, "деформаций"
@@ -115,7 +115,7 @@ Friend Sub Freeze()
 End Sub
 
 ' Подтверждает, что точки и пределы этой диаграммы больше не меняются.
-' Решатель может безопасно использовать прежнюю оценку при точно тех же исходных данных.
+' Решатель может использовать сохранённую оценку при точно тех же исходных данных.
 Friend Property Get IsFrozen() As Boolean
     IsFrozen = mFrozen
 End Property

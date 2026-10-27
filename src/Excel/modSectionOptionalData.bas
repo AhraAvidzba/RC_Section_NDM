@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modSectionOptionalData"
+Attribute VB_Name = "modSectionOptionalData"
 Option Explicit
 
 ' ==========================================================================
@@ -72,7 +72,7 @@ End Function
 Public Function ReadSectionOptionalNumber(ByVal value As String, ByVal address As String) As Double
     Dim parsed As Double
     If Not TryReadStrictDouble(value, parsed, False) Then GoTo InvalidNumber
-    ReadSectionOptionalNumber = Val(value) ' Сохраняем прежнее округление инвариантного формата после полной проверки; Val не определяет допустимую грамматику.
+    ReadSectionOptionalNumber = Val(value) ' Преобразуем проверенный инвариантный формат с округлением Double; Val не определяет допустимую грамматику.
     Exit Function
 InvalidNumber:
     Err.Raise vbObjectError + 4382, "ReadSectionOptionalNumber", _

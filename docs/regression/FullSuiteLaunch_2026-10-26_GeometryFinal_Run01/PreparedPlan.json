@@ -1,0 +1,57 @@
+{
+  "Status": "PREPARED_NOT_LAUNCHED",
+  "PreparedUTC": "2026-10-26T19:09:41.549805+00:00",
+  "LauncherDirectory": "docs\\regression\\FullSuiteLaunch_2026-10-26_GeometryFinal_Run01",
+  "CoreEvidenceDirectory": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01",
+  "ExpectedSuites": 178,
+  "CoverageVersion": 6,
+  "IncludesEntireFocusedPlan": true,
+  "ForecastHours": 4.5,
+  "DeadlineAfterActualStartHours": 8,
+  "ScheduledTaskName": "RC_NDM_Full_20261026_GeometryFinal_Run01",
+  "TaskTriggers": 0,
+  "TaskMultipleInstances": "IgnoreNew",
+  "TaskStartMethod": "Explicit Start-ScheduledTask only; host and driver independent of Codex process tree",
+  "SourceWorkbook": "workbook/output/RC_Section_NDM.xlsm",
+  "SourceAndAllCodeAndHEADCaptured": "Only on actual Launch.ps1; no current unpublished source hash recorded as acceptance input",
+  "SourceRequirement": "Root publishes clean full rebuild without user-data transfer after native/directed gates and commit; no old candidate packages are used",
+  "ProtectedObserverIncluded": true,
+  "ProtectedInputsCaptured": "Dynamically all active src/tests and tools/build_workbook inputs plus exact current book/AllCode/AGENTS/FocusedPlan and six launcher/observer scripts",
+  "Memory": "Actual Win32_PerfFormattedData_PerfOS_Memory AvailableMBytes and CommitLimit-CommittedBytes; launch/driver reserve8RAM/14commit, internal serial watchdog reserve4/8",
+  "PS51ParseErrors": 0,
+  "PythonSyntheticCases": 6,
+  "SyntheticProof": "ObserverSyntheticSelftest.json",
+  "NoPriorPASSImported": true,
+  "NoFullLaunchOrRequestCreated": true,
+  "NewCoreDirectoryCreated": false,
+  "TaskRegisteredByThisPreparation": false,
+  "ExcelProcessesStarted": 0,
+  "CADProcessesStarted": 0,
+  "FullRegressionPass": false,
+  "Files": [
+    {
+      "Path": "Launch.ps1",
+      "SHA256": "9AC259340E93FFEC8015961D21B2715366B11FEB8AACA43BE721A33D420116CE"
+    },
+    {
+      "Path": "FullDriver.ps1",
+      "SHA256": "22A9C7EDB5F41326FBBA5791D22EB9DD1E934E43711608C342992B3EC5977A53"
+    },
+    {
+      "Path": "FullDriverHost.ps1",
+      "SHA256": "C5C31733902D6394B620EF963D1F966C31FF313A494DC58CB86988388BD02A93"
+    },
+    {
+      "Path": "Read-CurrentStatus.ps1",
+      "SHA256": "852D8A27F0D6E5C1F2FDF1E3DB7860072D51B74B3826DB78B48A47B6FFE6FB79"
+    },
+    {
+      "Path": "TestObserveCompleted.py",
+      "SHA256": "2D3DC4E5105F94D1152DBC9E9286DDDE9D46FBF16BFE5D0F392A53D93F16E3F5"
+    },
+    {
+      "Path": "Test-ObserverSelftest.py",
+      "SHA256": "6237E5F1EA6A1B1DCE70ACD35512EE6C7DDBF271C60FDD83560606F9BC69B405"
+    }
+  ]
+}

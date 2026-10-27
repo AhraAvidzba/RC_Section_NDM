@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -100,7 +100,7 @@ Public Function RequiredRows(ByVal combinationCount As Long) As Long
 End Function
 
 ' Возвращает число строк данных по высоте rngLoadCombinations, чтобы пустые
-' доступные строки тоже получили рамки и не выглядели как остаток старого вывода.
+' все доступные строки получили полные рамки.
 Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
     RequiredDataRowsForWorkbook = combinationCount
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
@@ -151,7 +151,7 @@ Failed:
     Err.Raise Err.Number, "CStrengthSummaryWriter.WriteSummary", Err.Description
 End Sub
 
-' Очищает прежние данные подробной таблицы прочности. При fullFormatting=True
+' Очищает данные подробной таблицы прочности. При fullFormatting=True
 ' удаляет также шапку, объединения и форматы; иначе сохраняет готовое оформление.
 Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
     mMinimalFormatting = Not fullFormatting
@@ -200,7 +200,7 @@ UseDefaultHeight:
 End Function
 
 ' Готовит область к записи: при полном оформлении очищает её целиком.
-' В минимальном режиме оставляет шапку и форматы, удаляя данные и прежнюю заливку статусов.
+' В минимальном режиме оставляет шапку и форматы, удаляя данные и заливку рассчитанных статусов.
 Private Sub PrepareTarget(ByVal target As Object)
     If mMinimalFormatting Then
         If target.Rows.Count > HEADER_ROWS Then
@@ -830,7 +830,7 @@ Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
     Set mCapturedSnapshot = value
 End Property
 
-' Восстанавливает готовую подробную таблицу и её прежнее оформление без решения НДС.
+' Восстанавливает готовую подробную таблицу и её сохранённое оформление без решения НДС.
 Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
     Set mCapturedSnapshot = Nothing
     mMinimalFormatting = Not fullFormatting

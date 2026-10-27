@@ -1,0 +1,39 @@
+﻿{
+    "Status":  "APPLIED_EXACT_THREE_PS_FILES",
+    "StartedUTC":  "2026-10-27T01:44:13.5747943+00:00",
+    "ManifestSHA256":  "25D12CFC37B7132B46F2B4A25FC8FB3EA6032A53A08FBD7F1E7619767E655D3A",
+    "Files":  [
+                  {
+                      "Name":  "Run-FocusedAcceptance.ps1",
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-FocusedAcceptance.ps1",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FocusedNativeMemoryGuard01\\Revision02\\Candidate\\Run-FocusedAcceptance.ps1",
+                      "OriginalSHA256":  "554FA36F994293EE5E4392FEBD39DA1876A816B21BBBA721254BE869FB5B9F5F",
+                      "CandidateSHA256":  "1FE70882E03EDDEA764AEDC1538E30C8B157FA86E363C105C7485747F17775FA",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FocusedNativeMemoryGuard01\\Revision02\\Applied01\\Backup\\Run-FocusedAcceptance.ps1",
+                      "Applied":  true
+                  },
+                  {
+                      "Name":  "Run-FocusedNativeAcceptance.ps1",
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-FocusedNativeAcceptance.ps1",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FocusedNativeMemoryGuard01\\Revision02\\Candidate\\Run-FocusedNativeAcceptance.ps1",
+                      "OriginalSHA256":  "DFD75734E5E36615A0753C9C4EB3259FB2E9F1A68078662F586529A46C9913D4",
+                      "CandidateSHA256":  "C5504713F4EFF0FF7F0F526A9A6CFA75F867BFCBA23AA2A3BCF4689471DA13D4",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FocusedNativeMemoryGuard01\\Revision02\\Applied01\\Backup\\Run-FocusedNativeAcceptance.ps1",
+                      "Applied":  true
+                  },
+                  {
+                      "Name":  "Run-PostAudit03NativeCAD.ps1",
+                      "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-PostAudit03NativeCAD.ps1",
+                      "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FocusedNativeMemoryGuard01\\Revision02\\Candidate\\Run-PostAudit03NativeCAD.ps1",
+                      "OriginalSHA256":  "4EA00B483E3E2B428E66942953EB3F1C0BC1C8D3AFC3C69A6996C2B08B802076",
+                      "CandidateSHA256":  "589EC2D913662BB72A9C060514095CEA8EF2B747B66492BB302469F5B815CB1E",
+                      "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FocusedNativeMemoryGuard01\\Revision02\\Applied01\\Backup\\Run-PostAudit03NativeCAD.ps1",
+                      "Applied":  true
+                  }
+              ],
+    "Failure":  null,
+    "VBAOrWorkbookChanged":  false,
+    "ApplicationsStartedOrStopped":  false,
+    "NativeTerminalClosureIsRootPrecondition":  true,
+    "CompletedUTC":  "2026-10-27T01:44:13.6433239+00:00"
+}

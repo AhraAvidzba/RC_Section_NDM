@@ -5,3 +5,8 @@ docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/*.txt -text 
 docs/regression/SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/**/*.txt -text -diff
 # Сохраняем исходные байты прикреплённого ТЗ при checkout Windows.
 docs/NDM_OOP_Layers_Status_Refactoring_TZ.md -text
+
+# Доказательства и сценарии запуска сохраняют точные исходные байты.
+docs/regression/GeometryFinalization_2026-10-26_Run01/** -text whitespace=cr-at-eol
+docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/** -text whitespace=cr-at-eol
+workbook/output/NDM_Test_1232_30/** -text whitespace=cr-at-eol

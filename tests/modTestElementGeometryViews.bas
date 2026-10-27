@@ -21,6 +21,7 @@ Public Function RunElementGeometryViewTests() As String
     TestElementExportFailureCleanup
     TestStrictContourImport
     TestNativeFreeformViews
+    TestPlotReaderGeometryOwnership
     GoTo Finish
 Failed:
     TestCheck "elementViews.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
@@ -88,8 +89,8 @@ Private Sub TestElementExportFailureCleanup()
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Новый адаптер обязан читать реальный контур и отклонять spline без подмены;
-' старый режим с теми же A/I продолжает прежнее эквивалентное представление.
+' Contour читает реальную границу и отклоняет spline без подмены;
+' Adaptive сохраняет эквивалентное представление с переданными A/I.
 Private Sub TestStrictContourImport()
     Dim fixture As Object: Set fixture = Application.Workbooks.Add(-4167)
     Dim number As Long, description As String
@@ -175,6 +176,62 @@ Private Sub TestOneNativeFreeform(ByVal fixture As Object, ByVal region As CConc
     TestCheck "elementViews.plot." & label & ".PNG", chart.Export(path, "PNG")
     mReport = mReport & "RASTER_ELEMENT_GEOMETRY: " & label & "; " & path & vbCrLf
     chartObject.Delete
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Записывает точную модель и проверяет независимость областей reader-а.
+' Изменяет всю полученную геометрию, включая дуги, отверстие и несвязные части;
+' последующее чтение и физические A/c/I должны оставаться согласованными.
+Private Sub TestPlotReaderGeometryOwnership()
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
+    Dim regions As Collection: Set regions = New Collection
+    regions.Add query.SubtractContainedRegion(query.CircleRegion(0#, 0#, 100#), query.CircleRegion(0#, 0#, 30#))
+    Dim parts As Collection: Set parts = New Collection
+    parts.Add query.CircleRegion(300#, 0#, 25#): parts.Add query.CircleRegion(380#, 0#, 20#)
+    regions.Add query.MergeDisjointRegions(parts)
+    Dim compact As CConcreteRegion: Set compact = query.RectangleRegion(600#, 0#, 80#, 40#, 0.15)
+    Dim model As CSectionModel: Set model = New CSectionModel: model.SourceType = "Generated"
+    Dim i As Long, props As TGeometryProperties, region As CConcreteRegion
+    For i = 1 To regions.Count
+        Set region = regions(i): query.RegionProperties region, props
+        model.AddConcreteElement props.CentroidX, props.CentroidY, props.Area, 1, shapeType:="Contour", _
+            localIx:=props.Ixc, localIy:=props.Iyc, localIxy:=props.Ixyc, rotationKnown:=True, exactRegion:=region
+    Next i
+    model.AddConcreteElement 600#, 0#, 3200#, 1, shapeType:="Rectangle", width:=80#, height:=40#, rotation:=0.15, rotationKnown:=True
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model), units, False
+    Dim reader As CSectionPlotDataReader: Set reader = New CSectionPlotDataReader
+    reader.LoadGeometryPreviewFromWorkbook ThisWorkbook, settings
+    TestCheck "elementViews.reader.count", reader.Count = 3
+    Dim returned As CConcreteRegion, again As CConcreteRegion, replacement As CConcreteRegion
+    Dim edges() As TRegionEdge, count As Long, opening(1 To 1) As Boolean
+    Set replacement = query.RectangleRegion(-1000#, -1000#, 2#, 3#)
+    replacement.CopyEdges edges, count
+    For i = 1 To reader.Count
+        Set returned = reader.ConcreteGeometry(i): Set again = reader.ConcreteGeometry(i)
+        TestCheck "elementViews.reader.independent.C" & CStr(i), Not returned Is again
+        returned.SetGeometry edges, count, 1, replacement.Area, "TestMutation", 0, opening
+        returned.SetOwner "TestMutation", "TestMutation", "TestMutation"
+        Set again = reader.ConcreteGeometry(i)
+        If i <= regions.Count Then
+            Set region = regions(i)
+            TestCheck "elementViews.reader.boundary.C" & CStr(i), reader.ConcreteHasBoundary(i)
+            TestCheck "elementViews.reader.topology.C" & CStr(i), query.RegionsCoincide(region, again) And region.LoopCount = again.LoopCount
+        Else
+            Set region = compact
+            TestCheck "elementViews.reader.compact", Not reader.ConcreteHasBoundary(i) And Not again Is Nothing
+            TestCheck "elementViews.reader.compactGeometry", query.RegionsCoincide(compact, again)
+        End If
+        query.RegionProperties again, props
+        TestNear "elementViews.reader.area.C" & CStr(i), props.Area, model.ConcreteArea(i), 0.00000001
+        TestNear "elementViews.reader.cx.C" & CStr(i), props.CentroidX, model.ConcreteX(i), 0.00000001
+        TestNear "elementViews.reader.cy.C" & CStr(i), props.CentroidY, model.ConcreteY(i), 0.00000001
+        TestNear "elementViews.reader.Ix.C" & CStr(i), props.Ixc, model.ConcreteLocalIx(i), 0.001
+        TestNear "elementViews.reader.Iy.C" & CStr(i), props.Iyc, model.ConcreteLocalIy(i), 0.001
+        TestNear "elementViews.reader.Ixy.C" & CStr(i), props.Ixyc, model.ConcreteLocalIxy(i), 0.001
+    Next i
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

@@ -1,0 +1,38 @@
+{
+  "Status": "NO_PRODUCTION_INTEGRATION_NO_DEMONSTRATED_WHOLE_GAIN",
+  "ObservedUTC": "2026-10-27T01:51:26.8779536+00:00",
+  "PrimaryPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport.txt",
+  "PrimarySHA256": "84F604AE954CACAD7124CA595D3D1F19800F00EE94C696098D0D7C10F4D04FEB",
+  "NativeFeasibilityChecks": 29,
+  "NativeExactGeometryAndStylePairs": 2,
+  "SourceTablesUnchanged": true,
+  "NoProductionVBAOverlayApplied": true,
+  "LiveExporterSHA256": "117FA3D175CEB38380BC71BB3909BFA7FDB476C50D743E467440919A5381BB1E",
+  "COMDefaultAndOnlyProductionPathPreserved": true,
+  "Pairs": [
+    {
+      "Scenario": "Small",
+      "COMSeconds": 0.19943819999753,
+      "BatchSeconds": 1.66210570000112,
+      "BatchOverCOM": 8.33393853344898,
+      "SecondsDifference": 1.4626675000035898,
+      "PermanentObjects": 12,
+      "SamplesEach": 1
+    },
+    {
+      "Scenario": "Heavy",
+      "COMSeconds": 8.31188619999739,
+      "BatchSeconds": 45.7782793000079,
+      "BatchOverCOM": 5.507568101693003,
+      "SecondsDifference": 37.466393100010514,
+      "PermanentObjects": 1243,
+      "SamplesEach": 1
+    }
+  ],
+  "Scope": "Single AB feasibility pair per size; configure+public saved-geometry exporter including temporary DWG setup/payload/cleanup; excludes independent geometry readback and IO. Not interactive button timing or stable multi-pair benchmark.",
+  "PreviousWholeFivePairAttempt": "TIMEOUT900, 19 artifacts/9 exact closed pairs, no returned QPC primary; preserved without PASS",
+  "TypedTransportOnly": "Native07 72/0 preserves typed Double fields, not evidence of whole-export speed",
+  "TestedEnvironmentOnly": "Installed AutoCAD24.2 native session; no cross-version universality claim",
+  "PerformancePass": false,
+  "FullRegressionPass": false
+}

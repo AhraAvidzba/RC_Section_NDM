@@ -17,6 +17,8 @@ Option Explicit
 ' Решение подтверждается отдельными допусками равновесия всех трёх усилий.
 ' Материалы, нагрузки и единицы заранее подготовлены вызывающим расчётом;
 ' чтение Excel и поиск предельной нагрузки выполняются отдельно.
+' Числовая проекция хранит координаты и площади для точного объекта модели,
+' его ревизии и численного начала; состояния материалов в неё не входят.
 
 Private Const STRAIN_EXTREMA_ROUNDING_MARGIN As Double = 1.77635683940025E-15            ' Допуск в восемь машинных погрешностей Double для близких экстремумов деформаций; при неоднозначном сравнении используется полный обход.
 
@@ -55,6 +57,13 @@ Private mIterations As Long ' Суммарное число итераций н�
 Private mLoadStepsCompleted As Long ' Сколько ступеней нагрузки успешно доведено до равновесия.
 Private mK(1 To 3, 1 To 3) As Double ' Касательная матрица d(N,Mx,My)/d(epsilon0,kappaX,kappaY).
 Private mFrame As CSectionNumericalFrame ' Общий центр и масштаб без изменения публичных координат.
+Private mProjectionSection As CSectionModel ' Модель числовой проекции; другой объект с тем же номером ревизии не совпадает.
+Private mProjectionRevision As Long ' Точная ревизия, для которой прочитаны числовые координаты и площади.
+Private mProjectionOriginX As Double, mProjectionOriginY As Double ' Начало, вычтенное из координат без округления.
+Private mConcreteProjectionValid As Boolean, mRebarProjectionValid As Boolean ' Каждый набор готовится только перед фактическим обходом.
+Private mConcreteProjectionCount As Long, mRebarProjectionCount As Long ' Число элементов в соответствующем подготовленном наборе.
+Private mConcreteProjectionX() As Double, mConcreteProjectionY() As Double, mConcreteProjectionArea() As Double ' Центрированные координаты и площади бетона.
+Private mRebarProjectionX() As Double, mRebarProjectionY() As Double, mRebarProjectionArea() As Double ' Центрированные координаты и площади арматуры.
 Private mCenterEpsilon As Double, mCenterMx As Double, mCenterMy As Double ' Деформация в численном центре без размерности и моменты Mx, My относительно него в Н*мм.
 Private mCenterResidualMx As Double, mCenterResidualMy As Double ' Невязки моментов относительно численного центра, Н*мм.
 Private mCenterK(1 To 3, 1 To 3) As Double ' Собирается напрямую по малым плечам, без вычитания больших K.
@@ -258,7 +267,7 @@ Friend Sub EvaluatePhysicalCenterPlane(ByVal section As CSectionModel, _
 End Sub
 
 ' Общая оценка известной плоскости; запрос физических данных независим от K.
-' Публичная оценка по-прежнему возвращает полную касательную матрицу.
+' Публичная оценка возвращает полную касательную матрицу.
 Private Sub EvaluatePlaneCore(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, ByVal buildTangent As Boolean, _
@@ -855,6 +864,62 @@ Private Sub EvaluateState(ByVal section As CSectionModel, _
     mMyint = mFrame.OriginalMy(mNint, mCenterMy)
 End Sub
 
+' Читает координаты и площади один раз для точного объекта модели, его
+' ревизии и численного начала. Порядок элементов и вычитание начала сохраняются.
+' Бетон и арматура готовятся независимо: расчёт только усилий не создаёт
+' бетонный буфер, а пустая арматура вообще не требует массивов.
+Private Sub PrepareNumericProjection(ByVal section As CSectionModel, ByVal originX As Double, _
+        ByVal originY As Double, ByVal concreteElements As Boolean)
+    Dim currentRevision As Long, sameContext As Boolean
+    currentRevision = section.Revision
+    If section Is mProjectionSection Then
+        sameContext = (currentRevision = mProjectionRevision And originX = mProjectionOriginX And originY = mProjectionOriginY)
+    End If
+    If Not sameContext Then
+        mConcreteProjectionValid = False: mRebarProjectionValid = False
+        Erase mConcreteProjectionX: Erase mConcreteProjectionY: Erase mConcreteProjectionArea
+        Erase mRebarProjectionX: Erase mRebarProjectionY: Erase mRebarProjectionArea
+        mConcreteProjectionCount = 0: mRebarProjectionCount = 0
+        Set mProjectionSection = section
+        mProjectionRevision = currentRevision
+        mProjectionOriginX = originX: mProjectionOriginY = originY
+    End If
+    Dim i As Long, xCoord As Double, yCoord As Double, area As Double
+    If concreteElements Then
+        If mConcreteProjectionValid Then Exit Sub
+        mConcreteProjectionCount = section.ConcreteCount
+        If mConcreteProjectionCount > 0 Then
+            ReDim mConcreteProjectionX(1 To mConcreteProjectionCount)
+            ReDim mConcreteProjectionY(1 To mConcreteProjectionCount)
+            ReDim mConcreteProjectionArea(1 To mConcreteProjectionCount)
+            For i = 1 To mConcreteProjectionCount
+                section.ConcreteElementForSolver i, xCoord, yCoord, area
+                xCoord = xCoord - originX: yCoord = yCoord - originY
+                mConcreteProjectionX(i) = xCoord: mConcreteProjectionY(i) = yCoord: mConcreteProjectionArea(i) = area
+            Next i
+        Else
+            Erase mConcreteProjectionX: Erase mConcreteProjectionY: Erase mConcreteProjectionArea
+        End If
+        mConcreteProjectionValid = True
+    Else
+        If mRebarProjectionValid Then Exit Sub
+        mRebarProjectionCount = section.RebarCount
+        If mRebarProjectionCount > 0 Then
+            ReDim mRebarProjectionX(1 To mRebarProjectionCount)
+            ReDim mRebarProjectionY(1 To mRebarProjectionCount)
+            ReDim mRebarProjectionArea(1 To mRebarProjectionCount)
+            For i = 1 To mRebarProjectionCount
+                section.RebarElementForSolver i, xCoord, yCoord, area
+                xCoord = xCoord - originX: yCoord = yCoord - originY
+                mRebarProjectionX(i) = xCoord: mRebarProjectionY(i) = yCoord: mRebarProjectionArea(i) = area
+            Next i
+        Else
+            Erase mRebarProjectionX: Erase mRebarProjectionY: Erase mRebarProjectionArea
+        End If
+        mRebarProjectionValid = True
+    End If
+End Sub
+
 ' Вычисляет внутренние усилия интегрированием напряжений бетонных элементов
 ' и стержней для заданного поля деформаций. Это основной повторяемый цикл
 ' решения, работающий с CSectionModel без обращения к Excel.
@@ -946,9 +1011,9 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         End If
     End If
 
-    For i = 1 To section.ConcreteCount
-        section.ConcreteElementForSolver i, xCoord, yCoord, area
-        xCoord = xCoord - originX: yCoord = yCoord - originY
+    PrepareNumericProjection section, originX, originY, True
+    For i = 1 To mConcreteProjectionCount
+        xCoord = mConcreteProjectionX(i): yCoord = mConcreteProjectionY(i): area = mConcreteProjectionArea(i)
         strain = eps0 + kx * yCoord + ky * xCoord
         If physical Then
             If strain < mMinConcreteStrain Then
@@ -989,9 +1054,9 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
 
 ConcreteForcesReady:
     If section.RebarCount > 0 Then
-        For i = 1 To section.RebarCount
-            section.RebarElementForSolver i, xCoord, yCoord, area
-            xCoord = xCoord - originX: yCoord = yCoord - originY
+        PrepareNumericProjection section, originX, originY, False
+        For i = 1 To mRebarProjectionCount
+            xCoord = mRebarProjectionX(i): yCoord = mRebarProjectionY(i): area = mRebarProjectionArea(i)
             strain = eps0 + kx * yCoord + ky * xCoord
             If physical Then
                 If strain < mMinSteelStrain Then
@@ -1094,7 +1159,7 @@ Private Sub AddTangent(ByVal axialStiffness As Double, ByVal xCoord As Double, B
     mCenterK(3, 3) = mCenterK(3, 3) + axialStiffness * xCoord * xCoord
 End Sub
 
-' Публичная K относится к прежнему началу координат. Численные поправки
+' Публичная K относится к исходному началу координат WCS. Численные поправки
 ' используют только напрямую собранную центрированную K, а не ее обратный перенос.
 Private Sub BuildOriginalTangent()
     Dim x As Double, y As Double
@@ -1268,7 +1333,7 @@ Public Sub ClearResult()
     mConverged = False
     mStopReason = vbNullString
     mFailureCode = sfcNone
-    mFailureSettingKeys = vbNullString ' Успешный повторный расчет не наследует адреса ошибки прежней конфигурации.
+    mFailureSettingKeys = vbNullString ' Успешный повторный расчёт не наследует адреса ошибки другой конфигурации.
     mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
     mCenterEpsilon = 0#: mCenterMx = 0#: mCenterMy = 0#
     mCenterResidualMx = 0#: mCenterResidualMy = 0#

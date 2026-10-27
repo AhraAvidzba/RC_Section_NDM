@@ -1,0 +1,55 @@
+{
+    "SchemaVersion":  1,
+    "Status":  "PASS_EXACT_SELECTED_SOURCE_APPLY_ONLY",
+    "ObservedUTC":  "2026-10-26T23:50:04.0980478Z",
+    "SelectedModuleCount":  4,
+    "AppliedModuleCount":  4,
+    "IncludeRotation":  false,
+    "ManifestPath":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalSourceApplyPlan01\\SourceManifest.json",
+    "ManifestSHA256":  "A082CC7A06DB7CB4D8C81DDCB47E29D599F87E35185261C9ED16E18CB07F1378",
+    "TerminalProofPath":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalSourceApplyPlan01\\TerminalProof01.json",
+    "TerminalProofSHA256":  "4291D9988180C44955A369448E528144AA7D28BAE72684A635F7B765DA105DE8",
+    "Modules":  [
+                    {
+                        "Module":  "CSectionSolver",
+                        "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CSectionSolver.cls",
+                        "BeforeSHA256":  "F2F74CE66F5BF1FDF2C58C47B6C367A5B8599A7FADCABBE7D643C4F2181A1088",
+                        "FinalSHA256":  "CA646695E4E7307EFA37B386D9DD8021F77D75780CDA748968BAB56A588AE0DC",
+                        "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalSourceApplyPlan01\\AppliedFour01\\OriginalSources\\CSectionSolver.cls",
+                        "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\IsolatedFinalCommentReview01\\Source\\CSectionSolver.cls"
+                    },
+                    {
+                        "Module":  "CNDMResultsWriter",
+                        "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CNDMResultsWriter.cls",
+                        "BeforeSHA256":  "93935994A13DADE9C859AC3E3AD9F095E2607B7F809C775DA3B58DD6CD9015D3",
+                        "FinalSHA256":  "55BF43D7336B1EFACB17E8F787A8B2DF79ED05007D59A5EE728A68879A6C9F38",
+                        "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalSourceApplyPlan01\\AppliedFour01\\OriginalSources\\CNDMResultsWriter.cls",
+                        "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\IsolatedFinalCommentReview01\\Source\\CNDMResultsWriter.cls"
+                    },
+                    {
+                        "Module":  "CUnitSystem",
+                        "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CUnitSystem.cls",
+                        "BeforeSHA256":  "4AB40EA911F58B4C7738E80CB3456588F95921D64757702567F4035F632B1B1E",
+                        "FinalSHA256":  "1166FFB8E73EF235C6ABBE4486089C84EA84DF790CE8655857D03F3383AD13D3",
+                        "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalSourceApplyPlan01\\AppliedFour01\\OriginalSources\\CUnitSystem.cls",
+                        "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\IsolatedFinalCommentReview01\\Source\\CUnitSystem.cls"
+                    },
+                    {
+                        "Module":  "CSectionGeometryQuery",
+                        "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionGeometryQuery.cls",
+                        "BeforeSHA256":  "7414530A259F86737B82F82F92726C838C6A698095656121223502CFC97D7195",
+                        "FinalSHA256":  "3F6E3804394F37FB135E8138A64910AC1EEED41B84C6914E39DF019A8693E924",
+                        "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FinalSourceApplyPlan01\\AppliedFour01\\OriginalSources\\CSectionGeometryQuery.cls",
+                        "Candidate":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\DeferredRegionProjectionReuse01\\Candidate\\CSectionGeometryQuery.cls"
+                    }
+                ],
+    "Failure":  null,
+    "ProtectedInputCount":  179,
+    "OfflineTempCopiesOnly":  false,
+    "WorkbookPublished":  false,
+    "WorkbookBuilt":  false,
+    "AppsLaunched":  false,
+    "ProcessesKilled":  false,
+    "FullRegressionPass":  false,
+    "UnderFiveSecondsAchieved":  false
+}

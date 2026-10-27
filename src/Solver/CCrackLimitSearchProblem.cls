@@ -33,7 +33,7 @@ Private Sub ILimitSearchProblem_BeginLoadPath(ByVal request As CLimitSearchReque
     mCrack.LimitSearchBeginCrackFormationAttempt request.SelectedLoadPath.Key, request.SelectedLoadPath
 End Sub
 
-' Передаёт расчёту образования трещины выбранный путь и причины прежних попыток
+' Передаёт расчёту образования трещины выбранный путь и причины выполненных попыток
 ' для сохранения в окончательном результате.
 Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
         ByVal previousPathComments As String, ByVal hadPreviousAttempts As Boolean)

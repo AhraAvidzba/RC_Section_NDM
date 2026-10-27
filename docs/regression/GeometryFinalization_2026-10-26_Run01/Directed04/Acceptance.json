@@ -1,0 +1,338 @@
+﻿{
+    "Status":  "PASS_DIRECTED_GEOMETRY_NO_YES",
+    "Passed":  true,
+    "Modes":  [
+                  {
+                      "Mode":  "No",
+                      "Passed":  true,
+                      "WorkerExitCode":  0,
+                      "OuterTimedOut":  false,
+                      "Seconds":  305.6338149,
+                      "Primary":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\Directed04\\Directed_No.txt",
+                      "PrimarySHA256":  "CA7BAF3371A49988CAFDA21D256B6FAA56A1656F547D5234A33EB088809D964D",
+                      "Suites":  [
+                                     {
+                                         "Macro":  "modTestElementGeometry.RunContourCellMeshTests",
+                                         "ExpectedTotal":  "TOTAL:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  2713,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestContourMesh.RunAutomaticMeshTests",
+                                         "ExpectedTotal":  "TOTAL_AUTO_MESH:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  131181,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                         "ExpectedTotal":  "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  123,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                         "ExpectedTotal":  "TOTAL CALCULATION SNAPSHOT:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  559,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                         "ExpectedTotal":  "TOTAL_ELEMENT_GEOMETRY_VIEWS:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  61,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                                         "ExpectedTotal":  "TOTAL RECIPE RULES:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  272,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestAutoCADContours.RunAutoCADContourTests",
+                                         "ExpectedTotal":  "TOTAL_AUTOCAD_CONTOURS:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  670,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests",
+                                         "ExpectedTotal":  "TOTAL_GENERAL_GEOMETRY_CONFIG:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  2293,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestAutoCADConfig.RunAudit03AutoCADConfigTests",
+                                         "ExpectedTotal":  "TOTAL_AUTOCAD_CONFIG:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  1243,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestWorkbookInterface.RunAudit03InputAreaImportFilterTests",
+                                         "ExpectedTotal":  "TOTAL_AUDIT03_INPUT_AREA_IMPORT:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  101,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests",
+                                         "ExpectedTotal":  "TOTAL_AUDIT03_IMPORTED_UNIT_CHANGES:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  277,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     }
+                                 ],
+                      "Closure":  {
+                                      "OwnedIdentityRecorded":  true,
+                                      "ExactIdentityAbsent":  true,
+                                      "ResidualForceKilled":  false,
+                                      "PID":  35064,
+                                      "StartTicksUTC":  "639286447330056720",
+                                      "Name":  "EXCEL"
+                                  },
+                      "SourceUnchanged":  true
+                  },
+                  {
+                      "Mode":  "Yes",
+                      "Passed":  true,
+                      "WorkerExitCode":  0,
+                      "OuterTimedOut":  false,
+                      "Seconds":  341.48578599999996,
+                      "Primary":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\Directed04\\Directed_Yes.txt",
+                      "PrimarySHA256":  "07A7627D35C11DA9BA478223E01431AB4B876C89930EF31BB73124972A9AFB2A",
+                      "Suites":  [
+                                     {
+                                         "Macro":  "modTestElementGeometry.RunContourCellMeshTests",
+                                         "ExpectedTotal":  "TOTAL:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  2713,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestContourMesh.RunAutomaticMeshTests",
+                                         "ExpectedTotal":  "TOTAL_AUTO_MESH:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  131181,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                         "ExpectedTotal":  "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  123,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                         "ExpectedTotal":  "TOTAL CALCULATION SNAPSHOT:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  559,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                         "ExpectedTotal":  "TOTAL_ELEMENT_GEOMETRY_VIEWS:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  61,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                                         "ExpectedTotal":  "TOTAL RECIPE RULES:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  272,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestAutoCADContours.RunAutoCADContourTests",
+                                         "ExpectedTotal":  "TOTAL_AUTOCAD_CONTOURS:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  670,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests",
+                                         "ExpectedTotal":  "TOTAL_GENERAL_GEOMETRY_CONFIG:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  2293,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestAutoCADConfig.RunAudit03AutoCADConfigTests",
+                                         "ExpectedTotal":  "TOTAL_AUTOCAD_CONFIG:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  1243,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestWorkbookInterface.RunAudit03InputAreaImportFilterTests",
+                                         "ExpectedTotal":  "TOTAL_AUDIT03_INPUT_AREA_IMPORT:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  101,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     },
+                                     {
+                                         "Macro":  "modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests",
+                                         "ExpectedTotal":  "TOTAL_AUDIT03_IMPORTED_UNIT_CHANGES:",
+                                         "Started":  true,
+                                         "Finished":  true,
+                                         "TotalMatches":  1,
+                                         "AssertionsPassed":  277,
+                                         "AssertionsFailed":  0,
+                                         "Errors":  [
+
+                                                    ],
+                                         "Passed":  true
+                                     }
+                                 ],
+                      "Closure":  {
+                                      "OwnedIdentityRecorded":  true,
+                                      "ExactIdentityAbsent":  true,
+                                      "ResidualForceKilled":  false,
+                                      "PID":  24620,
+                                      "StartTicksUTC":  "639286450389637966",
+                                      "Name":  "EXCEL"
+                                  },
+                      "SourceUnchanged":  true
+                  }
+              ],
+    "SourceSHA256":  "1A008653400C7F0E66E607ACF150A4831A3137F49EC28CC174358913D8311AED",
+    "SourceUnchanged":  true,
+    "RequiredSuiteCount":  22,
+    "FullRegressionPass":  false,
+    "FullUIRun":  false,
+    "Failure":  null
+}

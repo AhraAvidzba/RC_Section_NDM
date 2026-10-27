@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Полный файловый снимок расчёта с проверкой целостности
+' Файловый снимок расчёта или явно сформированной геометрии с проверкой целостности
 ' ==========================================================================
 ' Сохраняет полный набор в одном .ndm; Excel-вывод не использует этот архив.
 ' Одинаковые строки колонки хранятся словарём, числа — исходными Double.
@@ -19,9 +19,9 @@ Private Declare PtrSafe Function MoveFileExW Lib "kernel32" (ByVal source As Lon
 Private Declare PtrSafe Sub CopySnapshotBits Lib "kernel32" Alias "RtlMoveMemory" (ByRef target As Currency, ByRef source As Double, ByVal count As LongPtr)
 Private Declare PtrSafe Sub CopyPackedBytes Lib "kernel32" Alias "RtlMoveMemory" (ByVal target As LongPtr, ByVal source As LongPtr, ByVal count As LongPtr)
 Private Const MAGIC As String = "NDMSNP04" ' Контракт плотных колонок и точных повторяющихся серий версии 4.
-Private Const BOUNDARY_MAGIC As String = "NDMSNP05" ' Версия 5 запрещает прежнему читателю потерять обязательную фактическую границу элемента.
+Private Const BOUNDARY_MAGIC As String = "NDMSNP05" ' NDMSNP05 явно отклоняется читателем NDMSNP04, который не поддерживает обязательные границы.
 Private Const FILE_EXTENSION As String = ".ndm" ' Имя в Config не требует расширения; новые снимки получают один общий суффикс.
-Private Const LEGACY_FILE_EXTENSION As String = ".ndms" ' Прежние файлы доступны для чтения без изменения их содержимого или имени.
+Private Const LEGACY_FILE_EXTENSION As String = ".ndms" ' Расширение .ndms поддерживается для чтения без изменения содержимого или имени.
 Private Const LINK_PREFIX As String = "NDM.CalculationSnapshot." ' Привязка показанных результатов к уже загруженному файлу.
 
 ' Проверяет источник уже показанного расчёта независимо от нового выбора Config.
@@ -118,8 +118,8 @@ Public Function SnapshotPath(ByVal workbook As Object) As String
         "Полный путь снимка слишком длинный для файловых операций VBA.", "Сократите имя или путь к папке книги.")
 End Function
 
-' Выбирает файл текущего имени Config; новый .ndm имеет приоритет перед прежним .ndms.
-' Повреждённый существующий .ndm не подменяется старым расчётом: после выбора проверяется его SHA256.
+' Выбирает файл текущего имени Config; .ndm имеет приоритет перед .ndms.
+' Повреждённый .ndm не подменяется файлом .ndms: после выбора проверяется SHA256.
 Private Function SelectedReadPath(ByVal workbook As Object) As String
     SelectedReadPath = SnapshotPath(workbook)
     If FileExists(SelectedReadPath) Then Exit Function
@@ -148,7 +148,7 @@ Failed:
     Err.Raise vbObjectError + 4950, "CCalculationSnapshotStore", "Снимок не сохранён (" & target & "): " & reason
 End Sub
 
-' Загружает файл, выбранный сейчас в Config; прежняя привязка просмотра его не заменяет.
+' Загружает файл, выбранный сейчас в Config, независимо от привязки показанных Results.
 Public Function LoadFile(ByVal workbook As Object) As CCalculationSnapshot
     Dim path As String: path = SelectedReadPath(workbook)
     If Not FileExists(path) Then Err.Raise vbObjectError + 4956, "CCalculationSnapshotStore", "Файл снимка не найден: " & path
@@ -157,8 +157,8 @@ Public Function LoadFile(ByVal workbook As Object) As CCalculationSnapshot
     Set LoadFile = snapshot
 End Function
 
-' Записывает все матрицы прежним плотным кодеком. Обязательная фактическая
-' граница включает версию 5; компактный прежний режим сохраняет версию 4.
+' Записывает матрицы плотным колоночным кодеком. Обязательная фактическая
+' граница и явный GeometryPreview требуют NDMSNP05; полный компактный расчёт сохраняет NDMSNP04.
 Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot)
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
     Dim count As Long, key As Variant, hash As String, signature As String, version As Long
@@ -167,7 +167,7 @@ Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnap
         count = count + 1
     Next key
     signature = MAGIC: version = 4
-    If HasConcreteBoundaries(snapshot) Then signature = BOUNDARY_MAGIC: version = 5
+    If HasConcreteBoundaries(snapshot) Or snapshot.IsGeometryPreview Then signature = BOUNDARY_MAGIC: version = 5
     file.OpenWrite path
     file.WriteASCII signature: file.WriteLong version: file.WriteDouble snapshot.RunID: file.WriteDouble snapshot.ElapsedSeconds: file.WriteLong count
     For Each key In snapshot.Keys()
@@ -185,7 +185,7 @@ Failed:
 End Sub
 
 ' Отличает новую обязательную геометрию от пустой дополнительной шапки.
-' Наличие строки Contour без границ раньше отклоняет snapshot.Validate.
+' Contour без обязательных границ отклоняется snapshot.Validate до начала записи.
 Private Function HasConcreteBoundaries(ByVal snapshot As CCalculationSnapshot) As Boolean
     If snapshot.HasTable("rngNDMElementGeometry") Then HasConcreteBoundaries = snapshot.TableRowCount("rngNDMElementGeometry") > 1
 End Function
@@ -215,7 +215,7 @@ Private Function ReadBinary(ByVal path As String) As CCalculationSnapshot
     For i = 1 To count
         key = GetText(file): values = ReadMatrix(file): snapshot.AddTable key, values
     Next i
-    If version = 4 And HasConcreteBoundaries(snapshot) Then Err.Raise 5, , "Обязательные границы элементов требуют версии снимка 5."
+    If version = 4 And (HasConcreteBoundaries(snapshot) Or snapshot.HasTable("Snapshot.Kind")) Then Err.Raise 5, , "Обязательные границы элементов требуют версии снимка 5."
     If file.Position <> file.Size - 72 Then Err.Raise 5, , "Неверная длина снимка."
     file.CloseFile
     Set ReadBinary = snapshot
@@ -279,7 +279,7 @@ NextColumn:
 End Sub
 
 ' Проверяет повторение точного списка ElementID во всех сохранённых состояниях.
-' Создаёт прежний словарь лишь для первого блока; несовпадение возвращает обычный кодек без записи байтов.
+' Создаёт словарь первого блока; несовпадение выбирает обычный кодек до записи байтов.
 Private Function WriteRepeatedElementIDs(ByVal file As CBinarySnapshotFile, ByRef values As Variant, ByVal rows As Long, ByVal elementCount As Long) As Boolean
     If elementCount < 1 Or rows < 4096 Then Exit Function
     If (rows - 1) Mod elementCount <> 0 Or (rows - 1) \ elementCount < 2 Then Exit Function
@@ -306,7 +306,7 @@ Private Function WriteRepeatedElementIDs(ByVal file As CBinarySnapshotFile, ByRe
     WriteRepeatedElementIDs = True
 End Function
 
-' Готовит крупный словарь в один непрерывный блок с прежними Long-длинами и UTF-16LE.
+' Готовит крупный словарь в один непрерывный блок с Long-длинами и текстом UTF-16LE.
 ' Предел 8 МиБ ограничивает дополнительную память; маленькие и слишком большие словари идут потоком.
 Private Function WritePackedDictionary(ByVal file As CBinarySnapshotFile, ByVal dictionary As Object) As Boolean
     If dictionary.Count < 512 Then Exit Function

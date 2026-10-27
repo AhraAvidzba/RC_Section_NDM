@@ -50,8 +50,8 @@ try {
     foreach($helper in @('FocusedAcceptanceProbe.bas')+$helpers){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $helper) -Destination (Join-Path $directory $helper)}
     $fixture=Join-Path $PSScriptRoot 'fixtures/FocusedSavedSection.json'
     Copy-Item -LiteralPath $fixture -Destination (Join-Path $directory 'SavedSectionFixture.json')
-    & (Join-Path $PSScriptRoot 'Prepare-FocusedAcceptance.ps1') -SourceWorkbook $source -OutputDirectory ($EvidenceDirectory+'/Probe') -ExtraHelperFile ('../../'+$EvidenceDirectory+'/Combined.bas') -SavedFixture $fixture
-    & (Join-Path $PSScriptRoot 'Describe-FocusedAcceptance.ps1') -ProbeDirectory ($EvidenceDirectory+'/Probe')
+    & (Join-Path $PSScriptRoot 'Prepare-FocusedAcceptance.ps1') -SourceWorkbook $source -OutputDirectory ($EvidenceDirectory+'/Probe') -ExtraHelperFile ('../../'+$EvidenceDirectory+'/Combined.bas') -SavedFixture $fixture -DeadlineUTC $deadline.ToString('o')
+    & (Join-Path $PSScriptRoot 'Describe-FocusedAcceptance.ps1') -ProbeDirectory ($EvidenceDirectory+'/Probe') -DeadlineUTC $deadline.ToString('o')
     $input=Get-Content -LiteralPath (Join-Path $directory 'Probe/InputManifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach($group in $input.Groups){foreach($mode in @('No','Yes')){
         Invoke-Gate ($group.Shape+'_'+$group.Group+'_'+$mode) 'modTestBatchCalculation.TestRunFocusedAcceptanceCases' $mode $group.Shape $group.Group -Reopen
@@ -64,7 +64,7 @@ try {
         Invoke-Gate ('Model_'+$shape) 'modTestBatchCalculation.TestDumpFocusedForceBoundsExact' 'No' $shape '' 120
     }
     Invoke-Gate 'OutputPresentation' 'RunConfigPresentationTests' 'No' '' '' 180
-    & (Join-Path $PSScriptRoot 'Run-FocusedNativeAcceptance.ps1') -SourceWorkbook $source -ReportDirectory ($EvidenceDirectory+'/NativeCAD') -MaxSeconds ([math]::Min(420,(Remaining)))
+    & (Join-Path $PSScriptRoot 'Run-FocusedNativeAcceptance.ps1') -SourceWorkbook $source -ReportDirectory ($EvidenceDirectory+'/NativeCAD') -MaxSeconds ([math]::Min(420,(Remaining))) -DeadlineUTC $deadline.ToString('o')
     $records.Add(@{ID='NativeCAD';Kind='NativeCAD';Passed=($LASTEXITCODE -eq 0);Report=($EvidenceDirectory+'/NativeCAD/Stage.json')})
     Save-Run
     & $Python (Join-Path $PSScriptRoot 'Verify-FocusedAcceptance.py') --directory $directory --independent

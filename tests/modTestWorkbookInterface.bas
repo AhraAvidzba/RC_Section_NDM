@@ -9,7 +9,7 @@ Option Explicit
 
 #If VBA7 Then
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Связывает полученный COM HWND с PID, чтобы не трогать прежний пользовательский Excel.
+' Связывает полученный COM HWND с PID, чтобы не трогать уже открытый пользовательский Excel.
 Private Declare PtrSafe Function TestExcelWindowProcessId Lib "user32" Alias "GetWindowThreadProcessId" (ByVal hwnd As LongPtr, ByRef processID As Long) As Long
 #Else
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -804,7 +804,7 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что расчет в режиме AutoCAD не запускает скрытый импорт.
 ' Пользователь должен сначала явно нажать отдельную кнопку импорта; иначе
-' расчет останавливается до очистки старых Results и до обращения к AutoCAD.
+' расчет останавливается до очистки сохранённых Results и до обращения к AutoCAD.
 Private Sub TestCalculationRequiresFormedSection(ByRef stats As TUiTestStats)
     TestPrepareCircleInput
     TestSetSystemSetting "Geometry.Source", "AutoCAD"
@@ -3222,7 +3222,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет наличие имени книги без падения теста на ошибке Excel.
-' Используется для контроля, что старые входные диапазоны не вернулись после
+' Используется для контроля, что удалённые входные диапазоны отсутствуют после
 ' перестройки листа Config.
 Private Function TestWorkbookNameExists(ByVal nameText As String) As Boolean
     On Error Resume Next
@@ -3686,7 +3686,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Готовит Rectangles fixture, активные грани и нагрузку через обычные таблицы Config.
-' Неактивные грани отключаются явно, чтобы не зависеть от прежних пользовательских данных.
+' Неактивные грани отключаются явно, чтобы не зависеть от сохранённых пользовательских данных.
 Private Sub TestPrepareRectanglesInput()
     TestSetSystemSetting "Units.Force.Input", "N"
     TestSetSystemSetting "Units.Moment.Input", "N*mm"
@@ -4919,7 +4919,7 @@ Public Function RunAudit03NumericSettingsInputTests() As String
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' явно пустая численная настройка или TODO не заменяется значением
+' явно пустая численная настройка или текстовая заглушка не заменяется значением
 ' по умолчанию. Отсутствующий необязательный ключ и пустой диаметр
 ' имеют собственные правила чтения и проверяются отдельно.
 Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats)
@@ -5956,7 +5956,7 @@ Private Sub TestAudit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal pr
                                 ' округление кривизны 2.73e-10 на плато в обеих
                                 ' книгах. Используем общий предел unit-сравнения
                                 ' 1e-9; абсолютный порог и проверки деформаций,
-                                ' усилий, статусов и геометрии остаются прежними.
+                                ' усилий, статусов и геометрии не изменяются.
                                 absoluteLimit = 0.000000000001 + 0.000000001 * Abs(expected)
                             End If
                         End If
@@ -6424,10 +6424,11 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     savedUnits = unitRange.Formula: savedSystem = systemRange.Formula
     For row = 2 To systemRange.Rows.Count
-        If CStr(systemRange.Cells(row, 1).Value2) = "AutoCAD.Import.MinArea" Then minAreaRow = row
+        If CStr(systemRange.Cells(row, 1).Value2) = "Mesh.MinElementArea" Then minAreaRow = row
     Next row
     If minAreaRow = 0 Then Err.Raise vbObjectError + 4602, "TestAudit03InputAreaImportFilter", "Не найден порог площади импорта."
     TestSetSystemSetting "Units.Length.Input", "m"
+    TestSetSystemSetting "Mesh.CellGeometry", "Adaptive"
     TestSetSystemSetting "AutoCAD.Common.ConcreteLayer", "Concrete"
     TestSetSystemSetting "AutoCAD.Common.RebarLayer", "Reinf"
     Set modelSpace = New Collection
@@ -6493,7 +6494,7 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
         TestAudit03CaptureImportError modelSpace, errorNumber, description
         prefix = "audit03.inputArea.invalid" & CStr(invalidIndex)
         TestAssertTrue stats, prefix & ".rejected", errorNumber <> 0
-        TestAssertTrue stats, prefix & ".address", InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+        TestAssertTrue stats, prefix & ".address", InStr(1, description, "Mesh.MinElementArea", vbBinaryCompare) > 0
         TestAssertTrue stats, prefix & ".actualCell", InStr(1, description, systemRange.Cells(minAreaRow, 2).Address(False, False), vbTextCompare) > 0
         TestAssertTrue stats, prefix & ".action", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
             InStr(1, description, "Исправьте", vbTextCompare) > 0 Or InStr(1, description, "Уменьшите", vbTextCompare) > 0
@@ -6503,16 +6504,16 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
     TestAudit03CaptureImportError modelSpace, errorNumber, description
     TestAssertTrue stats, "audit03.inputArea.emptyRebar.rejected", errorNumber <> 0
     TestAssertTrue stats, "audit03.inputArea.emptyRebar.reason", InStr(1, description, "арматурных", vbBinaryCompare) > 0 And _
-        InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+        InStr(1, description, "Mesh.MinElementArea", vbBinaryCompare) > 0
     systemRange.Cells(minAreaRow, 2).Value2 = 10001# / 1000000#
     TestAudit03CaptureImportError modelSpace, errorNumber, description
     TestAssertTrue stats, "audit03.inputArea.emptyConcrete.rejected", errorNumber <> 0
     TestAssertTrue stats, "audit03.inputArea.emptyConcrete.reason", InStr(1, description, "бетонных", vbBinaryCompare) > 0 And _
-        InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+        InStr(1, description, "Mesh.MinElementArea", vbBinaryCompare) > 0
     systemRange.Cells(minAreaRow, 1).Value2 = "__MissingImportMinimumArea"
     TestAudit03CaptureImportError modelSpace, errorNumber, description
     TestAssertTrue stats, "audit03.inputArea.missing.rejected", errorNumber <> 0
-    TestAssertTrue stats, "audit03.inputArea.missing.address", InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
+    TestAssertTrue stats, "audit03.inputArea.missing.address", InStr(1, description, "Mesh.MinElementArea", vbBinaryCompare) > 0
     TestAssertTrue stats, "audit03.inputArea.noStateSolve", SectionEquilibriumSolveCount() = solveCount
     GoTo Restore
 Failed:
@@ -6568,7 +6569,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' все девять переходов OUTPUT-длины mm/cm/m должны сохранить
 ' импортное сечение. INPUT и знаки меняются вместе с независимым переводом
-' чисел; заголовки старого snapshot остаются источником его размерностей.
+' чисел; заголовки сохранённого снимка остаются источником его размерностей.
 ' Непереведенное число нагрузки отдельно должно получить новый физический смысл.
 Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     Dim rangeNames As Variant, original As Collection, name As Variant, i As Long, beforeIndex As Long, afterIndex As Long
@@ -6612,7 +6613,8 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             TestSetProfileSetting "PR1", "Calculation.Crack.Width", "No"
             TestSetProfileSetting "PR1", "Calculation.Stability.Enabled", "No"
             TestSetProfileSetting "PR1", "Visualization.State", "StrengthState"
-            TestSetSystemSetting "AutoCAD.Import.MinArea", "0.000001"
+            TestSetSystemSetting "Mesh.MinElementArea", "0.000001"
+            TestSetSystemSetting "Mesh.CellGeometry", "Adaptive"
             TestSetSystemSetting "AutoCAD.Common.ConcreteLayer", "Concrete"
             TestSetSystemSetting "AutoCAD.Common.RebarLayer", "Reinf"
             For Each name In Array("Force", "Moment", "Stress", "Curvature")
@@ -6632,7 +6634,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             TestAssertTextEquals stats, prefix & ".previewAreaHeader", CStr(preview(1, TestResultHeaderColumnByBaseName(preview, "Area"))), "Area, " & CStr(areaNames(beforeIndex))
             TestAudit03AssertAutoCADMmGeometry stats, prefix & ".beforeChange", section
 
-            lengthFactor = CDbl(lengthFactors(afterIndex)): stressFactor = CDbl(stressFactors(afterIndex)) ' Меняем текущие единицы, сохраняя прежнюю импортированную геометрию и её единицы.
+            lengthFactor = CDbl(lengthFactors(afterIndex)): stressFactor = CDbl(stressFactors(afterIndex)) ' Меняем текущие единицы, сохраняя импортированную геометрию и её единицы.
             forceFactor = CDbl(forceFactors(afterIndex)): momentFactor = CDbl(momentFactors(afterIndex))
             TestAudit03RescaleInputTables lengthFactor, stressFactor
             TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
@@ -6658,7 +6660,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             TestSetSystemSetting "Geometry.Source", "AutoCAD"
             ' Эти параметры остановили бы новый импорт, но сохраненную модель
             ' при расчете не должны ни перечитывать из DWG, ни фильтровать заново.
-            TestSetSystemSetting "AutoCAD.Import.MinArea", "1e100"
+            TestSetSystemSetting "Mesh.MinElementArea", "1e100"
             TestSetSystemSetting "AutoCAD.Common.ConcreteLayer", "__NoNewConcreteImport"
             TestSetSystemSetting "AutoCAD.Common.RebarLayer", "__NoNewRebarImport"
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -6840,7 +6842,7 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
         "Stability.AccidentalEccentricityMode", "Stability.AccidentalEccentricityPlanes", _
         "Stability.AccidentalEccentricityUser1", "Stability.AccidentalEccentricityUser2", "Stability.SP63.Ks", _
         "Stability.SP63.DeltaEMin", "Stability.SP63.DeltaEMax", "Stability.SP35.PhiP", "Stability.SP35.NOverNcrLimit", _
-        "AutoCAD.Import.MinArea", "AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer")
+        "Mesh.MinElementArea", "AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer")
     For i = 0 To UBound(keys)
         key = CStr(keys(i))
         Set keyCell = Nothing
@@ -7101,7 +7103,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет дробные числа, mm/cm/m, поврежденные поля, перенос к последней
-' строке листа и комментарий LC за прежней границей 1000. Текущий Config не
+' строке листа и комментарий LC после строки 1000. Текущий Config не
 ' может менять физическую геометрию, уже сохраненную с собственной размерностью.
 Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     Dim fixture As Object, sheet As Object, anchor As Object, properties As Object, source As Object
@@ -7290,7 +7292,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сохраняет ошибку предварительного просмотра и повторяет чтение тем же объектом.
-' После исправления входных данных прежние элементы должны быть очищены.
+' После исправления входных данных элементы предыдущей попытки должны быть очищены.
 Private Sub TestAudit03CapturePlotGeometryError(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByVal reader As CSectionPlotDataReader, ByRef number As Long, ByRef description As String, _
         Optional ByVal readState As Boolean = False)
@@ -7377,7 +7379,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет valid -> invalid -> valid на тех же экземплярах Spec, Catalog
-' и PlotDataReader. Старая корректная копия результата должна оставаться
+' и PlotDataReader. Сохранённая корректная копия результата должна оставаться
 ' независимой, но новый неуспешный ввод не должен выглядеть как готовые данные.
 Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
     Dim fixture As Object, sheet As Object, profiles As Object, source As Object, target As Object
@@ -7641,7 +7643,7 @@ End Function
 
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Снимает PID и время создания всех прежних Excel до CreateObject; отказ WMI
+' Снимает PID и время создания всех уже открытых Excel до CreateObject; отказ WMI
 ' запрещает тесту менять видимость, состояние или закрывать неизвестный процесс.
 Private Function TestExcelProcessSnapshot() As Object
     Dim result As Object, process As Object
@@ -8671,7 +8673,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' ДЛЯ ТЕСТОВ
 ' Проверяет быстрый вывод, изменение единиц и статусов, восстановление шапок
-' и очистку старых сочетаний без изменения численных результатов.
+' и очистку данных предыдущего расчёта без изменения численных результатов.
 Public Function RunResultsFormattingTests() As String
     Dim stats As TUiTestStats
     TestResultsFormatting stats
@@ -9094,7 +9096,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         helper.Range("A1").Value2 = 1#: helper.Range("B1").Formula = "=A1*3": helper.Range("C1").Formula = "=B1+1"
         geometryCell.Formula = prefix & "*10+200"
         flagCell.Formula = "=IF(" & Mid$(prefix, 2) & ">10,""Yes"",""No"")"
-        app.Calculate ' Достоверный старый кэш240/No; дальнейшее изменение не вычисляется вручную тестом.
+        app.Calculate ' Достоверный исходный кэш240/No; дальнейшее изменение не вычисляется вручную тестом.
         helper.Range("A1").Value2 = 5#
         app.Calculation = mode: app.ScreenUpdating = (mode = xlCalculationAutomatic)
         app.EnableEvents = (mode <> xlCalculationManual): app.DisplayAlerts = (mode = xlCalculationSemiautomatic)
@@ -9115,7 +9117,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         helper.Range("A1").Value2 = 1#
         loads.Cells(2, 2).Formula = prefix & "*-1000"
         profileCell.Formula = "=IF(" & Mid$(prefix, 2) & ">10,""Yes"",""No"")"
-        app.Calculate ' Старый кэшN=-4000 и профильDirectState=No; ожидается обновление обоих reader-ов.
+        app.Calculate ' Исходный кэшN=-4000 и профильDirectState=No; ожидается обновление обоих reader-ов.
         helper.Range("A1").Value2 = 6#
         TestSetSystemSetting "Geometry.Source", "AutoCAD": TestSetSystemSetting "Geometry.Type", "INVALID_UNUSED_RECIPE"
         app.Calculation = mode: app.EnableEvents = expected(2)

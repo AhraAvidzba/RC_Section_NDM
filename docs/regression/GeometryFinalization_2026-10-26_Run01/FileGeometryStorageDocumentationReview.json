@@ -1,0 +1,250 @@
+{
+  "Status": "READ_ONLY_PLAN",
+  "NewContract": "File keeps complete element geometry in the external snapshot and writes no detailed segment rows to rngNDMElementGeometry; Excel retains full worksheet output.",
+  "AffectedTextAndContracts": [
+    {
+      "File": "AGENTS.md",
+      "Lines": [
+        24
+      ],
+      "Anchor": "фактические границы элементов — в последнем диапазоне",
+      "Category": "Current",
+      "RequiredAction": "Уточнить условное физическое размещение: Excel — таблица Results; File — полная матрица в снимке, без подробных строк на листе. Логическую связь ElementID сохранить.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "docs/ContourCellGeometryArchitecture.md",
+      "Lines": [
+        9
+      ],
+      "Anchor": "последнем среди таблиц Results",
+      "Category": "Current",
+      "RequiredAction": "Уточнить пункт 3 требований: имя матрицы одинаково, физический носитель зависит от storage mode.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "docs/ContourCellGeometryArchitecture.md",
+      "Lines": [
+        68
+      ],
+      "Anchor": "В режиме File геометрические таблицы",
+      "Category": "Current",
+      "RequiredAction": "Заменить прямое требование оставлять подробные границы на Results. Версия 05, полная матрица в файле и отказ при её потере сохраняются.",
+      "SuggestedWording": "В Excel фактические границы выводятся в rngNDMElementGeometry на Results. В File полная матрица границ хранится в .ndm и используется напрямую для расчёта, схемы и экспорта; подробные строки на лист не выводятся. Общие свойства и контуры сечения остаются на Results."
+    },
+    {
+      "File": "docs/ValidationPlan.md",
+      "Lines": [
+        72
+      ],
+      "Anchor": "или единиц. Снимки прежней геометрии",
+      "Category": "Current",
+      "RequiredAction": "Разделить проверку потери обязательной матрицы по источнику: Excel — физическая таблица; File — матрица файла. Пустая листовая таблица в File не считается потерей. Отказ до изменения Results при повреждении файла сохранить.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "docs/geometry_refactor/PROGRESS.md",
+      "Lines": [
+        4
+      ],
+      "Anchor": "последняя таблица Results",
+      "Category": "Current",
+      "RequiredAction": "В текущем итоговом обновлении описать носитель по mode; исторические утверждения о выполненных проверках не переименовывать в проверку нового поведения.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "tools/build_workbook/SettingsCatalog.ps1",
+      "Lines": [
+        688
+      ],
+      "Anchor": "Сетка, геометрические характеристики и использованные диаграммы также всегда выводятся",
+      "Category": "Current",
+      "RequiredAction": "Заменить безусловное обещание вывода подробной геометрии; сохранить число абзацев.",
+      "SuggestedWording": "После расчёта в обоих режимах на Results выводятся верхние сводки, общие свойства элементов, контуры сечения и использованные диаграммы. В File подробные границы элементов и массив состояний хранятся в .ndm; схема читает их из снимка."
+    },
+    {
+      "File": "tools/build_workbook/SettingsCatalog.ps1",
+      "Lines": [
+        739
+      ],
+      "Anchor": "Фактические линии, дуги и замкнутые контуры этих элементов связаны",
+      "Category": "Current",
+      "RequiredAction": "Указать Excel/File отдельно, сохранив ElementID и логическое имя матрицы.",
+      "SuggestedWording": "Общие свойства и расчётные имена C1, C2 и далее сохраняются в rngNDMSectionGeometry. Линии и дуги элементов связаны по ElementID: в Excel — в последней таблице Results rngNDMElementGeometry, в File — только в полном снимке .ndm."
+    },
+    {
+      "File": "tools/build_workbook/SettingsCatalog.ps1",
+      "Lines": [
+        723
+      ],
+      "Anchor": "Кнопка «Выполнить расчет» читает сохранённую геометрию из Results",
+      "Category": "DependsOnFormationContract",
+      "RequiredAction": "После решения persistence о preview до расчёта уточнить источник подробных границ File: связанный снимок, без нового импорта/построения.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "tools/build_workbook/SettingsCatalog.ps1",
+      "Lines": [
+        722,
+        1582
+      ],
+      "Anchor": "геометрия сохранится в Results",
+      "Category": "DependsOnFormationContract",
+      "RequiredAction": "Обещание относится к формированию до расчёта; согласовать с тем, создаёт ли File подготовительный снимок. Общие свойства действительно могут оставаться на Results.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "tools/build_workbook/SettingsCatalog.ps1",
+      "Lines": [
+        689
+      ],
+      "Anchor": "Кнопка «Обновить схему и результаты» при выбранном File",
+      "Category": "Current",
+      "RequiredAction": "Уточнить, что восстановление подробных сводок не означает физическую выгрузку сегментов на лист. Схема использует полную геометрию из файла.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "src/Excel/modCalculationSnapshot.bas",
+      "Lines": [
+        284
+      ],
+      "Anchor": "Геометрия, использованные диаграммы и подробные сводки останутся на Results.",
+      "Category": "Current",
+      "RequiredAction": "Уточнить реальный пользовательский MsgBox предложения File.",
+      "SuggestedWording": "Общие свойства элементов, контуры сечения, использованные диаграммы и сводки останутся на Results. Подробные границы элементов и состояния будут храниться в .ndm."
+    },
+    {
+      "File": "src/Excel/modCalculationSnapshot.bas",
+      "Lines": [
+        228
+      ],
+      "Anchor": "File: переполнение обязательной геометрии режим хранения не устраняет.",
+      "Category": "Current",
+      "RequiredAction": "Уточнить комментарий: ограничение относится только к таблицам, которые физически остаются в Excel; подробные сегменты в File больше не относятся к mandatory worksheet rows.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "src/Excel/modCalculationSnapshot.bas",
+      "Lines": [
+        135
+      ],
+      "Anchor": "предлагать, если обязательные границы или готовые сводки тоже не помещаются.",
+      "Category": "Current",
+      "RequiredAction": "Уточнить комментарий вместимости и исключение detailed boundaries в file-advice расчёте; общий принцип RowLimit не ослаблять.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "src/Excel/modCalculationSnapshot.bas",
+      "Lines": [
+        136
+      ],
+      "Anchor": "Private Function RestoredSnapshotMandatoryRowsFit",
+      "Category": "RuntimeOwnerPersistence",
+      "RequiredAction": "Согласовать runtime-контракт проверки с новым источником. Сейчас цикл BaseKeys исключает только rngNDMElementResults и ошибочно требует вместимости rngNDMElementGeometry на листе даже для File.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "Lines": [
+        610
+      ],
+      "Anchor": "Array(\"rngNDMElementGeometry\", elementGeometryRows",
+      "Category": "RuntimeOwnerRootPersistence",
+      "RequiredAction": "Согласовать estimates/policy: в Excel подробная таблица ограничена листом; в File она не входит в физически обязательные таблицы. Не игнорировать другие обязательные таблицы.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "src/Excel/modSectionSnapshot.bas",
+      "Lines": [
+        117
+      ],
+      "Anchor": "Читает собственную геометрию один раз блочными таблицами Results.",
+      "Category": "Current",
+      "RequiredAction": "Комментарий должен называть источник Results либо полную матрицу связанного снимка по текущему read-context. Обязательность реальной формы Contour не отменяется.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "src/Excel/CCalculationSnapshot.cls",
+      "Lines": [
+        240
+      ],
+      "Anchor": "Перечисляет обязательные таблицы Results и записанные фактические границы.",
+      "Category": "Current",
+      "RequiredAction": "Описать логические матрицы полного снимка; BaseKeys не является обещанием физического вывода каждой матрицы на лист.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "tools/build_workbook/Build-Workbook.ps1",
+      "Lines": [
+        539
+      ],
+      "Anchor": "Add-WorkbookName $workbook \"rngNDMElementGeometry\"",
+      "Category": "KeepStructure",
+      "RequiredAction": "СОХРАНИТЬ якорь, имя, 18 полей и шапку для Excel/совместимости; сборку не лишать диапазона из-за File. В File писатель очищает прежние подробные строки по принятому контракту.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "src/Excel/CCalculationSnapshotStore.cls",
+      "Lines": [
+        188
+      ],
+      "Anchor": "Contour без обязательных границ отклоняется snapshot.Validate",
+      "Category": "KeepValidation",
+      "RequiredAction": "СОХРАНИТЬ: полная матрица остаётся обязательной в снимке Contour. Физическое отсутствие строк на листе в File не равно отсутствию матрицы файла.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "docs/reports/ContourCellGeometry_2026-10-26.md",
+      "Lines": [
+        49
+      ],
+      "Anchor": "File хранит большую таблицу состояний снаружи",
+      "Category": "HistoricalPreserve",
+      "RequiredAction": "Исторический отчёт не переписывать. Новый отчёт должен явно назвать изменение физического размещения и его отдельную приёмку.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "docs/reports/SnapshotIORevision_2026-10-24.md",
+      "Lines": [
+        50
+      ],
+      "Anchor": "В File сетка, общие геометрические характеристики",
+      "Category": "HistoricalPreserve",
+      "RequiredAction": "Исторический отчёт не переписывать. Новый отчёт должен явно назвать изменение физического размещения и его отдельную приёмку.",
+      "SuggestedWording": null
+    },
+    {
+      "File": "docs/reports/SnapshotStorageLayout_2026-10-24.md",
+      "Lines": [
+        27
+      ],
+      "Anchor": "Для переполнения обязательной геометрии",
+      "Category": "HistoricalPreserve",
+      "RequiredAction": "Исторический отчёт не переписывать. Новый отчёт должен явно назвать изменение физического размещения и его отдельную приёмку.",
+      "SuggestedWording": null
+    }
+  ],
+  "ReviewedFileSHA256": {
+    "AGENTS.md": "CE445DE6B44143B83F6F229C975F4905048D50D8EEDEE0D5F987CC829E8C0922",
+    "docs/ContourCellGeometryArchitecture.md": "0BDC8BC1BDF71DB9125D9A6942F12F987DB689ADC020E55673E1E691FBC9AC40",
+    "docs/ValidationPlan.md": "D3025D53D8A82F1AACA3055B1539BD7BD5EF76DDFE5FFB1509C4AB205DFED2CF",
+    "docs/geometry_refactor/PROGRESS.md": "C2AB438DA9BEEB1D69A5FAFB2B89F64EDC91AFE816200A145E4C76F503AD6A0B",
+    "tools/build_workbook/SettingsCatalog.ps1": "4C5FD977ABE37D99838B0B6FBBFF79F467305A88D09EFF29776EF0014F8F59D6",
+    "src/Excel/modCalculationSnapshot.bas": "352C53BD441510A3A9E355F0FE1B3B88DBBB497B98E72734D45804F7EA68DE98",
+    "src/Excel/modWorkbookCalculation.bas": "DBDD8F22C293329A51E8E2D1AE62A6845D2B43EBA752096DAAF59B040827B513",
+    "src/Excel/modSectionSnapshot.bas": "11A89B50D2606AF5CBC5F970FECA50B2E71CF0281EC08D6DBBFBF2C8863F87B6",
+    "src/Excel/CCalculationSnapshot.cls": "54A44E5700634CC064B6F62CB7E8E9F3E85F93677E43850C2BCFF4DA0C09D338",
+    "tools/build_workbook/Build-Workbook.ps1": "DC69F4D835F45F9B094D4FE3CCC329D23A16631FB2025F9C4DACA260CA8A9451",
+    "src/Excel/CCalculationSnapshotStore.cls": "1D57442B981A634DA8DFED9DE491EFDDB27EFDDCA7939F5AA0BE99A73334F2FB",
+    "docs/reports/ContourCellGeometry_2026-10-26.md": "56FDDBA6D67EFF378754F52FF361E6DC38FD0734349227925F17C85779F6744E",
+    "docs/reports/SnapshotIORevision_2026-10-24.md": "85CB960241D809000A17E5E54AC8EE3CC00BA387C7C965A083D6D0B403194FC6",
+    "docs/reports/SnapshotStorageLayout_2026-10-24.md": "0F80BEB37194F6096E5EE0270C565F35759405DF25F5552FD03153622EF0A786"
+  },
+  "LiveFilesEdited": false,
+  "WorkbookEdited": false,
+  "NativeProcessesStarted": false,
+  "DeferredHelpLayout01Edited": false,
+  "NoValidationWeakening": true,
+  "OpenQuestion": "Confirm formed-but-not-calculated geometry in File and whether the named range keeps only headers; persistence owns that runtime design.",
+  "FinalLayoutNote": "Change existing Help paragraph text in place. Final content may alter wrapped row heights; validate final full build before applying any Help layout snapshot."
+}

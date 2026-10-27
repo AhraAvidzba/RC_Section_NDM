@@ -159,7 +159,7 @@ Private Sub InitializeEarlyResult(ByVal internalStatus As EResultInternalStatus,
 
 End Sub
 
-' Исключает утечку старой предельной точки при повторном заполнении объекта.
+' Исключает выдачу точки из другого расчёта при повторном заполнении объекта.
 ' Отсутствующие числа не заменяются прошлым успешным состоянием.
 Private Sub ResetNumericSnapshot()
     Set mSearchResult = Nothing
@@ -423,7 +423,7 @@ Friend Sub Freeze()
 End Sub
 
 ' Запрещает изменение результата после передачи потребителям.
-' Для повторного расчёта создаётся новый объект, а прежний результат сохраняется.
+' Для повторного расчёта создаётся отдельный объект; сохранённый результат не изменяется.
 Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCapacityResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."

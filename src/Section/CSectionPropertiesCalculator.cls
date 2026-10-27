@@ -47,7 +47,7 @@ Private mPrincipalRadius2 As Double ' Радиус инерции по глав�
 Private mLastCalculationSeconds As Double ' Время последнего расчета свойств для диагностики производительности.
 Private mSnapshotSection As CSectionModel ' Модель, для которой заранее подготовлены свойства записи Results.
 Private mSnapshotRevision As Long ' Ревизия подготовленной геометрии.
-Private mSnapshotBounds(1 To 4) As Double ' MinX/MaxX/MinY/MaxY по прежним оболочкам элементов.
+Private mSnapshotBounds(1 To 4) As Double ' MinX/MaxX/MinY/MaxY по фактическим границам либо компактным прямоугольным описаниям элементов.
 Private mTransformedSnapshot As CSectionPropertiesCalculator ' Готовое приведенное представление того же снимка.
 Private mPreparedSection As CSectionModel ' Контекст механических свойств; не контурная область трещин.
 Private mPreparedRevision As Long, mPreparedKind As Long ' Версия геометрии и вид подготовки: 1 — бетон, 2 — приведение по фактическим модулям Eb и Es.
@@ -94,7 +94,7 @@ Public Sub ValidateSnapshot(ByVal section As CSectionModel, Optional ByVal requi
     If requireTransformed And mTransformedSnapshot Is Nothing Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Приведенные характеристики снимка не подготовлены."
 End Sub
 
-' MinX/MaxX/MinY/MaxY по фактическим границам либо прежним оболочкам элементов.
+' MinX/MaxX/MinY/MaxY по фактическим границам либо компактным прямоугольным описаниям элементов.
 Public Property Get SnapshotBounds() As Variant
     SnapshotBounds = mSnapshotBounds
 End Property
@@ -643,7 +643,7 @@ Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCen
     mIxc = mIx - mArea * localCenterY * localCenterY ' Центральные моменты получаем до возврата в WCS, без разности глобальных величин порядка A*WCS^2.
     mIyc = mIy - mArea * localCenterX * localCenterX
     mIxyc = mIxy - mArea * localCenterX * localCenterY
-    mStaticMomentX = mArea * mCentroidY: mStaticMomentY = mArea * mCentroidX ' Публичные статические моменты по-прежнему относятся к исходным осям WCS.
+    mStaticMomentX = mArea * mCentroidY: mStaticMomentY = mArea * mCentroidX ' Публичные статические моменты относятся к исходным осям WCS.
     mIx = mIxc + mArea * mCentroidY * mCentroidY
     mIy = mIyc + mArea * mCentroidX * mCentroidX
     mIxy = mIxyc + mArea * mCentroidX * mCentroidY
@@ -677,7 +677,7 @@ End Sub
 ' Сбрасывает вычисленные площади, центры, инерции, главные оси и время расчета.
 ' Контекст подготовленной модели освобождается; сама модель не меняется.
 ' Обнуление исключает использование
-' прежних характеристик до следующего успешного вычисления свойств сечения.
+' сохранённых характеристик до следующего успешного вычисления свойств сечения.
 Public Sub Clear()
     Set mPreparedSection = Nothing
     mPreparedRevision = 0: mPreparedKind = 0: mPreparedEb = 0#: mPreparedEs = 0#

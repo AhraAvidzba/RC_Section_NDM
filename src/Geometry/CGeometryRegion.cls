@@ -117,7 +117,8 @@ Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByR
     X = mCentroidX: Y = mCentroidY
 End Sub
 
-' Возвращает крайние точки области по заданному направлению для геометрических проекций.
+' Возвращает вершины границы и крайние точки дуг по осям X/Y.
+' Для произвольного направления точные габариты вычисляет ProjectionBounds общего запроса.
 Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     If mRegion Is Nothing Then Err.Raise vbObjectError + 5290, "CGeometryRegion", "Точный контур бетонной области ещё не подготовлен."
     mQuery.MeshExtremePoints mEdges, mEdgeCount, pointX, pointY

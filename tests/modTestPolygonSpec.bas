@@ -88,7 +88,7 @@ Finished:
     RunPolygonSpecTests = mReport & "TOTAL POLYGON SPEC: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' явные имена, прежние вызовы, преобразования, происхождение и публикация контуров.
+' явные имена, поддерживаемые вызовы, преобразования, происхождение и публикация контуров.
 Public Function RunNamedSegmentTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -251,7 +251,7 @@ Private Sub TestCompareNamedGeometry(ByVal title As String, ByVal old As CGeomet
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' стороны узнаём по фактическим координатам; прежний порядок и начало не меняются.
+' стороны узнаём по фактическим координатам; исходные порядок и начало не меняются.
 Private Sub TestNamedRectangles()
     Dim facade As CSectionDefinitionBuilder, old As CGeometryPath, named As CGeometryPath, partial As CGeometryPath
     Dim part As CGeometryPath, i As Long, edge As TRegionEdge, code As Long

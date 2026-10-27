@@ -94,6 +94,8 @@ Private Sub TestConfigureGeneralFixture(ByVal system As Object, ByVal unitsRange
     Next row
     TestSetValue system, "Geometry.Source", "Generated"
     TestSetValue system, "Geometry.Type", "Circle"
+    TestSetValue system, "Mesh.MinElementArea", 0# ' Сценарии геометрии и перевода единиц сравнивают одну сетку без независимого отбора по площади.
+    TestSetValue system, "Mesh.CellGeometry", "Adaptive" ' Проверки глубины 1/4 относятся к адаптивной квадратуре; пользовательское значение по умолчанию проверяется отдельно.
     TestSetValue system, "Mesh.StepMode", "User"
     TestSetValue system, "Mesh.StepX", 20#: TestSetValue system, "Mesh.StepY", 20#
     TestSetValue system, "Mesh.BoundarySubdivisions", 2

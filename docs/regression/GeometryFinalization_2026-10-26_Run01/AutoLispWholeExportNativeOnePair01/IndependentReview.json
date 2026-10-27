@@ -1,0 +1,1808 @@
+{
+  "Status": "FUNCTIONAL_FEASIBILITY_PASS29_NO_PRODUCTION_NO_WHOLE_GAIN",
+  "ObservedUTC": "2026-10-27T01:52:48.300376+00:00",
+  "Decision": "NO_PRODUCTION_AUTOLISP_NO_WHOLE_GAIN",
+  "FunctionalAcceptance": {
+    "ExpectedUniqueLabels": 29,
+    "ActualUniqueLabels": 29,
+    "Failed": 0,
+    "EveryExpectedLabelPresentExactlyOnce": true,
+    "AllFourPositiveTimingsFromReturnedPrimary": true,
+    "ProgressUTF16ExactlyMatchesReturnedUTF8Primary": true,
+    "ReturnedPrimarySHA256": "84F604AE954CACAD7124CA595D3D1F19800F00EE94C696098D0D7C10F4D04FEB",
+    "FourASCIIEntireReadAndTwoRawOrderedPairsExactlyEqual": true,
+    "Pairs": [
+      {
+        "Scenario": "Small",
+        "Order": "AB",
+        "PairsMeasured": 1,
+        "RawOrderedBytesExactlyEqual": true,
+        "Objects": 12,
+        "ASHA256": "62F4FA3281FC83C8B42358BB78C377B0A81136D60C4936E7A0597FDD43957828",
+        "BSHA256": "62F4FA3281FC83C8B42358BB78C377B0A81136D60C4936E7A0597FDD43957828",
+        "COMSeconds": 0.19943819999753,
+        "BatchSeconds": 1.66210570000112,
+        "BatchMinusCOMSeconds": 1.4626675000035898,
+        "BatchSlowerFactor": 8.33393853344898
+      },
+      {
+        "Scenario": "Heavy",
+        "Order": "AB",
+        "PairsMeasured": 1,
+        "RawOrderedBytesExactlyEqual": true,
+        "Objects": 1243,
+        "ASHA256": "21D62F73EA93012137E50D0E2C4415D2B582E40E9C5E1E06661E18B57FC3A389",
+        "BSHA256": "21D62F73EA93012137E50D0E2C4415D2B582E40E9C5E1E06661E18B57FC3A389",
+        "COMSeconds": 8.31188619999739,
+        "BatchSeconds": 45.7782793000079,
+        "BatchMinusCOMSeconds": 37.466393100010514,
+        "BatchSlowerFactor": 5.507568101693003
+      }
+    ],
+    "SevenResultTablesUnchangedPerTurnAndNoSolverStates": true,
+    "OwnDocumentsRestored": true
+  },
+  "ActualQPCScope": "Includes TestConfigureBatchGeometryExport, full Audit03 export pipeline, and private scratch/packet/send/cleanup. Native fingerprint, ASCII writes, and seven-table comparisons occur outside the clock.",
+  "Timings": [
+    {
+      "Scenario": "Small",
+      "Pair": 1,
+      "Variant": "A",
+      "SecondsText": ".19943819999753",
+      "Seconds": 0.19943819999753,
+      "Objects": 12,
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport_Small_1_A.txt",
+      "SHA256": "62F4FA3281FC83C8B42358BB78C377B0A81136D60C4936E7A0597FDD43957828",
+      "EntireASCIIRead": true,
+      "EveryObjectIndexOrdered": true
+    },
+    {
+      "Scenario": "Small",
+      "Pair": 1,
+      "Variant": "B",
+      "SecondsText": "1.66210570000112",
+      "Seconds": 1.66210570000112,
+      "Objects": 12,
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport_Small_1_B.txt",
+      "SHA256": "62F4FA3281FC83C8B42358BB78C377B0A81136D60C4936E7A0597FDD43957828",
+      "EntireASCIIRead": true,
+      "EveryObjectIndexOrdered": true
+    },
+    {
+      "Scenario": "Heavy",
+      "Pair": 1,
+      "Variant": "A",
+      "SecondsText": "8.31188619999739",
+      "Seconds": 8.31188619999739,
+      "Objects": 1243,
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport_Heavy_1_A.txt",
+      "SHA256": "21D62F73EA93012137E50D0E2C4415D2B582E40E9C5E1E06661E18B57FC3A389",
+      "EntireASCIIRead": true,
+      "EveryObjectIndexOrdered": true
+    },
+    {
+      "Scenario": "Heavy",
+      "Pair": 1,
+      "Variant": "B",
+      "SecondsText": "45.7782793000079",
+      "Seconds": 45.7782793000079,
+      "Objects": 1243,
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport_Heavy_1_B.txt",
+      "SHA256": "21D62F73EA93012137E50D0E2C4415D2B582E40E9C5E1E06661E18B57FC3A389",
+      "EntireASCIIRead": true,
+      "EveryObjectIndexOrdered": true
+    }
+  ],
+  "StatisticalLimits": {
+    "PairsPerSize": 1,
+    "Order": "AB only, Small then Heavy",
+    "SteadyStateOrUniversalSpeedProof": false,
+    "NoRepeatedFivePairExperiment": true,
+    "NoSetupSubtractionOrTimingReconstruction": true
+  },
+  "PerformanceCriteriaMet": false,
+  "ProductionIntegrationAccepted": false,
+  "WorkingExporterRemainsCOM": true,
+  "NativeCodeProof": {
+    "Compiled": true,
+    "Stages": [
+      {
+        "Stage": "NativeBefore181",
+        "Passed": true,
+        "SourceComponents": 175,
+        "BaseExportComponents": 181,
+        "DocumentModules": 6,
+        "ExplicitOverrides": 0,
+        "Inventory": 181
+      },
+      {
+        "Stage": "NativeAfterCompile181",
+        "Passed": true,
+        "SourceComponents": 175,
+        "BaseExportComponents": 181,
+        "DocumentModules": 6,
+        "ExplicitOverrides": 1,
+        "Inventory": 182
+      },
+      {
+        "Stage": "NativeAfterReopen181",
+        "Passed": true,
+        "SourceComponents": 175,
+        "BaseExportComponents": 181,
+        "DocumentModules": 6,
+        "ExplicitOverrides": 1,
+        "Inventory": 182
+      },
+      {
+        "Stage": "NativeAfterWholeExport181",
+        "Passed": true,
+        "SourceComponents": 175,
+        "BaseExportComponents": 181,
+        "DocumentModules": 6,
+        "ExplicitOverrides": 1,
+        "Inventory": 182
+      }
+    ],
+    "Overlay": [
+      {
+        "Module": "modAutoCADStressExport",
+        "Type": 1,
+        "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modAutoCADStressExport.bas",
+        "OriginalSHA256": "117FA3D175CEB38380BC71BB3909BFA7FDB476C50D743E467440919A5381BB1E",
+        "Candidate": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispBatchGeometryPrototype01\\Candidate\\modAutoCADStressExport.bas",
+        "CandidateSHA256": "1AD00CF8FB159FE7B77D2333E91B0C2EA60A8F68481329E665BA91C00731035B"
+      }
+    ],
+    "FrozenHelperImportedAndDeclared182Inventory": true,
+    "HelperBodyNotSeparatelyComparedBy181BaseChecker": true
+  },
+  "FrozenInputsReread": {
+    "Count": 190,
+    "Matched": 190,
+    "Differences": [],
+    "Records": [
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportPrototype01\\NativePlanOnePair01\\Test-VerifyProbeSourceEquality.ps1",
+        "ExpectedSHA256": "07767838C6549D0D0E1C14DAF9E5A2A5B60F89F3660CB05BF75251B59B523E21",
+        "ActualSHA256": "07767838C6549D0D0E1C14DAF9E5A2A5B60F89F3660CB05BF75251B59B523E21",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportPrototype01\\NativePlanOnePair01\\Test-RunNativeProbe.ps1",
+        "ExpectedSHA256": "5E3F5A899252724CC3917B1CC06BA66DE0D3DDE2D7C73194CBD7F355E9C2F107",
+        "ActualSHA256": "5E3F5A899252724CC3917B1CC06BA66DE0D3DDE2D7C73194CBD7F355E9C2F107",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportPrototype01\\NativePlanOnePair01\\NativePlan.json",
+        "ExpectedSHA256": "AB4353554426F440534E47867F59B29EB4C799F57E36C17A3F84EE2B9B2F48CA",
+        "ActualSHA256": "AB4353554426F440534E47867F59B29EB4C799F57E36C17A3F84EE2B9B2F48CA",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportPrototype01\\NativePlanOnePair01\\Test-WatchNativeProbe.ps1",
+        "ExpectedSHA256": "0FD1CA78CD39CC50256CC3ECF276F7E92E5FB9761E98894792A8787A3579BD7A",
+        "ActualSHA256": "0FD1CA78CD39CC50256CC3ECF276F7E92E5FB9761E98894792A8787A3579BD7A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispBatchGeometryPrototype01\\Helper\\NDM_TestRectangleBatch.lsp",
+        "ExpectedSHA256": "3B4ADA86DB955464B6D90EB47C5EA75A8C2F1525F79B5EF167E1BBAC17A4C23B",
+        "ActualSHA256": "3B4ADA86DB955464B6D90EB47C5EA75A8C2F1525F79B5EF167E1BBAC17A4C23B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07\\RC_Section_NDM.xlsm",
+        "ExpectedSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+        "ActualSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\PairPreparation.json",
+        "ExpectedSHA256": "8926B1B6EC1B09A7695016143E97CA0ADB04FAFB12D9DC4568F15134BC63B9A3",
+        "ActualSHA256": "8926B1B6EC1B09A7695016143E97CA0ADB04FAFB12D9DC4568F15134BC63B9A3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\Transfer.json",
+        "ExpectedSHA256": "1EE2804E1E281A7058177FD16F234105AEFF242491DBCE99C51050F6552BA702",
+        "ActualSHA256": "1EE2804E1E281A7058177FD16F234105AEFF242491DBCE99C51050F6552BA702",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispBatchGeometryPrototype01\\CandidateManifest.json",
+        "ExpectedSHA256": "1208336F48046831AB6AD04A2C4AC2082B21EB1B64A206CE0BF0DE1758E9F7AD",
+        "ActualSHA256": "1208336F48046831AB6AD04A2C4AC2082B21EB1B64A206CE0BF0DE1758E9F7AD",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modAutoCADStressExport.bas",
+        "ExpectedSHA256": "117FA3D175CEB38380BC71BB3909BFA7FDB476C50D743E467440919A5381BB1E",
+        "ActualSHA256": "117FA3D175CEB38380BC71BB3909BFA7FDB476C50D743E467440919A5381BB1E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispBatchGeometryPrototype01\\Candidate\\modAutoCADStressExport.bas",
+        "ExpectedSHA256": "1AD00CF8FB159FE7B77D2333E91B0C2EA60A8F68481329E665BA91C00731035B",
+        "ActualSHA256": "1AD00CF8FB159FE7B77D2333E91B0C2EA60A8F68481329E665BA91C00731035B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportPrototype01\\NativePlanOnePair01\\Test-ValidateWholePrimary.ps1",
+        "ExpectedSHA256": "0A17095079A084ED2FB8190629343C74E9FD1B9426F4FAEC5FDE1CBE89989752",
+        "ActualSHA256": "0A17095079A084ED2FB8190629343C74E9FD1B9426F4FAEC5FDE1CBE89989752",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CBatchSectionCalculator.cls",
+        "ExpectedSHA256": "D226F1D1A5313623D6CB4C5709FF27A5540E8AA33274D451F687F4C9D12DC85D",
+        "ActualSHA256": "D226F1D1A5313623D6CB4C5709FF27A5540E8AA33274D451F687F4C9D12DC85D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CCalculationProfile.cls",
+        "ExpectedSHA256": "EA7B4CD68A4A7F4EBBDBEBA54F7270DC4FBC014CA27CAC9E2A245ACEB8D7FC37",
+        "ActualSHA256": "EA7B4CD68A4A7F4EBBDBEBA54F7270DC4FBC014CA27CAC9E2A245ACEB8D7FC37",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CCalculationProfileCatalog.cls",
+        "ExpectedSHA256": "5918111035AA297BCF1E04BFE843CF9047BB292790F4E6C8994692385B157B66",
+        "ActualSHA256": "5918111035AA297BCF1E04BFE843CF9047BB292790F4E6C8994692385B157B66",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CCombinationResult.cls",
+        "ExpectedSHA256": "1995EB25F68AF952037230E5ED1B082E7748C86EC224B8864EBF260B5956C10E",
+        "ActualSHA256": "1995EB25F68AF952037230E5ED1B082E7748C86EC224B8864EBF260B5956C10E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CDirectStateResult.cls",
+        "ExpectedSHA256": "0AA544ACBEC77FA7E1561674F80DEC63A007C7BD76E39181BE0C09AA7B98BA65",
+        "ActualSHA256": "0AA544ACBEC77FA7E1561674F80DEC63A007C7BD76E39181BE0C09AA7B98BA65",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CSectionStateResult.cls",
+        "ExpectedSHA256": "4A0BB05EA438351430EB75521596BFD55776C55F21B9E4E274E46BFEF96C56B7",
+        "ActualSHA256": "4A0BB05EA438351430EB75521596BFD55776C55F21B9E4E274E46BFEF96C56B7",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CStateProvider.cls",
+        "ExpectedSHA256": "7054B0266A78FED445D0DDB31E0B54B204394733E7EC428F63931AD9E1526072",
+        "ActualSHA256": "7054B0266A78FED445D0DDB31E0B54B204394733E7EC428F63931AD9E1526072",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CStateRepository.cls",
+        "ExpectedSHA256": "CBF68CFABD01B8BA3ECC1E54654EF9490FABF97DAF640162AEFC83BFEA2E208A",
+        "ActualSHA256": "CBF68CFABD01B8BA3ECC1E54654EF9490FABF97DAF640162AEFC83BFEA2E208A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CStateRequest.cls",
+        "ExpectedSHA256": "FF9A785CE7953411996336EAC21BFB90D6665A9F983D73BABDB4E4B870DC8AA4",
+        "ActualSHA256": "FF9A785CE7953411996336EAC21BFB90D6665A9F983D73BABDB4E4B870DC8AA4",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Batch\\CStrengthResult.cls",
+        "ExpectedSHA256": "E7E359CCDEBB2DEB90700DDE93CDBFDCF8B859F7D38E57D53638FE0697040D8E",
+        "ActualSHA256": "E7E359CCDEBB2DEB90700DDE93CDBFDCF8B859F7D38E57D53638FE0697040D8E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\CLoadPathDescriptor.cls",
+        "ExpectedSHA256": "62CEF9812972105D87A78D44D3E6ED0F6C0180D2313ABEB631DABA720AD71F19",
+        "ActualSHA256": "62CEF9812972105D87A78D44D3E6ED0F6C0180D2313ABEB631DABA720AD71F19",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\CLoadPathMath.cls",
+        "ExpectedSHA256": "9C4352A7CDD0174B7DF9884A923E447CB60DA73CE66F976703A34FFA2892DB2A",
+        "ActualSHA256": "9C4352A7CDD0174B7DF9884A923E447CB60DA73CE66F976703A34FFA2892DB2A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\CLoadPathVector.cls",
+        "ExpectedSHA256": "0787D5AC0370717F70D5DCF91C37D138A4EF67B34698B79751CD6014071C28CB",
+        "ActualSHA256": "0787D5AC0370717F70D5DCF91C37D138A4EF67B34698B79751CD6014071C28CB",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\CMomentZeroFilter.cls",
+        "ExpectedSHA256": "D99286776B550877E34316F34327226B31169CBFC39D1D09BBE4EBE597AD2C97",
+        "ActualSHA256": "D99286776B550877E34316F34327226B31169CBFC39D1D09BBE4EBE597AD2C97",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\CResultMeta.cls",
+        "ExpectedSHA256": "CB16997F094F4A11CF9FE21ADC3BF9943759823EB6928A5776E79D2A2569EF90",
+        "ActualSHA256": "CB16997F094F4A11CF9FE21ADC3BF9943759823EB6928A5776E79D2A2569EF90",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\CResultStatusPolicy.cls",
+        "ExpectedSHA256": "7F0A84F67BD069F40645DA4E5C3C1295810F6C9D5BA469759B922CCB9DCC35D4",
+        "ActualSHA256": "7F0A84F67BD069F40645DA4E5C3C1295810F6C9D5BA469759B922CCB9DCC35D4",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\CSectionLoadState.cls",
+        "ExpectedSHA256": "FA7CDA72CC31DA6CA5DE087D25318926C44191D7F7A4D9AEB7110B03171FFA66",
+        "ActualSHA256": "FA7CDA72CC31DA6CA5DE087D25318926C44191D7F7A4D9AEB7110B03171FFA66",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modCalculationPurpose.bas",
+        "ExpectedSHA256": "54E696BE0C8DE34E5037EB1FB874F255DBFA7ACBC23351E5688F71DC69716D8F",
+        "ActualSHA256": "54E696BE0C8DE34E5037EB1FB874F255DBFA7ACBC23351E5688F71DC69716D8F",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modGeometryPrimitives.bas",
+        "ExpectedSHA256": "54B8875F6B1004E159792FC3FC0ECE43F7B0EF324F8B4060BF20271E418CD18A",
+        "ActualSHA256": "54B8875F6B1004E159792FC3FC0ECE43F7B0EF324F8B4060BF20271E418CD18A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modGeometryTypes.bas",
+        "ExpectedSHA256": "4EAEC666848FBB3026EC5B3D7155D62D0BA92D4AC7B4AFBAF4199210E30E0717",
+        "ActualSHA256": "4EAEC666848FBB3026EC5B3D7155D62D0BA92D4AC7B4AFBAF4199210E30E0717",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modResultStatus.bas",
+        "ExpectedSHA256": "A91C9356A2927B8352F64C22C7449818E765CA910B30D67FB9CE0290BF69E1A1",
+        "ActualSHA256": "A91C9356A2927B8352F64C22C7449818E765CA910B30D67FB9CE0290BF69E1A1",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modSectionRecipeApiGuide.bas",
+        "ExpectedSHA256": "FDF0667C10D742654F154DFD2D1534BAB1088CDB2035D1958F14CC38E2B031B5",
+        "ActualSHA256": "FDF0667C10D742654F154DFD2D1534BAB1088CDB2035D1958F14CC38E2B031B5",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modSectionRecipeTypes.bas",
+        "ExpectedSHA256": "B93A5C15CFD94F29CFCF2F52CE8B3FB1F16F9481BDF09FBE4DCFA813DF43D012",
+        "ActualSHA256": "B93A5C15CFD94F29CFCF2F52CE8B3FB1F16F9481BDF09FBE4DCFA813DF43D012",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modSolverWorkStats.bas",
+        "ExpectedSHA256": "F411D5E7FBBA340FFDE3B7FF91EB9DE6D7392E3293DCF37453245D7EE2F0FA02",
+        "ActualSHA256": "F411D5E7FBBA340FFDE3B7FF91EB9DE6D7392E3293DCF37453245D7EE2F0FA02",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Crack\\CCrackFormationCalculator.cls",
+        "ExpectedSHA256": "50FF969DE9005BA886F54FB34F5962902E0E2003E77E837A7A196136EC07D38A",
+        "ActualSHA256": "50FF969DE9005BA886F54FB34F5962902E0E2003E77E837A7A196136EC07D38A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Crack\\CCrackFormationResult.cls",
+        "ExpectedSHA256": "04E3328DA5C347EFA54512347B2E810B118FECE344647947819BFED101BEA73E",
+        "ActualSHA256": "04E3328DA5C347EFA54512347B2E810B118FECE344647947819BFED101BEA73E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Crack\\CCrackResult.cls",
+        "ExpectedSHA256": "B40DE594B5CADE1A509722265A59F32D7C473FD4C3D25951193A98C261C51459",
+        "ActualSHA256": "B40DE594B5CADE1A509722265A59F32D7C473FD4C3D25951193A98C261C51459",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Crack\\CCrackWidthCalculator.cls",
+        "ExpectedSHA256": "B406CED94F98A1B0A75E311E7013DA16BC15AC29A8E9F8B316A0B6C085B2A2C1",
+        "ActualSHA256": "B406CED94F98A1B0A75E311E7013DA16BC15AC29A8E9F8B316A0B6C085B2A2C1",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Crack\\CCrackWidthResult.cls",
+        "ExpectedSHA256": "29F1A2BACD65FB9A59FBB9FBA9E8C12C69B521A0930EDDE789FCF2E639748D36",
+        "ActualSHA256": "29F1A2BACD65FB9A59FBB9FBA9E8C12C69B521A0930EDDE789FCF2E639748D36",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Crack\\CLongitudinalCrackCalculator.cls",
+        "ExpectedSHA256": "D1E08F145DA875E355E0E62EDD39D384021F7B2AEB9BADC1434846EDCBFC4A18",
+        "ActualSHA256": "D1E08F145DA875E355E0E62EDD39D384021F7B2AEB9BADC1434846EDCBFC4A18",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Crack\\CLongitudinalCrackResult.cls",
+        "ExpectedSHA256": "325AE412CFC501CC8138FC9AAD2B32819B12834ED438C09B87BF801954AA8BFC",
+        "ActualSHA256": "325AE412CFC501CC8138FC9AAD2B32819B12834ED438C09B87BF801954AA8BFC",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Crack\\CSP35CrackData.cls",
+        "ExpectedSHA256": "17FF57D7B5D69EEA3B94D9C9BB2AED7B8C170A74696538376BB2820E35A9F0BC",
+        "ActualSHA256": "17FF57D7B5D69EEA3B94D9C9BB2AED7B8C170A74696538376BB2820E35A9F0BC",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CAutoCADContourReader.cls",
+        "ExpectedSHA256": "3CF402E60E0190D7C6266B77EE7F02A3EE75ACAD639EA94173FD2069055E9DCB",
+        "ActualSHA256": "3CF402E60E0190D7C6266B77EE7F02A3EE75ACAD639EA94173FD2069055E9DCB",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CAutoCADSectionModelImporter.cls",
+        "ExpectedSHA256": "1A4EBE91FDADE787593653807874B5B8845FE26B01ADE3D93126E8F4156DD78F",
+        "ActualSHA256": "1A4EBE91FDADE787593653807874B5B8845FE26B01ADE3D93126E8F4156DD78F",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CBatchResultWriter.cls",
+        "ExpectedSHA256": "9836B60F9CEFD5107BC1BD40034872077464205BABE1F0E6E4F82C45A7E6888F",
+        "ActualSHA256": "9836B60F9CEFD5107BC1BD40034872077464205BABE1F0E6E4F82C45A7E6888F",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CBinarySnapshotFile.cls",
+        "ExpectedSHA256": "BFD0E234C228A8E6C09BA0C04AF59E700F7B4B6B283AE6C8CBF01260F2BE4E5F",
+        "ActualSHA256": "BFD0E234C228A8E6C09BA0C04AF59E700F7B4B6B283AE6C8CBF01260F2BE4E5F",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CCalculationSnapshot.cls",
+        "ExpectedSHA256": "E4139EB78F85552C0CEE08798363A3D02AD4CD0B6B1BC76B47449011FC3B512C",
+        "ActualSHA256": "E4139EB78F85552C0CEE08798363A3D02AD4CD0B6B1BC76B47449011FC3B512C",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CCalculationSnapshotStore.cls",
+        "ExpectedSHA256": "0687F8DEED4A5CEEEEFDBB1DBF1F02971651184CE7E20BE7ADF9BBB78CB217AE",
+        "ActualSHA256": "0687F8DEED4A5CEEEEFDBB1DBF1F02971651184CE7E20BE7ADF9BBB78CB217AE",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CCrackSummaryWriter.cls",
+        "ExpectedSHA256": "DBABAB47C97FD8B4C410315B8D0A21111D14A537F9ADE97D527B27EDE10ACE48",
+        "ActualSHA256": "DBABAB47C97FD8B4C410315B8D0A21111D14A537F9ADE97D527B27EDE10ACE48",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CExcelAppStateGuard.cls",
+        "ExpectedSHA256": "6E96B1B357131069049005A6424C71D9DAC07832E9757C8DB5A797528D6E4F67",
+        "ActualSHA256": "6E96B1B357131069049005A6424C71D9DAC07832E9757C8DB5A797528D6E4F67",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CExecutionReport.cls",
+        "ExpectedSHA256": "A7EA0E3AD369DA44EA8084FB47315F8AE66F1A322D1941650A6F910AB29EB6A9",
+        "ActualSHA256": "A7EA0E3AD369DA44EA8084FB47315F8AE66F1A322D1941650A6F910AB29EB6A9",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CFileChecksum.cls",
+        "ExpectedSHA256": "F9954D417C4EF21A40F5F3CD71FFE0D41E72AC4DC21526971FF87D3CDCC192C3",
+        "ActualSHA256": "F9954D417C4EF21A40F5F3CD71FFE0D41E72AC4DC21526971FF87D3CDCC192C3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CLoadCombinationReader.cls",
+        "ExpectedSHA256": "42234B7DE6BFB85F9DCBD2A253727A794019CA30065BF5E5A9844D969E9B60B2",
+        "ActualSHA256": "42234B7DE6BFB85F9DCBD2A253727A794019CA30065BF5E5A9844D969E9B60B2",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CNDMResultsWriter.cls",
+        "ExpectedSHA256": "55BF43D7336B1EFACB17E8F787A8B2DF79ED05007D59A5EE728A68879A6C9F38",
+        "ActualSHA256": "55BF43D7336B1EFACB17E8F787A8B2DF79ED05007D59A5EE728A68879A6C9F38",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CPlotAnnotationLayout.cls",
+        "ExpectedSHA256": "51B9485D6E667AE4B82386E6D7D1C7F926DA1F0BA988DD3EFBFA7F77AF42BFB3",
+        "ActualSHA256": "51B9485D6E667AE4B82386E6D7D1C7F926DA1F0BA988DD3EFBFA7F77AF42BFB3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CSectionInputSnapshotReader.cls",
+        "ExpectedSHA256": "D7AAF59C813510C4AD5B66220A90C17AB80146742073B9CDA8594D282285A95F",
+        "ActualSHA256": "D7AAF59C813510C4AD5B66220A90C17AB80146742073B9CDA8594D282285A95F",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CSectionPlotDataReader.cls",
+        "ExpectedSHA256": "6DDB76834DE25D3B2C9182065B90A41CAC0B113D62583F6900FF1F2F6EB1DD07",
+        "ActualSHA256": "6DDB76834DE25D3B2C9182065B90A41CAC0B113D62583F6900FF1F2F6EB1DD07",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CSectionPlotter.cls",
+        "ExpectedSHA256": "15848A596E0B5A4E9CE726D464D047F0A51F8315CC711B8BA6DC0AC6FB63E809",
+        "ActualSHA256": "15848A596E0B5A4E9CE726D464D047F0A51F8315CC711B8BA6DC0AC6FB63E809",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CSectionTypeRegistry.cls",
+        "ExpectedSHA256": "B4C7E7E060E33A77E455B0C69A9D497A0EB5C7513869E81A49133B961A66DE8D",
+        "ActualSHA256": "B4C7E7E060E33A77E455B0C69A9D497A0EB5C7513869E81A49133B961A66DE8D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CStabilitySummaryWriter.cls",
+        "ExpectedSHA256": "C10D4ED3EAC743EB2F783A9D69B742A52E42019A20869515D7E8048834FFBF0B",
+        "ActualSHA256": "C10D4ED3EAC743EB2F783A9D69B742A52E42019A20869515D7E8048834FFBF0B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CStrengthSummaryWriter.cls",
+        "ExpectedSHA256": "DCF56B3BE960BE5AD3349CFFE9CDEB153C062C2B706C9A4E3DE7195929EA620D",
+        "ActualSHA256": "DCF56B3BE960BE5AD3349CFFE9CDEB153C062C2B706C9A4E3DE7195929EA620D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CSystemSettingsReader.cls",
+        "ExpectedSHA256": "A94DABBA613F3CEBED46DAC2CA81658970E2E0DED05E34F6E20F0A1BE7D04AE7",
+        "ActualSHA256": "A94DABBA613F3CEBED46DAC2CA81658970E2E0DED05E34F6E20F0A1BE7D04AE7",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\CUnitSystem.cls",
+        "ExpectedSHA256": "1166FFB8E73EF235C6ABBE4486089C84EA84DF790CE8655857D03F3383AD13D3",
+        "ActualSHA256": "1166FFB8E73EF235C6ABBE4486089C84EA84DF790CE8655857D03F3383AD13D3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modAutoCADStressExport.bas",
+        "ExpectedSHA256": "117FA3D175CEB38380BC71BB3909BFA7FDB476C50D743E467440919A5381BB1E",
+        "ActualSHA256": "117FA3D175CEB38380BC71BB3909BFA7FDB476C50D743E467440919A5381BB1E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modCalculationSnapshot.bas",
+        "ExpectedSHA256": "E4148A4707BA531681BE01140ACC97B36C39AC4DD90A4B7016590FB812B93DF3",
+        "ActualSHA256": "E4148A4707BA531681BE01140ACC97B36C39AC4DD90A4B7016590FB812B93DF3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modMeshConfiguration.bas",
+        "ExpectedSHA256": "EA3DC58EE8EA7938C49D19CE8325E610B73C0A3D78D4CA9E6173138464138518",
+        "ActualSHA256": "EA3DC58EE8EA7938C49D19CE8325E610B73C0A3D78D4CA9E6173138464138518",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modResultsFormatting.bas",
+        "ExpectedSHA256": "B249CD30E16C448006C6C52DDA8F6F8AD7D70BD6B43F7F4ED7F9A12189FE4623",
+        "ActualSHA256": "B249CD30E16C448006C6C52DDA8F6F8AD7D70BD6B43F7F4ED7F9A12189FE4623",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modSectionOptionalData.bas",
+        "ExpectedSHA256": "C83492048DCE6193E503C7912E34B6BC6EF29F5C82FD78C023C2444AC7C9AFAA",
+        "ActualSHA256": "C83492048DCE6193E503C7912E34B6BC6EF29F5C82FD78C023C2444AC7C9AFAA",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modSectionRecipeSetup.bas",
+        "ExpectedSHA256": "A9D0EE75390E74F485FEDB5124366C46A0FE5F6631753E98F280EFD07ABABD5B",
+        "ActualSHA256": "A9D0EE75390E74F485FEDB5124366C46A0FE5F6631753E98F280EFD07ABABD5B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modSectionSnapshot.bas",
+        "ExpectedSHA256": "BD968B79F60ED417426D09662CA83C08E638D7EEC62C656CEEE0AC43ED04FAC3",
+        "ActualSHA256": "BD968B79F60ED417426D09662CA83C08E638D7EEC62C656CEEE0AC43ED04FAC3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modStatusFormatting.bas",
+        "ExpectedSHA256": "BB96EDA83D82B39563890507E7C2C0D5BF04B8C13696C76C47EFA0A33D3CAF68",
+        "ActualSHA256": "BB96EDA83D82B39563890507E7C2C0D5BF04B8C13696C76C47EFA0A33D3CAF68",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modWorkbookCalculation.bas",
+        "ExpectedSHA256": "818B2DE2BD22A9ABD3A7B97643EA3F8FA5FFFA7A37855562C539883645D616FA",
+        "ActualSHA256": "818B2DE2BD22A9ABD3A7B97643EA3F8FA5FFFA7A37855562C539883645D616FA",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modWorkbookMessages.bas",
+        "ExpectedSHA256": "40C8F44B6E5DB754E6EF5D81494B20773B4E23C61DA219027BEDB335A71E7E81",
+        "ActualSHA256": "40C8F44B6E5DB754E6EF5D81494B20773B4E23C61DA219027BEDB335A71E7E81",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CFiberMeshBuilder.cls",
+        "ExpectedSHA256": "0E8F56F8EE2B74CFB52A4B2AE1CD5C5280EFA4267ABC36E76D571E2044DF112C",
+        "ActualSHA256": "0E8F56F8EE2B74CFB52A4B2AE1CD5C5280EFA4267ABC36E76D571E2044DF112C",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CGeometryDiagnostic.cls",
+        "ExpectedSHA256": "8946153D9883BC493BB4015304782921F4E281D52C51C58FDD5A90C60ECFD49B",
+        "ActualSHA256": "8946153D9883BC493BB4015304782921F4E281D52C51C58FDD5A90C60ECFD49B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CGeometryPath.cls",
+        "ExpectedSHA256": "097A1BFE5E558BB3760D3229EDA4B20E316525A1A458BEBE8E92212325C762B2",
+        "ActualSHA256": "097A1BFE5E558BB3760D3229EDA4B20E316525A1A458BEBE8E92212325C762B2",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CGeometryRegion.cls",
+        "ExpectedSHA256": "ECB70A3363D36A7E50DCA0A3F72AE95E254FBCA8C8F8FBBF2E18C2120DDE53B1",
+        "ActualSHA256": "ECB70A3363D36A7E50DCA0A3F72AE95E254FBCA8C8F8FBBF2E18C2120DDE53B1",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CGeometryVariableOffset.cls",
+        "ExpectedSHA256": "02E83329F8AB537AFEB0629252C5EF34324314064A46B37EAC8572C49D231579",
+        "ActualSHA256": "02E83329F8AB537AFEB0629252C5EF34324314064A46B37EAC8572C49D231579",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CPolygonSpec.cls",
+        "ExpectedSHA256": "DBE2CEC2D9A456F01A39FBA31149A80F44D84A3FF4179EE7B4AB434BA1C79564",
+        "ActualSHA256": "DBE2CEC2D9A456F01A39FBA31149A80F44D84A3FF4179EE7B4AB434BA1C79564",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CSectionRecipeCircle.cls",
+        "ExpectedSHA256": "A3DEA88974246C72C591ADB15EE9BECBE083CCF39B889736E9FDD55739D0488E",
+        "ActualSHA256": "A3DEA88974246C72C591ADB15EE9BECBE083CCF39B889736E9FDD55739D0488E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CSectionRecipeHollowRectangle.cls",
+        "ExpectedSHA256": "7B3810A34EFAFB0754487FCED0A72CFB909795E93630AECA449FD0D177FD18E5",
+        "ActualSHA256": "7B3810A34EFAFB0754487FCED0A72CFB909795E93630AECA449FD0D177FD18E5",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CSectionRecipePointedSection.cls",
+        "ExpectedSHA256": "D1BE9CB8EA5D308CA7FA8333C9329D6BDF1DB0389CD7FD962A9993DD80010EA9",
+        "ActualSHA256": "D1BE9CB8EA5D308CA7FA8333C9329D6BDF1DB0389CD7FD962A9993DD80010EA9",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CSectionRecipeRectangles.cls",
+        "ExpectedSHA256": "E6353760A443EFA00CF4C1A9F228DDC7A767654ED4046447254FD0E595303FD7",
+        "ActualSHA256": "E6353760A443EFA00CF4C1A9F228DDC7A767654ED4046447254FD0E595303FD7",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Interfaces\\ILimitSearchProblem.cls",
+        "ExpectedSHA256": "2B1785A4E2B54DB686BB7F473DF8D39AFE2F15D715F6CDC8A8D7539A51483FB0",
+        "ActualSHA256": "2B1785A4E2B54DB686BB7F473DF8D39AFE2F15D715F6CDC8A8D7539A51483FB0",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Materials\\CConcreteMaterialParameters.cls",
+        "ExpectedSHA256": "9D9A9B2E62060EB32CCDCF8C56FF27C8C26C56292B2DB825E4BC55A6564889E3",
+        "ActualSHA256": "9D9A9B2E62060EB32CCDCF8C56FF27C8C26C56292B2DB825E4BC55A6564889E3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Materials\\CMaterialDiagram.cls",
+        "ExpectedSHA256": "3BB8F27184832DB07D73230B47717F24CE4FDC5756267EBCCEA80D87404B2BE7",
+        "ActualSHA256": "3BB8F27184832DB07D73230B47717F24CE4FDC5756267EBCCEA80D87404B2BE7",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Materials\\CMaterialModelProvider.cls",
+        "ExpectedSHA256": "81A645F00F53E9E498CF64BB1BD5E284E1587551B63FB3716B14B1F8B48FFE13",
+        "ActualSHA256": "81A645F00F53E9E498CF64BB1BD5E284E1587551B63FB3716B14B1F8B48FFE13",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Materials\\CMaterialModelSpec.cls",
+        "ExpectedSHA256": "E9999EE79D6E94352717821EC5D544AD78876FB4A55398F30FB7EBB9C77D6183",
+        "ActualSHA256": "E9999EE79D6E94352717821EC5D544AD78876FB4A55398F30FB7EBB9C77D6183",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Materials\\CSteelMaterialParameters.cls",
+        "ExpectedSHA256": "4892B7954916023BF325536ACD4F075189D56776B0B57F5787A9C67D860E7045",
+        "ActualSHA256": "4892B7954916023BF325536ACD4F075189D56776B0B57F5787A9C67D860E7045",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Materials\\CTestLinearConcreteMaterial.cls",
+        "ExpectedSHA256": "351F58E83EFDBCDDF4F0BC0B1166D47A8EEA0A00456D47D2C0D850E72FFAAA8E",
+        "ActualSHA256": "351F58E83EFDBCDDF4F0BC0B1166D47A8EEA0A00456D47D2C0D850E72FFAAA8E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Materials\\CTestLinearSteelMaterial.cls",
+        "ExpectedSHA256": "154E0FE1C86379ECC5AF5B0B30B88F798EB49293F305BEA0A36958A655534BDD",
+        "ActualSHA256": "154E0FE1C86379ECC5AF5B0B30B88F798EB49293F305BEA0A36958A655534BDD",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CConcreteElement.cls",
+        "ExpectedSHA256": "E88CF294C5F935EFC094759D7A38CEC12C35F574C111B070A0807890FF37610E",
+        "ActualSHA256": "E88CF294C5F935EFC094759D7A38CEC12C35F574C111B070A0807890FF37610E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CConcreteRegion.cls",
+        "ExpectedSHA256": "BFC6F341E90483978620556698EE3AFEDCBC9224217592A458974F7502919B77",
+        "ActualSHA256": "BFC6F341E90483978620556698EE3AFEDCBC9224217592A458974F7502919B77",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CRebarContactBuilder.cls",
+        "ExpectedSHA256": "2F767080D38BBBF267C788FF75D112B086D2552F0C5835E4E46FA706764BC43C",
+        "ActualSHA256": "2F767080D38BBBF267C788FF75D112B086D2552F0C5835E4E46FA706764BC43C",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CRebarGroupAnnotationBuilder.cls",
+        "ExpectedSHA256": "96A02A8D2F9955753610AD4F295AFC4DF2021C2CD86D496E071719C7D6E82257",
+        "ActualSHA256": "96A02A8D2F9955753610AD4F295AFC4DF2021C2CD86D496E071719C7D6E82257",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CRebarLayout.cls",
+        "ExpectedSHA256": "7309484E00E81FCF7338C0FCE7337C1A490DC61B9A67E742A67AE20C8488DA0A",
+        "ActualSHA256": "7309484E00E81FCF7338C0FCE7337C1A490DC61B9A67E742A67AE20C8488DA0A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CRebarOffsetContours.cls",
+        "ExpectedSHA256": "8FA8074CC55E87D99794531AC52A9B08D33AD57DF5C56712767C8DA3C2EB3F73",
+        "ActualSHA256": "8FA8074CC55E87D99794531AC52A9B08D33AD57DF5C56712767C8DA3C2EB3F73",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CRebarRuleExecutor.cls",
+        "ExpectedSHA256": "8752EE0AF44DD4DE96A682F37FF4EE093FA3EC3F4BBC5BD2C8D1996BEF3A4AB6",
+        "ActualSHA256": "8752EE0AF44DD4DE96A682F37FF4EE093FA3EC3F4BBC5BD2C8D1996BEF3A4AB6",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CRebarRuleOptions.cls",
+        "ExpectedSHA256": "5DD52F9C2943224D069BD02D2BA651EAF54CEE16BB1448A81BF4C3BCDE48A95B",
+        "ActualSHA256": "5DD52F9C2943224D069BD02D2BA651EAF54CEE16BB1448A81BF4C3BCDE48A95B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionAnnotationBuilder.cls",
+        "ExpectedSHA256": "0EA85EBB7BE4F62503C2D4A55F4751D87F9EC05FA7EE16E207F39F3DCB79C7D9",
+        "ActualSHA256": "0EA85EBB7BE4F62503C2D4A55F4751D87F9EC05FA7EE16E207F39F3DCB79C7D9",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionAnnotations.cls",
+        "ExpectedSHA256": "D06653F64D8F167074BE5C377CB2B491BAACAEA0ED26350929D1C5CD500D1080",
+        "ActualSHA256": "D06653F64D8F167074BE5C377CB2B491BAACAEA0ED26350929D1C5CD500D1080",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionBuilder.cls",
+        "ExpectedSHA256": "86C44FFFF80B889A296DEABE7C0C0E63586F7C7B1434F572E6A73AC939459EF9",
+        "ActualSHA256": "86C44FFFF80B889A296DEABE7C0C0E63586F7C7B1434F572E6A73AC939459EF9",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionContours.cls",
+        "ExpectedSHA256": "149D74A7FF734822325F2ED14AC092D4834EEDD7A1BE7B92290F02451BC4FC9B",
+        "ActualSHA256": "149D74A7FF734822325F2ED14AC092D4834EEDD7A1BE7B92290F02451BC4FC9B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionDefinition.cls",
+        "ExpectedSHA256": "78964C7C87D373648022123D4F807A39263047D044FC5888D1C96018F3652B9C",
+        "ActualSHA256": "78964C7C87D373648022123D4F807A39263047D044FC5888D1C96018F3652B9C",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionDefinitionBuilder.cls",
+        "ExpectedSHA256": "104928A202BEDCBC4563FD9B9D8978A865F05CDD0B64C1E9F4F2DBE5E883ADC5",
+        "ActualSHA256": "104928A202BEDCBC4563FD9B9D8978A865F05CDD0B64C1E9F4F2DBE5E883ADC5",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionGeometryQuery.cls",
+        "ExpectedSHA256": "3F6E3804394F37FB135E8138A64910AC1EEED41B84C6914E39DF019A8693E924",
+        "ActualSHA256": "3F6E3804394F37FB135E8138A64910AC1EEED41B84C6914E39DF019A8693E924",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionInputReader.cls",
+        "ExpectedSHA256": "9810C06F5760D32752CB69F0A87DF650C5F210558A12B63B1A328A097ECB680A",
+        "ActualSHA256": "9810C06F5760D32752CB69F0A87DF650C5F210558A12B63B1A328A097ECB680A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionInputTable.cls",
+        "ExpectedSHA256": "3C7FCB4B4181E0F37179AFA28B018682B9D46401395CC8C7323DACA093A259FD",
+        "ActualSHA256": "3C7FCB4B4181E0F37179AFA28B018682B9D46401395CC8C7323DACA093A259FD",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionModel.cls",
+        "ExpectedSHA256": "43B5A0675B5A7484FD76DC729D074DBF18EADB3A02212474A28C820914004345",
+        "ActualSHA256": "43B5A0675B5A7484FD76DC729D074DBF18EADB3A02212474A28C820914004345",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionModelBuilder.cls",
+        "ExpectedSHA256": "8EECC23EF584154694CD9FED6DAFBCD47D0D65BF569BB844AE94BA4193A4F918",
+        "ActualSHA256": "8EECC23EF584154694CD9FED6DAFBCD47D0D65BF569BB844AE94BA4193A4F918",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionPropertiesCalculator.cls",
+        "ExpectedSHA256": "FC274ED49408723EDC901AF2769259C33505210ABD2887ED6D1F034CB2BB738D",
+        "ActualSHA256": "FC274ED49408723EDC901AF2769259C33505210ABD2887ED6D1F034CB2BB738D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionRecipeContext.cls",
+        "ExpectedSHA256": "1088CDE1E89361A750946BA69BB0DDA8B8F78259E5C9001D668DFF1097E04DC0",
+        "ActualSHA256": "1088CDE1E89361A750946BA69BB0DDA8B8F78259E5C9001D668DFF1097E04DC0",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\ISectionRecipe.cls",
+        "ExpectedSHA256": "D963BC8C3C3F105FED9825B07DB11A0258E275604286FEA66D7322488AD5EDF0",
+        "ActualSHA256": "D963BC8C3C3F105FED9825B07DB11A0258E275604286FEA66D7322488AD5EDF0",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CCapacityCalculator.cls",
+        "ExpectedSHA256": "8A00B333019203F67EE987A9D6AF906B641AF9F852FFF5D6BB79BC6798E141BD",
+        "ActualSHA256": "8A00B333019203F67EE987A9D6AF906B641AF9F852FFF5D6BB79BC6798E141BD",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CCapacityLimitSearchProblem.cls",
+        "ExpectedSHA256": "106FA7540A8E45B7BBC3BA4478138388D95BED967EEC3E301A8509CDB653272B",
+        "ActualSHA256": "106FA7540A8E45B7BBC3BA4478138388D95BED967EEC3E301A8509CDB653272B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CCapacityResult.cls",
+        "ExpectedSHA256": "5D252ECDB2358D7AAE15FA92633C0631B91436A9BF76AD8469002ECF017B30FE",
+        "ActualSHA256": "5D252ECDB2358D7AAE15FA92633C0631B91436A9BF76AD8469002ECF017B30FE",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CCapacitySolver.cls",
+        "ExpectedSHA256": "611B74359248CDA7213174C3562238E18B9DA7A0A3D2B10A5E3221CDE920D2B3",
+        "ActualSHA256": "611B74359248CDA7213174C3562238E18B9DA7A0A3D2B10A5E3221CDE920D2B3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CCrackLimitSearchProblem.cls",
+        "ExpectedSHA256": "D8E1FBC6810BD817ED0113A9DCA6C5B4BD7D6E89365ED693B234F494D66B5857",
+        "ActualSHA256": "D8E1FBC6810BD817ED0113A9DCA6C5B4BD7D6E89365ED693B234F494D66B5857",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CDiscreteForceIntegrator.cls",
+        "ExpectedSHA256": "38B4415C734B9D0B3A57FFDDCEE4AF676004BF79BF05F64293F46582EE1AE83D",
+        "ActualSHA256": "38B4415C734B9D0B3A57FFDDCEE4AF676004BF79BF05F64293F46582EE1AE83D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CLimitSearchCoordinator.cls",
+        "ExpectedSHA256": "E8AEC6491AA26549AB38009001C6B46A535274901447CA0AA1CE41A3E1832389",
+        "ActualSHA256": "E8AEC6491AA26549AB38009001C6B46A535274901447CA0AA1CE41A3E1832389",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CLimitSearchRequest.cls",
+        "ExpectedSHA256": "F49C67F26783D8F9E4A06CEB786279A3A75148A05353E496CA471F2A212DBFA7",
+        "ActualSHA256": "F49C67F26783D8F9E4A06CEB786279A3A75148A05353E496CA471F2A212DBFA7",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CLimitSearchResult.cls",
+        "ExpectedSHA256": "B8C29041A3870F82BD767305F5BB5C0F38F1B32A20CD6374715D4D857628DB0D",
+        "ActualSHA256": "B8C29041A3870F82BD767305F5BB5C0F38F1B32A20CD6374715D4D857628DB0D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CLinearSystem3x3.cls",
+        "ExpectedSHA256": "F2DF0773DB7859288569D01F00C95CA4D4BC55DB955E694C0752B3C462A291AE",
+        "ActualSHA256": "F2DF0773DB7859288569D01F00C95CA4D4BC55DB955E694C0752B3C462A291AE",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CLoadMultiplierSearch.cls",
+        "ExpectedSHA256": "5D5C4B8F44875592F561BB0D2225AEF8965354C61A764664C4AA5ABDA5FEC949",
+        "ActualSHA256": "5D5C4B8F44875592F561BB0D2225AEF8965354C61A764664C4AA5ABDA5FEC949",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CSectionNumericalFrame.cls",
+        "ExpectedSHA256": "EA5CBA6B4F477E640EB23E730ACE870E630670695BEC3849044712DDFAA544E5",
+        "ActualSHA256": "EA5CBA6B4F477E640EB23E730ACE870E630670695BEC3849044712DDFAA544E5",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CSectionSolver.cls",
+        "ExpectedSHA256": "CA646695E4E7307EFA37B386D9DD8021F77D75780CDA748968BAB56A588AE0DC",
+        "ActualSHA256": "CA646695E4E7307EFA37B386D9DD8021F77D75780CDA748968BAB56A588AE0DC",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CSectionStrainLimits.cls",
+        "ExpectedSHA256": "4729BB38394B092DC185B588412E74A9174D136D2DFD714B35469FE69A3D08EE",
+        "ActualSHA256": "4729BB38394B092DC185B588412E74A9174D136D2DFD714B35469FE69A3D08EE",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CStateGuessBuilder.cls",
+        "ExpectedSHA256": "199DE0864CF1154E24904AD2A2AC0FFD92E9CE90A0F601E35D96261A242214EE",
+        "ActualSHA256": "199DE0864CF1154E24904AD2A2AC0FFD92E9CE90A0F601E35D96261A242214EE",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CStateSolutionRunner.cls",
+        "ExpectedSHA256": "462062BA5CFF0029EC3BFB10628CC74B864A48D2DBF7ABEDD7364B3A8982AFBF",
+        "ActualSHA256": "462062BA5CFF0029EC3BFB10628CC74B864A48D2DBF7ABEDD7364B3A8982AFBF",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\CUltimateStrainSearch.cls",
+        "ExpectedSHA256": "309E418EB1D4458DD0560C8D3FD265478AAE30E4007B5C1BFCDA9AC21DF6176A",
+        "ActualSHA256": "309E418EB1D4458DD0560C8D3FD265478AAE30E4007B5C1BFCDA9AC21DF6176A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\modLimitSearchRequestFactory.bas",
+        "ExpectedSHA256": "680EE52AC8589CED2A84C78C4FAC8F4CCF1311BE11051A9A513610E655DCE942",
+        "ActualSHA256": "680EE52AC8589CED2A84C78C4FAC8F4CCF1311BE11051A9A513610E655DCE942",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Solver\\modNonlinearStepControl.bas",
+        "ExpectedSHA256": "625519B63D01CE15340D857387CEEAC576AF4C9AF8CB7055E68066A95D40C874",
+        "ActualSHA256": "625519B63D01CE15340D857387CEEAC576AF4C9AF8CB7055E68066A95D40C874",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Stability\\CStabilityCalculator.cls",
+        "ExpectedSHA256": "2DC5F47F4CCCF226D691FA1A00690196CB5008298E307B62A0EE41A49413C3C8",
+        "ActualSHA256": "2DC5F47F4CCCF226D691FA1A00690196CB5008298E307B62A0EE41A49413C3C8",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Stability\\CStabilityResult.cls",
+        "ExpectedSHA256": "D4A243BE48585701D1DB48E5B671FA0DDF21D2C41D01D2E341CEC1D8710CE824",
+        "ActualSHA256": "D4A243BE48585701D1DB48E5B671FA0DDF21D2C41D01D2E341CEC1D8710CE824",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\CTestExcelApplicationState.cls",
+        "ExpectedSHA256": "A21F487490C202DCB8F155D22F7EF7568456B908CF721515E08E3565E7CCFFBB",
+        "ActualSHA256": "A21F487490C202DCB8F155D22F7EF7568456B908CF721515E08E3565E7CCFFBB",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\CTestFakeAcadContour.cls",
+        "ExpectedSHA256": "003D8D6EAB6BD9F0AD90DBE9218C2160CF1A5E7BA526307C59F0C1AB8949D2E3",
+        "ActualSHA256": "003D8D6EAB6BD9F0AD90DBE9218C2160CF1A5E7BA526307C59F0C1AB8949D2E3",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\CTestFakeAcadContourExport.cls",
+        "ExpectedSHA256": "ECA3A2E97181F0CF4D57B531A61E90EF59DD2222FB46EA62B8AFB7F0D7AA4250",
+        "ActualSHA256": "ECA3A2E97181F0CF4D57B531A61E90EF59DD2222FB46EA62B8AFB7F0D7AA4250",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\CTestFakeAcadDocument.cls",
+        "ExpectedSHA256": "8EFA36329F286AF9D8B8D24B789CA567175A991DB456039733DABE1F29B40A9B",
+        "ActualSHA256": "8EFA36329F286AF9D8B8D24B789CA567175A991DB456039733DABE1F29B40A9B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\CTestFakeAcadLine.cls",
+        "ExpectedSHA256": "6C505D9ADA9FE36A2E1B436531A5934C5DB7CFFD5B67DB0B60035C84DF849B27",
+        "ActualSHA256": "6C505D9ADA9FE36A2E1B436531A5934C5DB7CFFD5B67DB0B60035C84DF849B27",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\CTestFakeAcadRegion.cls",
+        "ExpectedSHA256": "6EAA19B00D5614066AFF01E8AC067CC9A21D653B12BAFC87DDC229AB0EE35E0A",
+        "ActualSHA256": "6EAA19B00D5614066AFF01E8AC067CC9A21D653B12BAFC87DDC229AB0EE35E0A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\CTestLimitSearchProblem.cls",
+        "ExpectedSHA256": "0B111D54843C9CC6A611495734E685D8A314BD71063C25AB9BE5FCEF0AFF431D",
+        "ActualSHA256": "0B111D54843C9CC6A611495734E685D8A314BD71063C25AB9BE5FCEF0AFF431D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\CTestWorkflowWorkbook.cls",
+        "ExpectedSHA256": "E1588EADC051E34FDCEC119CDF3CE8D038471B5C99B3B328EA55EF4D12D994DE",
+        "ActualSHA256": "E1588EADC051E34FDCEC119CDF3CE8D038471B5C99B3B328EA55EF4D12D994DE",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestAudit02Api.bas",
+        "ExpectedSHA256": "A421DF3CD88C04A86650FA4330B63DA64E2DD95B7AA3F8E6B33A6C017CD4B07B",
+        "ActualSHA256": "A421DF3CD88C04A86650FA4330B63DA64E2DD95B7AA3F8E6B33A6C017CD4B07B",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestAudit02Snapshots.bas",
+        "ExpectedSHA256": "2811B162146BCF3AF44B4CA323B6E72F73F27B1FBD5AA1FEEC53107631030F41",
+        "ActualSHA256": "2811B162146BCF3AF44B4CA323B6E72F73F27B1FBD5AA1FEEC53107631030F41",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestAutoCADConfig.bas",
+        "ExpectedSHA256": "85D61DE7D2BF857804E43EA1E9DF31228A95BDE529B1BE1DF42BBB1F09B30A38",
+        "ActualSHA256": "85D61DE7D2BF857804E43EA1E9DF31228A95BDE529B1BE1DF42BBB1F09B30A38",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestAutoCADContours.bas",
+        "ExpectedSHA256": "70AC99F12A85A587674132E0311222564FACB0041D1F4874214E5E2DE85E6912",
+        "ActualSHA256": "70AC99F12A85A587674132E0311222564FACB0041D1F4874214E5E2DE85E6912",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestBatchCalculation.bas",
+        "ExpectedSHA256": "EE0C83CB9459D2A112DC525E7CBFCE49CD72274AEADE50F0E5DED98E064A7FAA",
+        "ActualSHA256": "EE0C83CB9459D2A112DC525E7CBFCE49CD72274AEADE50F0E5DED98E064A7FAA",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestCalculationSnapshot.bas",
+        "ExpectedSHA256": "F4C225B46E7013D19797C5E81126E2AD413043B96656AA023376F2EF607CAD01",
+        "ActualSHA256": "F4C225B46E7013D19797C5E81126E2AD413043B96656AA023376F2EF607CAD01",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestCapacitySolver.bas",
+        "ExpectedSHA256": "89D73E883BF1FA41949C2B9381084FAF54BA6C5AE765D3012D7A45EC06E72F85",
+        "ActualSHA256": "89D73E883BF1FA41949C2B9381084FAF54BA6C5AE765D3012D7A45EC06E72F85",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestConfiguration.bas",
+        "ExpectedSHA256": "529A997501DB4BF42EF04671C4D3C582E0E5BA0C582FE65332BC4161B69AA361",
+        "ActualSHA256": "529A997501DB4BF42EF04671C4D3C582E0E5BA0C582FE65332BC4161B69AA361",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestContourMesh.bas",
+        "ExpectedSHA256": "CC6A1198042D1F4DBB6027396A154060FA824D17AC235B6AC343E710FCE2E4EB",
+        "ActualSHA256": "CC6A1198042D1F4DBB6027396A154060FA824D17AC235B6AC343E710FCE2E4EB",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestCrackWidth.bas",
+        "ExpectedSHA256": "CEAE3E50AEAB87F64258D49B5E27D9B4FD69575CF3D69BAA13BA2F67AC4649D8",
+        "ActualSHA256": "CEAE3E50AEAB87F64258D49B5E27D9B4FD69575CF3D69BAA13BA2F67AC4649D8",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestDeclarativeExamples.bas",
+        "ExpectedSHA256": "00195FF7EF036C7C4B140D05E92EAFB2402725F04324D4B81707ABFE48BAF619",
+        "ActualSHA256": "00195FF7EF036C7C4B140D05E92EAFB2402725F04324D4B81707ABFE48BAF619",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestDeclarativeGeometry.bas",
+        "ExpectedSHA256": "53E9FBA682553EE0BCDB1A140BB0F07524F641F9FB1B43AC111EA6579A861345",
+        "ActualSHA256": "53E9FBA682553EE0BCDB1A140BB0F07524F641F9FB1B43AC111EA6579A861345",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestDiscreteForces.bas",
+        "ExpectedSHA256": "2377255FA484103026742B81D9216903B3A4EEEB4B296FC575E495DCDEDFB4F4",
+        "ActualSHA256": "2377255FA484103026742B81D9216903B3A4EEEB4B296FC575E495DCDEDFB4F4",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestElementGeometry.bas",
+        "ExpectedSHA256": "BF6BF9AE6CD1C79F819C3230312D43EA199FF9FFDB9C3ACE4A41F16059F5CB3F",
+        "ActualSHA256": "BF6BF9AE6CD1C79F819C3230312D43EA199FF9FFDB9C3ACE4A41F16059F5CB3F",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestElementGeometryViews.bas",
+        "ExpectedSHA256": "AB5B3CE2E78A361C74AA790C28A8B7F107FC2CE0C59EA1C86127BD7E729D36CF",
+        "ActualSHA256": "AB5B3CE2E78A361C74AA790C28A8B7F107FC2CE0C59EA1C86127BD7E729D36CF",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeneralGeometryConfig.bas",
+        "ExpectedSHA256": "CDACE616739E827AA4CDD4F1492EC13D3FE1A166CCAE9C992C55CC80B3B41495",
+        "ActualSHA256": "CDACE616739E827AA4CDD4F1492EC13D3FE1A166CCAE9C992C55CC80B3B41495",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometry.bas",
+        "ExpectedSHA256": "2FCA4F01A9623B98FED0286273860553EA92B93ABB856899288E1725337BED05",
+        "ActualSHA256": "2FCA4F01A9623B98FED0286273860553EA92B93ABB856899288E1725337BED05",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometryConfig.bas",
+        "ExpectedSHA256": "F1258541695FBC6DF56A9B2992582E378AE006A560ED8566E126C268F65D7243",
+        "ActualSHA256": "F1258541695FBC6DF56A9B2992582E378AE006A560ED8566E126C268F65D7243",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometryFixtures.bas",
+        "ExpectedSHA256": "24219499542D6F59F54D5F833F3B2FD430361890B04E1B4EDFB4D553565F6746",
+        "ActualSHA256": "24219499542D6F59F54D5F833F3B2FD430361890B04E1B4EDFB4D553565F6746",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometryPublication.bas",
+        "ExpectedSHA256": "53CCFE826D1A442803C453BC80DADFEB915A8C8C6DBF76CC4BF9E6B1FFE50EBD",
+        "ActualSHA256": "53CCFE826D1A442803C453BC80DADFEB915A8C8C6DBF76CC4BF9E6B1FFE50EBD",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometryQuery.bas",
+        "ExpectedSHA256": "D74B38D9AEF5D37DDD4096D3E9033A970A0B85F1205B4EF023E32CA1FAF4740A",
+        "ActualSHA256": "D74B38D9AEF5D37DDD4096D3E9033A970A0B85F1205B4EF023E32CA1FAF4740A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometryReview.bas",
+        "ExpectedSHA256": "46E73B343DA39CEBA0B28A35427A5E76F9C2316FC7915C6B5EB578FDE4F84FD5",
+        "ActualSHA256": "46E73B343DA39CEBA0B28A35427A5E76F9C2316FC7915C6B5EB578FDE4F84FD5",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometrySolidSnapshots.bas",
+        "ExpectedSHA256": "2565A6706FB02659B36313BDDCE4BECC05FA134EA682945358DED333D4CF34D2",
+        "ActualSHA256": "2565A6706FB02659B36313BDDCE4BECC05FA134EA682945358DED333D4CF34D2",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestIndividualContours.bas",
+        "ExpectedSHA256": "8FB15CFBB3BA19144EE4FFA0145A2421791E545F8EE8C0347EA538A28978FF54",
+        "ActualSHA256": "8FB15CFBB3BA19144EE4FFA0145A2421791E545F8EE8C0347EA538A28978FF54",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestLoadTableConfig.bas",
+        "ExpectedSHA256": "D1526418630EDE1BB49EDFEFE3BFE4D6EC6577685516686D43A7A268DC52FB25",
+        "ActualSHA256": "D1526418630EDE1BB49EDFEFE3BFE4D6EC6577685516686D43A7A268DC52FB25",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestMaterialDiagrams.bas",
+        "ExpectedSHA256": "0D6CF1055C575CC2285D01C1F1D90308279A5E86CDB477791B6D6CB5AEAC48ED",
+        "ActualSHA256": "0D6CF1055C575CC2285D01C1F1D90308279A5E86CDB477791B6D6CB5AEAC48ED",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestPerformance.bas",
+        "ExpectedSHA256": "91702595925DBBFD9445ED7BB74FC5326DD508B3F98544FFD0D71E6806957380",
+        "ActualSHA256": "91702595925DBBFD9445ED7BB74FC5326DD508B3F98544FFD0D71E6806957380",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestPlotConfig.bas",
+        "ExpectedSHA256": "CACAC4FC62C127F62A87F04519F367DC78C582A0CC56ADB9CA3A53F1AD1FF3B6",
+        "ActualSHA256": "CACAC4FC62C127F62A87F04519F367DC78C582A0CC56ADB9CA3A53F1AD1FF3B6",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestPolygonSpec.bas",
+        "ExpectedSHA256": "3E3A12174E25B92F5BD5EE5B205E241874A9268AC592322ADDD3174F7409F55E",
+        "ActualSHA256": "3E3A12174E25B92F5BD5EE5B205E241874A9268AC592322ADDD3174F7409F55E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestProfileConfig.bas",
+        "ExpectedSHA256": "2D221A24B020D30802B78F13672AA725C95266E750FD3C20500EC5F3B7EF5C92",
+        "ActualSHA256": "2D221A24B020D30802B78F13672AA725C95266E750FD3C20500EC5F3B7EF5C92",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRecipeAnnotations.bas",
+        "ExpectedSHA256": "B8EC7FDE2F3DBB58BB23121659C7AD52C16854C575E3B6C2E7DDB62BE55DF801",
+        "ActualSHA256": "B8EC7FDE2F3DBB58BB23121659C7AD52C16854C575E3B6C2E7DDB62BE55DF801",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRecipeApiCatalogue.bas",
+        "ExpectedSHA256": "89CA4E4CBB615831A03B988C57243F402872F32247CF2497B71E0B3C08F1382D",
+        "ActualSHA256": "89CA4E4CBB615831A03B988C57243F402872F32247CF2497B71E0B3C08F1382D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRecipeOperations.bas",
+        "ExpectedSHA256": "CC44985A06B1E194C085105FA3397D50B1DB4A71B5A6AEF77071D1577D3ECE3E",
+        "ActualSHA256": "CC44985A06B1E194C085105FA3397D50B1DB4A71B5A6AEF77071D1577D3ECE3E",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRecipeSetbacks.bas",
+        "ExpectedSHA256": "8B897C8F3767FBF91A5668213901FD21C50A85CEE4989F2A387B37DCEBDD07D6",
+        "ActualSHA256": "8B897C8F3767FBF91A5668213901FD21C50A85CEE4989F2A387B37DCEBDD07D6",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRegressionBaseline.bas",
+        "ExpectedSHA256": "3CD473CA937E2A44E0B09ADBE750F0B5D1BAA2B32D7C0AA6403953B780905C84",
+        "ActualSHA256": "3CD473CA937E2A44E0B09ADBE750F0B5D1BAA2B32D7C0AA6403953B780905C84",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestSectionInputReader.bas",
+        "ExpectedSHA256": "D7EA646F51E40A197D42511269D095B183FCDC186A84F3E46B7CC540D1CDF211",
+        "ActualSHA256": "D7EA646F51E40A197D42511269D095B183FCDC186A84F3E46B7CC540D1CDF211",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestSectionRecipes.bas",
+        "ExpectedSHA256": "991D8E176A55F85368DBB4D28F1C3B94A1E9E596F60B287A40B10E7B28D7B07D",
+        "ActualSHA256": "991D8E176A55F85368DBB4D28F1C3B94A1E9E596F60B287A40B10E7B28D7B07D",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestSectionSolver.bas",
+        "ExpectedSHA256": "0263184F9C904C0858E1A184EAB307F5F54A50E16E24FDDA57F612BF3486C784",
+        "ActualSHA256": "0263184F9C904C0858E1A184EAB307F5F54A50E16E24FDDA57F612BF3486C784",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestSectionWorkflow.bas",
+        "ExpectedSHA256": "71792B65F72DD8E11DAB1DF00760577FEF12F954DBF75C4771F6B72CCA877AFE",
+        "ActualSHA256": "71792B65F72DD8E11DAB1DF00760577FEF12F954DBF75C4771F6B72CCA877AFE",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestShapeArchitecture.bas",
+        "ExpectedSHA256": "20102F2882814ACEC6B5B82F7E6EB0388E4730E7977C86B6B44B82FB3FB4B1AC",
+        "ActualSHA256": "20102F2882814ACEC6B5B82F7E6EB0388E4730E7977C86B6B44B82FB3FB4B1AC",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestSP35CrackWidth.bas",
+        "ExpectedSHA256": "A5018C1775E732C338F07A1753D2F327E77B98F66FF9029B3E6616A9A38AEF09",
+        "ActualSHA256": "A5018C1775E732C338F07A1753D2F327E77B98F66FF9029B3E6616A9A38AEF09",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestWorkbookInterface.bas",
+        "ExpectedSHA256": "68BBD190F8101669C08BB68DA4BAC3E286470DB7D7CBD6FE8654163B5944A545",
+        "ActualSHA256": "68BBD190F8101669C08BB68DA4BAC3E286470DB7D7CBD6FE8654163B5944A545",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestZeroContourParity.bas",
+        "ExpectedSHA256": "E02E9E901AF95D4AC7EF65CFBE0F37E9C7DE4A5DFE8611C8AAD88FA2F8C4B77A",
+        "ActualSHA256": "E02E9E901AF95D4AC7EF65CFBE0F37E9C7DE4A5DFE8611C8AAD88FA2F8C4B77A",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\WorkbookHelpEvents.vba",
+        "ExpectedSHA256": "8FCEE6BEF74B7903C9F7E1E902D084DDA8655E91A3A4654CBB301BF5280CF8EB",
+        "ActualSHA256": "8FCEE6BEF74B7903C9F7E1E902D084DDA8655E91A3A4654CBB301BF5280CF8EB",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Build-Workbook.ps1",
+        "ExpectedSHA256": "DC69F4D835F45F9B094D4FE3CCC329D23A16631FB2025F9C4DACA260CA8A9451",
+        "ActualSHA256": "DC69F4D835F45F9B094D4FE3CCC329D23A16631FB2025F9C4DACA260CA8A9451",
+        "Matches": true
+      },
+      {
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportPrototype01\\HelperOnePair01\\modTestLispWholeExport.bas",
+        "ExpectedSHA256": "3DBB910B0AFD999123746E037BAC1F042553202324EA55C7F3140524B3B8A9AA",
+        "ActualSHA256": "3DBB910B0AFD999123746E037BAC1F042553202324EA55C7F3140524B3B8A9AA",
+        "Matches": true
+      }
+    ]
+  },
+  "AdditionalPlanExporterHashes": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\FreshBuild07\\RC_Section_NDM.xlsm",
+      "SHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "Matches": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\PairPreparation.json",
+      "SHA256": "8926B1B6EC1B09A7695016143E97CA0ADB04FAFB12D9DC4568F15134BC63B9A3",
+      "Matches": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\SeparatePerformanceBookPlan\\PairFinalFresh07_01\\Transfer.json",
+      "SHA256": "1EE2804E1E281A7058177FD16F234105AEFF242491DBCE99C51050F6552BA702",
+      "Matches": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispBatchGeometryPrototype01\\CandidateManifest.json",
+      "SHA256": "1208336F48046831AB6AD04A2C4AC2082B21EB1B64A206CE0BF0DE1758E9F7AD",
+      "Matches": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispBatchGeometryPrototype01\\Helper\\NDM_TestRectangleBatch.lsp",
+      "SHA256": "3B4ADA86DB955464B6D90EB47C5EA75A8C2F1525F79B5EF167E1BBAC17A4C23B",
+      "Matches": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportPrototype01\\HelperOnePair01\\modTestLispWholeExport.bas",
+      "SHA256": "3DBB910B0AFD999123746E037BAC1F042553202324EA55C7F3140524B3B8A9AA",
+      "Matches": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modAutoCADStressExport.bas",
+      "SHA256": "117FA3D175CEB38380BC71BB3909BFA7FDB476C50D743E467440919A5381BB1E",
+      "Matches": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispBatchGeometryPrototype01\\Candidate\\modAutoCADStressExport.bas",
+      "SHA256": "1AD00CF8FB159FE7B77D2333E91B0C2EA60A8F68481329E665BA91C00731035B",
+      "Matches": true
+    }
+  ],
+  "ActualSourceSHA256StillMatches": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4",
+  "PairSourceVBA": {
+    "SourceSHA256": "D30F221FD793250E09CEE35A70AB6BBA4FF6BEC3A6DF1700EF228898A0703DC4",
+    "TemplateSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+    "ActualVBASHA256": "67FB9D92D3FB88F6CF1F4A22248B9DC59A76DA347232711A6ED71A6CA2B921F9",
+    "ActualVBAByteEquality": true,
+    "VBABytes": 21544059,
+    "OriginSHA256": "C456377A98C1C71D5128DA7E958DE1EA8349CF587E9B9BE96A8E5F42785A042E",
+    "NoSolverOrRemeshExecuted": true
+  },
+  "WatchdogCompletion": {
+    "Passed": true,
+    "Timeout": false,
+    "WorkerExitCode": 0,
+    "WorkerState": {
+      "State": "Absent",
+      "PID": 34208,
+      "ExpectedStartTicksUTC": "639286622672187107",
+      "ExpectedName": "powershell",
+      "Error": null
+    },
+    "ExcelState": {
+      "State": "Absent",
+      "PID": 23356,
+      "ExpectedStartTicksUTC": "639286622697290010",
+      "ExpectedName": "EXCEL",
+      "Error": null
+    },
+    "CADState": {
+      "State": "Absent",
+      "PID": 25196,
+      "ExpectedStartTicksUTC": "639286623218682237",
+      "ExpectedName": "acad",
+      "Error": null
+    },
+    "WorkerExactIdentityAbsent": true,
+    "ExcelExactIdentityAbsent": true,
+    "CADExactIdentityAbsent": true,
+    "OrdinaryPathKilledAnything": false,
+    "SourceUnchanged": true,
+    "WorkerUnchanged": true,
+    "WorkerAcceptance": {
+      "Passed": true,
+      "Status": "PASS_ONE_PAIR_FEASIBILITY_ASSERTIONS_PENDING_POST_CHILD_CLOSURE",
+      "Compiled": true,
+      "SourceEqualityBefore181": true,
+      "SourceEqualityAfter181": true,
+      "SourceEqualityAfterRun181": true,
+      "ExpectedSourceOverrides": 1,
+      "CompletedCalls": 1,
+      "ExpectedCalls": 1,
+      "SourceUnchanged": true,
+      "ChangedInputs": [],
+      "ExcelQuitSucceeded": true,
+      "CADQuitSucceeded": true,
+      "PostChildClosureRequired": true,
+      "PrivateWholeGeometryExportOnly": true,
+      "OnePairFeasibilityOnly": true,
+      "NoProductionChange": true,
+      "Failure": null,
+      "CleanupErrors": [],
+      "ProductionIntegrationAccepted": false,
+      "PerformancePass": false,
+      "FullRegressionPass": false
+    },
+    "FullBuildExecuted": false,
+    "FullRegressionPass": false
+  },
+  "IndependentThreeExactIdentities": [
+    {
+      "Role": "Worker",
+      "PID": 34208,
+      "ExpectedUTCStartTicks": "639286622672187107",
+      "ExpectedName": "powershell",
+      "State": "ConfirmedNotFound",
+      "Error": "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+      "CheckedUTC": "2026-10-27T01:51:13.8814177+00:00"
+    },
+    {
+      "Role": "Excel",
+      "PID": 23356,
+      "ExpectedUTCStartTicks": "639286622697290010",
+      "ExpectedName": "EXCEL",
+      "State": "ConfirmedNotFound",
+      "Error": "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+      "CheckedUTC": "2026-10-27T01:51:13.9029521+00:00"
+    },
+    {
+      "Role": "CAD",
+      "PID": 25196,
+      "ExpectedUTCStartTicks": "639286623218682237",
+      "ExpectedName": "acad",
+      "State": "ConfirmedNotFound",
+      "Error": "NoProcessFoundForGivenId,Microsoft.PowerShell.Commands.GetProcessCommand",
+      "CheckedUTC": "2026-10-27T01:51:13.9109491+00:00"
+    }
+  ],
+  "WorkerAndCADAndExcelOrdinaryExitNoForceKill": true,
+  "Memory": {
+    "Worker": {
+      "RAMGiB": 16.10546875,
+      "CommitGiB": 21.459381103515625,
+      "RequiredRAMGiB": 8,
+      "RequiredCommitGiB": 14
+    },
+    "Excel": {
+      "RAMGiB": 15.7412109375,
+      "CommitGiB": 21.05514907836914,
+      "RequiredRAMGiB": 8,
+      "RequiredCommitGiB": 14
+    },
+    "CAD": {
+      "RAMGiB": 15.5341796875,
+      "CommitGiB": 20.742698669433594,
+      "RequiredRAMGiB": 8,
+      "RequiredCommitGiB": 14
+    }
+  },
+  "StreamsReadEntire": {
+    "stdout.txt": "VBA_EQUALITY: passed=True; source=175; export=181; missing=0; differences=0; extra=0\nVBA_EQUALITY: passed=True; source=175; export=181; missing=0; differences=0; extra=0\nVBA_EQUALITY: passed=True; source=175; export=181; missing=0; differences=0; extra=0\nVBA_EQUALITY: passed=True; source=175; export=181; missing=0; differences=0; extra=0\n",
+    "stderr.txt": ""
+  },
+  "EveryClosedArtifactReadAndHashed": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\Acceptance.json",
+      "Bytes": 841,
+      "SHA256": "F050D2E9C44B291D53F1EEF7324AC2E41376FC39856F17C1B0A785683AB1D481",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 26
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\CADProcessClosure.json",
+      "Bytes": 622,
+      "SHA256": "DEDC5D453053F1526C7FDC508F07BC993C5E2B282F036AEF56C116D39E918153",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 19
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\CADStartupVisibility.json",
+      "Bytes": 273,
+      "SHA256": "23F81894003EFAAA2DB2426B396B8CB5D6D7414D3C2EDA5D04F244C56B4879A6",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 10
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\Calls.json",
+      "Bytes": 10463,
+      "SHA256": "5587CFD04ECE0AC6004CA705F0E762955ADDC6C78162C6022CCB8029750E6501",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 146
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\Compile.json",
+      "Bytes": 125,
+      "SHA256": "3805BFDF46DF58CCE08780CC476842A7D05EA7961B3992D311E810D48D722F01",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 6
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\Inputs.json",
+      "Bytes": 69679,
+      "SHA256": "37475EC7FA2E4A6F532F4091A568D7AA4360FFF18311FD47B292FE97F2CCEC13",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 841
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\MemoryBeforeCAD.json",
+      "Bytes": 136,
+      "SHA256": "1DA17844E629E2A52E46C8C5DD532E5299B29657C9B4F4A46F35667781AA682C",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 6
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\MemoryBeforeExcel.json",
+      "Bytes": 136,
+      "SHA256": "11CCA67FC3911A73856C1B7490D91373B9EDC4181BB15DBF6CC60C4E27A07012",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 6
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterCompile181.Equality.json",
+      "Bytes": 117152,
+      "SHA256": "E2E48961AB7E9072F47D982399C010DB753FB91CCDC45AD4C654BB3BEDCDA51A",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 1988
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterCompile181.Inventory.json",
+      "Bytes": 18408,
+      "SHA256": "442ADFDC5DB52EC9BB1DE9D17CF924BB2335DEF22A7D7A068B4F2939258A7DB3",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 912
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterCompile181.Overrides.json",
+      "Bytes": 831,
+      "SHA256": "4F30D4F8AD01F9E782C86701691AEEFFA2DB270C45FEF232BC4FA51DE059C29C",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 12
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterCompile181.txt",
+      "Bytes": 8931989,
+      "SHA256": "CA5C1EEE969C124B876CCC7641C1CC751311FE81BE92D0832FCD3A229C6C6CAF",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 124987
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterReopen181.Equality.json",
+      "Bytes": 117152,
+      "SHA256": "E2E48961AB7E9072F47D982399C010DB753FB91CCDC45AD4C654BB3BEDCDA51A",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 1988
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterReopen181.Inventory.json",
+      "Bytes": 18408,
+      "SHA256": "442ADFDC5DB52EC9BB1DE9D17CF924BB2335DEF22A7D7A068B4F2939258A7DB3",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 912
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterReopen181.Overrides.json",
+      "Bytes": 831,
+      "SHA256": "4F30D4F8AD01F9E782C86701691AEEFFA2DB270C45FEF232BC4FA51DE059C29C",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 12
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterReopen181.txt",
+      "Bytes": 8931989,
+      "SHA256": "CA5C1EEE969C124B876CCC7641C1CC751311FE81BE92D0832FCD3A229C6C6CAF",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 124987
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterWholeExport181.Equality.json",
+      "Bytes": 117152,
+      "SHA256": "E2E48961AB7E9072F47D982399C010DB753FB91CCDC45AD4C654BB3BEDCDA51A",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 1988
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterWholeExport181.Inventory.json",
+      "Bytes": 18408,
+      "SHA256": "442ADFDC5DB52EC9BB1DE9D17CF924BB2335DEF22A7D7A068B4F2939258A7DB3",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 912
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterWholeExport181.Overrides.json",
+      "Bytes": 831,
+      "SHA256": "4F30D4F8AD01F9E782C86701691AEEFFA2DB270C45FEF232BC4FA51DE059C29C",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 12
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeAfterWholeExport181.txt",
+      "Bytes": 8931989,
+      "SHA256": "CA5C1EEE969C124B876CCC7641C1CC751311FE81BE92D0832FCD3A229C6C6CAF",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 124987
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeBefore181.Equality.json",
+      "Bytes": 117153,
+      "SHA256": "7CCFAF50B1C4308E8B04870D2C41A0D21AFCB47FA2BC48C1E6761566412144FD",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 1988
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeBefore181.Inventory.json",
+      "Bytes": 18305,
+      "SHA256": "CF440D52E50A171A1930F7D4F446BE869ACF0F82BD4F95248BD4AC443621E84D",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 907
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\NativeBefore181.txt",
+      "Bytes": 8900631,
+      "SHA256": "AE28FE287D5DCEFD9DA0163CB863CE3D84E67FC8EA58D6DE840EF89F4516D6B0",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 124545
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\Ownership.json",
+      "Bytes": 645,
+      "SHA256": "93DB8DEE05BA929915164B90D5850E8EAE3270A2451D3E1E20C861EFBED26D97",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 14
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\PairSourceActualVBA.json",
+      "Bytes": 478,
+      "SHA256": "F8E33A5678947BAFFEB189C1201C4BC03AB74429D5C9B56075488B91EC917E51",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 9
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\PrimaryCoverage.json",
+      "Bytes": 7518,
+      "SHA256": "F26D95910F510B1F1C557DCA2229B83FE9BE35DD982C28FEAD101AB4C70B5F89",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 132
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\ProcessClosure.json",
+      "Bytes": 746,
+      "SHA256": "E8AF1C08B2F0BA2C1AE3FB00B5FB3D097AA33943398550A21D3EBC7C58DEAAB2",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 21
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\Progress.json",
+      "Bytes": 137,
+      "SHA256": "5030022AA0CBA8A70EB1619A029F212693B4E11FB3325C177369C846CCEB3DDF",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 5
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\ProgressPrimary.json",
+      "Bytes": 430,
+      "SHA256": "1A75795697CBF5DACAFCD15727D6BB2C8DAC714D29ED576F2B81B34A449BC05B",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 7
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\RC_Section_NDM_PrivateProbe.xlsm",
+      "Bytes": 16878641,
+      "SHA256": "B2440AF9622A971AB1CA023F362E4DE5107EB5621D7B4E24840635B100BD264E"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\ScratchDocument.json",
+      "Bytes": 287,
+      "SHA256": "6DAED54F64C5C557E1DF461E50F400B93811B9685ED45D5C4540BDB950B79243",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 10
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport.txt",
+      "Bytes": 2026,
+      "SHA256": "84F604AE954CACAD7124CA595D3D1F19800F00EE94C696098D0D7C10F4D04FEB",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 34
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport_Heavy_1_A.txt",
+      "Bytes": 1281022,
+      "SHA256": "21D62F73EA93012137E50D0E2C4415D2B582E40E9C5E1E06661E18B57FC3A389",
+      "EntireTextRead": true,
+      "Encoding": "ascii",
+      "NonemptyLines": 1243
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport_Heavy_1_B.txt",
+      "Bytes": 1281022,
+      "SHA256": "21D62F73EA93012137E50D0E2C4415D2B582E40E9C5E1E06661E18B57FC3A389",
+      "EntireTextRead": true,
+      "Encoding": "ascii",
+      "NonemptyLines": 1243
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport_Small_1_A.txt",
+      "Bytes": 10706,
+      "SHA256": "62F4FA3281FC83C8B42358BB78C377B0A81136D60C4936E7A0597FDD43957828",
+      "EntireTextRead": true,
+      "Encoding": "ascii",
+      "NonemptyLines": 12
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExport_Small_1_B.txt",
+      "Bytes": 10706,
+      "SHA256": "62F4FA3281FC83C8B42358BB78C377B0A81136D60C4936E7A0597FDD43957828",
+      "EntireTextRead": true,
+      "Encoding": "ascii",
+      "NonemptyLines": 12
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01\\WholeExportProgress.txt",
+      "Bytes": 3920,
+      "SHA256": "C167B373F543D4F2C04591398259762276D96C851003E0978EBC15EBDE2C7581",
+      "EntireTextRead": true,
+      "Encoding": "utf-16",
+      "NonemptyLines": 34
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01.Watchdog\\Completion.json",
+      "Bytes": 2727,
+      "SHA256": "F4A7C1260B0F743F2E99BEA4E982558EF41B388D46BF273FDB19A2E966E32226",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 60
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01.Watchdog\\Launch.json",
+      "Bytes": 633,
+      "SHA256": "8A103C83DF944CFA0E64A593D93E7F46078B34CDA5AE72089B7614B3AB5D23B7",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 10
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01.Watchdog\\MemoryBeforeWorker.json",
+      "Bytes": 134,
+      "SHA256": "96667E7B24CDD288A1CE5AF2CF094130BBF30A757F4E89DCB32EA8321C6DFFAC",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 6
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01.Watchdog\\stderr.txt",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFinalization_2026-10-26_Run01\\AutoLispWholeExportNativeOnePair01.Watchdog\\stdout.txt",
+      "Bytes": 344,
+      "SHA256": "2A3B1B41BEC2BE91D1793F7F2816BBB150BF89B84F66698C4C292F37276218E1",
+      "EntireTextRead": true,
+      "Encoding": "utf-8-sig",
+      "NonemptyLines": 4
+    }
+  ],
+  "PriorTimeoutNativeWhole01RemainsSeparateAndNotPromotedToPASS": true,
+  "NoAppsStartedStoppedOrProductionInputsChangedByReview": true,
+  "FullRegressionPass": false
+}

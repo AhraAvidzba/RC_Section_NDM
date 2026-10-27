@@ -90,7 +90,7 @@ Private mUltimateMomentNMeritWeight As Double ' Перевод осевой не
 Private mUltimatePathMath As CLoadPathMath ' Общие уравнения траектории нагрузки для поиска по предельным деформациям.
 Private mUltimatePathTolerance As Double ' Допустимое отклонение от траектории в нормированных уравнениях поиска.
 Private mProbeCacheCount As Long ' Число сохранённых оценок пробных нагрузок.
-Private mProbeCacheNextSlot As Long ' Место следующей записи; при заполнении списка новая оценка заменяет самую старую.
+Private mProbeCacheNextSlot As Long ' Место следующей записи; при заполнении списка замещается наиболее давняя оценка.
 Private mProbeCacheLambda(1 To PROBE_CACHE_SIZE) As Double ' Lambda ранее посчитанной точки поиска.
 Private mProbeCacheN(1 To PROBE_CACHE_SIZE) As Double ' N этой lambda-точки; нужен, чтобы не спутать разные траектории.
 Private mProbeCacheMx(1 To PROBE_CACHE_SIZE) As Double ' Mx этой lambda-точки.
@@ -1193,7 +1193,7 @@ Private Function CapacityScalesAxial(ByVal nBase As Double) As Boolean
 End Function
 
 ' До создания запроса поиска проверяет обязательные программные объекты.
-' При их отсутствии очищает старый результат и сохраняет внутреннюю ошибку
+' При их отсутствии очищает сохранённый результат и записывает внутреннюю ошибку
 ' с кодом причины вместо необработанного исключения VBA.
 Private Function EnsureSearchDependencies(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
@@ -1480,7 +1480,7 @@ Private Sub ConfigureCapacityProbeRunner(ByVal runner As CStateSolutionRunner, B
 End Sub
 
 ' Показывает, нужна ли для пробы чистого изгиба начальная плоскость
-' по целевым моментам, если ненулевое прежнее равновесие ещё не найдено.
+' по целевым моментам, если ненулевое равновесие ещё не найдено.
 Private Function IsPureBendingProbe(ByVal nSpecified As Double, _
         ByVal mx As Double, ByVal my As Double) As Boolean
     IsPureBendingProbe = (Abs(nSpecified) <= 0.000000001 And _
@@ -1604,7 +1604,7 @@ Private Sub StoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVa
     Set mProbeCacheSolver(slot) = mLastSolver
 
     If mProbeCacheCount < PROBE_CACHE_SIZE Then mProbeCacheCount = mProbeCacheCount + 1
-    mProbeCacheNextSlot = slot + 1 ' Кольцевой буфер ограниченного размера заменяет самую старую пробу текущего поиска.
+    mProbeCacheNextSlot = slot + 1 ' Кольцевой буфер ограниченного размера замещает наиболее давнюю пробу текущего поиска.
     If mProbeCacheNextSlot > PROBE_CACHE_SIZE Then mProbeCacheNextSlot = 1
 End Sub
 

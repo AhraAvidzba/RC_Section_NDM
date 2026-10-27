@@ -44,6 +44,8 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Dim lengthUnit As String: lengthUnit = ResultHeaderUnit(data, colX, "mm")
     Dim areaUnit As String: areaUnit = ResultHeaderUnit(data, colArea, "mm2")
     Dim fourthUnit As String: fourthUnit = ResultHeaderUnit(data, colLocalIx, lengthUnit & "4")
+    Dim boundaries As Object: Set boundaries = ReadSavedConcreteBoundaries(workbook, data)
+    Dim exactRegion As CConcreteRegion
     Dim model As CSectionModel: Set model = New CSectionModel
     model.SourceType = sourceType
     model.ConcreteMeshSource = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.ConcreteMeshSource")
@@ -77,6 +79,8 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
                 If Abs(localIxy) / Sqr(localIx) / Sqr(localIy) >= 1# Then Err.Raise vbObjectError + 4355, _
                     "ReadSectionGeometryFromResults", "Несогласованные собственные моменты инерции бетонного элемента: " & _
                     anchor.Parent.Name & "!" & anchor.Offset(row - 1, colLocalIxy - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
+                Set exactRegion = Nothing
+                If boundaries.Exists(id) Then Set exactRegion = boundaries.Item(id)
                 model.AddConcreteElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX), lengthUnit), _
                     OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY), lengthUnit), _
                     OutputAreaToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colArea), areaUnit), materialID, sourceName, handle, _
@@ -86,7 +90,7 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
                     ReadGeometryNumber(data, anchor, row, colRotation), comment, _
                     OutputFourthPowerLengthToInternalByUnit(localIx, fourthUnit), _
                     OutputFourthPowerLengthToInternalByUnit(localIy, fourthUnit), _
-                    OutputFourthPowerLengthToInternalByUnit(localIxy, fourthUnit), True ' Это готовая расчётная граница ячейки. Угол уже определён при формировании; повторное усреднение направлений не требуется.
+                    OutputFourthPowerLengthToInternalByUnit(localIxy, fourthUnit), True, exactRegion ' Это готовая расчётная граница ячейки. Угол уже определён при формировании; повторное усреднение направлений не требуется.
                 If model.ConcreteID(model.ConcreteCount) <> id Then GoTo InvalidElementID
             ElseIf StrComp(kind, "Rebar", vbTextCompare) = 0 Then
                 model.AddRebarElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX), lengthUnit), _
@@ -102,11 +106,6 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Next row
     If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4351, "ReadSectionGeometryFromResults", "В Results нет бетонных элементов."
     ReadSavedSectionContours workbook, model.Contours
-    Dim boundaries As Object: Set boundaries = ReadSavedConcreteBoundaries(workbook, data)
-    Dim concrete As Long
-    For concrete = 1 To model.ConcreteCount
-        If boundaries.Exists(model.ConcreteID(concrete)) Then model.SetConcreteGeometry concrete, boundaries.Item(model.ConcreteID(concrete))
-    Next concrete
     Set ReadSectionGeometryFromResults = model
     Exit Function
 InvalidElementID:
@@ -117,7 +116,7 @@ End Function
 
 ' Читает собственную геометрию один раз блочными таблицами Results.
 ' Текущий Config, дополнительные JSON и внешний AutoCAD не участвуют;
-' отсутствие новой таблицы допустимо только для прежней прямоугольной модели.
+' таблица границ обязательна для Contour; компактные Rectangle/Region хранятся без неё.
 Public Function ReadSavedConcreteBoundaries(ByVal workbook As Object, Optional ByRef geometryData As Variant) As Object
     Dim data As Variant
     If IsArray(geometryData) Then data = geometryData Else data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
@@ -126,12 +125,31 @@ Public Function ReadSavedConcreteBoundaries(ByVal workbook As Object, Optional B
     On Error Resume Next
     Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange
     On Error GoTo 0
-    If Not anchor Is Nothing Then boundaryData = ReadAnchoredResultTable(workbook, "rngNDMElementGeometry")
+    If Not anchor Is Nothing Then
+        If GeometryRequiresConcreteBoundaries(data) Then
+            boundaryData = ReadAnchoredResultTable(workbook, "rngNDMElementGeometry")
+        Else
+            boundaryData = ReadPhysicalResultTable(workbook, "rngNDMElementGeometry")
+        End If
+    End If
     Set ReadSavedConcreteBoundaries = ReadConcreteBoundaryMap(boundaryData, data, "rngNDMElementGeometry", anchor, geometryAnchor)
 End Function
 
+' Проверяет явный маркер точной геометрии; компактная сетка не требует чтения большого файла НДС.
+Public Function GeometryRequiresConcreteBoundaries(ByRef geometry As Variant) As Boolean
+    If Not IsArray(geometry) Then Exit Function
+    Dim column As Long: column = ResultColumn(geometry, "GeometryInterpretationStatus")
+    Dim row As Long
+    For row = 2 To UBound(geometry, 1)
+        If IsError(geometry(row, column)) Or IsNull(geometry(row, column)) Then
+            GeometryRequiresConcreteBoundaries = True: Exit Function
+        End If
+        If StrComp(CStr(geometry(row, column)), "Contour", vbTextCompare) = 0 Then GeometryRequiresConcreteBoundaries = True: Exit Function
+    Next row
+End Function
+
 ' Разбирает обязательные собственные границы из матриц Excel или файла.
-' Contour требует точной связанной области; старые Region/Rectangle не
+' Contour требует точной связанной области; компактные Region/Rectangle не
 ' получают выдуманный контур. Возвращаемые координаты и инерции всегда в мм.
 Public Function ReadConcreteBoundaryMap(ByRef boundaryData As Variant, ByRef geometryData As Variant, _
         Optional ByVal sourceReference As String = "rngNDMElementGeometry", _
@@ -248,7 +266,7 @@ End Function
 
 ' Дата запуска до записи в Excel может иметь тип Date. Только эта колонка
 ' допускает Date и преобразует его числовое представление без текста локали;
-' координаты, площади и остальные физические числа по-прежнему отвергают Date.
+' координаты, площади и остальные физические числа отвергают Date.
 Private Function SavedBoundaryRunID(ByRef values As Variant, ByVal row As Long, ByVal reference As String, ByVal anchor As Object) As Double
     If VarType(values(row, 1)) = vbDate Then
         SavedBoundaryRunID = CDbl(values(row, 1))
@@ -368,11 +386,11 @@ Private Function SavedBoundarySameEdge(ByRef first As TRegionEdge, ByRef second 
     SavedBoundarySameEdge = True
 End Function
 
-' Сверяет A, центр и собственные инерции тем же контрактом модели, который
-' принимает генератор и AutoCAD. Временный элемент не содержит метаданных
-' и не обращается к Excel; наружный обработчик добавляет адрес границы.
+' Сверяет A, центр и собственные инерции общим геометрическим валидатором.
+' Единицы и числовые поля проверяются до вызова; наружный обработчик
+' добавляет фактический адрес границы без создания временной модели.
 Private Sub ValidateSavedBoundaryProperties(ByVal region As CConcreteRegion, ByRef data As Variant, ByVal row As Long, ByVal anchor As Object)
-    Dim model As CSectionModel: Set model = New CSectionModel
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
     Dim xColumn As Long: xColumn = ResultColumn(data, "X")
     Dim yColumn As Long: yColumn = ResultColumn(data, "Y")
     Dim areaColumn As Long: areaColumn = ResultColumn(data, "Area")
@@ -396,17 +414,14 @@ Private Sub ValidateSavedBoundaryProperties(ByVal region As CConcreteRegion, ByR
         SavedBoundaryError "Ширина точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, widthColumn, anchor
     If SavedBoundaryNumber(data, row, heightColumn, "rngNDMSectionGeometry", anchor) < 0# Then _
         SavedBoundaryError "Высота точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, heightColumn, anchor
-    model.AddConcreteElement OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, xColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
+    Call SavedBoundaryNumber(data, row, rotationColumn, "rngNDMSectionGeometry", anchor)
+    query.ValidateBoundaryProperties region, _
+        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, xColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
         OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, yColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
         OutputAreaToInternalByUnit(SavedBoundaryNumber(data, row, areaColumn, "rngNDMSectionGeometry", anchor), areaUnit), _
-        1, vbNullString, vbNullString, "Contour", _
-        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, widthColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
-        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, heightColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
-        SavedBoundaryNumber(data, row, rotationColumn, "rngNDMSectionGeometry", anchor), vbNullString, _
         OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, ixColumn, "rngNDMSectionGeometry", anchor), inertiaUnit), _
         OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, iyColumn, "rngNDMSectionGeometry", anchor), inertiaUnit), _
-        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, ixyColumn, "rngNDMSectionGeometry", anchor), inertiaUnit), True
-    model.SetConcreteGeometry 1, region
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, ixyColumn, "rngNDMSectionGeometry", anchor), inertiaUnit)
 End Sub
 
 ' Точная геометрия запрещает подстановку текущих единиц при пустой шапке.
@@ -454,7 +469,7 @@ Private Function ReadPositiveGeometryNumber(ByRef data As Variant, ByVal anchor 
 End Function
 
 ' Нулевые Width/Height допустимы только у точного непрямоугольного Contour:
-' его настоящая граница обязательна в отдельной таблице. Прежние размеры
+' его настоящая граница обязательна в отдельной таблице. Размеры
 ' прямоугольника остаются строго положительными, отрицательные запрещены всем.
 Private Function ReadConcreteSnapshotDimension(ByRef data As Variant, ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal shape As String) As Double
     Dim value As Double: value = ReadGeometryNumber(data, anchor, row, column)
@@ -634,7 +649,7 @@ End Function
 
 
 ' Читает сохранённый целочисленный ID материала без округления дроби или группировки разрядов.
-' Число остаётся Long прежнего формата; повреждённое поле указывает свою ячейку ExtraData.
+' MaterialID хранится целым Long; повреждённое поле указывает свою ячейку ExtraData.
 Private Function ReadSnapshotMaterialID(ByVal text As String, ByVal anchor As Object, _
         ByVal row As Long, ByVal column As Long) As Long
     Dim parsed As Double
@@ -717,12 +732,20 @@ End Function
 ' Не использует CurrentRegion: расположенные рядом пояснения и заголовки
 ' не должны попадать в массив расчётных данных.
 Public Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+    Dim snapshot As CCalculationSnapshot
+    If rangeName = "rngNDMElementGeometry" Then
+        Set snapshot = CurrentCalculationSnapshot(workbook)
+        If Not snapshot Is Nothing Then
+            If snapshot.HasTable(rangeName) Then ReadAnchoredResultTable = snapshot.Table(rangeName)
+            Exit Function ' Привязанный файл авторитетен: не смешиваем его с остатком прежней таблицы.
+        End If
+    End If
     If workbook Is mSnapshotReadWorkbook And mSnapshotReadGeometryOnly Then
         ReadAnchoredResultTable = ReadPhysicalResultTable(workbook, rangeName)
         Exit Function
     End If
     If rangeName = "rngNDMElementResults" Or rangeName = "rngNDMSectionProperties" Or rangeName = "rngNDMSectionAnnotations" Then
-        Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+        Set snapshot = CurrentCalculationSnapshot(workbook)
         If Not snapshot Is Nothing Then
             ReadAnchoredResultTable = snapshot.ResultTable(rangeName)
             Exit Function
@@ -881,7 +904,7 @@ Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As 
     Const INITIAL_BLOCK_SIZE As Long = 1024
     Const MAX_BLOCK_SIZE As Long = 32768
     Dim available As Long, offset As Long, count As Long, i As Long, blockSize As Long
-    blockSize = INITIAL_BLOCK_SIZE ' Малые таблицы читаются прежним объёмом; большие требуют логарифмического числа начальных COM-вызовов.
+    blockSize = INITIAL_BLOCK_SIZE ' Начальный блок ограничен размером малой таблицы; для больших таблиц размер блока удваивается.
     If columns Then
         available = anchor.Worksheet.Columns.Count - anchor.Column + 1
     Else
@@ -935,7 +958,7 @@ End Sub
 Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional ByVal includeOptionalData As Boolean = False, _
         Optional ByVal preservedWriter As CNDMResultsWriter = Nothing) As CSectionModel
     On Error GoTo Failed
-    BeginSectionSnapshotRead workbook, True ' Модель использует только общую геометрию, без загрузки больших массивов прежних НДС.
+    BeginSectionSnapshotRead workbook, True ' Модель использует только общую геометрию, без загрузки массивов расчётных состояний.
     Dim source As String: source = ResultsGeometrySource(workbook)
     If Len(source) = 0 Then Err.Raise vbObjectError + 4380, "ReadFormedSectionFromResults", _
         "В Results нет сформированного сечения. Сначала нажмите «Сформировать сечение»."
@@ -988,7 +1011,7 @@ Private Sub RestoreModelAnnotations(ByVal workbook As Object, ByVal model As CSe
     Next row
 End Sub
 
-' Получает номера непустых строк готовой сводки для прежней подсветки статусов.
+' Получает номера непустых строк готовой сводки для подсветки статусов.
 ' Источником служит сохранённый ID, а не повторная загрузка сочетаний Config.
 Public Function ResultSnapshotStatusRows(ByVal target As Object, ByVal headerRows As Long, _
         Optional ByRef preparedValues As Variant, Optional ByVal headerRowsInValues As Long = 0) As Variant
@@ -1013,7 +1036,7 @@ Public Function ResultSnapshotStatusRows(ByVal target As Object, ByVal headerRow
 End Function
 
 ' Строго распознаёт сохранённый Boolean без Excel/AutoCAD и без подстановки False при повреждении.
-' Поддерживает только прежние пары True/False, Yes/No, Да/Нет, 1/0 и Boolean.
+' Поддерживает пары True/False, Yes/No, Да/Нет, 1/0 и тип Boolean.
 Public Function TryReadSnapshotBoolean(ByVal value As Variant, ByRef parsed As Boolean) As Boolean
     parsed = False
     On Error GoTo InvalidValue

@@ -1,0 +1,4933 @@
+﻿{
+  "Status": "PASS_EXACT_18_ABBA_PHYSICS_ONLY",
+  "ExactAllTimedPhysicsEqual": true,
+  "ComparedPairs": 18,
+  "TimedArtifactsCompared": 36,
+  "Pairs": [
+    {
+      "Scenario": "Circle_File_LC01",
+      "Block": 1,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 80,
+          "Columns": 6,
+          "CellsCompared": 480,
+          "DeclaredRunIDElapsedExclusions": 79,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 273,
+          "Columns": 9,
+          "CellsCompared": 2457,
+          "DeclaredRunIDElapsedExclusions": 272,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "CA6F472ED6D6585795C9F4E5BF17CBF3A06335D0635CBB8EBE2A7FF75D8220CE",
+      "WorkbookBSHA256": "4B3C04346EF490AE0D3742D3ADE4D22E44D9139D0992D50B6AFE7B76EA6C31AF",
+      "SnapshotASHA256": "495797E7357176B9C95E602B16FF245B719928F91C7F80BAEB0FD4F54DEF1942",
+      "SnapshotBSHA256": "1B7D66209354CC900B591744687165B4B535E968AD522853B8B2EF61007102B5"
+    },
+    {
+      "Scenario": "Circle_File_LC01",
+      "Block": 1,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 80,
+          "Columns": 6,
+          "CellsCompared": 480,
+          "DeclaredRunIDElapsedExclusions": 79,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 273,
+          "Columns": 9,
+          "CellsCompared": 2457,
+          "DeclaredRunIDElapsedExclusions": 272,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "6C393AD34C9A7B5D02E01C57D5D84D364CCF37C8F304943A6C5FAC7B2CB53A95",
+      "WorkbookBSHA256": "7F07BB631F08326EA9C71FD6FA7C4CA8780B34B3693D0CF2757673713E1C40CF",
+      "SnapshotASHA256": "1C20412847BEF59CBEEBECE9A9E617F86192860EA7C62E73FAF9826F450D8BF4",
+      "SnapshotBSHA256": "EDF90172A16E04278C370F5E53A82B6E123E294D150209AB8E320C628D3C3ACF"
+    },
+    {
+      "Scenario": "Circle_File_LC01",
+      "Block": 2,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 80,
+          "Columns": 6,
+          "CellsCompared": 480,
+          "DeclaredRunIDElapsedExclusions": 79,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 273,
+          "Columns": 9,
+          "CellsCompared": 2457,
+          "DeclaredRunIDElapsedExclusions": 272,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "B9ADECBB4524362B2619C458458B9E062FED3AA90DDD04C89548A80405CD785A",
+      "WorkbookBSHA256": "6CD2693C70DDD0C673FB0418CF958A56FEC6C1D875B07BEC0CF18FD0BF3783A8",
+      "SnapshotASHA256": "A8B71DB004FD0EB2C026DD09DABFF884AC8DE20A3E626C9B3F8DE62CC5C3B246",
+      "SnapshotBSHA256": "648F324FBD192522C2634980FF94E5C08BDFBC19164478E1329693767B968174"
+    },
+    {
+      "Scenario": "Circle_File_LC01",
+      "Block": 2,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 80,
+          "Columns": 6,
+          "CellsCompared": 480,
+          "DeclaredRunIDElapsedExclusions": 79,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 273,
+          "Columns": 9,
+          "CellsCompared": 2457,
+          "DeclaredRunIDElapsedExclusions": 272,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "C8F3178770FDA7384E5DE9CDB06CD5DCAB1BCE9B52D4386D68EF853D7EC23D1A",
+      "WorkbookBSHA256": "46BBC34887814E640E4180A012CD9EDB6D93586AAD522AAA583B2BB90D54331E",
+      "SnapshotASHA256": "1BEF41314E1CA4EEC1F1AC3A8A62807B14659DE7DB5A7130B1E24BE491A0858A",
+      "SnapshotBSHA256": "658E282D4CB57E9E70D30308AEC54ECDF355224E828D5E86C279BB2087A45167"
+    },
+    {
+      "Scenario": "Circle_File_LC01",
+      "Block": 3,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 80,
+          "Columns": 6,
+          "CellsCompared": 480,
+          "DeclaredRunIDElapsedExclusions": 79,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 273,
+          "Columns": 9,
+          "CellsCompared": 2457,
+          "DeclaredRunIDElapsedExclusions": 272,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "5F6B8D93AF00BD8AD42D5A410A699C7D3D35769019DBE22668E561692A95D582",
+      "WorkbookBSHA256": "37FCB6CE3DCCEAC8DC6645D02836D7E8B41433B7839116BA38C127755D540110",
+      "SnapshotASHA256": "DE47621C2B302131F1D3D7381AD010D8EC244EFEACA06A633ED7F81280252C1C",
+      "SnapshotBSHA256": "27A4C35B1504F3C74CBC21822A76C31F0962E5495985452A94B8D1EB2E7BE1E3"
+    },
+    {
+      "Scenario": "Circle_File_LC01",
+      "Block": 3,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 80,
+          "Columns": 6,
+          "CellsCompared": 480,
+          "DeclaredRunIDElapsedExclusions": 79,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 273,
+          "Columns": 9,
+          "CellsCompared": 2457,
+          "DeclaredRunIDElapsedExclusions": 272,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "D8A95720C49AC4D0C72C7CD14BBBACC37B40505BED581A68483C5D5B98A78778",
+      "WorkbookBSHA256": "FE1EE46DC89D9DCF437E5069FD2CFD2557F62C497CAB06BD779A855E3392CDBB",
+      "SnapshotASHA256": "4D526CD44B53A8D7DA9C02E7BBE3D159FDE896FD37CED670E0F03BB9D3F770E7",
+      "SnapshotBSHA256": "E099B2AFAF6B6C28C87573703833252935031DB41755CAC1040516BE836B3EDB"
+    },
+    {
+      "Scenario": "Circle_File_LC15",
+      "Block": 1,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 1130,
+          "Columns": 6,
+          "CellsCompared": 6780,
+          "DeclaredRunIDElapsedExclusions": 1129,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 4081,
+          "Columns": 9,
+          "CellsCompared": 36729,
+          "DeclaredRunIDElapsedExclusions": 4080,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "43B147F76D447A5C31AA233D546026BF3138BB28118B7D284982594B0BD21A5C",
+      "WorkbookBSHA256": "9293AE69207203AFAC184FB62C94286E57BB7565EB6CF61E641BC044C0148D12",
+      "SnapshotASHA256": "BBE34C2C9EA569CA1154EADF86EC2B89E83AA367A9BDEFBFC94210C359E16696",
+      "SnapshotBSHA256": "34EA823285B550F6B06B58A23181669D863738654D82E8536C55A93A77A29AFE"
+    },
+    {
+      "Scenario": "Circle_File_LC15",
+      "Block": 1,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 1130,
+          "Columns": 6,
+          "CellsCompared": 6780,
+          "DeclaredRunIDElapsedExclusions": 1129,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 4081,
+          "Columns": 9,
+          "CellsCompared": 36729,
+          "DeclaredRunIDElapsedExclusions": 4080,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "B1F66C9C7662297C8C85D2275D0071468DA0843A051A8E107FB9FBBA2F8FD68E",
+      "WorkbookBSHA256": "ED9DE950C71DBD23FC443065497D5602E720D2726B9EFD5A71762BCBE9DDDDF1",
+      "SnapshotASHA256": "0E653704356D74DB7A896D08A772BC56060DB9935F163AACD9A38F5962C78E60",
+      "SnapshotBSHA256": "DDAC765CD765F5D5147B2D0EE3942C084D1F98E54A18016532F92AF91648C033"
+    },
+    {
+      "Scenario": "Circle_File_LC15",
+      "Block": 2,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 1130,
+          "Columns": 6,
+          "CellsCompared": 6780,
+          "DeclaredRunIDElapsedExclusions": 1129,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 4081,
+          "Columns": 9,
+          "CellsCompared": 36729,
+          "DeclaredRunIDElapsedExclusions": 4080,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "659E4A14100F2E602BB3823204A279804C93CBD85750BB8E3DCB3027301D1E00",
+      "WorkbookBSHA256": "E539D9B7D024DFF51746661949003D291F15CA2F6D36679BC7C2127E03B67B09",
+      "SnapshotASHA256": "19AE9EB34483E48ADB168D01DCF1B7B9191AC43A48931B3D127F3797A100CC92",
+      "SnapshotBSHA256": "BE73DD3BE3297FF00EF5478399F2BDCF0E69C2683C1F9CE25F430003B39A0690"
+    },
+    {
+      "Scenario": "Circle_File_LC15",
+      "Block": 2,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 1130,
+          "Columns": 6,
+          "CellsCompared": 6780,
+          "DeclaredRunIDElapsedExclusions": 1129,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 4081,
+          "Columns": 9,
+          "CellsCompared": 36729,
+          "DeclaredRunIDElapsedExclusions": 4080,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "B2067CB477DCE6F6687DCA49F6799ED83E1ABB29CED26D8488511CDBF4B7C3FA",
+      "WorkbookBSHA256": "5A0C46CCF40B77A812F495039922C3739F3322D1A7D76CE199C177EBAFA9262C",
+      "SnapshotASHA256": "2BE4EF5A5D14502AEEDA6F0D5DFA16486F44114C8AB568109B2EB4E9A33401E2",
+      "SnapshotBSHA256": "CB872B521F6FC6EDD80F95FF3CFF182789423F43C7E6148F3AC866CDE8CAE8E3"
+    },
+    {
+      "Scenario": "Circle_File_LC15",
+      "Block": 3,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 1130,
+          "Columns": 6,
+          "CellsCompared": 6780,
+          "DeclaredRunIDElapsedExclusions": 1129,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 4081,
+          "Columns": 9,
+          "CellsCompared": 36729,
+          "DeclaredRunIDElapsedExclusions": 4080,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "0031A61E480DF756AC6DD744DF5D79678DBB1573748A6D2BFBBD37DC320408A0",
+      "WorkbookBSHA256": "9C1ACC89686ADD780B22448E908E55292ED0749A37AA20DB164EFEE324DEB343",
+      "SnapshotASHA256": "384625297B6A43F7E4DF0E56523FA43A04AF9F8B90D470948363D18E500715C0",
+      "SnapshotBSHA256": "426DF86EEBFE26311A892054AE710E72BA3C76AA4338371388658B721DB2989C"
+    },
+    {
+      "Scenario": "Circle_File_LC15",
+      "Block": 3,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Calculation.Profiles",
+          "StructureEqual": true,
+          "Rows": 32,
+          "Columns": 7,
+          "CellsCompared": 224,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Annotations",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 24,
+          "CellsCompared": 24,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "LoadCase.Properties",
+          "StructureEqual": true,
+          "Rows": 1130,
+          "Columns": 6,
+          "CellsCompared": 6780,
+          "DeclaredRunIDElapsedExclusions": 1129,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 18,
+          "CellsCompared": 18,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Sheet.rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Labels",
+          "StructureEqual": true,
+          "Rows": 1,
+          "Columns": 84,
+          "CellsCompared": 84,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 4081,
+          "Columns": 9,
+          "CellsCompared": 36729,
+          "DeclaredRunIDElapsedExclusions": 4080,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 6,
+          "CellsCompared": 414,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "FCD915C7F7CE29DD2DD1E62BE25284E5862B213933323FDCDFC3C776EEE91327",
+      "WorkbookBSHA256": "54DA91A6B20AD1A140E956F4E3B54D70306BDCD4B086A1E87735CB91EA5328CA",
+      "SnapshotASHA256": "92B114D336E3C4B574139AB5289C67121451EE2D191382827547CE5A8C0DFDE9",
+      "SnapshotBSHA256": "6A9373035FA56BE753D51C3D3FBE242FA31FA07CFDCC720D716B5F490EDE9502"
+    },
+    {
+      "Scenario": "Circle_Excel_LC05",
+      "Block": 1,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 1361,
+          "Columns": 9,
+          "CellsCompared": 12249,
+          "DeclaredRunIDElapsedExclusions": 1360,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 448,
+          "Columns": 6,
+          "CellsCompared": 2688,
+          "DeclaredRunIDElapsedExclusions": 447,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "F8219658819D97503BD911B185A5E5C0138A5E7EBA410E721A1C12B528D539F5",
+      "WorkbookBSHA256": "D1B14F60354B019E98E87296B5DEE722A25A2E3CC3316E71A4B394E2B58E9776",
+      "SnapshotASHA256": null,
+      "SnapshotBSHA256": null
+    },
+    {
+      "Scenario": "Circle_Excel_LC05",
+      "Block": 1,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 1361,
+          "Columns": 9,
+          "CellsCompared": 12249,
+          "DeclaredRunIDElapsedExclusions": 1360,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 448,
+          "Columns": 6,
+          "CellsCompared": 2688,
+          "DeclaredRunIDElapsedExclusions": 447,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "DB00801A85F4D84E8C4BDDD80859220D83D053A1F3AA872C8C3885C32B0EEEC1",
+      "WorkbookBSHA256": "B3C9F0B213C6FAB5BB1F8738E33BBF52C88D0BD7361294B42877DEF790646FFA",
+      "SnapshotASHA256": null,
+      "SnapshotBSHA256": null
+    },
+    {
+      "Scenario": "Circle_Excel_LC05",
+      "Block": 2,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 1361,
+          "Columns": 9,
+          "CellsCompared": 12249,
+          "DeclaredRunIDElapsedExclusions": 1360,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 448,
+          "Columns": 6,
+          "CellsCompared": 2688,
+          "DeclaredRunIDElapsedExclusions": 447,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "BE5A613C5994714CA39B085AD329674F51AD29F9058C76D34EB68CC8CCFB6F08",
+      "WorkbookBSHA256": "8ECEEB565F47E636F26DA8B31A21AF5DA899266375C5E54136243DED796B0EFC",
+      "SnapshotASHA256": null,
+      "SnapshotBSHA256": null
+    },
+    {
+      "Scenario": "Circle_Excel_LC05",
+      "Block": 2,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 1361,
+          "Columns": 9,
+          "CellsCompared": 12249,
+          "DeclaredRunIDElapsedExclusions": 1360,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 448,
+          "Columns": 6,
+          "CellsCompared": 2688,
+          "DeclaredRunIDElapsedExclusions": 447,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "88D448AC1557E44D90BD855ACF6D85FC50147EA8399406FBACFC6A320A5C3D9B",
+      "WorkbookBSHA256": "8FB135A26B81706BDD7F528AAC2E6A78750A7FC9D6AF49B6835A205B43320263",
+      "SnapshotASHA256": null,
+      "SnapshotBSHA256": null
+    },
+    {
+      "Scenario": "Circle_Excel_LC05",
+      "Block": 3,
+      "PositionA": 1,
+      "PositionB": 2,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 1361,
+          "Columns": 9,
+          "CellsCompared": 12249,
+          "DeclaredRunIDElapsedExclusions": 1360,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 448,
+          "Columns": 6,
+          "CellsCompared": 2688,
+          "DeclaredRunIDElapsedExclusions": 447,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "FA8869C326702666E5289064964FD3E7469262A9B3E54985CBFB4113D2906D99",
+      "WorkbookBSHA256": "03344F93752BE6D159191AFD27385A668224FC1716A05CDD55AC80882E4F3D6A",
+      "SnapshotASHA256": null,
+      "SnapshotBSHA256": null
+    },
+    {
+      "Scenario": "Circle_Excel_LC05",
+      "Block": 3,
+      "PositionA": 4,
+      "PositionB": 3,
+      "DifferenceCount": 0,
+      "Tables": [
+        {
+          "Table": "Cracks.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 72,
+          "CellsCompared": 2160,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Cracks.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 72,
+          "CellsCompared": 288,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 84,
+          "CellsCompared": 2520,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Stability.Headers",
+          "StructureEqual": true,
+          "Rows": 5,
+          "Columns": 84,
+          "CellsCompared": 420,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Data",
+          "StructureEqual": true,
+          "Rows": 30,
+          "Columns": 49,
+          "CellsCompared": 1470,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Strength.Headers",
+          "StructureEqual": true,
+          "Rows": 4,
+          "Columns": 49,
+          "CellsCompared": 196,
+          "DeclaredRunIDElapsedExclusions": 0,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "Summary",
+          "StructureEqual": true,
+          "Rows": 42,
+          "Columns": 33,
+          "CellsCompared": 1386,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementGeometry",
+          "StructureEqual": true,
+          "Rows": 237,
+          "Columns": 18,
+          "CellsCompared": 4266,
+          "DeclaredRunIDElapsedExclusions": 236,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMElementResults",
+          "StructureEqual": true,
+          "Rows": 1361,
+          "Columns": 9,
+          "CellsCompared": 12249,
+          "DeclaredRunIDElapsedExclusions": 1360,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMMaterialDiagrams",
+          "StructureEqual": true,
+          "Rows": 52,
+          "Columns": 11,
+          "CellsCompared": 572,
+          "DeclaredRunIDElapsedExclusions": 51,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionAnnotations",
+          "StructureEqual": true,
+          "Rows": 3,
+          "Columns": 24,
+          "CellsCompared": 72,
+          "DeclaredRunIDElapsedExclusions": 2,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionContours",
+          "StructureEqual": true,
+          "Rows": 2,
+          "Columns": 17,
+          "CellsCompared": 34,
+          "DeclaredRunIDElapsedExclusions": 1,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionGeometry",
+          "StructureEqual": true,
+          "Rows": 69,
+          "Columns": 16,
+          "CellsCompared": 1104,
+          "DeclaredRunIDElapsedExclusions": 68,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        },
+        {
+          "Table": "rngNDMSectionProperties",
+          "StructureEqual": true,
+          "Rows": 448,
+          "Columns": 6,
+          "CellsCompared": 2688,
+          "DeclaredRunIDElapsedExclusions": 447,
+          "DifferenceCount": 0,
+          "FirstDifferences": []
+        }
+      ],
+      "WorkbookASHA256": "159B2C078237993567130AEE6A45939FC1466561B08EB18935D71717317135A3",
+      "WorkbookBSHA256": "BC76076E0BADEE8DD76C58D241C59D084CA22489300FAADAECF93D964830FB9B",
+      "SnapshotASHA256": null,
+      "SnapshotBSHA256": null
+    }
+  ],
+  "Timings": [
+    {
+      "Scenario": "Circle_File_LC01",
+      "Storage": "File",
+      "LoadCases": 1,
+      "A": {
+        "Minimum": 1.3316949,
+        "Median": 1.3670691499999998,
+        "Maximum": 1.4453859999999998,
+        "Values": [
+          1.4254906999999999,
+          1.3316949,
+          1.340542,
+          1.3648616,
+          1.4453859999999998,
+          1.3692767
+        ]
+      },
+      "B": {
+        "Minimum": 1.2653786,
+        "Median": 1.3912542499999998,
+        "Maximum": 1.6414529999999998,
+        "Values": [
+          1.6066623,
+          1.3684828999999998,
+          1.4135419999999999,
+          1.2653786,
+          1.6414529999999998,
+          1.3689665
+        ]
+      },
+      "MedianBRatioToA": 1.017691204574399,
+      "MedianDeltaSeconds": 0.02418509999999996,
+      "ABBAIndividualBlocks": [
+        {
+          "Block": 1,
+          "A": [
+            1.4254906999999999,
+            1.3316949
+          ],
+          "B": [
+            1.6066623,
+            1.3684828999999998
+          ],
+          "MeanA": 1.3785927999999998,
+          "MeanB": 1.4875726,
+          "BRatioToA": 1.079051479160489
+        },
+        {
+          "Block": 2,
+          "A": [
+            1.340542,
+            1.3648616
+          ],
+          "B": [
+            1.4135419999999999,
+            1.2653786
+          ],
+          "MeanA": 1.3527018,
+          "MeanB": 1.3394602999999998,
+          "BRatioToA": 0.9902110723886076
+        },
+        {
+          "Block": 3,
+          "A": [
+            1.4453859999999998,
+            1.3692767
+          ],
+          "B": [
+            1.6414529999999998,
+            1.3689665
+          ],
+          "MeanA": 1.4073313499999998,
+          "MeanB": 1.50520975,
+          "BRatioToA": 1.069548937426854
+        }
+      ],
+      "UntimedPrimesExcluded": true,
+      "DescriptiveOnly": true
+    },
+    {
+      "Scenario": "Circle_File_LC15",
+      "Storage": "File",
+      "LoadCases": 15,
+      "A": {
+        "Minimum": 1.8104506999999999,
+        "Median": 1.8560249500000001,
+        "Maximum": 2.0834843,
+        "Values": [
+          1.8104506999999999,
+          1.8770681,
+          1.8271225,
+          1.9866792,
+          2.0834843,
+          1.8349818
+        ]
+      },
+      "B": {
+        "Minimum": 1.7096436,
+        "Median": 1.7959614999999998,
+        "Maximum": 1.891441,
+        "Values": [
+          1.7162747999999999,
+          1.7096436,
+          1.891441,
+          1.7752039,
+          1.8167190999999998,
+          1.8747345999999998
+        ]
+      },
+      "MedianBRatioToA": 0.9676386624005241,
+      "MedianDeltaSeconds": -0.06006345000000035,
+      "ABBAIndividualBlocks": [
+        {
+          "Block": 1,
+          "A": [
+            1.8104506999999999,
+            1.8770681
+          ],
+          "B": [
+            1.7162747999999999,
+            1.7096436
+          ],
+          "MeanA": 1.8437594,
+          "MeanB": 1.7129591999999998,
+          "BRatioToA": 0.9290578803286371
+        },
+        {
+          "Block": 2,
+          "A": [
+            1.8271225,
+            1.9866792
+          ],
+          "B": [
+            1.891441,
+            1.7752039
+          ],
+          "MeanA": 1.90690085,
+          "MeanB": 1.8333224499999998,
+          "BRatioToA": 0.9614146692524679
+        },
+        {
+          "Block": 3,
+          "A": [
+            2.0834843,
+            1.8349818
+          ],
+          "B": [
+            1.8167190999999998,
+            1.8747345999999998
+          ],
+          "MeanA": 1.95923305,
+          "MeanB": 1.8457268499999997,
+          "BRatioToA": 0.942066003837573
+        }
+      ],
+      "UntimedPrimesExcluded": true,
+      "DescriptiveOnly": true
+    },
+    {
+      "Scenario": "Circle_Excel_LC05",
+      "Storage": "Excel",
+      "LoadCases": 5,
+      "A": {
+        "Minimum": 1.2625016999999998,
+        "Median": 1.3805683,
+        "Maximum": 1.4443534999999998,
+        "Values": [
+          1.4443534999999998,
+          1.3856108,
+          1.3123694,
+          1.3755258,
+          1.2625016999999998,
+          1.3988269
+        ]
+      },
+      "B": {
+        "Minimum": 1.2626483,
+        "Median": 1.36034055,
+        "Maximum": 1.4798813,
+        "Values": [
+          1.3882154,
+          1.4798813,
+          1.3792277,
+          1.2626483,
+          1.3414534,
+          1.2956805
+        ]
+      },
+      "MedianBRatioToA": 0.9853482439079617,
+      "MedianDeltaSeconds": -0.020227749999999878,
+      "ABBAIndividualBlocks": [
+        {
+          "Block": 1,
+          "A": [
+            1.4443534999999998,
+            1.3856108
+          ],
+          "B": [
+            1.3882154,
+            1.4798813
+          ],
+          "MeanA": 1.41498215,
+          "MeanB": 1.4340483499999999,
+          "BRatioToA": 1.0134745162686327
+        },
+        {
+          "Block": 2,
+          "A": [
+            1.3123694,
+            1.3755258
+          ],
+          "B": [
+            1.3792277,
+            1.2626483
+          ],
+          "MeanA": 1.3439476,
+          "MeanB": 1.320938,
+          "BRatioToA": 0.9828790943932636
+        },
+        {
+          "Block": 3,
+          "A": [
+            1.2625016999999998,
+            1.3988269
+          ],
+          "B": [
+            1.3414534,
+            1.2956805
+          ],
+          "MeanA": 1.3306643,
+          "MeanB": 1.3185669500000001,
+          "BRatioToA": 0.9909087889409824
+        }
+      ],
+      "UntimedPrimesExcluded": true,
+      "DescriptiveOnly": true
+    }
+  ],
+  "Failure": null,
+  "StrictComparatorSHA256": "40E23B771E5E7FE6CCB08AC0D2BEBC829C9092E1170A8F3B4A6F3C825975B76C",
+  "Exclusions": [
+    "Validated per-artifact RunID",
+    "Elapsed header and Summary R4C1 only"
+  ],
+  "SameSchemaCaptionRelaxations": false,
+  "NoOfficeLaunched": true,
+  "UntimedPrimes": 6,
+  "UniversalNoRegressionProven": false,
+  "FullRegressionPass": false,
+  "TimingInterpretation": "Three short ABBA blocks diagnose the selected cases only; no automatic speed or universal pass from ratios."
+}

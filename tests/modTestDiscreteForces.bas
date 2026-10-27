@@ -2,7 +2,7 @@ Attribute VB_Name = "modTestDiscreteForces"
 Option Explicit
 
 ' ==================== ДЛЯ ТЕСТОВ ====================
-' Полная прежняя сумма и групповой интеграл одной сетки, затем настоящий Newton.
+' Прямое суммирование и групповой интеграл одной сетки, затем настоящий Newton.
 ' Диаграммы синтетические: проверяется алгоритм, а не нормативная калибровка.
 Private Declare PtrSafe Function TestCounter Lib "kernel32" Alias "QueryPerformanceCounter" (ByRef value As Currency) As Long
 Private Declare PtrSafe Function TestFrequency Lib "kernel32" Alias "QueryPerformanceFrequency" (ByRef value As Currency) As Long
@@ -59,7 +59,7 @@ Finished:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Использует настоящие solve с новой и прежней оценкой проб, включая холодную подготовку.
+' Использует настоящие solve с групповой и прямой оценкой усилий, включая холодную подготовку.
 Private Sub TestNonlinearForceSolve(ByVal section As CSectionModel, ByVal concrete As CMaterialDiagram, ByVal steel As CMaterialDiagram, ByVal caseCount As Long)
     Dim oracle As CSectionSolver: Set oracle = New CSectionSolver
     Dim loads() As Double, j As Long: ReDim loads(1 To caseCount, 1 To 3)

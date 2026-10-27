@@ -289,7 +289,7 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
 End Sub
 
 ' Размещает текст размера у середины его линии. Общая функция учитывает
-' поворот рамки и оставляет прежнее размещение горизонтального/вертикального текста.
+' поворот рамки и размещает горизонтальный/вертикальный текст относительно размерной линии.
 Private Sub DimensionTextBox(ByVal sx As Double, ByVal sy As Double, ByVal ex As Double, ByVal ey As Double, _
         ByVal normalPxX As Double, ByVal normalPxY As Double, ByVal rotation As Double, ByVal textValue As String, _
         ByRef leftPos As Double, ByRef topPos As Double, ByRef widthValue As Double, ByRef heightValue As Double)
@@ -318,7 +318,7 @@ End Function
 ' Центр текста отнесён от линии на TextGap, как у горизонтальных/вертикальных подписей.
 ' При растянутой рамке графика учитывается
 ' угол между нормалью модели и перпендикуляром к экранной линии. Для 0/90 градусов
-' оставляем прежние размеры блока и отсчёт зазора, включая нативный вертикальный текст.
+' размеры блока и зазор вычисляются непосредственно, включая вертикальный текст.
 Private Sub PositionTextBox(ByVal anchorX As Double, ByVal anchorY As Double, ByVal normalX As Double, ByVal normalY As Double, _
         ByVal rotation As Double, ByVal textValue As String, ByVal fontSize As Double, ByVal gapBase As Double, ByVal textUnits As String, _
         ByRef leftPos As Double, ByRef topPos As Double, ByRef widthValue As Double, ByRef heightValue As Double)

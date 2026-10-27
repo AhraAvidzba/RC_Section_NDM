@@ -103,7 +103,7 @@ Failed:
     Err.Raise Err.Number, "CStabilitySummaryWriter.WriteSummary", Err.Description
 End Sub
 
-' Очищает прежние данные подробной таблицы устойчивости. При fullFormatting=True
+' Очищает данные подробной таблицы устойчивости. При fullFormatting=True
 ' удаляет также шапку, объединения и форматы; иначе сохраняет готовое оформление.
 Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
     mMinimalFormatting = Not fullFormatting
@@ -121,7 +121,7 @@ Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows A
     Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
-' Возвращает область очистки прежней таблицы до начала следующего нижнего блока Results.
+' Возвращает область очистки существующей таблицы до начала следующего нижнего блока Results.
 Private Function ClearTargetRange(ByVal workbook As Object) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
@@ -150,7 +150,7 @@ UseDefaultHeight:
 End Function
 
 ' Готовит область к записи: при полном оформлении очищает её целиком.
-' В минимальном режиме оставляет шапку и форматы, удаляя данные и прежнюю заливку статусов.
+' В минимальном режиме оставляет шапку и форматы, удаляя данные и заливку рассчитанных статусов.
 Private Sub PrepareTarget(ByVal target As Object)
     If mMinimalFormatting Then
         If target.Rows.Count > HEADER_ROWS Then
@@ -939,7 +939,7 @@ Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
     Set mCapturedSnapshot = value
 End Property
 
-' Восстанавливает готовую подробную таблицу и её прежнее оформление без решения НДС.
+' Восстанавливает готовую подробную таблицу и её сохранённое оформление без решения НДС.
 Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
     Set mCapturedSnapshot = Nothing
     mMinimalFormatting = Not fullFormatting

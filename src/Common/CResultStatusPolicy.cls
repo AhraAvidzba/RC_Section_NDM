@@ -101,7 +101,7 @@ Private Function IsBaseFailure(ByVal meta As CResultMeta) As Boolean
         (meta.ResultCode = rcInitialStateBeyondLimit Or meta.ResultCode = rcCriterionNotReached)
 End Function
 
-' Возвращает прежний приоритет непосредственно по метаданным. Отсутствующий,
+' Возвращает приоритет результата непосредственно по метаданным. Отсутствующий,
 ' не сформированный и неизвестный исход сохраняет приоритет внутренней ошибки.
 Public Function MetaPriority(ByVal meta As CResultMeta) As Long
     MetaPriority = 6

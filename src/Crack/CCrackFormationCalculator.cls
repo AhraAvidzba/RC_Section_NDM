@@ -508,7 +508,7 @@ Public Sub LimitSearchClearStopReason()
     mFailureSettingKeys = vbNullString
 End Sub
 
-' Возвращает прежнюю причину только при отсутствии машинного исхода дополнительной попытки.
+' Возвращает сохранённую причину только при отсутствии машинного исхода дополнительной попытки.
 ' Пустой/локализованный комментарий уже зафиксированного исхода не отменяет его.
 Public Sub LimitSearchSetStopReasonIfEmpty(ByVal text As String)
     If mFormationInternalStatus = rsUnset Then SetFormationNumericalFailure text
@@ -1295,7 +1295,7 @@ Private Sub ApplyMaterialProviderProperties(ByVal materialProvider As CMaterialM
 End Sub
 
 ' Решает НДС одной нагрузки lambda общим CStateSolutionRunner.
-' Использует пригодное прежнее НДС как старт; при неудаче пробует самостоятельное
+' Использует пригодное сохранённое НДС как старт; при неудаче пробует самостоятельное
 ' начальное приближение. Возвращает невязку критерия трещины только после подтверждения
 ' равновесия.
 Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
@@ -1429,7 +1429,7 @@ Private Sub AppendLoadScalingProbeDiagnostic(ByVal lambdaValue As Double, _
     End If
 End Sub
 
-' Выбирает прежнее НДС как начальное приближение только при ненулевом поле деформаций.
+' Выбирает сохранённое НДС как начальное приближение только при ненулевом поле деформаций.
 ' Это исключает неудачный старт lambda*NMxy из полностью нулевого состояния при lambda = 0.
 Private Function EffectiveLoadScalingWarmStart(ByVal startSolver As CSectionSolver) As CSectionSolver
     If startSolver Is Nothing Then Exit Function

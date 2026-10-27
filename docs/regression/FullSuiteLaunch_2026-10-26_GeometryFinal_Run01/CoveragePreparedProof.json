@@ -1,0 +1,26 @@
+{
+  "Status": "PASS_STATIC_CURRENT_COVERAGE_DEFINITION_ONLY",
+  "Runner": "tools/build_workbook/Run-FullOnOffAcceptance.ps1",
+  "RunnerSHA256": "EF1CBAAEC032481D1042087C1A8A948676B2A2394884DAFFCCB3D19B6E40CFF0",
+  "CoreSuites": 178,
+  "CoverageVersion": 6,
+  "JobGroups": 12,
+  "PerModeCounts": {
+    "Full": 8,
+    "geometry": 36,
+    "sp35": 6,
+    "recipes": 26,
+    "savedOffsets": 2,
+    "currentFeatures": 11
+  },
+  "WholeFocusedRequired": {
+    "SingleCases": 122,
+    "Batch15BothModes": true,
+    "StabilityBothModes": true,
+    "AsymmetricSteelBothModes": true,
+    "RealAutoCAD": true,
+    "Reopen": true,
+    "IndependentControls": true
+  },
+  "ActualRegressionExecuted": false
+}
