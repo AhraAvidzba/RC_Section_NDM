@@ -1,0 +1,109 @@
+{
+  "Status": "PASS_DOCUMENTATION_SCOPE_ONLY",
+  "Requirements": [
+    {
+      "Requirement": "Contour: автоматическое построение без ручного описания каждого элемента",
+      "Evidence": "TextPlan.json / B850",
+      "Verified": true
+    },
+    {
+      "Requirement": "Проверена понятность всего текста Справки",
+      "Evidence": "EditorialReview.json / HelpRows.json / Read_01…08.txt",
+      "Verified": true
+    },
+    {
+      "Requirement": "Импорт только из ModelSpace подтверждён актуальным кодом",
+      "Evidence": "AutoCADSpaceEvidence.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Оба варианта экспорта всегда в ModelSpace подтверждены кодом",
+      "Evidence": "AutoCADSpaceEvidence.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Импорт с листов и экспорт при активном листе явно описаны в нужном разделе",
+      "Evidence": "CellMap.json / A2:A3, A52:A53",
+      "Verified": true
+    },
+    {
+      "Requirement": "Сборка и зависимое пояснение Config синхронизированы",
+      "Evidence": "SourceRuntime.json / SourceChange.json / PackageProof02.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Обе книги опубликованы; файлы и резервные копии сверены",
+      "Evidence": "Publication.json / FinalReview.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Все 1317 текстов каждой книги проверены в Excel",
+      "Evidence": "Native03/NativeBooks.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Изменённые тексты читаемы в прежних строках",
+      "Evidence": "Native03/NativeBooks.json / Final_*.png",
+      "Verified": true
+    },
+    {
+      "Requirement": "VBA, AllCode, результаты, данные и схема сохранены",
+      "Evidence": "PackageProof02.json / FinalReview.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Ссылки, раскладка и формулы сохранены",
+      "Evidence": "PackageProof02.json / SourceChange.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Собственные Excel/PowerShell закрыты штатно",
+      "Evidence": "Native03.Watchdog/Completion.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Неуспешные служебные попытки не скрыты",
+      "Evidence": "Native01 / Native02 / FinalReview.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Отчёт и PROGRESS сохранены",
+      "Evidence": "docs/reports/HelpReadability_2026-10-27.md / docs/geometry_refactor/PROGRESS.md",
+      "Verified": true
+    }
+  ],
+  "PublishedBooks": [
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "3C0EE1DD0BD55DD6DEF0D86851985543DEAB688AB8338BC0C4390C45DE88CFD6",
+      "TotalZIPParts": 107,
+      "PreservedParts": 104,
+      "HelpCellsCompared": 1317,
+      "HelpChanges": 37,
+      "DependentConfigChanges": 1,
+      "VBA181Unchanged": true,
+      "InputsResultsAndSchemePreserved": true,
+      "TextFits": true
+    },
+    {
+      "Path": "workbook/output/NDM_Test_1232_30/RC_Section_NDM.xlsm",
+      "SHA256": "3BAFD92E5DC4FF37F2EDCB07242755CD280A66F678440AE4797E2F00CDB00669",
+      "TotalZIPParts": 111,
+      "PreservedParts": 108,
+      "HelpCellsCompared": 1317,
+      "HelpChanges": 37,
+      "DependentConfigChanges": 1,
+      "VBA181Unchanged": true,
+      "InputsResultsAndSchemePreserved": true,
+      "TextFits": true
+    }
+  ],
+  "SourceSHA256": "F2159A204B5197A261FB9C37371D7C84563810745081BBD1B7A67E1EE3F907FD",
+  "AllCode": {
+    "Path": "workbook/output/VBA_All_Code.txt",
+    "SHA256": "0A90F1C53E2E9E4C51C543076EF0534D1394ACEC8D17FF9489EBDF9A5C1E6547"
+  },
+  "ArchiveSHA256": "4A5ADB399C6E45074414F686225DDC84E3E6CDE020E58C36A310345B0520B43A",
+  "NoFullCalculationPassClaimed": true,
+  "NoNewFullRun": true
+}
