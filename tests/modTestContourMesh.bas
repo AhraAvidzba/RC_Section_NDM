@@ -853,6 +853,9 @@ Private Sub TestCheckSnapshot()
     Set importer = New CAutoCADSectionModelImporter
     Set model = importer.ImportFromModelSpace(TestFakeSpace(contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", TestFakeLayers(), settings)
     Set sheet = mFixture.Worksheets.Add: sheet.Name = "Results"
+    sheet.Range("A1").Value2 = "Key": sheet.Range("B1").Value2 = "Value": sheet.Range("C1").Value2 = "Default"
+    sheet.Range("A2").Value2 = "Results.SnapshotStorage": sheet.Range("B2").Value2 = "Excel"
+    mFixture.Names.Add Name:="rngSystemSettings", RefersTo:="='Results'!" & sheet.Range("A1:C2").Address ' Явный Excel-источник переживает SaveAs/reopen вместе с контрольной геометрией.
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
     columns = Array(1, 12, 29, 48, 56, 69, 96)
     For i = 0 To UBound(names)

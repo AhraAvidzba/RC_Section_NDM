@@ -1241,8 +1241,9 @@ Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats
 Finished:
     If Len(path) > 0 Then
         If TestFileExists(path) And store.HasFileReference(ThisWorkbook) Then
+            Dim completedSnapshot As CCalculationSnapshot: Set completedSnapshot = store.LoadFile(ThisWorkbook)
             TestSetSystemSetting "Results.SnapshotStorage", "Excel"
-            UpdateSectionResultsForWorkbook ThisWorkbook
+            UpdateSectionResultsForWorkbook ThisWorkbook, completedSnapshot ' Подготавливает полный Excel-fixture явно; смена режима не должна загружать File скрыто.
         End If
         TestDeleteFileIfExists path
     End If
@@ -4146,9 +4147,9 @@ End Sub
 ' Добавляет диагностическую строку к протоколу интерфейсного набора.
 Private Sub TestAppendLine(ByRef stats As TUiTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
-    ' ДЛЯ ТЕСТОВ: сохраняем текущий этап вне COM-вызова. При зависании или
-    ' ошибке Excel runner сможет определить тест, не обращаясь к busy Excel.
-    If Left$(text, 5) = "RUN: " Then
+    ' ДЛЯ ТЕСТОВ: этапы и найденные FAIL пишутся сразу вне COM-вызова;
+    ' наблюдение видит отказ до возврата длинного UI-макроса.
+    If Left$(text, 5) = "RUN: " Or Left$(text, 6) = "FAIL: " Then
         Dim stream As Object
         Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile( _
             ThisWorkbook.Path & "\RC_NDM_ui_test_progress.txt", 8, True, -1)
@@ -7097,6 +7098,9 @@ End Function
 ' Пустой сохранённый набор версии 1 требует нового обязательного блока;
 ' проверка выполняется в отдельной временной книге.
 Private Sub TestInitializeEmptyContourFixture(ByVal workbook As Object, ByVal sheet As Object)
+    sheet.Range("A1").Value2 = "Key": sheet.Range("B1").Value2 = "Value": sheet.Range("C1").Value2 = "Default"
+    sheet.Range("A2").Value2 = "Results.SnapshotStorage": sheet.Range("B2").Value2 = "Excel"
+    workbook.Names.Add Name:="rngSystemSettings", RefersTo:="='" & sheet.Name & "'!" & sheet.Range("A1:C2").Address ' Мини-книга явно выбирает листовой снимок; схема и метаданные остаются исходными контрольными данными.
     workbook.Names.Add Name:="rngNDMSectionContours", RefersTo:="='" & sheet.Name & "'!$GR$5"
     Dim writer As CNDMResultsWriter, contours As CSectionContours
     Set writer = New CNDMResultsWriter: Set contours = New CSectionContours

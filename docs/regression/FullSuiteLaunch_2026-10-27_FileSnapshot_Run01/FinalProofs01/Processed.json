@@ -1,0 +1,109 @@
+{
+  "Status": "ORIGINAL_FULL_FAIL_RETAINED_FOUR_TEST_FIXES_PUBLISHED_NEW_FULL_REQUIRED",
+  "RecordedUTC": "2026-10-27T21:31:44.747163+00:00",
+  "OriginalSourceSHA256": "D794FA1D8F1BB646B4A9B072E9EBE0BD0EF9FB3A95FE2C3029B17BDC3681D5BD",
+  "OriginalFullResult": "REVIEW_REQUIRED",
+  "CoreMacrosReviewed": 178,
+  "FocusedCasesReviewed": 122,
+  "FocusedRecords": 26,
+  "OwnIdentitiesTerminal": 44,
+  "DirectedReports": 20,
+  "DirectedAssertions": 116724,
+  "Published": [
+    {
+      "ID": "Main",
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "Stage": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-27_FileSnapshot_Run01\\RecoveryPublicationStage01\\Main",
+      "Backup": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-27_FileSnapshot_Run01\\RecoveryPublicationBackups01\\Main",
+      "BeforeSHA256": "D794FA1D8F1BB646B4A9B072E9EBE0BD0EF9FB3A95FE2C3029B17BDC3681D5BD",
+      "AfterSHA256": "C04C0F30E843976C25F9CFDB3E6F98099EC1D25CFF21E86C03A19BE81DC51CA7"
+    },
+    {
+      "ID": "SavedExcelWarm2",
+      "Path": "workbook/output/NDM_Test_1232_30/RC_Section_NDM.xlsm",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM.xlsm",
+      "Stage": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-27_FileSnapshot_Run01\\RecoveryPublicationStage01\\SavedExcelWarm2",
+      "Backup": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-27_FileSnapshot_Run01\\RecoveryPublicationBackups01\\SavedExcelWarm2",
+      "BeforeSHA256": "7616EC0B2E9EBF9D10786D43E4820EC6249A07B94A28F7AEC1BD3D410D8455D2",
+      "AfterSHA256": "5850F2755E0587DB4C32DE6C1D76B653B30A2AA1E251A7ED46C2045A2E3AF16D"
+    },
+    {
+      "ID": "AllCode",
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\VBA_All_Code.txt",
+      "Stage": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-27_FileSnapshot_Run01\\RecoveryPublicationStage01\\AllCode",
+      "Backup": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-27_FileSnapshot_Run01\\RecoveryPublicationBackups01\\AllCode",
+      "BeforeSHA256": "CCB7F5345163B76B99F2DE9B2DC11427B86F11F63D82E0DD51038BF2666A1392",
+      "AfterSHA256": "1BECCF680D40616878FC836C504C002E91C1949850385EBDC4C6BE458FA18712"
+    }
+  ],
+  "ProductionVBAChanged": false,
+  "NativeComponentsEachBook": 181,
+  "UnchangedNativeComponents": 177,
+  "FullRegressionPass": false,
+  "MainMerged": false,
+  "TimingReview": {
+    "Status": "THREE_PLANNED_TIMING_OBSERVATIONS_NOT_FULL_PASS",
+    "AllPassed": true,
+    "AllNumericalRecordsExactlyEqual": true,
+    "Observations": [
+      {
+        "Index": 1,
+        "Mode": "No",
+        "Cases": 23,
+        "AllTypedStatusesAndNumericalRecordsExactlyEqualToOriginal": true,
+        "ComparedNonzeroStates": 22,
+        "Passed": true,
+        "MaximumSeconds": 7.52099609375,
+        "ExtremeSeconds": 7.52099609375,
+        "ExtremeSolverCalls": 23,
+        "Failures": [],
+        "ReportSHA256": "A0FDAD5CF9915C74DF34BA77ED928C1057794AB30C8FF2485613493C5442F70B"
+      },
+      {
+        "Index": 2,
+        "Mode": "No",
+        "Cases": 23,
+        "AllTypedStatusesAndNumericalRecordsExactlyEqualToOriginal": true,
+        "ComparedNonzeroStates": 22,
+        "Passed": true,
+        "MaximumSeconds": 9.307983398438,
+        "ExtremeSeconds": 9.307983398438,
+        "ExtremeSolverCalls": 23,
+        "Failures": [],
+        "ReportSHA256": "0FD3FCEFDB5500BB62BC2A467FD8D8FA19AD55178D5703103C25C04EC7B1BEF7"
+      },
+      {
+        "Index": 3,
+        "Mode": "Yes",
+        "Cases": 23,
+        "AllTypedStatusesAndNumericalRecordsExactlyEqualToOriginal": true,
+        "ComparedNonzeroStates": 22,
+        "Passed": true,
+        "MaximumSeconds": 2.627990722656,
+        "ExtremeSeconds": 0.522033691406,
+        "ExtremeSolverCalls": 7,
+        "Failures": [],
+        "ReportSHA256": "E3F0309889332720E6FFF459EF83110479D678B83479649955A08AA97FF2A616"
+      }
+    ],
+    "Originals": {
+      "No": {
+        "SHA256": "60114EFE6F1D32C4958F48EE1E2FFE07D09BCDF4B14D2C32E5E29C31AEE531B4"
+      },
+      "Yes": {
+        "SHA256": "12D571945CD8A12BE224A4FB817F96082117980E4CC2DB7F3AB65FD7163B7CD7"
+      }
+    },
+    "OriginalNoFailureSeconds": 10.375,
+    "LimitSeconds": 10,
+    "CauseOfOriginalWallTimeVariationProven": false,
+    "OriginalFailurePreserved": true,
+    "SourceOrMathOrTestLimitChanged": false,
+    "FullAcceptanceClaim": false
+  },
+  "Archive": "ReviewedEvidence.zip",
+  "ArchiveSHA256": "59E26B1D13718A6C11D0FE2869C4607D3597FF0ECA6E06C5C50A19308D4E371D",
+  "ForeignOutputsIncluded": false
+}

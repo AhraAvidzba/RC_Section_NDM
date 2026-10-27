@@ -2732,6 +2732,11 @@ Public Function RunLocaleSavedContractTests(Optional ByRef passedCount As Long =
     For i = 0 To UBound(names)
         fixture.Names.Add CStr(names(i)), "='Results'!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i
+    sheet.Range("A1").Value2 = "Key": sheet.Range("B1").Value2 = "Value": sheet.Range("C1").Value2 = "Default"
+    sheet.Range("A2").Value2 = "Results.SnapshotStorage": sheet.Range("B2").Value2 = "Excel"
+    fixture.Names.Add Name:="rngSystemSettings", RefersTo:="='Results'!" & sheet.Range("A1:C2").Address ' Минимальная книга явно выбирает Excel; общий reader не должен угадывать источник при отсутствии Config.
+    Dim snapshotStore As CCalculationSnapshotStore: Set snapshotStore = New CCalculationSnapshotStore
+    TestCheck stats, "locale.savedContract.explicitExcelFixture", snapshotStore.StorageMode(fixture) = "Excel"
     Set model = New CSectionModel
     model.AddConcreteElement 0#, 0#, 10000#, 1, , , "Rectangle", 100#, 100#, 0#, , 123456#, 654321#, 12#
     Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview fixture, model, PrepareSectionSnapshot(model)

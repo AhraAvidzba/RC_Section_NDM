@@ -1,0 +1,1667 @@
+{
+  "Entries": [
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/CurrentFeatures_Off.txt",
+      "SHA256": "4F4DE910B43B11C75702D8EAD2403FADDD39E8C2F39F6B3EBC7C2DC5E5998856",
+      "Bytes": 312328
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/CurrentFeatures_On.txt",
+      "SHA256": "E4449AD090C54B1DEF294CB3D4C6B27BB7400ED5C359960F4A2371BF291ACF03",
+      "Bytes": 311587
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/AsymmetricSteel_No.txt",
+      "SHA256": "2255AB67DB398185502392EC58039416A3CEE4A4FE0588D5F089A16FD65EC698",
+      "Bytes": 11515
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/AsymmetricSteel_Yes.txt",
+      "SHA256": "610DDDB74F1CC0325865492B8F6787CEE1A615DDB942F10CA0C80F9A1CC350B3",
+      "Bytes": 11276
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Batch15_No.txt",
+      "SHA256": "7AD2B7B8365CBDD52B018C99DA1DEA00ED17F0C7F57415C5B16B6BC2DB7E35A5",
+      "Bytes": 116243
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Batch15_Yes.txt",
+      "SHA256": "757A934CAE5F1B27F63BAD9BDCFCE6A66402424AC3194EBA1C7FB1CE4E7658FD",
+      "Bytes": 114553
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Circle_Generated_No.txt",
+      "SHA256": "6018C76739913C57C13377CD5BF71120213A87249CF4FA3B06AD3014FB6B6971",
+      "Bytes": 75739
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Circle_Generated_Yes.txt",
+      "SHA256": "05314EA7A11EDD42CC3D1385BA42724A97CCDFCB1F260AA346320BFA1393942A",
+      "Bytes": 74239
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/HollowRectangle_Generated_No.txt",
+      "SHA256": "A015D22612627AA2782DC4E967763E53E56F5C0FC90FA83C7065C3FC479E09FD",
+      "Bytes": 80629
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/HollowRectangle_Generated_Yes.txt",
+      "SHA256": "D195672FF93A244EE0CC247F56D71C0F0D80BE71D2BDAC8C9E793017B592BA88",
+      "Bytes": 78878
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Independent.json",
+      "SHA256": "6D1B91861E8116CE09147ED16A940D591546F7F9D8A13AF58044030CEFA7EA63",
+      "Bytes": 193473
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Model_Circle.txt",
+      "SHA256": "70F6602694E1D14F4ED799A48621E0DED638A64D34283889629E2BA28B320DB3",
+      "Bytes": 17996
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Model_HollowRectangle.txt",
+      "SHA256": "43395599B39FAA76BFEDA313F1E7D91029E95BBAD317A8F6BCCB6C5E03DC4B44",
+      "Bytes": 24878
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Model_PointedSection.txt",
+      "SHA256": "97881EE8A7F061DB9845C047AA1BFC8235CF8F089A242CF0027B3D10D0A32077",
+      "Bytes": 42761
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Model_Rectangles.txt",
+      "SHA256": "BCA3785D834D6EA32C74CBB1416F80ED4F4DF520CDF7BD425CB3392905A63B38",
+      "Bytes": 20320
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Model_SavedWorkbook.txt",
+      "SHA256": "E84C0BE00A92349C8FB5F045DC44F199D6F61AA88FCB2F8B7D2FB60B8BF99CCE",
+      "Bytes": 15331
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "SHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607",
+      "Bytes": 31071
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "SHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F",
+      "Bytes": 22427
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/NativeCAD/Stage.json",
+      "SHA256": "4B0C89D57450FBA7C25D8E9493DA9BE8097CAA016D1CD099566D352D448802A7",
+      "Bytes": 787
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/OutputPresentation.txt",
+      "SHA256": "8616B162C0FFC8203EFC980C91A4764522E5E18B1DAE428945C3D4E73437105A",
+      "Bytes": 66793
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/PointedSection_Generated_No.txt",
+      "SHA256": "773EEEFC4BD3A5B42ED8C95594A5BD1C698E29027990A087D55770F036828C25",
+      "Bytes": 80196
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/PointedSection_Generated_Yes.txt",
+      "SHA256": "DFF6FD43EB23105A0B3993F38EB9C80B56951496D52DB3B9A1AF34E3836B3820",
+      "Bytes": 78454
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Rectangles_Generated_No.txt",
+      "SHA256": "80CA1CDFAEDAB4D0A4FA07A6728A6D1C12DA1F11F51418C2DE2EFAA2B78695B6",
+      "Bytes": 77946
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Rectangles_Generated_Yes.txt",
+      "SHA256": "871C3DD50BDCF2CCDE89ABCFBE8A7F0F979965139E9E2E5B4139169FFB4E1DDC",
+      "Bytes": 76345
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/SavedWorkbook_Paths_No.txt",
+      "SHA256": "F33AAC0B87E5D58C8B9F4E32B42A9FCB93E2E68B0E3BB8472BC137DC108C0E95",
+      "Bytes": 61344
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/SavedWorkbook_Paths_Yes.txt",
+      "SHA256": "7B83246F25BBDC95F7B8B791083BCB8CF3925236587CEAC7FE8A4B8587CD3BBB",
+      "Bytes": 60102
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/SavedWorkbook_Saved_No.txt",
+      "SHA256": "60114EFE6F1D32C4958F48EE1E2FFE07D09BCDF4B14D2C32E5E29C31AEE531B4",
+      "Bytes": 265219
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/SavedWorkbook_Saved_Yes.txt",
+      "SHA256": "12D571945CD8A12BE224A4FB817F96082117980E4CC2DB7F3AB65FD7163B7CD7",
+      "Bytes": 255217
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Stability_No.txt",
+      "SHA256": "217A143F596FA89052ACFD26F0ECDE6107793F880692BFBA075D39B9CF1EA9EC",
+      "Bytes": 11046
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Focused/Stability_Yes.txt",
+      "SHA256": "7F2228C91B9D87A0EFEF72270AF0EBC5959BCFB7F8DF3C5211E897A0C0D27F2E",
+      "Bytes": 10839
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Full_Off.txt",
+      "SHA256": "4CEAF53601113CE88CA2B5ABA8D765E075351FEEAD075F8508EDFDB20F6A4DAD",
+      "Bytes": 17209506
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Full_On.txt",
+      "SHA256": "72D5BB3BBFF8699E2A500BA273C4234CAE632FE46AA6A89B4652775447E134E1",
+      "Bytes": 17213435
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Geometry_Off.txt",
+      "SHA256": "B02473782AAE406D40E42222FB8E5A10C7BFDF0EAAF692076A13579302D041B4",
+      "Bytes": 1711681
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Geometry_On.txt",
+      "SHA256": "AC486516211711D4402A82F90F4405B05D71ABF04411BD8F461BA699331D7EE0",
+      "Bytes": 1711911
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Recipes_Off.txt",
+      "SHA256": "9C3E0C408956F7BB1668B19F69E9475D57298EB808C4593BFF8050A26761688D",
+      "Bytes": 558308
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/Recipes_On.txt",
+      "SHA256": "36715FC8CF8CE21818D3CDDCC987AF13746AF7584D59C0539694F6886AA0660D",
+      "Bytes": 558336
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/SavedOffsets_Off.txt",
+      "SHA256": "EBC19057ABBFD676FF96601FA3CE9C88E7E388F07300C178C673F5718602DB3B",
+      "Bytes": 3388
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/SavedOffsets_On.txt",
+      "SHA256": "C173D5B800E7E0F8DA6322BF461CB239F7B6029925162DC07D9147CDBD197441",
+      "Bytes": 3393
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/SP35_Off.txt",
+      "SHA256": "76C62FDCFC6171780B1F3AD2F6C2EBC7C6A5541806D2C5A3DDF1A9DB2B74D374",
+      "Bytes": 47237
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-27_FileSnapshot_Run01/SP35_On.txt",
+      "SHA256": "C0B9AE9A6FD693FE0646EEFE6D1B85C8E4194559F3E25D72BC41B4E8ADDAC920",
+      "Bytes": 47247
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/AllClosedJobsReview.json",
+      "SHA256": "56202F021EDA0E4D14EAC7A8937E4FA44A745B7CA2B6044FB65334336CA33E2F",
+      "Bytes": 241327
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/AllOwnClosuresPending.json",
+      "SHA256": "B530B8F1C7CE30FFD2FE5AFA5FFB7450F40759F6DE2F009B3C7BF03D7F53DC66",
+      "Bytes": 31497
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/AllOwnClosuresReviewed.json",
+      "SHA256": "4BA304087F6B4828EEE96E6C22B8B19283B0F9FA0245F04E8897F84E6A189D5F",
+      "Bytes": 31770
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/CurrentFeatures_OffPrimaryReview.json",
+      "SHA256": "A7D6456777EE4FB1422F170F0C0D2C58977BFC039FC67AE1ED0C9C39C5B52085",
+      "Bytes": 5064
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/CurrentFeatures_OnPrimaryReview.json",
+      "SHA256": "9D4794CACDE9745D57BADE61453FEA7CFCC4E211F18B6E5B9259DA761B380DCF",
+      "Bytes": 5064
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Full_OffPrimaryReview.json",
+      "SHA256": "D7A9D1EB8C36B696BEB447D02013555AEEA22778AC830D25D0003277AB9BB849",
+      "Bytes": 87327
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Full_OffUIReview.json",
+      "SHA256": "ED15C8E6BCB1C570BF298512B65B72878EFD08042D52DA8728DC0C59F2921465",
+      "Bytes": 87367
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Full_OnActivePrimaryRead.json",
+      "SHA256": "6AC51B4FFC1CC7CA04BB9F1313B13CB738AE526CBE783D95ACC61A6BB4562E3F",
+      "Bytes": 4800
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Full_OnPrimaryReview.json",
+      "SHA256": "6E1D70068DDCF6C50AC2A771045107FD0C6C6946A9B0C3B59517A917661F0DA2",
+      "Bytes": 87328
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Full_OnUIReview.json",
+      "SHA256": "693E02720F3AE14D7EB6987A186133A41B4C000527114C263E1CAC67CA90F53C",
+      "Bytes": 87365
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/FullPairFailureReview.json",
+      "SHA256": "52C1E95FF298C1B7E6859FA9486268F86A28EE85DD0555B2F6604CE984298DCE",
+      "Bytes": 593
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Geometry_OffPrimaryReview.json",
+      "SHA256": "423C95E7833E1D9F3AE3419A0FEBDF53FCEC7074AFE43CE82CCB60EAD3D7ACBC",
+      "Bytes": 15301
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Geometry_OnPrimaryReview.json",
+      "SHA256": "499A8DB1DCA1D738A88069562AB11269E9F1BD00B126B5CCDCE11E506F7FB2D1",
+      "Bytes": 15301
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Recipes_OffPrimaryReview.json",
+      "SHA256": "399F266E8D71CB24F356425B608E8FC8E2890B9766CB00FA293945D34A373219",
+      "Bytes": 10813
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/Recipes_OnPrimaryReview.json",
+      "SHA256": "CBE3F0234FFC426E6B58EE91AAC6DFBA722F11669C9C693E84B050136F647704",
+      "Bytes": 10813
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/SavedOffsets_OffPrimaryReview.json",
+      "SHA256": "A313AFB47AA81F579344FE11B5B79ED6AA374BE6FFC92E491F421456FEAEB384",
+      "Bytes": 1691
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/SavedOffsets_OnPrimaryReview.json",
+      "SHA256": "B74723F5B217D33C7C993FE03DFC5A2CAECB3E4D02124169E53E1824A36006D0",
+      "Bytes": 1691
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/SP35_OffPrimaryReview.json",
+      "SHA256": "0F70B2717BB0BF0C62F65DC41CFB729AF5B838A4D3A92E3DE2BE4F771DE973D8",
+      "Bytes": 3148
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ClosedReview/SP35_OnPrimaryReview.json",
+      "SHA256": "28C0206E323C3C1A8A99460583958DA2DD134E3AB3FC07B993D0BEAA3D40F678",
+      "Bytes": 3148
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Completion.json",
+      "SHA256": "9AC60E293062745950D338AAADABB69352BAD516F0942B51983CCD32F321E093",
+      "Bytes": 661
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/CoordinatorState.json",
+      "SHA256": "40ACC04514001B00D42A673A8FF95983811B832EBD60A4CB36A71A54A577984B",
+      "Bytes": 19137
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/Before/modTestConfiguration.bas",
+      "SHA256": "529A997501DB4BF42EF04671C4D3C582E0E5BA0C582FE65332BC4161B69AA361",
+      "Bytes": 218821
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/Before/modTestContourMesh.bas",
+      "SHA256": "CC6A1198042D1F4DBB6027396A154060FA824D17AC235B6AC343E710FCE2E4EB",
+      "Bytes": 75670
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/Before/modTestPlotConfig.bas",
+      "SHA256": "CACAC4FC62C127F62A87F04519F367DC78C582A0CC56ADB9CA3A53F1AD1FF3B6",
+      "Bytes": 151764
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/Before/modTestWorkbookInterface.bas",
+      "SHA256": "0B5668B0A7FD46E0B5E9F7E4F7154C503346A6CE22CEE5981110957B5AED11A4",
+      "Bytes": 617553
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/Candidate/modTestConfiguration.bas",
+      "SHA256": "B375CBF3601494DF08F65CC5E742E7C56201DDF4B8963577F628CF954E007BC0",
+      "Bytes": 219524
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/Candidate/modTestContourMesh.bas",
+      "SHA256": "22D121E2FF6B92ACE245722C539DC5B1A4AECA25E5FFF43C2DAB7E265732C0B9",
+      "Bytes": 76114
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/Candidate/modTestPlotConfig.bas",
+      "SHA256": "7ACF29039D8FF74455D925F3679B84F0AAE02759FA7F987EFADBAF5369CD709C",
+      "Bytes": 152065
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/Candidate/modTestWorkbookInterface.bas",
+      "SHA256": "84F28DD7ACE4BC5CD1B0C20939C7BA85A32ACAE2733EF5EB1E18A63D6A1B2019",
+      "Bytes": 618356
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/DeferredPatch.diff",
+      "SHA256": "949F70A18101255E8BDD6F6F5A585DDB1D50BAF33A6A1FD02F8A90D62CE7C833",
+      "Bytes": 6031
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/DeferredSourceManifest.json",
+      "SHA256": "C0FE761A5AD88FE1F0A331548F21D256666DF80F5E5BFF3CF9C7BAD1A390F969",
+      "Bytes": 3384
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/FixturePlacementReview.json",
+      "SHA256": "1CAB73FA7DDD725DD6AD42B192D6AE1D53BACCECFCEAE661359D9B8289371BA3",
+      "Bytes": 727
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredConfirmedFixes01/PreparationReview.json",
+      "SHA256": "9670606142B64721B012672FEE3B06A912B2627DD1B18CCDAB8CACFCE414268A",
+      "Bytes": 1684
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredObserverSchema01/DeferredPatch.diff",
+      "SHA256": "5313EC61179FDF806FEFAD724D7DB5DCB269C2975AB04F7E33594BB2F817B2C8",
+      "Bytes": 2959
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredObserverSchema01/DeferredSourceManifest.json",
+      "SHA256": "929D83773BA2D92949106EF6EA7BED1CAE6D943DC5308C53BEC6C3B71F908A24",
+      "Bytes": 787
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredObserverSchema01/OfflineReview.json",
+      "SHA256": "6EB813B7F3D362C21DAC3FD534019708084AACDA9FF90AF8B290332A8D2ED581",
+      "Bytes": 6865
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredObserverSchema01/Read-CurrentStatus.Candidate.ps1",
+      "SHA256": "0CC99CFDD4B32AFADB99807B7B846454A5D2EECA1E1B41BF7FDC575A11E3E9E1",
+      "Bytes": 12453
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredPublicationInputGuard01.json",
+      "SHA256": "3FC751934744D87E70D3A17D852200BFDEADD0751FD91F1F04DC5876B0B23917",
+      "Bytes": 23846
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredReadme01.json",
+      "SHA256": "AAE1ED62149B45E9539013080E4201DB2838ECE0528BABDD2F672C8F5CC97FB8",
+      "Bytes": 345
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredRecoveryPlan01.json",
+      "SHA256": "64FD4D8400A51D10E126FD8F554EC9CB172DF4A14C50B49E11004CF378044976",
+      "Bytes": 10453
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DeferredTimingObservationPlan01.json",
+      "SHA256": "915B7D2EF3915EA8115F683EF3CB966B3A7910DD4886691912A0D9804A798E30",
+      "Bytes": 970
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/DriverRun.json",
+      "SHA256": "390499BA0885F78CF40DF7ABF13BA12B21CAA7203E392B19F07F76954D9587DC",
+      "Bytes": 310
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/EndReviewPlan.json",
+      "SHA256": "6F50E91739766D0C9BD47127E93C261B352A0BA30311D3A55752E49BC9DE72D7",
+      "Bytes": 15271
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/FullDriver.ps1",
+      "SHA256": "75E03CAD1E0BFE22BA9EB9AD58AD189EC31339B3A4BD683BAAC4DF910CBAC17E",
+      "Bytes": 5388
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/FullDriverHost.ps1",
+      "SHA256": "C5C31733902D6394B620EF963D1F966C31FF313A494DC58CB86988388BD02A93",
+      "Bytes": 1750
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/FullLaunch.json",
+      "SHA256": "80B7F670F3ED558676148FF6BDEB0A20B6ABB4CAB9E67FD895900CC9604CD137",
+      "Bytes": 915
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/FullLaunch.stderr.log",
+      "SHA256": "33B29B3671C0CE9B493A36BF690C7362D98C43759DD103CE4FD46240D35D74DD",
+      "Bytes": 5333
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/FullLaunch.stdout.log",
+      "SHA256": "D7CB5D9B1A6B34E0D9498A8AFD04F6915BB93AFBAA17A918EF93DC9F771ECDC9",
+      "Bytes": 14927
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/GoalTurn_2026-10-27_2227.json",
+      "SHA256": "33CA9BE29C237F8B4065D2F8FD7FD6913D56B00D6C2B292657108E202465423D",
+      "Bytes": 528
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/GoalTurn_2026-10-27_2245.json",
+      "SHA256": "BD1C4076984B6EC84533401DA40C35FE79BB3670856385960C68EFC2D7DAB3AD",
+      "Bytes": 981
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/HistoricalTimingReference.json",
+      "SHA256": "3695BD33CAD6F4E7CC25563381BB9B73890663DB1323BD375B56A0C74A1A2172",
+      "Bytes": 979
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/HistoricalWholeTimingReference.json",
+      "SHA256": "16A0F720E9BF9939B780979F4D23E68B7AB410A1DCBCFC49832CCAEF1E5E6C4F",
+      "Bytes": 2215
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/HostCompletion.json",
+      "SHA256": "82D60F4B774EE1DF96418CDD6687CFFF36AE662C4A0B47C54F7E1D2AE194EE02",
+      "Bytes": 93
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/HostRun.json",
+      "SHA256": "DFC4B028962B2480677B53E4ECCD855832C2E1F06CF1F6D8AF55744AA4D2F00B",
+      "Bytes": 201
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Launch.ps1",
+      "SHA256": "11698024D5214802B657836C3318AAA7E5CCF10F3488118B52E57C27CB5B9477",
+      "Bytes": 9770
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/LaunchRequest.json",
+      "SHA256": "37289FECC5623AE8794E058B95F3AF38E6643E1F7426418471E93B1558330FD6",
+      "Bytes": 142297
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/MonitorLast.json",
+      "SHA256": "DBC5AEDE9AFBEEFC4BBEAF3E24E38884431964CFFB904679564091153C2F3490",
+      "Bytes": 24712
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ObserverSyntheticSelftest.json",
+      "SHA256": "3B4353E1FD50AFD0D71ADF7C2ADC0A7AE4AEF3BC0029E73AD5CD1EDD0DE16A8F",
+      "Bytes": 783
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/PreparedPlan.json",
+      "SHA256": "A81814C59E1589B37D33AADC1E271F1C1D80FD2AE7BBD6C51011AA2C5ABD23E2",
+      "Bytes": 2178
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/PS51ParseProof.json",
+      "SHA256": "B814C37EF242DA30C9E0B91C1CBF1F9672C76C7FF26FB6BD9D0FF01B97769DD6",
+      "Bytes": 249
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Read-CurrentStatus.ps1",
+      "SHA256": "880A538794391FB5F75B367A02EA8542F53848448522D851745E6E8321F14611",
+      "Bytes": 11175
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/Acceptance.json",
+      "SHA256": "A8158D0EBE6DC3125FC528B65FE441A006007F0BA1A9986B1DA4399E917EDD18",
+      "Bytes": 336
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_No.txt",
+      "SHA256": "A462BA5C49C6D9E3D8FE48290D57CAC4DBC39DC2762340E5889C86D5E6DB5F2A",
+      "Bytes": 27286
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_No.txt.Memory.json",
+      "SHA256": "BC85C8CF3A73CCBEAFE04B0CC6017A5166952DA700619B4F4F356BE3EE6B945F",
+      "Bytes": 318
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_No.txt.Ownership.json",
+      "SHA256": "AE5B691F686D325C2EE06C282AD140631BDD132145CA1E4388E1FF3D9FF8C1B6",
+      "Bytes": 258
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_No.txt.ProcessClosure.json",
+      "SHA256": "F2CB03AF98AEE645BD76DFDB6993E2944F412C3D856F95477736E7FC892340F0",
+      "Bytes": 5557
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_No.txt.RunnerCleanup.json",
+      "SHA256": "3F677478610B3D826D0318F8B6DF99834265F3174569AA49F75578B9F652665E",
+      "Bytes": 510
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_No.txt.stdout.log",
+      "SHA256": "530FA35113E34B56B2C1C2F43ECC7F288B7BC67CA497D4D1278DCF073F6EF8EE",
+      "Bytes": 545
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_Yes.txt",
+      "SHA256": "BF6ED3BEA7A9CE27BF0106A3EDC09423A0DA23C79E3113F03E0E415E038808E1",
+      "Bytes": 27290
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_Yes.txt.Memory.json",
+      "SHA256": "2EB6C386B88EB0EC1F0FA9A97F151E29A2BBB366EB9717170D0161784404F136",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_Yes.txt.Ownership.json",
+      "SHA256": "CA999D5199980942B4CF6BBEFC2638BBEC7C3B07494C34DE7E6C5E75273F9BD2",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "A39E227C505107203ED4944194FDD536E633372FEBA691E6C6DC7246F045E0A8",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "51DC1AF6B180C6C7F8A9681C7C6C8CE28F327FA44EF6801B1C9BB82B076A1FDF",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestCalculationSnapshot_RunCalculationSnapshotTests_Yes.txt.stdout.log",
+      "SHA256": "F557E8ED8FFBEFD16078789C8C7E359BA163C91AF0ADDD255F1A655DEF6802B7",
+      "Bytes": 547
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_No.txt",
+      "SHA256": "0F13A0B760FE33FC16B96E46F3C98EA2327D0AC2399D1D7CD7208898FCB08CA9",
+      "Bytes": 34842
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_No.txt.Memory.json",
+      "SHA256": "B71D28E81BF0376FF3AA16656A586573F6FB00607B499342A4CD7B41585E708D",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_No.txt.Ownership.json",
+      "SHA256": "E751F30EB0571C22C9011C8CCF31D24FFBCA489E5287380BC661A874C647971B",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_No.txt.ProcessClosure.json",
+      "SHA256": "80844AFECA8318942E0A3C1C67E167F44AC3D3FC763C2F49F361649332EFEF1D",
+      "Bytes": 4100
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_No.txt.progress.txt",
+      "SHA256": "A04EDAC9C14372BECC53F27E40FCE80ED26C74C18798DF9D577659596DF10871",
+      "Bytes": 26976
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_No.txt.RunnerCleanup.json",
+      "SHA256": "89381291267F2627BDF7794B8DABF93097AD5327982AA003225799C45DB9DA04",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_No.txt.stdout.log",
+      "SHA256": "4D0AF4B401DAEBD9353F7CA4A78502AE1F432CEE19F0209BED3E59844B82A940",
+      "Bytes": 542
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_Yes.txt",
+      "SHA256": "F6F2D005B3119E05E5917EBECE0028981FD399F6B9B239ADC14CE2140EF81110",
+      "Bytes": 34844
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_Yes.txt.Memory.json",
+      "SHA256": "A0080B33A39143E960B204FCF69EA5EA48332F5781D80CC82635E4C4DEE8C484",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_Yes.txt.Ownership.json",
+      "SHA256": "36F268A953B5483A929C3E494D99E7672F5C40E058FD99AF5617A04FC7E2D290",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "5627041A0ADC710CA31D981123E7B552628B1F262504BF21304E8188C3462EFF",
+      "Bytes": 4100
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_Yes.txt.progress.txt",
+      "SHA256": "A04EDAC9C14372BECC53F27E40FCE80ED26C74C18798DF9D577659596DF10871",
+      "Bytes": 26976
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "CE9D333089AF32018DE3A9F183E37D82B0CFC0CDCF84D47CFB22B3AED91F50A7",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleBoundaryTests_Yes.txt.stdout.log",
+      "SHA256": "B76E2C78A6CFDBCA17AD14B2DFEF25FB145F35F29A7CB95379F20E83D7C982D3",
+      "Bytes": 544
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_No.txt",
+      "SHA256": "280A53BA4FBC6A1C1D849D95055C9F2CD3AC5594526AC847917F55DA85122C4B",
+      "Bytes": 7244
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_No.txt.Memory.json",
+      "SHA256": "89F2822592D3D40E4690E3DC76C37985C1D55A7DF7907D8073BD343449E58DC6",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_No.txt.Ownership.json",
+      "SHA256": "8EBBB2D6F6774C8B774EF1BE98AA185DE0DA697FA3C2BC45BEE5284438A19C17",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_No.txt.ProcessClosure.json",
+      "SHA256": "AB87E81BF8A92238813E44BE47EE8F92B2D839B576EE74EDF9EE90CB8AAFDC71",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_No.txt.progress.txt",
+      "SHA256": "97F3CE0041CB3966297A02D039F94E4A02D44BC97001F56BCD2A191BEC9F05B9",
+      "Bytes": 5982
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_No.txt.RunnerCleanup.json",
+      "SHA256": "3B56A21EAF1977E1C833471E45F5DF95418C19484DD90BCAD66E70C9B9C3F6D1",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_No.txt.stdout.log",
+      "SHA256": "7AD46A21A702FA553AF481E3E0FE422447163215E3C99B2C7A7359BD9B29813D",
+      "Bytes": 539
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_Yes.txt",
+      "SHA256": "894DE3CF66826A22718B573341A11BAB1B7E191CF130EA29E681FB85B130C4A1",
+      "Bytes": 7253
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_Yes.txt.Memory.json",
+      "SHA256": "127F3E7F42E81BC982A59491780B3FA0233CC2E856EBDAA9DD987D564EF362EA",
+      "Bytes": 319
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_Yes.txt.Ownership.json",
+      "SHA256": "B54AE1FC70C09D23A3880169A619AB1CDE9439F88D19F800E43EB745520F9711",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "5D3A3E939AA20E4E9DEC39D909EF634DEEB587795EA7A7AAB0B097F866288B4F",
+      "Bytes": 4100
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_Yes.txt.progress.txt",
+      "SHA256": "97F3CE0041CB3966297A02D039F94E4A02D44BC97001F56BCD2A191BEC9F05B9",
+      "Bytes": 5982
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "FF52B40C5C3C7B5FF96A7446FE31A232E714C8FD5BF687A47FBEE61B759E905F",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleNumberTests_Yes.txt.stdout.log",
+      "SHA256": "5A886485DA3BD68B29D441869A131DF9F3179E5E13CDAA8EC6A3E961B95083AF",
+      "Bytes": 541
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_No.txt",
+      "SHA256": "E09EFCE2348E95D3E4BFA6A9F630ED3F761F71A4727D0CD959B5841A31DD12C1",
+      "Bytes": 6920
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_No.txt.Memory.json",
+      "SHA256": "00F8AE203CDD103D106CD02501CD756790DC0E8DBD49D65E4D635AA7AA1E2365",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_No.txt.Ownership.json",
+      "SHA256": "4CED6F623418577CC754FABD652BBBC26F5C646CC3EB5F0296FBF43ECBAAD4F5",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_No.txt.ProcessClosure.json",
+      "SHA256": "915178FB29555DA51A5BF2099AA42678079D48596F64F44540F4EE4D476C4DFD",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_No.txt.progress.txt",
+      "SHA256": "355C8B1C40F4D648175239B1B18C560C57D87F2B3A4E0B2F7B6FF8D465F9F649",
+      "Bytes": 4268
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_No.txt.RunnerCleanup.json",
+      "SHA256": "69B05672FD3E0EEB76B2FD0E87967947A861A3095FAAB9DBD31EA70EABE7E301",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_No.txt.stdout.log",
+      "SHA256": "D3CA13D68AF12F47B2F1266C9D311D39CF4C5626001E436F39D0E54E8F3782EF",
+      "Bytes": 546
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_Yes.txt",
+      "SHA256": "F2B3A45EEA2C2F31617B0D78F413AF1879C2B2AD87284A868F869402CE2C01F8",
+      "Bytes": 6915
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_Yes.txt.Memory.json",
+      "SHA256": "558476FFA3DCADFDAC3A4D4D6BD149B7E22B0332D979D00A995FDB6AA56B6E36",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_Yes.txt.Ownership.json",
+      "SHA256": "BBF0ED1259AA02D836411FBAD6CB78D5597C1C47ABBEB7E7BE0FB631C27268E8",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "80B5885DF706343DCD7730EC90281A17239E4EAFE2047F5AC79EA3B1B837BD47",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_Yes.txt.progress.txt",
+      "SHA256": "355C8B1C40F4D648175239B1B18C560C57D87F2B3A4E0B2F7B6FF8D465F9F649",
+      "Bytes": 4268
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "3A3A6F14FFB9F7CD3F556390AC734244A6F3D25DA25BAEA92E396654C9B7DCF7",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestConfiguration_RunLocaleSavedContractTests_Yes.txt.stdout.log",
+      "SHA256": "9A1FCB54CDC159856D5F068D324D2D703323E5C9E042257E6150727E82784D39",
+      "Bytes": 548
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_No.txt",
+      "SHA256": "AD3FB0797D95964576C7CBADEBB009B5C7645639D7B3C50E26BF4E6C44ECF580",
+      "Bytes": 12139
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_No.txt.Memory.json",
+      "SHA256": "F701BAC574BDFE94E5DCA1023073E451B17C97B116BA0C63C0E2917DF4402257",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_No.txt.Ownership.json",
+      "SHA256": "30B92F74167A38A392EF00174C6EF376D548895A9CFAA88D1AB6DA4570074D56",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_No.txt.ProcessClosure.json",
+      "SHA256": "1133E93C704073F4A8106C8747DBC708F1E48859A3942D0FE2A3A5E74A7BBDA2",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_No.txt.RunnerCleanup.json",
+      "SHA256": "4F5B5F7D2C2BB01BB9DDF6D963F2E9F707D812CAA3CC8748048AA062C5D93995",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_No.txt.stdout.log",
+      "SHA256": "723AB98DB0B56ED1D60A8D78D2CBC9DE03D8B48B1C950A8ADF0F2AF558DB7701",
+      "Bytes": 539
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_Yes.txt",
+      "SHA256": "C5238D187A6533F6FDAA0F393E40A64435ACA3FA536827B083C2AE30A6AF9949",
+      "Bytes": 12318
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_Yes.txt.Memory.json",
+      "SHA256": "8B4CB43E8DAD8B0F5D959D20D13E49FB16E13B39157EFB6589B013F57072EE9F",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_Yes.txt.Ownership.json",
+      "SHA256": "0881EA68B396F88B5CD947C4F6D2F4FD765E72FB111E46B4E5447DD7349AE2DE",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "EFAF113400B9D6D4BB46C4310CECDE1CAEC287ECD1C2DB331C8431FB150567AC",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "0456992CF7D7D2942857CE9D4106DDA860753AEFE04ED6D2604374A839F11879",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestContourMesh_RunContourMeshTests_Yes.txt.stdout.log",
+      "SHA256": "BE7111AD1C061C0C1CE0C50F6FFBD8A69699A8BB18B731B3FA74217574D75694",
+      "Bytes": 541
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_No.txt",
+      "SHA256": "9CC2BDB844BB76E05C428363E2C949433632CEB5987E7B403C5C9A08ACA6BAFC",
+      "Bytes": 513707
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_No.txt.Memory.json",
+      "SHA256": "8C3A4A0D4A772466E5B56C1A38CC7FD01556F4660AB78EBF4FEA6479934686FE",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_No.txt.Ownership.json",
+      "SHA256": "01A7B5F1831095479B7AEA727D38A25F1AE883AF00F79930FDBEFD8E3D1D0B9B",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_No.txt.ProcessClosure.json",
+      "SHA256": "A65B26E809694816C264976F30669699BB7E2B372C76096EC3B4EBF5BF8C04CC",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_No.txt.RunnerCleanup.json",
+      "SHA256": "B31ACABF9FE2CA879C09C65FABC4CC74F2BD5CC748D179CE80D6AEB493653742",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_No.txt.stdout.log",
+      "SHA256": "5B0A7DE419FC3CBCBCF1F57FAA504D77B473AE9287AA8A0AEA2F2959542A626E",
+      "Bytes": 546
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_Yes.txt",
+      "SHA256": "226EF658FAD26462CB0E8A0D9A6BCC05C73128723526FED039C2355751D29878",
+      "Bytes": 513705
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_Yes.txt.Memory.json",
+      "SHA256": "25C773798CDDD3A0E186FAA64062ACEA5D53BD91FC3853325F2A01CB9D5092BE",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_Yes.txt.Ownership.json",
+      "SHA256": "3800E69E9990CB6E850F6E377FADC5101F0377E1C5589D682C784E43C6AEAB9A",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "366171CE5F09AF5363A6C6B3499CB4CDD95850ACE518A04D9E2F984C1F65A3E8",
+      "Bytes": 5078
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "8BEF14205B091BABAB779FA68A9A1DE4426E437B671062C73BFB54EE713261D2",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestPlotConfig_RunAudit03GeneralPlotTests_Yes.txt.stdout.log",
+      "SHA256": "DF200F6E83F426C3AA54660898F1B1CE3692FCA97FC7E5D6030E50B854B5B07F",
+      "Bytes": 548
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_No.txt",
+      "SHA256": "2EA8A619A0532D986D4DB86529B6C96AD744409967D8FADE96D31A397206EC0D",
+      "Bytes": 107943
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_No.txt.Memory.json",
+      "SHA256": "BACA83A0ABC37D701A2050EFE1C83077275B2B523AC95C9FA7244EF5D4C826BC",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_No.txt.Ownership.json",
+      "SHA256": "1B48C7986D479C1B5EC91763ECB5DC877D6F75AEB74EB245B7A9539E1035F8D6",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_No.txt.ProcessClosure.json",
+      "SHA256": "6D3945700DB0D93C031439AF1B42FCD8E66972BEB79DD45CF93F210428757DF5",
+      "Bytes": 3611
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_No.txt.RunnerCleanup.json",
+      "SHA256": "62206009BCBF1FB67DC2C5AE2D0639D6A82E38E818E416ED598382B3FBB30B6C",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_No.txt.stdout.log",
+      "SHA256": "FF7359BD14A3F45DCE184B03C02662F0FD5D182A3BE32C35C2CF1970AB7C92C3",
+      "Bytes": 551
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_Yes.txt",
+      "SHA256": "F0CA4194ADE861443FCAD5B3E2D0D57CE571C6D7EF2697E2C5E709082C38C22A",
+      "Bytes": 107943
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_Yes.txt.Memory.json",
+      "SHA256": "07A131A3E8B1C3168C31EDB13FBA004967EC47EC648BDF8ADCEEA72C75E7D410",
+      "Bytes": 319
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_Yes.txt.Ownership.json",
+      "SHA256": "176E515C727EAB3D124AFFE4061EDC010808CA47D9958471144911845272DF15",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "E78AEA4A61539EF91A92D9EE5E7B20DB36524C8BE9BA9C98727C0CCC76EC5240",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "2B53CB2F71AF52B92550338E4057D8078823DB886B3C7061CE91466564DE1B07",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03GeometrySnapshotTests_Yes.txt.stdout.log",
+      "SHA256": "7E8032C015CCF875D932FA90AA88340C51428137EBDF054FB5E10A408F4D0195",
+      "Bytes": 553
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_No.txt",
+      "SHA256": "7530891696ED2B66112540A97DE9DAF2E8A0CE3399BC1B6C636D3F0D87F22AB7",
+      "Bytes": 420696
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_No.txt.Memory.json",
+      "SHA256": "3AD85408BC134BE40A7FFEE11B0FB8DBD9B00BC42FC29A30542EF9244CA650BD",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_No.txt.Ownership.json",
+      "SHA256": "D2DB7859F99E9489744FE1996BBD82F695332546BB9076537BA1379EBF44F21F",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_No.txt.ProcessClosure.json",
+      "SHA256": "0C2EBF2ABFDDB1FBE21CB19CA0E790AE4D1A41FA99EF40075835C91985F89812",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_No.txt.RunnerCleanup.json",
+      "SHA256": "95B2E4EDA7908B4A2B1C888F2F40F1AA6F3C3611B00F08BFE400EF791C91EE24",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_No.txt.stdout.log",
+      "SHA256": "8B4F9008630C05589BE064FA3FBEDCF37F215C3CD34B419B2D2A184C34872F95",
+      "Bytes": 548
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_Yes.txt",
+      "SHA256": "581E8E98864EB78C464CB67F05730BD5B4BC86207816C22ECC9731C05430818F",
+      "Bytes": 420698
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_Yes.txt.Memory.json",
+      "SHA256": "97AB8761B2DE58F0CD1CDFCC57E54FB77B94DE22B3C6D893B4F97D9B25BBE6DF",
+      "Bytes": 319
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_Yes.txt.Ownership.json",
+      "SHA256": "D32364162884AB07F398E004C27439AEF946F7F1D70E8B3AF03F43A6FF6B0AFE",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "64BCE2587FFD265A600B91C957F1E23B1F1449F23CA66FF98A03B7F71FDC0FFD",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "789379D33C70EC37D01108C122A7B3E496DD92E61BEE0AFEB2A624CC70FF0366",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunAudit03ReadLifecycleTests_Yes.txt.stdout.log",
+      "SHA256": "A332FFC5D9508CA4602725FE813A6D0521F2F8590B5EC0C83D5D0D115E5DF4AD",
+      "Bytes": 550
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_No.txt",
+      "SHA256": "5A21A0B898B434F9A7A6A262F169CDB232364A8A50D6CBB516618EEB667BADF9",
+      "Bytes": 6592
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_No.txt.Memory.json",
+      "SHA256": "587DFC1CC1FCFA3835A082FB52269DC47C8D9383D650D181B79F34A57803EE49",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_No.txt.Ownership.json",
+      "SHA256": "CA1250192C01BD054B893EBC75719F9DC6A5E37F9C4BFFA8C10CB1A48E8C472D",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_No.txt.ProcessClosure.json",
+      "SHA256": "CE9FE53C4AECEC38FE7AF7B7F8971AEE4653ACB8D2B62A81D4220AD262D5E8D8",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_No.txt.RunnerCleanup.json",
+      "SHA256": "69B8E5BCE9FD3766885CA065453BA29920DC3BCBAFF86C9733EE9F968261EC7D",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_No.txt.stdout.log",
+      "SHA256": "CC419132B4B181AC76448ECFBB1F55A7EF322BFDCB0F04B345B50B24C49DF0A2",
+      "Bytes": 545
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_Yes.txt",
+      "SHA256": "CAEE36E46364262B6F146F95CCD3AECEF79E85A90D509A4FD4B7A1430B70EF31",
+      "Bytes": 6591
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_Yes.txt.Memory.json",
+      "SHA256": "10E669871BD731C9E2C8F8AB7CB9A4399C8363C7A3C13C651E5F9F9FA82BCD2F",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_Yes.txt.Ownership.json",
+      "SHA256": "2488C0E5BEBCD37613C515CD95023CB7FDAD5D4A7A3084A866A1EDBFBBF57A57",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "F60508E8F974EB151D192085F8BB9CA76FA6DEB8AE89309141E5E940C945EBF7",
+      "Bytes": 4100
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "B0D427BA0051C73C1C4EFED4E57C5509902D0023B200CD8BEFDACD724F226F4A",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_RunSectionWorkflowCalculationTests_Yes.txt.stdout.log",
+      "SHA256": "6C31C436A285A318E26648EF3565FA89B9962F39EF4219DACB2E3E366CFB038B",
+      "Bytes": 547
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_No.txt",
+      "SHA256": "51EE65F5F262715FF307F842A4F6120733936697E9933FB63F13D3FC4ED54375",
+      "Bytes": 1965
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_No.txt.Memory.json",
+      "SHA256": "77D40F3687EE28FB4877A58E5FE5B2FC5D0E54A44E888B438B3CD551781C67DA",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_No.txt.Ownership.json",
+      "SHA256": "AACD47E3A1D7BC365A07EFF41A6A1B53D720A0C5C192F7378BC0F57A371285F6",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_No.txt.ProcessClosure.json",
+      "SHA256": "B15A0F3C5E3EF41DE1365EBF5026A3B18A339689409D708C91CDD7974C7A9ACB",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_No.txt.RunnerCleanup.json",
+      "SHA256": "CB38CB268EF0773E7A94DD9274C0ECF7101513E76EC63B8E740E9B3B27324C89",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_No.txt.stdout.log",
+      "SHA256": "E48562EB754F889CBFDE3337EF43EE27C57640C5AA77D6D2FDDDF8299FCB4A50",
+      "Bytes": 545
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_Yes.txt",
+      "SHA256": "E59C47AC5F816AD06E50D73A738D34B087888A67B2160B4071BA20DF9E4A2059",
+      "Bytes": 1965
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_Yes.txt.Memory.json",
+      "SHA256": "BA21A2C5BA174C3E0A158730CEB86200EB38182E5C2453DB74B429E08C8E62BD",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_Yes.txt.Ownership.json",
+      "SHA256": "B9CB2DAE64CBC486B10EA4E84A623077229AF632062DD5E3B5B2FBEA941D8392",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_Yes.txt.ProcessClosure.json",
+      "SHA256": "C3FDC3E2423F78E03DEFF35F23A0B138EA828DE45B22215BE8CCC90FA2C489C3",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_Yes.txt.RunnerCleanup.json",
+      "SHA256": "5D842812DAA7AE8C3F3E80B83EBB8ACEBBDF957C7625196A9C9A43BEB2DA1B7A",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/modTestWorkbookInterface_TestRunMissingStatePlotStorageTests_Yes.txt.stdout.log",
+      "SHA256": "2F8D3A945E848CAC1327C901C945CE9D236F1E93717922E72EA008B4F3A17E8A",
+      "Bytes": 547
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryDirected01/Results.json",
+      "SHA256": "CA21B30078A369151D8A86F42834DBB9FA0603C2B6071CA277A4028E1BAAFB93",
+      "Bytes": 17484
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryFreshBuild01/InvocationFailure.json",
+      "SHA256": "E85AD349963628350B9DDA611DF0ED61526909018D13D42EC92C63F7BFA99785",
+      "Bytes": 409
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryFreshBuild01/MemoryBefore.json",
+      "SHA256": "3B145AA223EA704D24DA3E2988B49195BEF63D1E34206F5326736ECACAE54F9A",
+      "Bytes": 136
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryFreshBuild01/Transfer.json",
+      "SHA256": "F2FE85C9E3536E28AF7F8395E7182311AB4085BAFD1262A13775BFDE43A7CAF5",
+      "Bytes": 3286
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryFreshBuild02/Build.json",
+      "SHA256": "CE4A430B638CC05CD563150FBEE62CE0273F503AF9426AA63774D52179E65CF4",
+      "Bytes": 787
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryFreshBuild02/BuildOwnership.json",
+      "SHA256": "9425A1AD6197FE923A352CBF099AB005C5AF4676996C1A876A338FA839596265",
+      "Bytes": 371
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryFreshBuild02/MemoryBefore.json",
+      "SHA256": "73DE75F2BBF446BBFBD484A102B15B96D8C6FFC0D022B37EF0A385CF66651688",
+      "Bytes": 134
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryFreshBuild02/Transfer.json",
+      "SHA256": "F2FE85C9E3536E28AF7F8395E7182311AB4085BAFD1262A13775BFDE43A7CAF5",
+      "Bytes": 3286
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryMonitorLast.json",
+      "SHA256": "484146D0B10EFF5C7C4E40264DAE313212047A173B9FA818E2256F2CA6A5A0BD",
+      "Bytes": 464
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Acceptance.json",
+      "SHA256": "0BF4AAF02A9C483ED5E597F43FD93FB740DD0BA35712339B30EB819BA8DF20D3",
+      "Bytes": 3326
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Cases.json",
+      "SHA256": "FE3BFE7A8EC7DAF3278B6CB3267DBB1A601ECCA5618A7DBFF2FB0FEEA2FC2763",
+      "Bytes": 2421
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/CleanupRequests.json",
+      "SHA256": "6B3C4CCA1021630A498B7D5C46032612623D4EE6373FB06CB780C32E99671B4E",
+      "Bytes": 215
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/ExactNativeReview.json",
+      "SHA256": "4BBD734C136B152955A565F5021E777737EC1884A2E73EFA779AC64062FC2475",
+      "Bytes": 1096
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Inputs.json",
+      "SHA256": "1C35353D534429C1C3E483EA97C728FD78CAD2524891D342CC75307DA0AF4E92",
+      "Bytes": 57316
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Main/Inventory.json",
+      "SHA256": "A4BDC322221BAECFD6CEE39811C315D02344D23E0230A7B1878271E2B5A8E4FD",
+      "Bytes": 18304
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Main/LayoutAnchors.json",
+      "SHA256": "88F66C04974FC00938699C89D69624A69AE0CDFBCAF2CE1252CEE48F804774DA",
+      "Bytes": 1036
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Main/SourceEquality.json",
+      "SHA256": "E121238D18F2A2922FCE345F40C10FB0B5C49A3899457A8178BEB09F1423E860",
+      "Bytes": 117153
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Main/TextFits.json",
+      "SHA256": "F1D4ED4A75237E4878028E6B6010C6BBEF26A0046C58DE51825558342883B19F",
+      "Bytes": 9
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Main/VBA_All_Code.txt",
+      "SHA256": "1BECCF680D40616878FC836C504C002E91C1949850385EBDC4C6BE458FA18712",
+      "Bytes": 9015465
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/MemoryBeforeExcel.json",
+      "SHA256": "7BB8D942A929DE20DF9479FBE1949ADE26022B25544C1AE29BCA3F4437E62602",
+      "Bytes": 134
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/Ownership.json",
+      "SHA256": "368A1C3200E59ABC5598EB2FE5F6C1D646F56E60FBE18FCF226664A01D960E66",
+      "Bytes": 178
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/RawNativeComponentComparison.json",
+      "SHA256": "0E5E2EEADBD51D7E94610C673A4A1FAED574527CD2A76ECB75AB6522F410D173",
+      "Bytes": 335
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/SavedExcelWarm2/Inventory.json",
+      "SHA256": "A4BDC322221BAECFD6CEE39811C315D02344D23E0230A7B1878271E2B5A8E4FD",
+      "Bytes": 18304
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/SavedExcelWarm2/LayoutAnchors.json",
+      "SHA256": "88F66C04974FC00938699C89D69624A69AE0CDFBCAF2CE1252CEE48F804774DA",
+      "Bytes": 1036
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/SavedExcelWarm2/SourceEquality.json",
+      "SHA256": "CE60692E2C999EE3735DD386AA53B628B912B878DD9F204A53B57C86AEE511C1",
+      "Bytes": 117153
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/SavedExcelWarm2/TextFits.json",
+      "SHA256": "F1D4ED4A75237E4878028E6B6010C6BBEF26A0046C58DE51825558342883B19F",
+      "Bytes": 9
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01/SavedExcelWarm2/VBA_All_Code.txt",
+      "SHA256": "7246261656A5AC0A6BDF0FC7ED2709BB8C9F459F3056D976D9A6E8E27773DAD3",
+      "Bytes": 9015465
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01.Watchdog/Completion.json",
+      "SHA256": "3F733FA26290E655F43342292647DFEE0C355A42E45ED46DE8ED19D24CC17B2E",
+      "Bytes": 5321
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01.Watchdog/Launch.json",
+      "SHA256": "1BDB1F3221BBBFFB2E6A3D5D2D4186CD28EC091C8F41BFDDAFBA904D1C865C72",
+      "Bytes": 485
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01.Watchdog/MemoryBeforeWorker.json",
+      "SHA256": "0628EF3B4A7870BC18311DE1E73049BD342C5DF55E6AE6A2633D00CF8A42F933",
+      "Bytes": 134
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01.Watchdog/stderr.txt",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNative01.Watchdog/stdout.txt",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNativePlan01/Plan.json",
+      "SHA256": "A51B932C773A572A12C67FC4DDAD24F19A06F25F6DDE661CE45F5523B30282A8",
+      "Bytes": 1397
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNativePlan01/Test-RunSourceOnly.ps1",
+      "SHA256": "6A5540E90E39A97FD6FFBB24BA95158B8DD366472C7F8B0480C9B6DD1C48DB9A",
+      "Bytes": 16969
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNativePlan01/Test-WatchSourceOnly.ps1",
+      "SHA256": "905EE6D98A7845BFF490F89D7C23F88BB9B0463053D3DBB2B3C2FA6D82438693",
+      "Bytes": 6809
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryNativePlan01/Verifier/Test-VerifyProbeSourceEquality.ps1",
+      "SHA256": "07767838C6549D0D0E1C14DAF9E5A2A5B60F89F3660CB05BF75251B59B523E21",
+      "Bytes": 11545
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryPackages01/PackageProof.json",
+      "SHA256": "47A1FB11D8ACA5D4B2A49AC23E7247C55585361E741C9959F40108D805D975CA",
+      "Bytes": 2556
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryPublication.json",
+      "SHA256": "B99385B0993CF0775EC95AAC4B12A61DF135F87AB554B6B0480CA1867982650C",
+      "Bytes": 3229
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/RecoveryPublicationPlan01.json",
+      "SHA256": "AE3B173D154F7C28F1B885CAB9A761A9961D1C4FEF4CD48AFD2941D9F633C786",
+      "Bytes": 1071
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ScheduledTask.xml",
+      "SHA256": "31CE789E9CEC8411D4F7F95C366440C576AEEC63968720CFA8803391AFC3C37A",
+      "Bytes": 1628
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ScheduledTaskAfterCompletion.xml",
+      "SHA256": "E0325A32291739C10512A04E795C6271AA8F4631B2EBFEF53E31ABFE544167B5",
+      "Bytes": 1625
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/ScheduledTaskCleanup.json",
+      "SHA256": "C71361DC0FE32AE704EA1E604960FBF2BC5396DE42BFA9B53D75AF10F627EEC4",
+      "Bytes": 305
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TerminalReaderHistoricalSchemaCheck.json",
+      "SHA256": "183AD900DABBF4A90DF6ABEDFF807ADD090272B082B42A8DD107D16D728B5867",
+      "Bytes": 81075
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TerminalScopeReview.json",
+      "SHA256": "3E172951A1D55C9FF0E886A05BDDE4C95265B9B04850833D08FE3360B919A2C5",
+      "Bytes": 253594
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TerminalScopeReviewPartial.json",
+      "SHA256": "BAE3148200C3C026FDF2248045958C49B01F2D8642AF5A059BAF138F53552D73",
+      "Bytes": 249764
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Test-ApplyAndBuildConfirmedFixes.ps1",
+      "SHA256": "45E19A07929AFAC056A154423F7B213DC8C1CA094571F54852D5C4DA46B421A8",
+      "Bytes": 8675
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Test-ObserverSelftest.py",
+      "SHA256": "4DC6D8D2419F48C84FD538E15F5483F9CA0DEE06DFFC1001B5A5C42C3C256FD5",
+      "Bytes": 5750
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Test-PublishConfirmedRecovery.ps1",
+      "SHA256": "00AF33AB9C773E10F367E961BCF71DC09EA4A750B734046279D774CF076B9232",
+      "Bytes": 5874
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Test-RepeatTimingObservation.ps1",
+      "SHA256": "8DE48B7A5A9E7A85AD215F0264CDCB0DB5EAB3E9B7A270E14A309DECB300B431",
+      "Bytes": 5570
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Test-ResumeTransferredBuild.ps1",
+      "SHA256": "719CC7F41156408FCCED49BD5E25287F64B36450ACA1CCAD5F7ADB81DC1BE6C4",
+      "Bytes": 6198
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Test-RunConfirmedDirected.ps1",
+      "SHA256": "017B6801A821F69D162050A4CEAD50CABC0FA80B1A83C4011D0123ECADD449FC",
+      "Bytes": 6062
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/Test-VerifyAllOwnClosures.ps1",
+      "SHA256": "D4F753D03D9939FD5B579517DEA63D961979562C0BA3E11B9FCAE2A3986D536F",
+      "Bytes": 6562
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TestObserveCompleted.py",
+      "SHA256": "1D758D2838FE670DE86E9F83C8E2A45137D957A64DC16F748F7E647F34FE5009",
+      "Bytes": 8777
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/ParityAndTimingReview.json",
+      "SHA256": "440DD524D1DF4B3B421C827DCDA1802D6D3C9351DA79FBD99D5C8F9BA70CE07F",
+      "Bytes": 1929
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Results.json",
+      "SHA256": "66D7608D187180F721F5937D49701EB0812E1819DC8861F81ECADF884968E6B1",
+      "Bytes": 9841
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Review.json",
+      "SHA256": "2FAB98366D35B175B9B6284B3BA38F8CB25FAF36589E4BCFB59CCD4FA9E0B966",
+      "Bytes": 278
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_1_No.txt",
+      "SHA256": "A0FDAD5CF9915C74DF34BA77ED928C1057794AB30C8FF2485613493C5442F70B",
+      "Bytes": 265359
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_1_No.txt.Memory.json",
+      "SHA256": "4D751423C6BA89951703EF58D22A43F126E521E6759E7CDA79A2068F0C24C8E5",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_1_No.txt.Ownership.json",
+      "SHA256": "66B6D5E9D6EB6198C45C1A1BF8F0789333FD345293675AF1D7E9FBB8A8E12F49",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_1_No.txt.ProcessClosure.json",
+      "SHA256": "66A0AFA506B80115CA4EBA9EA51C84AABF4A6992C5BFA23CFA784E4B46AD28D9",
+      "Bytes": 3611
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_1_No.txt.progress.txt",
+      "SHA256": "112E4AABED146AEC1BA7E97DF726199D513CD638E446777E4E3D112DE6B81E12",
+      "Bytes": 467094
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_1_No.txt.RunnerCleanup.json",
+      "SHA256": "F5C3382B10D7FCDE72D905012DA4F5165215EEEF383F0B8C23ABF6A9D5019432",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_1_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_1_No.txt.stdout.log",
+      "SHA256": "8749BA930DA16C1586BE0600DDFE563022172CFF7BACBD0204B3DBC4C531ABC6",
+      "Bytes": 601
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_2_No.txt",
+      "SHA256": "0FD3FCEFDB5500BB62BC2A467FD8D8FA19AD55178D5703103C25C04EC7B1BEF7",
+      "Bytes": 265356
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_2_No.txt.Memory.json",
+      "SHA256": "556B5C04BF497530F6CD241FAA8EC07A6CC2E078A38B111EDAE380397926B9CC",
+      "Bytes": 319
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_2_No.txt.Ownership.json",
+      "SHA256": "6DED1AA9B0AEAA141F72190AD92B734D8A6AF24158EA62A9ACA7A130B28A0110",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_2_No.txt.ProcessClosure.json",
+      "SHA256": "A073E7E84EE252D5A32178E236BDF59D6BF6BD5C0C68A56FA6F90E39FA4B4B71",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_2_No.txt.progress.txt",
+      "SHA256": "EA9C2732400601968548B5B2C658380E94BE1394FF79E8A32AFA993F93CDADDA",
+      "Bytes": 467090
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_2_No.txt.RunnerCleanup.json",
+      "SHA256": "8D43AECA6362993BAD5121198A3347DE8B3FC5FD9E100B25AA58EE1820DCF88C",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_2_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_2_No.txt.stdout.log",
+      "SHA256": "FA2930ACC5B819FF3C23CD29BC40A0C93EF16B867E9E10AA1D1B6394C0F1D59C",
+      "Bytes": 602
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_3_Yes.txt",
+      "SHA256": "E3F0309889332720E6FFF459EF83110479D678B83479649955A08AA97FF2A616",
+      "Bytes": 255340
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_3_Yes.txt.Memory.json",
+      "SHA256": "10EA9CC444FFD70BF479B786118A22DE83820A3FFB379758317C4BF835089131",
+      "Bytes": 320
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_3_Yes.txt.Ownership.json",
+      "SHA256": "663A432037F92E8309CF4398B7851A213655911F4FDAE75125AEA778003EEBCE",
+      "Bytes": 259
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_3_Yes.txt.ProcessClosure.json",
+      "SHA256": "8F97AA3E1465531681F2D96621E792114EEA66B920AEB867A73582262A873761",
+      "Bytes": 2633
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_3_Yes.txt.progress.txt",
+      "SHA256": "988A73DA27F8993039276C1786592C793C5F37D4E72A07283D03B6172AD32B94",
+      "Bytes": 455958
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_3_Yes.txt.RunnerCleanup.json",
+      "SHA256": "E2D821D98A0C7FE621773A1E4F6DA95FCCCCC34D4DB3B17A4CC16C4D32660A86",
+      "Bytes": 511
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_3_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/TimingObservation01/Saved_3_Yes.txt.stdout.log",
+      "SHA256": "B7D3ECE5EA9BF67B32991DFFCDF5E53EDF7C8929F6AECF7B84E44A8F5CE5E0FE",
+      "Bytes": 604
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-27_FileSnapshot_Run01/UIObservationLast.json",
+      "SHA256": "B62DA23734EC95A5B36E00C30757A5028320D0562DACF3FB82432BC81756B3B9",
+      "Bytes": 710
+    },
+    {
+      "Path": "docs/regression/UserGuide_2026-10-27_Run01/AutoCADCleanupWordingReview.json",
+      "SHA256": "70FBE7C705847836DA16A25DBECDA0AB631BD52BD86443CF2D620836CB60F320",
+      "Bytes": 812
+    },
+    {
+      "Path": "docs/regression/UserGuide_2026-10-27_Run01/DocumentReview.json",
+      "SHA256": "FB7920F58092E8CA126F47B1D7590A47EA4A3096D1A077FB9610D3B3A9E7343F",
+      "Bytes": 2840
+    },
+    {
+      "Path": "docs/regression/UserGuide_2026-10-27_Run01/TerminologyReview.json",
+      "SHA256": "F7A4BF78CFBF15FEB5A2B2D478900C322864F7A1CA3F1BCD8EC8BF47719BDBF5",
+      "Bytes": 639
+    }
+  ],
+  "Count": 332,
+  "ArchiveSHA256": "59E26B1D13718A6C11D0FE2869C4607D3597FF0ECA6E06C5C50A19308D4E371D",
+  "ArchiveBytes": 7032403
+}

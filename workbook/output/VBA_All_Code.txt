@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-27 19:45:19
+Date: 2026-10-28 00:29:48
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -90415,7 +90415,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestConfiguration
 TYPE: 1
-LINES: 2910
+LINES: 2915
 ====================================================================================================
 Option Explicit
 
@@ -93150,6 +93150,11 @@ Public Function RunLocaleSavedContractTests(Optional ByRef passedCount As Long =
     For i = 0 To UBound(names)
         fixture.names.Add CStr(names(i)), "='Results'!" & sheet.cells(20, CLng(columns(i))).address
     Next i
+    sheet.range("A1").value2 = "Key": sheet.range("B1").value2 = "Value": sheet.range("C1").value2 = "Default"
+    sheet.range("A2").value2 = "Results.SnapshotStorage": sheet.range("B2").value2 = "Excel"
+    fixture.names.Add name:="rngSystemSettings", RefersTo:="='Results'!" & sheet.range("A1:C2").address ' Минимальная книга явно выбирает Excel; общий reader не должен угадывать источник при отсутствии Config.
+    Dim snapshotStore As CCalculationSnapshotStore: Set snapshotStore = New CCalculationSnapshotStore
+    TestCheck stats, "locale.savedContract.explicitExcelFixture", snapshotStore.storageMode(fixture) = "Excel"
     Set model = New CSectionModel
     model.AddConcreteElement 0#, 0#, 10000#, 1, , , "Rectangle", 100#, 100#, 0#, , 123456#, 654321#, 12#
     Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview fixture, model, PrepareSectionSnapshot(model)
@@ -93331,7 +93336,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestContourMesh
 TYPE: 1
-LINES: 1068
+LINES: 1071
 ====================================================================================================
 Option Explicit
 
@@ -94187,6 +94192,9 @@ Private Sub TestCheckSnapshot()
     Set importer = New CAutoCADSectionModelImporter
     Set model = importer.ImportFromModelSpace(TestFakeSpace(contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", TestFakeLayers(), settings)
     Set sheet = mFixture.Worksheets.Add: sheet.name = "Results"
+    sheet.range("A1").value2 = "Key": sheet.range("B1").value2 = "Value": sheet.range("C1").value2 = "Default"
+    sheet.range("A2").value2 = "Results.SnapshotStorage": sheet.range("B2").value2 = "Excel"
+    mFixture.names.Add name:="rngSystemSettings", RefersTo:="='Results'!" & sheet.range("A1:C2").address ' Явный Excel-источник переживает SaveAs/reopen вместе с контрольной геометрией.
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
     columns = Array(1, 12, 29, 48, 56, 69, 96)
     For i = 0 To UBound(names)
@@ -112682,7 +112690,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestPlotConfig
 TYPE: 1
-LINES: 2029
+LINES: 2031
 ====================================================================================================
 Option Explicit
 
@@ -113542,6 +113550,8 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
     Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.name = "MetadataConfig"
     Set sheet = fixture.Worksheets.Add: sheet.name = "Results"
     Set table = TestAudit03PlotSettingsTable(config.range("A5"))
+    TestAudit03SetPlotSetting table, "Results.SnapshotStorage", "Excel"
+    fixture.names.Add name:="rngSystemSettings", RefersTo:="='MetadataConfig'!" & table.address ' Рабочий выбор источника читает именованную таблицу той же мини-книги.
     Set source = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
     config.range("AF5").Resize(source.rows.count, source.columns.count).value2 = source.value2
     For row = 2 To source.rows.count
@@ -125994,7 +126004,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 9566
+LINES: 9570
 ====================================================================================================
 Option Explicit
 
@@ -127238,8 +127248,9 @@ Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats
 Finished:
     If Len(path) > 0 Then
         If TestFileExists(path) And store.HasFileReference(ThisWorkbook) Then
+            Dim completedSnapshot As CCalculationSnapshot: Set completedSnapshot = store.LoadFile(ThisWorkbook)
             TestSetSystemSetting "Results.SnapshotStorage", "Excel"
-            UpdateSectionResultsForWorkbook ThisWorkbook
+            UpdateSectionResultsForWorkbook ThisWorkbook, completedSnapshot ' Подготавливает полный Excel-fixture явно; смена режима не должна загружать File скрыто.
         End If
         TestDeleteFileIfExists path
     End If
@@ -130143,9 +130154,9 @@ End Sub
 ' Добавляет диагностическую строку к протоколу интерфейсного набора.
 Private Sub TestAppendLine(ByRef stats As TUiTestStats, ByVal text As String)
     stats.report = stats.report & text & vbCrLf
-    ' ДЛЯ ТЕСТОВ: сохраняем текущий этап вне COM-вызова. При зависании или
-    ' ошибке Excel runner сможет определить тест, не обращаясь к busy Excel.
-    If left$(text, 5) = "RUN: " Then
+    ' ДЛЯ ТЕСТОВ: этапы и найденные FAIL пишутся сразу вне COM-вызова;
+    ' наблюдение видит отказ до возврата длинного UI-макроса.
+    If left$(text, 5) = "RUN: " Or left$(text, 6) = "FAIL: " Then
         Dim stream As Object
         Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile( _
             ThisWorkbook.path & "\RC_NDM_ui_test_progress.txt", 8, True, -1)
@@ -133094,6 +133105,9 @@ End Function
 ' Пустой сохранённый набор версии 1 требует нового обязательного блока;
 ' проверка выполняется в отдельной временной книге.
 Private Sub TestInitializeEmptyContourFixture(ByVal Workbook As Object, ByVal sheet As Object)
+    sheet.range("A1").value2 = "Key": sheet.range("B1").value2 = "Value": sheet.range("C1").value2 = "Default"
+    sheet.range("A2").value2 = "Results.SnapshotStorage": sheet.range("B2").value2 = "Excel"
+    Workbook.names.Add name:="rngSystemSettings", RefersTo:="='" & sheet.name & "'!" & sheet.range("A1:C2").address ' Мини-книга явно выбирает листовой снимок; схема и метаданные остаются исходными контрольными данными.
     Workbook.names.Add name:="rngNDMSectionContours", RefersTo:="='" & sheet.name & "'!$GR$5"
     Dim writer As CNDMResultsWriter, contours As CSectionContours
     Set writer = New CNDMResultsWriter: Set contours = New CSectionContours

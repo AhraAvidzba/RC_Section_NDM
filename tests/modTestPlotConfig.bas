@@ -857,6 +857,8 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
     Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "MetadataConfig"
     Set sheet = fixture.Worksheets.Add: sheet.Name = "Results"
     Set table = TestAudit03PlotSettingsTable(config.Range("A5"))
+    TestAudit03SetPlotSetting table, "Results.SnapshotStorage", "Excel"
+    fixture.Names.Add Name:="rngSystemSettings", RefersTo:="='MetadataConfig'!" & table.Address ' Рабочий выбор источника читает именованную таблицу той же мини-книги.
     Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     config.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Value2 = source.Value2
     For row = 2 To source.Rows.Count
