@@ -1,6 +1,6 @@
 ﻿# Выполняет все штатные VBA suites на независимой копии заданной книги.
 # Меняет только глобальную настройку копии: исходная baseline/output книга
-# остается неизменной. Explicit-On setup внутри исторических тестов сохранен.
+# остаётся неизменной. Подготовку Explicit-On выполняют соответствующие тесты.
 param(
     [Parameter(Mandatory=$true)][string]$SourceWorkbook,
     [string]$SettingKey = "General.DiagramExtension",
@@ -265,7 +265,7 @@ try {
         $macroName = "'RC_Section_NDM.xlsm'!$macro"
         # Фоновый тестовый Excel не должен прерывать VBA из-за Escape в другом
         # приложении. Excel сбрасывает этот режим после idle, поэтому задаем его
-        # перед каждым Run; зависание по-прежнему ограничивает внешний watchdog.
+        # перед каждым Run; предельное время выполнения контролирует внешний watchdog.
         $excel.EnableCancelKey = 0
         $lines.Add('TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only')
         $excel.DisplayAlerts = $false

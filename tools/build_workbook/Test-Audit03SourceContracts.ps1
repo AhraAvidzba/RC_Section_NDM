@@ -60,9 +60,9 @@ $production = @(Get-ChildItem -LiteralPath (Join-Path $root 'src') -Recurse -Fil
 $testClasses = @(Get-ChildItem -LiteralPath (Join-Path $root 'tests') -Recurse -File -Filter '*.cls')
 $beforeClasses = @(Get-ChildItem -LiteralPath (Join-Path $BaselineRoot 'src') -Recurse -File -Filter '*.cls' |
     ForEach-Object { $_.Name })
-# Пользовательский scope LoadPath переименовал существующий описатель без
-# добавления ответственности/класса. Сопоставляем его с baseline по этой явной
-# паре; остальные новые классы по-прежнему запрещены.
+# При сравнении с baseline CLoadPathDescriptor соответствует CCapacityLoadPath:
+# это один описатель LoadPath. Явное сопоставление имён не допускает появления
+# других классов в проверяемом составе.
 $comparableClasses = @($production.Name | ForEach-Object { if ($_ -eq 'CLoadPathDescriptor.cls') { 'CCapacityLoadPath.cls' } else { $_ } })
 $difference = @(Compare-Object ($beforeClasses | Sort-Object) ($comparableClasses | Sort-Object))
 $added = @($difference | Where-Object { $_.SideIndicator -eq '=>' })

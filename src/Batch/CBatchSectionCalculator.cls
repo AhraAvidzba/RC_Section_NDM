@@ -2227,7 +2227,7 @@ End Property
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Подставляет готовые метаданные только для синтетической проверки представления.
-' Численный расчёт не вызывается; публичный ResultAt по-прежнему замораживает результат.
+' Численный расчёт не вызывается; публичный ResultAt замораживает результат.
 Friend Sub TestStoreResultForPresentation(ByVal index As Long, ByVal result As CCombinationResult)
     If index < 1 Or index > mCount Or result Is Nothing Then Err.Raise vbObjectError + 3943, _
         "CBatchSectionCalculator.TestStoreResultForPresentation", "Тестовый результат сочетания вне диапазона или не передан."

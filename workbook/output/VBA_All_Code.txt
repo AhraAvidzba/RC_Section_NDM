@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-27 02:55:00
+Date: 2026-10-27 10:40:29
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -40877,7 +40877,7 @@ End Property
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Подставляет готовые метаданные только для синтетической проверки представления.
-' Численный расчёт не вызывается; публичный ResultAt по-прежнему замораживает результат.
+' Численный расчёт не вызывается; публичный ResultAt замораживает результат.
 Friend Sub TestStoreResultForPresentation(ByVal index As Long, ByVal result As CCombinationResult)
     If index < 1 Or index > mCount Or result Is Nothing Then Err.Raise vbObjectError + 3943, _
         "CBatchSectionCalculator.TestStoreResultForPresentation", "Тестовый результат сочетания вне диапазона или не передан."
@@ -51690,7 +51690,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionPlotDataReader
 TYPE: 2
-LINES: 1370
+LINES: 1516
 ====================================================================================================
 Option Explicit
 
@@ -51801,8 +51801,9 @@ Public Sub LoadFromWorkbook(ByVal Workbook As Object, ByVal settings As CSystemS
     mLoadCase = ResolveLoadCase(Workbook, settings.GetRequiredString("Plot.LoadCase"))
     ApplyVisualizationProfile Workbook
 
-    ReadSectionProperties Workbook
-    ReadGeometryAndResults Workbook
+    Dim stateFields As Object
+    Set stateFields = ReadSectionProperties(Workbook)
+    ReadGeometryAndResults Workbook, stateFields
     ReadAnnotations Workbook
     Set mReadTables = Nothing
     EndCalculationSnapshotRead
@@ -52082,7 +52083,9 @@ End Function
 
 ' Читает свойства сечения и выбранного сочетания: габариты, центр тяжести,
 ' главные оси, единицы и параметры поля деформаций epsilon0/kappaX/kappaY.
-Private Sub ReadSectionProperties(ByVal Workbook As Object)
+' Возвращает значения и адреса свойств выбранного LC для согласования
+' именованных НДС с реально сохранёнными строками элементов.
+Private Function ReadSectionProperties(ByVal Workbook As Object) As Object
     Dim anchor As Object
     Set anchor = Workbook.names.item("rngNDMSectionProperties").RefersToRange
     Dim data As Variant
@@ -52098,6 +52101,7 @@ Private Sub ReadSectionProperties(ByVal Workbook As Object)
     Dim rowIndex As Long
     Dim parameter As String, loadCase As String
     Dim stateFields As Object: Set stateFields = CreateObject("Scripting.Dictionary")
+    Dim selectedStateMetadataExists As Boolean
     For rowIndex = 2 To UBound(data, 1) ' Сначала читаем единицы результата, чтобы порядок строк свойств не влиял на перевод величин без отдельно указанной единицы.
         parameter = Trim$(ReadSnapshotText(data(rowIndex, colParameter), anchor, rowIndex, colParameter, "Parameter"))
         loadCase = Trim$(ReadSnapshotText(data(rowIndex, colLoadCase), anchor, rowIndex, colLoadCase, "LoadCase"))
@@ -52121,21 +52125,14 @@ Private Sub ReadSectionProperties(ByVal Workbook As Object)
             ElseIf StrComp(loadCase, mLoadCase, vbTextCompare) = 0 Then
                 If Not mGeometryOnly Or mGeometryReferenceItemsEnabled Then
                     ReadLoadCaseProperty parameter, data(rowIndex, colValue), data(rowIndex, colUnit), anchor, rowIndex, colValue, colUnit
-                    stateFields(LCase$(parameter)) = True
+                    stateFields(LCase$(parameter)) = Array(data(rowIndex, colValue), data(rowIndex, colUnit), rowIndex, colValue, colUnit)
+                    If left$(LCase$(parameter), Len("state." & mStateType & ".")) = "state." & LCase$(mStateType) & "." Then selectedStateMetadataExists = True
                 End If
             End If
         End If
     Next rowIndex
 
-    If Not mGeometryOnly Then
-        Dim field As Variant, requiredKey As String
-        For Each field In Array("Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
-            requiredKey = "State." & mStateType & "." & CStr(field)
-            If Not stateFields.Exists(LCase$(requiredKey)) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
-                "В сохраненном снимке Results для сочетания " & mLoadCase & " отсутствует обязательное поле " & requiredKey & _
-                " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет/импорт для восстановления снимка."
-        Next field
-    End If
+    If Not mGeometryOnly And selectedStateMetadataExists Then RequireSavedStateFields Workbook, stateFields, mStateType, False
 
     If Len(mSnapshotLengthUnit) = 0 Then mSnapshotLengthUnit = "mm"
     If Len(mSnapshotAreaUnit) = 0 Then mSnapshotAreaUnit = mSnapshotLengthUnit & "2"
@@ -52151,7 +52148,8 @@ Private Sub ReadSectionProperties(ByVal Workbook As Object)
         mResultUnit = mStressUnit
         mResultCaption = "Stress"
     End If
-End Sub
+    Set ReadSectionProperties = stateFields
+End Function
 
 ' Читает общие свойства ALL из Results независимо от способа формирования:
 ' габариты и центры переводит в мм, углы оставляет в радианах.
@@ -52217,7 +52215,7 @@ End Sub
 ' Соединяет постоянную геометрию с LC-зависимыми результатами.
 ' rngNDMSectionGeometry хранит координаты и площади один раз, а
 ' rngNDMElementResults хранит Stress/Strain/PhysicalState по LoadCase.
-Private Sub ReadGeometryAndResults(ByVal Workbook As Object)
+Private Sub ReadGeometryAndResults(ByVal Workbook As Object, ByVal stateFields As Object)
     Dim anchor As Object
     Set anchor = Workbook.names.item("rngNDMSectionGeometry").RefersToRange
     Dim geom As Variant
@@ -52230,7 +52228,11 @@ Private Sub ReadGeometryAndResults(ByVal Workbook As Object)
     Dim resultAnchor As Object
     Set resultAnchor = Workbook.names.item("rngNDMElementResults").RefersToRange
     results = ReadElementResultTable(Workbook, mLoadCase, mStateType)
-    If Not HasRows(results) Then results = ReadElementResultTable(Workbook, , , True) ' Индекс отличает отсутствие выбранного состояния от отсутствия всех результатов без копирования полной таблицы.
+    Dim missingSelectedState As Boolean: missingSelectedState = Not HasRows(results)
+    If missingSelectedState Then
+        results = ReadElementResultTable(Workbook, mLoadCase) ' Только этот LC: весь его payload проверяется в существующем проходе перед геометрической схемой.
+        If Not HasRows(results) Then results = ReadElementResultTable(Workbook, , , True) ' Глобальный индекс отличает диагностический LC без строк от полного отсутствия результатов.
+    End If
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."
 
@@ -52245,6 +52247,8 @@ Private Sub ReadGeometryAndResults(ByVal Workbook As Object)
     Dim colStress As Long: colStress = ResultColumn(results, "Stress")
     Dim colState As Long: colState = ResultColumn(results, "PhysicalState")
 
+    Dim caseStates As Object: Set caseStates = CreateObject("Scripting.Dictionary"): caseStates.CompareMode = vbTextCompare
+    Dim colResProfile As Long: colResProfile = ResultColumn(results, "ProfileId")
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(results, 1) ' Собирает напряжения и деформации выбранного сочетания по ElementID. Они хранятся отдельно от геометрии и затем связываются с нужными элементами.
         If StrComp(Trim$(SafeText(results(rowIndex, colResLC))), mLoadCase, vbTextCompare) = 0 And _
@@ -52254,9 +52258,36 @@ Private Sub ReadGeometryAndResults(ByVal Workbook As Object)
                 ReadSnapshotNumber(results(rowIndex, colStress), resultAnchor, rowIndex, colStress, CStr(results(1, colStress))), _
                 CStr(results(rowIndex, colState)))
         End If
+        If StrComp(Trim$(SafeText(results(rowIndex, colResLC))), mLoadCase, vbTextCompare) = 0 Then
+            If StrComp(Trim$(SafeText(results(rowIndex, colResProfile))), mProfileId, vbTextCompare) <> 0 Then Err.Raise vbObjectError + 4703, _
+                "CSectionPlotDataReader", "В сохраненном снимке Results не совпадает ProfileId состояния " & mLoadCase & _
+                "/" & SafeText(results(rowIndex, colResStateType)) & "; ElementID=" & SafeText(results(rowIndex, colResID)) & _
+                "; строка выбранного набора " & CStr(rowIndex) & " (rngNDMElementResults, " & resultAnchor.Worksheet.name & "!" & _
+                resultAnchor.address(False, False) & "). Повторите расчет."
+            If missingSelectedState Then
+                Dim stateName As String, stateElements As Object, elementName As String, otherNumber As Double
+                stateName = Trim$(SafeText(results(rowIndex, colResStateType)))
+                If Not caseStates.Exists(stateName) Then
+                    Set stateElements = CreateObject("Scripting.Dictionary"): stateElements.CompareMode = vbTextCompare
+                    caseStates.Add stateName, stateElements
+                End If
+                Set stateElements = caseStates.item(stateName)
+                elementName = Trim$(ReadSnapshotText(results(rowIndex, colResID), resultAnchor, rowIndex, colResID, "ElementID"))
+                If Len(elementName) = 0 Or stateElements.Exists(elementName) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+                    "В сохраненном снимке Results пустой или повторный ElementID=" & elementName & " для " & mLoadCase & "/" & stateName & _
+                    "; строка выбранного набора " & CStr(rowIndex) & " (rngNDMElementResults, " & resultAnchor.Worksheet.name & "!" & _
+                    resultAnchor.address(False, False) & "). Повторите расчет."
+                stateElements.Add elementName, True
+                otherNumber = ReadMissingStateResultNumber(results(rowIndex, colStrain), resultAnchor, rowIndex, "Strain", stateName, elementName)
+                otherNumber = ReadMissingStateResultNumber(results(rowIndex, colStress), resultAnchor, rowIndex, "Stress", stateName, elementName)
+            End If
+        End If
     Next rowIndex
-    If resultMap.count = 0 Then Err.Raise vbObjectError + 4706, "CSectionPlotDataReader", _
-        MissingStateMessage(mLoadCase, mStateType)
+    If resultMap.count = 0 Then
+        RequireMissingStateFullSnapshot Workbook, stateFields, caseStates, geom
+        Err.Raise vbObjectError + 4706, "CSectionPlotDataReader", MissingStateMessage(mLoadCase, mStateType)
+    End If
+    If Not stateFields.Exists("state." & LCase$(mStateType) & ".epsilon0") Then RequireSavedStateFields Workbook, stateFields, mStateType, False
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
     If UBound(geom, 2) < 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
@@ -52288,6 +52319,121 @@ Private Sub ReadGeometryAndResults(ByVal Workbook As Object)
         End If
     Next rowIndex
 End Sub
+
+
+' Проверяет число в выбранном наборе строк другого НДС тем же строгим
+' парсером, что и обычные значения снимка. Номер строки среза не выдаётся
+' за физическую строку листа; сообщение называет якорь, LC/State и ElementID.
+Private Function ReadMissingStateResultNumber(ByVal value As Variant, ByVal anchor As Object, _
+        ByVal selectedRow As Long, ByVal field As String, ByVal stateType As String, ByVal elementID As String) As Double
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed) Then Err.Raise vbObjectError + 4719, "CSectionPlotDataReader", _
+        "В сохраненном снимке Results поле " & field & " содержит нечисловое значение для " & mLoadCase & "/" & stateType & _
+        "; ElementID=" & elementID & "; строка выбранного набора " & CStr(selectedRow) & " (rngNDMElementResults, " & _
+        anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет, чтобы восстановить корректный снимок."
+    ReadMissingStateResultNumber = parsed
+End Function
+
+' Проверяет пять обязательных полей существующего НДС. Для других состояний
+' перед geometry-only ветвью проверяет также значения/единицы, не публикуя их
+' как выбранное поле деформаций и не перечитывая полную таблицу элементов.
+Private Sub RequireSavedStateFields(ByVal Workbook As Object, ByVal stateFields As Object, _
+        ByVal stateType As String, ByVal validateValues As Boolean)
+    Dim anchor As Object: Set anchor = Workbook.names.item("rngNDMSectionProperties").RefersToRange
+    Dim field As Variant, key As String, saved As Variant, number As Double, flag As Boolean, status As String, unit As String
+    Dim knownState As Boolean
+    Select Case LCase$(Trim$(stateType))
+        Case "strengthstate", "capacitystate", "precrackstate", "postcrackstate", "crackedstate": knownState = True
+    End Select
+    If Not knownState Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+        "В сохраненном снимке Results неизвестный StateType " & stateType & " для сочетания " & mLoadCase & _
+        " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет."
+    For Each field In Array("Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
+        key = "State." & stateType & "." & CStr(field)
+        If Not stateFields.Exists(LCase$(key)) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+            "В сохраненном снимке Results для сочетания " & mLoadCase & " отсутствует обязательное поле " & key & _
+            " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет/импорт для восстановления снимка."
+        If validateValues Then
+            saved = stateFields.item(LCase$(key))
+            Select Case CStr(field)
+                Case "Epsilon0": number = ReadSnapshotNumber(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), key)
+                Case "KappaX", "KappaY"
+                    number = ReadSnapshotNumber(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), key)
+                    unit = ReadSnapshotUnit(saved(1), "Curvature", mSnapshotCurvatureUnit, "1/mm", anchor, CLng(saved(2)), CLng(saved(4)), key & ".Unit", True)
+                Case "ExtensionUsed": flag = ReadSnapshotBoolean(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), key)
+                Case "Status": status = ReadSnapshotStatus(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), key)
+            End Select
+        End If
+    Next field
+End Sub
+
+' Отсутствующее выбранное НДС разрешает только геометрию проверенного Full:
+' рассчитанные состояния этого LC имеют полный payload и metadata; полностью
+' диагностический LC сохраняет свои валидные поля и использует общий индекс.
+' Частичные metadata и успешное НДС без строк означают повреждение Full.
+' Полный диагностический NumFail/InputErr/CalcErr/N/A без строк сохраняет
+' контракт writer; этот путь не создаёт Snapshot.Kind=GeometryPreview.
+Private Sub RequireMissingStateFullSnapshot(ByVal Workbook As Object, ByVal stateFields As Object, ByVal caseStates As Object, ByRef geometry As Variant)
+    Dim anchor As Object: Set anchor = Workbook.names.item("rngNDMSectionProperties").RefersToRange
+    Dim key As Variant, profile As Variant, metadataStates As Object, parts As Variant
+    Set metadataStates = CreateObject("Scripting.Dictionary"): metadataStates.CompareMode = vbTextCompare
+    For Each key In stateFields.keys
+        If left$(CStr(key), 6) = "state." Then
+            parts = split(CStr(key), ".")
+            If UBound(parts) >= 2 Then metadataStates(CStr(parts(1))) = True
+        End If
+    Next key
+    For Each key In metadataStates.keys
+        RequireSavedStateFields Workbook, stateFields, CStr(key), True
+        If SavedStateNeedsElementRows(Workbook, stateFields, CStr(key)) And Not caseStates.Exists(key) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+            "В сохраненном снимке Results успешное состояние " & CStr(key) & " не имеет строк элементов для " & mLoadCase & _
+            " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет."
+    Next key
+    If Not stateFields.Exists("profileid") Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+        "В сохраненном снимке Results нет полного рассчитанного сочетания " & mLoadCase & _
+        " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет."
+    profile = stateFields.item("profileid")
+    If StrComp(Trim$(ReadSnapshotText(profile(0), anchor, CLng(profile(2)), CLng(profile(3)), "ProfileId")), mProfileId, vbTextCompare) <> 0 Then _
+        Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", "Не совпадает сохраненный ProfileId сочетания " & mLoadCase & _
+        " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет."
+    If caseStates.count = 0 And Not metadataStates.Exists(LCase$(mStateType)) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+        "В сохраненном снимке Results нет полного состояния или диагностических свойств сочетания " & mLoadCase & _
+        " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет."
+    Dim expectedElements As Object: Set expectedElements = CreateObject("Scripting.Dictionary"): expectedElements.CompareMode = vbTextCompare
+    Dim column As Long: column = ResultColumn(geometry, "ElementID")
+    Dim row As Long, identity As String, stateElements As Object, element As Variant
+    For row = 2 To UBound(geometry, 1)
+        identity = Trim$(SafeText(geometry(row, column)))
+        If Len(identity) = 0 Or expectedElements.Exists(identity) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+            "В rngNDMSectionGeometry пустой или повторный ElementID. Повторите формирование сечения."
+        expectedElements.Add identity, True
+    Next row
+    For Each key In caseStates.keys
+        RequireSavedStateFields Workbook, stateFields, CStr(key), True
+        Set stateElements = caseStates.item(key)
+        If stateElements.count <> expectedElements.count Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+            "В сохраненном снимке Results неполный состав элементов " & mLoadCase & "/" & CStr(key) & _
+            " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет."
+        For Each element In expectedElements.keys
+            If Not stateElements.Exists(element) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+                "В сохраненном снимке Results отсутствует " & CStr(element) & " для " & mLoadCase & "/" & CStr(key) & _
+                " (rngNDMSectionProperties, " & anchor.Worksheet.name & "!" & anchor.address(False, False) & "). Повторите расчет."
+        Next element
+    Next key
+End Sub
+
+' Согласует внешний статус с контрактом writer: OK/FAIL/BaseFail требуют
+' рассчитанных строк; диагностические статусы могут хранить только metadata.
+Private Function SavedStateNeedsElementRows(ByVal Workbook As Object, ByVal stateFields As Object, ByVal stateType As String) As Boolean
+    Dim anchor As Object: Set anchor = Workbook.names.item("rngNDMSectionProperties").RefersToRange
+    Dim key As String: key = "state." & LCase$(stateType) & ".status"
+    Dim saved As Variant: saved = stateFields.item(key)
+    Dim status As String: status = ReadSnapshotStatus(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), "State." & stateType & ".Status")
+    Select Case status
+        Case "OK", "FAIL", "BaseFail": SavedStateNeedsElementRows = True
+        Case "NumFail", "InputErr", "CalcErr", "N/A": SavedStateNeedsElementRows = False
+    End Select
+End Function
 
 ' Читает геометрию без расчётной раскраски для предварительного просмотра
 ' импорта или случая, когда выбранное НДС отсутствует,
@@ -102653,7 +102799,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestGeometryConfig
 TYPE: 1
-LINES: 1710
+LINES: 1711
 ====================================================================================================
 Option Explicit
 
@@ -103793,6 +103939,7 @@ Private Sub TestCheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats,
     Dim errorNumber As Long, description As String, prefix As String, caseIndex As Long
     TestSetKey systemRange, "Geometry.Type", "Circle": TestSetKey systemRange, "Geometry.Source", "Generated"
     TestSetKey systemRange, "Mesh.StepMode", "User" ' Ручные шаги проверяются как активные входы; внешний тест возвращает исходные формулы, включая режим Auto.
+    TestSetKey systemRange, "Mesh.CellGeometry", "Adaptive" ' Число уровней границы — активный обязательный вход Adaptive; внешний suite восстанавливает исходный режим сетки.
     TestConfigureCircle circleRange
     For Each key In Array("Geometry.Type", "Geometry.Source", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions")
         Set cell = TestRequiredGeometryKeyCell(systemRange, CStr(key))
@@ -125383,7 +125530,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 9271
+LINES: 9566
 ====================================================================================================
 Option Explicit
 
@@ -125586,6 +125733,8 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAppendLine stats, "RUN: TestMissingProfileStateDrawsGeometryOnly"
     TestMissingProfileStateDrawsGeometryOnly stats
     TestMissingProfileStateDrawsGeometryOnly stats, "File"
+    TestAppendLine stats, "RUN: TestFullPlotStateIntegrity"
+    TestFullPlotStateIntegrity stats
     TestAutoCADCalculationMessageUsesSavedGeometry stats
     TestBlankMomentDefaultsToZeroAndZeroLoadsAreSkipped stats
     TestAppendLine stats, "RUN: TestCircleWorkbookRunWritesResults"
@@ -131386,7 +131535,7 @@ End Sub
 ' Инженерный относительный порог 1e-9 совпадает с общим сравнением Properties:
 ' машинный шум не требует дополнительного прохода расчёта геометрии.
 ' Правило включается только для Transformed.Ixy/Ixyc при compareInertiaRoundoff=True;
-' пороги solver/прочности/трещин/устойчивости и исторический unit-sign тест не меняются.
+' Для solver, прочности, трещин, устойчивости и отдельной проверки единиц и знаков используются их собственные допуски.
 Private Function TestAudit03InertiaRoundoffLimit(ByRef properties As Variant, ByVal parameter As String) As Double
     Dim ix As Double, iy As Double, row As Long, suffix As String
     If parameter = "Transformed.Ixyc" Then suffix = "c"
@@ -132493,7 +132642,7 @@ End Sub
 ' может менять физическую геометрию, уже сохраненную с собственной размерностью.
 Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     Dim fixture As Object, sheet As Object, anchor As Object, properties As Object, source As Object
-    Dim data As Variant, prop(1 To 3, 1 To 4) As Variant, configuration(1 To 2, 1 To 3) As Variant
+    Dim data As Variant, prop(1 To 8, 1 To 4) As Variant, configuration(1 To 2, 1 To 3) As Variant
     Dim results(1 To 3, 1 To 7) As Variant, operation As Variant
     Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, model As CSectionModel
     Dim unitIndex As Long, position As Long, field As Variant, badValue As Variant, prefix As String, badIndex As Long
@@ -132511,7 +132660,17 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     prop(1, 1) = "LoadCase": prop(1, 2) = "Parameter": prop(1, 3) = "Value": prop(1, 4) = "Unit"
     prop(2, 1) = "ALL": prop(2, 2) = "Bounds.MaxX": prop(2, 3) = 100#: prop(2, 4) = "mm"
     prop(3, 1) = "LATE": prop(3, 2) = "ProfileId": prop(3, 3) = "PR1": prop(3, 4) = "-"
-    properties.Resize(3, 4).value2 = prop
+    ' Это синтетический тест сериализации, не нормативный НДС: обе исходные
+    ' Strain принадлежат одной плоскости по тем же внутренним координатам Y.
+    ' Известные Stress остаются независимыми контрольными значениями чтения.
+    Dim fixtureKappaX As Double: fixtureKappaX = (-0.0001 - 0.000015) / (17.625 + 8.125)
+    Dim fixtureEpsilon0 As Double: fixtureEpsilon0 = -0.0001 - fixtureKappaX * 17.625
+    prop(4, 1) = "LATE": prop(4, 2) = "State.StrengthState.Epsilon0": prop(4, 3) = fixtureEpsilon0: prop(4, 4) = "-"
+    prop(5, 1) = "LATE": prop(5, 2) = "State.StrengthState.KappaX": prop(5, 3) = fixtureKappaX: prop(5, 4) = "1/mm"
+    prop(6, 1) = "LATE": prop(6, 2) = "State.StrengthState.KappaY": prop(6, 3) = 0#: prop(6, 4) = "1/mm"
+    prop(7, 1) = "LATE": prop(7, 2) = "State.StrengthState.ExtensionUsed": prop(7, 3) = False: prop(7, 4) = "-"
+    prop(8, 1) = "LATE": prop(8, 2) = "State.StrengthState.Status": prop(8, 3) = "OK": prop(8, 4) = "-"
+    properties.Resize(8, 4).value2 = prop
     fixture.names.Add name:="rngNDMSectionProperties", RefersTo:="=Snapshot!" & properties.address
     configuration(1, 1) = "Параметр": configuration(1, 2) = "Значение": configuration(1, 3) = "Комментарий"
     configuration(2, 1) = "Plot.LoadCase": configuration(2, 2) = "LATE"
@@ -132557,6 +132716,8 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
             If reader.count = 2 Then
                 TestAssertClose stats, prefix & ".state.concreteStress", reader.resultValue(1), -1.25, 0#
                 TestAssertClose stats, prefix & ".state.rebarStress", reader.resultValue(2), 2.75, 0#
+                TestAssertClose stats, prefix & ".state.concreteStrainPlane", reader.epsilon0 + reader.kappaX * 17.625 + reader.kappaY * (-23.125), -0.0001, 1E-18
+                TestAssertClose stats, prefix & ".state.rebarStrainPlane", reader.epsilon0 + reader.kappaX * (-8.125) + reader.kappaY * 12.375, 0.000015, 1E-18
             End If
         Next unitIndex
     Next position
@@ -133292,7 +133453,7 @@ Private Sub TestAutoCADGeometryContourWarning(ByRef stats As TUiTestStats)
     For row = 1 To UBound(values, 1)
         value = CStr(values(row, 1))
         If InStr(1, value, "ВНИМАНИЕ: для расчета раскрытия трещин", vbTextCompare) = 1 Then Set warning = guide.cells(used.row + row - 1, used.column)
-        If value = "3. Точный контур и несколько отверстий" Then Set heading = guide.cells(used.row + row - 1, used.column)
+        If value = "3. Дополнительный способ: готовая бетонная сетка" Then Set heading = guide.cells(used.row + row - 1, used.column)
         If value = "4. Импорт и контроль модели" Then Set nextHeading = guide.cells(used.row + row - 1, used.column)
         If left$(value, Len("2. Задан только наружный контур.")) = "2. Задан только наружный контур." Then
             Dim noteRow As Long
@@ -134584,6 +134745,22 @@ End Function
 
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет только штатную геометрическую схему при невыбранном НДС,
+' в Excel и File, без повторения 30 сочетаний и всего интерфейсного набора.
+Public Function TestRunMissingStatePlotStorageTests() As String
+    Dim stats As TUiTestStats
+    On Error GoTo Failed
+    TestMissingProfileStateDrawsGeometryOnly stats
+    TestMissingProfileStateDrawsGeometryOnly stats, "File"
+Finished:
+    TestRunMissingStatePlotStorageTests = stats.report & "TOTAL_MISSING_STATE_STORAGE: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
+    Exit Function
+Failed:
+    TestAssertTrue stats, "missingStateStorage.runtime." & CStr(Err.number) & "." & Err.description, False
+    Resume Finished
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Запускает затронутые UI-проверки на независимой кандидатной книге.
 Public Function TestRunSnapshotUiFailureProbe() As String
     Dim stats As TUiTestStats
@@ -134654,6 +134831,271 @@ Restore:
     If Len(file) > 0 Then Kill file
     For Each name In saved.keys: ThisWorkbook.names(CStr(name)).RefersToRange.formula = saved.item(name): Next name
     On Error GoTo 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает тот же строгий Full-контракт, который включён в общий UI suite,
+' без остальных длительных UI-групп. Работает только на собственной тестовой копии.
+Public Function TestRunFullPlotStateIntegrityTests() As String
+    Dim stats As TUiTestStats
+    TestFullPlotStateIntegrity stats
+    TestRunFullPlotStateIntegrityTests = stats.report & "TOTAL_FULL_PLOT_STATE_INTEGRITY: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт настоящий Full один раз на каждый carrier, затем повреждает только
+' собственные копии матриц. Файл проходит штатный codec/LinkFile перед чтением.
+' Схема и reader проверяются без нового solve; GeometryPreview не подмешивается.
+Private Sub TestFullPlotStateIntegrity(ByRef stats As TUiTestStats)
+    Dim savedConfig As Variant, savedSections As Variant, config As Object, sections As Object
+    Dim store As CCalculationSnapshotStore, original As CCalculationSnapshot, changed As CCalculationSnapshot
+    Dim properties As Variant, states As Variant, changedProperties As Variant, changedStates As Variant
+    Dim storage As Variant, cases As Variant, item As Variant, propertyKey As String, file As String
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, message As String, reason As String
+    Dim expected As Long, code As Long, solves As Long, label As String, plotCase As String, plotState As String
+    On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange
+    Set sections = ThisWorkbook.Worksheets("Сечения").UsedRange
+    savedConfig = TestFixtureSaveInputs(config): savedSections = TestFixtureSaveInputs(sections)
+    Set store = New CCalculationSnapshotStore
+    If store.HasFileReference(ThisWorkbook) Then Err.Raise 5, "TestFullPlotStateIntegrity", "Перед тестом требуется копия без привязанного пользовательского файла."
+    cases = Array("AbsentSelected", "OtherMissingEpsilon", "OtherBadCurvatureUnit", "OtherLateStress", _
+        "OtherBadProfile", "OtherMissingElement", "OtherDuplicateElement", "SelectedPartial", "SelectedRowsWithoutMetadata", _
+        "SelectedOKWithoutRows", "SelectedFAILWithoutRows", "SelectedBaseFailWithoutRows", _
+        "SelectedNumFailWithoutRows", "SelectedNAWithoutRows", "SelectedInputErrWithoutRows", "SelectedCalcErrWithoutRows", _
+        "DiagnosticLCWithoutOwnRows", "GlobalNoRows")
+    For Each storage In Array("Excel", "File")
+        TestPrepareCircleInput
+        TestSetProfileSetting "PR1", "Calculation.Strength.DirectState", "Yes"
+        TestSetProfileSetting "PR1", "Calculation.Strength.Capacity", "No"
+        TestSetProfileSetting "PR1", "Calculation.Crack.Width", "No"
+        TestSetProfileSetting "PR1", "Calculation.Stability.Enabled", "No"
+        TestSetProfileSetting "PR1", "Visualization.State", "CapacityState"
+        ThisWorkbook.names.item("rngLoadCombinations").RefersToRange.cells(2, 5).value2 = "PR1"
+        TestSetSystemSetting "General.ExecutionReportEnabled", "No"
+        TestSetSystemSetting "Plot.Enabled", "Yes": TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+        TestSetSystemSetting "Results.SnapshotStorage", CStr(storage)
+        TestSetSystemSetting "Results.SnapshotName", "TestFullPlotIntegrity_" & format$(Now, "yyyymmdd_hhnnss") & "_" & CStr(CLng(Timer * 100#)) & ".ndm"
+        If CStr(storage) = "File" Then
+            file = store.SnapshotPath(ThisWorkbook)
+            If TestFileExists(file) Then file = vbNullString: Err.Raise 5, , "Собственный файл теста уже существует."
+        End If
+        message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
+        TestAssertTrue stats, "fullPlot." & CStr(storage) & ".prepared", TestCompletedCalculationMessage(message, 1)
+        If CStr(storage) = "File" Then
+            Set original = store.LoadLinkedFile(ThisWorkbook)
+            TestAssertTrue stats, "fullPlot.File.fullKind", Not original.IsGeometryPreview
+            propertyKey = "LoadCase.Properties": properties = original.table(propertyKey): states = original.table("rngNDMElementResults")
+        Else
+            propertyKey = "rngNDMSectionProperties"
+            properties = ReadPhysicalResultTable(ThisWorkbook, propertyKey): states = ReadPhysicalResultTable(ThisWorkbook, "rngNDMElementResults")
+        End If
+        For Each item In cases
+            changedProperties = properties: changedStates = states
+            plotCase = "LC1": plotState = "CapacityState": expected = vbObjectError + 4703
+            TestFullPlotChangeFixture changedProperties, changedStates, CStr(item), plotCase, plotState, expected
+            TestSetSystemSetting "Plot.LoadCase", plotCase: TestSetProfileSetting "PR1", "Visualization.State", plotState
+            If CStr(storage) = "File" Then
+                Set changed = TestFullPlotCopySnapshot(original, propertyKey, changedProperties, changedStates)
+                store.SaveFile ThisWorkbook, changed: store.LinkFile ThisWorkbook
+            Else
+                TestFullPlotPutMatrix propertyKey, changedProperties, UBound(properties, 1) + 6
+                TestFullPlotPutMatrix "rngNDMElementResults", changedStates, UBound(states, 1)
+            End If
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set reader = New CSectionPlotDataReader
+            solves = SectionEquilibriumSolveCount(): reason = vbNullString: code = 0
+            On Error Resume Next
+            reader.LoadFromWorkbook ThisWorkbook, settings
+            code = Err.number: reason = Err.description: Err.clear
+            On Error GoTo Failed
+            label = "fullPlot." & CStr(storage) & "." & CStr(item)
+            TestAssertTrue stats, label & ".readerClass", code = expected
+            TestAssertTrue stats, label & ".readerCleared", reader.count = 0 And reader.annotationCount = 0
+            If expected = vbObjectError + 4706 Then
+                On Error Resume Next
+                UpdateSectionPlotForWorkbook ThisWorkbook
+                code = Err.number: reason = Err.description: Err.clear
+                On Error GoTo Failed
+                TestAssertTrue stats, label & ".geometryAllowed", code = 0
+                TestAssertTrue stats, label & ".geometryTitle", TestPlotVisibleTitleContains("Геометрия расчетного сечения")
+                TestAssertTrue stats, label & ".warning", TestPlotShapeTextContains("Запрашиваемое состояние")
+            ElseIf expected <> vbObjectError + 4705 Then
+                On Error Resume Next
+                UpdateSectionPlotForWorkbook ThisWorkbook
+                code = Err.number: reason = Err.description: Err.clear
+                On Error GoTo Failed
+                TestAssertTrue stats, label & ".noCorruptGeometryFallback", code = expected
+            End If
+            TestAssertTrue stats, label & ".noSolve", SectionEquilibriumSolveCount() = solves
+            TestAppendLine stats, "FULL_PLOT_CONTRACT|storage=" & CStr(storage) & "|case=" & CStr(item) & "|expected=" & CStr(expected) & "|reason=" & reason
+            If CStr(storage) = "File" Then
+                store.SaveFile ThisWorkbook, original: store.LinkFile ThisWorkbook
+            Else
+                TestFullPlotPutMatrix propertyKey, properties, UBound(properties, 1) + 6
+                TestFullPlotPutMatrix "rngNDMElementResults", states, UBound(states, 1)
+            End If
+        Next item
+        If CStr(storage) = "File" Then TestFullPlotCleanupFile stats, store, file
+    Next storage
+    GoTo Finished
+Failed:
+    TestAssertTrue stats, "fullPlot.runtime." & CStr(Err.number) & "." & Err.description, False
+Finished:
+    If Len(file) > 0 Then TestFullPlotCleanupFile stats, store, file
+    If Not config Is Nothing Then
+        On Error Resume Next
+        Err.clear: TestFixtureRestoreInputs config, savedConfig
+        code = Err.number: reason = Err.description: Err.clear
+        On Error GoTo 0
+        If code <> 0 Then TestAssertTrue stats, "fullPlot.cleanup.restoreConfig." & CStr(code) & "." & reason, False
+    End If
+    If Not sections Is Nothing Then
+        On Error Resume Next
+        Err.clear: TestFixtureRestoreInputs sections, savedSections
+        code = Err.number: reason = Err.description: Err.clear
+        On Error GoTo 0
+        If code <> 0 Then TestAssertTrue stats, "fullPlot.cleanup.restoreSections." & CStr(code) & "." & reason, False
+    End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Очищает только собственную файловую ссылку и известный файл этого теста.
+' Каждая ошибка становится FAIL; путь забывается только после проверки удаления.
+Private Sub TestFullPlotCleanupFile(ByRef stats As TUiTestStats, ByVal store As CCalculationSnapshotStore, ByRef file As String)
+    Dim code As Long, reason As String, remains As Boolean
+    On Error Resume Next
+    Err.clear: store.ClearReference ThisWorkbook
+    code = Err.number: reason = Err.description: Err.clear
+    On Error GoTo 0
+    If code <> 0 Then TestAssertTrue stats, "fullPlot.cleanup.clearReference." & CStr(code) & "." & reason, False
+    On Error Resume Next
+    Err.clear: TestDeleteFileIfExists file
+    code = Err.number: reason = Err.description: Err.clear
+    On Error GoTo 0
+    If code <> 0 Then TestAssertTrue stats, "fullPlot.cleanup.deleteFile." & CStr(code) & "." & reason, False
+    On Error Resume Next
+    Err.clear: remains = TestFileExists(file)
+    code = Err.number: reason = Err.description: Err.clear
+    On Error GoTo 0
+    If code <> 0 Then
+        TestAssertTrue stats, "fullPlot.cleanup.verifyDeleted." & CStr(code) & "." & reason, False
+    ElseIf remains Then
+        TestAssertTrue stats, "fullPlot.cleanup.fileRemains." & file, False
+    Else
+        file = vbNullString
+    End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет только конкретную копию metadata/payload. Все добавленные поля
+' берутся из того же действительного StrengthState, RunID и профиля.
+Private Sub TestFullPlotChangeFixture(ByRef properties As Variant, ByRef states As Variant, ByVal testCase As String, _
+        ByRef plotCase As String, ByRef plotState As String, ByRef expected As Long)
+    Dim row As Long, field As Variant, sourceRows As Object, prefix As String, selectedStatus As String, addCount As Long
+    Dim expanded() As Variant, column As Long, last As Long, index As Long, targetRow As Long, values As Variant
+    Set sourceRows = CreateObject("Scripting.Dictionary")
+    prefix = "State.StrengthState."
+    For row = 2 To UBound(properties, 1)
+        If CStr(properties(row, 2)) = "LC1" Then
+            If left$(CStr(properties(row, 3)), Len(prefix)) = prefix Then sourceRows(mid$(CStr(properties(row, 3)), Len(prefix) + 1)) = row
+        End If
+    Next row
+    For Each field In Array("Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
+        If Not sourceRows.Exists(CStr(field)) Then Err.Raise 5, "TestFullPlotChangeFixture", "Нет полного исходного StrengthState: " & CStr(field)
+    Next field
+    Select Case testCase
+        Case "AbsentSelected": expected = vbObjectError + 4706
+        Case "OtherMissingEpsilon": properties(CLng(sourceRows("Epsilon0")), 3) = "Removed.Epsilon0"
+        Case "OtherBadCurvatureUnit": properties(CLng(sourceRows("KappaX")), 5) = "m": expected = vbObjectError + 4720
+        Case "OtherLateStress", "OtherBadProfile", "OtherMissingElement", "OtherDuplicateElement"
+            For row = 2 To UBound(states, 1)
+                If CStr(states(row, 2)) = "LC1" And CStr(states(row, 4)) = "StrengthState" Then last = row
+            Next row
+            If last <= 2 Then Err.Raise 5, "TestFullPlotChangeFixture", "Нужно несколько реальных элементов StrengthState."
+            Select Case testCase
+                Case "OtherLateStress": states(last, 8) = "late-invalid": expected = vbObjectError + 4719
+                Case "OtherBadProfile": states(last, 3) = "WRONG_PROFILE"
+                Case "OtherMissingElement"
+                    ReDim expanded(1 To UBound(states, 1) - 1, 1 To UBound(states, 2))
+                    index = 0
+                    For row = 1 To UBound(states, 1)
+                        If row <> last Then
+                            index = index + 1
+                            For column = 1 To UBound(states, 2): expanded(index, column) = states(row, column): Next column
+                        End If
+                    Next row
+                    states = expanded
+                Case "OtherDuplicateElement": states(last, 5) = states(2, 5)
+            End Select
+        Case "SelectedRowsWithoutMetadata"
+            plotState = "StrengthState"
+            For row = 2 To UBound(properties, 1)
+                If CStr(properties(row, 2)) = "LC1" And left$(CStr(properties(row, 3)), Len(prefix)) = prefix Then properties(row, 3) = "Removed." & CStr(properties(row, 3))
+            Next row
+        Case "GlobalNoRows"
+            ReDim expanded(1 To 1, 1 To UBound(states, 2))
+            For column = 1 To UBound(states, 2): expanded(1, column) = states(1, column): Next column
+            states = expanded: plotState = "StrengthState": expected = vbObjectError + 4705
+        Case Else
+            addCount = 5: selectedStatus = "OK"
+            Select Case testCase
+                Case "SelectedPartial": addCount = 1
+                Case "SelectedFAILWithoutRows": selectedStatus = "FAIL"
+                Case "SelectedBaseFailWithoutRows": selectedStatus = "BaseFail"
+                Case "SelectedNumFailWithoutRows", "DiagnosticLCWithoutOwnRows": selectedStatus = "NumFail": expected = vbObjectError + 4706
+                Case "SelectedNAWithoutRows": selectedStatus = "N/A": expected = vbObjectError + 4706
+                Case "SelectedInputErrWithoutRows": selectedStatus = "InputErr": expected = vbObjectError + 4706
+                Case "SelectedCalcErrWithoutRows": selectedStatus = "CalcErr": expected = vbObjectError + 4706
+            End Select
+            If testCase = "DiagnosticLCWithoutOwnRows" Then plotCase = "DIAG": addCount = 6
+            ReDim expanded(1 To UBound(properties, 1) + addCount, 1 To UBound(properties, 2))
+            For row = 1 To UBound(properties, 1)
+                For column = 1 To UBound(properties, 2): expanded(row, column) = properties(row, column): Next column
+            Next row
+            values = Array("Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
+            For index = 0 To IIf(addCount = 1, 0, 4)
+                row = CLng(sourceRows(CStr(values(index)))): targetRow = UBound(properties, 1) + index + 1
+                For column = 1 To UBound(properties, 2): expanded(targetRow, column) = properties(row, column): Next column
+                expanded(targetRow, 2) = plotCase: expanded(targetRow, 3) = "State.CapacityState." & CStr(values(index))
+                If CStr(values(index)) = "Status" Then expanded(targetRow, 4) = selectedStatus
+            Next index
+            If addCount = 6 Then
+                targetRow = UBound(expanded, 1): expanded(targetRow, 1) = properties(2, 1): expanded(targetRow, 2) = "DIAG"
+                expanded(targetRow, 3) = "ProfileId": expanded(targetRow, 4) = "PR1": expanded(targetRow, 5) = "-"
+            End If
+            properties = expanded
+    End Select
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Копирует полный snapshot без изменения Kind, заменяя только два тестовых массива.
+Private Function TestFullPlotCopySnapshot(ByVal original As CCalculationSnapshot, ByVal propertyKey As String, _
+        ByRef properties As Variant, ByRef states As Variant) As CCalculationSnapshot
+    Dim result As CCalculationSnapshot: Set result = New CCalculationSnapshot
+    result.runID = original.runID: result.elapsedSeconds = original.elapsedSeconds
+    Dim key As Variant, values As Variant
+    For Each key In original.keys()
+        If CStr(key) = propertyKey Then
+            values = properties
+        ElseIf CStr(key) = "rngNDMElementResults" Then
+            values = states
+        Else
+            values = original.table(CStr(key))
+        End If
+        result.AddTable CStr(key), values
+    Next key
+    Set TestFullPlotCopySnapshot = result
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' В своей тестовой книге восстанавливает только body переданных technical tables.
+' Дополнительный хвост негативного примера очищается без изменения оформления.
+Private Sub TestFullPlotPutMatrix(ByVal rangeName As String, ByRef values As Variant, ByVal clearRows As Long)
+    Dim anchor As Object: Set anchor = ThisWorkbook.names.item(rangeName).RefersToRange.cells(1, 1)
+    If clearRows < UBound(values, 1) Then clearRows = UBound(values, 1)
+    anchor.Resize(clearRows, UBound(values, 2)).ClearContents
+    anchor.Resize(UBound(values, 1), UBound(values, 2)).value2 = values
 End Sub
 
 

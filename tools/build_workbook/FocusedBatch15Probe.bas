@@ -6,7 +6,7 @@
 ' Архивный entrypoint: исходный SavedCrackSearchProbe отсутствует; актуальные 15 сочетаний проверяет CoreRegressionBatchProbe.
 Public Function TestRunFocusedBatch15() As String
     Err.Raise vbObjectError + 5917, "TestRunFocusedBatch15", "Архивная проверка требует исходный SavedCrackSearchProbe.bas от 09.10.2026, которого нет в репозитории. Используйте tools/build_workbook/Run-FocusedAcceptance.ps1 для действующей полной приёмки с пакетом из 15 сочетаний."
-#If False Then ' Исторический body сохранён целиком как описание прежних expectations; его зависимость не подменяется фиктивной реализацией.
+#If False Then ' Фиксированное тело описывает ожидания batch15 и отключено без SavedCrackSearchProbe; фиктивная реализация зависимости не используется.
     On Error GoTo Failed
     Dim stats As TBatchTestStats, body As String, result As CCombinationResult
     Dim settings As CSystemSettingsReader, units As CUnitSystem, i As Long, meta As Variant

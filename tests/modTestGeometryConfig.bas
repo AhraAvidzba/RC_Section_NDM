@@ -1137,6 +1137,7 @@ Private Sub TestCheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats,
     Dim errorNumber As Long, description As String, prefix As String, caseIndex As Long
     TestSetKey systemRange, "Geometry.Type", "Circle": TestSetKey systemRange, "Geometry.Source", "Generated"
     TestSetKey systemRange, "Mesh.StepMode", "User" ' Ручные шаги проверяются как активные входы; внешний тест возвращает исходные формулы, включая режим Auto.
+    TestSetKey systemRange, "Mesh.CellGeometry", "Adaptive" ' Число уровней границы — активный обязательный вход Adaptive; внешний suite восстанавливает исходный режим сетки.
     TestConfigureCircle circleRange
     For Each key In Array("Geometry.Type", "Geometry.Source", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions")
         Set cell = TestRequiredGeometryKeyCell(systemRange, CStr(key))

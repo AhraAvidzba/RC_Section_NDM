@@ -1,0 +1,1102 @@
+[
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/CurrentFeatures_Off.txt",
+    "Bytes": 307848,
+    "SHA256": "A762A2883FD8EC9E8898D2D1DB1FF219A2EF797CE25F48E04A992F0DA48E6684"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/CurrentFeatures_Off.txt.ProcessClosure.json",
+    "Bytes": 4589,
+    "SHA256": "C49F9F4BB556FC099525C3A77985666D324CE23F5186A17E642771FCF5197EA8"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/CurrentFeatures_Off.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/CurrentFeatures_Off.txt.stdout.log",
+    "Bytes": 1193,
+    "SHA256": "2DAE0B5C472441BC6788F2C59419B4F57FB5D9089D1BECCE5FDBADF05CB3713C"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/CurrentFeatures_On.txt",
+    "Bytes": 307111,
+    "SHA256": "9E5CF75E107778298AF9FD89BF99FA810B90339D365DA1B4157EEC98CBCBC290"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/CurrentFeatures_On.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "8EC03E9D92D579025CE2CAE330E43E212FA91331E4DD7AEA9F470F0D3F156B2C"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/CurrentFeatures_On.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/CurrentFeatures_On.txt.stdout.log",
+    "Bytes": 1205,
+    "SHA256": "9BD2E1B84982FCABDADEB887A9AC51E3F9225CA41956515534E3B223CD527531"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Finalize.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Acceptance.json",
+    "Bytes": 1835,
+    "SHA256": "C15DF1161C94C88D25E4764A541F78EC52350AF70E37E1B285479206ED5D0C17"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/AsymmetricSteel_No.txt",
+    "Bytes": 11514,
+    "SHA256": "6EA6A15A777EEDA89A80E744115132E0EE04D72FDD63CEF6A35D4AC495A301AC"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/AsymmetricSteel_No.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "7E9FFFE178FF8196FBC9C2E57D705F88F4270B11B40623A548A9EC8931F1784B"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/AsymmetricSteel_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/AsymmetricSteel_No.txt.stdout.log",
+    "Bytes": 571,
+    "SHA256": "B3EB5DD93E430D42A162B8899AD6EA0E20C59A6AE38D8AEC24EBC88785495BD4"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/AsymmetricSteel_Yes.txt",
+    "Bytes": 11273,
+    "SHA256": "22DCFD2556448EAD379BBDBF3F2D831A7FA78915385E34D7D37F379E9C29C567"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/AsymmetricSteel_Yes.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "2444E1B4467740F767984645756CB9ED3E46A15D785887C06FC7D1E64A8118F1"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/AsymmetricSteel_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/AsymmetricSteel_Yes.txt.stdout.log",
+    "Bytes": 574,
+    "SHA256": "D45AB03A54D957E09F64A39F5F37A131B00C32026D9F6620B6D3AA25832DEE0E"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Batch15_No.txt",
+    "Bytes": 116242,
+    "SHA256": "0BDA5697AFBC2B35540A31ECB553C8DA295975FD4AFB081FE3F18BC3CE282D38"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Batch15_No.txt.ProcessClosure.json",
+    "Bytes": 3605,
+    "SHA256": "52D5E698EF3C80B660A4229F9992F496D35086441C131B66ED147AC5010E841E"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Batch15_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Batch15_No.txt.stdout.log",
+    "Bytes": 545,
+    "SHA256": "574B31995B63BC38042A8519344003BD76EB443F8FC27FC4D3B24258555DB6FA"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Batch15_Yes.txt",
+    "Bytes": 114538,
+    "SHA256": "2BD0A789C5277006593C34C0AE114668AFF8657E323B02A9C26068C877185759"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Batch15_Yes.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "29E04E3960F01618EA356818B8267A910A3337A83A40601E09D68B57B42E2CCA"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Batch15_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Batch15_Yes.txt.stdout.log",
+    "Bytes": 546,
+    "SHA256": "FAFA6BEA37BE0920663AC6C57CFB7E3290F402180E8A09EFF134296D2CC48599"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Circle_Generated_No.txt",
+    "Bytes": 75758,
+    "SHA256": "6727DB6EC1A1738EBC91417BEAAA8CF09F4C502D60E1E3819C91241A1A85FE3D"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Circle_Generated_No.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "5A7870F18BFBE03E50C9C6C7D6A75BC8E54607D737F38C1A117C05FDE5963DCA"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Circle_Generated_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Circle_Generated_No.txt.stdout.log",
+    "Bytes": 595,
+    "SHA256": "B91D954CD0E8E657ECDAC96900956D3A55155510446225099AAE63CAED0C8733"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Circle_Generated_Yes.txt",
+    "Bytes": 74253,
+    "SHA256": "447B38B77DED2801E90AB203E09A1427D2876D404BB1AD8162F9BAAE667EB306"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Circle_Generated_Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "6A7BA80691C614AD3D508B40B836FC3619610B39B512A862E8EB327B143FFD6A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Circle_Generated_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Circle_Generated_Yes.txt.stdout.log",
+    "Bytes": 596,
+    "SHA256": "A34E809A139B2BC7D61D18B1D1E9423861D57BE39809F33B9E76BC60DECD4C00"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/FocusedRunner.ps1",
+    "Bytes": 7486,
+    "SHA256": "1FE70882E03EDDEA764AEDC1538E30C8B157FA86E363C105C7485747F17775FA"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/HollowRectangle_Generated_No.txt",
+    "Bytes": 80643,
+    "SHA256": "C6CD9DC9C49B3B4609B861F525EA5E4B8BA0E225E0BC1B30A1C8536AA48F3BB6"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/HollowRectangle_Generated_No.txt.ProcessClosure.json",
+    "Bytes": 4093,
+    "SHA256": "AACEBE57D35A792CF88D1C083F5790FEC43F31F385E994BBF1B8EC48C17336ED"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/HollowRectangle_Generated_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/HollowRectangle_Generated_No.txt.stdout.log",
+    "Bytes": 604,
+    "SHA256": "737F27E3CEE015E4898C1C0E65C569D21A3034C422862CC2686CF1E9B7DCFA3D"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/HollowRectangle_Generated_Yes.txt",
+    "Bytes": 78900,
+    "SHA256": "FFBF5A0E054877FBBEC8391DBC2A9A7F4812BC62FDE0C1940909052F982F26DD"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/HollowRectangle_Generated_Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "34C7D1464E5CCA6A0D23F86F7CBE613A2EACE6CA26DEC66A7ABB1E85B88488EF"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/HollowRectangle_Generated_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/HollowRectangle_Generated_Yes.txt.stdout.log",
+    "Bytes": 604,
+    "SHA256": "A77311D02696FB7962855025B4CEE6CB1CC660E39E4F493DD3EFDBD044A59973"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Independent.json",
+    "Bytes": 193473,
+    "SHA256": "00F62738C2C6CEDEA84CED33EE98CD0686573636138376E9937C89720599AA93"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_Circle.txt",
+    "Bytes": 17999,
+    "SHA256": "F0B15EF9744F3B17D1AE26C16532C8E43437AFA08898030F4BEDC5E8DB6A66C5"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_Circle.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "AC476ADB8E0EC3563363FA846F7F2A0283EE508AECDA5E244FCF4EEA1152B405"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_Circle.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_Circle.txt.stdout.log",
+    "Bytes": 483,
+    "SHA256": "3A8667D45108D47CDE6C7CF81110CF5C648DDEE71D9518FF024D8173EEE9F4F6"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_HollowRectangle.txt",
+    "Bytes": 24879,
+    "SHA256": "0036822DF5143129B12D02D2651F0619413F44E53A46EFC734E620BE9266B6AE"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_HollowRectangle.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "0C0646D0FC67A63D0E4BF14084E72476C17AEEB65437F273F1DF36F4CD160BBE"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_HollowRectangle.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_HollowRectangle.txt.stdout.log",
+    "Bytes": 483,
+    "SHA256": "84AB47B57753FCCFB84021C3CD9600D31AF24B43F836462604C01AB6B8E74318"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_PointedSection.txt",
+    "Bytes": 42766,
+    "SHA256": "F1726F90AFCA305530B2FC0F76D1E0B18CEF89107519FF07E37EEC688E7EEF8D"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_PointedSection.txt.ProcessClosure.json",
+    "Bytes": 3611,
+    "SHA256": "C67E7923FCAB9339EAE04F31BC9317A6079764590BF3BDE464DE6CF0CAA1E120"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_PointedSection.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_PointedSection.txt.stdout.log",
+    "Bytes": 483,
+    "SHA256": "ED36C7B7FDED244F24984C91A619095F4DAED872DACD9C466C81CE6716739592"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_Rectangles.txt",
+    "Bytes": 20321,
+    "SHA256": "3871891296164CB103A4B41F983E873A4BA651B84A0C2212320A930E991FD7AF"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_Rectangles.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "92CD130998D599A4BE20D5E9E10DD4F9980627EDE578A9E2A00DCD72B375891F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_Rectangles.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_Rectangles.txt.stdout.log",
+    "Bytes": 483,
+    "SHA256": "4A0D61C84E1BD36D475F96C51AE81352C58E60F85ED1A650A5536512CC42D2FF"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_SavedWorkbook.txt",
+    "Bytes": 15333,
+    "SHA256": "39AF2E44D96E903EA46BBB17946DBE87D2F88E724FC5C230397E5FA5C427CF49"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_SavedWorkbook.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "A051679C2F6195108155414A21D35366BA972DFC376FAFF89C6421620C469838"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_SavedWorkbook.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Model_SavedWorkbook.txt.stdout.log",
+    "Bytes": 483,
+    "SHA256": "9E2A58C7C7BE29CDD297F4503351840879DDC864CB1A914A25B4E7E07CCAF88A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+    "Bytes": 31071,
+    "SHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+    "Bytes": 593,
+    "SHA256": "E1C4E7E07B0FBF1F54A3AFD9AB20100DD4206188C1DC948D237E58F4107E87E0"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stdout.log",
+    "Bytes": 247,
+    "SHA256": "07546A2613BFC95D5A53D7E3B46F54B3A945B9B47E06C0BAEC916DD9F781950F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+    "Bytes": 22427,
+    "SHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+    "Bytes": 591,
+    "SHA256": "952E0BE886958D5E27E0562DA9C000CCCE0414A5B4B2054CD9187B9FD625FB79"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/stdout.log",
+    "Bytes": 247,
+    "SHA256": "DFB6C466852BBBF3ED1B07726FB58BBA80B17AD34A1F7E1003949BBE0EE4F87A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/NativeCAD/Stage.json",
+    "Bytes": 787,
+    "SHA256": "88551B2D5C7CC725CBEC1905EF36CE879B07DD1CCDDD4EDAD78E629F9E26FDF1"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/OutputPresentation.txt",
+    "Bytes": 66453,
+    "SHA256": "30480EB631E66EDA5B112287055F805AB48852143E2EF7538E0F972DDC6D07F9"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/OutputPresentation.txt.ProcessClosure.json",
+    "Bytes": 2632,
+    "SHA256": "E90D0B156992CD27F1A5F4A0745618B6CC0BC4D43F587229397CFC31C51E7FBD"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/OutputPresentation.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/OutputPresentation.txt.stdout.log",
+    "Bytes": 576,
+    "SHA256": "EA07F30E9F1451A1E5D29E2CC191B2D3985773745BA69A3ABB88CDE27B0A825D"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/PointedSection_Generated_No.txt",
+    "Bytes": 80219,
+    "SHA256": "DB2742DE711BE7148A101FAC7CB99360288F0BFC847C8C6D1CD9F8945644BB88"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/PointedSection_Generated_No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "8418A622A083314D224055EE290B10AE3B173723E2BFFD36B714BBDCB19ACD6A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/PointedSection_Generated_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/PointedSection_Generated_No.txt.stdout.log",
+    "Bytes": 601,
+    "SHA256": "1A01C1E215941851E35A853E2361533B7B972302F0B1A6E9817C7D897336B618"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/PointedSection_Generated_Yes.txt",
+    "Bytes": 78467,
+    "SHA256": "238EFDB811451F2D7DD95C80887BCB801F2B3ED263DC5CD80FA50BE10F3B6B1A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/PointedSection_Generated_Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "90111A3B1637D67758E0F4A09DD6B8388C2AF5A60B42AD61B4ED70820A47F46C"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/PointedSection_Generated_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/PointedSection_Generated_Yes.txt.stdout.log",
+    "Bytes": 605,
+    "SHA256": "95297A3A924C6E3D6604A03D6DB55E8ECEB0450C5BB9045DE876D9E06CE93E9A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Probe/Circle_Generated_Manifest.txt",
+    "Bytes": 730,
+    "SHA256": "C796A40FBE6DFBBE0E60062DA63EFCAC72EB98587A2C7A18F11828F103FE23F8"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Probe/HollowRectangle_Generated_Manifest.txt",
+    "Bytes": 731,
+    "SHA256": "F1274CA0B12EA10A7F1BEB70E482C0161C0AD70F6FAA58F649C476234DEF56C6"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Probe/InputManifest.json",
+    "Bytes": 3578,
+    "SHA256": "3A93DE46364E03534B2350E2B0C847589F1E9FFC03C3BA2CD94C5DD3F8D643BF"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Probe/PointedSection_Generated_Manifest.txt",
+    "Bytes": 740,
+    "SHA256": "6982EA86E2323030133ACAAB26F37426A5F6B5C1B8D6F7F2CA2A62BECB268F69"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Probe/Rectangles_Generated_Manifest.txt",
+    "Bytes": 735,
+    "SHA256": "123D4E11E982327C458B57C48711222EC59C0F0F463AF6E45CD9FB8DA5F9980D"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Probe/SavedWorkbook_Paths_Manifest.txt",
+    "Bytes": 707,
+    "SHA256": "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Probe/SavedWorkbook_Saved_Manifest.txt",
+    "Bytes": 1867,
+    "SHA256": "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Rectangles_Generated_No.txt",
+    "Bytes": 77974,
+    "SHA256": "E97366C2C96FD52CD7D44FDB266ABCF58F0FF6AD80B8DEAEAA9C3B6FC24D6233"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Rectangles_Generated_No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "4ECDD714E63FE411B1C28CB56D1F5CD86E486BA534FD9B1AC5A6E1E56D4B8EAB"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Rectangles_Generated_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Rectangles_Generated_No.txt.stdout.log",
+    "Bytes": 599,
+    "SHA256": "3B580C50DB3DC2E42DA71E80FC0602A36887222C09A85B3A54FD3C43CA8AC3D2"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Rectangles_Generated_Yes.txt",
+    "Bytes": 76356,
+    "SHA256": "FB5EE6C50507D65A0F80E4AB4346F675C62D61508105A8FD5F770A2D942AE557"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Rectangles_Generated_Yes.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "F1847A585F4310A488DCE2BC6CC8685D5054D75C09059401ACCC7D8B7C520171"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Rectangles_Generated_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Rectangles_Generated_Yes.txt.stdout.log",
+    "Bytes": 601,
+    "SHA256": "442C721BECFFBCDE9AD322B094AA6EF890F4844FAA91C3E0C54F45B18BB21A35"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Run.json",
+    "Bytes": 18851,
+    "SHA256": "35D42EADD5CBCFC68D13C41736C82803870D81877772292583CDFB95B18CC582"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Paths_No.txt",
+    "Bytes": 61346,
+    "SHA256": "DB53BBF2B2E873CEB36BD2EE7575EC8AE49E6C04337B499CF2D8D2F1B331FA8D"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Paths_No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "9A1F3201FEAC30F363B1BDC4DC577729B7DE48F5B11CF8F4E1B7453C614595C8"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Paths_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Paths_No.txt.stdout.log",
+    "Bytes": 595,
+    "SHA256": "9E67CE4E95FC886363F30968D5E26D4EF205033BFDCDF46A4ACF1B5DD40F069B"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Paths_Yes.txt",
+    "Bytes": 60113,
+    "SHA256": "9507342787905AD9ADF6EFF23B28D9EE20A3D9EC7221639FC090326BEBD9BB68"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Paths_Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "6D1376729641D73050CBB67A46C69EF4BDF818875BB4666504CB4B1DE3A0B666"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Paths_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Paths_Yes.txt.stdout.log",
+    "Bytes": 599,
+    "SHA256": "FE219D05E8882529A49257E4C8FA9F735FB5F28E779FBCF9B7F6EBAB95CD56FE"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Saved_No.txt",
+    "Bytes": 265237,
+    "SHA256": "0C920268F48CC9E98C179BD8EC1F15A66890B875BB2BE776F57350939F7DF475"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Saved_No.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "4D8B344E9010507465CA78360A504569C382D3F02ACE03B4782998790F1C801B"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Saved_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Saved_No.txt.stdout.log",
+    "Bytes": 598,
+    "SHA256": "37EC55A7583CD0763DF8157EE8357640BE365EE3528297C29CF6640D655CA2BE"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Saved_Yes.txt",
+    "Bytes": 255214,
+    "SHA256": "9A65B3FFEB4CBED3BA51C363748A5E71B289FB1334EA0A0FAD670512316E98BA"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Saved_Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "4C4C48BE32C11DAEA3EEF10C94E8339B255CB02A3E450A7CEE7FEB85024DDFFE"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Saved_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/SavedWorkbook_Saved_Yes.txt.stdout.log",
+    "Bytes": 597,
+    "SHA256": "3075885CDE53AA482B73BA11F847BF7CE383C0AB38D00B8E4E793152A685A838"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Stability_No.txt",
+    "Bytes": 11052,
+    "SHA256": "9B0A8D667AFF6278B1507FD6FA344C6B6749A968B8D6DFB39BB6ACA3EB699599"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Stability_No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "3FAE65F3EB9E52BE869CF1FCF229FF76BCEE8A180B0A3EFFAFD3805D080F548A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Stability_No.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Stability_No.txt.stdout.log",
+    "Bytes": 566,
+    "SHA256": "5F3A3CD92383699B5BB4D01104C18F65CC98861D1749B9E991A304CEAE62BF4C"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Stability_Yes.txt",
+    "Bytes": 10833,
+    "SHA256": "43187B96352146E2E7752E91EABB6E634E96987CD9F520FDD59155E4FE35297A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Stability_Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "DB62312DF34441BBD4424D72B71E188FF7C0A1032BC899AD37A456DA98181CDB"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Stability_Yes.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Focused/Stability_Yes.txt.stdout.log",
+    "Bytes": 567,
+    "SHA256": "A58FAC69480DD0416C692205CDEF4F2FB59BD2C799A7BD5A355017AB6ACE8B01"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/FullRunner.ps1",
+    "Bytes": 13744,
+    "SHA256": "EF1CBAAEC032481D1042087C1A8A948676B2A2394884DAFFCCB3D19B6E40CFF0"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Full_Off.txt",
+    "Bytes": 17548571,
+    "SHA256": "F527B826C419EB7C611CEF63B98B99F3E559B3A2FEF6ED302B05FBCC02DC198F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Full_Off.txt.ProcessClosure.json",
+    "Bytes": 2632,
+    "SHA256": "44BFAC5C0B640E17EFFF0E892C8A19A8D08D3B4B14AC803D15B835B6A14CF8F6"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Full_Off.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Full_Off.txt.stdout.log",
+    "Bytes": 5541,
+    "SHA256": "54647338918AA30C4A97D425F6CD420ADABFC404CF2F82A3579463B0E04A4304"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Full_On.txt",
+    "Bytes": 17552490,
+    "SHA256": "13687C39CDAF54A498F51808BE903A883DD6C60E90AA75F36B5EF92EF6C93952"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Full_On.txt.ProcessClosure.json",
+    "Bytes": 2632,
+    "SHA256": "45E3332B8FFCF9DC7F02A853014970AE6C33C4EA6F4B052559B42245F3E1B284"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Full_On.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Full_On.txt.stdout.log",
+    "Bytes": 5554,
+    "SHA256": "0DC359FDC5BADCCB24DB29F57F1F47BCBE2F3E038A224ED6B585B16B835CEA2E"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Geometry_Off.txt",
+    "Bytes": 1711035,
+    "SHA256": "B5C291A7F681022C0373F60ADB9C14B8E4CA272C46F1D2D91E9C36108A61B743"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Geometry_Off.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "D65D42125FC263E240486620686FDB15E6AB1361AF5749215BBF44E24BCD7B29"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Geometry_Off.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Geometry_Off.txt.stdout.log",
+    "Bytes": 3267,
+    "SHA256": "3C1211F0F768B5A643B86FD0306BBC3375FA301A410D86EEF8682009A4F76EAD"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Geometry_On.txt",
+    "Bytes": 1711228,
+    "SHA256": "514D426C45523A293FD9930287D0449B1573BA0954C182422A789AF72688452D"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Geometry_On.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "22EA3B476BD24FDA74F60153B80BE9202CEBD1C408C23DC8FBD981108253FD9E"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Geometry_On.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Geometry_On.txt.stdout.log",
+    "Bytes": 3304,
+    "SHA256": "5A19B6FB115D77CA632EF3B8E56100727D7C4591D0245EE205C7CD8EB04C862C"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/ModeRunner.ps1",
+    "Bytes": 24333,
+    "SHA256": "EDFEE7CD7610EB6D70CF227792CEC0EE94CDEABE4B3125A649D384370F2E0363"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Recipes_Off.txt",
+    "Bytes": 558312,
+    "SHA256": "D73724C14D1A9A4C3EE9CA1F8182FD3BC9405B15A1D1D116E810D2F6DA06C983"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Recipes_Off.txt.ProcessClosure.json",
+    "Bytes": 3611,
+    "SHA256": "1832E5C1EBEAC7EBE2DADD3C9A90A36AB83B9618F4A78F67C7759F15CAA56FD2"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Recipes_Off.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Recipes_Off.txt.stdout.log",
+    "Bytes": 2319,
+    "SHA256": "2FE68017DA34F528C8ED0F82A224A470986E507704E95FB4AC6F57B3335A93B1"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Recipes_On.txt",
+    "Bytes": 558341,
+    "SHA256": "4E41EB6DE5760E9FE4D45CCC668B2A5207EBBBCC6691BBA00A43C04069ADEAAE"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Recipes_On.txt.ProcessClosure.json",
+    "Bytes": 4589,
+    "SHA256": "DE52BB8E0F8263C007C5D394A4B144AC5E9D6E4D2C80F8616950433C7F4A7436"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Recipes_On.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Recipes_On.txt.stdout.log",
+    "Bytes": 2346,
+    "SHA256": "87E2C04CF7F04D3E52112E07E0664214368ACE3D012B6C687A2365E858580E1B"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SP35_Off.txt",
+    "Bytes": 47237,
+    "SHA256": "2F94FA236386506B2229BC8BECCA5F232AF0D0D23B4FCDFACFC2AEF32A7AE323"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SP35_Off.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "E595FCAD9954A721F6C1E2AABBCE99C1CAF62795129604002332C6B82EC068EF"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SP35_Off.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SP35_Off.txt.stdout.log",
+    "Bytes": 858,
+    "SHA256": "E1D6D2D465483F17CFBA5403F28128B1A5FF4EBF0C0803D2097BD84A78ED01FC"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SP35_On.txt",
+    "Bytes": 47248,
+    "SHA256": "805189681AD0D8BA0D1107BE6E2ED02A0EEACB79A26D69A36637F7CC9E7398D5"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SP35_On.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "19B9F2889EF687D9CAFDF3173DC6611401160EFDA1E6D12BFAB490C6636FFB48"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SP35_On.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SP35_On.txt.stdout.log",
+    "Bytes": 865,
+    "SHA256": "9652CC0C8CD58976842EE01F493DF2F0A280386AE08B6F87591077C55D3F4807"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SavedOffsets_Off.txt",
+    "Bytes": 2981,
+    "SHA256": "27AA675FA8C305396B955E0A00A193DEA29A5FB2324683B3B6D4DD860A35910A"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SavedOffsets_Off.txt.ProcessClosure.json",
+    "Bytes": 3611,
+    "SHA256": "22ADB5AAEBC87971881B6C8A90C38D65BA54C0033E26188E885AEDBC66B83538"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SavedOffsets_Off.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SavedOffsets_Off.txt.stdout.log",
+    "Bytes": 600,
+    "SHA256": "A76E004F9C10F968CFED50BCBF36F68CF5EFA41AEA168985E6FDC23F56BFA0A2"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SavedOffsets_On.txt",
+    "Bytes": 2990,
+    "SHA256": "EE6642CB9A99D57EB10078790AB13D0EE364624455DE3F867D6A803A03167A0B"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SavedOffsets_On.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "68571A5F029CCDEF6B783D7E28B7888237ADE9DAE29E73D38B82DE0E2EAF38AD"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SavedOffsets_On.txt.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/SavedOffsets_On.txt.stdout.log",
+    "Bytes": 603,
+    "SHA256": "4A121BBD1F5C29522063BAC8C32969B70F09B57FEB67ACB4E2C93A9195844D91"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Summary.json",
+    "Bytes": 84795,
+    "SHA256": "BF3AD97FD6D479DEE2DC0B30513950AA58876AB074BE911E197AF1A9C684D420"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-26_GeometryFinal_Run01/Summary.stderr.log",
+    "Bytes": 0,
+    "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/Completion.json",
+    "Bytes": 662,
+    "SHA256": "EFF4CC0832D29EA8AB1C284A28E5A6EC53E9D5AB4AF0AD63247DA93048AEA7B0"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/FullLaunch.stderr.log",
+    "Bytes": 5294,
+    "SHA256": "357A0CC053D5E06D576B5DE3C1099EC2D9F2E3AADE49EEAF1CDAFE02F191EEA2"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/FullLaunch.stdout.log",
+    "Bytes": 14871,
+    "SHA256": "837B9C82BFEAEF8A7D213EF0DDE6C62933FE7F1FEB93A87661E8D15D9BE87C84"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-26_GeometryFinal_Run01/LaunchRequest.json",
+    "Bytes": 141497,
+    "SHA256": "A4E90360912292AE564BF578462BBE1A06CEA8EA559DC986871734CA0D46E20B"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/AutoLispImprovementReview02/BatchCleanupCandidate01/NativePlan04/Helper/modTestLispWholeExport.bas",
+    "Bytes": 25039,
+    "SHA256": "F3B422C18CB03616E307676C21DEA9F6CC7966ECD3A2E5F5CC084D0A8267CF8C"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/AutoLispImprovementReview02/FinalReviewDraft01/IndependentFinal04Review.json",
+    "Bytes": 103277,
+    "SHA256": "2A4AF1331A9C44E00100F9473466F52F34DBD9981A0133C5CEABDD5207D142C3"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/CompletionAudit01/GoalRequirementsIndex01.json",
+    "Bytes": 14680,
+    "SHA256": "50564D08B6829EB97B83AA953B7C75A824438818BD7FA2BC79B3C1F1FC0BCAFE"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FinalNativeCode02/Main/VBA_All_Code.txt",
+    "Bytes": 8937633,
+    "SHA256": "B2F5EF9D99E92C9C3C3D302BF18BD8D8F9B65AB669ABE838DFB4DEAC321F18D8"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FreshBuild08.ProcessClosure.json",
+    "Bytes": 307,
+    "SHA256": "5987361662A71D5F4FCFA34C1E5B908C7F6CFB0E92723246F5DECF52DAF7EF25"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FreshBuild08.json",
+    "Bytes": 566,
+    "SHA256": "AC747AF4B999137F4242CA1C13935F9017E75BBFB307A7B7DD53F803DF7B84D6"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullFailureFix01/Directed01/No.txt",
+    "Bytes": 760234,
+    "SHA256": "0688E11A3E703761274700859E697122858D3E411A6B795B131E6F0E7FCE66D6"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullFailureFix01/Directed01/No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "4D3BA77AFB2A735EFD59BABA1888A42256C098E00DA002DEBED0C0D411E9A150"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullFailureFix01/Directed01/NoYesAcceptance02.json",
+    "Bytes": 7512,
+    "SHA256": "FA26327185CBA1D08E455D9DA414E64ECA36D53B1CD595089D0E84F9CBE74225"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullFailureFix01/Directed01/Yes.txt",
+    "Bytes": 760244,
+    "SHA256": "940D0FFB6A8173A7CC4E4FE9C09FE3F2091114C5B820CC305D675F66223A8751"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullFailureFix01/Directed01/Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "8B26F95E5620BABE1F7022D36E160E04F25CD4D1325EF4F6B0E578B51C4A9F8F"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullFailureFix01/FullClosurePreparation01/TerminalClosure02/FullClosureReceipt.json",
+    "Bytes": 11635,
+    "SHA256": "9B072FCEB522D00C473ABAEB7A09217193551A1AAE3333BC77931C57A159E521"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullFailureFix01/FullClosurePreparation01/TerminalClosure02/ProcessClosure.json",
+    "Bytes": 47921,
+    "SHA256": "C719576704EDA23F70EF5BE76A0C5111E7A5978BBCBC1E4AE5A4BA3523215B3C"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullPrimaryReviewPlan01/ReviewActualTerminalFail01.Classification.json",
+    "Bytes": 9243,
+    "SHA256": "325A2A1818EEB13F23AF909D2CDAED99271CD443D45F8497A4E3FCD6B2BA2D5F"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/FullPrimaryReviewPlan01/ReviewActualTerminalFail01.json",
+    "Bytes": 110191,
+    "SHA256": "F43E9A998A5684BC87269DE4F49C0DFF555F143CB21A6B10231ED17EECE3751A"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/LispC04.Watchdog/Completion.json",
+    "Bytes": 2727,
+    "SHA256": "C01831B0D7ED36C346EEAF65F3315048FCF13308750110D9999D6E72179A7AF4"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/LispC04/Acceptance.json",
+    "Bytes": 841,
+    "SHA256": "F050D2E9C44B291D53F1EEF7324AC2E41376FC39856F17C1B0A785683AB1D481"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/LispC04/WholeExport.txt",
+    "Bytes": 3406,
+    "SHA256": "C239314066B405081CA34E1AF98828866277BAEA478A4628E2D0957A95F21366"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/LispC04/WholeExport_Heavy_1_A.txt",
+    "Bytes": 1281022,
+    "SHA256": "21D62F73EA93012137E50D0E2C4415D2B582E40E9C5E1E06661E18B57FC3A389"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/LispC04/WholeExport_Heavy_1_B.txt",
+    "Bytes": 1281022,
+    "SHA256": "21D62F73EA93012137E50D0E2C4415D2B582E40E9C5E1E06661E18B57FC3A389"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/LispC04/WholeExport_Small_1_A.txt",
+    "Bytes": 10706,
+    "SHA256": "62F4FA3281FC83C8B42358BB78C377B0A81136D60C4936E7A0597FDD43957828"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/LispC04/WholeExport_Small_1_B.txt",
+    "Bytes": 10706,
+    "SHA256": "62F4FA3281FC83C8B42358BB78C377B0A81136D60C4936E7A0597FDD43957828"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostFullSourceTransfer01/Backups.json",
+    "Bytes": 3721,
+    "SHA256": "B447A175C1A03D2AB42EE094C751C6CE6189A4A9D9FA2499C823E5A5E8EFD15A"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostFullSourceTransfer01/Completion.json",
+    "Bytes": 8300,
+    "SHA256": "757283FB9665DCD678753ED1E4B9FCEF4C4041C11EF8A3732D0180D9F454108C"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostFullSourceTransfer01/NineSources.diff",
+    "Bytes": 64414,
+    "SHA256": "40890D2F7F4C98AE116164397A8CFD4ACFEEB6D186FB220F5C37B3B9A2352DFC"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeCode01.Watchdog/Completion.json",
+    "Bytes": 6514,
+    "SHA256": "CD1C968EA3FDEC876CF10A2DFF7F06ED26B07072EB4DE0274D977F57537DF7BA"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeCode01/Acceptance.json",
+    "Bytes": 4269,
+    "SHA256": "A15B775F98EB3EAD0E9C2DBDD464872D38AB0ECD1027484F6E6BE85A066142A8"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeCode01/DerivedCaseRecords.json",
+    "Bytes": 2380,
+    "SHA256": "1779BF1ACFC62D8117A533F01EB312C7F5CDDFDFDAF8048F8256C53CB3379A72"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeCode01/Main/SourceEquality.json",
+    "Bytes": 117153,
+    "SHA256": "9DEB5B1C820B5DB9B854689429AAE4B85D641C375064A08195DDE12A08B81F13"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeCode01/Main/VBA_All_Code.txt",
+    "Bytes": 8972121,
+    "SHA256": "801FDF97C01FA90216B43E50E4491742E24C9482D8F8789AE6D5AA852F5678DF"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeCode01/RawNativeComponentComparison.json",
+    "Bytes": 335,
+    "SHA256": "0E5E2EEADBD51D7E94610C673A4A1FAED574527CD2A76ECB75AB6522F410D173"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeCode01/SavedExcelWarm2/SourceEquality.json",
+    "Bytes": 117153,
+    "SHA256": "3095935B4DA7668EBA838FE61B1F96FFC24F720E10441662160AB6BE1B106FE3"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeCode01/SavedExcelWarm2/VBA_All_Code.txt",
+    "Bytes": 8972121,
+    "SHA256": "52432BFBDEC2E7A95EF7D78864B0B1A89AF1ADDBE1463239737788DD5D26A903"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeRelease01/Cleanliness.json",
+    "Bytes": 2740,
+    "SHA256": "96838DE6013E37764F028FCD193D44E227516733C37D903FF1A54EF55BFAF201"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeRelease01/NativeRelease.json",
+    "Bytes": 573,
+    "SHA256": "46AFADDF7B70C097BFA59EF3E132FFB891BC52CE4805772E5ABA42840A1B214C"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeRelease01/ProcessClosure.json",
+    "Bytes": 519,
+    "SHA256": "E175B55910F132F03F4A80C06A46A2E672B4A4DBBFD443C2CAFD60ADD8B711D7"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeRelease01/SettingsNative.json",
+    "Bytes": 29814,
+    "SHA256": "1B311F5017796296D4DEF1E49833261DBAEA6AF5240F7D9561670685D6D413A3"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeRelease01/SourceEquality.json",
+    "Bytes": 117153,
+    "SHA256": "2012AA84077612F93FD06C5D7B1C56C5C8E64D7D0A35BC9D60CDEAA5133571EE"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNumericProof01/Acceptance.json",
+    "Bytes": 689,
+    "SHA256": "B36C826CFBF8F02CAE11EC91A6BC86D9436ED0D7D4EBE88D2540EBB468A17F40"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNumericProof01/Exact4DoubleBits.json",
+    "Bytes": 1886981,
+    "SHA256": "9B76A1D7C3B2294820115A2D26FCB3CAB8498462E21C794EB3B31A96F3F25976"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNumericProof01/Raw177.json",
+    "Bytes": 60870,
+    "SHA256": "E51C9E99B617600FA46353A46133D06EBEA88FC1EF2BC6E3D9BB1C01555B5C0F"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferPublication01/Failure.json",
+    "Bytes": 431,
+    "SHA256": "B6E5220E5C98B5738E67664E1DC2487DB38C07C69BF6092B0B64589F6C0CC2C4"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferPublication01/Publication.json",
+    "Bytes": 2229,
+    "SHA256": "B492218A2ED71BE9BBEAB79D2C2AC68B5396AE3C8E683FCA6FD2975DDE5B2507"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferPublication01/Ready/PackagePreservation.json",
+    "Bytes": 40140,
+    "SHA256": "6F7E887BA60E9B3EED2FB9FD3D44AA540E2773717FD4248B61394426EBC52118"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferSmoke01/Acceptance.json",
+    "Bytes": 2942,
+    "SHA256": "B4881BE74622F400C60E294A3E495232EBA1053479449C43F1372B3F390FACCB"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferSmoke01/No.txt",
+    "Bytes": 175843,
+    "SHA256": "A8D5EFF3626332E8B6E0DC11C31B0526A7D665E8D0B8756A79D45B5C7C4634B2"
+  },
+  {
+    "Path": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferSmoke01/No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "B856AA3F8DF5E40763595E70D7387896EB04132A91224F958343ECCA2D8FD187"
+  }
+]

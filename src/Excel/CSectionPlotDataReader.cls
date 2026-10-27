@@ -116,8 +116,9 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
     ApplyVisualizationProfile workbook
 
-    ReadSectionProperties workbook
-    ReadGeometryAndResults workbook
+    Dim stateFields As Object
+    Set stateFields = ReadSectionProperties(workbook)
+    ReadGeometryAndResults workbook, stateFields
     ReadAnnotations workbook
     Set mReadTables = Nothing
     EndCalculationSnapshotRead
@@ -397,7 +398,9 @@ End Function
 
 ' Читает свойства сечения и выбранного сочетания: габариты, центр тяжести,
 ' главные оси, единицы и параметры поля деформаций epsilon0/kappaX/kappaY.
-Private Sub ReadSectionProperties(ByVal workbook As Object)
+' Возвращает значения и адреса свойств выбранного LC для согласования
+' именованных НДС с реально сохранёнными строками элементов.
+Private Function ReadSectionProperties(ByVal workbook As Object) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
     Dim data As Variant
@@ -413,6 +416,7 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
     Dim rowIndex As Long
     Dim parameter As String, loadCase As String
     Dim stateFields As Object: Set stateFields = CreateObject("Scripting.Dictionary")
+    Dim selectedStateMetadataExists As Boolean
     For rowIndex = 2 To UBound(data, 1) ' Сначала читаем единицы результата, чтобы порядок строк свойств не влиял на перевод величин без отдельно указанной единицы.
         parameter = Trim$(ReadSnapshotText(data(rowIndex, colParameter), anchor, rowIndex, colParameter, "Parameter"))
         loadCase = Trim$(ReadSnapshotText(data(rowIndex, colLoadCase), anchor, rowIndex, colLoadCase, "LoadCase"))
@@ -436,21 +440,14 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
             ElseIf StrComp(loadCase, mLoadCase, vbTextCompare) = 0 Then
                 If Not mGeometryOnly Or mGeometryReferenceItemsEnabled Then
                     ReadLoadCaseProperty parameter, data(rowIndex, colValue), data(rowIndex, colUnit), anchor, rowIndex, colValue, colUnit
-                    stateFields(LCase$(parameter)) = True
+                    stateFields(LCase$(parameter)) = Array(data(rowIndex, colValue), data(rowIndex, colUnit), rowIndex, colValue, colUnit)
+                    If Left$(LCase$(parameter), Len("state." & mStateType & ".")) = "state." & LCase$(mStateType) & "." Then selectedStateMetadataExists = True
                 End If
             End If
         End If
     Next rowIndex
 
-    If Not mGeometryOnly Then
-        Dim field As Variant, requiredKey As String
-        For Each field In Array("Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
-            requiredKey = "State." & mStateType & "." & CStr(field)
-            If Not stateFields.Exists(LCase$(requiredKey)) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
-                "В сохраненном снимке Results для сочетания " & mLoadCase & " отсутствует обязательное поле " & requiredKey & _
-                " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет/импорт для восстановления снимка."
-        Next field
-    End If
+    If Not mGeometryOnly And selectedStateMetadataExists Then RequireSavedStateFields workbook, stateFields, mStateType, False
 
     If Len(mSnapshotLengthUnit) = 0 Then mSnapshotLengthUnit = "mm"
     If Len(mSnapshotAreaUnit) = 0 Then mSnapshotAreaUnit = mSnapshotLengthUnit & "2"
@@ -466,7 +463,8 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
         mResultUnit = mStressUnit
         mResultCaption = "Stress"
     End If
-End Sub
+    Set ReadSectionProperties = stateFields
+End Function
 
 ' Читает общие свойства ALL из Results независимо от способа формирования:
 ' габариты и центры переводит в мм, углы оставляет в радианах.
@@ -532,7 +530,7 @@ End Sub
 ' Соединяет постоянную геометрию с LC-зависимыми результатами.
 ' rngNDMSectionGeometry хранит координаты и площади один раз, а
 ' rngNDMElementResults хранит Stress/Strain/PhysicalState по LoadCase.
-Private Sub ReadGeometryAndResults(ByVal workbook As Object)
+Private Sub ReadGeometryAndResults(ByVal workbook As Object, ByVal stateFields As Object)
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
     Dim geom As Variant
@@ -545,7 +543,11 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim resultAnchor As Object
     Set resultAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
     results = ReadElementResultTable(workbook, mLoadCase, mStateType)
-    If Not HasRows(results) Then results = ReadElementResultTable(workbook, , , True) ' Индекс отличает отсутствие выбранного состояния от отсутствия всех результатов без копирования полной таблицы.
+    Dim missingSelectedState As Boolean: missingSelectedState = Not HasRows(results)
+    If missingSelectedState Then
+        results = ReadElementResultTable(workbook, mLoadCase) ' Только этот LC: весь его payload проверяется в существующем проходе перед геометрической схемой.
+        If Not HasRows(results) Then results = ReadElementResultTable(workbook, , , True) ' Глобальный индекс отличает диагностический LC без строк от полного отсутствия результатов.
+    End If
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."
 
@@ -560,6 +562,8 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     Dim colStress As Long: colStress = ResultColumn(results, "Stress")
     Dim colState As Long: colState = ResultColumn(results, "PhysicalState")
 
+    Dim caseStates As Object: Set caseStates = CreateObject("Scripting.Dictionary"): caseStates.CompareMode = vbTextCompare
+    Dim colResProfile As Long: colResProfile = ResultColumn(results, "ProfileId")
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(results, 1) ' Собирает напряжения и деформации выбранного сочетания по ElementID. Они хранятся отдельно от геометрии и затем связываются с нужными элементами.
         If StrComp(Trim$(SafeText(results(rowIndex, colResLC))), mLoadCase, vbTextCompare) = 0 And _
@@ -569,9 +573,36 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
                 ReadSnapshotNumber(results(rowIndex, colStress), resultAnchor, rowIndex, colStress, CStr(results(1, colStress))), _
                 CStr(results(rowIndex, colState)))
         End If
+        If StrComp(Trim$(SafeText(results(rowIndex, colResLC))), mLoadCase, vbTextCompare) = 0 Then
+            If StrComp(Trim$(SafeText(results(rowIndex, colResProfile))), mProfileId, vbTextCompare) <> 0 Then Err.Raise vbObjectError + 4703, _
+                "CSectionPlotDataReader", "В сохраненном снимке Results не совпадает ProfileId состояния " & mLoadCase & _
+                "/" & SafeText(results(rowIndex, colResStateType)) & "; ElementID=" & SafeText(results(rowIndex, colResID)) & _
+                "; строка выбранного набора " & CStr(rowIndex) & " (rngNDMElementResults, " & resultAnchor.Worksheet.Name & "!" & _
+                resultAnchor.Address(False, False) & "). Повторите расчет."
+            If missingSelectedState Then
+                Dim stateName As String, stateElements As Object, elementName As String, otherNumber As Double
+                stateName = Trim$(SafeText(results(rowIndex, colResStateType)))
+                If Not caseStates.Exists(stateName) Then
+                    Set stateElements = CreateObject("Scripting.Dictionary"): stateElements.CompareMode = vbTextCompare
+                    caseStates.Add stateName, stateElements
+                End If
+                Set stateElements = caseStates.Item(stateName)
+                elementName = Trim$(ReadSnapshotText(results(rowIndex, colResID), resultAnchor, rowIndex, colResID, "ElementID"))
+                If Len(elementName) = 0 Or stateElements.Exists(elementName) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+                    "В сохраненном снимке Results пустой или повторный ElementID=" & elementName & " для " & mLoadCase & "/" & stateName & _
+                    "; строка выбранного набора " & CStr(rowIndex) & " (rngNDMElementResults, " & resultAnchor.Worksheet.Name & "!" & _
+                    resultAnchor.Address(False, False) & "). Повторите расчет."
+                stateElements.Add elementName, True
+                otherNumber = ReadMissingStateResultNumber(results(rowIndex, colStrain), resultAnchor, rowIndex, "Strain", stateName, elementName)
+                otherNumber = ReadMissingStateResultNumber(results(rowIndex, colStress), resultAnchor, rowIndex, "Stress", stateName, elementName)
+            End If
+        End If
     Next rowIndex
-    If resultMap.Count = 0 Then Err.Raise vbObjectError + 4706, "CSectionPlotDataReader", _
-        MissingStateMessage(mLoadCase, mStateType)
+    If resultMap.Count = 0 Then
+        RequireMissingStateFullSnapshot workbook, stateFields, caseStates, geom
+        Err.Raise vbObjectError + 4706, "CSectionPlotDataReader", MissingStateMessage(mLoadCase, mStateType)
+    End If
+    If Not stateFields.Exists("state." & LCase$(mStateType) & ".epsilon0") Then RequireSavedStateFields workbook, stateFields, mStateType, False
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
     If UBound(geom, 2) < 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
@@ -603,6 +634,121 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
         End If
     Next rowIndex
 End Sub
+
+
+' Проверяет число в выбранном наборе строк другого НДС тем же строгим
+' парсером, что и обычные значения снимка. Номер строки среза не выдаётся
+' за физическую строку листа; сообщение называет якорь, LC/State и ElementID.
+Private Function ReadMissingStateResultNumber(ByVal value As Variant, ByVal anchor As Object, _
+        ByVal selectedRow As Long, ByVal field As String, ByVal stateType As String, ByVal elementID As String) As Double
+    Dim parsed As Double
+    If Not TryReadStrictDouble(value, parsed) Then Err.Raise vbObjectError + 4719, "CSectionPlotDataReader", _
+        "В сохраненном снимке Results поле " & field & " содержит нечисловое значение для " & mLoadCase & "/" & stateType & _
+        "; ElementID=" & elementID & "; строка выбранного набора " & CStr(selectedRow) & " (rngNDMElementResults, " & _
+        anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет, чтобы восстановить корректный снимок."
+    ReadMissingStateResultNumber = parsed
+End Function
+
+' Проверяет пять обязательных полей существующего НДС. Для других состояний
+' перед geometry-only ветвью проверяет также значения/единицы, не публикуя их
+' как выбранное поле деформаций и не перечитывая полную таблицу элементов.
+Private Sub RequireSavedStateFields(ByVal workbook As Object, ByVal stateFields As Object, _
+        ByVal stateType As String, ByVal validateValues As Boolean)
+    Dim anchor As Object: Set anchor = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
+    Dim field As Variant, key As String, saved As Variant, number As Double, flag As Boolean, status As String, unit As String
+    Dim knownState As Boolean
+    Select Case LCase$(Trim$(stateType))
+        Case "strengthstate", "capacitystate", "precrackstate", "postcrackstate", "crackedstate": knownState = True
+    End Select
+    If Not knownState Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+        "В сохраненном снимке Results неизвестный StateType " & stateType & " для сочетания " & mLoadCase & _
+        " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет."
+    For Each field In Array("Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
+        key = "State." & stateType & "." & CStr(field)
+        If Not stateFields.Exists(LCase$(key)) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+            "В сохраненном снимке Results для сочетания " & mLoadCase & " отсутствует обязательное поле " & key & _
+            " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет/импорт для восстановления снимка."
+        If validateValues Then
+            saved = stateFields.Item(LCase$(key))
+            Select Case CStr(field)
+                Case "Epsilon0": number = ReadSnapshotNumber(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), key)
+                Case "KappaX", "KappaY"
+                    number = ReadSnapshotNumber(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), key)
+                    unit = ReadSnapshotUnit(saved(1), "Curvature", mSnapshotCurvatureUnit, "1/mm", anchor, CLng(saved(2)), CLng(saved(4)), key & ".Unit", True)
+                Case "ExtensionUsed": flag = ReadSnapshotBoolean(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), key)
+                Case "Status": status = ReadSnapshotStatus(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), key)
+            End Select
+        End If
+    Next field
+End Sub
+
+' Отсутствующее выбранное НДС разрешает только геометрию проверенного Full:
+' рассчитанные состояния этого LC имеют полный payload и metadata; полностью
+' диагностический LC сохраняет свои валидные поля и использует общий индекс.
+' Частичные metadata и успешное НДС без строк означают повреждение Full.
+' Полный диагностический NumFail/InputErr/CalcErr/N/A без строк сохраняет
+' контракт writer; этот путь не создаёт Snapshot.Kind=GeometryPreview.
+Private Sub RequireMissingStateFullSnapshot(ByVal workbook As Object, ByVal stateFields As Object, ByVal caseStates As Object, ByRef geometry As Variant)
+    Dim anchor As Object: Set anchor = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
+    Dim key As Variant, profile As Variant, metadataStates As Object, parts As Variant
+    Set metadataStates = CreateObject("Scripting.Dictionary"): metadataStates.CompareMode = vbTextCompare
+    For Each key In stateFields.Keys
+        If Left$(CStr(key), 6) = "state." Then
+            parts = Split(CStr(key), ".")
+            If UBound(parts) >= 2 Then metadataStates(CStr(parts(1))) = True
+        End If
+    Next key
+    For Each key In metadataStates.Keys
+        RequireSavedStateFields workbook, stateFields, CStr(key), True
+        If SavedStateNeedsElementRows(workbook, stateFields, CStr(key)) And Not caseStates.Exists(key) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+            "В сохраненном снимке Results успешное состояние " & CStr(key) & " не имеет строк элементов для " & mLoadCase & _
+            " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет."
+    Next key
+    If Not stateFields.Exists("profileid") Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+        "В сохраненном снимке Results нет полного рассчитанного сочетания " & mLoadCase & _
+        " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет."
+    profile = stateFields.Item("profileid")
+    If StrComp(Trim$(ReadSnapshotText(profile(0), anchor, CLng(profile(2)), CLng(profile(3)), "ProfileId")), mProfileId, vbTextCompare) <> 0 Then _
+        Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", "Не совпадает сохраненный ProfileId сочетания " & mLoadCase & _
+        " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет."
+    If caseStates.Count = 0 And Not metadataStates.Exists(LCase$(mStateType)) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+        "В сохраненном снимке Results нет полного состояния или диагностических свойств сочетания " & mLoadCase & _
+        " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет."
+    Dim expectedElements As Object: Set expectedElements = CreateObject("Scripting.Dictionary"): expectedElements.CompareMode = vbTextCompare
+    Dim column As Long: column = ResultColumn(geometry, "ElementID")
+    Dim row As Long, identity As String, stateElements As Object, element As Variant
+    For row = 2 To UBound(geometry, 1)
+        identity = Trim$(SafeText(geometry(row, column)))
+        If Len(identity) = 0 Or expectedElements.Exists(identity) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+            "В rngNDMSectionGeometry пустой или повторный ElementID. Повторите формирование сечения."
+        expectedElements.Add identity, True
+    Next row
+    For Each key In caseStates.Keys
+        RequireSavedStateFields workbook, stateFields, CStr(key), True
+        Set stateElements = caseStates.Item(key)
+        If stateElements.Count <> expectedElements.Count Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+            "В сохраненном снимке Results неполный состав элементов " & mLoadCase & "/" & CStr(key) & _
+            " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет."
+        For Each element In expectedElements.Keys
+            If Not stateElements.Exists(element) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
+                "В сохраненном снимке Results отсутствует " & CStr(element) & " для " & mLoadCase & "/" & CStr(key) & _
+                " (rngNDMSectionProperties, " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & "). Повторите расчет."
+        Next element
+    Next key
+End Sub
+
+' Согласует внешний статус с контрактом writer: OK/FAIL/BaseFail требуют
+' рассчитанных строк; диагностические статусы могут хранить только metadata.
+Private Function SavedStateNeedsElementRows(ByVal workbook As Object, ByVal stateFields As Object, ByVal stateType As String) As Boolean
+    Dim anchor As Object: Set anchor = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
+    Dim key As String: key = "state." & LCase$(stateType) & ".status"
+    Dim saved As Variant: saved = stateFields.Item(key)
+    Dim status As String: status = ReadSnapshotStatus(saved(0), anchor, CLng(saved(2)), CLng(saved(3)), "State." & stateType & ".Status")
+    Select Case status
+        Case "OK", "FAIL", "BaseFail": SavedStateNeedsElementRows = True
+        Case "NumFail", "InputErr", "CalcErr", "N/A": SavedStateNeedsElementRows = False
+    End Select
+End Function
 
 ' Читает геометрию без расчётной раскраски для предварительного просмотра
 ' импорта или случая, когда выбранное НДС отсутствует,

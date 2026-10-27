@@ -1,0 +1,50 @@
+{
+  "Status": "ORIGINAL_FULL_REVIEWED_FAILED_CAUSES_FIXED_SCOPED_ONLY_NEW_FULL_PENDING",
+  "ObservedUTC": "2026-10-27T07:58:09.389354+00:00",
+  "OriginalFullSourceSHA256": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+  "OriginalFullResult": "REVIEW_REQUIRED",
+  "CoreGroups": 12,
+  "CoreSuites": 178,
+  "FocusedRecords": 26,
+  "SingleCases": 122,
+  "OriginalFullErrorsRetained": true,
+  "PublishedRows": [
+    {
+      "Name": "Main",
+      "Source": "docs/regression/GeometryFinalization_2026-10-26_Run01/FreshBuild08/RC_Section_NDM.xlsm",
+      "Destination": "workbook/output/RC_Section_NDM.xlsm",
+      "Before": "CD264F72E8E110BAE04277C1C68F133AE64D92B908F9C2BCD34B3ADD0F2365BF",
+      "After": "08A9652C85E111B4C1DFCEDF828AF11CE369AA7CB20E3C8E6048C07FB3D7E8C3"
+    },
+    {
+      "Name": "Ready",
+      "Source": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferPublication01/Ready/RC_Section_NDM.xlsm",
+      "Destination": "workbook/output/NDM_Test_1232_30/RC_Section_NDM.xlsm",
+      "Before": "38AB6A1E9748D2840E3E941C720973DAAF2643C221694A1A36B0863CAD69C2B8",
+      "After": "4C25038DB5FCD97B689D1595B704D2C901C02216C6A108344531CEE5EFC6E852"
+    },
+    {
+      "Name": "AllCode",
+      "Source": "docs/regression/GeometryFinalization_2026-10-26_Run01/PostTransferNativeRelease01/VBA_All_Code.txt",
+      "Destination": "workbook/output/VBA_All_Code.txt",
+      "Before": "6F4B5701E0ED8EE3FAB90210DCD50AE65FA75E45C76790B12AB2B62E2BAD90E4",
+      "After": "58FD32625CEF786CBD34EE97BD56AA523375F998FF89A1B4DC09A3F7E783FDA4"
+    }
+  ],
+  "FullRegressionPass": false,
+  "MainMerged": false,
+  "NewLongFullStarted": false,
+  "DirectedRepairsAssertions": 15672,
+  "NewBookSmokeAssertions": 2631,
+  "LiteralUnchangedNativeComponents": 177,
+  "ExactChangedModuleDoubleBits": 4,
+  "MainReadyNativeComponents": 181,
+  "LispPerformanceAccepted": false,
+  "Archive": "ReviewedEvidence.zip",
+  "ArchiveSHA256": "9BFA1E050051F27C04A6E3BEC5DFEE2785813751CFDC352729A4C37E7D457235",
+  "ArchiveBytes": 8225608,
+  "ArchiveFiles": 220,
+  "PostRunInputs": 502,
+  "IntentionalPostRunInputChanges": 11,
+  "ArchiveOriginalEvidenceAllHashesMatched": true
+}

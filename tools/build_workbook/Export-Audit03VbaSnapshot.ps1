@@ -26,7 +26,7 @@ $sharedRebarAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/Sha
 $workflowAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/SectionWorkflowLayers_2026-10-21'))+[IO.Path]::DirectorySeparatorChar
 foreach ($path in @($source, $output)) {
     # Итоговая приёмка может читать именно опубликованную книгу. Это исключение
-    # только для source; dump по-прежнему создаётся в evidence, без Save/macros.
+    # только для source; dump создаётся в evidence, без сохранения книги и запуска макросов.
     if ($path -eq $source -and $source -eq $publishedWorkbook) {continue}
     if (-not $path.StartsWith($workflowAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($sharedRebarAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($structuredTablesAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($postAuditAllowed, [StringComparison]::OrdinalIgnoreCase) -and
