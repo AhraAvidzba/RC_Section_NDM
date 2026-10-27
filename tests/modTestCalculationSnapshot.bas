@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestCalculationSnapshot"
+﻿Attribute VB_Name = "modTestCalculationSnapshot"
 Option Explicit
 
 ' ==================== ДЛЯ ТЕСТОВ ====================
@@ -28,6 +28,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotOriginalLoadMemory
     Dim initial As CSystemSettingsReader: Set initial = New CSystemSettingsReader: initial.LoadFromWorkbook ThisWorkbook
     Dim extension As String: extension = initial.GetRequiredString("General.DiagramExtension")
+    TestSnapshotFileGeometryAuthority extension
     modTestPerformance.TestConfigurePerformanceFixture "MIXED", 6, "Newton", "Circle", "Normal", extension
     TestSnapshotSetting "General.ExecutionReportEnabled", "No"
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
@@ -97,7 +98,7 @@ Public Function RunCalculationSnapshotTests() As String
     header.Value2 = "PR1"
     ' Новый выбранный файл не должен менять показанное НДС до нажатия кнопки.
     TestSnapshotSetting "Results.SnapshotName", token & "_other.ndm"
-    TestSnapshotCheck "selection.keepsDisplayed", TestSnapshotPlot() = originalPlot
+    TestSnapshotCheck "selection.missingFileRejectedImmediately", TestSnapshotFileReadRejected(1)
     TestSnapshotCheck "missing.rejected", TestSnapshotRefreshRejected()
     TestSnapshotCheck "readScope.afterFailure", TestCalculationSnapshotReadReleased()
     TestSnapshotCheck "missing.keepsGeometry", TestSnapshotSameMatrix(geometry, ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry"))
@@ -137,8 +138,8 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotSetting "Solver.MaxIterations", "100"
     TestSnapshotSetting "Results.SnapshotStorage", "Excel"
     Dim detached As CCalculationSnapshot: Set detached = CurrentCalculationSnapshot(ThisWorkbook)
-    TestSnapshotCheck "excel.linkedSourceRetainedUntilMaterialization", Not detached Is Nothing
-    UpdateSectionResultsForWorkbook ThisWorkbook
+    TestSnapshotCheck "excel.ignoresPreviousFileReference", detached Is Nothing
+    UpdateSectionResultsForWorkbook ThisWorkbook, second ' Только явная запись подготовленного снимка создаёт полный Excel-набор; чтение Excel само файл не переносит.
     TestSnapshotCheck "excel.materializedBeforeDetach", Not store.HasFileReference(ThisWorkbook)
     TestSnapshotCheck "excel.materializedBoundaryExact", TestSnapshotSameMatrix(ReadPhysicalResultTable(ThisWorkbook, "rngNDMElementGeometry"), second.Table("rngNDMElementGeometry"))
     SaveAndDisplayCalculationSnapshot ThisWorkbook, second
@@ -341,7 +342,7 @@ Finished:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет линии, дуги, отверстие и два острова; linked boundary обязана пережить смену режима без формирования.
+' Проверяет линии, дуги, отверстие и два острова в File и в явно подготовленном Excel-снимке.
 Private Sub TestSnapshotGeometryPreview(ByVal original As CCalculationSnapshot, ByVal store As CCalculationSnapshotStore)
     Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
     Dim geometry As Variant, boundaries As Variant, regions As Collection, values As Variant
@@ -441,8 +442,8 @@ Private Sub TestSnapshotGeometryPreview(ByVal original As CCalculationSnapshot, 
     Dim beforeExport As String: beforeExport = Audit02ReadExportSnapshotForTests(ThisWorkbook)
     TestSnapshotSetting "Results.SnapshotStorage", "Excel"
     Set loaded = CurrentCalculationSnapshot(ThisWorkbook)
-    TestSnapshotCheck "preview.switch.linkUntilMaterialization", Not loaded Is Nothing
-    UpdateSectionResultsForWorkbook ThisWorkbook
+    TestSnapshotCheck "preview.switch.excelIgnoresLink", loaded Is Nothing
+    UpdateSectionResultsForWorkbook ThisWorkbook, preview ' Полный листовой fixture готовится явно: Excel сам не загружает ранее привязанный File.
     TestSnapshotCheck "preview.switch.excelDetached", Not store.HasFileReference(ThisWorkbook)
     TestSnapshotCheck "preview.switch.excelExact", TestSnapshotSameMatrix(boundaries, ReadPhysicalResultTable(ThisWorkbook, "rngNDMElementGeometry"))
     TestSnapshotSetting "Results.SnapshotStorage", "File"
@@ -737,6 +738,7 @@ End Function
 ' Проверяет отказ до solver у последней строки, частичное объединение и оформление перенесённой шапки.
 Private Sub TestSnapshotNativeLayout(ByVal original As CCalculationSnapshot)
     TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+    UpdateSectionResultsForWorkbook ThisWorkbook, original ' Испытывается вместимость полноценного листового снимка, а не минимального справочного File-вывода.
     Dim name As Object: Set name = ThisWorkbook.Names.Item("rngNDMElementResults")
     Dim previous As String: previous = name.RefersTo
     Dim anchor As Object: Set anchor = name.RefersToRange
@@ -903,6 +905,10 @@ Private Sub TestSnapshotMinimalFormatting()
     TestSnapshotSetting "General.ReformatResultsEnabled", "No"
     For Each mode In Array("Excel", "File")
         TestSnapshotSetting "Results.SnapshotStorage", CStr(mode)
+        If CStr(mode) = "File" Then
+            TestSnapshotSetting "Geometry.Source", "Generated" ' Тест оформления не зависит от оставшегося после импортного сценария AutoCAD-источника.
+            message = FormSectionForWorkbook(ThisWorkbook) ' File рассчитывает геометрию своего файла, а не оставшиеся строки Excel.
+        End If
         Set target = ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Cells(2, 4)
         target.Font.Color = RGB(12, 34, 56): target.NumberFormat = "0.0000000000"
         message = RunSectionCalculationForWorkbook(ThisWorkbook)
@@ -1144,6 +1150,13 @@ Private Sub TestSnapshotOneUseSource()
     Set target = ThisWorkbook.Names("rngNDMSectionGeometry").RefersToRange.Cells(2, 15)
     saved = target.Formula
     On Error GoTo Failed
+    Dim sourceStore As CCalculationSnapshotStore: Set sourceStore = New CCalculationSnapshotStore
+    Dim previousMode As String: previousMode = sourceStore.StorageMode(ThisWorkbook)
+    Dim wasLinked As Boolean: wasLinked = sourceStore.HasFileReference(ThisWorkbook)
+    Dim sourceSnapshot As CCalculationSnapshot
+    If wasLinked Then Set sourceSnapshot = sourceStore.LoadFile(ThisWorkbook)
+    TestSnapshotSetting "Results.SnapshotStorage", "Excel" ' Этот тест проверяет обновление изменяемого Excel-источника; файл отдельно проверяется как неизменяемый источник.
+    If wasLinked Then UpdateSectionResultsForWorkbook ThisWorkbook, sourceSnapshot ' Данные для отдельного Excel-теста записываются явно, без неявного файлового источника.
     Dim section As CSectionModel: Set section = ReadFormedSectionFromResults(ThisWorkbook)
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -1165,14 +1178,295 @@ Private Sub TestSnapshotOneUseSource()
     values = second.Table("rngNDMSectionGeometry")
     TestSnapshotCheck "capture.oneUse.newSource", CStr(values(2, 15)) = "TestSourceAfter"
     target.Formula = saved
+    TestSnapshotSetting "Results.SnapshotStorage", previousMode
+    If wasLinked Then UpdateSectionResultsForWorkbook ThisWorkbook
     Exit Sub
 Failed:
     Dim number As Long, reason As String: number = Err.Number: reason = Err.Description
     On Error Resume Next
     target.Formula = saved
+    If Len(previousMode) > 0 Then TestSnapshotSetting "Results.SnapshotStorage", previousMode
+    If wasLinked Then sourceStore.LinkFile ThisWorkbook
     On Error GoTo 0
     Err.Raise number, "TestSnapshotOneUseSource", reason
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает отдельно те же File/Excel проверки источника, которые входят в Snapshot-приёмку.
+Public Function RunFileGeometryAuthorityTests() As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    On Error GoTo Failed
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    TestSnapshotFileGeometryAuthority settings.GetRequiredString("General.DiagramExtension")
+    RunFileGeometryAuthorityTests = mTestReport & "TOTAL_FILE_GEOMETRY_AUTHORITY: " & mTestPassed & "/" & mTestFailed
+    Exit Function
+Failed:
+    RunFileGeometryAuthorityTests = mTestReport & "RUNTIME: " & Err.Number & " " & Err.Description & vbCrLf & _
+        "TOTAL_FILE_GEOMETRY_AUTHORITY: " & mTestPassed & "/" & (mTestFailed + 1)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Удаляет все справочные геометрические таблицы и сравнивает File с неизменённым снимком.
+' Проверяет preview, повторный расчёт всех проверок и независимый выбор File/Excel для обеих сеток.
+Private Sub TestSnapshotFileGeometryAuthority(ByVal extension As String)
+    TestSnapshotTableOrder
+    TestSnapshotActionMessages
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    Dim geometryMode As Variant, token As String, message As String, path As String
+    Dim original As CCalculationSnapshot, after As CCalculationSnapshot, preview As CCalculationSnapshot
+    Dim beforeModel As CSectionModel, afterModel As CSectionModel, key As Variant, data As Variant, matrix As Variant
+    Dim geometrySource As String, exportBefore As String, plotBefore As String
+    For Each geometryMode In Array("Adaptive", "Contour")
+        modTestPerformance.TestConfigurePerformanceFixture "MIXED", 2, "Newton", "Circle", "Normal", extension
+        TestSnapshotSetting "Mesh.CellGeometry", CStr(geometryMode)
+        TestSnapshotSetting "Results.SnapshotStorage", "File"
+        token = "TestFileAuthority_" & CStr(geometryMode) & "_" & extension & "_" & Format$(Now, "yyyymmdd_hhnnss")
+        TestSnapshotSetting "Results.SnapshotName", token
+        TestSnapshotSetting "General.ExecutionReportEnabled", "No"
+        message = FormSectionForWorkbook(ThisWorkbook)
+        path = store.SnapshotPath(ThisWorkbook)
+        TestSnapshotCheck CStr(geometryMode) & ".message.formed.File", InStr(message, "Сечение сформировано и сохранено в файле «" & token & ".ndm».") = 1
+        Set preview = store.LoadFile(ThisWorkbook)
+        store.ClearReference ThisWorkbook ' Имя и File достаточны и для GeometryPreview; предварительное обновление не требуется.
+        Set beforeModel = ReadFormedSectionFromResults(ThisWorkbook, True)
+        geometrySource = beforeModel.SourceType
+        TestSnapshotEraseGeometryDisplay
+        Set afterModel = ReadFormedSectionFromResults(ThisWorkbook, True)
+        TestSnapshotCheck CStr(geometryMode) & ".preview.fileModel", TestSnapshotSameModel(beforeModel, afterModel)
+        TestSnapshotCheck CStr(geometryMode) & ".preview.source", ResultsGeometrySource(ThisWorkbook) = geometrySource
+        TestSnapshotCheck CStr(geometryMode) & ".preview.fileUnchanged", TestSnapshotSameMatrix(preview.Table("rngNDMSectionGeometry"), store.LoadFile(ThisWorkbook).Table("rngNDMSectionGeometry"))
+        message = RunSectionCalculationForWorkbook(ThisWorkbook)
+        Set original = store.LoadLinkedFile(ThisWorkbook)
+        TestSnapshotCheck CStr(geometryMode) & ".message.calculated.source.File", InStr(message, "Геометрия для расчёта загружена из файла «" & token & ".ndm».") > 0
+        TestSnapshotCheck CStr(geometryMode) & ".message.calculated.saved.File", Right$(message, Len("Данные сохранены в файле «" & token & ".ndm».")) = "Данные сохранены в файле «" & token & ".ndm»."
+        TestSnapshotCheck CStr(geometryMode) & ".calculate.fromFilePreview", Not original.IsGeometryPreview And original.TableRowCount("rngNDMElementResults") > 1
+        TestSnapshotSetting "AutoCAD.Export.CombinationID", "PERF_01"
+        TestSnapshotSetting "Plot.LoadCase", "PERF_01"
+        exportBefore = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+        plotBefore = TestSnapshotPlot()
+        TestSnapshotEraseGeometryDisplay
+        Set afterModel = ReadFormedSectionFromResults(ThisWorkbook, True)
+        TestSnapshotCheck CStr(geometryMode) & ".calculated.fileModel", TestSnapshotSameModel(beforeModel, afterModel)
+        TestSnapshotCheck CStr(geometryMode) & ".calculated.export", Audit02ReadExportSnapshotForTests(ThisWorkbook) = exportBefore
+        TestSnapshotCheck CStr(geometryMode) & ".calculated.plot", TestSnapshotPlot() = plotBefore
+        TestSnapshotSetting "AutoCAD.Export.CombinationID", "Worst"
+        TestSnapshotSetting "Plot.LoadCase", "Worst"
+        exportBefore = Audit02ReadExportSnapshotForTests(ThisWorkbook): plotBefore = TestSnapshotPlot()
+        ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2 = "FORGED_RESULT_ID"
+        TestSnapshotCheck CStr(geometryMode) & ".worst.exportFromFile", Audit02ReadExportSnapshotForTests(ThisWorkbook) = exportBefore
+        TestSnapshotCheck CStr(geometryMode) & ".worst.plotFromFile", TestSnapshotPlot() = plotBefore
+        TestSnapshotFileViewControls CStr(geometryMode)
+        UpdateSectionResultsForWorkbook ThisWorkbook
+        TestSnapshotUpper original
+        For Each key In Array("rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams")
+            TestSnapshotCheck CStr(geometryMode) & ".display.refreshed." & CStr(key), TestSnapshotSameMatrix(original.Table(CStr(key)), ReadPhysicalResultTable(ThisWorkbook, CStr(key)))
+        Next key
+        TestSnapshotEraseGeometryDisplay
+        message = RunSectionCalculationForWorkbook(ThisWorkbook)
+        Set after = store.LoadLinkedFile(ThisWorkbook)
+        For Each key In Array("rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMElementGeometry", "rngNDMElementResults", "rngNDMSectionProperties", "LoadCase.Properties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "LoadCase.Annotations")
+            TestSnapshotCheck CStr(geometryMode) & ".repeat." & CStr(key), TestSnapshotSameIgnoringRun(original.Table(CStr(key)), after.Table(CStr(key)))
+        Next key
+        TestSnapshotEraseGeometryDisplay
+        TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+        TestSnapshotCheck CStr(geometryMode) & ".excel.noFileFallback", TestSnapshotFileReadRejected(0, vbObjectError + 4380)
+        UpdateSectionResultsForWorkbook ThisWorkbook, after ' Подготовка полного листового снимка для отдельной проверки Excel, без скрытой загрузки файла этим режимом.
+        message = RunSectionCalculationForWorkbook(ThisWorkbook)
+        TestSnapshotCheck CStr(geometryMode) & ".message.calculated.source.Excel", InStr(message, "Геометрия для расчёта загружена с листа Results текущей книги.") > 0
+        TestSnapshotCheck CStr(geometryMode) & ".message.calculated.saved.Excel", Right$(message, Len("Данные сохранены на листе Results текущей книги.")) = "Данные сохранены на листе Results текущей книги."
+        TestSnapshotCheck CStr(geometryMode) & ".toExcel.referenceCleared", Not store.HasFileReference(ThisWorkbook)
+        Set afterModel = ReadFormedSectionFromResults(ThisWorkbook, True)
+        TestSnapshotCheck CStr(geometryMode) & ".toExcel.completeModel", TestSnapshotSameModel(beforeModel, afterModel)
+        TestSnapshotCheck CStr(geometryMode) & ".toExcel.boundaries", TestSnapshotSameIgnoringRun(after.Table("rngNDMElementGeometry"), ReadPhysicalResultTable(ThisWorkbook, "rngNDMElementGeometry"))
+        TestSnapshotCheck CStr(geometryMode) & ".scopeReleased", TestCalculationSnapshotReadReleased()
+        TestSnapshotSetting "Results.SnapshotStorage", "File"
+        UpdateSectionResultsForWorkbook ThisWorkbook
+        For Each key In Array("rngNDMElementResults", "rngNDMElementGeometry", "rngNDMSectionAnnotations")
+            data = ReadPhysicalResultTable(ThisWorkbook, CStr(key))
+            TestSnapshotCheck CStr(geometryMode) & ".display.headerOnly." & CStr(key), UBound(data, 1) = 1
+        Next key
+        TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+        UpdateSectionResultsForWorkbook ThisWorkbook, after
+        TestSnapshotSetting "Results.SnapshotStorage", "File"
+        Set afterModel = ReadFormedSectionFromResults(ThisWorkbook, True)
+        TestSnapshotCheck CStr(geometryMode) & ".file.noPreloadRequired", TestSnapshotSameModel(beforeModel, afterModel)
+        message = RunSectionCalculationForWorkbook(ThisWorkbook)
+        TestSnapshotCheck CStr(geometryMode) & ".file.directCalculation", store.LoadFile(ThisWorkbook).TableRowCount("rngNDMElementResults") > 1
+        TestSnapshotSetting "Results.SnapshotName", token & "_missing"
+        TestSnapshotCheck CStr(geometryMode) & ".saveAs.ignoresOtherName", TestSnapshotUnselectedLinkIgnored(store)
+        store.ClearReference ThisWorkbook
+        TestSnapshotCheck CStr(geometryMode) & ".noLinkedFile.modelRejected", TestSnapshotFileReadRejected(0)
+        TestSnapshotCheck CStr(geometryMode) & ".noLinkedFile.plotRejected", TestSnapshotFileReadRejected(1)
+        TestSnapshotCheck CStr(geometryMode) & ".noLinkedFile.exportRejected", TestSnapshotFileReadRejected(2)
+        TestSnapshotMissingFileMessage store
+        TestSnapshotSetting "Results.SnapshotName", token
+        TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+        If CreateObject("Scripting.FileSystemObject").FileExists(path) Then Kill path
+    Next geometryMode
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет, что SaveAs не сверяет и не копирует ранее показанный файл другого имени.
+Private Function TestSnapshotUnselectedLinkIgnored(ByVal store As CCalculationSnapshotStore) As Boolean
+    Dim hashProperty As Object: Set hashProperty = ThisWorkbook.CustomDocumentProperties.Item("NDM.CalculationSnapshot.Hash")
+    Dim before As String: before = CStr(hashProperty.Value)
+    On Error GoTo Finished
+    hashProperty.Value = "TestUnselectedHash"
+    store.EnsureBesideWorkbook ThisWorkbook
+    TestSnapshotUnselectedLinkIgnored = True
+Finished:
+    hashProperty.Value = before
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет имя, действия пользователя и фактический адрес настройки при отсутствии выбранного файла.
+Private Sub TestSnapshotMissingFileMessage(ByVal store As CCalculationSnapshotStore)
+    Dim snapshot As CCalculationSnapshot, reason As String, number As Long
+    On Error Resume Next
+    Set snapshot = store.LoadFile(ThisWorkbook)
+    reason = Err.Description: number = Err.Number
+    On Error GoTo 0
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    TestSnapshotCheck "missingFile.error", number = vbObjectError + 4956
+    TestSnapshotCheck "missingFile.name", InStr(reason, "«" & store.SelectedFileName(ThisWorkbook) & "» не найден.") > 0
+    TestSnapshotCheck "missingFile.actions", InStr(reason, "Проверьте имя Results.SnapshotName") > 0 And InStr(reason, "«Сформировать сечение»") > 0
+    TestSnapshotCheck "missingFile.location", InStr(reason, settings.InputLocation("Results.SnapshotName")) > 0
+    TestSnapshotCheck "missingFile.path", InStr(reason, store.SnapshotPath(ThisWorkbook)) > 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет согласованный порядок семи нижних блоков и зазор между их реальными ширинами.
+Private Sub TestSnapshotTableOrder()
+    Dim key As Variant, anchor As Object, previousEnd As Long
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    For Each key In Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionContours", "rngNDMElementResults", "rngNDMElementGeometry", "rngNDMSectionAnnotations")
+        Set anchor = ThisWorkbook.Names.Item(CStr(key)).RefersToRange
+        TestSnapshotCheck "layout.order." & CStr(key), anchor.Column > previousEnd
+        previousEnd = anchor.Column + writer.OutputColumnCount(CStr(key)) + 1
+    Next key
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Удаляет всё содержимое Results, включая сводки и шапки, не трогая Config, имена и оформление.
+Private Sub TestSnapshotEraseGeometryDisplay()
+    ThisWorkbook.Worksheets.Item("Results").UsedRange.ClearContents
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Изменяет только просмотр: другие сохранённые LC/НДС, величину и точность; расчётные поля Config намеренно непригодны.
+Private Sub TestSnapshotFileViewControls(ByVal prefix As String)
+    Dim profiles As Object: Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Dim saved As Variant: saved = profiles.Formula
+    Dim row As Long, column As Long, key As String
+    For row = 1 To profiles.Rows.Count
+        key = CStr(profiles.Cells(row, 2).Value2)
+        For column = 3 To profiles.Columns.Count
+            Select Case key
+                Case "Visualization.State": profiles.Cells(row, column).Value2 = "CapacityState"
+                Case "Visualization.Quantity": profiles.Cells(row, column).Value2 = "Strain"
+                Case "Visualization.StrainPrecision": profiles.Cells(row, column).Value2 = 8
+                Case "Calculation.Crack.Width", "MaterialModel.Strength.ValueSet": profiles.Cells(row, column).Value2 = "INVALID_FOR_NEW_CALCULATION"
+            End Select
+        Next column
+    Next row
+    TestSnapshotSetting "Plot.LoadCase", "PERF_02"
+    TestSnapshotSetting "AutoCAD.Export.CombinationID", "PERF_02"
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim reader As CSectionPlotDataReader: Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
+    TestSnapshotCheck prefix & ".view.currentLC", reader.LoadCase = "PERF_02"
+    TestSnapshotCheck prefix & ".view.currentState", reader.StateType = "CapacityState"
+    TestSnapshotCheck prefix & ".view.currentQuantity", reader.VisualizationQuantity = "Strain"
+    TestSnapshotCheck prefix & ".view.currentPrecision", reader.ResultPrecision = 8
+    TestSnapshotCheck prefix & ".view.currentExport", Left$(Audit02ReadExportSnapshotForTests(ThisWorkbook), Len("PERF_02|PR1|CapacityState|Strain|")) = "PERF_02|PR1|CapacityState|Strain|"
+    profiles.Formula = saved
+    TestSnapshotSetting "Plot.LoadCase", "Worst"
+    TestSnapshotSetting "AutoCAD.Export.CombinationID", "Worst"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' File без привязки не имеет права подменять свой источник сохранившимися таблицами Excel.
+Private Function TestSnapshotFileReadRejected(ByVal consumer As Long, Optional ByVal expectedError As Long = 0) As Boolean
+    On Error GoTo Rejected
+    Dim model As CSectionModel, text As String
+    Select Case consumer
+        Case 0: Set model = ReadFormedSectionFromResults(ThisWorkbook)
+        Case 1: text = TestSnapshotPlot()
+        Case 2: text = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    End Select
+    Exit Function
+Rejected:
+    If expectedError = 0 Then expectedError = vbObjectError + 4956
+    TestSnapshotFileReadRejected = Err.Number = expectedError
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет короткий источник для каждого действия и расположение абзаца без открытия файла и AutoCAD.
+Private Sub TestSnapshotActionMessages()
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim mode As String: mode = settings.GetRequiredString("Results.SnapshotStorage")
+    Dim name As String: name = settings.GetRequiredString("Results.SnapshotName")
+    TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+    TestSnapshotCheck "message.calc.Excel", SnapshotActionDataOrigin(ThisWorkbook, "Calculation") = "Геометрия для расчёта загружена с листа Results текущей книги."
+    TestSnapshotSetting "Results.SnapshotStorage", "File"
+    TestSnapshotSetting "Results.SnapshotName", "Контрольный_снимок"
+    Dim source As String: source = SnapshotActionDataOrigin(ThisWorkbook, "Calculation")
+    TestSnapshotCheck "message.calc.File", source = "Геометрия для расчёта загружена из файла «Контрольный_снимок.ndm»."
+    TestSnapshotCheck "message.export.full", InStr(SnapshotActionDataOrigin(ThisWorkbook, "Export"), "Геометрия и НДС для экспорта") = 1
+    TestSnapshotCheck "message.export.geometryOnly", InStr(SnapshotActionDataOrigin(ThisWorkbook, "Export", True), "НДС") = 0
+    TestSnapshotCheck "message.update", InStr(SnapshotActionDataOrigin(ThisWorkbook, "Update"), "Данные для схемы и таблиц") = 1
+    TestSnapshotCheck "message.afterOutcome", WorkbookMessageAfterOutcome("Готово." & vbCrLf & vbCrLf & "Строк: 4.", source) = _
+        "Готово." & vbCrLf & vbCrLf & source & vbCrLf & vbCrLf & "Строк: 4."
+    TestSnapshotSetting "Results.SnapshotStorage", mode
+    TestSnapshotSetting "Results.SnapshotName", name
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает сохранённые числа/строки буквально, исключая только новый RunID первого столбца.
+Private Function TestSnapshotSameIgnoringRun(ByVal expected As Variant, ByVal actual As Variant) As Boolean
+    If Not IsArray(expected) Or Not IsArray(actual) Then Exit Function
+    If UBound(expected, 1) <> UBound(actual, 1) Or UBound(expected, 2) <> UBound(actual, 2) Then Exit Function
+    Dim row As Long
+    For row = 2 To UBound(expected, 1): expected(row, 1) = 0#: actual(row, 1) = 0#: Next row
+    TestSnapshotSameIgnoringRun = TestSnapshotSameMatrix(expected, actual)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет все координаты, площади, собственные инерции и фактические границы без допуска и округления.
+Private Function TestSnapshotSameModel(ByVal expected As CSectionModel, ByVal actual As CSectionModel) As Boolean
+    If expected.ConcreteCount <> actual.ConcreteCount Or expected.RebarCount <> actual.RebarCount Or expected.Contours.Count <> actual.Contours.Count Or expected.AnnotationCount <> actual.AnnotationCount Then Exit Function
+    Dim i As Long
+    For i = 1 To expected.ConcreteCount
+        If expected.ConcreteID(i) <> actual.ConcreteID(i) Or expected.ConcreteX(i) <> actual.ConcreteX(i) Or expected.ConcreteY(i) <> actual.ConcreteY(i) Or expected.ConcreteArea(i) <> actual.ConcreteArea(i) Then Exit Function
+        If expected.ConcreteLocalIx(i) <> actual.ConcreteLocalIx(i) Or expected.ConcreteLocalIy(i) <> actual.ConcreteLocalIy(i) Or expected.ConcreteLocalIxy(i) <> actual.ConcreteLocalIxy(i) Then Exit Function
+        If Not TestSnapshotOptionalMatrixEqual(TestSnapshotRegionValues(expected.ConcreteGeometry(i)), TestSnapshotRegionValues(actual.ConcreteGeometry(i))) Then Exit Function
+    Next i
+    For i = 1 To expected.RebarCount
+        If expected.RebarID(i) <> actual.RebarID(i) Or expected.RebarX(i) <> actual.RebarX(i) Or expected.RebarY(i) <> actual.RebarY(i) Or expected.RebarArea(i) <> actual.RebarArea(i) Or expected.RebarDiameter(i) <> actual.RebarDiameter(i) Then Exit Function
+    Next i
+    For i = 1 To expected.Contours.Count
+        If expected.Contours.SegmentType(i) <> actual.Contours.SegmentType(i) Or expected.Contours.LoopID(i) <> actual.Contours.LoopID(i) Or expected.Contours.LoopRole(i) <> actual.Contours.LoopRole(i) Then Exit Function
+        If expected.Contours.StartX(i) <> actual.Contours.StartX(i) Or expected.Contours.StartY(i) <> actual.Contours.StartY(i) Or expected.Contours.EndX(i) <> actual.Contours.EndX(i) Or expected.Contours.EndY(i) <> actual.Contours.EndY(i) Then Exit Function
+        If expected.Contours.CenterX(i) <> actual.Contours.CenterX(i) Or expected.Contours.CenterY(i) <> actual.Contours.CenterY(i) Or expected.Contours.Radius(i) <> actual.Contours.Radius(i) Or expected.Contours.SweepAngle(i) <> actual.Contours.SweepAngle(i) Then Exit Function
+    Next i
+    TestSnapshotSameModel = True
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Преобразует каждую фактическую прямую/дугу и роль петли в матрицу точного сравнения.
+Private Function TestSnapshotRegionValues(ByVal region As CConcreteRegion) As Variant
+    If region Is Nothing Then Exit Function
+    Dim data() As Variant, i As Long, loopID As Long
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, sweep As Double
+    ReDim data(1 To region.SegmentCount + 1, 1 To 10)
+    data(1, 1) = region.Area: data(1, 2) = region.LoopCount: data(1, 3) = region.SegmentCount
+    For i = 1 To region.SegmentCount
+        region.GetSegment i, x1, y1, x2, y2, cx, cy, sweep, loopID
+        data(i + 1, 1) = x1: data(i + 1, 2) = y1: data(i + 1, 3) = x2: data(i + 1, 4) = y2
+        data(i + 1, 5) = cx: data(i + 1, 6) = cy: data(i + 1, 7) = sweep: data(i + 1, 8) = loopID
+        data(i + 1, 9) = region.LoopIsOpening(loopID)
+    Next i
+    TestSnapshotRegionValues = data
+End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Повторная проверка сохраняет защиту при изменении даты и добавлении новой части.
@@ -1678,7 +1972,7 @@ End Sub
 ' Проверяет заданный горизонтальный порядок, не фиксируя адреса верхних таблиц.
 Private Function TestSnapshotLowerOrder() As Boolean
     Dim name As Variant, last As Long, column As Long
-    For Each name In Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMElementResults", "rngNDMSectionContours", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+    For Each name In Array("rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionContours", "rngNDMElementResults", "rngNDMElementGeometry", "rngNDMSectionAnnotations")
         column = ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Column
         If column <= last Then Exit Function
         last = column

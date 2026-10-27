@@ -109,6 +109,35 @@ Public Function WorkbookMessageParagraph(ByVal message As String, ByVal paragrap
     End If
 End Function
 
+' Вставляет короткий источник сразу после итогового абзаца, сохраняя счётчики, причины и пути отдельными блоками.
+Public Function WorkbookMessageAfterOutcome(ByVal message As String, ByVal sourceText As String) As String
+    Dim position As Long: position = InStr(1, message, vbCrLf & vbCrLf, vbBinaryCompare)
+    If position = 0 Then
+        WorkbookMessageAfterOutcome = WorkbookMessageParagraph(message, sourceText)
+    Else
+        WorkbookMessageAfterOutcome = Left$(message, position - 1) & vbCrLf & vbCrLf & sourceText & Mid$(message, position)
+    End If
+End Function
+
+' Называет только источник текущего действия. Расчёт читает геометрию; экспорт полного снимка — геометрию и НДС.
+Public Function SnapshotActionDataOrigin(ByVal workbook As Object, ByVal action As String, Optional ByVal geometryOnly As Boolean = False) As String
+    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+    Dim origin As String
+    If store.StorageMode(workbook) = "File" Then
+        origin = "из файла «" & store.SelectedFileName(workbook) & "»"
+    Else
+        origin = "с листа Results текущей книги"
+    End If
+    Select Case action
+        Case "Calculation": SnapshotActionDataOrigin = "Геометрия для расчёта загружена " & origin & "."
+        Case "Export"
+            If geometryOnly Then SnapshotActionDataOrigin = "Геометрия для экспорта загружена " & origin & "." Else _
+                SnapshotActionDataOrigin = "Геометрия и НДС для экспорта загружены " & origin & "."
+        Case "Update": SnapshotActionDataOrigin = "Данные для схемы и таблиц загружены " & origin & "."
+        Case Else: Err.Raise 5, "SnapshotActionDataOrigin", "Неизвестное действие для сообщения об источнике данных."
+    End Select
+End Function
+
 ' Собирает итог один раз по готовым результатам: отдельно считает ошибки ввода,
 ' внутренние ошибки и численные отказы; берёт собственную причину каждой категории.
 ' Чтение результатов не запускает solver и не меняет статусы или таблицы.

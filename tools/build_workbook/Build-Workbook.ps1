@@ -530,32 +530,32 @@ try {
     Add-WorkbookName $workbook "rngStrengthSummaryAnchor" $results '$A$49'
     Add-WorkbookName $workbook "rngCrackSummaryAnchor" $results '$A$85'
     Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$122'
-    Add-WorkbookName $workbook "rngNDMElementResults" $results '$AN$156'
+    Add-WorkbookName $workbook "rngNDMElementResults" $results '$BG$156'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$A$156'
-    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$AY$156'
+    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$AN$156'
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$S$156'
     Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AA$156'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BR$156'
-    Add-WorkbookName $workbook "rngNDMElementGeometry" $results '$CR$156'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$CL$156'
+    Add-WorkbookName $workbook "rngNDMElementGeometry" $results '$BR$156'
     $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
     # Постоянные подписи создаются один раз при сборке шаблона.
     # Поэлементная запись обходит ограничение COM-адаптера PowerShell для этой шапки.
     for ($i = 0; $i -lt $contourHeaders.Count; $i++) {
-        $results.Cells.Item(156, 51 + $i).Value2 = [string]$contourHeaders[$i]
+        $results.Cells.Item(156, 40 + $i).Value2 = [string]$contourHeaders[$i]
     }
     # Фактические границы элементов отделены от общих контуров сечения; ElementID связывает их с основной геометрией.
     $elementGeometryHeaders = $contourHeaders + @('ElementID')
     for ($i = 0; $i -lt $elementGeometryHeaders.Count; $i++) {
-        $results.Cells.Item(156, 96 + $i).Value2 = [string]$elementGeometryHeaders[$i]
+        $results.Cells.Item(156, 70 + $i).Value2 = [string]$elementGeometryHeaders[$i]
     }
-    $results.Range('AY155:BO155').Merge()
-    $results.Cells.Item(155, 51).Value2 = 'Достоверные контуры и отверстия сечения'
-    $results.Range('AY155:BO156').Font.Bold = $true
-    Set-Border $results.Range('AY156:BO156')
-    $results.Range('CR155:DI155').Merge()
-    $results.Cells.Item(155, 96).Value2 = 'Фактические границы бетонных элементов'
-    $results.Range('CR155:DI156').Font.Bold = $true
-    Set-Border $results.Range('CR156:DI156')
+    $results.Range('AN155:BD155').Merge()
+    $results.Cells.Item(155, 40).Value2 = 'Достоверные контуры и отверстия сечения'
+    $results.Range('AN155:BD156').Font.Bold = $true
+    Set-Border $results.Range('AN156:BD156')
+    $results.Range('BR155:CI155').Merge()
+    $results.Cells.Item(155, 70).Value2 = 'Фактические границы бетонных элементов'
+    $results.Range('BR155:CI156').Font.Bold = $true
+    Set-Border $results.Range('BR156:CI156')
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

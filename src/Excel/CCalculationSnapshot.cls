@@ -159,6 +159,22 @@ Public Function TableRowCount(ByVal key As String) As Long
     TableRowCount = CLng(mTableRows.Item(key))
 End Function
 
+' Возвращает только исходную шапку таблицы; большие массивы состояний не копируются ради справочного вывода File.
+Public Function TableHeader(ByVal key As String) As Variant
+    If Not mTables.Exists(key) Then Err.Raise 5, "CCalculationSnapshot", "В снимке отсутствует таблица: " & key
+    Dim header() As Variant, values As Variant, column As Long, width As Long
+    If key = "rngNDMElementResults" Then
+        width = UBound(mElements, 2)
+    Else
+        values = mTables.Item(key): width = UBound(values, 2)
+    End If
+    ReDim header(1 To 1, 1 To width)
+    For column = 1 To width
+        If key = "rngNDMElementResults" Then header(1, column) = mElements(1, column) Else header(1, column) = values(1, column)
+    Next column
+    TableHeader = header
+End Function
+
 ' Выбирает только нужные строки по кратковременному индексу неизменяемого снимка.
 ' Несмежные повторения сочетания и состояния сохраняют исходный порядок.
 Public Function SelectElementResults(ByVal combinationID As String, ByVal stateType As String, ByVal indexOnly As Boolean) As Variant

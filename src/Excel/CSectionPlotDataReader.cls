@@ -225,11 +225,7 @@ End Function
 
 ' Читает поле «Определяющее сочетание» над компактной сводкой Results.
 Private Function ReadWorstCombinationID(ByVal workbook As Object) As String
-    On Error GoTo Failed
-    Dim anchor As Object
-    Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
-    ReadWorstCombinationID = Trim$(SafeText(anchor.Value2))
-Failed:
+    ReadWorstCombinationID = ReadSavedWorstCombinationID(workbook)
 End Function
 
 ' Применяет оформление профиля выбранного сочетания. ProfileId берёт
@@ -242,16 +238,20 @@ Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    profiles.LoadFromWorkbook workbook
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    profiles.LoadFromWorkbook workbook, True, Not snapshot Is Nothing
 
     Dim profile As CCalculationProfile
     If profiles.HasProfile(mProfileId) Then
         Set profile = profiles.ProfileById(mProfileId)
     Else
-        Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
         If snapshot Is Nothing Then Set profile = profiles.ProfileById(mProfileId) Else Set profile = snapshot.SavedVisualizationProfile(mProfileId)
     End If
     mProfileCrackWidthEnabled = profile.CrackWidthEnabled
+    If Not snapshot Is Nothing Then
+        Dim savedProfile As CCalculationProfile: Set savedProfile = snapshot.SavedVisualizationProfile(mProfileId)
+        mProfileCrackWidthEnabled = savedProfile.CrackWidthEnabled ' Это сведения о выполненном расчёте; текущий Config управляет только видом схемы.
+    End If
     mStateType = profile.VisualizationStateText
     mVisualizationQuantity = VisualizationQuantityToText(profile.VisualizationQuantity)
     mResultPrecision = profile.VisualizationPrecisionForQuantity(profile.VisualizationQuantity)

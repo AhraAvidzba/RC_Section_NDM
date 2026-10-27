@@ -15,7 +15,7 @@ Private mSnapshotReadGeometryOnly As Boolean ' Формирование моде
 Private mSnapshotTableReadCount As Long ' ДЛЯ ТЕСТОВ: число загрузок целых таблиц; чтения при поиске границ сюда не входят.
 
 ' Восстанавливает расчётную модель из обязательных координат, площадей,
-' инерций и исходных контуров Results в мм, мм2 и мм4. При includeOptionalData=True
+' инерций и контуров единого источника: выбранного файла либо Results, в мм, мм2 и мм4. При includeOptionalData=True
 ' дополнительно читает JSON происхождения и RecipeTrace; для расчёта они не требуются.
 ' Восстановлением аннотаций управляет вызывающий ReadFormedSectionFromResults.
 Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results", _
@@ -114,6 +114,19 @@ InvalidElementID:
         anchor.Offset(row - 1, colID - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
 End Function
 
+' Читает определяющее сочетание сохранённого расчёта, не доверяя справочной сводке при File.
+' Переключатели выбора сочетания остаются в Config; Worst принадлежит конкретному снимку.
+Public Function ReadSavedWorstCombinationID(ByVal workbook As Object) As String
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    If Not snapshot Is Nothing Then
+        If snapshot.IsGeometryPreview Then Exit Function
+        Dim summary As Variant: summary = snapshot.Table("Summary")
+        ReadSavedWorstCombinationID = Trim$(SafeText(summary(1, 1)))
+    Else
+        ReadSavedWorstCombinationID = Trim$(SafeText(workbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2))
+    End If
+End Function
+
 ' Читает собственную геометрию один раз блочными таблицами Results.
 ' Текущий Config, дополнительные JSON и внешний AutoCAD не участвуют;
 ' таблица границ обязательна для Contour; компактные Rectangle/Region хранятся без неё.
@@ -125,13 +138,8 @@ Public Function ReadSavedConcreteBoundaries(ByVal workbook As Object, Optional B
     On Error Resume Next
     Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange
     On Error GoTo 0
-    If Not anchor Is Nothing Then
-        If GeometryRequiresConcreteBoundaries(data) Then
-            boundaryData = ReadAnchoredResultTable(workbook, "rngNDMElementGeometry")
-        Else
-            boundaryData = ReadPhysicalResultTable(workbook, "rngNDMElementGeometry")
-        End If
-    End If
+    Dim saved As CCalculationSnapshot: Set saved = CurrentCalculationSnapshot(workbook)
+    If Not anchor Is Nothing Or Not saved Is Nothing Then boundaryData = ReadAnchoredResultTable(workbook, "rngNDMElementGeometry")
     Set ReadSavedConcreteBoundaries = ReadConcreteBoundaryMap(boundaryData, data, "rngNDMElementGeometry", anchor, geometryAnchor)
 End Function
 
@@ -597,12 +605,12 @@ InvalidSweep:
         anchor.Parent.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False))
 End Function
 
-' Возвращает источник уже сформированного сечения из свойств Results.
+' Возвращает источник уже сформированного сечения из свойств выбранного файла либо Results.
 ' Текущий выбор Geometry.Source не меняет происхождение сохранённого снимка.
 Public Function ResultsGeometrySource(ByVal workbook As Object) As String
     On Error GoTo Failed
     Dim data As Variant
-    data = ReadPhysicalResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -625,11 +633,7 @@ End Function
 Public Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal combinationID As String, ByVal propertyName As String) As String
     On Error GoTo Failed
     Dim data As Variant
-    If combinationID = "ALL" And propertyName <> "LoadReferenceX" And propertyName <> "LoadReferenceY" And Left$(propertyName, Len("SP35.Slenderness")) <> "SP35.Slenderness" Then
-        data = ReadPhysicalResultTable(workbook, "rngNDMSectionProperties")
-    Else
-        data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
-    End If
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -728,28 +732,19 @@ Public Function ResultHeaderBase(ByVal headerText As String) As String
     End If
 End Function
 
-' Читает таблицу Results от её именованной начальной ячейки.
-' Не использует CurrentRegion: расположенные рядом пояснения и заголовки
-' не должны попадать в массив расчётных данных.
+' Читает таблицу из единого источника текущего режима: выбранного файла либо Results.
+' В File ни одна геометрическая таблица не дополняется ячейками листа.
+' Для расчёта достаточно общих таблиц, для схемы/экспорта добавляются записи сочетаний.
 Public Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
-    Dim snapshot As CCalculationSnapshot
-    If rangeName = "rngNDMElementGeometry" Then
-        Set snapshot = CurrentCalculationSnapshot(workbook)
-        If Not snapshot Is Nothing Then
-            If snapshot.HasTable(rangeName) Then ReadAnchoredResultTable = snapshot.Table(rangeName)
-            Exit Function ' Привязанный файл авторитетен: не смешиваем его с остатком прежней таблицы.
-        End If
-    End If
-    If workbook Is mSnapshotReadWorkbook And mSnapshotReadGeometryOnly Then
-        ReadAnchoredResultTable = ReadPhysicalResultTable(workbook, rangeName)
-        Exit Function
-    End If
-    If rangeName = "rngNDMElementResults" Or rangeName = "rngNDMSectionProperties" Or rangeName = "rngNDMSectionAnnotations" Then
-        Set snapshot = CurrentCalculationSnapshot(workbook)
-        If Not snapshot Is Nothing Then
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    If Not snapshot Is Nothing Then
+        If rangeName = "rngNDMElementGeometry" And Not snapshot.HasTable(rangeName) Then Exit Function ' Старый Adaptive-снимок может не иметь необязательной матрицы границ; Contour проверяется snapshot.Validate.
+        If workbook Is mSnapshotReadWorkbook And mSnapshotReadGeometryOnly Then
+            ReadAnchoredResultTable = snapshot.Table(rangeName)
+        Else
             ReadAnchoredResultTable = snapshot.ResultTable(rangeName)
-            Exit Function
         End If
+        Exit Function
     End If
     ReadAnchoredResultTable = ReadPhysicalResultTable(workbook, rangeName)
 End Function
@@ -959,6 +954,7 @@ Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional 
         Optional ByVal preservedWriter As CNDMResultsWriter = Nothing) As CSectionModel
     On Error GoTo Failed
     BeginSectionSnapshotRead workbook, True ' Модель использует только общую геометрию, без загрузки массивов расчётных состояний.
+    Dim savedSnapshot As CCalculationSnapshot: Set savedSnapshot = CurrentCalculationSnapshot(workbook) ' Проверяем файл до опционального чтения подписи источника: его ошибку нельзя выдать за пустой Results.
     Dim source As String: source = ResultsGeometrySource(workbook)
     If Len(source) = 0 Then Err.Raise vbObjectError + 4380, "ReadFormedSectionFromResults", _
         "В Results нет сформированного сечения. Сначала нажмите «Сформировать сечение»."

@@ -25,9 +25,11 @@ Private mCount As Long ' Количество столбцов профилей 
 
 ' Загружает каталог из именованного диапазона книги. Расчёт передаёт False,
 ' чтобы настройки оформления проверялись только схемой и экспортом.
-Public Sub LoadFromWorkbook(ByVal workbook As Object, Optional ByVal includeVisualization As Boolean = True)
+' visualizationOnly=True читает лишь переключатели просмотра файла, не проверяя текущие расчётные модели Config.
+Public Sub LoadFromWorkbook(ByVal workbook As Object, Optional ByVal includeVisualization As Boolean = True, _
+        Optional ByVal visualizationOnly As Boolean = False)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3980, "CCalculationProfileCatalog", "Книга Excel не передана."
-    LoadFromRange workbook.Names.Item("rngCalculationProfiles").RefersToRange, includeVisualization
+    LoadFromRange workbook.Names.Item("rngCalculationProfiles").RefersToRange, includeVisualization, visualizationOnly
 End Sub
 
 
@@ -44,7 +46,8 @@ End Function
 ' только поля оформления. Структурные строки в квадратных
 ' скобках пропускаются. Каталог доступен только после успешного чтения всех
 ' столбцов; при отказе частичные данные удаляются, исходная ошибка сохраняется.
-Public Sub LoadFromRange(ByVal source As Object, Optional ByVal includeVisualization As Boolean = True)
+Public Sub LoadFromRange(ByVal source As Object, Optional ByVal includeVisualization As Boolean = True, _
+        Optional ByVal visualizationOnly As Boolean = False)
     If source Is Nothing Then Err.Raise vbObjectError + 3981, "CCalculationProfileCatalog", "Диапазон rngCalculationProfiles не найден."
     Clear
     On Error GoTo Failed
@@ -72,7 +75,7 @@ Public Sub LoadFromRange(ByVal source As Object, Optional ByVal includeVisualiza
     Dim profileIndex As Long
     For profileIndex = 1 To profileCount
         mProfileIds(profileIndex) = profileIds(profileIndex)
-        Set mProfiles(profileIndex) = BuildProfile(source, data, profileColumns(profileIndex), profileIds(profileIndex), includeVisualization)
+        Set mProfiles(profileIndex) = BuildProfile(source, data, profileColumns(profileIndex), profileIds(profileIndex), includeVisualization, visualizationOnly)
     Next profileIndex
     mCount = profileCount
     Exit Sub
@@ -86,7 +89,7 @@ End Sub
 ' Создает профиль по одному столбцу PR и сохраняет адреса его параметров
 ' для понятной ошибки ввода. Адреса не передаются в расчетное ядро.
 Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
-        ByVal profileColumn As Long, ByVal profileId As String, ByVal includeVisualization As Boolean) As CCalculationProfile
+        ByVal profileColumn As Long, ByVal profileId As String, ByVal includeVisualization As Boolean, ByVal visualizationOnly As Boolean) As CCalculationProfile
     On Error GoTo InvalidValue
     Dim values As Object
     Dim locations As Object
@@ -103,24 +106,31 @@ Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
         Dim keyText As String
         keyText = Trim$(CStr(data(rowIndex, 2)))
         If Len(keyText) > 0 Then
+            If visualizationOnly And Left$(keyText, Len("Visualization.")) <> "Visualization." And keyText <> "Profile.DisplayName" And keyText <> "Profile.Description" Then GoTo NextProfileValue
             If includeVisualization Or StrComp(Left$(keyText, Len("Visualization.")), "Visualization.", vbTextCompare) <> 0 Then
                 locations(keyText) = sheetName & "!" & columnName & CStr(firstRow + rowIndex - 1)
                 values(keyText) = ProfileCellText(data(rowIndex, profileColumn), keyText, profileId, locations)
             End If
         End If
+NextProfileValue:
     Next rowIndex
 
     Dim profile As CCalculationProfile
     Set profile = New CCalculationProfile
+    If visualizationOnly Then
+        profile.Initialize profileId, ProfileValue(values, "Profile.DisplayName"), ProfileValue(values, "Profile.Description"), False, False, False, False
+    Else
     profile.Initialize profileId, ProfileValue(values, "Profile.DisplayName"), _
         ProfileValue(values, "Profile.Description"), _
         YesNo(ProfileValue(values, "Calculation.Strength.DirectState"), "Calculation.Strength.DirectState", profileId, locations), _
         YesNo(ProfileValue(values, "Calculation.Strength.Capacity"), "Calculation.Strength.Capacity", profileId, locations), _
         YesNo(ProfileValue(values, "Calculation.Crack.Width"), "Calculation.Crack.Width", profileId, locations), _
         YesNo(ProfileValue(values, "Calculation.Stability.Enabled"), "Calculation.Stability.Enabled", profileId, locations)
+    End If
 
     profile.SetInputLocations locations
     Dim spec As CMaterialModelSpec
+    If Not visualizationOnly Then
     Set spec = SpecFromValues(values, locations, profileId, "MaterialModel.Strength")
     If spec.IsComplete Then profile.SetStrengthSpec spec
 
@@ -133,6 +143,7 @@ Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
     activeKey = "MaterialModel.Stability.ValueSet"
     If profile.StabilityEnabled Then RequireProfileValue values, activeKey
     profile.SetStabilityValueSet ProfileValue(values, activeKey)
+    End If
 
     If includeVisualization Then
         activeKey = "Visualization.State"

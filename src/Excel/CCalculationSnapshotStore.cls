@@ -39,8 +39,8 @@ Public Sub LinkFile(ByVal workbook As Object)
     SetLink workbook, "Hash", digest.FileSHA256(path)
 End Sub
 
-' Читает файл ранее показанного снимка и проверяет, что его не заменили другим расчётом.
-' Выбор другого имени в Config применяется явно кнопкой обновления.
+' Читает прежнюю служебную привязку для проверки переноса/диагностики.
+' Пользовательские действия выбирают текущий файл через LoadFile, а не эту привязку.
 Public Function LoadLinkedFile(ByVal workbook As Object) As CCalculationSnapshot
     Dim path As String: path = CStr(workbook.Path) & Application.PathSeparator & LinkText(workbook, "File")
     If Not FileExists(path) Then path = LinkText(workbook, "Folder") & Application.PathSeparator & LinkText(workbook, "File")
@@ -83,6 +83,11 @@ Public Function StorageMode(ByVal workbook As Object) As String
     StorageMode = settings.GetRequiredString("Results.SnapshotStorage")
     If StorageMode <> "Excel" And StorageMode <> "File" Then Err.Raise 5, "CCalculationSnapshotStore", _
         settings.InputErrorMessage("Results.SnapshotStorage", "Допустимы Excel или File.", "Выберите место сохранения снимка.")
+End Function
+
+' Называет фактически выбранный .ndm/.ndms без пути для короткого сообщения об источнике данных.
+Public Function SelectedFileName(ByVal workbook As Object) As String
+    SelectedFileName = CreateObject("Scripting.FileSystemObject").GetFileName(SelectedReadPath(workbook))
 End Function
 
 ' Разрешает только имя файла рядом с книгой; путь к произвольному каталогу не принимается.
@@ -151,7 +156,15 @@ End Sub
 ' Загружает файл, выбранный сейчас в Config, независимо от привязки показанных Results.
 Public Function LoadFile(ByVal workbook As Object) As CCalculationSnapshot
     Dim path As String: path = SelectedReadPath(workbook)
-    If Not FileExists(path) Then Err.Raise vbObjectError + 4956, "CCalculationSnapshotStore", "Файл снимка не найден: " & path
+    If Not FileExists(path) Then
+        Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
+        settings.LoadFromRange workbook.Names.Item("rngSystemSettings").RefersToRange
+        Err.Raise vbObjectError + 4956, "CCalculationSnapshotStore", _
+            "Файл снимка «" & CreateObject("Scripting.FileSystemObject").GetFileName(path) & "» не найден." & vbCrLf & vbCrLf & _
+            "Проверьте имя Results.SnapshotName и поместите файл в папку книги." & vbCrLf & _
+            "Если снимка ещё нет, нажмите «Сформировать сечение»." & vbCrLf & vbCrLf & _
+            "Настройка: " & settings.InputLocation("Results.SnapshotName") & vbCrLf & "Ожидаемый файл:" & vbCrLf & path
+    End If
     Dim snapshot As CCalculationSnapshot: Set snapshot = ReadBinary(path)
     snapshot.Validate
     Set LoadFile = snapshot
@@ -474,12 +487,13 @@ Private Function GetText(ByVal file As CBinarySnapshotFile) As String
     GetText = file.ReadSizedUTF16(131072)
 End Function
 
-' После переноса книги копирует связанный снимок, если рядом его ещё нет.
-' Одноимённый иной расчёт не заменяет; обычное сохранение не переписывает файл.
+' После переноса книги копирует подтверждённый снимок только текущего имени.
+' Привязка другого имени не участвует; одноимённый иной расчёт не заменяется.
 Public Sub EnsureBesideWorkbook(ByVal workbook As Object, Optional ByVal previousFolder As String = "")
     If Not HasFileReference(workbook) Then Exit Sub
     If StorageMode(workbook) <> "File" Then Exit Sub
     Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
+    If StrComp(fileSystem.GetBaseName(SnapshotPath(workbook)), fileSystem.GetBaseName(LinkText(workbook, "File")), vbTextCompare) <> 0 Then Exit Sub ' Старый показанный файл не подменяет новый выбор Config даже при SaveAs.
     Dim target As String: target = CStr(workbook.Path) & Application.PathSeparator & LinkText(workbook, "File")
     Dim source As String: source = LinkText(workbook, "Folder") & Application.PathSeparator & LinkText(workbook, "File")
     Dim digest As CFileChecksum: Set digest = New CFileChecksum

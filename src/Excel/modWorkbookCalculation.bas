@@ -55,7 +55,8 @@ Public Sub UpdateSectionPlot()
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     UpdateSectionResultsForWorkbook ThisWorkbook
     If informationEnabled Then
-        ShowWorkbookMessage "Схема и подробные результаты восстановлены из выбранного снимка без повторного расчёта.", vbInformation, "RC Section NDM"
+        ShowWorkbookMessage WorkbookMessageAfterOutcome("Схема и таблицы обновлены без повторного расчёта.", _
+            SnapshotActionDataOrigin(ThisWorkbook, "Update")), vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
@@ -191,7 +192,7 @@ Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
 End Sub
 
 
-' Формирует сечение выбранным способом и публикует полный снимок в Results.
+' Формирует сечение и сохраняет геометрию в текущий File или Results.
 ' Не читает сочетания и не выполняет расчёт; текущий снимок сохраняется,
 ' если получение новой геометрии или подготовка её характеристик завершились ошибкой.
 Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal startedAt As Double = -1#, _
@@ -239,14 +240,18 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
         summary.ClearSummary workbook, fullFormatting
         writer.WriteGeometryPreview workbook, section, snapshot, units, fullFormatting
     End If
+    Dim savedDestination As String: savedDestination = "на листе Results"
+    If previewStore.StorageMode(workbook) = "File" Then savedDestination = "в файле «" & previewStore.SelectedFileName(workbook) & "»"
     ClearSectionPlotForNoData workbook, "Сечение сформировано. Схема не обновлена."
     If importer Is Nothing Then
-        FormSectionForWorkbook = "Сечение сформировано и сохранено в Results." & vbCrLf & vbCrLf & _
+        FormSectionForWorkbook = "Сечение сформировано и сохранено " & savedDestination & "." & vbCrLf & vbCrLf & _
             "Бетонных элементов: " & CStr(section.ConcreteCount) & "." & vbCrLf & _
             "Стержней арматуры: " & CStr(section.RebarCount) & "."
+        FormSectionForWorkbook = WorkbookMessageAfterOutcome(FormSectionForWorkbook, _
+            "Геометрия сформирована по параметрам Config и листа «Сечения».")
     Else
         FormSectionForWorkbook = importer.ResultMessage(section) & vbCrLf & vbCrLf & _
-            "Сечение сформировано и сохранено в Results. Для расчёта нажмите «Выполнить расчёт»."
+            "Сечение сформировано и сохранено " & savedDestination & ". Для расчёта нажмите «Выполнить расчёт»."
     End If
     If Len(section.GeometryWarningText) > 0 Then FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & section.GeometryWarningText
     CalculateResultsSheet workbook
@@ -260,7 +265,7 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     If plotErrorNumber <> 0 Then
         requiresAttention = True
         FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
-            "Предупреждение:" & vbCrLf & "Схема не обновлена. Сечение сохранено в Results." & vbCrLf & vbCrLf & _
+            "Предупреждение:" & vbCrLf & "Схема не обновлена. Сечение сохранено " & savedDestination & "." & vbCrLf & vbCrLf & _
             SectionRecipeErrorText(plotError) & vbCrLf & vbCrLf & _
             "После исправления настроек оформления нажмите «Обновить схему и результаты»."
     End If
@@ -291,7 +296,7 @@ Public Function NonCriticalMessagesEnabled(ByVal workbook As Object) As Boolean
     NonCriticalMessagesEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
 End Function
 
-' Читает сформированное сечение из Results и текущие расчётные настройки.
+' Читает сформированное сечение из связанного файла либо Results и текущие расчётные настройки Config.
 ' Подготавливает материалы один раз, рассчитывает сочетания и записывает Results.
 ' Возвращает итоговое сообщение; временные настройки Excel сохраняет CExcelAppStateGuard.
 Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False, _
@@ -323,7 +328,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddStep "Лист Config прочитан."
     report.AddValue "Загружено настроек", CStr(settings.KeyCount)
     report.AddValue "Дубликатов настроек", CStr(settings.DuplicateCount)
-    report.AddValue "Геометрия", "Сформированное сечение из Results"
+    report.AddValue "Геометрия", "Сохранённое сечение: связанный файл либо Results"
     report.AddValue "Профили расчета", "rngCalculationProfiles"
 
     Dim units As CUnitSystem
@@ -346,10 +351,12 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim section As CSectionModel
     report.AddSection "Геометрия и материалы"
-    report.AddStep "Начато чтение сформированного сечения из Results."
+    report.AddStep "Начато чтение сохранённого сечения."
+    Dim snapshotStore As CCalculationSnapshotStore: Set snapshotStore = New CCalculationSnapshotStore
+    Dim dataOrigin As String: dataOrigin = SnapshotActionDataOrigin(workbook, "Calculation") ' Имя фиксируется до чтения: новый расчёт может сохранить прежний .ndms уже как .ndm.
     Dim ndmWriter As CNDMResultsWriter: Set ndmWriter = New CNDMResultsWriter
     Set section = ReadFormedSectionFromResults(workbook, False, ndmWriter)
-    report.AddStep "CSectionModel прочитан из сохранённого снимка Results без генерации и импорта."
+    report.AddStep "CSectionModel прочитан из единого сохранённого снимка без генерации и импорта."
     report.AddValue "Источник сохранённого сечения", section.SourceType
     report.AddValue "Происхождение бетонной сетки", section.ConcreteMeshSource
     report.AddValue "Бетонных элементов", CStr(section.ConcreteCount)
@@ -405,7 +412,6 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     report.AddSection "Проверка вывода Results"
     ValidateResultsOutputLayout workbook, section, batch, profiles, showMessages
-    Dim snapshotStore As CCalculationSnapshotStore: Set snapshotStore = New CCalculationSnapshotStore
     If snapshotStore.StorageMode(workbook) = "File" Then
         Dim validatedSnapshotPath As String: validatedSnapshotPath = snapshotStore.SnapshotPath(workbook)
     End If
@@ -445,6 +451,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
     RunSectionCalculationForWorkbook = CalculationBatchMessage(batch, , requiresAttention)
+    RunSectionCalculationForWorkbook = WorkbookMessageAfterOutcome(RunSectionCalculationForWorkbook, dataOrigin)
     requiresAttention = requiresAttention Or plotHasWarning
     If Len(plotWarning) > 0 Then RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & plotWarning
     If report.Enabled Then
@@ -461,6 +468,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     excelGuard.Restore True
     RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & _
         "Время расчёта: " & Format$(ElapsedSecondsFrom(runStart), "0.00") & " с."
+    Dim savedDestination As String: savedDestination = "на листе Results текущей книги"
+    If snapshotStore.StorageMode(workbook) = "File" Then savedDestination = "в файле «" & snapshotStore.SelectedFileName(workbook) & "»"
+    RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & "Данные сохранены " & savedDestination & "."
     Exit Function
 
 Failed:

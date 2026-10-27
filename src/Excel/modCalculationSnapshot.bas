@@ -5,20 +5,23 @@ Option Explicit
 ' Общая загрузка и восстановление результатов без повторного расчёта
 ' ==========================================================================
 ' После расчёта вывод использует готовые данные в памяти. Кнопка в File
-' читает полный расчёт либо явно сформированную геометрию; Excel материализует ещё привязанный файл.
+' читает текущий выбранный файл расчёта либо геометрии; Excel читает только Results.
 ' Кратковременный контекст чтения принадлежит одной операции и одной книге.
 Private mReadSnapshot As CCalculationSnapshot ' Неизменяемый набор только на время одной операции чтения.
 Private mReadWorkbook As Object ' Книга, которой принадлежит текущий контекст.
 Private mReadDepth As Long ' Вложенные чтения схемы и экспорта не уничтожают внешний контекст.
+Private mReadSourceResolved As Boolean ' Выбор Excel/File проверяется один раз на операцию, в том числе при отсутствии файла в Excel.
 
 ' Открывает короткую область чтения; между пользовательскими действиями кэша нет.
 Public Sub BeginCalculationSnapshotRead(ByVal workbook As Object, Optional ByVal snapshot As CCalculationSnapshot = Nothing)
     If mReadDepth = 0 Then
         Set mReadWorkbook = workbook: Set mReadSnapshot = snapshot
+        mReadSourceResolved = False
     ElseIf Not workbook Is mReadWorkbook Then
         Err.Raise 5, "modCalculationSnapshot", "Вложенное чтение относится к другой книге."
     ElseIf Not snapshot Is Nothing Then
         Set mReadSnapshot = snapshot
+        mReadSourceResolved = False
     End If
     mReadDepth = mReadDepth + 1
 End Sub
@@ -26,20 +29,22 @@ End Sub
 ' Освобождает большие массивы и ссылку на книгу после успеха или ошибки.
 Public Sub EndCalculationSnapshotRead()
     If mReadDepth > 0 Then mReadDepth = mReadDepth - 1
-    If mReadDepth = 0 Then Set mReadSnapshot = Nothing: Set mReadWorkbook = Nothing
+    If mReadDepth = 0 Then Set mReadSnapshot = Nothing: Set mReadWorkbook = Nothing: mReadSourceResolved = False
 End Sub
 
-' Читает именно показанный расчёт; новый выбор имени применяется кнопкой загрузки.
-' Явный GeometryPreview читается тем же привязанным источником без выдуманных LC.
+' Выбирает источник только по текущему Excel/File. File сразу читает указанное имя,
+' Excel не обращается к файлу независимо от прежней привязки или смены имени.
 Public Function CurrentCalculationSnapshot(ByVal workbook As Object) As CCalculationSnapshot
     If workbook Is mReadWorkbook Then
-        If Not mReadSnapshot Is Nothing Then Set CurrentCalculationSnapshot = mReadSnapshot: Exit Function
+        If mReadSourceResolved Then Set CurrentCalculationSnapshot = mReadSnapshot: Exit Function
     End If
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim snapshot As CCalculationSnapshot
-    If Not store.HasFileReference(workbook) Then Exit Function
-    Set snapshot = store.LoadLinkedFile(workbook)
-    If mReadDepth > 0 And workbook Is mReadWorkbook Then Set mReadSnapshot = snapshot
+    If store.StorageMode(workbook) = "File" Then
+        If workbook Is mReadWorkbook Then Set snapshot = mReadSnapshot ' Уже проверенные данные текущего сохранения/загрузки не читаются повторно в той же операции.
+        If snapshot Is Nothing Then Set snapshot = store.LoadFile(workbook)
+    End If
+    If mReadDepth > 0 And workbook Is mReadWorkbook Then Set mReadSnapshot = snapshot: mReadSourceResolved = True
     Set CurrentCalculationSnapshot = snapshot
 End Function
 
@@ -58,9 +63,8 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     If snapshot Is Nothing Then
         If mode = "File" Then
             Set snapshot = store.LoadFile(workbook)
-        ElseIf store.HasFileReference(workbook) Then
-            Set snapshot = store.LoadLinkedFile(workbook) ' File→Excel читает показанный точный источник до снятия ссылки.
         Else
+            store.ClearReference workbook ' Источник Excel — только лист; прежняя служебная привязка ничего не подгружает.
             UpdateSectionPlotForWorkbook workbook
             guard.Restore True
             Exit Sub
@@ -112,7 +116,7 @@ Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snaps
         Set anchor = workbook.Names.Item(CStr(key)).RefersToRange
         rowCount = snapshot.TableRowCount(CStr(key))
         If Not includeElements Then
-            If CStr(key) = "rngNDMElementResults" Or CStr(key) = "rngNDMElementGeometry" Then rowCount = 1
+            If CStr(key) = "rngNDMElementResults" Or CStr(key) = "rngNDMElementGeometry" Or CStr(key) = "rngNDMSectionAnnotations" Then rowCount = 1
         End If
         If includeElements And Not snapshot.IsGeometryPreview Then
             If CStr(key) = "rngNDMSectionProperties" Then rowCount = rowCount + snapshot.TableRowCount("LoadCase.Properties") - 1
@@ -146,7 +150,7 @@ End Sub
 Private Function RestoredSnapshotMandatoryRowsFit(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot) As Boolean
     Dim key As Variant, anchor As Object
     For Each key In snapshot.BaseKeys()
-        If CStr(key) <> "rngNDMElementResults" And CStr(key) <> "rngNDMElementGeometry" Then
+        If CStr(key) <> "rngNDMElementResults" And CStr(key) <> "rngNDMElementGeometry" And CStr(key) <> "rngNDMSectionAnnotations" Then
             Set anchor = workbook.Names.Item(CStr(key)).RefersToRange
             If Not ResultRowsFitSheet(anchor.Row, snapshot.TableRowCount(CStr(key)), anchor.Worksheet.Rows.Count) Then Exit Function
         End If

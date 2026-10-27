@@ -1,0 +1,99 @@
+{
+  "Status": "PASS_DIRECTED_FILE_EXCEL_AUTHORITY_AND_MESSAGES_ONLY",
+  "Assertions": 1898,
+  "Requirements": [
+    {
+      "Requirement": "Текущий Excel/File и текущее имя файла без предварительного обновления",
+      "Evidence": "Plan.json; Directed11*.txt",
+      "Verified": true
+    },
+    {
+      "Requirement": "Полное удаление Results не меняет чтение File, схему, экспорт и расчёт",
+      "Evidence": "Adaptive/Contour preview.*, calculated.*, repeat.*",
+      "Verified": true
+    },
+    {
+      "Requirement": "Excel не подмешивает прежний файл",
+      "Evidence": "Adaptive/Contour excel.noFileFallback",
+      "Verified": true
+    },
+    {
+      "Requirement": "Выбор сочетания, состояния и оформления остаётся на Config",
+      "Evidence": "Adaptive/Contour view.current*",
+      "Verified": true
+    },
+    {
+      "Requirement": "Четыре нижние справочные таблицы, полный Excel и согласованный порядок семи блоков",
+      "Evidence": "layout.order.*; display.*; LayoutAnchors.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Геометрия, единицы, состояния и результаты сохраняются точно",
+      "Evidence": "repeat.*; toExcel.*; save/reopen proofs",
+      "Verified": true
+    },
+    {
+      "Requirement": "Отсутствующий файл даёт имя, действия, фактический адрес настройки и путь",
+      "Evidence": "missingFile.*; noLinkedFile.*",
+      "Verified": true
+    },
+    {
+      "Requirement": "Сообщения называют источник действия и место сохранения в конце расчёта",
+      "Evidence": "message.*; SnapshotActionDataOrigin",
+      "Verified": true
+    },
+    {
+      "Requirement": "SaveAs не выбирает старую привязку другого имени",
+      "Evidence": "saveAs.ignoresOtherName",
+      "Verified": true
+    },
+    {
+      "Requirement": "Чистая пересборка с компиляцией и источники синхронизированы",
+      "Evidence": "FreshBuild11.Build.json; CandidateSourcePins.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Обе книги 175+6 native-компонентов и актуальный AllCode проверены без импорта",
+      "Evidence": "Native01; NativeNumeric.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "1232 бетонных/8 стержней/30 сочетаний и готовые Results сохранены",
+      "Evidence": "PackageProof.json; точная обратная перестановка всех Results-байтов",
+      "Verified": true
+    },
+    {
+      "Requirement": "Опубликованные файлы и резервные копии сверены",
+      "Evidence": "Publication.json",
+      "Verified": true
+    },
+    {
+      "Requirement": "Все собственные процессы закрыты; новый полный не запускался",
+      "Evidence": "OwnProcessFinal.json; Acceptance.json",
+      "Verified": true
+    }
+  ],
+  "PublishedFiles": [
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "BeforeSHA256": "3C0EE1DD0BD55DD6DEF0D86851985543DEAB688AB8338BC0C4390C45DE88CFD6",
+      "AfterSHA256": "D794FA1D8F1BB646B4A9B072E9EBE0BD0EF9FB3A95FE2C3029B17BDC3681D5BD"
+    },
+    {
+      "Path": "workbook/output/NDM_Test_1232_30/RC_Section_NDM.xlsm",
+      "BeforeSHA256": "3BAFD92E5DC4FF37F2EDCB07242755CD280A66F678440AE4797E2F00CDB00669",
+      "AfterSHA256": "7616EC0B2E9EBF9D10786D43E4820EC6249A07B94A28F7AEC1BD3D410D8455D2"
+    },
+    {
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "BeforeSHA256": "0A90F1C53E2E9E4C51C543076EF0534D1394ACEC8D17FF9489EBDF9A5C1E6547",
+      "AfterSHA256": "CCB7F5345163B76B99F2DE9B2DC11427B86F11F63D82E0DD51038BF2666A1392"
+    }
+  ],
+  "ArchivedFiles": 201,
+  "ArchiveBytes": 6113185,
+  "ArchiveSHA256": "B2A7FF5006C02FC3F0DF9D90B91F77A03D2B05655C5C1B39BFB653033EA35773",
+  "FullRegressionPass": false,
+  "NewFullOrWholeUIRunStarted": false,
+  "OldFullReviewRequiredPreserved": true
+}

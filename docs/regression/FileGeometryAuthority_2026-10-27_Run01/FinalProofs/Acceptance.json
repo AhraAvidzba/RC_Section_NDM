@@ -1,0 +1,109 @@
+{
+  "Passed": true,
+  "Status": "PASS_DIRECTED_FILE_EXCEL_SOURCE_AND_LAYOUT_ONLY",
+  "Assertions": 1898,
+  "Jobs": [
+    {
+      "Macro": "RunCalculationSnapshotTests",
+      "Mode": "No",
+      "ExitCode": 0,
+      "Passed": true,
+      "Primary": "docs/regression/FileGeometryAuthority_2026-10-27_Run01/Directed11_RunCalculationSnapshotTests_No.txt",
+      "SHA256": "882B51CE09FEC17EC510F0D71F3838B69765D1BF1442E034F8B6CA2C8329737E",
+      "Assertions": 682,
+      "BytesRead": 27191,
+      "OwnExcel": {
+        "Valid": true,
+        "PID": 38168,
+        "Ticks": 639287158549392743,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      }
+    },
+    {
+      "Macro": "RunCalculationSnapshotTests",
+      "Mode": "Yes",
+      "ExitCode": 0,
+      "Passed": true,
+      "Primary": "docs/regression/FileGeometryAuthority_2026-10-27_Run01/Directed11_RunCalculationSnapshotTests_Yes.txt",
+      "SHA256": "4660C16858CCD8D593E02B075751E319F8EC818C5BD113522B6ABB8E7A96A97F",
+      "Assertions": 682,
+      "BytesRead": 27191,
+      "OwnExcel": {
+        "Valid": true,
+        "PID": 30264,
+        "Ticks": 639287159822446911,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      }
+    },
+    {
+      "Macro": "RunWorkflowSnapshotTests",
+      "Mode": "No",
+      "ExitCode": 0,
+      "Passed": true,
+      "Primary": "docs/regression/FileGeometryAuthority_2026-10-27_Run01/Directed11_RunWorkflowSnapshotTests_No.txt",
+      "SHA256": "16BA6EFFFDE964FC568DB81B58CE5DC884FCC5516C9C4BED0D30406CE7CE7AB8",
+      "Assertions": 151,
+      "BytesRead": 6283,
+      "OwnExcel": {
+        "Valid": true,
+        "PID": 38648,
+        "Ticks": 639287161024204522,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      }
+    },
+    {
+      "Macro": "RunWorkflowSnapshotTests",
+      "Mode": "Yes",
+      "ExitCode": 0,
+      "Passed": true,
+      "Primary": "docs/regression/FileGeometryAuthority_2026-10-27_Run01/Directed11_RunWorkflowSnapshotTests_Yes.txt",
+      "SHA256": "25DBA0E6D633D33B7BBEE07CE750FB547D3A37D85D620C501B86A01783F6374B",
+      "Assertions": 151,
+      "BytesRead": 6285,
+      "OwnExcel": {
+        "Valid": true,
+        "PID": 24048,
+        "Ticks": 639287161375787315,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      }
+    },
+    {
+      "Macro": "RunSectionWorkflowCalculationTests",
+      "Mode": "No",
+      "ExitCode": 0,
+      "Passed": true,
+      "Primary": "docs/regression/FileGeometryAuthority_2026-10-27_Run01/Directed11_RunSectionWorkflowCalculationTests_No.txt",
+      "SHA256": "E8160E16AA078801620BE0BCC477D422E90F690B0D21F143326A81092B57A4A4",
+      "Assertions": 116,
+      "BytesRead": 6484,
+      "OwnExcel": {
+        "Valid": true,
+        "PID": 33168,
+        "Ticks": 639287161721704295,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      }
+    },
+    {
+      "Macro": "RunSectionWorkflowCalculationTests",
+      "Mode": "Yes",
+      "ExitCode": 0,
+      "Passed": true,
+      "Primary": "docs/regression/FileGeometryAuthority_2026-10-27_Run01/Directed11_RunSectionWorkflowCalculationTests_Yes.txt",
+      "SHA256": "6771B11ECE30D6BC14A7838BAB1B49903B386F5E42C089ACD2A4A17F2C9CC94A",
+      "Assertions": 116,
+      "BytesRead": 6488,
+      "OwnExcel": {
+        "Valid": true,
+        "PID": 38496,
+        "Ticks": 639287162327844305,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      }
+    }
+  ],
+  "NativeComponentsPerBook": 181,
+  "SourceComponents": 175,
+  "DocumentModules": 6,
+  "NewLongOrFullRunStarted": false,
+  "FullRegressionPass": false,
+  "OriginalFullReviewRequiredUnchanged": true
+}

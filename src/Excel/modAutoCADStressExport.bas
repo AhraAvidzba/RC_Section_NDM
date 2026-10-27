@@ -64,7 +64,8 @@ Public Sub ExportSectionStressToAutoCAD()
         Set acad = ConnectToRunningAutoCAD(): Set exportDocument = ActiveAutoCADDocument(acad)
         destinationMessage = AutoCADExportDestinationMessage(exportDocument)
         DrawFormedGeometryExport ThisWorkbook, section, exportSettings, contourExportCount, exportDocument
-        ShowWorkbookMessage GEOMETRY_ONLY_EXPORT_WARNING & vbCrLf & vbCrLf & destinationMessage, vbExclamation, "RC Section NDM"
+        ShowWorkbookMessage WorkbookMessageAfterOutcome(GEOMETRY_ONLY_EXPORT_WARNING, _
+            SnapshotActionDataOrigin(ThisWorkbook, "Export", True)) & vbCrLf & vbCrLf & destinationMessage, vbExclamation, "RC Section NDM"
         Exit Sub
     End If
     Dim informationEnabled As Boolean: informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
@@ -81,7 +82,8 @@ Public Sub ExportSectionStressToAutoCAD()
         contourExportCount, exportDocument, crackRows, crackSweeps
     If informationEnabled Then
         Dim message As String
-        message = "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
+        message = "Экспорт в AutoCAD завершен." & vbCrLf & vbCrLf & SnapshotActionDataOrigin(ThisWorkbook, "Export") & vbCrLf & vbCrLf & _
+            "Волокон бетона: " & CStr(section.ConcreteCount) & _
             "; стержней арматуры: " & CStr(section.RebarCount) & _
             "; объектов контура: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
             "; сочетание: " & combinationID & "; профиль: " & profileId & "; состояние: " & stateType & "; величина: " & quantity & vbCrLf & vbCrLf & destinationMessage
@@ -255,13 +257,13 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    profiles.LoadFromWorkbook workbook
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    profiles.LoadFromWorkbook workbook, True, Not snapshot Is Nothing
 
     Dim profile As CCalculationProfile
     If profiles.HasProfile(profileId) Then
         Set profile = profiles.ProfileById(profileId)
     Else
-        Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
         If snapshot Is Nothing Then Set profile = profiles.ProfileById(profileId) Else Set profile = snapshot.SavedVisualizationProfile(profileId)
     End If
     stateType = profile.VisualizationStateText
@@ -552,6 +554,13 @@ Private Function ExportCombinationHasCrackWidth(ByVal combinationID As String) A
     profileId = ReadProfileIdForLoadCase(workbook, combinationID)
     If Len(profileId) = 0 Then Exit Function
 
+    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    If Not snapshot Is Nothing Then
+        Dim savedProfile As CCalculationProfile: Set savedProfile = snapshot.SavedVisualizationProfile(profileId)
+        ExportCombinationHasCrackWidth = savedProfile.CrackWidthEnabled
+        Exit Function
+    End If
+
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
     profiles.LoadFromWorkbook workbook
@@ -562,11 +571,7 @@ End Function
 ' Читает определяющее сочетание из готовой сводки. Если оно не указано,
 ' вызывающий код выберет другое сочетание среди сохранённых результатов.
 Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
-    On Error GoTo Failed
-    Dim anchor As Object
-    Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
-    ReadGoverningCombinationID = Trim$(SafeText(anchor.Value2))
-Failed:
+    ReadGoverningCombinationID = ReadSavedWorstCombinationID(workbook)
 End Function
 
 ' Добавляет фактический адрес именованной таблицы к повреждённому полю снимка.

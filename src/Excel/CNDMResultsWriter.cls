@@ -22,6 +22,7 @@ Option Explicit
 Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник полного результата до сохранения и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 Private mPreservedWorkbook As Object ' Владелец исходных таблиц, прочитанных до расчёта в пределах одной операции.
+Private mPreservedFromFile As Boolean ' Подготовленные массивы File не дополняются справочным листом при прямом вызове writer-а.
 Private mPreservedGeometry As Variant, mPreservedContours As Variant, mPreservedElementGeometry As Variant, mPreservedAnnotations As Variant ' Точные входные строки; рассчитанные результаты через лист не передаются.
 Private mPreservedDiagnostics As String ' Пояснение происхождения текущей геометрии, прочитанное до запуска решателя.
 
@@ -104,14 +105,16 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
         Exit Sub
     End If
 
-    ClearPublishedCalculationSnapshot workbook
-
     snapshot.ValidateSnapshot section, True
     Dim previousAnnotations As Variant, previousDiagnostics As String
+    Dim restoreFileGeometry As Boolean
     If preserveGeometry Then
-        previousAnnotations = ReadPhysicalResultTable(workbook, "rngNDMSectionAnnotations")
-        previousDiagnostics = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
+        If Not workbook Is mPreservedWorkbook Then PreparePreservedSnapshotSource workbook
+        previousAnnotations = mPreservedAnnotations
+        previousDiagnostics = mPreservedDiagnostics
+        restoreFileGeometry = mPreservedFromFile
     End If
+    ClearPublishedCalculationSnapshot workbook ' Исходные массивы уже прочитаны и проверены до снятия файловой привязки.
     If preserveGeometry Then
         ClearCalculationData workbook
     Else
@@ -123,7 +126,7 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
 
     WriteSnapshotTitle workbook
     If preserveGeometry Then
-        UpdateGeometrySnapshotRunID workbook, runID
+        If restoreFileGeometry Then RestorePreservedFileGeometry workbook, runID Else UpdateGeometrySnapshotRunID workbook, runID
     Else
         WriteSectionGeometry workbook, section, runID, units
         WriteSectionContours workbook, section.Contours, runID, units
@@ -133,6 +136,8 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     WriteSectionProperties workbook, section, snapshot, batch, runID, units, previousDiagnostics
     WriteMaterialDiagrams workbook, batch, runID, units
     WriteSectionAnnotations workbook, section, runID, units, batch, previousAnnotations
+    Set mPreservedWorkbook = Nothing: mPreservedFromFile = False
+    mPreservedGeometry = Empty: mPreservedContours = Empty: mPreservedElementGeometry = Empty: mPreservedAnnotations = Empty: mPreservedDiagnostics = vbNullString
 End Sub
 
 ' После формирования или импорта записывает геометрию без расчёта сочетаний.
@@ -1904,16 +1909,33 @@ End Property
 ' При последующей подготовке файла используются эти массивы, а не ячейки Results.
 Friend Sub PreparePreservedSnapshotSource(ByVal workbook As Object)
     Set mPreservedWorkbook = Nothing ' Неудачное новое чтение не оставляет действительной привязку предыдущего набора.
-    mPreservedGeometry = CalculationGeometryTable(ReadPhysicalResultTable(workbook, "rngNDMSectionGeometry"))
-    mPreservedContours = ReadPhysicalResultTable(workbook, "rngNDMSectionContours")
-    If GeometryRequiresConcreteBoundaries(mPreservedGeometry) Then
-        mPreservedElementGeometry = CalculationElementGeometryTable(ReadAnchoredResultTable(workbook, "rngNDMElementGeometry"))
-    Else
-        mPreservedElementGeometry = CalculationElementGeometryTable(ReadPhysicalResultTable(workbook, "rngNDMElementGeometry"))
-    End If
-    mPreservedAnnotations = ReadPhysicalResultTable(workbook, "rngNDMSectionAnnotations")
+    Dim source As CCalculationSnapshot: Set source = CurrentCalculationSnapshot(workbook)
+    mPreservedFromFile = Not source Is Nothing
+    mPreservedGeometry = CalculationGeometryTable(ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry"))
+    mPreservedContours = ReadAnchoredResultTable(workbook, "rngNDMSectionContours")
+    mPreservedElementGeometry = CalculationElementGeometryTable(ReadAnchoredResultTable(workbook, "rngNDMElementGeometry"))
+    mPreservedAnnotations = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
     mPreservedDiagnostics = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
     Set mPreservedWorkbook = workbook
+End Sub
+
+' Восстанавливает три геометрические таблицы из подготовленного File при прямом листовом выводе writer-а.
+' Использует подготовленные массивы файла с их единицами; данные или удаления на листе не подмешиваются.
+Private Sub RestorePreservedFileGeometry(ByVal workbook As Object, ByVal runID As Date)
+    Dim key As Variant, data As Variant, row As Long, target As Object, title As String
+    For Each key In Array("rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMElementGeometry")
+        Select Case CStr(key)
+            Case "rngNDMSectionGeometry": data = mPreservedGeometry: title = "Сформированная сетка и арматура"
+            Case "rngNDMSectionContours": data = mPreservedContours: title = "Сохранённые контуры сечения"
+            Case "rngNDMElementGeometry": data = mPreservedElementGeometry: title = "Фактические границы бетонных элементов"
+        End Select
+        For row = 2 To UBound(data, 1): data(row, 1) = CDbl(runID): Next row
+        ClearNamedRegion workbook, CStr(key)
+        Set target = workbook.Names.Item(CStr(key)).RefersToRange
+        If CStr(key) = "rngNDMSectionGeometry" Then target.Resize(UBound(data, 1), UBound(data, 2)).Columns.Item(15).Resize(, 2).NumberFormat = "@"
+        target.Resize(UBound(data, 1), UBound(data, 2)).Value2 = data
+        FormatResultsBlock target, UBound(data, 1), UBound(data, 2), title, data
+    Next key
 End Sub
 
 ' Собирает конечные таблицы из результатов и заранее сохранённых входных массивов.
@@ -1943,7 +1965,7 @@ Private Sub CapturePreparedResults(ByVal workbook As Object, ByVal section As CS
         WriteSectionContours workbook, section.Contours, runID, units
         WriteElementGeometry workbook, section, runID, units
     End If
-    Set mPreservedWorkbook = Nothing
+    Set mPreservedWorkbook = Nothing: mPreservedFromFile = False
     mPreservedGeometry = Empty: mPreservedContours = Empty: mPreservedElementGeometry = Empty: mPreservedAnnotations = Empty: mPreservedDiagnostics = vbNullString
     WriteElementResults workbook, section, batch, runID, units
     WriteSectionProperties workbook, section, props, batch, runID, units, diagnostics
@@ -1995,12 +2017,11 @@ End Function
 
 ' Выводит общие технические таблицы выбранного сечения, включая сетку,
 ' общие характеристики и диаграммы. В Excel LC-свойства и области трещин
-' остаются читаемыми строками Results; в File состояния и собственные границы остаются только в снимке.
+' остаются читаемыми строками Results; в File состояния, аннотации и собственные границы остаются только в снимке.
 Public Sub RestoreSnapshotBase(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True, Optional ByVal includeElements As Boolean = True)
     If snapshot Is Nothing Then Err.Raise 5, "CNDMResultsWriter.RestoreSnapshotBase", "Снимок для восстановления не передан."
     snapshot.Validate ' Публичный прямой вызов также отклоняет потерю обязательной границы до очистки первой ячейки Results.
     Set mCapturedSnapshot = Nothing: mMinimalFormatting = Not fullFormatting
-    If Not includeElements Then ClearNamedRegion workbook, "rngNDMElementResults"
     If Not includeElements Or Not snapshot.HasTable("rngNDMElementGeometry") Then
         Dim emptySection As CSectionModel: Set emptySection = New CSectionModel
         Dim savedMinimalFormatting As Boolean: savedMinimalFormatting = mMinimalFormatting
@@ -2011,9 +2032,15 @@ Public Sub RestoreSnapshotBase(ByVal workbook As Object, ByVal snapshot As CCalc
     Dim key As Variant, data As Variant, target As Object, title As String
     For Each key In snapshot.BaseKeys()
         If Not includeElements Then
-            If CStr(key) = "rngNDMElementResults" Or CStr(key) = "rngNDMElementGeometry" Then GoTo NextBaseTable
+            If CStr(key) = "rngNDMElementGeometry" Then GoTo NextBaseTable
+            If CStr(key) = "rngNDMElementResults" Or CStr(key) = "rngNDMSectionAnnotations" Then
+                data = snapshot.TableHeader(CStr(key)) ' File сохраняет шапки, но не копирует подробные состояния и аннотации на лист.
+            Else
+                data = snapshot.Table(CStr(key))
+            End If
+        Else
+            data = snapshot.ResultTable(CStr(key))
         End If
-        If includeElements Then data = snapshot.ResultTable(CStr(key)) Else data = snapshot.Table(CStr(key))
         ClearNamedRegion workbook, CStr(key)
         Set target = workbook.Names.Item(CStr(key)).RefersToRange
         If CStr(key) = "rngNDMSectionGeometry" Then target.Resize(UBound(data, 1), UBound(data, 2)).Columns.Item(15).Resize(, 2).NumberFormat = "@"
