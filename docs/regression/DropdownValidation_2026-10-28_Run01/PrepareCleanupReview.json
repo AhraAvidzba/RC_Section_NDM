@@ -1,0 +1,11 @@
+{
+  "FinalPreparePID": 43180,
+  "StartTicksUTC": "639287837526757661",
+  "CrashEventsMatchingExactPID": 0,
+  "CleanupOrderChanged": true,
+  "ApplicationFinalReleaseRemoved": true,
+  "NormalClosureProof": "PrepareClosure.json",
+  "PriorCombaseFailuresRetained": "UIInterruptionReview.json",
+  "CauseClaim": "COM cleanup hazard inferred from repeated preparation-only fault timing; corrected cleanup observed without matching crash event",
+  "CheckedUTC": "2026-10-28T11:29:57.6013386+00:00"
+}

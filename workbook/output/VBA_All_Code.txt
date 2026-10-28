@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-28 13:32:24
+Date: 2026-10-28 14:18:30
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -61797,7 +61797,7 @@ Public Sub UpdateSectionRecipeTypes()
     If row = 0 Then SectionRecipeError "modSectionRecipeSetup", "В rngSystemSettings отсутствует ключ Geometry.Type."
     Set cell = table.cells(row, 2)
     ids = RegisteredSectionRecipeTypes
-    choices = Join(ids, CStr(ThisWorkbook.Application.International(xlListSeparator)))
+    choices = Join(ids, ",") ' Validation.Add принимает инвариантный разделитель; локальная «;» склеивает варианты в один пункт.
     If Len(choices) = 0 Or Len(choices) > 255 Then SectionRecipeError "modSectionRecipeSetup", _
         "Список зарегистрированных типов не помещается в проверку данных Geometry.Type."
     Set guard = New CExcelAppStateGuard: guard.Enter ThisWorkbook.Application
@@ -118384,323 +118384,6 @@ Private Sub TestPrepareSavedOffsetCalculationLoad()
 End Sub
 
 ====================================================================================================
-COMPONENT: modTestRecipeSetbacks
-TYPE: 1
-LINES: 311
-====================================================================================================
-Option Explicit
-
-' ==========================================================================
-' ДЛЯ ТЕСТОВ: редактируемые отступы таблиц листа «Сечения» и их влияние на общий
-' рецепт, включая фильтр проекций Opening. НДС в этом наборе не решается.
-' ==========================================================================
-Private mPassed As Long, mFailed As Long, mReport As String
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' те же внутренние координаты при вводе отступов в мм/см/м.
-Public Function RunRecipeSetbackUnitTests() As String
-    Dim values As Variant, baseline As Variant, scaled As Variant, table As CSectionInputReader
-    Dim sheet As Object, setting As Object, settings As CSystemSettingsReader, units As CUnitSystem
-    Dim recipe As ISectionRecipe, definition As CSectionDefinition, expected As CRebarLayout, actual As CRebarLayout
-    Dim main As Long, extra As Long, row As Long, column As Long, i As Long, item As Variant, factor As Double
-    Dim alerts As Boolean, itemColumn As Variant
-    On Error GoTo Failed
-    mPassed = 0: mFailed = 0: mReport = "": alerts = Application.DisplayAlerts
-    values = TestFixtureRecipeValues("rngPointedSectionGeometry")
-    TestFixtureSetInput values, "General", "B", "val", 800#: TestFixtureSetInput values, "General", "H", "val", 250#
-    TestFixtureSetInput values, "Detail", "W", "left", 0#: TestFixtureSetInput values, "Detail", "W", "right", 150#
-    TestFixtureSetInput values, "Detail", "R1", "left", 40#: TestFixtureSetInput values, "Detail", "R1", "right", 40#
-    TestFixtureSetInput values, "Detail", "R2", "left", 0#: TestFixtureSetInput values, "Detail", "R2", "right", 80#
-    Dim key As Variant, block As Variant, fields As Variant, field As Variant, rowKeys As Variant
-    Set table = TestFixtureInput(values)
-    For Each key In table.rowKeys("Main")
-        TestFixtureSetInput values, "Main", CStr(key), "as", 40#: TestFixtureSetInput values, "Main", CStr(key), "d", 20#
-        TestFixtureSetInput values, "Main", CStr(key), "n", 3
-        TestFixtureSetInput values, "Main", CStr(key), "s0", 10#: TestFixtureSetInput values, "Main", CStr(key), "s1", 20#
-        TestFixtureSetInput values, "Extra", CStr(key), "d2", 0#: TestFixtureSetInput values, "Extra", CStr(key), "d3", 0#
-    Next key
-    Set recipe = New CSectionRecipePointedSection
-    Set expected = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngPointedSectionGeometry", values))
-    baseline = values
-    Set sheet = ThisWorkbook.Worksheets.Add: Set setting = sheet.range("A1:C2")
-    setting.cells(1, 1).value2 = "Key": setting.cells(1, 2).value2 = "Value": setting.cells(1, 3).value2 = "Unit"
-    setting.cells(2, 1).value2 = "Units.Length.Input"
-    For Each item In Array(Array("mm", 1#), Array("cm", 10#), Array("m", 1000#))
-        factor = CDbl(item(1)): scaled = baseline
-        For Each block In Array("General", "Main", "Extra")
-            Select Case CStr(block)
-                Case "General": fields = Array("val")
-                Case "Detail": fields = Array("left", "right")
-                Case "Main": fields = Array("as", "d", "s0", "s1")
-                Case "Extra": fields = Array("d2", "a2", "d3", "a3")
-            End Select
-            For Each key In table.rowKeys(CStr(block))
-                If CStr(block) <> "Detail" Or CStr(key) <> "Type" Then
-                    row = table.rowIndex(CStr(block), CStr(key))
-                    For Each field In fields
-                        column = table.columnIndex(CStr(block), CStr(field))
-                        If IsNumeric(baseline(row, column)) Then scaled(row, column) = CDbl(baseline(row, column)) / factor
-                    Next field
-                End If
-            Next key
-        Next block
-        setting.cells(2, 2).value2 = CStr(item(0))
-        Set settings = New CSystemSettingsReader: settings.LoadFromRange setting
-        Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set definition = TestFixtureRecipeDefinition(recipe, "rngPointedSectionGeometry", scaled, units)
-        Set actual = TestFixtureAnnotatedLayout(definition)
-        TestCheck "setback.units.count." & CStr(item(0)), actual.count = expected.count
-        For i = 1 To expected.count
-            TestNear "setback.units.x." & CStr(item(0)) & "." & CStr(i), actual.x(i), expected.x(i)
-            TestNear "setback.units.y." & CStr(item(0)) & "." & CStr(i), actual.y(i), expected.y(i)
-        Next i
-    Next item
-    mReport = mReport & "TOTAL_RECIPE_SETBACK_UNITS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
-Restore:
-    On Error Resume Next
-    Application.DisplayAlerts = False
-    If Not sheet Is Nothing Then sheet.Delete
-    Application.DisplayAlerts = alerts
-    On Error GoTo 0
-    RunRecipeSetbackUnitTests = mReport
-    Exit Function
-Failed:
-    mFailed = mFailed + 1: mReport = mReport & "FAIL: units.runtime; " & CStr(Err.number) & "; " & Err.description & vbCrLf
-    Resume Restore
-End Function
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Обновление реестра меняет только встроенный список, без служебных ячеек и таблиц геометрии.
-Public Function RunRecipeTypeListTests() As String
-    Dim config As Object, system As Object, typeKey As Object, typeCell As Object, saved As Variant, expected As Variant
-    Dim ids As Variant, choices As String, originalValidation As String, originalCircle As String, brokenCircle As String
-    Dim i As Long, count As Long, code As Long, absent As Boolean, unused As Object
-    Dim calculation As Long, events As Boolean, updating As Boolean, alerts As Boolean
-    On Error GoTo Failed
-    mPassed = 0: mFailed = 0: mReport = ""
-    calculation = Application.calculation: events = Application.EnableEvents
-    updating = Application.ScreenUpdating: alerts = Application.DisplayAlerts
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
-    Set system = ThisWorkbook.names("rngSystemSettings").RefersToRange
-    For i = 2 To system.rows.count
-        If CStr(system.cells(i, 1).value2) = "Geometry.Type" Then Set typeKey = system.cells(i, 1): Set typeCell = system.cells(i, 2)
-    Next i
-    If typeCell Is Nothing Then Err.Raise 5, "RunRecipeTypeListTests", "Geometry.Type отсутствует в тестовой книге."
-    originalValidation = typeCell.validation.Formula1
-    originalCircle = ThisWorkbook.names("rngCircleGeometry").RefersTo
-    ids = RegisteredSectionRecipeTypes: count = UBound(ids) - LBound(ids) + 1
-    choices = Join(ids, CStr(Application.International(xlListSeparator)))
-    Application.calculation = xlCalculationManual: Application.EnableEvents = False
-    Application.ScreenUpdating = False: Application.DisplayAlerts = False
-    ThisWorkbook.names("rngCircleGeometry").RefersTo = "=#REF!" ' Повреждённая таблица геометрии не нужна обновлению списка.
-    brokenCircle = ThisWorkbook.names("rngCircleGeometry").RefersTo
-    typeCell.validation.Delete: typeCell.validation.Add xlValidateList, xlValidAlertStop, xlBetween, "stale choice"
-    expected = config.formula: modSectionRecipeSetup.UpdateSectionRecipeTypes
-    TestCheck "types.config.allValuesPreserved", TestSameConfigOutsideTypeList(config, expected, Nothing)
-    TestCheck "types.current.selection", TestSameConfigOutsideTypeList(config, saved(0), Nothing)
-    TestCheck "types.sectionInputsPreserved", TestSameConfigOutsideTypeList(ThisWorkbook.Worksheets("Сечения").range(CStr(saved(1))), saved(2), Nothing)
-    TestCheck "types.unrelated.name", ThisWorkbook.names("rngCircleGeometry").RefersTo = brokenCircle
-    TestCheck "types.inline", left$(typeCell.validation.Formula1, 1) <> "="
-    TestCheck "types.registered.all", Replace$(typeCell.validation.Formula1, ";", ",") = Replace$(choices, ";", ",")
-    TestCheck "types.dropdown", typeCell.validation.Type = xlValidateList And typeCell.validation.InCellDropdown
-    On Error Resume Next
-    Set unused = ThisWorkbook.names("rngSectionRecipeTypes"): absent = Err.number <> 0: Err.clear
-    On Error GoTo Failed
-    TestCheck "types.noHelperName", absent
-    TestCheck "types.state.success", Application.calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
-    expected = config.formula: modSectionRecipeSetup.UpdateSectionRecipeTypes
-    TestCheck "types.idempotent", TestSameConfigOutsideTypeList(config, expected, Nothing) And Replace$(typeCell.validation.Formula1, ";", ",") = Replace$(choices, ";", ",")
-    typeKey.value2 = "Missing.Geometry.Type": expected = config.formula
-    On Error Resume Next
-    modSectionRecipeSetup.UpdateSectionRecipeTypes: code = Err.number: Err.clear
-    On Error GoTo Failed
-    TestCheck "types.missing.rejected", code <> 0
-    TestCheck "types.missing.data", TestSameConfigOutsideTypeList(config, expected, Nothing)
-    TestCheck "types.state.failure", Application.calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
-    GoTo Restore
-Failed:
-    TestCheck "types.runtime; " & CStr(Err.number) & "; " & Err.description, False
-Restore:
-    On Error Resume Next
-    If Len(originalCircle) > 0 Then ThisWorkbook.names("rngCircleGeometry").RefersTo = originalCircle
-    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
-    If Not typeCell Is Nothing And Len(originalValidation) > 0 Then
-        typeCell.validation.Delete: typeCell.validation.Add xlValidateList, xlValidAlertStop, xlBetween, originalValidation
-        typeCell.validation.IgnoreBlank = False: typeCell.validation.InCellDropdown = True
-    End If
-    Application.calculation = calculation: Application.EnableEvents = events
-    Application.ScreenUpdating = updating: Application.DisplayAlerts = alerts
-    On Error GoTo 0
-    RunRecipeTypeListTests = mReport & "TOTAL RECIPE TYPE LIST: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
-End Function
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает весь Config, кроме явно разрешённого служебного списка.
-Private Function TestSameConfigOutsideTypeList(ByVal config As Object, ByVal expected As Variant, ByVal list As Object) As Boolean
-    Dim actual As Variant, row As Long, column As Long, sheetRow As Long, sheetColumn As Long, skip As Boolean
-    actual = config.formula
-    For row = 1 To UBound(expected, 1)
-        For column = 1 To UBound(expected, 2)
-            skip = False
-            If Not list Is Nothing Then
-                sheetRow = config.row + row - 1: sheetColumn = config.column + column - 1
-                skip = sheetColumn = list.column And sheetRow >= list.row And sheetRow < list.row + list.rows.count
-            End If
-            If Not skip Then
-                If VarType(actual(row, column)) <> VarType(expected(row, column)) Then Exit Function
-                If CStr(actual(row, column)) <> CStr(expected(row, column)) Then Exit Function
-            End If
-        Next column
-    Next row
-    TestSameConfigOutsideTypeList = True
-End Function
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет влияние редактируемых концевых отступов PointedSection и HollowRectangle на позиции, проекции, адреса ошибок и неизменность бетона.
-Public Function RunRecipeSetbackInputTests() As String
-    Dim rounded As Object, hollow As Object, savedRounded As Variant, savedHollow As Variant
-    Dim table As CSectionInputReader, row As Long, main As Long, def As CSectionDefinition
-    Dim original As CRebarLayout, changed As CRebarLayout, region As CConcreteRegion
-    Dim face As Variant, faces As Variant, helper As CRebarRuleExecutor, originalHelper As CRebarRuleExecutor, parameters As Variant
-    Dim geometryArea As Double, layoutCount As Long, reference As String, reason As String, number As Long
-    Dim config As Object, savedConfig As Variant
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(config)
-    On Error GoTo Failed
-    mPassed = 0: mFailed = 0: mReport = ""
-    modTestShapeArchitecture.TestConfigureShapeFixture "RoundedMixed"
-    Set rounded = ThisWorkbook.names("rngPointedSectionGeometry").RefersToRange
-    Set hollow = ThisWorkbook.names("rngHollowRectangleGeometry").RefersToRange
-    savedRounded = rounded.formula: savedHollow = hollow.formula
-    Set table = TestFixtureInput(rounded.value2)
-    row = table.rowIndex("Main", "Top"): main = row - 1
-    TestCheck "rounded.start.header", table.columnIndex("Main", "s0") = 6
-    TestCheck "rounded.end.header", table.columnIndex("Main", "s1") = 7
-    TestCheck "rounded.editable.centered", rounded.cells(row, 6).HorizontalAlignment = xlCenter And rounded.cells(row, 7).HorizontalAlignment = xlCenter
-    face = Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
-    faces = Array(face, face, Array(40#, 20#, 5, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), face)
-    parameters = Array(800#, 250#, 0#, 150#, 40#, 40#, 0#, 80#)
-    rounded.cells(main + 1, 6).Resize(4, 2).value2 = 0#
-    Set def = TestFixtureRoundedDefinition(parameters, faces, True): Set original = TestFixtureAnnotatedLayout(def)
-    geometryArea = def.ConcreteDomain.area: layoutCount = original.count
-    TestNear "rounded.zero.first", original.x(1), -360#
-    rounded.cells(row, 6).value2 = 10#: rounded.cells(row, 7).value2 = 20#
-    Set def = TestFixtureRoundedDefinition(parameters, faces, True): Set changed = TestFixtureAnnotatedLayout(def)
-    TestNear "rounded.start.actual", changed.x(1), original.x(1) + 10#
-    TestNear "rounded.end.actual", changed.x(5), original.x(5) - 20#
-    TestNear "rounded.concrete.unchanged", def.ConcreteDomain.area, geometryArea
-    TestCheck "rounded.count.unchanged", changed.count = layoutCount
-    TestNear "rounded.opposite.row.unchanged", changed.y(6), original.y(6)
-    rounded.cells(row, 6).ClearContents
-    Set changed = Nothing: number = 0
-    On Error Resume Next
-    Set changed = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(parameters, faces, True))
-    number = Err.number: reason = Err.description: Err.clear
-    On Error GoTo Failed
-    TestCheck "rounded.active.empty.rejected", number <> 0 And changed Is Nothing
-    rounded.cells(row, 6).value2 = -1#
-    On Error Resume Next
-    Set changed = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(parameters, faces, True))
-    number = Err.number: reason = Err.description: Err.clear
-    On Error GoTo Failed
-    TestCheck "rounded.active.negative.rejected", number <> 0 And InStr(1, reason, "[" & CStr(row) & ",6]", vbBinaryCompare) > 0
-    rounded.cells(row, 6).value2 = CVErr(xlErrValue)
-    faces(2) = Array(40#, 0#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
-    Set changed = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(parameters, faces, True))
-    TestCheck "rounded.inactive.error.ignored", changed.count = layoutCount - 5
-    rounded.formula = savedRounded
-
-    modTestShapeArchitecture.TestConfigureShapeFixture "HollowCentered"
-    Set table = TestFixtureInput(hollow.value2)
-    main = table.rowIndex("Main", "Top") - 1
-    row = table.rowIndex("Main", "OpeningTop")
-    TestCheck "hollow.start.header", table.columnIndex("Main", "s0") = 6
-    TestCheck "hollow.end.header", table.columnIndex("Main", "s1") = 7
-    hollow.cells(main + 1, 6).Resize(8, 2).value2 = 0#
-    face = Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
-    faces = Array(face, face, Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
-        Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), face, face, face, face)
-    parameters = Array(500#, 800#, 0#, 200#, 500#, 0#)
-    Set originalHelper = New CRebarRuleExecutor
-    Set def = TestFixtureHollowDefinition(parameters, faces, True): Set original = TestFixtureAnnotatedLayout(def, originalHelper)
-    geometryArea = def.ConcreteDomain.area
-    TestCheck "hollow.zero.projected.count", TestGroupCount(original, "Opening.B.Top") = 6
-    hollow.cells(row, 6).value2 = 75#: hollow.cells(row, 7).value2 = 15#
-    Set helper = New CRebarRuleExecutor
-    Set def = TestFixtureHollowDefinition(parameters, faces, True): Set changed = TestFixtureAnnotatedLayout(def, helper)
-    TestCheck "hollow.projection.filtered", TestGroupCount(changed, "Opening.B.Top") = 4
-    TestCheck "hollow.skips.diagnostic", helper.SkippedProjections - originalHelper.SkippedProjections = 2
-    TestCheck "hollow.positions.not.redistributed", TestProjectedSubset(changed, original, "Opening.B.Top")
-    TestCheck "hollow.other.projections.unchanged", TestGroupCount(changed, "Opening.B.Bottom") = TestGroupCount(original, "Opening.B.Bottom")
-    TestNear "hollow.concrete.unchanged", def.ConcreteDomain.area, geometryArea
-    hollow.formula = savedHollow
-    mReport = mReport & "TOTAL_RECIPE_SETBACK_INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
-Restore:
-    On Error Resume Next
-    If Not rounded Is Nothing Then rounded.formula = savedRounded
-    If Not hollow Is Nothing Then hollow.formula = savedHollow
-    If Not config Is Nothing Then TestFixtureRestoreInputs config, savedConfig
-    On Error GoTo 0
-    RunRecipeSetbackInputTests = mReport
-    Exit Function
-Failed:
-    mFailed = mFailed + 1: mReport = mReport & "FAIL: runtime; " & CStr(Err.number) & "; " & Err.description & vbCrLf
-    Resume Restore
-End Function
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Считает физические стержни, которые состоят в указанной группе, включая дополнительные принадлежности.
-Private Function TestGroupCount(ByVal layout As CRebarLayout, ByVal group As String) As Long
-    Dim i As Long
-    For i = 1 To layout.count
-        If TestInGroup(layout, i, group) Then TestGroupCount = TestGroupCount + 1
-    Next i
-End Function
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет, что отфильтрованные проекции сохранили исходные координаты и не были равномерно перераспределены заново.
-Private Function TestProjectedSubset(ByVal actual As CRebarLayout, ByVal original As CRebarLayout, ByVal group As String) As Boolean
-    Dim i As Long, j As Long, found As Boolean
-    For i = 1 To actual.count
-        If TestInGroup(actual, i, group) Then
-            found = False
-            For j = 1 To original.count
-                If TestInGroup(original, j, group) Then
-                    If Abs(actual.x(i) - original.x(j)) < 0.000001 And Abs(actual.y(i) - original.y(j)) < 0.000001 Then found = True
-                End If
-            Next j
-            If Not found Then Exit Function
-        End If
-    Next i
-    TestProjectedSubset = True
-End Function
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет все принадлежности физического стержня, а не только первую группу публикации.
-Private Function TestInGroup(ByVal layout As CRebarLayout, ByVal index As Long, ByVal group As String) As Boolean
-    Dim membership As Variant
-    For Each membership In layout.BarMemberships(index)
-        If CStr(membership) = group Then TestInGroup = True: Exit Function
-    Next membership
-End Function
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Учитывает отдельное условие проверки и сохраняет его имя в итоговом протоколе.
-Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
-    If condition Then
-        mPassed = mPassed + 1: mReport = mReport & "OK: " & name & vbCrLf
-    Else
-        mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
-    End If
-End Sub
-
-' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает фактическую и ожидаемую величины с заданным в этом наборе допуском, сохраняя числа в протоколе.
-Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
-    TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000001
-End Sub
-
-
-====================================================================================================
 COMPONENT: modTestRegressionBaseline
 TYPE: 1
 LINES: 401
@@ -135708,4 +135391,329 @@ Private Function TestBits(ByVal value As Double) As String
         right$("0" & Hex$(bytes.Byte7), 2) & right$("0" & Hex$(bytes.Byte8), 2)
 End Function
 
+
+====================================================================================================
+COMPONENT: modTestRecipeSetbacks
+TYPE: 1
+LINES: 319
+====================================================================================================
+Option Explicit
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: редактируемые отступы таблиц листа «Сечения» и их влияние на общий
+' рецепт, включая фильтр проекций Opening. НДС в этом наборе не решается.
+' ==========================================================================
+Private mPassed As Long, mFailed As Long, mReport As String
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' те же внутренние координаты при вводе отступов в мм/см/м.
+Public Function RunRecipeSetbackUnitTests() As String
+    Dim values As Variant, baseline As Variant, scaled As Variant, table As CSectionInputReader
+    Dim sheet As Object, setting As Object, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim recipe As ISectionRecipe, definition As CSectionDefinition, expected As CRebarLayout, actual As CRebarLayout
+    Dim main As Long, extra As Long, row As Long, column As Long, i As Long, item As Variant, factor As Double
+    Dim alerts As Boolean, itemColumn As Variant
+    On Error GoTo Failed
+    mPassed = 0: mFailed = 0: mReport = "": alerts = Application.DisplayAlerts
+    values = TestFixtureRecipeValues("rngPointedSectionGeometry")
+    TestFixtureSetInput values, "General", "B", "val", 800#: TestFixtureSetInput values, "General", "H", "val", 250#
+    TestFixtureSetInput values, "Detail", "W", "left", 0#: TestFixtureSetInput values, "Detail", "W", "right", 150#
+    TestFixtureSetInput values, "Detail", "R1", "left", 40#: TestFixtureSetInput values, "Detail", "R1", "right", 40#
+    TestFixtureSetInput values, "Detail", "R2", "left", 0#: TestFixtureSetInput values, "Detail", "R2", "right", 80#
+    Dim key As Variant, block As Variant, fields As Variant, field As Variant, rowKeys As Variant
+    Set table = TestFixtureInput(values)
+    For Each key In table.rowKeys("Main")
+        TestFixtureSetInput values, "Main", CStr(key), "as", 40#: TestFixtureSetInput values, "Main", CStr(key), "d", 20#
+        TestFixtureSetInput values, "Main", CStr(key), "n", 3
+        TestFixtureSetInput values, "Main", CStr(key), "s0", 10#: TestFixtureSetInput values, "Main", CStr(key), "s1", 20#
+        TestFixtureSetInput values, "Extra", CStr(key), "d2", 0#: TestFixtureSetInput values, "Extra", CStr(key), "d3", 0#
+    Next key
+    Set recipe = New CSectionRecipePointedSection
+    Set expected = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngPointedSectionGeometry", values))
+    baseline = values
+    Set sheet = ThisWorkbook.Worksheets.Add: Set setting = sheet.range("A1:C2")
+    setting.cells(1, 1).value2 = "Key": setting.cells(1, 2).value2 = "Value": setting.cells(1, 3).value2 = "Unit"
+    setting.cells(2, 1).value2 = "Units.Length.Input"
+    For Each item In Array(Array("mm", 1#), Array("cm", 10#), Array("m", 1000#))
+        factor = CDbl(item(1)): scaled = baseline
+        For Each block In Array("General", "Main", "Extra")
+            Select Case CStr(block)
+                Case "General": fields = Array("val")
+                Case "Detail": fields = Array("left", "right")
+                Case "Main": fields = Array("as", "d", "s0", "s1")
+                Case "Extra": fields = Array("d2", "a2", "d3", "a3")
+            End Select
+            For Each key In table.rowKeys(CStr(block))
+                If CStr(block) <> "Detail" Or CStr(key) <> "Type" Then
+                    row = table.rowIndex(CStr(block), CStr(key))
+                    For Each field In fields
+                        column = table.columnIndex(CStr(block), CStr(field))
+                        If IsNumeric(baseline(row, column)) Then scaled(row, column) = CDbl(baseline(row, column)) / factor
+                    Next field
+                End If
+            Next key
+        Next block
+        setting.cells(2, 2).value2 = CStr(item(0))
+        Set settings = New CSystemSettingsReader: settings.LoadFromRange setting
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set definition = TestFixtureRecipeDefinition(recipe, "rngPointedSectionGeometry", scaled, units)
+        Set actual = TestFixtureAnnotatedLayout(definition)
+        TestCheck "setback.units.count." & CStr(item(0)), actual.count = expected.count
+        For i = 1 To expected.count
+            TestNear "setback.units.x." & CStr(item(0)) & "." & CStr(i), actual.x(i), expected.x(i)
+            TestNear "setback.units.y." & CStr(item(0)) & "." & CStr(i), actual.y(i), expected.y(i)
+        Next i
+    Next item
+    mReport = mReport & "TOTAL_RECIPE_SETBACK_UNITS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+Restore:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = alerts
+    On Error GoTo 0
+    RunRecipeSetbackUnitTests = mReport
+    Exit Function
+Failed:
+    mFailed = mFailed + 1: mReport = mReport & "FAIL: units.runtime; " & CStr(Err.number) & "; " & Err.description & vbCrLf
+    Resume Restore
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Обновление реестра меняет только встроенный список, без служебных ячеек и таблиц геометрии.
+Public Function RunRecipeTypeListTests() As String
+    Dim config As Object, system As Object, typeKey As Object, typeCell As Object, saved As Variant, expected As Variant
+    Dim ids As Variant, choices As String, originalValidation As String, originalCircle As String, brokenCircle As String, originalType As Variant, currentValidation As String
+    Dim i As Long, count As Long, code As Long, absent As Boolean, unused As Object
+    Dim calculation As Long, events As Boolean, updating As Boolean, alerts As Boolean
+    On Error GoTo Failed
+    mPassed = 0: mFailed = 0: mReport = ""
+    calculation = Application.calculation: events = Application.EnableEvents
+    updating = Application.ScreenUpdating: alerts = Application.DisplayAlerts
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
+    Set system = ThisWorkbook.names("rngSystemSettings").RefersToRange
+    For i = 2 To system.rows.count
+        If CStr(system.cells(i, 1).value2) = "Geometry.Type" Then Set typeKey = system.cells(i, 1): Set typeCell = system.cells(i, 2)
+    Next i
+    If typeCell Is Nothing Then Err.Raise 5, "RunRecipeTypeListTests", "Geometry.Type отсутствует в тестовой книге."
+    originalValidation = typeCell.validation.Formula1: originalType = typeCell.formula
+    originalCircle = ThisWorkbook.names("rngCircleGeometry").RefersTo
+    ids = RegisteredSectionRecipeTypes: count = UBound(ids) - LBound(ids) + 1
+    choices = Join(ids, ",")
+    Application.calculation = xlCalculationManual: Application.EnableEvents = False
+    Application.ScreenUpdating = False: Application.DisplayAlerts = False
+    ThisWorkbook.names("rngCircleGeometry").RefersTo = "=#REF!" ' Повреждённая таблица геометрии не нужна обновлению списка.
+    brokenCircle = ThisWorkbook.names("rngCircleGeometry").RefersTo
+    typeCell.validation.Delete: typeCell.validation.Add xlValidateList, xlValidAlertStop, xlBetween, "stale choice"
+    expected = config.formula: modSectionRecipeSetup.UpdateSectionRecipeTypes
+    TestCheck "types.config.allValuesPreserved", TestSameConfigOutsideTypeList(config, expected, Nothing)
+    TestCheck "types.current.selection", TestSameConfigOutsideTypeList(config, saved(0), Nothing)
+    TestCheck "types.sectionInputsPreserved", TestSameConfigOutsideTypeList(ThisWorkbook.Worksheets("Сечения").range(CStr(saved(1))), saved(2), Nothing)
+    TestCheck "types.unrelated.name", ThisWorkbook.names("rngCircleGeometry").RefersTo = brokenCircle
+    TestCheck "types.inline", left$(typeCell.validation.Formula1, 1) <> "="
+    currentValidation = typeCell.validation.Formula1 ' Excel может локализовать строку при чтении; отдельные пункты проверяются его собственным Validation.Value.
+    TestCheck "types.dropdown", typeCell.validation.Type = xlValidateList And typeCell.validation.InCellDropdown
+    For i = LBound(ids) To UBound(ids)
+        typeCell.value2 = ids(i)
+        TestCheck "types.option.accepted." & CStr(ids(i)), typeCell.validation.value ' Отдельные значения обязан принимать сам Excel, а не тестовый разбор строки.
+    Next i
+    typeCell.value2 = Join(ids, ";")
+    TestCheck "types.joinedValue.rejected", Not typeCell.validation.value
+    typeCell.value2 = "TEST_UNKNOWN_GEOMETRY_TYPE"
+    TestCheck "types.unknownValue.rejected", Not typeCell.validation.value
+    typeCell.formula = originalType
+    On Error Resume Next
+    Set unused = ThisWorkbook.names("rngSectionRecipeTypes"): absent = Err.number <> 0: Err.clear
+    On Error GoTo Failed
+    TestCheck "types.noHelperName", absent
+    TestCheck "types.state.success", Application.calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
+    expected = config.formula: modSectionRecipeSetup.UpdateSectionRecipeTypes
+    TestCheck "types.idempotent", TestSameConfigOutsideTypeList(config, expected, Nothing) And typeCell.validation.Formula1 = currentValidation
+    typeKey.value2 = "Missing.Geometry.Type": expected = config.formula
+    On Error Resume Next
+    modSectionRecipeSetup.UpdateSectionRecipeTypes: code = Err.number: Err.clear
+    On Error GoTo Failed
+    TestCheck "types.missing.rejected", code <> 0
+    TestCheck "types.missing.data", TestSameConfigOutsideTypeList(config, expected, Nothing)
+    TestCheck "types.state.failure", Application.calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
+    GoTo Restore
+Failed:
+    TestCheck "types.runtime; " & CStr(Err.number) & "; " & Err.description, False
+Restore:
+    On Error Resume Next
+    If Len(originalCircle) > 0 Then ThisWorkbook.names("rngCircleGeometry").RefersTo = originalCircle
+    If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
+    If Not typeCell Is Nothing And Len(originalValidation) > 0 Then
+        typeCell.validation.Delete: typeCell.validation.Add xlValidateList, xlValidAlertStop, xlBetween, originalValidation
+        typeCell.validation.IgnoreBlank = False: typeCell.validation.InCellDropdown = True
+    End If
+    Application.calculation = calculation: Application.EnableEvents = events
+    Application.ScreenUpdating = updating: Application.DisplayAlerts = alerts
+    On Error GoTo 0
+    RunRecipeTypeListTests = mReport & "TOTAL RECIPE TYPE LIST: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает весь Config, кроме явно разрешённого служебного списка.
+Private Function TestSameConfigOutsideTypeList(ByVal config As Object, ByVal expected As Variant, ByVal list As Object) As Boolean
+    Dim actual As Variant, row As Long, column As Long, sheetRow As Long, sheetColumn As Long, skip As Boolean
+    actual = config.formula
+    For row = 1 To UBound(expected, 1)
+        For column = 1 To UBound(expected, 2)
+            skip = False
+            If Not list Is Nothing Then
+                sheetRow = config.row + row - 1: sheetColumn = config.column + column - 1
+                skip = sheetColumn = list.column And sheetRow >= list.row And sheetRow < list.row + list.rows.count
+            End If
+            If Not skip Then
+                If VarType(actual(row, column)) <> VarType(expected(row, column)) Then Exit Function
+                If CStr(actual(row, column)) <> CStr(expected(row, column)) Then Exit Function
+            End If
+        Next column
+    Next row
+    TestSameConfigOutsideTypeList = True
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет влияние редактируемых концевых отступов PointedSection и HollowRectangle на позиции, проекции, адреса ошибок и неизменность бетона.
+Public Function RunRecipeSetbackInputTests() As String
+    Dim rounded As Object, hollow As Object, savedRounded As Variant, savedHollow As Variant
+    Dim table As CSectionInputReader, row As Long, main As Long, def As CSectionDefinition
+    Dim original As CRebarLayout, changed As CRebarLayout, region As CConcreteRegion
+    Dim face As Variant, faces As Variant, helper As CRebarRuleExecutor, originalHelper As CRebarRuleExecutor, parameters As Variant
+    Dim geometryArea As Double, layoutCount As Long, reference As String, reason As String, number As Long
+    Dim config As Object, savedConfig As Variant
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(config)
+    On Error GoTo Failed
+    mPassed = 0: mFailed = 0: mReport = ""
+    modTestShapeArchitecture.TestConfigureShapeFixture "RoundedMixed"
+    Set rounded = ThisWorkbook.names("rngPointedSectionGeometry").RefersToRange
+    Set hollow = ThisWorkbook.names("rngHollowRectangleGeometry").RefersToRange
+    savedRounded = rounded.formula: savedHollow = hollow.formula
+    Set table = TestFixtureInput(rounded.value2)
+    row = table.rowIndex("Main", "Top"): main = row - 1
+    TestCheck "rounded.start.header", table.columnIndex("Main", "s0") = 6
+    TestCheck "rounded.end.header", table.columnIndex("Main", "s1") = 7
+    TestCheck "rounded.editable.centered", rounded.cells(row, 6).HorizontalAlignment = xlCenter And rounded.cells(row, 7).HorizontalAlignment = xlCenter
+    face = Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+    faces = Array(face, face, Array(40#, 20#, 5, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), face)
+    parameters = Array(800#, 250#, 0#, 150#, 40#, 40#, 0#, 80#)
+    rounded.cells(main + 1, 6).Resize(4, 2).value2 = 0#
+    Set def = TestFixtureRoundedDefinition(parameters, faces, True): Set original = TestFixtureAnnotatedLayout(def)
+    geometryArea = def.ConcreteDomain.area: layoutCount = original.count
+    TestNear "rounded.zero.first", original.x(1), -360#
+    rounded.cells(row, 6).value2 = 10#: rounded.cells(row, 7).value2 = 20#
+    Set def = TestFixtureRoundedDefinition(parameters, faces, True): Set changed = TestFixtureAnnotatedLayout(def)
+    TestNear "rounded.start.actual", changed.x(1), original.x(1) + 10#
+    TestNear "rounded.end.actual", changed.x(5), original.x(5) - 20#
+    TestNear "rounded.concrete.unchanged", def.ConcreteDomain.area, geometryArea
+    TestCheck "rounded.count.unchanged", changed.count = layoutCount
+    TestNear "rounded.opposite.row.unchanged", changed.y(6), original.y(6)
+    rounded.cells(row, 6).ClearContents
+    Set changed = Nothing: number = 0
+    On Error Resume Next
+    Set changed = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(parameters, faces, True))
+    number = Err.number: reason = Err.description: Err.clear
+    On Error GoTo Failed
+    TestCheck "rounded.active.empty.rejected", number <> 0 And changed Is Nothing
+    rounded.cells(row, 6).value2 = -1#
+    On Error Resume Next
+    Set changed = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(parameters, faces, True))
+    number = Err.number: reason = Err.description: Err.clear
+    On Error GoTo Failed
+    TestCheck "rounded.active.negative.rejected", number <> 0 And InStr(1, reason, "[" & CStr(row) & ",6]", vbBinaryCompare) > 0
+    rounded.cells(row, 6).value2 = CVErr(xlErrValue)
+    faces(2) = Array(40#, 0#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+    Set changed = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(parameters, faces, True))
+    TestCheck "rounded.inactive.error.ignored", changed.count = layoutCount - 5
+    rounded.formula = savedRounded
+
+    modTestShapeArchitecture.TestConfigureShapeFixture "HollowCentered"
+    Set table = TestFixtureInput(hollow.value2)
+    main = table.rowIndex("Main", "Top") - 1
+    row = table.rowIndex("Main", "OpeningTop")
+    TestCheck "hollow.start.header", table.columnIndex("Main", "s0") = 6
+    TestCheck "hollow.end.header", table.columnIndex("Main", "s1") = 7
+    hollow.cells(main + 1, 6).Resize(8, 2).value2 = 0#
+    face = Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+    faces = Array(face, face, Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), face, face, face, face)
+    parameters = Array(500#, 800#, 0#, 200#, 500#, 0#)
+    Set originalHelper = New CRebarRuleExecutor
+    Set def = TestFixtureHollowDefinition(parameters, faces, True): Set original = TestFixtureAnnotatedLayout(def, originalHelper)
+    geometryArea = def.ConcreteDomain.area
+    TestCheck "hollow.zero.projected.count", TestGroupCount(original, "Opening.B.Top") = 6
+    hollow.cells(row, 6).value2 = 75#: hollow.cells(row, 7).value2 = 15#
+    Set helper = New CRebarRuleExecutor
+    Set def = TestFixtureHollowDefinition(parameters, faces, True): Set changed = TestFixtureAnnotatedLayout(def, helper)
+    TestCheck "hollow.projection.filtered", TestGroupCount(changed, "Opening.B.Top") = 4
+    TestCheck "hollow.skips.diagnostic", helper.SkippedProjections - originalHelper.SkippedProjections = 2
+    TestCheck "hollow.positions.not.redistributed", TestProjectedSubset(changed, original, "Opening.B.Top")
+    TestCheck "hollow.other.projections.unchanged", TestGroupCount(changed, "Opening.B.Bottom") = TestGroupCount(original, "Opening.B.Bottom")
+    TestNear "hollow.concrete.unchanged", def.ConcreteDomain.area, geometryArea
+    hollow.formula = savedHollow
+    mReport = mReport & "TOTAL_RECIPE_SETBACK_INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+Restore:
+    On Error Resume Next
+    If Not rounded Is Nothing Then rounded.formula = savedRounded
+    If Not hollow Is Nothing Then hollow.formula = savedHollow
+    If Not config Is Nothing Then TestFixtureRestoreInputs config, savedConfig
+    On Error GoTo 0
+    RunRecipeSetbackInputTests = mReport
+    Exit Function
+Failed:
+    mFailed = mFailed + 1: mReport = mReport & "FAIL: runtime; " & CStr(Err.number) & "; " & Err.description & vbCrLf
+    Resume Restore
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Считает физические стержни, которые состоят в указанной группе, включая дополнительные принадлежности.
+Private Function TestGroupCount(ByVal layout As CRebarLayout, ByVal group As String) As Long
+    Dim i As Long
+    For i = 1 To layout.count
+        If TestInGroup(layout, i, group) Then TestGroupCount = TestGroupCount + 1
+    Next i
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет, что отфильтрованные проекции сохранили исходные координаты и не были равномерно перераспределены заново.
+Private Function TestProjectedSubset(ByVal actual As CRebarLayout, ByVal original As CRebarLayout, ByVal group As String) As Boolean
+    Dim i As Long, j As Long, found As Boolean
+    For i = 1 To actual.count
+        If TestInGroup(actual, i, group) Then
+            found = False
+            For j = 1 To original.count
+                If TestInGroup(original, j, group) Then
+                    If Abs(actual.x(i) - original.x(j)) < 0.000001 And Abs(actual.y(i) - original.y(j)) < 0.000001 Then found = True
+                End If
+            Next j
+            If Not found Then Exit Function
+        End If
+    Next i
+    TestProjectedSubset = True
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет все принадлежности физического стержня, а не только первую группу публикации.
+Private Function TestInGroup(ByVal layout As CRebarLayout, ByVal index As Long, ByVal group As String) As Boolean
+    Dim membership As Variant
+    For Each membership In layout.BarMemberships(index)
+        If CStr(membership) = group Then TestInGroup = True: Exit Function
+    Next membership
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Учитывает отдельное условие проверки и сохраняет его имя в итоговом протоколе.
+Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
+    If condition Then
+        mPassed = mPassed + 1: mReport = mReport & "OK: " & name & vbCrLf
+    Else
+        mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
+    End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает фактическую и ожидаемую величины с заданным в этом наборе допуском, сохраняя числа в протоколе.
+Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
+    TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000001
+End Sub
 

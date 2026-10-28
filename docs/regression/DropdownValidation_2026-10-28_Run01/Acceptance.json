@@ -1,0 +1,41 @@
+{
+  "Status": "PASS_DIRECTED_DROPDOWN_BEHAVIOR",
+  "PrimaryLogs": [
+    {
+      "Mode": "No",
+      "SHA256": "F0C7A4E7AC0A7940593D231150FB13E2CEB15A8338B7370DF4835AC8D400A66C",
+      "LinesRead": 77,
+      "Passed": 48,
+      "Failed": 0,
+      "AllPrimaryRead": true
+    },
+    {
+      "Mode": "Yes",
+      "SHA256": "AE5FEB2D6FBE0167B0DF5944BE1267647003018F4E64E33819D8CE39CD4ABD85",
+      "LinesRead": 79,
+      "Passed": 48,
+      "Failed": 0,
+      "AllPrimaryRead": true
+    }
+  ],
+  "NativeChoiceChecks": 24,
+  "SavedWorkbookAndBuilderTested": true,
+  "DecimalDotAndCommaPassed": true,
+  "BeforeOldCode": "13 passed/5 failed, expected regression detection",
+  "AfterCorrectedCode": "18 passed/0 failed",
+  "SourceEqualsNative175Plus6": true,
+  "MainReady181BodiesLiteralEqual": true,
+  "UnchangedNativeBodies179": true,
+  "ChangedNativeBodies": [
+    "modSectionRecipeSetup",
+    "modTestRecipeSetbacks"
+  ],
+  "NumericConstantsNotNormalized": true,
+  "NoNewFullRun": true,
+  "VisualDropdownCapturePassed": false,
+  "VisualCaptureLimitation": "Own UI probe disconnected during screenshot/activation; no visual PASS claimed",
+  "UIExitCauseProven": false,
+  "PriorPreparationCombaseFailuresRetained": true,
+  "CorrectedPreparationNormalExitAndNoMatchingCrash": true,
+  "ProjectRuleAdded": true
+}

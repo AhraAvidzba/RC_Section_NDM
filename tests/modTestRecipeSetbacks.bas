@@ -84,7 +84,7 @@ End Function
 ' Обновление реестра меняет только встроенный список, без служебных ячеек и таблиц геометрии.
 Public Function RunRecipeTypeListTests() As String
     Dim config As Object, system As Object, typeKey As Object, typeCell As Object, saved As Variant, expected As Variant
-    Dim ids As Variant, choices As String, originalValidation As String, originalCircle As String, brokenCircle As String
+    Dim ids As Variant, choices As String, originalValidation As String, originalCircle As String, brokenCircle As String, originalType As Variant, currentValidation As String
     Dim i As Long, count As Long, code As Long, absent As Boolean, unused As Object
     Dim calculation As Long, events As Boolean, updating As Boolean, alerts As Boolean
     On Error GoTo Failed
@@ -97,10 +97,10 @@ Public Function RunRecipeTypeListTests() As String
         If CStr(system.Cells(i, 1).Value2) = "Geometry.Type" Then Set typeKey = system.Cells(i, 1): Set typeCell = system.Cells(i, 2)
     Next i
     If typeCell Is Nothing Then Err.Raise 5, "RunRecipeTypeListTests", "Geometry.Type отсутствует в тестовой книге."
-    originalValidation = typeCell.Validation.Formula1
+    originalValidation = typeCell.Validation.Formula1: originalType = typeCell.Formula
     originalCircle = ThisWorkbook.Names("rngCircleGeometry").RefersTo
     ids = RegisteredSectionRecipeTypes: count = UBound(ids) - LBound(ids) + 1
-    choices = Join(ids, CStr(Application.International(xlListSeparator)))
+    choices = Join(ids, ",")
     Application.Calculation = xlCalculationManual: Application.EnableEvents = False
     Application.ScreenUpdating = False: Application.DisplayAlerts = False
     ThisWorkbook.Names("rngCircleGeometry").RefersTo = "=#REF!" ' Повреждённая таблица геометрии не нужна обновлению списка.
@@ -112,15 +112,24 @@ Public Function RunRecipeTypeListTests() As String
     TestCheck "types.sectionInputsPreserved", TestSameConfigOutsideTypeList(ThisWorkbook.Worksheets("Сечения").Range(CStr(saved(1))), saved(2), Nothing)
     TestCheck "types.unrelated.name", ThisWorkbook.Names("rngCircleGeometry").RefersTo = brokenCircle
     TestCheck "types.inline", Left$(typeCell.Validation.Formula1, 1) <> "="
-    TestCheck "types.registered.all", Replace$(typeCell.Validation.Formula1, ";", ",") = Replace$(choices, ";", ",")
+    currentValidation = typeCell.Validation.Formula1 ' Excel может локализовать строку при чтении; отдельные пункты проверяются его собственным Validation.Value.
     TestCheck "types.dropdown", typeCell.Validation.Type = xlValidateList And typeCell.Validation.InCellDropdown
+    For i = LBound(ids) To UBound(ids)
+        typeCell.Value2 = ids(i)
+        TestCheck "types.option.accepted." & CStr(ids(i)), typeCell.Validation.Value ' Отдельные значения обязан принимать сам Excel, а не тестовый разбор строки.
+    Next i
+    typeCell.Value2 = Join(ids, ";")
+    TestCheck "types.joinedValue.rejected", Not typeCell.Validation.Value
+    typeCell.Value2 = "TEST_UNKNOWN_GEOMETRY_TYPE"
+    TestCheck "types.unknownValue.rejected", Not typeCell.Validation.Value
+    typeCell.Formula = originalType
     On Error Resume Next
     Set unused = ThisWorkbook.Names("rngSectionRecipeTypes"): absent = Err.Number <> 0: Err.Clear
     On Error GoTo Failed
     TestCheck "types.noHelperName", absent
     TestCheck "types.state.success", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
     expected = config.Formula: modSectionRecipeSetup.UpdateSectionRecipeTypes
-    TestCheck "types.idempotent", TestSameConfigOutsideTypeList(config, expected, Nothing) And Replace$(typeCell.Validation.Formula1, ";", ",") = Replace$(choices, ";", ",")
+    TestCheck "types.idempotent", TestSameConfigOutsideTypeList(config, expected, Nothing) And typeCell.Validation.Formula1 = currentValidation
     typeKey.Value2 = "Missing.Geometry.Type": expected = config.Formula
     On Error Resume Next
     modSectionRecipeSetup.UpdateSectionRecipeTypes: code = Err.Number: Err.Clear

@@ -26,7 +26,7 @@ Public Sub UpdateSectionRecipeTypes()
     If row = 0 Then SectionRecipeError "modSectionRecipeSetup", "В rngSystemSettings отсутствует ключ Geometry.Type."
     Set cell = table.Cells(row, 2)
     ids = RegisteredSectionRecipeTypes
-    choices = Join(ids, CStr(ThisWorkbook.Application.International(xlListSeparator)))
+    choices = Join(ids, ",") ' Validation.Add принимает инвариантный разделитель; локальная «;» склеивает варианты в один пункт.
     If Len(choices) = 0 Or Len(choices) > 255 Then SectionRecipeError "modSectionRecipeSetup", _
         "Список зарегистрированных типов не помещается в проверку данных Geometry.Type."
     Set guard = New CExcelAppStateGuard: guard.Enter ThisWorkbook.Application

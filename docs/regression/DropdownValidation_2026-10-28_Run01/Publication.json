@@ -1,0 +1,29 @@
+{
+  "Status": "PUBLISHED",
+  "Items": [
+    {
+      "Name": "Main",
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "BeforeSHA256": "829DAB81587B88995211DB0FE571FEFC95C9BA38CBD100942C05DD01C01CB5B6",
+      "PublishedSHA256": "BBA2AAC9740BE54D73D02BDA14475F87CD7D25485192D04ED615DDD52C9B9F8A",
+      "BackupVerified": true
+    },
+    {
+      "Name": "Ready",
+      "Path": "workbook/output/NDM_Test_1232_30/RC_Section_NDM.xlsm",
+      "BeforeSHA256": "F2487AF87992F91651B26867484945FB68CBBC44B221CE6A705EBCA09F9532E2",
+      "PublishedSHA256": "169EEDE3BEA52F839C41FA4FE629DDF423728766F8128ABF3341A4DD2C53B9EC",
+      "BackupVerified": true
+    },
+    {
+      "Name": "AllCode",
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "BeforeSHA256": "822228C2FB2DB70C76830060361AF480A72BEC5C6FE536E620BF9C23526EEF9E",
+      "PublishedSHA256": "1286296353A6E31EBBBBA795A6F1D455A3A0C02F274CC9E3281EAC23A1EEA1AC",
+      "BackupVerified": true
+    }
+  ],
+  "UTC": "2026-10-28T11:31:27.0238795+00:00",
+  "SourceRuleAndTestsUpdated": true,
+  "VisualPASSClaimed": false
+}
