@@ -1,0 +1,11 @@
+{
+  "Inputs": 502,
+  "Unchanged": 502,
+  "Changed": [],
+  "SourceCommitAtFinalReview": "a79230513060644df249aa5a93faf2872cad2f58",
+  "RootAndFrozenSHA256": "C04C0F30E843976C25F9CFDB3E6F98099EC1D25CFF21E86C03A19BE81DC51CA7",
+  "AllCodeSHA256": "1BECCF680D40616878FC836C504C002E91C1949850385EBDC4C6BE458FA18712",
+  "AllOwnFullIdentitiesTerminal": true,
+  "FinalNativeClosedNormally": true,
+  "BooksSavedOrModified": false
+}

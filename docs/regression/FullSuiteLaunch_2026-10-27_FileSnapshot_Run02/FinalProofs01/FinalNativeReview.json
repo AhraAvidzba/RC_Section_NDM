@@ -1,0 +1,47 @@
+{
+  "Passed": true,
+  "ComponentsEachBook": 181,
+  "SourceComponents": 175,
+  "DocumentModules": 6,
+  "BothNativeBodiesLiteralEqual": true,
+  "PublishedAllCodeBodyLiteralEqual": true,
+  "OnlyAllCodeHeaderExcluded": "Date",
+  "Interface": [
+    {
+      "Case": "Main",
+      "Keys": 111,
+      "InlineLists": 3,
+      "FramedTables": 5
+    },
+    {
+      "Case": "SavedExcelWarm2",
+      "Keys": 111,
+      "InlineLists": 3,
+      "FramedTables": 5
+    }
+  ],
+  "MemoryBeforeExcel": {
+    "RAMGiB": 14.814453125,
+    "CommitGiB": 21.605327606201172,
+    "RequiredRAMGiB": 8,
+    "RequiredCommitGiB": 14
+  },
+  "OwnExcel": {
+    "State": "Absent",
+    "PID": 31280,
+    "ExpectedStartTicksUTC": "639287483585004161",
+    "ExpectedName": "EXCEL",
+    "Error": null
+  },
+  "OwnWorker": {
+    "State": "Absent",
+    "PID": 39740,
+    "ExpectedStartTicksUTC": "639287483565557696",
+    "ExpectedName": "powershell",
+    "Error": null
+  },
+  "ForceKilled": false,
+  "ReadyDataPreserved": true,
+  "MainSHA256": "C04C0F30E843976C25F9CFDB3E6F98099EC1D25CFF21E86C03A19BE81DC51CA7",
+  "ReadySHA256": "5850F2755E0587DB4C32DE6C1D76B653B30A2AA1E251A7ED46C2045A2E3AF16D"
+}
