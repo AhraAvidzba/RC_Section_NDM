@@ -1,0 +1,31 @@
+{
+  "AtUTC": "2026-10-28T18:52:12.8197430+00:00",
+  "PrimaryIssue": "Incorrect preparation expectation: empty plot container from WorkbookLayout is permitted; final container has 0 shapes and 0 series.",
+  "OriginalFirstClosurePollPreserved": true,
+  "Observations": [
+    {
+      "Attempt": "01",
+      "PID": 14048,
+      "StartTicksUTC": "639288100379675530",
+      "ExactIdentityAbsent": true,
+      "Observation": "NO_PROCESS",
+      "ForceKilled": false
+    },
+    {
+      "Attempt": "02",
+      "PID": 12120,
+      "StartTicksUTC": "639288101545603400",
+      "ExactIdentityAbsent": true,
+      "Observation": "NO_PROCESS",
+      "ForceKilled": false
+    },
+    {
+      "Attempt": "03",
+      "PID": 15596,
+      "StartTicksUTC": "639288102222477732",
+      "ExactIdentityAbsent": true,
+      "Observation": "NO_PROCESS",
+      "ForceKilled": false
+    }
+  ]
+}

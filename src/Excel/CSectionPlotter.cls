@@ -553,6 +553,7 @@ Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
     Dim groups As Object: Set groups = CreateObject("Scripting.Dictionary")
     Dim itemIndex As Long, colorValue As Long, key As String, shapeObject As Object, indexes As Collection
     Dim shapeIndex As Long: shapeIndex = mChart.Shapes.Count
+    Dim transparentLine As Boolean ' Несколько контуров одной фигуры соединены служебными мостами; только их обводку скрываем прозрачностью.
     For itemIndex = 1 To data.Count
         Set shapeObject = Nothing
         colorValue = ElementColor(data, itemIndex)
@@ -560,9 +561,9 @@ Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
             Set shapeObject = AddRebarElementShape(data, itemIndex, colorValue)
             key = "R:" & CStr(colorValue)
         Else
-            Set shapeObject = AddConcreteElementShape(data, itemIndex, fallbackSquareRotation, colorValue)
+            Set shapeObject = AddConcreteElementShape(data, itemIndex, fallbackSquareRotation, colorValue, transparentLine)
             key = "C:" & CStr(colorValue)
-            If data.ConcreteHasBoundary(itemIndex) Then key = "F:" & CStr(colorValue)
+            If transparentLine Then key = "F:" & CStr(colorValue)
         End If
         If Not shapeObject Is Nothing Then
             shapeIndex = shapeIndex + 1
@@ -583,37 +584,30 @@ Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
         Else
             lineColor = colorValue: weight = 0.15
         End If
-        FormatElementShapes groups.Item(groupKey), colorValue, lineColor, weight
-        If Left$(CStr(groupKey), 1) = "F" Then HideElementShapeLines groups.Item(groupKey) ' Двойные нулевые перемычки составной фигуры не должны рисовать цветные швы через отверстия.
+        FormatElementShapes groups.Item(groupKey), colorValue, lineColor, weight, (Left$(CStr(groupKey), 1) = "F") ' Visible=False не используется ни для прямоугольников, ни для произвольных границ: цветная либо прозрачная линия сохраняет быстрый интерфейс Excel.
     Next groupKey
-End Sub
-
-' Убирает только обводку заполненных составных областей: отверстия задаются
-' противоположным обходом, а двойные мосты соединяют loops без дополнительной площади.
-Private Sub HideElementShapeLines(ByVal indexes As Collection)
-    Dim values() As Variant, i As Long
-    ReDim values(1 To indexes.Count)
-    For i = 1 To indexes.Count: values(i) = CLng(indexes(i)): Next i
-    mChart.Shapes.Range(values).Line.Visible = False
 End Sub
 
 ' Применяет заданные заливку и обводку ко всем фигурам одного оформления.
 ' ShapeRange не объединяет фигуры и не меняет их имена, геометрию или порядок.
-Private Sub FormatElementShapes(ByVal indexes As Collection, ByVal fillColor As Long, ByVal lineColor As Long, ByVal weight As Double)
+Private Sub FormatElementShapes(ByVal indexes As Collection, ByVal fillColor As Long, ByVal lineColor As Long, _
+        ByVal weight As Double, Optional ByVal transparentLine As Boolean = False)
     Dim values() As Variant, i As Long, shapes As Object
     ReDim values(1 To indexes.Count)
     For i = 1 To indexes.Count: values(i) = CLng(indexes(i)): Next i
     Set shapes = mChart.Shapes.Range(values)
     shapes.Fill.ForeColor.RGB = fillColor
+    shapes.Line.Visible = True
+    If transparentLine Then shapes.Line.Transparency = 1# Else shapes.Line.Transparency = 0#
     shapes.Line.ForeColor.RGB = lineColor
     shapes.Line.Weight = weight
 End Sub
 
-' Рисует бетонный элемент по сохранённым ширине, высоте и углу.
-' Если при импорте известна только площадь, использует эквивалентный квадрат
-' с сохранённой средней ориентацией сетки.
+' Рисует Contour по фактической границе; прямоугольникам и одноконтурным фигурам задаёт одинаковую тонкую обводку.
+' В Adaptive использует сохранённые размеры и угол; при известной только площади допускает эквивалентный квадрат.
 Private Function AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
-        ByVal fallbackSquareRotation As Double, ByVal colorValue As Long) As Object
+        ByVal fallbackSquareRotation As Double, ByVal colorValue As Long, ByRef transparentLine As Boolean) As Object
+    transparentLine = False
     If data.ConcreteHasBoundary(index) Then
         Dim geometry As CConcreteRegion, query As CSectionGeometryQuery
         Dim cx As Double, cy As Double, rectangleWidth As Double, rectangleHeight As Double, rectangleRotation As Double
@@ -622,6 +616,7 @@ Private Function AddConcreteElementShape(ByVal data As CSectionPlotDataReader, B
             Set AddConcreteElementShape = DrawModelRectangleCentered(cx, cy, rectangleWidth * CONCRETE_SHAPE_FILL_RATIO, _
                 rectangleHeight * CONCRETE_SHAPE_FILL_RATIO, rectangleRotation, colorValue, colorValue, 0.15, "ElementConcrete", True)
         Else
+            transparentLine = (geometry.LoopCount > 1) ' Видимая линия многоконтурного Freeform показала бы служебные мосты через отверстия и промежутки.
             Set AddConcreteElementShape = DrawConcreteRegionShape(geometry, data.X(index), data.Y(index))
         End If
         Exit Function
@@ -2207,6 +2202,7 @@ Public Function TestDrawConcreteRegionShape(ByVal chart As Object, ByVal region 
     query.ProjectionBounds region, 0#, 1#, mMinY, mMaxY
     mPlotLeft = 0#: mPlotTop = 0#: mPlotWidth = 200#: mPlotHeight = 200#: mPlotMetricsCaptured = True
     Dim shape As Object: Set shape = DrawConcreteRegionShape(region, centerX, centerY)
-    shape.Fill.ForeColor.RGB = RGB(210, 20, 40): shape.Line.Visible = False
+    Dim indexes As Collection: Set indexes = New Collection: indexes.Add chart.Shapes.Count
+    FormatElementShapes indexes, RGB(210, 20, 40), RGB(210, 20, 40), 0.15, (region.LoopCount > 1)
     Set TestDrawConcreteRegionShape = shape
 End Function

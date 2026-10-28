@@ -1,0 +1,321 @@
+{
+  "Status": "PUBLISHED_AWAITING_USER_FINAL_BUTTON_TEST",
+  "AtUTC": "2026-10-28T18:34:54.747161+00:00",
+  "ConfirmedCause": "Line.Visible=False on the saved Contour concrete shapes; enabling the line with full transparency removed reported UI pauses in controlled manual comparisons.",
+  "UnderlyingExcelInternalCause": "Not determined; no general Excel/driver/security root-cause claim.",
+  "UserObservations": [
+    {
+      "Case": "PhaseContour01",
+      "Change": "Исходный Contour, подробные этапы",
+      "UserReportedDelay": true,
+      "PhasesSHA256": "239768BB9F440BFD4DB5C4E0D01E6C074C1A0B5226714E1401B433855FBF0F90",
+      "ObservedWorkbookSHA256": "53D947533861BBC2A729F28537895DFD56B51EC2AC00FC8FEFCAFFF1C7BD5313",
+      "Ownership": {
+        "PID": 24948,
+        "StartTicksUTC": "639288067376624419",
+        "SourceSHA256": "F6DD866931C99ED1BC87491BD24E012E05492718F896DB6A8F2F5B36DD2D9BCD",
+        "RAMGiB": 18.556640625,
+        "CommitFreeGiB": 22.357406616210938
+      },
+      "Closure": {
+        "PID": 24948,
+        "StartTicksUTC": "639288067376624419",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      }
+    },
+    {
+      "Case": "PhaseAdaptive01",
+      "Change": "Adaptive на тех же входах",
+      "UserReportedDelay": false,
+      "PhasesSHA256": "54026C762FE9C4195347B82AEEEA557AB8419160F161AA8CDBD104D79494EB90",
+      "ObservedWorkbookSHA256": "91A1EBCB189662AACC1CE54FB7B274BAA71A4A0146D1D3515314A44BC3D034E3",
+      "Ownership": {
+        "PID": 21064,
+        "StartTicksUTC": "639288071110979924",
+        "SourceSHA256": "F6DD866931C99ED1BC87491BD24E012E05492718F896DB6A8F2F5B36DD2D9BCD",
+        "RAMGiB": 18.62890625,
+        "CommitFreeGiB": 22.56467056274414
+      },
+      "Closure": {
+        "PID": 21064,
+        "StartTicksUTC": "639288071110979924",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      }
+    },
+    {
+      "Case": "NumericHashContour01",
+      "Change": "Хеш без Windows API; в рабочий код НЕ перенесён",
+      "StageDelayRemained": true,
+      "PhasesSHA256": "B859E9B0BA26C104A128255F1A65940CFCC7891B9FF618BB885778BA6F8A09E7",
+      "ObservedWorkbookSHA256": "E16EBA7312330629E124973976F967A33395A64683F80F1098508CB431580879",
+      "Ownership": {
+        "PID": 7764,
+        "StartTicksUTC": "639288073968298874",
+        "SourceSHA256": "3CD4B2D66E3B183AC7AD67CCB233FBFC471E7E67A8286F7F5E758805A384AC68",
+        "RAMGiB": 18.51171875,
+        "CommitFreeGiB": 22.307640075683594
+      },
+      "Closure": {
+        "PID": 7764,
+        "StartTicksUTC": "639288073968298874",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      }
+    },
+    {
+      "Case": "PhaseContourFile01",
+      "Change": "Тот же Contour, подробные таблицы в File",
+      "UserReportedDelay": true,
+      "UserReply": "сделал. Задержки сохранились и до и после",
+      "PhasesSHA256": "ECD85EC91DA65A72716608FF6964F1CC19B74C94696EF77234B7F6C83B078EC1",
+      "ObservedWorkbookSHA256": "A04B5100BE42413E03F75F0695F0B37517B74B3D2897FE012B359B0B6B25A5F6",
+      "Ownership": {
+        "PID": 6232,
+        "StartTicksUTC": "639288078106855889",
+        "SourceSHA256": "F6DD866931C99ED1BC87491BD24E012E05492718F896DB6A8F2F5B36DD2D9BCD",
+        "RAMGiB": 18.3798828125,
+        "CommitFreeGiB": 22.237564086914062
+      },
+      "Closure": {
+        "PID": 6232,
+        "StartTicksUTC": "639288078106855889",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      }
+    },
+    {
+      "Case": "PhaseContourNoPlot01",
+      "Change": "Диаграмма удалена; геометрия Contour прежняя",
+      "UserReportedDelay": false,
+      "UserReply": "задержек нет",
+      "PhasesSHA256": "3DCCDFC7C613BB05EA70EA3EC39F3B733A8080395122C36E157681F2310C39EA",
+      "ObservedWorkbookSHA256": "2810AC2EC56C63B15D90E3552014AC726A6FF0C7D6D953BC084E2751F0B7B0A1",
+      "Ownership": {
+        "PID": 1692,
+        "StartTicksUTC": "639288079915526155",
+        "SourceSHA256": "53D947533861BBC2A729F28537895DFD56B51EC2AC00FC8FEFCAFFF1C7BD5313",
+        "RAMGiB": 18.37890625,
+        "CommitFreeGiB": 22.09988021850586
+      },
+      "Closure": {
+        "PID": 1692,
+        "StartTicksUTC": "639288079915526155",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      }
+    },
+    {
+      "Case": "PhaseContourNoFreeform01",
+      "Change": "Удалена только одна сложная фигура; остальные451 сохранены",
+      "UserReportedDelay": true,
+      "UserReply": "задержки есть и до и после",
+      "PhasesSHA256": "9BE5A53469B88B8F3EA03A278A043BED4FCE4960866A4AC05E7C2EDDFA5795E6",
+      "ObservedWorkbookSHA256": "43116FADE001CC62BEF45223857F61F6EADADA6982CE4B5F0C546388B51405C2",
+      "Ownership": {
+        "PID": 25740,
+        "StartTicksUTC": "639288080883827945",
+        "SourceSHA256": "53D947533861BBC2A729F28537895DFD56B51EC2AC00FC8FEFCAFFF1C7BD5313",
+        "RAMGiB": 18.3779296875,
+        "CommitFreeGiB": 22.193096160888672
+      },
+      "Closure": {
+        "PID": 25740,
+        "StartTicksUTC": "639288080883827945",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      },
+      "Difference": {
+        "RemovedFreeforms": 1,
+        "OtherShapes": 451
+      }
+    },
+    {
+      "Case": "PhaseContourNativeRects01",
+      "Change": "Все452 объекта; прямоугольникам включена обводка и нормализованы37 поворотов",
+      "UserReportedDelay": false,
+      "UserReply": "задержки нет",
+      "PhasesSHA256": "D26A6C3D91CA8B32441A32CC3A3639077B1C1CE805C6EFDE6F3BEFB2ACCEB7ED",
+      "ObservedWorkbookSHA256": "28F860CAAB659DA4506851C1A4DC739A13674B935FC5BD2AF813AB04D630AEE8",
+      "Ownership": {
+        "PID": 2516,
+        "StartTicksUTC": "639288081831234624",
+        "SourceSHA256": "53D947533861BBC2A729F28537895DFD56B51EC2AC00FC8FEFCAFFF1C7BD5313",
+        "RAMGiB": 18.3994140625,
+        "CommitFreeGiB": 22.23638153076172
+      },
+      "Closure": {
+        "PID": 2516,
+        "StartTicksUTC": "639288081831234624",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      },
+      "Difference": {
+        "RectangleStyles": 341,
+        "EquivalentRotationsRemoved": 37,
+        "OtherShapes": 452
+      }
+    },
+    {
+      "Case": "PhaseContourLineOn01",
+      "Change": "Только обводка341 прямоугольника; исходные повороты и сложная фигура сохранены",
+      "UserReportedDelay": false,
+      "UserReply": "задержек не заметил",
+      "PhasesSHA256": "618B6DF653CFEE6F9867E4CEB6AA0B9C7257F954A4476A2A39A7D4CAE7B90ECD",
+      "ObservedWorkbookSHA256": "4B371413C792366F2C2A14728CB3982EBF8EE7570864E18A1A4C38144EDE1DAF",
+      "Ownership": {
+        "PID": 11060,
+        "StartTicksUTC": "639288083662479024",
+        "SourceSHA256": "53D947533861BBC2A729F28537895DFD56B51EC2AC00FC8FEFCAFFF1C7BD5313",
+        "RAMGiB": 18.3662109375,
+        "CommitFreeGiB": 22.20416259765625
+      },
+      "Closure": {
+        "PID": 11060,
+        "StartTicksUTC": "639288083662479024",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      },
+      "Difference": {
+        "VisibleRectangleLines": 341,
+        "AllShapes": 452,
+        "RotationsUnchanged": true
+      }
+    },
+    {
+      "Case": "PhaseContourTransparent01",
+      "Change": "Та же линия полностью прозрачна",
+      "UserReportedDelay": false,
+      "UserReply": "задержек нет",
+      "PhasesSHA256": "2A5A309D71E815DC0C2B91D03556C8FA44777C6A4B839FDE36779CAF9B06DF8B",
+      "ObservedWorkbookSHA256": "9C6BCE6859AAB8B5018F992BFAC5CC57AB5004CE86B587CBB51A1B87DBD8D417",
+      "Ownership": {
+        "PID": 7012,
+        "StartTicksUTC": "639288086396762628",
+        "SourceSHA256": "4B371413C792366F2C2A14728CB3982EBF8EE7570864E18A1A4C38144EDE1DAF",
+        "RAMGiB": 18.2607421875,
+        "CommitFreeGiB": 22.042842864990234
+      },
+      "Closure": {
+        "PID": 7012,
+        "StartTicksUTC": "639288086396762628",
+        "Released": true,
+        "ForceKilled": false,
+        "PrimaryError": "",
+        "CloseError": ""
+      },
+      "Difference": {
+        "VisibleRectangleLines": 341,
+        "AllShapes": 452,
+        "RotationsUnchanged": true
+      }
+    }
+  ],
+  "PrimaryLogsFullyRead": [
+    {
+      "File": "modTestCalculationSnapshot.RunWorkbookActionCompletionTests_No.txt",
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE",
+      "Bytes": 445,
+      "Passed": 12,
+      "Failed": 0
+    },
+    {
+      "File": "modTestCalculationSnapshot.RunWorkbookActionCompletionTests_Yes.txt",
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE",
+      "Bytes": 445,
+      "Passed": 12,
+      "Failed": 0
+    },
+    {
+      "File": "modTestElementGeometryViews.RunElementGeometryViewTests_No.txt",
+      "SHA256": "74B1CA4EDCC039CC8F80FE820E00A749C3A90373A9C04084D50DEC68EDEDDDDA",
+      "Bytes": 4308,
+      "Passed": 61,
+      "Failed": 0
+    },
+    {
+      "File": "modTestElementGeometryViews.RunElementGeometryViewTests_Yes.txt",
+      "SHA256": "74B1CA4EDCC039CC8F80FE820E00A749C3A90373A9C04084D50DEC68EDEDDDDA",
+      "Bytes": 4308,
+      "Passed": 61,
+      "Failed": 0
+    },
+    {
+      "File": "modTestPlotConfig.RunContourLineWeightTests_No.txt",
+      "SHA256": "F13E88837B2569EBF7338146CB14B1368A14FE1FE290813597A654EA6B58F8CC",
+      "Bytes": 8267,
+      "Passed": 123,
+      "Failed": 0
+    },
+    {
+      "File": "modTestPlotConfig.RunContourLineWeightTests_Yes.txt",
+      "SHA256": "F13E88837B2569EBF7338146CB14B1368A14FE1FE290813597A654EA6B58F8CC",
+      "Bytes": 8267,
+      "Passed": 123,
+      "Failed": 0
+    },
+    {
+      "File": "modTestWorkbookInterface.RunFormationPreviewTests_No.txt",
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED",
+      "Bytes": 455,
+      "Passed": 13,
+      "Failed": 0
+    },
+    {
+      "File": "modTestWorkbookInterface.RunFormationPreviewTests_Yes.txt",
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED",
+      "Bytes": 455,
+      "Passed": 13,
+      "Failed": 0
+    }
+  ],
+  "Passed": 418,
+  "Failed": 0,
+  "NativeSource": {
+    "Passed": true,
+    "SourceComponents": 175,
+    "ExportComponents": 181,
+    "ExportSHA256": "B0DBF1287CBBC1FE61959C644CFADB8470587205FA0F431EAC5FB8C2027F113F"
+  },
+  "FinalStyleScope": "All Contour concrete shapes, including rectangles, arcs, concave, opening and disconnected boundaries; no geometry change.",
+  "NativeRastersInspected": [
+    "Hole",
+    "Disconnected",
+    "Concave"
+  ],
+  "Publication": {
+    "Status": "PUBLISHED_AWAITING_USER_BUTTON_TEST",
+    "AtUTC": "2026-10-28T18:33:34.384275+00:00",
+    "WorkbookSHA256": "63827E89406FC3E1E673AFE681B50CF4DA40D50C2D6041112070D6EC11CBB2BC",
+    "AllCodeSHA256": "B0DBF1287CBBC1FE61959C644CFADB8470587205FA0F431EAC5FB8C2027F113F",
+    "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ButtonUiLatency_2026-10-28_Run01\\Publication02\\UserBase.xlsm",
+    "OtherHeavyBookUnchanged": true,
+    "SourceComponents": 175,
+    "DocumentComponents": 6,
+    "DirectedPassed": 418,
+    "DirectedFailed": 0,
+    "FullSuite": false,
+    "FurtherAutomatedTestsDeferredByUser": true
+  },
+  "FurtherAutomatedTestsDeferredByUser": true,
+  "AdaptiveFreshTimingComparison": "Deferred by user; no additional geometry operations added to Adaptive.",
+  "FullSuite": false,
+  "FinalAutomaticPlotButtonConfirmation": "Pending user test of published book"
+}

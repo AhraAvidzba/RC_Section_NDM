@@ -1,0 +1,22 @@
+{
+  "Status": "CLEAN_REBUILD_PUBLISHED_AWAITING_USER_VISUAL_TEST",
+  "AtUTC": "2026-10-28T18:51:01.805589+00:00",
+  "WorkbookSHA256": "700586112CF3761145EEF9158F2CE69182C4228DCE3CAF3021A93B32A816AFA1",
+  "AllCodeSHA256": "744928504499678935D214E2248FAC61AFD9CD68255D33FFD720AF68FF12A626",
+  "CreatedFrom": "Excel.Workbooks.Add through tools/build_workbook/Build-Workbook.ps1",
+  "UserDataCopied": false,
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ButtonUiLatency_2026-10-28_Run01\\CleanRebuild01Backup",
+  "SourceComponents": 175,
+  "DocumentComponents": 6,
+  "NativeSourceEqualityPassed": true,
+  "VBECompileCommand": 578,
+  "HeavyBooksUnchanged": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM_ok.xlsm",
+      "SHA256": "31F188692A01CC421A37CF962598778A5AD1FE6D9AB5D96DD41C29389C0919F7"
+    }
+  ],
+  "FurtherCalculationsOrBehaviorTestsDeferredByUser": true,
+  "Earlier418ChecksApplyTo": "Earlier all-transparent-line variant, not final thin-line styling",
+  "FullSuite": false
+}

@@ -1,0 +1,14 @@
+{
+  "Status": "PUBLISHED_AWAITING_USER_BUTTON_TEST",
+  "AtUTC": "2026-10-28T18:33:34.384275+00:00",
+  "WorkbookSHA256": "63827E89406FC3E1E673AFE681B50CF4DA40D50C2D6041112070D6EC11CBB2BC",
+  "AllCodeSHA256": "B0DBF1287CBBC1FE61959C644CFADB8470587205FA0F431EAC5FB8C2027F113F",
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ButtonUiLatency_2026-10-28_Run01\\Publication02\\UserBase.xlsm",
+  "OtherHeavyBookUnchanged": true,
+  "SourceComponents": 175,
+  "DocumentComponents": 6,
+  "DirectedPassed": 418,
+  "DirectedFailed": 0,
+  "FullSuite": false,
+  "FurtherAutomatedTestsDeferredByUser": true
+}
