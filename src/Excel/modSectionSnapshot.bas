@@ -1,5 +1,6 @@
-﻿Attribute VB_Name = "modSectionSnapshot"
+Attribute VB_Name = "modSectionSnapshot"
 Option Explicit
+Private mTestBoundaryFullReads As Long, mTestBoundaryHashReads As Long ' ДЛЯ ТЕСТОВ: число полных и подтверждённых хешем элементов.
 
 ' ==========================================================================
 ' Чтение сохранённого сечения и таблиц Results
@@ -193,6 +194,13 @@ Public Function ReadSavedConcreteBoundaries(ByVal workbook As Object, Optional B
     Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange
     On Error GoTo 0
     Dim saved As CCalculationSnapshot: Set saved = CurrentCalculationSnapshot(workbook)
+    If Not saved Is Nothing Then
+        Dim checked As Object
+        If saved.TryCopyValidatedConcreteBoundaries(data, checked) Then
+            Set ReadSavedConcreteBoundaries = checked
+            Exit Function
+        End If
+    End If
     If Not anchor Is Nothing Or Not saved Is Nothing Then boundaryData = ReadAnchoredResultTable(workbook, "rngNDMElementGeometry")
     Set ReadSavedConcreteBoundaries = ReadConcreteBoundaryMap(boundaryData, data, "rngNDMElementGeometry", anchor, geometryAnchor)
 End Function
@@ -252,6 +260,7 @@ Public Function ReadConcreteBoundaryMap(ByRef boundaryData As Variant, ByRef geo
     Dim groups As Object: Set groups = CreateObject("Scripting.Dictionary"): groups.CompareMode = vbBinaryCompare
     Dim firstRows As Object: Set firstRows = CreateObject("Scripting.Dictionary"): firstRows.CompareMode = vbBinaryCompare
     Dim ids As Object: Set ids = CreateObject("Scripting.Dictionary"): ids.CompareMode = vbBinaryCompare
+    Dim hashed As Object: Set hashed = ReadHashedConcreteBoundaries(boundaryData, geometryData, rows)
     Dim contours As CSectionContours, segmentID As String, loopID As String, role As String, owner As String, key As String, unitText As String
     Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, radius As Double, sweep As Double, geometryRow As Long
     On Error GoTo InvalidContourRow
@@ -264,6 +273,7 @@ Public Function ReadConcreteBoundaryMap(ByRef boundaryData As Variant, ByRef geo
             SavedBoundaryError "Граница относится к другому расчётному снимку.", sourceReference, row, 1, boundaryAnchor
         If SavedBoundaryNumber(boundaryData, row, 4, sourceReference, boundaryAnchor) <> row - 1 Then _
             SavedBoundaryError "Нарушена последовательность сегментов фактической границы.", sourceReference, row, 4, boundaryAnchor
+        If hashed.Exists(owner) Then GoTo NextSavedContourRow
         segmentID = SavedBoundaryText(boundaryData, row, 3, sourceReference, boundaryAnchor)
         loopID = SavedBoundaryText(boundaryData, row, 2, sourceReference, boundaryAnchor)
         role = SavedBoundaryText(boundaryData, row, 5, sourceReference, boundaryAnchor)
@@ -302,6 +312,7 @@ Public Function ReadConcreteBoundaryMap(ByRef boundaryData As Variant, ByRef geo
             Case Else
                 SavedBoundaryError "Неизвестный тип сегмента фактической границы.", sourceReference, row, 6, boundaryAnchor
         End Select
+NextSavedContourRow:
     Next row
     On Error GoTo 0
     Dim item As Variant, region As CConcreteRegion, query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
@@ -311,9 +322,15 @@ Public Function ReadConcreteBoundaryMap(ByRef boundaryData As Variant, ByRef geo
     Dim layout As TSavedBoundaryLayout, layoutReady As Boolean ' Один заголовок для всех элементов этого чтения; между действиями ничего не кэшируется.
 
     For Each item In required.Keys
+        If hashed.Exists(CStr(item)) Then
+            Set region = hashed.Item(CStr(item)): result.Add CStr(item), region
+            mTestBoundaryHashReads = mTestBoundaryHashReads + 1
+            GoTo NextSavedBoundaryElement
+        End If
         If Not groups.Exists(CStr(item)) Then SavedBoundaryError "Для бетонного элемента " & CStr(item) & " отсутствует обязательная фактическая граница.", sourceReference, 1, 18, boundaryAnchor
         Set contours = groups.Item(CStr(item))
         On Error GoTo InvalidBoundary
+        mTestBoundaryFullReads = mTestBoundaryFullReads + 1
         Set region = SavedConcreteRegion(contours, query, loopNames, actualLoopNames)
         If Not layoutReady Then
             ReadSavedBoundaryLayout geometryData, geometryAnchor, layout
@@ -322,6 +339,7 @@ Public Function ReadConcreteBoundaryMap(ByRef boundaryData As Variant, ByRef geo
         ValidateSavedBoundaryProperties region, geometryData, CLng(rows.Item(CStr(item))), geometryAnchor, query, layout
         On Error GoTo 0
         result.Add CStr(item), region
+NextSavedBoundaryElement:
     Next item
     Set ReadConcreteBoundaryMap = result
     Exit Function
@@ -494,6 +512,13 @@ Private Sub ValidateSavedBoundaryProperties(ByVal region As CConcreteRegion, ByR
         SavedBoundaryError "Высота точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, layout.HeightColumn, anchor
     Call SavedBoundaryNumber(data, row, layout.RotationColumn, "rngNDMSectionGeometry", anchor)
     query.ValidateBoundaryProperties region, _
+        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.XColumn, "rngNDMSectionGeometry", anchor), layout.LengthUnit), _
+        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.YColumn, "rngNDMSectionGeometry", anchor), layout.LengthUnit), _
+        OutputAreaToInternalByUnit(SavedBoundaryNumber(data, row, layout.AreaColumn, "rngNDMSectionGeometry", anchor), layout.AreaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.IxColumn, "rngNDMSectionGeometry", anchor), layout.InertiaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.IyColumn, "rngNDMSectionGeometry", anchor), layout.InertiaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.IxyColumn, "rngNDMSectionGeometry", anchor), layout.InertiaUnit)
+    region.RememberPreparedProperties _
         OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.XColumn, "rngNDMSectionGeometry", anchor), layout.LengthUnit), _
         OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.YColumn, "rngNDMSectionGeometry", anchor), layout.LengthUnit), _
         OutputAreaToInternalByUnit(SavedBoundaryNumber(data, row, layout.AreaColumn, "rngNDMSectionGeometry", anchor), layout.AreaUnit), _
@@ -1147,4 +1172,110 @@ End Function
 Public Function TestSectionSnapshotReadDiagnostics() As String
     TestSectionSnapshotReadDiagnostics = "tables=" & CStr(mSnapshotTableReadCount) & ";released=" & _
         CStr(mSnapshotReadTables Is Nothing And mSnapshotReadWorkbook Is Nothing)
+End Function
+
+
+' Подтверждает только целиком неизменённые записи, выпущенные штатным writer-ом.
+' При отсутствии/ошибке JSON или хеша возвращает прежний полный путь без подмены геометрии.
+Private Function ReadHashedConcreteBoundaries(ByRef boundaries As Variant, ByRef geometry As Variant, ByVal geometryRows As Object) As Object
+    Dim result As Object: Set result = CreateObject("Scripting.Dictionary"): result.CompareMode = vbBinaryCompare
+    Set ReadHashedConcreteBoundaries = result
+    If UBound(boundaries, 1) < 2 Then Exit Function
+    Dim extraColumn As Long: extraColumn = ResultColumn(geometry, "ExtraData", False)
+    If extraColumn = 0 Then Exit Function
+    Dim first As Object, last As Object, counts As Object
+    Set first = CreateObject("Scripting.Dictionary"): Set last = CreateObject("Scripting.Dictionary"): Set counts = CreateObject("Scripting.Dictionary")
+    Dim row As Long, owner As String, key As Variant
+    On Error GoTo Untrusted
+    For row = 2 To UBound(boundaries, 1)
+        owner = CStr(boundaries(row, 18))
+        If Not first.Exists(owner) Then first.Add owner, row: counts.Add owner, 0
+        last(owner) = row: counts(owner) = CLng(counts(owner)) + 1
+    Next row
+    Dim checksum As CFileChecksum: Set checksum = New CFileChecksum
+    checksum.PrepareGeometryHashHeaders geometry, boundaries
+    Dim region As CConcreteRegion, query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim layout As TSavedBoundaryLayout, layoutReady As Boolean
+    For Each key In first.Keys
+        owner = CStr(key)
+        If geometryRows.Exists(owner) And CLng(counts(owner)) = CLng(last(owner)) - CLng(first(owner)) + 1 Then
+            Set region = TryReadHashedBoundary(boundaries, geometry, CLng(geometryRows.Item(owner)), _
+                CLng(first(owner)), CLng(last(owner)), extraColumn, checksum, query, layout, layoutReady)
+            If Not region Is Nothing Then result.Add owner, region
+        End If
+    Next key
+    Exit Function
+Untrusted:
+    Err.Clear ' Основной читатель выдаст прежнюю адресную ошибку, если обязательные данные повреждены.
+End Function
+
+' Вычисляет контрольную сумму только по скалярам и при совпадении собирает отрезки/дуги без геометрического валидатора.
+' Неподдерживаемая запись остаётся на обычном пути; старые снимки без подписи не меняют поведения.
+Private Function TryReadHashedBoundary(ByRef boundaries As Variant, ByRef geometry As Variant, ByVal geometryRow As Long, _
+        ByVal firstRow As Long, ByVal lastRow As Long, ByVal extraColumn As Long, ByVal checksum As CFileChecksum, _
+        ByVal query As CSectionGeometryQuery, ByRef layout As TSavedBoundaryLayout, ByRef layoutReady As Boolean) As CConcreteRegion
+    On Error GoTo Untrusted
+    Dim digest As String: digest = SavedGeometryHashText(CStr(geometry(geometryRow, extraColumn)))
+    If Len(digest) <> 16 Then Exit Function
+    If StrComp(digest, checksum.PreparedGeometryHash(geometry, geometryRow, boundaries, firstRow, lastRow), vbBinaryCompare) <> 0 Then Exit Function
+    Dim edges() As TRegionEdge, count As Long, row As Long, index As Long, kind As String, factor As Double, unit As String
+    count = lastRow - firstRow + 1: ReDim edges(1 To count)
+    For row = firstRow To lastRow
+        index = row - firstRow + 1: unit = CStr(boundaries(row, 17))
+        factor = OutputLengthToInternalByUnit(1#, unit)
+        With edges(index)
+            .X1 = CDbl(boundaries(row, 7)) * factor: .Y1 = CDbl(boundaries(row, 8)) * factor
+            kind = CStr(boundaries(row, 6))
+            Select Case kind
+                Case "CONTOUR_LINE"
+                    .X2 = CDbl(boundaries(row, 9)) * factor: .Y2 = CDbl(boundaries(row, 10)) * factor
+                Case "CONTOUR_ARC"
+                    .CenterX = CDbl(boundaries(row, 11)) * factor: .CenterY = CDbl(boundaries(row, 12)) * factor
+                    .Sweep = ReadContourArcSweep(boundaries(row, 14), "rngNDMElementGeometry") ' Сохраняет прежнюю числовую интерпретацию угла, без изменения результатов.
+                    .X2 = .CenterX + (.X1 - .CenterX) * Cos(.Sweep) - (.Y1 - .CenterY) * Sin(.Sweep)
+                    .Y2 = .CenterY + (.X1 - .CenterX) * Sin(.Sweep) + (.Y1 - .CenterY) * Cos(.Sweep)
+                Case Else: Exit Function ' Writer выпускает только линии и дуги; внешние окружности проверяются как прежде.
+            End Select
+        End With
+    Next row
+    Dim region As CConcreteRegion: Set region = query.RestoreHashedBoundary(edges, count)
+    If Not layoutReady Then ReadSavedBoundaryLayout geometry, Nothing, layout: layoutReady = True
+    region.RememberPreparedProperties _
+        OutputLengthToInternalByUnit(CDbl(geometry(geometryRow, layout.XColumn)), layout.LengthUnit), _
+        OutputLengthToInternalByUnit(CDbl(geometry(geometryRow, layout.YColumn)), layout.LengthUnit), _
+        OutputAreaToInternalByUnit(CDbl(geometry(geometryRow, layout.AreaColumn)), layout.AreaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(CDbl(geometry(geometryRow, layout.IxColumn)), layout.InertiaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(CDbl(geometry(geometryRow, layout.IyColumn)), layout.InertiaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(CDbl(geometry(geometryRow, layout.IxyColumn)), layout.InertiaUnit)
+    region.RememberGeometryHash digest
+    Set TryReadHashedBoundary = region
+    Exit Function
+Untrusted:
+    Err.Clear
+End Function
+
+' Извлекает только каноническую шестнадцатеричную подпись writer-а, не создавая словарь для каждого элемента.
+' Необычное оформление или отсутствующий маркер выбирает полный путь; остальные необязательные поля не интерпретируются.
+Private Function SavedGeometryHashText(ByVal text As String) As String
+    Dim marker As String: marker = Chr$(34) & "GeometryHash" & Chr$(34) & ":" & Chr$(34)
+    Dim prefix As String: prefix = "{" & Chr$(34) & "schema" & Chr$(34) & ":" & Chr$(34) & "1" & Chr$(34)
+    If Left$(text, Len(prefix)) <> prefix Or Right$(text, 1) <> "}" Then Exit Function
+    Dim position As Long: position = InStr(1, text, marker, vbBinaryCompare)
+    If position = 0 Then Exit Function
+    If InStr(position + Len(marker), text, marker, vbBinaryCompare) > 0 Then Exit Function
+    position = position + Len(marker)
+    If Mid$(text, position + 16, 1) <> Chr$(34) Then Exit Function
+    Dim value As String: value = Mid$(text, position, 16)
+    Dim i As Long
+    For i = 1 To 16
+        If InStr(1, "0123456789ABCDEF", Mid$(value, i, 1), vbBinaryCompare) = 0 Then Exit Function
+    Next i
+    SavedGeometryHashText = value
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает независимые счётчики выбора полного/хеш-пути; reset не меняет рабочие данные.
+Public Function TestSavedBoundaryReadCounts(Optional ByVal reset As Boolean = False) As String
+    TestSavedBoundaryReadCounts = CStr(mTestBoundaryFullReads) & "/" & CStr(mTestBoundaryHashReads)
+    If reset Then mTestBoundaryFullReads = 0: mTestBoundaryHashReads = 0
 End Function

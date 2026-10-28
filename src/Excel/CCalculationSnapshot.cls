@@ -20,6 +20,7 @@ Private mTableRows As Object ' Высоты неизменяемых матри�
 Private mElapsedSeconds As Double ' Полное время запуска, отдельное от содержимого таблиц.
 Private mRunID As Double ' Точная дата одного согласованного запуска.
 Private mValidated As Boolean ' Повторная проверка того же неизменённого набора не копирует большие массивы.
+Private mValidatedBoundaries As Object ' Проверенные точные области принадлежат только неизменяемым таблицам этого снимка; наружу выдаются независимые копии.
 Private mElements As Variant ' Большая матрица принадлежит снимку; служебный словарь содержит только её ключ.
 Private mElementFirst() As Long, mElementLast() As Long ' Непрерывные группы строк в исходном порядке.
 Private mElementCase() As String, mElementState() As String ' Точные подписи группы; поиск не зависит от регистра.
@@ -36,7 +37,7 @@ End Sub
 ' Устанавливает дату до заполнения таблиц; преобразование в текст не требуется.
 Public Property Let RunID(ByVal value As Double)
     mRunID = value
-    mValidated = False
+    mValidated = False: Set mValidatedBoundaries = Nothing
 End Property
 
 ' Возвращает исходную дату для проверки согласованности нижних таблиц.
@@ -68,7 +69,7 @@ Public Sub AddTable(ByVal key As String, ByVal values As Variant)
         mTables.Add key, values
     End If
     mTableRows.Add key, UBound(values, 1)
-    mValidated = False
+    mValidated = False: Set mValidatedBoundaries = Nothing
 End Sub
 
 ' Удаляет неиспользованный резерв массивов перед сохранением готовых таблиц.
@@ -105,7 +106,7 @@ Friend Sub AddPreparedElementResults(ByRef values() As Variant, ByVal usedRows A
     End If
     mTables.Add "rngNDMElementResults", Empty
     mTableRows.Add "rngNDMElementResults", usedRows
-    mElementGroupCount = 0: mValidated = False
+    mElementGroupCount = 0: mValidated = False: Set mValidatedBoundaries = Nothing
 End Sub
 
 ' Возвращает настройки просмотра сохранённого профиля, отсутствующего в текущем Config.
@@ -306,9 +307,9 @@ Private Sub ValidateGeometryPreview()
             If UBound(values, 1) <> 1 Then Err.Raise 5, "CCalculationSnapshot", "Геометрический снимок не содержит расчётных состояний или диаграмм: " & CStr(key)
         End If
     Next key
-    Dim geometry As Variant, boundaries As Variant, boundaryMap As Object, row As Long, propertyName As String
+    Dim geometry As Variant, boundaries As Variant, row As Long, propertyName As String
     geometry = Table("rngNDMSectionGeometry"): boundaries = Table("rngNDMElementGeometry")
-    Set boundaryMap = ReadConcreteBoundaryMap(boundaries, geometry)
+    Set mValidatedBoundaries = ReadConcreteBoundaryMap(boundaries, geometry)
     values = Table("rngNDMSectionProperties")
     For row = 2 To UBound(values, 1)
         If CStr(values(row, 2)) <> "ALL" Then Err.Raise 5, "CCalculationSnapshot", "Геометрический снимок содержит свойства сочетания."
@@ -359,12 +360,51 @@ Public Sub Validate()
             If CDbl(values(i, 1)) <> mRunID Then Err.Raise 5, "CCalculationSnapshot", "LC относятся к другому запуску: " & CStr(key)
         Next i
     Next key
-    Dim geometry As Variant, boundaries As Variant, boundaryMap As Object
+    Dim geometry As Variant, boundaries As Variant
     geometry = Table("rngNDMSectionGeometry")
     If HasTable("rngNDMElementGeometry") Then boundaries = Table("rngNDMElementGeometry")
-    Set boundaryMap = ReadConcreteBoundaryMap(boundaries, geometry)
+    Set mValidatedBoundaries = ReadConcreteBoundaryMap(boundaries, geometry)
     mValidated = True
 End Sub
+
+
+' Возвращает независимые области только для точной исходной матрицы этого снимка.
+' Изменённая или посторонняя геометрия проходит прежний полный разбор, без округлённых ключей.
+Friend Function TryCopyValidatedConcreteBoundaries(ByRef geometry As Variant, ByRef result As Object) As Boolean
+    Validate
+    If mValidatedBoundaries Is Nothing Then Exit Function
+    Dim expected As Variant: expected = Table("rngNDMSectionGeometry")
+    If Not SameConcreteGeometryMatrix(geometry, expected) Then Exit Function
+    Dim copied As Object: Set copied = CreateObject("Scripting.Dictionary"): copied.CompareMode = vbBinaryCompare
+    Dim key As Variant, region As CConcreteRegion
+    For Each key In mValidatedBoundaries.Keys
+        Set region = mValidatedBoundaries.Item(CStr(key))
+        copied.Add CStr(key), region.Clone ' Получатель не может изменить сохранённый контур, владельца или словарь снимка.
+    Next key
+    Set result = copied
+    TryCopyValidatedConcreteBoundaries = True
+End Function
+
+' Сравнивает размеры, типы и значения всех ячеек, включая единицы, ID и метаданные.
+' При неопределённом значении выбирается безопасный обычный разбор вместо повторного использования.
+Private Function SameConcreteGeometryMatrix(ByRef actual As Variant, ByRef expected As Variant) As Boolean
+    On Error GoTo Different
+    If Not IsArray(actual) Or Not IsArray(expected) Then Exit Function
+    If LBound(actual, 1) <> 1 Or LBound(actual, 2) <> 1 Then Exit Function
+    If UBound(actual, 1) <> UBound(expected, 1) Or UBound(actual, 2) <> UBound(expected, 2) Then Exit Function
+    Dim row As Long, column As Long
+    For row = 1 To UBound(actual, 1)
+        For column = 1 To UBound(actual, 2)
+            If VarType(actual(row, column)) <> VarType(expected(row, column)) Then Exit Function
+            If IsError(actual(row, column)) Or IsNull(actual(row, column)) Or IsObject(actual(row, column)) Or IsArray(actual(row, column)) Then Exit Function
+            If actual(row, column) <> expected(row, column) Then Exit Function
+        Next column
+    Next row
+    SameConcreteGeometryMatrix = True
+    Exit Function
+Different:
+    Err.Clear
+End Function
 
 ' Проверяет запуск непосредственно в принадлежащем снимку массиве, без копии для обхода.
 Private Sub ValidateRunID(ByRef values As Variant, ByVal key As String)

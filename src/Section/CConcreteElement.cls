@@ -193,3 +193,14 @@ Friend Function WithRotation(ByVal rotation As Double) As CConcreteElement
         mWidth, mHeight, rotation, mRotationKnown, mComment, mLocalIx, mLocalIy, mLocalIxy, Nothing, mKnownRectangle
     Set WithRotation = result
 End Function
+
+
+' Подпись уже проверенной геометрической записи принадлежит тому же объекту, что и фактическая граница.
+Public Property Get GeometryHash() As String
+    If Not mExactGeometry Is Nothing Then GeometryHash = mExactGeometry.GeometryHash
+End Property
+
+' Добавляет только производную подпись сериализации; характеристики и границы элемента не меняются.
+Friend Sub RememberGeometryHash(ByVal value As String)
+    If Not mExactGeometry Is Nothing Then mExactGeometry.RememberGeometryHash value
+End Sub

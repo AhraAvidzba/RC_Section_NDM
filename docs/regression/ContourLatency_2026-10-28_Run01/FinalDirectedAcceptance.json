@@ -1,0 +1,307 @@
+{
+  "Status": "PASS_DIRECTED_ONLY",
+  "FullSuite": false,
+  "Passed": 3660,
+  "Failed": 0,
+  "Logs": [
+    {
+      "Path": "HashUiDirected02\\RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE",
+      "Passed": 12,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB",
+      "Passed": 203,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunPreparedSnapshotReuseTests_No.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC",
+      "Passed": 69,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439",
+      "Passed": 123,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunGeometryPreviewStorageTests_No.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92",
+      "Passed": 62,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunFileGeometryAuthorityTests_No.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053",
+      "Passed": 125,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunCalculationSnapshotTests_No.txt",
+      "Bytes": 33608,
+      "SHA256": "318A26BC57B0DC3CEF99BD04FCDE3B7EB8836399BBD1F24FD29172A7B7870EA9",
+      "Passed": 956,
+      "Failed": 0
+    },
+    {
+      "Path": "ButtonCompletion02\\RunButtonCompletionProbeTests_No.txt",
+      "Bytes": 1560,
+      "SHA256": "F2FC327B3B8D7C01D00E0E34DD8FB39B39E09BC3D3862413ECCE6F5BB4EA2360",
+      "Passed": 12,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunWorkbookActionCompletionTests_Yes.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE",
+      "Passed": 12,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunGeometryHashTests_Yes.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB",
+      "Passed": 203,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunPreparedSnapshotReuseTests_Yes.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC",
+      "Passed": 69,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunConcreteGeometrySnapshotTests_Yes.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439",
+      "Passed": 123,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunGeometryPreviewStorageTests_Yes.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92",
+      "Passed": 62,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunFileGeometryAuthorityTests_Yes.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053",
+      "Passed": 125,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected02\\RunCalculationSnapshotTests_Yes.txt",
+      "Bytes": 33608,
+      "SHA256": "318A26BC57B0DC3CEF99BD04FCDE3B7EB8836399BBD1F24FD29172A7B7870EA9",
+      "Passed": 956,
+      "Failed": 0
+    },
+    {
+      "Path": "ButtonCompletion02\\RunButtonCompletionProbeTests_Yes.txt",
+      "Bytes": 1564,
+      "SHA256": "195408D1945E3E9FDD5C8301B0457C2749C3A2AB911E62DB3D46EA06F11748B1",
+      "Passed": 12,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected03\\RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE",
+      "Passed": 12,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected03\\RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB",
+      "Passed": 203,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected03\\modTestAudit02Api.RunProgramMessagePresentationTests_No.txt",
+      "Bytes": 2538,
+      "SHA256": "B30F0DE159A94CB070506E5927E61C34935B56CBDC2CA71FCD17F3A5369C88EF",
+      "Passed": 29,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected03\\RunWorkbookActionCompletionTests_Yes.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE",
+      "Passed": 12,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected03\\RunGeometryHashTests_Yes.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB",
+      "Passed": 203,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiDirected03\\modTestAudit02Api.RunProgramMessagePresentationTests_Yes.txt",
+      "Bytes": 2538,
+      "SHA256": "B30F0DE159A94CB070506E5927E61C34935B56CBDC2CA71FCD17F3A5369C88EF",
+      "Passed": 29,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\Excel_Dot_mm\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\Excel_Dot_cm\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\Excel_Dot_m\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\Excel_Comma_mm\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\Excel_Comma_cm\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\Excel_Comma_m\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\File_Dot_mm\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\File_Dot_cm\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\File_Dot_m\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\File_Comma_mm\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\File_Comma_cm\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    },
+    {
+      "Path": "HashUiReopen01\\File_Comma_m\\Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0
+    }
+  ],
+  "Closures": {
+    "HashUiDirected02": {
+      "PID": 16988,
+      "StartTicksUTC": "639288023006372620",
+      "Absent": true,
+      "ForceKilled": false,
+      "CloseError": "",
+      "PrimaryError": ""
+    },
+    "HashUiDirected03": {
+      "PID": 24524,
+      "StartTicksUTC": "639288029148922434",
+      "Absent": true,
+      "ForceKilled": false,
+      "CloseError": "",
+      "PrimaryError": ""
+    },
+    "ButtonCompletion02": {
+      "PID": 24512,
+      "StartTicksUTC": "639288034661036215",
+      "Absent": true,
+      "ForceKilled": false,
+      "CloseError": "",
+      "PrimaryError": ""
+    },
+    "HashUiReopen01": {
+      "PID": 17228,
+      "StartTicksUTC": "639288027777119459",
+      "Absent": true,
+      "ForceKilled": false,
+      "PrimaryError": "",
+      "SeparatorsRestored": true
+    },
+    "FinalFreshPaired_Contour_Excel": {
+      "PID": 6712,
+      "StartTicksUTC": "639288031447597595",
+      "Absent": true,
+      "ForceKilled": false
+    },
+    "FinalFreshPaired_Adaptive_Excel": {
+      "PID": 14868,
+      "StartTicksUTC": "639288032718357568",
+      "Absent": true,
+      "ForceKilled": false
+    },
+    "FinalFreshPaired_Contour_File": {
+      "PID": 20312,
+      "StartTicksUTC": "639288033987339133",
+      "Absent": true,
+      "ForceKilled": false
+    }
+  },
+  "RegressionBasis": {
+    "SnapshotAndHashImplementationUnchanged": true,
+    "FinalUIRetestedNoYes": true,
+    "ChangedFiles": [
+      "CSectionPlotter.cls",
+      "modWorkbookCalculation.bas",
+      "modWorkbookMessages.bas"
+    ]
+  }
+}

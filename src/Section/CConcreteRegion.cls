@@ -29,11 +29,15 @@ Private mAnchorID As String ' Группа арматуры или стерже�
 Private mLoopOpening() As Boolean ' Роли замкнутых контуров: наружная граница или граница отверстия.
 Private mBoundaryProbes As Variant ' Пары точек на границах бетона вдоль контрольных прямых для проверки области взаимодействия; площадь рассчитывается по точным контурам.
 
+Private mGeometryHash As String ' Контрольная сумма точной записи снимка; пусто у внешней или изменённой границы.
+Private mPreparedProperties As Variant ' Точные уже проверенные A/c/I этой неизменённой области, без округления.
+
 ' Копирует готовые границы области, чтобы дальнейшее использование рабочих массивов
 ' при пересечениях и обрезке не изменило сохранённый результат.
 Friend Sub SetGeometry(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal loopCount As Long, ByVal area As Double, ByVal source As String, ByVal revision As Long, _
         ByRef loopOpening() As Boolean)
+    mGeometryHash = vbNullString: mPreparedProperties = Empty
     mCount = count: mLoopCount = loopCount: mArea = area
     mSource = source: mSectionRevision = revision
     Erase mEdges
@@ -150,5 +154,37 @@ Public Function Clone() As CConcreteRegion
     result.SetGeometry mEdges, mCount, mLoopCount, mArea, mSource, mSectionRevision, mLoopOpening
     result.SetOwner mOwnerID, mStandard, mAnchorID
     result.SetBoundaryProbes mBoundaryProbes
+    result.RememberGeometryHash mGeometryHash
+    result.CopyPreparedProperties mPreparedProperties
     Set Clone = result
+End Function
+
+
+' Возвращает сохранённую подпись проверенной записи; она не является свойством материала или НДС.
+Public Property Get GeometryHash() As String
+    GeometryHash = mGeometryHash
+End Property
+
+' Сохраняет производную подпись после проверки записи; изменение границ через SetGeometry её сбрасывает.
+Friend Sub RememberGeometryHash(ByVal value As String)
+    mGeometryHash = value
+End Sub
+
+' Запоминает физические величины, проверенные вместе с этой границей либо подтверждённые её хешем.
+Friend Sub RememberPreparedProperties(ByVal x As Double, ByVal y As Double, ByVal area As Double, _
+        ByVal ix As Double, ByVal iy As Double, ByVal ixy As Double)
+    mPreparedProperties = Array(x, y, area, ix, iy, ixy)
+End Sub
+
+' Копирует производную метку только при независимом Clone; массив снаружи не возвращается.
+Friend Sub CopyPreparedProperties(ByVal values As Variant)
+    mPreparedProperties = values
+End Sub
+
+' Исключает повторное интегрирование уже проверенной области только при точном совпадении всех A/c/I.
+Friend Function MatchesPreparedProperties(ByVal x As Double, ByVal y As Double, ByVal area As Double, _
+        ByVal ix As Double, ByVal iy As Double, ByVal ixy As Double) As Boolean
+    If Not IsArray(mPreparedProperties) Then Exit Function
+    MatchesPreparedProperties = (mPreparedProperties(0) = x And mPreparedProperties(1) = y And mPreparedProperties(2) = area And _
+        mPreparedProperties(3) = ix And mPreparedProperties(4) = iy And mPreparedProperties(5) = ixy)
 End Function

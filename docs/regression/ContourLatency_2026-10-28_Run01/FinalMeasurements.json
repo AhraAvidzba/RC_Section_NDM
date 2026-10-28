@@ -1,0 +1,90 @@
+{
+  "Baseline": "P1 exact scoped snapshot reuse; before persistent geometry hashes and outer timer",
+  "Method": "Fresh Excel; saved compiled books; ABBA, four runs each; visible scheme; no source editing during timing",
+  "Rows": [
+    {
+      "Case": "Contour_Excel",
+      "Action": "FormSectionForWorkbook",
+      "Original": {
+        "Seconds": 1.010864,
+        "IdleSeconds": 0.06640625,
+        "ThroughIdleSeconds": 1.0655515
+      },
+      "Candidate": {
+        "Seconds": 1.03038425,
+        "IdleSeconds": 0.16796875,
+        "ThroughIdleSeconds": 1.2061655
+      }
+    },
+    {
+      "Case": "Contour_Excel",
+      "Action": "RunSectionCalculationForWorkbook",
+      "Original": {
+        "Seconds": 1.6255934,
+        "IdleSeconds": 0.0546875,
+        "ThroughIdleSeconds": 1.6802809
+      },
+      "Candidate": {
+        "Seconds": 1.4701296,
+        "IdleSeconds": 0.140625,
+        "ThroughIdleSeconds": 1.61466085
+      }
+    },
+    {
+      "Case": "Adaptive_Excel",
+      "Action": "FormSectionForWorkbook",
+      "Original": {
+        "Seconds": 0.65111545,
+        "IdleSeconds": 0.046875,
+        "ThroughIdleSeconds": 0.6940842
+      },
+      "Candidate": {
+        "Seconds": 0.6399612499999999,
+        "IdleSeconds": 0.0234375,
+        "ThroughIdleSeconds": 0.6673049999999999
+      }
+    },
+    {
+      "Case": "Adaptive_Excel",
+      "Action": "RunSectionCalculationForWorkbook",
+      "Original": {
+        "Seconds": 1.1303344499999999,
+        "IdleSeconds": 0.03515625,
+        "ThroughIdleSeconds": 1.1693969499999999
+      },
+      "Candidate": {
+        "Seconds": 1.08192075,
+        "IdleSeconds": 0.015625,
+        "ThroughIdleSeconds": 1.101452
+      }
+    },
+    {
+      "Case": "Contour_File",
+      "Action": "FormSectionForWorkbook",
+      "Original": {
+        "Seconds": 1.2952674499999999,
+        "IdleSeconds": 0.06640625,
+        "ThroughIdleSeconds": 1.3772986999999999
+      },
+      "Candidate": {
+        "Seconds": 1.0821931,
+        "IdleSeconds": 0.16015625,
+        "ThroughIdleSeconds": 1.2384431
+      }
+    },
+    {
+      "Case": "Contour_File",
+      "Action": "RunSectionCalculationForWorkbook",
+      "Original": {
+        "Seconds": 1.6223534,
+        "IdleSeconds": 0.0546875,
+        "ThroughIdleSeconds": 1.6770409
+      },
+      "Candidate": {
+        "Seconds": 1.4031090499999999,
+        "IdleSeconds": 0.1484375,
+        "ThroughIdleSeconds": 1.5175424
+      }
+    }
+  ]
+}

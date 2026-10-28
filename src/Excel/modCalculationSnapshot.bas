@@ -15,13 +15,15 @@ Private mReadSourceResolved As Boolean ' Выбор Excel/File проверяе�
 ' Открывает короткую область чтения; между пользовательскими действиями кэша нет.
 Public Sub BeginCalculationSnapshotRead(ByVal workbook As Object, Optional ByVal snapshot As CCalculationSnapshot = Nothing)
     If mReadDepth = 0 Then
+        If Not snapshot Is Nothing Then snapshot.Validate
         Set mReadWorkbook = workbook: Set mReadSnapshot = snapshot
-        mReadSourceResolved = False
+        mReadSourceResolved = Not snapshot Is Nothing ' Готовый набор принадлежит текущему выводу в обоих режимах; ручное чтение без него по-прежнему выбирает Config.
     ElseIf Not workbook Is mReadWorkbook Then
         Err.Raise 5, "modCalculationSnapshot", "Вложенное чтение относится к другой книге."
     ElseIf Not snapshot Is Nothing Then
+        snapshot.Validate
         Set mReadSnapshot = snapshot
-        mReadSourceResolved = False
+        mReadSourceResolved = True
     End If
     mReadDepth = mReadDepth + 1
 End Sub
@@ -67,6 +69,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
             store.ClearReference workbook ' Источник Excel — только лист; прежняя служебная привязка ничего не подгружает.
             UpdateSectionPlotForWorkbook workbook
             guard.Restore True
+    CompleteWorkbookDrawing workbook
             Exit Sub
         End If
     End If
@@ -98,6 +101,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     EndCalculationSnapshotRead
     entered = False
     guard.Restore True
+    CompleteWorkbookDrawing workbook
     Exit Sub
 Failed:
     Dim errorNumber As Long, reason As String, source As String

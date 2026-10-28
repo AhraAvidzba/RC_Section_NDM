@@ -1,0 +1,12 @@
+{
+  "WaitForUserExcluded": true,
+  "RealPublicHandlers": true,
+  "DiagnosticMessageBoxSubstitution": true,
+  "VisualClickPassClaimed": false,
+  "Lines": [
+    "RunButtonCompletionProbeTests_No: TIMING Form: beforeDialog=3.4609375; afterDialog=0; displayed=3.46",
+    "RunButtonCompletionProbeTests_No: TIMING Calculate: beforeDialog=1.3125; afterDialog=0; displayed=1.3",
+    "RunButtonCompletionProbeTests_Yes: TIMING Form: beforeDialog=1.3203125; afterDialog=0; displayed=1.32",
+    "RunButtonCompletionProbeTests_Yes: TIMING Calculate: beforeDialog=1.4765625; afterDialog=0; displayed=1.48"
+  ]
+}

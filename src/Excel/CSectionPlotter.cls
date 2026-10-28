@@ -205,6 +205,7 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     End If
     If mAxisLabelsEnabled Then DrawAxisNameLabels
     DrawPlotTitleOverlay PlotTitleText(data)
+    MarkWorkbookDrawingPending workbook
 End Sub
 
 ' Очищает элементы, подписи и заголовок текущей схемы, сохраняя саму диаграмму,
@@ -224,6 +225,7 @@ Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
     Loop
     ClearGeneratedShapes
     DrawPlotTitleOverlay titleText
+    MarkWorkbookDrawingPending workbook
 End Sub
 
 ' Возвращает существующий ChartObject или создает его при первом запуске.

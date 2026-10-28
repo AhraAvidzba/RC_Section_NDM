@@ -379,6 +379,13 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
     Set BoundaryRegion = MakeRegion(ordered, count, source, 0)
 End Function
 
+ ' Восстанавливает выпущенную программой неизменённую запись после совпадения контрольной суммы.
+' Не повторяет самопересечения, вложенность и A/c/I; соединяет уже ориентированные сегменты тем же MakeRegion.
+' Вызывать только после подтверждения хеша всей записи, включая роли, единицы и характеристики.
+Friend Function RestoreHashedBoundary(ByRef edges() As TRegionEdge, ByVal count As Long) As CConcreteRegion
+    Set RestoreHashedBoundary = MakeRegion(edges, count, "SavedConcreteBoundary", 0)
+End Function
+
 ' Проверяет отсутствие самопересечений каждого контура и касаний между контурами.
 ' При ошибке исходной геометрии останавливает импорт до создания новой модели.
 Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As Long)

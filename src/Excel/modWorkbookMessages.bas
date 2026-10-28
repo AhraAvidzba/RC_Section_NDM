@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modWorkbookMessages"
+Attribute VB_Name = "modWorkbookMessages"
 Option Explicit
 
 ' ==========================================================================
@@ -12,11 +12,17 @@ Option Explicit
 
 Public Const CONTOUR_MESH_GENERATION_NOTICE As String = "БЕТОННАЯ СЕТКА АВТОМАТИЧЕСКИ СГЕНЕРИРОВАНА ПО КОНТУРАМ AUTOCAD." ' Только сообщение формирования сечения по контурам AutoCAD.
 
+Private mPendingDrawingBooks As Collection ' Готовые изменения диаграмм до завершения показа; расчётные данные здесь не кэшируются.
+
 #If VBA7 Then
+    Private Declare PtrSafe Function PaintPendingWindow Lib "user32" Alias "RedrawWindow" ( _
+        ByVal window As LongPtr, ByVal rectangle As LongPtr, ByVal region As LongPtr, ByVal flags As Long) As Long
     Private Declare PtrSafe Function MessageBoxUnicode Lib "user32" Alias "MessageBoxW" ( _
         ByVal ownerWindow As LongPtr, ByVal textPointer As LongPtr, _
         ByVal titlePointer As LongPtr, ByVal flags As Long) As Long
 #Else
+    Private Declare Function PaintPendingWindow Lib "user32" Alias "RedrawWindow" ( _
+        ByVal window As Long, ByVal rectangle As Long, ByVal region As Long, ByVal flags As Long) As Long
     Private Declare Function MessageBoxUnicode Lib "user32" Alias "MessageBoxW" ( _
         ByVal ownerWindow As Long, ByVal textPointer As Long, _
         ByVal titlePointer As Long, ByVal flags As Long) As Long
@@ -30,6 +36,11 @@ Public Function ShowWorkbookMessage(ByVal message As String, _
         Optional ByVal style As VbMsgBoxStyle = vbInformation, _
         Optional ByVal title As String = "RC Section NDM") As VbMsgBoxResult
     Dim response As Long, displayText As String
+    Dim drawingWarning As String: drawingWarning = TryCompleteWorkbookDrawing(ThisWorkbook)
+    If Len(drawingWarning) > 0 Then
+        message = WorkbookMessageParagraph(message, drawingWarning)
+        If style = vbInformation Then style = vbExclamation
+    End If
     displayText = WorkbookDialogText(message)
 #If VBA7 Then
     response = MessageBoxUnicode(CLngPtr(Application.hWnd), StrPtr(displayText), StrPtr(title), CLng(style))
@@ -313,4 +324,61 @@ Private Function ErrorReasonParagraphs(ByVal reason As String) As String
     details = Trim$(Mid$(reason, last + 1))
     If Left$(details, 1) = ":" Then details = Trim$(Mid$(details, 2))
     ErrorReasonParagraphs = SectionRecipeErrorText(details, location, Left$(reason, first - 1))
+End Function
+
+
+' Запоминает только необходимость закончить показ уже изменённой диаграммы, без повторного построения схемы.
+Public Sub MarkWorkbookDrawingPending(ByVal workbook As Object)
+    If mPendingDrawingBooks Is Nothing Then Set mPendingDrawingBooks = New Collection
+    Dim pending As Object
+    For Each pending In mPendingDrawingBooks
+        If pending Is workbook Then Exit Sub
+    Next pending
+    mPendingDrawingBooks.Add workbook
+End Sub
+
+' После восстановления ScreenUpdating завершает показ готовой схемы и WM_PAINT своей книги.
+' DoEvents не вызывается: обработчик не передаёт управление повторным нажатиям кнопок и очереди OnTime.
+Public Sub CompleteWorkbookDrawing(ByVal workbook As Object)
+    If workbook Is Nothing Then Exit Sub
+    If Not workbook.Application.ScreenUpdating Then Exit Sub
+    Dim refresh As Boolean, pending As Object, i As Long
+    If Not mPendingDrawingBooks Is Nothing Then
+        For i = mPendingDrawingBooks.Count To 1 Step -1
+            Set pending = mPendingDrawingBooks.Item(i)
+            If pending Is workbook Then mPendingDrawingBooks.Remove i: refresh = True
+        Next i
+        If mPendingDrawingBooks.Count = 0 Then Set mPendingDrawingBooks = Nothing
+    End If
+    Dim window As Object, succeeded As Long, flags As Long: flags = &H180&
+    If refresh Then flags = flags Or &H1& ' Перерисовывается готовое окно; Chart.Refresh повторно не перестраивает диаграмму.
+    For Each window In workbook.Windows
+        If window.hWnd <> 0 Then ' Нулевой HWND обозначал бы рабочий стол Windows; его эта операция не затрагивает.
+#If VBA7 Then
+            succeeded = PaintPendingWindow(CLngPtr(window.hWnd), 0, 0, flags)
+#Else
+            succeeded = PaintPendingWindow(window.hWnd, 0, 0, flags)
+#End If
+            If succeeded = 0 Then Err.Raise vbObjectError + 4251, "CompleteWorkbookDrawing", "Excel не смог завершить обновление окна книги. Код Windows: " & CStr(Err.LastDllError)
+        End If
+    Next window
+End Sub
+
+' Сохранённые данные и НДС не превращаются в неудачный расчёт из-за отдельной ошибки экранного показа.
+Public Function TryCompleteWorkbookDrawing(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    CompleteWorkbookDrawing workbook
+    Exit Function
+Failed:
+    TryCompleteWorkbookDrawing = "Предупреждение:" & vbCrLf & "Excel не завершил отрисовку схемы или окна книги. Данные сохранены." & vbCrLf & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет завершение показа конкретной книги без требования, чтобы чужие API-действия отсутствовали.
+Public Function TestWorkbookDrawingPending(ByVal workbook As Object) As Boolean
+    If mPendingDrawingBooks Is Nothing Then Exit Function
+    Dim pending As Object
+    For Each pending In mPendingDrawingBooks
+        If pending Is workbook Then TestWorkbookDrawingPending = True: Exit Function
+    Next pending
 End Function

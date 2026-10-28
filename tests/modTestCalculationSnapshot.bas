@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestCalculationSnapshot"
+Attribute VB_Name = "modTestCalculationSnapshot"
 Option Explicit
 
 ' ==================== ДЛЯ ТЕСТОВ ====================
@@ -48,6 +48,8 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotOneUseSource
     TestSnapshotNativeLayout original
     TestSnapshotValidationReuse original
+    TestSnapshotPreparedReuse
+    TestSnapshotGeometryHashes
     TestSnapshotElementIndex
     TestSnapshotGeometryPreview original, store
     TestSnapshotBoundaryFileCodec original, store
@@ -1998,3 +2000,290 @@ Private Sub TestSnapshotCheck(ByVal label As String, ByVal value As Boolean)
     If value Then mTestPassed = mTestPassed + 1 Else mTestFailed = mTestFailed + 1
     mTestReport = mTestReport & IIf(value, "PASS ", "FAIL ") & label & vbCrLf
 End Sub
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отдельный короткий запуск тех же регрессий, включённых в общий набор снимков.
+Public Function RunPreparedSnapshotReuseTests() As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    On Error GoTo Failed
+    TestSnapshotPreparedReuse
+    GoTo Finished
+Failed:
+    TestSnapshotCheck "prepared.runtime " & CStr(Err.Number) & ": " & Err.Description, False
+Finished:
+    RunPreparedSnapshotReuseTests = mTestReport & "TOTAL PREPARED SNAPSHOT REUSE: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет реальный контекст Excel, точность входа и независимость возвращённых областей в мм/см/м.
+Private Sub TestSnapshotPreparedReuse()
+    Dim geometry As Variant, boundaries As Variant, expected As Collection, unit As Variant
+    Dim snapshot As CCalculationSnapshot, current As CCalculationSnapshot
+    Dim copied As Object, second As Object, region As CConcreteRegion, changed As Variant, i As Long
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim oldMode As String: oldMode = settings.GetRequiredString("Results.SnapshotStorage")
+    Dim entered As Long, query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    On Error GoTo Failed
+    TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+    For Each unit In Array("mm", "cm", "m")
+        TestSnapshotBoundaryFixture CStr(unit), geometry, boundaries, expected
+        Set snapshot = TestSnapshotPreparedPreview(geometry, boundaries, CStr(unit))
+        snapshot.Validate
+        TestSnapshotCheck CStr(unit) & ".prepared.cache", snapshot.TryCopyValidatedConcreteBoundaries(geometry, copied)
+        TestSnapshotCheck CStr(unit) & ".prepared.count", copied.Count = expected.Count
+        For i = 1 To expected.Count
+            TestSnapshotCheck CStr(unit) & ".prepared.geometry.C" & CStr(i), query.RegionsCoincide(expected(i), copied.Item("C" & CStr(i)))
+        Next i
+        Set region = copied.Item("C1"): region.SetOwner "CHANGED_COPY", "CHANGED_STANDARD", "CHANGED_ANCHOR"
+        copied.RemoveAll
+        TestSnapshotCheck CStr(unit) & ".prepared.copyAgain", snapshot.TryCopyValidatedConcreteBoundaries(geometry, second)
+        Set region = second.Item("C1")
+        TestSnapshotCheck CStr(unit) & ".prepared.dictionaryIndependent", second.Count = expected.Count
+        TestSnapshotCheck CStr(unit) & ".prepared.ownerIndependent", region.OwnerID <> "CHANGED_COPY" And region.Standard <> "CHANGED_STANDARD" And region.AnchorID <> "CHANGED_ANCHOR"
+        changed = geometry: changed(2, 6) = CDbl(changed(2, 6)) * (1# + 0.000000000001)
+        TestSnapshotCheck CStr(unit) & ".prepared.noRoundedAreaKey", Not snapshot.TryCopyValidatedConcreteBoundaries(changed, copied)
+        changed = geometry: changed(2, 15) = "Changed metadata"
+        TestSnapshotCheck CStr(unit) & ".prepared.metadataChange", Not snapshot.TryCopyValidatedConcreteBoundaries(changed, copied)
+        changed = geometry: changed(1, 4) = "X, other"
+        TestSnapshotCheck CStr(unit) & ".prepared.unitChange", Not snapshot.TryCopyValidatedConcreteBoundaries(changed, copied)
+        changed = geometry: changed(2, 1) = CStr(changed(2, 1))
+        TestSnapshotCheck CStr(unit) & ".prepared.variantTypeChange", Not snapshot.TryCopyValidatedConcreteBoundaries(changed, copied)
+        BeginCalculationSnapshotRead ThisWorkbook, snapshot: entered = entered + 1
+        Set current = CurrentCalculationSnapshot(ThisWorkbook)
+        TestSnapshotCheck CStr(unit) & ".prepared.excelUsesPreparedObject", current Is snapshot
+        changed = ReadAnchoredResultTable(ThisWorkbook, "rngNDMSectionGeometry")
+        TestSnapshotCheck CStr(unit) & ".prepared.tablesFromPrepared", TestSnapshotSameMatrix(changed, geometry)
+        Set copied = ReadSavedConcreteBoundaries(ThisWorkbook, geometry)
+        TestSnapshotCheck CStr(unit) & ".prepared.boundaryConsumer", copied.Count = expected.Count
+        BeginCalculationSnapshotRead ThisWorkbook: entered = entered + 1
+        Set current = CurrentCalculationSnapshot(ThisWorkbook)
+        TestSnapshotCheck CStr(unit) & ".prepared.nestedSameObject", current Is snapshot
+        Call EndCalculationSnapshotRead: entered = entered - 1
+        Call EndCalculationSnapshotRead: entered = entered - 1
+        Set current = CurrentCalculationSnapshot(ThisWorkbook)
+        TestSnapshotCheck CStr(unit) & ".prepared.noPersistentExcelCache", current Is Nothing
+        snapshot.RunID = 45001#
+        TestSnapshotCheck CStr(unit) & ".prepared.changedRunRejected", TestSnapshotValidationRejected(snapshot)
+        snapshot.RunID = 45000#
+        TestSnapshotCheck CStr(unit) & ".prepared.restoredRun", snapshot.TryCopyValidatedConcreteBoundaries(geometry, copied)
+        snapshot.AddTable "Unexpected.Part", TestSnapshotPreparedHeader(1)
+        TestSnapshotCheck CStr(unit) & ".prepared.invalidExtraPartRejected", TestSnapshotValidationRejected(snapshot)
+        TestSnapshotCheck CStr(unit) & ".prepared.invalidContextRejected", TestSnapshotPreparedContextRejected(snapshot)
+        TestSnapshotCheck CStr(unit) & ".prepared.invalidContextNoLeak", TestCalculationSnapshotReadReleased()
+    Next unit
+    TestSnapshotSetting "Results.SnapshotStorage", oldMode
+    Exit Sub
+Failed:
+    Dim number As Long, origin As String, reason As String
+    number = Err.Number: origin = Err.Source: reason = Err.Description
+    On Error Resume Next
+    Do While entered > 0: Call EndCalculationSnapshotRead: entered = entered - 1: Loop
+    TestSnapshotSetting "Results.SnapshotStorage", oldMode
+    On Error GoTo 0
+    Err.Raise number, origin, reason
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Собирает минимальный законный GeometryPreview из независимого контурного fixture.
+Private Function TestSnapshotPreparedPreview(ByRef geometry As Variant, ByRef boundaries As Variant, ByVal unit As String) As CCalculationSnapshot
+    Dim snapshot As CCalculationSnapshot: Set snapshot = New CCalculationSnapshot
+    snapshot.RunID = 45000#
+    Dim kind(1 To 1, 1 To 1) As Variant: kind(1, 1) = "GeometryPreview"
+    snapshot.AddTable "Snapshot.Kind", kind
+    snapshot.AddTable "rngNDMSectionGeometry", geometry
+    snapshot.AddTable "rngNDMElementGeometry", boundaries
+    snapshot.AddTable "rngNDMElementResults", TestSnapshotPreparedHeader(9)
+    snapshot.AddTable "rngNDMSectionContours", TestSnapshotPreparedHeader(17)
+    snapshot.AddTable "rngNDMMaterialDiagrams", TestSnapshotPreparedHeader(11)
+    snapshot.AddTable "rngNDMSectionAnnotations", TestSnapshotPreparedHeader(24)
+    Dim properties(1 To 2, 1 To 6) As Variant
+    properties(1, 1) = "RunID": properties(2, 1) = 45000#: properties(2, 2) = "ALL"
+    properties(2, 3) = "Output.LengthUnit": properties(2, 4) = unit
+    snapshot.AddTable "rngNDMSectionProperties", properties
+    Set TestSnapshotPreparedPreview = snapshot
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает пустую техническую матрицу нужной ширины без расчётных состояний.
+Private Function TestSnapshotPreparedHeader(ByVal columns As Long) As Variant
+    Dim values() As Variant: ReDim values(1 To 1, 1 To columns)
+    values(1, 1) = "RunID"
+    TestSnapshotPreparedHeader = values
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Непригодный явно переданный снимок не должен оставлять открытый контекст чтения.
+Private Function TestSnapshotPreparedContextRejected(ByVal snapshot As CCalculationSnapshot) As Boolean
+    On Error GoTo Rejected
+    BeginCalculationSnapshotRead ThisWorkbook, snapshot
+    EndCalculationSnapshotRead
+    Exit Function
+Rejected:
+    TestSnapshotPreparedContextRejected = True
+End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Изолированно проверяет подписи, быстрый путь и возврат к полному разбору без нового полного набора.
+Public Function RunGeometryHashTests() As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    On Error GoTo Failed
+    TestSnapshotGeometryHashes
+    GoTo Finished
+Failed:
+    TestSnapshotCheck "hash.runtime " & CStr(Err.Number) & ": " & Err.Description, False
+Finished:
+    RunGeometryHashTests = mTestReport & "TOTAL_GEOMETRY_HASH: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет три единицы, реальные дуги/отверстие/острова, все физические поля подписи и отсутствие геометрического разбора.
+Private Sub TestSnapshotGeometryHashes()
+    Dim checksum As CFileChecksum: Set checksum = New CFileChecksum
+    TestSnapshotCheck "hash.numeric.reference.utf16abc", checksum.TestGeometryHashText("abc") = "E2E0CC84EA7D2583"
+    TestSnapshotCheck "hash.nativeNumber", checksum.TestGeometryHashNumber(0.5) = "4CFA5B42CA669328"
+    Dim geometry As Variant, boundaries As Variant, expected As Collection, unit As Variant, map As Object
+    Dim baseline As Object, query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim i As Long, row As Long, first As Long, last As Long, digest As String, info As Object, changed As Variant
+    Dim region As CConcreteRegion, clone As CConcreteRegion, before As String
+    For Each unit In Array("mm", "cm", "m")
+        TestSnapshotBoundaryFixture CStr(unit), geometry, boundaries, expected
+        Set baseline = ReadConcreteBoundaryMap(boundaries, geometry)
+        For i = 1 To expected.Count
+            first = 0: last = 0
+            For row = 2 To UBound(boundaries, 1)
+                If CStr(boundaries(row, 18)) = "C" & CStr(i) Then
+                    If first = 0 Then first = row
+                    last = row
+                End If
+            Next row
+            digest = checksum.GeometryHash(geometry, i + 1, boundaries, first, last)
+            geometry(i + 1, 16) = SectionOptionalJson("GeometryHash", digest)
+        Next i
+        Call TestSavedBoundaryReadCounts(True)
+        Set map = ReadConcreteBoundaryMap(boundaries, geometry)
+        TestSnapshotCheck CStr(unit) & ".hash.noFullGeometryParse", TestSavedBoundaryReadCounts() = "0/4"
+        TestSnapshotCheck CStr(unit) & ".hash.count", map.Count = 4
+        For i = 1 To expected.Count
+            Set region = map.Item("C" & CStr(i))
+            Set info = ReadSectionOptionalJson(CStr(geometry(i + 1, 16)))
+            TestSnapshotCheck CStr(unit) & ".hash.object.C" & CStr(i), region.GeometryHash = SectionOptionalText(info, "GeometryHash")
+            TestSnapshotCheck CStr(unit) & ".hash.shape.C" & CStr(i), query.RegionsCoincide(expected(i), region)
+            TestSnapshotCheck CStr(unit) & ".hash.loopCount.C" & CStr(i), baseline.Item("C" & CStr(i)).LoopCount = region.LoopCount
+            TestSnapshotCheck CStr(unit) & ".hash.area.C" & CStr(i), baseline.Item("C" & CStr(i)).Area = region.Area
+            Set clone = region.Clone: clone.SetOwner "OTHER", "OTHER", "OTHER"
+            TestSnapshotCheck CStr(unit) & ".hash.clone.C" & CStr(i), clone.GeometryHash = region.GeometryHash
+        Next i
+        first = 2: last = 2
+        Do While last < UBound(boundaries, 1)
+            If CStr(boundaries(last + 1, 18)) <> "C1" Then Exit Do
+            last = last + 1
+        Loop
+        digest = checksum.GeometryHash(geometry, 2, boundaries, first, last)
+        Dim column As Long
+        For column = 2 To 14
+            changed = geometry
+            If VarType(changed(2, column)) = vbString Then changed(2, column) = CStr(changed(2, column)) & "x" Else changed(2, column) = 1.000000000001 + CDbl(changed(2, column))
+            TestSnapshotCheck CStr(unit) & ".hash.geometryField." & CStr(column), checksum.GeometryHash(changed, 2, boundaries, first, last) <> digest
+            changed = geometry: changed(1, column) = CStr(changed(1, column)) & "x"
+            TestSnapshotCheck CStr(unit) & ".hash.geometryUnit." & CStr(column), checksum.GeometryHash(changed, 2, boundaries, first, last) <> digest
+        Next column
+        For column = 2 To 18
+            If column <> 15 And column <> 16 Then
+                changed = boundaries
+                If VarType(changed(2, column)) = vbString Then changed(2, column) = CStr(changed(2, column)) & "x" Else changed(2, column) = 1.000000000001 + CDbl(changed(2, column))
+                TestSnapshotCheck CStr(unit) & ".hash.boundaryField." & CStr(column), checksum.GeometryHash(geometry, 2, changed, first, last) <> digest
+            End If
+        Next column
+        changed = geometry: changed(2, 1) = 45001#
+        TestSnapshotCheck CStr(unit) & ".hash.runNotGeometry", checksum.GeometryHash(changed, 2, boundaries, first, last) = digest
+        changed = geometry: changed(2, 6) = CDbl(changed(2, 6)) * 1.000000000001
+        Call TestSavedBoundaryReadCounts(True)
+        Set map = ReadConcreteBoundaryMap(boundaries, changed)
+        TestSnapshotCheck CStr(unit) & ".hash.changedUsesFull", TestSavedBoundaryReadCounts() = "1/3"
+        changed = geometry: changed(2, 16) = "{}"
+        Call TestSavedBoundaryReadCounts(True)
+        Set map = ReadConcreteBoundaryMap(boundaries, changed)
+        TestSnapshotCheck CStr(unit) & ".hash.missingUsesFull", TestSavedBoundaryReadCounts() = "1/3"
+        changed = geometry: changed(2, 16) = SectionOptionalJson("GeometryHash", String$(16, "0"))
+        Call TestSavedBoundaryReadCounts(True)
+        Set map = ReadConcreteBoundaryMap(boundaries, changed)
+        TestSnapshotCheck CStr(unit) & ".hash.wrongUsesFull", TestSavedBoundaryReadCounts() = "1/3"
+    Next unit
+End Sub
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет фактическую сохранённую и повторно открытую книгу после штатного формирования новой Contour-сетки.
+Public Function RunStoredGeometryHashTests() As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    On Error GoTo Failed
+    Call TestSavedBoundaryReadCounts(True)
+    Dim model As CSectionModel: Set model = ReadFormedSectionFromResults(ThisWorkbook, False)
+    TestSnapshotCheck "storedHash.count", model.ConcreteCount > 0
+    TestSnapshotCheck "storedHash.noFullParse", TestSavedBoundaryReadCounts() = "0/" & CStr(model.ConcreteCount)
+    Dim i As Long, allSigned As Boolean: allSigned = True
+    For i = 1 To model.ConcreteCount
+        If Len(model.ConcreteElement(i).GeometryHash) <> 16 Then allSigned = False
+    Next i
+    TestSnapshotCheck "storedHash.allObjectsSigned", allSigned
+    TestSnapshotCheck "storedHash.scopeReleased", TestCalculationSnapshotReadReleased()
+    GoTo Finished
+Failed:
+    TestSnapshotCheck "storedHash.runtime " & CStr(Err.Number) & ": " & Err.Description, False
+Finished:
+    RunStoredGeometryHashTests = mTestReport & "TOTAL_STORED_GEOMETRY_HASH: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет внешний таймер и завершение показа до возврата API, не открывая модальное окно.
+Public Function RunWorkbookActionCompletionTests() As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    Dim originalSettings As Variant: originalSettings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula
+    Dim originalScreen As Boolean: originalScreen = Application.ScreenUpdating
+    On Error GoTo Failed
+    TestSnapshotSetting "Mesh.CellGeometry", "Contour"
+    TestSnapshotSetting "Results.SnapshotStorage", "Excel"
+    TestSnapshotSetting "Plot.Enabled", "Yes"
+    TestSnapshotSetting "General.ExecutionReportEnabled", "No"
+    Application.ScreenUpdating = False
+    MarkWorkbookDrawingPending ThisWorkbook
+    CompleteWorkbookDrawing ThisWorkbook
+    TestSnapshotCheck "action.paint.deferredWhileGuarded", TestWorkbookDrawingPending(ThisWorkbook)
+    Application.ScreenUpdating = True
+    CompleteWorkbookDrawing ThisWorkbook
+    TestSnapshotCheck "action.paint.completedAfterRestore", Not TestWorkbookDrawingPending(ThisWorkbook)
+    Dim message As String, started As Double, information As Boolean, attention As Boolean, position As Long, duration As Double
+    started = Timer - 0.5
+    message = FormSectionForWorkbook(ThisWorkbook, started, information, attention)
+    TestSnapshotCheck "action.form.noWarning", Not attention
+    TestSnapshotCheck "action.form.paintCompleted", Not TestWorkbookDrawingPending(ThisWorkbook)
+    position = InStr(message, "Время формирования сечения: ") + Len("Время формирования сечения: ")
+    duration = CDbl(Split(Mid$(message, position), " с.")(0))
+    TestSnapshotCheck "action.form.outerTimer", duration >= 0.5
+    Call TestSavedBoundaryReadCounts(True)
+    started = Timer - 0.5
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False, started, information, attention)
+    TestSnapshotCheck "action.calc.noWarning", InStr(message, "Предупреждение:") = 0
+    TestSnapshotCheck "action.calc.paintCompleted", Not TestWorkbookDrawingPending(ThisWorkbook)
+    position = InStr(message, "Время расчёта: ") + Len("Время расчёта: ")
+    duration = CDbl(Split(Mid$(message, position), " с.")(0))
+    TestSnapshotCheck "action.calc.outerTimer", duration >= 0.5
+    TestSnapshotCheck "action.calc.readScopeReleased", TestCalculationSnapshotReadReleased()
+    TestSnapshotCheck "action.calc.fastBoundaries", Left$(TestSavedBoundaryReadCounts(), 2) = "0/"
+    Dim counts As String: counts = TestSavedBoundaryReadCounts()
+    CompleteWorkbookDrawing ThisWorkbook
+    TestSnapshotCheck "action.paint.noRepeatedGeometry", TestSavedBoundaryReadCounts() = counts
+    TestSnapshotCheck "action.destination.last", Right$(message, Len("Данные сохранены на листе Results текущей книги.")) = "Данные сохранены на листе Results текущей книги."
+    GoTo Finished
+Failed:
+    TestSnapshotCheck "action.runtime " & CStr(Err.Number) & ": " & Err.Description, False
+Finished:
+    On Error Resume Next
+    ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula = originalSettings
+    Application.ScreenUpdating = originalScreen
+    On Error GoTo 0
+    RunWorkbookActionCompletionTests = mTestReport & "TOTAL_ACTION_COMPLETION: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function

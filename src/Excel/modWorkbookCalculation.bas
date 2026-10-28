@@ -122,6 +122,7 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
     plotter.Draw workbook, reader, settings
+    CompleteWorkbookDrawing workbook
 End Sub
 
 ' Пытается прочитать данные обычной схемы с результатами расчёта.
@@ -189,6 +190,7 @@ Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
     plotter.Draw workbook, reader, settings
+    CompleteWorkbookDrawing workbook
 End Sub
 
 
@@ -197,7 +199,19 @@ End Sub
 ' если получение новой геометрии или подготовка её характеристик завершились ошибкой.
 Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal startedAt As Double = -1#, _
         Optional ByRef informationEnabled As Boolean = False, Optional ByRef requiresAttention As Boolean = False) As String
+    If startedAt < 0# Then startedAt = Timer
+    Dim completed As Boolean, message As String
+    message = FormSectionCore(workbook, startedAt, informationEnabled, requiresAttention, completed)
+    If completed Then message = FinishWorkbookAction(workbook, message, startedAt, "Время формирования сечения", requiresAttention)
+    FormSectionForWorkbook = message
+End Function
+
+' Выполняет основную работу; тяжёлые модели и временные таблицы освобождаются до финального измерения в обёртке.
+Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal startedAt As Double = -1#, _
+        Optional ByRef informationEnabled As Boolean = False, Optional ByRef requiresAttention As Boolean = False, _
+        Optional ByRef completed As Boolean = False) As String
     requiresAttention = False
+    completed = False
     On Error GoTo Failed
     If startedAt < 0# Then startedAt = Timer
     If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "FormSectionForWorkbook", "Книга Excel не передана."
@@ -244,16 +258,16 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     If previewStore.StorageMode(workbook) = "File" Then savedDestination = "в файле «" & previewStore.SelectedFileName(workbook) & "»"
     ClearSectionPlotForNoData workbook, "Сечение сформировано. Схема не обновлена."
     If importer Is Nothing Then
-        FormSectionForWorkbook = "Сечение сформировано и сохранено " & savedDestination & "." & vbCrLf & vbCrLf & _
+        FormSectionCore = "Сечение сформировано и сохранено " & savedDestination & "." & vbCrLf & vbCrLf & _
             "Бетонных элементов: " & CStr(section.ConcreteCount) & "." & vbCrLf & _
             "Стержней арматуры: " & CStr(section.RebarCount) & "."
-        FormSectionForWorkbook = WorkbookMessageAfterOutcome(FormSectionForWorkbook, _
+        FormSectionCore = WorkbookMessageAfterOutcome(FormSectionCore, _
             "Геометрия сформирована по параметрам Config и листа «Сечения».")
     Else
-        FormSectionForWorkbook = importer.ResultMessage(section) & vbCrLf & vbCrLf & _
+        FormSectionCore = importer.ResultMessage(section) & vbCrLf & vbCrLf & _
             "Сечение сформировано и сохранено " & savedDestination & ". Для расчёта нажмите «Выполнить расчёт»."
     End If
-    If Len(section.GeometryWarningText) > 0 Then FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & section.GeometryWarningText
+    If Len(section.GeometryWarningText) > 0 Then FormSectionCore = FormSectionCore & vbCrLf & section.GeometryWarningText
     CalculateResultsSheet workbook
     Dim plotErrorNumber As Long, plotError As String
     On Error Resume Next
@@ -264,14 +278,13 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     On Error GoTo Failed
     If plotErrorNumber <> 0 Then
         requiresAttention = True
-        FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
+        FormSectionCore = FormSectionCore & vbCrLf & vbCrLf & _
             "Предупреждение:" & vbCrLf & "Схема не обновлена. Сечение сохранено " & savedDestination & "." & vbCrLf & vbCrLf & _
             SectionRecipeErrorText(plotError) & vbCrLf & vbCrLf & _
             "После исправления настроек оформления нажмите «Обновить схему и результаты»."
     End If
     guard.Restore True
-    FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
-        "Время формирования сечения: " & Format$(ElapsedSecondsFrom(startedAt), "0.00") & " с."
+    completed = True
     Exit Function
 Failed:
     Dim number As Long, origin As String, description As String
@@ -302,6 +315,22 @@ End Function
 Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False, _
         Optional ByVal startedAt As Double = -1#, Optional ByRef informationEnabled As Boolean = False, _
         Optional ByRef requiresAttention As Boolean = False) As String
+    If startedAt < 0# Then startedAt = Timer
+    Dim completed As Boolean, destination As String, message As String
+    message = CalculateSectionCore(workbook, showMessages, startedAt, informationEnabled, requiresAttention, completed, destination)
+    If completed Then
+        message = FinishWorkbookAction(workbook, message, startedAt, "Время расчёта", requiresAttention, True)
+        message = WorkbookMessageParagraph(message, "Данные сохранены " & destination & ".")
+    End If
+    RunSectionCalculationForWorkbook = message
+End Function
+
+' Выполняет основную работу; тяжёлые модели и временные таблицы освобождаются до финального измерения в обёртке.
+Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False, _
+        Optional ByVal startedAt As Double = -1#, Optional ByRef informationEnabled As Boolean = False, _
+        Optional ByRef requiresAttention As Boolean = False, _
+        Optional ByRef completed As Boolean = False, Optional ByRef savedDestination As String = "") As String
+    completed = False
     On Error GoTo Failed
     requiresAttention = False
     Dim runStart As Double
@@ -390,9 +419,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddStep "Начато чтение rngLoadCombinations."
     reader.LoadFromWorkbook workbook, batch, units
     If batch.Count = 0 Then
-        RunSectionCalculationForWorkbook = "Расчёт не запускался: нет сочетаний с заполненным CombinationID и ненулевыми нагрузками. Прежние результаты сохранены."
-        report.AddStep RunSectionCalculationForWorkbook
-        report.Save RunSectionCalculationForWorkbook
+        CalculateSectionCore = "Расчёт не запускался: нет сочетаний с заполненным CombinationID и ненулевыми нагрузками. Прежние результаты сохранены."
+        report.AddStep CalculateSectionCore
+        report.Save CalculateSectionCore
         excelGuard.Restore True
         Exit Function
     End If
@@ -445,32 +474,25 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim totalElapsedSeconds As Double
     totalElapsedSeconds = ElapsedSecondsFrom(runStart)
-    summaryWriter.UpdateElapsedSeconds workbook, totalElapsedSeconds
     report.AddValue "Время до записи итогового отчёта", FormatReportNumber(totalElapsedSeconds) & " с"
 
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
-    RunSectionCalculationForWorkbook = CalculationBatchMessage(batch, , requiresAttention)
-    RunSectionCalculationForWorkbook = WorkbookMessageAfterOutcome(RunSectionCalculationForWorkbook, dataOrigin)
+    CalculateSectionCore = CalculationBatchMessage(batch, , requiresAttention)
+    CalculateSectionCore = WorkbookMessageAfterOutcome(CalculateSectionCore, dataOrigin)
     requiresAttention = requiresAttention Or plotHasWarning
-    If Len(plotWarning) > 0 Then RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & plotWarning
+    If Len(plotWarning) > 0 Then CalculateSectionCore = CalculateSectionCore & vbCrLf & vbCrLf & plotWarning
     If report.Enabled Then
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."
-        report.Save RunSectionCalculationForWorkbook
-        summaryWriter.UpdateElapsedSeconds workbook, ElapsedSecondsFrom(runStart)
-        RunSectionCalculationForWorkbook = WorkbookMessageParagraph(RunSectionCalculationForWorkbook, _
+        report.Save CalculateSectionCore
+        CalculateSectionCore = WorkbookMessageParagraph(CalculateSectionCore, _
             "Пошаговый отчет сохранен:" & vbCrLf & report.FilePath)
     End If
     CalculateResultsSheet workbook
-    savedSnapshot.ElapsedSeconds = ElapsedSecondsFrom(runStart)
-    snapshotStore.UpdateSavedElapsed workbook, savedSnapshot
-    summaryWriter.UpdateElapsedSeconds workbook, savedSnapshot.ElapsedSeconds
     excelGuard.Restore True
-    RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & _
-        "Время расчёта: " & Format$(ElapsedSecondsFrom(runStart), "0.00") & " с."
-    Dim savedDestination As String: savedDestination = "на листе Results текущей книги"
+    savedDestination = "на листе Results текущей книги"
     If snapshotStore.StorageMode(workbook) = "File" Then savedDestination = "в файле «" & snapshotStore.SelectedFileName(workbook) & "»"
-    RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & "Данные сохранены " & savedDestination & "."
+    completed = True
     Exit Function
 
 Failed:
@@ -1310,3 +1332,23 @@ Public Sub Audit03ApplyLoadReferenceForTests(ByVal section As CSectionModel, _
         ByVal batch As CBatchSectionCalculator)
     ApplyLoadReferenceFromSettings section, settings, units, batch
 End Sub
+
+
+' Завершает показ после освобождения расчётных объектов и учитывает подготовку, запись, отчёт и отрисовку.
+' Время ожидания OK сюда не входит; после возвращения остаётся только форматирование самого окна.
+Private Function FinishWorkbookAction(ByVal workbook As Object, ByVal message As String, ByVal startedAt As Double, _
+        ByVal timeCaption As String, ByRef requiresAttention As Boolean, Optional ByVal calculated As Boolean = False) As String
+    Dim warning As String: warning = TryCompleteWorkbookDrawing(workbook)
+    If Len(warning) > 0 Then requiresAttention = True: message = WorkbookMessageParagraph(message, warning)
+    If calculated Then
+        Dim snapshot As CCalculationSnapshot: Set snapshot = New CCalculationSnapshot
+        snapshot.ElapsedSeconds = ElapsedSecondsFrom(startedAt)
+        Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
+        store.UpdateSavedElapsed workbook, snapshot
+        Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
+        summary.UpdateElapsedSeconds workbook, snapshot.ElapsedSeconds
+        Dim finalWarning As String: finalWarning = TryCompleteWorkbookDrawing(workbook) ' Диаграмма не перестраивается: закрывается только показ последней ячейки времени.
+        If Len(finalWarning) > 0 And finalWarning <> warning Then requiresAttention = True: message = WorkbookMessageParagraph(message, finalWarning)
+    End If
+    FinishWorkbookAction = WorkbookMessageParagraph(message, timeCaption & ": " & Format$(ElapsedSecondsFrom(startedAt), "0.00") & " с.")
+End Function

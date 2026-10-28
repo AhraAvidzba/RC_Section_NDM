@@ -501,6 +501,7 @@ Private Sub ValidateConcreteBoundary(ByVal query As CSectionGeometryQuery, ByVal
         ByVal x As Double, ByVal y As Double, ByVal area As Double, ByVal localIx As Double, ByVal localIy As Double, _
         ByVal localIxy As Double, ByVal elementID As String)
     On Error GoTo InvalidBoundary
+    If region.MatchesPreparedProperties(x, y, area, localIx, localIy, localIxy) Then Exit Sub
     query.ValidateBoundaryProperties region, x, y, area, localIx, localIy, localIxy
     Exit Sub
 InvalidBoundary:

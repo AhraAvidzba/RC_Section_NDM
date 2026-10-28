@@ -26,6 +26,10 @@ Private mPreservedFromFile As Boolean ' Подготовленные масси�
 Private mPreservedGeometry As Variant, mPreservedContours As Variant, mPreservedElementGeometry As Variant, mPreservedAnnotations As Variant ' Точные входные строки; рассчитанные результаты через лист не передаются.
 Private mPreservedDiagnostics As String ' Пояснение происхождения текущей геометрии, прочитанное до запуска решателя.
 
+Private mPreparedElementGeometry As Variant ' Одна сериализация границ для подписи и записи, без повторного обхода областей.
+Private mPreparedBoundaryOwner As CSectionModel ' Подготовка принадлежит одному вызову записи и сбрасывается после его потребления.
+Private mPreparedFirstBoundary As Object, mPreparedLastBoundary As Object ' Непрерывные строки каждого элемента в готовой матрице.
+
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' Столбцы результата каждого элемента: запуск, сочетание, профиль, вид НДС, имя элемента, материал, деформация, напряжение и состояние работы.
 Private Const GEOMETRY_COLUMNS As Long = 16 ' Только расчетные бетонные элементы и арматура.
 Private Const CONTOUR_COLUMNS As Long = 17 ' Компактные аналитические исходные границы, формат v1.
@@ -410,6 +414,7 @@ End Sub
 ' AutoCAD export затем объединяют эту таблицу с нужным LC из ElementResults.
 Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
+    PrepareElementGeometryRows section, runID, units
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
 
@@ -442,6 +447,19 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         data(rowIndex, 15) = section.ConcreteComment(i)
         data(rowIndex, 16) = SectionOptionalJson("SourceName", section.ConcreteSourceName(i), _
             "SourceHandle", section.ConcreteSourceHandle(i), "MaterialID", section.ConcreteMaterialID(i))
+        If mPreparedFirstBoundary.Exists(section.ConcreteID(i)) Then
+            Dim checksum As CFileChecksum
+            If checksum Is Nothing Then
+                Set checksum = New CFileChecksum
+                checksum.PrepareGeometryHashHeaders data, mPreparedElementGeometry
+            End If
+            Dim digest As String: digest = checksum.PreparedGeometryHash(data, rowIndex, mPreparedElementGeometry, _
+                CLng(mPreparedFirstBoundary.Item(section.ConcreteID(i))), CLng(mPreparedLastBoundary.Item(section.ConcreteID(i))))
+            data(rowIndex, 16) = SectionOptionalJson("SourceName", section.ConcreteSourceName(i), _
+                "SourceHandle", section.ConcreteSourceHandle(i), "MaterialID", section.ConcreteMaterialID(i), "GeometryHash", digest)
+            Dim concrete As CConcreteElement: Set concrete = section.ConcreteElement(i)
+            concrete.RememberGeometryHash digest
+        End If
         rowIndex = rowIndex + 1
     Next i
 
@@ -518,8 +536,10 @@ End Sub
 ' Сохраняет собственные границы отдельно от общих контуров сечения.
 ' Связь ElementID обязательна для Contour; элементы Adaptive без точной границы
 ' остаются компактными и восстанавливаются из основной таблицы геометрии.
-Private Sub WriteElementGeometry(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal runID As Variant, ByVal units As CUnitSystem)
+
+' Готовит одну числовую матрицу границ для хеша и последующего блочного вывода.
+' Вызывается заново для каждой записи геометрии; межоперационного кэша нет.
+Private Sub PrepareElementGeometryRows(ByVal section As CSectionModel, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim groups As Collection: Set groups = New Collection
     Dim owners As Collection: Set owners = New Collection
     Dim element As Long, total As Long, boundary As CSectionContours
@@ -535,9 +555,12 @@ Private Sub WriteElementGeometry(ByVal workbook As Object, ByVal section As CSec
     headers = ElementGeometryHeaders()
     ReDim data(1 To total + 1, 1 To ELEMENT_GEOMETRY_COLUMNS)
     For i = 0 To UBound(headers): data(1, i + 1) = headers(i): Next i
+    Set mPreparedFirstBoundary = CreateObject("Scripting.Dictionary")
+    Set mPreparedLastBoundary = CreateObject("Scripting.Dictionary")
     row = 1
     For group = 1 To groups.Count
         Set boundary = groups(group)
+        mPreparedFirstBoundary.Add CStr(owners(group)), row + 1
         For i = 1 To boundary.Count
             row = row + 1: kind = boundary.SegmentType(i)
             data(row, 1) = runID: data(row, 2) = boundary.LoopID(i): data(row, 3) = boundary.ContourID(i)
@@ -555,7 +578,19 @@ Private Sub WriteElementGeometry(ByVal workbook As Object, ByVal section As CSec
             data(row, 15) = boundary.SourceID(i): data(row, 16) = boundary.Comment(i)
             data(row, 17) = OutputLengthUnit(units): data(row, 18) = CStr(owners(group))
         Next i
+        mPreparedLastBoundary.Add CStr(owners(group)), row
     Next group
+    mPreparedElementGeometry = data
+    Set mPreparedBoundaryOwner = section
+End Sub
+
+Private Sub WriteElementGeometry(ByVal workbook As Object, ByVal section As CSectionModel, _
+        ByVal runID As Variant, ByVal units As CUnitSystem)
+    If Not mPreparedBoundaryOwner Is section Then PrepareElementGeometryRows section, runID, units
+    Dim data As Variant: data = mPreparedElementGeometry
+    Dim total As Long: total = UBound(data, 1) - 1
+    mPreparedElementGeometry = Empty: Set mPreparedBoundaryOwner = Nothing
+    Set mPreparedFirstBoundary = Nothing: Set mPreparedLastBoundary = Nothing
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "rngNDMElementGeometry", data
         Exit Sub

@@ -1,0 +1,28 @@
+{
+  "Status": "PASS_SMOKE_ONLY",
+  "MacroImport": false,
+  "Passed": 430,
+  "Failed": 0,
+  "Logs": [
+    {
+      "Path": "ExactPackageSmoke02\\RunGeometryHashTests_No.txt",
+      "Passed": 203,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "ExactPackageSmoke02\\RunGeometryHashTests_Yes.txt",
+      "Passed": 203,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "ExactPackageSmoke02\\RunWorkbookActionCompletionTests_No.txt",
+      "Passed": 12,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    },
+    {
+      "Path": "ExactPackageSmoke02\\RunWorkbookActionCompletionTests_Yes.txt",
+      "Passed": 12,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    }
+  ]
+}

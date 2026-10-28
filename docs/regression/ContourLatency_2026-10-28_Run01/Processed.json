@@ -1,0 +1,28 @@
+{
+  "Status": "DIRECTED_COMPLETE_FULL_RUN_NOT_STARTED",
+  "AtUTC": "2026-10-28T17:03:41.754129+00:00",
+  "FullSuite": false,
+  "DirectedPassed": 3660,
+  "ExactPackageSmokePassed": 430,
+  "Failed": 0,
+  "Publication": {
+    "Status": "PUBLISHED_DIRECTED_ACCEPTANCE",
+    "AtUTC": "2026-10-28T17:00:28.560547+00:00",
+    "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+    "WorkbookSHA256": "0D50727A0B0180CFE99CDDE313373C6D39361227A94E8AF7CBE81419DE5107A3",
+    "AllCodeSHA256": "495F012791B628DECD563418286FB5105B83D232FAC409F5A40A19CC735EFE1C",
+    "UserBackup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ContourLatency_2026-10-28_Run01\\Publication02\\UserBase.xlsm",
+    "HeavyOkUnchanged": true,
+    "NonVBAPartsByteIdentical": 108,
+    "FullSuite": false
+  },
+  "UserDataPreserved": true,
+  "HeavyOkUnchanged": true,
+  "SourceComponents": 175,
+  "DocumentComponents": 6,
+  "AllCodeExact": true,
+  "ProcessesReleased": true,
+  "ResidualRisk": "Excel internal queue remains up to approximately 0.18 s; not included in VBA action timer; no zero-lag guarantee",
+  "ArchiveFiles": 340,
+  "ArchiveSHA256": "F082624F77FF64EC08586F6EEBAB56A0AD17570367F6C3EE190A84AC4648B3DE"
+}

@@ -1,0 +1,1705 @@
+{
+  "Files": [
+    {
+      "Path": "Evidence/AdaptiveClosure.json",
+      "Bytes": 123,
+      "SHA256": "F4A5F9BE001D2A8859B2E7FD53DAC7F8F760332E175CD1EC6F77275A1D5FFC4A"
+    },
+    {
+      "Path": "Evidence/AdaptiveOwnership.json",
+      "Bytes": 147,
+      "SHA256": "4A4C732C40DB6261EAD0869A7071557585FF9564BB9EC17413FCD4B0F00F583C"
+    },
+    {
+      "Path": "Evidence/Attempt01Closure.json",
+      "Bytes": 123,
+      "SHA256": "FDD36472531393C28BF6E0480AD2DBE96679B96FC28951A412DD964059126E0D"
+    },
+    {
+      "Path": "Evidence/Attempt01Ownership.json",
+      "Bytes": 147,
+      "SHA256": "58E9F35F2E680DA529E01F90E9DAF43193CC2D782BEBCCA0B4647FE5761C4F85"
+    },
+    {
+      "Path": "Evidence/ButtonTimings.json",
+      "Bytes": 610,
+      "SHA256": "8EEBA9E5AB55EB78DEB59CA775C71A50EFAAE817DBBD87AA385D80EA1A0A24AA"
+    },
+    {
+      "Path": "Evidence/ContourClosure.json",
+      "Bytes": 123,
+      "SHA256": "A7A438CFC1B02AAE1E8C390CCADB30247AE6AF9DD71C217B9B48CC6E2CE132AB"
+    },
+    {
+      "Path": "Evidence/ContourOwnership.json",
+      "Bytes": 147,
+      "SHA256": "9BC8BF3681AD0D274874004744A8C607CF3F4AE62994803C922F1B8F9656612A"
+    },
+    {
+      "Path": "Evidence/DirectedAcceptance.json",
+      "Bytes": 4226,
+      "SHA256": "DFBE15ACDFDE3C6EA6E0EA3D69A1B56999893E253728E0DAAE9139DB6CA04535"
+    },
+    {
+      "Path": "Evidence/ExactPackageAcceptance.json",
+      "Bytes": 888,
+      "SHA256": "A73B40BE6A096CEFB770122DCEB9710280F7957C71CDFEDD3AA21FF7E34B4D1E"
+    },
+    {
+      "Path": "Evidence/FinalDirectedAcceptance.json",
+      "Bytes": 9575,
+      "SHA256": "307A31B3636F1B4A79506DE58876E9354975BE3149088EB7BFB85CABE875F345"
+    },
+    {
+      "Path": "Evidence/FinalMeasurements.json",
+      "Bytes": 2535,
+      "SHA256": "F1315CA302CB61F2CB4D0EA0C746161B7A67E735C480FDDCB6B18D9C73DBE097"
+    },
+    {
+      "Path": "Evidence/FinalPackagePreservation.json",
+      "Bytes": 3816,
+      "SHA256": "CDA0139440DF052867F776DEA466557765258D3BB2C97975546A205DC0748269"
+    },
+    {
+      "Path": "Evidence/FinalPublication.json",
+      "Bytes": 679,
+      "SHA256": "2A54736312FE376AF51961DFDBD029F249E89AB8E5778074EA54C8CBFF0B94B8"
+    },
+    {
+      "Path": "Evidence/FinalSourceTransfer.json",
+      "Bytes": 3199,
+      "SHA256": "153FD512717FD6FD8AC295231B1E876EE4C5479B123D7C11731E9BDF58150544"
+    },
+    {
+      "Path": "Evidence/GeometryHashDeclarations.vba",
+      "Bytes": 1125,
+      "SHA256": "A1CD7D05A0A922D78D2A869548B2BF868E400FDF9E124147E568AC972CE35B06"
+    },
+    {
+      "Path": "Evidence/GeometryHashMethods.vba",
+      "Bytes": 11182,
+      "SHA256": "31B12D076341A442A5DA2126E729E5072A7C151AE253F924F28E7A22D41AE07A"
+    },
+    {
+      "Path": "Evidence/InputsComparison.json",
+      "Bytes": 78837,
+      "SHA256": "AF601A536DF9192C2E5DDADD6F11E7377AA90658CB375C744543D92FF1797871"
+    },
+    {
+      "Path": "Evidence/PackagePreservation.json",
+      "Bytes": 3830,
+      "SHA256": "E456288085914B10BEA56B6B696F08BA78378973DE47AA26065C1FB92A033A16"
+    },
+    {
+      "Path": "Evidence/PairedAdaptiveClosure.json",
+      "Bytes": 123,
+      "SHA256": "87D366E536E67F0DAE2B653E6A479D424461319BF6DCDEE308E3303BA94384A6"
+    },
+    {
+      "Path": "Evidence/PairedAdaptiveOwnership.json",
+      "Bytes": 145,
+      "SHA256": "15DA41EEE3D5880A3AB39098E22C17A26EBB3750BBC3974605D28F302F74A88F"
+    },
+    {
+      "Path": "Evidence/ProcessClosure.json",
+      "Bytes": 14123,
+      "SHA256": "727B6F1687B82BF66B24B9B6AD45D5A9405A06E20F695C8075461E3FF9988E09"
+    },
+    {
+      "Path": "Evidence/ProfileMeasurements.json",
+      "Bytes": 90039,
+      "SHA256": "4196DC5A78BBC9AACC42815334C8D01CB0B0F976CFB92D1F23B069B19BAC800E"
+    },
+    {
+      "Path": "Evidence/Publication.json",
+      "Bytes": 679,
+      "SHA256": "B0E93F14357E9007F7FD41179DFBFE3377C7CD507E31BC1C2D86887D283C6920"
+    },
+    {
+      "Path": "Evidence/SourceTransfer.json",
+      "Bytes": 1147,
+      "SHA256": "1160AEB5A8D23249505CED827B03BEF2D0257ED0B6BFC8EB7379106AE340439F"
+    },
+    {
+      "Path": "Evidence/TestAcceptFinal.py",
+      "Bytes": 6526,
+      "SHA256": "82826AE413409327DEA549B682AF418A3083304BDDBC5628475FA6D3A73665E2"
+    },
+    {
+      "Path": "Evidence/TestButtonCompletion.ps1",
+      "Bytes": 10360,
+      "SHA256": "7DAF67CA30C0C74312A1336F77DA24FF435E6C670BE256C580945AEF12A87F77"
+    },
+    {
+      "Path": "Evidence/TestButtonCompletion02.ps1",
+      "Bytes": 10360,
+      "SHA256": "28C63F22EA651FBABA3D4ED6F1CB0F7EAED67A714CC3884A7B3C470B6F9F4AAB"
+    },
+    {
+      "Path": "Evidence/TestCompareBooks.py",
+      "Bytes": 3738,
+      "SHA256": "3FEA0C6A9874B22C8ADEC2C88EF5BA3E8D12D31C04A44B1AA030F30B1DE1FB0B"
+    },
+    {
+      "Path": "Evidence/TestCompareInputs.py",
+      "Bytes": 1715,
+      "SHA256": "B587F43E147116DF2F894ACCA83C8F27B29292D18949039D9281C41238B10ADA"
+    },
+    {
+      "Path": "Evidence/TestCountReuse.ps1",
+      "Bytes": 5248,
+      "SHA256": "05668FD826BFA1FB65A76F0D9BD298ABDC2DB2A67FF8CE1D44AA5F0581BD22B3"
+    },
+    {
+      "Path": "Evidence/TestDialog.ps1",
+      "Bytes": 6666,
+      "SHA256": "1A8E4BAFC326142C2351039C5CA1F62621B525A1EE500645DE3C6E4AB2319842"
+    },
+    {
+      "Path": "Evidence/TestDirected.ps1",
+      "Bytes": 6139,
+      "SHA256": "F9026FD5094D11B62AE69C15703C3940EEC13CF0F03B3A5FA254876A19D395C2"
+    },
+    {
+      "Path": "Evidence/TestDirected02.ps1",
+      "Bytes": 6484,
+      "SHA256": "BCDCD74194726996595AE84D8110376E4F6846414B3F26D40A5219165BFDF6F0"
+    },
+    {
+      "Path": "Evidence/TestDirected03.ps1",
+      "Bytes": 6484,
+      "SHA256": "FD9CB92C6BBE5DD1623113C9F05052016EA734D698648C81B514499E153177FA"
+    },
+    {
+      "Path": "Evidence/TestDirected04.ps1",
+      "Bytes": 6540,
+      "SHA256": "405AF17D5DEBD7F012575E02A9EA79722B873A34C5CE335153AF6B1797B9477E"
+    },
+    {
+      "Path": "Evidence/TestExactPackageSmoke.ps1",
+      "Bytes": 6015,
+      "SHA256": "DDB3A5CD73C58C4AF92E540C4B9363343B3A1C3C410B8B608FF9C918BF387F5B"
+    },
+    {
+      "Path": "Evidence/TestFinalFreshBenchmark.ps1",
+      "Bytes": 5259,
+      "SHA256": "8502395F68C166A26F79EFD48F00BD78ECED958ED6A514D5F83465BC1379EDF2"
+    },
+    {
+      "Path": "Evidence/TestFinalParity.py",
+      "Bytes": 7681,
+      "SHA256": "3A435A8D36E4A632C9EC4A9E45BB4BCB17E707B43B585D7435BE34B8160D4089"
+    },
+    {
+      "Path": "Evidence/TestFinalizeArtifacts.py",
+      "Bytes": 24727,
+      "SHA256": "3C6185A3D2E1D531CDCD77CEEAA8EDE33DC0ABF3FE3D81E613F0DFBC89245B8E"
+    },
+    {
+      "Path": "Evidence/TestHashBenchmark.ps1",
+      "Bytes": 6654,
+      "SHA256": "4742CA9643DD20E070FF3C275780BC34551B836695796E486538CC57E49EFEB1"
+    },
+    {
+      "Path": "Evidence/TestHashBulkBenchmark.ps1",
+      "Bytes": 6658,
+      "SHA256": "AE1DBC5527F5DAD827C688F392D872472A6AB32DDA2934F3AA42CF882EC4E82D"
+    },
+    {
+      "Path": "Evidence/TestHashDirected01.ps1",
+      "Bytes": 6477,
+      "SHA256": "F92C427E309B9ECC14AE322FA32B9FF6267337D50B67CEA70E0A31280AA61BC2"
+    },
+    {
+      "Path": "Evidence/TestHashDirected02.ps1",
+      "Bytes": 6477,
+      "SHA256": "4A24F92B169945631774423B1C8AEBF31A421A55B28C3438E2EF7FDE28686E74"
+    },
+    {
+      "Path": "Evidence/TestHashDirected03.ps1",
+      "Bytes": 6639,
+      "SHA256": "90B1A5C5861CFF982A09F8990DBFD6F621F9E3F39AD579749DB625362E153189"
+    },
+    {
+      "Path": "Evidence/TestHashDirected04.ps1",
+      "Bytes": 6477,
+      "SHA256": "B0C37FBE06A421C8647DE8DF1AA4826AD2F9E365CF80F57098085A8009571DD2"
+    },
+    {
+      "Path": "Evidence/TestHashDirected05.ps1",
+      "Bytes": 6477,
+      "SHA256": "D1E2C99A8D14D16B93B8046BFD2048F50B75870D6AA6FFA8F10B2DDCF061B8CF"
+    },
+    {
+      "Path": "Evidence/TestHashDirected06.ps1",
+      "Bytes": 6477,
+      "SHA256": "81B30C630567C73F655C8598BB05177E70039E4C2F5EB7535A8E3C8F6F01E44E"
+    },
+    {
+      "Path": "Evidence/TestHashFastBenchmark.ps1",
+      "Bytes": 6658,
+      "SHA256": "FE616E8490EB4E89262EC03DA5D27EB22A2E52AEDFFEDF7948C735C4F54A3DE9"
+    },
+    {
+      "Path": "Evidence/TestHashNumericBenchmark.ps1",
+      "Bytes": 6661,
+      "SHA256": "9E617BC33031F0F9E7148E4B85CB05D86F4D406664BE92EA3A9B1104F429C797"
+    },
+    {
+      "Path": "Evidence/TestHashReopen.ps1",
+      "Bytes": 6216,
+      "SHA256": "F2AED12225E12884DF0286C72E12646181D95B78CFA45793ACDCBAD32B19BA8B"
+    },
+    {
+      "Path": "Evidence/TestHashUiBenchmark.ps1",
+      "Bytes": 6658,
+      "SHA256": "415CFE3EFBC35848A1B6BE138C2325C769A1A4FD27C9FE4485AEC6697D57910D"
+    },
+    {
+      "Path": "Evidence/TestHashUiBenchmark02.ps1",
+      "Bytes": 6659,
+      "SHA256": "62037FCCDE7767680E12C2392FABC503629091F36BAF6CCEB650A82A6142D4D4"
+    },
+    {
+      "Path": "Evidence/TestHashUiDirected01.ps1",
+      "Bytes": 6678,
+      "SHA256": "6F346F952A50DA4B9756829C76193416AC0CCD3CF0C8E47BAA8CA1A6FC5C26C1"
+    },
+    {
+      "Path": "Evidence/TestHashUiDirected02.ps1",
+      "Bytes": 6678,
+      "SHA256": "83CAC8ABAFE8DFEAE8C4543CD794F161D217A8D3D0E84DA330DFA66742FAE315"
+    },
+    {
+      "Path": "Evidence/TestHashUiDirected03.ps1",
+      "Bytes": 6634,
+      "SHA256": "8822C5367228B30D3E9CA611B039BF1DEC36F8AF95A9703A74853D673B04A7D1"
+    },
+    {
+      "Path": "Evidence/TestHashUiReopen.ps1",
+      "Bytes": 6283,
+      "SHA256": "921483E7CE9660A5C096C4FD29B936F276A8A140EFF73E164D5B297631EEBF42"
+    },
+    {
+      "Path": "Evidence/TestHashUiReopen02.ps1",
+      "Bytes": 6283,
+      "SHA256": "4CF659AD331CAC4A501B5ABC0A03C3824CF0F9C48B2E7484CC25CA3971B30D17"
+    },
+    {
+      "Path": "Evidence/TestInstrument.py",
+      "Bytes": 2343,
+      "SHA256": "231DE30D05A1512ABCB5BD8BB9F0696D8155AD1DE2A241961CBC806ED3A51586"
+    },
+    {
+      "Path": "Evidence/TestPairedCandidate.ps1",
+      "Bytes": 4916,
+      "SHA256": "F475EF777A872A50A4B0C77F0BC62C4487896BCFDBB79B651B28C81FA69098A0"
+    },
+    {
+      "Path": "Evidence/TestPostProcesses.ps1",
+      "Bytes": 2030,
+      "SHA256": "34CBDF3AFDEFECCBF7FCB65D0EBF38F4BB9C18177E6E34EE0217552DCF8605FA"
+    },
+    {
+      "Path": "Evidence/TestPrepareButtonProbe.py",
+      "Bytes": 4655,
+      "SHA256": "F431DE5D58655C51CE4D53E4F753BD24EB1ACF1D742AC3A2CB63B334F25445E3"
+    },
+    {
+      "Path": "Evidence/TestPrepareButtonProbe02.py",
+      "Bytes": 4730,
+      "SHA256": "8BEA4125142F384B5969D0FCC89929D58C61E7DF8FE24D57B8BFF9B0A0F1BBAE"
+    },
+    {
+      "Path": "Evidence/TestPrepareCandidate.py",
+      "Bytes": 6499,
+      "SHA256": "353EED8887780B12804E65A72F089CEF2819795028E4EF38147C9B5FA57811F5"
+    },
+    {
+      "Path": "Evidence/TestPrepareDialog.py",
+      "Bytes": 2932,
+      "SHA256": "4B7EF974BEBE113198C17FA7A00F3A78A2FBB24E48E4F2E4E9145F62F6E7DDF4"
+    },
+    {
+      "Path": "Evidence/TestPrepareGeometryHashes.py",
+      "Bytes": 28941,
+      "SHA256": "8EEFB05D5791D7E0777E43F23CBE08593E5C6B3D46CA7697442451303170B6FC"
+    },
+    {
+      "Path": "Evidence/TestPrepareHashBenchmark.py",
+      "Bytes": 2734,
+      "SHA256": "E45945E630FADAF49711C4A4C04155DE4A604E74A7054C69BC5612EE09530616"
+    },
+    {
+      "Path": "Evidence/TestPrepareReuseTests.py",
+      "Bytes": 9539,
+      "SHA256": "5068E347170828211FEA640980832B795FC25855112F3CADCFA4E2E427F0EF4B"
+    },
+    {
+      "Path": "Evidence/TestPrepareUiCompletion.py",
+      "Bytes": 17536,
+      "SHA256": "27532F677BD378DE77D425D83C2B8684F1BFBE25353AE158B0B49C15648DE31B"
+    },
+    {
+      "Path": "Evidence/TestPrepareUiCompletion02.py",
+      "Bytes": 16925,
+      "SHA256": "405E91A094FAE7303CAE4785FEAE1E8B80F88CED0DBF41D61C31FBF85643E7A8"
+    },
+    {
+      "Path": "Evidence/TestProfile.ps1",
+      "Bytes": 7465,
+      "SHA256": "67ED5BEA01E8939DB1B9FCFDCF5A59EF8D41DEA4FA85AA4E69B5A3B1F6023795"
+    },
+    {
+      "Path": "Evidence/TestPublish.py",
+      "Bytes": 2434,
+      "SHA256": "536F3BC8B6AE9E025C9FD4DD625CF50D0B7B1C954DF2FAD6E65D9EE06DD043F7"
+    },
+    {
+      "Path": "Evidence/TestPublishFinal.py",
+      "Bytes": 2493,
+      "SHA256": "FB3B3C54B5973FC70DE4BE564ADAA0E2BFF7A11E083C8E3263B607820B58E83C"
+    },
+    {
+      "Path": "Evidence/TestReviewAndTransfer.py",
+      "Bytes": 4282,
+      "SHA256": "55E4925E8BCD4E3E6137FC07866DD6FC0C26955808A8AEB2C015EEB2F22EBEB5"
+    },
+    {
+      "Path": "Native/NativeFinal02Closure.json",
+      "Bytes": 123,
+      "SHA256": "3100F17493E6B2BF1F9932718193992C6050614DD1D8106F0811F3E0B5E89F77"
+    },
+    {
+      "Path": "Native/NativeFinal02Ownership.json",
+      "Bytes": 73,
+      "SHA256": "ED78828441422D98554764C1F4AE8168EBD9888946E7EFB37BCEF9B97799F0FC"
+    },
+    {
+      "Path": "Native/NativeVerification.json",
+      "Bytes": 35829,
+      "SHA256": "9E1F81039ACBABC13F061606A847C424358596F78B435A786A9C99387B00F412"
+    },
+    {
+      "Path": "Native/SourceEquality_Final02.json",
+      "Bytes": 117153,
+      "SHA256": "91237A2AB9D56D1BE754EB775ECCA89DB639D9A6D23CED91EE18DBA14CA73919"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion01/Closure.json",
+      "Bytes": 173,
+      "SHA256": "AAF47867CB4A0A8C9D58C63DEBC9CAE6D930CC5C5AA7A6D0AE64DA8134D7AA51"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion01/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "DE50CEE23A03BCF75DF6B185D92598C47CF0770286AA404EF9DD4A5775ADC267"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion01/Results.json",
+      "Bytes": 406,
+      "SHA256": "8775B76F145F5D2D1593A55D5C1C49C113320B8CA6076F02861CA81F0DF4372E"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion01/RunButtonCompletionProbeTests_No.txt",
+      "Bytes": 1563,
+      "SHA256": "8B51DAEAD7639EAE89AC31C63C37317F338B33CF7157EBA06D478B06F409B946"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion01/RunButtonCompletionProbeTests_Yes.txt",
+      "Bytes": 1562,
+      "SHA256": "243EC50B0185D47411F7FEBF9FC85418FA1A20D7D9C116EE6D5F0550AB6C830E"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion01/State.json",
+      "Bytes": 116,
+      "SHA256": "7153944709B39A58B700A892DF814329F2202C71D5A9FD9680C1A219EC1F3779"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion02/Closure.json",
+      "Bytes": 173,
+      "SHA256": "04D108F65F621FD83F9C1C081A465EB1581947AFDB049847747AD362008F38E9"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion02/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "AF15A21763C9674824BB6EE36983AF59238EA5FAAA69E09AAA021269C502E4D7"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion02/Results.json",
+      "Bytes": 406,
+      "SHA256": "286CA430D3E69A2A23B74FF9765191E9022D3B06D0C1E26FB37C9B46AA93C35E"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion02/RunButtonCompletionProbeTests_No.txt",
+      "Bytes": 1560,
+      "SHA256": "F2FC327B3B8D7C01D00E0E34DD8FB39B39E09BC3D3862413ECCE6F5BB4EA2360"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion02/RunButtonCompletionProbeTests_Yes.txt",
+      "Bytes": 1564,
+      "SHA256": "195408D1945E3E9FDD5C8301B0457C2749C3A2AB911E62DB3D46EA06F11748B1"
+    },
+    {
+      "Path": "Scratch/ButtonCompletion02/State.json",
+      "Bytes": 116,
+      "SHA256": "7153944709B39A58B700A892DF814329F2202C71D5A9FD9680C1A219EC1F3779"
+    },
+    {
+      "Path": "Scratch/Directed01/Closure.json",
+      "Bytes": 254,
+      "SHA256": "B46A506614080188AB66EA551AADF4391C72583BE3B25A7AC64BF26695B20B2D"
+    },
+    {
+      "Path": "Scratch/Directed01/Failure.json",
+      "Bytes": 348,
+      "SHA256": "E0CE1E421AE6EA8B176C0EDC88CCC48FBB1FE879F6F263AEAF53B2E4FEB68C7A"
+    },
+    {
+      "Path": "Scratch/Directed01/Ownership.json",
+      "Bytes": 145,
+      "SHA256": "D9A7073707409D4648D37F85D76ABA0DE53A5BE85C2CDF547469EC4DE7AEAC3C"
+    },
+    {
+      "Path": "Scratch/Directed02/Closure.json",
+      "Bytes": 254,
+      "SHA256": "078244856DA1A156303F8AE14E0B652F7A33967C1176C2EE771386A4529CB2B5"
+    },
+    {
+      "Path": "Scratch/Directed02/CompileSelection.json",
+      "Bytes": 177,
+      "SHA256": "F41A2B715DCD200E53025CC050D7EAF223DB671743489AF6673810D4CB881426"
+    },
+    {
+      "Path": "Scratch/Directed02/Failure.json",
+      "Bytes": 350,
+      "SHA256": "FBC555C47E0E32C4AEB6307EDC370CB5E358A909C0445B5685927B58E7A2F072"
+    },
+    {
+      "Path": "Scratch/Directed02/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "3B5E75EA35CBE13B93130F117D0D9C7E2ECEAC382D401DF44E998559F885B152"
+    },
+    {
+      "Path": "Scratch/Directed03/Closure.json",
+      "Bytes": 272,
+      "SHA256": "5BAEA50645BDF8E46325AD98E407931AB870CF6D6263FE144304ADD53765685C"
+    },
+    {
+      "Path": "Scratch/Directed03/Failure.json",
+      "Bytes": 368,
+      "SHA256": "09C06E6DBD28AA3A8D3141C9BB93A0E869E9E48E02F6519E4D66578509010BD6"
+    },
+    {
+      "Path": "Scratch/Directed03/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "1736826E904C8776CDEA0F135D0B109E9655DDD78836A9DBBCEF63DA8BF8644B"
+    },
+    {
+      "Path": "Scratch/Directed03/Results.json",
+      "Bytes": 603,
+      "SHA256": "8E44FAD829C7DA5096F480EC85CD3E6F32D777C2481DF16FDA3E16FAA2A6F839"
+    },
+    {
+      "Path": "Scratch/Directed03/RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Scratch/Directed03/RunFileGeometryAuthorityTests_No.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053"
+    },
+    {
+      "Path": "Scratch/Directed03/RunGeometryPreviewStorageTests_No.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92"
+    },
+    {
+      "Path": "Scratch/Directed03/RunPreparedSnapshotReuseTests_No.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC"
+    },
+    {
+      "Path": "Scratch/Directed03/State.json",
+      "Bytes": 219,
+      "SHA256": "F7A4B8249F8ED70F686CC4C1CF552B65B9EA93E251D2B4FBD9A2AA1AEBB887A7"
+    },
+    {
+      "Path": "Scratch/Directed04/Closure.json",
+      "Bytes": 377,
+      "SHA256": "CEE0C29B7EED9EAE04D09CE5EF7E1A52577064538675307B72782980D56C06C5"
+    },
+    {
+      "Path": "Scratch/Directed04/Failure.json",
+      "Bytes": 474,
+      "SHA256": "92BFF77BC435E25873954CE2A3F88BDE9175B534879C898EBD6427A304C02F1E"
+    },
+    {
+      "Path": "Scratch/Directed04/Ownership.json",
+      "Bytes": 145,
+      "SHA256": "58FC0F19B6A0AA6303F226FCAA13A74A8F7106D640FE99C27C25FD17B4124267"
+    },
+    {
+      "Path": "Scratch/Directed04/Results.json",
+      "Bytes": 2000,
+      "SHA256": "F4D1C78852B6F8828C5595CD14719FECFCA03B68A9EE076CE4C483245C481999"
+    },
+    {
+      "Path": "Scratch/Directed04/RunCalculationSnapshotTests_No.txt",
+      "Bytes": 27970,
+      "SHA256": "6D642D6FA8D30E0FA32C636832D3CED5FAC88149F8AA82EF13B7E8F59C0DBDEB"
+    },
+    {
+      "Path": "Scratch/Directed04/RunCalculationSnapshotTests_Yes.txt",
+      "Bytes": 27970,
+      "SHA256": "6D642D6FA8D30E0FA32C636832D3CED5FAC88149F8AA82EF13B7E8F59C0DBDEB"
+    },
+    {
+      "Path": "Scratch/Directed04/RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Scratch/Directed04/RunConcreteGeometrySnapshotTests_Yes.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Scratch/Directed04/RunFileGeometryAuthorityTests_No.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053"
+    },
+    {
+      "Path": "Scratch/Directed04/RunFileGeometryAuthorityTests_Yes.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053"
+    },
+    {
+      "Path": "Scratch/Directed04/RunGeometryPreviewStorageTests_No.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92"
+    },
+    {
+      "Path": "Scratch/Directed04/RunGeometryPreviewStorageTests_Yes.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92"
+    },
+    {
+      "Path": "Scratch/Directed04/RunPreparedSnapshotReuseTests_No.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC"
+    },
+    {
+      "Path": "Scratch/Directed04/RunPreparedSnapshotReuseTests_Yes.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC"
+    },
+    {
+      "Path": "Scratch/Directed04/State.json",
+      "Bytes": 217,
+      "SHA256": "C62C59EEE1AC451481D783B3A2C53ACB096997A332B0A4BDE2C20D3F147C5974"
+    },
+    {
+      "Path": "Scratch/ExactPackageSmoke02/Closure.json",
+      "Bytes": 173,
+      "SHA256": "9862184E4227D06CE459403F15DDED55166ACC27373CA81B03216C6A81152B73"
+    },
+    {
+      "Path": "Scratch/ExactPackageSmoke02/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "71A160CC478724560E83513A8EA943D3E081A01B9DBA530D6A65F111EEC3D894"
+    },
+    {
+      "Path": "Scratch/ExactPackageSmoke02/Results.json",
+      "Bytes": 794,
+      "SHA256": "12375A6CE4AE8A7CBD106271075EAABEF80BAB50203BB3C4C00DB31F2AEB73EC"
+    },
+    {
+      "Path": "Scratch/ExactPackageSmoke02/RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/ExactPackageSmoke02/RunGeometryHashTests_Yes.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/ExactPackageSmoke02/RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    },
+    {
+      "Path": "Scratch/ExactPackageSmoke02/RunWorkbookActionCompletionTests_Yes.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    },
+    {
+      "Path": "Scratch/ExactPackageSmoke02/State.json",
+      "Bytes": 117,
+      "SHA256": "7F70583F585B69F2F2FA60788879F931DA84A97A3968BDAAB0D554C11123DC98"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Adaptive_Excel/Closure.json",
+      "Bytes": 123,
+      "SHA256": "E7D151E9B7979D6BC3109190D36722A199AA86892C940803DE2E851EE4AFA466"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Adaptive_Excel/Measurements.json",
+      "Bytes": 16024,
+      "SHA256": "C5615A2D406AB6958FF647EA39152AEB616812D29DAF878587CACEFC16E82B1F"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Adaptive_Excel/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "DF9D1A17687108732E1EE8079AE0821EC633B95A471B4567F78715539C17B7A4"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Adaptive_Excel/Parity.json",
+      "Bytes": 232,
+      "SHA256": "F9278AD9668B6F7676CA75B02749EDAF649B00AA6C74765CB004B578FE6B333D"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Contour_Excel/Closure.json",
+      "Bytes": 122,
+      "SHA256": "3D4754D596AE8C6068CCF3C7CA5EC80A1BB3E6DD92D915A5407E28ECB2043B8A"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Contour_Excel/Measurements.json",
+      "Bytes": 15996,
+      "SHA256": "F2175E1AE04C7714321E2FA76E93B0316F053BC27737CDB75C3A7A21B1E77787"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Contour_Excel/Ownership.json",
+      "Bytes": 139,
+      "SHA256": "21616BD965F01FFE1F86C8656B714E12F993F2B608EAD32405BF0D74142992AB"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Contour_Excel/Parity.json",
+      "Bytes": 234,
+      "SHA256": "A7DB0EE6F953858ED64BF136544215099A48B043EC70697293D285E2EDE586D6"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Contour_File/Closure.json",
+      "Bytes": 123,
+      "SHA256": "9FF117F87E1E57DDBF48F5E6F9FCFB774679878F1F017468B0F367B59B275160"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Contour_File/Measurements.json",
+      "Bytes": 16013,
+      "SHA256": "D1A194356BE4242B782ED18EFA314E60F6734CE38EF7165EA2B1B774208971DD"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Contour_File/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "54C05AB54A04C4CBED2B286D8884B49F299088507FC9B6D08E5CA7637C010F22"
+    },
+    {
+      "Path": "Scratch/FinalFreshPaired_Contour_File/Parity.json",
+      "Bytes": 236,
+      "SHA256": "65D33EBB3E3419DAC52E44D2A8574A2966BCDB4D2179066CA74583C429E5F19D"
+    },
+    {
+      "Path": "Scratch/HashBulkPaired_Contour_Excel/Closure.json",
+      "Bytes": 122,
+      "SHA256": "9CC69E651DB04DFFB33BE0C050288CD7556245C9C0CE0AE33B0356E9DBF8B476"
+    },
+    {
+      "Path": "Scratch/HashBulkPaired_Contour_Excel/Measurements.json",
+      "Bytes": 15965,
+      "SHA256": "B6C4E00F32FC960790D5CC5B5E5E6180FC6FF3A1E2C9EE9E1EAB6F3A006CDED2"
+    },
+    {
+      "Path": "Scratch/HashBulkPaired_Contour_Excel/Ownership.json",
+      "Bytes": 143,
+      "SHA256": "7E2AD01D00C9968F0811B132CC3F75BD9CEABB9A250330FBE633421A18ECD910"
+    },
+    {
+      "Path": "Scratch/HashBulkPaired_Contour_Excel/Parity.json",
+      "Bytes": 234,
+      "SHA256": "A7DB0EE6F953858ED64BF136544215099A48B043EC70697293D285E2EDE586D6"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/CConcreteElement.cls",
+      "Bytes": 13817,
+      "SHA256": "0D0F879DF9E9BCD726FFB1DB028DE39D2E4787888371F5F2BF2E2DD9B5585ED4"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/CConcreteRegion.cls",
+      "Bytes": 12599,
+      "SHA256": "5F19F30C1DF99573C230D62FF6FF4E5C95D0B87B7390972318F97E93597FE5BD"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/CFileChecksum.cls",
+      "Bytes": 15806,
+      "SHA256": "40648127609DCFCCEACBF2ED84922C115FC5374DB811F5BFCFB9D59281DF90F5"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/CNDMResultsWriter.cls",
+      "Bytes": 149707,
+      "SHA256": "94E933B622297838ACBE041707282AEDFEFB76F412CEF41A147EB7357205ED94"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/CSectionGeometryQuery.cls",
+      "Bytes": 154737,
+      "SHA256": "320302D2331E49327310E56EEB12D3DA33EAE20C11BBEB8459C6AE06CA9A0082"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/CSectionModel.cls",
+      "Bytes": 71883,
+      "SHA256": "5947AB8745342E8E319E2781D03C7330B518ABB953A1EEA5EB37159C0B26CA0C"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/DeferredSourceManifest.json",
+      "Bytes": 2078,
+      "SHA256": "A6A48EF3842BF53BEB616B77FA1A7F2ED8122E4C0BA722D8DDD3FE55B74516DD"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/modSectionSnapshot.bas",
+      "Bytes": 92196,
+      "SHA256": "D55E6D444230F4577F47479044AB54717E6A234A05F8CBCBAD14AAACDD0B59D5"
+    },
+    {
+      "Path": "Scratch/HashCandidate01/modTestCalculationSnapshot.bas",
+      "Bytes": 155625,
+      "SHA256": "4252DF9A24C64D39EA0ED65514931F9344EC607AC693552AAEF952326180CBC6"
+    },
+    {
+      "Path": "Scratch/HashDirected01/Closure.json",
+      "Bytes": 270,
+      "SHA256": "7A4EE90BB7429628CA78C30D9F2B7A97B8473FE7E6E1E2FBE3AD120DC33B9B89"
+    },
+    {
+      "Path": "Scratch/HashDirected01/Failure.json",
+      "Bytes": 370,
+      "SHA256": "2E01AAC3FEC66D606E2D95763EAB51A6740435BD63D3614E1DE9E979147B78E5"
+    },
+    {
+      "Path": "Scratch/HashDirected01/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "D87C45F620932B21E75DEEFE0A26AFFB052FE44E20B78B75AB02265FA146899E"
+    },
+    {
+      "Path": "Scratch/HashDirected01/Results.json",
+      "Bytes": 156,
+      "SHA256": "A3752ADD5EDECC62FA20038F7835E9303818AA2B76FD0D88B390C38BF95C7ABA"
+    },
+    {
+      "Path": "Scratch/HashDirected01/RunGeometryHashTests_No.txt",
+      "Bytes": 5647,
+      "SHA256": "10C76A650AAA201B1D88E638B708734E0708D2A20AC695FC541C4FB92B1A9162"
+    },
+    {
+      "Path": "Scratch/HashDirected01/State.json",
+      "Bytes": 210,
+      "SHA256": "5999E749C30EE2F2C592FCD0765DC134A54DB33F92D00F47FF4CE515B32583C3"
+    },
+    {
+      "Path": "Scratch/HashDirected02/Closure.json",
+      "Bytes": 172,
+      "SHA256": "04EF271148A727E8BCC8DD9E7D1366649768AB28392B786BF3D9F48621BFC347"
+    },
+    {
+      "Path": "Scratch/HashDirected02/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "250D6582C1BDCD8426C0176E7BECE571AC3717F66F9B7BBF6024FA214D82C72F"
+    },
+    {
+      "Path": "Scratch/HashDirected02/Results.json",
+      "Bytes": 391,
+      "SHA256": "4D1C65CE3B9C7B7CFC86596617C41806CAA10A46C2EF1E1B4478C58EB119E9E5"
+    },
+    {
+      "Path": "Scratch/HashDirected02/RunGeometryHashTests_No.txt",
+      "Bytes": 5647,
+      "SHA256": "7AD8049F0D0501272DA613330FF9DB91C6752E7E544D867CECD7AE21170D8617"
+    },
+    {
+      "Path": "Scratch/HashDirected02/RunGeometryHashTests_Yes.txt",
+      "Bytes": 5647,
+      "SHA256": "7AD8049F0D0501272DA613330FF9DB91C6752E7E544D867CECD7AE21170D8617"
+    },
+    {
+      "Path": "Scratch/HashDirected02/State.json",
+      "Bytes": 117,
+      "SHA256": "E661A7F0CE665C6AE5F7BCDDC013778420F8D81A84419DC9C1330E09189F67D7"
+    },
+    {
+      "Path": "Scratch/HashDirected03/Closure.json",
+      "Bytes": 173,
+      "SHA256": "F2DEDCF2E6A402F2BD84A3E3DE1AC2A158F82D56B5976537BC054F2DC7A73D5D"
+    },
+    {
+      "Path": "Scratch/HashDirected03/Ownership.json",
+      "Bytes": 138,
+      "SHA256": "B8A11140F3B488A734453F2254E18ECD75927CC90E667666BB062E8A56E3404A"
+    },
+    {
+      "Path": "Scratch/HashDirected03/Results.json",
+      "Bytes": 2396,
+      "SHA256": "33699A434450575508FF665AC95725D1FA6BB10CB2191446D1C87D2320E966CA"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunCalculationSnapshotTests_No.txt",
+      "Bytes": 33573,
+      "SHA256": "151EB37A8FE6BA701C5CA823D3F4345F60CD7498C4CA393E3EEC79C27D7D0783"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunCalculationSnapshotTests_Yes.txt",
+      "Bytes": 33573,
+      "SHA256": "151EB37A8FE6BA701C5CA823D3F4345F60CD7498C4CA393E3EEC79C27D7D0783"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunConcreteGeometrySnapshotTests_Yes.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunFileGeometryAuthorityTests_No.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunFileGeometryAuthorityTests_Yes.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunGeometryHashTests_No.txt",
+      "Bytes": 5647,
+      "SHA256": "7AD8049F0D0501272DA613330FF9DB91C6752E7E544D867CECD7AE21170D8617"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunGeometryHashTests_Yes.txt",
+      "Bytes": 5647,
+      "SHA256": "7AD8049F0D0501272DA613330FF9DB91C6752E7E544D867CECD7AE21170D8617"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunGeometryPreviewStorageTests_No.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunGeometryPreviewStorageTests_Yes.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunPreparedSnapshotReuseTests_No.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC"
+    },
+    {
+      "Path": "Scratch/HashDirected03/RunPreparedSnapshotReuseTests_Yes.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC"
+    },
+    {
+      "Path": "Scratch/HashDirected03/State.json",
+      "Bytes": 119,
+      "SHA256": "0D0B01D294C5DC9C45CE3DD64D7B3403798D82BF848777B7EA3DF8C1CD56C383"
+    },
+    {
+      "Path": "Scratch/HashDirected04/Closure.json",
+      "Bytes": 173,
+      "SHA256": "9B24963B2E84E3F8D9613110683CBF35EC5BAE5AA40BDC87EA2FCB69BBC06741"
+    },
+    {
+      "Path": "Scratch/HashDirected04/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "C035251ABCB0EC30D2D311A640DE3C478FB91422CAE5D01571A4F30FB61D62CF"
+    },
+    {
+      "Path": "Scratch/HashDirected04/Results.json",
+      "Bytes": 380,
+      "SHA256": "084929DE23448F737F5DE11A20CAF56783BC7286482F3063D914BC163D3F4E00"
+    },
+    {
+      "Path": "Scratch/HashDirected04/RunGeometryHashTests_No.txt",
+      "Bytes": 5658,
+      "SHA256": "10918D7EA9FFE3EFFC888DEE54B0981EC0019660192B809BC35D0BF3E8C63E59"
+    },
+    {
+      "Path": "Scratch/HashDirected04/RunGeometryHashTests_Yes.txt",
+      "Bytes": 5658,
+      "SHA256": "10918D7EA9FFE3EFFC888DEE54B0981EC0019660192B809BC35D0BF3E8C63E59"
+    },
+    {
+      "Path": "Scratch/HashDirected04/State.json",
+      "Bytes": 117,
+      "SHA256": "E661A7F0CE665C6AE5F7BCDDC013778420F8D81A84419DC9C1330E09189F67D7"
+    },
+    {
+      "Path": "Scratch/HashDirected05/Closure.json",
+      "Bytes": 173,
+      "SHA256": "8BAEC94FDCDFAABEC0BF7981530E42709446F7DFCC99E38DB62AC00E8FF652D8"
+    },
+    {
+      "Path": "Scratch/HashDirected05/Ownership.json",
+      "Bytes": 145,
+      "SHA256": "78A273035D699218624916C0D897E572EF92D7C18F88F393DBD0A178B7E686E2"
+    },
+    {
+      "Path": "Scratch/HashDirected05/Results.json",
+      "Bytes": 381,
+      "SHA256": "608733F3A66D0CE3BE4D49DD201F3874EBE0CDBD19AA2E0C41524BB1455C847A"
+    },
+    {
+      "Path": "Scratch/HashDirected05/RunGeometryHashTests_No.txt",
+      "Bytes": 5658,
+      "SHA256": "10918D7EA9FFE3EFFC888DEE54B0981EC0019660192B809BC35D0BF3E8C63E59"
+    },
+    {
+      "Path": "Scratch/HashDirected05/RunGeometryHashTests_Yes.txt",
+      "Bytes": 5658,
+      "SHA256": "10918D7EA9FFE3EFFC888DEE54B0981EC0019660192B809BC35D0BF3E8C63E59"
+    },
+    {
+      "Path": "Scratch/HashDirected05/State.json",
+      "Bytes": 117,
+      "SHA256": "E661A7F0CE665C6AE5F7BCDDC013778420F8D81A84419DC9C1330E09189F67D7"
+    },
+    {
+      "Path": "Scratch/HashDirected06/Closure.json",
+      "Bytes": 173,
+      "SHA256": "1A9D4C68059420107422BDFD0506D7A7E821B26393713907C88C015DC5723E55"
+    },
+    {
+      "Path": "Scratch/HashDirected06/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "811907B1FF54E6794FE006F02F9670C62F46699EF3471CB000DFF68F95E6D078"
+    },
+    {
+      "Path": "Scratch/HashDirected06/Results.json",
+      "Bytes": 381,
+      "SHA256": "E8B12973DC30624CFF86886BEC329DC4BF520BD3D4F71EBB6CFC98B8BFC38B5A"
+    },
+    {
+      "Path": "Scratch/HashDirected06/RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/HashDirected06/RunGeometryHashTests_Yes.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/HashDirected06/State.json",
+      "Bytes": 117,
+      "SHA256": "D71724B4EE7DCCE6C1CEF204F07F5084ECCEDBB56703F11DF4978362D2D94743"
+    },
+    {
+      "Path": "Scratch/HashFastPaired_Contour_Excel/Closure.json",
+      "Bytes": 123,
+      "SHA256": "554CB44DCF798A197F6C021FBEB7690D2EFF5E2510E5884BFD4E1C7F17246134"
+    },
+    {
+      "Path": "Scratch/HashFastPaired_Contour_Excel/Measurements.json",
+      "Bytes": 15961,
+      "SHA256": "6AE6FD1FA894F9219D437B372B2DD0FD82D29DBAB96C64E35C90EE68A9DE0D9F"
+    },
+    {
+      "Path": "Scratch/HashFastPaired_Contour_Excel/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "11555BF912E46437D08CE2A7E36FF704BFAC70114F628003AF0B366BD0718656"
+    },
+    {
+      "Path": "Scratch/HashNumericPaired_Contour_Excel/Closure.json",
+      "Bytes": 123,
+      "SHA256": "9C7E509BA7B2B30B58A443C847B8C265667FB2F25E0DA58C5FBEF28A00D07D35"
+    },
+    {
+      "Path": "Scratch/HashNumericPaired_Contour_Excel/Measurements.json",
+      "Bytes": 16024,
+      "SHA256": "D0B121A9430234DD5A8E025BF4A4E000298D4250A6C7812B15DAC583AD08981C"
+    },
+    {
+      "Path": "Scratch/HashNumericPaired_Contour_Excel/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "CDFFF03DD5A24A9420C2686E956F0AF831B72F9A44F1285A54BEF0E3B9C86AAB"
+    },
+    {
+      "Path": "Scratch/HashPaired_Contour_Excel/Closure.json",
+      "Bytes": 123,
+      "SHA256": "150A0448D6E5D9180DBCD7E63B3FE91A8073A355CD98D94C1C67FEEBB09EEBDC"
+    },
+    {
+      "Path": "Scratch/HashPaired_Contour_Excel/Measurements.json",
+      "Bytes": 15982,
+      "SHA256": "22994AEB84ECE16C3C463A8EC5AE538F3BFA65B3C6F9A3E0D38F28E82D6BE086"
+    },
+    {
+      "Path": "Scratch/HashPaired_Contour_Excel/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "E84F66DDFE7306ADD889C7FDD9076C5CC92724DBEAF343523DE3EECE092ADBF3"
+    },
+    {
+      "Path": "Scratch/HashReopen01/Closure.json",
+      "Bytes": 264,
+      "SHA256": "0A18985AA3D7495A5C6C8D819EF13308B7680F2ABB98546865A28BC01547492B"
+    },
+    {
+      "Path": "Scratch/HashReopen01/Failure.json",
+      "Bytes": 502,
+      "SHA256": "72ACFBB6037518A685E52F9C40F5D638CE4179EAB7A67F80FF4368200AC0D888"
+    },
+    {
+      "Path": "Scratch/HashReopen01/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "1EA5772C4B44B7BC54933A8D720EDAC48E2DD09998D9855C1FC68F5918D8A60B"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Acceptance.json",
+      "Bytes": 137,
+      "SHA256": "3E6D80103215DB12AEBE6E00FEE16C41F4FBADA060541F1047CBCD9641104C5B"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Closure.json",
+      "Bytes": 183,
+      "SHA256": "D05CDEB682B7390BC198AEC4AE4D368211D1893E1291F750FA307A23D3537994"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Excel_Comma_cm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Excel_Comma_m/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Excel_Comma_mm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Excel_Dot_cm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Excel_Dot_m/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Excel_Dot_mm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/File_Comma_cm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/File_Comma_m/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/File_Comma_mm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/File_Dot_cm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/File_Dot_m/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/File_Dot_mm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Ownership.json",
+      "Bytes": 145,
+      "SHA256": "5EBF9B72F1291E88451FBCB1A5E65A8D4EEB75004B7C80E5554A72EF7A78C91A"
+    },
+    {
+      "Path": "Scratch/HashReopen02/Results.json",
+      "Bytes": 8302,
+      "SHA256": "B90ADE3FA12DA2F6D03AA87E9149B3A8C2D73CD122FC1934DA544BE3EEAF1678"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Adaptive_Excel/Closure.json",
+      "Bytes": 123,
+      "SHA256": "6B73FA8E34D8F500982FA33966AC287D8E1271C148675123EAE0E1FDF910303C"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Adaptive_Excel/Measurements.json",
+      "Bytes": 15926,
+      "SHA256": "C3B5579CF44D3C97A8B63588286BC67B6C14E3478B0CCB0524CCD216FCE1B749"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Adaptive_Excel/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "F2E01156FF44E5F8FE89BEC48B8DAA30345D3C9F9D30A3F2E9744CE8B503ED11"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Contour_Excel/Closure.json",
+      "Bytes": 123,
+      "SHA256": "63FAF7BC3BAAF16514E2EAFF9C162ADE21AD04252C1F5793B0A3AB9F904D47E2"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Contour_Excel/Measurements.json",
+      "Bytes": 16007,
+      "SHA256": "599CE19D873AD95739C50A062DF16A8427A926697455402C57DF180D62443C0B"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Contour_Excel/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "56EA958A7A1DAB77AFBF2743C83B224E0547BF9614A7691AE8B9DA5AC453E219"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Contour_File/Closure.json",
+      "Bytes": 123,
+      "SHA256": "E2A11AF353290B4D261BDF7A6A283A8F5F81BAA7A423FCEAE5103E3CCBAA2D30"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Contour_File/Measurements.json",
+      "Bytes": 15991,
+      "SHA256": "FB83EC76EB7CE3AFC65ADC6016A743E99455BAB165FF73E06CF311CD6E40AD4C"
+    },
+    {
+      "Path": "Scratch/HashUi2Paired_Contour_File/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "DA04D44924C7101026A417EABBACA0134047766DEC27824F6D82C7E90AE97CA6"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/CConcreteElement.cls",
+      "Bytes": 13817,
+      "SHA256": "0D0F879DF9E9BCD726FFB1DB028DE39D2E4787888371F5F2BF2E2DD9B5585ED4"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/CConcreteRegion.cls",
+      "Bytes": 12599,
+      "SHA256": "5F19F30C1DF99573C230D62FF6FF4E5C95D0B87B7390972318F97E93597FE5BD"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/CFileChecksum.cls",
+      "Bytes": 15806,
+      "SHA256": "40648127609DCFCCEACBF2ED84922C115FC5374DB811F5BFCFB9D59281DF90F5"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/CNDMResultsWriter.cls",
+      "Bytes": 149707,
+      "SHA256": "94E933B622297838ACBE041707282AEDFEFB76F412CEF41A147EB7357205ED94"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/CSectionGeometryQuery.cls",
+      "Bytes": 154737,
+      "SHA256": "320302D2331E49327310E56EEB12D3DA33EAE20C11BBEB8459C6AE06CA9A0082"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/CSectionModel.cls",
+      "Bytes": 71883,
+      "SHA256": "5947AB8745342E8E319E2781D03C7330B518ABB953A1EEA5EB37159C0B26CA0C"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/CSectionPlotter.cls",
+      "Bytes": 130033,
+      "SHA256": "358E1CC5311D2EDFB210810CDC745D53B606A00D04AB21F0A0CA2DF6032EC4D5"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/DeferredPatch.diff",
+      "Bytes": 73723,
+      "SHA256": "A846B99E98F3C5405844F1D66BA8E68AC1AAC6F7F7F2EA9625280BBED1E1503A"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/DeferredSourceManifest.json",
+      "Bytes": 3199,
+      "SHA256": "7E39446AC56D163013508B4C5569A1480B88BEF8C7674376F974898E724DF35A"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/modCalculationSnapshot.bas",
+      "Bytes": 24450,
+      "SHA256": "DF9D9CC7AD9740634A16B158819C2E86C3612B0E1110B02AC61EDC66DC49BBDE"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/modSectionSnapshot.bas",
+      "Bytes": 92196,
+      "SHA256": "D55E6D444230F4577F47479044AB54717E6A234A05F8CBCBAD14AAACDD0B59D5"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/modTestCalculationSnapshot.bas",
+      "Bytes": 159194,
+      "SHA256": "61C5CE70F44EE5A94C22ADB3650692A88D23FA3213D385D9CBF0D54B9D480670"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/modWorkbookCalculation.bas",
+      "Bytes": 86024,
+      "SHA256": "EB511B4C101926D262A424CF2673133BB536E63020510C3881FDBF77C5F9FA8B"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate01/modWorkbookMessages.bas",
+      "Bytes": 28004,
+      "SHA256": "1D54E85CD5637433C605D3A5737C85474B1AD2B86FBF1571881B72E7589C33AF"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/CConcreteElement.cls",
+      "Bytes": 13817,
+      "SHA256": "0D0F879DF9E9BCD726FFB1DB028DE39D2E4787888371F5F2BF2E2DD9B5585ED4"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/CConcreteRegion.cls",
+      "Bytes": 12599,
+      "SHA256": "5F19F30C1DF99573C230D62FF6FF4E5C95D0B87B7390972318F97E93597FE5BD"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/CFileChecksum.cls",
+      "Bytes": 15806,
+      "SHA256": "40648127609DCFCCEACBF2ED84922C115FC5374DB811F5BFCFB9D59281DF90F5"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/CNDMResultsWriter.cls",
+      "Bytes": 149707,
+      "SHA256": "94E933B622297838ACBE041707282AEDFEFB76F412CEF41A147EB7357205ED94"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/CSectionGeometryQuery.cls",
+      "Bytes": 154737,
+      "SHA256": "320302D2331E49327310E56EEB12D3DA33EAE20C11BBEB8459C6AE06CA9A0082"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/CSectionModel.cls",
+      "Bytes": 71883,
+      "SHA256": "5947AB8745342E8E319E2781D03C7330B518ABB953A1EEA5EB37159C0B26CA0C"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/CSectionPlotter.cls",
+      "Bytes": 129396,
+      "SHA256": "732E47E1B616AE85F8011C4156A68A66CE4A2458F3A493EE1CFD9701795FA357"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/DeferredSourceManifest.json",
+      "Bytes": 3199,
+      "SHA256": "153FD512717FD6FD8AC295231B1E876EE4C5479B123D7C11731E9BDF58150544"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/modCalculationSnapshot.bas",
+      "Bytes": 24450,
+      "SHA256": "DF9D9CC7AD9740634A16B158819C2E86C3612B0E1110B02AC61EDC66DC49BBDE"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/modSectionSnapshot.bas",
+      "Bytes": 92196,
+      "SHA256": "D55E6D444230F4577F47479044AB54717E6A234A05F8CBCBAD14AAACDD0B59D5"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/modTestCalculationSnapshot.bas",
+      "Bytes": 159194,
+      "SHA256": "61C5CE70F44EE5A94C22ADB3650692A88D23FA3213D385D9CBF0D54B9D480670"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/modWorkbookCalculation.bas",
+      "Bytes": 86037,
+      "SHA256": "806478235F429D4736D37BFD4664EA40E188D9BD715CC149FF4BA5D49A680EC5"
+    },
+    {
+      "Path": "Scratch/HashUiCandidate02/modWorkbookMessages.bas",
+      "Bytes": 28044,
+      "SHA256": "A0659A9FF174D8E5D5BA50A06EC68F9BF3627BB6AEC9AD5337689C43EE81E65C"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/Closure.json",
+      "Bytes": 276,
+      "SHA256": "F471319FC43501028A31DD33CB6FE80BDB9ECB1A5E3AE1D69BCC7ECEF1E32053"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/Failure.json",
+      "Bytes": 379,
+      "SHA256": "A86C74038CDC8D3E3DB1E5EBE590EAFA43E3CF1B73E78ABE60BF0E5E735D66B2"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "6F8600BD409B1A522191BDCB5CE46AC9662BA67E4EDBE21CB3F3FDE10B3540B4"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/Results.json",
+      "Bytes": 1374,
+      "SHA256": "8F17C82ED9B20572210A25074D0DCD5696C94CCF44A39944BDDE90A032384633"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/RunCalculationSnapshotTests_No.txt",
+      "Bytes": 33662,
+      "SHA256": "5DF5CA0557E3910BE655A0023B24AF14068ED459EC91B46E18EB2C7A3EEF9593"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/RunFileGeometryAuthorityTests_No.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/RunGeometryPreviewStorageTests_No.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/RunPreparedSnapshotReuseTests_No.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    },
+    {
+      "Path": "Scratch/HashUiDirected01/State.json",
+      "Bytes": 216,
+      "SHA256": "5FD6E1873EF647E17B197E581DAF0EAE341B391544503653769B7B9EF02E546F"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/Closure.json",
+      "Bytes": 173,
+      "SHA256": "A4354B119EBFA0BDAEB565E5291860BF6104453E1C4CE44A5BADA53C101AE789"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "A7EEE9908A84B2B8753A2BBCF448799DCDDC5874EB921AD00D553337DE156680"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/Results.json",
+      "Bytes": 2791,
+      "SHA256": "4F0FDA3B91C34770FBC48F3AFD01C36ED55FD65CCAA3F50C3EEC37A7071EBFD7"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunCalculationSnapshotTests_No.txt",
+      "Bytes": 33608,
+      "SHA256": "318A26BC57B0DC3CEF99BD04FCDE3B7EB8836399BBD1F24FD29172A7B7870EA9"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunCalculationSnapshotTests_Yes.txt",
+      "Bytes": 33608,
+      "SHA256": "318A26BC57B0DC3CEF99BD04FCDE3B7EB8836399BBD1F24FD29172A7B7870EA9"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunConcreteGeometrySnapshotTests_Yes.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunFileGeometryAuthorityTests_No.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunFileGeometryAuthorityTests_Yes.txt",
+      "Bytes": 4795,
+      "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunGeometryHashTests_Yes.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunGeometryPreviewStorageTests_No.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunGeometryPreviewStorageTests_Yes.txt",
+      "Bytes": 2569,
+      "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunPreparedSnapshotReuseTests_No.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunPreparedSnapshotReuseTests_Yes.txt",
+      "Bytes": 2382,
+      "SHA256": "2E53D97758D28175B85EC10E388D0A3B54C575666C802A9589207D06EFA875AC"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/RunWorkbookActionCompletionTests_Yes.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    },
+    {
+      "Path": "Scratch/HashUiDirected02/State.json",
+      "Bytes": 119,
+      "SHA256": "17C232E0C56640F43E30238515973825A78A2ECDB39CBFF5BC67BBD3F301544A"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/Closure.json",
+      "Bytes": 173,
+      "SHA256": "95F32729B1870E4F1A334A394ADE57C0336F4D340BDE42F571317C213D57AE64"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/Ownership.json",
+      "Bytes": 144,
+      "SHA256": "7F6B781A2FF27CB602AB12EA30B83060F97297D8D7C84C9D1CB67886C16AD67D"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/Results.json",
+      "Bytes": 1248,
+      "SHA256": "42A054C401216075ED79657A150704115C50E5A431753DADAE8C08CEBFBD53F1"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/RunGeometryHashTests_Yes.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/RunWorkbookActionCompletionTests_Yes.txt",
+      "Bytes": 445,
+      "SHA256": "C4ECACD52317B6A990E8AC7865B866DED432311E161A79DCB01DF30ACB260BBE"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/State.json",
+      "Bytes": 117,
+      "SHA256": "9A03D4B8EA21B42DA85F06A310DF096B25F7BEEBA928B81D118791DACB3C4D74"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/modTestAudit02Api.RunProgramMessagePresentationTests_No.txt",
+      "Bytes": 2538,
+      "SHA256": "B30F0DE159A94CB070506E5927E61C34935B56CBDC2CA71FCD17F3A5369C88EF"
+    },
+    {
+      "Path": "Scratch/HashUiDirected03/modTestAudit02Api.RunProgramMessagePresentationTests_Yes.txt",
+      "Bytes": 2538,
+      "SHA256": "B30F0DE159A94CB070506E5927E61C34935B56CBDC2CA71FCD17F3A5369C88EF"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Adaptive_Excel/Closure.json",
+      "Bytes": 122,
+      "SHA256": "DC269D6C73532F1FE3268183E60E0D4C74FEFC8A70855B59BB0B41E65392D21F"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Adaptive_Excel/Measurements.json",
+      "Bytes": 15955,
+      "SHA256": "4FF36D4C94A3A8CBB346F1A14DBC0735EB39022A2FF77F8AD2F4000C28170235"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Adaptive_Excel/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "6D021E3A0BC4C6DC8B4A69F367CCAFAE5248544FF143EA9F412484124541B88A"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Adaptive_Excel/Parity.json",
+      "Bytes": 232,
+      "SHA256": "F9278AD9668B6F7676CA75B02749EDAF649B00AA6C74765CB004B578FE6B333D"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Contour_Excel/Closure.json",
+      "Bytes": 123,
+      "SHA256": "681703408B603C05ABBA62892643CA882983BE60F21726CDC67EB68EBEB6351D"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Contour_Excel/Measurements.json",
+      "Bytes": 16011,
+      "SHA256": "354F8C72F733F35BF54BBB60805E5FED952F5DDD6C81F204497BDCE915108E25"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Contour_Excel/Ownership.json",
+      "Bytes": 141,
+      "SHA256": "162B6D14C4B6FD34353C1AB31C2A470153667684ED069319308A5C1466142D54"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Contour_Excel/Parity.json",
+      "Bytes": 234,
+      "SHA256": "A7DB0EE6F953858ED64BF136544215099A48B043EC70697293D285E2EDE586D6"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Contour_File/Closure.json",
+      "Bytes": 123,
+      "SHA256": "1CEDF9FB1A4AF8F276B6B9BC776A44B7D1D93C22AB705B849C87134BA7CAF855"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Contour_File/Measurements.json",
+      "Bytes": 15983,
+      "SHA256": "F0DE46FD77D394FF09FC80D0B41EB93816C122F819469F8DD8833D031D3ED3B3"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Contour_File/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "BB0D59ED594682D3128137940EA262EA2036AA1E6A2CD8EF9D68F8BFCF17BF14"
+    },
+    {
+      "Path": "Scratch/HashUiPaired_Contour_File/Parity.json",
+      "Bytes": 236,
+      "SHA256": "65D33EBB3E3419DAC52E44D2A8574A2966BCDB4D2179066CA74583C429E5F19D"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Acceptance.json",
+      "Bytes": 137,
+      "SHA256": "3E6D80103215DB12AEBE6E00FEE16C41F4FBADA060541F1047CBCD9641104C5B"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Closure.json",
+      "Bytes": 183,
+      "SHA256": "9F7B4B4A94E9CBF66EDA926E8E999A6C0E10D97200AAD045EB407EDF842414F0"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Excel_Comma_cm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Excel_Comma_m/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Excel_Comma_mm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Excel_Dot_cm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Excel_Dot_m/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Excel_Dot_mm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/File_Comma_cm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/File_Comma_m/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/File_Comma_mm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/File_Dot_cm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/File_Dot_m/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/File_Dot_mm/Primary.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "902BE50CB09C04EE48F275DCA807FAEC7E035871BE8BE13B57E8E052C3D90169"
+    },
+    {
+      "Path": "Scratch/HashUiReopen01/Results.json",
+      "Bytes": 8302,
+      "SHA256": "0E2459B1B674391F11653E4B716B04068BB3A06716D0576403E5F8C72FA4B54D"
+    },
+    {
+      "Path": "Scratch/Paired01/BenchmarkSummary.json",
+      "Bytes": 781,
+      "SHA256": "4988F06172AC300BEB9FFAF4C122D98AA0D8637D1713116F4DC35EC6973AF2F5"
+    },
+    {
+      "Path": "Scratch/Paired01/Closure.json",
+      "Bytes": 123,
+      "SHA256": "8C89EC1850953CAD541019186288AFCD25A2CBB04D4B784194BA9849B1C50010"
+    },
+    {
+      "Path": "Scratch/Paired01/Measurements.json",
+      "Bytes": 12907,
+      "SHA256": "AB0FB478D69343D2253A2FC541FBEEDD1754E1992B09F19AC426419746E509B0"
+    },
+    {
+      "Path": "Scratch/Paired01/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "D54355AF99F6987D1DA79228AD80AACC870B2C02686FD243BE761F6B7FCD614C"
+    },
+    {
+      "Path": "Scratch/Paired01/Parity.json",
+      "Bytes": 425,
+      "SHA256": "A529735CAE30804DC341C46EDA61D56754A4C7820341A288C3E57D843389F007"
+    },
+    {
+      "Path": "Scratch/Paired01/RawParity.json",
+      "Bytes": 652748,
+      "SHA256": "0D8A1E60CBECC7EBC016C5607E7B491EF550DDBACB74B5713D26E39D89DB423B"
+    },
+    {
+      "Path": "Scratch/ReadCounts01/Closure.json",
+      "Bytes": 123,
+      "SHA256": "5EC1B14D1D2261E537DF1C42424ACBEAE40A6C1E33B2F82EE9E49FBBEFE67F1D"
+    },
+    {
+      "Path": "Scratch/ReadCounts01/Ownership.json",
+      "Bytes": 144,
+      "SHA256": "1D23DEA3E8ECBAED4CF7C7C454ACB459EA792FF27E56EF46CF0297668566DFC3"
+    },
+    {
+      "Path": "Scratch/ReadCounts01/Results.json",
+      "Bytes": 2696,
+      "SHA256": "782ADE46DCE0D453CF7544C3733DD72466A21A651055F2B080C9860DB6F2BA45"
+    }
+  ],
+  "ArchiveSHA256": "F082624F77FF64EC08586F6EEBAB56A0AD17570367F6C3EE190A84AC4648B3DE"
+}
