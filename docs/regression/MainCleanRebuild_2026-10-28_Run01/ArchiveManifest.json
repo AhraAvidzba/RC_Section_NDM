@@ -1,0 +1,136 @@
+{
+  "Files": [
+    {
+      "Path": "Before.json",
+      "Bytes": 135656,
+      "SHA256": "54D896170E4F2B6014A6CCAEA5F307B8786832CDE4058FF3D7306D65847207DF"
+    },
+    {
+      "Path": "Build.json",
+      "Bytes": 687,
+      "SHA256": "D01B4B0F29081F15BBA0AD7551D13164D0AA45D50376C5CA0877A7036223EB90"
+    },
+    {
+      "Path": "Layout.json",
+      "Bytes": 524561,
+      "SHA256": "F49028B11FC173856B5C6C26D19951FCF11E0D0226494711481777FCC1FB8A34"
+    },
+    {
+      "Path": "LayoutClosure.json",
+      "Bytes": 123,
+      "SHA256": "44BA6423A0665F0DF545A8CE645AE7A0D96B970A8B1B94B56A539F32010C79C8"
+    },
+    {
+      "Path": "LayoutOwnership.json",
+      "Bytes": 73,
+      "SHA256": "C81F9E605A893A07B9CB7E4D35598665628BF95EC5E295D6CB0B1BBE58814A04"
+    },
+    {
+      "Path": "LayoutSummary.json",
+      "Bytes": 963,
+      "SHA256": "89F983E39CF6E1B27DF6BA67F1B0B9CAE0EC8967C30DED4E43B5FD0C6605A4A5"
+    },
+    {
+      "Path": "MemoryBeforeBuild.json",
+      "Bytes": 136,
+      "SHA256": "F3125DC24971BDE712B37297332CD8FED1B56CA505BE6F0D34D61A3182C7A11E"
+    },
+    {
+      "Path": "NativeAcceptance.json",
+      "Bytes": 375,
+      "SHA256": "650A91B336CE0BF6317D8180B35EFA1A647DD25C08EF793A21E92D34EBA6CB15"
+    },
+    {
+      "Path": "NativeChecks.json",
+      "Bytes": 45351,
+      "SHA256": "5A501B1E9D58EC6E033DC074B6D1DC9EF91149EAF813261157689DFC18BE17EB"
+    },
+    {
+      "Path": "Processed.json",
+      "Bytes": 3657,
+      "SHA256": "20BDF9D87000641B77B46545763EE18DC85590DC708581436D8B6E2D29F13A35"
+    },
+    {
+      "Path": "Publication.json",
+      "Bytes": 907,
+      "SHA256": "63CC819293DC2D043D838BF9B654975F99AB46409B7B3DCD77CC2841F2B5AEEB"
+    },
+    {
+      "Path": "Smoke.json",
+      "Bytes": 2838,
+      "SHA256": "559F3EF24E48838CAA5B5B491807AB2B8A16A25DF2364A7D86DAC1FA950D49AB"
+    },
+    {
+      "Path": "SmokeClosure.json",
+      "Bytes": 123,
+      "SHA256": "FE48D5B9952DA7192724707B6F967156D33056AC773248A08E7FD387B19F9B42"
+    },
+    {
+      "Path": "SmokeOwnership.json",
+      "Bytes": 146,
+      "SHA256": "CBE4CB83A58A19EDEDA56567C3F32845F327552953CDB0F96C9FB0E59EEDCF8D"
+    },
+    {
+      "Path": "SourceEquality.json",
+      "Bytes": 117153,
+      "SHA256": "E80E80F814E9D62A8E6DC5802217E7F71B65F7672C65546D8C610A98CA562B1C"
+    },
+    {
+      "Path": "Test-FreshBuild.ps1",
+      "Bytes": 3972,
+      "SHA256": "32C6AE655B84D29374BA9CF72F55D052688AC180DB94B0B906C04A48871FC569"
+    },
+    {
+      "Path": "Test-Layout.ps1",
+      "Bytes": 9458,
+      "SHA256": "DCDF7CC6A5415020B39946BF7EFEEB59A0E01549E9F514AC4FE07E692631512C"
+    },
+    {
+      "Path": "Test-Smoke.ps1",
+      "Bytes": 4383,
+      "SHA256": "292DA4B54DFBE6999DA389560C01D49016EE4C979CB1FE2A460DC296ED07A0BF"
+    },
+    {
+      "Path": "Test-VerifyBuild.ps1",
+      "Bytes": 8998,
+      "SHA256": "9FCEF49D7A56EBB266C0B47734AB47EB340CDF6A2D38ABCF611FFD769C5FA38D"
+    },
+    {
+      "Path": "TestPackageProofs.py",
+      "Bytes": 3479,
+      "SHA256": "D21E1731F51AA49A39BA8FC1B93B04A46ED08F6A0932D770B22A53BE4055A410"
+    },
+    {
+      "Path": "TestPrepareLayout.py",
+      "Bytes": 2198,
+      "SHA256": "FF53673E53D40A08391D3201DFA753F7A0DBAD428EE129B4A7637AC2083317F5"
+    },
+    {
+      "Path": "VerificationAttempt01Closure.json",
+      "Bytes": 122,
+      "SHA256": "663CA7746A498A11FBC61DBB1D6AE9F3AC976EFF7BA16AEC621B9E3733F43405"
+    },
+    {
+      "Path": "VerificationAttempt01Ownership.json",
+      "Bytes": 146,
+      "SHA256": "CE131519950C3B819C930636BDE368CAB2121DC13A0368108D1DC47494DD6545"
+    },
+    {
+      "Path": "VerificationClosure.json",
+      "Bytes": 123,
+      "SHA256": "D8B9B60E79CD5DAAC9ADD19438A32B5DF01F1639A7DA5750725A3B267530C4AA"
+    },
+    {
+      "Path": "VerificationOwnership.json",
+      "Bytes": 145,
+      "SHA256": "89E6F9529C433BBB6AAFB47315910B4CE2FFE5F9F502C819A6682E8408ECFF14"
+    },
+    {
+      "Path": "Test-VerifySource.ps1",
+      "Bytes": 11491,
+      "SHA256": "EB155F815D522B62B337CC89C72801001E7F4D14C60D4867BB6EDF8EDF7941A7"
+    }
+  ],
+  "ArchiveBytes": 79289,
+  "ArchiveSHA256": "2F0301B1D2424538544EAF9942FA462D33DE3BA3F3638D1D652D1057848450A5"
+}

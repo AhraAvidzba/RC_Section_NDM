@@ -1,0 +1,38 @@
+﻿[
+    {
+        "Action":  "FormSectionForWorkbook",
+        "Seconds":  0.6182533,
+        "Message":  "Сечение сформировано и сохранено на листе Results.\r\n\r\nГеометрия сформирована по параметрам Config и листа «Сечения».\r\n\r\nБетонных элементов: 95.\r\nСтержней арматуры: 28.\r\n\r\nВремя формирования сечения: 0.60 с.",
+        "Ready":  true,
+        "CalculationState":  0,
+        "ProductionVBAUnmodified":  true,
+        "AtUTC":  "2026-10-28T14:05:31.5935321+00:00"
+    },
+    {
+        "Action":  "RunSectionCalculationForWorkbook",
+        "Seconds":  1.0934177999999999,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПошаговый отчет сохранен:\r\nC:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\MainCleanRebuild_2026-10-28_Run01\\Smoke\\RC_Section_NDM_execution_report.txt\r\n\r\nВремя расчёта: 1.07 с.\r\n\r\nДанные сохранены на листе Results текущей книги.",
+        "Ready":  true,
+        "CalculationState":  0,
+        "ProductionVBAUnmodified":  true,
+        "AtUTC":  "2026-10-28T14:05:32.7738660+00:00"
+    },
+    {
+        "Action":  "RunSectionCalculationForWorkbook",
+        "Seconds":  0.9450385,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПошаговый отчет сохранен:\r\nC:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\MainCleanRebuild_2026-10-28_Run01\\Smoke\\RC_Section_NDM_execution_report.txt\r\n\r\nВремя расчёта: 0.94 с.\r\n\r\nДанные сохранены на листе Results текущей книги.",
+        "Ready":  true,
+        "CalculationState":  0,
+        "ProductionVBAUnmodified":  true,
+        "AtUTC":  "2026-10-28T14:05:33.7735962+00:00"
+    },
+    {
+        "Action":  "UpdateSectionResultsForWorkbook",
+        "Seconds":  0.2852886,
+        "Message":  "",
+        "Ready":  true,
+        "CalculationState":  0,
+        "ProductionVBAUnmodified":  true,
+        "AtUTC":  "2026-10-28T14:05:34.1246384+00:00"
+    }
+]

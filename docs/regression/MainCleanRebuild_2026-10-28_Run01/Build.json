@@ -1,0 +1,16 @@
+{
+  "Status": "FRESH_SOURCE_BUILD_AND_COMPILE_COMPLETED",
+  "CreatedFrom": "Excel.Workbooks.Add",
+  "StartedUTC": "2026-10-28T16:58:54.1442963+03:00",
+  "VerifiedUTC": "2026-10-28T14:03:11.0834232+00:00",
+  "SHA256": "4E07112309359382EB88A9C367120158E7B7429E4E3DFE901C409B73E5EF5160",
+  "OwnExcelPID": 10016,
+  "OwnExcelStartTicksUTC": "639287927331837335",
+  "OwnProcessAbsent": true,
+  "ForceKilled": false,
+  "CompileCommand578Passed": true,
+  "WrapperFirstExit": 1,
+  "WrapperReason": "Immediate closure check before PowerShell released remaining COM references; independently absent after PowerShell exit",
+  "RebuiltAgain": false,
+  "HeavyOpenedOrChanged": false
+}

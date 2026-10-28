@@ -1,0 +1,107 @@
+{
+  "Status": "FRESH_MAIN_REBUILD_ACCEPTED",
+  "Publication": {
+    "Status": "FRESH_MAIN_BOOK_PUBLISHED",
+    "AtUTC": "2026-10-28T14:07:20.5963595+00:00",
+    "MainBeforeSHA256": "8E2A5784354054953C3CE82A9FAAF88B7BE5A75B78430B69B0E950E82A69275B",
+    "MainAfterSHA256": "4E07112309359382EB88A9C367120158E7B7429E4E3DFE901C409B73E5EF5160",
+    "AllCodeBeforeSHA256": "7C29935735F2FCBAA8826DC0B2AD7D96DF918F5313A824426BEA95B2FBC5D496",
+    "AllCodeAfterSHA256": "EF4273FC88230DAA0B955A3E0B582A45BEDFD224D1A7EBC96BC2A2F5FFBBC7C9",
+    "HeavyBeforeSHA256": "EF2BAFDAF35D24F4A93983C8DB6204386FE400A3D723E86022ADCEF576EF2483",
+    "HeavyAfterSHA256": "EF2BAFDAF35D24F4A93983C8DB6204386FE400A3D723E86022ADCEF576EF2483",
+    "HeavyOpenedOrChanged": false,
+    "SourceComponents": 175,
+    "DocumentModules": 6,
+    "CleanNoImportedUserData": true,
+    "NativeChecks": 333,
+    "LayoutChecks": 1220,
+    "BuildInputsChecked": 536,
+    "BuildInputChanges": 0,
+    "FullSuiteLaunched": false
+  },
+  "NativeChecks": {
+    "Passed": true,
+    "Checks": 333,
+    "Failed": [],
+    "ReopenedSavedBook": true,
+    "SourceSHA256": "4E07112309359382EB88A9C367120158E7B7429E4E3DFE901C409B73E5EF5160",
+    "NativeComponents": 181,
+    "SettingsKeys": 111,
+    "PermanentLists": 49,
+    "CleanResultsAndLoads": true,
+    "NoBookSaveOrVBAExecution": true
+  },
+  "Layout": {
+    "Status": "PASS",
+    "WorkbookSHA256": "4E07112309359382EB88A9C367120158E7B7429E4E3DFE901C409B73E5EF5160",
+    "NamedRanges": 26,
+    "OtherTables": 1,
+    "Objects": 84,
+    "Checks": 1220,
+    "Headers": [
+      {
+        "Name": "rngCircleGeometry",
+        "Row": 2,
+        "Caption": "Круглое сечение (Подробнее)",
+        "LinkSize": 12
+      },
+      {
+        "Name": "rngRectanglesGeometry",
+        "Row": 21,
+        "Caption": "Набор прямоугольников (Г-сечение) (Подробнее)",
+        "LinkSize": 12
+      },
+      {
+        "Name": "rngPointedSectionGeometry",
+        "Row": 59,
+        "Caption": "Клиновидное сечение (Подробнее)",
+        "LinkSize": 12
+      },
+      {
+        "Name": "rngHollowRectangleGeometry",
+        "Row": 91,
+        "Caption": "Пустотелый прямоугольник (Подробнее)",
+        "LinkSize": 12
+      }
+    ],
+    "Failures": []
+  },
+  "NativeSourceEqualityPassed": true,
+  "OwnClosures": [
+    {
+      "PID": 4176,
+      "StartTicksUTC": "639287930176470775",
+      "Absent": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 19752,
+      "StartTicksUTC": "639287930710661183",
+      "Absent": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 23752,
+      "StartTicksUTC": "639287931262130566",
+      "Absent": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 20040,
+      "StartTicksUTC": "639287932023595107",
+      "Absent": true,
+      "ForceKilled": false
+    }
+  ],
+  "BuildExcelAbsent": true,
+  "ForceKilled": false,
+  "SmokeActions": 4,
+  "ProductionSourceChanges": 0,
+  "FullSuiteLaunched": false,
+  "UserVisualPauseAfterOKVerified": false,
+  "PreparationIssues": [
+    "First build wrapper checked Excel absence before remaining COM references were released; exact process independently absent after PowerShell exited.",
+    "Verification harness needed UTF-8 BOM under Windows PowerShell5.1; first parse attempt did not launch Excel.",
+    "Verification harness was narrowed to Config list dictionary instead of also matching unit/sign dictionaries; first native attempt closed normally."
+  ]
+}

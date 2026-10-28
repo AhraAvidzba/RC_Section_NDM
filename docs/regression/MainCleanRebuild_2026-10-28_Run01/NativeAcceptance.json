@@ -1,0 +1,14 @@
+﻿{
+    "Passed":  true,
+    "Checks":  333,
+    "Failed":  [
+
+               ],
+    "ReopenedSavedBook":  true,
+    "SourceSHA256":  "4E07112309359382EB88A9C367120158E7B7429E4E3DFE901C409B73E5EF5160",
+    "NativeComponents":  181,
+    "SettingsKeys":  111,
+    "PermanentLists":  49,
+    "CleanResultsAndLoads":  true,
+    "NoBookSaveOrVBAExecution":  true
+}

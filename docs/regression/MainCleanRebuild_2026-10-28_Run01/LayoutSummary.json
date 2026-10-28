@@ -1,0 +1,35 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "4E07112309359382EB88A9C367120158E7B7429E4E3DFE901C409B73E5EF5160",
+  "NamedRanges": 26,
+  "OtherTables": 1,
+  "Objects": 84,
+  "Checks": 1220,
+  "Headers": [
+    {
+      "Name": "rngCircleGeometry",
+      "Row": 2,
+      "Caption": "Круглое сечение (Подробнее)",
+      "LinkSize": 12
+    },
+    {
+      "Name": "rngRectanglesGeometry",
+      "Row": 21,
+      "Caption": "Набор прямоугольников (Г-сечение) (Подробнее)",
+      "LinkSize": 12
+    },
+    {
+      "Name": "rngPointedSectionGeometry",
+      "Row": 59,
+      "Caption": "Клиновидное сечение (Подробнее)",
+      "LinkSize": 12
+    },
+    {
+      "Name": "rngHollowRectangleGeometry",
+      "Row": 91,
+      "Caption": "Пустотелый прямоугольник (Подробнее)",
+      "LinkSize": 12
+    }
+  ],
+  "Failures": []
+}
