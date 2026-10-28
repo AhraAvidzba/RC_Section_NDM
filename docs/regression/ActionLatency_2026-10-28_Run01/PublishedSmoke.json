@@ -1,0 +1,40 @@
+{
+  "PublishedSHA256": "8E2A5784354054953C3CE82A9FAAF88B7BE5A75B78430B69B0E950E82A69275B",
+  "ImportedOrInstrumentedCode": false,
+  "Storage": "Excel",
+  "UserMeshStepMode": "Auto 0.05",
+  "ConcreteElements": 342,
+  "Rebar": 28,
+  "Measurements": [
+    {
+      "Fixture": "UserSaved_Auto005",
+      "Action": "Calculate",
+      "Median": 2.1348106,
+      "Min": 1.9947241999999998,
+      "Max": 2.2149478,
+      "Count": 3
+    },
+    {
+      "Fixture": "Published_UserSaved_Auto005",
+      "Action": "Form",
+      "Median": 1.1104226,
+      "Min": 1.0829909,
+      "Max": 1.1296377,
+      "Count": 3
+    },
+    {
+      "Fixture": "Published_UserSaved_Auto005_Reformed",
+      "Action": "Calculate",
+      "Median": 2.0275282999999997,
+      "Min": 1.9397289999999998,
+      "Max": 2.1424019999999997,
+      "Count": 3
+    }
+  ],
+  "Closure": {
+    "PID": 17796,
+    "StartTicksUTC": "639287907259910019",
+    "Absent": true,
+    "ForceKilled": false
+  }
+}

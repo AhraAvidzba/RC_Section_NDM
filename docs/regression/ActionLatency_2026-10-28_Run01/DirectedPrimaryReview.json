@@ -1,0 +1,86 @@
+[
+  {
+    "File": "Final_RunConcreteGeometrySnapshotTests_No.txt",
+    "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439",
+    "Total": "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=123; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "Final_RunConcreteGeometrySnapshotTests_Yes.txt",
+    "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439",
+    "Total": "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=123; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "Final_RunFileGeometryAuthorityTests_No.txt",
+    "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053",
+    "Total": "TOTAL_FILE_GEOMETRY_AUTHORITY: 125/0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "Final_RunFileGeometryAuthorityTests_Yes.txt",
+    "SHA256": "65AC03C78E1B5BBED9525DC8E5042F45F3520C779022F5064656904BBC098053",
+    "Total": "TOTAL_FILE_GEOMETRY_AUTHORITY: 125/0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "Final_RunGeometryPreviewStorageTests_No.txt",
+    "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92",
+    "Total": "TOTAL_GEOMETRY_PREVIEW_STORAGE: passed=62; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "Final_RunGeometryPreviewStorageTests_Yes.txt",
+    "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92",
+    "Total": "TOTAL_GEOMETRY_PREVIEW_STORAGE: passed=62; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "RunCalculationSnapshotTests_No.txt",
+    "SHA256": "1A32F6CA36435EEC864A72A61401438C4998304639015EDCC842C27D21872B99",
+    "Total": "TOTAL CALCULATION SNAPSHOT: passed=682; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "RunCalculationSnapshotTests_Yes.txt",
+    "SHA256": "1A32F6CA36435EEC864A72A61401438C4998304639015EDCC842C27D21872B99",
+    "Total": "TOTAL CALCULATION SNAPSHOT: passed=682; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "RunConcreteGeometrySnapshotTests_No.txt",
+    "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439",
+    "Total": "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=123; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "RunConcreteGeometrySnapshotTests_Yes.txt",
+    "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439",
+    "Total": "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=123; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "RunGeometryPreviewStorageTests_No.txt",
+    "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92",
+    "Total": "TOTAL_GEOMETRY_PREVIEW_STORAGE: passed=62; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  },
+  {
+    "File": "RunGeometryPreviewStorageTests_Yes.txt",
+    "SHA256": "D21B9097C4C949DDF2BAF5905AA020DB06DAFF384114A221685A81F125738C92",
+    "Total": "TOTAL_GEOMETRY_PREVIEW_STORAGE: passed=62; failed=0",
+    "WholePrimaryRead": true,
+    "Errors": []
+  }
+]

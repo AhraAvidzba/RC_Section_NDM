@@ -1,0 +1,24 @@
+{
+  "Status": "PUBLISHED_LOCALLY_DIRECTED_PASS",
+  "Books": [
+    {
+      "Case": "Main",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "BeforeSHA256": "A907AF64246A2CD9E5C174561CCA7A6502D2C14B25808083707DF1869C5DA1C5",
+      "AfterSHA256": "8E2A5784354054953C3CE82A9FAAF88B7BE5A75B78430B69B0E950E82A69275B",
+      "NonVBAPartsPreserved": 110
+    },
+    {
+      "Case": "Ready",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM.xlsm",
+      "BeforeSHA256": "169EEDE3BEA52F839C41FA4FE629DDF423728766F8128ABF3341A4DD2C53B9EC",
+      "AfterSHA256": "EF2BAFDAF35D24F4A93983C8DB6204386FE400A3D723E86022ADCEF576EF2483",
+      "NonVBAPartsPreserved": 111
+    }
+  ],
+  "AllCodeSHA256": "7C29935735F2FCBAA8826DC0B2AD7D96DF918F5313A824426BEA95B2FBC5D496",
+  "SourceComponents": 175,
+  "DocumentModules": 6,
+  "OwnNativeIdentitiesAbsent": true,
+  "AtUTC": "2026-10-28T13:16:51.2836764+00:00"
+}

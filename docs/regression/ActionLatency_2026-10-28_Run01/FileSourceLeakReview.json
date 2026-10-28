@@ -1,0 +1,11 @@
+{
+  "Status": "CONFIRMED_ORIGINAL_FILE_SOURCE_MIX",
+  "OriginalFileSHA256": "C42899D24456AE53E19463A54FA32CF922860B241346D1260199EE010F173FAC",
+  "FileRunID": 46323.66409722222,
+  "PhysicalResultsRunID": 46323.6640625,
+  "PhysicalCell": "Results!A157",
+  "OriginalCode": "ReadSavedSectionContours compared file contour rows against physical geometryAnchor.Offset(1,0).Value2",
+  "ValidSelectedFileWasRejectedDueToStaleReferenceSheet": true,
+  "Fix": "Use ReadAnchoredResultTable for the geometry RunID, same source as contour rows",
+  "Regression": "Adaptive/Contour stale-sheet assertions pass No/Yes; full numerical outputs preserved"
+}

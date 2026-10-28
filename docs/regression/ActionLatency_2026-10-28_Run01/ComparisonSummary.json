@@ -1,0 +1,146 @@
+[
+  {
+    "File": "BaselineMeasurements.json",
+    "Case": "Current",
+    "Action": "Form",
+    "Count": 3,
+    "Median": 0.6014691999999999,
+    "Min": 0.5710911,
+    "Max": 0.6443675999999999
+  },
+  {
+    "File": "BaselineMeasurements.json",
+    "Case": "Current",
+    "Action": "Calculate",
+    "Count": 3,
+    "Median": 1.6045019999999999,
+    "Min": 1.3581448,
+    "Max": 1.7365916
+  },
+  {
+    "File": "BaselineMeasurements.json",
+    "Case": "PriorAccepted",
+    "Action": "Form",
+    "Count": 3,
+    "Median": 0.5412845,
+    "Min": 0.5135364,
+    "Max": 0.5501992
+  },
+  {
+    "File": "BaselineMeasurements.json",
+    "Case": "PriorAccepted",
+    "Action": "Calculate",
+    "Count": 3,
+    "Median": 1.2725419,
+    "Min": 1.2647605,
+    "Max": 1.3055515
+  },
+  {
+    "File": "BaselineMeasurements.json",
+    "Case": "BeforeFileChanges",
+    "Action": "Form",
+    "Count": 3,
+    "Median": 0.8546689,
+    "Min": 0.6604983999999999,
+    "Max": 0.8595714
+  },
+  {
+    "File": "BaselineMeasurements.json",
+    "Case": "BeforeFileChanges",
+    "Action": "Calculate",
+    "Count": 3,
+    "Median": 1.6217325,
+    "Min": 1.4327299,
+    "Max": 1.6590846
+  },
+  {
+    "File": "BaselineMeasurements.json",
+    "Case": "PreContour",
+    "Action": "Form",
+    "Count": 3,
+    "Median": 0.2947376,
+    "Min": 0.28901699999999997,
+    "Max": 0.3619956
+  },
+  {
+    "File": "BaselineMeasurements.json",
+    "Case": "PreContour",
+    "Action": "Calculate",
+    "Count": 3,
+    "Median": 0.6535679,
+    "Min": 0.6343456,
+    "Max": 0.6967015
+  },
+  {
+    "File": "PairedMeasurements.json",
+    "Case": "Original1",
+    "Action": "Form",
+    "Count": 3,
+    "Median": 0.673524,
+    "Min": 0.6563829999999999,
+    "Max": 0.7182063
+  },
+  {
+    "File": "PairedMeasurements.json",
+    "Case": "Original1",
+    "Action": "Calculate",
+    "Count": 3,
+    "Median": 1.3022479999999999,
+    "Min": 1.2514752,
+    "Max": 1.3514724
+  },
+  {
+    "File": "PairedMeasurements.json",
+    "Case": "Optimized1",
+    "Action": "Form",
+    "Count": 3,
+    "Median": 0.46373949999999997,
+    "Min": 0.4450784,
+    "Max": 0.4675397
+  },
+  {
+    "File": "PairedMeasurements.json",
+    "Case": "Optimized1",
+    "Action": "Calculate",
+    "Count": 3,
+    "Median": 0.9084308999999999,
+    "Min": 0.8726471,
+    "Max": 0.9215751999999999
+  },
+  {
+    "File": "PairedMeasurements.json",
+    "Case": "Optimized2",
+    "Action": "Form",
+    "Count": 3,
+    "Median": 0.46325059999999996,
+    "Min": 0.452521,
+    "Max": 0.46419269999999996
+  },
+  {
+    "File": "PairedMeasurements.json",
+    "Case": "Optimized2",
+    "Action": "Calculate",
+    "Count": 3,
+    "Median": 0.8897233999999999,
+    "Min": 0.8713225,
+    "Max": 0.9602499
+  },
+  {
+    "File": "PairedMeasurements.json",
+    "Case": "Original2",
+    "Action": "Form",
+    "Count": 3,
+    "Median": 0.6394525,
+    "Min": 0.5594482,
+    "Max": 0.7207773
+  },
+  {
+    "File": "PairedMeasurements.json",
+    "Case": "Original2",
+    "Action": "Calculate",
+    "Count": 3,
+    "Median": 1.4607367999999998,
+    "Min": 1.2954915999999999,
+    "Max": 1.5172746
+  }
+]

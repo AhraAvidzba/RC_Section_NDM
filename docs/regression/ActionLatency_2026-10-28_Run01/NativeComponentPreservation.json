@@ -1,0 +1,12 @@
+{
+  "Passed": true,
+  "Components": 181,
+  "Changed": [
+    "modSectionSnapshot",
+    "modTestCalculationSnapshot"
+  ],
+  "Other179EqualExceptIdentifierCase": true,
+  "NumbersStringsCommentsComparedLiterally": true,
+  "MainReadyAll181LiteralEqual": true,
+  "RawUnchanged": 127
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Excel\\modSectionSnapshot.bas",
+    "OriginalSHA256": "E7C24A50BF5C69130CB2C8281525FA1136A0B7D3895AD241EE9BE2C682547AC2",
+    "Candidate": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ActionLatency_2026-10-28_Run01\\Candidate\\modSectionSnapshot.bas",
+    "CandidateSHA256": "8C8A034B9638F371DB8D94977BC4EA495016846F24EDC9F968F2E519048B2230"
+  },
+  {
+    "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestCalculationSnapshot.bas",
+    "OriginalSHA256": "2A7FC6F9AB03816A96D8AEE1C8835C5AB83C6ECAA739AF760386E47366D644FA",
+    "Candidate": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ActionLatency_2026-10-28_Run01\\Candidate\\modTestCalculationSnapshot.bas",
+    "CandidateSHA256": "791B6D721235EA8D7D9E3F1B4F764F0B538066D6A6BF88B79A7512BE5D53C4F0"
+  }
+]

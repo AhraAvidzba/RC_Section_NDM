@@ -1,0 +1,116 @@
+{
+  "Status": "PASS",
+  "Tables": [
+    {
+      "Key": "Summary",
+      "Rows": 42,
+      "Columns": 33,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Strength.Headers",
+      "Rows": 4,
+      "Columns": 49,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Strength.Data",
+      "Rows": 30,
+      "Columns": 49,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Cracks.Headers",
+      "Rows": 4,
+      "Columns": 72,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Cracks.Data",
+      "Rows": 30,
+      "Columns": 72,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Stability.Labels",
+      "Rows": 1,
+      "Columns": 84,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Stability.Data",
+      "Rows": 30,
+      "Columns": 84,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMSectionGeometry",
+      "Rows": 1241,
+      "Columns": 16,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMSectionContours",
+      "Rows": 13,
+      "Columns": 17,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMElementGeometry",
+      "Rows": 1,
+      "Columns": 18,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMElementResults",
+      "Rows": 114081,
+      "Columns": 9,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMSectionProperties",
+      "Rows": 69,
+      "Columns": 6,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "LoadCase.Properties",
+      "Rows": 1891,
+      "Columns": 6,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMMaterialDiagrams",
+      "Rows": 51,
+      "Columns": 11,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "rngNDMSectionAnnotations",
+      "Rows": 4,
+      "Columns": 24,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "LoadCase.Annotations",
+      "Rows": 222,
+      "Columns": 24,
+      "AllValuesEqual": true
+    },
+    {
+      "Key": "Calculation.Profiles",
+      "Rows": 32,
+      "Columns": 7,
+      "AllValuesEqual": true
+    }
+  ],
+  "CellsCompared": 1072897,
+  "BaselineSHA256": "AF9B07871BCAC11574C189FDAA37D324836954703DDD49D825D0B965708AF93F",
+  "CandidateSHA256": "F28AF06A9032099093651AE357B0BC1F25B82035FBEC67BD1D6FA4ACCD32DED9",
+  "RunIDsInternallyConsistent": true,
+  "Exclusions": [
+    "RunID between separate calculations",
+    "Elapsed time"
+  ],
+  "NumberEquivalence": "Only the sign of exact zero; every other Double bit is unchanged"
+}

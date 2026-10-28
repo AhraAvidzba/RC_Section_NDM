@@ -1,0 +1,93 @@
+[
+  {
+    "Proof": "BeforeFileChangesOwnership.json",
+    "PID": 19888,
+    "StartTicksUTC": "639287872629963990",
+    "ExactIdentityAbsent": true,
+    "PIDReused": true
+  },
+  {
+    "Proof": "CurrentCandidateOwnership.json",
+    "PID": 24724,
+    "StartTicksUTC": "639287879205499768",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "CurrentDialogOwnership.json",
+    "PID": 23956,
+    "StartTicksUTC": "639287896063906420",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "CurrentDirectedOwnership.json",
+    "PID": 12604,
+    "StartTicksUTC": "639287886817292822",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "CurrentFinalDirectedOwnership.json",
+    "PID": 22320,
+    "StartTicksUTC": "639287894459386681",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "CurrentOwnership.json",
+    "PID": 20500,
+    "StartTicksUTC": "639287870782748565",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "CurrentPairedOwnership.json",
+    "PID": 20296,
+    "StartTicksUTC": "639287883210947574",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "CurrentProfileOwnership.json",
+    "PID": 23452,
+    "StartTicksUTC": "639287876260424327",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "NativeFinalOwnership.json",
+    "PID": 14724,
+    "StartTicksUTC": "639287897731217044",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "PreContourOwnership.json",
+    "PID": 23696,
+    "StartTicksUTC": "639287875705557649",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "PriorAcceptedOwnership.json",
+    "PID": 24628,
+    "StartTicksUTC": "639287872170484267",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "StorageOwnership.json",
+    "PID": 20156,
+    "StartTicksUTC": "639287889527414913",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  },
+  {
+    "Proof": "StorageOwnership.json",
+    "PID": 18220,
+    "StartTicksUTC": "639287892201099072",
+    "ExactIdentityAbsent": true,
+    "PIDReused": false
+  }
+]

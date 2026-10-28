@@ -1,0 +1,9 @@
+﻿{
+    "ExternalIncludingHumanWait":  21.092664799999998,
+    "IdleDrainSeconds":  0.040524600000026112,
+    "Ready":  true,
+    "CalculationState":  0,
+    "Macro":  "RunSectionCalculation",
+    "Mode":  "Excel",
+    "ActiveSheet":  "Config"
+}

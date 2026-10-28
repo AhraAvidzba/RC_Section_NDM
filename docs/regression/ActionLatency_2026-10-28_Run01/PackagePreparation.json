@@ -1,0 +1,26 @@
+[
+  {
+    "Case": "Main",
+    "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+    "SourceSHA256": "A907AF64246A2CD9E5C174561CCA7A6502D2C14B25808083707DF1869C5DA1C5",
+    "Candidate": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ActionLatency_2026-10-28_Run01\\ReleaseCandidate\\Main\\RC_Section_NDM.xlsm",
+    "CandidateSHA256": "8E2A5784354054953C3CE82A9FAAF88B7BE5A75B78430B69B0E950E82A69275B",
+    "Entries": 111,
+    "Changed": [
+      "xl/vbaProject.bin"
+    ],
+    "OtherPartsByteIdentical": 110
+  },
+  {
+    "Case": "Ready",
+    "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM.xlsm",
+    "SourceSHA256": "169EEDE3BEA52F839C41FA4FE629DDF423728766F8128ABF3341A4DD2C53B9EC",
+    "Candidate": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ActionLatency_2026-10-28_Run01\\ReleaseCandidate\\Ready\\RC_Section_NDM.xlsm",
+    "CandidateSHA256": "EF2BAFDAF35D24F4A93983C8DB6204386FE400A3D723E86022ADCEF576EF2483",
+    "Entries": 112,
+    "Changed": [
+      "xl/vbaProject.bin"
+    ],
+    "OtherPartsByteIdentical": 111
+  }
+]

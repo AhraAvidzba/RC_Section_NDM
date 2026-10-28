@@ -1,0 +1,74 @@
+[
+  {
+    "Fixture": "Light",
+    "Variant": "Original",
+    "Mode": "Excel",
+    "Median": 1.2735520999999999,
+    "Min": 1.2530261,
+    "Max": 1.408342,
+    "Count": 3
+  },
+  {
+    "Fixture": "Light",
+    "Variant": "Original",
+    "Mode": "File",
+    "Median": 1.5254839,
+    "Min": 1.4620294999999999,
+    "Max": 1.5637728,
+    "Count": 3
+  },
+  {
+    "Fixture": "Light",
+    "Variant": "Optimized",
+    "Mode": "Excel",
+    "Median": 1.0497641,
+    "Min": 1.0146804999999999,
+    "Max": 1.1784529,
+    "Count": 3
+  },
+  {
+    "Fixture": "Light",
+    "Variant": "Optimized",
+    "Mode": "File",
+    "Median": 1.0888826,
+    "Min": 1.0857335,
+    "Max": 1.1031807,
+    "Count": 3
+  },
+  {
+    "Fixture": "Heavy1232_30",
+    "Variant": "Original",
+    "Mode": "Excel",
+    "Median": 9.061051899999999,
+    "Min": 8.6241607,
+    "Max": 9.498476199999999,
+    "Count": 3
+  },
+  {
+    "Fixture": "Heavy1232_30",
+    "Variant": "Original",
+    "Mode": "File",
+    "Median": 7.4995758,
+    "Min": 7.0740484,
+    "Max": 7.6543334,
+    "Count": 3
+  },
+  {
+    "Fixture": "Heavy1232_30",
+    "Variant": "Optimized",
+    "Mode": "Excel",
+    "Median": 9.1370083,
+    "Min": 8.833565499999999,
+    "Max": 9.2663028,
+    "Count": 3
+  },
+  {
+    "Fixture": "Heavy1232_30",
+    "Variant": "Optimized",
+    "Mode": "File",
+    "Median": 7.275312,
+    "Min": 7.203904199999999,
+    "Max": 7.6974607,
+    "Count": 3
+  }
+]

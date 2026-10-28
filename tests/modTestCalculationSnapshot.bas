@@ -1227,6 +1227,18 @@ Private Sub TestSnapshotFileGeometryAuthority(ByVal extension As String)
         path = store.SnapshotPath(ThisWorkbook)
         TestSnapshotCheck CStr(geometryMode) & ".message.formed.File", InStr(message, "Сечение сформировано и сохранено в файле «" & token & ".ndm».") = 1
         Set preview = store.LoadFile(ThisWorkbook)
+        Dim sheetRunCell As Object: Set sheetRunCell = ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Offset(1, 0)
+        Dim previousSheetRun As Variant: previousSheetRun = sheetRunCell.Value2
+        sheetRunCell.Value2 = -1# ' Справочная геометрия намеренно относится к другому запуску; источник File обязан оставаться самодостаточным.
+        Dim staleRunError As Long
+        On Error Resume Next
+        Err.Clear
+        Set beforeModel = ReadFormedSectionFromResults(ThisWorkbook)
+        staleRunError = Err.Number
+        Err.Clear
+        On Error GoTo 0
+        sheetRunCell.Value2 = previousSheetRun
+        TestSnapshotCheck CStr(geometryMode) & ".source.fileIgnoresStaleSheetRunID", staleRunError = 0
         store.ClearReference ThisWorkbook ' Имя и File достаточны и для GeometryPreview; предварительное обновление не требуется.
         Set beforeModel = ReadFormedSectionFromResults(ThisWorkbook, True)
         geometrySource = beforeModel.SourceType

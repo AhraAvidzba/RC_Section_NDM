@@ -1,0 +1,13 @@
+{
+  "Status": "REVIEWED",
+  "LargeWorksheetDataTransfers": "One rectangular Value2 array per table; seven assignments observed for seven lower tables",
+  "ExtentReads": "Blocks of 1024 up to 32768 cells, then memory scan",
+  "SnapshotNumericIO": "Contiguous Double arrays per encoded column",
+  "SnapshotSmallIO": "64 KiB read/write buffers; large requests go directly to Windows",
+  "PerRowWorksheetDataIOFoundInExaminedSnapshotPaths": false,
+  "PerCellPhysicalFileIOFound": false,
+  "ScalarExceptions": ["elapsed time", "single selected combination", "table headings"],
+  "Graphics": "Individual chart shapes remain per element; they are output graphics rather than repeated reading of element data",
+  "ConfirmedFileSourceLeakFixed": "ReadSavedSectionContours compared file contour RunID with physical Results geometry cell",
+  "NoChangesToCodecMathUnitsTolerances": true
+}

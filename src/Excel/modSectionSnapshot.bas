@@ -14,6 +14,23 @@ Private mSnapshotReadWorkbook As Object ' Книга, которой прина�
 Private mSnapshotReadGeometryOnly As Boolean ' Формирование модели читает общую геометрию; экспорт также получает LC из полного снимка.
 Private mSnapshotTableReadCount As Long ' ДЛЯ ТЕСТОВ: число загрузок целых таблиц; чтения при поиске границ сюда не входят.
 
+' Положение и единицы общих колонок одной неизменяемой матрицы проверяются один раз.
+' Числовые значения каждой строки по-прежнему проходят отдельную строгую проверку.
+Private Type TSavedBoundaryLayout
+    XColumn As Long
+    YColumn As Long
+    AreaColumn As Long
+    IxColumn As Long
+    IyColumn As Long
+    IxyColumn As Long
+    WidthColumn As Long
+    HeightColumn As Long
+    RotationColumn As Long
+    LengthUnit As String
+    AreaUnit As String
+    InertiaUnit As String
+End Type
+
 ' Восстанавливает расчётную модель из обязательных координат, площадей,
 ' инерций и контуров единого источника: выбранного файла либо Results, в мм, мм2 и мм4. При includeOptionalData=True
 ' дополнительно читает JSON происхождения и RecipeTrace; для расчёта они не требуются.
@@ -288,12 +305,21 @@ Public Function ReadConcreteBoundaryMap(ByRef boundaryData As Variant, ByRef geo
     Next row
     On Error GoTo 0
     Dim item As Variant, region As CConcreteRegion, query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim loopNames As Object, actualLoopNames As Object
+    Set loopNames = CreateObject("Scripting.Dictionary"): loopNames.CompareMode = vbBinaryCompare
+    Set actualLoopNames = CreateObject("Scripting.Dictionary"): actualLoopNames.CompareMode = vbBinaryCompare
+    Dim layout As TSavedBoundaryLayout, layoutReady As Boolean ' Один заголовок для всех элементов этого чтения; между действиями ничего не кэшируется.
+
     For Each item In required.Keys
         If Not groups.Exists(CStr(item)) Then SavedBoundaryError "Для бетонного элемента " & CStr(item) & " отсутствует обязательная фактическая граница.", sourceReference, 1, 18, boundaryAnchor
         Set contours = groups.Item(CStr(item))
         On Error GoTo InvalidBoundary
-        Set region = SavedConcreteRegion(contours, query)
-        ValidateSavedBoundaryProperties region, geometryData, CLng(rows.Item(CStr(item))), geometryAnchor
+        Set region = SavedConcreteRegion(contours, query, loopNames, actualLoopNames)
+        If Not layoutReady Then
+            ReadSavedBoundaryLayout geometryData, geometryAnchor, layout
+            layoutReady = True
+        End If
+        ValidateSavedBoundaryProperties region, geometryData, CLng(rows.Item(CStr(item))), geometryAnchor, query, layout
         On Error GoTo 0
         result.Add CStr(item), region
     Next item
@@ -361,7 +387,8 @@ End Sub
 ' Собирает область строгим общим валидатором, без нормализации повреждений.
 ' Сохранённые LoopID и роли сверяются с фактической вложенностью замкнутых
 ' границ; окружность разворачивается общим ядром в четыре точные дуги.
-Private Function SavedConcreteRegion(ByVal contours As CSectionContours, ByVal query As CSectionGeometryQuery) As CConcreteRegion
+Private Function SavedConcreteRegion(ByVal contours As CSectionContours, ByVal query As CSectionGeometryQuery, _
+        ByVal loops As Object, ByVal actualLoops As Object) As CConcreteRegion
     Dim edges() As TRegionEdge, sourceLoop() As String, sourceRole() As String, count As Long
     ReDim edges(1 To contours.Count * 4): ReDim sourceLoop(1 To contours.Count * 4): ReDim sourceRole(1 To contours.Count * 4)
     Dim i As Long, j As Long, circleEdges() As TRegionEdge, circleCount As Long, circleRegion As CConcreteRegion
@@ -385,8 +412,7 @@ Private Function SavedConcreteRegion(ByVal contours As CSectionContours, ByVal q
         End If
     Next i
     Dim region As CConcreteRegion: Set region = query.BoundaryRegion(edges, count, "SavedConcreteBoundary")
-    Dim loops As Object: Set loops = CreateObject("Scripting.Dictionary"): loops.CompareMode = vbBinaryCompare
-    Dim actualLoops As Object: Set actualLoops = CreateObject("Scripting.Dictionary"): actualLoops.CompareMode = vbBinaryCompare
+    loops.RemoveAll: actualLoops.RemoveAll ' Эти рабочие словари принадлежат одному чтению и очищаются для каждого элемента; возвращаемая область от них не зависит.
     Dim actual() As TRegionEdge, actualCount As Long, loopID As Long, matched As Boolean, tolerance As Double
     region.CopyEdges actual, actualCount
     If actualCount <> count Then Err.Raise vbObjectError + 4383, "SavedConcreteRegion", "Число сегментов изменилось при проверке фактической границы."
@@ -434,39 +460,46 @@ End Function
 ' Сверяет A, центр и собственные инерции общим геометрическим валидатором.
 ' Единицы и числовые поля проверяются до вызова; наружный обработчик
 ' добавляет фактический адрес границы без создания временной модели.
-Private Sub ValidateSavedBoundaryProperties(ByVal region As CConcreteRegion, ByRef data As Variant, ByVal row As Long, ByVal anchor As Object)
-    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
-    Dim xColumn As Long: xColumn = ResultColumn(data, "X")
-    Dim yColumn As Long: yColumn = ResultColumn(data, "Y")
-    Dim areaColumn As Long: areaColumn = ResultColumn(data, "Area")
-    Dim ixColumn As Long: ixColumn = ResultColumn(data, "LocalIx")
-    Dim iyColumn As Long: iyColumn = ResultColumn(data, "LocalIy")
-    Dim ixyColumn As Long: ixyColumn = ResultColumn(data, "LocalIxy")
-    Dim widthColumn As Long: widthColumn = ResultColumn(data, "Width")
-    Dim heightColumn As Long: heightColumn = ResultColumn(data, "Height")
-    Dim rotationColumn As Long: rotationColumn = ResultColumn(data, "Rotation")
-    Dim lengthUnit As String: lengthUnit = SavedBoundaryHeaderUnit(data, xColumn, anchor)
-    Dim areaUnit As String: areaUnit = SavedBoundaryHeaderUnit(data, areaColumn, anchor)
-    Dim inertiaUnit As String: inertiaUnit = SavedBoundaryHeaderUnit(data, ixColumn, anchor)
-    If Right$(inertiaUnit, 1) <> "4" Then SavedBoundaryError "Собственная инерция требует единицы длины в четвёртой степени.", "rngNDMSectionGeometry", 1, ixColumn, anchor
-    Call SavedBoundaryHeaderUnit(data, yColumn, anchor, lengthUnit)
-    Call SavedBoundaryHeaderUnit(data, widthColumn, anchor, lengthUnit)
-    Call SavedBoundaryHeaderUnit(data, heightColumn, anchor, lengthUnit)
-    Call SavedBoundaryHeaderUnit(data, iyColumn, anchor, inertiaUnit)
-    Call SavedBoundaryHeaderUnit(data, ixyColumn, anchor, inertiaUnit)
-    Call SavedBoundaryHeaderUnit(data, rotationColumn, anchor, "rad")
-    If SavedBoundaryNumber(data, row, widthColumn, "rngNDMSectionGeometry", anchor) < 0# Then _
-        SavedBoundaryError "Ширина точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, widthColumn, anchor
-    If SavedBoundaryNumber(data, row, heightColumn, "rngNDMSectionGeometry", anchor) < 0# Then _
-        SavedBoundaryError "Высота точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, heightColumn, anchor
-    Call SavedBoundaryNumber(data, row, rotationColumn, "rngNDMSectionGeometry", anchor)
+' Проверяет заголовок одной матрицы до чтения свойств её первого точного элемента.
+' Адреса и требования совпадают с построчной проверкой; текущие единицы Config не используются.
+Private Sub ReadSavedBoundaryLayout(ByRef data As Variant, ByVal anchor As Object, ByRef layout As TSavedBoundaryLayout)
+    layout.XColumn = ResultColumn(data, "X")
+    layout.YColumn = ResultColumn(data, "Y")
+    layout.AreaColumn = ResultColumn(data, "Area")
+    layout.IxColumn = ResultColumn(data, "LocalIx")
+    layout.IyColumn = ResultColumn(data, "LocalIy")
+    layout.IxyColumn = ResultColumn(data, "LocalIxy")
+    layout.WidthColumn = ResultColumn(data, "Width")
+    layout.HeightColumn = ResultColumn(data, "Height")
+    layout.RotationColumn = ResultColumn(data, "Rotation")
+    layout.LengthUnit = SavedBoundaryHeaderUnit(data, layout.XColumn, anchor)
+    layout.AreaUnit = SavedBoundaryHeaderUnit(data, layout.AreaColumn, anchor)
+    layout.InertiaUnit = SavedBoundaryHeaderUnit(data, layout.IxColumn, anchor)
+    If Right$(layout.InertiaUnit, 1) <> "4" Then SavedBoundaryError "Собственная инерция требует единицы длины в четвёртой степени.", "rngNDMSectionGeometry", 1, layout.IxColumn, anchor
+    Call SavedBoundaryHeaderUnit(data, layout.YColumn, anchor, layout.LengthUnit)
+    Call SavedBoundaryHeaderUnit(data, layout.WidthColumn, anchor, layout.LengthUnit)
+    Call SavedBoundaryHeaderUnit(data, layout.HeightColumn, anchor, layout.LengthUnit)
+    Call SavedBoundaryHeaderUnit(data, layout.IyColumn, anchor, layout.InertiaUnit)
+    Call SavedBoundaryHeaderUnit(data, layout.IxyColumn, anchor, layout.InertiaUnit)
+    Call SavedBoundaryHeaderUnit(data, layout.RotationColumn, anchor, "rad")
+End Sub
+
+' Сверяет каждую строку с точной границей тем же общим валидатором.
+' Общая шапка подготовлена для этого чтения; данные и числовые допуски не кэшируются.
+Private Sub ValidateSavedBoundaryProperties(ByVal region As CConcreteRegion, ByRef data As Variant, ByVal row As Long, ByVal anchor As Object, _
+        ByVal query As CSectionGeometryQuery, ByRef layout As TSavedBoundaryLayout)
+    If SavedBoundaryNumber(data, row, layout.WidthColumn, "rngNDMSectionGeometry", anchor) < 0# Then _
+        SavedBoundaryError "Ширина точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, layout.WidthColumn, anchor
+    If SavedBoundaryNumber(data, row, layout.HeightColumn, "rngNDMSectionGeometry", anchor) < 0# Then _
+        SavedBoundaryError "Высота точного элемента не может быть отрицательной.", "rngNDMSectionGeometry", row, layout.HeightColumn, anchor
+    Call SavedBoundaryNumber(data, row, layout.RotationColumn, "rngNDMSectionGeometry", anchor)
     query.ValidateBoundaryProperties region, _
-        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, xColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
-        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, yColumn, "rngNDMSectionGeometry", anchor), lengthUnit), _
-        OutputAreaToInternalByUnit(SavedBoundaryNumber(data, row, areaColumn, "rngNDMSectionGeometry", anchor), areaUnit), _
-        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, ixColumn, "rngNDMSectionGeometry", anchor), inertiaUnit), _
-        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, iyColumn, "rngNDMSectionGeometry", anchor), inertiaUnit), _
-        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, ixyColumn, "rngNDMSectionGeometry", anchor), inertiaUnit)
+        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.XColumn, "rngNDMSectionGeometry", anchor), layout.LengthUnit), _
+        OutputLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.YColumn, "rngNDMSectionGeometry", anchor), layout.LengthUnit), _
+        OutputAreaToInternalByUnit(SavedBoundaryNumber(data, row, layout.AreaColumn, "rngNDMSectionGeometry", anchor), layout.AreaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.IxColumn, "rngNDMSectionGeometry", anchor), layout.InertiaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.IyColumn, "rngNDMSectionGeometry", anchor), layout.InertiaUnit), _
+        OutputFourthPowerLengthToInternalByUnit(SavedBoundaryNumber(data, row, layout.IxyColumn, "rngNDMSectionGeometry", anchor), layout.InertiaUnit)
 End Sub
 
 ' Точная геометрия запрещает подстановку текущих единиц при пустой шапке.
@@ -546,9 +579,11 @@ Public Function ReadSavedSectionContours(ByVal workbook As Object, _
     Dim kind As String, id As String, loopID As String, role As String, source As String, comment As String, unitText As String
     Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, radius As Double, sweep As Double, angle As Double
     Dim ids As Object: Set ids = CreateObject("Scripting.Dictionary")
-    Dim snapshotRun As Variant, geometryAnchor As Object
-    Set geometryAnchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
-    If CStr(geometryAnchor.Value2) = "RunID" Then snapshotRun = geometryAnchor.Offset(1, 0).Value2
+    Dim snapshotRun As Variant, geometryData As Variant
+    geometryData = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry") ' Номер запуска берётся из того же источника Excel/File, что и контуры; справочный Results в File не участвует.
+    If HasResultTableRows(geometryData) Then
+        If CStr(geometryData(1, 1)) = "RunID" Then snapshotRun = geometryData(2, 1)
+    End If
     For row = 2 To UBound(data, 1)
         If IsError(data(row, 1)) Or IsNull(data(row, 1)) Then GoTo InvalidRow
         If Len(CStr(data(row, 1))) = 0 Then GoTo InvalidRow

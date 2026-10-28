@@ -1,0 +1,363 @@
+{
+  "Status": "PASS_DIRECTED_ACTION_LATENCY_AND_FILE_SOURCE",
+  "Scope": "Short directed performance/source checks only; no new full ON/OFF, UI or Focused run",
+  "SourceInputs": "Original user-saved workbook A907AF64... preserved in local backup; all non-VBA ZIP parts retained in published workbook",
+  "FinalDirected": {
+    "No": "FileAuthority125/0; Boundaries123/0; Preview62/0",
+    "Yes": "FileAuthority125/0; Boundaries123/0; Preview62/0",
+    "TotalPassed": 620,
+    "Failed": 0
+  },
+  "EarlierOptimizationGate": {
+    "No": "123/0 + 62/0 + Snapshot682/0",
+    "Yes": "123/0 + 62/0 + Snapshot682/0"
+  },
+  "StaleRunIDRegressions": [
+    {
+      "File": "Final_RunFileGeometryAuthorityTests_No.txt",
+      "Assertion": "PASS Adaptive.source.fileIgnoresStaleSheetRunID"
+    },
+    {
+      "File": "Final_RunFileGeometryAuthorityTests_No.txt",
+      "Assertion": "PASS Contour.source.fileIgnoresStaleSheetRunID"
+    },
+    {
+      "File": "Final_RunFileGeometryAuthorityTests_Yes.txt",
+      "Assertion": "PASS Adaptive.source.fileIgnoresStaleSheetRunID"
+    },
+    {
+      "File": "Final_RunFileGeometryAuthorityTests_Yes.txt",
+      "Assertion": "PASS Contour.source.fileIgnoresStaleSheetRunID"
+    }
+  ],
+  "NumericalParity": [
+    {
+      "Status": "PASS",
+      "Tables": [
+        {
+          "Key": "Summary",
+          "Rows": 42,
+          "Columns": 33,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Strength.Headers",
+          "Rows": 4,
+          "Columns": 49,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Strength.Data",
+          "Rows": 30,
+          "Columns": 49,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Cracks.Headers",
+          "Rows": 4,
+          "Columns": 72,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Cracks.Data",
+          "Rows": 30,
+          "Columns": 72,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Stability.Labels",
+          "Rows": 1,
+          "Columns": 84,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Stability.Data",
+          "Rows": 30,
+          "Columns": 84,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMSectionGeometry",
+          "Rows": 124,
+          "Columns": 16,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMSectionContours",
+          "Rows": 8,
+          "Columns": 17,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMElementGeometry",
+          "Rows": 383,
+          "Columns": 18,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMElementResults",
+          "Rows": 247,
+          "Columns": 9,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMSectionProperties",
+          "Rows": 69,
+          "Columns": 6,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "LoadCase.Properties",
+          "Rows": 54,
+          "Columns": 6,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMMaterialDiagrams",
+          "Rows": 25,
+          "Columns": 11,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMSectionAnnotations",
+          "Rows": 1,
+          "Columns": 24,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "LoadCase.Annotations",
+          "Rows": 1,
+          "Columns": 24,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Calculation.Profiles",
+          "Rows": 32,
+          "Columns": 7,
+          "AllValuesEqual": true
+        }
+      ],
+      "CellsCompared": 20626,
+      "BaselineSHA256": "5DF59A7076A8DA104CFE42D85A846F1DE1020C6BC3CDA095EFB6ED77CA4D7A15",
+      "CandidateSHA256": "395611B6E7937D5DCE6DBBF93F8A0DD084638D54CEF1C9210A9F01AB6D0967B3",
+      "RunIDsInternallyConsistent": true,
+      "Exclusions": [
+        "RunID between separate calculations",
+        "Elapsed time"
+      ],
+      "NumberEquivalence": "Only the sign of exact zero; every other Double bit is unchanged"
+    },
+    {
+      "Status": "PASS",
+      "Tables": [
+        {
+          "Key": "Summary",
+          "Rows": 42,
+          "Columns": 33,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Strength.Headers",
+          "Rows": 4,
+          "Columns": 49,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Strength.Data",
+          "Rows": 30,
+          "Columns": 49,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Cracks.Headers",
+          "Rows": 4,
+          "Columns": 72,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Cracks.Data",
+          "Rows": 30,
+          "Columns": 72,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Stability.Labels",
+          "Rows": 1,
+          "Columns": 84,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Stability.Data",
+          "Rows": 30,
+          "Columns": 84,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMSectionGeometry",
+          "Rows": 1241,
+          "Columns": 16,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMSectionContours",
+          "Rows": 13,
+          "Columns": 17,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMElementGeometry",
+          "Rows": 1,
+          "Columns": 18,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMElementResults",
+          "Rows": 114081,
+          "Columns": 9,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMSectionProperties",
+          "Rows": 69,
+          "Columns": 6,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "LoadCase.Properties",
+          "Rows": 1891,
+          "Columns": 6,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMMaterialDiagrams",
+          "Rows": 51,
+          "Columns": 11,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "rngNDMSectionAnnotations",
+          "Rows": 4,
+          "Columns": 24,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "LoadCase.Annotations",
+          "Rows": 222,
+          "Columns": 24,
+          "AllValuesEqual": true
+        },
+        {
+          "Key": "Calculation.Profiles",
+          "Rows": 32,
+          "Columns": 7,
+          "AllValuesEqual": true
+        }
+      ],
+      "CellsCompared": 1072897,
+      "BaselineSHA256": "AF9B07871BCAC11574C189FDAA37D324836954703DDD49D825D0B965708AF93F",
+      "CandidateSHA256": "F28AF06A9032099093651AE357B0BC1F25B82035FBEC67BD1D6FA4ACCD32DED9",
+      "RunIDsInternallyConsistent": true,
+      "Exclusions": [
+        "RunID between separate calculations",
+        "Elapsed time"
+      ],
+      "NumberEquivalence": "Only the sign of exact zero; every other Double bit is unchanged"
+    }
+  ],
+  "Native": {
+    "Passed": true,
+    "Components": 181,
+    "Changed": [
+      "modSectionSnapshot",
+      "modTestCalculationSnapshot"
+    ],
+    "Other179EqualExceptIdentifierCase": true,
+    "NumbersStringsCommentsComparedLiterally": true,
+    "MainReadyAll181LiteralEqual": true,
+    "RawUnchanged": 127
+  },
+  "Publication": {
+    "Status": "PUBLISHED_LOCALLY_DIRECTED_PASS",
+    "Books": [
+      {
+        "Case": "Main",
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+        "BeforeSHA256": "A907AF64246A2CD9E5C174561CCA7A6502D2C14B25808083707DF1869C5DA1C5",
+        "AfterSHA256": "8E2A5784354054953C3CE82A9FAAF88B7BE5A75B78430B69B0E950E82A69275B",
+        "NonVBAPartsPreserved": 110
+      },
+      {
+        "Case": "Ready",
+        "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM.xlsm",
+        "BeforeSHA256": "169EEDE3BEA52F839C41FA4FE629DDF423728766F8128ABF3341A4DD2C53B9EC",
+        "AfterSHA256": "EF2BAFDAF35D24F4A93983C8DB6204386FE400A3D723E86022ADCEF576EF2483",
+        "NonVBAPartsPreserved": 111
+      }
+    ],
+    "AllCodeSHA256": "7C29935735F2FCBAA8826DC0B2AD7D96DF918F5313A824426BEA95B2FBC5D496",
+    "SourceComponents": 175,
+    "DocumentModules": 6,
+    "OwnNativeIdentitiesAbsent": true,
+    "AtUTC": "2026-10-28T13:16:51.2836764+00:00"
+  },
+  "AllOwnNativeProcessesClosed": true,
+  "ForceKilled": false,
+  "MathUnitsTolerancesChanged": false,
+  "PersistentTrustOrHashCacheAdded": false,
+  "OriginalFileFailureRetained": true,
+  "CurrentFullPASSAssigned": false,
+  "Branch": "codex/action-latency",
+  "BaseCode": "dd7bdef3d8b5226edb8a278f671ac820b73fb97d",
+  "PushProof": "Recorded after commit/push in local PushVerification.json; main not merged without acceptance",
+  "PublishedExactPackageSmoke": {
+    "PublishedSHA256": "8E2A5784354054953C3CE82A9FAAF88B7BE5A75B78430B69B0E950E82A69275B",
+    "ImportedOrInstrumentedCode": false,
+    "Storage": "Excel",
+    "UserMeshStepMode": "Auto 0.05",
+    "ConcreteElements": 342,
+    "Rebar": 28,
+    "Measurements": [
+      {
+        "Fixture": "UserSaved_Auto005",
+        "Action": "Calculate",
+        "Median": 2.1348106,
+        "Min": 1.9947241999999998,
+        "Max": 2.2149478,
+        "Count": 3
+      },
+      {
+        "Fixture": "Published_UserSaved_Auto005",
+        "Action": "Form",
+        "Median": 1.1104226,
+        "Min": 1.0829909,
+        "Max": 1.1296377,
+        "Count": 3
+      },
+      {
+        "Fixture": "Published_UserSaved_Auto005_Reformed",
+        "Action": "Calculate",
+        "Median": 2.0275282999999997,
+        "Min": 1.9397289999999998,
+        "Max": 2.1424019999999997,
+        "Count": 3
+      }
+    ],
+    "Closure": {
+      "PID": 17796,
+      "StartTicksUTC": "639287907259910019",
+      "Absent": true,
+      "ForceKilled": false
+    }
+  },
+  "OriginalFileLeakIndependentlyConfirmed": {
+    "Status": "CONFIRMED_ORIGINAL_FILE_SOURCE_MIX",
+    "OriginalFileSHA256": "C42899D24456AE53E19463A54FA32CF922860B241346D1260199EE010F173FAC",
+    "FileRunID": 46323.66409722222,
+    "PhysicalResultsRunID": 46323.6640625,
+    "PhysicalCell": "Results!A157",
+    "OriginalCode": "ReadSavedSectionContours compared file contour rows against physical geometryAnchor.Offset(1,0).Value2",
+    "ValidSelectedFileWasRejectedDueToStaleReferenceSheet": true,
+    "Fix": "Use ReadAnchoredResultTable for the geometry RunID, same source as contour rows",
+    "Regression": "Adaptive/Contour stale-sheet assertions pass No/Yes; full numerical outputs preserved"
+  }
+}
