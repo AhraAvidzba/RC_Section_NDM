@@ -1,0 +1,67 @@
+{
+  "Status": "PASS_HEAVY_15_STORAGE_COMPARISON_ONLY",
+  "Concrete": 1232,
+  "Rebar": 8,
+  "Combinations": 15,
+  "LoadIDs": [
+    "PERF_01",
+    "PERF_02",
+    "PERF_03",
+    "PERF_04",
+    "PERF_05",
+    "PERF_06",
+    "PERF_07",
+    "PERF_08",
+    "PERF_09",
+    "PERF_10",
+    "PERF_11",
+    "PERF_12",
+    "PERF_13",
+    "PERF_15",
+    "PERF_16"
+  ],
+  "ConcreteGeometry": "Saved rectangular cells from the historical heavy circular section; no new generation",
+  "PlotEnabled": true,
+  "GenerationIncluded": false,
+  "SameCurrentVBA": true,
+  "NumericalIEEE64Exact": true,
+  "GeometrySourceMetadataExact": true,
+  "DocumentedBooleanMetadataRepresentationOnly": true,
+  "BooleanMetadataRows": [
+    78,
+    78,
+    78,
+    78
+  ],
+  "RawPhysicalSHA256": [
+    "381CAC9D71916E601E262D60D908E23E211CD6DE47F5D19EC2143BBAB64AB21B",
+    "D03A79185B8B0CE8F2EAC0CA06EBF7A923C9A3A979BD8B16E37FC306F150898E",
+    "D03A79185B8B0CE8F2EAC0CA06EBF7A923C9A3A979BD8B16E37FC306F150898E",
+    "381CAC9D71916E601E262D60D908E23E211CD6DE47F5D19EC2143BBAB64AB21B"
+  ],
+  "ComparedDataBytes": 7704454,
+  "CanonicalSHA256": "4635460E7D7835FA25EA16E85E16A84890D10ADA92E00AD4808FA3AD46B523B1",
+  "Measurements": {
+    "Excel": {
+      "WarmMedianSeconds": 4.8615713,
+      "MinimumSeconds": 4.6006826,
+      "MaximumSeconds": 5.007412899999999,
+      "Samples": 10,
+      "QueueMedianSeconds": 0.08715004999999999
+    },
+    "File": {
+      "WarmMedianSeconds": 4.15266475,
+      "MinimumSeconds": 3.8849196999999998,
+      "MaximumSeconds": 4.4464540999999995,
+      "Samples": 10,
+      "QueueMedianSeconds": 0.09362105
+    }
+  },
+  "FileTimeChangePercent": -14.581840031843207,
+  "FullPass": false,
+  "OriginalUserBookChanged": false,
+  "PreparationTrialsPreserved": {
+    "Heavy15_01": "Wrong fixture, 474/28 and one active LC, excluded",
+    "Heavy15_02": "Conversion helper recreated source metadata, corrected by preserving the saved geometry matrix; excluded from final timing"
+  }
+}

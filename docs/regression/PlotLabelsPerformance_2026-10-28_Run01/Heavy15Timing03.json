@@ -1,0 +1,218 @@
+﻿[
+    {
+        "Version":  "Excel",
+        "Pass":  1,
+        "Mode":  "SavedHeavy",
+        "Repeat":  1,
+        "Seconds":  5.5905252999999995,
+        "QueueDrainSeconds":  0.0916601,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 5.59 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  1,
+        "Mode":  "SavedHeavy",
+        "Repeat":  2,
+        "Seconds":  4.9438195999999994,
+        "QueueDrainSeconds":  0.0870811,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.93 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  1,
+        "Mode":  "SavedHeavy",
+        "Repeat":  3,
+        "Seconds":  4.6924661,
+        "QueueDrainSeconds":  0.0868752,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.68 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  1,
+        "Mode":  "SavedHeavy",
+        "Repeat":  4,
+        "Seconds":  4.8798509999999995,
+        "QueueDrainSeconds":  0.0859487,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.87 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  1,
+        "Mode":  "SavedHeavy",
+        "Repeat":  5,
+        "Seconds":  4.6981898,
+        "QueueDrainSeconds":  0.086423199999999992,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.68 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  1,
+        "Mode":  "SavedHeavy",
+        "Repeat":  6,
+        "Seconds":  5.0074128999999994,
+        "QueueDrainSeconds":  0.12151569999999999,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.99 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "File",
+        "Pass":  2,
+        "Mode":  "SavedHeavy",
+        "Repeat":  1,
+        "Seconds":  5.2975245,
+        "QueueDrainSeconds":  0.0923461,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 5.29 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  2,
+        "Mode":  "SavedHeavy",
+        "Repeat":  2,
+        "Seconds":  4.1495125,
+        "QueueDrainSeconds":  0.0899946,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.15 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  2,
+        "Mode":  "SavedHeavy",
+        "Repeat":  3,
+        "Seconds":  4.1350399,
+        "QueueDrainSeconds":  0.084398,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.13 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  2,
+        "Mode":  "SavedHeavy",
+        "Repeat":  4,
+        "Seconds":  3.8849196999999998,
+        "QueueDrainSeconds":  0.0867367,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 3.88 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  2,
+        "Mode":  "SavedHeavy",
+        "Repeat":  5,
+        "Seconds":  4.234399,
+        "QueueDrainSeconds":  0.084044899999999992,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.23 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  2,
+        "Mode":  "SavedHeavy",
+        "Repeat":  6,
+        "Seconds":  3.9270384,
+        "QueueDrainSeconds":  0.1031609,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 3.92 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  3,
+        "Mode":  "SavedHeavy",
+        "Repeat":  1,
+        "Seconds":  4.9851133999999995,
+        "QueueDrainSeconds":  0.086931399999999992,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.98 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  3,
+        "Mode":  "SavedHeavy",
+        "Repeat":  2,
+        "Seconds":  4.2631302999999994,
+        "QueueDrainSeconds":  0.1015195,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.26 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  3,
+        "Mode":  "SavedHeavy",
+        "Repeat":  3,
+        "Seconds":  4.2208849,
+        "QueueDrainSeconds":  0.0915314,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.21 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  3,
+        "Mode":  "SavedHeavy",
+        "Repeat":  4,
+        "Seconds":  4.1392270999999994,
+        "QueueDrainSeconds":  0.10493849999999999,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.13 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  3,
+        "Mode":  "SavedHeavy",
+        "Repeat":  5,
+        "Seconds":  4.155817,
+        "QueueDrainSeconds":  0.12238479999999999,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.15 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "File",
+        "Pass":  3,
+        "Mode":  "SavedHeavy",
+        "Repeat":  6,
+        "Seconds":  4.4464540999999995,
+        "QueueDrainSeconds":  0.0957107,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Heavy1232_30_Optimized.ndm».\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.42 с.\r\n\r\nДанные сохранены в файле «Heavy1232_30_Optimized.ndm»."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  4,
+        "Mode":  "SavedHeavy",
+        "Repeat":  1,
+        "Seconds":  5.5960804999999993,
+        "QueueDrainSeconds":  0.0980605,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 5.59 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  4,
+        "Mode":  "SavedHeavy",
+        "Repeat":  2,
+        "Seconds":  4.6006826,
+        "QueueDrainSeconds":  0.094977499999999992,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.59 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  4,
+        "Mode":  "SavedHeavy",
+        "Repeat":  3,
+        "Seconds":  4.8852154,
+        "QueueDrainSeconds":  0.084972999999999993,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.88 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  4,
+        "Mode":  "SavedHeavy",
+        "Repeat":  4,
+        "Seconds":  4.9561765,
+        "QueueDrainSeconds":  0.087218999999999991,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.95 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  4,
+        "Mode":  "SavedHeavy",
+        "Repeat":  5,
+        "Seconds":  4.8432916,
+        "QueueDrainSeconds":  0.0916235,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.84 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Version":  "Excel",
+        "Pass":  4,
+        "Mode":  "SavedHeavy",
+        "Repeat":  6,
+        "Seconds":  4.7083983,
+        "QueueDrainSeconds":  0.11804909999999999,
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 15.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 4.70 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    }
+]
