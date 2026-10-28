@@ -1,0 +1,103 @@
+{
+  "Status": "PASS_EXACT_PHYSICAL_PARITY_AND_NATIVE_TIMING",
+  "Instrumented": false,
+  "Order": [
+    "Baseline",
+    "Candidate",
+    "Candidate",
+    "Baseline"
+  ],
+  "IgnoredPhysicalFields": [
+    "RunID only"
+  ],
+  "Tables": [
+    "rngNDMSectionGeometry",
+    "rngNDMSectionProperties",
+    "rngNDMMaterialDiagrams",
+    "rngNDMElementResults"
+  ],
+  "AnnotationsComparedSeparately": true,
+  "Measurements": {
+    "Excel/Adaptive": {
+      "ExactTableSHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A",
+      "ComparedDumpBytes": 347223,
+      "Counts": "474/28",
+      "Baseline": {
+        "WarmMedianSeconds": 1.03292205,
+        "MinimumSeconds": 0.9519983,
+        "MaximumSeconds": 1.3328076,
+        "QueueMedianSeconds": 0.062324399999999995,
+        "Samples": 10
+      },
+      "Candidate": {
+        "WarmMedianSeconds": 1.0476902,
+        "MinimumSeconds": 1.0285062,
+        "MaximumSeconds": 1.1626414,
+        "QueueMedianSeconds": 0.052143999999999996,
+        "Samples": 10
+      },
+      "SpeedChangePercent": 1.4297448679694513
+    },
+    "Excel/Contour": {
+      "ExactTableSHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044",
+      "ComparedDumpBytes": 275804,
+      "Counts": "342/28",
+      "Baseline": {
+        "WarmMedianSeconds": 1.44977635,
+        "MinimumSeconds": 1.3489516,
+        "MaximumSeconds": 1.5907962999999998,
+        "QueueMedianSeconds": 0.04567225,
+        "Samples": 10
+      },
+      "Candidate": {
+        "WarmMedianSeconds": 1.37704315,
+        "MinimumSeconds": 1.2075775,
+        "MaximumSeconds": 1.6575136,
+        "QueueMedianSeconds": 0.05232085,
+        "Samples": 10
+      },
+      "SpeedChangePercent": -5.016856565497163
+    },
+    "File/Adaptive": {
+      "ExactTableSHA256": "413290F938F1ABCD3D78AE47582269EC1F2FCA3FC11614FA87F9A43D2181CFB1",
+      "ComparedDumpBytes": 333497,
+      "Counts": "474/28",
+      "Baseline": {
+        "WarmMedianSeconds": 1.2456584999999998,
+        "MinimumSeconds": 1.134504,
+        "MaximumSeconds": 1.3642569999999998,
+        "QueueMedianSeconds": 0.04990835,
+        "Samples": 10
+      },
+      "Candidate": {
+        "WarmMedianSeconds": 1.2371753,
+        "MinimumSeconds": 1.148712,
+        "MaximumSeconds": 1.3679617,
+        "QueueMedianSeconds": 0.0504464,
+        "Samples": 10
+      },
+      "SpeedChangePercent": -0.6810213232599227
+    },
+    "File/Contour": {
+      "ExactTableSHA256": "259FD2DA82F3B506423DBD89444D62D52C5CBFCF31270FEFBEA94C828907771B",
+      "ComparedDumpBytes": 265510,
+      "Counts": "342/28",
+      "Baseline": {
+        "WarmMedianSeconds": 1.5021787,
+        "MinimumSeconds": 1.3967749999999999,
+        "MaximumSeconds": 1.9282712,
+        "QueueMedianSeconds": 0.044731099999999996,
+        "Samples": 10
+      },
+      "Candidate": {
+        "WarmMedianSeconds": 1.4779904,
+        "MinimumSeconds": 1.3651754,
+        "MaximumSeconds": 1.6285497999999998,
+        "QueueMedianSeconds": 0.04590925,
+        "Samples": 10
+      },
+      "SpeedChangePercent": -1.610214550372735
+    }
+  },
+  "FullPass": false
+}

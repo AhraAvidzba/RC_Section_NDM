@@ -26,12 +26,41 @@ Public Function RunElementGeometryTests() As String
     TestTangentArcEndpoints stats
     TestHollowTangentCells stats
     TestSmallArcSegment stats
+    TestOwnerReadQueries stats
     stats.Report = stats.Report & "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
     RunElementGeometryTests = stats.Report
     Exit Function
 Failed:
     RunElementGeometryTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; source=" & Err.Source & "; description=" & Err.Description & vbCrLf
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет запрос владельца с прежним запросом независимой Geometry для прямоугольника, дуг и отверстия; выдаваемая наружу область остаётся копией.
+Private Sub TestOwnerReadQueries(ByRef stats As TTestStats)
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim regions As Collection: Set regions = New Collection
+    regions.Add query.RectangleRegion(17#, -9#, 50#, 100#, 0.37)
+    regions.Add query.CircleRegion(-11#, 7#, 35#)
+    regions.Add query.SubtractContainedRegion(query.CircleRegion(0#, 0#, 100#), query.CircleRegion(20#, 0#, 15#))
+    Dim item As Variant, region As CConcreteRegion, model As CSectionModel, properties As TGeometryProperties
+    Dim axis As Variant, minimum As Double, maximum As Double, oldMinimum As Double, oldMaximum As Double
+    Dim cx As Double, cy As Double, width As Double, height As Double, rotation As Double, number As Long
+    For Each item In regions
+        Set region = item: query.RegionProperties region, properties
+        Set model = New CSectionModel
+        model.AddConcreteElement properties.CentroidX, properties.CentroidY, properties.Area, shapeType:="Contour", _
+            localIx:=properties.Ixc, localIy:=properties.Iyc, localIxy:=properties.Ixyc, exactRegion:=region
+        number = number + 1
+        For Each axis In Array(Array(1#, 0#), Array(0#, 1#), Array(0.6, 0.8), Array(-0.8, 0.6))
+            model.ConcreteProjectionBounds 1, CDbl(axis(0)), CDbl(axis(1)), minimum, maximum
+            query.ProjectionBounds model.ConcreteGeometry(1), CDbl(axis(0)), CDbl(axis(1)), oldMinimum, oldMaximum
+            TestTrue stats, "ownerQuery.min." & CStr(number), minimum = oldMinimum
+            TestTrue stats, "ownerQuery.max." & CStr(number), maximum = oldMaximum
+        Next axis
+        TestTrue stats, "ownerQuery.rectangle." & CStr(number), _
+            model.ConcreteBoundaryRectangle(1, width, height, rotation) = query.TryRectangle(model.ConcreteGeometry(1), cx, cy, width, height, rotation)
+    Next item
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет полный перенос точных ячеек через CFiberMeshBuilder и сборщик модели,

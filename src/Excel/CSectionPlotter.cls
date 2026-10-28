@@ -600,7 +600,7 @@ Private Sub FormatElementShapes(ByVal indexes As Collection, ByVal fillColor As 
     shapes.Line.Visible = True
     If transparentLine Then shapes.Line.Transparency = 1# Else shapes.Line.Transparency = 0#
     shapes.Line.ForeColor.RGB = lineColor
-    shapes.Line.Weight = weight
+    If transparentLine Then shapes.Line.Weight = 0.01 Else shapes.Line.Weight = weight ' Тонкая прозрачная обводка скрывает служебные мосты и уменьшает область сглаживания Excel.
 End Sub
 
 ' Рисует Contour по фактической границе; прямоугольникам и одноконтурным фигурам задаёт одинаковую тонкую обводку.
@@ -1383,7 +1383,8 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
     If rebarLabelsEnabled Then
         For i = 1 To data.AnnotationCount
             If StrComp(data.AnnotationType(i), "REBAR_ANNOTATION", vbTextCompare) = 0 Or _
-                    StrComp(data.AnnotationType(i), "REBAR_GLOBAL_ANNOTATION", vbTextCompare) = 0 Then
+                    StrComp(data.AnnotationType(i), "REBAR_GLOBAL_ANNOTATION", vbTextCompare) = 0 Or _
+                    StrComp(data.AnnotationType(i), "REBAR_LOCAL_ANNOTATION", vbTextCompare) = 0 Then
                 layout.AddRebarLabel data.AnnotationStartX(i), data.AnnotationStartY(i), _
                     data.AnnotationEndX(i), data.AnnotationEndY(i), data.AnnotationNormalX(i), _
                     data.AnnotationNormalY(i), data.AnnotationText(i), data.AnnotationBoundaryDistance(i)

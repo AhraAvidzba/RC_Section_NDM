@@ -618,7 +618,7 @@ Private Sub TestDisabledSides(ByVal fixture As String, ByVal tableName As String
             Next i
             dimensions = 0
             For i = 1 To model.AnnotationCount
-                If model.Annotations.AnnotationType(i) = "REBAR_ANNOTATION" Then
+                If model.Annotations.AnnotationType(i) = "REBAR_ANNOTATION" Or model.Annotations.AnnotationType(i) = "REBAR_LOCAL_ANNOTATION" Then
                     key = Mid$(model.Annotations.AnnotationID(i), 7): labels.Add key, model.Annotations.Text(i)
                     TestCheck label & ".noEmptyLabel." & key, counts.Exists(key)
                 End If

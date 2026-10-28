@@ -49,7 +49,8 @@ Public Function TestFixtureAnnotatedLayout(ByVal definition As CSectionDefinitio
     builder.Build definition, layout, all, executor
     Set annotations = New CSectionAnnotations
     For i = 1 To all.Count
-        If all.AnnotationType(i) = "REBAR_ANNOTATION" Then TestFixtureCopyAnnotation all, i, annotations, 0#, 0#
+        If all.AnnotationType(i) = "REBAR_ANNOTATION" Or all.AnnotationType(i) = "REBAR_LOCAL_ANNOTATION" Then _
+            TestFixtureCopyAnnotation all, i, annotations, 0#, 0# ' Оба типа относятся к физической группе арматуры; локальный якорь уже расположен на границе своей части.
     Next i
     Set TestFixtureAnnotatedLayout = layout
 End Function

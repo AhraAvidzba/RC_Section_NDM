@@ -542,9 +542,8 @@ Public Function ConcreteBoundaryRectangle(ByVal index As Long, ByRef widthValue 
         ByRef heightValue As Double, ByRef rotationValue As Double) As Boolean
     CheckConcreteIndex index
     If mConcreteElements(index).HasExactGeometry Then
-        Dim query As CSectionGeometryQuery, centerX As Double, centerY As Double
-        Set query = New CSectionGeometryQuery
-        ConcreteBoundaryRectangle = query.TryRectangle(mConcreteElements(index).Geometry, centerX, centerY, widthValue, heightValue, rotationValue)
+        Dim centerX As Double, centerY As Double
+        ConcreteBoundaryRectangle = mConcreteElements(index).ExactRectangle(centerX, centerY, widthValue, heightValue, rotationValue)
         Exit Function
     End If
     Dim statusText As String
@@ -569,12 +568,11 @@ Public Sub ConcreteProjectionBounds(ByVal index As Long, ByVal axisX As Double, 
         ByRef minimum As Double, ByRef maximum As Double)
     CheckConcreteIndex index
     If mConcreteElements(index).HasExactGeometry Then
-        Dim query As CSectionGeometryQuery, axisNorm As Double, axisScale As Double
-        Set query = New CSectionGeometryQuery
+        Dim axisNorm As Double, axisScale As Double
         axisScale = GeomMax(Abs(axisX), Abs(axisY))
         If axisScale <= 0# Then Err.Raise vbObjectError + 5223, "CSectionModel", "Направление проекции бетонной ячейки имеет нулевую длину."
         axisNorm = axisScale * Sqr((axisX / axisScale) ^ 2 + (axisY / axisScale) ^ 2) ' Линейные коэффициенты ядра могут быть много меньше геометрического допуска, оставаясь ненулевыми.
-        query.ProjectionBounds mConcreteElements(index).Geometry, axisX / axisNorm, axisY / axisNorm, minimum, maximum
+        mConcreteElements(index).ExactProjectionBounds axisX / axisNorm, axisY / axisNorm, minimum, maximum
         minimum = minimum * axisNorm: maximum = maximum * axisNorm ' Общий запрос нормирует направление; линейная проекция ядра сохраняет его исходный масштаб.
     Else
         Dim centerProjection As Double, halfProjection As Double

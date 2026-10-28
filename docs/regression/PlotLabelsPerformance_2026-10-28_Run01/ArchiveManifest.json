@@ -1,0 +1,2163 @@
+{
+  "Files": 431,
+  "UncompressedBytes": 31918278,
+  "ArchiveBytes": 4977029,
+  "ArchiveSHA256": "3F80BB5F5E77C254F6C8264DAED565569B0AC8E67D125637B43D24817FCA91F3",
+  "Entries": [
+    {
+      "Path": "Evidence/AdaptiveClosure.json",
+      "Bytes": 123,
+      "SHA256": "D3932357AD98630DCEF7C461828CBACB931A25CC1DCB4B1EFB979568558B9C51"
+    },
+    {
+      "Path": "Evidence/AdaptiveOwnership.json",
+      "Bytes": 146,
+      "SHA256": "96F9E21E9703CD82591C292C0050257B10D9B66BE5BF1C60E56FB72E2AA740AF"
+    },
+    {
+      "Path": "Evidence/AllDirectedOwnClosures01.json",
+      "Bytes": 14386,
+      "SHA256": "9C404EC17823A3260323D1FE9417CAC1C9EF9E7F3E0DECE4C529CC01DF6AFE22"
+    },
+    {
+      "Path": "Evidence/CandidateAdaptiveClosure.json",
+      "Bytes": 122,
+      "SHA256": "593250484BA45228D90C6FED4D0FA85FD93A527D48FCF9CBF9E4EB031FDDB49A"
+    },
+    {
+      "Path": "Evidence/CandidateAdaptiveOwnership.json",
+      "Bytes": 146,
+      "SHA256": "3E71A7C44FEA66FC3848EE69DB5AA36A254EC702610673D4E226EFBBA6FB4FBF"
+    },
+    {
+      "Path": "Evidence/CandidateContourClosure.json",
+      "Bytes": 122,
+      "SHA256": "80C29B4B90D04D1424DB851427C6609DAD138DDCD6D42BBC9C8E38BD60EA6AD1"
+    },
+    {
+      "Path": "Evidence/CandidateContourOwnership.json",
+      "Bytes": 145,
+      "SHA256": "A7172D2D2FDE6EA48A5A134890423592273D01093FE8F0EBDFDF93DBDE4454CC"
+    },
+    {
+      "Path": "Evidence/CandidateProfileMeasurements02.json",
+      "Bytes": 219077,
+      "SHA256": "45517E9066757F47F86358733E3C26AF7C417C895F894DFC78BABE54BDD6EA10"
+    },
+    {
+      "Path": "Evidence/CandidateProfileMeasurements02_Part1.json",
+      "Bytes": 82584,
+      "SHA256": "0E71252188508F4F30B95D67755A1D9B3BFEF7250556F823B973461BB4E8E6AF"
+    },
+    {
+      "Path": "Evidence/CleanStructure.json",
+      "Bytes": 29751,
+      "SHA256": "0DB9AD38CDC128D916BDC95E07E604A017F4C6E1FCC6F5C73A692C7090AE5262"
+    },
+    {
+      "Path": "Evidence/ContourClosure.json",
+      "Bytes": 123,
+      "SHA256": "68D4F36B50767913BE5EE93A874289403D1ED2DC4A673A0A24CB3B7CC96AD552"
+    },
+    {
+      "Path": "Evidence/ContourOwnership.json",
+      "Bytes": 146,
+      "SHA256": "1D0D99E34192F47893F373EA5F2135E77096810D76DD1C867509502BCB40A10C"
+    },
+    {
+      "Path": "Evidence/DirectedPrimaryReview01.json",
+      "Bytes": 15612,
+      "SHA256": "A066092F214501ECF273F3C127AA107E6EF25B5737D9587A8047D4C3C48443FE"
+    },
+    {
+      "Path": "Evidence/FocusedVerifierPreflight01.txt",
+      "Bytes": 4001,
+      "SHA256": "CAC7AD6AE7B0EF4354861027A55B13C528D62ACFA5FA6F9040820E836DCF75BE"
+    },
+    {
+      "Path": "Evidence/FocusedVerifierPreflight02.txt",
+      "Bytes": 1947,
+      "SHA256": "29B5D02A285270407EF68297CFDF79B8680368888FE79267EAC50A680DB5082D"
+    },
+    {
+      "Path": "Evidence/FreshBuild01/Build.json",
+      "Bytes": 513,
+      "SHA256": "D0C799D6830278B562518F7285F9A6AEE78C20491EE2BA82285767F75A4968B5"
+    },
+    {
+      "Path": "Evidence/FreshBuild01/BuildOwnership.json",
+      "Bytes": 355,
+      "SHA256": "92CE0AB563C418746937FF8017708C3FDD212DBD1A6160A0D430E8FA7051F053"
+    },
+    {
+      "Path": "Evidence/FreshBuild01/MemoryBefore.json",
+      "Bytes": 134,
+      "SHA256": "9F417262C87909535C301A90007052B1DE1E8D45718DDA3A0527AD01FA73B0BB"
+    },
+    {
+      "Path": "Evidence/FreshBuild02/Build.json",
+      "Bytes": 513,
+      "SHA256": "BCF75F27DC626FE10533E2FB8C390FE7E465290EC5A33E8F6C4492A70C3F202F"
+    },
+    {
+      "Path": "Evidence/FreshBuild02/BuildOwnership.json",
+      "Bytes": 355,
+      "SHA256": "9490C66590C95897458E03C88CC7246963E287C9ED2A2C337BF0DC0FD993343A"
+    },
+    {
+      "Path": "Evidence/FreshBuild02/MemoryBefore.json",
+      "Bytes": 134,
+      "SHA256": "8773ACA88F0DFEFEBC9608D32B7A3D43595CA31A0076B5A16AB65E394CDC26DF"
+    },
+    {
+      "Path": "Evidence/NativeTimingParity01.json",
+      "Bytes": 44418,
+      "SHA256": "2997317D78D13AF00CFFCD06C363E7A948844AC97E620D4F6609B304F9B89D5E"
+    },
+    {
+      "Path": "Evidence/NativeTimingParityReview01.json",
+      "Bytes": 1850,
+      "SHA256": "CA5C4BCB1B32E7C16003E9CDF038B3B4460683BFD750C24CB9E196FC882D86C9"
+    },
+    {
+      "Path": "Evidence/NativeVerification.json",
+      "Bytes": 35829,
+      "SHA256": "C936F72E78FE5F2CDDADE5F77644995119B2EF853AF95C08A7276A839E07E08B"
+    },
+    {
+      "Path": "Evidence/OwnerTimingParity02.json",
+      "Bytes": 90147,
+      "SHA256": "03009BCD021FFA84715380C7E1054166EE941C4DAD667D40EADAECF06CBB0D7C"
+    },
+    {
+      "Path": "Evidence/OwnerTimingParityReview02.json",
+      "Bytes": 3209,
+      "SHA256": "4DA612CE3AB7AEBAD79B5182A1925FE3BA61257E6772903C1C54FC89F732EE36"
+    },
+    {
+      "Path": "Evidence/ProfileMeasurements.json",
+      "Bytes": 230140,
+      "SHA256": "166BF4785B1114C68930CEFCD24AE5EAC58532F40F8E2D9B080AD9F9010BF42D"
+    },
+    {
+      "Path": "Evidence/Publication.json",
+      "Bytes": 879,
+      "SHA256": "8976471D41848556880667E78E52D5F51062C88EC8501C72B1702BDE93561184"
+    },
+    {
+      "Path": "Evidence/SourceEquality02.json",
+      "Bytes": 117153,
+      "SHA256": "44FF169D4FAB49B858B009D9510327FB5F21DA0686A76D4E223945D092AE2225"
+    },
+    {
+      "Path": "Evidence/StoredRoundtrip01.json",
+      "Bytes": 1232,
+      "SHA256": "3D5E20EB349EDE3AF5B412086718DBADA55F63E31C3FD49D607244066356AE0C"
+    },
+    {
+      "Path": "Evidence/TestArchivePrepared01.py",
+      "Bytes": 2515,
+      "SHA256": "25CC9385B9DB8EDA08706CB3CA859B9223B81AB4A65A8A2B0EA2965B1EF2CB81"
+    },
+    {
+      "Path": "Evidence/TestCandidateProfile02.ps1",
+      "Bytes": 8622,
+      "SHA256": "16222CE69E98B35EF5472ECE029D356CAFCB69F78F3EFF726A68473C3CE62634"
+    },
+    {
+      "Path": "Evidence/TestCandidateProfile02Continuation.ps1",
+      "Bytes": 8790,
+      "SHA256": "02B29FF890DF3982B1F8B5318C9B69A1CC3A72FA9FD2CE0503412F93E1E0C284"
+    },
+    {
+      "Path": "Evidence/TestFixDirected01.ps1",
+      "Bytes": 7602,
+      "SHA256": "52526B3451FEC73E0E66A0A1285CAD35E1CCF815D0B5B78A8970155D568DD830"
+    },
+    {
+      "Path": "Evidence/TestFixDirected02.ps1",
+      "Bytes": 7596,
+      "SHA256": "FF73AACE97C18C9A2E4C98DCB539BA908A945C7735E97AEEA8FEA0F736770902"
+    },
+    {
+      "Path": "Evidence/TestFixDirected03.ps1",
+      "Bytes": 7745,
+      "SHA256": "BF481EBD4670C5BA2E7F5FDE79602B8560F12618B67EF37D439DF7939F5A60B1"
+    },
+    {
+      "Path": "Evidence/TestFreshBuild01.ps1",
+      "Bytes": 1952,
+      "SHA256": "B6BB61A5FD9439D9BB87872C8D21D88E9AFD851CA060F06CC52BD4B7FD5CF98B"
+    },
+    {
+      "Path": "Evidence/TestFreshBuild02.ps1",
+      "Bytes": 1952,
+      "SHA256": "AB56618C580600D2DE3600C2DFE87CAF719958743009C977EEF52376DEDEAC8A"
+    },
+    {
+      "Path": "Evidence/TestGeometryFixtureDirected04.ps1",
+      "Bytes": 7191,
+      "SHA256": "3C9E6C4B33BB10999A3660EC7E847ED6D4FEC676FBE6643D65B2E69FE5A039D8"
+    },
+    {
+      "Path": "Evidence/TestInstrument01.py",
+      "Bytes": 2841,
+      "SHA256": "3D0915C01FA64B67CF07B342774C202E4A76857E14B21F1D861DA084F3AD845F"
+    },
+    {
+      "Path": "Evidence/TestInstrumentCandidate02.py",
+      "Bytes": 2860,
+      "SHA256": "B9297C494A1884BBC6F8DFB3D1A899602582E475EE1B6E42342C953487F70794"
+    },
+    {
+      "Path": "Evidence/TestNativeFreshBuild01.ps1",
+      "Bytes": 7343,
+      "SHA256": "9D82900DFE739925E930957F6AA15E48D2D7EA11FC9A8DA5D583AC50B8F0E63B"
+    },
+    {
+      "Path": "Evidence/TestNativeFreshBuild02.ps1",
+      "Bytes": 7343,
+      "SHA256": "986892361119AC78B4EEC3AE64ABBE142616429DBA07DA11437B6030CC2F0782"
+    },
+    {
+      "Path": "Evidence/TestNativeTimingParity01.ps1",
+      "Bytes": 8101,
+      "SHA256": "0C5268B671F0E91AB1F91DA063FD478A7B2C59C5B563C69E1E04B0A4A443426A"
+    },
+    {
+      "Path": "Evidence/TestOwnClosures01.ps1",
+      "Bytes": 1784,
+      "SHA256": "57489E29EC5C3C79B8238EC3F3B8CFDAE13A7B62F07DBDF43709196CC507A0BA"
+    },
+    {
+      "Path": "Evidence/TestOwnerTimingParity02.ps1",
+      "Bytes": 8816,
+      "SHA256": "C72FBDD60F76A8A9F2874274FACC30303BCDD5D1D22517E654B9F2C8D6D88402"
+    },
+    {
+      "Path": "Evidence/TestPrepareCandidateProfile02.py",
+      "Bytes": 2637,
+      "SHA256": "069C8BAA2688D2BBC8724324FF6BDFE78F86F84D7FED690BEED2F994D6B55B75"
+    },
+    {
+      "Path": "Evidence/TestPrepareFinalStages01.py",
+      "Bytes": 4829,
+      "SHA256": "990D36796E91E39E5309A0FD8DB13EAEF809F477542AF62511526639F34B30F0"
+    },
+    {
+      "Path": "Evidence/TestPrepareFixDirected01.py",
+      "Bytes": 2350,
+      "SHA256": "A3725B234B0BF186BBCF2FCC2AF6F1703AD39A8514931B567266CB77D2E81B40"
+    },
+    {
+      "Path": "Evidence/TestPrepareOwnerTiming02.py",
+      "Bytes": 3290,
+      "SHA256": "2C136E6E459BF418E8738F49A18E271A75BE620E6E9788A0D321EF40CAA2384C"
+    },
+    {
+      "Path": "Evidence/TestPrepareProfile01.py",
+      "Bytes": 4209,
+      "SHA256": "ABFDBD1DB20292ABDB47F938B9A08C0255C06A5ED322FCAF8B5D6BEE56866162"
+    },
+    {
+      "Path": "Evidence/TestPrepareRendering01.py",
+      "Bytes": 1685,
+      "SHA256": "9130ACBE75C46817C3563DC510ADAF39FA407AAE72CB45B65543C8EF5F6DC932"
+    },
+    {
+      "Path": "Evidence/TestProfile01.ps1",
+      "Bytes": 7739,
+      "SHA256": "1630685CB2A29F3B556F842B85D07CA607D4C99E2C8F2BB25C3AE3E29C1E6A79"
+    },
+    {
+      "Path": "Evidence/TestPublishPrepared01.py",
+      "Bytes": 15001,
+      "SHA256": "B6579792B043AED33140E717C13F2E8E621E93F607589F1924B684E2399C5C6D"
+    },
+    {
+      "Path": "Evidence/TestRenderingDirected01.ps1",
+      "Bytes": 6767,
+      "SHA256": "2A6D1270201E89F6E996F0B6922E3E90AEFE2D73118F58B0F15B7AC66274499B"
+    },
+    {
+      "Path": "Evidence/TestRenderingDirected02.ps1",
+      "Bytes": 6806,
+      "SHA256": "0053EBEC85BCC87A5BF464478F9568E3C0475096CE050861CE2033FC94B92431"
+    },
+    {
+      "Path": "Evidence/TestReviewDirected01.py",
+      "Bytes": 3041,
+      "SHA256": "31F9B145A041E45C2CB5D8348395FD64F3C94978D516519E6016B7DFD871882C"
+    },
+    {
+      "Path": "Evidence/TestReviewOwnerTiming02.py",
+      "Bytes": 2521,
+      "SHA256": "8500A1BD644141171EEEAC2BA5CF2AD4684951057E310887A25A1615147CD05C"
+    },
+    {
+      "Path": "Evidence/TestReviewTiming01.py",
+      "Bytes": 2353,
+      "SHA256": "C759CAC50A01F5A6DDC14A0809FDB8E046EF256F23D590B34B487DF361448B8F"
+    },
+    {
+      "Path": "Evidence/TestStoredRoundtrip01.ps1",
+      "Bytes": 7657,
+      "SHA256": "1A19C507081D3ADC4A02A8738D39A49113E6DF0A1565F0F0238F889B2E62A371"
+    },
+    {
+      "Path": "Native/FixDirected01/Closure.json",
+      "Bytes": 303,
+      "SHA256": "2FA49D5AF0677E97025917DE790F7BF06351F5B24A3AB7FB21ACAF74271A2634"
+    },
+    {
+      "Path": "Native/FixDirected01/Failure.json",
+      "Bytes": 409,
+      "SHA256": "6D48ED7081A17AC4F584D36DDFA67582FE4F0CD00AD3000E9DADEB08CE27DC65"
+    },
+    {
+      "Path": "Native/FixDirected01/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "9A437CAD8159F5BB1FFA30096EF3AD8C866B64A341B38AE29D1619E0E515C033"
+    },
+    {
+      "Path": "Native/FixDirected01/Results.json",
+      "Bytes": 1107,
+      "SHA256": "67AB972D0A9A6E175DA4C89FDE78D288ABE24723E54618B4DBD2EDFC1FCB5620"
+    },
+    {
+      "Path": "Native/FixDirected01/State.json",
+      "Bytes": 243,
+      "SHA256": "9CB30A715ADAEC8A6BBC3819CB8C0C5714AE5FB46F3FBE8FD702652D658A7F07"
+    },
+    {
+      "Path": "Native/FixDirected01/modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Native/FixDirected01/modTestCalculationSnapshot.RunStoredGeometryHashTests_No.txt",
+      "Bytes": 166,
+      "SHA256": "1C20D31AAA5CB09B6BEBB6103FD7FF661A16BEF99A725ADC674B8A9954F8AC25"
+    },
+    {
+      "Path": "Native/FixDirected01/modTestElementGeometry.RunContourCellMeshTests_No.txt",
+      "Bytes": 208146,
+      "SHA256": "E25C24A3D8919DD2347F18DD3108D62330B62960B6948D647EA76266A37599A3"
+    },
+    {
+      "Path": "Native/FixDirected01/modTestElementGeometry.RunElementGeometryTests_No.txt",
+      "Bytes": 6857,
+      "SHA256": "5B0028E3206682F9B78603BB5A12BB6D306D94710D9AC632B626075878C61578"
+    },
+    {
+      "Path": "Native/FixDirected01/modTestElementGeometryViews.RunElementGeometryViewTests_No.txt",
+      "Bytes": 5783,
+      "SHA256": "98DB7277385A5A6DA960EF35DFAA7286953341F0C3838653D80D69C58F270BA7"
+    },
+    {
+      "Path": "Native/FixDirected02/Closure.json",
+      "Bytes": 287,
+      "SHA256": "38C1D998FFB7568E971626088207AD1CAD2FFA9117C221D3F2225F9C2C4CF8D3"
+    },
+    {
+      "Path": "Native/FixDirected02/Failure.json",
+      "Bytes": 393,
+      "SHA256": "C87F284030B94A8185AEB4D7DCF8BAD03CEFE1E23ABCF4A3146A14CDD4C30BC8"
+    },
+    {
+      "Path": "Native/FixDirected02/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "0EF8719C9003B203A663C6B49244BD0420305EF36690EFE2AD2BCC2FDD321F53"
+    },
+    {
+      "Path": "Native/FixDirected02/Results.json",
+      "Bytes": 1981,
+      "SHA256": "119E7FA3A1B7DCEC3A2EE3270612DB5C1C07CCE0750BA26AAB2E53E00975BC66"
+    },
+    {
+      "Path": "Native/FixDirected02/State.json",
+      "Bytes": 234,
+      "SHA256": "476A357985F97A339E10767E028435232208E7C80071F4F8A3AD4AE1CB78B6DB"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestCalculationSnapshot.RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestCalculationSnapshot.RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 473,
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestElementGeometry.RunContourCellMeshTests_No.txt",
+      "Bytes": 208146,
+      "SHA256": "E25C24A3D8919DD2347F18DD3108D62330B62960B6948D647EA76266A37599A3"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestElementGeometry.RunElementGeometryTests_No.txt",
+      "Bytes": 6857,
+      "SHA256": "5B0028E3206682F9B78603BB5A12BB6D306D94710D9AC632B626075878C61578"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestElementGeometryViews.RunElementGeometryViewTests_No.txt",
+      "Bytes": 5783,
+      "SHA256": "77FEB164D92D395A7F21155E06F727415905A343A84BE412C5BC556F2C3F62E2"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestGeometryReview.RunGeometryReviewTests_No.txt",
+      "Bytes": 50128,
+      "SHA256": "FE298B4486EE77308B0B220C52A3A6DEE3EC52751074DACC5AB22D8289503B20"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestGeometryReview.RunRebarLabelBoundaryTests_No.txt",
+      "Bytes": 2050,
+      "SHA256": "926ABEB3CE8A9B015B5591AB55C611CA0DBAEC0C6AA864D7E84480D25706D444"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestSectionRecipes.RunRecipeAnnotationCountTests_No.txt",
+      "Bytes": 4058,
+      "SHA256": "9B03394155C6A89785DFEE87BDBCCC5E47BD9D2F21F5438DCF9FC1561F9E6BDE"
+    },
+    {
+      "Path": "Native/FixDirected02/modTestSectionRecipes.RunRecipeRuleTests_No.txt",
+      "Bytes": 12065,
+      "SHA256": "D12505318015234A777C878D1BDAD221DAD5434324249206797E0A8B09A28A7C"
+    },
+    {
+      "Path": "Native/FixDirected03/Closure.json",
+      "Bytes": 172,
+      "SHA256": "B42C802A627A5302ECDE2B25DE8CE2C80940904EC0E45CD6367B4BD4047BDFAB"
+    },
+    {
+      "Path": "Native/FixDirected03/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "14ACD9967D601F91121920328ADE6D66AA7CEC02B2B72B666826ED5EF1E95A12"
+    },
+    {
+      "Path": "Native/FixDirected03/Results.json",
+      "Bytes": 5266,
+      "SHA256": "0AE5DE07E6EF1B07B9A918DA931EAA451610D2B07DE531DEB16156E636B7BCBA"
+    },
+    {
+      "Path": "Native/FixDirected03/State.json",
+      "Bytes": 119,
+      "SHA256": "C54ED83B28BEC2EBF4AD917E8BC3367E7CC1432C6CCD2F87FD15984D6B6F24D1"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests_No.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests_Yes.txt",
+      "Bytes": 3323,
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestCalculationSnapshot.RunGeometryHashTests_No.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestCalculationSnapshot.RunGeometryHashTests_Yes.txt",
+      "Bytes": 5682,
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestCalculationSnapshot.RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 473,
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestCalculationSnapshot.RunWorkbookActionCompletionTests_Yes.txt",
+      "Bytes": 473,
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestElementGeometry.RunContourCellMeshTests_No.txt",
+      "Bytes": 208146,
+      "SHA256": "E25C24A3D8919DD2347F18DD3108D62330B62960B6948D647EA76266A37599A3"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestElementGeometry.RunContourCellMeshTests_Yes.txt",
+      "Bytes": 208146,
+      "SHA256": "E25C24A3D8919DD2347F18DD3108D62330B62960B6948D647EA76266A37599A3"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestElementGeometry.RunElementGeometryTests_No.txt",
+      "Bytes": 6857,
+      "SHA256": "5B0028E3206682F9B78603BB5A12BB6D306D94710D9AC632B626075878C61578"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestElementGeometry.RunElementGeometryTests_Yes.txt",
+      "Bytes": 6857,
+      "SHA256": "5B0028E3206682F9B78603BB5A12BB6D306D94710D9AC632B626075878C61578"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestElementGeometryViews.RunElementGeometryViewTests_No.txt",
+      "Bytes": 5783,
+      "SHA256": "5BA35B439859EF11E88378499EA14054E56AA066DE3D62DDC35F75DE4D35CA7A"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestElementGeometryViews.RunElementGeometryViewTests_Yes.txt",
+      "Bytes": 5783,
+      "SHA256": "5BA35B439859EF11E88378499EA14054E56AA066DE3D62DDC35F75DE4D35CA7A"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestGeometryReview.RunGeometryReviewTests_No.txt",
+      "Bytes": 50128,
+      "SHA256": "50C6FCB4D554900BA70CF5B4FA9AE5B76BC0FF13518EE55CC2872BCA00375147"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestGeometryReview.RunGeometryReviewTests_Yes.txt",
+      "Bytes": 50128,
+      "SHA256": "17696CF4D757DB2596587DB534916BC15E1F9E92D5A19F633F318C8D969A822F"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestGeometryReview.RunRebarLabelBoundaryTests_No.txt",
+      "Bytes": 2050,
+      "SHA256": "926ABEB3CE8A9B015B5591AB55C611CA0DBAEC0C6AA864D7E84480D25706D444"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestGeometryReview.RunRebarLabelBoundaryTests_Yes.txt",
+      "Bytes": 2050,
+      "SHA256": "926ABEB3CE8A9B015B5591AB55C611CA0DBAEC0C6AA864D7E84480D25706D444"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests_No.txt",
+      "Bytes": 58,
+      "SHA256": "7FBB480FCA62346DDE217B3F0905E8C18BAA7DEB4B2C363CC6C063379986ECA9"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests_Yes.txt",
+      "Bytes": 58,
+      "SHA256": "7FBB480FCA62346DDE217B3F0905E8C18BAA7DEB4B2C363CC6C063379986ECA9"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestSectionRecipes.RunRecipeAnnotationCountTests_No.txt",
+      "Bytes": 4058,
+      "SHA256": "9B03394155C6A89785DFEE87BDBCCC5E47BD9D2F21F5438DCF9FC1561F9E6BDE"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestSectionRecipes.RunRecipeAnnotationCountTests_Yes.txt",
+      "Bytes": 4058,
+      "SHA256": "9B03394155C6A89785DFEE87BDBCCC5E47BD9D2F21F5438DCF9FC1561F9E6BDE"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestSectionRecipes.RunRecipeRuleTests_No.txt",
+      "Bytes": 12065,
+      "SHA256": "D12505318015234A777C878D1BDAD221DAD5434324249206797E0A8B09A28A7C"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestSectionRecipes.RunRecipeRuleTests_Yes.txt",
+      "Bytes": 12065,
+      "SHA256": "D12505318015234A777C878D1BDAD221DAD5434324249206797E0A8B09A28A7C"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestWorkbookInterface.RunFormationPreviewTests_No.txt",
+      "Bytes": 455,
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED"
+    },
+    {
+      "Path": "Native/FixDirected03/modTestWorkbookInterface.RunFormationPreviewTests_Yes.txt",
+      "Bytes": 455,
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED"
+    },
+    {
+      "Path": "Native/GeometryFixtureDirected04/Closure.json",
+      "Bytes": 173,
+      "SHA256": "648AC77E772184A9A6960E8186EC9260486FCF7C55D0122BCE41B159B765F160"
+    },
+    {
+      "Path": "Native/GeometryFixtureDirected04/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "39830C27F3D84CB7A4129356B1680CCE576D758B03631685E23B2066C02FBE94"
+    },
+    {
+      "Path": "Native/GeometryFixtureDirected04/Results.json",
+      "Bytes": 413,
+      "SHA256": "A8FEB366B1555293518CA24C7AA673E00486914284D982692721068181469282"
+    },
+    {
+      "Path": "Native/GeometryFixtureDirected04/State.json",
+      "Bytes": 118,
+      "SHA256": "DD6D145D14D11C44C93EE9742C871D758388C64A1904FE3961B8E7268ED5D06E"
+    },
+    {
+      "Path": "Native/GeometryFixtureDirected04/modTestGeometry.RunGeometryTests_No.txt",
+      "Bytes": 393654,
+      "SHA256": "174F69C25E06644B062F769BD9645779ED96FD3ADC8ECE9EA4F81AA43E8FDD3C"
+    },
+    {
+      "Path": "Native/GeometryFixtureDirected04/modTestGeometry.RunGeometryTests_Yes.txt",
+      "Bytes": 393654,
+      "SHA256": "B4D20509E9EA58646B6318A01F1AE0E4D186206FEBE3F5D05A27E2B988423CFE"
+    },
+    {
+      "Path": "Native/NativeFreshBuild01Ownership.json",
+      "Bytes": 73,
+      "SHA256": "8152CA389908202C020068B36BAE489E53AA357BB42D76B0A3CAD5068DBC529C"
+    },
+    {
+      "Path": "Native/NativeFreshBuild01Quit.json",
+      "Bytes": 130,
+      "SHA256": "DDCF312D4EA1FF698F4186A084C32F62CFFC85F76B244900E2584D1A13E3E583"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CAutoCADContourReader.txt",
+      "Bytes": 13473,
+      "SHA256": "597CA48D0E997DD75FC2E2A809CE1597AF88556B1FF0F253C767CDA899984E5E"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CAutoCADSectionModelImporter.txt",
+      "Bytes": 69747,
+      "SHA256": "12B022C83A34A30E4F9EB03D22DE67339306997628590A4E97F588A0FBD130B5"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CBatchResultWriter.txt",
+      "Bytes": 68029,
+      "SHA256": "CCF51EBC124DB815536F405588A74E10D3040B7234D4E801E5F539185A10E0AF"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CBatchSectionCalculator.txt",
+      "Bytes": 149508,
+      "SHA256": "523928138FA02B19B30913F97CDCA997CF78B4610F2EE04879F8FF86CD1234E4"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CBinarySnapshotFile.txt",
+      "Bytes": 14475,
+      "SHA256": "A03F8755A1934E8DE7BC345519841F520299C82EC85908ED5B7AE1FB9AA3081A"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCalculationProfile.txt",
+      "Bytes": 20844,
+      "SHA256": "BE6443E144E3CD21EAB77930F5C3E17926C445254C70FAC4B9CF0AB5C9D087D6"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCalculationProfileCatalog.txt",
+      "Bytes": 20853,
+      "SHA256": "7777B7E9A8BACA898E76F7EA67A4A1D563852845A8E561DA5922D8D5CD4C32C0"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCalculationSnapshot.txt",
+      "Bytes": 31551,
+      "SHA256": "A6931E7894B66BC65F4FCE84C4B2EB1BEDBC4CF46FE15E02183DB8BBF9C6DF34"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCalculationSnapshotStore.txt",
+      "Bytes": 36298,
+      "SHA256": "1C7DBA4C3682E798686F3D8B8CA6A3C8DCC976209A7388D74919A5E8DE6D609A"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCapacityCalculator.txt",
+      "Bytes": 21719,
+      "SHA256": "F467AD2ECD19B11B582B06F4EAAA143DEA8D3A3E5D0885252E0AFD36658DA5D9"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCapacityLimitSearchProblem.txt",
+      "Bytes": 37196,
+      "SHA256": "49179A01409AEDB7FDC71189AF48551B4661D9B9667553BFB8EEFA0ED431055A"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCapacityResult.txt",
+      "Bytes": 26974,
+      "SHA256": "07FE5C9BB9E4DCCD3DB64B90F0A0FAAFE6F81ACCCA74EF0714F01C9ED405D9B0"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCapacitySolver.txt",
+      "Bytes": 136739,
+      "SHA256": "196B4D71F6BBD6384196E1834F517FFD9D67C328090B8EF2EACD1C7A52409BE6"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCombinationResult.txt",
+      "Bytes": 24652,
+      "SHA256": "0C0C591041907A6F39F1A1555AF259DA9EBF74A0B5E91067B23AF4A11BD88869"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CConcreteElement.txt",
+      "Bytes": 15412,
+      "SHA256": "0097EB83AC7A9A251142ECBF9B2C9FCE83205F9BE9F2F5D499FC1C77DC40B94F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CConcreteMaterialParameters.txt",
+      "Bytes": 10543,
+      "SHA256": "5CECD05C9C969F7A3D2B07FA8360B3BC9E3C9BAFC75802F9570A0D76B784645D"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CConcreteRegion.txt",
+      "Bytes": 12562,
+      "SHA256": "3B9FFF40EB80B0E5B108145A1A44DD41EFD5A3C7C83DE4EBE6D1C4E41862F49A"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCrackFormationCalculator.txt",
+      "Bytes": 140982,
+      "SHA256": "EF4862AAD503B99846A08F691E6DD7D19FD8A97DFC3BA30EF321CBA7C22397F2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCrackFormationResult.txt",
+      "Bytes": 14351,
+      "SHA256": "C6F0154DF9A20FA05945CC3BA11E38C625DE279DB151CA92A190C433D55E009E"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCrackLimitSearchProblem.txt",
+      "Bytes": 29291,
+      "SHA256": "ED57DE9CBA1A6F062D60009E522736C00BBE09568D3E6D7AE84E4E19E5B65300"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCrackResult.txt",
+      "Bytes": 11547,
+      "SHA256": "A707846CC82A51F6D4B57E4F4E0C2626461CAF9D792CEDBAAEDF26FCEFD87476"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCrackSummaryWriter.txt",
+      "Bytes": 82963,
+      "SHA256": "C131266904386D9592A2687417AAABABAE07B54E2146A1D3D7DBEA93D9ED9273"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCrackWidthCalculator.txt",
+      "Bytes": 99574,
+      "SHA256": "47EDF7CD2114F0B879D53A76B3227925252F6FEF8B4DC7A9499C6EF75B1EF4CB"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CCrackWidthResult.txt",
+      "Bytes": 16493,
+      "SHA256": "F475F376ACC8E474520EED912FA03740109ADF3C8AE3D9978F3979EFC055EE35"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CDirectStateResult.txt",
+      "Bytes": 9657,
+      "SHA256": "95E3F3074A2B38E14AAF9EEBE5029902B0C322F87949EA5EB44EA7735888BC0F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CDiscreteForceIntegrator.txt",
+      "Bytes": 9564,
+      "SHA256": "5ECFA705D8743C0E829A7517D4AE46AEB22153307328DF66D6C93B771D203721"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CExcelAppStateGuard.txt",
+      "Bytes": 6595,
+      "SHA256": "6D122A2959078C3F2D65B1E3045A26ECD856468DECCB088AE4050D263C2975BB"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CExecutionReport.txt",
+      "Bytes": 40349,
+      "SHA256": "7E8774DDBBB894EB7DF8536E14AC3D2DE1113AEDC13698CD4B9EE27893DFC489"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CFiberMeshBuilder.txt",
+      "Bytes": 21056,
+      "SHA256": "895BBEAB0DD4C300D62E4F119183EBE738EE6DA6B9F3812ACBA3950D88E54B2E"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CFileChecksum.txt",
+      "Bytes": 15827,
+      "SHA256": "D1A10B23C15B61D613B2932EB734838F2E95DFAAB4C0CE8B606F3A918B15CD0F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CGeometryDiagnostic.txt",
+      "Bytes": 3286,
+      "SHA256": "7A9F10A9DB18D3CC68484216C2CB4D7CC0CA5193A7CAE68D836983E63695F8B2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CGeometryPath.txt",
+      "Bytes": 41930,
+      "SHA256": "150C86882C131365EFCF93BAA531D43C5B603369263CDCE879A0212AE92DEF61"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CGeometryRegion.txt",
+      "Bytes": 8761,
+      "SHA256": "C02FC70D3BAF5855278154B5BD6F7DC344E6FED893E3B58714ADAB2216C2E5E8"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CGeometryVariableOffset.txt",
+      "Bytes": 12454,
+      "SHA256": "0B1410F6D94619E8406BD26C5AE88C7784C5A594C909F6589A84569277CED6E9"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLimitSearchCoordinator.txt",
+      "Bytes": 17576,
+      "SHA256": "D5C3C796FC65F60B1ED4EF4335EF4D5D85BD07C38D09E4586717C01476BADE1C"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLimitSearchRequest.txt",
+      "Bytes": 19261,
+      "SHA256": "6942E40B81AD2511F49CB020738973A5AB6CF8BBA5A2E5C385D1825DE80B9A0B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLimitSearchResult.txt",
+      "Bytes": 12712,
+      "SHA256": "A2D16056F7F2E6DC23940476127E9C9B328FFCBF86C267FE627EF16B73898B07"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLinearSystem3x3.txt",
+      "Bytes": 10120,
+      "SHA256": "5BD6EAF97EBA350E6CB859D1319EB275B9687AA42A6D21C0A1643C8D6557A1F7"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLoadCombinationReader.txt",
+      "Bytes": 12582,
+      "SHA256": "BB7E89320EA0293C0D1D422B2116884066BCAFC621328EFE24DA0BEF028C6902"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLoadMultiplierSearch.txt",
+      "Bytes": 47898,
+      "SHA256": "9E95E9F56BFD6F2122C745759FA8964B64E79F4E11E23CC1DF999D4587A445E0"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLoadPathDescriptor.txt",
+      "Bytes": 15039,
+      "SHA256": "3D194F4D499DEAB1743F940054D38F9BB55BF1B479870FCBA822C6ADAF6E7B3B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLoadPathMath.txt",
+      "Bytes": 21481,
+      "SHA256": "23D94BFAF016B629D027DFBF5B0F09BC4F9CC44216925331821C4C0880BDB435"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLoadPathVector.txt",
+      "Bytes": 4092,
+      "SHA256": "93559A105E1364DCDFCA84191A751BC7D3CB588C13C95C68B6082BB80FD2860F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLongitudinalCrackCalculator.txt",
+      "Bytes": 5418,
+      "SHA256": "24BD8C59C4728955192228C5922E6F299C6004F724031474B1D47597AE5E6B63"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CLongitudinalCrackResult.txt",
+      "Bytes": 5240,
+      "SHA256": "341288975F438D4DA0D63E2EA3C744061D967FACD89AED717C6CF5E8EAB2D532"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CMaterialDiagram.txt",
+      "Bytes": 33122,
+      "SHA256": "783570CE4888AB7D8BF9B26935FF98C6D4DD0EA5EEB2E7D6A2D5025878488018"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CMaterialModelProvider.txt",
+      "Bytes": 56327,
+      "SHA256": "E3EE47353A6182FAB34DD6AE9D0591122F34620F00E29CDB4045FBC561B7E5B2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CMaterialModelSpec.txt",
+      "Bytes": 4538,
+      "SHA256": "EB146710DEEC4DB271614EEF0B2B72CDF0655716AD754C52CE0DBD38CED50C9A"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CMomentZeroFilter.txt",
+      "Bytes": 3055,
+      "SHA256": "D4758BD007720C7BB980F3F3689E634125C4B0020548E524934A8E19A2610D84"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CNDMResultsWriter.txt",
+      "Bytes": 151581,
+      "SHA256": "96F74BEBF19E68F65E83003602A7DCEBBB00F44D44EA66C623E6795A305A23A9"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CPlotAnnotationLayout.txt",
+      "Bytes": 37283,
+      "SHA256": "E5092271D1E252A3ADC11BEDCAAE11103ED9D83EC603C56FB896709AEEE7965E"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CPolygonSpec.txt",
+      "Bytes": 11906,
+      "SHA256": "2B131124D08427461D9CE80CB3B7E975A55143FB9EA7789085185FB972D0194D"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CRebarContactBuilder.txt",
+      "Bytes": 9901,
+      "SHA256": "E3A1D8F0605F8F0CD84A2760027D4F5E42096E4DEF0926C063E662FD6D2D5315"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CRebarGroupAnnotationBuilder.txt",
+      "Bytes": 4160,
+      "SHA256": "C31DD6F735B5AB2C788C34F568C554234DC14DD0C67C9A9F3ECD52DFFF39B060"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CRebarLayout.txt",
+      "Bytes": 15962,
+      "SHA256": "C6F01C54BAAE468817D9E6462DB6E12AB76C0D3839AB1930077E29080F86C9F9"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CRebarOffsetContours.txt",
+      "Bytes": 31420,
+      "SHA256": "101FCF650FE49D8F0D86315A16F25EEEB9B7BDB37E9626A821A687E34FE7B200"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CRebarRuleExecutor.txt",
+      "Bytes": 84690,
+      "SHA256": "D7FBE552564C3CA7B164F08FEC437FA04D7A62CEB4AC7D8AFB7B9E0502F4E18F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CRebarRuleOptions.txt",
+      "Bytes": 12361,
+      "SHA256": "B143204F51CC4B64D00F66C8EA897E54EFAAA591A62701FD98434497BA95B770"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CResultMeta.txt",
+      "Bytes": 13643,
+      "SHA256": "1EB4218BB8943A48BE458E4DCCDFE5A3CC9DD0FC8DD630149E75A8EDD34CE5F4"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CResultStatusPolicy.txt",
+      "Bytes": 13368,
+      "SHA256": "3F74E3F89E7D3CB62D0CE04554D9E2E1661DC44121FB0F89EECD953BE69F5526"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSP35CrackData.txt",
+      "Bytes": 47761,
+      "SHA256": "04080266DFB97ABB509603EAAD77ADDFFE203C0797619539181DEE88AA996734"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionAnnotationBuilder.txt",
+      "Bytes": 27739,
+      "SHA256": "4B24F92C3F38087DE046DAB89EC3F45EF11C20D4BDAEDDAB418DF098073C8D2E"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionAnnotations.txt",
+      "Bytes": 10366,
+      "SHA256": "8173EAF1DEED1FE0B9CE8F47EBDC98DC4CAF08CE80F5FFBD99F7AA2F2F4719F2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionBuilder.txt",
+      "Bytes": 7673,
+      "SHA256": "C6DBD43B320BA66607424101C3AC3DB0261C942A05ADA5885CF59C1964EAFCAA"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionContours.txt",
+      "Bytes": 12598,
+      "SHA256": "0BA4B15FF7DF4D8CA3E51ACA795C2867D4820D90240964483B3409EA28A7DF60"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionDefinition.txt",
+      "Bytes": 30337,
+      "SHA256": "D6BD0C667E9B087A1C0EA2F7A992CCDF9CDDA5D427DCF828851851E7ED44EC15"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionDefinitionBuilder.txt",
+      "Bytes": 37787,
+      "SHA256": "82C11EA997796ADD63F4223CE6C21143A00BA3A8ABBC1585456391AD64687D2A"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionGeometryQuery.txt",
+      "Bytes": 156721,
+      "SHA256": "FCE6FD2A6BC3FC45807F10A3301C3F24ED1E8235246868748B903B04F511E46F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionInputReader.txt",
+      "Bytes": 17385,
+      "SHA256": "714C20E664BFC95DF45F9DED7413E6A97ACD0C7CDD363FF5219B68EE930DD217"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionInputSnapshotReader.txt",
+      "Bytes": 3191,
+      "SHA256": "680DC5C0F021BEADDBA42EAA9B86023050A761BFF7130528DAC9B4817EF7CA77"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionInputTable.txt",
+      "Bytes": 18890,
+      "SHA256": "1F29FA242A876FEE5B2CC3F05322C5EE132479B48C138FFE5D586C29452DE143"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionLoadState.txt",
+      "Bytes": 9658,
+      "SHA256": "D47492DCDBDB49786DC615E788D4DDAFCCF58D7591094EE131B8958C367FA004"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionModel.txt",
+      "Bytes": 72668,
+      "SHA256": "D63DCDDAE14633C0F19B51F6AC1097BB224BC48D1F0AE7322F0F331E1A6DEC88"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionModelBuilder.txt",
+      "Bytes": 4223,
+      "SHA256": "9F6F822C40622BF7FFF1DAAB06042BDF9F553FAF6D8E4E457E89A8F30D4B13A5"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionNumericalFrame.txt",
+      "Bytes": 6471,
+      "SHA256": "34125FE4C628D08D9257446449955CA9E88361C636ADEE2D2E30D43C6584B17D"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionPlotDataReader.txt",
+      "Bytes": 106551,
+      "SHA256": "15F5146620B25C37FD04119174C520FD644FF97AEB3D2AFA630570EFBDD4650B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionPlotter.txt",
+      "Bytes": 132055,
+      "SHA256": "F2E83611F657C9CBE085C096305E3C2C92747958414A4C1DE47C1124E67DD544"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionPropertiesCalculator.txt",
+      "Bytes": 54156,
+      "SHA256": "43B0FB85E2A698C45F36B8683C97A4A828D1D79042ABD372BF98D70DD442FBFC"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionRecipeCircle.txt",
+      "Bytes": 13085,
+      "SHA256": "91C0ACD6A825252B0CD88DDB493C73D88F5CEAC38349E8EE533C93ECCD5379C3"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionRecipeContext.txt",
+      "Bytes": 4726,
+      "SHA256": "F9F3857ADA261528653AE7F2CD8C55094A1BAB9CB3D769686E15D408951DBB30"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionRecipeHollowRectangle.txt",
+      "Bytes": 31558,
+      "SHA256": "8851D37AEC9BD0B0144465C95D34DBC5CBF65DAF765FF41ED0562BAAD7B9AF62"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionRecipePointedSection.txt",
+      "Bytes": 23198,
+      "SHA256": "44F2F0500A03E43FB99218C474519D6732CBF81D9467FFC8ABA757EB037DA756"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionRecipeRectangles.txt",
+      "Bytes": 22153,
+      "SHA256": "5943D5AAF3E0CCB0B960C71834C509D732F303532C3F9E95DAC065617835FEA4"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionSolver.txt",
+      "Bytes": 110172,
+      "SHA256": "9E9FFE398B5F0C297D87ECED728D65A3190750EA0959D5167EEE25657D492A1D"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionStateResult.txt",
+      "Bytes": 38104,
+      "SHA256": "1A0CCA6626183AA53D6EEB90A2B6BD0EBD114643AFDE651D2969A8C24169BD5B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionStrainLimits.txt",
+      "Bytes": 8495,
+      "SHA256": "C72CF6C2DE20BFF79922A59F3D3A6CFFC791A3BB9F4E67512C0A01EB7E3FB293"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSectionTypeRegistry.txt",
+      "Bytes": 5331,
+      "SHA256": "32C08ABDB7366CF8BD53B17EE43C671343F0D17BCAD877273FE29E0C819FF363"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStabilityCalculator.txt",
+      "Bytes": 103103,
+      "SHA256": "01AEC78AA0775695A817EDC5604AE4FC4EDEBBE4315930AC3D610DD66342876B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStabilityResult.txt",
+      "Bytes": 39382,
+      "SHA256": "BF06AD4A4896353148D607BEEEE2BD50AFD14490428D3E2FC15F77DA5F8F2821"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStabilitySummaryWriter.txt",
+      "Bytes": 62823,
+      "SHA256": "6565644D19F0D9650D7B87511E333787A07114877915AB318F41B24B53F975C7"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStateGuessBuilder.txt",
+      "Bytes": 41104,
+      "SHA256": "864003E65F374E85175456263E03A0F76F96F41EBF068A0CFD9AC1BFE66C707E"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStateProvider.txt",
+      "Bytes": 13998,
+      "SHA256": "339E49FC448F1378A682784098D371879602FFFF6F4AFC091154743D690EBBDA"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStateRepository.txt",
+      "Bytes": 11702,
+      "SHA256": "BFEC70344A1BA485EE5BF1908CDFADAF797961226BE39F01AE98BA44E7E214E8"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStateRequest.txt",
+      "Bytes": 6522,
+      "SHA256": "999887C324BAB7B6C17C85113D821D0B1414AA52EB44FBB4F12B45E017F8C148"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStateSolutionRunner.txt",
+      "Bytes": 46041,
+      "SHA256": "E602DF7B4453846D8577D85E35D777E7939A047FDC10708D38305974E1B497C9"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSteelMaterialParameters.txt",
+      "Bytes": 9174,
+      "SHA256": "C5C8803770BFD5478CD52B98E200AE902D424BC07F9A03CD63E793B33BF89E8C"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStrengthResult.txt",
+      "Bytes": 7864,
+      "SHA256": "D51F29EC54C244E7FFE3BBB195C191AC416EA0298D70CB8A0190BDD2913584FE"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CStrengthSummaryWriter.txt",
+      "Bytes": 59537,
+      "SHA256": "A3CF9B09E19A6C6DD8129F530AE37F5403781C5179D92CED1B6817C4EBDEE8C0"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CSystemSettingsReader.txt",
+      "Bytes": 58561,
+      "SHA256": "CBF71866F630DBA4FFBB5229E3CA6D6102970B2113760A8056F8977CAD7DA7A3"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestExcelApplicationState.txt",
+      "Bytes": 8691,
+      "SHA256": "5D49B6514BFE5851CDB5B44A18A6F1104B6DDC8D15EC038B5349982FF163E21C"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestFakeAcadContour.txt",
+      "Bytes": 11963,
+      "SHA256": "F4DE7A6E8DDBC8F5471DEB3E753C0D22B350D146A711BC13A41566CAE476026B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestFakeAcadContourExport.txt",
+      "Bytes": 12571,
+      "SHA256": "A1E5978AF7DA6B3C454A4E3B26241EE433DD32791CFB899B5A81C203357C8FDC"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestFakeAcadDocument.txt",
+      "Bytes": 4413,
+      "SHA256": "A9690B0724E376CAFE69B9D8B88F957516765D4DF0E559995E3671EF6DA69F64"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestFakeAcadLine.txt",
+      "Bytes": 3165,
+      "SHA256": "0A6A4C254FFFD536EF60AB56CC43220721003C99CBC6AA8977E0A62237B4B6C2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestFakeAcadRegion.txt",
+      "Bytes": 9627,
+      "SHA256": "F168C10B818C30B34E37A64816AB852AAD1EB18BC4B8283719B0577F8F93CEFF"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestLimitSearchProblem.txt",
+      "Bytes": 51030,
+      "SHA256": "192C263487B8802F79F47994315C51F85F933AEA3DA28F7B852A7DF514F1C2CC"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestLinearConcreteMaterial.txt",
+      "Bytes": 2916,
+      "SHA256": "CB10A3A0A4383AEC3D4BED1B7F26CC66951B17A68F10B9DE03CEF426AD75CFC4"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestLinearSteelMaterial.txt",
+      "Bytes": 2938,
+      "SHA256": "3F098495761EFFC16AD241C492E7FF7C3D9743D8162910A043BD954CC3A64306"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CTestWorkflowWorkbook.txt",
+      "Bytes": 3754,
+      "SHA256": "68C75C53DEE52465C24878542879D959A21CBF4F4034F16CC7FE9DCB4628E7F8"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CUltimateStrainSearch.txt",
+      "Bytes": 66095,
+      "SHA256": "80B1B151B6E32DD14BAF68F5F4755A8140539A9A6527C1F795FEF42C2D26FD69"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CUnitSystem.txt",
+      "Bytes": 31412,
+      "SHA256": "883EC6BCB5DCE2FFCF22B1B57672196459AA8B8FB471E693B51403ACC82CA0BA"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/CleanStructure.json",
+      "Bytes": 29751,
+      "SHA256": "0DB9AD38CDC128D916BDC95E07E604A017F4C6E1FCC6F5C73A692C7090AE5262"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/EmptyPlotContainers.json",
+      "Bytes": 278,
+      "SHA256": "44EF6FC970C4C8713D10B7D86B8AD603A6B8BBFA5E60B805A8F90C1CE8DF6CDA"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/ILimitSearchProblem.txt",
+      "Bytes": 16863,
+      "SHA256": "BE5111D4C90042D7474D03D3E6552AE0F92235B490A7DB90FEB6A91EB4643841"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/ISectionRecipe.txt",
+      "Bytes": 1006,
+      "SHA256": "BDFD4A017835593A51F3A1507658092D32A1134355DA1C99129E20988F817BA3"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/NativeVerification.json",
+      "Bytes": 35829,
+      "SHA256": "C936F72E78FE5F2CDDADE5F77644995119B2EF853AF95C08A7276A839E07E08B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/VBA_All_Code.txt",
+      "Bytes": 9094770,
+      "SHA256": "F4DEB50893752E941000843DF008882757D22984CE8F82DF0023F1D8A1CBF225"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modAutoCADStressExport.txt",
+      "Bytes": 152063,
+      "SHA256": "4E1F4E8A5C6C0505AB17698A04E853A1D39A47B347756995E867D50F2A9ABFF2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modCalculationPurpose.txt",
+      "Bytes": 18695,
+      "SHA256": "7FCB10A4D0594FB3F64114471F4E4E47DCC919E712933B74831AFAE2259C4350"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modCalculationSnapshot.txt",
+      "Bytes": 24735,
+      "SHA256": "60C694320A2BDF7061B26294A746C4DAE85B106CAA22305421CF9FFFC4BA6125"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modGeometryPrimitives.txt",
+      "Bytes": 16788,
+      "SHA256": "BC7307A37F7C6AE229E4E3C1E301134CCE5C3476FCA9F6BAA65ACD628FFB3B59"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modGeometryTypes.txt",
+      "Bytes": 9945,
+      "SHA256": "B50AE9CF544A6E44D9A8F47DDE1528DE34DC5EA50D64BBD17D259BA6874055AF"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modLimitSearchRequestFactory.txt",
+      "Bytes": 3474,
+      "SHA256": "1D6EAB256BB495ABADC26331EB4B5F175A53AD8B6DDF315532A4B6E7AC9D56B2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modMeshConfiguration.txt",
+      "Bytes": 8827,
+      "SHA256": "57401720BE30B4B686BA718D254616CCF203CD3DFB5E37CCC0E3FBA6A49DE15D"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modNonlinearStepControl.txt",
+      "Bytes": 2907,
+      "SHA256": "E0CD8A06374186E7A67D1BFFAAB8B8ACA899E9A4D71612981E2A3931BBA1B1F9"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modResultStatus.txt",
+      "Bytes": 11447,
+      "SHA256": "59F197CAA8E600746C8140E5AA948D180474BE72FF881CF03142E7FF56C12B1D"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modResultsFormatting.txt",
+      "Bytes": 3892,
+      "SHA256": "BA64BE818BBC510B50B2695BE42AAAE303C27DFD947009A22E9F347484385A3D"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modSectionOptionalData.txt",
+      "Bytes": 8967,
+      "SHA256": "8A97A5EEB84DB53B6AEB685BCECDFC6CFC8B27EEC4A77E607C6F520F933F5D1D"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modSectionRecipeApiGuide.txt",
+      "Bytes": 217185,
+      "SHA256": "8D81FB99445824C37E69AF5953EE62E8C7FEE0A276C43A54A0ABFA4357D37297"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modSectionRecipeSetup.txt",
+      "Bytes": 3623,
+      "SHA256": "4DC13E8A598501F4A57C6DCD7BCB102AF71CBEF73DDF9B5CF854B8A55D7935FF"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modSectionRecipeTypes.txt",
+      "Bytes": 16103,
+      "SHA256": "4D763B475727030ACC0597D185AA90DE96A4DC81D55A1BBF69EE2C52D9B48646"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modSectionSnapshot.txt",
+      "Bytes": 93438,
+      "SHA256": "FEE695AE8B2E288B5775F0B34BF8934B2375131B266958B104CF5CEBBCB408A2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modSolverWorkStats.txt",
+      "Bytes": 3859,
+      "SHA256": "FFC2194A9331C2194D98C0B88AE5D23259D40DB84F4F58FBE94B026EF224D47C"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modStatusFormatting.txt",
+      "Bytes": 6449,
+      "SHA256": "866B2885ADC49809438428736FCFE14BD1FC43A6710CC9634BFEC1FB82DCE527"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestAudit02Api.txt",
+      "Bytes": 150342,
+      "SHA256": "124BEF3E0B20BC5E5A98D2F604EF08879D8C3C85CFD08798273E272825E12DB8"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestAudit02Snapshots.txt",
+      "Bytes": 20195,
+      "SHA256": "71ECA9B24C369A9DB2222B8CA358EB325EA68877ABCAAE9FEC1CA1829F6B613F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestAutoCADConfig.txt",
+      "Bytes": 93152,
+      "SHA256": "67FE6B55A2631ED725864B0430D0DB4ADC8807B09B77558515A35E504ECD9D75"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestAutoCADContours.txt",
+      "Bytes": 196687,
+      "SHA256": "C1E43520421CA676EFAE747E56B3989C326FF047A3D1B27066E58E884B0C742A"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestBatchCalculation.txt",
+      "Bytes": 699000,
+      "SHA256": "9533EF5689864CDDE8BA1F1446533E00B30E406012BCD531C390797FD6EBCBC3"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestCalculationSnapshot.txt",
+      "Bytes": 162831,
+      "SHA256": "4ABA09294912E63F6B6B17C555C2BBF764D5A0ECC1B9CFC2899911FF0B5BD3AE"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestCapacitySolver.txt",
+      "Bytes": 287224,
+      "SHA256": "BF38C69E46048BEBEC6DC5128F6CFEE1E62496CD59ECB5E21B9648E30CE0E1F6"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestConfiguration.txt",
+      "Bytes": 219472,
+      "SHA256": "22970D45F8B601FA055D511D3ADA1DECE130A407D969675851ED7BCFB2C8A849"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestContourMesh.txt",
+      "Bytes": 76139,
+      "SHA256": "ED85A3F5F6071AC700A5F503EB2DB44580E2C3B5A9D00E2D3F3D35C36D0414F9"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestCrackWidth.txt",
+      "Bytes": 146445,
+      "SHA256": "6E4BB6015A4EE01A9000BDC22C2D0ED7AA36A85625B95364599126F8C89A0AE7"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestDeclarativeExamples.txt",
+      "Bytes": 11356,
+      "SHA256": "5FE0A915B87E085C22FEB9316F7CBF0E5613F3920F51A120B44697E0DF3DC89B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestDeclarativeGeometry.txt",
+      "Bytes": 53611,
+      "SHA256": "27CBF1579E3C1C15E991D931A90D5FE519278F1A074488A35899EE65DD056FBD"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestDiscreteForces.txt",
+      "Bytes": 11995,
+      "SHA256": "FC7A759A127292F970195B7E601FB69B1E1AE5F6F5A1B2A0A4E40E9660717B4E"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestElementGeometry.txt",
+      "Bytes": 63450,
+      "SHA256": "45BA91FDECB2693792BFEC6BEB802D0C651DE04442183FFAD3733929CEE2E711"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestElementGeometryViews.txt",
+      "Bytes": 18010,
+      "SHA256": "AD8B4BD1D2FF655C0E37B7D6F6604FE86F7652DABD5AB6DF4C24B4F2FFE363B8"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestGeneralGeometryConfig.txt",
+      "Bytes": 43194,
+      "SHA256": "EEDE6588F5E53D255D495ECBE4AC5FA966C257E2DB7805FCF039127BD480850B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestGeometry.txt",
+      "Bytes": 243919,
+      "SHA256": "0CCA2E489CF4BDF9C6F9EC68B17D2DDFBB3EE3BD59E5140641D36CD3EB24A26C"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestGeometryConfig.txt",
+      "Bytes": 113650,
+      "SHA256": "1F5E6213775FE43A3E811CF0E2ABFCD86991BE3D89582B37F3AFEAC48D219E26"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestGeometryFixtures.txt",
+      "Bytes": 39896,
+      "SHA256": "46C12B8FAF91C22B2B88D759C9DF649D3F56370495930FA7B40E25CD931D3C0F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestGeometryPublication.txt",
+      "Bytes": 16942,
+      "SHA256": "9A867E3B36F419C727F66583C0A5D2AA30B9DC4140A428AF70DC7E6076FB1A4A"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestGeometryQuery.txt",
+      "Bytes": 61894,
+      "SHA256": "9597B619360285B7EECCFF10E9B2FA0E69A7935B5B34B32C9F67D09C1CB84612"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestGeometryReview.txt",
+      "Bytes": 60297,
+      "SHA256": "4876E4345A20A29F802084D50477462BF2D53EC35488346743E871AD668504BB"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestGeometrySolidSnapshots.txt",
+      "Bytes": 8928,
+      "SHA256": "782B2B631CABBE4D02AFEFEB0742C743AB7B66B666F673FF741D4FDF46B695AE"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestIndividualContours.txt",
+      "Bytes": 59686,
+      "SHA256": "DEBD96DDE0462827AF7507D5C87E79651BBF933D7588994603C81A6B6BCB6C0B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestLoadTableConfig.txt",
+      "Bytes": 69013,
+      "SHA256": "4F249DF7E2B32731A0D809891CF8315AB60ECBA6D70DB112BB37685A6DDB09A6"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestMaterialDiagrams.txt",
+      "Bytes": 111259,
+      "SHA256": "30003F9859D08A66435E91DF35278966BBFBE91E1ADA452496B51A8C440B8350"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestPerformance.txt",
+      "Bytes": 90419,
+      "SHA256": "8EA442C3E959B684A58ECB2D8A6C35ADB7535CFE043282F7061B0629A0CCFF29"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestPlotConfig.txt",
+      "Bytes": 162960,
+      "SHA256": "DCFCEB97F4F87B3B0F2BF7DC62FE2A144953382362C57DD14ADF79EB44844559"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestPolygonSpec.txt",
+      "Bytes": 22838,
+      "SHA256": "1F446EED5502EC75CD5151034F7E6F60091651C5A85EE7D89C6DC0C720671B9B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestProfileConfig.txt",
+      "Bytes": 140682,
+      "SHA256": "988BD51610F833E73AD9CD573BC95C79296D685C22C5AE8AAFD21A4ED0ABFD19"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestRecipeAnnotations.txt",
+      "Bytes": 21551,
+      "SHA256": "8350695F11179749C93C80F6A420F6AEE121E95F6993F582E3694F0AF7B228C8"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestRecipeApiCatalogue.txt",
+      "Bytes": 20966,
+      "SHA256": "3180B2BA9342C6EA366A585F5523BE94FF3F3D697CEFCC121821BD4434DEC70B"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestRecipeOperations.txt",
+      "Bytes": 49805,
+      "SHA256": "0E4A7B0E830A3817DCD3CB9F7FD20837B8409149FDB647A55465E6B272256548"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestRecipeSetbacks.txt",
+      "Bytes": 21957,
+      "SHA256": "4BC1A847FAAB39A909C368FAE2C9BE96BCAB03D44F55391E362BE2833AB15DB9"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestRegressionBaseline.txt",
+      "Bytes": 23153,
+      "SHA256": "461E8EB5925CD5278F5130D412F43D4708A5FCAAACA7615D2BB6CB2421D4BEC7"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestSP35CrackWidth.txt",
+      "Bytes": 102426,
+      "SHA256": "4A8022C941FCA36EC7CE28F2706054F736729F86495B2B6E745A5D8A1261ACB2"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestSectionInputReader.txt",
+      "Bytes": 11848,
+      "SHA256": "65316D3107EB840CA618A64C6539240C1351BEF77E441DDE7A9193741489F49F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestSectionRecipes.txt",
+      "Bytes": 129651,
+      "SHA256": "400CBCDB407618BC24A70A4FAE3AA14F4A8177B34002AA03A0B14E6265E9CFD7"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestSectionSolver.txt",
+      "Bytes": 136856,
+      "SHA256": "C0E14BD52854EEC9233C6AE493D3601DB5F793077E45FB37C712D97D433918B6"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestSectionWorkflow.txt",
+      "Bytes": 34645,
+      "SHA256": "76765D20440B73C4CC606C6ECE13B00C3D55689E1C6A639D7CA333478317EE1E"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestShapeArchitecture.txt",
+      "Bytes": 62469,
+      "SHA256": "D033AB21F5550EB83DCD345BEEE60A45753A4C986F0AC8AD0FBF3805CAFF4407"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestWorkbookInterface.txt",
+      "Bytes": 617586,
+      "SHA256": "FDB51CE0F09124B59625EB94059E3A474C359A41A46E0E5F33F0E81BE2F73260"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modTestZeroContourParity.txt",
+      "Bytes": 6406,
+      "SHA256": "123C94C9F77E22A1A9C6C90F889ABC978B1D170B4A223E418C8AB97C0EA1A400"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modWorkbookCalculation.txt",
+      "Bytes": 87348,
+      "SHA256": "C7C5F8CD0570E017022BE6851D39F5624C010214369B4DA4CF81455B24376399"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/modWorkbookMessages.txt",
+      "Bytes": 28388,
+      "SHA256": "C2701A3131193CBEE0AB62352F5486D0B5F5EC9C1598977ECB520F5C99864722"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/Лист1.txt",
+      "Bytes": 140,
+      "SHA256": "D65C54FB20333629F361998F6C5ECDAB318987DB2B1DD39CA0FBA04F865A051F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/Лист2.txt",
+      "Bytes": 140,
+      "SHA256": "D65C54FB20333629F361998F6C5ECDAB318987DB2B1DD39CA0FBA04F865A051F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/Лист3.txt",
+      "Bytes": 140,
+      "SHA256": "D65C54FB20333629F361998F6C5ECDAB318987DB2B1DD39CA0FBA04F865A051F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/Лист4.txt",
+      "Bytes": 140,
+      "SHA256": "D65C54FB20333629F361998F6C5ECDAB318987DB2B1DD39CA0FBA04F865A051F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/Лист5.txt",
+      "Bytes": 140,
+      "SHA256": "D65C54FB20333629F361998F6C5ECDAB318987DB2B1DD39CA0FBA04F865A051F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02/Main/ЭтаКнига.txt",
+      "Bytes": 4856,
+      "SHA256": "F565A7C2257C3F29D03BA183ABF5812366527FCEA14256D185B7C9FD09ABF11F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02Ownership.json",
+      "Bytes": 73,
+      "SHA256": "9DCFF5913D2D990045092F8827DB519E7D5F0DECFCEAD4CBF11CEBA126C2A37F"
+    },
+    {
+      "Path": "Native/NativeFreshBuild02Quit.json",
+      "Bytes": 130,
+      "SHA256": "9A7448839D3CE64CB970E782DEE5FD4BA4F679A429DD5FEB38F4B40286C22C54"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline1/Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline1/Adaptive.IEEE64.txt",
+      "Bytes": 347223,
+      "SHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline1/Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline1/Contour.IEEE64.txt",
+      "Bytes": 275804,
+      "SHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline1/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "303E609ADE31D162752149BC92392F7B43CFB01FD5F277F0B8A95C9B82545A50"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline1/Quit.json",
+      "Bytes": 130,
+      "SHA256": "4911120F80BAF4D4796014AED93106867330C3060F99C2AE8192AEF3229BF5C5"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline1/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36320,
+      "SHA256": "48E188054BBD209D3022D127258D93F872BCF930FEB77D028F589C999637A52A"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline4/Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline4/Adaptive.IEEE64.txt",
+      "Bytes": 347223,
+      "SHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline4/Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline4/Contour.IEEE64.txt",
+      "Bytes": 275804,
+      "SHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline4/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "F2E71D4DCA98968B20AADF3EC824A9D0F132E8ADF0BBDE1705B45F2EF817AE48"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline4/Quit.json",
+      "Bytes": 130,
+      "SHA256": "3DF33541A28B520378A2EB8ECBEFAA1425A270DC4B3656C221C67F93B1C4BD5C"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Baseline4/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36406,
+      "SHA256": "5E7A5DD352217BCBDBF7ECB311896B0DADCE54DB874FF4D2F215F0521287B451"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate2/Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate2/Adaptive.IEEE64.txt",
+      "Bytes": 347223,
+      "SHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate2/Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate2/Contour.IEEE64.txt",
+      "Bytes": 275804,
+      "SHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate2/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "14080723056FAB13A225E346C831DBB7B6F53038A0C5AF7AED960176F7D5A501"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate2/Quit.json",
+      "Bytes": 130,
+      "SHA256": "1E22FD8BA4DA78EA80CB3052DB0A5D04A4AA3B2B7C360B5ACE9E6A05C96E7371"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate2/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36404,
+      "SHA256": "724F1318AF9A4D537307F72F97191AC721EC4EE25547FFEAD70D77CAE0F9E1D5"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate3/Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate3/Adaptive.IEEE64.txt",
+      "Bytes": 347223,
+      "SHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate3/Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate3/Contour.IEEE64.txt",
+      "Bytes": 275804,
+      "SHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate3/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "7974CC3AED1592868048A00533D449E586E5A94144B39F9898865636D2B0925E"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate3/Quit.json",
+      "Bytes": 129,
+      "SHA256": "691DCDFC0E1C7FBA8D57F3B72E4CA4D1DDB19F176FAB2979259FEA875C680D7B"
+    },
+    {
+      "Path": "Native/NativeTimingParity01/Candidate3/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36322,
+      "SHA256": "276EEDBCAB0DD574DD16F660C9EF91F2EF025179536650F3E61373E42CDCFFF3"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/Excel_Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/Excel_Adaptive.IEEE64.txt",
+      "Bytes": 347223,
+      "SHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/Excel_Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/Excel_Contour.IEEE64.txt",
+      "Bytes": 275804,
+      "SHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/File_Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/File_Adaptive.IEEE64.txt",
+      "Bytes": 333497,
+      "SHA256": "413290F938F1ABCD3D78AE47582269EC1F2FCA3FC11614FA87F9A43D2181CFB1"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/File_Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/File_Contour.IEEE64.txt",
+      "Bytes": 265510,
+      "SHA256": "259FD2DA82F3B506423DBD89444D62D52C5CBFCF31270FEFBEA94C828907771B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "734244AA97F78DC4DBB988B31137939EB9E8ED20FA6EB640C07E9538D5109DAC"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/Quit.json",
+      "Bytes": 129,
+      "SHA256": "C3973C91F948007C7CDA2654E3088F31A58E5D184FD261A9AE4A1837CFD40CE4"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline1/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36314,
+      "SHA256": "9B518DB6BEDDF50E7629ECA2A42CB72FEBB6BF74DD93C29EEDF41E515FA95350"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/Excel_Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/Excel_Adaptive.IEEE64.txt",
+      "Bytes": 347223,
+      "SHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/Excel_Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/Excel_Contour.IEEE64.txt",
+      "Bytes": 275804,
+      "SHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/File_Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/File_Adaptive.IEEE64.txt",
+      "Bytes": 333497,
+      "SHA256": "413290F938F1ABCD3D78AE47582269EC1F2FCA3FC11614FA87F9A43D2181CFB1"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/File_Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/File_Contour.IEEE64.txt",
+      "Bytes": 265510,
+      "SHA256": "259FD2DA82F3B506423DBD89444D62D52C5CBFCF31270FEFBEA94C828907771B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "36FB066D3FB9FB0C0419E9C71F1014DC926B1B3D6BE8FBED00963B1E093F2AB1"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/Quit.json",
+      "Bytes": 129,
+      "SHA256": "874FEE3D78E49FBBB73B940FA550A6AE6956C26DAA113616402637A3C745351B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Baseline4/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36408,
+      "SHA256": "99E83CC72AC296EBE742DFEDD8A02EA88FB042ACDC6EB6EC956F72ADE23C2F07"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/Excel_Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/Excel_Adaptive.IEEE64.txt",
+      "Bytes": 347223,
+      "SHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/Excel_Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/Excel_Contour.IEEE64.txt",
+      "Bytes": 275804,
+      "SHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/File_Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/File_Adaptive.IEEE64.txt",
+      "Bytes": 333497,
+      "SHA256": "413290F938F1ABCD3D78AE47582269EC1F2FCA3FC11614FA87F9A43D2181CFB1"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/File_Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/File_Contour.IEEE64.txt",
+      "Bytes": 265510,
+      "SHA256": "259FD2DA82F3B506423DBD89444D62D52C5CBFCF31270FEFBEA94C828907771B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/Ownership.json",
+      "Bytes": 142,
+      "SHA256": "505D341A28C1015268828DE95A612B4DDD1E1DF093D5A54167DD51CB409AC84A"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/Quit.json",
+      "Bytes": 130,
+      "SHA256": "F0CF41BBA7971064FB9909207F3612AB23F7964C2A76E81568D560CDAB3787A1"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate2/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36408,
+      "SHA256": "CD70CD5DBD4C2342D51CB64D8BF0630C6B1CC84A0CCEBE80B72A836E6532B155"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/Excel_Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/Excel_Adaptive.IEEE64.txt",
+      "Bytes": 347223,
+      "SHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/Excel_Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/Excel_Contour.IEEE64.txt",
+      "Bytes": 275804,
+      "SHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/File_Adaptive.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "807DC23FB10C09D63EF2EE843608161BD4257E018CD58B70279F117E2E09A17B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/File_Adaptive.IEEE64.txt",
+      "Bytes": 333497,
+      "SHA256": "413290F938F1ABCD3D78AE47582269EC1F2FCA3FC11614FA87F9A43D2181CFB1"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/File_Contour.Counts.txt",
+      "Bytes": 6,
+      "SHA256": "7AF5BD0FD1510E7DD325A3FBEA97D71675465251D99C63EFE31C542D0334F5AF"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/File_Contour.IEEE64.txt",
+      "Bytes": 265510,
+      "SHA256": "259FD2DA82F3B506423DBD89444D62D52C5CBFCF31270FEFBEA94C828907771B"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/Ownership.json",
+      "Bytes": 147,
+      "SHA256": "86D5A59304FD2E3D2341A9D39D53B59E5679EC305736147976EBF836410317E5"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/Quit.json",
+      "Bytes": 130,
+      "SHA256": "C36E2BEE58A0751A02B2D7C73CE30CD6910BEB24DE839C79DF146A44C699049D"
+    },
+    {
+      "Path": "Native/OwnerTimingParity02/Candidate3/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36308,
+      "SHA256": "6D990AE95456109BFCC9F64E3420B73071FE0A6E2D311A58D4DC999164BDD4CD"
+    },
+    {
+      "Path": "Native/RenderingDirected01/Closure.json",
+      "Bytes": 309,
+      "SHA256": "B08FDE687557FE1862CC41F687FCFD30C53B6D37CBF9BC88BAB2C2AA33D749C8"
+    },
+    {
+      "Path": "Native/RenderingDirected01/Failure.json",
+      "Bytes": 421,
+      "SHA256": "5DEFFB5ED225888CC5C4E352AD1BB0C2D9760C6611737812775DBEDC31A8BEA1"
+    },
+    {
+      "Path": "Native/RenderingDirected01/Ownership.json",
+      "Bytes": 144,
+      "SHA256": "7A03C3629E569616FD398CBEE49F61F91A2F380E6EA0781A9555F985B80EBCDF"
+    },
+    {
+      "Path": "Native/RenderingDirected01/Results.json",
+      "Bytes": 881,
+      "SHA256": "1E6615888AFE750C3FCE35B8F9939FA324D8477851A18CDF8761D73687622430"
+    },
+    {
+      "Path": "Native/RenderingDirected01/State.json",
+      "Bytes": 249,
+      "SHA256": "D91F305B94832D1DFE0073F759B740F7B481A28899AAB9339A88C1D8BB53F094"
+    },
+    {
+      "Path": "Native/RenderingDirected01/modTestCalculationSnapshot.RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 317,
+      "SHA256": "379D04501F2616330D2D9930DA341D62CCDF04B7D4BF7F945C087B003E341CB8"
+    },
+    {
+      "Path": "Native/RenderingDirected01/modTestElementGeometryViews.RunElementGeometryViewTests_No.txt",
+      "Bytes": 5807,
+      "SHA256": "BCFC37D191E7A41A39744937AF9A9D683149FDE4B53CC62D296D5400B984DFAD"
+    },
+    {
+      "Path": "Native/RenderingDirected01/modTestPlotConfig.RunContourLineWeightTests_No.txt",
+      "Bytes": 8267,
+      "SHA256": "F13E88837B2569EBF7338146CB14B1368A14FE1FE290813597A654EA6B58F8CC"
+    },
+    {
+      "Path": "Native/RenderingDirected01/modTestWorkbookInterface.RunFormationPreviewTests_No.txt",
+      "Bytes": 455,
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED"
+    },
+    {
+      "Path": "Native/RenderingDirected02/Closure.json",
+      "Bytes": 173,
+      "SHA256": "13D039BD0F35EFFDECE61FD0D9C052549D444FE7C5976DEC72EA0AF809052985"
+    },
+    {
+      "Path": "Native/RenderingDirected02/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "583269F5215A3B12274048940B8BB8C7CA3EBA8D31AAC428816ECBC7071B9D64"
+    },
+    {
+      "Path": "Native/RenderingDirected02/Results.json",
+      "Bytes": 1761,
+      "SHA256": "45F097D898650EC0A43F2F3A37DB2AB10E66917BB605ED8D4907D77A8526758C"
+    },
+    {
+      "Path": "Native/RenderingDirected02/State.json",
+      "Bytes": 117,
+      "SHA256": "BD5D65E87121151B39B9C507A6DC34CBA82CFD951E5C4AB20303AE5034D75C05"
+    },
+    {
+      "Path": "Native/RenderingDirected02/modTestCalculationSnapshot.RunWorkbookActionCompletionTests_No.txt",
+      "Bytes": 473,
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6"
+    },
+    {
+      "Path": "Native/RenderingDirected02/modTestCalculationSnapshot.RunWorkbookActionCompletionTests_Yes.txt",
+      "Bytes": 473,
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6"
+    },
+    {
+      "Path": "Native/RenderingDirected02/modTestElementGeometryViews.RunElementGeometryViewTests_No.txt",
+      "Bytes": 5807,
+      "SHA256": "41D0D0FC6683BB536BCEC3B8E6927E764B34766A020F16207240F84066485080"
+    },
+    {
+      "Path": "Native/RenderingDirected02/modTestElementGeometryViews.RunElementGeometryViewTests_Yes.txt",
+      "Bytes": 5807,
+      "SHA256": "41D0D0FC6683BB536BCEC3B8E6927E764B34766A020F16207240F84066485080"
+    },
+    {
+      "Path": "Native/RenderingDirected02/modTestPlotConfig.RunContourLineWeightTests_No.txt",
+      "Bytes": 8267,
+      "SHA256": "F13E88837B2569EBF7338146CB14B1368A14FE1FE290813597A654EA6B58F8CC"
+    },
+    {
+      "Path": "Native/RenderingDirected02/modTestPlotConfig.RunContourLineWeightTests_Yes.txt",
+      "Bytes": 8267,
+      "SHA256": "F13E88837B2569EBF7338146CB14B1368A14FE1FE290813597A654EA6B58F8CC"
+    },
+    {
+      "Path": "Native/RenderingDirected02/modTestWorkbookInterface.RunFormationPreviewTests_No.txt",
+      "Bytes": 455,
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED"
+    },
+    {
+      "Path": "Native/RenderingDirected02/modTestWorkbookInterface.RunFormationPreviewTests_Yes.txt",
+      "Bytes": 455,
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED"
+    },
+    {
+      "Path": "Native/SourceEquality01.json",
+      "Bytes": 117153,
+      "SHA256": "638A00A3018390F09A7A03C36AC2AD43787BEC8EC7876396BEE9A39282821438"
+    },
+    {
+      "Path": "Native/SourceEquality02.json",
+      "Bytes": 117153,
+      "SHA256": "44FF169D4FAB49B858B009D9510327FB5F21DA0686A76D4E223945D092AE2225"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_Excel/Calculation.txt",
+      "Bytes": 659,
+      "SHA256": "8A9F9100AA1C7974E72776F5EF08DF74AE0221F23CD65F49A13D27502ABFD27C"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_Excel/Fingerprint.txt",
+      "Bytes": 630343,
+      "SHA256": "9BFD2BD2450E4482E86A2E86E88CF5CB20E4883400F94EC3E297EA55BDA6B833"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_Excel/Formation.txt",
+      "Bytes": 352,
+      "SHA256": "C9E29EAFEA48BDE04D5D3EE80351E8093E720413D78A151F014B7C1570798203"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_Excel/Ownership.json",
+      "Bytes": 145,
+      "SHA256": "D61EF5A31ADA8A93267CB103B35FC2C2F8340476EEC0A2AC2B7805A79140D3B6"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_Excel/Quit.json",
+      "Bytes": 130,
+      "SHA256": "0E806B49DEF8503347101091CE8FDB72FB33673912E97FBBF6B9AAB1A063D6D2"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_Excel/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36356,
+      "SHA256": "FAD48B1F61438F04458BABD55A2FD50ED4D928AAAC09904BE49E4D4BBB82854A"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_Excel/StoredHash.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_File/Calculation.txt",
+      "Bytes": 628,
+      "SHA256": "55D7352BF83DA18B7D765D00703CEF58A0C3EBD07D7FADFE5A7C0A89FC3D044E"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_File/Fingerprint.txt",
+      "Bytes": 678938,
+      "SHA256": "FE4E1E6F15795E6E67DEFA2BADCE78AA4A39FB4696B1912B7EA51713F110D6D8"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_File/Formation.txt",
+      "Bytes": 361,
+      "SHA256": "CD321041878B7B12C7B42850F55BD473E7C909C229FD79FFAA9A1D2B6B190EE4"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_File/Ownership.json",
+      "Bytes": 143,
+      "SHA256": "C00FEFB93834944A2AC5368B83FD29C6370DA65C34BD25AA7197C84FFEBE0071"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_File/Quit.json",
+      "Bytes": 130,
+      "SHA256": "35E1B93F4A5C116529B5727EA79B3FA35100E29B6688C6DC955BBA043B4C5290"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_File/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36340,
+      "SHA256": "467F579CCBD01ED4016B303F95F8CFB42007A16A280E694E6B42CF5646D95865"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/No_File/StoredHash.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_Excel/Calculation.txt",
+      "Bytes": 660,
+      "SHA256": "5C73EA3E59C3AEBE00FA3CF94BD6373CF0F4967F1335B06D09A6BEA875DA586F"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_Excel/Fingerprint.txt",
+      "Bytes": 632161,
+      "SHA256": "6464F5E1726C17130B0052EDB261230113CA5C04AA3E5B1F5B705371D20F3E02"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_Excel/Formation.txt",
+      "Bytes": 352,
+      "SHA256": "66C8FE0CE5E9B5F37F7B81FB4C4DF080B5D6CEC378B1C3CB58DE1D28778A2465"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_Excel/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "9D016D2B4E095CEF8431E90DC702EA0CCE21F99278764A81E765BA022FC8CA23"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_Excel/Quit.json",
+      "Bytes": 129,
+      "SHA256": "A0BA601F91AB74433DC929D522E68DB3C3796756AD4812A0509584E4C7766332"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_Excel/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36312,
+      "SHA256": "F1E525248691B3506F1F8DE23FEBE44461DAFEC65472B9A03246862A1FE66E54"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_Excel/StoredHash.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_File/Calculation.txt",
+      "Bytes": 629,
+      "SHA256": "87914787A17FC2B0089464DE7F1B45DCEB8E5E9F4691F6F33E4CF319E0B9D3B0"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_File/Fingerprint.txt",
+      "Bytes": 680756,
+      "SHA256": "B913D60192D33E3DC4FCA9223F4B4A634EA0CCD49B05B497DB0358FA51D0EBF1"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_File/Formation.txt",
+      "Bytes": 361,
+      "SHA256": "FE95092168511B001AAACDC0377AACB3C104B71353F2EA6FA1C464619EA11159"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_File/Ownership.json",
+      "Bytes": 146,
+      "SHA256": "A577A947927224CAC8D6FC021A3F3BAA641CF07FC7045C3DB13F23AE03FEDC2F"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_File/Quit.json",
+      "Bytes": 130,
+      "SHA256": "60EA3BE93D4FEAF491FB98FADA6214233B1FB3FB4CA083C3BAE66ADADFED60B5"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_File/RC_Section_NDM_execution_report.txt",
+      "Bytes": 36302,
+      "SHA256": "2D9FF865287833FA0E5EE8460983FE12123752C274117E4F86BBF37F618E327C"
+    },
+    {
+      "Path": "Native/StoredRoundtrip01/Yes_File/StoredHash.txt",
+      "Bytes": 166,
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5"
+    }
+  ]
+}

@@ -100,13 +100,15 @@ End Sub
 ' Добавляет групповую подпись арматуры; пустой текст пропускается.
 ' boundaryIsGlobal отмечает общую подпись над глобальной границей бетона,
 ' чтобы отрисовка не переносила её к локальной ближайшей грани.
+' boundaryIsLocal сохраняет привязку к исходной части составного сечения, в том числе у внутренней грани.
 Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
         ByVal labelText As String, Optional ByVal commentValue As String = "Подпись общего количества и диаметров арматуры у выбранного участка контура.", _
-        Optional ByVal boundaryIsGlobal As Boolean = False)
+        Optional ByVal boundaryIsGlobal As Boolean = False, Optional ByVal boundaryIsLocal As Boolean = False)
     If Len(Trim$(labelText)) = 0 Then Exit Sub
     Dim kind As String: kind = "REBAR_ANNOTATION"
     If boundaryIsGlobal Then kind = "REBAR_GLOBAL_ANNOTATION"
+    If boundaryIsLocal Then kind = "REBAR_LOCAL_ANNOTATION"
     AddAnnotation kind, annotationID, startX, startY, endX, endY, normalX, normalY, labelText, 0#, vbNullString, commentValue
 End Sub
 

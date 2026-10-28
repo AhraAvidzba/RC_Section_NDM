@@ -2242,8 +2242,13 @@ End Function
 Public Function RunWorkbookActionCompletionTests() As String
     mTestReport = "": mTestPassed = 0: mTestFailed = 0
     Dim originalSettings As Variant: originalSettings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula
+    Dim originalLoads As Variant: originalLoads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Formula
+    Dim originalProfiles As Variant: originalProfiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange.Formula
+    Dim originalDuration As Variant: originalDuration = ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersToRange.Formula
     Dim originalScreen As Boolean: originalScreen = Application.ScreenUpdating
     On Error GoTo Failed
+    Dim initial As CSystemSettingsReader: Set initial = New CSystemSettingsReader: initial.LoadFromWorkbook ThisWorkbook
+    modTestPerformance.TestConfigurePerformanceFixture "NDS", 1, "Newton", "Rectangles", "Normal", initial.GetRequiredString("General.DiagramExtension") ' У чистой книги нет нагрузок: тест сам задаёт одно пригодное сочетание и Generated-источник вместо зависимости от предыдущего набора.
     TestSnapshotSetting "Mesh.CellGeometry", "Contour"
     TestSnapshotSetting "Results.SnapshotStorage", "Excel"
     TestSnapshotSetting "Plot.Enabled", "Yes"
@@ -2268,6 +2273,8 @@ Public Function RunWorkbookActionCompletionTests() As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False, started, information, attention)
     TestSnapshotCheck "action.calc.noWarning", InStr(message, "Предупреждение:") = 0
     TestSnapshotCheck "action.calc.paintCompleted", Not TestWorkbookDrawingPending(ThisWorkbook)
+    TestSnapshotCheck "action.calc.completed", InStr(message, "Время расчёта: ") > 0
+    If InStr(message, "Время расчёта: ") = 0 Then Err.Raise 5, "RunWorkbookActionCompletionTests", message
     position = InStr(message, "Время расчёта: ") + Len("Время расчёта: ")
     duration = CDbl(Split(Mid$(message, position), " с.")(0))
     TestSnapshotCheck "action.calc.outerTimer", duration >= 0.5
@@ -2283,6 +2290,9 @@ Failed:
 Finished:
     On Error Resume Next
     ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula = originalSettings
+    ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Formula = originalLoads
+    ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange.Formula = originalProfiles
+    ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersToRange.Formula = originalDuration
     Application.ScreenUpdating = originalScreen
     On Error GoTo 0
     RunWorkbookActionCompletionTests = mTestReport & "TOTAL_ACTION_COMPLETION: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)

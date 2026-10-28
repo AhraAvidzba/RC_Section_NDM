@@ -53,6 +53,12 @@ CONTOUR_ELEMENT_MACROS = MESSAGE_PRESENTATION_MACROS | {
     'modTestElementGeometryViews.RunElementGeometryViewTests',
 }
 
+ACTION_COMPLETION_GROUP_COUNTS = {**CONTOUR_ELEMENT_GROUP_COUNTS, 'CurrentFeatures': 13}
+ACTION_COMPLETION_MACROS = CONTOUR_ELEMENT_MACROS | {
+    'modTestCalculationSnapshot.RunGeometryHashTests',
+    'modTestCalculationSnapshot.RunWorkbookActionCompletionTests',
+}
+
 
 def coverage_errors(manifest):
     """Исторические запуски читаются в прежнем объёме; новый полный набор обязателен целиком."""
@@ -60,9 +66,9 @@ def coverage_errors(manifest):
         return []
     errors=[]
     version=manifest.get('CoverageVersion',1)
-    if version not in (1,2,3,4,5,6):
+    if version not in (1,2,3,4,5,6,7):
         return ['Unsupported full coverage version']
-    counts=CONTOUR_ELEMENT_GROUP_COUNTS if version==6 else MESSAGE_PRESENTATION_GROUP_COUNTS if version==5 else SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
+    counts=ACTION_COMPLETION_GROUP_COUNTS if version==7 else CONTOUR_ELEMENT_GROUP_COUNTS if version==6 else MESSAGE_PRESENTATION_GROUP_COUNTS if version==5 else SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
     if manifest.get('IncludesFocusedAcceptance') is not True:
         errors.append('The current full definition requires focused acceptance')
     expected={(group,mode) for group in counts for mode in ('No','Yes')}
@@ -79,7 +85,7 @@ def coverage_errors(manifest):
                 errors.append('Individual row coverage is incomplete or duplicated')
         if version >= 4 and job['Group'] == 'CurrentFeatures':
             macros = job.get('Macro', [])
-            required = CONTOUR_ELEMENT_MACROS if version == 6 else MESSAGE_PRESENTATION_MACROS if version == 5 else SNAPSHOT_ACCELERATION_MACROS
+            required = ACTION_COMPLETION_MACROS if version == 7 else CONTOUR_ELEMENT_MACROS if version == 6 else MESSAGE_PRESENTATION_MACROS if version == 5 else SNAPSHOT_ACCELERATION_MACROS
             if len(macros) != len(required) or set(macros) != required:
                 errors.append('Every feature declared for this coverage version is mandatory')
     return errors
@@ -89,13 +95,13 @@ def runner_coverage_errors(manifest, runner_text):
     """Связывает новую версию с реально сохранённым runner, не меняя исторические планы."""
     versions = {int(value) for value in re.findall(r'\bCoverageVersion\s*=\s*(\d+)\b', runner_text)}
     declared = manifest.get('CoverageVersion', 1)
-    if declared != 6 and not any(version >= 6 for version in versions):
+    if declared not in (6,7) and not any(version >= 6 for version in versions):
         return []
     errors = []
     if versions != {declared}:
         errors.append('Full runner snapshot and manifest coverage versions differ')
     if manifest.get('CoverageDefinition') != 'AllActiveAcceptanceIncludingFocused':
-        errors.append('The version 6 runner requires the complete current coverage definition')
+        errors.append(f'The version {declared} runner requires the complete current coverage definition')
     return errors
 
 def load_logs():

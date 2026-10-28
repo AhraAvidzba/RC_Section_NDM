@@ -1,0 +1,10 @@
+{
+  "Status": "PREPARED_NOT_LAUNCHED",
+  "ExpectedCoreMacroExecutions": 182,
+  "CoverageVersion": 7,
+  "FocusedSingleCases": 122,
+  "IncludesEntireFocusedPlan": true,
+  "OverallDeadline": "2026-10-29T12:00:00+03:00",
+  "ForecastHours": 4.5,
+  "FinalReviewReserveMinutes": 40
+}

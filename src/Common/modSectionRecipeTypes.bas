@@ -161,6 +161,7 @@ Public Type TSectionAnnotation
     Value As Double
     DisplayIncrement As Double
     ReverseDirection As Boolean
+    BoundaryIsLocal As Boolean ' Якорь подписи уже перенесён к исходной границе своей части сечения, а не к общей оболочке.
     Comment As String
 End Type
 

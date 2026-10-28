@@ -272,6 +272,7 @@ Public Function RunRecipeRuleTests() As String
     TestNear "distance.outside", query.BoundaryDistance(region, 150#, -20#), 40#
     For scenario = 0 To 7: TestCheck "rule.invalid." & CStr(scenario), TestInvalidRuleRejected(scenario): Next scenario
     TestPublicationAndCoincidence
+    TestLocalRowBoundaryAnchor
     TestLayoutIndex
     TestAdjacentRectangles
     TestAnnotationMeasurements
@@ -476,7 +477,7 @@ End Sub
 Private Function TestAnnotatedBarCount(ByVal annotations As CSectionAnnotations) As Long
     Dim i As Long, part As Variant, position As Long
     For i = 1 To annotations.Count
-        If annotations.AnnotationType(i) = "REBAR_ANNOTATION" Then
+        If annotations.AnnotationType(i) = "REBAR_ANNOTATION" Or annotations.AnnotationType(i) = "REBAR_LOCAL_ANNOTATION" Then
             For Each part In Split(annotations.Text(i), "+")
                 position = InStr(1, CStr(part), ChrW$(216), vbBinaryCompare)
                 If position = 0 Then Err.Raise vbObjectError + 5532, "modTestSectionRecipes", "Неверный формат групповой подписи: " & CStr(part)
@@ -557,6 +558,32 @@ Private Function TestBuildFixture(ByVal facade As CSectionDefinitionBuilder, ByV
     mesh.StepX = 1000#: mesh.StepY = 1000#: mesh.BoundarySubdivisions = 1: mesh.MaterialID = 1
     Set TestBuildFixture = builder.Build(facade.Finish, mesh)
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Внутренняя грань Upper смежных прямоугольников не входит в общую оболочку: подпись остаётся у y=250, стержни — у y=290.
+Private Sub TestLocalRowBoundaryAnchor()
+    Dim facade As CSectionDefinitionBuilder: Set facade = New CSectionDefinitionBuilder: facade.Initialize "TestLocalRowBoundary"
+    Dim path As CGeometryPath
+    Set path = facade.RectanglePath("Upper", 0#, 250#, 250#, 550#)
+    Set path = facade.RectanglePath("Lower", 0#, 0#, 600#, 250#)
+    Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)))
+    facade.Outer "OUTER", path.ID
+    Set path = facade.LinePath("UpperBottom", 200#, 290#, 50#, 290#)
+    Dim options As CRebarRuleOptions: Set options = New CRebarRuleOptions: options.AnnotationGroup = "UpperBottom"
+    facade.RebarByCount "UpperBottom.Main", path.ID, 2, 20#, options
+    facade.RebarContour "UpperBottom.Main", "OUTER", "Upper", 40#, "UpperBottom.Row2", "UpperBottom.Row3", normalSign:=-1#
+    facade.RebarRowLabel "UpperBottom", "UpperBottom.Main", 0#, -1#
+    Dim mesh As TSectionMeshOptions: mesh.StepX = 100#: mesh.StepY = 100#: mesh.MaterialID = 1: mesh.CellGeometry = "Contour"
+    Dim builder As CSectionBuilder: Set builder = New CSectionBuilder
+    Dim model As CSectionModel: Set model = builder.Build(facade.Finish, mesh)
+    TestCheck "localLabel.single", model.Annotations.Count = 1
+    TestCheck "localLabel.resolvedType", model.Annotations.AnnotationType(1) = "REBAR_LOCAL_ANNOTATION"
+    TestNear "localLabel.upperBoundary.start", model.Annotations.StartY(1), 250#
+    TestNear "localLabel.upperBoundary.end", model.Annotations.EndY(1), 250#
+    TestNear "localLabel.normal", model.Annotations.NormalY(1), -1#
+    TestNear "localLabel.barUnchanged.first", model.RebarY(1), 290#
+    TestNear "localLabel.barUnchanged.second", model.RebarY(2), 290#
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет недопустимые отступы, шаг, режим замыкания, циклическую зависимость и отсутствие допустимой проекции.

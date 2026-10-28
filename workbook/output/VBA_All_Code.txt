@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-28 21:50:33
+Date: 2026-10-28 23:35:14
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -6131,7 +6131,7 @@ LINES: 3641
 ====================================================================================================
 COMPONENT: modSectionRecipeTypes
 TYPE: 1
-LINES: 303
+LINES: 304
 ====================================================================================================
 Option Explicit
 
@@ -6295,6 +6295,7 @@ Public Type TSectionAnnotation
     value As Double
     displayIncrement As Double
     reverseDirection As Boolean
+    boundaryIsLocal As Boolean ' Якорь подписи уже перенесён к исходной границе своей части сечения, а не к общей оболочке.
     comment As String
 End Type
 
@@ -9072,7 +9073,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CConcreteElement
 TYPE: 2
-LINES: 198
+LINES: 215
 ====================================================================================================
 Option Explicit
 
@@ -9234,6 +9235,23 @@ Public Property Get geometry() As CConcreteRegion
     End If
     Set geometry = mLegacyGeometry.clone
 End Property
+
+' Вычисляет проекцию собственной неизменяемой границы без выдачи изменяемого объекта наружу.
+' Использует тот же геометрический запрос; независимая публичная Geometry по-прежнему возвращает Clone.
+Friend Sub ExactProjectionBounds(ByVal axisX As Double, ByVal axisY As Double, ByRef minimum As Double, ByRef maximum As Double)
+    If mExactGeometry Is Nothing Then Err.Raise vbObjectError + 5223, "CConcreteElement", "Фактическая граница бетонного элемента не задана."
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    query.ProjectionBounds mExactGeometry, axisX, axisY, minimum, maximum
+End Sub
+
+' Проверяет форму собственной границы без копирования всех её сегментов во временный объект.
+' Параметры возвращаются числами; исходная область не меняется и остаётся закрытой внутри элемента.
+Friend Function ExactRectangle(ByRef centerX As Double, ByRef centerY As Double, ByRef width As Double, _
+        ByRef height As Double, ByRef rotation As Double) As Boolean
+    If mExactGeometry Is Nothing Then Exit Function
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    ExactRectangle = query.TryRectangle(mExactGeometry, centerX, centerY, width, height, rotation)
+End Function
 
 ' Создаёт заменяющую сущность с той же расчётной идентичностью и A/c/I.
 ' Согласованность новой области предварительно проверяет CSectionModel.
@@ -9637,7 +9655,7 @@ Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars
             annotations.AddRebarLabel "REBAR_" & groupName, _
                 anchors(i).startX, anchors(i).startY, _
                 anchors(i).endX, anchors(i).endY, _
-                anchors(i).normalX, anchors(i).normalY, CStr(labels(groupName))
+                anchors(i).normalX, anchors(i).normalY, CStr(labels(groupName)), boundaryIsLocal:=anchors(i).boundaryIsLocal
             labels.Remove groupName ' Несколько привязок одной группы не создают повторную подпись.
         End If
     Next i
@@ -11555,7 +11573,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionAnnotationBuilder
 TYPE: 2
-LINES: 398
+LINES: 424
 ====================================================================================================
 Option Explicit
 
@@ -11606,8 +11624,10 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                 AppendLabelAnchor anchors, anchorCount, value
             Case "RebarRowLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи арматуры сначала требуется построить стержни по заданным правилам."
-                If rules.RuleEnds(value.Target, value.startX, value.startY, value.endX, value.endY) Then _
+                If rules.RuleEnds(value.Target, value.startX, value.startY, value.endX, value.endY) Then
+                    ResolveRowLabelBoundary definition, value
                     AppendLabelAnchor anchors, anchorCount, value
+                End If
             Case "RebarRowExtentLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи арматуры сначала требуется построить стержни по заданным правилам."
                 Dim nx As Double, ny As Double, tx As Double, ty As Double, support As Double
@@ -11638,6 +11658,30 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     Dim labels As CRebarGroupAnnotationBuilder
     Set labels = New CRebarGroupAnnotationBuilder
     labels.AddRebarLabels annotations, rebars, anchors, anchorCount
+End Sub
+
+' Переносит подпись основного ряда к его исходной замкнутой границе.
+' Общая оболочка смежных частей может не содержать внутреннюю грань; стержни и рецепт не меняются.
+Private Sub ResolveRowLabelBoundary(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation)
+    Dim link As TRebarContourLink, i As Long, path As CGeometryPath
+    Dim query As CSectionGeometryQuery, region As CConcreteRegion, distance As Double, norm As Double
+    For i = 1 To definition.RebarContourCount
+        definition.CopyRebarContour i, link
+        If StrComp(link.mainRuleID, value.Target, vbTextCompare) = 0 Then
+            Set path = definition.path(link.sourcePathID)
+            If Not path.IsClosed Then Exit Sub
+            norm = Sqr(value.normalX * value.normalX + value.normalY * value.normalY)
+            If norm <= GEOM_TOLERANCE Then Exit Sub
+            Set query = New CSectionGeometryQuery: Set region = query.RegionFromPath(path)
+            If query.LabelBoundaryDistance(region, 0.5 * (value.startX + value.endX), 0.5 * (value.startY + value.endY), _
+                    value.normalX, value.normalY, distance) Then
+                value.startX = value.startX + value.normalX / norm * distance: value.endX = value.endX + value.normalX / norm * distance
+                value.startY = value.startY + value.normalY / norm * distance: value.endY = value.endY + value.normalY / norm * distance
+                value.boundaryIsLocal = True
+            End If
+            Exit Sub
+        End If
+    Next i
 End Sub
 
 ' Находит линию, относительно которой размещается подпись, по точным отрезкам и дугам.
@@ -11959,7 +12003,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionAnnotations
 TYPE: 2
-LINES: 186
+LINES: 188
 ====================================================================================================
 Option Explicit
 
@@ -12054,13 +12098,15 @@ End Sub
 ' Добавляет групповую подпись арматуры; пустой текст пропускается.
 ' boundaryIsGlobal отмечает общую подпись над глобальной границей бетона,
 ' чтобы отрисовка не переносила её к локальной ближайшей грани.
+' boundaryIsLocal сохраняет привязку к исходной части составного сечения, в том числе у внутренней грани.
 Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
         ByVal labelText As String, Optional ByVal commentValue As String = "Подпись общего количества и диаметров арматуры у выбранного участка контура.", _
-        Optional ByVal boundaryIsGlobal As Boolean = False)
+        Optional ByVal boundaryIsGlobal As Boolean = False, Optional ByVal boundaryIsLocal As Boolean = False)
     If Len(Trim$(labelText)) = 0 Then Exit Sub
     Dim kind As String: kind = "REBAR_ANNOTATION"
     If boundaryIsGlobal Then kind = "REBAR_GLOBAL_ANNOTATION"
+    If boundaryIsLocal Then kind = "REBAR_LOCAL_ANNOTATION"
     AddAnnotation kind, annotationID, startX, startY, endX, endY, normalX, normalY, labelText, 0#, vbNullString, commentValue
 End Sub
 
@@ -16105,7 +16151,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionModel
 TYPE: 2
-LINES: 1185
+LINES: 1183
 ====================================================================================================
 Option Explicit
 
@@ -16642,9 +16688,8 @@ Public Function ConcreteBoundaryRectangle(ByVal index As Long, ByRef widthValue 
         ByRef heightValue As Double, ByRef rotationValue As Double) As Boolean
     CheckConcreteIndex index
     If mConcreteElements(index).HasExactGeometry Then
-        Dim query As CSectionGeometryQuery, centerX As Double, centerY As Double
-        Set query = New CSectionGeometryQuery
-        ConcreteBoundaryRectangle = query.TryRectangle(mConcreteElements(index).geometry, centerX, centerY, widthValue, heightValue, rotationValue)
+        Dim centerX As Double, centerY As Double
+        ConcreteBoundaryRectangle = mConcreteElements(index).ExactRectangle(centerX, centerY, widthValue, heightValue, rotationValue)
         Exit Function
     End If
     Dim statusText As String
@@ -16669,12 +16714,11 @@ Public Sub ConcreteProjectionBounds(ByVal index As Long, ByVal axisX As Double, 
         ByRef minimum As Double, ByRef maximum As Double)
     CheckConcreteIndex index
     If mConcreteElements(index).HasExactGeometry Then
-        Dim query As CSectionGeometryQuery, axisNorm As Double, axisScale As Double
-        Set query = New CSectionGeometryQuery
+        Dim axisNorm As Double, axisScale As Double
         axisScale = GeomMax(Abs(axisX), Abs(axisY))
         If axisScale <= 0# Then Err.Raise vbObjectError + 5223, "CSectionModel", "Направление проекции бетонной ячейки имеет нулевую длину."
         axisNorm = axisScale * Sqr((axisX / axisScale) ^ 2 + (axisY / axisScale) ^ 2) ' Линейные коэффициенты ядра могут быть много меньше геометрического допуска, оставаясь ненулевыми.
-        query.ProjectionBounds mConcreteElements(index).geometry, axisX / axisNorm, axisY / axisNorm, minimum, maximum
+        mConcreteElements(index).ExactProjectionBounds axisX / axisNorm, axisY / axisNorm, minimum, maximum
         minimum = minimum * axisNorm: maximum = maximum * axisNorm ' Общий запрос нормирует направление; линейная проекция ядра сохраняет его исходный масштаб.
     Else
         Dim centerProjection As Double, halfProjection As Double
@@ -52188,7 +52232,7 @@ Private mExtensionUsed As Boolean ' Признак использования ч
 Private mStateStatus As String ' Статус выбранного сохранённого расчётного состояния.
 Private mAnnotationCount As Long ' Число размеров, подписей и исходных контуров для схемы; расчётные области трещин сюда не включаются.
 Private mAnnotationCapacity As Long ' Закрытый резерв массивов аннотаций; внешний Count содержит только заполненную часть.
-Private mAnnotationType() As String ' Тип аннотации: DIMENSION, REBAR_ANNOTATION, REBAR_GLOBAL_ANNOTATION, TEXT_ANNOTATION или CONTOUR_*.
+Private mAnnotationType() As String ' Тип аннотации: DIMENSION, REBAR_ANNOTATION, REBAR_GLOBAL_ANNOTATION, REBAR_LOCAL_ANNOTATION, TEXT_ANNOTATION или CONTOUR_*.
 Private mLabelContours As CSectionContours, mLabelBoundary As CConcreteRegion ' Сохранённые контуры и бетонная область для отсчёта отступов подписей.
 Private mAnnotationStartX() As Double ' Начало линии/размера в координатах модели.
 Private mAnnotationStartY() As Double ' Начало линии/размера в координатах модели.
@@ -52997,7 +53041,7 @@ End Sub
 ' нормали или координат неуспешной пробы не является повреждением подписи.
 Private Function IsPlotLabelAnnotation(ByVal annotationType As String) As Boolean
     Select Case UCase$(Trim$(annotationType))
-        Case "DIMENSION", "REBAR_ANNOTATION", "REBAR_GLOBAL_ANNOTATION", "MEASUREMENT_LABEL", "TEXT_ANNOTATION"
+        Case "DIMENSION", "REBAR_ANNOTATION", "REBAR_GLOBAL_ANNOTATION", "REBAR_LOCAL_ANNOTATION", "MEASUREMENT_LABEL", "TEXT_ANNOTATION"
             IsPlotLabelAnnotation = True
     End Select
 End Function
@@ -53532,7 +53576,7 @@ Public Property Get annotationCount() As Long: annotationCount = mAnnotationCoun
 ' это добавляет as; на дуге определяется действительное расстояние по нормали.
 ' Сохранённые Results читаются без нового расчёта или обращения к геометрии Config.
 Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double
-    If mAnnotationType(index) = "REBAR_GLOBAL_ANNOTATION" Then Exit Function ' Общая подпись уже привязана к крайней точке бетона. Пересечение по нормали в середине повёрнутого сечения опустило бы её на контур.
+    If mAnnotationType(index) = "REBAR_GLOBAL_ANNOTATION" Or mAnnotationType(index) = "REBAR_LOCAL_ANNOTATION" Then Exit Function ' Якорь уже относится к выбранной границе. Общая оболочка не должна переносить подпись внутренней грани к краю всего сечения.
     If mLabelContours Is Nothing Then Exit Function
     Dim query As CSectionGeometryQuery, i As Long, hasOuter As Boolean
     Dim nx As Double, ny As Double, norm As Double, distance As Double
@@ -53577,7 +53621,7 @@ Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: Annotat
 ====================================================================================================
 COMPONENT: CSectionPlotter
 TYPE: 2
-LINES: 2200
+LINES: 2201
 ====================================================================================================
 Option Explicit
 
@@ -54170,9 +54214,9 @@ Private Sub FormatElementShapes(ByVal indexes As Collection, ByVal fillColor As 
     Set shapes = mChart.shapes.range(values)
     shapes.Fill.ForeColor.RGB = fillColor
     shapes.line.Visible = True
-    If transparentLine Then shapes.line.Transparency = 1# Else shapes.line.Transparency = 0#
+    If transparentLine Then shapes.line.transparency = 1# Else shapes.line.transparency = 0#
     shapes.line.ForeColor.RGB = lineColor
-    shapes.line.weight = weight
+    If transparentLine Then shapes.line.weight = 0.01 Else shapes.line.weight = weight ' Тонкая прозрачная обводка скрывает служебные мосты и уменьшает область сглаживания Excel.
 End Sub
 
 ' Рисует Contour по фактической границе; прямоугольникам и одноконтурным фигурам задаёт одинаковую тонкую обводку.
@@ -54955,7 +54999,8 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
     If rebarLabelsEnabled Then
         For i = 1 To data.annotationCount
             If StrComp(data.annotationType(i), "REBAR_ANNOTATION", vbTextCompare) = 0 Or _
-                    StrComp(data.annotationType(i), "REBAR_GLOBAL_ANNOTATION", vbTextCompare) = 0 Then
+                    StrComp(data.annotationType(i), "REBAR_GLOBAL_ANNOTATION", vbTextCompare) = 0 Or _
+                    StrComp(data.annotationType(i), "REBAR_LOCAL_ANNOTATION", vbTextCompare) = 0 Then
                 layout.AddRebarLabel data.AnnotationStartX(i), data.AnnotationStartY(i), _
                     data.AnnotationEndX(i), data.AnnotationEndY(i), data.AnnotationNormalX(i), _
                     data.AnnotationNormalY(i), data.AnnotationText(i), data.AnnotationBoundaryDistance(i)
@@ -84462,7 +84507,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCalculationSnapshot
 TYPE: 1
-LINES: 2289
+LINES: 2299
 ====================================================================================================
 Option Explicit
 
@@ -86707,8 +86752,13 @@ End Function
 Public Function RunWorkbookActionCompletionTests() As String
     mTestReport = "": mTestPassed = 0: mTestFailed = 0
     Dim originalSettings As Variant: originalSettings = ThisWorkbook.names.item("rngSystemSettings").RefersToRange.formula
+    Dim originalLoads As Variant: originalLoads = ThisWorkbook.names.item("rngLoadCombinations").RefersToRange.formula
+    Dim originalProfiles As Variant: originalProfiles = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange.formula
+    Dim originalDuration As Variant: originalDuration = ThisWorkbook.names.item("rngStabilityDurationLoads").RefersToRange.formula
     Dim originalScreen As Boolean: originalScreen = Application.ScreenUpdating
     On Error GoTo Failed
+    Dim initial As CSystemSettingsReader: Set initial = New CSystemSettingsReader: initial.LoadFromWorkbook ThisWorkbook
+    modTestPerformance.TestConfigurePerformanceFixture "NDS", 1, "Newton", "Rectangles", "Normal", initial.GetRequiredString("General.DiagramExtension") ' У чистой книги нет нагрузок: тест сам задаёт одно пригодное сочетание и Generated-источник вместо зависимости от предыдущего набора.
     TestSnapshotSetting "Mesh.CellGeometry", "Contour"
     TestSnapshotSetting "Results.SnapshotStorage", "Excel"
     TestSnapshotSetting "Plot.Enabled", "Yes"
@@ -86733,6 +86783,8 @@ Public Function RunWorkbookActionCompletionTests() As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False, started, information, attention)
     TestSnapshotCheck "action.calc.noWarning", InStr(message, "Предупреждение:") = 0
     TestSnapshotCheck "action.calc.paintCompleted", Not TestWorkbookDrawingPending(ThisWorkbook)
+    TestSnapshotCheck "action.calc.completed", InStr(message, "Время расчёта: ") > 0
+    If InStr(message, "Время расчёта: ") = 0 Then Err.Raise 5, "RunWorkbookActionCompletionTests", message
     position = InStr(message, "Время расчёта: ") + Len("Время расчёта: ")
     duration = CDbl(split(mid$(message, position), " с.")(0))
     TestSnapshotCheck "action.calc.outerTimer", duration >= 0.5
@@ -86748,6 +86800,9 @@ Failed:
 Finished:
     On Error Resume Next
     ThisWorkbook.names.item("rngSystemSettings").RefersToRange.formula = originalSettings
+    ThisWorkbook.names.item("rngLoadCombinations").RefersToRange.formula = originalLoads
+    ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange.formula = originalProfiles
+    ThisWorkbook.names.item("rngStabilityDurationLoads").RefersToRange.formula = originalDuration
     Application.ScreenUpdating = originalScreen
     On Error GoTo 0
     RunWorkbookActionCompletionTests = mTestReport & "TOTAL_ACTION_COMPLETION: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
@@ -98574,7 +98629,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestElementGeometry
 TYPE: 1
-LINES: 851
+LINES: 880
 ====================================================================================================
 Option Explicit
 
@@ -98603,12 +98658,41 @@ Public Function RunElementGeometryTests() As String
     TestTangentArcEndpoints stats
     TestHollowTangentCells stats
     TestSmallArcSegment stats
+    TestOwnerReadQueries stats
     stats.report = stats.report & "TOTAL: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
     RunElementGeometryTests = stats.report
     Exit Function
 Failed:
     RunElementGeometryTests = stats.report & "RUNTIME ERROR: " & CStr(Err.number) & "; source=" & Err.source & "; description=" & Err.description & vbCrLf
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет запрос владельца с прежним запросом независимой Geometry для прямоугольника, дуг и отверстия; выдаваемая наружу область остаётся копией.
+Private Sub TestOwnerReadQueries(ByRef stats As TTestStats)
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    Dim regions As Collection: Set regions = New Collection
+    regions.Add query.RectangleRegion(17#, -9#, 50#, 100#, 0.37)
+    regions.Add query.circleRegion(-11#, 7#, 35#)
+    regions.Add query.SubtractContainedRegion(query.circleRegion(0#, 0#, 100#), query.circleRegion(20#, 0#, 15#))
+    Dim item As Variant, region As CConcreteRegion, model As CSectionModel, properties As TGeometryProperties
+    Dim axis As Variant, minimum As Double, maximum As Double, oldMinimum As Double, oldMaximum As Double
+    Dim cx As Double, cy As Double, width As Double, height As Double, rotation As Double, number As Long
+    For Each item In regions
+        Set region = item: query.RegionProperties region, properties
+        Set model = New CSectionModel
+        model.AddConcreteElement properties.centroidX, properties.centroidY, properties.area, shapeType:="Contour", _
+            localIx:=properties.Ixc, localIy:=properties.Iyc, localIxy:=properties.Ixyc, exactRegion:=region
+        number = number + 1
+        For Each axis In Array(Array(1#, 0#), Array(0#, 1#), Array(0.6, 0.8), Array(-0.8, 0.6))
+            model.ConcreteProjectionBounds 1, CDbl(axis(0)), CDbl(axis(1)), minimum, maximum
+            query.ProjectionBounds model.ConcreteGeometry(1), CDbl(axis(0)), CDbl(axis(1)), oldMinimum, oldMaximum
+            TestTrue stats, "ownerQuery.min." & CStr(number), minimum = oldMinimum
+            TestTrue stats, "ownerQuery.max." & CStr(number), maximum = oldMaximum
+        Next axis
+        TestTrue stats, "ownerQuery.rectangle." & CStr(number), _
+            model.ConcreteBoundaryRectangle(1, width, height, rotation) = query.TryRectangle(model.ConcreteGeometry(1), cx, cy, width, height, rotation)
+    Next item
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет полный перенос точных ячеек через CFiberMeshBuilder и сборщик модели,
@@ -99431,7 +99515,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestElementGeometryViews
 TYPE: 1
-LINES: 248
+LINES: 256
 ====================================================================================================
 Option Explicit
 
@@ -99575,6 +99659,7 @@ Private Sub TestNativeFreeformViews()
     Dim number As Long, description As String
     On Error GoTo Failed
     Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    TestOneNativeFreeform fixture, query.circleRegion(0#, 0#, 100#), 0#, 0#, "Circle"
     Dim ring As CConcreteRegion: Set ring = query.SubtractContainedRegion(query.circleRegion(0#, 0#, 100#), query.circleRegion(0#, 0#, 30#))
     TestOneNativeFreeform fixture, ring, 0#, 0#, "Hole"
     Dim parts As Collection: Set parts = New Collection
@@ -99606,6 +99691,13 @@ Private Sub TestOneNativeFreeform(ByVal fixture As Object, ByVal region As CConc
     TestCheck "elementViews.plot." & label & ".freeform", shape.Type = 5
     TestNear "elementViews.plot." & label & ".width07", shape.width, 140#, 0.01
     TestNear "elementViews.plot." & label & ".height07", shape.height, 140#, 0.01
+    TestCheck "elementViews.plot." & label & ".lineEnabled", shape.line.Visible <> 0
+    Dim transparency As Double: If region.loopCount > 1 Then transparency = 1#
+    TestNear "elementViews.plot." & label & ".lineTransparency", shape.line.transparency, transparency, 0.00001
+    TestCheck "elementViews.plot." & label & ".lineMatchesFill", shape.line.ForeColor.RGB = shape.Fill.ForeColor.RGB
+    Dim lineWeight As Double: lineWeight = 0.15
+    If region.loopCount > 1 Then lineWeight = 0.01
+    TestNear "elementViews.plot." & label & ".lineWeight", shape.line.weight, lineWeight, 0.0001
     Dim path As String: path = ThisWorkbook.path & "\TestElementGeometry_" & label & ".png"
     TestCheck "elementViews.plot." & label & ".PNG", chart.export(path, "PNG")
     mReport = mReport & "RASTER_ELEMENT_GEOMETRY: " & label & "; " & path & vbCrLf
@@ -105781,7 +105873,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestGeometryFixtures
 TYPE: 1
-LINES: 586
+LINES: 587
 ====================================================================================================
 Option Explicit
 
@@ -105833,7 +105925,8 @@ Public Function TestFixtureAnnotatedLayout(ByVal definition As CSectionDefinitio
     builder.Build definition, layout, all, executor
     Set annotations = New CSectionAnnotations
     For i = 1 To all.count
-        If all.annotationType(i) = "REBAR_ANNOTATION" Then TestFixtureCopyAnnotation all, i, annotations, 0#, 0#
+        If all.annotationType(i) = "REBAR_ANNOTATION" Or all.annotationType(i) = "REBAR_LOCAL_ANNOTATION" Then _
+            TestFixtureCopyAnnotation all, i, annotations, 0#, 0# ' Оба типа относятся к физической группе арматуры; локальный якорь уже расположен на границе своей части.
     Next i
     Set TestFixtureAnnotatedLayout = layout
 End Function
@@ -108246,7 +108339,7 @@ Private Sub TestDisabledSides(ByVal fixture As String, ByVal tableName As String
             Next i
             dimensions = 0
             For i = 1 To model.annotationCount
-                If model.annotations.annotationType(i) = "REBAR_ANNOTATION" Then
+                If model.annotations.annotationType(i) = "REBAR_ANNOTATION" Or model.annotations.annotationType(i) = "REBAR_LOCAL_ANNOTATION" Then
                     key = mid$(model.annotations.annotationID(i), 7): labels.Add key, model.annotations.text(i)
                     TestCheck label & ".noEmptyLabel." & key, counts.Exists(key)
                 End If
@@ -120204,7 +120297,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestSectionRecipes
 TYPE: 1
-LINES: 1780
+LINES: 1807
 ====================================================================================================
 Option Explicit
 
@@ -120479,6 +120572,7 @@ Public Function RunRecipeRuleTests() As String
     TestNear "distance.outside", query.boundaryDistance(region, 150#, -20#), 40#
     For scenario = 0 To 7: TestCheck "rule.invalid." & CStr(scenario), TestInvalidRuleRejected(scenario): Next scenario
     TestPublicationAndCoincidence
+    TestLocalRowBoundaryAnchor
     TestLayoutIndex
     TestAdjacentRectangles
     TestAnnotationMeasurements
@@ -120683,7 +120777,7 @@ End Sub
 Private Function TestAnnotatedBarCount(ByVal annotations As CSectionAnnotations) As Long
     Dim i As Long, part As Variant, position As Long
     For i = 1 To annotations.count
-        If annotations.annotationType(i) = "REBAR_ANNOTATION" Then
+        If annotations.annotationType(i) = "REBAR_ANNOTATION" Or annotations.annotationType(i) = "REBAR_LOCAL_ANNOTATION" Then
             For Each part In split(annotations.text(i), "+")
                 position = InStr(1, CStr(part), ChrW$(216), vbBinaryCompare)
                 If position = 0 Then Err.Raise vbObjectError + 5532, "modTestSectionRecipes", "Неверный формат групповой подписи: " & CStr(part)
@@ -120764,6 +120858,32 @@ Private Function TestBuildFixture(ByVal facade As CSectionDefinitionBuilder, ByV
     mesh.stepX = 1000#: mesh.stepY = 1000#: mesh.boundarySubdivisions = 1: mesh.materialID = 1
     Set TestBuildFixture = builder.Build(facade.Finish, mesh)
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Внутренняя грань Upper смежных прямоугольников не входит в общую оболочку: подпись остаётся у y=250, стержни — у y=290.
+Private Sub TestLocalRowBoundaryAnchor()
+    Dim facade As CSectionDefinitionBuilder: Set facade = New CSectionDefinitionBuilder: facade.Initialize "TestLocalRowBoundary"
+    Dim path As CGeometryPath
+    Set path = facade.RectanglePath("Upper", 0#, 250#, 250#, 550#)
+    Set path = facade.RectanglePath("Lower", 0#, 0#, 600#, 250#)
+    Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)))
+    facade.outer "OUTER", path.id
+    Set path = facade.LinePath("UpperBottom", 200#, 290#, 50#, 290#)
+    Dim options As CRebarRuleOptions: Set options = New CRebarRuleOptions: options.AnnotationGroup = "UpperBottom"
+    facade.RebarByCount "UpperBottom.Main", path.id, 2, 20#, options
+    facade.RebarContour "UpperBottom.Main", "OUTER", "Upper", 40#, "UpperBottom.Row2", "UpperBottom.Row3", normalSign:=-1#
+    facade.RebarRowLabel "UpperBottom", "UpperBottom.Main", 0#, -1#
+    Dim mesh As TSectionMeshOptions: mesh.stepX = 100#: mesh.stepY = 100#: mesh.materialID = 1: mesh.cellGeometry = "Contour"
+    Dim builder As CSectionBuilder: Set builder = New CSectionBuilder
+    Dim model As CSectionModel: Set model = builder.Build(facade.Finish, mesh)
+    TestCheck "localLabel.single", model.annotations.count = 1
+    TestCheck "localLabel.resolvedType", model.annotations.annotationType(1) = "REBAR_LOCAL_ANNOTATION"
+    TestNear "localLabel.upperBoundary.start", model.annotations.startY(1), 250#
+    TestNear "localLabel.upperBoundary.end", model.annotations.endY(1), 250#
+    TestNear "localLabel.normal", model.annotations.normalY(1), -1#
+    TestNear "localLabel.barUnchanged.first", model.rebarY(1), 290#
+    TestNear "localLabel.barUnchanged.second", model.rebarY(2), 290#
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет недопустимые отступы, шаг, режим замыкания, циклическую зависимость и отсутствие допустимой проекции.

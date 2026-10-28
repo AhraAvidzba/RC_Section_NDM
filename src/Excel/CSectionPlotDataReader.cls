@@ -73,7 +73,7 @@ Private mExtensionUsed As Boolean ' Признак использования ч
 Private mStateStatus As String ' Статус выбранного сохранённого расчётного состояния.
 Private mAnnotationCount As Long ' Число размеров, подписей и исходных контуров для схемы; расчётные области трещин сюда не включаются.
 Private mAnnotationCapacity As Long ' Закрытый резерв массивов аннотаций; внешний Count содержит только заполненную часть.
-Private mAnnotationType() As String ' Тип аннотации: DIMENSION, REBAR_ANNOTATION, REBAR_GLOBAL_ANNOTATION, TEXT_ANNOTATION или CONTOUR_*.
+Private mAnnotationType() As String ' Тип аннотации: DIMENSION, REBAR_ANNOTATION, REBAR_GLOBAL_ANNOTATION, REBAR_LOCAL_ANNOTATION, TEXT_ANNOTATION или CONTOUR_*.
 Private mLabelContours As CSectionContours, mLabelBoundary As CConcreteRegion ' Сохранённые контуры и бетонная область для отсчёта отступов подписей.
 Private mAnnotationStartX() As Double ' Начало линии/размера в координатах модели.
 Private mAnnotationStartY() As Double ' Начало линии/размера в координатах модели.
@@ -882,7 +882,7 @@ End Sub
 ' нормали или координат неуспешной пробы не является повреждением подписи.
 Private Function IsPlotLabelAnnotation(ByVal annotationType As String) As Boolean
     Select Case UCase$(Trim$(annotationType))
-        Case "DIMENSION", "REBAR_ANNOTATION", "REBAR_GLOBAL_ANNOTATION", "MEASUREMENT_LABEL", "TEXT_ANNOTATION"
+        Case "DIMENSION", "REBAR_ANNOTATION", "REBAR_GLOBAL_ANNOTATION", "REBAR_LOCAL_ANNOTATION", "MEASUREMENT_LABEL", "TEXT_ANNOTATION"
             IsPlotLabelAnnotation = True
     End Select
 End Function
@@ -1417,7 +1417,7 @@ Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCoun
 ' это добавляет as; на дуге определяется действительное расстояние по нормали.
 ' Сохранённые Results читаются без нового расчёта или обращения к геометрии Config.
 Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double
-    If mAnnotationType(index) = "REBAR_GLOBAL_ANNOTATION" Then Exit Function ' Общая подпись уже привязана к крайней точке бетона. Пересечение по нормали в середине повёрнутого сечения опустило бы её на контур.
+    If mAnnotationType(index) = "REBAR_GLOBAL_ANNOTATION" Or mAnnotationType(index) = "REBAR_LOCAL_ANNOTATION" Then Exit Function ' Якорь уже относится к выбранной границе. Общая оболочка не должна переносить подпись внутренней грани к краю всего сечения.
     If mLabelContours Is Nothing Then Exit Function
     Dim query As CSectionGeometryQuery, i As Long, hasOuter As Boolean
     Dim nx As Double, ny As Double, norm As Double, distance As Double

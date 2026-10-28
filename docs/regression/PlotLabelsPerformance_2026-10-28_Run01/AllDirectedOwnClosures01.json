@@ -1,0 +1,215 @@
+﻿{
+    "AtUTC":  "2026-10-28T20:36:52.8418663+00:00",
+    "AllOwnClosed":  true,
+    "Identities":  [
+                       {
+                           "PID":  24232,
+                           "StartTicksUTC":  "639288159184847219",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\NativeFreshBuild01Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  16840,
+                           "StartTicksUTC":  "639288165059222054",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\NativeFreshBuild02Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  22536,
+                           "StartTicksUTC":  "639288140339638291",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected01\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  12956,
+                           "StartTicksUTC":  "639288141455382790",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected02\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  1556,
+                           "StartTicksUTC":  "639288154739478916",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  20824,
+                           "StartTicksUTC":  "639288162419329251",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\GeometryFixtureDirected04\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  22340,
+                           "StartTicksUTC":  "639288149057430222",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\NativeTimingParity01\\Baseline1\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  23784,
+                           "StartTicksUTC":  "639288150060187558",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\NativeTimingParity01\\Baseline4\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  17484,
+                           "StartTicksUTC":  "639288149370269545",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\NativeTimingParity01\\Candidate2\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  3640,
+                           "StartTicksUTC":  "639288149683118644",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\NativeTimingParity01\\Candidate3\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  1808,
+                           "StartTicksUTC":  "639288159897845198",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\OwnerTimingParity02\\Baseline1\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  4184,
+                           "StartTicksUTC":  "639288161467516070",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\OwnerTimingParity02\\Baseline4\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  16420,
+                           "StartTicksUTC":  "639288160444553193",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\OwnerTimingParity02\\Candidate2\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  22568,
+                           "StartTicksUTC":  "639288160947008017",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\OwnerTimingParity02\\Candidate3\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  23660,
+                           "StartTicksUTC":  "639288128639701244",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected01\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  11176,
+                           "StartTicksUTC":  "639288129932039783",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  14728,
+                           "StartTicksUTC":  "639288157572868260",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\StoredRoundtrip01\\No_Excel\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  20628,
+                           "StartTicksUTC":  "639288158052095667",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\StoredRoundtrip01\\No_File\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  4044,
+                           "StartTicksUTC":  "639288158468383363",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\StoredRoundtrip01\\Yes_Excel\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  21208,
+                           "StartTicksUTC":  "639288158825034542",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\StoredRoundtrip01\\Yes_File\\Ownership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  16668,
+                           "StartTicksUTC":  "639288133105171350",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PlotLabelsPerformance_2026-10-28_Run01\\AdaptiveOwnership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  1544,
+                           "StartTicksUTC":  "639288144142459732",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PlotLabelsPerformance_2026-10-28_Run01\\CandidateAdaptiveOwnership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  7848,
+                           "StartTicksUTC":  "639288145440960066",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PlotLabelsPerformance_2026-10-28_Run01\\CandidateContourOwnership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  24480,
+                           "StartTicksUTC":  "639288133428540181",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PlotLabelsPerformance_2026-10-28_Run01\\ContourOwnership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  4280,
+                           "StartTicksUTC":  "639288156033304347",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PlotLabelsPerformance_2026-10-28_Run01\\FreshBuild01\\BuildOwnership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       },
+                       {
+                           "PID":  5604,
+                           "StartTicksUTC":  "639288162546506716",
+                           "State":  "ABSENT",
+                           "OriginalEvidence":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PlotLabelsPerformance_2026-10-28_Run01\\FreshBuild02\\BuildOwnership.json",
+                           "OwnIdentityTerminal":  true,
+                           "ForceKilled":  false
+                       }
+                   ],
+    "Count":  26
+}

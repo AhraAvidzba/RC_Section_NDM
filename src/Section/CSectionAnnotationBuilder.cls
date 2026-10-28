@@ -56,8 +56,10 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                 AppendLabelAnchor anchors, anchorCount, value
             Case "RebarRowLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи арматуры сначала требуется построить стержни по заданным правилам."
-                If rules.RuleEnds(value.Target, value.StartX, value.StartY, value.EndX, value.EndY) Then _
+                If rules.RuleEnds(value.Target, value.StartX, value.StartY, value.EndX, value.EndY) Then
+                    ResolveRowLabelBoundary definition, value
                     AppendLabelAnchor anchors, anchorCount, value
+                End If
             Case "RebarRowExtentLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи арматуры сначала требуется построить стержни по заданным правилам."
                 Dim nx As Double, ny As Double, tx As Double, ty As Double, support As Double
@@ -88,6 +90,30 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     Dim labels As CRebarGroupAnnotationBuilder
     Set labels = New CRebarGroupAnnotationBuilder
     labels.AddRebarLabels annotations, rebars, anchors, anchorCount
+End Sub
+
+' Переносит подпись основного ряда к его исходной замкнутой границе.
+' Общая оболочка смежных частей может не содержать внутреннюю грань; стержни и рецепт не меняются.
+Private Sub ResolveRowLabelBoundary(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation)
+    Dim link As TRebarContourLink, i As Long, path As CGeometryPath
+    Dim query As CSectionGeometryQuery, region As CConcreteRegion, distance As Double, norm As Double
+    For i = 1 To definition.RebarContourCount
+        definition.CopyRebarContour i, link
+        If StrComp(link.MainRuleID, value.Target, vbTextCompare) = 0 Then
+            Set path = definition.Path(link.SourcePathID)
+            If Not path.IsClosed Then Exit Sub
+            norm = Sqr(value.NormalX * value.NormalX + value.NormalY * value.NormalY)
+            If norm <= GEOM_TOLERANCE Then Exit Sub
+            Set query = New CSectionGeometryQuery: Set region = query.RegionFromPath(path)
+            If query.LabelBoundaryDistance(region, 0.5 * (value.StartX + value.EndX), 0.5 * (value.StartY + value.EndY), _
+                    value.NormalX, value.NormalY, distance) Then
+                value.StartX = value.StartX + value.NormalX / norm * distance: value.EndX = value.EndX + value.NormalX / norm * distance
+                value.StartY = value.StartY + value.NormalY / norm * distance: value.EndY = value.EndY + value.NormalY / norm * distance
+                value.BoundaryIsLocal = True
+            End If
+            Exit Sub
+        End If
+    Next i
 End Sub
 
 ' Находит линию, относительно которой размещается подпись, по точным отрезкам и дугам.

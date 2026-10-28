@@ -1,0 +1,63 @@
+{
+  "Status": "PASS_EXACT_PHYSICAL_PARITY_AND_NATIVE_TIMING",
+  "Instrumented": false,
+  "Order": [
+    "Baseline",
+    "Candidate",
+    "Candidate",
+    "Baseline"
+  ],
+  "IgnoredPhysicalFields": [
+    "RunID only"
+  ],
+  "Tables": [
+    "rngNDMSectionGeometry",
+    "rngNDMSectionProperties",
+    "rngNDMMaterialDiagrams",
+    "rngNDMElementResults"
+  ],
+  "AnnotationsComparedSeparately": true,
+  "Measurements": {
+    "Adaptive": {
+      "ExactTableSHA256": "52D53D47AA743EBA1033FC2D4FA25BAE7357D02E3AF95F6F15B7E2268844BC6A",
+      "ComparedDumpBytes": 347223,
+      "Counts": "474/28",
+      "Baseline": {
+        "WarmMedianSeconds": 1.0190214,
+        "MinimumSeconds": 0.9751896999999999,
+        "MaximumSeconds": 1.1638214999999998,
+        "QueueMedianSeconds": 0.054847349999999996,
+        "Samples": 10
+      },
+      "Candidate": {
+        "WarmMedianSeconds": 1.1392882,
+        "MinimumSeconds": 1.0323643999999998,
+        "MaximumSeconds": 1.397902,
+        "QueueMedianSeconds": 0.048234299999999994,
+        "Samples": 10
+      },
+      "SpeedChangePercent": 11.802185901100803
+    },
+    "Contour": {
+      "ExactTableSHA256": "343E2F3C4617A8DE3B37EE004014C966197A8BD3AD07576F8E99A59104D16044",
+      "ComparedDumpBytes": 275804,
+      "Counts": "342/28",
+      "Baseline": {
+        "WarmMedianSeconds": 1.4552678000000001,
+        "MinimumSeconds": 1.3124474,
+        "MaximumSeconds": 1.7033570999999998,
+        "QueueMedianSeconds": 0.0451291,
+        "Samples": 10
+      },
+      "Candidate": {
+        "WarmMedianSeconds": 1.34385545,
+        "MinimumSeconds": 1.2351547,
+        "MaximumSeconds": 1.4511459,
+        "QueueMedianSeconds": 0.052181,
+        "Samples": 10
+      },
+      "SpeedChangePercent": -7.655797097963701
+    }
+  },
+  "FullPass": false
+}

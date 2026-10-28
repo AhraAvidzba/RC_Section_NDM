@@ -141,6 +141,7 @@ Private Sub TestNativeFreeformViews()
     Dim number As Long, description As String
     On Error GoTo Failed
     Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    TestOneNativeFreeform fixture, query.CircleRegion(0#, 0#, 100#), 0#, 0#, "Circle"
     Dim ring As CConcreteRegion: Set ring = query.SubtractContainedRegion(query.CircleRegion(0#, 0#, 100#), query.CircleRegion(0#, 0#, 30#))
     TestOneNativeFreeform fixture, ring, 0#, 0#, "Hole"
     Dim parts As Collection: Set parts = New Collection
@@ -172,6 +173,13 @@ Private Sub TestOneNativeFreeform(ByVal fixture As Object, ByVal region As CConc
     TestCheck "elementViews.plot." & label & ".freeform", shape.Type = 5
     TestNear "elementViews.plot." & label & ".width07", shape.Width, 140#, 0.01
     TestNear "elementViews.plot." & label & ".height07", shape.Height, 140#, 0.01
+    TestCheck "elementViews.plot." & label & ".lineEnabled", shape.Line.Visible <> 0
+    Dim transparency As Double: If region.LoopCount > 1 Then transparency = 1#
+    TestNear "elementViews.plot." & label & ".lineTransparency", shape.Line.Transparency, transparency, 0.00001
+    TestCheck "elementViews.plot." & label & ".lineMatchesFill", shape.Line.ForeColor.RGB = shape.Fill.ForeColor.RGB
+    Dim lineWeight As Double: lineWeight = 0.15
+    If region.LoopCount > 1 Then lineWeight = 0.01
+    TestNear "elementViews.plot." & label & ".lineWeight", shape.Line.Weight, lineWeight, 0.0001
     Dim path As String: path = ThisWorkbook.Path & "\TestElementGeometry_" & label & ".png"
     TestCheck "elementViews.plot." & label & ".PNG", chart.Export(path, "PNG")
     mReport = mReport & "RASTER_ELEMENT_GEOMETRY: " & label & "; " & path & vbCrLf

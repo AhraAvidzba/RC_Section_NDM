@@ -1,0 +1,283 @@
+{
+  "Status": "PASS_DIRECTED_ONLY",
+  "FullPass": false,
+  "PrimaryReports": 38,
+  "Passed": 17782,
+  "Failed": 0,
+  "Records": [
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\modTestElementGeometryViews.RunElementGeometryViewTests_No.txt",
+      "SHA256": "41D0D0FC6683BB536BCEC3B8E6927E764B34766A020F16207240F84066485080",
+      "Passed": 82,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\modTestPlotConfig.RunContourLineWeightTests_No.txt",
+      "SHA256": "F13E88837B2569EBF7338146CB14B1368A14FE1FE290813597A654EA6B58F8CC",
+      "Passed": 123,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\modTestWorkbookInterface.RunFormationPreviewTests_No.txt",
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED",
+      "Passed": 13,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\modTestCalculationSnapshot.RunWorkbookActionCompletionTests_No.txt",
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6",
+      "Passed": 13,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\modTestElementGeometryViews.RunElementGeometryViewTests_Yes.txt",
+      "SHA256": "41D0D0FC6683BB536BCEC3B8E6927E764B34766A020F16207240F84066485080",
+      "Passed": 82,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\modTestPlotConfig.RunContourLineWeightTests_Yes.txt",
+      "SHA256": "F13E88837B2569EBF7338146CB14B1368A14FE1FE290813597A654EA6B58F8CC",
+      "Passed": 123,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\modTestWorkbookInterface.RunFormationPreviewTests_Yes.txt",
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED",
+      "Passed": 13,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\RenderingDirected02\\modTestCalculationSnapshot.RunWorkbookActionCompletionTests_Yes.txt",
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6",
+      "Passed": 13,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestElementGeometry.RunElementGeometryTests_No.txt",
+      "SHA256": "5B0028E3206682F9B78603BB5A12BB6D306D94710D9AC632B626075878C61578",
+      "Passed": 151,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestElementGeometry.RunContourCellMeshTests_No.txt",
+      "SHA256": "E25C24A3D8919DD2347F18DD3108D62330B62960B6948D647EA76266A37599A3",
+      "Passed": 2713,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestElementGeometryViews.RunElementGeometryViewTests_No.txt",
+      "SHA256": "5BA35B439859EF11E88378499EA14054E56AA066DE3D62DDC35F75DE4D35CA7A",
+      "Passed": 82,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests_No.txt",
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439",
+      "Passed": 123,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestCalculationSnapshot.RunGeometryHashTests_No.txt",
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB",
+      "Passed": 203,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestCalculationSnapshot.RunWorkbookActionCompletionTests_No.txt",
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6",
+      "Passed": 13,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestSectionRecipes.RunRecipeRuleTests_No.txt",
+      "SHA256": "D12505318015234A777C878D1BDAD221DAD5434324249206797E0A8B09A28A7C",
+      "Passed": 279,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestSectionRecipes.RunRecipeAnnotationCountTests_No.txt",
+      "SHA256": "9B03394155C6A89785DFEE87BDBCCC5E47BD9D2F21F5438DCF9FC1561F9E6BDE",
+      "Passed": 92,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestGeometryReview.RunRebarLabelBoundaryTests_No.txt",
+      "SHA256": "926ABEB3CE8A9B015B5591AB55C611CA0DBAEC0C6AA864D7E84480D25706D444",
+      "Passed": 59,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestGeometryReview.RunGeometryReviewTests_No.txt",
+      "SHA256": "50C6FCB4D554900BA70CF5B4FA9AE5B76BC0FF13518EE55CC2872BCA00375147",
+      "Passed": 847,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests_No.txt",
+      "SHA256": "7FBB480FCA62346DDE217B3F0905E8C18BAA7DEB4B2C363CC6C063379986ECA9",
+      "Passed": 24,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestWorkbookInterface.RunFormationPreviewTests_No.txt",
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED",
+      "Passed": 13,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestElementGeometry.RunElementGeometryTests_Yes.txt",
+      "SHA256": "5B0028E3206682F9B78603BB5A12BB6D306D94710D9AC632B626075878C61578",
+      "Passed": 151,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestElementGeometry.RunContourCellMeshTests_Yes.txt",
+      "SHA256": "E25C24A3D8919DD2347F18DD3108D62330B62960B6948D647EA76266A37599A3",
+      "Passed": 2713,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestElementGeometryViews.RunElementGeometryViewTests_Yes.txt",
+      "SHA256": "5BA35B439859EF11E88378499EA14054E56AA066DE3D62DDC35F75DE4D35CA7A",
+      "Passed": 82,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests_Yes.txt",
+      "SHA256": "C1747B7FC31003D19950A6159C617FAD8273AACB5B42CA1A6E3E1AA25D698439",
+      "Passed": 123,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestCalculationSnapshot.RunGeometryHashTests_Yes.txt",
+      "SHA256": "297F4DB46DDB073F6B5105933A63DAD294138F3A379614AA9B88FFBF53BC52FB",
+      "Passed": 203,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestCalculationSnapshot.RunWorkbookActionCompletionTests_Yes.txt",
+      "SHA256": "58D6C893325D3B84974498DFC15094C4E5384D552800723AAF11D69415A14CF6",
+      "Passed": 13,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestSectionRecipes.RunRecipeRuleTests_Yes.txt",
+      "SHA256": "D12505318015234A777C878D1BDAD221DAD5434324249206797E0A8B09A28A7C",
+      "Passed": 279,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestSectionRecipes.RunRecipeAnnotationCountTests_Yes.txt",
+      "SHA256": "9B03394155C6A89785DFEE87BDBCCC5E47BD9D2F21F5438DCF9FC1561F9E6BDE",
+      "Passed": 92,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestGeometryReview.RunRebarLabelBoundaryTests_Yes.txt",
+      "SHA256": "926ABEB3CE8A9B015B5591AB55C611CA0DBAEC0C6AA864D7E84480D25706D444",
+      "Passed": 59,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestGeometryReview.RunGeometryReviewTests_Yes.txt",
+      "SHA256": "17696CF4D757DB2596587DB534916BC15E1F9E92D5A19F633F318C8D969A822F",
+      "Passed": 847,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests_Yes.txt",
+      "SHA256": "7FBB480FCA62346DDE217B3F0905E8C18BAA7DEB4B2C363CC6C063379986ECA9",
+      "Passed": 24,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\FixDirected03\\modTestWorkbookInterface.RunFormationPreviewTests_Yes.txt",
+      "SHA256": "0A128F4D760B0EA9D17F0261FA35BEFB5F95C40D80EF0205C3F13C45B5B3FEED",
+      "Passed": 13,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\GeometryFixtureDirected04\\modTestGeometry.RunGeometryTests_No.txt",
+      "SHA256": "174F69C25E06644B062F769BD9645779ED96FD3ADC8ECE9EA4F81AA43E8FDD3C",
+      "Passed": 4053,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\GeometryFixtureDirected04\\modTestGeometry.RunGeometryTests_Yes.txt",
+      "SHA256": "B4D20509E9EA58646B6318A01F1AE0E4D186206FEBE3F5D05A27E2B988423CFE",
+      "Passed": 4053,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\StoredRoundtrip01\\No_Excel\\StoredHash.txt",
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\StoredRoundtrip01\\No_File\\StoredHash.txt",
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\StoredRoundtrip01\\Yes_Excel\\StoredHash.txt",
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0,
+      "FullyDecoded": true
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\StoredRoundtrip01\\Yes_File\\StoredHash.txt",
+      "SHA256": "706C263976CFB713D92B85615B103133C3D7C1654CA27D08ABDBCF35329EAFE5",
+      "Passed": 4,
+      "Failed": 0,
+      "FullyDecoded": true
+    }
+  ],
+  "HistoricalPreparationFailuresPreserved": [
+    "RenderingDirected01 empty load prerequisite",
+    "FixDirected01 stored-hash prerequisite",
+    "FixDirected02 multiple terminal totals parser",
+    "CandidateProfile02 ChartObjects COM accessor",
+    "FocusedVerifierPreflight01 sandbox access"
+  ],
+  "AdditionalFixtureCorrection": "Geometry fixture now includes local-boundary rebar labels; numerical and bar-position expectations unchanged."
+}

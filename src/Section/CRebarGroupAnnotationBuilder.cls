@@ -70,7 +70,7 @@ Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars
             annotations.AddRebarLabel "REBAR_" & groupName, _
                 anchors(i).StartX, anchors(i).StartY, _
                 anchors(i).EndX, anchors(i).EndY, _
-                anchors(i).NormalX, anchors(i).NormalY, CStr(labels(groupName))
+                anchors(i).NormalX, anchors(i).NormalY, CStr(labels(groupName)), boundaryIsLocal:=anchors(i).BoundaryIsLocal
             labels.Remove groupName ' Несколько привязок одной группы не создают повторную подпись.
         End If
     Next i

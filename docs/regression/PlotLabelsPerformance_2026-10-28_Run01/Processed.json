@@ -1,0 +1,31 @@
+{
+  "Status": "DIRECTED_REVIEWED_FULL_PENDING",
+  "DirectedPassed": 17782,
+  "DirectedFailed": 0,
+  "FullPass": false,
+  "Publication": {
+    "Status": "PUBLISHED_DIRECTED_ACCEPTED_FULL_PENDING",
+    "AtUTC": "2026-10-28T20:38:11.775327+00:00",
+    "BookSHA256": "E70746B7171A81B570F9E10B50ACBE28704B6FB95DA9B92F46759F3F6DF43ECA",
+    "AllCodeSHA256": "F4DEB50893752E941000843DF008882757D22984CE8F82DF0023F1D8A1CBF225",
+    "FreshBuild": "FreshBuild02",
+    "FromWorkbooksAdd": true,
+    "UserDataCopied": false,
+    "PreviousBookSHA256": "79DAE951AE3779E7273028FF95747AA3047554D1E6AE91199FB8A55BC63A2BEA",
+    "PreviousBookBackup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\BeforePublication01\\RC_Section_NDM.xlsm",
+    "HeavyBookUnchangedSHA256": "31F188692A01CC421A37CF962598778A5AD1FE6D9AB5D96DD41C29389C0919F7",
+    "SourceEqualityPassed": true,
+    "SourceComponents": 175,
+    "DocumentComponents": 6,
+    "FullPass": false
+  },
+  "AllOwnClosed": true,
+  "ArchiveSHA256": "3F80BB5F5E77C254F6C8264DAED565569B0AC8E67D125637B43D24817FCA91F3",
+  "PrimaryReports": 38,
+  "TimingEvidence": [
+    "NativeTimingParityReview01.json",
+    "OwnerTimingParityReview02.json"
+  ],
+  "ExactPhysicsParity": true,
+  "ReadOnlySourceEquality": "SourceEquality02.json"
+}

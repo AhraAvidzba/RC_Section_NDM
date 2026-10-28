@@ -168,6 +168,23 @@ Public Property Get Geometry() As CConcreteRegion
     Set Geometry = mLegacyGeometry.Clone
 End Property
 
+' Вычисляет проекцию собственной неизменяемой границы без выдачи изменяемого объекта наружу.
+' Использует тот же геометрический запрос; независимая публичная Geometry по-прежнему возвращает Clone.
+Friend Sub ExactProjectionBounds(ByVal axisX As Double, ByVal axisY As Double, ByRef minimum As Double, ByRef maximum As Double)
+    If mExactGeometry Is Nothing Then Err.Raise vbObjectError + 5223, "CConcreteElement", "Фактическая граница бетонного элемента не задана."
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    query.ProjectionBounds mExactGeometry, axisX, axisY, minimum, maximum
+End Sub
+
+' Проверяет форму собственной границы без копирования всех её сегментов во временный объект.
+' Параметры возвращаются числами; исходная область не меняется и остаётся закрытой внутри элемента.
+Friend Function ExactRectangle(ByRef centerX As Double, ByRef centerY As Double, ByRef width As Double, _
+        ByRef height As Double, ByRef rotation As Double) As Boolean
+    If mExactGeometry Is Nothing Then Exit Function
+    Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+    ExactRectangle = query.TryRectangle(mExactGeometry, centerX, centerY, width, height, rotation)
+End Function
+
 ' Создаёт заменяющую сущность с той же расчётной идентичностью и A/c/I.
 ' Согласованность новой области предварительно проверяет CSectionModel.
 Friend Function WithGeometry(ByVal region As CConcreteRegion, ByVal width As Double, _
