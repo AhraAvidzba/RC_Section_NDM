@@ -127,6 +127,43 @@ Public Function ReadSavedWorstCombinationID(ByVal workbook As Object) As String
     End If
 End Function
 
+' Выбирает одно сочетание для схемы и AutoCAD по общим настройкам Config.
+' User читает только ID; Worst игнорирует ID и использует сохранённый итог расчёта.
+' При отсутствии определяющей строки сохранённые состояния проверяются в прежнем порядке.
+Public Function ReadOutputCombinationID(ByVal workbook As Object, ByVal settings As CSystemSettingsReader) As String
+    Dim mode As String: mode = settings.GetRequiredChoice("Output.CombinationMode", Array("Worst", "User"))
+    If mode = "User" Then
+        ReadOutputCombinationID = settings.GetRequiredString("Output.CombinationID")
+        Exit Function
+    End If
+    ReadOutputCombinationID = ReadSavedWorstCombinationID(workbook)
+    If Len(ReadOutputCombinationID) = 0 Then ReadOutputCombinationID = FirstOutputCombinationInTable(workbook, "rngNDMElementResults")
+    If Len(ReadOutputCombinationID) = 0 Then ReadOutputCombinationID = FirstOutputCombinationInTable(workbook, "rngNDMSectionProperties")
+    If Len(ReadOutputCombinationID) = 0 Then Err.Raise vbObjectError + 4702, "ReadOutputCombinationID", _
+        settings.InputErrorMessage("Output.CombinationMode", _
+            "В сохранённом снимке нет определяющего или другого рассчитанного сочетания для режима Worst.", _
+            "Выполните расчёт либо выберите User и ID сочетания, уже сохранённого в текущем снимке.")
+End Function
+
+' Возвращает первое сохранённое сочетание, если верхняя сводка не содержит Worst.
+' Общие свойства ALL не являются сочетанием. Отсутствующая необязательная таблица пропускается.
+Private Function FirstOutputCombinationInTable(ByVal workbook As Object, ByVal rangeName As String) As String
+    On Error GoTo Failed
+    Dim data As Variant: data = ReadAnchoredResultTable(workbook, rangeName)
+    If Not HasResultTableRows(data) Then Exit Function
+    Dim column As Long: column = ResultColumn(data, "LoadCase")
+    Dim row As Long, candidate As String
+    For row = 2 To UBound(data, 1)
+        candidate = Trim$(SafeText(data(row, column)))
+        If Len(candidate) > 0 Then
+            If rangeName <> "rngNDMSectionProperties" Or StrComp(candidate, "ALL", vbTextCompare) <> 0 Then
+                FirstOutputCombinationInTable = candidate: Exit Function
+            End If
+        End If
+    Next row
+Failed:
+End Function
+
 ' Читает собственную геометрию один раз блочными таблицами Results.
 ' Текущий Config, дополнительные JSON и внешний AutoCAD не участвуют;
 ' таблица границ обязательна для Contour; компактные Rectangle/Region хранятся без неё.

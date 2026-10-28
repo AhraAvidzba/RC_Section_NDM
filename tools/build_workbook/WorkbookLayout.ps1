@@ -7,15 +7,6 @@ function Read-WorkbookLayout {
     return $layout
 }
 
-# Возвращает закреплённую колонку служебного списка, не создавая имён в книге.
-function Get-WorkbookLayoutHelperColumn {
-    param([string]$Key)
-    if($null -eq $script:WorkbookLayout){return 0}
-    $property=$script:WorkbookLayout.HelperColumns.PSObject.Properties[$Key]
-    if($property){return [int]$property.Value}
-    return 0
-}
-
 # Единое оформление заголовков типов по образцу сохранённой книги.
 function Format-SectionTypeHeaders {
     param([object]$Workbook,[object]$Style)
@@ -101,17 +92,14 @@ function Get-WorkbookLayoutSnapshot {
         $sheets+=,[ordered]@{Name=[string]$sheet.Name;Visible=[int]$sheet.Visible;StandardWidth=[double]$sheet.StandardWidth;StandardHeight=[double]$sheet.StandardHeight;Columns=$columns;Rows=$rows;Objects=$objects;Tables=$tables;PrintArea=[string]$XmlSheets['__PrintAreas'][[string]$sheet.Name]}
         foreach($hiddenRow in $helpHiddenRows){$sheet.Rows.Item($hiddenRow).Hidden=$true}
     }
-    $config=$Workbook.Worksheets.Item('Config');$system=$Workbook.Names.Item('rngSystemSettings').RefersToRange
-    $caseColumn=0
-    for($r=2;$r -le $system.Rows.Count;$r++){if([string]$system.Cells.Item($r,1).Value2 -eq 'Plot.LoadCase'){$formula=[string]$system.Cells.Item($r,2).Validation.Formula1;$caseColumn=[int]$config.Range($formula.Substring(1)).Column;break}}
-    $loads=$Workbook.Names.Item('rngLoadCombinations').RefersToRange;$profiles=[string]$loads.Cells.Item(2,5).Validation.Formula1
+    $config=$Workbook.Worksheets.Item('Config')
     $controls=$config.Cells.Find('Контрольные точки диаграмм',[Type]::Missing,-4163,2)
     if($null -eq $controls){throw 'Не найдена таблица контрольных точек диаграмм.'}
     $controlBlock=$controls.CurrentRegion
     $circle=$Workbook.Names.Item('rngCircleGeometry').RefersToRange
     $reference=$circle.Worksheet.Cells.Item($circle.Row-1,$circle.Column)
     $sectionStyle=[ordered]@{Color=[int]$reference.Interior.Color;Height=[double]$reference.RowHeight;FontName=[string]$reference.Characters(1,1).Font.Name;FontSize=[double]$reference.Characters(1,1).Font.Size;LinkSize=[double]$reference.Characters(([string]$reference.Value2).IndexOf('(Подробнее)')+1,11).Font.Size}
-    return [pscustomobject][ordered]@{Schema=1;Names=$names;Sheets=$sheets;HelperColumns=[ordered]@{rngSectionRecipeTypes=[int]$Workbook.Names.Item('rngSectionRecipeTypes').RefersToRange.Column;LoadProfiles=[int]$config.Range($profiles.Substring(1)).Column;LoadCases=$caseColumn};OtherTables=@([ordered]@{Key='MaterialDiagramControls';Sheet='Config';Caption='Контрольные точки диаграмм';Address=$controlBlock.Address()});SectionHeaders=$sectionStyle}
+    return [pscustomobject][ordered]@{Schema=1;Names=$names;Sheets=$sheets;HelperColumns=[ordered]@{};OtherTables=@([ordered]@{Key='MaterialDiagramControls';Sheet='Config';Caption='Контрольные точки диаграмм';Address=$controlBlock.Address()});SectionHeaders=$sectionStyle}
 }
 
 # Переносит таблицы через временный лист: их исходные и конечные области могут пересекаться.

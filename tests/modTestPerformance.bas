@@ -1096,7 +1096,7 @@ Public Sub TestPrepareNativeCADPerformance(ByVal rotated As Boolean)
     TestPerformanceSetting "Plot.Enabled", "No"
     TestPerformanceSetting "Plot.AutoUpdateAfterCalculation", "No"
     TestPerformanceSetting "General.ExecutionReportEnabled", "No"
-    TestPerformanceSetting "AutoCAD.Export.CombinationID", "PERF_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_01"
     TestPerformanceSetting "Mesh.MinElementArea", "0"
     Dim table As Object, row As Long
     Set table = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
@@ -1207,7 +1207,7 @@ Public Sub TestPrepareNativeCADRoundoffFixture()
     TestConfigurePerformanceFixture "IMPORTED_DIRECT", 1, "Newton"
     TestPerformanceSetting "Plot.Enabled", "No": TestPerformanceSetting "Plot.AutoUpdateAfterCalculation", "No"
     TestPerformanceSetting "General.ExecutionReportEnabled", "No"
-    TestPerformanceSetting "AutoCAD.Export.CombinationID", "PERF_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_01"
     TestPerformanceSetting "Mesh.MinElementArea", "0"
     Dim section As CSectionModel, i As Long, j As Long, x As Double, y As Double, c As Double, s As Double
     Dim points As Variant, point As Variant, path As CGeometryPath, query As CSectionGeometryQuery

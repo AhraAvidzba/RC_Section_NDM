@@ -20,11 +20,16 @@ function Get-SystemSettingsCatalog {
             @("Results.SnapshotStorage", "Excel", "-", "Excel — подробные результаты хранятся на листе Results. File — полный снимок хранится в файле .ndm рядом с книгой, на листе остаются сводки и общая геометрия. Кнопка «Обновить схему и результаты» загружает снимок без повторного расчёта."),
             @("Results.SnapshotName", "NDM_Snapshot", "-", "Имя снимка без пути и расширения. Файл сохраняется в формате .ndm рядом с книгой. Новый расчёт заменяет файл с этим именем; обновление схемы и результатов загружает его без повторного решения.")
         )},
-        @{ Name = "LoadDiagramSettings"; Title = "[Нагрузки и диаграммы материалов]"; Rows = @(
-            @("Load.ReferenceOffsetX", "0", "мм", "Смещение точки приложения нагрузок по X относительно центра тяжести бетонного сечения. 0 означает, что N, Mx и My заданы относительно центра бетона без учета арматуры."),
-            @("Load.ReferenceOffsetY", "0", "мм", "Смещение точки приложения нагрузок по Y относительно центра тяжести бетонного сечения. Рабочие моменты для решателя автоматически переносятся к координатам расчетных элементов."),
+        @{ Name = "LoadDiagramSettings"; Title = "[Нагрузки, сочетания и диаграммы материалов]"; Rows = @(
+            @("[Нагрузки]", "", "-", ""),
+            @("Load.ReferenceOffsetX", "0", "мм", "Смещение точки приложения нагрузок по X относительно центра тяжести бетонного сечения без учёта арматуры."),
+            @("Load.ReferenceOffsetY", "0", "мм", "Смещение точки приложения нагрузок по Y относительно центра тяжести бетонного сечения. Рабочие моменты для решателя автоматически переносятся к координатам расчётных элементов."),
             @("Calculation.ZeroMomentPerDepth", "0.0005", "Н*мм/мм", "Порог обнуления малых моментов: M_tol = значение·h. Убирает численный остаток после переносов и поворотов; слишком большое значение может обнулить значимый малый момент."),
-            @("General.WorstCombinationCriterion", "StrengthCapacity", "-", "Критерий выбора сочетания Worst в верхней сводке Results: прочность по деформациям, прочность по несущей, трещины или устойчивость."),
+            @("[Выводимое сочетание]", "", "-", ""),
+            @("Output.CombinationMode", "Worst", "-", "Общий выбор сочетания для схемы Excel и экспорта AutoCAD: Worst — определяющее сочетание сохранённого расчёта; User — сочетание из Output.CombinationID."),
+            @("General.WorstCombinationCriterion", "StrengthCapacity", "-", "Критерий выбора сочетания Worst при расчёте: прочность по деформациям, прочность по несущей, трещины или устойчивость. Схема и экспорт используют сохранённый выбор."),
+            @("Output.CombinationID", "", "-", "ID сочетания для схемы и экспорта при Output.CombinationMode = User. Список берётся непосредственно из таблицы сочетаний; в режиме Worst поле не используется."),
+            @("[Диаграммы материалов]", "", "-", ""),
             @("General.PlateauSlopeFactor", "0.001", "-", "Коэффициент α определяет наклон ненулевых плато бетона и арматуры: Et = α·E. По умолчанию α = 0,001, наклон плато — 0,001·E (0,1% от E своей ветви). 0 — горизонтальное плато. Наклон помогает сходимости и меняет напряжения; предельные деформации сохраняются."),
             @("General.DiagramExtension", "Yes", "-", "Численное продолжение диаграмм: продолжает активные ветви за физическими пределами. Рекомендуется для сходимости и диагностики. Не увеличивает физические пределы и не делает состояние в продолжении допустимым. При No работают обычные диаграммы.")
         )},
@@ -117,9 +122,7 @@ function Get-SystemSettingsCatalog {
             @("AutoCAD.Common.RebarLayer", "Reinf", "-", "Единый слой продольной арматуры для импорта и экспорта. Импортируются Region; цвет экспортируемых стержней определяется их физическим состоянием из Results."),
             @("AutoCAD.Common.SectionContourLayer", "RC_NDM_Contour", "-", "Общий слой точной наружной границы для импорта и экспорта. Отсутствующий или пустой слой допустим: без контура используются границы бетонных элементов."),
             @("AutoCAD.Common.OpeningContourLayer", "RC_NDM_Opening", "-", "Общий слой отдельных отверстий для импорта и экспорта. Задается независимо от наружного контура; без него отверстия вычитаются из бетонной сетки. Допускает несколько контуров; отсутствующий или пустой слой пропускается. Координаты всегда в мм."),
-            @("[Импорт]", "", "", ""),
             @("[Экспорт]", "", "", ""),
-            @("AutoCAD.Export.CombinationID", "Worst", "-", "Какое сочетание экспортировать в AutoCAD: Worst - строка, выбранная в верхней сводке Results по General.WorstCombinationCriterion; либо конкретный CombinationID."),
             @("AutoCAD.Export.NeutralLineEnabled", "Yes", "-", "Выгружать нейтральную линию в AutoCAD: Yes - выводить; No - не выводить."),
             @("AutoCAD.Export.PrincipalAxesMode", "Transformed", "-", "Какие главные центральные оси выгружать в AutoCAD: Transformed - приведенного сечения; Concrete - бетонного; None - не выводить."),
             @("AutoCAD.Export.LoadPointEnabled", "Yes", "-", "Выгружать точку приложения нагрузки в AutoCAD: Yes - выводить; No - не выводить."),
@@ -141,7 +144,6 @@ function Get-SystemSettingsCatalog {
         @{ Name = "PlotSettings"; Title = "[Схема сечения]"; Rows = @(
             @("Plot.Enabled", "Yes", "-", "Включить построение схемы сечения на листе Расчет по данным последнего расчета на листе Results."),
             @("Plot.AutoUpdateAfterCalculation", "Yes", "-", "При Plot.Enabled=Yes обязателен выбор Yes/No: обновлять схему после расчета или сохранять готовую схему. При Plot.Enabled=No настройка не используется. Кнопка обновления читает только Results."),
-            @("Plot.LoadCase", "Worst", "-", "Какое сочетание показывать на схеме: Worst - строка, выбранная в верхней сводке Results по General.WorstCombinationCriterion; либо конкретный CombinationID."),
             @("Plot.ResultGradient", "Yes", "-", "Включить цветовое различение результата на схеме. Цвет физического состояния берется из PhysicalState, записанного в Results."),
             @("Plot.ResultLabelsEnabled", "No", "-", "Показывать пространственно распределенные численные подписи величины Visualization.Quantity выбранного профиля для бетонных элементов."),
             @("Plot.ResultLabelSpacing", "100", "мм", "Минимальный пространственный шаг между численными подписями результата на схеме."),
@@ -334,56 +336,16 @@ function Apply-ConfigNamedRangeBorders {
     }
 }
 
-# Начинает распределение служебных списков Config для одной сборки листа.
-# Все таблицы используют этот реестр: добавление новых настроек не может
-# перезаписать списки геометрии, единиц или параметров схемы.
-function Reset-ConfigValidationSources {
-    param([object]$Sheet)
-    $script:ConfigValidationSheet = $Sheet
-    $script:ConfigValidationNextColumn = 70
-    if($null -ne $script:WorkbookLayout){$last=($script:WorkbookLayout.HelperColumns.PSObject.Properties.Value | Measure-Object -Maximum).Maximum;$script:ConfigValidationNextColumn=[int]$last+1}
-    $script:ConfigValidationLists = @{}
-}
-
-# Выделяет отдельную скрытую колонку для статического или динамического
-# списка. Очищается только выделяемый служебный диапазон, не пользовательские таблицы.
-function Get-NextConfigValidationColumn {
-    param([object]$Sheet,[string]$SourceKey='')
-    if ($null -eq $script:ConfigValidationSheet -or
-        $script:ConfigValidationSheet.Parent.Name -ne $Sheet.Parent.Name -or
-        $script:ConfigValidationSheet.Name -ne $Sheet.Name) {
-        throw 'Служебные списки Config не инициализированы для этой книги.'
-    }
-    $column = Get-WorkbookLayoutHelperColumn $SourceKey
-    if($column -eq 0){$column=$script:ConfigValidationNextColumn;$script:ConfigValidationNextColumn++}
-    if ($column -gt $Sheet.Columns.Count) { throw 'Недостаточно колонок для служебных списков Config.' }
-    $Sheet.Range($Sheet.Cells.Item(1, $column), $Sheet.Cells.Item(501, $column)).ClearContents() | Out-Null
-    $Sheet.Columns.Item($column).Hidden = $true
-    return $column
-}
-
-# Возвращает прямую ссылку на вертикальный список допустимых значений.
-# Короткие постоянные наборы хранятся в проверке данных; большие и динамические используют общий источник.
+# Возвращает короткий список непосредственно для проверки данных, без служебных ячеек.
+# Имена сочетаний и профилей передаются прямыми ссылками на их видимые таблицы отдельно.
 function Get-ConfigValidationListAddress {
-    param([object]$Sheet, [array]$Options, [string]$IndependentName = '')
+    param([object]$Sheet, [array]$Options)
     if ($Options.Count -eq 0) { throw 'Пустой список допустимых значений Config.' }
-    $inline=@($Options | ForEach-Object {[string]$_}) -join ','
-    if (-not $IndependentName -and $inline.Length -le 255 -and -not @($Options | Where-Object {[string]$_ -match '[,;\r\n]'}).Count) { return ($Options -join [string]$Sheet.Application.International(5)) }
-    $key = ConvertTo-Json -InputObject @($Options) -Compress
-    if ($IndependentName) { $key = $IndependentName + ':' + $key }
-    if ($script:ConfigValidationLists.ContainsKey($key)) { return $script:ConfigValidationLists[$key] }
-    $column = Get-NextConfigValidationColumn $Sheet $IndependentName
-    for ($i = 0; $i -lt $Options.Count; $i++) {
-        $Sheet.Cells.Item($i + 1, $column).Value2 = [string]$Options[$i]
+    $inline = @($Options | ForEach-Object {[string]$_}) -join [string]$Sheet.Application.International(5)
+    if ($inline.Length -gt 255 -or @($Options | Where-Object {[string]$_ -match '[,;\r\n]'}).Count) {
+        throw 'Перечисление не помещается в проверку данных: используйте прямую ссылку на видимую исходную таблицу.'
     }
-    $colName = ConvertTo-ExcelColumn $column
-    $address = '=$' + $colName + '$1:$' + $colName + '$' + $Options.Count
-    if ($IndependentName) {
-        Set-WorkbookNameByBounds $Sheet.Parent $IndependentName $Sheet 1 $column $Options.Count $column
-        $address = '=' + $IndependentName
-    }
-    $script:ConfigValidationLists[$key] = $address
-    return $address
+    return $inline
 }
 
 # Возвращает фактические таблицы форматирования внутри именованных диапазонов.
@@ -705,7 +667,7 @@ function Get-SettingInstructionLines {
             "StrengthCapacity выбирает сочетание с минимальным запасом по найденному множителю несущей способности. Это значение по умолчанию новой книги.",
             "Cracks выбирает сочетание с минимальным запасом по нормальным или продольным трещинам среди включенных проверок.",
             "Stability выбирает сочетание с минимальным запасом по расчету продольного изгиба и устойчивости. Для ветви СП 35 с условием N/N_cr ≤ Stability.SP35.NOverNcrLimit запас считается именно относительно этого лимита.",
-            "Plot.LoadCase = Worst и AutoCAD.Export.CombinationID = Worst не пересчитывают критерий самостоятельно: они читают уже выбранное сочетание из верхней строки rngBatchSummary.",
+            "Output.CombinationMode = Worst для схемы Excel и экспорта AutoCAD не пересчитывают критерий самостоятельно: они читают уже выбранное сочетание из верхней строки rngBatchSummary.",
             "Явно пустое, ошибочное или неизвестное значение этого критерия является ошибкой Config: сочетания не передаются в решатель и получают InputErr с указанием настройки. Другая проверка вместо выбранной молча не подставляется."
         ) }
         "Calculation.ZeroMomentPerDepth" { return @(
@@ -1249,15 +1211,16 @@ function Get-SettingInstructionLines {
             "Изменение порога применяется при следующем нажатии «Сформировать сечение». Чтение готового Results и восстановление поддерживаемого снимка не удаляют сохранённые элементы.",
             "Задайте неотрицательное число. Пустая ячейка, ошибка формулы, отрицательное или слишком большое для перевода значение останавливают формирование с указанием фактической ячейки Mesh.MinElementArea."
         ) }
-        "AutoCAD.Export.CombinationID" { return @(
-            "Выбор обязателен: укажите Worst или ID сохраненного сочетания. Пустая ячейка, текстовая заглушка, ошибка Excel и отсутствующая строка не заменяются Worst; сообщение указывает текущую ячейку Config и способ исправления.",
-            "Worst означает: взять определяющее сочетание из верхней сводки Results. Критерий выбора задается General.WorstCombinationCriterion.",
-            "Геометрия экспортируется в AutoCAD всегда в миллиметрах: координаты, размеры, диаметры, контур, оси и точка приложения нагрузки. Выбор OUTPUT для длины в Config не меняет масштаб чертежа: одна единица AutoCAD соответствует 1 мм.",
-            "Если указан конкретный номер, например LC2, в AutoCAD выгружаются напряжения/деформации именно для этого сочетания.",
-            "Значение должно совпадать с CombinationID, который есть в результатах последнего расчета. Если указать несуществующее сочетание, экспорт остановится с понятной ошибкой.",
-            "Если сечение сформировано, но расчёт ещё не выполнен, экспортируются только бетон, арматура и включённые геометрические контуры. Программа всегда предупреждает, что передано сечение без рассчитанного состояния. Напряжения, деформации и нейтральная линия не выводятся.",
-            "Экспорт не запускает новый расчёт или импорт. Для сохранённого рассчитанного состояния используются его профиль, единицы и результаты; ошибка такого снимка не заменяется экспортом одной геометрии. После изменения нагрузок выполните расчёт, чтобы экспортировать актуальное состояние."
-        ) }
+        "Output.CombinationMode" { return @(
+            "Одна настройка выбирает сочетание и для схемы Excel, и для экспорта AutoCAD. Worst берёт определяющее сочетание сохранённого снимка; User использует Output.CombinationID.",
+            "Критерий General.WorstCombinationCriterion применяется при расчёте. Последующая смена критерия не пересчитывает сохранённый Worst: для этого повторите расчёт.",
+            "Предварительная схема и экспорт одной геометрии не требуют рассчитанного сочетания. В режиме Worst поле Output.CombinationID не используется и может оставаться пустым."
+        )}
+        "Output.CombinationID" { return @(
+            "При Output.CombinationMode = User укажите точный ID сочетания, сохранённого в текущем источнике: Excel Results либо файле снимка. В режиме Worst это поле игнорируется.",
+            "Выпадающий список непосредственно связан со столбцом CombinationID таблицы сочетаний Config и меняется вместе с ним. Отдельного служебного варианта Worst в этом списке нет.",
+            "При User пустое значение, ошибка Excel, TODO и ID отсутствующего сочетания дают понятную ошибку с адресом настройки. Они не заменяются Worst автоматически."
+        )}
         "AutoCAD.Export.LabelMode" { return @($lead) + @(
             "Выбор обязателен: пустота, текстовая заглушка, неизвестное значение или ошибка формулы не заменяются NamesAndValues, а дают сообщение с текущим адресом Config и допустимыми вариантами.",
             "ValuesOnly выводит только численное значение выбранной профильной величины Visualization.Quantity.",
@@ -1323,12 +1286,6 @@ function Get-SettingInstructionLines {
             "Выбор обязателен, если Plot.Enabled = Yes. Пустота, текстовая заглушка, ошибка Excel и отсутствие строки требуют исправления Config до начала расчета и очистки предыдущих Results.",
             "При Plot.Enabled = No настройка не используется, существующая схема сохраняется даже при отсутствии доступного НДС. Если оба переключателя Yes, но расчетных состояний нет, прежняя схема очищается с пояснением отсутствия данных.",
             "В обоих случаях обновление схемы только читает Results и не запускает расчет заново."
-        ) }
-        "Plot.LoadCase" { return @(
-            "Worst показывает определяющее сочетание из верхней сводки Results. Критерий выбора задается General.WorstCombinationCriterion.",
-            "Конкретный CombinationID, например LC2, показывает сохраненные напряжения, деформации и плоскость деформаций именно этого сочетания.",
-            "Переключение LoadCase не создает геометрию заново: меняется только отображаемое расчетное состояние из Results.",
-            "Укажите сочетание, чтобы показать его НДС либо схему геометрии с пояснением, почему это НДС отсутствует. Пустая ячейка и текстовая заглушка не означают Worst. Сразу после формирования сечения показывается предварительная схема без выбора сочетания; эта настройка тогда не используется."
         ) }
         "Plot.ResultGradient" { return @(
             "Yes включает цветовой градиент расчетных элементов по величине Visualization.Quantity выбранного профиля.",
@@ -3641,8 +3598,8 @@ function Add-LoadCombinationsTable {
 }
 
 # Подключает выпадающий список профилей после создания rngCalculationProfiles.
-# Ячейки сочетаний остаются обычным пользовательским вводом без формул; динамика
-# сидит только в служебном списке, который ссылается на строку Profile.DisplayName.
+# Ячейки сочетаний остаются обычным вводом; проверка данных прямо ссылается
+# на видимую строку Profile.DisplayName, без скрытой копии имён профилей.
 function Add-LoadProfileValidation {
     param([object]$Workbook, [object]$Sheet)
 
@@ -3661,15 +3618,8 @@ function Add-LoadProfileValidation {
     $profileCount = [Math]::Max(0, $profilesRange.Columns.Count - 3)
     if ($profileCount -le 0) { return }
 
-    $ListColumn = Get-NextConfigValidationColumn $Sheet 'LoadProfiles'
-    for ($i = 0; $i -lt $profileCount; $i++) {
-        $sourceCell = $profilesRange.Cells.Item($displayRow, 3 + $i)
-        $Sheet.Cells.Item($i + 1, $ListColumn).Formula = "=" + $sourceCell.Address($true, $true)
-    }
-    $Sheet.Columns.Item($ListColumn).Hidden = $true
-
-    $colName = ConvertTo-ExcelColumn $ListColumn
-    $listAddress = "=$" + $colName + '$1:$' + $colName + '$' + $profileCount
+    $source = $profilesRange.Cells.Item($displayRow, 3).Resize(1, $profileCount)
+    $listAddress = '=' + $source.Address($true, $true) # Имена профилей непосредственно из строки Profile.DisplayName (J39:M39).
     $profileInputRange = $Sheet.Range($loadRange.Cells.Item(2, 5), $loadRange.Cells.Item($loadRange.Rows.Count, 5))
     $profileInputRange.Validation.Delete()
     $profileInputRange.Validation.Add(3, 1, 1, $listAddress)
@@ -4623,7 +4573,6 @@ function Apply-SystemSettingsLayout {
     param([object]$Workbook, [object]$Sheet)
 
     $catalog = Get-SystemSettingsCatalog
-    Reset-ConfigValidationSources $Sheet
     $Sheet.Range("A1:EF260").ClearContents()
     $Sheet.Range("A1:EF260").Validation.Delete()
     Remove-MaterialDiagramCharts $Sheet
@@ -4720,6 +4669,7 @@ function Apply-SystemSettingsLayout {
         "General.NonCriticalMessagesEnabled" = @("Yes", "No")
         "General.ReformatResultsEnabled" = @("Yes", "No")
         "Results.SnapshotStorage" = @("Excel", "File")
+        "Output.CombinationMode" = @("Worst", "User")
         "General.WorstCombinationCriterion" = @("StrengthStrain", "StrengthCapacity", "Cracks", "Stability")
         "Stability.Code" = @("SP63", "SP35")
         "Stability.SystemType" = @("Determinate", "Indeterminate")
@@ -4783,20 +4733,15 @@ function Apply-SystemSettingsLayout {
         }
     }
 
-    $exportCombinationListColumn = Get-NextConfigValidationColumn $Sheet 'LoadCases'
-    $loadCasePickerHelperRows = $Workbook.Names.Item("rngLoadCombinations").RefersToRange.Rows.Count - 1
-    $Sheet.Cells.Item(1, $exportCombinationListColumn).Value2 = "Worst"
-    for ($i = 1; $i -le $loadCasePickerHelperRows; $i++) {
-        $Sheet.Cells.Item($i + 1, $exportCombinationListColumn).Formula = '=IF(ROW()-1>ROWS(rngLoadCombinations)-1,"",INDEX(rngLoadCombinations,ROW(),1))' # Счётчик зависит от своей строки, а не от перемещаемых ячеек системных настроек A:E.
-    }
-    $exportCombinationColName = ConvertTo-ExcelColumn $exportCombinationListColumn
-    $exportCombinationListAddress = "=$" + $exportCombinationColName + '$1:$' + $exportCombinationColName + '$' + ($loadCasePickerHelperRows + 1)
+    $loads = $Workbook.Names.Item("rngLoadCombinations").RefersToRange
+    $combinationSource = $loads.Cells.Item(2, 1).Resize($loads.Rows.Count - 1, 1)
+    $combinationListAddress = '=' + $combinationSource.Address($true, $true) # Прямой столбец ID без заголовка и отдельного служебного Worst.
     for ($r = 2; $r -le $settingsRange.Rows.Count; $r++) {
-        if ([string]$settingsRange.Cells.Item($r, 1).Value2 -eq "AutoCAD.Export.CombinationID" -or [string]$settingsRange.Cells.Item($r, 1).Value2 -eq "Plot.LoadCase") {
+        if ([string]$settingsRange.Cells.Item($r, 1).Value2 -eq "Output.CombinationID") {
             $cell = $settingsRange.Cells.Item($r, 2)
             $cell.Validation.Delete()
-            $cell.Validation.Add(3, 1, 1, $exportCombinationListAddress)
-            $cell.Validation.IgnoreBlank = $false
+            $cell.Validation.Add(3, 1, 1, $combinationListAddress)
+            $cell.Validation.IgnoreBlank = $true # Поле не обязательно в режиме Worst; User проверяет выбранный ID при действии.
             $cell.Validation.InCellDropdown = $true
         }
     }
@@ -4818,7 +4763,6 @@ function Apply-SystemSettingsLayout {
     for ($colIndex = 25; $colIndex -le 69; $colIndex++) {
         $Sheet.Columns.Item($colIndex).ColumnWidth = 8.43
     }
-    $Sheet.Columns.Item("BR:EF").Hidden = $true
     $Sheet.Range("A1:EF260").Font.Name = "Arial"
     $Sheet.Range("A1:EF260").Font.Size = 9
     Apply-ConfigUserInputAlignment $Workbook

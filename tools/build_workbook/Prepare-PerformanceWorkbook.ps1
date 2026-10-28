@@ -153,11 +153,6 @@ try {
             if ($setting.Count -ne 1) { throw 'ContourFormat is not unique in the catalog.' }
             for ($c = 0; $c -lt 4; $c++) { $insert.Cells.Item(1, $c + 1).Value2 = [string]$setting[0][$c] }
             Set-WorkbookNameByBounds $book 'rngSystemSettings' $config $firstRow $firstColumn ($lastRow + 1) $lastColumn
-            # Находим свободную служебную колонку без сброса прежнего реестра.
-            Reset-ConfigValidationSources $config
-            while ($config.Application.WorksheetFunction.CountA($config.Range($config.Cells.Item(1, $script:ConfigValidationNextColumn), $config.Cells.Item(501, $script:ConfigValidationNextColumn))) -gt 0) {
-                $script:ConfigValidationNextColumn++
-            }
             $source = Get-ConfigValidationListAddress $config @('Region', 'Polyline')
             $valueCell = $insert.Cells.Item(1, 2)
             $valueCell.Validation.Add(3, 1, 1, $source)

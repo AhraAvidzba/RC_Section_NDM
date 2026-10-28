@@ -1,0 +1,135 @@
+{
+  "Status": "PASS_DIRECTED_UNIFIED_OUTPUT_ONLY",
+  "FullRunStarted": false,
+  "FullPassTransferredToNewSHA": false,
+  "PassedAssertions": 39269,
+  "FailedAssertions": 0,
+  "AcceptedPrimaries": [
+    {
+      "Primary": "Directed02/Selector_No.txt",
+      "SHA256": "AAD264BE0C3CC2643796F27A89613184EB3096C1428FCB1626F2B27D4DDDC257",
+      "SourceSHA256": "4F1653FB1D578DDF534E900FEDF16B598D08457E4FA3D9C3013FBD27F56A9033",
+      "LinesRead": 72,
+      "AllLinesRead": true,
+      "PassedAssertions": 43,
+      "FailedAssertions": 0,
+      "MacrosFinished": 2,
+      "Summaries": [
+        "TOTAL_UNIFIED_OUTPUT: passed=30; failed=0",
+        "TOTAL RECIPE TYPE LIST: passed=13; failed=0"
+      ],
+      "NormalOwnClosure": true
+    },
+    {
+      "Primary": "Directed02/Selector_Yes.txt",
+      "SHA256": "1767D96DD7602F79BD713E5108082DD56DEC109B236B0BD07C4CB626ADFCDA9B",
+      "SourceSHA256": "4F1653FB1D578DDF534E900FEDF16B598D08457E4FA3D9C3013FBD27F56A9033",
+      "LinesRead": 72,
+      "AllLinesRead": true,
+      "PassedAssertions": 43,
+      "FailedAssertions": 0,
+      "MacrosFinished": 2,
+      "Summaries": [
+        "TOTAL_UNIFIED_OUTPUT: passed=30; failed=0",
+        "TOTAL RECIPE TYPE LIST: passed=13; failed=0"
+      ],
+      "NormalOwnClosure": true
+    },
+    {
+      "Primary": "Directed02/Affected_No.txt",
+      "SHA256": "335FA370D29BE94CA644DEE8D6F261E138C201549B95EABD178892EFBF252186",
+      "SourceSHA256": "4F1653FB1D578DDF534E900FEDF16B598D08457E4FA3D9C3013FBD27F56A9033",
+      "LinesRead": 21370,
+      "AllLinesRead": true,
+      "PassedAssertions": 19527,
+      "FailedAssertions": 0,
+      "MacrosFinished": 7,
+      "Summaries": [
+        "TOTAL_AUDIT03_GENERAL_PLOT: passed=4681; failed=0",
+        "TOTAL_AUTOCAD_CONFIG: passed=1243; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=682; failed=0",
+        "TOTAL_AUDIT03_READ_LIFECYCLE: passed=3929; failed=0",
+        "TOTAL_MISSING_STATE_STORAGE: passed=16; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=116; failed=0",
+        "TOTAL_AUDIT03_PROFILE_CONFIG: passed=8860; failed=0; cases=292"
+      ],
+      "NormalOwnClosure": true
+    },
+    {
+      "Primary": "Directed02/Affected_Yes.txt",
+      "SHA256": "B16C89681B706B28A6D0C7BA2600F6121CE306DE1EEBE3F9F1A1296F7269F801",
+      "SourceSHA256": "4F1653FB1D578DDF534E900FEDF16B598D08457E4FA3D9C3013FBD27F56A9033",
+      "LinesRead": 21373,
+      "AllLinesRead": true,
+      "PassedAssertions": 19527,
+      "FailedAssertions": 0,
+      "MacrosFinished": 7,
+      "Summaries": [
+        "TOTAL_AUDIT03_GENERAL_PLOT: passed=4681; failed=0",
+        "TOTAL_AUTOCAD_CONFIG: passed=1243; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=682; failed=0",
+        "TOTAL_AUDIT03_READ_LIFECYCLE: passed=3929; failed=0",
+        "TOTAL_MISSING_STATE_STORAGE: passed=16; failed=0",
+        "TOTAL_WORKFLOW_CALCULATION: passed=116; failed=0",
+        "TOTAL_AUDIT03_PROFILE_CONFIG: passed=8860; failed=0; cases=292"
+      ],
+      "NormalOwnClosure": true
+    },
+    {
+      "Primary": "ReleaseSmoke/Main_No.txt",
+      "SHA256": "215184F9F5915D6DCE40E7907D6A2EBA08EC186E007CC09D6B39F3BD9BC60289",
+      "SourceSHA256": "829DAB81587B88995211DB0FE571FEFC95C9BA38CBD100942C05DD01C01CB5B6",
+      "LinesRead": 74,
+      "AllLinesRead": true,
+      "PassedAssertions": 43,
+      "FailedAssertions": 0,
+      "MacrosFinished": 2,
+      "Summaries": [
+        "TOTAL_UNIFIED_OUTPUT: passed=30; failed=0",
+        "TOTAL RECIPE TYPE LIST: passed=13; failed=0"
+      ],
+      "NormalOwnClosure": true
+    },
+    {
+      "Primary": "ReleaseSmoke/Ready_Yes.txt",
+      "SHA256": "35D271D26FA64B2AB67F0B7696FE7E3E0D8A57896FDD732D0DF43AE3452BF0E3",
+      "SourceSHA256": "F2487AF87992F91651B26867484945FB68CBBC44B221CE6A705EBCA09F9532E2",
+      "LinesRead": 74,
+      "AllLinesRead": true,
+      "PassedAssertions": 43,
+      "FailedAssertions": 0,
+      "MacrosFinished": 2,
+      "Summaries": [
+        "TOTAL_UNIFIED_OUTPUT: passed=30; failed=0",
+        "TOTAL RECIPE TYPE LIST: passed=13; failed=0"
+      ],
+      "NormalOwnClosure": true
+    },
+    {
+      "Primary": "ReleaseSmoke/Rebuild03_No.txt",
+      "SHA256": "65B97D6423150CD7473BFC6141B825F2ACF10EEA6095BD6DC43B320FFF9F469A",
+      "SourceSHA256": "4E13FFDBB9CECF7227C2E42824312AFA8F88A5919128776E5DF57AF3863EB5F1",
+      "LinesRead": 72,
+      "AllLinesRead": true,
+      "PassedAssertions": 43,
+      "FailedAssertions": 0,
+      "MacrosFinished": 2,
+      "Summaries": [
+        "TOTAL_UNIFIED_OUTPUT: passed=30; failed=0",
+        "TOTAL RECIPE TYPE LIST: passed=13; failed=0"
+      ],
+      "NormalOwnClosure": true
+    }
+  ],
+  "NativeSource175Plus6": true,
+  "MainReady181BodiesLiteralEqual": true,
+  "UniformNativeHeaderStyles": true,
+  "NativeVisualReviewed": true,
+  "RebuildWithCapturedLayoutPassed": true,
+  "PreservedReadyResults": true,
+  "OldUnsuccessfulSelectorProbePreserved": "Directed01/Selector_No.txt",
+  "NdMUnchanged": "PAUSED",
+  "MainSHA256": "829DAB81587B88995211DB0FE571FEFC95C9BA38CBD100942C05DD01C01CB5B6",
+  "ReadySHA256": "F2487AF87992F91651B26867484945FB68CBBC44B221CE6A705EBCA09F9532E2",
+  "AllCodeSHA256": "822228C2FB2DB70C76830060361AF480A72BEC5C6FE536E620BF9C23526EEF9E"
+}

@@ -1717,8 +1717,8 @@ Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
 End Function
 
 ' Выбирает сочетание Worst для верхней сводки по пользовательскому критерию.
-' Его же используют схема Plot.LoadCase = Worst и экспорт AutoCAD
-' с AutoCAD.Export.CombinationID = Worst.
+' Его же используют схема Excel и экспорт AutoCAD
+' при Output.CombinationMode = Worst.
 Private Sub SelectWorstCombination()
     Dim i As Long
     mWorstCombinationIndex = 0

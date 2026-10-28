@@ -15,7 +15,6 @@ try{
     $ownedPid=[int]$identity;$ownedTicks=(Get-Process -Id $ownedPid).StartTime.ToUniversalTime().Ticks
     Write-Output "OWNED_EXCEL: $ownedPid"
     $book=$excel.Workbooks.Add();$sheet=$book.Worksheets.Item(1);$sheet.Name='Config'
-    Reset-ConfigValidationSources $sheet
     Add-UnitSettingsTable $book $sheet 3 1
     $top=30
     foreach($item in (Get-GeometrySettingsCatalog)){

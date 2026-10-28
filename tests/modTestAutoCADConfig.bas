@@ -179,15 +179,15 @@ Private Sub TestCheckPresentation(ByRef stats As TCadStats, ByVal system As Obje
         Set result = Audit03AutoCADPresentationForTests(TestReader(), "Rebar", "Tension", "R1", 1#, 0)
         TestCheck stats, "autoCADConfig.color.bound." & CStr(position) & "." & CStr(value), CLng(result("Color")) = CLng(value)
     Next value
-    TestSetValue system, "AutoCAD.Export.CombinationID", "CAD_CFG"
+    modTestPlotConfig.TestSetOutputCombinationInTable system, "CAD_CFG"
     first = Audit02ReadExportSnapshotForTests(ThisWorkbook)
-    TestSetValue system, "AutoCAD.Export.CombinationID", "CAD_CFG_2"
+    modTestPlotConfig.TestSetOutputCombinationInTable system, "CAD_CFG_2"
     second = Audit02ReadExportSnapshotForTests(ThisWorkbook)
     TestCheck stats, "autoCADConfig.combination.explicit." & CStr(position), Left$(first, 8) = "CAD_CFG|" And Left$(second, 10) = "CAD_CFG_2|"
     TestCheck stats, "autoCADConfig.combination.changed." & CStr(position), first <> second
     TestCheck stats, "autoCADConfig.combination.valuesChanged." & CStr(position), _
         Mid$(first, InStr(first, vbCrLf) + 2) <> Mid$(second, InStr(second, vbCrLf) + 2)
-    TestSetValue system, "AutoCAD.Export.CombinationID", "Worst"
+    modTestPlotConfig.TestSetOutputCombinationInTable system, "Worst"
     first = Audit02ReadExportSnapshotForTests(ThisWorkbook)
     TestCheck stats, "autoCADConfig.combination.worst." & CStr(position), Left$(first, 7) = "CAD_CFG"
     TestCheck stats, "autoCADConfig.presentation.noSolve." & CStr(position), SectionEquilibriumSolveCount() = solves
@@ -405,7 +405,8 @@ Private Function TestConsumeError(ByRef stats As TCadStats, ByVal key As String)
     If Left$(key, 15) = "AutoCAD.Import." Then
         Set importer = New CAutoCADSectionModelImporter
         Set model = importer.ImportConfiguredModelSpace(TestImportRegions(), TestReader(), Nothing, TestEmptyContourLayers())
-    ElseIf key = "AutoCAD.Export.CombinationID" Then
+    ElseIf key = "Output.CombinationID" Then
+        TestSetValue ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange, "Output.CombinationMode", "User"
         text = Audit02ReadExportSnapshotForTests(ThisWorkbook)
     Else
         Set result = Audit03AutoCADPresentationForTests(TestReader(), "Concrete", "Tension", "C1", 1#, 2)
@@ -423,7 +424,7 @@ End Function
 ' Один список содержит самостоятельные CAD-поля без дублирования общих
 ' слоев. Изменение общего слоя проверяется и импортером, и экспортом.
 Private Function TestCadKeys() As Variant
-    TestCadKeys = Array("AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
+    TestCadKeys = Array("Output.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
         "AutoCAD.Export.PrincipalAxesMode", "AutoCAD.Export.LoadPointEnabled", "AutoCAD.Export.ContourEnabled", _
         "AutoCAD.Export.LabelMode", "AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
         "AutoCAD.Layer.ConcreteTension", "AutoCAD.Layer.ConcreteCompression", "AutoCAD.Layer.RebarTension", "AutoCAD.Layer.RebarCompression", _
@@ -1076,7 +1077,7 @@ Private Sub TestPrepareNativeImportedSnapshot(ByRef stats As TCadStats, ByVal sy
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim batch As CBatchSectionCalculator, catalog As CCalculationProfileCatalog, writer As CNDMResultsWriter
     Dim referenceX As Double, referenceY As Double
-    TestSetValue system, "AutoCAD.Export.CombinationID", "CAD_SHAPE"
+    modTestPlotConfig.TestSetOutputCombinationInTable system, "CAD_SHAPE"
     Set settings = TestReader(): Set units = New CUnitSystem: units.LoadFromSettings settings
     Set provider = New CMaterialModelProvider: provider.Initialize settings, units
     Set catalog = New CCalculationProfileCatalog: catalog.LoadFromWorkbook ThisWorkbook

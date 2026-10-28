@@ -113,7 +113,8 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     End If
     ResetReaderState
     Set mReadTables = CreateObject("Scripting.Dictionary")
-    mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
+    mLoadCase = ReadOutputCombinationID(workbook, settings)
+    mLoadCaseComment = ReadBatchSummaryComment(workbook, mLoadCase)
     ApplyVisualizationProfile workbook
 
     Dim stateFields As Object
@@ -178,7 +179,8 @@ Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
     On Error GoTo Failed
     ResetReaderState
     Set mReadTables = CreateObject("Scripting.Dictionary")
-    mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
+    mLoadCase = ReadOutputCombinationID(workbook, settings)
+    mLoadCaseComment = ReadBatchSummaryComment(workbook, mLoadCase)
     ApplyVisualizationProfile workbook
 
     mGeometryOnly = True
@@ -200,33 +202,6 @@ Failed:
     ResetReaderState
     Err.Raise errorNumber, errorSource, description
 End Sub
-
-' Определяет, какой LC показывать на схеме.
-' При выборе Worst используется сочетание из верхней строки общей сводки
-' "Определяющее сочетание". Критерий выбора задает
-' General.WorstCombinationCriterion, а схема только читает сохраненный результат.
-Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
-    Dim valueText As String
-    valueText = Trim$(requested)
-
-    If StrComp(valueText, "Worst", vbTextCompare) <> 0 Then
-        ResolveLoadCase = valueText
-        mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
-        Exit Function
-    End If
-
-    ResolveLoadCase = ReadWorstCombinationID(workbook)
-    If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstCalculatedLoadCaseFromResults(workbook)
-    If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstLoadCaseFromSectionProperties(workbook)
-    mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
-    If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, "CSectionPlotDataReader", _
-        "В сохранённых Results нет определяющего или другого рассчитанного сочетания для Plot.LoadCase = Worst. Сначала выполните расчёт."
-End Function
-
-' Читает поле «Определяющее сочетание» над компактной сводкой Results.
-Private Function ReadWorstCombinationID(ByVal workbook As Object) As String
-    ReadWorstCombinationID = ReadSavedWorstCombinationID(workbook)
-End Function
 
 ' Применяет оформление профиля выбранного сочетания. ProfileId берёт
 ' из сохранённых Results, чтобы показывать фактически рассчитанный запуск
@@ -306,46 +281,6 @@ Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal loadCa
             ReadLoadCasePropertyText = Trim$(SafeText(data(rowIndex, colValue)))
             Exit Function
         End If
-    Next rowIndex
-Failed:
-End Function
-
-' Возвращает первое сочетание с результатами элементов, если Worst нельзя
-' получить из запаса прочности, например при одном НДС без поиска предела.
-' Предварительный просмотр сформированного сечения этим способом не выбирается.
-Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
-    On Error GoTo Failed
-    Dim data As Variant
-    data = ReadElementResultTable(workbook, , , True)
-    If Not HasRows(data) Then Exit Function
-
-    Dim colLoadCase As Long
-    colLoadCase = ResultColumn(data, "LoadCase")
-
-    Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1)
-        FirstCalculatedLoadCaseFromResults = Trim$(SafeText(data(rowIndex, colLoadCase)))
-        If Len(FirstCalculatedLoadCaseFromResults) > 0 Then Exit Function
-    Next rowIndex
-Failed:
-End Function
-
-' Возвращает первое сочетание из свойств сечения. Даже при отсутствии
-' НДС для раскраски это позволяет показать, какие результаты сохранены.
-Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String
-    On Error GoTo Failed
-    Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
-    If Not HasRows(data) Then Exit Function
-
-    Dim colLoadCase As Long
-    colLoadCase = ResultColumn(data, "LoadCase")
-
-    Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1)
-        FirstLoadCaseFromSectionProperties = Trim$(SafeText(data(rowIndex, colLoadCase)))
-        If Len(FirstLoadCaseFromSectionProperties) > 0 And _
-                StrComp(FirstLoadCaseFromSectionProperties, "ALL", vbTextCompare) <> 0 Then Exit Function
     Next rowIndex
 Failed:
 End Function

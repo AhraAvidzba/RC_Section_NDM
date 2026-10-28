@@ -102,7 +102,7 @@ try {
     foreach($plan in $plans){
         Test-BatchLoadsSetting 'Units.Force.Output' 'tf';Test-BatchLoadsSetting 'Units.Moment.Output' 'tf*m'
         $app.Run("'$($book.Name)'!modTestPerformance.TestConfigurePerformanceFixture",$plan.Family,[int]$plan.Count,'Newton',$plan.Shape,'Normal',$Mode)
-        foreach($item in @(@('General.ExecutionReportEnabled','No'),@('General.NonCriticalMessagesEnabled','No'),@('Plot.Enabled','Yes'),@('Plot.AutoUpdateAfterCalculation','Yes'),@('Plot.LoadCase','Worst'),@('Stability.ElementLength','2000'),@('Stability.Code','SP63'),@('General.WorstCombinationCriterion',$plan.Criterion),@('Results.SnapshotStorage',$plan.Storage),@('Results.SnapshotName',$plan.Name),@('General.ReformatResultsEnabled',$plan.Format),@('Units.Force.Output',$plan.Force),@('Units.Moment.Output',$plan.Moment))){Test-BatchLoadsSetting $item[0] $item[1]}
+        foreach($item in @(@('General.ExecutionReportEnabled','No'),@('General.NonCriticalMessagesEnabled','No'),@('Plot.Enabled','Yes'),@('Plot.AutoUpdateAfterCalculation','Yes'),@('Output.CombinationMode','Worst'),@('Stability.ElementLength','2000'),@('Stability.Code','SP63'),@('General.WorstCombinationCriterion',$plan.Criterion),@('Results.SnapshotStorage',$plan.Storage),@('Results.SnapshotName',$plan.Name),@('General.ReformatResultsEnabled',$plan.Format),@('Units.Force.Output',$plan.Force),@('Units.Moment.Output',$plan.Moment))){Test-BatchLoadsSetting $item[0] $item[1]}
         if($plan.Filtered){
             Test-BatchLoadsSetting 'Calculation.ZeroMomentPerDepth' '0.5'
             $profiles=$book.Names.Item('rngCalculationProfiles').RefersToRange;$values=$profiles.Value2

@@ -132,8 +132,9 @@ Private Sub TestCheckNativeFullExport(ByVal doc As Object, ByVal model As CSecti
     Set table = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange: saved = table.Formula
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange: savedProfiles = profiles.Formula
     For i = 2 To table.Rows.Count
-        If CStr(table.Cells(i, 1).Value2) = "AutoCAD.Export.CombinationID" Then Set exportCell = table.Cells(i, 2): exportCell.Value2 = "CM_BEND"
+        If CStr(table.Cells(i, 1).Value2) = "Output.CombinationID" Then Set exportCell = table.Cells(i, 2): exportCell.Value2 = "CM_BEND"
     Next i
+    modTestPlotConfig.TestSetOutputCombinationInTable table, "CM_BEND"
     For i = 2 To profiles.Rows.Count
         If CStr(profiles.Cells(i, 2).Value2) = "Visualization.State" Then profiles.Cells(i, 3).Value2 = "StrengthState"
     Next i

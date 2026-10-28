@@ -534,7 +534,7 @@ Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Obje
         Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
         before = ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2
         solves = SectionEquilibriumSolveCount()
-        TestSetTableValue system, "Plot.LoadCase", "PROFILE_CONFIG", 2
+        modTestPlotConfig.TestSetOutputCombinationInTable system, "PROFILE_CONFIG"
         settings.LoadFromWorkbook ThisWorkbook
         For Each stateName In Array("StrengthState", "CapacityState", "PreCrackState", "PostCrackState", "CrackedState")
             TestSetProfileValue source, profile, "Visualization.State", stateName
@@ -1376,7 +1376,7 @@ Public Function RunAudit03PresentationConfigTests(Optional ByRef passed As Long 
     TestConfigureDurationUnits "N", "N*mm", "Tension", "+Y tension", "+X tension"
     TestSetTableValue system, "Calculation.ZeroMomentPerDepth", "0", 2
     TestSetTableValue system, "Load.ReferenceOffsetX", "0", 2: TestSetTableValue system, "Load.ReferenceOffsetY", "0", 2
-    TestSetTableValue system, "Plot.LoadCase", "PROFILE_CONFIG", 2
+    modTestPlotConfig.TestSetOutputCombinationInTable system, "PROFILE_CONFIG"
     TestConfigureAnnotationFixture annotations
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings

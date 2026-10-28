@@ -24,7 +24,7 @@ Public Function TestRunCoreRegressionBatch15() As String
     TestSetSystemSetting "SLS.Crack.Code", "SP35"
     TestSetSystemSetting "Plot.Enabled", "Yes"
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    TestSetSystemSetting "Plot.LoadCase", "Worst"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
     TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
     TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
     TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"

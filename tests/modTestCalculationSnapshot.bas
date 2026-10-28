@@ -36,9 +36,9 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotSetting "Results.SnapshotStorage", "File"
     TestSnapshotSetting "Results.SnapshotName", token & "_" & ChrW$(&H3B1)
     Dim path As String: path = store.SnapshotPath(ThisWorkbook)
-    TestSnapshotSetting "Plot.LoadCase", "PERF_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_01"
     Dim loads As Object: Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
-    loads.Cells(2, 1).Value2 = "Сочетание_" & ChrW$(&H3B1) & "_01": TestSnapshotSetting "Plot.LoadCase", "Сочетание_" & ChrW$(&H3B1) & "_01"
+    loads.Cells(2, 1).Value2 = "Сочетание_" & ChrW$(&H3B1) & "_01": modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Сочетание_" & ChrW$(&H3B1) & "_01"
     Dim message As String: message = FormSectionForWorkbook(ThisWorkbook)
     message = RunSectionCalculationForWorkbook(ThisWorkbook)
     TestSnapshotCheck "readScope.afterCalculation", TestCalculationSnapshotReadReleased()
@@ -52,7 +52,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotGeometryPreview original, store
     TestSnapshotBoundaryFileCodec original, store
     Dim originalPlot As String: originalPlot = TestSnapshotPlot()
-    TestSnapshotSetting "AutoCAD.Export.CombinationID", "Сочетание_" & ChrW$(&H3B1) & "_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Сочетание_" & ChrW$(&H3B1) & "_01"
     Dim originalExport As String: originalExport = Audit02ReadExportSnapshotForTests(ThisWorkbook)
     TestSnapshotCheck "native.calculate.fileReference", store.HasFileReference(ThisWorkbook)
     TestSnapshotCheck "native.calculate.noSheetArchive", Not TestSnapshotNameExists("rngNDMLoadCaseResults")
@@ -1240,8 +1240,8 @@ Private Sub TestSnapshotFileGeometryAuthority(ByVal extension As String)
         TestSnapshotCheck CStr(geometryMode) & ".message.calculated.source.File", InStr(message, "Геометрия для расчёта загружена из файла «" & token & ".ndm».") > 0
         TestSnapshotCheck CStr(geometryMode) & ".message.calculated.saved.File", Right$(message, Len("Данные сохранены в файле «" & token & ".ndm».")) = "Данные сохранены в файле «" & token & ".ndm»."
         TestSnapshotCheck CStr(geometryMode) & ".calculate.fromFilePreview", Not original.IsGeometryPreview And original.TableRowCount("rngNDMElementResults") > 1
-        TestSnapshotSetting "AutoCAD.Export.CombinationID", "PERF_01"
-        TestSnapshotSetting "Plot.LoadCase", "PERF_01"
+        modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_01"
+        modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_01"
         exportBefore = Audit02ReadExportSnapshotForTests(ThisWorkbook)
         plotBefore = TestSnapshotPlot()
         TestSnapshotEraseGeometryDisplay
@@ -1249,8 +1249,8 @@ Private Sub TestSnapshotFileGeometryAuthority(ByVal extension As String)
         TestSnapshotCheck CStr(geometryMode) & ".calculated.fileModel", TestSnapshotSameModel(beforeModel, afterModel)
         TestSnapshotCheck CStr(geometryMode) & ".calculated.export", Audit02ReadExportSnapshotForTests(ThisWorkbook) = exportBefore
         TestSnapshotCheck CStr(geometryMode) & ".calculated.plot", TestSnapshotPlot() = plotBefore
-        TestSnapshotSetting "AutoCAD.Export.CombinationID", "Worst"
-        TestSnapshotSetting "Plot.LoadCase", "Worst"
+        modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
+        modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
         exportBefore = Audit02ReadExportSnapshotForTests(ThisWorkbook): plotBefore = TestSnapshotPlot()
         ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2 = "FORGED_RESULT_ID"
         TestSnapshotCheck CStr(geometryMode) & ".worst.exportFromFile", Audit02ReadExportSnapshotForTests(ThisWorkbook) = exportBefore
@@ -1369,8 +1369,8 @@ Private Sub TestSnapshotFileViewControls(ByVal prefix As String)
             End Select
         Next column
     Next row
-    TestSnapshotSetting "Plot.LoadCase", "PERF_02"
-    TestSnapshotSetting "AutoCAD.Export.CombinationID", "PERF_02"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_02"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_02"
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Dim reader As CSectionPlotDataReader: Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
     TestSnapshotCheck prefix & ".view.currentLC", reader.LoadCase = "PERF_02"
@@ -1379,8 +1379,8 @@ Private Sub TestSnapshotFileViewControls(ByVal prefix As String)
     TestSnapshotCheck prefix & ".view.currentPrecision", reader.ResultPrecision = 8
     TestSnapshotCheck prefix & ".view.currentExport", Left$(Audit02ReadExportSnapshotForTests(ThisWorkbook), Len("PERF_02|PR1|CapacityState|Strain|")) = "PERF_02|PR1|CapacityState|Strain|"
     profiles.Formula = saved
-    TestSnapshotSetting "Plot.LoadCase", "Worst"
-    TestSnapshotSetting "AutoCAD.Export.CombinationID", "Worst"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -1585,7 +1585,7 @@ Private Sub TestSnapshotRepeatedImportedAnnotations(ByVal extension As String)
     modTestPerformance.TestConfigurePerformanceFixture "IMPORTED_CRACK_SP35", 3, "Newton", "Saved", "Normal", extension
     TestSnapshotSetting "Results.SnapshotStorage", "Excel"
     TestSnapshotSetting "General.ExecutionReportEnabled", "No"
-    TestSnapshotSetting "Plot.LoadCase", "PERF_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_01"
     Dim message As String: message = RunSectionCalculationForWorkbook(ThisWorkbook)
     Dim first As Variant: first = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionAnnotations")
     Dim expected As Variant: expected = ReadPhysicalResultTable(ThisWorkbook, "rngNDMElementResults")
@@ -1683,8 +1683,8 @@ Public Function TestPrepareSnapshotReopen(ByVal mode As String) As String
     TestSnapshotSetting "Results.SnapshotStorage", mode
     TestSnapshotSetting "Results.SnapshotName", "TestReopen_" & ChrW$(&H3B1) & ".ndm"
     TestSnapshotSetting "General.ExecutionReportEnabled", "No"
-    TestSnapshotSetting "Plot.LoadCase", "PERF_01"
-    TestSnapshotSetting "AutoCAD.Export.CombinationID", "PERF_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "PERF_01"
     Dim message As String: message = FormSectionForWorkbook(ThisWorkbook)
     message = RunSectionCalculationForWorkbook(ThisWorkbook)
     TestPrepareSnapshotReopen = TestSnapshotReopenFingerprint()

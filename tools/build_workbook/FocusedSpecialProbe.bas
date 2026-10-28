@@ -28,7 +28,7 @@ Public Function TestRunFocusedSpecialCase(ByVal caseName As String) As String
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
     TestSetSystemSetting "Plot.Enabled", "Yes": TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    TestSetSystemSetting "Plot.LoadCase", "Worst": TestSetSystemSetting "SLS.Crack.Code", "SP35"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst": TestSetSystemSetting "SLS.Crack.Code", "SP35"
     TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
     TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
     TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"

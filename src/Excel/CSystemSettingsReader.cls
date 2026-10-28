@@ -222,7 +222,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
             Else
                 sourceValue = vbNullString
             End If
-            If Left$(keyValue, 5) = "Plot." Or keyValue = "Mesh.StepX" Or keyValue = "Mesh.StepY" Then ' Ручные шаги не являются входом Auto; в User их ошибки выдаются при обязательном чтении.
+            If Left$(keyValue, 5) = "Plot." Or Left$(keyValue, 7) = "Output." Or keyValue = "Mesh.StepX" Or keyValue = "Mesh.StepY" Then ' Preview не выбирает сочетание; Worst не читает ID. Ручные шаги не являются входом Auto. Ошибка выдаётся при запросе активного поля.
                 AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
             Else
                 AppendSetting keyValue, _
@@ -497,6 +497,7 @@ End Function
 ' Сохраняет условный ввод вместе с возможной ошибкой ячейки.
 ' Ошибка выдаётся при запросе активного параметра; выключенные аннотации
 ' и автоматический шаг сетки не требуют чтения неиспользуемых ручных полей.
+' Предварительная геометрия не выбирает сочетание; Worst не требует пользовательского ID.
 Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String, _
         ByVal rowIndex As Long, ByVal columnIndex As Long, Optional ByVal source As String = vbNullString)
     Dim value As String, valueError As String, valueHasError As Boolean
@@ -592,11 +593,12 @@ Private Function InputSettingsSection(ByVal key As String) As String
         Case Left$(key, 7) = "Solver.": sectionName = "настройки решателя"
         Case Left$(key, 9) = "Capacity.": sectionName = "настройки несущей способности"
         Case Left$(key, 15) = "AutoCAD.Import.": sectionName = "импорт геометрии из AutoCAD"
+        Case Left$(key, 7) = "Output.": sectionName = "Нагрузки, сочетания и диаграммы материалов"
         Case Left$(key, 5) = "Plot.": sectionName = "оформление Excel-схемы"
         Case key = "Load.ReferenceOffsetX", key = "Load.ReferenceOffsetY", _
                 key = "Calculation.ZeroMomentPerDepth", key = "General.WorstCombinationCriterion", _
                 key = "General.PlateauSlopeFactor", key = "General.DiagramExtension"
-            sectionName = "Нагрузки и диаграммы материалов"
+            sectionName = "Нагрузки, сочетания и диаграммы материалов"
         Case Left$(key, 9) = "Geometry.": sectionName = "Геометрия"
         Case Left$(key, 5) = "Mesh.": sectionName = "Сетка геометрии"
         Case Left$(key, 8) = "General.": sectionName = "Общие"

@@ -84,8 +84,7 @@ try {
         Test-SetSnapshotInput 'General.NonCriticalMessagesEnabled' 'No'
         Test-SetSnapshotInput 'Plot.Enabled' 'Yes'
         Test-SetSnapshotInput 'Plot.AutoUpdateAfterCalculation' 'Yes'
-        Test-SetSnapshotInput 'Plot.LoadCase' 'Worst'
-        Test-SetSnapshotInput 'AutoCAD.Export.CombinationID' 'Worst'
+        Test-SetSnapshotInput 'Output.CombinationMode' 'Worst'
         Test-SetSnapshotInput 'Stability.ElementLength' '1000'
         Test-SetSnapshotInput 'General.WorstCombinationCriterion' $(if($family -eq 'MIXED'){'StrengthCapacity'}else{'Cracks'})
         foreach($rangeName in @('rngLoadCombinations','rngStabilityDurationLoads')){

@@ -1,0 +1,93 @@
+{
+  "All14OwnIdentitiesTerminal": true,
+  "NoOwnIdentityLive": true,
+  "ForcedClosure": false,
+  "CurrentUTC": "2026-10-28T10:47:54.4582285+00:00",
+  "Identities": [
+    {
+      "PID": 27688,
+      "StartTicksUTC": "639287792245919494",
+      "State": "Absent",
+      "AcceptedClosureProof": "Selector_No.txt.ProcessClosure.json"
+    },
+    {
+      "PID": 33960,
+      "StartTicksUTC": "639287798947414504",
+      "State": "Absent",
+      "AcceptedClosureProof": "Affected_No.txt.ProcessClosure.json"
+    },
+    {
+      "PID": 40796,
+      "StartTicksUTC": "639287803142353963",
+      "State": "Absent",
+      "AcceptedClosureProof": "Affected_Yes.txt.ProcessClosure.json"
+    },
+    {
+      "PID": 40396,
+      "StartTicksUTC": "639287798161322505",
+      "State": "Absent",
+      "AcceptedClosureProof": "Selector_No.txt.ProcessClosure.json"
+    },
+    {
+      "PID": 36996,
+      "StartTicksUTC": "639287798512556328",
+      "State": "Absent",
+      "AcceptedClosureProof": "Selector_Yes.txt.ProcessClosure.json"
+    },
+    {
+      "PID": 29668,
+      "StartTicksUTC": "639287807900804570",
+      "State": "Absent",
+      "AcceptedClosureProof": "Main_No.txt.ProcessClosure.json"
+    },
+    {
+      "PID": 40676,
+      "StartTicksUTC": "639287808772754901",
+      "State": "Absent",
+      "AcceptedClosureProof": "Ready_Yes.txt.ProcessClosure.json"
+    },
+    {
+      "PID": 43508,
+      "StartTicksUTC": "639287810414532571",
+      "State": "Absent",
+      "AcceptedClosureProof": "Rebuild03_No.txt.ProcessClosure.json"
+    },
+    {
+      "PID": 7556,
+      "StartTicksUTC": "639287789343330197",
+      "State": "Absent",
+      "AcceptedClosureProof": "FreshBuild01/BuildAcceptance.json"
+    },
+    {
+      "PID": 40876,
+      "StartTicksUTC": "639287793650598531",
+      "State": "Absent",
+      "AcceptedClosureProof": "FreshBuild02/BuildAcceptance.json"
+    },
+    {
+      "PID": 28744,
+      "StartTicksUTC": "639287804912024204",
+      "State": "Absent",
+      "AcceptedClosureProof": "RebuildProof03/BuildAcceptance.json"
+    },
+    {
+      "PID": 15252,
+      "StartTicksUTC": "639287803427103433",
+      "State": "Absent",
+      "AcceptedClosureProof": "Native/Main/Closure.json"
+    },
+    {
+      "PID": 24688,
+      "StartTicksUTC": "639287803983555774",
+      "State": "Absent",
+      "AcceptedClosureProof": "Native/Ready/Closure.json"
+    },
+    {
+      "PID": 41484,
+      "StartTicksUTC": "639287810210719386",
+      "State": "Absent",
+      "AcceptedClosureProof": "NativePreviewClosure.json"
+    }
+  ],
+  "UserExcelAndCADUntouched": true
+}

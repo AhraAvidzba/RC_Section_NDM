@@ -196,7 +196,7 @@ End Sub
 
 ' После записи Results и построения схемы дописывает полное время запуска.
 ' Сама сводка готовится раньше подробных таблиц, поскольку схема
-' Plot.LoadCase = Worst читает из неё определяющее сочетание.
+' Output.CombinationMode = Worst читает из неё определяющее сочетание.
 Public Sub UpdateElapsedSeconds(ByVal workbook As Object, ByVal elapsedSeconds As Double)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3974, "CBatchResultWriter", "Книга Excel не передана."
 

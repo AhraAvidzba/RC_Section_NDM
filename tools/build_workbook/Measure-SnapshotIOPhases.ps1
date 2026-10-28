@@ -223,7 +223,8 @@ End Sub
         }else{
             $book.Names.Item('rngLoadCombinations').RefersToRange.Value2=$allLoads;$book.Names.Item('rngStabilityDurationLoads').RefersToRange.Value2=$allDuration
             foreach($name in @('rngLoadCombinations','rngStabilityDurationLoads')){$table=$book.Names.Item($name).RefersToRange;if($count+1 -lt $table.Rows.Count){$table.Offset($count+1,0).Resize($table.Rows.Count-$count-1,$table.Columns.Count).ClearContents()}}
-            Set-TestSnapshotPhaseSetting 'Plot.LoadCase' ([string]$allLoads[2,1])
+            Set-TestSnapshotPhaseSetting 'Output.CombinationMode' 'User'
+            Set-TestSnapshotPhaseSetting 'Output.CombinationID' ([string]$allLoads[2,1])
         }
         Set-TestSnapshotPhaseSetting 'General.ExecutionReportEnabled' 'Yes';Set-TestSnapshotPhaseSetting 'General.ReformatResultsEnabled' 'Yes';Set-TestSnapshotPhaseSetting 'Plot.Enabled' 'Yes';Set-TestSnapshotPhaseSetting 'Plot.AutoUpdateAfterCalculation' 'Yes';Set-TestSnapshotPhaseSetting 'Results.SnapshotName' 'TestSnapshotIO'
         if($Fixture -eq 'Standard'){[void]$app.Run("'$($book.Name)'!modWorkbookCalculation.FormSectionForWorkbook",$book)}

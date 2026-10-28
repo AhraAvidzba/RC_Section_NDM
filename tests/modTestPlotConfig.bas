@@ -24,6 +24,8 @@ End Type
 Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim stats As TUiTestStats
+    TestUnifiedOutputSelectionContracts stats
+    TestUnifiedOutputConfigContracts stats
     TestAudit03GeneralPlotContracts stats
     TestAudit03AnnotationLayoutContracts stats
     TestAudit03PlotEnableContracts stats
@@ -1273,7 +1275,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         If Not marker Is Nothing Then TestAssertTrue stats, "audit03.generalPlot.gradient.p" & CStr(position) & ".effect", marker.Fill.ForeColor.RGB = RGB(164, 169, 173)
         sheet.Range("R35").Resize(5, 7).Value2 = elements
         table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
-        TestAudit03SetPlotSetting table, "Plot.LoadCase", "ALT"
+        TestSetOutputCombinationInTable table, "ALT"
         TestAudit03SetPlotSetting table, "Plot.ResultLabelsEnabled", "Yes"
         TestAudit03SetPlotSetting table, "Plot.ResultLabelSpacing", 100#
         settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
@@ -1311,14 +1313,14 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         Next key
         For mode = 0 To 2
             For Each bad In Array("", "TODO", CVErr(2015))
-                cases = cases + 1: TestAudit03SetPlotSetting table, "Plot.LoadCase", bad: settings.LoadFromWorkbook fixture
+                cases = cases + 1: TestSetOutputCombinationInTable table, bad: settings.LoadFromWorkbook fixture
                 TestAudit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
                 prefix = "audit03.generalPlot.loadCase.p" & CStr(position) & ".mode" & CStr(mode) & ".type" & CStr(VarType(bad))
                 If mode = 1 Then
                     TestAssertTrue stats, prefix & ".inactive", code = 0 And reader.Count = 2
                 Else
-                    Set cell = TestAudit03PlotSettingCell(table, "Plot.LoadCase")
-                    TestAssertTrue stats, prefix & ".rejected", code <> 0 And InStr(1, reason, "Plot.LoadCase", vbTextCompare) > 0
+                    Set cell = TestAudit03PlotSettingCell(table, "Output.CombinationID")
+                    TestAssertTrue stats, prefix & ".rejected", code <> 0 And InStr(1, reason, "Output.CombinationID", vbTextCompare) > 0
                     TestAssertTrue stats, prefix & ".address", InStr(1, reason, config.Name, vbTextCompare) > 0 And InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0
                     TestAssertTrue stats, prefix & ".empty", reader.Count = 0
                 End If
@@ -1435,7 +1437,7 @@ Private Function TestAudit03PlotSettingsTable(ByVal anchor As Object) As Object
     Set TestAudit03PlotSettingsTable = anchor.Resize(target, 3)
     TestAudit03PlotSettingsTable.NumberFormat = "@"
     TestAudit03PlotSettingsTable.Value2 = data
-    TestAudit03SetPlotSetting TestAudit03PlotSettingsTable, "Plot.LoadCase", "PLOT"
+    TestSetOutputCombinationInTable TestAudit03PlotSettingsTable, "PLOT"
     TestAudit03SetPlotSetting TestAudit03PlotSettingsTable, "Plot.Dimensions.Enabled", "No"
     TestAudit03SetPlotSetting TestAudit03PlotSettingsTable, "Plot.RebarLabels.Enabled", "No"
     TestAudit03SetPlotSetting TestAudit03PlotSettingsTable, "Plot.ResultLabelsEnabled", "No"
@@ -1458,7 +1460,7 @@ Private Function TestAudit03NamedGeneralPlotSettingsTable(ByVal fixture As Objec
         index = index + 1
     Next name
     Set TestAudit03NamedGeneralPlotSettingsTable = fixture.Names.Item("rngSystemSettings").RefersToRange
-    TestAudit03SetPlotSetting TestAudit03NamedGeneralPlotSettingsTable, "Plot.LoadCase", "PLOT"
+    TestSetOutputCombinationInTable TestAudit03NamedGeneralPlotSettingsTable, "PLOT"
     TestAudit03SetPlotSetting TestAudit03NamedGeneralPlotSettingsTable, "Plot.Dimensions.Enabled", "No"
     TestAudit03SetPlotSetting TestAudit03NamedGeneralPlotSettingsTable, "Plot.RebarLabels.Enabled", "No"
     TestAudit03SetPlotSetting TestAudit03NamedGeneralPlotSettingsTable, "Plot.ResultLabelsEnabled", "No"
@@ -2027,5 +2029,157 @@ Cleanup:
     anchor.Resize(18, 4).Value2 = saved
     Application.UseSystemSeparators = False: Application.DecimalSeparator = oldDecimal
     Application.ThousandsSeparator = oldThousands: Application.UseSystemSeparators = oldUse
+    On Error GoTo 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задаёт логический выбор тестового сценария двумя реальными полями Config.
+' Строка Worst здесь означает режим теста; отдельные проверки задают буквальный ID Worst напрямую.
+Public Sub TestSetOutputCombination(ByVal workbook As Object, ByVal requested As Variant)
+    TestSetOutputCombinationInTable workbook.Names.Item("rngSystemSettings").RefersToRange, requested
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Работает только с явно подготовленной тестовой таблицей, не создавая отсутствующих ключей.
+Public Sub TestSetOutputCombinationInTable(ByVal table As Object, ByVal requested As Variant)
+    Dim mode As String: mode = "User"
+    If VarType(requested) = vbString Then
+        If StrComp(Trim$(CStr(requested)), "Worst", vbTextCompare) = 0 Then mode = "Worst"
+    End If
+    TestAudit03PlotSettingCell(table, "Output.CombinationMode").Value2 = mode
+    If mode = "User" Then TestAudit03PlotSettingCell(table, "Output.CombinationID").Value2 = requested
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет общий выбор без НДС-решателя и прямые списки настоящего Config.
+Public Function RunUnifiedOutputSelectionTests(Optional ByRef passed As Long = 0, Optional ByRef failed As Long = 0) As String
+    Dim stats As TUiTestStats
+    TestUnifiedOutputSelectionContracts stats
+    TestUnifiedOutputConfigContracts stats
+    TestAppendLine stats, "TOTAL_UNIFIED_OUTPUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed: RunUnifiedOutputSelectionTests = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Один resolver проверяется с User/Worst, неактивным ID и сохранёнными fallback-таблицами.
+Private Sub TestUnifiedOutputSelectionContracts(ByRef stats As TUiTestStats)
+    Dim fixture As Object, sheet As Object, table As Object, settings As CSystemSettingsReader
+    Dim data(1 To 5, 1 To 3) As Variant, bad As Variant, value As String, reason As String, code As Long
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(xlWBATWorksheet): Set sheet = fixture.Worksheets(1): sheet.Name = "Selection"
+    data(1, 1) = "Параметр": data(1, 2) = "Значение": data(1, 3) = "Комментарий"
+    data(2, 1) = "Output.CombinationMode": data(2, 2) = "Worst"
+    data(3, 1) = "Output.CombinationID": data(3, 2) = "IGNORED"
+    data(4, 1) = "Results.SnapshotStorage": data(4, 2) = "Excel"
+    data(5, 1) = "Results.SnapshotName": data(5, 2) = "UnusedSelectionSnapshot"
+    Set table = sheet.Range("A1").Resize(5, 3): table.Value2 = data
+    fixture.Names.Add Name:="rngSystemSettings", RefersTo:="=Selection!$A$1:$C$5"
+    fixture.Names.Add Name:="rngBatchSummary", RefersTo:="=Selection!$H$2"
+    sheet.Range("H2").Value2 = "WORST_REAL"
+    Set settings = New CSystemSettingsReader
+    For Each bad In Array("", CVErr(2015), "NOT_SAVED")
+        table.Cells(3, 2).Value2 = bad: settings.LoadFromRange table
+        TestAssertTrue stats, "output.Worst.ignoresID." & CStr(VarType(bad)), ReadOutputCombinationID(fixture, settings) = "WORST_REAL"
+    Next bad
+    table.Cells(2, 2).Value2 = "User": table.Cells(3, 2).Value2 = "USER_REAL": settings.LoadFromRange table
+    TestAssertTrue stats, "output.User.exactID", ReadOutputCombinationID(fixture, settings) = "USER_REAL"
+    table.Cells(3, 2).Value2 = "Worst": settings.LoadFromRange table
+    TestAssertTrue stats, "output.User.literalWorstIsID", ReadOutputCombinationID(fixture, settings) = "Worst"
+    For Each bad In Array("", "TODO", CVErr(2015))
+        table.Cells(3, 2).Value2 = bad: settings.LoadFromRange table
+        TestCaptureUnifiedOutput fixture, settings, value, code, reason
+        TestAssertTrue stats, "output.User.rejectsBadID." & CStr(VarType(bad)), code <> 0 And InStr(1, reason, "Output.CombinationID", vbTextCompare) > 0
+        TestAssertTrue stats, "output.User.IDaddress." & CStr(VarType(bad)), InStr(1, reason, table.Cells(3, 2).Address(False, False), vbTextCompare) > 0
+    Next bad
+    table.Cells(3, 2).Value2 = "USER_REAL"
+    For Each bad In Array("", "TODO", "Auto", CVErr(2015))
+        table.Cells(2, 2).Value2 = bad: settings.LoadFromRange table
+        TestCaptureUnifiedOutput fixture, settings, value, code, reason
+        TestAssertTrue stats, "output.rejectsBadMode." & CStr(VarType(bad)) & "." & CStr(Len(reason)), code <> 0 And InStr(1, reason, "Output.CombinationMode", vbTextCompare) > 0
+    Next bad
+    table.Cells(2, 2).Value2 = "Worst": settings.LoadFromRange table: sheet.Range("H2").ClearContents
+    sheet.Range("J1").Value2 = "LoadCase": sheet.Range("J2").Value2 = "ELEMENT_FALLBACK"
+    fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Selection!$J$1"
+    TestAssertTrue stats, "output.Worst.savedElementFallback", ReadOutputCombinationID(fixture, settings) = "ELEMENT_FALLBACK"
+    sheet.Range("J2").ClearContents
+    sheet.Range("P1").Value2 = "LoadCase": sheet.Range("Q1").Value2 = "Parameter"
+    sheet.Range("P2").Value2 = "ALL": sheet.Range("Q2").Value2 = "Bounds.MaxX"
+    sheet.Range("P3").Value2 = "PROPERTIES_FALLBACK": sheet.Range("Q3").Value2 = "ProfileId"
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Selection!$P$1"
+    TestAssertTrue stats, "output.Worst.savedPropertiesFallback", ReadOutputCombinationID(fixture, settings) = "PROPERTIES_FALLBACK"
+    sheet.Range("P3:Q3").ClearContents
+    TestCaptureUnifiedOutput fixture, settings, value, code, reason
+    TestAssertTrue stats, "output.Worst.noCalculatedCases", code <> 0 And InStr(1, reason, "Output.CombinationMode", vbTextCompare) > 0
+    GoTo Restore
+Failed:
+    TestAssertTrue stats, "output.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет полную исходную ошибку resolver-а для независимой проверки ключа и адреса.
+Private Sub TestCaptureUnifiedOutput(ByVal fixture As Object, ByVal settings As CSystemSettingsReader, _
+        ByRef value As String, ByRef code As Long, ByRef reason As String)
+    value = vbNullString: code = 0: reason = vbNullString
+    On Error GoTo Failed
+    value = ReadOutputCombinationID(fixture, settings)
+    Exit Sub
+Failed:
+    code = Err.Number: reason = Err.Description: Err.Clear
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет настоящий порядок, оба прямых диапазона и немедленную реакцию dropdown на смену источника.
+Private Sub TestUnifiedOutputConfigContracts(ByRef stats As TUiTestStats)
+    Dim table As Object, loads As Object, profiles As Object, config As Object, mode As Object, id As Object, criterion As Object
+    Dim display As Object, row As Long, formula As String, foundImport As Boolean, helper As Object, absent As Boolean
+    Dim savedID As Variant, savedSourceID As Variant, savedProfile As Variant, savedAssigned As Variant, saved As Boolean
+    On Error GoTo Failed
+    Set table = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange: Set config = table.Worksheet
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Set mode = TestAudit03PlotSettingCell(table, "Output.CombinationMode")
+    Set criterion = TestAudit03PlotSettingCell(table, "General.WorstCombinationCriterion")
+    Set id = TestAudit03PlotSettingCell(table, "Output.CombinationID")
+    TestAssertTrue stats, "output.config.order", mode.Row + 1 = criterion.Row And criterion.Row + 1 = id.Row
+    TestAssertTrue stats, "output.config.subsection", CStr(mode.Offset(-1, -1).Value2) = "[Выводимое сочетание]"
+    For row = 2 To table.Rows.Count
+        If CStr(table.Cells(row, 1).Value2) = "[Импорт]" Then foundImport = True
+    Next row
+    TestAssertTrue stats, "output.config.noEmptyImport", Not foundImport
+    formula = CStr(id.Validation.Formula1)
+    TestAssertTrue stats, "output.config.IDdirect", formula = "=" & loads.Cells(2, 1).Resize(loads.Rows.Count - 1, 1).Address(True, True)
+    For row = 2 To profiles.Rows.Count
+        If CStr(profiles.Cells(row, 2).Value2) = "Profile.DisplayName" Then Set display = profiles.Cells(row, 3).Resize(1, profiles.Columns.Count - 3): Exit For
+    Next row
+    TestAssertTrue stats, "output.config.profileDirect", CStr(loads.Cells(2, 5).Validation.Formula1) = "=" & display.Address(True, True)
+    TestAssertTrue stats, "output.config.profileCurrentLayout", display.Address = "$J$39:$M$39"
+    TestAssertTrue stats, "output.config.noHiddenColumns", config.Range("BQ:EF").EntireColumn.Hidden = False
+    On Error Resume Next
+    Set helper = ThisWorkbook.Names("rngSectionRecipeTypes"): absent = Err.Number <> 0: Err.Clear
+    On Error GoTo Failed
+    TestAssertTrue stats, "output.config.noHelperName", absent
+    savedID = id.Formula: savedSourceID = loads.Cells(2, 1).Formula
+    savedProfile = display.Cells(1, 1).Formula: savedAssigned = loads.Cells(2, 5).Formula: saved = True
+    loads.Cells(2, 1).Value2 = "TEST_SHARED_OUTPUT": id.Value2 = "TEST_SHARED_OUTPUT"
+    TestAssertTrue stats, "output.config.IDdynamicPositive", id.Validation.Value
+    loads.Cells(2, 1).Value2 = "TEST_SHARED_CHANGED"
+    TestAssertTrue stats, "output.config.IDdynamicNegative", Not id.Validation.Value
+    display.Cells(1, 1).Value2 = "TEST_PROFILE_DIRECT": loads.Cells(2, 5).Value2 = "TEST_PROFILE_DIRECT"
+    TestAssertTrue stats, "output.config.profileDynamicPositive", loads.Cells(2, 5).Validation.Value
+    display.Cells(1, 1).Value2 = "TEST_PROFILE_CHANGED"
+    TestAssertTrue stats, "output.config.profileDynamicNegative", Not loads.Cells(2, 5).Validation.Value
+    GoTo Restore
+Failed:
+    TestAssertTrue stats, "output.config.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    If saved Then
+        id.Formula = savedID: loads.Cells(2, 1).Formula = savedSourceID
+        display.Cells(1, 1).Formula = savedProfile: loads.Cells(2, 5).Formula = savedAssigned
+    End If
     On Error GoTo 0
 End Sub

@@ -81,63 +81,64 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' обновление реестра не перестраивает Config и не требует таблиц геометрии.
+' Обновление реестра меняет только встроенный список, без служебных ячеек и таблиц геометрии.
 Public Function RunRecipeTypeListTests() As String
-    Dim config As Object, saved As Variant, expected As Variant, list As Object, ids As Variant
-    Dim originalList As String, originalCircle As String, brokenCircle As String, i As Long, count As Long, code As Long
+    Dim config As Object, system As Object, typeKey As Object, typeCell As Object, saved As Variant, expected As Variant
+    Dim ids As Variant, choices As String, originalValidation As String, originalCircle As String, brokenCircle As String
+    Dim i As Long, count As Long, code As Long, absent As Boolean, unused As Object
     Dim calculation As Long, events As Boolean, updating As Boolean, alerts As Boolean
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = ""
     calculation = Application.Calculation: events = Application.EnableEvents
     updating = Application.ScreenUpdating: alerts = Application.DisplayAlerts
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
-    originalList = ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo
+    Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange
+    For i = 2 To system.Rows.Count
+        If CStr(system.Cells(i, 1).Value2) = "Geometry.Type" Then Set typeKey = system.Cells(i, 1): Set typeCell = system.Cells(i, 2)
+    Next i
+    If typeCell Is Nothing Then Err.Raise 5, "RunRecipeTypeListTests", "Geometry.Type отсутствует в тестовой книге."
+    originalValidation = typeCell.Validation.Formula1
     originalCircle = ThisWorkbook.Names("rngCircleGeometry").RefersTo
-    Set list = ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange
     ids = RegisteredSectionRecipeTypes: count = UBound(ids) - LBound(ids) + 1
+    choices = Join(ids, CStr(Application.International(xlListSeparator)))
     Application.Calculation = xlCalculationManual: Application.EnableEvents = False
     Application.ScreenUpdating = False: Application.DisplayAlerts = False
-    ThisWorkbook.Names("rngCircleGeometry").RefersTo = "=#REF!" ' Даже повреждённая чужая таблица не участвует в обновлении списка.
+    ThisWorkbook.Names("rngCircleGeometry").RefersTo = "=#REF!" ' Повреждённая таблица геометрии не нужна обновлению списка.
     brokenCircle = ThisWorkbook.Names("rngCircleGeometry").RefersTo
-    list.Value2 = "stale choice": expected = config.Formula
-    modSectionRecipeSetup.UpdateSectionRecipeTypes
-    TestCheck "types.config.outside.list", TestSameConfigOutsideTypeList(config, expected, list.Resize(count, 1))
-    TestCheck "types.current.selection", TestSameConfigOutsideTypeList(config, saved, list.Resize(count, 1))
+    typeCell.Validation.Delete: typeCell.Validation.Add xlValidateList, xlValidAlertStop, xlBetween, "stale choice"
+    expected = config.Formula: modSectionRecipeSetup.UpdateSectionRecipeTypes
+    TestCheck "types.config.allValuesPreserved", TestSameConfigOutsideTypeList(config, expected, Nothing)
+    TestCheck "types.current.selection", TestSameConfigOutsideTypeList(config, saved(0), Nothing)
+    TestCheck "types.sectionInputsPreserved", TestSameConfigOutsideTypeList(ThisWorkbook.Worksheets("Сечения").Range(CStr(saved(1))), saved(2), Nothing)
     TestCheck "types.unrelated.name", ThisWorkbook.Names("rngCircleGeometry").RefersTo = brokenCircle
-    For i = 1 To count: TestCheck "types.registered." & CStr(i), list.Cells(i, 1).Value2 = ids(LBound(ids) + i - 1): Next i
+    TestCheck "types.inline", Left$(typeCell.Validation.Formula1, 1) <> "="
+    TestCheck "types.registered.all", Replace$(typeCell.Validation.Formula1, ";", ",") = Replace$(choices, ";", ",")
+    TestCheck "types.dropdown", typeCell.Validation.Type = xlValidateList And typeCell.Validation.InCellDropdown
+    On Error Resume Next
+    Set unused = ThisWorkbook.Names("rngSectionRecipeTypes"): absent = Err.Number <> 0: Err.Clear
+    On Error GoTo Failed
+    TestCheck "types.noHelperName", absent
     TestCheck "types.state.success", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
     expected = config.Formula: modSectionRecipeSetup.UpdateSectionRecipeTypes
-    TestCheck "types.idempotent", TestSameConfigOutsideTypeList(config, expected, Nothing)
-    list.Cells(count, 1).ClearContents ' Сокращённый список расширяется только на свободные ячейки своего столбца.
-    ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=" & list.Resize(count - 1, 1).Address(True, True, xlA1, True)
-    modSectionRecipeSetup.UpdateSectionRecipeTypes
-    TestCheck "types.grow", ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange.Rows.Count = count And list.Cells(count, 1).Value2 = ids(UBound(ids))
-    ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=" & list.Resize(count - 1, 1).Address(True, True, xlA1, True) ' Занятое продолжение отклоняется до записи значений и имени.
-    list.Cells(count, 1).Value2 = "user data": expected = config.Formula
-    On Error Resume Next
-    modSectionRecipeSetup.UpdateSectionRecipeTypes: code = Err.Number: Err.Clear
-    On Error GoTo Failed
-    TestCheck "types.occupied.rejected", code <> 0
-    TestCheck "types.occupied.data", TestSameConfigOutsideTypeList(config, expected, Nothing)
-    TestCheck "types.occupied.name", ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange.Rows.Count = count - 1
-    TestCheck "types.state.failure", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
-    ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=" & list.Resize(count + 1, 1).Address(True, True, xlA1, True) ' Лишняя запись удаляется только из принадлежащего списку диапазона.
-    list.Cells(count + 1, 1).Value2 = "removed type": modSectionRecipeSetup.UpdateSectionRecipeTypes
-    TestCheck "types.shrink", ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange.Rows.Count = count And IsEmpty(list.Cells(count + 1, 1).Value2)
-    expected = config.Formula: ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=#REF!": code = 0
+    TestCheck "types.idempotent", TestSameConfigOutsideTypeList(config, expected, Nothing) And Replace$(typeCell.Validation.Formula1, ";", ",") = Replace$(choices, ";", ",")
+    typeKey.Value2 = "Missing.Geometry.Type": expected = config.Formula
     On Error Resume Next
     modSectionRecipeSetup.UpdateSectionRecipeTypes: code = Err.Number: Err.Clear
     On Error GoTo Failed
     TestCheck "types.missing.rejected", code <> 0
     TestCheck "types.missing.data", TestSameConfigOutsideTypeList(config, expected, Nothing)
+    TestCheck "types.state.failure", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
     GoTo Restore
 Failed:
     TestCheck "types.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Restore:
     On Error Resume Next
-    If Len(originalList) > 0 Then ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = originalList
     If Len(originalCircle) > 0 Then ThisWorkbook.Names("rngCircleGeometry").RefersTo = originalCircle
     If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
+    If Not typeCell Is Nothing And Len(originalValidation) > 0 Then
+        typeCell.Validation.Delete: typeCell.Validation.Add xlValidateList, xlValidAlertStop, xlBetween, originalValidation
+        typeCell.Validation.IgnoreBlank = False: typeCell.Validation.InCellDropdown = True
+    End If
     Application.Calculation = calculation: Application.EnableEvents = events
     Application.ScreenUpdating = updating: Application.DisplayAlerts = alerts
     On Error GoTo 0

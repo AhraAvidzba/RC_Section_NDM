@@ -433,7 +433,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     TestAssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
-        "AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
+        "Output.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
         "AutoCAD.Export.PrincipalAxesMode", "AutoCAD.Export.LoadPointEnabled", _
         "AutoCAD.Export.ContourEnabled", "AutoCAD.Export.LabelMode", _
         "AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
@@ -446,7 +446,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     TestAssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
-        "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", "Plot.LoadCase", _
+        "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", "Output.CombinationMode", _
         "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.ResultLabelSpacing", _
         "Plot.NeutralLineEnabled", "Plot.PrincipalAxesMode", "Plot.LoadApplicationPointEnabled", _
         "Plot.AxisLabelsEnabled", "Plot.AxisLabelsFontSize", _

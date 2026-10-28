@@ -63,7 +63,7 @@ Public Function TestRunFocusedAcceptanceCases(ByVal shapeName As String, ByVal g
     TestSetSystemSetting "SLS.Crack.Code", "SP35"
     TestSetSystemSetting "Plot.Enabled", "Yes"
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    TestSetSystemSetting "Plot.LoadCase", "Worst"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
     TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
     TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
     TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"

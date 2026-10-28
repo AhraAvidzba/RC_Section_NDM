@@ -1,0 +1,33 @@
+{
+  "Status": "COMPLETE_DIRECTED_TASK",
+  "Requirements": {
+    "NoEmptyImport": true,
+    "OneSelectorForPlotAndExport": true,
+    "ExplicitWorstUserAndSeparateID": true,
+    "DirectVisibleCombinationAndProfileLists": true,
+    "NoHiddenHelperLists": true,
+    "ThreeSubsectionsWithApprovedTitles": true,
+    "ModeCriterionIDOrder": true,
+    "SharedNativeHeaderStyles": true,
+    "UserClarificationsApplied": true,
+    "MainAndReadyWorst": true,
+    "BuildSourcesAndNativeLayoutSynchronized": true,
+    "HelpGuideCommentsUpdated": true,
+    "UserDataAndReadyResultsPreserved": true,
+    "ActualAllCode175Plus6": true
+  },
+  "AcceptanceSHA256": "CC5765772D2933E76CB8C85EC6BDE0916BEA70850544798F288FA196B4E2AB77",
+  "PassedAssertions": 39269,
+  "FailedAssertions": 0,
+  "PublicationSHA256": "84F30577FE5EC10FCA42545F751469E7F72D43DDAFA295DC89E095CE2F8613A8",
+  "OwnClosuresSHA256": "FF5D9559D3F1075F123FEDE8E96E8F30B74C41254E86BFC4996D42AC83DE8DC4",
+  "ReportSHA256": "16DCE46BE3225ACDDD7738660B21EC940EC1E2493F2D58727965F7004F1FB27A",
+  "ProgressSHA256": "02AC7F0F99BC5EEB229393D106152E7184D4CCC4D334B857450AA2AC4FE35556",
+  "OldFailedProbeRetained": true,
+  "NewFullRunStarted": false,
+  "NewFullPassClaimed": false,
+  "NdMUnchanged": "PAUSED",
+  "FeatureBranch": "codex/unified-output-combination",
+  "MainMergePendingUserAgreement": true,
+  "ForeignExecutionReportsAndOutputsExcluded": true
+}

@@ -1160,12 +1160,12 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет DirectState-сценарий без определяющего сочетания по прочности.
-' При Plot.LoadCase = Worst схема должна показать первый рассчитанный LC из
+' При Output.CombinationMode = Worst схема должна показать первый рассчитанный LC из
 ' Results, а не оставлять AutoCAD-preview и не очищаться до пустого окна.
 Private Sub TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC(ByRef stats As TUiTestStats)
     TestPrepareCircleInput
     TestSetSystemSetting "Geometry.Source", "Generated"
-    TestSetSystemSetting "Plot.LoadCase", "Worst"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
 
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
@@ -1182,7 +1182,7 @@ End Sub
 Private Sub TestProfileDrivenPlotUsesSnapshotState(ByRef stats As TUiTestStats)
     TestPrepareCircleInput
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    TestSetSystemSetting "Plot.LoadCase", "Worst"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
 
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
@@ -1216,7 +1216,7 @@ Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats
     End If
     TestPrepareCircleInput
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
-    TestSetSystemSetting "Plot.LoadCase", "LC1"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC1"
 
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
@@ -1496,7 +1496,7 @@ Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     TestSetSystemSetting "SLS.Crack.PsiMode", "Auto"
     TestSetSystemSetting "SLS.Crack.Allowable", "0.000001"
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
-    TestSetSystemSetting "Plot.LoadCase", "LC_FULL_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC_FULL_01"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -1680,7 +1680,7 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     TestSetSystemSetting "SLS.Crack.PsiMode", "Auto"
     TestSetSystemSetting "SLS.Crack.Allowable", "0.000001"
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    TestSetSystemSetting "Plot.LoadCase", "LC_BIG_01"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC_BIG_01"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -1991,7 +1991,7 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     TestSetSystemSetting "General.WorstCombinationCriterion", "StrengthCapacity"
     TestSetSystemSetting "Capacity.SolutionStrategy", "Auto"
     TestSetSystemSetting "Capacity.MaxLambda", "1024"
-    TestSetSystemSetting "Plot.LoadCase", "Worst"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "Worst"
     TestSetProfileSetting "PR1", "Calculation.Strength.DirectState", "Yes"
     TestSetProfileSetting "PR1", "Calculation.Strength.Capacity", "Yes"
     TestSetProfileSetting "PR1", "Calculation.Crack.Width", "No"
@@ -2388,36 +2388,15 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Подготавливает круговой fixture и проверяет реальную validation выбора LC для AutoCAD.
-' Список должен содержать Worst/LC1 и ссылаться на формулы, а не быть статической строкой.
+' Проверяет единый прямой список ID, который используют схема и AutoCAD.
 Private Function TestAutoCADCombinationValidationIsDynamic() As Boolean
-    On Error GoTo Failed
-    TestPrepareCircleInput
-
-    Dim settings As Object
-    Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
-    Dim rowIndex As Long
-    For rowIndex = 2 To settings.Rows.Count
-        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), "AutoCAD.Export.CombinationID", vbTextCompare) = 0 Then
-            Dim formulaText As String
-            formulaText = CStr(settings.Cells.Item(rowIndex, 2).Validation.Formula1)
-            If Left$(formulaText, 1) <> "=" Then Exit Function
-
-            Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
-            listRange.Calculate ' Данные сочетаний изменены тестом; обновляем формулы списка и при ручном пересчёте.
-            TestAutoCADCombinationValidationIsDynamic = (CStr(listRange.Cells.Item(1, 1).Value2) = "Worst" And _
-                CStr(listRange.Cells.Item(2, 1).Value2) = "LC1" And listRange.Cells.Item(2, 1).HasFormula)
-            Exit Function
-        End If
-    Next rowIndex
-Failed:
+    TestAutoCADCombinationValidationIsDynamic = TestLoadCaseValidationIsDynamicForSetting("Output.CombinationID")
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Применяет ту же проверку динамического списка к селектору LC Excel-схемы.
 Private Function TestPlotLoadCaseValidationIsDynamic() As Boolean
-    TestPlotLoadCaseValidationIsDynamic = TestLoadCaseValidationIsDynamicForSetting("Plot.LoadCase")
+    TestPlotLoadCaseValidationIsDynamic = TestLoadCaseValidationIsDynamicForSetting("Output.CombinationID")
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -2438,9 +2417,9 @@ Private Function TestLoadCaseValidationIsDynamicForSetting(ByVal settingKey As S
 
             Dim listRange As Object
             Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
-            listRange.Calculate ' Данные сочетаний изменены тестом; обновляем формулы списка и при ручном пересчёте.
-            TestLoadCaseValidationIsDynamicForSetting = (CStr(listRange.Cells.Item(1, 1).Value2) = "Worst" And _
-                CStr(listRange.Cells.Item(2, 1).Value2) = "LC1" And listRange.Cells.Item(2, 1).HasFormula)
+            Dim loads As Object: Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+            TestLoadCaseValidationIsDynamicForSetting = (listRange.Address = loads.Cells(2, 1).Resize(loads.Rows.Count - 1, 1).Address And _
+                CStr(listRange.Cells.Item(1, 1).Value2) = "LC1" And Not listRange.Cells.Item(1, 1).HasFormula)
             Exit Function
         End If
     Next rowIndex
@@ -3555,8 +3534,8 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Список сочетаний должен содержать вычисленные формулами названия всех профилей.
-' Смена имени профиля обновляет список без изменения VBA.
+' ProfileId ссылается непосредственно на горизонтальную строку имён профилей.
+' Смена имени видна в списке без служебной копии, формулы и обновления VBA.
 Private Function TestLoadProfileValidationUsesDisplayNames() As Boolean
     On Error GoTo Failed
 
@@ -3578,10 +3557,11 @@ Private Function TestLoadProfileValidationUsesDisplayNames() As Boolean
     Next displayRow
     If displayRow > profiles.Rows.Count Then Exit Function
 
-    Dim i As Long
-    For i = 1 To listRange.Cells.Count
-        If Not CBool(listRange.Cells.Item(i, 1).HasFormula) Then Exit Function
-        If CStr(listRange.Cells.Item(i, 1).Value2) <> CStr(profiles.Cells.Item(displayRow, i + 2).Value2) Then Exit Function
+    Dim i As Long, count As Long: count = profiles.Columns.Count - 3
+    If listRange.Address <> profiles.Cells(displayRow, 3).Resize(1, count).Address Then Exit Function
+    If listRange.Rows.Count <> 1 Or listRange.Columns.Count <> count Then Exit Function
+    For i = 1 To count
+        If CStr(listRange.Cells.Item(1, i).Value2) <> CStr(profiles.Cells.Item(displayRow, i + 2).Value2) Then Exit Function
     Next i
     TestLoadProfileValidationUsesDisplayNames = True
     Exit Function
@@ -3668,7 +3648,7 @@ Private Sub TestPrepareCircleInput()
     TestFixtureResetReinforcement "Circle"
     TestSetSystemSetting "Circle.Diameter", "300"
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    TestSetSystemSetting "Plot.LoadCase", "LC1"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC1"
     TestSetSystemSetting "Rebar.AxisDistance", "40"
     TestSetSystemSetting "Rebar.Count", "8"
     TestSetSystemSetting "Rebar.Diameter", "20"
@@ -3705,7 +3685,7 @@ Private Sub TestPrepareRectanglesInput()
     TestFixtureResetReinforcement "Rectangles"
     TestSetSystemSetting "Rectangles.SectionType", "TwoRect"
     TestSetSystemSetting "Rectangles.UpperOffsetX", "0"
-    TestSetSystemSetting "Plot.LoadCase", "LC_L"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC_L"
     TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "40"
     TestSetSystemSetting "Mesh.StepY", "40"
@@ -3799,7 +3779,7 @@ Private Sub TestPrepareUserRectanglesMomentUltimateInput()
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
     TestSetSystemSetting "Load.ReferenceOffsetX", "0"
     TestSetSystemSetting "Load.ReferenceOffsetY", "0"
-    TestSetSystemSetting "Plot.LoadCase", "LC_MX"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC_MX"
     TestSetSystemSetting "General.ExecutionReportEnabled", "No"
 
     TestSetSystemSetting "Rectangles.H1", "550"
@@ -3851,7 +3831,7 @@ Private Sub TestPrepareUserRectanglesAxialTensionInput()
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
     TestSetSystemSetting "Load.ReferenceOffsetX", "0"
     TestSetSystemSetting "Load.ReferenceOffsetY", "0"
-    TestSetSystemSetting "Plot.LoadCase", "LC_OVER"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC_OVER"
     TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
 
     TestSetSystemSetting "Rectangles.H1", "550"
@@ -4377,7 +4357,7 @@ Private Sub TestAudit02SavedResultsIgnoreMaterialChanges(ByRef stats As TUiTestS
     Set beforeStress = New CSectionPlotDataReader
     TestSetProfileSetting "PR2", "Visualization.Quantity", "Stress"
     beforeStress.LoadFromWorkbook ThisWorkbook, settings
-    TestSetSystemSetting "AutoCAD.Export.CombinationID", "LC1"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC1"
     Dim beforeExport As String
     beforeExport = Audit02ReadExportSnapshotForTests(ThisWorkbook)
     Dim beforeStrain As CSectionPlotDataReader
@@ -7113,7 +7093,7 @@ End Sub
 ' может менять физическую геометрию, уже сохраненную с собственной размерностью.
 Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     Dim fixture As Object, sheet As Object, anchor As Object, properties As Object, source As Object
-    Dim data As Variant, prop(1 To 8, 1 To 4) As Variant, configuration(1 To 2, 1 To 3) As Variant
+    Dim data As Variant, prop(1 To 8, 1 To 4) As Variant, configuration(1 To 3, 1 To 3) As Variant
     Dim results(1 To 3, 1 To 7) As Variant, operation As Variant
     Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, model As CSectionModel
     Dim unitIndex As Long, position As Long, field As Variant, badValue As Variant, prefix As String, badIndex As Long
@@ -7144,9 +7124,10 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     properties.Resize(8, 4).Value2 = prop
     fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Snapshot!" & properties.Address
     configuration(1, 1) = "Параметр": configuration(1, 2) = "Значение": configuration(1, 3) = "Комментарий"
-    configuration(2, 1) = "Plot.LoadCase": configuration(2, 2) = "LATE"
-    sheet.Range("AO5").Resize(2, 3).Value2 = configuration
-    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("AO5").Resize(2, 3)
+    configuration(2, 1) = "Output.CombinationID": configuration(2, 2) = "LATE"
+    configuration(3, 1) = "Output.CombinationMode": configuration(3, 2) = "User"
+    sheet.Range("AO5").Resize(3, 3).Value2 = configuration
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("AO5").Resize(3, 3)
     Set reader = New CSectionPlotDataReader
     Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     sheet.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Value2 = source.Value2
@@ -7409,7 +7390,7 @@ Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
     Dim bad As Variant, badIndex As Long, mode As Long, code As Long, reason As String, prefix As String
     Dim baseline As Variant, actual As Variant, values As Variant, keys As Variant, badValues As Variant
     Dim props(1 To 22, 1 To 4) As Variant, results(1 To 3, 1 To 7) As Variant
-    Dim configuration(1 To 2, 1 To 3) As Variant, solveCount As Long, cases As Long
+    Dim configuration(1 To 3, 1 To 3) As Variant, solveCount As Long, cases As Long
     On Error GoTo Failed
     solveCount = SectionEquilibriumSolveCount()
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -7509,9 +7490,10 @@ Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
     sheet.Range("R35").Resize(3, 7).Value2 = results
     fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=ReadLifecycle!$R$35"
     configuration(1, 1) = "Параметр": configuration(1, 2) = "Значение": configuration(1, 3) = "Комментарий"
-    configuration(2, 1) = "Plot.LoadCase": configuration(2, 2) = "LIFE"
-    sheet.Range("AO70").Resize(2, 3).Value2 = configuration
-    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("AO70").Resize(2, 3)
+    configuration(2, 1) = "Output.CombinationID": configuration(2, 2) = "LIFE"
+    configuration(3, 1) = "Output.CombinationMode": configuration(3, 2) = "User"
+    sheet.Range("AO70").Resize(3, 3).Value2 = configuration
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("AO70").Resize(3, 3)
     Set reader = New CSectionPlotDataReader
     keys = Array("Bounds.MinX", "Bounds.MaxX", "Bounds.MinY", "Bounds.MaxY", _
         "Concrete.CentroidX", "Concrete.CentroidY", "Concrete.PrincipalAngle", _
@@ -8853,7 +8835,7 @@ Public Function RunTestAnnotationReadBenchmark() As String
     sheet.Range("R5").Resize(2, 4).Value2 = properties
     fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="='AnnotationBench'!$R$5"
     configuration(1, 1) = "Параметр": configuration(1, 2) = "Значение": configuration(1, 3) = "Комментарий"
-    configuration(2, 1) = "Plot.LoadCase": configuration(2, 2) = "Worst"
+    configuration(2, 1) = "Output.CombinationID": configuration(2, 2) = "Worst"
     sheet.Range("AO5").Resize(2, 3).Value2 = configuration
     Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("AO5").Resize(2, 3)
     Set anchor = sheet.Range("A30")
@@ -9365,7 +9347,7 @@ Private Sub TestFullPlotStateIntegrity(ByRef stats As TUiTestStats)
             changedProperties = properties: changedStates = states
             plotCase = "LC1": plotState = "CapacityState": expected = vbObjectError + 4703
             TestFullPlotChangeFixture changedProperties, changedStates, CStr(item), plotCase, plotState, expected
-            TestSetSystemSetting "Plot.LoadCase", plotCase: TestSetProfileSetting "PR1", "Visualization.State", plotState
+            modTestPlotConfig.TestSetOutputCombination ThisWorkbook, plotCase: TestSetProfileSetting "PR1", "Visualization.State", plotState
             If CStr(storage) = "File" Then
                 Set changed = TestFullPlotCopySnapshot(original, propertyKey, changedProperties, changedStates)
                 store.SaveFile ThisWorkbook, changed: store.LinkFile ThisWorkbook

@@ -44,7 +44,7 @@ try {
 Public Function TestAudit02PrepareReopenFixture() As String
     TestPrepareCircleInput
     TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
-    TestSetSystemSetting "AutoCAD.Export.CombinationID", "LC1"
+    modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC1"
     TestAudit02PrepareReopenFixture = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

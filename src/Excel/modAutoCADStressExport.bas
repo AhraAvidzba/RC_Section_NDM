@@ -247,12 +247,12 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     End If
     If Len(principalAxesMode) = 0 Then principalAxesMode = AutoCADPrincipalAxesMode(settings)
 
-    combinationID = ResolveExportCombinationID(workbook, settings.GetRequiredString("AutoCAD.Export.CombinationID"))
+    combinationID = ReadOutputCombinationID(workbook, settings)
     profileId = ReadProfileIdForLoadCase(workbook, combinationID)
     If Len(profileId) = 0 Then Err.Raise vbObjectError + 4366, "ReadResultsExportState", _
-        settings.InputErrorMessage("AutoCAD.Export.CombinationID", _
+        settings.InputErrorMessage("Output.CombinationID", _
             "В сохраненных Results не найдено сочетание " & combinationID & " с расчетным профилем.", _
-            "Выберите Worst или ID сохраненного сочетания; для новых нагрузок сначала выполните расчет.")
+            "Выберите Output.CombinationMode = Worst либо User и ID сохранённого сочетания; для новых нагрузок сначала выполните расчёт.")
     Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
     Dim profiles As CCalculationProfileCatalog
@@ -568,12 +568,6 @@ Private Function ExportCombinationHasCrackWidth(ByVal combinationID As String) A
 Failed:
 End Function
 
-' Читает определяющее сочетание из готовой сводки. Если оно не указано,
-' вызывающий код выберет другое сочетание среди сохранённых результатов.
-Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
-    ReadGoverningCombinationID = ReadSavedWorstCombinationID(workbook)
-End Function
-
 ' Добавляет фактический адрес именованной таблицы к повреждённому полю снимка.
 ' Проверка значения общая со схемой; адаптер не назначает новый инженерный статус.
 Private Sub RejectExportSnapshotMetadata(ByVal workbook As Object, ByVal row As Long, ByVal column As Long, ByVal field As String)
@@ -583,66 +577,6 @@ Private Sub RejectExportSnapshotMetadata(ByVal workbook As Object, ByVal row As 
         anchor.Offset(row - 1, column - 1).Address(False, False) & ") содержит недопустимое значение. " & _
         "Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка."
 End Sub
-
-' Разрешает Worst через сохраненную сводку/таблицы либо принимает точный LC ID.
-' Пустой выбор и отсутствие рассчитанных сочетаний отклоняются явно.
-Private Function ResolveExportCombinationID(ByVal workbook As Object, ByVal settingValue As String) As String
-    Dim valueText As String
-    valueText = Trim$(settingValue)
-    If Len(valueText) = 0 Then Err.Raise vbObjectError + 4357, "ResolveExportCombinationID", _
-        "AutoCAD.Export.CombinationID должен быть Worst или точным CombinationID из Results."
-
-    If StrComp(valueText, "Worst", vbTextCompare) = 0 Then
-        ResolveExportCombinationID = ReadGoverningCombinationID(workbook)
-        If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstCalculatedLoadCaseFromResults(workbook)
-        If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstLoadCaseFromSectionProperties(workbook)
-        If Len(ResolveExportCombinationID) = 0 Then Err.Raise vbObjectError + 4358, "ResolveExportCombinationID", _
-            "В Results не найдено рассчитанное сочетание для AutoCAD.Export.CombinationID = Worst."
-    Else
-        ResolveExportCombinationID = valueText
-    End If
-End Function
-
-' Возвращает первое сочетание из свойств Results, если определяющее сочетание
-' не указано и таблица результатов элементов пуста. Наличие выбранного
-' Visualization.State у этого сочетания проверяется отдельно.
-Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String
-    On Error GoTo Failed
-    Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
-    If Not HasResultTableRows(data) Then Exit Function
-
-    Dim colLoadCase As Long
-    colLoadCase = ResultColumn(data, "LoadCase")
-
-    Dim rowIndex As Long, candidateID As String
-    For rowIndex = 2 To UBound(data, 1)
-        candidateID = Trim$(SafeText(data(rowIndex, colLoadCase)))
-        If Len(candidateID) > 0 And StrComp(candidateID, "ALL", vbTextCompare) <> 0 Then
-            FirstLoadCaseFromSectionProperties = candidateID: Exit Function
-        End If
-    Next rowIndex
-Failed:
-End Function
-
-' Возвращает первое сочетание с сохранёнными результатами элементов.
-' Как и для схемы Excel, используется при отсутствии определяющего сочетания в сводке.
-Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
-    On Error GoTo Failed
-    Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
-    If Not HasResultTableRows(data) Then Exit Function
-
-    Dim colLoadCase As Long
-    colLoadCase = ResultColumn(data, "LoadCase")
-
-    Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1)
-        FirstCalculatedLoadCaseFromResults = Trim$(SafeText(data(rowIndex, colLoadCase)))
-        If Len(FirstCalculatedLoadCaseFromResults) > 0 Then Exit Function
-    Next rowIndex
-Failed:
-End Function
 
 ' Строит в активном чертеже геометрию, подписи, оси и нейтральную линию
 ' по сохранённым Results. Размеры элементов берёт из результатов расчёта;
