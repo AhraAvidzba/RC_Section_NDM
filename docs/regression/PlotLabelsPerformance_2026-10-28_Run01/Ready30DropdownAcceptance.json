@@ -1,0 +1,104 @@
+﻿{
+    "Status":  "PASS_SAVED_READY_NATIVE_DROPDOWNS",
+    "Choices":  [
+                    {
+                        "Key":  "Geometry.Type",
+                        "Address":  "$B$26",
+                        "NativeFormula1":  "Circle;Rectangles;PointedSection;HollowRectangle",
+                        "Options":  [
+                                        "Circle",
+                                        "Rectangles",
+                                        "PointedSection",
+                                        "HollowRectangle"
+                                    ],
+                        "EachOptionAccepted":  true,
+                        "JoinedCommaRejected":  true,
+                        "JoinedSemicolonRejected":  true,
+                        "UnknownRejected":  true,
+                        "SavedPackageAlreadyReopened":  true,
+                        "SourceSeparatorNotNormalized":  true
+                    },
+                    {
+                        "Key":  "Mesh.CellGeometry",
+                        "Address":  "$B$30",
+                        "NativeFormula1":  "Adaptive;Contour",
+                        "Options":  [
+                                        "Adaptive",
+                                        "Contour"
+                                    ],
+                        "EachOptionAccepted":  true,
+                        "JoinedCommaRejected":  true,
+                        "JoinedSemicolonRejected":  true,
+                        "UnknownRejected":  true,
+                        "SavedPackageAlreadyReopened":  true,
+                        "SourceSeparatorNotNormalized":  true
+                    },
+                    {
+                        "Key":  "Mesh.StepMode",
+                        "Address":  "$B$31",
+                        "NativeFormula1":  "Auto 0.05;Auto 0.1;Auto 0.2;User",
+                        "Options":  [
+                                        "Auto 0.05",
+                                        "Auto 0.1",
+                                        "Auto 0.2",
+                                        "User"
+                                    ],
+                        "EachOptionAccepted":  true,
+                        "JoinedCommaRejected":  true,
+                        "JoinedSemicolonRejected":  true,
+                        "UnknownRejected":  true,
+                        "SavedPackageAlreadyReopened":  true,
+                        "SourceSeparatorNotNormalized":  true
+                    },
+                    {
+                        "Key":  "Results.SnapshotStorage",
+                        "Address":  "$B$8",
+                        "NativeFormula1":  "Excel;File",
+                        "Options":  [
+                                        "Excel",
+                                        "File"
+                                    ],
+                        "EachOptionAccepted":  true,
+                        "JoinedCommaRejected":  true,
+                        "JoinedSemicolonRejected":  true,
+                        "UnknownRejected":  true,
+                        "SavedPackageAlreadyReopened":  true,
+                        "SourceSeparatorNotNormalized":  true
+                    },
+                    {
+                        "Key":  "Output.CombinationMode",
+                        "Address":  "$B$17",
+                        "NativeFormula1":  "Worst;User",
+                        "Options":  [
+                                        "Worst",
+                                        "User"
+                                    ],
+                        "EachOptionAccepted":  true,
+                        "JoinedCommaRejected":  true,
+                        "JoinedSemicolonRejected":  true,
+                        "UnknownRejected":  true,
+                        "SavedPackageAlreadyReopened":  true,
+                        "SourceSeparatorNotNormalized":  true
+                    },
+                    {
+                        "Key":  "Load.ProfileID",
+                        "Address":  "$L$71",
+                        "NativeFormula1":  "=$J$39:$M$39",
+                        "Options":  [
+                                        "PR1",
+                                        "PR2",
+                                        "PR3",
+                                        "PR4"
+                                    ],
+                        "EachOptionAccepted":  true,
+                        "JoinedCommaRejected":  true,
+                        "JoinedSemicolonRejected":  true,
+                        "UnknownRejected":  true,
+                        "SavedPackageAlreadyReopened":  true,
+                        "SourceSeparatorNotNormalized":  true
+                    }
+                ],
+    "OriginalValuesRestoredInMemory":  true,
+    "WorkbookSaved":  false,
+    "SourceFileUnchanged":  true
+}

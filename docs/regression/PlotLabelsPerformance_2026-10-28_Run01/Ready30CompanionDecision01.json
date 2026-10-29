@@ -1,0 +1,1843 @@
+{
+  "Status": "HISTORICAL_COMPANION_NOT_MATCHING_NOT_PUBLISHED",
+  "Reason": "Native snapshots belong to different historical runs; SourceName and contour IEEE bits also differ. Current source code unchanged; no weakening of exact comparison.",
+  "Differences": {
+    "Tables": [
+      {
+        "Key": "rngNDMSectionGeometry",
+        "ExcelShape": [
+          1241,
+          16
+        ],
+        "FileShape": [
+          1241,
+          16
+        ],
+        "DifferingCells": 2480,
+        "FirstDifferences": [
+          {
+            "Row": 2,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 2,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_1\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 3,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 3,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_2\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 4,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 4,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_3\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 5,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 5,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_4\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 6,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 6,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_5\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 7,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 7,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_6\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 8,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 8,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_7\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 9,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 9,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_8\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 10,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 10,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_9\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 11,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 11,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_10\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 12,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 12,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_11\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 13,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 13,
+            "Column": 16,
+            "Header": {
+              "Kind": "S",
+              "Text": "ExtraData"
+            },
+            "Excel": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"CAD_CELL_12\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            },
+            "File": {
+              "Kind": "S",
+              "Text": "{\"schema\":\"1\",\"SourceName\":\"\",\"SourceHandle\":\"\",\"MaterialID\":\"1\"}"
+            }
+          },
+          {
+            "Row": 14,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          }
+        ]
+      },
+      {
+        "Key": "rngNDMElementResults",
+        "ExcelShape": [
+          114081,
+          9
+        ],
+        "FileShape": [
+          114081,
+          9
+        ],
+        "DifferingCells": 114080,
+        "FirstDifferences": [
+          {
+            "Row": 2,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 3,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 4,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 5,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 6,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 7,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 8,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 9,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 10,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 11,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 12,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 13,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 14,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 15,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 16,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 17,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 18,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 19,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 20,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 21,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 22,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 23,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 24,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 25,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 26,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          }
+        ]
+      },
+      {
+        "Key": "rngNDMSectionContours",
+        "ExcelShape": [
+          13,
+          17
+        ],
+        "FileShape": [
+          13,
+          17
+        ],
+        "DifferingCells": 24,
+        "FirstDifferences": [
+          {
+            "Row": 2,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 2,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "3FF921FB54442D18",
+              "Double": 1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "3FF921FB54442D28",
+              "Double": 1.5707963267949
+            }
+          },
+          {
+            "Row": 3,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 3,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "3FF921FB54442D18",
+              "Double": 1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "3FF921FB54442D28",
+              "Double": 1.5707963267949
+            }
+          },
+          {
+            "Row": 4,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 4,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "3FF921FB54442D18",
+              "Double": 1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "3FF921FB54442D28",
+              "Double": 1.5707963267949
+            }
+          },
+          {
+            "Row": 5,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 5,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "3FF921FB54442D18",
+              "Double": 1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "3FF921FB54442D28",
+              "Double": 1.5707963267949
+            }
+          },
+          {
+            "Row": 6,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 6,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D18",
+              "Double": -1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D28",
+              "Double": -1.5707963267949
+            }
+          },
+          {
+            "Row": 7,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 7,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D18",
+              "Double": -1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D28",
+              "Double": -1.5707963267949
+            }
+          },
+          {
+            "Row": 8,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 8,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D18",
+              "Double": -1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D28",
+              "Double": -1.5707963267949
+            }
+          },
+          {
+            "Row": 9,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 9,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D18",
+              "Double": -1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D28",
+              "Double": -1.5707963267949
+            }
+          },
+          {
+            "Row": 10,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 10,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D18",
+              "Double": -1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D28",
+              "Double": -1.5707963267949
+            }
+          },
+          {
+            "Row": 11,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 11,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D18",
+              "Double": -1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D28",
+              "Double": -1.5707963267949
+            }
+          },
+          {
+            "Row": 12,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 12,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D18",
+              "Double": -1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D28",
+              "Double": -1.5707963267949
+            }
+          },
+          {
+            "Row": 13,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 13,
+            "Column": 14,
+            "Header": {
+              "Kind": "S",
+              "Text": "SweepAngle, rad"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D18",
+              "Double": -1.5707963267948966
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "BFF921FB54442D28",
+              "Double": -1.5707963267949
+            }
+          }
+        ]
+      },
+      {
+        "Key": "rngNDMMaterialDiagrams",
+        "ExcelShape": [
+          51,
+          11
+        ],
+        "FileShape": [
+          51,
+          11
+        ],
+        "DifferingCells": 50,
+        "FirstDifferences": [
+          {
+            "Row": 2,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 3,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 4,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 5,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 6,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 7,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 8,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 9,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 10,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 11,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 12,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 13,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 14,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 15,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 16,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 17,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 18,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 19,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 20,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 21,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 22,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 23,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 24,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 25,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          },
+          {
+            "Row": 26,
+            "Column": 1,
+            "Header": {
+              "Kind": "S",
+              "Text": "RunID"
+            },
+            "Excel": {
+              "Kind": "D",
+              "Bits": "40E69E75672894AB",
+              "Double": 46323.66884259259
+            },
+            "File": {
+              "Kind": "D",
+              "Bits": "40E69E7569D0369D",
+              "Double": 46323.66916666667
+            }
+          }
+        ]
+      },
+      {
+        "Key": "rngNDMElementGeometry",
+        "ExcelShape": [
+          1,
+          18
+        ],
+        "FileShape": [
+          1,
+          18
+        ],
+        "DifferingCells": 0,
+        "FirstDifferences": []
+      }
+    ],
+    "ConsumersExact": true,
+    "ExcelPrefix": "",
+    "FilePrefix": "40E69E7569D0369D|401C3C0000000000"
+  },
+  "ArchiveFileSHA256": "F28AF06A9032099093651AE357B0BC1F25B82035FBEC67BD1D6FA4ACCD32DED9",
+  "NativeCurrentReaderLoadedSuccessfully": true,
+  "CanonicalReadyMode": "Excel",
+  "RequiredByLastBookCodeUpdate": false,
+  "Published": false
+}

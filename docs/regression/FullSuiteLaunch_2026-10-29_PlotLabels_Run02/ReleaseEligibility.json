@@ -1,0 +1,895 @@
+{
+  "Ready": true,
+  "AtUTC": "2026-10-29T00:38:16.0155855+00:00",
+  "AllOwnClosed": true,
+  "OwnIdentities": [
+    {
+      "PID": 1240,
+      "Name": "powershell",
+      "StartTicksUTC": "639288178795120695",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 20700,
+      "Name": "powershell",
+      "StartTicksUTC": "639288178791212334",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 20908,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288178843794877",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 23904,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288225715359395",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 20716,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288228429109352",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 7552,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288228641712270",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 992,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288231720477632",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 22676,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288231963365301",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 21208,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288233290259422",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 23800,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288279030801266",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 10120,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288281695307668",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 10168,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288281907488985",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 23508,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288284938516052",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 2216,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288285190814939",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 15288,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288286755095566",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 3484,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288287199156776",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 8504,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288287644127579",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 25520,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288288088798785",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 7580,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288288576279546",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 22364,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288289112379965",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 13444,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288289642535381",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 19448,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288290110676540",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 18840,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288290574879756",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 23852,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288291148485744",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 15388,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288291610907372",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 19228,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288291988367205",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 9748,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288292379323732",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 9868,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288292739106007",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 2088,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288293097041003",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 15704,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288293444227032",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 19760,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288293817251856",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 25360,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288294168118105",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 7000,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288294523305424",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 288,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288294611096505",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 17260,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288294691863210",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 24764,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288294778121697",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 20708,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288294872348221",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 16016,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288294960805647",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 9716,
+      "Name": "acad",
+      "StartTicksUTC": "639288295305859665",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 12380,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288295413034441",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 24088,
+      "Name": "acad",
+      "StartTicksUTC": "639288295059576565",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 16512,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288295229814585",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 10148,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288286491928343",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 25504,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288286679391912",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 24232,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288159184847219",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 16840,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288165059222054",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 22536,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288140339638291",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 12956,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288141455382790",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 1556,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288154739478916",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 20824,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288162419329251",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 23680,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288170155275572",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 13444,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288170775087771",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 16812,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288170364522118",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 19288,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288170570720770",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 25468,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288171825371967",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 17048,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288173140884320",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 25340,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288172284937447",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 3812,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288172709767375",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 20664,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288175757034427",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 21684,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288177069574032",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 25316,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288176218761907",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 15192,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288176639706069",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 22340,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288149057430222",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 23784,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288150060187558",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 17484,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288149370269545",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 3640,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288149683118644",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 1808,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288159897845198",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 4184,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288161467516070",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 16420,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288160444553193",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 22568,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288160947008017",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 23660,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288128639701244",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 11176,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288129932039783",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 14728,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288157572868260",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 20628,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288158052095667",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 4044,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288158468383363",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 21208,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288158825034542",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 16668,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288133105171350",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 1544,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288144142459732",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 7848,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288145440960066",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 24480,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288133428540181",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 4280,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288156033304347",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 5604,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288162546506716",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 6972,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288199089097845",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 25272,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288227624031893",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 11400,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288300172676694",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 2076,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288303604979522",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 17060,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288305522705814",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    },
+    {
+      "PID": 1236,
+      "Name": "EXCEL",
+      "StartTicksUTC": "639288307905913245",
+      "State": "Absent",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false
+    }
+  ],
+  "FirstFullStatus": "REVIEW_REQUIRED",
+  "FirstFullSourceSHA256": "E70746B7171A81B570F9E10B50ACBE28704B6FB95DA9B92F46759F3F6DF43ECA",
+  "PrimaryLogsReviewed": true,
+  "SourceEquality": true,
+  "CleanRebuild": true,
+  "CandidateBookSHA256": "0DA6EBCA2E8A21CD12E484E665CF20C9111A6FEC5344F19E3BB0EBB0D2A9D56A",
+  "CandidateAllCodeSHA256": "F5C82C8FE1B21734586AE8301428913841EED144669437D91931B2B25C3A2605",
+  "AnyProcessClosed": false
+}

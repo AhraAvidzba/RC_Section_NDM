@@ -1,0 +1,1747 @@
+{
+  "Archive": "ReviewedRun02.zip",
+  "Bytes": 3202195,
+  "SHA256": "A285C85A76E235F5E01ED5FABEF91594226645659DA1E14AA01E5F495D06E252",
+  "Entries": [
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CompleteCurrentAcceptance.json",
+      "Bytes": 1011,
+      "SHA256": "50027C9DA35F54499444E5F59C7113A95A08417B872C40B5A774A5FC1BB0FB67"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Completion.json",
+      "Bytes": 354,
+      "SHA256": "842C9FA1E0440634B6C80AC8C7B9DCBBA618DBC9C5E21118C8735BEC60A5A6B4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_Off.txt",
+      "Bytes": 329929,
+      "SHA256": "B48AC7F258F1A3D6A7C98A78C4BCF519AAD3C978F84D2865539E5912B9B184D3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_Off.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "8E4302042E3ADA5F6E1EEEA91F7BFA74CDE0AFF4F49B78B656E931D921D74D6E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "49BEF8E3085174F139AFE77D86E0F61D41343C924BBDA55395BF9E0686F78142"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_Off.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "DC4275CEFCFD21A1F24750A496855928E9ABD466B7D6620763DACC4E412809E5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "6CD917D37E3136204DB74BA7108E69CAC093F15D282B740ADA18D9563133A5A6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_Off.txt.stdout.log",
+      "Bytes": 1323,
+      "SHA256": "D86912E7618A9B5FDD07C5A36193699B9ABEDA77B16E5F8344456B5091D3301D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_On.txt",
+      "Bytes": 329179,
+      "SHA256": "DCCAF060A8575ED9125755934726F1F451B07373FA2942560084CC9E3E1C9F29"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_On.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "77C48763A1EA1AB6A8A96823E7913E39BABA3512638158891E2D21ADFC408709"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "A63E7F29C294A7276FEAF32EB47D16086E875AFD410D7CA48E6E13EA7EC297B1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_On.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "4EB10A33374BFD96E6F877CC3974DA5D8A2C43CE72665C3C3660A5D4E38F2940"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "015FC71C953B8A9383663D93835D4464845F416D393872337D212B8C3D4C3E97"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/CurrentFeatures_On.txt.stdout.log",
+      "Bytes": 1337,
+      "SHA256": "AC36B3108E88413FC505B5CD6FE90CE4B0BDE5D80564420A4BD4C3E79814483E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Finalize.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Finalize.stdout.json",
+      "Bytes": 1864,
+      "SHA256": "25446AE55A671C3525BD82C80C72FE7FFB9D4CDFEA5887EEA82F6E580706B735"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Acceptance.json",
+      "Bytes": 1656,
+      "SHA256": "176F298CA4F846D0A9765DE141A2C5962CE7EC094B89AB85FFE96171BB2161F1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_No.txt",
+      "Bytes": 11506,
+      "SHA256": "8C2F4F8B6AE85CC9985BF2C12CDB17C104B84574BDC9199BA34BBC35C4D59CB8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_No.txt.memory.json",
+      "Bytes": 318,
+      "SHA256": "98E6D8819102D4F08D337E8B7ED30FEFA05A8ABFCA82D816B0F17D0EE73F31F8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "DAA658C13AD1D9E1D2FA3B7CE66E1CF2B56D44AC4A4D162C35AB50D915A527ED"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_No.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "FF76995D649640367A0E3EB07DB0BC63A5BDAC3BEC398B12E9ACF6F57582D6E7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "905F2CB4244C241D7A467600B9EFBAEC201CC1132B40D1B165FF047C161EF04B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_No.txt.stdout.log",
+      "Bytes": 567,
+      "SHA256": "8A98DB9D34EF0545724D6899A7B5C671F8AA2A4E901673A44FF00D8F4537F107"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_Yes.txt",
+      "Bytes": 11267,
+      "SHA256": "1DEB26BCBC0AEBF1205A4AC9E2732738BF53FC6B775A68FB6691BDA043AC5A0A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "AB33114F02EADD813FB92900E3334432CDA4F13E60AAC12081FBD46A385174BF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "76DDFD2BE922568E0BB3E7725F5DB74403944F7F17E3CBF19B92A1BC5C2937C8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_Yes.txt.ProcessClosure.json",
+      "Bytes": 4100,
+      "SHA256": "2C6A395AC2E448A167A94865BC74C75C5D42247564841BCA7A84DCACD5F45D82"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "87837578581AFD47E84445CA21A9D3499FCDFDEB4F34FBF225403ECBC39098F3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/AsymmetricSteel_Yes.txt.stdout.log",
+      "Bytes": 570,
+      "SHA256": "BE7737DF3815D0390798D37D33CD77332C02234D52A6C3098427FF705C2795BA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_No.txt",
+      "Bytes": 116243,
+      "SHA256": "837099B573DA904E17C4F12CC07F5A5D63CA7F78E373A5DDF92FEE2EBDE2669D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "1EEC8D3E726E1CFF530B36339E537F2D99D85AAFD862B350B706505C560CD582"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "E829C32BFC450E630D690B1D0687BFE18A8BFECBCEEE4B995C3279DB974719F9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_No.txt.ProcessClosure.json",
+      "Bytes": 7509,
+      "SHA256": "B7488C64FC99ED289ABE6404011DA1ACD76766AB7C7905F33D0996457F357A57"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "75D3E68E9ABBF9BC635A8FA60ADE022803F1720EF9E0F40EAC638B283993AE6C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_No.txt.stdout.log",
+      "Bytes": 543,
+      "SHA256": "BF2A9285247C1DDD04B619085FC4A7358EA59D0060159C25569DE27B09AD4098"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_Yes.txt",
+      "Bytes": 114545,
+      "SHA256": "AC3EA787A168BB6472088D9043765DB74ACD7A0AAFA011EE6512C5E837B987EE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_Yes.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "4A69664F73C647DC33AD080DAE3A66F0BF62E8F30825F12A9DA1CD4D44AE0CEE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "2448A0C87638A5D644924913BB1C827C9F6A76BA71B40FAAFC24ED50B0A9EA20"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "56BEB053A1EF956D7F2516FECDAEF036E8F64ED15E54ED749C28E48CA0A2D6A6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "1D83D9662267FFAFBF3148C6A387984C2E698D26A2AC3C366A5F3E805286A25F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Batch15_Yes.txt.stdout.log",
+      "Bytes": 545,
+      "SHA256": "D0D9D27DA28C0F16FD5D390D470F4F4902F94CD8A9957CD3557215F38F4D00D9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_No.txt",
+      "Bytes": 75734,
+      "SHA256": "2B7B0E345928B6FDDA51D0927538E07A238484DCA850743DE4A35711FA161588"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "A5CA020DEEC18258D60318976717D460FE02D548D853E421EF562F7307D30C5B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "297A34FB76B78EF3DD8CB33A796EF1235FE839053C215471E29FDA2B58ABFAC5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_No.txt.ProcessClosure.json",
+      "Bytes": 4093,
+      "SHA256": "0C0031F2CD6E19148938CA143257A01B06EA740AA91AFEA2E730912FBBFD602F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_No.txt.progress.txt",
+      "Bytes": 140178,
+      "SHA256": "6DA3B219FC6CE893898583D0437184B2CFEB1561095E4DE13BF1BF16AFCBA436"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "C1B3125B95C5B05F405C1722B0E27BA48872EE0E37FD655A2A40885997B80B18"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_No.txt.stdout.log",
+      "Bytes": 588,
+      "SHA256": "0B2785C529787FD4C5408617831368405F2443147794DF872517B454CA753251"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_Yes.txt",
+      "Bytes": 74255,
+      "SHA256": "A5B5246CF9EC5434DDA572C4EA0BEDE6CC294B55C2813E99F8D43ECBFB4C8C77"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_Yes.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "C4F9472C2A99CA1EBAC2F96C1388DDB7ED4EB1F33458D44770FBE28B999EEEA9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "8FDEC78DC7FFEF6B20E9259D31CE0BC4D3DC7E333E563BF2EB246A934C460260"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "AFE469A46D444CB4D4FEC92C805580AAF89C3280150FD4112FC5EF258F9AB6D4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_Yes.txt.progress.txt",
+      "Bytes": 137214,
+      "SHA256": "2D6200FB7C7D1C65EE1E1C5A74096851659403EE70B97DC786055D1A11AE944C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "A2ED789A10E2E9CF5FF35F3FBDA49FC8AB87A00E7C8643E6DF5AEDA44279777E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Circle_Generated_Yes.txt.stdout.log",
+      "Bytes": 594,
+      "SHA256": "0C7B166A9AC6CDA920A5AC99E83C121629014EE806A3980A78D8B31E0AB0265E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Combined.bas",
+      "Bytes": 24432,
+      "SHA256": "8563593A78F7155714B25095794E1EF052EFD6682140627DE06374DD9A9483F6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/CombinedAcceptance.json",
+      "Bytes": 845,
+      "SHA256": "8B680843945F4D88358990AD53577AED15B82B0765D9F9851D4451CF4F4F714D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/CoreRegressionBatchProbe.bas",
+      "Bytes": 6045,
+      "SHA256": "36B7CFB24E1CA8E49AA6FD2F953D7E3BC712A539FEE05F69737554E4A941052E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/FocusedAcceptanceProbe.bas",
+      "Bytes": 26264,
+      "SHA256": "F84263B90E613EC7C4C3A36373DC3D12994D3D8CD4F9D514ED23B9E507C65D91"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/FocusedForceBounds.bas",
+      "Bytes": 6404,
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/FocusedRunner.ps1",
+      "Bytes": 7486,
+      "SHA256": "1FE70882E03EDDEA764AEDC1538E30C8B157FA86E363C105C7485747F17775FA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/FocusedSpecialProbe.bas",
+      "Bytes": 11976,
+      "SHA256": "17EABF6A2CF8510CB94FD27E643335978C33F3F63E3B8BA8E047B1076DA8A196"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_No.txt",
+      "Bytes": 80638,
+      "SHA256": "4BA9EB570662D4C7ECC9DA6184388670E253E4CCDD0FF85EA80B0D928FD36650"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "D8CF16CF0739AAB0BF61A23328FE0B19C42916D0A708A0A71C46EB41A3A015FD"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "4F6038180D27C28356878B012FA223A0663A5BA091E062855FA12A27B593F2B7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "948AA4466079EC328885844F31F21E4DB17A0DAD44C73EA4CA42D07A32852AED"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_No.txt.progress.txt",
+      "Bytes": 149958,
+      "SHA256": "33D135F80796B85A5860E160430580D77676278B8AE35C695784F247AB2DEFCA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "8862CDA47B3489D0B9843D3C3A94911415E7701C85BC49F3E75A3803BE121C19"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_No.txt.stdout.log",
+      "Bytes": 601,
+      "SHA256": "D2CC65DEC064BB4087311589F45E141526E81B26F25729DB9A6E500D927BE005"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_Yes.txt",
+      "Bytes": 78888,
+      "SHA256": "3EB7D13390C54FC23F734F2D2FFB3A8B94ADF9C954BCC7CD37A6B29F27322B92"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "891ED6169703488D8688EAABE5BAEB2913C0630FC8E36674CE78FF4E9D7B9BFB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "DFB0A4CB5870632F418352F932DB1851AA4FD47AABCCE2930E084815C3438E7B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_Yes.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "CE201A7549CC43E8709DFBF8950B0247A9321E1DB01790EF3E15EDE9110B31A2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_Yes.txt.progress.txt",
+      "Bytes": 146466,
+      "SHA256": "7513C5CC84A06BC11957B10FCC11F220C992B57A04E2B2FB16AB911178C3757B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "4673A8E8B0D9FDCE0871D842C6E271264E9E970D59200DDF73A9F55EEFED3B23"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/HollowRectangle_Generated_Yes.txt.stdout.log",
+      "Bytes": 603,
+      "SHA256": "7AD8FA7A9C9CFB609FA6303A169B21FC0C2BDBAB9F95EFCBBF55F1DAA0070AD4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Independent.json",
+      "Bytes": 193473,
+      "SHA256": "EEB19A5C349BBCA3D5FEEEC8C3091E2983B26CAC0413BB17E08D9564E003EEE2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/IndependentVerifier.py",
+      "Bytes": 22901,
+      "SHA256": "25AAB7C88741D90F0A3D7BE658BE862B87DCEDEF68184F49B49E02A2D1D23C67"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Circle.txt",
+      "Bytes": 17996,
+      "SHA256": "666AD66A6381D79F4FC9E9607D32B4B645E129320B8FD16906DDA0AF6270B614"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Circle.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "0AB5CF8B8FE49A816C67A853838C287E7B40A4AEFFB748692F049BF2940CAFAB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Circle.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "A605F86B2D6AC376D9E5B13AD76BDA6282DF7DDDDA40E1D3A1E43A526CBFD598"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Circle.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "52067015E02F443FC231B67912075B2228D963C04BAA65AA2FEFD5CDEAE577E7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Circle.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "DA1A705994D9D4B35403FA55B1571A798D10C71C98C0BA2B9473D3602741D808"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Circle.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Circle.txt.stdout.log",
+      "Bytes": 480,
+      "SHA256": "F02DAA0CB1C9BBA27C7DB4AD583A4A34A6C0508FBC3C65C553D2126DE914DE51"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_HollowRectangle.txt",
+      "Bytes": 24871,
+      "SHA256": "6EB510F1AB0E369CBD0E6B26CD3E0848F502A1E01EA808EF2EDC6F2F6FFD9F27"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_HollowRectangle.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "E5C757BF10DE614F25F04646D1BA9063DE79999FAD7139202CD3F7259DC3A6D5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_HollowRectangle.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "78F6AB52A7095C6B68B527716000F22BD63824EB2C9F746256618730121E1EC9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_HollowRectangle.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "5C9C2ACA99CE013521A4C790522E453092CA52F557394CF692398723ECCC2D1C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_HollowRectangle.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "E0587FE26077B5B912E1F9C2F87CD1DF826517359F472D40016CABA796AA2BD2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_HollowRectangle.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_HollowRectangle.txt.stdout.log",
+      "Bytes": 480,
+      "SHA256": "0402F407AC87FEC6F7E0041E1C0DDC6FADB12BBEC36E9F5FDC2A8BFA75C3301D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_PointedSection.txt",
+      "Bytes": 42762,
+      "SHA256": "A0C40A3E1484BD7CC45EC378C9E5884E1F02786676B8A1197D0C4E8B206EFE35"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_PointedSection.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "08CBEA830A28B0EB7E4E249BCEC983E2CBFB37389B388F870EA99D2F1ACD4CB0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_PointedSection.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "CD5C688008BA75C2F9C8CC82D8D6DCA96CB717FBC7392B0324069B28A86634C1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_PointedSection.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "8CC52199609FDA50B4D57F03366E577D1FAF9990C933A3BD2CD52342FFB2B204"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_PointedSection.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "786B859CEEEB0C6C590ABA5CB24890F4BA970409386CDF2FEB488E2C101BD78C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_PointedSection.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_PointedSection.txt.stdout.log",
+      "Bytes": 480,
+      "SHA256": "2D3609B837E6F4722E75FEBECCAE0A12E5251C927CDC2B0C87AD8C5CFA23BECC"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Rectangles.txt",
+      "Bytes": 20317,
+      "SHA256": "13FA984BFCB933C47CDE2BEC0F3F6309E34B416688198FAEC1D0BA921B62164C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Rectangles.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "8140911B5EB139962F9694C745ABF75FB70A1087D77F266CFE6F5C3DE0EA18FE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Rectangles.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "FD87A5D3E5CDAEF8FB99C9BE03E960330BE4EBC6E72D01ABBEDBA9A55FD9147A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Rectangles.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "271C920667DE8A81C853D364D72FA7BA638A808ED0A43CE2C2AA6FFF55DE250B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Rectangles.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "A99669EB16A3D6898B985FE6D2102FB7B35F4DEEA6057914E48AFF19D8632A6F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Rectangles.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_Rectangles.txt.stdout.log",
+      "Bytes": 480,
+      "SHA256": "299EC424A8C86E022FF09533F570A7A882B4ED3AC8E22AC1BC4C76FC190FF2A1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_SavedWorkbook.txt",
+      "Bytes": 15330,
+      "SHA256": "E0EDB3EFB87BC323406AC5830EE123F9AE5B22B84F6A9259651558D3EA07824D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_SavedWorkbook.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "5D438747529C0517ED5AEAFEA0DE20EEE4C4194FC7687CBEB3387807FA59C17D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_SavedWorkbook.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "D6B3A6515371D67AA5DDD0783405B2C201071AEEE9078DDC3B17599C86FE9F2D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_SavedWorkbook.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "C19F52ED43B2E5D5B58BE4B772B8EBC0333152CBB374255A30A133A2BBB26307"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_SavedWorkbook.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "59DB1D1A4C3BF8ABA8968688601258FD718A017CA386B30739D3076892248226"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_SavedWorkbook.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Model_SavedWorkbook.txt.stdout.log",
+      "Bytes": 480,
+      "SHA256": "CF74BC509599085A666F96CFAA2226A78D9C26379DC4F904C528A63F615A0129"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/NativeRunner.ps1",
+      "Bytes": 17113,
+      "SHA256": "589EC2D913662BB72A9C060514095CEA8EF2B747B66492BB302469F5B815CB1E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/MemoryBeforeCADCOM.json",
+      "Bytes": 493,
+      "SHA256": "2868A9513B7781C3E4CA4691293CB103ECF028E29EB62E1E05223117F584B7BE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/MemoryBeforeExcel.json",
+      "Bytes": 494,
+      "SHA256": "619108D8202ABE9A86F5F7E4716FF835A87D4B885AEC322FA44FF7C0980ACF02"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.progress.txt",
+      "Bytes": 28363,
+      "SHA256": "67A7FB0D27E916FDB756B37F4C0D5BE61F2E37B8511154402BF221B04EDAECCC"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "Bytes": 31071,
+      "SHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "BDDEEA8551AE44988A1022D8E15B3CF640F8200B6DC8F927C842C7675ED4648A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+      "Bytes": 233,
+      "SHA256": "473096EDCF9598CDBD79E4B7E9423BCB7888ED9CE82911E57B228761A96998B7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+      "Bytes": 154,
+      "SHA256": "6865D106E3A7813A390684360C06413312FFF559B503B633DDB88D2C75A43632"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+      "Bytes": 590,
+      "SHA256": "72C9D70058566344F7D8C11B2B64D70E3682FF1B92BDF59A409815B6B0009090"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stdout.log",
+      "Bytes": 247,
+      "SHA256": "3186DFE3B4F30DEBB2DDD2E32344E8227C6C3032D3BF7F7813F1285637918628"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/MemoryBeforeCADCOM.json",
+      "Bytes": 495,
+      "SHA256": "0B7FADAA9AB3FD1F111F0E0A952A079EF3C459C107D427EB88141A3AB993CB2C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/MemoryBeforeExcel.json",
+      "Bytes": 494,
+      "SHA256": "280B83B3100F35157875D2099EBD7A98EABE3D8EDEAA836A532806C2B73681F4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.progress.txt",
+      "Bytes": 23152,
+      "SHA256": "426F259CB5A99EAA4520869D4DA393708BD989788797AAD61EBC08273346844D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "Bytes": 22427,
+      "SHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "D8F908B2A801BF259BB106DE2B932D33F3E5F5B5557C79E4D979C8AA9157D1DE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+      "Bytes": 233,
+      "SHA256": "06356BEA5A839C40906C1A069A6FF4600979BD4280E5F4C10955508A191BEF3C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+      "Bytes": 154,
+      "SHA256": "6B7CDB9F52F29DF4EF2CB8F5BA0FCDF1CCEED71A92662543101B9BD6FB9652A0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+      "Bytes": 588,
+      "SHA256": "D75451AC70353D4825165428E79929B492497E9059ED00474488A1781E092ABA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/stdout.log",
+      "Bytes": 247,
+      "SHA256": "1CAA70349848F0CCB3D6E5832152AD9DE941CE25FC031D9F9330467E2E892F45"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/NativeCAD/Stage.json",
+      "Bytes": 787,
+      "SHA256": "983DC98C28551D2C9E4C513B15FF115318FE8DD06276A95C363038F0A1475DBA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/OutputPresentation.txt",
+      "Bytes": 65982,
+      "SHA256": "5CF1C852E215504AF6A8D91E78AF8BA0B3EB59BA16B06BB5DEBA62F8C41450AC"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/OutputPresentation.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "5126B940A8FB5B74593F0E83B3A4B1DACEA8C2E7703D9B4AF197DF0E43E3BB46"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/OutputPresentation.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "6682A0DB74B875C80B050551D4E79E4E769EFEB4B4A3120C40D4E0A02B6FF2D7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/OutputPresentation.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "40AB864B027D9455B48730AD20A5BCAAFD42A70FE02CDE2C42F7D46C94983864"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/OutputPresentation.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "AE1ECD7E305DC3ADEE49E502D79013270217641AAA990ACA96A770318E94B081"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/OutputPresentation.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/OutputPresentation.txt.stdout.log",
+      "Bytes": 530,
+      "SHA256": "06FA09C101BCAB4D8FBE8AAE8A2AAF145BA2025BE9D90CF98BA60D0D914265B9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_No.txt",
+      "Bytes": 80221,
+      "SHA256": "DF92C1F8EA02366A0C5ED11D244611BB4E13CE42F79C4F3C89F10B1D9D0DBC3D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "5CC263FE732767887DCBEBD8C19296FAB9A549AC4189A03C0733454960F6090C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "2DAE3C7BB5F6D8BBEBD0A9EF7C7886ACD8D4581DCBBE09A9BB82E9701047D981"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "9CDF8B7B73DF9A9EFF316DC2B80928F17485ED369917B3EE9B729C22A7A484BA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_No.txt.progress.txt",
+      "Bytes": 149126,
+      "SHA256": "F95547CF130AC6E352E53297B027EA5742925A39ACB0F1FA44EA9992A5974100"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "A2040102B3D80FCC6B70FEF0CE178612246AFCAD83045F35A66E304CBD5AF8B9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_No.txt.stdout.log",
+      "Bytes": 599,
+      "SHA256": "180EA1CFB3FD26351CF454DBABAD606493C37E275C7741D6015D4A88CAD073DE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_Yes.txt",
+      "Bytes": 78461,
+      "SHA256": "56C1E9B8EC907327A9C7C5DACC0A72C63DF1C4D277A7FBBDEB1865730F0A5F15"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "CB9F8A100EB7DE2829193A9DFFEC8755BF476C055B60CFB51DCCA9EF8DD3BF43"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_Yes.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "90602CE023708172CEFD4A464435E7B7F2C7D2BB32D702AE6619D38882423A52"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_Yes.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "39E1A3FB27C3EEA8B9DB64A28770E5CEE73A0F3E0935E1B6E256615FA8D66E60"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_Yes.txt.progress.txt",
+      "Bytes": 145606,
+      "SHA256": "B812EEE83757B7EB3938AD0B314D170B40C26278ED86ADB8B37CD4AE62E3760E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_Yes.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "3ADF60B4D006590FB1920620D49B61578A7BB928F55D30866D24898CF4DFAF21"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/PointedSection_Generated_Yes.txt.stdout.log",
+      "Bytes": 601,
+      "SHA256": "C979B4C4CA78BE9232BD5004C926BF2C2C3A98C31C0D4D495DBA5B3C06D2BBA1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/Circle_Generated_Manifest.txt",
+      "Bytes": 730,
+      "SHA256": "C796A40FBE6DFBBE0E60062DA63EFCAC72EB98587A2C7A18F11828F103FE23F8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/DescribeMemory/MemoryBeforeExcel.json",
+      "Bytes": 457,
+      "SHA256": "9035B5B9E3436662EDFB2640518E98EA624817382923D6268C43A5A432DEB786"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/HollowRectangle_Generated_Manifest.txt",
+      "Bytes": 731,
+      "SHA256": "F1274CA0B12EA10A7F1BEB70E482C0161C0AD70F6FAA58F649C476234DEF56C6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/InputManifest.json",
+      "Bytes": 3560,
+      "SHA256": "776AFDACF33EA067AAB98992CBCBA62992AEC277FC2822F79C7D350A44F3564D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/MemoryBeforeExcel.json",
+      "Bytes": 464,
+      "SHA256": "5F3BD550211FF3409A950ED015D5CC8FAA1E935723A9D669E1807234A41CD831"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/PointedSection_Generated_Manifest.txt",
+      "Bytes": 740,
+      "SHA256": "6982EA86E2323030133ACAAB26F37426A5F6B5C1B8D6F7F2CA2A62BECB268F69"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/Preparation.json",
+      "Bytes": 996,
+      "SHA256": "AD675440BCC5BD1665D84FAE4015046930798394B2419A26DD097FE0975CD601"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/Rectangles_Generated_Manifest.txt",
+      "Bytes": 735,
+      "SHA256": "123D4E11E982327C458B57C48711222EC59C0F0F463AF6E45CD9FB8DA5F9980D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/SavedWorkbook_Paths_Manifest.txt",
+      "Bytes": 707,
+      "SHA256": "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Probe/SavedWorkbook_Saved_Manifest.txt",
+      "Bytes": 1867,
+      "SHA256": "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_No.txt",
+      "Bytes": 77968,
+      "SHA256": "24C4FDDB3E70C46A133AD3AB6A8EB90C8F26B3815E8B1215CFF1DA905C73F380"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "4F824604A3D9D2ABD408B12B5EBD7F70EE2EE2399ADE79C403AA313D219FBE4E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "98FCA850B73A7753054EE09775DD67A42A105863A9AE2E79D003D738A9DDD702"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_No.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "68B4F70B2D5D7745BCF2EA2757DB9B2E18C7D952579E6E8BFB74488A0924749D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_No.txt.progress.txt",
+      "Bytes": 144624,
+      "SHA256": "9FC0AC7002F9EE894D0CFAD969394FCDC9B3986D62CE7CAAAC40AB8E7EC2F4C4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "61904073FDD330A0A8F12937A038E18C210780A37B6071A71CF49F9ACCEB4115"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_No.txt.stdout.log",
+      "Bytes": 596,
+      "SHA256": "6909C040EFFB98D8507ABE96882374BC4271036E3E59A0B658FDD6CA63D94087"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_Yes.txt",
+      "Bytes": 76358,
+      "SHA256": "CED9C0B47668FBD6E9FAD4377F603601AE8C283D574C1C2364F2C7BA56099095"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_Yes.txt.memory.json",
+      "Bytes": 318,
+      "SHA256": "96E81632C53C24BCC85B4C9564ABC6B83F756F0C4040C3D8A8420F66847AE5A6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "00A8F64B4D79B0C08951689269EBDF2872FE4F8EF41FE1D7C3D6C2BEF647B0CD"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "3D4F32E0676B81C4FC041DBAA943901C8E77565757B7751543639D3D24BADE92"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_Yes.txt.progress.txt",
+      "Bytes": 141406,
+      "SHA256": "E89EF0BF24F07C3EEA9CCF610FD6D6EEB59DE1A2A2E222E48607BFFF3183028E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "6815B0E82A94E7EBC2D2A9A4EE5A6680E89F343B85BC9F357A25511DC91E8E38"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Rectangles_Generated_Yes.txt.stdout.log",
+      "Bytes": 597,
+      "SHA256": "A4E93D312F933C7A1CC073DE625D744740FF9D9CB99B55F972454E35BDA65E6C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Run.json",
+      "Bytes": 18765,
+      "SHA256": "D2B56184A90052A2054D32DB8A56EE0DEFCEE7AE1F66ED56E1F45C1F39B37BFF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedSectionFixture.json",
+      "Bytes": 90873,
+      "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_No.txt",
+      "Bytes": 61354,
+      "SHA256": "957E4E8FE1EF33C9F0FE9FF2660FF9BB02EF75E06E634A002A9C09A0F192B38B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "91B1E841E0CFCDF3E5FAA7EF37E6FFA7926615CAD954C4FC84F814D1276E3DBA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "7901598D79AD1F690D8156B5F5DFC1F1254BA5DAA0F40E5AD317304EA12AA009"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "6CE6966BCF448FBA60E1679FE957908944EE93226CF2DD33943A4BF5DC357D3E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_No.txt.progress.txt",
+      "Bytes": 112848,
+      "SHA256": "4FFE381EB6D8CA69331DFE5D5BDEEBF3E80F1FFBF3E52483F7A915D77671F5B7"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "3C40D7B1EF7F8B6E5A41009547D3023D996DBE893E2E593FB00AB48401D1195A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_No.txt.stdout.log",
+      "Bytes": 593,
+      "SHA256": "6EF56E098720E173C524DC752CA44EABCA984AE5AF5B3B2D9705CE3BB86EC6DB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_Yes.txt",
+      "Bytes": 60118,
+      "SHA256": "715BD93751700F94A1223364F250A72FB65C1E8309172E0CF2AF939DEAC3D4AD"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "85592DE234FCF6F48BC6359768F20924A26B09DD74F9552FA5113C350DFFD325"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_Yes.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "B6361B7D8D95C7ABC280AAF5EF73FA8E1977DD7DFC8347247249DD027399475D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_Yes.txt.ProcessClosure.json",
+      "Bytes": 4093,
+      "SHA256": "489B01DD28E3F475DB1F75BD46CE046D99F069EC406B46D90F35621170844B09"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "Bytes": 110364,
+      "SHA256": "BCE675E059E2F2C53BF277BCE12B7060D44EECAA9B1FB2C23D68D014557CBC03"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_Yes.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "3EF8E033BF378542D7EF98B724B1C5B234CEA54F7EBA214D9E270CBFF3655885"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Paths_Yes.txt.stdout.log",
+      "Bytes": 597,
+      "SHA256": "E0243589A88F5CAC5BEA0CF5BA7D5C77FDBA762A59AB0ACB59EB021D3DF45063"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_No.txt",
+      "Bytes": 265270,
+      "SHA256": "5D8E11C7B51473F0D835D869A718788BAAA797AFE559FF44086B65084F256076"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "AAC13DA70E486369FADE52CB0C3FFD1918D4E074F897774CCD493EE3501B5F65"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "EEEB7871369C508BA0A8D7DCAB66D06A00831B4225A94BAB89D5C128C0D8939D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_No.txt.ProcessClosure.json",
+      "Bytes": 4100,
+      "SHA256": "05EAD55E2417D14C0A32E7413F153138B4833ECC073755CF84D7AB4DB54F6F58"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_No.txt.progress.txt",
+      "Bytes": 466930,
+      "SHA256": "A532EF50EE91CC85A3DD8064DF2F959ABB2696268C5658A2907485E69E5461CF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "F91CEE7A7EEF43DD88ADE602BCAC8FBF1BA22979B2EAA40E0D0DBFDAEF56262F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_No.txt.stdout.log",
+      "Bytes": 595,
+      "SHA256": "29B9B237E0FA1933CDF903DD82A912A7FC106411A6F57384D729362FA4C91574"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_Yes.txt",
+      "Bytes": 255261,
+      "SHA256": "EF964AC0BB49761F7D0122A6312BD068153D88C44AAF3F74F6CC49FF33ACCD87"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_Yes.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "220FBDF8C4D669E37AC4B686B542E9D460DA6A6A3846FE6C81F70AE4BBFC8DE3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "FF9BB244F3F4124C5FBA45BD2297B4B6EE3B50D3953D5C12C53C6EE218CABD87"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "CA96FF924D484C7F76C3C47A8673D98961FFB2C1C55B9137E2C253495B61FCF1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "Bytes": 455814,
+      "SHA256": "C18CC07D990BAC6D443F1D522E6E9D3A637CC65122EC4B2D714D7A0A519AA977"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "8575908C626A5BE8FDE28E1ECED9591FA001372108CF1CACB3A99F2C0A2DE0B0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/SavedWorkbook_Saved_Yes.txt.stdout.log",
+      "Bytes": 598,
+      "SHA256": "A818AE6458976F0DFCDA4B99D6FBB700DCE24B91D7B8C121090226766BDCA716"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_No.txt",
+      "Bytes": 11048,
+      "SHA256": "F7119544C49988F7C0AB4C67A850934924EB39369DAE8652EB3959874782D1D2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "2273CED8D0BFFF4206BB9238A93DCFF0E5C8B8B6745FD432F4BCF617E68E92EC"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "99A56078F137C3F3B51865F5FB1CD50903D442C303586351B3E7A7F3F0A637FE"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_No.txt.ProcessClosure.json",
+      "Bytes": 4581,
+      "SHA256": "9650F35987ECAB4E65F34FFDF10EECD825B1BA114F46D04AC11DA87E1F7B9149"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "74FEF38286A01CC355C14CA3471BC81021AF84471A764F4B2C6BF423354958B0"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_No.txt.stdout.log",
+      "Bytes": 563,
+      "SHA256": "59303E5F5F7EEA8F0DD008B62B0E8B9978CDFA3994CEB5FB7C76A95F0F5393CF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_Yes.txt",
+      "Bytes": 10834,
+      "SHA256": "C24A70E2AE8E65AA425E5CD8B2E3190EBB2ECE9501059C4EDE919A0951FC6B7D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "84DE67D5545765E856D8EABF0143B9032BECC98EA9102E0965110DCF2FCA57BD"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "D67EA6BC66B915E5FEA1A0BC6360E3B6FD21581D1B7FAC673048FBA787093A9D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "529DAA9AED46F2DF797DD3FB235762D60DA450C67E7D6D971692078C5D672C8D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "9F726F5296F40DF6A100A1EA0A86A151E2BD02F14FEB993F22BE9A92ABC63659"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Focused/Stability_Yes.txt.stdout.log",
+      "Bytes": 566,
+      "SHA256": "2AA21BA6CCD51D6C5EDAC855895C85BF44B81B221403E5C071B4D93A965C852F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_Off.txt",
+      "Bytes": 17678647,
+      "SHA256": "20B467ABA9084F6E3316B3E00802C0DD2CCFE2CA076C1F166C03B3F450A58E59"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_Off.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "558C964E9A6A749137970851D980105D5BCE921392CA57FDFDAC18D1D801B91C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_Off.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "A9D57F34CF4C8C5A713F2058694D63E978E4EEA240956674E9A3F0D0BF19C004"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_Off.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "5755C7CC6DB2A5F24D0670D5837F9F4456B77EF842B09B98E8C925CD0091C0DF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_Off.txt.progress.txt",
+      "Bytes": 1847560,
+      "SHA256": "360D2749DA885741DCFC2BA12922369C6E7CF7196F44CAEDB4403CB086790FF9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_Off.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "6E387DF8EB442718353E45CE513EB8CC00A686C2BB182BB0DB95F5B1039B784F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_Off.txt.stdout.log",
+      "Bytes": 3278,
+      "SHA256": "13EC8FAAA6821BB5CCEB0FE421C8ABB514F2CC5866D0373CF7DE4B772F670E53"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_On.txt",
+      "Bytes": 17682677,
+      "SHA256": "01F790C9876950FE9C8771753306B6915A04CAC28BC32EC1C5FE16BF54373032"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "948C61E254623E4EF661B0A447841A4BAFE76B68422626A8A1F2666FE39BEA22"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "4C167C02479416838A812BCF47B1BE6DC964CFC1CF994A6494F082A81D4F6216"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_On.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "447CDD8991907CBC22FED918207703C0F6ED9DD232CBBE3698D3E0761B49DA47"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_On.txt.progress.txt",
+      "Bytes": 1847560,
+      "SHA256": "360D2749DA885741DCFC2BA12922369C6E7CF7196F44CAEDB4403CB086790FF9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "96A7D2E8B18EC9684249DB1EDBED819472B42B91AC168400CE0E2773CDCF4656"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Full_On.txt.stdout.log",
+      "Bytes": 3283,
+      "SHA256": "C82078AE50BC138A02DBF513448DD28E9393033E78FE78FE5FC2BB74B0AC9855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/FullRunner.ps1",
+      "Bytes": 13868,
+      "SHA256": "C51C70BBBBF155F7950B1405942B8D5B03BFC385BD7A57885AC63A4FEED8CB61"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_Off.txt",
+      "Bytes": 1711926,
+      "SHA256": "01C23C840309A1879E92C89BAA05F7813D2371C8A62F0734AF55619AC5741332"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "89F41035D1AC04F3EA825F480923D8C3C8D0C056395EA1EF371B00581AAB0A94"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_Off.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "969B160AA3E5E88D2D8C7AACC2927A31E862E71F2D5C776F496024E6B282CEC2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_Off.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "0C60385466F64C645C14041E214C65FE77285B9C14F0B0A6FA9B7AB18BAE2560"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_Off.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "A19BC3A9F84C044702A27552BAB7B8F870B83DCBC61550BE4B8F66BA6BFDEE78"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_Off.txt.stdout.log",
+      "Bytes": 3264,
+      "SHA256": "889215ECFA9EB7CD15D925AC29A386517E1F696DF988D9A8EC4BC1C37DB29FB4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_On.txt",
+      "Bytes": 1712198,
+      "SHA256": "1DA9DBE572B03E8116FA620E4F0A729802E9A8837B212F497A703A86E5395329"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "E43EC37725636B12DFE2DA1ECD5B87B6393D040FC4D553FB1BA6CAF40519EF2E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "0E0D093ABBA41D0375BB4572D69825EB56E3366720D64D858648560356D20632"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_On.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "E4D1BE77567A2054BB42D00073CBE1E66EE3E678F4CD1365AC5FD430DA739691"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "BB311D085191F57D65173A12B3741A79D03B5113D7B3207030D1E4BC1A6814A5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Geometry_On.txt.stdout.log",
+      "Bytes": 3301,
+      "SHA256": "4A01ADDCE09B955F7A5246FCB1F47F5A8E1F83C4CDA5114452D5C1ABA6B32000"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/ModeRunner.ps1",
+      "Bytes": 24353,
+      "SHA256": "0CD9C34BEBFE3593C0F8BBD40D3DD03400F37F729C232E3076A01DB4596956FA"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_Off.txt",
+      "Bytes": 558638,
+      "SHA256": "28D8DEF0FA9E18E4857469D3ED982710AAC07E21FC3297B9B0300A7EDAE2E399"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "32840117ECE618A1BFF0F8199E93B6660C9C3208DA67FBC5065EB8C9B03AD644"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_Off.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "A059B4177011E1B7E84E27246831A77385FBBC054320F56840EB8E420F3FE9D9"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_Off.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "F6D5492EF61AFAA5884CA80AAECAD5ABA3AE28F493CFF2A20604CFB2B712A1F6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_Off.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "A0604F4B48EC9D08DA3AF7CF0AD7B4C8C2C09BD57B3C45F1E12F3CC66CB38FE1"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_Off.txt.stdout.log",
+      "Bytes": 2316,
+      "SHA256": "F37CFC5DD0ECA5B265F58B31B2F6342D69C7D72DB8FEDD264072809E2B18712A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_On.txt",
+      "Bytes": 558668,
+      "SHA256": "E22D5A7CF9E06DC64FA331633B388377108FB869F5172615E7F46A7848E6075A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "9FF63C4BFBB409CAF5C0F8ACF4DA3E94F7DD0A55F6BBFA6DCDAC5552CEA306B8"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_On.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "F8B931C1FD2154C05CA223559E3592A00C427EF139599BA719946BA7D6AE14EB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_On.txt.ProcessClosure.json",
+      "Bytes": 3605,
+      "SHA256": "605B3B7633D8D142527716834EF12BE45A4970D41FB0F8FD47FF2A71E9D83758"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_On.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "AB93F9038EC382B16466FEE1ADB7FB3E3AB7372C16988B6FAF5E0F0DAFA6B722"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Recipes_On.txt.stdout.log",
+      "Bytes": 2343,
+      "SHA256": "8F924474490B9538813FB1351F09E2967DB7AA1EA840ADEDD4BD11288BD2CE89"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Run.json",
+      "Bytes": 27396,
+      "SHA256": "54C7C0756C4807DDE892B914890B78C02E52499CA50BF2464D42318FB6F5D526"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_Off.txt",
+      "Bytes": 3384,
+      "SHA256": "31A92B485B5EEB54FC6A4A91D460107B1DA814E952E4953A2460EFDFFB16B62A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "B16DF32BAC1C26C3A2E4D0FCC94E083516A8F8A9114120F687F68833CBE726E3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "6880209EF73D41EBAC1B64B52598CC8E00C85A4FC55B071A8EA41083627E9385"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_Off.txt.ProcessClosure.json",
+      "Bytes": 4589,
+      "SHA256": "E1FCA2A8B559A2F945A575053423B7FFC4EDBEBFB725A7616B336001BFF0674C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "C9BFB419E58DF7AF44E7156E34F5CEC1D4A7EBEBC101AD5971DAA885B3869AFF"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_Off.txt.stdout.log",
+      "Bytes": 597,
+      "SHA256": "DA18309C014CE2595859ED501538D43311E7BCDC6A5A4D7088CD08A45D45E67C"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_On.txt",
+      "Bytes": 3390,
+      "SHA256": "88392AB10D500BDF87F98FFFAB72BF273DBAD8F1DF49376565D227375A016FF4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_On.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "3A75C83BC8A9FEE7A33292278ED6BE000C26E8B2CF69F84E58B327F15FE0702B"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "5B075BB82E1ACF0AB1B1C52D457BA2C3F21036F0740674CCA7108908562C45DB"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_On.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "D5CD1CFE36256FF822866EFC64AF8FC5BFCB1D7E80BDC09610B47B4114F2D8B2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "9557CDC597EEB16982676F72B736B6D0F04E6FFCBCD26A9CA59214B5A112C6B3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SavedOffsets_On.txt.stdout.log",
+      "Bytes": 600,
+      "SHA256": "40E9005AFFFF34B6E7FE4579C23AECACF3080738053145FEA2E1A19B869DB779"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_Off.txt",
+      "Bytes": 47228,
+      "SHA256": "6A5D73C5F6C4F6227D710EF59C44A82C0773AB2B4FA0C03B2E74ABB04CEB27E5"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "6430E3DC12B4DC517C35B4D52619B65A1B4F6CE1B0C19664E56A304658B9B1F3"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "7E0E67BB32EF7AF0C21B3BE7DD10CE308EAE32C7F07E2E960C57767B1C29D115"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_Off.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "2358993D6A7FB0273F1A1A09A20E8F653FEC6CDA888C5AEE09875C0A1B00ABB2"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "8A24FEDA950D31C214F9A599C7C67F1B941D5A78A24884F7131F68DD203343C4"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_Off.txt.stdout.log",
+      "Bytes": 855,
+      "SHA256": "AD37DD56B93CD6787EB048F48B86A17EDC7C40035864B02662AEBDF1E8F97DC6"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_On.txt",
+      "Bytes": 47235,
+      "SHA256": "DF5E72649EEDD7AA00F88059EE03784F2824725B4AFC1A9BE2B8A1FED3159A07"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "B9C49FEEA6DB85332EFDC437D1D7ECF46A710DBCF60D6259768B254B0233AE4E"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_On.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "5A284B1BD7E83D58D6261A0727A9B67E1FE322105D7BA0FE2E5EC9CCC9B5606F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_On.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "3FAB2336EFB5E2D4D39502C3841B6C547D8FEE0CE941CC9DC776A5ECAD87A37A"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_On.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "98CD5CDAEB0FB0ECE19C49EA088817843C18E7A84A5D87AC1F89171132E0FE7F"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/SP35_On.txt.stdout.log",
+      "Bytes": 862,
+      "SHA256": "79F0435C4100AFAEABA8076E4802E535A888B0CEC90F56A689BC398130785DBC"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Summary.json",
+      "Bytes": 79951,
+      "SHA256": "A157B2B5A81C7274BF13911A68CDF7FF995FE5D73F41CA9E90B1A08F7779629D"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Summary.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02/Summary.stdout.json",
+      "Bytes": 2014,
+      "SHA256": "BDF5DF8EAAF5AEF74065B7E3BE67F17C9CC986FAD37929C8C144C9093B5C3214"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllClosedJobsReview.json",
+      "Bytes": 63323,
+      "SHA256": "8D95DBAAAD1A298CD2BFC9BBF566F089CBD463AB00FE1B4EFD0BD8C6AC299904"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "Bytes": 32957,
+      "SHA256": "4A45B2FAE5871AFC684D91430C5227C6B680074AD221111FD537536704024414"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/Completion.json",
+      "Bytes": 674,
+      "SHA256": "88F2D1DECA322FCE5846AFDB42B961C0C660899B03B5084A2892E10F1043F3E3"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/CoordinatorPulseLast.json",
+      "Bytes": 16950,
+      "SHA256": "6121C4A6486559289358399D5ACAB62541889885100C1878BC7A8D203F9AA86A"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/DriverRun.json",
+      "Bytes": 310,
+      "SHA256": "77FD3EB4D1BB37AE596AE12050FD9F79B76B1F7CBAF18CFCBFE19C823C6C1EBB"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/FullDriver.ps1",
+      "Bytes": 5341,
+      "SHA256": "D900EAB2E86D87C371CC3C716B4DD40F0806FB8C949DD5CC1B41073ABD30A38E"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/FullDriverHost.ps1",
+      "Bytes": 1750,
+      "SHA256": "C5C31733902D6394B620EF963D1F966C31FF313A494DC58CB86988388BD02A93"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/FullLaunch.json",
+      "Bytes": 904,
+      "SHA256": "05C967201B007CE20FAA00EB04333B3A244722BE47BDA68161C95097BB4DF054"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/FullLaunch.stderr.log",
+      "Bytes": 4016,
+      "SHA256": "BF21E4B5B5EED85DD4B72AFD74AD3B33F77F055CE479848A858DA082F366C411"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/FullLaunch.stdout.log",
+      "Bytes": 15246,
+      "SHA256": "051ACDA3C88FDD6BD851DE6893AC4C92C47FD2804F7D193849BC9E57F404CC1B"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/HostCompletion.json",
+      "Bytes": 93,
+      "SHA256": "49A1640C6061FA1F2296F81E2A500CE5FF91E7276A00DE7B5D5D70F83369317C"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/HostRun.json",
+      "Bytes": 201,
+      "SHA256": "2B0AFA8EBF7032E8C9001122036645EE1CCF995E705E5B6B75FB26C805E68080"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/Launch.ps1",
+      "Bytes": 10616,
+      "SHA256": "F20FC6C1D342973DC0A101B2F1D3956638A18D8DEA68A0C71FA5AEB229A87D12"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/LaunchRequest.json",
+      "Bytes": 143179,
+      "SHA256": "AFEA009A5DD7C9CBDDEB50C4F1AB6817C7FC5CDFDA70D2D9AFA1CA93F6F9A131"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/MonitorLast.json",
+      "Bytes": 25143,
+      "SHA256": "1F15384F6213F86567370696E669189C868F06D3867C6EF295329A12E2321C68"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/PreparedPlan.json",
+      "Bytes": 1702,
+      "SHA256": "89E69139E67E350103BE0B977155ADF20815D06548EC8BCAFF95D4258D1AEDEB"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/Read-CurrentStatus.ps1",
+      "Bytes": 12453,
+      "SHA256": "0CC99CFDD4B32AFADB99807B7B846454A5D2EECA1E1B41BF7FDC575A11E3E9E1"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/Read-UiProgressSupplement.ps1",
+      "Bytes": 7518,
+      "SHA256": "161B8B0B9D968CBAAD1769D7E20F326F4D5E749E480ADAC0BAD75A10032D1998"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "Bytes": 23690,
+      "SHA256": "99196E6C7E9A307C52CFFFE6AC24BEDDE15047A137E28BD5D46CBA034965F3D6"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ScheduledTaskCleanup.json",
+      "Bytes": 477,
+      "SHA256": "DD654C964C734349E25A91A3B0CE008A0950EA0B120F634653C5E733EDA9CDD6"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/SourceEpoch.json",
+      "Bytes": 634,
+      "SHA256": "59DB1E7DC38861FB4139CFE830DDEBF19CA8476C5C5B6DB426D263D072AD9082"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/TerminalScopeReview.json",
+      "Bytes": 83801,
+      "SHA256": "EAEA19C6432E635C885AE878AACCA58DF7C50657D8F59BB0CBE215986644DBB6"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/TerminalScopeReviewPartial.json",
+      "Bytes": 81773,
+      "SHA256": "C0096B7C4005EC896B205B61C5988EC9825684A3510F688636D1A638C7325B82"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/Test-ObserverSelftest.py",
+      "Bytes": 5753,
+      "SHA256": "562937A61CACDF530DE23D5032C19DD74D15B8A3E9E33AC8CAD301CBB2B59065"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/Test-ReviewPrimaryScope.py",
+      "Bytes": 9512,
+      "SHA256": "8D8BC20463A44F4336619AB5C5F96DB69F91B70EDAC8A1D7AC0FDF9C71B9BDAB"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/Test-VerifyAllOwnClosures.ps1",
+      "Bytes": 6528,
+      "SHA256": "C86C28110DE2F3529C2D5F03FD8A683A2F5002BCB1DF724F8CAF7CBC3B15930F"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/TestObserveCompleted.py",
+      "Bytes": 8780,
+      "SHA256": "E75B9E2D816BB2351A8357376908F0AB535F77C27992770C34973D9483407491"
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/UiProgressSupplementLast.json",
+      "Bytes": 710,
+      "SHA256": "40AACC05CA732A084815EC9CDDF7EC108B116B354F2D1902B9F8D26A18A34BCA"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+﻿{
+    "Status":  "PASS_PENDING_PRIMARY_LOG_REVIEW",
+    "FinishedUTC":  "2026-10-29T03:50:41.9047455+00:00",
+    "SourceSHA256":  "0DA6EBCA2E8A21CD12E484E665CF20C9111A6FEC5344F19E3BB0EBB0D2A9D56A",
+    "SourceCommit":  "9570a7103411bb96679c7151da13e3bb142be0bd",
+    "RunnerExit":  0,
+    "SummaryExit":  0,
+    "FinalizeExit":  0,
+    "CompleteAcceptancePassed":  true,
+    "ExpectedSuites":  182,
+    "CoverageVersion":  7,
+    "PrimaryReviewStillRequired":  true,
+    "ChangedInputs":  [
+
+                      ],
+    "HeadChanged":  false,
+    "DriverError":  "",
+    "EvidenceDirectory":  "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02"
+}

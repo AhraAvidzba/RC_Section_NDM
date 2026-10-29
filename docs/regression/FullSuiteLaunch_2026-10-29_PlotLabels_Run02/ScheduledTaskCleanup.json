@@ -1,0 +1,9 @@
+{
+  "Name": "RC_NDM_Full_20261029_PlotLabels_Run02",
+  "ActionArguments": "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \"C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_PlotLabels_Run02\\FullDriverHost.ps1\"",
+  "PreviousState": "Ready",
+  "AtUTC": "2026-10-29T03:52:01.0517706+00:00",
+  "All44OwnClosed": true,
+  "CompleteCurrentAcceptance": "PASS",
+  "Deleted": true
+}

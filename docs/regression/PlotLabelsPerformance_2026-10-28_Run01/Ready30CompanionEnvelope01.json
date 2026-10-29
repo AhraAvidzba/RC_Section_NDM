@@ -1,0 +1,16 @@
+{
+  "Status": "PASS_PASSIVE_FILE_ENVELOPE_ONLY",
+  "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ActionLatency_2026-10-28_Run01\\StorageRun02\\Heavy1232_30_Optimized.ndm",
+  "SHA256": "F28AF06A9032099093651AE357B0BC1F25B82035FBEC67BD1D6FA4ACCD32DED9",
+  "Bytes": 6016069,
+  "Signature": "NDMSNP04",
+  "Version": 4,
+  "RunID": 46323.66916666667,
+  "ElapsedSeconds": 7.05859375,
+  "TableCount": 17,
+  "EmbeddedSHA256Verified": true,
+  "SourceModified": false,
+  "ExcelProcessesStarted": 0,
+  "NativeLoadAndGeometryParityStillRequiredBeforePublication": true,
+  "ExistingUserSmallSnapshotNotTouched": true
+}

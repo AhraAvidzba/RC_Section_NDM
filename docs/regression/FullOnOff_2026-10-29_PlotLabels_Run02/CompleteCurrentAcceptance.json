@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "0DA6EBCA2E8A21CD12E484E665CF20C9111A6FEC5344F19E3BB0EBB0D2A9D56A",
+  "CoreSuites": 182,
+  "CorePassedAssertions": 868910,
+  "FocusedSingleCases": 122,
+  "FocusedPassedAssertions": 13967,
+  "IndependentIntegrals": 560,
+  "IndependentlyReviewedNumFailStates": 10,
+  "SameWorkbookBytes": true,
+  "SingleInvocation": true,
+  "CoreDirectory": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_PlotLabels_Run02",
+  "FocusedDirectory": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_PlotLabels_Run02\\Focused",
+  "FocusedRunSHA256": "D2B56184A90052A2054D32DB8A56EE0DEFCEE7AE1F66ED56E1F45C1F39B37BFF",
+  "IndependentSHA256": "EEB19A5C349BBCA3D5FEEEC8C3091E2983B26CAC0413BB17E08D9564E003EEE2",
+  "Meaning": "All current acceptance groups use exactly the same production workbook; invocation is recorded above."
+}

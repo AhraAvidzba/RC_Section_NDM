@@ -1,0 +1,16 @@
+{
+  "Status": "PASS_EXACT_MAIN_AND_NATIVE_READY_ARTIFACT_GATES",
+  "MainSHA256": "0DA6EBCA2E8A21CD12E484E665CF20C9111A6FEC5344F19E3BB0EBB0D2A9D56A",
+  "AllCodeSHA256": "F5C82C8FE1B21734586AE8301428913841EED144669437D91931B2B25C3A2605",
+  "MainNativeProof": "FreshBuild03/NativeVerification.json",
+  "MainNativeProofRemainsValidForIdenticalWorkbookBytes": true,
+  "MainCleanStructure": "FreshBuild03/CleanStructure.json",
+  "MainSettingsListsBordersCoveredByActualFullUIBothModes": true,
+  "NativeComponents": 181,
+  "SourceEquality": true,
+  "ReadySHA256": "4D09B1109916C078824C9D48895B2B3E73B5828E78D6468DF71A0C7F3036C3EF",
+  "ReadyVBAProjectByteEqualMain": true,
+  "ReadyDataUnchangedNonVBAParts": 110,
+  "ReadyDropdownGate": "Ready30DropdownAcceptance.json",
+  "HistoricalCompanionPublished": false
+}

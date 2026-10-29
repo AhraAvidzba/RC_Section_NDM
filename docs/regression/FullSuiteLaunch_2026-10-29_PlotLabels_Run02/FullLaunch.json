@@ -1,0 +1,19 @@
+﻿{
+    "Status":  "STARTED",
+    "HostPID":  10168,
+    "HostStartTicks":  "639288311234753161",
+    "PID":  15196,
+    "StartTicks":  "639288311238457398",
+    "Started":  "2026-10-29T03:38:41.5773742+03:00",
+    "Deadline":  "2026-10-29T11:38:41.5773742+03:00",
+    "SourceSHA256":  "0DA6EBCA2E8A21CD12E484E665CF20C9111A6FEC5344F19E3BB0EBB0D2A9D56A",
+    "SourceCommit":  "9570a7103411bb96679c7151da13e3bb142be0bd",
+    "Branch":  "codex/action-latency",
+    "EvidenceDirectory":  "docs/regression/FullOnOff_2026-10-29_PlotLabels_Run02",
+    "ExpectedSuites":  182,
+    "IncludesFocusedAcceptance":  true,
+    "CoverageVersion":  7,
+    "AllCodeSHA256":  "F5C82C8FE1B21734586AE8301428913841EED144669437D91931B2B25C3A2605",
+    "RequestSHA256":  "AFEA009A5DD7C9CBDDEB50C4F1AB6817C7FC5CDFDA70D2D9AFA1CA93F6F9A131",
+    "ScheduledTaskName":  "RC_NDM_Full_20261029_PlotLabels_Run02"
+}
