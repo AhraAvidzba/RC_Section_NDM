@@ -663,6 +663,25 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '
 '     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.RebarEndMode
+'
+'       Читает явный endMode по ключам блока и строки: IncludeBoth, ExcludeBoth, IncludeStart или
+'       IncludeEnd. Пустота и неизвестное значение отклоняются с адресом поля; совместимость с открытым
+'       или замкнутым путём проверяет рецепт либо общий исполнитель.
+'
+'       Объявление:
+'         Public Function RebarEndMode(ByVal blockKey As String, ByVal rowKey As String) As
+'         ERebarEndMode
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например General, Edges, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'
+'     ----------------------------------------------------------------------------------------------
 '     CSectionInputReader.Length
 '
 '       Находит поле по ключам блока, строки и столбца. Читает обязательное число и один раз переводит
@@ -1981,8 +2000,9 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     CSectionDefinitionBuilder.RebarByFixedStep
 '
 '       Задаёт точное расстояние step между соседними стержнями вдоль линии. RemainderPlacement
-'       определяет, где оставить неиспользованный остаток длины. При IncludeBoth или ClosedUniform
-'       рабочая длина должна соответствовать заданному расстоянию.
+'       определяет, где оставить неиспользованный остаток длины. При IncludeBoth, а также на полном
+'       замкнутом пути с IncludeStart/IncludeEnd рабочая длина должна соответствовать заданному
+'       расстоянию.
 '
 '       Объявление:
 '         Public Sub RebarByFixedStep(ByVal ruleID As String, ByVal target As String, ByVal step As
@@ -2208,7 +2228,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.StartSetback
 '
-'       Начальное отсечение вдоль каждого target-пути, мм>=0; у полного ClosedUniform 0.
+'       Начальное отсечение вдоль каждого target-пути, мм>=0; у полного замкнутого пути 0.
 '
 '       Объявление:
 '         Public StartSetback As Double
@@ -2227,8 +2247,10 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.EndMode
 '
-'       IncludeBoth/ExcludeBoth/IncludeStart/IncludeEnd/ClosedUniform; последние требуют соответствующей
-'       замкнутости.
+'       IncludeBoth включает оба конца пути; ExcludeBoth исключает оба; IncludeStart включает начало;
+'       IncludeEnd включает конец. На полном замкнутом пути IncludeStart/IncludeEnd не повторяют точку
+'       замыкания; IncludeBoth повторяет её с обработкой заданной политикой Coincidence. При одном
+'       стержне ByCount IncludeStart/IncludeEnd выбирают свой конец, IncludeBoth/ExcludeBoth — середину.
 '
 '       Объявление:
 '         Public EndMode As ERebarEndMode
@@ -2394,6 +2416,17 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       Объявление:
 '         Public Coincidence As ERebarCoincidence
 '       По умолчанию: RejectCoincidence.
+'
+'     ----------------------------------------------------------------------------------------------
+'     CRebarRuleOptions.WarnOnCoincidence
+'
+'       При разрешённом совпадении предупреждать о каждом пропуске поздней позиции, включая одинаковый
+'       диаметр и материал. По умолчанию False. Все Main зарегистрированных рецептов явно включают эту
+'       настройку; схема и подписи используют только созданные физические стержни.
+'
+'       Объявление:
+'         Public WarnOnCoincidence As Boolean
+'       По умолчанию: False.
 '
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.PlacementCheck
@@ -2598,8 +2631,10 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     modSectionRecipeTypes.ERebarEndMode
 '
-'       IncludeBoth/ExcludeBoth/IncludeStart/IncludeEnd/ClosedUniform; последние требуют соответствующей
-'       замкнутости.
+'       IncludeBoth включает оба конца пути; ExcludeBoth исключает оба; IncludeStart включает начало;
+'       IncludeEnd включает конец. На полном замкнутом пути IncludeStart/IncludeEnd не повторяют точку
+'       замыкания; IncludeBoth повторяет её с обработкой заданной политикой Coincidence. При одном
+'       стержне ByCount IncludeStart/IncludeEnd выбирают свой конец, IncludeBoth/ExcludeBoth — середину.
 '
 '       Объявление:
 '         Public Enum ERebarEndMode
@@ -2609,7 +2644,6 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '         ExcludeBoth = 2
 '         IncludeStart = 3
 '         IncludeEnd = 4
-'         ClosedUniform = 5
 '
 '     ----------------------------------------------------------------------------------------------
 '     modSectionRecipeTypes.ERebarDistributionScope

@@ -1,0 +1,16 @@
+{
+  "Status": "FINAL_PREFLIGHT_REVIEWED_COMPLETE_ACCEPTANCE_PENDING",
+  "ObservedUTC": "2026-10-29T20:30:00.468610+00:00",
+  "BookSHA256": "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+  "AllCodeSHA256": "7138D93A32497F24A59616ADDEB40939422129DCA60C57DF06B1EF4F9F5AD87E",
+  "NativeComponents": 181,
+  "ReferenceDirectedMacrosPerMode": 40,
+  "FinalSourceDirectedMacrosPerMode": 3,
+  "FinalDefaultCells40": 16,
+  "AllOwnTerminalCount": 182,
+  "CoreExpected": 182,
+  "FocusedExpected": 122,
+  "FocusedRecordsExpected": 26,
+  "FullRunLaunched": false,
+  "FullAcceptanceClaim": false
+}

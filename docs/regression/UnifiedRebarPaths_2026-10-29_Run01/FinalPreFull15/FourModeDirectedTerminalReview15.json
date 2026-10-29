@@ -1,0 +1,53 @@
+{
+  "Status": "FINAL_SAVED_NATIVE_AND_DIRECTED_REFERENCE_REVIEW_PASS",
+  "ObservedUTC": "2026-10-29T20:23:15.527436+00:00",
+  "NativeSourceSHA256": "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+  "DirectedReferenceSHA256": "EF9EC63F1D06B8A3647EADCC5C6F1EFD1C8D5F2A84E17BFCD5A51E67DE800804",
+  "PrimaryAndStdoutStderrAllRead": true,
+  "NativeImagesReviewed": true,
+  "Images": [
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native12\\Main\\Main_EndMode.png",
+      "SHA256": "3F928C5C0041E7A4913436B9136068E4790822442B32BD859E07F78F48623EB0",
+      "VisualReview": "Viewed in this conversation: readable text, same peer style, no clipped body paragraphs; Main s0/s1 show40."
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native12\\Main\\Help_Common.png",
+      "SHA256": "86514D18F4AC8B5E3E722B323FFC7C82076ED1A23465B8C126530533359C983A",
+      "VisualReview": "Viewed in this conversation: readable text, same peer style, no clipped body paragraphs; Main s0/s1 show40."
+    }
+  ],
+  "ImageDeliveryToUserClaim": false,
+  "APICatalog338Reviewed": true,
+  "APICatalogChecks": [
+    "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH",
+    "SOURCE_MANIFEST_DOC_EXAMPLES_MATCH",
+    "API_CATALOG_MUTATION_GUARDS_PASS3"
+  ],
+  "APIManifestSHA256": "21174737F6D0D482D0BFA4A71425A196D40AC9A2F07EEF59C4580AE2FCD688BB",
+  "SharedHelpLinks": [
+    [
+      "B730",
+      "'Справка'!A711"
+    ],
+    [
+      "B737",
+      "'Справка'!A711"
+    ],
+    [
+      "B744",
+      "'Справка'!A711"
+    ],
+    [
+      "B752",
+      "'Справка'!A711"
+    ]
+  ],
+  "FinalDefaultCells": 16,
+  "SavedNativeIndividualChoices": 68,
+  "RejectedCombinedOrUnknown": 85,
+  "AllOwnTerminalCount": 180,
+  "FinalExecutableVBAStatementsEqual": true,
+  "FinalBookRequiresFullAcceptance": true,
+  "FullAcceptanceClaim": false
+}

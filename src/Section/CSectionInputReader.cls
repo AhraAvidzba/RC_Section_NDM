@@ -105,6 +105,17 @@ Public Function Choice(ByVal blockKey As String, ByVal rowKey As String, ByVal a
     Choice = mTable.Choice(RowIndex(blockKey, rowKey), ColumnIndex(blockKey, columnKey), allowed, defaultValue)
 End Function
 
+' Читает явный способ расстановки основного ряда без автоматической подмены режима.
+' Совместимость с открытым или замкнутым путём проверяет рецепт либо общий исполнитель.
+Public Function RebarEndMode(ByVal blockKey As String, ByVal rowKey As String) As ERebarEndMode
+    Select Case Choice(blockKey, rowKey, Array("IncludeBoth", "ExcludeBoth", "IncludeStart", "IncludeEnd"), "endMode")
+        Case "IncludeBoth": RebarEndMode = IncludeBoth
+        Case "ExcludeBoth": RebarEndMode = ExcludeBoth
+        Case "IncludeStart": RebarEndMode = IncludeStart
+        Case "IncludeEnd": RebarEndMode = IncludeEnd
+    End Select
+End Function
+
 ' Читает длину и переводит её в мм через единую систему единиц.
 Public Function Length(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = "val") As Double
     Length = mTable.Length(RowIndex(blockKey, rowKey), ColumnIndex(blockKey, columnKey), mUnits)

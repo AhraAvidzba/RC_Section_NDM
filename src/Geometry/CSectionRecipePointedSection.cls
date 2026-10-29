@@ -38,6 +38,7 @@ Private Type TRoundedFace
     Count As Long ' Число стержней основного ряда.
     Diameter As Double ' Диаметр стержней основного ряда, мм.
     AxisDistance As Double ' Расстояние от края бетона до осей основного ряда, мм.
+    EndMode As ERebarEndMode ' Явный способ расстановки основного ряда на подготовленном пути.
     StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
     EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
     LabelX As Double ' Компонента X направления выноса подписи.
@@ -114,7 +115,8 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
             End Select
             .StartSetback = reader.OptionalRowOffset("Main", key, "s0")
             .EndSetback = reader.OptionalRowOffset("Main", key, "s1")
-            .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
+            .EndMode = reader.RebarEndMode("Main", key)
+            .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1", "endMode"))
             .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
             .Diameters(3) = reader.OptionalDiameter("Extra", key, "d3")
             For rowNumber = 2 To 3
@@ -182,11 +184,12 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
             Set path = AxisPath(facade, polygon, contour, .ID, .AxisSource, "Арматура у стороны «" & .Caption & "»") ' Выбираем сторону из общего контура с индивидуальными as.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-            If i >= 3 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
+            options.EndMode = .EndMode ' Применяем выбранное правило после концевых отступов.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
             options.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
             options.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
-            options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+            options.Coincidence = KeepPublishedOwner ' Первый добавленный физический стержень сохраняет свои диаметр и материал.
+            options.WarnOnCoincidence = True ' Каждый пропуск совпавшего Main фиксируется предупреждением, включая одинаковые диаметры.
             options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
             options.Comment = "Клиновидное сечение: " & .Caption & " грань, ряд 1"
             options.SourceReference = .Source ' Адреса полей для сообщения об ошибке размещения.

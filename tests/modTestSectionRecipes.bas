@@ -199,7 +199,7 @@ Public Function RunRecipeRuleTests() As String
     Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
     TestNear "one.midpoint", model.RebarX(1), 45#
     Set facade = TestRuleFacade: Set options = New CRebarRuleOptions
-    options.EndMode = ClosedUniform
+    options.EndMode = IncludeStart
     Set path = facade.CirclePath("Closed", 0#, 0#, 100#)
     facade.RebarByCount "Closed.Row", "Closed", 4, 10#, options
     Set builder = New CSectionBuilder: Set model = TestBuildFixture(facade, builder)
@@ -598,7 +598,7 @@ Private Function TestInvalidRuleRejected(ByVal scenario As Long) As Boolean
         Case 3: facade.RebarByMaxStep "Bad", "Row", 0#, 10#, options
         Case 4
             Set path = facade.CirclePath("Closed", 0#, 0#, 100#)
-            options.EndMode = ClosedUniform: options.StartSetback = 1#
+            options.EndMode = IncludeStart: options.StartSetback = 1#
             facade.RebarByCount "Bad", "Closed", 2, 10#, options
         Case 5
             facade.RebarDependent "A", "B", 10#, options
@@ -719,7 +719,7 @@ Private Function TestCircleInputCase(ByVal scenario As Long) As Boolean
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Select Case scenario
-        Case 0: key = "Rebar.Count": TestSetCircleInput key, 1
+        Case 0: key = "Rebar.Count": TestSetCircleInput key, 1.5 ' Проверяем недопустимое дробное количество; n=1 покрыто положительными случаями EndMode.
         Case 1: key = "Rebar.AxisDistance": TestSetCircleInput key, 10# / units.InputLengthToInternal(1#)
         Case 2: key = "Rebar.Diameter2": TestSetCircleInput key, -1#
         Case 3

@@ -1,0 +1,121 @@
+{
+  "Status": "FINAL_DEFAULTS_3_MACROS_NO_YES_PRIMARY_STDIO_ALL_READ",
+  "SourceSHA256": "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+  "MacroCountPerMode": 3,
+  "Files": [
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt",
+      "Bytes": 28506,
+      "SHA256": "1020C0887951DD9395103F4A33D3403236468BE1C261E2942130E2B86F6D2722",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "FF5A20FBBF805E88B59568862CB90D67A8E3D4FCEA148D863383FBD40B91341E",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "C683CE1A57EDF328ADDA8B664D6872200D8F32C157478B064B61CCF03DCBD64A",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt.PrimaryReview.json",
+      "Bytes": 2811,
+      "SHA256": "0E735E5D4EBC6B93A650875964748D89B9714FAC6FF26A30BAD0D1F2F6B33FB1",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "B5457729C113AC9B798157A54EBAC82F3FE9B6E0B3CBD6A703F347313EDBAB35",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "8A88F3A0809E1506CEC44DEFDAED0C06A8CADBC48B0005B698F4B6E4F4260863",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt.stdout.log",
+      "Bytes": 662,
+      "SHA256": "73C30B749B32ACB85CEBFE8ACDDB3F17ACE24644ADE23E8DA7E64BDC5871AEF4",
+      "Encoding": "cp866",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt",
+      "Bytes": 28502,
+      "SHA256": "5DA90FDF0AC4FCC232E98ED7F8DC37CFABF0F07FF1B964422B6048885ABEDB7E",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "12C710A93BD381D3C9D95599A6DEE28C777958EAB598FFC4E070A4FA32667487",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "941891B7B43FD616DB4E3DC2BF6B51CD40C12D344AA6AD24766B68B8FFF45C51",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt.PrimaryReview.json",
+      "Bytes": 4264,
+      "SHA256": "D6885B51ACF3CDF54BBCA426B390E62811AB29BDE3D9A49961017D4A9874A061",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt.ProcessClosure.json",
+      "Bytes": 5557,
+      "SHA256": "29946EBCAEE58F15115F368A54A99CB95C2CAE9A1C59D7FB1FF69D5432E51220",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "7E3CB8FBF19AAE25B6D21912CA33D6D868314D387C9B76EFA40AB04F2A5DDA52",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "utf-8",
+      "AllBytesRead": true
+    },
+    {
+      "Path": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt.stdout.log",
+      "Bytes": 666,
+      "SHA256": "F070C6C4D663AF4B2C325AA67471EE6994A84C12A795E6527C0AED5EF354A913",
+      "Encoding": "cp866",
+      "AllBytesRead": true
+    }
+  ],
+  "Errors": [],
+  "FullAcceptanceClaim": false
+}

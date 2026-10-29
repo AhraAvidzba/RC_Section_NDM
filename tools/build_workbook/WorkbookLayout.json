@@ -5009,6 +5009,13 @@
   "Provenance": {
     "Workbook": "RC_Section_NDM.xlsm",
     "SHA256": "829DAB81587B88995211DB0FE571FEFC95C9BA38CBD100942C05DD01C01CB5B6",
-    "Captured": "2026-10-28T13:32:45"
+    "Captured": "2026-10-28T13:32:45",
+    "MainEndMode": {
+      "Column": 8,
+      "CommentColumn": 9,
+      "TableOuterBoundsChanged": false,
+      "RowsColumnsDimensionsChanged": false,
+      "Reason": "Явный способ расстановки после s1; существующий свободный столбец Main в диапазоне A:K."
+    }
   }
 }

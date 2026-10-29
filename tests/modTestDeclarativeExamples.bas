@@ -100,7 +100,7 @@ Public Function TestRoundedFrameDefinition() As CSectionDefinition
     polygonSpec.Seal
     Set path = facade.OffsetRoundedPolygon("Outer.Axis", polygonSpec, 60#)
     Set options = New CRebarRuleOptions
-    options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
+    options.EndMode = IncludeStart: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     options.AnnotationGroup = "OuterBars": options.SourcePrefix = "Outer."
     facade.RebarByCount "OuterBars", path.ID, 24, 20#, options
     Set polygonSpec = New CPolygonSpec
@@ -115,7 +115,7 @@ Public Function TestRoundedFrameDefinition() As CSectionDefinition
     polygonSpec.Seal
     Set path = facade.OffsetRoundedPolygon("Inner.Axis", polygonSpec, -45#)
     Set options = New CRebarRuleOptions
-    options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
+    options.EndMode = IncludeStart: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     options.AnnotationGroup = "InnerBars": options.SourcePrefix = "Inner."
     facade.RebarByCount "InnerBars", path.ID, 16, 16#, options
     facade.VerticalExtent "Height", "Outer", "H", -600#, -1#

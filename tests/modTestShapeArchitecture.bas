@@ -189,7 +189,8 @@ Public Sub TestConfigureShapeFixture(ByVal fixture As String)
             TestFixtureInputCell(table, "General", "Shape", "val").Value2 = IIf(fixture = "Rectangle", "OneRect", "TwoRect")
             TestFixtureInputCell(table, "Detail", "XOffset", "val").Value2 = IIf(fixture = "LSection", 0#, -50#) / factor
             TestFixtureInputCell(table, "General", "H1", "val").Value2 = 400# / factor: TestFixtureInputCell(table, "General", "B1", "val").Value2 = 300# / factor
-            TestFixtureInputCell(table, "General", "H2", "val").Value2 = 200# / factor: TestFixtureInputCell(table, "General", "B2", "val").Value2 = 600# / factor
+            ' При as=40 с двух сторон и s0+s1=160 положительному примеру нужна H2>240; H2=400 сохраняет допустимый участок 160 мм и n=5 без изменения проверок.
+            TestFixtureInputCell(table, "General", "H2", "val").Value2 = 400# / factor: TestFixtureInputCell(table, "General", "B2", "val").Value2 = 600# / factor
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
             shapeName = "PointedSection": Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
             TestFixtureInputCell(table, "General", "B", "val").Value2 = 600# / factor: TestFixtureInputCell(table, "General", "H", "val").Value2 = 400# / factor
@@ -281,7 +282,7 @@ InactiveSide:
     Next i
     If scenario = 5 Then
         TestFixtureInputCell(table, "Main", "R1.Bottom", "n").Value2 = 0
-        TestFixtureInputCell(table, "Main", "R1.Bottom", "as").Value2 = "inactive value"
+        ' Заданный as отключённой стороны сохраняется: он ограничивает общий контур осей.
         TestFixtureInputCell(table, "Main", "R1.Bottom", "s0").Value2 = "inactive value"
         TestFixtureInputCell(table, "Extra", "R1.Bottom", "d2").Value2 = "inactive value"
         If fixture = "Rectangle" Then
@@ -358,7 +359,7 @@ Public Sub TestConfigureRoundedScenario(ByVal scenario As Long)
     Next i
     If scenario = 5 Then
         TestFixtureInputCell(table, "Main", "Top", "n").Value2 = 0
-        TestFixtureInputCell(table, "Main", "Top", "as").Value2 = "inactive value"
+        ' Заданный as отключённой стороны сохраняется: он ограничивает общий контур осей.
         TestFixtureInputCell(table, "Extra", "Top", "d2").Value2 = "inactive value"
         For i = 2 To 3
             If CDbl(TestFixtureInputCell(table, "Detail", "W", IIf(i = 2, "left", "right")).Value2) = 0# Then
@@ -455,7 +456,7 @@ Public Sub TestConfigureHollowScenario(ByVal scenario As Long)
         End If
         If scenario = 7 And i = 3 Then
             TestFixtureInputCell(table, "Main", CStr(keys(i - 1)), "n").Value2 = 0
-            TestFixtureInputCell(table, "Main", CStr(keys(i - 1)), "as").Value2 = "inactive value"
+            ' Заданный as отключённой стороны сохраняется: он ограничивает общий контур осей.
             TestFixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = "inactive value": TestFixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d3").Value2 = "inactive value"
         End If
         If (scenario = 8 Or scenario = 9) And (i = 1 Or i = 2 Or i = 5 Or i = 6) Then

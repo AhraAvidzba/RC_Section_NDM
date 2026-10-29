@@ -5177,7 +5177,7 @@ Private Function TestCircleRebars(ByVal diameter As Double, ByVal centerX As Dou
     Set path = facade.CirclePath("Boundary", centerX, centerY, diameter / 2#): facade.Outer "OUTER", path.ID
     radius = diameter / 2# - axisDistance
     Set path = facade.CirclePath("Axis", centerX, centerY, radius)
-    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
+    Set options = New CRebarRuleOptions: options.EndMode = IncludeStart
     options.SourcePrefix = "B": options.Publication = PublishPerSourcePosition
     options.AnnotationGroup = "Circle": options.Comment = "Круг: основной ряд арматуры"
     facade.RebarByCount "CircleRow", path.ID, barCount, barDiameter, options, "A400"

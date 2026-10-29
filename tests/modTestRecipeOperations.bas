@@ -148,7 +148,7 @@ Public Function RunRecipeDiagnosticTests() As String
     TestCheck "projection.related", rules.DiagnosticAt(1).RelatedEntityID = "Base.1" And rules.DiagnosticAt(2).RelatedEntityID = "Base.3"
     TestCheck "projection.source", rules.DiagnosticAt(1).SourceReference = "ProgramInputs.Target"
     Set facade = TestDiagnosticFacade: Set path = facade.CirclePath("Ring", 0#, 0#, 40#)
-    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
+    Set options = New CRebarRuleOptions: options.EndMode = IncludeStart
     facade.RebarAtStations "RingBars", path.ID, Array(0#, 10#, 20#), 4#, options
     Set definition = facade.Finish: Set rules = New CRebarRuleExecutor: Set layout = TestFixtureAnnotatedLayout(definition, rules)
     Dim stepCount As Long, minStep As Double, maxStep As Double, minChord As Double, maxChord As Double

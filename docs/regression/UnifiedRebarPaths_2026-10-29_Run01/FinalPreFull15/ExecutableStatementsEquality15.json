@@ -1,0 +1,16 @@
+{
+  "Status": "COMMENT_ONLY_VBA_CHANGES",
+  "Files": [
+    "src/Geometry/CSectionRecipeHollowRectangle.cls",
+    "src/Section/CRebarRuleExecutor.cls",
+    "src/Section/CSectionGeometryQuery.cls",
+    "src/Section/CConcreteElement.cls",
+    "src/Batch/CSectionStateResult.cls",
+    "src/Excel/CCalculationSnapshot.cls",
+    "src/Excel/modCalculationSnapshot.bas",
+    "src/Excel/modSectionSnapshot.bas"
+  ],
+  "ExecutableStatementsEqual": true,
+  "DirectedSourceSHA256": "EF9EC63F1D06B8A3647EADCC5C6F1EFD1C8D5F2A84E17BFCD5A51E67DE800804",
+  "FullAcceptanceClaim": false
+}

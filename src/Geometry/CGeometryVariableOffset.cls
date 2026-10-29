@@ -10,13 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Замкнутая проверочная граница с отдельным смещением каждого участка
+' Общий замкнутый контур с отдельным смещением каждого участка
 ' ==========================================================================
 ' Сохраняет точные прямые и концентрические дуги. Продолжения соседних прямых
 ' пересекает; разрыв при разных смещениях дуги и соседа соединяет отрезком.
 ' Исчезнувшее скругление удаляет; соседние прямые продолжает до пересечения.
 ' Такой стык может быть негладким: координаты стержней он не исправляет.
-' Исходные контуры не изменяет; равномерные смещения строятся отдельными общими методами.
+' Используется для основных путей осей и проверки дополнительных рядов. Исходные контуры не изменяет.
 
 Private Const TOL As Double = GEOM_BOUNDARY_TOLERANCE ' Геометрический допуск стыков и вырождения, мм.
 Private mResult() As TRegionEdge, mResultSource() As Long, mResultCount As Long ' Последний проверенный контур и номера исходных участков; ноль обозначает соединительный отрезок.
@@ -27,6 +27,7 @@ Friend Function BuildPath(ByVal pathID As String, ByVal source As CGeometryPath,
         ByVal sourceReference As String, ByRef segmentSources() As String) As CGeometryPath
     Dim original() As TRegionEdge, region As CConcreteRegion, result As CGeometryPath, stations() As Double, starts() As Double
     Dim i As Long, j As Long, name As String, connector As Long, mapped As Variant
+    Dim sourceFirst As Double, sourceLast As Double, tx As Double, ty As Double, lengthSquared As Double, span As Double
     ReDim original(1 To source.SegmentCount): ReDim stations(0 To source.SegmentCount): ReDim starts(1 To source.SegmentCount)
     For i = 1 To source.SegmentCount: source.CopySegment i, original(i): Next i
     Set region = Build(original, distances, source.SegmentCount, sourceReference, segmentSources)
@@ -36,14 +37,21 @@ Friend Function BuildPath(ByVal pathID As String, ByVal source As CGeometryPath,
         If j > 0 Then
             name = source.SegmentID(j)
             starts(j) = result.AccumulatedLength
-            result.Append name, mResult(i), source.ID, name
+            sourceFirst = source.SourceStartParameter(j): sourceLast = source.SourceEndParameter(j)
+            If original(j).Sweep = 0# Then
+                tx = original(j).X2 - original(j).X1: ty = original(j).Y2 - original(j).Y1
+                lengthSquared = tx * tx + ty * ty: span = sourceLast - sourceFirst
+                sourceLast = sourceFirst + span * ((mResult(i).X2 - original(j).X1) * tx + (mResult(i).Y2 - original(j).Y1) * ty) / lengthSquared
+                sourceFirst = sourceFirst + span * ((mResult(i).X1 - original(j).X1) * tx + (mResult(i).Y1 - original(j).Y1) * ty) / lengthSquared ' Концы после стыковки проецируются на исходную прямую; нормальный перенос не меняет её параметр.
+            End If
+            result.Append name, mResult(i), source.SourcePathID(j), source.SourceSegmentID(j), sourceFirst, sourceLast
             stations(j) = result.AccumulatedLength
         Else
             connector = connector + 1: name = "Offset.Join." & CStr(connector)
             Do While source.HasSegmentID(name) Or source.HasCollapsedSegmentID(name)
                 name = name & ".Join"
             Loop
-            result.Append name, mResult(i), source.ID, name
+            result.Append name, mResult(i) ' Соединительный отрезок создан этим путём; у исходного контура такого сегмента нет.
         End If
     Next i
     For i = source.SegmentCount To 1 Step -1
@@ -117,7 +125,7 @@ NextSource:
     sourceReference = allReferences
     For i = 1 To resultCount: after = after + EdgeArea(result(i), original(1).X1, original(1).Y1): Next i
     If Abs(after) <= TOL Or before * after <= 0# Then _
-        Fail "Проверочный контур выродился или изменил направление обхода. Уменьшите отступы дополнительных рядов.", sourceReference
+        Fail "Проверочный контур выродился или изменил направление обхода. Уменьшите заданные отступы осей арматуры.", sourceReference
     Set query = New CSectionGeometryQuery
     On Error GoTo InvalidContour
     Set region = query.BoundaryRegion(result, resultCount, "DependentRowsVariableOffset")
@@ -131,7 +139,7 @@ NextSource:
 InvalidContour:
     Dim reason As String
     reason = Err.Description
-    Fail "Не удалось построить единый проверочный контур дополнительных рядов: " & reason & _
+    Fail "Не удалось построить единый смещённый контур осей арматуры: " & reason & _
         " Уменьшите отступы или измените армирование соседних участков.", sourceReference
 End Function
 
@@ -167,7 +175,7 @@ Friend Sub ShiftEdge(ByRef original As TRegionEdge, ByVal distance As Double, By
         radialScale = (radius - Sgn(original.Sweep) * distance) / radius ' Левая нормаль уменьшает радиус дуги против часовой стрелки и увеличивает радиус обратной дуги.
         If radialScale <= TOL / radius Then Fail "При заданном отступе радиус проверочной дуги становится нулевым или отрицательным. " & _
             "Исходный радиус: " & CStr(radius) & " мм; полный отступ внутрь дуги: " & CStr(Sgn(original.Sweep) * distance) & " мм. " & _
-            "Уменьшите отступ дополнительного ряда или увеличьте радиус скругления.", sourceReference
+            "Уменьшите полный отступ оси арматуры или увеличьте радиус скругления.", sourceReference
         result.X1 = original.CenterX + (original.X1 - original.CenterX) * radialScale
         result.Y1 = original.CenterY + (original.Y1 - original.CenterY) * radialScale
         result.X2 = original.CenterX + (original.X2 - original.CenterX) * radialScale

@@ -16,7 +16,7 @@ Private mSnapshotReadGeometryOnly As Boolean ' Формирование моде
 Private mSnapshotTableReadCount As Long ' ДЛЯ ТЕСТОВ: число загрузок целых таблиц; чтения при поиске границ сюда не входят.
 
 ' Положение и единицы общих колонок одной неизменяемой матрицы проверяются один раз.
-' Числовые значения каждой строки по-прежнему проходят отдельную строгую проверку.
+' Числовые значения каждой строки проходят отдельную строгую проверку.
 Private Type TSavedBoundaryLayout
     XColumn As Long
     YColumn As Long
@@ -147,7 +147,7 @@ End Function
 
 ' Выбирает одно сочетание для схемы и AutoCAD по общим настройкам Config.
 ' User читает только ID; Worst игнорирует ID и использует сохранённый итог расчёта.
-' При отсутствии определяющей строки сохранённые состояния проверяются в прежнем порядке.
+' При отсутствии определяющей строки сохранённые состояния проверяются в порядке таблицы.
 Public Function ReadOutputCombinationID(ByVal workbook As Object, ByVal settings As CSystemSettingsReader) As String
     Dim mode As String: mode = settings.GetRequiredChoice("Output.CombinationMode", Array("Worst", "User"))
     If mode = "User" Then
@@ -1176,7 +1176,7 @@ End Function
 
 
 ' Подтверждает только целиком неизменённые записи, выпущенные штатным writer-ом.
-' При отсутствии/ошибке JSON или хеша возвращает прежний полный путь без подмены геометрии.
+' При отсутствии или ошибке JSON/хеша передаёт запись полному разбору без подмены геометрии.
 Private Function ReadHashedConcreteBoundaries(ByRef boundaries As Variant, ByRef geometry As Variant, ByVal geometryRows As Object) As Object
     Dim result As Object: Set result = CreateObject("Scripting.Dictionary"): result.CompareMode = vbBinaryCompare
     Set ReadHashedConcreteBoundaries = result
@@ -1206,11 +1206,11 @@ Private Function ReadHashedConcreteBoundaries(ByRef boundaries As Variant, ByRef
     Next key
     Exit Function
 Untrusted:
-    Err.Clear ' Основной читатель выдаст прежнюю адресную ошибку, если обязательные данные повреждены.
+    Err.Clear ' Основной читатель выдаст адресную ошибку, если обязательные данные повреждены.
 End Function
 
 ' Вычисляет контрольную сумму только по скалярам и при совпадении собирает отрезки/дуги без геометрического валидатора.
-' Неподдерживаемая запись остаётся на обычном пути; старые снимки без подписи не меняют поведения.
+' Запись неподдерживаемого вида или без контрольной суммы проходит полный разбор.
 Private Function TryReadHashedBoundary(ByRef boundaries As Variant, ByRef geometry As Variant, ByVal geometryRow As Long, _
         ByVal firstRow As Long, ByVal lastRow As Long, ByVal extraColumn As Long, ByVal checksum As CFileChecksum, _
         ByVal query As CSectionGeometryQuery, ByRef layout As TSavedBoundaryLayout, ByRef layoutReady As Boolean) As CConcreteRegion
@@ -1231,10 +1231,10 @@ Private Function TryReadHashedBoundary(ByRef boundaries As Variant, ByRef geomet
                     .X2 = CDbl(boundaries(row, 9)) * factor: .Y2 = CDbl(boundaries(row, 10)) * factor
                 Case "CONTOUR_ARC"
                     .CenterX = CDbl(boundaries(row, 11)) * factor: .CenterY = CDbl(boundaries(row, 12)) * factor
-                    .Sweep = ReadContourArcSweep(boundaries(row, 14), "rngNDMElementGeometry") ' Сохраняет прежнюю числовую интерпретацию угла, без изменения результатов.
+                    .Sweep = ReadContourArcSweep(boundaries(row, 14), "rngNDMElementGeometry") ' Общий читатель проверяет угол дуги и возвращает его в радианах.
                     .X2 = .CenterX + (.X1 - .CenterX) * Cos(.Sweep) - (.Y1 - .CenterY) * Sin(.Sweep)
                     .Y2 = .CenterY + (.X1 - .CenterX) * Sin(.Sweep) + (.Y1 - .CenterY) * Cos(.Sweep)
-                Case Else: Exit Function ' Writer выпускает только линии и дуги; внешние окружности проверяются как прежде.
+                Case Else: Exit Function ' Writer выпускает только линии и дуги; внешние окружности проходят полный разбор.
             End Select
         End With
     Next row

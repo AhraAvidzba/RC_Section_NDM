@@ -331,7 +331,7 @@ Public Sub RebarByMaxStep(ByVal ruleID As String, ByVal target As String, ByVal 
 End Sub
 
 ' Задаёт постоянный шаг стержней и способ распределения остатка длины.
-' Режимы IncludeBoth и ClosedUniform требуют совместимости длины с этим шагом.
+' IncludeBoth и полный замкнутый путь с IncludeStart/IncludeEnd требуют совместимости длины с этим шагом.
 Public Sub RebarByFixedStep(ByVal ruleID As String, ByVal target As String, ByVal step As Double, ByVal diameter As Double, _
         Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = "Rebar")
     Dim value As TRebarRule

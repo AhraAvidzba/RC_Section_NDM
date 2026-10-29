@@ -95,14 +95,14 @@ Private Function Describe(ByRef parameters As TInputs, ByVal table As CSectionIn
     facade.Opening "Opening", openingPath.ID, "Concrete", "Круглое отверстие." ' Opening — имя отверстия, которое вычитается из области Concrete.
     Set axis = facade.OffsetRoundedPolygon("Outer.Axis", polygon, parameters.OuterAxisDistance) ' Положительное смещение направлено внутрь трапеции; стержни располагаются по центрам на этой линии.
     Set options = New CRebarRuleOptions
-    options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap ' Замкнутая раскладка без повторения конца; весь диск каждого стержня должен лежать в бетоне и не пересекать другие.
+    options.EndMode = IncludeStart: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap ' Замкнутая раскладка без повторения конца; весь диск каждого стержня должен лежать в бетоне и не пересекать другие.
     options.AnnotationGroup = "OuterBars": options.SourcePrefix = "Outer." ' Группа общей подписи и префикс исходных имён наружных стержней.
     options.SourceReference = parameters.Source ' Общий источник для программного ввода; при наличии таблицы ниже выбираются конкретные связанные поля.
     If Not table Is Nothing Then options.SourceReference = table.SourceReference(table.RowByKey("OuterAxisDistance"), 2) & "; " & table.SourceReference(table.RowByKey("OuterCount"), 2) ' Ошибка наружного ряда укажет его отступ и количество в реальной таблице.
     facade.RebarByCount "OuterBars", axis.ID, parameters.OuterCount, parameters.OuterDiameter, options ' Количество и диаметр относятся к наружному ряду; параметры размещения копируются из options.
     Set axis = facade.Offset("Inner.Axis", openingPath.ID, -parameters.InnerAxisDistance) ' Окружность идёт против часовой стрелки; отрицательное левое смещение направлено вправо от обхода, из отверстия в бетон.
     Set options = New CRebarRuleOptions
-    options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap ' Замкнутая раскладка без повторения конца; весь диск каждого стержня должен лежать в бетоне и не пересекать другие.
+    options.EndMode = IncludeStart: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap ' Замкнутая раскладка без повторения конца; весь диск каждого стержня должен лежать в бетоне и не пересекать другие.
     options.AnnotationGroup = "InnerBars": options.SourcePrefix = "Inner." ' Внутренние стержни получают отдельные группу подписи и префикс имён.
     options.SourceReference = parameters.Source ' Общий источник для программного ввода; при наличии таблицы ниже выбираются конкретные связанные поля.
     If Not table Is Nothing Then options.SourceReference = table.SourceReference(table.RowByKey("InnerAxisDistance"), 2) & "; " & table.SourceReference(table.RowByKey("InnerCount"), 2) ' Ошибка внутреннего ряда укажет его отступ и количество в реальной таблице.

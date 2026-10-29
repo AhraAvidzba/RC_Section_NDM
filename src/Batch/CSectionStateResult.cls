@@ -179,8 +179,8 @@ Private Sub ValidateElementSnapshotSource(ByVal section As CSectionModel)
     If Not HasMaterialSnapshot Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Фактические диаграммы состояния недоступны для записи элементов."
 End Sub
 
-' Вычисляет прежние поля элементов тем же порядком операций в заданном окне массива.
-' Общая реализация сохраняет точное совпадение старого пятиколоночного и прямого путей вывода.
+' Вычисляет ID, тип, деформацию и напряжение элементов в заданном окне массива.
+' Общая реализация обеспечивает точное совпадение пятиколоночной матрицы и прямой записи в таблицу.
 Private Sub FillElementSnapshot(ByVal section As CSectionModel, ByRef data() As Variant, ByVal firstRow As Long, ByVal firstColumn As Long)
     Dim i As Long, row As Long, strain As Double, stress As Double
     row = firstRow
@@ -582,7 +582,7 @@ End Sub
 
 
 ' Возвращает геометрический смысл сохранённого поля деформаций без нового решения НДС.
-' Не меняет даже frozen-состояние; при нулевой кривизне прежний h отсутствует, x определён и равен нулю.
+' Не меняет даже frozen-состояние; при нулевой кривизне h не определён, x определён и равен нулю.
 ' При Nothing сечения обе величины не определены; writer получает готовые флаги записи, а не выбирает критерии.
 Public Sub GetGeometryDepths(ByVal section As CSectionModel, ByRef depthH As Double, _
         ByRef compressedDepth As Double, ByRef hasH As Boolean, ByRef hasX As Boolean)

@@ -1,0 +1,34 @@
+{
+  "Status": "TEST_EXPECTATIONS_CORRECTED_REBUILD_NATIVE_DIRECTED_REQUIRED",
+  "AtUTC": "2026-10-29T19:56:32.324080+00:00",
+  "Path": "tests/modTestRecipeSetbacks.bas",
+  "BeforeSHA256": "4EF2E9D70EC21081BD6091969C18B61D707A912976888130BF60C2F33BF3276C",
+  "AfterSHA256": "ACA18DE2533DCDBD80079A78B66AFD70B38B7C19F7BC1823B7EBAD605EE0E602",
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\BeforeDirected14TestFix14\\modTestRecipeSetbacks.bas",
+  "ProductionCodeChanged": false,
+  "NumericalExpectationsReduced": false,
+  "Reason": [
+    "CSectionAnnotations.Value is numeric dimension value; AddRebarLabel explicitly writes0, quantities are in Text.",
+    "CRebarRuleExecutor.DiagnosticsText is selective human output; typed machine code is DiagnosticAt.Code."
+  ],
+  "ExpectedLabel": "4Ø20 + 4Ø12 + 2Ø10",
+  "ExpectedPhysicalTotal": 10,
+  "ExpectedDependentDuplicateCodes": 2,
+  "FailedRunPreserved": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed14_No.txt",
+  "Files": [
+    {
+      "Path": "tests/modTestRecipeSetbacks.bas",
+      "BeforeSHA256": "4EF2E9D70EC21081BD6091969C18B61D707A912976888130BF60C2F33BF3276C",
+      "AfterSHA256": "ACA18DE2533DCDBD80079A78B66AFD70B38B7C19F7BC1823B7EBAD605EE0E602",
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\BeforeDirected14TestFix14\\modTestRecipeSetbacks.bas"
+    },
+    {
+      "Path": "tools/build_workbook/Build-SectionRecipeApiExamples.py",
+      "BeforeSHA256": "736824CAFAF3526FA4395E639A68B485989DA20EC990FED1DF3A2EBBB8796970",
+      "AfterSHA256": "74B0F3E4816BD0B8F3AF04409C7809FBC1B07718B311170A3889E8830011A391",
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\BeforeDirected14TestFix14\\Build-SectionRecipeApiExamples.py"
+    }
+  ],
+  "DocumentationToolUpdatedForNewDirectedReceiptIds": true,
+  "CurrentDirectedReceiptsStillRequireFullPrimarySHAAndOwnClosure": true
+}

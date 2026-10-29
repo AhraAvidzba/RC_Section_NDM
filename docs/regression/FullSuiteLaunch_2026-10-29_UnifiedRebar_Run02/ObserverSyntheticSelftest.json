@@ -1,0 +1,18 @@
+{
+  "Status": "PASS_SYNTHETIC_OBSERVER_ONLY",
+  "Checks": [
+    "FAIL-space and runtime with SUITE_FINISHED never prove PASS",
+    "Later clean group and stage switch preserve earlier FAIL; observer never grants full PASS",
+    "Rewriting closed log cannot erase prior FAIL",
+    "Expected Independent.Failures diagnostics are not automatically classified as defects",
+    "Different run/source SHA rejected without destroying preserved review",
+    "Foreign or historical report path rejected"
+  ],
+  "Count": 6,
+  "RealLaunchPerformed": false,
+  "ExcelProcessesStarted": 0,
+  "CADProcessesStarted": 0,
+  "HistoricalAcceptanceImported": false,
+  "FullRegressionPass": false,
+  "ObserverSHA256": "1D758D2838FE670DE86E9F83C8E2A45137D957A64DC16F748F7E647F34FE5009"
+}

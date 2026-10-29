@@ -1,0 +1,16 @@
+{
+  "Status": "PRIVATE_PREPARED_NOT_LAUNCHED_WAIT_CURRENT_OWN_EXIT_FIX_DIRECTED_NATIVE_COMMIT",
+  "ExpectedCore": 182,
+  "CoverageVersion": 7,
+  "FocusedSingles": 122,
+  "FocusedRecords": 26,
+  "FullFocusedRequired": true,
+  "ForecastHours": 6,
+  "FinalReviewReserveMinutes": 90,
+  "OverallDeadline": "2026-10-30T11:00:00+03:00",
+  "TaskCreated": false,
+  "AuthorizationProof": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/UserFullAuthorization.json",
+  "Change": "Explicit Main EndMode plus shared contour corrections and Main coincidence warning; actual physical scheme counts",
+  "SourceEpochPrepared": false,
+  "ReleaseEligibilityPrepared": false
+}

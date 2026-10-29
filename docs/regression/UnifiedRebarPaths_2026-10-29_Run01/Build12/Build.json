@@ -1,0 +1,28 @@
+{
+  "Status": "CLEAN_BUILD_COMPILED",
+  "AtUTC": "2026-10-29T20:21:36.0949590+00:00",
+  "Output": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Build12/RC_Section_NDM.xlsm",
+  "BookSHA256": "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+  "SourceHEAD": "bf7021d992675c4cbe673f8e459a176c6480f202",
+  "SourceFilesNotYetCommitted": true,
+  "CompileCommandID": 578,
+  "BuiltFromWorkbooksAdd": true,
+  "UserDataCopied": false,
+  "Before": {
+    "AtUTC": "2026-10-29T20:17:39.1122853+00:00",
+    "FreeRAMGiB": 16.3525390625,
+    "FreeCommitGiB": 20.684024810791016,
+    "CommitLimitBytes": 45569380352.0,
+    "OldFullAllOwnClosed": true
+  },
+  "Owner": {
+    "Status": "BUILDING",
+    "PID": 4588,
+    "StartTicksUTC": "639289018600730792",
+    "OutputPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build12\\RC_Section_NDM.xlsm",
+    "StartedUTC": "2026-10-29T23:17:41.141146+03:00"
+  },
+  "OwnIdentityTerminal": true,
+  "ForceKilled": false,
+  "FullAcceptanceClaim": false
+}

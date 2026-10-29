@@ -30,6 +30,7 @@ Private mTotalNormalOffset() As Double ' Суммарное нормальное
 Private mOffsetContours As CRebarOffsetContours ' Общие индивидуальные контуры только семейств с ненулевым пользовательским отступом.
 Private mSkippedOffsets As Long ' Дополнительные позиции вне полного смещённого контура.
 Private mMergedOffsetNeighbors As Long ' Пересекающиеся дополнительные стержни соседних граней, заменённые первым физическим стержнем.
+Private mSkippedCoincidences As Long ' Разрешённые совпадения с обязательным предупреждением; полный счётчик не зависит от лимита подробных записей.
 Private mSkippedProjections As Long ' Проекции без пересечения, пропуск которых явно разрешён.
 Private mFilteredByArea As Long, mFilteredAreaByRule() As Long ' Геометрические позиции, исключённые общим порогом до поиска физического владельца.
 Private mRuleArea() As Double, mRuleBelowMinArea() As Boolean ' Площадь диаметра и готовый признак фильтра, вычисленные один раз для каждого активного правила.
@@ -166,6 +167,12 @@ Public Function DiagnosticsText() As String
                 diagnostic.EntityID & "; " & diagnostic.RelatedEntityID & ". " & diagnostic.Reason & vbCrLf
         Next diagnostic
     End If
+    If mSkippedCoincidences > 0 Then
+        DiagnosticsText = DiagnosticsText & SkippedCoincidencesWarning() & vbCrLf
+        For Each diagnostic In mDiagnostics
+            If diagnostic.Code = "COINCIDENCE_SKIPPED" Then DiagnosticsText = DiagnosticsText & diagnostic.SourceReference & ": " & diagnostic.EntityID & "; " & diagnostic.Reason & vbCrLf
+        Next diagnostic
+    End If
     If mFilteredByArea > 0 Then DiagnosticsText = DiagnosticsText & FilteredAreaWarning() & vbCrLf
     If mMergedOffsetNeighbors > 0 Then
         DiagnosticsText = DiagnosticsText & MergedOffsetNeighborsWarning() & vbCrLf
@@ -180,14 +187,18 @@ End Function
 
 ' Распознаёт значимые пропуски и объединения по полным счётчикам, включая события сверх лимита записей.
 Public Property Get HasGeometryWarnings() As Boolean
-    HasGeometryWarnings = (mSkippedOffsets > 0 Or mMergedOffsetNeighbors > 0 Or mFilteredByArea > 0)
+    HasGeometryWarnings = (mSkippedOffsets > 0 Or mMergedOffsetNeighbors > 0 Or mFilteredByArea > 0 Or mSkippedCoincidences > 0)
 End Property
 
 ' Готовит краткие строки по событиям из полных счётчиков без анализа подробного отчёта.
 Public Property Get GeometryWarningText() As String
-    If mSkippedOffsets > 0 Then GeometryWarningText = SkippedOffsetsWarning()
+    If mSkippedCoincidences > 0 Then GeometryWarningText = SkippedCoincidencesWarning()
+    If mSkippedOffsets > 0 Then
+        If Len(GeometryWarningText) > 0 Then GeometryWarningText = GeometryWarningText & vbCrLf
+        GeometryWarningText = GeometryWarningText & SkippedOffsetsWarning()
+    End If
     If mMergedOffsetNeighbors > 0 Then
-        If mSkippedOffsets > 0 Then GeometryWarningText = GeometryWarningText & vbCrLf
+        If Len(GeometryWarningText) > 0 Then GeometryWarningText = GeometryWarningText & vbCrLf
         GeometryWarningText = GeometryWarningText & MergedOffsetNeighborsWarning()
     End If
     If mFilteredByArea > 0 Then
@@ -195,6 +206,12 @@ Public Property Get GeometryWarningText() As String
         GeometryWarningText = GeometryWarningText & FilteredAreaWarning()
     End If
 End Property
+
+' Поясняет штатный пропуск совпавших позиций с сохранением первого физического стержня.
+Private Function SkippedCoincidencesWarning() As String
+    SkippedCoincidencesWarning = "Предупреждение: пропущено совпавших стержней: " & CStr(mSkippedCoincidences) & _
+        ". В каждой совпавшей позиции сохранён первый добавленный стержень с его диаметром и материалом. На схеме и в расчёте учтены фактически созданные стержни. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results."
+End Function
 
 ' Поясняет пропуск дополнительных позиций; наличие события определяет счётчик, а не эта строка.
 Private Function SkippedOffsetsWarning() As String
@@ -223,7 +240,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     mBuilt = False
     Set mDefinition = Nothing ' Даже отказ до подготовки начинает новый отчет, без счетчиков и ID предыдущего успешного запуска того же исполнителя.
     mPositionCount = 0: mCapacity = 0: mSkippedProjections = 0: mSkippedOffsets = 0: Erase mPositions
-    mMergedOffsetNeighbors = 0: mFilteredByArea = 0
+    mMergedOffsetNeighbors = 0: mFilteredByArea = 0: mSkippedCoincidences = 0
     Erase mFilteredAreaByRule: Erase mRuleArea: Erase mRuleBelowMinArea
     Erase mTotalNormalOffset
     Set mOffsetContours = Nothing
@@ -285,6 +302,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
                     "Стержень пропущен: площадь его диаметра меньше Mesh.MinElementArea.", mRuleArea(index), minArea
                 GoTo NextPosition
             End If
+            If MergeDuplicateMainSource(index, order(i), result) Then GoTo NextPosition
             owner = OffsetNeighborOwner(index, position, result)
             If owner > 0 Then
                 ValidatePlacement OffsetCheckRule(index, owner), result.X(owner), result.Y(owner), result.Diameter(owner), result.BarID(owner), geometry, region, query
@@ -308,7 +326,13 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
                     mPhysicalOffsetRule(owner) = index
                     CheckNeighbors index, position, result, owner, result.Diameter(owner)
                 End If
-                If Not identical Then
+                If mRules(index).WarnOnCoincidence Then
+                    mSkippedCoincidences = mSkippedCoincidences + 1
+                    AddDiagnostic index, "COINCIDENCE_SKIPPED", result.BarID(owner), _
+                        "Стержень '" & position.SourcePositionID & "' пропущен: его центр совпал с ранее добавленным стержнем '" & result.BarID(owner) & _
+                        "'. Сохранены диаметр " & CStr(result.Diameter(owner)) & " мм и материал " & result.SteelClass(owner) & _
+                        " первого стержня; запрошенный диаметр пропущенного — " & CStr(mRules(index).Diameter) & " мм.", result.Diameter(owner), mRules(index).Diameter
+                ElseIf Not identical Then
                     mConflicts = mConflicts + 1
                     AddDiagnostic index, "COINCIDENCE_OWNER", result.BarID(owner), "В совпавшей позиции сохранён стержень, которому правило отдаёт приоритет.", result.Diameter(owner), mRules(index).Diameter
                 End If
@@ -331,6 +355,32 @@ NextPosition:
     End If
     mBuilt = True
     Set Build = result
+End Function
+
+' Не создаёт повторные дочерние стержни по двум совпавшим позициям одного Main на той же линии.
+' Дополнительные ряды разных сторон или исходных линий независимы и проходят общую проверку конфликтов.
+Private Function MergeDuplicateMainSource(ByVal index As Long, ByVal positionIndex As Long, ByVal result As CRebarLayout) As Boolean
+    Dim source As Long, original As Long ' Первичная позиция Main для текущего потомка и позиция, впервые создавшая физический основной стержень.
+    Dim mainOwner As Long, owner As Long, rule As Long ' Физические владельцы основного и дочернего стержней и номер исходного Main-правила.
+    source = mPositions(positionIndex).SourcePositionIndex
+    If source = 0 Then Exit Function
+    Do While mPositions(source).SourcePositionIndex > 0: source = mPositions(source).SourcePositionIndex: Loop
+    rule = mPositions(source).RuleIndex
+    If Not mRules(rule).WarnOnCoincidence Then Exit Function
+    mainOwner = mPhysicalOwner(source)
+    If mainOwner = 0 Then Exit Function
+    original = mPhysicalFirstPosition(mainOwner)
+    If original = source Then Exit Function
+    If mPositions(original).RuleIndex <> rule Or mPositions(original).PathID <> mPositions(source).PathID Then Exit Function
+    owner = result.FindBarAt(mPositions(positionIndex).X, mPositions(positionIndex).Y)
+    If owner = 0 Then Exit Function
+    If mPhysicalRule(owner) <> index Then Exit Function ' Слияние допустимо только внутри того же дочернего правила; диаметр и материал чужого ряда не подменяются.
+    mMergedPositions = mMergedPositions + 1: mMergedByRule(index) = mMergedByRule(index) + 1
+    mPhysicalOwner(positionIndex) = owner
+    result.AddMembership owner, mRules(index).AnnotationGroup
+    AddDiagnostic index, "DEPENDENT_SOURCE_DUPLICATE_SKIPPED", result.BarID(owner), _
+        "Повторный зависимый стержень пропущен: совпавшая позиция того же основного ряда уже имеет физического владельца на той же линии.", mPositions(positionIndex).X, mPositions(positionIndex).Y
+    MergeDuplicateMainSource = True
 End Function
 
 ' Выбирает самый ранний физический стержень среди пересекающихся дополнительных рядов соседних граней.
@@ -550,7 +600,7 @@ Private Function PositionCountFor(ByVal index As Long, ByVal path As CGeometryPa
             End Select
         Case ByFixedStep
             intervals = length / mRules(index).Step
-            If mRules(index).EndMode = IncludeBoth Or mRules(index).EndMode = ClosedUniform Then
+            If RequiresIntegralFixedStep(index, path) Then
                 If Abs(intervals - Round(intervals)) > 0.0000000001 Then RuleError index, "Точный шаг несовместим с фиксированными обоими концами или полным замкнутым обходом."
                 PositionCountFor = Round(intervals)
                 If mRules(index).EndMode = IncludeBoth Then PositionCountFor = PositionCountFor + 1#
@@ -852,15 +902,19 @@ Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) A
     If count < 0# Or count > GEOM_MAX_REBAR_COUNT Then RuleError index, "Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг."
     If count = 0# Then Exit Function
     ReDim stations(0 To CLng(count) - 1)
-    If count = 1# And mRules(index).Mode = ByCount And mRules(index).EndMode <> ClosedUniform Then
-        stations(0) = first + length / 2#
+    If count = 1# And mRules(index).Mode = ByCount Then
+        Select Case mRules(index).EndMode
+            Case IncludeStart: stations(0) = first
+            Case IncludeEnd: stations(0) = first + length
+            Case Else: stations(0) = first + length / 2#
+        End Select
     Else
         Select Case mRules(index).EndMode
             Case IncludeBoth
                 step = length / (count - 1#): start = first
             Case ExcludeBoth
                 step = length / (count + 1#): start = first + step
-            Case IncludeStart, ClosedUniform
+            Case IncludeStart
                 step = length / count: start = first
             Case IncludeEnd
                 step = length / count: start = first + step
@@ -870,12 +924,18 @@ Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) A
     StationsFor = stations
 End Function
 
+' Оба заданных конца требуют целого числа точных шагов; на полном замкнутом пути это также относится к включению одного конца без разрыва шага на замыкании.
+Private Function RequiresIntegralFixedStep(ByVal index As Long, ByVal path As CGeometryPath) As Boolean
+    RequiresIntegralFixedStep = (mRules(index).EndMode = IncludeBoth) Or _
+        (path.IsClosed And (mRules(index).EndMode = IncludeStart Or mRules(index).EndMode = IncludeEnd))
+End Function
+
 ' Вычисляет расстояния до стержней с постоянным шагом и заданным включением концов.
 ' Если длина не позволяет выдержать этот шаг в выбранном режиме, сообщает об ошибке.
 Private Function FixedStations(ByVal index As Long, ByVal path As CGeometryPath, ByVal first As Double, ByVal length As Double) As Variant
     Dim count As Double, intervals As Double, start As Double, step As Double, stations() As Double, i As Long, kept As Long, station As Double
     step = mRules(index).Step: intervals = length / step
-    If mRules(index).EndMode = ClosedUniform Or mRules(index).EndMode = IncludeBoth Then
+    If RequiresIntegralFixedStep(index, path) Then
         If Abs(intervals - Round(intervals)) > 0.0000000001 Then RuleError index, "Точный шаг несовместим с фиксированными обоими концами или полным замкнутым обходом."
         count = Round(intervals)
         If mRules(index).EndMode = IncludeBoth Then count = count + 1#
@@ -910,7 +970,7 @@ Private Sub ValidateOptions(ByVal index As Long)
     With mRules(index)
         If .Diameter <= 0# Then RuleError index, "Диаметр активного ряда должен быть положительным."
         If .StartSetback < 0# Or .EndSetback < 0# Then RuleError index, "Концевые отступы не могут быть отрицательными."
-        If .EndMode < IncludeBoth Or .EndMode > ClosedUniform Then RuleError index, "Не распознан способ установки стержней на концах линии (EndMode)."
+        If .EndMode < IncludeBoth Or .EndMode > IncludeEnd Then RuleError index, "Не распознан способ установки стержней на концах линии (EndMode)."
         If .PlacementCheck <> CheckCenter And .PlacementCheck <> CheckFullDisk Then RuleError index, "Не распознана проверка положения арматуры: принадлежность центров или всего поперечного сечения стержней бетону (PlacementCheck)."
         If .OverlapPolicy <> ReportOverlap And .OverlapPolicy <> RejectOverlap Then RuleError index, "Не распознано правило обработки пересечения поперечных сечений стержней."
         If .Publication <> PublishByRule And .Publication <> PublishPerSourcePosition Then RuleError index, "Не распознан порядок присвоения расчётных имён основным и связанным стержням (Publication)."
@@ -942,9 +1002,6 @@ Private Sub ValidateWorkInterval(ByVal index As Long, ByVal path As CGeometryPat
     End If
     If path.IsClosed Then
         If mRules(index).StartSetback <> 0# Or mRules(index).EndSetback <> 0# Then RuleError index, "При равномерном размещении по всей замкнутой линии концевые отступы должны быть нулевыми. Для ненулевых отступов задайте открытый участок."
-        If mRules(index).EndMode <> ClosedUniform Then RuleError index, "Для всей замкнутой линии используйте ClosedUniform — равномерное размещение без повторного стержня на замыкании. Для других способов задайте открытый участок."
-    ElseIf mRules(index).EndMode = ClosedUniform Then
-        RuleError index, "Равномерное размещение по полному замкнутому обходу (ClosedUniform) неприменимо к открытой линии."
     End If
 End Sub
 

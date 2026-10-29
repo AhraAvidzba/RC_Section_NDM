@@ -37,7 +37,7 @@ MEANINGS['Opening'].update(namingPolicy='способ публикации им�
 PROPERTIES = {
  'StartSetback':'отступ начала участка размещения от начала линии, мм',
  'EndSetback':'отступ конца участка размещения от конца линии, мм',
- 'EndMode':'учёт концов: ClosedUniform замкнутый ряд; ExcludeBoth без крайних точек',
+ 'EndMode':'включение начала и конца: IncludeBoth, ExcludeBoth, IncludeStart или IncludeEnd',
  'SourcePrefix':'начало имён стержней', 'SourceSuffix':'суффикс имён дополнительного ряда',
  'AnnotationGroup':'имя общей подписи для всех рядов этой группы',
  'Publication':'PublishPerSourcePosition сохраняет имена по исходным позициям',
@@ -158,6 +158,6 @@ def argument_comment(code, owner, builder_signatures, helper_signatures, fallbac
         args = [{'parameter':p,'value':v.strip(),'meaning':PROPERTIES[p]} for p,v in assignments]
         for a in args:
             if a['parameter'] == 'EndMode':
-                a['meaning'] = 'ClosedUniform распределяет стержни по замкнутой линии без повторного конца' if a['value']=='ClosedUniform' else 'ExcludeBoth не ставит стержни на концах участка после концевых отступов'
+                a['meaning'] = {'IncludeBoth':'включает оба конца пути', 'ExcludeBoth':'исключает оба конца пути', 'IncludeStart':'включает начало и исключает конец; на полном замкнутом пути не повторяет точку замыкания', 'IncludeEnd':'исключает начало и включает конец пути'}.get(a['value'], PROPERTIES['EndMode'])
         return '; '.join(a['parameter']+' — '+a['meaning'] for a in args)+'.',args
     return fallback,[]

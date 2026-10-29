@@ -16,9 +16,9 @@ Option Explicit
 ' CSectionDefinitionBuilder копирует параметры при объявлении правила,
 ' поэтому последующее изменение этого объекта не меняет готовое описание сечения.
 
-Public StartSetback As Double ' Отступ начала участка размещения от начала каждой линии, мм >= 0; для полного ClosedUniform равен 0.
+Public StartSetback As Double ' Отступ начала участка размещения от начала каждой линии, мм >= 0; для полного замкнутого пути равен 0.
 Public EndSetback As Double ' Отступ конца участка размещения от конца линии, мм >= 0; при проекции ограничивает участок без перераспределения стержней.
-Public EndMode As ERebarEndMode ' Какие концы ряда включать: оба, ни одного, только начало или конец; ClosedUniform задаёт равномерный замкнутый ряд.
+Public EndMode As ERebarEndMode ' Какие концы ряда включать: оба, ни одного, только начало или конец; на замкнутом пути IncludeStart не повторяет начальную точку.
 Public DistributionScope As ERebarDistributionScope ' Допустимо только PerPath: число стержней, расстояния между ними и отступы от концов применяются отдельно к каждой независимой линии группы.
 Public RemainderPlacement As ERemainderPlacement ' К какому концу или середине ряда отнести остаток длины при постоянном шаге.
 Public TangentOffset As Double ' Смещение зависимого стержня вдоль касательной к исходной линии, мм; знак задаёт направление.
@@ -35,6 +35,7 @@ Public SkipMissingProjection As Boolean ' Разрешает пропуск пр
 Public Publication As ERebarPublication ' Порядок добавления: сначала весь ряд или каждый основной стержень вместе с зависимыми; расстояния между стержнями не меняются.
 Public PositionOrder As ERebarPositionOrder ' Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. При KeepPublishedOwner также определяет, чей диаметр и материал сохраняются в совпавшей позиции.
 Public Coincidence As ERebarCoincidence ' Как обработать совпавшие центры: отклонить, объединить одинаковые стержни или сохранить ранее добавленный стержень.
+Public WarnOnCoincidence As Boolean ' При разрешённом совпадении предупреждать о пропуске каждой поздней позиции, даже при одинаковом диаметре и материале.
 Public PlacementCheck As ERebarPlacementCheck ' Что проверять относительно бетона и отверстий: только центр стержня или всё его круглое поперечное сечение.
 Public OverlapPolicy As ERebarOverlapPolicy ' При пересечении стержней по площади: записать сообщение или отклонить расстановку. Касание допускается; нормативный зазор здесь не проверяется.
 Public SourcePrefix As String ' Начало имени исходной позиции; если не задано, имя строится из ID правила или имени исходного стержня.
@@ -97,6 +98,7 @@ Public Function Clone() As CRebarRuleOptions
     result.Publication = Publication
     result.PositionOrder = PositionOrder
     result.Coincidence = Coincidence
+    result.WarnOnCoincidence = WarnOnCoincidence
     result.PlacementCheck = PlacementCheck
     result.OverlapPolicy = OverlapPolicy
     result.SourcePrefix = SourcePrefix
@@ -123,6 +125,7 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.SkipMissingProjection = SkipMissingProjection
     rule.Publication = Publication: rule.PlacementCheck = PlacementCheck
     rule.PositionOrder = PositionOrder: rule.Coincidence = Coincidence
+    rule.WarnOnCoincidence = WarnOnCoincidence
     rule.OverlapPolicy = OverlapPolicy
     rule.SourcePrefix = SourcePrefix: rule.SourceSuffix = SourceSuffix
     rule.AnnotationGroup = AnnotationGroup: rule.Comment = Comment

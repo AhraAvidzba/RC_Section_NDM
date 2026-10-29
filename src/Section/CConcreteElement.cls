@@ -169,7 +169,7 @@ Public Property Get Geometry() As CConcreteRegion
 End Property
 
 ' Вычисляет проекцию собственной неизменяемой границы без выдачи изменяемого объекта наружу.
-' Использует тот же геометрический запрос; независимая публичная Geometry по-прежнему возвращает Clone.
+' Использует общий геометрический запрос; публичная Geometry возвращает независимую копию Clone.
 Friend Sub ExactProjectionBounds(ByVal axisX As Double, ByVal axisY As Double, ByRef minimum As Double, ByRef maximum As Double)
     If mExactGeometry Is Nothing Then Err.Raise vbObjectError + 5223, "CConcreteElement", "Фактическая граница бетонного элемента не задана."
     Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery

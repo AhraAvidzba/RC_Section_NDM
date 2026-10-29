@@ -370,7 +370,7 @@ Private Function TestGeometryReviewAreaFamily(ByVal side As Double, ByVal shift 
         facade.Outer "OUTER", "Boundary": loopID = "OUTER"
     End If
     Set path = facade.Offset("Axis", "Boundary", inward * side / 10#)
-    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform: options.AnnotationGroup = "Family"
+    Set options = New CRebarRuleOptions: options.EndMode = IncludeStart: options.AnnotationGroup = "Family"
     facade.RebarByCount "Main", path.ID, 8, side / 20#, options
     Set options = New CRebarRuleOptions: options.NormalOffset = inward * side / 10#: options.ValidateRowOffset = True
     options.AnnotationGroup = "Family": options.PlacementCheck = CheckFullDisk
@@ -505,8 +505,8 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
 
     TestAssertTrue stats, "annotation.rectangles.count", rectanglesLabels.Count = 1
     TestAssertTrue stats, "annotation.rectangles.group", rectanglesLabels.AnnotationID(1) = "REBAR_H1.as_1"
-    TestAssertClose stats, "annotation.rectangles.startY", rectanglesLabels.StartY(1), 300#, 0.000001
-    TestAssertClose stats, "annotation.rectangles.endY", rectanglesLabels.EndY(1), 730#, 0.000001
+    TestAssertClose stats, "annotation.rectangles.startY", rectanglesLabels.StartY(1), 250# + 40# + 50#, 0.000001
+    TestAssertClose stats, "annotation.rectangles.endY", rectanglesLabels.EndY(1), 800# - 40# - 70#, 0.000001
     TestAssertClose stats, "annotation.rectangles.normalX", rectanglesLabels.NormalX(1), -1#, 0.000001
     TestAssertClose stats, "annotation.rectangles.axisDistance", rectanglesBars.X(1), 40#, 0.000001
 
@@ -1209,10 +1209,11 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
 
     Dim noFirstRow As CRebarLayout
     Set noFirstRow = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
-        Array(Array(50#, 50#, 20#, 20#, 0, 0, 100#, 100#, 100#, 100#, 20#, 20#, 30#, 30#, "Stacked", "Stacked"), Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
+        Array(Array(50#, 50#, 20#, 20#, 0, 0, 100#, 100#, 100#, 100#, 20#, 20#, 30#, 30#, "Stacked", "Stacked"), Array(50#, 50#, 20#, 20#, 1, 0, 50#, 50#, 100#, 100#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.noFirstRow.ignored", noFirstRow.Count = 1
     TestAssertTrue stats, "rectangles.rows.noFirstRow.source", InStr(1, noFirstRow.BarID(1), "H2", vbTextCompare) > 0
+    TestAssertClose stats, "rectangles.rows.noFirstRow.midpoint", noFirstRow.Y(1), 250# / 2#, 0.000001
 
     Dim mixed As CRebarLayout
     Set mixed = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
@@ -1489,7 +1490,7 @@ Private Sub TestRectanglesAutoRebarLayout(ByRef stats As TTestStats)
     Set footprint = TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#))
     TestAssertClose stats, "rectangles.rebar.perimeter", footprint.Path("Upper").Length + footprint.Path("Lower").Length, 3300#, 0.000001
     TestAssertClose stats, "rectangles.rebar.outerPerimeter", footprint.Path("Boundary").Length, 2800#, 0.000001
-    TestAssertClose stats, "rectangles.rebar.step", Abs(layout.X(7) - layout.X(6)), 200#, 0.000001
+    TestAssertClose stats, "rectangles.rebar.step", Abs(layout.X(7) - layout.X(6)), (600# - 50# - 50# - 100# - 100#) / 2#, 0.000001
     TestAssertClose stats, "rectangles.rebar.firstX", layout.X(1), 50#, 0.000001
     TestAssertClose stats, "rectangles.rebar.firstY", layout.Y(1), 525#, 0.000001
     TestAssertTrue stats, "rectangles.rebar.zeroFaceSkipped", InStr(1, layout.BarID(1), "H2", vbTextCompare) = 0
@@ -1535,10 +1536,10 @@ Private Sub TestRectanglesSeparateLineOffsets(ByRef stats As TTestStats)
         Array(Array(40#, 60#, 20#, 20#, 2, 2, 80#, 120#, 30#, 70#), Array(40#, 40#, 20#, 20#, 0, 0, 40#, 40#, 40#, 40#), Array(40#, 40#, 20#, 20#, 0, 0, 40#, 40#, 40#, 40#), Array(40#, 40#, 20#, 20#, 0, 0, 40#, 40#, 40#, 40#))), builder)
 
     TestAssertTrue stats, "rectangles.offsets.separate.count", layout.Count = 4
-    TestAssertClose stats, "rectangles.offsets.as_1.firstY", layout.Y(1), 680#, 0.000001
-    TestAssertClose stats, "rectangles.offsets.as_1.edgeY", layout.Y(2), 330#, 0.000001
-    TestAssertClose stats, "rectangles.offsets.as_2.firstY", layout.Y(3), 320#, 0.000001
-    TestAssertClose stats, "rectangles.offsets.as_2.edgeY", layout.Y(4), 770#, 0.000001
+    TestAssertClose stats, "rectangles.offsets.as_1.firstY", layout.Y(1), 250# + 550# - 40# - 120#, 0.000001
+    TestAssertClose stats, "rectangles.offsets.as_1.edgeY", layout.Y(2), 250# + 40# + 80#, 0.000001
+    TestAssertClose stats, "rectangles.offsets.as_2.firstY", layout.Y(3), 250# + 40# + 70#, 0.000001
+    TestAssertClose stats, "rectangles.offsets.as_2.edgeY", layout.Y(4), 250# + 550# - 40# - 30#, 0.000001
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -1603,7 +1604,10 @@ Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
     TestAssertTrue stats, "circle.rebar.rows.noFirstByDiameter.ignored", noFirstByDiameter.Count = 0
 
     TestAssertCircleRebarError stats, "circle.rebar.invalid.D", 0#, 40#, 8, 20#
-    TestAssertCircleRebarError stats, "circle.rebar.invalid.n", 300#, 40#, 1, 20#
+    Set layout = TestFixtureAnnotatedLayout(TestFixtureCircleDefinition(Array(300#, 40#, 1, 20#)), builder)
+    TestAssertTrue stats, "circle.rebar.single.closed.count", layout.Count = 1
+    TestAssertClose stats, "circle.rebar.single.closed.x", layout.X(1), 0#, 0.000001
+    TestAssertClose stats, "circle.rebar.single.closed.y", layout.Y(1), 110#, 0.000001
     TestAssertCircleRebarError stats, "circle.rebar.invalid.ds", 300#, 40#, 8, -1#
     TestAssertCircleRebarError stats, "circle.rebar.invalid.as.small", 300#, 10#, 8, 20#
     TestAssertCircleRebarError stats, "circle.rebar.invalid.as.large", 300#, 150#, 8, 20#

@@ -373,7 +373,99 @@ Private Sub TestUnifiedRebarPaths()
     code = Err.Number: reason = Err.Description: Err.Clear
     On Error GoTo 0
     TestCheck "unified.disappearing.side.rejected", code <> 0 And InStr(reason, "исчез") > 0 And InStr(reason, "left.as") > 0 And InStr(reason, "right.as") > 0
+    TestUnifiedContourSourceParameters
+    TestExplicitEndModes
 End Sub
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет исходные параметры после двух смещений, переименования и обратного обхода.
+' Аналитические координаты задаются прямоугольником 1000x600, первым отступом 10 и независимыми as=30/70/50/90.
+Private Sub TestUnifiedContourSourceParameters()
+    Dim definition As CSectionDefinition, contour As CGeometryPath, path As CGeometryPath, transferred As CGeometryPath
+    Dim query As CSectionGeometryQuery, layout As CRebarLayout, i As Long, code As Long, reason As String, faces As Variant, joins As Long
+    Set definition = TestProvenanceOffsetDefinition(False)
+    Set contour = definition.Path("Axis"): i = contour.SegmentIndex("Renamed.Bottom")
+    TestCheck "unified.provenance.root.path", contour.SourcePathID(i) = "Original"
+    TestCheck "unified.provenance.root.segment", contour.SourceSegmentID(i) = "Bottom"
+    TestNear "unified.provenance.bottom.first", contour.SourceStartParameter(i), 0.04
+    TestNear "unified.provenance.bottom.last", contour.SourceEndParameter(i), 0.92
+    Set path = definition.Path("Top")
+    TestNear "unified.provenance.reversed.first", path.SourceStartParameter(1), 0.96
+    TestNear "unified.provenance.reversed.last", path.SourceEndParameter(1), 0.08
+    Set query = New CSectionGeometryQuery: Set transferred = query.OffsetPath("Transferred", contour, 10#)
+    i = transferred.SegmentIndex("Renamed.Bottom")
+    TestCheck "unified.provenance.transfer.root", transferred.SourcePathID(i) = "Original" And transferred.SourceSegmentID(i) = "Bottom"
+    TestNear "unified.provenance.transfer.first", transferred.SourceStartParameter(i), 0.05
+    TestNear "unified.provenance.transfer.last", transferred.SourceEndParameter(i), 0.91
+    Set layout = TestFixtureAnnotatedLayout(definition)
+    TestCheck "unified.provenance.layout.count", layout.Count = 6
+    TestCheck "unified.provenance.layout.main.count", TestGroupCount(layout, "Main") = 3
+    TestCheck "unified.provenance.layout.row2.count", TestGroupCount(layout, "R2") = 3
+    TestNear "unified.provenance.layout.first.x", layout.X(1), 40#
+    TestNear "unified.provenance.layout.last.x", layout.X(3), 920#
+    For i = 1 To layout.Count
+        If TestInGroup(layout, i, "Main") Then
+            TestNear "unified.provenance.layout.y." & CStr(i), layout.Y(i), 540#
+        Else
+            TestNear "unified.provenance.layout.row2.y." & CStr(i), layout.Y(i), 520#
+        End If
+    Next i
+    code = 0: reason = "": Set layout = Nothing
+    On Error Resume Next
+    Set layout = TestFixtureAnnotatedLayout(TestProvenanceOffsetDefinition(True))
+    code = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "unified.provenance.wrongSource.rejected", code <> 0 And InStr(reason, "не принадлежит заданной группе") > 0
+
+    faces = Array(Array(20#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(80#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(60#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"))
+    Set definition = TestFixtureRoundedDefinition(Array(1000#, 600#, 0#, 0#, 100#, 100#, 0#, 0#), faces)
+    Set contour = definition.Path("Rebar.Boundary")
+    For i = 1 To contour.SegmentCount
+        If Left$(contour.SegmentID(i), 12) = "Offset.Join." Then
+            joins = joins + 1
+            TestCheck "unified.provenance.join.path." & CStr(i), contour.SourcePathID(i) = contour.ID
+            TestCheck "unified.provenance.join.segment." & CStr(i), contour.SourceSegmentID(i) = contour.SegmentID(i)
+            TestNear "unified.provenance.join.first." & CStr(i), contour.SourceStartParameter(i), 0#
+            TestNear "unified.provenance.join.last." & CStr(i), contour.SourceEndParameter(i), 1#
+        End If
+    Next i
+    TestCheck "unified.provenance.joins.present", joins > 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт производный контур с отличающимися локальными именами и сохранёнными исходными параметрами.
+' Ненулевой отступ R2 включает проверку связей контура; без него этот контракт штатно не используется.
+' Отрицательный вариант намеренно связывает верхний Main с нижней исходной гранью; общий исполнитель обязан отклонить такую связь.
+Private Function TestProvenanceOffsetDefinition(ByVal wrongSource As Boolean) As CSectionDefinition
+    Dim facade As CSectionDefinitionBuilder, original As CGeometryPath, inner As CGeometryPath, renamed As CGeometryPath
+    Dim query As CSectionGeometryQuery, axis As CGeometryPath, path As CGeometryPath, options As CRebarRuleOptions
+    Dim edge As TRegionEdge, i As Long, selected As String
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "Test.Provenance"
+    Set original = facade.RectanglePath("Original", 0#, 0#, 1000#, 600#, "Bottom", "Right", "Top", "Left")
+    Set query = New CSectionGeometryQuery: Set inner = query.OffsetPath("Inner", original, 10#)
+    Set renamed = New CGeometryPath: renamed.Initialize "Renamed"
+    For i = 1 To inner.SegmentCount
+        inner.CopySegment i, edge
+        renamed.Append "Renamed." & inner.SegmentID(i), edge, inner.SourcePathID(i), inner.SourceSegmentID(i), inner.SourceStartParameter(i), inner.SourceEndParameter(i)
+    Next i
+    renamed.Seal True: facade.AddPath renamed
+    Set axis = facade.OffsetContour("Axis", renamed.ID, Array("Renamed.Left", "Renamed.Right", "Renamed.Top", "Renamed.Bottom"), _
+        Array(30#, 70#, 50#, 90#), Array("left.as", "right.as", "top.as", "bottom.as"))
+    facade.Outer "OUTER", renamed.ID
+    Set path = facade.Chain("Top", axis.ID, "Renamed.Top", 1#, "Renamed.Top", 0#, False)
+    Set options = New CRebarRuleOptions: options.SourceReference = "TestProvenance.As": options.AnnotationGroup = "Main"
+    facade.RebarByCount "Main", path.ID, 3, 20#, options
+    Set options = New CRebarRuleOptions: options.SourceReference = "TestProvenance.R2": options.AnnotationGroup = "R2"
+    options.NormalOffset = -20#: options.ValidateRowOffset = True
+    facade.RebarDependent "R2", "Main", 20#, options
+    selected = "Renamed.Top": If wrongSource Then selected = "Renamed.Bottom"
+    facade.RebarContour "Main", "OUTER", renamed.ID, 50#, "R2", "", sourceSegments:=Array(selected), normalSign:=-1#
+    Set TestProvenanceOffsetDefinition = facade.Finish
+End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Считает физические стержни, которые состоят в указанной группе, включая дополнительные принадлежности.
@@ -426,3 +518,289 @@ End Sub
 Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000001
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет координаты четырёх открытых режимов, один стержень, замкнутый обход и адреса несовместимых настроек.
+Private Sub TestExplicitEndModes()
+    Dim modes As Variant, starts As Variant, ends As Variant, singles As Variant, mode As Long, count As Long
+    Dim layout As CRebarLayout, i As Long, minX As Double, maxX As Double, values As Variant, key As Variant
+    Dim recipe As ISectionRecipe, definition As CSectionDefinition, code As Long, reason As String, reader As CSectionInputReader
+    modes = Array(IncludeBoth, ExcludeBoth, IncludeStart, IncludeEnd)
+    starts = Array(120#, 180#, 120#, 200#): ends = Array(360#, 300#, 280#, 360#)
+    singles = Array(240#, 240#, 120#, 360#)
+    Dim modeNames As Variant: modeNames = Array("IncludeBoth", "ExcludeBoth", "IncludeStart", "IncludeEnd")
+    values = TestFixtureRecipeValues("rngCircleGeometry")
+    For mode = 0 To 3
+        TestFixtureSetInput values, "Main", "Circle", "endMode", CStr(modeNames(mode))
+        Set reader = TestFixtureInput(values)
+        TestCheck "endMode.reader.typed." & CStr(mode), reader.RebarEndMode("Main", "Circle") = CLng(modes(mode))
+        For count = 1 To 3 Step 2
+            Set layout = TestEndModeLayout(CLng(modes(mode)), count)
+            TestCheck "endMode.open.count." & CStr(mode) & "." & CStr(count), layout.Count = count
+            minX = 1E+30: maxX = -1E+30
+            For i = 1 To layout.Count
+                minX = GeomMin(minX, layout.X(i)): maxX = GeomMax(maxX, layout.X(i))
+                TestNear "endMode.open.y." & CStr(mode) & "." & CStr(count) & "." & CStr(i), layout.Y(i), 100#
+            Next i
+            If count = 1 Then
+                TestNear "endMode.single." & CStr(mode), minX, CDbl(singles(mode))
+            Else
+                TestNear "endMode.first." & CStr(mode), minX, CDbl(starts(mode))
+                TestNear "endMode.last." & CStr(mode), maxX, CDbl(ends(mode))
+            End If
+        Next count
+    Next mode
+    Set layout = TestEndModeLayout(IncludeStart, 4, True)
+    TestCheck "endMode.closed.count", layout.Count = 4
+    For i = 1 To 4
+        TestNear "endMode.closed.radius." & CStr(i), Sqr((layout.X(i) - 250#) ^ 2 + (layout.Y(i) - 250#) ^ 2), 100#
+    Next i
+    TestNear "endMode.closed.unique.spacing", Sqr((layout.X(1) - layout.X(4)) ^ 2 + (layout.Y(1) - layout.Y(4)) ^ 2), Sqr(2#) * 100#
+
+    values = TestFixtureRecipeValues("rngRectanglesGeometry")
+    TestFixtureSetInput values, "General", "Shape", "val", "OneRect"
+    For Each key In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right")
+        TestFixtureSetInput values, "Main", CStr(key), "n", 0
+        TestFixtureSetInput values, "Main", CStr(key), "as", 40#
+    Next key
+    TestFixtureSetInput values, "Main", "R1.Top", "n", 3
+    TestFixtureSetInput values, "Main", "R1.Top", "d", 20#
+    Set recipe = New CSectionRecipeRectangles
+    For Each key In Array("ClosedUniform", "Auto", "unknown", "IncludeBoth,ExcludeBoth", "IncludeBoth;ExcludeBoth", "", CVErr(xlErrValue))
+        TestFixtureSetInput values, "Main", "R1.Top", "endMode", key
+        code = 0: reason = "": Set definition = Nothing
+        On Error Resume Next
+        Set definition = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values)
+        code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo 0
+        TestCheck "endMode.invalid.address." & CStr(VarType(key)) & "." & CStr(Len(reason)), code <> 0 And definition Is Nothing And InStr(reason, "rngRectanglesGeometry[") > 0
+    Next key
+    values = TestFixtureRecipeValues("rngHollowRectangleGeometry")
+    TestFixtureSetInput values, "Main", "OpeningTop", "endMode", "IncludeBoth"
+    Set recipe = New CSectionRecipeHollowRectangle: code = 0: reason = "": Set definition = Nothing
+    On Error Resume Next
+    Set definition = TestFixtureRecipeDefinition(recipe, "rngHollowRectangleGeometry", values)
+    code = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "endMode.projection.inapplicable.address", code <> 0 And InStr(reason, "проекц") > 0 And InStr(reason, "rngHollowRectangleGeometry[") > 0
+    TestMainCoincidenceLabels
+    TestCircleSingleEndModes
+    TestCircleClosedEndModes
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт независимый путь: открытый x100..400 с отступами20/40 либо полный круг радиуса100 внутри бетона.
+Private Function TestEndModeLayout(ByVal mode As ERebarEndMode, ByVal count As Long, Optional ByVal closed As Boolean = False) As CRebarLayout
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "Test.EndMode"
+    Set path = facade.RectanglePath("Concrete", 0#, 0#, 600#, 600#): facade.Outer "OUTER", path.ID
+    If closed Then
+        Set path = facade.CirclePath("Axis", 250#, 250#, 100#)
+    Else
+        Set path = facade.LinePath("Axis", 100#, 100#, 400#, 100#)
+    End If
+    Set options = New CRebarRuleOptions: options.EndMode = mode
+    If Not closed Then options.StartSetback = 20#: options.EndSetback = 40#
+    facade.RebarByCount "Main", path.ID, count, 20#, options
+    Set TestEndModeLayout = TestFixtureAnnotatedLayout(facade.Finish)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет общий угол двух Main: первый стержень сохраняется, второй пропускается с предупреждением, подписи считают только физические стержни.
+Private Sub TestMainCoincidenceLabels()
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions, copied As CRebarRuleOptions
+    Dim layout As CRebarLayout, executor As CRebarRuleExecutor, labels As CSectionAnnotations, definition As CSectionDefinition
+    Dim diameter As Variant, i As Long, owner As Long, firstFound As Boolean, secondFound As Boolean
+    For Each diameter In Array(20#, 16#)
+        Set facade = New CSectionDefinitionBuilder: facade.Initialize "Test.MainCoincidence"
+        Set path = facade.RectanglePath("Concrete", 0#, 0#, 600#, 600#): facade.Outer "OUTER", path.ID
+        Set path = facade.LinePath("AxisA", 100#, 100#, 300#, 100#)
+        Set path = facade.LinePath("AxisB", 300#, 100#, 300#, 300#)
+        Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner: options.WarnOnCoincidence = True
+        Set copied = options.Clone: options.WarnOnCoincidence = False
+        TestCheck "main.coincidence.options.clone", copied.WarnOnCoincidence
+        copied.AnnotationGroup = "First": copied.SourceReference = "First.EndMode"
+        facade.RebarByCount "First.Main", "AxisA", 3, 20#, copied, "A400"
+        copied.AnnotationGroup = "Second": copied.SourceReference = "Second.EndMode"
+        facade.RebarByCount "Second.Main", "AxisB", 3, CDbl(diameter), copied, "A400"
+        copied.WarnOnCoincidence = False ' Проверяем, что объявленные правила сохранили независимую копию параметров.
+        facade.RebarLabel "First", "AxisA", 0#, -1#: facade.RebarLabel "Second", "AxisB", 1#, 0#
+        Set definition = facade.Finish: Set executor = New CRebarRuleExecutor
+        Set layout = TestFixtureAnnotatedLayout(definition, executor, labels)
+        TestCheck "main.coincidence.physical.count." & CStr(diameter), layout.Count = 5 And executor.RequestedPositions = 6 And executor.MergedPositions = 1
+        owner = layout.FindBarAt(300#, 100#)
+        TestCheck "main.coincidence.first.owner." & CStr(diameter), owner > 0
+        If owner > 0 Then
+            TestNear "main.coincidence.first.diameter." & CStr(diameter), layout.Diameter(owner), 20#
+            TestCheck "main.coincidence.first.material." & CStr(diameter), layout.SteelClass(owner) = "A400"
+            TestCheck "main.coincidence.first.label.group." & CStr(diameter), layout.BarAnnotationGroupName(owner) = "First"
+        End If
+        TestCheck "main.coincidence.warning.typed." & CStr(diameter), executor.HasGeometryWarnings And InStr(executor.GeometryWarningText, "пропущено совпавших стержней: 1") > 0
+        TestCheck "main.coincidence.warning.detail." & CStr(diameter), executor.DiagnosticCount = 1 And executor.DiagnosticAt(1).Code = "COINCIDENCE_SKIPPED" And executor.DiagnosticAt(1).SourceReference = "Second.EndMode"
+        TestCheck "main.coincidence.warning.saved.text." & CStr(diameter), InStr(executor.DiagnosticsText, "Second.EndMode") > 0 And InStr(executor.DiagnosticsText, "пропущен") > 0
+        firstFound = False: secondFound = False
+        For i = 1 To labels.Count
+            If labels.AnnotationID(i) = "REBAR_First" Then firstFound = labels.Text(i) = "3" & ChrW$(216) & "20"
+            If labels.AnnotationID(i) = "REBAR_Second" Then secondFound = labels.Text(i) = "2" & ChrW$(216) & CStr(diameter)
+        Next i
+        TestCheck "main.coincidence.labels.actual." & CStr(diameter), firstFound And secondFound And labels.Count = 2
+    Next diameter
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет один реальный стержень Circle: четыре режима дуги270 градусов и полный IncludeStart, без старого ограничения n>=2.
+Private Sub TestCircleSingleEndModes()
+    Dim values As Variant, recipe As ISectionRecipe, layout As CRebarLayout, mode As Long
+    Dim modes As Variant, expectedX As Variant, expectedY As Variant
+    modes = Array("IncludeBoth", "ExcludeBoth", "IncludeStart", "IncludeEnd", "IncludeStart")
+    expectedX = Array(100# / Sqr(2#), 100# / Sqr(2#), 0#, -100#, 0#)
+    expectedY = Array(-100# / Sqr(2#), -100# / Sqr(2#), 100#, 0#, 100#)
+    For mode = 0 To 4
+        values = TestFixtureRecipeValues("rngCircleGeometry")
+        TestFixtureSetInput values, "General", "D", "val", 300#
+        TestFixtureSetInput values, "Main", "Circle", "as", 50#
+        TestFixtureSetInput values, "Main", "Circle", "d", 20#
+        TestFixtureSetInput values, "Main", "Circle", "n", 1
+        TestFixtureSetInput values, "Main", "Circle", "endMode", modes(mode)
+        If mode < 4 Then TestFixtureSetInput values, "Main", "Circle", "s1", 50# * GEOM_PI
+        TestFixtureSetInput values, "Extra", "Circle", "d2", 0#
+        TestFixtureSetInput values, "Extra", "Circle", "d3", 0#
+        Set recipe = New CSectionRecipeCircle
+        Set layout = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngCircleGeometry", values))
+        TestCheck "endMode.circle.single.count." & CStr(mode), layout.Count = 1
+        If layout.Count > 0 Then
+            TestNear "endMode.circle.single.x." & CStr(mode), layout.X(1), CDbl(expectedX(mode))
+            TestNear "endMode.circle.single.y." & CStr(mode), layout.Y(1), CDbl(expectedY(mode))
+        End If
+    Next mode
+End Sub
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет все четыре режима на полном круге, один стержень, фактические количества и отсутствие повторных дочерних стержней на замыкании.
+Private Sub TestCircleClosedEndModes()
+    Dim values As Variant, recipe As ISectionRecipe, layout As CRebarLayout, executor As CRebarRuleExecutor
+    Dim labels As CSectionAnnotations, mode As Long, count As Variant, i As Long, wanted As Long, ordinal As Long
+    Dim modes As Variant, fraction As Double, angle As Double, sum As Double, kind As Long, code As Long, reason As String
+    Dim mainCount As Long, row2Count As Long, row3Count As Long
+    Dim labelParts As Variant, part As Variant, labelCount As Long, labelMatch As Boolean
+    Dim diagnosticCount As Long, diagnostic As CGeometryDiagnostic
+    modes = Array("IncludeBoth", "ExcludeBoth", "IncludeStart", "IncludeEnd")
+    For Each count In Array(1, 4, 5)
+        For mode = 0 To 3
+            values = TestCircleClosedValues(CStr(modes(mode)), CLng(count))
+            Set recipe = New CSectionRecipeCircle: Set executor = New CRebarRuleExecutor
+            Set layout = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngCircleGeometry", values), executor)
+            wanted = CLng(count): If mode = 0 And wanted > 1 Then wanted = wanted - 1
+            TestCheck "endMode.full.circle.count." & CStr(mode) & "." & CStr(count), layout.Count = wanted
+            For i = 1 To layout.Count
+                If CLng(count) = 1 Then
+                    fraction = 0#: If mode < 2 Then fraction = 0.5
+                    If mode = 3 Then fraction = 1#
+                Else
+                    Select Case mode
+                        Case 0: fraction = CDbl(i - 1) / (CDbl(count) - 1#)
+                        Case 1: fraction = CDbl(i) / (CDbl(count) + 1#)
+                        Case 2: fraction = CDbl(i - 1) / CDbl(count)
+                        Case 3: fraction = CDbl(i) / CDbl(count)
+                    End Select
+                End If
+                angle = GEOM_PI / 2# - 2# * GEOM_PI * fraction
+                TestNear "endMode.full.circle.x." & CStr(mode) & "." & CStr(count) & "." & CStr(i), layout.X(i), 100# * Cos(angle)
+                TestNear "endMode.full.circle.y." & CStr(mode) & "." & CStr(count) & "." & CStr(i), layout.Y(i), 100# * Sin(angle)
+            Next i
+            TestCheck "endMode.full.circle.warning." & CStr(mode) & "." & CStr(count), executor.HasGeometryWarnings = (mode = 0 And CLng(count) > 1)
+        Next mode
+    Next count
+    values = TestCircleClosedValues("IncludeBoth", 5)
+    TestFixtureSetInput values, "Extra", "Circle", "d2", 12#
+    TestFixtureSetInput values, "Extra", "Circle", "d3", 10#
+    TestFixtureSetInput values, "Extra", "Circle", "bind2", "EachBar"
+    TestFixtureSetInput values, "Extra", "Circle", "bind3", "EverySecondBar"
+    TestFixtureSetInput values, "Extra", "Circle", "pos2", "Stacked"
+    TestFixtureSetInput values, "Extra", "Circle", "pos3", "Stacked"
+    TestFixtureSetInput values, "Extra", "Circle", "a2", 0#
+    TestFixtureSetInput values, "Extra", "Circle", "a3", 0#
+    Set executor = New CRebarRuleExecutor: Set recipe = New CSectionRecipeCircle
+    Set layout = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngCircleGeometry", values), executor, labels)
+    For i = 1 To layout.Count
+        Select Case layout.Diameter(i)
+            Case 20#: mainCount = mainCount + 1
+            Case 12#: row2Count = row2Count + 1
+            Case 10#: row3Count = row3Count + 1
+        End Select
+    Next i
+    TestCheck "endMode.full.circle.dependent.physical", layout.Count = 10 And mainCount = 4 And row2Count = 4 And row3Count = 2
+    TestCheck "endMode.full.circle.dependent.accounting", executor.RequestedPositions = 13 And executor.CreatedPositions = 10 And executor.MergedPositions = 3
+    TestCheck "endMode.full.circle.dependent.warning", executor.HasGeometryWarnings And InStr(executor.GeometryWarningText, "пропущено совпавших стержней: 1") > 0
+    For i = 1 To labels.Count
+        If labels.AnnotationID(i) = "REBAR_Circle" Then
+            labelCount = labelCount + 1
+            labelMatch = (labels.Text(i) = "4" & ChrW$(216) & "20 + 4" & ChrW$(216) & "12 + 2" & ChrW$(216) & "10")
+            labelParts = Split(labels.Text(i), " + ") ' Количества находятся в тексте; Value предназначен для числовых размеров.
+            For Each part In labelParts
+                If InStr(CStr(part), ChrW$(216)) > 1 Then sum = sum + CLng(Left$(CStr(part), InStr(CStr(part), ChrW$(216)) - 1))
+            Next part
+        End If
+    Next i
+    TestCheck "endMode.full.circle.dependent.label.text", labelCount = 1 And labelMatch
+    TestNear "endMode.full.circle.dependent.label.total", sum, 10#
+    For i = 1 To executor.DiagnosticCount
+        Set diagnostic = executor.DiagnosticAt(i)
+        If diagnostic.Code = "DEPENDENT_SOURCE_DUPLICATE_SKIPPED" Then
+            diagnosticCount = diagnosticCount + 1
+            TestCheck "endMode.full.circle.dependent.diagnostic.source." & CStr(i), InStr(diagnostic.SourceReference, "rngCircleGeometry") > 0 And Len(diagnostic.RelatedEntityID) > 0
+        End If
+    Next i
+    TestCheck "endMode.full.circle.dependent.diagnostics", diagnosticCount = 2
+    values = TestCircleClosedValues("ClosedUniform", 5): code = 0: reason = ""
+    On Error Resume Next
+    Set layout = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngCircleGeometry", values))
+    code = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "endMode.full.circle.removed.mode.rejected", code <> 0 And InStr(reason, "rngCircleGeometry[") > 0
+    For kind = 0 To 2
+        code = 0: Set layout = Nothing
+        On Error Resume Next
+        Set layout = TestCircleFixedStepLayout(kind)
+        code = Err.Number: Err.Clear
+        On Error GoTo 0
+        If kind = 1 Then
+            TestCheck "endMode.full.circle.exact.step.incompatible", code = vbObjectError + 5530 And layout Is Nothing
+        Else
+            TestCheck "endMode.full.circle.exact.step.compatible." & CStr(kind), code = 0 And Not layout Is Nothing
+            If Not layout Is Nothing Then TestCheck "endMode.full.circle.exact.step.count." & CStr(kind), layout.Count = 4
+        End If
+    Next kind
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит явные исходные значения полной окружности радиуса100; дополнительные ряды выключены до специальных проверок.
+Private Function TestCircleClosedValues(ByVal mode As String, ByVal count As Long) As Variant
+    Dim values As Variant
+    values = TestFixtureRecipeValues("rngCircleGeometry")
+    TestFixtureSetInput values, "General", "D", "val", 300#
+    TestFixtureSetInput values, "Main", "Circle", "as", 50#
+    TestFixtureSetInput values, "Main", "Circle", "d", 20#
+    TestFixtureSetInput values, "Main", "Circle", "n", count
+    TestFixtureSetInput values, "Main", "Circle", "s0", 0#
+    TestFixtureSetInput values, "Main", "Circle", "s1", 0#
+    TestFixtureSetInput values, "Main", "Circle", "endMode", mode
+    TestFixtureSetInput values, "Extra", "Circle", "d2", 0#
+    TestFixtureSetInput values, "Extra", "Circle", "d3", 0#
+    TestCircleClosedValues = values
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Полная окружность радиуса100: IncludeStart/IncludeEnd сохраняют ровно четыре точных шага; дробное число шагов отклоняется до размещения.
+Private Function TestCircleFixedStepLayout(ByVal kind As Long) As CRebarLayout
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions, step As Double
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "Test.ClosedStep"
+    Set path = facade.RectanglePath("Concrete", 0#, 0#, 500#, 500#): facade.Outer "OUTER", path.ID
+    Set path = facade.CirclePath("Axis", 250#, 250#, 100#)
+    Set options = New CRebarRuleOptions: options.EndMode = IncludeStart
+    If kind = 2 Then options.EndMode = IncludeEnd
+    step = path.Length / 4#: If kind = 1 Then step = path.Length / 4.5
+    facade.RebarByFixedStep "Main", path.ID, step, 10#, options
+    Set TestCircleFixedStepLayout = TestFixtureAnnotatedLayout(facade.Finish)
+End Function

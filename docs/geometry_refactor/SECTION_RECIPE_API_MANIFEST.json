@@ -279,6 +279,67 @@
     },
     {
       "owner": "CSectionDefinitionBuilder",
+      "name": "OffsetContour",
+      "kind": "Function",
+      "signature": "Public Function OffsetContour(ByVal pathID As String, ByVal sourcePathID As String, ByVal groups As Variant, ByVal axisDistances As Variant, ByVal references As Variant, Optional ByVal opening As Boolean = False) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "sourcePathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathID As String"
+        },
+        {
+          "name": "groups",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal groups As Variant"
+        },
+        {
+          "name": "axisDistances",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal axisDistances As Variant"
+        },
+        {
+          "name": "references",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal references As Variant"
+        },
+        {
+          "name": "opening",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal opening As Boolean = False"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 86,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.OffsetContour",
+      "anchor": "api-csectiondefinitionbuilder-offsetcontour"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
       "name": "AddPath",
       "kind": "Sub",
       "signature": "Public Sub AddPath(ByVal path As CGeometryPath)",
@@ -293,7 +354,7 @@
         }
       ],
       "resultType": null,
-      "line": 87,
+      "line": 129,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.AddPath",
       "anchor": "api-csectiondefinitionbuilder-addpath"
@@ -330,7 +391,7 @@
         }
       ],
       "resultType": null,
-      "line": 93,
+      "line": 135,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Anchor",
       "anchor": "api-csectiondefinitionbuilder-anchor"
@@ -375,7 +436,7 @@
         }
       ],
       "resultType": null,
-      "line": 99,
+      "line": 141,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.PathAnchor",
       "anchor": "api-csectiondefinitionbuilder-pathanchor"
@@ -404,7 +465,7 @@
         }
       ],
       "resultType": null,
-      "line": 108,
+      "line": 150,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Source",
       "anchor": "api-csectiondefinitionbuilder-source"
@@ -465,7 +526,7 @@
         }
       ],
       "resultType": null,
-      "line": 115,
+      "line": 157,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.TransformAnchor",
       "anchor": "api-csectiondefinitionbuilder-transformanchor"
@@ -502,7 +563,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 127,
+      "line": 169,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Offset",
       "anchor": "api-csectiondefinitionbuilder-offset"
@@ -579,7 +640,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 139,
+      "line": 181,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.ConstrainLine",
       "anchor": "api-csectiondefinitionbuilder-constrainline"
@@ -591,7 +652,7 @@
       "signature": "Public Property Get LastGeometryDiagnostic() As CGeometryDiagnostic",
       "parameters": [],
       "resultType": "CGeometryDiagnostic",
-      "line": 153,
+      "line": 195,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.LastGeometryDiagnostic",
       "anchor": "api-csectiondefinitionbuilder-lastgeometrydiagnostic"
@@ -668,7 +729,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 166,
+      "line": 208,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Chain",
       "anchor": "api-csectiondefinitionbuilder-chain"
@@ -713,7 +774,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 178,
+      "line": 220,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Slice",
       "anchor": "api-csectiondefinitionbuilder-slice"
@@ -774,7 +835,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 189,
+      "line": 231,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Transform",
       "anchor": "api-csectiondefinitionbuilder-transform"
@@ -859,7 +920,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 201,
+      "line": 243,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RectanglePath",
       "anchor": "api-csectiondefinitionbuilder-rectanglepath"
@@ -888,7 +949,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 230,
+      "line": 272,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.AdjacentRectangles",
       "anchor": "api-csectiondefinitionbuilder-adjacentrectangles"
@@ -917,7 +978,7 @@
         }
       ],
       "resultType": null,
-      "line": 238,
+      "line": 280,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.PathGroup",
       "anchor": "api-csectiondefinitionbuilder-pathgroup"
@@ -986,7 +1047,7 @@
         }
       ],
       "resultType": null,
-      "line": 245,
+      "line": 287,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Outer",
       "anchor": "api-csectiondefinitionbuilder-outer"
@@ -1063,7 +1124,7 @@
         }
       ],
       "resultType": null,
-      "line": 259,
+      "line": 301,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Opening",
       "anchor": "api-csectiondefinitionbuilder-opening"
@@ -1124,7 +1185,7 @@
         }
       ],
       "resultType": null,
-      "line": 273,
+      "line": 315,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByCount",
       "anchor": "api-csectiondefinitionbuilder-rebarbycount"
@@ -1185,7 +1246,7 @@
         }
       ],
       "resultType": null,
-      "line": 284,
+      "line": 326,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByMaxStep",
       "anchor": "api-csectiondefinitionbuilder-rebarbymaxstep"
@@ -1246,7 +1307,7 @@
         }
       ],
       "resultType": null,
-      "line": 293,
+      "line": 335,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByFixedStep",
       "anchor": "api-csectiondefinitionbuilder-rebarbyfixedstep"
@@ -1307,7 +1368,7 @@
         }
       ],
       "resultType": null,
-      "line": 302,
+      "line": 344,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarAtStations",
       "anchor": "api-csectiondefinitionbuilder-rebaratstations"
@@ -1384,7 +1445,7 @@
         }
       ],
       "resultType": null,
-      "line": 311,
+      "line": 353,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarContour",
       "anchor": "api-csectiondefinitionbuilder-rebarcontour"
@@ -1437,7 +1498,7 @@
         }
       ],
       "resultType": null,
-      "line": 326,
+      "line": 368,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarContourBaseline",
       "anchor": "api-csectiondefinitionbuilder-rebarcontourbaseline"
@@ -1490,7 +1551,7 @@
         }
       ],
       "resultType": null,
-      "line": 337,
+      "line": 379,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarDependent",
       "anchor": "api-csectiondefinitionbuilder-rebardependent"
@@ -1551,7 +1612,7 @@
         }
       ],
       "resultType": null,
-      "line": 346,
+      "line": 388,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarProjected",
       "anchor": "api-csectiondefinitionbuilder-rebarprojected"
@@ -1612,7 +1673,7 @@
         }
       ],
       "resultType": null,
-      "line": 367,
+      "line": 409,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.VerticalExtent",
       "anchor": "api-csectiondefinitionbuilder-verticalextent"
@@ -1673,7 +1734,7 @@
         }
       ],
       "resultType": null,
-      "line": 378,
+      "line": 420,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.HorizontalExtent",
       "anchor": "api-csectiondefinitionbuilder-horizontalextent"
@@ -1750,7 +1811,7 @@
         }
       ],
       "resultType": null,
-      "line": 389,
+      "line": 431,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.HorizontalDistance",
       "anchor": "api-csectiondefinitionbuilder-horizontaldistance"
@@ -1819,7 +1880,7 @@
         }
       ],
       "resultType": null,
-      "line": 403,
+      "line": 445,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.VerticalDistance",
       "anchor": "api-csectiondefinitionbuilder-verticaldistance"
@@ -1896,7 +1957,7 @@
         }
       ],
       "resultType": null,
-      "line": 416,
+      "line": 458,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Dimension",
       "anchor": "api-csectiondefinitionbuilder-dimension"
@@ -1949,7 +2010,7 @@
         }
       ],
       "resultType": null,
-      "line": 431,
+      "line": 473,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.PathLength",
       "anchor": "api-csectiondefinitionbuilder-pathlength"
@@ -2010,7 +2071,7 @@
         }
       ],
       "resultType": null,
-      "line": 442,
+      "line": 484,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Radius",
       "anchor": "api-csectiondefinitionbuilder-radius"
@@ -2071,7 +2132,7 @@
         }
       ],
       "resultType": null,
-      "line": 449,
+      "line": 491,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Diameter",
       "anchor": "api-csectiondefinitionbuilder-diameter"
@@ -2116,7 +2177,7 @@
         }
       ],
       "resultType": null,
-      "line": 468,
+      "line": 510,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Text",
       "anchor": "api-csectiondefinitionbuilder-text"
@@ -2161,7 +2222,7 @@
         }
       ],
       "resultType": null,
-      "line": 479,
+      "line": 521,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarlabel"
@@ -2206,7 +2267,7 @@
         }
       ],
       "resultType": null,
-      "line": 488,
+      "line": 530,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowlabel"
@@ -2259,7 +2320,7 @@
         }
       ],
       "resultType": null,
-      "line": 498,
+      "line": 540,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtentLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextentlabel"
@@ -2271,7 +2332,7 @@
       "signature": "Public Function Finish() As CSectionDefinition",
       "parameters": [],
       "resultType": "CSectionDefinition",
-      "line": 510,
+      "line": 552,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Finish",
       "anchor": "api-csectiondefinitionbuilder-finish"
@@ -2332,7 +2393,7 @@
         }
       ],
       "resultType": null,
-      "line": 520,
+      "line": 562,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtremeLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextremelabel"
@@ -2344,7 +2405,7 @@
       "signature": "Public Property Get LastDiagnostic() As CGeometryDiagnostic",
       "parameters": [],
       "resultType": "CGeometryDiagnostic",
-      "line": 35,
+      "line": 37,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.LastDiagnostic",
       "anchor": "api-cgeometrypath-lastdiagnostic"
@@ -2365,7 +2426,7 @@
         }
       ],
       "resultType": null,
-      "line": 40,
+      "line": 68,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Initialize",
       "anchor": "api-cgeometrypath-initialize"
@@ -2418,7 +2479,7 @@
         }
       ],
       "resultType": null,
-      "line": 47,
+      "line": 75,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.AddLine",
       "anchor": "api-cgeometrypath-addline"
@@ -2479,7 +2540,7 @@
         }
       ],
       "resultType": null,
-      "line": 56,
+      "line": 84,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.AddArc",
       "anchor": "api-cgeometrypath-addarc"
@@ -2500,7 +2561,7 @@
         }
       ],
       "resultType": null,
-      "line": 72,
+      "line": 100,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Seal",
       "anchor": "api-cgeometrypath-seal"
@@ -2512,7 +2573,7 @@
       "signature": "Public Property Get ID() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 88,
+      "line": 116,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.ID",
       "anchor": "api-cgeometrypath-id"
@@ -2524,7 +2585,7 @@
       "signature": "Public Property Get SegmentCount() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 90,
+      "line": 118,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.SegmentCount",
       "anchor": "api-cgeometrypath-segmentcount"
@@ -2536,7 +2597,7 @@
       "signature": "Public Property Get IsSealed() As Boolean",
       "parameters": [],
       "resultType": "Boolean",
-      "line": 92,
+      "line": 120,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.IsSealed",
       "anchor": "api-cgeometrypath-issealed"
@@ -2548,7 +2609,7 @@
       "signature": "Public Property Get IsClosed() As Boolean",
       "parameters": [],
       "resultType": "Boolean",
-      "line": 94,
+      "line": 122,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.IsClosed",
       "anchor": "api-cgeometrypath-isclosed"
@@ -2560,7 +2621,7 @@
       "signature": "Public Property Get Length() As Double",
       "parameters": [],
       "resultType": "Double",
-      "line": 96,
+      "line": 124,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Length",
       "anchor": "api-cgeometrypath-length"
@@ -2581,7 +2642,7 @@
         }
       ],
       "resultType": "String",
-      "line": 98,
+      "line": 126,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.SegmentID",
       "anchor": "api-cgeometrypath-segmentid"
@@ -2602,7 +2663,7 @@
         }
       ],
       "resultType": "String",
-      "line": 103,
+      "line": 131,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.SourcePathID",
       "anchor": "api-cgeometrypath-sourcepathid"
@@ -2623,7 +2684,7 @@
         }
       ],
       "resultType": "String",
-      "line": 108,
+      "line": 136,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.SourceSegmentID",
       "anchor": "api-cgeometrypath-sourcesegmentid"
@@ -2644,7 +2705,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 113,
+      "line": 141,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.SourceStartParameter",
       "anchor": "api-cgeometrypath-sourcestartparameter"
@@ -2665,7 +2726,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 118,
+      "line": 146,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.SourceEndParameter",
       "anchor": "api-cgeometrypath-sourceendparameter"
@@ -2686,7 +2747,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 124,
+      "line": 152,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.SegmentIndex",
       "anchor": "api-cgeometrypath-segmentindex"
@@ -2715,7 +2776,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 135,
+      "line": 163,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.AnchorStation",
       "anchor": "api-cgeometrypath-anchorstation"
@@ -2760,7 +2821,7 @@
         }
       ],
       "resultType": null,
-      "line": 148,
+      "line": 176,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.ResolveAnchor",
       "anchor": "api-cgeometrypath-resolveanchor"
@@ -2781,7 +2842,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 168,
+      "line": 196,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.WithID",
       "anchor": "api-cgeometrypath-withid"
@@ -2850,7 +2911,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 182,
+      "line": 210,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.BetweenAnchors",
       "anchor": "api-cgeometrypath-betweenanchors"
@@ -2911,7 +2972,7 @@
         }
       ],
       "resultType": null,
-      "line": 218,
+      "line": 246,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.AtDistance",
       "anchor": "api-cgeometrypath-atdistance"
@@ -2948,7 +3009,7 @@
         }
       ],
       "resultType": null,
-      "line": 234,
+      "line": 262,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.ValidateNormalTransfer",
       "anchor": "api-cgeometrypath-validatenormaltransfer"
@@ -2993,7 +3054,7 @@
         }
       ],
       "resultType": null,
-      "line": 318,
+      "line": 346,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.ProjectionBounds",
       "anchor": "api-cgeometrypath-projectionbounds"
@@ -3022,7 +3083,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 333,
+      "line": 361,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Slice",
       "anchor": "api-cgeometrypath-slice"
@@ -3034,7 +3095,7 @@
       "signature": "Public Function Reversed() As CGeometryPath",
       "parameters": [],
       "resultType": "CGeometryPath",
-      "line": 449,
+      "line": 477,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Reversed",
       "anchor": "api-cgeometrypath-reversed"
@@ -3079,7 +3140,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 466,
+      "line": 494,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Transformed",
       "anchor": "api-cgeometrypath-transformed"
@@ -3140,7 +3201,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 491,
+      "line": 519,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.RayHit",
       "anchor": "api-cgeometrypath-rayhit"
@@ -3612,7 +3673,7 @@
       "signature": "Public Function MaterialContours() As CSectionContours",
       "parameters": [],
       "resultType": "CSectionContours",
-      "line": 358,
+      "line": 361,
       "source": "src/Section/CSectionDefinition.cls",
       "id": "CSectionDefinition.MaterialContours",
       "anchor": "api-csectiondefinition-materialcontours"
@@ -3633,7 +3694,7 @@
         }
       ],
       "resultType": null,
-      "line": 366,
+      "line": 369,
       "source": "src/Section/CSectionDefinition.cls",
       "id": "CSectionDefinition.WriteContours",
       "anchor": "api-csectiondefinition-writecontours"
@@ -3849,11 +3910,22 @@
     },
     {
       "owner": "CRebarRuleOptions",
+      "name": "WarnOnCoincidence",
+      "kind": "Field",
+      "signature": "Public WarnOnCoincidence As Boolean",
+      "resultType": "Boolean",
+      "line": 38,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.WarnOnCoincidence",
+      "anchor": "api-crebarruleoptions-warnoncoincidence"
+    },
+    {
+      "owner": "CRebarRuleOptions",
       "name": "PlacementCheck",
       "kind": "Field",
       "signature": "Public PlacementCheck As ERebarPlacementCheck",
       "resultType": "ERebarPlacementCheck",
-      "line": 38,
+      "line": 39,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.PlacementCheck",
       "anchor": "api-crebarruleoptions-placementcheck"
@@ -3864,7 +3936,7 @@
       "kind": "Field",
       "signature": "Public OverlapPolicy As ERebarOverlapPolicy",
       "resultType": "ERebarOverlapPolicy",
-      "line": 39,
+      "line": 40,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.OverlapPolicy",
       "anchor": "api-crebarruleoptions-overlappolicy"
@@ -3875,7 +3947,7 @@
       "kind": "Field",
       "signature": "Public SourcePrefix As String",
       "resultType": "String",
-      "line": 40,
+      "line": 41,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourcePrefix",
       "anchor": "api-crebarruleoptions-sourceprefix"
@@ -3886,7 +3958,7 @@
       "kind": "Field",
       "signature": "Public SourceSuffix As String",
       "resultType": "String",
-      "line": 41,
+      "line": 42,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourceSuffix",
       "anchor": "api-crebarruleoptions-sourcesuffix"
@@ -3897,7 +3969,7 @@
       "kind": "Field",
       "signature": "Public AnnotationGroup As String",
       "resultType": "String",
-      "line": 42,
+      "line": 43,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.AnnotationGroup",
       "anchor": "api-crebarruleoptions-annotationgroup"
@@ -3908,7 +3980,7 @@
       "kind": "Field",
       "signature": "Public Comment As String",
       "resultType": "String",
-      "line": 43,
+      "line": 44,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.Comment",
       "anchor": "api-crebarruleoptions-comment"
@@ -3919,7 +3991,7 @@
       "kind": "Field",
       "signature": "Public SourceReference As String",
       "resultType": "String",
-      "line": 44,
+      "line": 45,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourceReference",
       "anchor": "api-crebarruleoptions-sourcereference"
@@ -3980,7 +4052,7 @@
         }
       ],
       "resultType": null,
-      "line": 63,
+      "line": 64,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.ConfigureDependentContact",
       "anchor": "api-crebarruleoptions-configuredependentcontact"
@@ -3992,7 +4064,7 @@
       "signature": "Public Function Clone() As CRebarRuleOptions",
       "parameters": [],
       "resultType": "CRebarRuleOptions",
-      "line": 78,
+      "line": 79,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.Clone",
       "anchor": "api-crebarruleoptions-clone"
@@ -4347,7 +4419,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 124,
+      "line": 125,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Count",
       "anchor": "api-csectioninputtable-count"
@@ -4392,7 +4464,7 @@
         }
       ],
       "resultType": "String",
-      "line": 134,
+      "line": 135,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Choice",
       "anchor": "api-csectioninputtable-choice"
@@ -4429,7 +4501,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 145,
+      "line": 146,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Length",
       "anchor": "api-csectioninputtable-length"
@@ -4466,7 +4538,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 156,
+      "line": 157,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.PositiveLength",
       "anchor": "api-csectioninputtable-positivelength"
@@ -4503,7 +4575,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 162,
+      "line": 163,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.NonNegativeLength",
       "anchor": "api-csectioninputtable-nonnegativelength"
@@ -4540,7 +4612,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 169,
+      "line": 170,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.OptionalDiameter",
       "anchor": "api-csectioninputtable-optionaldiameter"
@@ -4577,7 +4649,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 179,
+      "line": 180,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.OptionalRowOffset",
       "anchor": "api-csectioninputtable-optionalrowoffset"
@@ -4606,7 +4678,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 190,
+      "line": 191,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.ColumnByCaption",
       "anchor": "api-csectioninputtable-columnbycaption"
@@ -4651,7 +4723,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 206,
+      "line": 207,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByKey",
       "anchor": "api-csectioninputtable-rowbykey"
@@ -4696,7 +4768,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 213,
+      "line": 214,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByAnyKey",
       "anchor": "api-csectioninputtable-rowbyanykey"
@@ -5031,7 +5103,7 @@
       "signature": "Public Property Get Mesh() As CFiberMeshBuilder",
       "parameters": [],
       "resultType": "CFiberMeshBuilder",
-      "line": 59,
+      "line": 66,
       "source": "src/Section/CSectionBuilder.cls",
       "id": "CSectionBuilder.Mesh",
       "anchor": "api-csectionbuilder-mesh"
@@ -5043,7 +5115,7 @@
       "signature": "Public Property Get Rebars() As CRebarLayout",
       "parameters": [],
       "resultType": "CRebarLayout",
-      "line": 66,
+      "line": 73,
       "source": "src/Section/CSectionBuilder.cls",
       "id": "CSectionBuilder.Rebars",
       "anchor": "api-csectionbuilder-rebars"
@@ -5055,7 +5127,7 @@
       "signature": "Public Property Get Rules() As CRebarRuleExecutor",
       "parameters": [],
       "resultType": "CRebarRuleExecutor",
-      "line": 73,
+      "line": 80,
       "source": "src/Section/CSectionBuilder.cls",
       "id": "CSectionBuilder.Rules",
       "anchor": "api-csectionbuilder-rules"
@@ -5067,7 +5139,7 @@
       "signature": "Public Property Get RequestedPositions() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 46,
+      "line": 49,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.RequestedPositions",
       "anchor": "api-crebarruleexecutor-requestedpositions"
@@ -5079,7 +5151,7 @@
       "signature": "Public Property Get CreatedPositions() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 48,
+      "line": 51,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.CreatedPositions",
       "anchor": "api-crebarruleexecutor-createdpositions"
@@ -5091,10 +5163,22 @@
       "signature": "Public Property Get SkippedProjections() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 50,
+      "line": 53,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.SkippedProjections",
       "anchor": "api-crebarruleexecutor-skippedprojections"
+    },
+    {
+      "owner": "CRebarRuleExecutor",
+      "name": "FilteredByArea",
+      "kind": "Property Get",
+      "signature": "Public Property Get FilteredByArea() As Long",
+      "parameters": [],
+      "resultType": "Long",
+      "line": 55,
+      "source": "src/Section/CRebarRuleExecutor.cls",
+      "id": "CRebarRuleExecutor.FilteredByArea",
+      "anchor": "api-crebarruleexecutor-filteredbyarea"
     },
     {
       "owner": "CRebarRuleExecutor",
@@ -5103,7 +5187,7 @@
       "signature": "Public Property Get MergedPositions() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 52,
+      "line": 57,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.MergedPositions",
       "anchor": "api-crebarruleexecutor-mergedpositions"
@@ -5115,7 +5199,7 @@
       "signature": "Public Property Get Conflicts() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 54,
+      "line": 59,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.Conflicts",
       "anchor": "api-crebarruleexecutor-conflicts"
@@ -5127,7 +5211,7 @@
       "signature": "Public Property Get BarOverlaps() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 57,
+      "line": 62,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.BarOverlaps",
       "anchor": "api-crebarruleexecutor-baroverlaps"
@@ -5139,7 +5223,7 @@
       "signature": "Public Property Get DiagnosticRecordsOmitted() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 59,
+      "line": 64,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.DiagnosticRecordsOmitted",
       "anchor": "api-crebarruleexecutor-diagnosticrecordsomitted"
@@ -5151,7 +5235,7 @@
       "signature": "Public Property Get LastDiagnostic() As CGeometryDiagnostic",
       "parameters": [],
       "resultType": "CGeometryDiagnostic",
-      "line": 61,
+      "line": 66,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.LastDiagnostic",
       "anchor": "api-crebarruleexecutor-lastdiagnostic"
@@ -5163,7 +5247,7 @@
       "signature": "Public Property Get DiagnosticCount() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 63,
+      "line": 68,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.DiagnosticCount",
       "anchor": "api-crebarruleexecutor-diagnosticcount"
@@ -5184,7 +5268,7 @@
         }
       ],
       "resultType": "CGeometryDiagnostic",
-      "line": 69,
+      "line": 74,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.DiagnosticAt",
       "anchor": "api-crebarruleexecutor-diagnosticat"
@@ -5196,7 +5280,7 @@
       "signature": "Public Property Get PositionCount() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 75,
+      "line": 80,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.PositionCount",
       "anchor": "api-crebarruleexecutor-positioncount"
@@ -5217,7 +5301,7 @@
         }
       ],
       "resultType": "String",
-      "line": 77,
+      "line": 82,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.PositionRuleID",
       "anchor": "api-crebarruleexecutor-positionruleid"
@@ -5238,7 +5322,7 @@
         }
       ],
       "resultType": "String",
-      "line": 81,
+      "line": 86,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.PositionPathID",
       "anchor": "api-crebarruleexecutor-positionpathid"
@@ -5259,7 +5343,7 @@
         }
       ],
       "resultType": "String",
-      "line": 83,
+      "line": 88,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.PositionSourceID",
       "anchor": "api-crebarruleexecutor-positionsourceid"
@@ -5280,7 +5364,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 86,
+      "line": 91,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.PositionPhysicalOwner",
       "anchor": "api-crebarruleexecutor-positionphysicalowner"
@@ -5301,7 +5385,7 @@
         }
       ],
       "resultType": "String",
-      "line": 90,
+      "line": 95,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.RuleTrace",
       "anchor": "api-crebarruleexecutor-ruletrace"
@@ -5362,7 +5446,7 @@
         }
       ],
       "resultType": null,
-      "line": 106,
+      "line": 112,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.RuleStepBounds",
       "anchor": "api-crebarruleexecutor-rulestepbounds"
@@ -5374,16 +5458,40 @@
       "signature": "Public Function DiagnosticsText() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 146,
+      "line": 152,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.DiagnosticsText",
       "anchor": "api-crebarruleexecutor-diagnosticstext"
     },
     {
       "owner": "CRebarRuleExecutor",
+      "name": "HasGeometryWarnings",
+      "kind": "Property Get",
+      "signature": "Public Property Get HasGeometryWarnings() As Boolean",
+      "parameters": [],
+      "resultType": "Boolean",
+      "line": 189,
+      "source": "src/Section/CRebarRuleExecutor.cls",
+      "id": "CRebarRuleExecutor.HasGeometryWarnings",
+      "anchor": "api-crebarruleexecutor-hasgeometrywarnings"
+    },
+    {
+      "owner": "CRebarRuleExecutor",
+      "name": "GeometryWarningText",
+      "kind": "Property Get",
+      "signature": "Public Property Get GeometryWarningText() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 194,
+      "source": "src/Section/CRebarRuleExecutor.cls",
+      "id": "CRebarRuleExecutor.GeometryWarningText",
+      "anchor": "api-crebarruleexecutor-geometrywarningtext"
+    },
+    {
+      "owner": "CRebarRuleExecutor",
       "name": "Build",
       "kind": "Function",
-      "signature": "Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion) As CRebarLayout",
+      "signature": "Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion, Optional ByVal minArea As Double = 0#) As CRebarLayout",
       "parameters": [
         {
           "name": "definition",
@@ -5400,10 +5508,18 @@
           "optional": false,
           "default": null,
           "signature": "ByVal geometry As CGeometryRegion"
+        },
+        {
+          "name": "minArea",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal minArea As Double = 0#"
         }
       ],
       "resultType": "CRebarLayout",
-      "line": 178,
+      "line": 237,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.Build",
       "anchor": "api-crebarruleexecutor-build"
@@ -5415,7 +5531,7 @@
       "signature": "Public Property Get IsReadOnly() As Boolean",
       "parameters": [],
       "resultType": "Boolean",
-      "line": 986,
+      "line": 1105,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.IsReadOnly",
       "anchor": "api-crebarruleexecutor-isreadonly"
@@ -5427,7 +5543,7 @@
       "signature": "Public Sub InitializeDefaults()",
       "parameters": [],
       "resultType": null,
-      "line": 42,
+      "line": 43,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InitializeDefaults",
       "anchor": "api-cunitsystem-initializedefaults"
@@ -5448,7 +5564,7 @@
         }
       ],
       "resultType": null,
-      "line": 58,
+      "line": 59,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.LoadFromSettings",
       "anchor": "api-cunitsystem-loadfromsettings"
@@ -5460,7 +5576,7 @@
       "signature": "Public Function Clone() As CUnitSystem",
       "parameters": [],
       "resultType": "CUnitSystem",
-      "line": 83,
+      "line": 84,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.Clone",
       "anchor": "api-cunitsystem-clone"
@@ -5472,7 +5588,7 @@
       "signature": "Public Property Get IsReadOnly() As Boolean",
       "parameters": [],
       "resultType": "Boolean",
-      "line": 96,
+      "line": 97,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.IsReadOnly",
       "anchor": "api-cunitsystem-isreadonly"
@@ -5493,7 +5609,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 140,
+      "line": 141,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputLengthToInternal",
       "anchor": "api-cunitsystem-inputlengthtointernal"
@@ -5522,7 +5638,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 146,
+      "line": 147,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalLengthToOutput",
       "anchor": "api-cunitsystem-internallengthtooutput"
@@ -5551,7 +5667,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 153,
+      "line": 154,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputLengthToInternal",
       "anchor": "api-cunitsystem-outputlengthtointernal"
@@ -5572,7 +5688,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 159,
+      "line": 160,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputAreaToInternal",
       "anchor": "api-cunitsystem-inputareatointernal"
@@ -5593,7 +5709,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 164,
+      "line": 165,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalAreaToOutput",
       "anchor": "api-cunitsystem-internalareatooutput"
@@ -5622,7 +5738,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 170,
+      "line": 171,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputAreaToInternal",
       "anchor": "api-cunitsystem-outputareatointernal"
@@ -5643,7 +5759,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 176,
+      "line": 177,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputFourthPowerLengthToInternal",
       "anchor": "api-cunitsystem-inputfourthpowerlengthtointernal"
@@ -5664,7 +5780,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 181,
+      "line": 182,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalFourthPowerLengthToOutput",
       "anchor": "api-cunitsystem-internalfourthpowerlengthtooutput"
@@ -5693,7 +5809,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 187,
+      "line": 188,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputFourthPowerLengthToInternal",
       "anchor": "api-cunitsystem-outputfourthpowerlengthtointernal"
@@ -5714,7 +5830,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 193,
+      "line": 194,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputForceToInternal",
       "anchor": "api-cunitsystem-inputforcetointernal"
@@ -5735,7 +5851,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 198,
+      "line": 199,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalForceToOutput",
       "anchor": "api-cunitsystem-internalforcetooutput"
@@ -5756,7 +5872,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 205,
+      "line": 206,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalForceLengthSquaredToOutput",
       "anchor": "api-cunitsystem-internalforcelengthsquaredtooutput"
@@ -5777,7 +5893,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 210,
+      "line": 211,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputMomentMxToInternal",
       "anchor": "api-cunitsystem-inputmomentmxtointernal"
@@ -5798,7 +5914,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 215,
+      "line": 216,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputMomentMyToInternal",
       "anchor": "api-cunitsystem-inputmomentmytointernal"
@@ -5819,7 +5935,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 222,
+      "line": 223,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputMomentPerLengthToInternal",
       "anchor": "api-cunitsystem-inputmomentperlengthtointernal"
@@ -5840,7 +5956,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 227,
+      "line": 228,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalMomentMxToOutput",
       "anchor": "api-cunitsystem-internalmomentmxtooutput"
@@ -5861,7 +5977,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 232,
+      "line": 233,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalMomentMyToOutput",
       "anchor": "api-cunitsystem-internalmomentmytooutput"
@@ -5882,7 +5998,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 237,
+      "line": 238,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalMomentMagnitudeToOutput",
       "anchor": "api-cunitsystem-internalmomentmagnitudetooutput"
@@ -5903,7 +6019,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 242,
+      "line": 243,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputStressToInternal",
       "anchor": "api-cunitsystem-inputstresstointernal"
@@ -5924,7 +6040,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 247,
+      "line": 249,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalStressToOutput",
       "anchor": "api-cunitsystem-internalstresstooutput"
@@ -5953,7 +6069,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 253,
+      "line": 259,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputStressToInternal",
       "anchor": "api-cunitsystem-outputstresstointernal"
@@ -5974,7 +6090,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 259,
+      "line": 265,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputCurvatureToInternal",
       "anchor": "api-cunitsystem-inputcurvaturetointernal"
@@ -6003,7 +6119,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 265,
+      "line": 271,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InternalCurvatureToOutput",
       "anchor": "api-cunitsystem-internalcurvaturetooutput"
@@ -6024,7 +6140,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 271,
+      "line": 277,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputCurvatureToInternal",
       "anchor": "api-cunitsystem-outputcurvaturetointernal"
@@ -6036,7 +6152,7 @@
       "signature": "Public Property Get OutputLengthUnit() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 276,
+      "line": 282,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputLengthUnit",
       "anchor": "api-cunitsystem-outputlengthunit"
@@ -6048,7 +6164,7 @@
       "signature": "Public Property Get OutputAreaUnit() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 281,
+      "line": 287,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputAreaUnit",
       "anchor": "api-cunitsystem-outputareaunit"
@@ -6060,7 +6176,7 @@
       "signature": "Public Property Get OutputMomentUnit() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 286,
+      "line": 292,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputMomentUnit",
       "anchor": "api-cunitsystem-outputmomentunit"
@@ -6072,7 +6188,7 @@
       "signature": "Public Property Get InputMomentPerLengthUnit() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 291,
+      "line": 297,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.InputMomentPerLengthUnit",
       "anchor": "api-cunitsystem-inputmomentperlengthunit"
@@ -6084,7 +6200,7 @@
       "signature": "Public Property Get OutputForceUnit() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 296,
+      "line": 302,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputForceUnit",
       "anchor": "api-cunitsystem-outputforceunit"
@@ -6096,7 +6212,7 @@
       "signature": "Public Property Get OutputForceLengthSquaredUnit() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 301,
+      "line": 307,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputForceLengthSquaredUnit",
       "anchor": "api-cunitsystem-outputforcelengthsquaredunit"
@@ -6108,7 +6224,7 @@
       "signature": "Public Property Get OutputStressUnit() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 306,
+      "line": 312,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputStressUnit",
       "anchor": "api-cunitsystem-outputstressunit"
@@ -6120,7 +6236,7 @@
       "signature": "Public Property Get OutputCurvatureUnit() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 311,
+      "line": 317,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputCurvatureUnit",
       "anchor": "api-cunitsystem-outputcurvatureunit"
@@ -6132,7 +6248,7 @@
       "signature": "Public Property Get OutputSignN() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 316,
+      "line": 322,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputSignN",
       "anchor": "api-cunitsystem-outputsignn"
@@ -6144,7 +6260,7 @@
       "signature": "Public Property Get OutputSignMx() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 321,
+      "line": 327,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputSignMx",
       "anchor": "api-cunitsystem-outputsignmx"
@@ -6156,7 +6272,7 @@
       "signature": "Public Property Get OutputSignMy() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 326,
+      "line": 332,
       "source": "src/Excel/CUnitSystem.cls",
       "id": "CUnitSystem.OutputSignMy",
       "anchor": "api-cunitsystem-outputsignmy"
@@ -6193,7 +6309,7 @@
         }
       ],
       "resultType": null,
-      "line": 76,
+      "line": 80,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.SetOwner",
       "anchor": "api-cconcreteregion-setowner"
@@ -6278,7 +6394,7 @@
         }
       ],
       "resultType": null,
-      "line": 82,
+      "line": 86,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.GetSegment",
       "anchor": "api-cconcreteregion-getsegment"
@@ -6290,7 +6406,7 @@
       "signature": "Public Property Get SegmentCount() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 93,
+      "line": 97,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.SegmentCount",
       "anchor": "api-cconcreteregion-segmentcount"
@@ -6302,7 +6418,7 @@
       "signature": "Public Property Get BoundaryProbes() As Variant",
       "parameters": [],
       "resultType": "Variant",
-      "line": 100,
+      "line": 104,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.BoundaryProbes",
       "anchor": "api-cconcreteregion-boundaryprobes"
@@ -6314,7 +6430,7 @@
       "signature": "Public Property Get BoundaryProbeCount() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 104,
+      "line": 108,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.BoundaryProbeCount",
       "anchor": "api-cconcreteregion-boundaryprobecount"
@@ -6326,7 +6442,7 @@
       "signature": "Public Property Get LoopCount() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 108,
+      "line": 112,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.LoopCount",
       "anchor": "api-cconcreteregion-loopcount"
@@ -6347,7 +6463,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 114,
+      "line": 118,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.LoopIsOpening",
       "anchor": "api-cconcreteregion-loopisopening"
@@ -6359,7 +6475,7 @@
       "signature": "Public Property Get Area() As Double",
       "parameters": [],
       "resultType": "Double",
-      "line": 120,
+      "line": 124,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.Area",
       "anchor": "api-cconcreteregion-area"
@@ -6371,7 +6487,7 @@
       "signature": "Public Property Get Source() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 124,
+      "line": 128,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.Source",
       "anchor": "api-cconcreteregion-source"
@@ -6383,7 +6499,7 @@
       "signature": "Public Property Get SectionRevision() As Long",
       "parameters": [],
       "resultType": "Long",
-      "line": 128,
+      "line": 132,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.SectionRevision",
       "anchor": "api-cconcreteregion-sectionrevision"
@@ -6395,7 +6511,7 @@
       "signature": "Public Property Get OwnerID() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 132,
+      "line": 136,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.OwnerID",
       "anchor": "api-cconcreteregion-ownerid"
@@ -6407,7 +6523,7 @@
       "signature": "Public Property Get Standard() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 137,
+      "line": 141,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.Standard",
       "anchor": "api-cconcreteregion-standard"
@@ -6419,7 +6535,7 @@
       "signature": "Public Property Get AnchorID() As String",
       "parameters": [],
       "resultType": "String",
-      "line": 141,
+      "line": 145,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.AnchorID",
       "anchor": "api-cconcreteregion-anchorid"
@@ -6431,10 +6547,22 @@
       "signature": "Public Function Clone() As CConcreteRegion",
       "parameters": [],
       "resultType": "CConcreteRegion",
-      "line": 147,
+      "line": 151,
       "source": "src/Section/CConcreteRegion.cls",
       "id": "CConcreteRegion.Clone",
       "anchor": "api-cconcreteregion-clone"
+    },
+    {
+      "owner": "CConcreteRegion",
+      "name": "GeometryHash",
+      "kind": "Property Get",
+      "signature": "Public Property Get GeometryHash() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 164,
+      "source": "src/Section/CConcreteRegion.cls",
+      "id": "CConcreteRegion.GeometryHash",
+      "anchor": "api-cconcreteregion-geometryhash"
     },
     {
       "owner": "CSectionGeometryQuery",
@@ -6618,7 +6746,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 182,
+      "line": 203,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ConstrainLine",
       "anchor": "api-csectiongeometryquery-constrainline"
@@ -6639,7 +6767,7 @@
         }
       ],
       "resultType": null,
-      "line": 215,
+      "line": 236,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.Initialize",
       "anchor": "api-csectiongeometryquery-initialize"
@@ -6651,7 +6779,7 @@
       "signature": "Public Function ConcreteDomain() As CConcreteRegion",
       "parameters": [],
       "resultType": "CConcreteRegion",
-      "line": 237,
+      "line": 258,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ConcreteDomain",
       "anchor": "api-csectiongeometryquery-concretedomain"
@@ -6704,7 +6832,7 @@
         }
       ],
       "resultType": null,
-      "line": 245,
+      "line": 266,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ProjectionBounds",
       "anchor": "api-csectiongeometryquery-projectionbounds"
@@ -6741,7 +6869,7 @@
         }
       ],
       "resultType": null,
-      "line": 264,
+      "line": 285,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.OpeningBounds",
       "anchor": "api-csectiongeometryquery-openingbounds"
@@ -6762,10 +6890,63 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 290,
+      "line": 311,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.PolygonRegion",
       "anchor": "api-csectiongeometryquery-polygonregion"
+    },
+    {
+      "owner": "CSectionGeometryQuery",
+      "name": "RectangleRegion",
+      "kind": "Function",
+      "signature": "Public Function RectangleRegion(ByVal centerX As Double, ByVal centerY As Double, ByVal width As Double, ByVal height As Double, Optional ByVal rotationRad As Double = 0#) As CConcreteRegion",
+      "parameters": [
+        {
+          "name": "centerX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal centerX As Double"
+        },
+        {
+          "name": "centerY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal centerY As Double"
+        },
+        {
+          "name": "width",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal width As Double"
+        },
+        {
+          "name": "height",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal height As Double"
+        },
+        {
+          "name": "rotationRad",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal rotationRad As Double = 0#"
+        }
+      ],
+      "resultType": "CConcreteRegion",
+      "line": 327,
+      "source": "src/Section/CSectionGeometryQuery.cls",
+      "id": "CSectionGeometryQuery.RectangleRegion",
+      "anchor": "api-csectiongeometryquery-rectangleregion"
     },
     {
       "owner": "CSectionGeometryQuery",
@@ -6799,7 +6980,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 305,
+      "line": 348,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.CircleRegion",
       "anchor": "api-csectiongeometryquery-circleregion"
@@ -6836,7 +7017,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 316,
+      "line": 359,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.BoundaryRegion",
       "anchor": "api-csectiongeometryquery-boundaryregion"
@@ -6865,7 +7046,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 395,
+      "line": 445,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.LoopIsOpening",
       "anchor": "api-csectiongeometryquery-loopisopening"
@@ -6902,10 +7083,31 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 407,
+      "line": 457,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ConnectedRegionAtPoint",
       "anchor": "api-csectiongeometryquery-connectedregionatpoint"
+    },
+    {
+      "owner": "CSectionGeometryQuery",
+      "name": "ConnectedRegions",
+      "kind": "Function",
+      "signature": "Public Function ConnectedRegions(ByVal region As CConcreteRegion) As Collection",
+      "parameters": [
+        {
+          "name": "region",
+          "type": "CConcreteRegion",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal region As CConcreteRegion"
+        }
+      ],
+      "resultType": "Collection",
+      "line": 491,
+      "source": "src/Section/CSectionGeometryQuery.cls",
+      "id": "CSectionGeometryQuery.ConnectedRegions",
+      "anchor": "api-csectiongeometryquery-connectedregions"
     },
     {
       "owner": "CSectionGeometryQuery",
@@ -6923,7 +7125,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 463,
+      "line": 551,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.MergeDisjointRegions",
       "anchor": "api-csectiongeometryquery-mergedisjointregions"
@@ -6952,7 +7154,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 484,
+      "line": 572,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.SubtractContainedRegion",
       "anchor": "api-csectiongeometryquery-subtractcontainedregion"
@@ -6981,7 +7183,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 569,
+      "line": 657,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.SubtractRegion",
       "anchor": "api-csectiongeometryquery-subtractregion"
@@ -7010,7 +7212,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 588,
+      "line": 676,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RegionsCoincide",
       "anchor": "api-csectiongeometryquery-regionscoincide"
@@ -7055,7 +7257,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 606,
+      "line": 694,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ClipHalfPlane",
       "anchor": "api-csectiongeometryquery-cliphalfplane"
@@ -7124,7 +7326,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 672,
+      "line": 760,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ClipWindow",
       "anchor": "api-csectiongeometryquery-clipwindow"
@@ -7169,7 +7371,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 688,
+      "line": 776,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.MaterialRegionThroughPlane",
       "anchor": "api-csectiongeometryquery-materialregionthroughplane"
@@ -7214,7 +7416,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 838,
+      "line": 926,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ContainsPoint",
       "anchor": "api-csectiongeometryquery-containspoint"
@@ -7251,7 +7453,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 880,
+      "line": 968,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.BoundaryDistance",
       "anchor": "api-csectiongeometryquery-boundarydistance"
@@ -7280,7 +7482,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 912,
+      "line": 1000,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RoundedPolygon",
       "anchor": "api-csectiongeometryquery-roundedpolygon"
@@ -7317,7 +7519,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 998,
+      "line": 1086,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.OffsetRoundedPolygon",
       "anchor": "api-csectiongeometryquery-offsetroundedpolygon"
@@ -7338,7 +7540,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 1073,
+      "line": 1161,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RegionFromPath",
       "anchor": "api-csectiongeometryquery-regionfrompath"
@@ -7367,7 +7569,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 1085,
+      "line": 1173,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.AdjacentRectangles",
       "anchor": "api-csectiongeometryquery-adjacentrectangles"
@@ -7436,7 +7638,7 @@
         }
       ],
       "resultType": "Variant",
-      "line": 1257,
+      "line": 1346,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.LineIntervals",
       "anchor": "api-csectiongeometryquery-lineintervals"
@@ -7505,7 +7707,7 @@
         }
       ],
       "resultType": "Variant",
-      "line": 1319,
+      "line": 1408,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.SampleMaterialIntervals",
       "anchor": "api-csectiongeometryquery-samplematerialintervals"
@@ -7550,7 +7752,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 1351,
+      "line": 1440,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ConcreteCoverFromPointAlongDirection",
       "anchor": "api-csectiongeometryquery-concretecoverfrompointalongdirection"
@@ -7571,7 +7773,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 1489,
+      "line": 1606,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RegionFromContours",
       "anchor": "api-csectiongeometryquery-regionfromcontours"
@@ -7608,10 +7810,169 @@
         }
       ],
       "resultType": null,
-      "line": 1509,
+      "line": 1626,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RegionCentroid",
       "anchor": "api-csectiongeometryquery-regioncentroid"
+    },
+    {
+      "owner": "CSectionGeometryQuery",
+      "name": "RegionProperties",
+      "kind": "Sub",
+      "signature": "Public Sub RegionProperties(ByVal region As CConcreteRegion, ByRef properties As TGeometryProperties)",
+      "parameters": [
+        {
+          "name": "region",
+          "type": "CConcreteRegion",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal region As CConcreteRegion"
+        },
+        {
+          "name": "properties",
+          "type": "TGeometryProperties",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef properties As TGeometryProperties"
+        }
+      ],
+      "resultType": null,
+      "line": 1663,
+      "source": "src/Section/CSectionGeometryQuery.cls",
+      "id": "CSectionGeometryQuery.RegionProperties",
+      "anchor": "api-csectiongeometryquery-regionproperties"
+    },
+    {
+      "owner": "CSectionGeometryQuery",
+      "name": "ValidateBoundaryProperties",
+      "kind": "Sub",
+      "signature": "Public Sub ValidateBoundaryProperties(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double, ByVal area As Double, ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double)",
+      "parameters": [
+        {
+          "name": "region",
+          "type": "CConcreteRegion",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal region As CConcreteRegion"
+        },
+        {
+          "name": "x",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x As Double"
+        },
+        {
+          "name": "y",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y As Double"
+        },
+        {
+          "name": "area",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal area As Double"
+        },
+        {
+          "name": "localIx",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal localIx As Double"
+        },
+        {
+          "name": "localIy",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal localIy As Double"
+        },
+        {
+          "name": "localIxy",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal localIxy As Double"
+        }
+      ],
+      "resultType": null,
+      "line": 1722,
+      "source": "src/Section/CSectionGeometryQuery.cls",
+      "id": "CSectionGeometryQuery.ValidateBoundaryProperties",
+      "anchor": "api-csectiongeometryquery-validateboundaryproperties"
+    },
+    {
+      "owner": "CSectionGeometryQuery",
+      "name": "TryRectangle",
+      "kind": "Function",
+      "signature": "Public Function TryRectangle(ByVal region As CConcreteRegion, ByRef centerX As Double, ByRef centerY As Double, ByRef width As Double, ByRef height As Double, ByRef rotation As Double) As Boolean",
+      "parameters": [
+        {
+          "name": "region",
+          "type": "CConcreteRegion",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal region As CConcreteRegion"
+        },
+        {
+          "name": "centerX",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef centerX As Double"
+        },
+        {
+          "name": "centerY",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef centerY As Double"
+        },
+        {
+          "name": "width",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef width As Double"
+        },
+        {
+          "name": "height",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef height As Double"
+        },
+        {
+          "name": "rotation",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef rotation As Double"
+        }
+      ],
+      "resultType": "Boolean",
+      "line": 1843,
+      "source": "src/Section/CSectionGeometryQuery.cls",
+      "id": "CSectionGeometryQuery.TryRectangle",
+      "anchor": "api-csectiongeometryquery-tryrectangle"
     },
     {
       "owner": "modSectionRecipeTypes",
@@ -7664,10 +8025,9 @@
         "IncludeBoth = 1",
         "ExcludeBoth = 2",
         "IncludeStart = 3",
-        "IncludeEnd = 4",
-        "ClosedUniform = 5"
+        "IncludeEnd = 4"
       ],
-      "line": 24,
+      "line": 25,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.ERebarEndMode",
       "anchor": "api-modsectionrecipetypes-erebarendmode"
@@ -7865,6 +8225,7 @@
         "Publication As ERebarPublication",
         "PositionOrder As ERebarPositionOrder",
         "Coincidence As ERebarCoincidence",
+        "WarnOnCoincidence As Boolean",
         "PlacementCheck As ERebarPlacementCheck",
         "OverlapPolicy As ERebarOverlapPolicy",
         "SourcePrefix As String",
@@ -7903,9 +8264,10 @@
         "Value As Double",
         "DisplayIncrement As Double",
         "ReverseDirection As Boolean",
+        "BoundaryIsLocal As Boolean",
         "Comment As String"
       ],
-      "line": 145,
+      "line": 146,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.TSectionAnnotation",
       "anchor": "api-modsectionrecipetypes-tsectionannotation"
@@ -7916,14 +8278,16 @@
       "kind": "Type",
       "signature": "Public Type TSectionMeshOptions",
       "fields": [
+        "CellGeometry As String",
         "StepX As Double",
         "StepY As Double",
         "AutoStepFactor As Double",
         "BoundarySubdivisions As Long",
         "MaterialID As Long",
-        "SourceReference As String"
+        "SourceReference As String",
+        "MinArea As Double"
       ],
-      "line": 167,
+      "line": 169,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.TSectionMeshOptions",
       "anchor": "api-modsectionrecipetypes-tsectionmeshoptions"
@@ -7949,7 +8313,7 @@
         "SourcePositionID As String",
         "PathID As String"
       ],
-      "line": 176,
+      "line": 180,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.TRebarPosition",
       "anchor": "api-modsectionrecipetypes-trebarposition"
@@ -8002,7 +8366,7 @@
         }
       ],
       "resultType": null,
-      "line": 194,
+      "line": 198,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.SectionRecipeError",
       "anchor": "api-modsectionrecipetypes-sectionrecipeerror"
@@ -8047,7 +8411,7 @@
         }
       ],
       "resultType": "String",
-      "line": 201,
+      "line": 205,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.SectionRecipeErrorText",
       "anchor": "api-modsectionrecipetypes-sectionrecipeerrortext"
@@ -8092,7 +8456,7 @@
         }
       ],
       "resultType": null,
-      "line": 283,
+      "line": 287,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.SectionRecipeGeometryError",
       "anchor": "api-modsectionrecipetypes-sectionrecipegeometryerror"
@@ -8179,7 +8543,10 @@
         "Height As Double",
         "Area As Double",
         "FillFactor As Double",
-        "MaterialID As Long"
+        "MaterialID As Long",
+        "LocalIx As Double",
+        "LocalIy As Double",
+        "LocalIxy As Double"
       ],
       "line": 37,
       "source": "src/Common/modGeometryTypes.bas",
@@ -8211,7 +8578,7 @@
         "PrincipalRadius1 As Double",
         "PrincipalRadius2 As Double"
       ],
-      "line": 47,
+      "line": 50,
       "source": "src/Common/modGeometryTypes.bas",
       "id": "modGeometryTypes.TGeometryProperties",
       "anchor": "api-modgeometrytypes-tgeometryproperties"
@@ -8240,7 +8607,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 70,
+      "line": 73,
       "source": "src/Common/modGeometryTypes.bas",
       "id": "modGeometryTypes.GeomMax",
       "anchor": "api-modgeometrytypes-geommax"
@@ -8269,10 +8636,47 @@
         }
       ],
       "resultType": "Double",
-      "line": 80,
+      "line": 83,
       "source": "src/Common/modGeometryTypes.bas",
       "id": "modGeometryTypes.GeomMin",
       "anchor": "api-modgeometrytypes-geommin"
+    },
+    {
+      "owner": "modGeometryTypes",
+      "name": "TryReadStrictDouble",
+      "kind": "Function",
+      "signature": "Public Function TryReadStrictDouble(ByVal value As Variant, ByRef parsed As Double, Optional ByVal allowDecimalComma As Boolean = True) As Boolean",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal value As Variant"
+        },
+        {
+          "name": "parsed",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef parsed As Double"
+        },
+        {
+          "name": "allowDecimalComma",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "True",
+          "signature": "Optional ByVal allowDecimalComma As Boolean = True"
+        }
+      ],
+      "resultType": "Boolean",
+      "line": 94,
+      "source": "src/Common/modGeometryTypes.bas",
+      "id": "modGeometryTypes.TryReadStrictDouble",
+      "anchor": "api-modgeometrytypes-tryreadstrictdouble"
     },
     {
       "owner": "modGeometryTypes",
@@ -8298,7 +8702,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 93,
+      "line": 153,
       "source": "src/Common/modGeometryTypes.bas",
       "id": "modGeometryTypes.ReadContourArcSweep",
       "anchor": "api-modgeometrytypes-readcontourarcsweep"
@@ -8335,7 +8739,7 @@
         }
       ],
       "resultType": "CSectionModel",
-      "line": 124,
+      "line": 184,
       "source": "src/Common/modGeometryTypes.bas",
       "id": "modGeometryTypes.TestBuildGeneratedSectionModel",
       "anchor": "api-modgeometrytypes-testbuildgeneratedsectionmodel"
@@ -8810,6 +9214,35 @@
     },
     {
       "owner": "CSectionInputReader",
+      "name": "RebarEndMode",
+      "kind": "Function",
+      "signature": "Public Function RebarEndMode(ByVal blockKey As String, ByVal rowKey As String) As ERebarEndMode",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        }
+      ],
+      "resultType": "ERebarEndMode",
+      "line": 110,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.RebarEndMode",
+      "anchor": "api-csectioninputreader-rebarendmode"
+    },
+    {
+      "owner": "CSectionInputReader",
       "name": "Length",
       "kind": "Function",
       "signature": "Public Function Length(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As Double",
@@ -8840,7 +9273,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 109,
+      "line": 120,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Length",
       "anchor": "api-csectioninputreader-length"
@@ -8877,7 +9310,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 114,
+      "line": 125,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.PositiveLength",
       "anchor": "api-csectioninputreader-positivelength"
@@ -8914,7 +9347,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 119,
+      "line": 130,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.NonNegativeLength",
       "anchor": "api-csectioninputreader-nonnegativelength"
@@ -8951,7 +9384,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 124,
+      "line": 135,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.OptionalDiameter",
       "anchor": "api-csectioninputreader-optionaldiameter"
@@ -8988,7 +9421,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 129,
+      "line": 140,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.OptionalRowOffset",
       "anchor": "api-csectioninputreader-optionalrowoffset"
@@ -9025,7 +9458,7 @@
         }
       ],
       "resultType": "String",
-      "line": 134,
+      "line": 145,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.SourceReference",
       "anchor": "api-csectioninputreader-sourcereference"
@@ -9062,7 +9495,7 @@
         }
       ],
       "resultType": "String",
-      "line": 139,
+      "line": 150,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.SourceReferences",
       "anchor": "api-csectioninputreader-sourcereferences"
@@ -9115,7 +9548,7 @@
         }
       ],
       "resultType": null,
-      "line": 148,
+      "line": 159,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Require",
       "anchor": "api-csectioninputreader-require"
@@ -9124,24 +9557,24 @@
   "scope": "Все Public члены фасада, его options/результатов и общего ввода/единиц; общие query/region и build diagnostics для проверок. Private/Friend не API рецепта.",
   "sourceHashes": {
     "src/Section/ISectionRecipe.cls": "d963bc8c3c3f105fed9825b07db11a0258e275604286fea66d7322488ad5edf0",
-    "src/Section/CSectionDefinitionBuilder.cls": "104928a202bedcbc4563fd9b9d8978a865f05cdd0b64c1e9f4f2dbe5e883adc5",
-    "src/Geometry/CGeometryPath.cls": "097a1bfe5e558bb3760d3229eda4b20e316525a1a458bebe8e92212325c762b2",
-    "src/Geometry/CPolygonSpec.cls": "3dae51cac0089249fb9e6bb7a7692778c113ab04b6f8562400a65c74cad9c4c8",
-    "src/Section/CSectionDefinition.cls": "d4834ef4b5174f302fd98af301eb0d15b75e6e87bd9a61b617156d124736dcff",
-    "src/Section/CRebarRuleOptions.cls": "5dd52f9c2943224d069bd02d2ba651eaf54cee16bb1448a81bf4c3bcde48a95b",
+    "src/Section/CSectionDefinitionBuilder.cls": "746c913aa27115f22db8e4eaeb4c160b9d212579fdde81916bab7d8fae2373fd",
+    "src/Geometry/CGeometryPath.cls": "418c08ae763b88232a7e51c51d7e406bd66348c02237087c256dc0227cc24edf",
+    "src/Geometry/CPolygonSpec.cls": "dbe2cec2d9a456f01a39fba31149a80f44d84a3ff4179ee7b4ab434ba1c79564",
+    "src/Section/CSectionDefinition.cls": "78964c7c87d373648022123d4f807a39263047d044fc5888d1c96018f3652b9c",
+    "src/Section/CRebarRuleOptions.cls": "d6592b046e0b0f019e7fc38ce2f66d094c8469569ea4b0fe0c2040c83020b80d",
     "src/Geometry/CGeometryDiagnostic.cls": "8946153d9883bc493bb4015304782921f4e281d52c51c58fdd5a90c60ecfd49b",
-    "src/Section/CSectionInputTable.cls": "fc92642c97aff707eba7e6e18e0d7e66423224dcef628ca7c51a54744146a2ce",
+    "src/Section/CSectionInputTable.cls": "3c7fcb4b4181e0f37179afa28b018682b9d46401395cc8c7323daca093a259fd",
     "src/Section/CSectionRecipeContext.cls": "1088cde1e89361a750946ba69bb0dda8b8f78259e5c9001d668dff1097e04dc0",
     "src/Excel/CSectionInputSnapshotReader.cls": "d7aaf59c813510c4ad5b66220a90c17ab80146742073b9cda8594d282285a95f",
     "src/Excel/CSectionTypeRegistry.cls": "b4c7e7e060e33a77e455b0c69a9d497a0eb5c7513869e81a49133b961a66de8d",
-    "src/Section/CSectionBuilder.cls": "25efd360b4189c778c6af8d92077c3f179d2dd6386cb68b3d3ddc1a5867d61fc",
-    "src/Section/CRebarRuleExecutor.cls": "9660d1ebe5855c608444ac24da044142aef38d6e26c6b18487aad4e778c499a3",
-    "src/Excel/CUnitSystem.cls": "acdcc7657cb0ac8aa82c62f4b047ea1e4db5c40fb16a805a5bf1d42364d30dd1",
-    "src/Section/CConcreteRegion.cls": "bfc6f341e90483978620556698ee3afedcbc9224217592a458974f7502919b77",
-    "src/Section/CSectionGeometryQuery.cls": "b1d60f982e0bd79a2de23360d23655476d8914bb10671b2fe52e34c0e5e509ed",
-    "src/Common/modSectionRecipeTypes.bas": "82643b79943b3a76422a0721467183ec630caec0f018ba5564428b3c8b8b30fa",
-    "src/Common/modGeometryTypes.bas": "0b286f64c33319b1b0e8b34ef0e0d25ab4edf2f917ca97fd75501d673ac0a78f",
-    "src/Section/CRebarContactBuilder.cls": "fe783d4ec67dcfa33fcb9176701079440125cec3bb2d498d2655805220afb1cc",
-    "src/Section/CSectionInputReader.cls": "9810c06f5760d32752cb69f0a87df650c5f210558a12b63b1a328a097ecb680a"
+    "src/Section/CSectionBuilder.cls": "86c44ffff80b889a296deabe7c0c0e63586f7c7b1434f572e6a73ac939459ef9",
+    "src/Section/CRebarRuleExecutor.cls": "7a032d1cc2468bef09b4a343899dc946f76050659867fafc66e28efffd77fd73",
+    "src/Excel/CUnitSystem.cls": "1166ffb8e73ef235c6abbe4486089c84ea84df790ce8655857d03f3383ad13d3",
+    "src/Section/CConcreteRegion.cls": "5f19f30c1df99573c230d62ff6ff4e5c95d0b87b7390972318f97e93597fe5bd",
+    "src/Section/CSectionGeometryQuery.cls": "ab48bc6731e32b87117132d0ea28d98213257d4afbd1c2a68896e5ff7474b393",
+    "src/Common/modSectionRecipeTypes.bas": "65313aff0eaa5b25de490a5beb56832d3488d9de5e5aeef6ad0b817150568638",
+    "src/Common/modGeometryTypes.bas": "4eaec666848fbb3026ec5b3d7155d62d0ba92d4ac7b4afbaf4199210e30e0717",
+    "src/Section/CRebarContactBuilder.cls": "2f767080d38bbbf267c788ff75d112b086d2552f0c5835e4e46fa706764bc43c",
+    "src/Section/CSectionInputReader.cls": "198073ff55eba2bf6a5f8db9f417d434bde12123386a23598c98dc2b253324aa"
   }
 }

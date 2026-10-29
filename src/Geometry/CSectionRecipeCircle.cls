@@ -26,6 +26,7 @@ Private Type TCircleRebar
     Count As Long ' Число стержней основного ряда.
     Diameter As Double ' Диаметр стержней основного ряда, мм.
     AxisDistance As Double ' Расстояние от края бетона до осей основного ряда, мм.
+    EndMode As ERebarEndMode ' Явный режим для полного круга либо открытой дуги.
     StartSetback As Double ' Отступ от верхней точки окружности по часовой стрелке вдоль линии центров, мм.
     EndSetback As Double ' Отступ назад от конца полного оборота вдоль линии центров, мм.
     BaseOffsets(2 To 3) As Double ' Базовые отступы второго и третьего рядов от основного, мм.
@@ -59,14 +60,14 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByVal diameter 
     rebar.Count = reader.Count("Main", "Circle", "n")
     rebar.Diameter = reader.OptionalDiameter("Main", "Circle", "d")
     If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
-    reader.Require "Main", "Circle", "n", rebar.Count >= 2, "Для круговой раскладки требуется не меньше двух стержней первого ряда."
     rebar.AxisDistance = reader.Length("Main", "Circle", "as")
     reader.Require "Main", "Circle", "as", rebar.AxisDistance > rebar.Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
     reader.Require "Main", "Circle", "as", rebar.AxisDistance < diameter / 2#, "Расстояние до оси должно быть меньше радиуса бетонного круга."
     rebar.StartSetback = reader.OptionalRowOffset("Main", "Circle", "s0")
     rebar.EndSetback = reader.OptionalRowOffset("Main", "Circle", "s1")
     reader.Require "Main", "Circle", "s0", rebar.StartSetback + rebar.EndSetback < 2# * GEOM_PI * (diameter / 2# - rebar.AxisDistance) - GEOM_TOLERANCE, "Сумма концевых отступов должна быть меньше длины окружности центров стержней."
-    rebar.Source = reader.SourceReferences("Main", "Circle", Array("as", "d", "n", "s0", "s1"))
+    rebar.EndMode = reader.RebarEndMode("Main", "Circle")
+    rebar.Source = reader.SourceReferences("Main", "Circle", Array("as", "d", "n", "s0", "s1", "endMode"))
     For rowNumber = 2 To 3
         suffix = CStr(rowNumber)
         rebar.Diameters(rowNumber) = reader.OptionalDiameter("Extra", "Circle", "d" & suffix)
@@ -98,11 +99,12 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal di
         Set path = facade.Slice("Circle.Axis", path.ID, rebar.StartSetback, path.Length - rebar.EndSetback) ' Открытая дуга после отсечения двух концевых отступов.
     End If
     Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-    If path.IsClosed Then options.EndMode = ClosedUniform Else options.EndMode = IncludeBoth ' Полный круг без повторного конца либо дуга с обоими концами.
+    options.EndMode = rebar.EndMode ' Те же четыре правила включения концов действуют и на полном круге, и на открытой дуге.
     options.SourcePrefix = "B" ' Имена стержней начинаются с B.
     options.AnnotationGroup = "Circle" ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой окружности.
     options.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
-    options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
+    options.Coincidence = KeepPublishedOwner ' Первый добавленный физический стержень сохраняет свои диаметр и материал.
+    options.WarnOnCoincidence = True ' Каждый пропуск совпавшего Main фиксируется предупреждением, включая одинаковые диаметры.
     options.Comment = "Круг: основной ряд арматуры"
     options.SourceReference = rebar.Source ' Адреса полей для сообщения об ошибке размещения.
     facade.RebarByCount "Circle.Main", path.ID, rebar.Count, rebar.Diameter, options ' Задаём основной ряд по числу стержней и диаметру.

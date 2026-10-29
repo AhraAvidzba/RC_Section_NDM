@@ -76,12 +76,12 @@ Public Function TestAdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSec
     ' Внутренний ряд смещается от границы отверстия в бетон без ручного задания координат
     ' стержней.
     Set path = facade.Offset("HoleAxis", "Hole", -30#)
-    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
+    Set options = New CRebarRuleOptions: options.EndMode = IncludeStart
     options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     facade.RebarByCount "Inner", "HoleAxis", 6, 8#, options
     Set path = facade.LinePath("BasePath", -150#, -350#, 150#, -350#)
     facade.RebarByCount "Base", "BasePath", 4, 10#
-    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform ' Два из четырёх лучей попадают на конечную круговую ось; пропуски явные.
+    Set options = New CRebarRuleOptions: options.EndMode = IncludeStart ' Два из четырёх лучей попадают на конечную круговую ось; пропуски явные.
     options.DirectionY = 1#: options.SkipMissingProjection = True
     options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     facade.RebarProjected "Projected", "HoleAxis", "Base", 6#, options

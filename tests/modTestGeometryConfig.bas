@@ -351,7 +351,7 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
         If InStr(1, CStr(key), "Loc", vbBinaryCompare) > 0 Then
             badValues = Array(vbNullString, "Wrong", CVErr(2015))
         ElseIf CStr(key) = "Rebar.Count" Then
-            badValues = Array(-1#, 1#, 0.5, 2147483648#, "abc", CVErr(2015))
+            badValues = Array(-1#, True, 0.5, 2147483648#, "abc", CVErr(2015)) ' Один стержень теперь допустим; логическое значение по-прежнему не является количеством.
         ElseIf CStr(key) = "Circle.Diameter" Then
             badValues = Array(vbNullString, -1#, 0#, "abc", CVErr(2015))
         ElseIf CStr(key) = "Rebar.AxisDistance" Then
@@ -1281,12 +1281,12 @@ Private Sub TestCheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, By
                     TestConfigureRebarFieldFixture target, CStr(shape), False
                     TestCheckInactiveRebarCell stats, target, CStr(shape), face, field, "extraRowsOff", cases
                 End If
-                ' Отступы отключенной наружной линии не нужны. Исключение:
-                ' as Opening ограничивает продолжение соседних проекций.
+                ' as остаётся параметром общего контура при n=0/d=0; пустой as равен нулю.
+                ' Концевые отступы отключённого наружного ряда и параметры отсутствующих extras не используются.
                 Dim inactiveOffset As Boolean
-                inactiveOffset = (kind = "as" Or kind = "start" Or kind = "end")
+                inactiveOffset = (kind = "start" Or kind = "end")
                 If CStr(shape) = "HollowRectangle" And Left$(CStr(face(0)), 8) = "Opening." Then inactiveOffset = False
-                If kind = "d2" Or kind = "d3" Or Left$(kind, 3) = "loc" Or Left$(kind, 4) = "bind" Or inactiveOffset Then
+                If kind = "as" Or kind = "d2" Or kind = "d3" Or Left$(kind, 3) = "loc" Or Left$(kind, 4) = "bind" Or inactiveOffset Then
                     For Each mode In Array("diameterOff", "countOff")
                         If CStr(mode) <> "countOff" Or Left$(CStr(face(0)), 8) <> "Opening." Then
                             TestConfigureRebarFieldFixture target, CStr(shape), True
@@ -1324,18 +1324,27 @@ Private Sub TestCheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, By
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Меняет только одну неиспользуемую ячейку и сравнивает полный расчетный layout
-' с независимым снимком до мутации. Ошибка формулы проверяется отдельно от текста;
-' после каждой попытки исходная Formula восстанавливается до следующего чтения.
+' Проверяет поле отключённого ряда: as остаётся отступом общего контура, пустой равен нулю.
+' Остальные неиспользуемые поля не вмешиваются в раскладку. Текст/ошибка формулы/отрицательный as
+' должны отклоняться с адресом; после каждого случая восстанавливается полный снимок стержней.
 Private Sub TestCheckInactiveRebarCell(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal activeShape As String, ByVal face As Variant, ByVal field As Variant, _
         ByVal mode As String, ByRef cases As Long)
     Dim cell As Object, savedValue As Variant, bad As Variant, baseline As Variant, current As Variant
     Dim prefix As String, number As Long, description As String, index As Long
+    Dim contourOffset As Boolean, zeroSnapshot As Variant, badValues As Variant
     Set cell = TestRebarFieldCell(target, CLng(field(1)), CLng(field(2)))
     savedValue = cell.Formula
     baseline = TestRequiredGeometryRouteSnapshot(activeShape, "Rebars")
-    For Each bad In Array(vbNullString, "abc", CVErr(2015))
+    contourOffset = (CStr(field(0)) = "as" And (mode = "diameterOff" Or mode = "countOff"))
+    If contourOffset Then
+        cell.Value2 = 0#: zeroSnapshot = TestRequiredGeometryRouteSnapshot(activeShape, "Rebars")
+        cell.Formula = savedValue
+        badValues = Array(vbNullString, 0#, 50#, -1#, "abc", CVErr(2015)) ' Fixture задаёт as=50 мм; первые три случая проверяют допустимый ввод отключённой стороны.
+    Else
+        badValues = Array(vbNullString, "abc", CVErr(2015))
+    End If
+    For Each bad In badValues
         index = index + 1: cases = cases + 1
         prefix = "rebarFields.inactive." & mode & "." & CStr(face(0)) & "." & CStr(field(0)) & "." & CStr(index)
         cell.Value2 = bad: number = 0: description = vbNullString
@@ -1344,8 +1353,24 @@ Private Sub TestCheckInactiveRebarCell(ByRef stats As TGeometryConfigStats, ByVa
         current = TestRequiredGeometryRouteSnapshot(activeShape, "Rebars")
         number = Err.Number: description = Err.Description
         Err.Clear: On Error GoTo 0
-        TestCheck stats, prefix & ".noInterference", number = 0
-        If number = 0 Then TestCheck stats, prefix & ".snapshot", TestSameGeometryRouteSnapshot(baseline, current)
+        If contourOffset Then
+            If index <= 3 Then
+                TestCheck stats, prefix & ".accepted", number = 0
+                If number = 0 Then
+                    If index <= 2 Then
+                        TestCheck stats, prefix & ".blankEqualsZero", TestSameGeometryRouteSnapshot(zeroSnapshot, current)
+                    Else
+                        TestCheck stats, prefix & ".givenAsRestored", TestSameGeometryRouteSnapshot(baseline, current)
+                    End If
+                End If
+            Else
+                TestCheck stats, prefix & ".reject", number <> 0
+                TestCheck stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
+            End If
+        Else
+            TestCheck stats, prefix & ".noInterference", number = 0
+            If number = 0 Then TestCheck stats, prefix & ".snapshot", TestSameGeometryRouteSnapshot(baseline, current)
+        End If
         stats.Report = stats.Report & "INACTIVE_REBAR_FIELD: " & prefix & "; error=" & CStr(number) & "; " & description & vbCrLf
         cell.Formula = savedValue
         current = TestRequiredGeometryRouteSnapshot(activeShape, "Rebars")
@@ -1534,13 +1559,13 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет активный ошибочный ввод и восстановление того же reader/builder
-' маршрута. Допустимая пустота d/n уже проверена отдельно; для обязательных
-' as/t/активных loc/bind пустота не должна незаметно выбирать размер/режим.
+' маршрута. Пустой s0/s1 должен совпасть с явным нулём; отрицательный, текст и ошибка отклоняются.
+' Для активного as и loc/bind пустота остаётся ошибкой; допустимая пустота d/n проверена отдельно.
 Private Sub TestCheckRebarFieldInvalid(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal shape As String, ByVal face As Variant, ByVal field As Variant, ByRef cases As Long)
     Dim bad As Variant, badValues As Variant, kind As String, prefix As String, cell As Object
     Dim savedValue As Variant, geom As CGeometryRegion, bars As CRebarLayout, baseline As Variant, current As Variant
-    Dim number As Long, description As String, index As Long
+    Dim number As Long, description As String, index As Long, zeroSnapshot As Variant
     kind = CStr(field(0)): Set cell = TestRebarFieldCell(target, CLng(field(1)), CLng(field(2)))
     savedValue = cell.Formula: baseline = TestRequiredGeometryRouteSnapshot(shape, "Rebars")
     If Left$(kind, 3) = "loc" Or Left$(kind, 4) = "bind" Then
@@ -1559,10 +1584,19 @@ Private Sub TestCheckRebarFieldInvalid(ByRef stats As TGeometryConfigStats, ByVa
         TestReadGeometry geom, bars
         number = Err.Number: description = Err.Description
         Err.Clear: On Error GoTo 0
-        TestCheck stats, prefix & ".reject", number <> 0
-        TestCheck stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
-        TestCheck stats, prefix & ".repair", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
-            InStr(1, description, "Выберите", vbTextCompare) > 0 Or InStr(1, description, "Исправ", vbTextCompare) > 0
+        If (kind = "start" Or kind = "end") And index = 1 Then
+            TestCheck stats, prefix & ".blankAccepted", number = 0
+            If number = 0 Then
+                current = TestRequiredGeometryRouteSnapshot(shape, "Rebars")
+                cell.Value2 = 0#: zeroSnapshot = TestRequiredGeometryRouteSnapshot(shape, "Rebars")
+                TestCheck stats, prefix & ".blankEqualsZero", TestSameGeometryRouteSnapshot(current, zeroSnapshot)
+            End If
+        Else
+            TestCheck stats, prefix & ".reject", number <> 0
+            TestCheck stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
+            TestCheck stats, prefix & ".repair", InStr(1, description, "Введите", vbTextCompare) > 0 Or _
+                InStr(1, description, "Выберите", vbTextCompare) > 0 Or InStr(1, description, "Исправ", vbTextCompare) > 0
+        End If
         stats.Report = stats.Report & "REBAR_FIELD_ERROR: " & prefix & "; error=" & CStr(number) & "; " & description & vbCrLf
         cell.Formula = savedValue
         current = TestRequiredGeometryRouteSnapshot(shape, "Rebars")
@@ -1596,7 +1630,7 @@ Private Function TestRebarFieldCell(ByVal target As Object, ByVal rowIndex As Lo
                 If Left$(group, 8) = "Opening." Then key = "Opening" & key
             End If
             If block = "Main" Then
-                fields = Array("key", "name", "as", "d", "n", "s0", "s1", "note")
+                fields = Array("key", "name", "as", "d", "n", "s0", "s1", "endMode", "note")
             Else
                 fields = Array("key", "name", "d2", "a2", "bind2", "pos2", "d3", "a3", "bind3", "pos3", "note")
             End If

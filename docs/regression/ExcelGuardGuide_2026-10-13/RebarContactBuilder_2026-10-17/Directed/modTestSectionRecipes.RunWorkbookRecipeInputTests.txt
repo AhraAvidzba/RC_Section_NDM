@@ -1,0 +1,285 @@
+PASS: workbook.reader.noShapeKey.Circle.Circle.Diameter
+PASS: workbook.reader.noShapeKey.Circle.RectSet.B1
+PASS: workbook.reader.noShapeKey.Circle.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.Circle.HollowRectangle.B
+PASS: workbook.inactiveName.Circle
+PASS: workbook.table.immutable.Circle
+PASS: workbook.definition.sealed.Circle
+PASS: workbook.definition.meshCount.Circle
+PASS: workbook.definition.barCount.Circle
+PASS: workbook.definition.x.Circle.1; actual=260; expected=260
+PASS: workbook.definition.y.Circle.1; actual=0; expected=0
+PASS: workbook.definition.x.Circle.2; actual=242; expected=242
+PASS: workbook.definition.y.Circle.2; actual=0; expected=0
+PASS: workbook.definition.x.Circle.3; actual=260; expected=260
+PASS: workbook.definition.y.Circle.3; actual=-16; expected=-16
+PASS: workbook.definition.x.Circle.4; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.y.Circle.4; actual=130; expected=130
+PASS: workbook.definition.x.Circle.5; actual=209.578147715834; expected=209.578147715834
+PASS: workbook.definition.y.Circle.5; actual=121; expected=121
+PASS: workbook.definition.x.Circle.6; actual=233.166604983954; expected=233.166604983954
+PASS: workbook.definition.y.Circle.6; actual=116.143593539449; expected=116.143593539449
+PASS: workbook.definition.x.Circle.7; actual=130; expected=130
+PASS: workbook.definition.y.Circle.7; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.x.Circle.8; actual=121; expected=121
+PASS: workbook.definition.y.Circle.8; actual=209.578147715834; expected=209.578147715834
+PASS: workbook.definition.x.Circle.9; actual=143.856406460551; expected=143.856406460551
+PASS: workbook.definition.y.Circle.9; actual=217.166604983954; expected=217.166604983954
+PASS: workbook.definition.x.Circle.10; actual=1.59198825996909E-14; expected=1.59198825996909E-14
+PASS: workbook.definition.y.Circle.10; actual=260; expected=260
+PASS: workbook.definition.x.Circle.11; actual=1.48177368812508E-14; expected=1.48177368812508E-14
+PASS: workbook.definition.y.Circle.11; actual=242; expected=242
+PASS: workbook.definition.x.Circle.12; actual=16; expected=16
+PASS: workbook.definition.y.Circle.12; actual=260; expected=260
+PASS: workbook.definition.x.Circle.13; actual=-130; expected=-130
+PASS: workbook.definition.y.Circle.13; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.x.Circle.14; actual=-121; expected=-121
+PASS: workbook.definition.y.Circle.14; actual=209.578147715834; expected=209.578147715834
+PASS: workbook.definition.x.Circle.15; actual=-116.143593539449; expected=-116.143593539449
+PASS: workbook.definition.y.Circle.15; actual=233.166604983954; expected=233.166604983954
+PASS: workbook.definition.x.Circle.16; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.y.Circle.16; actual=130; expected=130
+PASS: workbook.definition.x.Circle.17; actual=-209.578147715834; expected=-209.578147715834
+PASS: workbook.definition.y.Circle.17; actual=121; expected=121
+PASS: workbook.definition.x.Circle.18; actual=-217.166604983954; expected=-217.166604983954
+PASS: workbook.definition.y.Circle.18; actual=143.856406460551; expected=143.856406460551
+PASS: workbook.definition.x.Circle.19; actual=-260; expected=-260
+PASS: workbook.definition.y.Circle.19; actual=3.18397651993818E-14; expected=3.18397651993818E-14
+PASS: workbook.definition.x.Circle.20; actual=-242; expected=-242
+PASS: workbook.definition.y.Circle.20; actual=2.96354737625015E-14; expected=2.96354737625015E-14
+PASS: workbook.definition.x.Circle.21; actual=-260; expected=-260
+PASS: workbook.definition.y.Circle.21; actual=16; expected=16
+PASS: workbook.definition.x.Circle.22; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.y.Circle.22; actual=-130; expected=-130
+PASS: workbook.definition.x.Circle.23; actual=-209.578147715834; expected=-209.578147715834
+PASS: workbook.definition.y.Circle.23; actual=-121; expected=-121
+PASS: workbook.definition.x.Circle.24; actual=-233.166604983954; expected=-233.166604983954
+PASS: workbook.definition.y.Circle.24; actual=-116.143593539449; expected=-116.143593539449
+PASS: workbook.definition.x.Circle.25; actual=-130; expected=-130
+PASS: workbook.definition.y.Circle.25; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.x.Circle.26; actual=-121; expected=-121
+PASS: workbook.definition.y.Circle.26; actual=-209.578147715834; expected=-209.578147715834
+PASS: workbook.definition.x.Circle.27; actual=-143.856406460551; expected=-143.856406460551
+PASS: workbook.definition.y.Circle.27; actual=-217.166604983954; expected=-217.166604983954
+PASS: workbook.definition.x.Circle.28; actual=-4.77596477990727E-14; expected=-4.77596477990727E-14
+PASS: workbook.definition.y.Circle.28; actual=-260; expected=-260
+PASS: workbook.definition.x.Circle.29; actual=-4.44532106437523E-14; expected=-4.44532106437523E-14
+PASS: workbook.definition.y.Circle.29; actual=-242; expected=-242
+PASS: workbook.definition.x.Circle.30; actual=-16; expected=-16
+PASS: workbook.definition.y.Circle.30; actual=-260; expected=-260
+PASS: workbook.definition.x.Circle.31; actual=130; expected=130
+PASS: workbook.definition.y.Circle.31; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.x.Circle.32; actual=121; expected=121
+PASS: workbook.definition.y.Circle.32; actual=-209.578147715834; expected=-209.578147715834
+PASS: workbook.definition.x.Circle.33; actual=116.143593539449; expected=116.143593539449
+PASS: workbook.definition.y.Circle.33; actual=-233.166604983954; expected=-233.166604983954
+PASS: workbook.definition.x.Circle.34; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.y.Circle.34; actual=-130; expected=-130
+PASS: workbook.definition.x.Circle.35; actual=209.578147715834; expected=209.578147715834
+PASS: workbook.definition.y.Circle.35; actual=-121; expected=-121
+PASS: workbook.definition.x.Circle.36; actual=217.166604983954; expected=217.166604983954
+PASS: workbook.definition.y.Circle.36; actual=-143.856406460551; expected=-143.856406460551
+PASS: workbook.activeName.reject.Circle
+PASS: workbook.reader.noShapeKey.Rectangle.Circle.Diameter
+PASS: workbook.reader.noShapeKey.Rectangle.RectSet.B1
+PASS: workbook.reader.noShapeKey.Rectangle.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.Rectangle.HollowRectangle.B
+PASS: workbook.inactiveName.Rectangle
+PASS: workbook.table.immutable.Rectangle
+PASS: workbook.definition.sealed.Rectangle
+PASS: workbook.definition.meshCount.Rectangle
+PASS: workbook.definition.barCount.Rectangle
+PASS: workbook.definition.x.Rectangle.1; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.1; actual=200; expected=200
+PASS: workbook.definition.x.Rectangle.2; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.2; actual=140; expected=140
+PASS: workbook.definition.x.Rectangle.3; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.3; actual=260; expected=260
+PASS: workbook.definition.x.Rectangle.4; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.4; actual=80; expected=80
+PASS: workbook.definition.x.Rectangle.5; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.5; actual=320; expected=320
+PASS: workbook.definition.x.Rectangle.6; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.6; actual=200; expected=200
+PASS: workbook.definition.x.Rectangle.7; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.7; actual=260; expected=260
+PASS: workbook.definition.x.Rectangle.8; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.8; actual=140; expected=140
+PASS: workbook.definition.x.Rectangle.9; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.9; actual=320; expected=320
+PASS: workbook.definition.x.Rectangle.10; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.10; actual=80; expected=80
+PASS: workbook.definition.x.Rectangle.11; actual=80; expected=80
+PASS: workbook.definition.y.Rectangle.11; actual=360; expected=360
+PASS: workbook.definition.x.Rectangle.12; actual=220; expected=220
+PASS: workbook.definition.y.Rectangle.12; actual=360; expected=360
+PASS: workbook.definition.x.Rectangle.13; actual=220; expected=220
+PASS: workbook.definition.y.Rectangle.13; actual=40; expected=40
+PASS: workbook.definition.x.Rectangle.14; actual=80; expected=80
+PASS: workbook.definition.y.Rectangle.14; actual=40; expected=40
+PASS: workbook.activeName.reject.Rectangle
+PASS: workbook.reader.noShapeKey.RoundedMixed.Circle.Diameter
+PASS: workbook.reader.noShapeKey.RoundedMixed.RectSet.B1
+PASS: workbook.reader.noShapeKey.RoundedMixed.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.RoundedMixed.HollowRectangle.B
+PASS: workbook.inactiveName.RoundedMixed
+PASS: workbook.table.immutable.RoundedMixed
+PASS: workbook.definition.sealed.RoundedMixed
+PASS: workbook.definition.meshCount.RoundedMixed
+PASS: workbook.definition.barCount.RoundedMixed
+PASS: workbook.definition.x.RoundedMixed.1; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.1; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.2; actual=-183.101063109644; expected=-183.101063109644
+PASS: workbook.definition.y.RoundedMixed.2; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.3; actual=-106.202126219288; expected=-106.202126219288
+PASS: workbook.definition.y.RoundedMixed.3; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.4; actual=-29.3031893289313; expected=-29.3031893289313
+PASS: workbook.definition.y.RoundedMixed.4; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.5; actual=47.595747561425; expected=47.595747561425
+PASS: workbook.definition.y.RoundedMixed.5; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.6; actual=124.494684451781; expected=124.494684451781
+PASS: workbook.definition.y.RoundedMixed.6; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.7; actual=201.393621342137; expected=201.393621342137
+PASS: workbook.definition.y.RoundedMixed.7; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.8; actual=278.292558232494; expected=278.292558232494
+PASS: workbook.definition.y.RoundedMixed.8; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.9; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.9; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.10; actual=-183.101063109644; expected=-183.101063109644
+PASS: workbook.definition.y.RoundedMixed.10; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.11; actual=-106.202126219288; expected=-106.202126219288
+PASS: workbook.definition.y.RoundedMixed.11; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.12; actual=-29.3031893289313; expected=-29.3031893289313
+PASS: workbook.definition.y.RoundedMixed.12; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.13; actual=47.595747561425; expected=47.595747561425
+PASS: workbook.definition.y.RoundedMixed.13; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.14; actual=124.494684451781; expected=124.494684451781
+PASS: workbook.definition.y.RoundedMixed.14; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.15; actual=201.393621342137; expected=201.393621342137
+PASS: workbook.definition.y.RoundedMixed.15; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.16; actual=278.292558232494; expected=278.292558232494
+PASS: workbook.definition.y.RoundedMixed.16; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.17; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.17; actual=106.666666666667; expected=106.666666666667
+PASS: workbook.definition.x.RoundedMixed.18; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.18; actual=53.3333333333333; expected=53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.19; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.19; actual=0; expected=0
+PASS: workbook.definition.x.RoundedMixed.20; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.20; actual=-53.3333333333334; expected=-53.3333333333334
+PASS: workbook.definition.x.RoundedMixed.21; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.21; actual=-106.666666666667; expected=-106.666666666667
+PASS: workbook.definition.x.RoundedMixed.22; actual=312.95922489916; expected=312.95922489916
+PASS: workbook.definition.y.RoundedMixed.22; actual=106.666666666667; expected=106.666666666667
+PASS: workbook.definition.x.RoundedMixed.23; actual=347.625891565827; expected=347.625891565827
+PASS: workbook.definition.y.RoundedMixed.23; actual=53.3333333333333; expected=53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.24; actual=382.292558232494; expected=382.292558232494
+PASS: workbook.definition.y.RoundedMixed.24; actual=0; expected=0
+PASS: workbook.definition.x.RoundedMixed.25; actual=347.625891565827; expected=347.625891565827
+PASS: workbook.definition.y.RoundedMixed.25; actual=-53.3333333333333; expected=-53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.26; actual=312.95922489916; expected=312.95922489916
+PASS: workbook.definition.y.RoundedMixed.26; actual=-106.666666666667; expected=-106.666666666667
+PASS: workbook.activeName.reject.RoundedMixed
+PASS: workbook.reader.noShapeKey.HollowOffset.Circle.Diameter
+PASS: workbook.reader.noShapeKey.HollowOffset.RectSet.B1
+PASS: workbook.reader.noShapeKey.HollowOffset.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.HollowOffset.HollowRectangle.B
+PASS: workbook.inactiveName.HollowOffset
+PASS: workbook.table.immutable.HollowOffset
+PASS: workbook.definition.sealed.HollowOffset
+PASS: workbook.definition.meshCount.HollowOffset
+PASS: workbook.definition.barCount.HollowOffset
+PASS: workbook.definition.x.HollowOffset.1; actual=-366.656831750143; expected=-366.656831750143
+PASS: workbook.definition.y.HollowOffset.1; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.2; actual=-261.897736964388; expected=-261.897736964388
+PASS: workbook.definition.y.HollowOffset.2; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.3; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.3; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.4; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.4; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.5; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.5; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.6; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.6; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.7; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.7; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.8; actual=366.656831750143; expected=366.656831750143
+PASS: workbook.definition.y.HollowOffset.8; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.9; actual=-366.656831750143; expected=-366.656831750143
+PASS: workbook.definition.y.HollowOffset.9; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.10; actual=-261.897736964388; expected=-261.897736964388
+PASS: workbook.definition.y.HollowOffset.10; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.11; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.11; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.12; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.12; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.13; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.13; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.14; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.14; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.15; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.15; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.16; actual=366.656831750143; expected=366.656831750143
+PASS: workbook.definition.y.HollowOffset.16; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.17; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.17; actual=-540; expected=-540
+PASS: workbook.definition.x.HollowOffset.18; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.18; actual=-324; expected=-324
+PASS: workbook.definition.x.HollowOffset.19; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.19; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.20; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.20; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.21; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.21; actual=324; expected=324
+PASS: workbook.definition.x.HollowOffset.22; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.22; actual=540; expected=540
+PASS: workbook.definition.x.HollowOffset.23; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.23; actual=-540; expected=-540
+PASS: workbook.definition.x.HollowOffset.24; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.24; actual=-324; expected=-324
+PASS: workbook.definition.x.HollowOffset.25; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.25; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.26; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.26; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.27; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.27; actual=324; expected=324
+PASS: workbook.definition.x.HollowOffset.28; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.28; actual=540; expected=540
+PASS: workbook.definition.x.HollowOffset.29; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.29; actual=334.525143166832; expected=334.525143166832
+PASS: workbook.definition.x.HollowOffset.30; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.30; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.31; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.31; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.32; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.32; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.33; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.33; actual=316.974726161791; expected=316.974726161791
+PASS: workbook.definition.x.HollowOffset.34; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.34; actual=-234.525143166832; expected=-234.525143166832
+PASS: workbook.definition.x.HollowOffset.35; actual=-52.3795473928775; expected=-52.3795473928775
+PASS: workbook.definition.y.HollowOffset.35; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.36; actual=52.3795473928774; expected=52.3795473928774
+PASS: workbook.definition.y.HollowOffset.36; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.37; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.37; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.38; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.38; actual=-216.974726161791; expected=-216.974726161791
+PASS: workbook.definition.x.HollowOffset.39; actual=-200; expected=-200
+PASS: workbook.definition.y.HollowOffset.39; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.40; actual=-200; expected=-200
+PASS: workbook.definition.y.HollowOffset.40; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.41; actual=280; expected=280
+PASS: workbook.definition.y.HollowOffset.41; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.42; actual=280; expected=280
+PASS: workbook.definition.y.HollowOffset.42; actual=108; expected=108
+PASS: workbook.activeName.reject.HollowOffset
+PASS: workbook.manual.stale.fixture; actual=75; expected=75
+PASS: workbook.manual.capture.refreshed; actual=80; expected=80
+PASS: workbook.registry.metadata.copy
+PASS: workbook.registry.emptyMetadata
+PASS: workbook.registry.dynamicChoice
+PASS: inputTable.caption.ignoresInactiveError
+PASS: inputTable.caption.activeReadRejects
+PASS: inputTable.caption.otherValuePreserved; actual=50; expected=50
+TOTAL WORKBOOK RECIPE INPUT: passed=284; failed=0

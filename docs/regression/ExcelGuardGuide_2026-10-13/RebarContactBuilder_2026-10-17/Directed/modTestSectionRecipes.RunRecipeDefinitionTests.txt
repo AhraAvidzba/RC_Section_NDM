@@ -1,0 +1,16 @@
+PASS: definition.sealed
+PASS: definition.loops
+PASS: definition.area
+PASS: definition.concrete
+PASS: definition.hole.a
+PASS: definition.hole.b
+PASS: definition.roles
+PASS: definition.ids
+PASS: definition.contours.copy
+PASS: definition.region.copy
+PASS: definition.invalid.0
+PASS: definition.invalid.1
+PASS: definition.invalid.2
+PASS: definition.invalid.3
+PASS: definition.invalid.4
+TOTAL RECIPE DEFINITION: passed=15; failed=0

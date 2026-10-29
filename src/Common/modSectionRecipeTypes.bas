@@ -21,12 +21,12 @@ Public Enum ERebarOffsetAxis
     RowTangent = 2
 End Enum
 
+' Правила включения концов параметрического пути; его геометрическая замкнутость хранится отдельно в CGeometryPath.
 Public Enum ERebarEndMode
     IncludeBoth = 1
     ExcludeBoth = 2
     IncludeStart = 3
     IncludeEnd = 4
-    ClosedUniform = 5
 End Enum
 
 Public Enum ERebarDistribution
@@ -132,6 +132,7 @@ Public Type TRebarRule
     Publication As ERebarPublication
     PositionOrder As ERebarPositionOrder
     Coincidence As ERebarCoincidence
+    WarnOnCoincidence As Boolean
     PlacementCheck As ERebarPlacementCheck
     OverlapPolicy As ERebarOverlapPolicy
     SourcePrefix As String

@@ -5362,7 +5362,7 @@ Private Sub TestRectanglesIndependentThirdRows(ByRef stats As TUiTestStats)
     Set recipe = New CSectionRecipeRectangles
     values = TestFixtureRecipeValues("rngRectanglesGeometry")
     TestFixtureSetInput values, "General", "Shape", "val", "OneRect"
-    TestFixtureSetInput values, "General", "H1", "val", 300#: TestFixtureSetInput values, "General", "B1", "val", 200#
+    TestFixtureSetInput values, "General", "H1", "val", 300#: TestFixtureSetInput values, "General", "B1", "val", 300# ' При as=50 и максимальном контактном смещении54 полный проверочный контур должен сохранять положительную ширину: 300-2*(50+54)=92 мм.
     For Each rowKey In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
         TestFixtureSetInput values, "Main", CStr(rowKey), "as", 50#: TestFixtureSetInput values, "Main", CStr(rowKey), "d", 20#
         TestFixtureSetInput values, "Main", CStr(rowKey), "n", 0
@@ -9559,3 +9559,11 @@ Private Sub TestFullPlotPutMatrix(ByVal rangeName As String, ByRef values As Var
     anchor.Resize(clearRows, UBound(values, 2)).ClearContents
     anchor.Resize(UBound(values, 1), UBound(values, 2)).Value2 = values
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Адресно повторяет тот же случай третьего ряда, который входит в полный интерфейсный набор.
+Public Function RunRectanglesThirdRowRegressionTests() As String
+    Dim stats As TUiTestStats
+    TestRectanglesIndependentThirdRows stats
+    RunRectanglesThirdRowRegressionTests = stats.Report & "TOTAL_RECTANGLES_THIRD_ROWS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
+End Function

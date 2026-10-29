@@ -40,6 +40,7 @@ Private Type TRectangleFace
     ContourSource As String ' Исходный верхний или нижний прямоугольник, относительно которого задан as.
     LabelX As Double ' Компонента X направления выноса подписи.
     LabelY As Double ' Компонента Y направления выноса подписи.
+    EndMode As ERebarEndMode ' Явный способ расстановки основного ряда на подготовленном пути.
     StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
     EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
     BaseOffsets(2 To 3) As Double ' Базовые отступы второго и третьего рядов от основного, мм.
@@ -121,7 +122,8 @@ Private Sub ReadRectangleFaces(ByVal reader As CSectionInputReader, _
             reader.Require "Main", key, "as", axisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
             .StartSetback = reader.OptionalRowOffset("Main", key, "s0")
             .EndSetback = reader.OptionalRowOffset("Main", key, "s1")
-            .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
+            .EndMode = reader.RebarEndMode("Main", key)
+            .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1", "endMode"))
             .Caption = Left$(.ID, 2) & CStr(captions(side - 1))
             Select Case side
                 Case 1 ' Линия арматуры у левой грани: отступ as, снизу вверх.
@@ -184,11 +186,13 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             Set path = facade.Chain(.ID, contours((i - 1) \ 4 + 1).ID, CStr(groups((i - 1) Mod 4)), 1#, CStr(groups((i - 1) Mod 4)), 0#, False) ' Прежнее направление стороны; концы уже учитывают соседние as.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
+            options.EndMode = .EndMode ' Применяем выбранное правило после концевых отступов.
             options.PositionOrder = FromPathMiddle ' Нумеруем стержни от середины линии.
             options.SourceReference = .Source ' Адреса полей для сообщения об ошибке размещения.
             options.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
             options.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
-            options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+            options.Coincidence = KeepPublishedOwner ' Первый добавленный физический стержень сохраняет свои диаметр и материал.
+            options.WarnOnCoincidence = True ' Каждый пропуск совпавшего Main фиксируется предупреждением, включая одинаковые диаметры.
             options.Comment = "Набор прямоугольников: " & .Caption & ", ряд 1"
             facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
             facade.RebarContour .ID & ".Main", "OUTER", .ContourSource, .AxisDistance, .ID & ".Row2", .ID & ".Row3", sourceSegments:=Array(CStr(groups((i - 1) Mod 4))), normalSign:=-1# ' Связь с исходным прямоугольником и известным направлением в бетон.

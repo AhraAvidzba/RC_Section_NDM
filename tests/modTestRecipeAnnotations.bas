@@ -33,12 +33,12 @@ Public Function RunArbitraryAnnotationGeometryTests() As String
             Set options = New CRebarRuleOptions: options.AnnotationGroup = "G"
             If shape = "Circle" Then
                 Set path = facade.CirclePath("Axis", 0#, 0#, 150#)
-                options.EndMode = ClosedUniform: support = 150#
+                options.EndMode = IncludeStart: support = 150#
                 facade.RebarByCount "Bars", path.ID, 8, 10#, options
             ElseIf shape = "Rounded" Then
                 Set polygon = TestAngleRoundedPolygon(200#, 300#, 40#)
                 Set path = facade.RoundedPolygon("Axis", polygon)
-                options.EndMode = ClosedUniform
+                options.EndMode = IncludeStart
                 support = 160# * Abs(nx) + 260# * Abs(ny) + 40#
                 facade.RebarByCount "Bars", path.ID, 12, 10#, options
             Else

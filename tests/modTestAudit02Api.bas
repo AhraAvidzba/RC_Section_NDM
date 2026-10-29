@@ -1087,7 +1087,7 @@ Private Sub TestContactDefaults()
     TestCheck "contactBuilder.clone.independent", defaults.StartSetback = 7# And defaults.AnnotationGroup = "ExtraGroup"
     Set contact = New CRebarContactBuilder
     contact.Initialize 32#, 1#, -1#, defaults
-    defaults.StartSetback = 999#: defaults.EndMode = ClosedUniform: defaults.SourcePrefix = "Changed."
+    defaults.StartSetback = 999#: defaults.EndMode = IncludeStart: defaults.SourcePrefix = "Changed."
     defaults.AnnotationGroup = "Changed": defaults.PlacementCheck = CheckCenter
     defaults.SourceReference = "ChangedDefaults"
     Set first = contact.AppendRow(20#, "Stacked", "EachBar", "FirstTest[1,2]")
@@ -1279,7 +1279,7 @@ Private Function TestOffsetGeometryDefinition(ByVal kind As Long, ByVal a2 As Do
     If kind = 0 Then Set path = facade.LinePath("Axis", 0#, 0#, 400#, 0#) Else Set path = facade.CirclePath("Axis", 0#, 0#, 300#)
     If kind = 1 Then path.ValidateNormalTransfer 0#, 10#
     Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
-    If kind = 1 Then options.EndMode = ClosedUniform
+    If kind = 1 Then options.EndMode = IncludeStart
     facade.RebarByCount "Main", path.ID, 5, 32#, options
     facade.RebarContour "Main", "OUTER", "Boundary", IIf(kind = 0, 500#, 200#), "Row2", "Row3"
     Set options = New CRebarRuleOptions: options.SourceReference = "OffsetTest[2,3]": options.Coincidence = KeepPublishedOwner
@@ -1582,6 +1582,7 @@ Public Function TestDumpIndependentRowOffsetExamples(ByVal outputDirectory As St
         If index = 6 Then
             TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.StartSetback").Value2 = 150#
             TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.EndSetback").Value2 = 250#
+            TestFixtureInputCell(ThisWorkbook.Names("rngCircleGeometry").RefersToRange, "Main", "Circle", "endMode").Value2 = "IncludeBoth"
         End If
         If index = 4 Or index = 5 Then
             TestOffsetRebarCell(extra, 10).Value2 = "SideBySide": TestOffsetRebarCell(extra, 9).Value2 = "EverySecondBar"
@@ -1719,11 +1720,13 @@ Public Function RunCircleSetbackTests() As String
         TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter3").Value2 = 0#
         TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.StartSetback").Value2 = 0#
         TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.EndSetback").Value2 = 0#
+        TestFixtureInputCell(ThisWorkbook.Names("rngCircleGeometry").RefersToRange, "Main", "Circle", "endMode").Value2 = "IncludeStart"
         Set definition = TestReadOffsetWorkbookDefinition(): Set bars = TestFixtureLayout(definition)
         original = TestOffsetBarsSnapshot(bars)
         TestCheck "circle.setback.full.closed", definition.Path("Circle.Axis").IsClosed And bars.Count = 4
         TestCheck "circle.setback.full.first.top", Abs(bars.X(1)) < 0.0000001 And Abs(bars.Y(1) - 100#) < 0.0000001
         TestCheck "circle.setback.full.clockwise", Abs(bars.X(2) - 100#) < 0.0000001 And Abs(bars.Y(2)) < 0.0000001
+        TestFixtureInputCell(ThisWorkbook.Names("rngCircleGeometry").RefersToRange, "Main", "Circle", "endMode").Value2 = "IncludeBoth"
         TestCheck "circle.setback.full.bottom.left", Abs(bars.X(3)) < 0.0000001 And Abs(bars.Y(3) + 100#) < 0.0000001 And Abs(bars.X(4) + 100#) < 0.0000001 And Abs(bars.Y(4)) < 0.0000001
         For Each column In Array("Rebar.StartSetback", "Rebar.EndSetback")
             TestFixtureCircleFieldCell(ThisWorkbook, CStr(column)).Value2 = 50# * GEOM_PI / factor
@@ -1743,6 +1746,7 @@ Public Function RunCircleSetbackTests() As String
         TestCheck "circle.setback.end.only", Abs(bars.X(1)) < 0.0000001 And Abs(bars.Y(1) - 100#) < 0.0000001 And Abs(bars.X(4) + 100#) < 0.0000001
         TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.StartSetback").Value2 = 0#
         TestFixtureCircleFieldCell(ThisWorkbook, "Rebar.EndSetback").Value2 = 0#
+        TestFixtureInputCell(ThisWorkbook.Names("rngCircleGeometry").RefersToRange, "Main", "Circle", "endMode").Value2 = "IncludeStart"
         Set definition = TestReadOffsetWorkbookDefinition(): Set bars = TestFixtureLayout(definition)
         TestCheck "circle.setback.return.zero", TestOffsetBarsEqual(original, TestOffsetBarsSnapshot(bars))
         For Each column In Array("Rebar.StartSetback", "Rebar.EndSetback")

@@ -28,6 +28,7 @@
         "CSectionInputReader.Number",
         "CSectionInputReader.Count",
         "CSectionInputReader.Choice",
+        "CSectionInputReader.RebarEndMode",
         "CSectionInputReader.Length",
         "CSectionInputReader.PositiveLength",
         "CSectionInputReader.NonNegativeLength",
@@ -136,6 +137,7 @@
         "CRebarRuleOptions.Publication",
         "CRebarRuleOptions.PositionOrder",
         "CRebarRuleOptions.Coincidence",
+        "CRebarRuleOptions.WarnOnCoincidence",
         "CRebarRuleOptions.PlacementCheck",
         "CRebarRuleOptions.OverlapPolicy",
         "CRebarRuleOptions.SourcePrefix",
@@ -757,6 +759,35 @@
     },
     {
       "owner": "CSectionInputReader",
+      "name": "RebarEndMode",
+      "kind": "Function",
+      "signature": "Public Function RebarEndMode(ByVal blockKey As String, ByVal rowKey As String) As ERebarEndMode",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        }
+      ],
+      "resultType": "ERebarEndMode",
+      "line": 110,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.RebarEndMode",
+      "anchor": "api-csectioninputreader-rebarendmode"
+    },
+    {
+      "owner": "CSectionInputReader",
       "name": "Length",
       "kind": "Function",
       "signature": "Public Function Length(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As Double",
@@ -787,7 +818,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 109,
+      "line": 120,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Length",
       "anchor": "api-csectioninputreader-length"
@@ -824,7 +855,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 114,
+      "line": 125,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.PositiveLength",
       "anchor": "api-csectioninputreader-positivelength"
@@ -861,7 +892,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 119,
+      "line": 130,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.NonNegativeLength",
       "anchor": "api-csectioninputreader-nonnegativelength"
@@ -898,7 +929,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 124,
+      "line": 135,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.OptionalDiameter",
       "anchor": "api-csectioninputreader-optionaldiameter"
@@ -935,7 +966,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 129,
+      "line": 140,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.OptionalRowOffset",
       "anchor": "api-csectioninputreader-optionalrowoffset"
@@ -972,7 +1003,7 @@
         }
       ],
       "resultType": "String",
-      "line": 134,
+      "line": 145,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.SourceReference",
       "anchor": "api-csectioninputreader-sourcereference"
@@ -1009,7 +1040,7 @@
         }
       ],
       "resultType": "String",
-      "line": 139,
+      "line": 150,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.SourceReferences",
       "anchor": "api-csectioninputreader-sourcereferences"
@@ -1062,7 +1093,7 @@
         }
       ],
       "resultType": null,
-      "line": 148,
+      "line": 159,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Require",
       "anchor": "api-csectioninputreader-require"
@@ -3550,11 +3581,22 @@
     },
     {
       "owner": "CRebarRuleOptions",
+      "name": "WarnOnCoincidence",
+      "kind": "Field",
+      "signature": "Public WarnOnCoincidence As Boolean",
+      "resultType": "Boolean",
+      "line": 38,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.WarnOnCoincidence",
+      "anchor": "api-crebarruleoptions-warnoncoincidence"
+    },
+    {
+      "owner": "CRebarRuleOptions",
       "name": "PlacementCheck",
       "kind": "Field",
       "signature": "Public PlacementCheck As ERebarPlacementCheck",
       "resultType": "ERebarPlacementCheck",
-      "line": 38,
+      "line": 39,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.PlacementCheck",
       "anchor": "api-crebarruleoptions-placementcheck"
@@ -3565,7 +3607,7 @@
       "kind": "Field",
       "signature": "Public OverlapPolicy As ERebarOverlapPolicy",
       "resultType": "ERebarOverlapPolicy",
-      "line": 39,
+      "line": 40,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.OverlapPolicy",
       "anchor": "api-crebarruleoptions-overlappolicy"
@@ -3576,7 +3618,7 @@
       "kind": "Field",
       "signature": "Public SourcePrefix As String",
       "resultType": "String",
-      "line": 40,
+      "line": 41,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourcePrefix",
       "anchor": "api-crebarruleoptions-sourceprefix"
@@ -3587,7 +3629,7 @@
       "kind": "Field",
       "signature": "Public SourceSuffix As String",
       "resultType": "String",
-      "line": 41,
+      "line": 42,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourceSuffix",
       "anchor": "api-crebarruleoptions-sourcesuffix"
@@ -3598,7 +3640,7 @@
       "kind": "Field",
       "signature": "Public AnnotationGroup As String",
       "resultType": "String",
-      "line": 42,
+      "line": 43,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.AnnotationGroup",
       "anchor": "api-crebarruleoptions-annotationgroup"
@@ -3609,7 +3651,7 @@
       "kind": "Field",
       "signature": "Public Comment As String",
       "resultType": "String",
-      "line": 43,
+      "line": 44,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.Comment",
       "anchor": "api-crebarruleoptions-comment"
@@ -3620,7 +3662,7 @@
       "kind": "Field",
       "signature": "Public SourceReference As String",
       "resultType": "String",
-      "line": 44,
+      "line": 45,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourceReference",
       "anchor": "api-crebarruleoptions-sourcereference"
@@ -3681,7 +3723,7 @@
         }
       ],
       "resultType": null,
-      "line": 63,
+      "line": 64,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.ConfigureDependentContact",
       "anchor": "api-crebarruleoptions-configuredependentcontact"
@@ -3693,7 +3735,7 @@
       "signature": "Public Function Clone() As CRebarRuleOptions",
       "parameters": [],
       "resultType": "CRebarRuleOptions",
-      "line": 78,
+      "line": 79,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.Clone",
       "anchor": "api-crebarruleoptions-clone"
@@ -3819,10 +3861,9 @@
         "IncludeBoth = 1",
         "ExcludeBoth = 2",
         "IncludeStart = 3",
-        "IncludeEnd = 4",
-        "ClosedUniform = 5"
+        "IncludeEnd = 4"
       ],
-      "line": 24,
+      "line": 25,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.ERebarEndMode",
       "anchor": "api-modsectionrecipetypes-erebarendmode"

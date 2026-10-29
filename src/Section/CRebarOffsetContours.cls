@@ -148,7 +148,7 @@ Private Sub RegisterContourAxis(ByVal link As Long, ByVal axis As CGeometryPath,
         Fail "Для пути общего контура укажите исходные участки и направление Main.", reference
     direction = mLinks(link).NormalSign * Sgn(distance)
     For i = 1 To axis.SegmentCount
-        id = axis.SourceSegmentID(i)
+        id = axis.SegmentID(i) ' Имя относится к непосредственному исходному контуру; SourceSegmentID может вести к более раннему сегменту после переименования/смещения.
         If source.HasSegmentID(id) Then
             If Not SelectedSource(link, id) Then Fail "Участок Main не принадлежит заданной группе общего контура.", reference
             j = source.SegmentIndex(id): source.CopySegment j, original: axis.CopySegment i, part

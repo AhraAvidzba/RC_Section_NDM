@@ -46,6 +46,7 @@ Private Type THollowFace
     AxisDistance As Double ' Расстояние от бетонной границы до центров основного ряда арматуры, мм.
     Diameter As Double ' Диаметр стержней основного ряда, мм.
     Count As Long ' Заданное число наружных стержней; у отверстия число определяет проекция.
+    EndMode As ERebarEndMode ' Явный способ расстановки основного ряда на подготовленном пути.
     StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
     EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
     BaseOffsets(2 To 3) As Double ' Базовые отступы второго и третьего рядов от основного, мм.
@@ -111,6 +112,7 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
             .RowComment = "Пустотелый прямоугольник: арматура " & .Caption & ", ряд "
             key = CStr(keys(i - 1))
             .Source = reader.SourceReference("Main", key, "as")
+            If i > 4 Then reader.Require "Main", key, "endMode", reader.Text("Main", key, "endMode", "") = ChrW$(&H2014), "У ряда, полученного проекцией, способ расстановки не задаётся. Оставьте прочерк: допустимый участок определяется s0 и s1."
             If i <= 4 Then .Count = reader.Count("Main", key, "n")
             .Diameter = reader.OptionalDiameter("Main", key, "d")
             .Active = (.Diameter > 0# And (i > 4 Or .Count > 0))
@@ -135,7 +137,10 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
                 reader.Require "Main", key, "as", .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра."
                 .StartSetback = reader.OptionalRowOffset("Main", key, "s0")
                 .EndSetback = reader.OptionalRowOffset("Main", key, "s1")
-                .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
+                If i <= 4 Then
+                    .EndMode = reader.RebarEndMode("Main", key)
+                End If
+                .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1", "endMode"))
                 .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
                 .Diameters(3) = reader.OptionalDiameter("Extra", key, "d3")
                 For rowNumber = 2 To 3
@@ -215,12 +220,13 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback ' Отступ от начала и, если задан, от конца линии, мм.
         options.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
         options.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
-        options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+        options.Coincidence = KeepPublishedOwner ' Первый добавленный физический стержень сохраняет свои диаметр и материал.
+        options.WarnOnCoincidence = True ' Каждый пропуск совпавшего Main фиксируется предупреждением, включая одинаковые диаметры.
         options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
         options.SourceReference = faces(i).Source ' Адреса полей для сообщения об ошибке размещения.
         options.Comment = faces(i).RowComment & "1"
         If i <= 4 Then
-            If base <= 2 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
+            options.EndMode = faces(i).EndMode ' Применяем выбранное правило после концевых отступов.
             facade.RebarByCount faces(i).ID & ".Main", path.ID, faces(i).Count, faces(i).Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
             facade.RebarContour faces(i).ID & ".Main", "OUTER", "OUTER.Boundary", faces(i).AxisDistance, faces(i).ID & ".Row2", faces(i).ID & ".Row3", sourceSegments:=Split(CStr(groups(base - 1)), "|"), normalSign:=normalSign ' Связь наружного семейства с контуром и направлением в бетон.
         Else
@@ -256,7 +262,7 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     Dim first As String, last As String, firstParameter As Double, lastParameter As Double
     geometrySource = sizes.OuterSource
     If index > 4 Then geometrySource = sizes.OpeningSource
-    base = (index - 1) Mod 4 + 1 ' Сохраняем направления сторон и прежние привязки к прямым или исчезнувшим скруглениям.
+    base = (index - 1) Mod 4 + 1 ' Выбираем направление стороны и опорные точки на прямых или исчезнувших скруглениях.
     Select Case base
         Case 1, 2
             first = "Edge.BL": last = "Edge.TR"

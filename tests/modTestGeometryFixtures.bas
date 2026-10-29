@@ -266,7 +266,7 @@ Public Function TestFixtureClosedCountRow(ByVal boundary As CGeometryPath, ByVal
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "ClosedRowFixture"
     facade.AddPath boundary: facade.AddPath axis: facade.Outer "OUTER", boundary.ID
-    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
+    Set options = New CRebarRuleOptions: options.EndMode = IncludeStart
     options.SourcePrefix = "B": options.Publication = PublishPerSourcePosition
     options.AnnotationGroup = group: options.Comment = comment
     facade.RebarByCount "ClosedRow", axis.ID, count, diameter, options, steelClass

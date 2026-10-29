@@ -1,0 +1,2216 @@
+{
+  "Status": "ALL_CURRENT_OWN_IDENTITIES_TERMINAL",
+  "AtUTC": "2026-10-29T20:30:00.3055028+00:00",
+  "AllOwnIdentitiesTerminal": true,
+  "UniqueOwnCount": 182,
+  "Identities": [
+    {
+      "PID": 3212,
+      "StartTicksUTC": "639288938693209364",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed09_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2558287+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7888,
+      "StartTicksUTC": "639288412765976063",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2584312+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 992,
+      "StartTicksUTC": "639288231720477632",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2586817+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 3812,
+      "StartTicksUTC": "639288172709767375",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2589198+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 10168,
+      "StartTicksUTC": "639288311234753161",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2591381+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22364,
+      "StartTicksUTC": "639288359713381454",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2593568+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 18520,
+      "StartTicksUTC": "639288420341101450",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2609056+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 3848,
+      "StartTicksUTC": "639288417509856122",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2611312+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24764,
+      "StartTicksUTC": "639288294778121697",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2613476+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 19288,
+      "StartTicksUTC": "639288170570720770",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2615647+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 19636,
+      "StartTicksUTC": "639288852637742944",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed04_Yes.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2617806+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 9552,
+      "StartTicksUTC": "639288311287001172",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2620125+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25992,
+      "StartTicksUTC": "639288862580453028",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Native04Ownership.json",
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native04Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2622253+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 16512,
+      "StartTicksUTC": "639288295229814585",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2624366+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 13516,
+      "StartTicksUTC": "639289012740712736",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed16_Yes.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2626477+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 4280,
+      "StartTicksUTC": "639288156033304347",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2628586+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 21112,
+      "StartTicksUTC": "639289007360320979",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build11\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2631165+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17976,
+      "StartTicksUTC": "639288418021902052",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2633461+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17284,
+      "StartTicksUTC": "639288424520206012",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2635925+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 15388,
+      "StartTicksUTC": "639288291610907372",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2638179+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23852,
+      "StartTicksUTC": "639288291148485744",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2640439+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17060,
+      "StartTicksUTC": "639288305522705814",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2642657+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 11244,
+      "StartTicksUTC": "639288860736603313",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed06_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2645325+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 12628,
+      "StartTicksUTC": "639288421279324819",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2647566+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 19448,
+      "StartTicksUTC": "639288290110676540",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "PIDReusedDifferentStart",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": {
+        "Name": "chrome",
+        "StartTicksUTC": "639288563570543717"
+      },
+      "ObservedUTC": "2026-10-29T20:30:00.2716319+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22536,
+      "StartTicksUTC": "639288140339638291",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2719562+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 18228,
+      "StartTicksUTC": "639288939285899664",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build08\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2722015+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20908,
+      "StartTicksUTC": "639288178843794877",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2724315+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22676,
+      "StartTicksUTC": "639288231963365301",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2726604+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 10308,
+      "StartTicksUTC": "639288425294913748",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2728921+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 12184,
+      "StartTicksUTC": "639288952543105216",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\DirectedFields13_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2731188+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 4184,
+      "StartTicksUTC": "639288161467516070",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2733716+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24480,
+      "StartTicksUTC": "639288133428540181",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2735977+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 10996,
+      "StartTicksUTC": "639288424862339867",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2738225+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20664,
+      "StartTicksUTC": "639288175757034427",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2740748+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 13196,
+      "StartTicksUTC": "639288860553579971",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build04\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2742995+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25520,
+      "StartTicksUTC": "639288288088798785",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2745241+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7848,
+      "StartTicksUTC": "639288145440960066",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2747499+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 11048,
+      "StartTicksUTC": "639288938031663184",
+      "Provenance": [
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native06Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2749770+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25340,
+      "StartTicksUTC": "639288172284937447",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2751999+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 9084,
+      "StartTicksUTC": "639288417322662144",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2754246+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25316,
+      "StartTicksUTC": "639288176218761907",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2756481+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25604,
+      "StartTicksUTC": "639288941487699235",
+      "Provenance": [
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native07Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2758771+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17456,
+      "StartTicksUTC": "639288869082250504",
+      "Provenance": [
+        "L1/UserInterruptedOwnClosures01.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2761009+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17484,
+      "StartTicksUTC": "639288149370269545",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2763236+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 12380,
+      "StartTicksUTC": "639288295413034441",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2765470+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 11400,
+      "StartTicksUTC": "639288300172676694",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "PIDReusedDifferentStart",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": {
+        "Name": "msedgewebview2",
+        "StartTicksUTC": "639288545877257810"
+      },
+      "ObservedUTC": "2026-10-29T20:30:00.2768127+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 15824,
+      "StartTicksUTC": "639288854347475434",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build03\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2771924+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 26336,
+      "StartTicksUTC": "639288929590464189",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build06\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2774095+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 4048,
+      "StartTicksUTC": "639288359921555421",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2776069+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7000,
+      "StartTicksUTC": "639288294523305424",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2778159+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17488,
+      "StartTicksUTC": "639289001274205725",
+      "Provenance": [
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native09Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2780496+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 19760,
+      "StartTicksUTC": "639288293817251856",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2782361+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 9716,
+      "StartTicksUTC": "639288295305859665",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2784188+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 18840,
+      "StartTicksUTC": "639288290574879756",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2785998+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20700,
+      "StartTicksUTC": "639289003090835819",
+      "Provenance": [
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native10Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2788007+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25136,
+      "StartTicksUTC": "639288422347043400",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2789895+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 3484,
+      "StartTicksUTC": "639288287199156776",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2791710+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22908,
+      "StartTicksUTC": "639288415798043213",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2793509+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 15196,
+      "StartTicksUTC": "639288311238457398",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2795310+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24864,
+      "StartTicksUTC": "639288856685137214",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed05_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2797275+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20768,
+      "StartTicksUTC": "639288946728594222",
+      "Provenance": [
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native08Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2799184+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 2088,
+      "StartTicksUTC": "639288293097041003",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2800991+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7724,
+      "StartTicksUTC": "639288422723636962",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2802796+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 4588,
+      "StartTicksUTC": "639289018600730792",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build12\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2804596+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7552,
+      "StartTicksUTC": "639288228641712270",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2806395+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 12176,
+      "StartTicksUTC": "639288934326474512",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed08_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2808197+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 8888,
+      "StartTicksUTC": "639289024019308053",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed18_Yes.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2810189+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25468,
+      "StartTicksUTC": "639288171825371967",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2811992+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 21844,
+      "StartTicksUTC": "639288844430132510",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build01\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2813803+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7312,
+      "StartTicksUTC": "639288869051319327",
+      "Provenance": [
+        "L1/UserInterruptedOwnClosures01.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2815605+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25528,
+      "StartTicksUTC": "639288364556743104",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2817404+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 19228,
+      "StartTicksUTC": "639288291988367205",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2819255+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20700,
+      "StartTicksUTC": "639288178791212334",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2821218+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 19040,
+      "StartTicksUTC": "639288852014048529",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native02Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2823041+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 16228,
+      "StartTicksUTC": "639288362913100181",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2824852+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 2732,
+      "StartTicksUTC": "639288425456639973",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2826654+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22568,
+      "StartTicksUTC": "639288160947008017",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2828490+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23508,
+      "StartTicksUTC": "639288284938516052",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2830318+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22260,
+      "StartTicksUTC": "639288869035155307",
+      "Provenance": [
+        "L1/UserInterruptedOwnClosures01.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2832132+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 9748,
+      "StartTicksUTC": "639288292379323732",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2834077+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24872,
+      "StartTicksUTC": "639288425706705505",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2835875+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25272,
+      "StartTicksUTC": "639288227624031893",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2837672+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 5916,
+      "StartTicksUTC": "639288419812818018",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2839516+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 13444,
+      "StartTicksUTC": "639288170775087771",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2841324+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 4616,
+      "StartTicksUTC": "639288357068166793",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2843133+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25524,
+      "StartTicksUTC": "639288935797716392",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build07\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2844928+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20960,
+      "StartTicksUTC": "639288417585133258",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2846734+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 14740,
+      "StartTicksUTC": "639288947118142512",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed12_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2848585+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22308,
+      "StartTicksUTC": "639288419308580323",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2850389+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23800,
+      "StartTicksUTC": "639288279030801266",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2852180+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 9868,
+      "StartTicksUTC": "639288292739106007",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2853980+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 5032,
+      "StartTicksUTC": "639288423821893739",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2855775+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 21684,
+      "StartTicksUTC": "639288177069574032",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2857572+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7232,
+      "StartTicksUTC": "639288979802612777",
+      "Provenance": [
+        "P/FourModesPipeline12.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2859431+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1808,
+      "StartTicksUTC": "639288942011545896",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed10_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2861228+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 5604,
+      "StartTicksUTC": "639288162546506716",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2863029+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24172,
+      "StartTicksUTC": "639288425951392769",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2864836+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25420,
+      "StartTicksUTC": "639288869031318951",
+      "Provenance": [
+        "L1/UserInterruptedOwnClosures01.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2866636+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 3640,
+      "StartTicksUTC": "639288149683118644",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2868482+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 16016,
+      "StartTicksUTC": "639288294960805647",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2870327+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20600,
+      "StartTicksUTC": "639288927515842826",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build05\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2872120+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 4844,
+      "StartTicksUTC": "639288418459349114",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2873934+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 5352,
+      "StartTicksUTC": "639288999097254635",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build10\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2875741+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 16812,
+      "StartTicksUTC": "639288170364522118",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2877549+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 248,
+      "StartTicksUTC": "639288949844191631",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed12_Yes.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2879383+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7956,
+      "StartTicksUTC": "639288869101230095",
+      "Provenance": [
+        "L1/UserInterruptedOwnClosures01.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2881187+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 21208,
+      "StartTicksUTC": "639288158825034542",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2882989+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 7580,
+      "StartTicksUTC": "639288288576279546",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2884790+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1556,
+      "StartTicksUTC": "639288154739478916",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2886591+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 15192,
+      "StartTicksUTC": "639288176639706069",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2888456+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 2216,
+      "StartTicksUTC": "639288285190814939",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2890294+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 13792,
+      "StartTicksUTC": "639288426055207097",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2892106+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 14728,
+      "StartTicksUTC": "639288157572868260",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2894087+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 19400,
+      "StartTicksUTC": "639288849202368023",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build02\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2896285+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1192,
+      "StartTicksUTC": "639288412550371823",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2898624+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1148,
+      "StartTicksUTC": "639288851534118185",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed03_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2900721+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 6972,
+      "StartTicksUTC": "639288199089097845",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2918539+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 21208,
+      "StartTicksUTC": "639288233290259422",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2921226+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 26200,
+      "StartTicksUTC": "639289009782970383",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed16_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2923162+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23904,
+      "StartTicksUTC": "639288225715359395",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2925048+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24088,
+      "StartTicksUTC": "639288295059576565",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2926915+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 14556,
+      "StartTicksUTC": "639288944451955251",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Build09\\BuildOwnership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2928865+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 3164,
+      "StartTicksUTC": "639288423096834182",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2930706+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20436,
+      "StartTicksUTC": "639288847858853888",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed02_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2932704+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1240,
+      "StartTicksUTC": "639288178795120695",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2934553+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 21992,
+      "StartTicksUTC": "639288975477754833",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\DirectedFields13_Yes.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2936375+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 15288,
+      "StartTicksUTC": "639288286755095566",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2938350+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23576,
+      "StartTicksUTC": "639289022707546707",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed18_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2941256+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23680,
+      "StartTicksUTC": "639288170155275572",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2943245+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17048,
+      "StartTicksUTC": "639288173140884320",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2945358+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 26020,
+      "StartTicksUTC": "639289003341338722",
+      "Provenance": [
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed14_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2947268+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 21112,
+      "StartTicksUTC": "639288418876658121",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2949178+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 19432,
+      "StartTicksUTC": "639288425617431211",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2951055+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 10168,
+      "StartTicksUTC": "639288281907488985",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2952941+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22364,
+      "StartTicksUTC": "639288289112379965",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2954795+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 8504,
+      "StartTicksUTC": "639288287644127579",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2956649+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 12676,
+      "StartTicksUTC": "639289007334097494",
+      "Provenance": [
+        "P/FourModesPipeline14.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2958516+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1236,
+      "StartTicksUTC": "639288307905913245",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2960366+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 11176,
+      "StartTicksUTC": "639288129932039783",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2962221+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 16668,
+      "StartTicksUTC": "639288133105171350",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2964071+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20628,
+      "StartTicksUTC": "639288158052095667",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2965907+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23844,
+      "StartTicksUTC": "639288363163460774",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2967756+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24600,
+      "StartTicksUTC": "639289009534884306",
+      "Provenance": [
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native11Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2969624+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22152,
+      "StartTicksUTC": "639288846890462146",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed01_No.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2971461+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24652,
+      "StartTicksUTC": "639288421854541350",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2973482+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 18916,
+      "StartTicksUTC": "639288409834471810",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2975335+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 4044,
+      "StartTicksUTC": "639288158468383363",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2977195+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 6064,
+      "StartTicksUTC": "639288425372987694",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2979065+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 10120,
+      "StartTicksUTC": "639288281695307668",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2980930+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 2076,
+      "StartTicksUTC": "639288303604979522",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2982770+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 10148,
+      "StartTicksUTC": "639288286491928343",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2984604+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 15704,
+      "StartTicksUTC": "639288293444227032",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2986454+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25360,
+      "StartTicksUTC": "639288294168118105",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2988317+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 13444,
+      "StartTicksUTC": "639288289642535381",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2990167+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20708,
+      "StartTicksUTC": "639288294872348221",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2992013+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 12956,
+      "StartTicksUTC": "639288141455382790",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2993856+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20824,
+      "StartTicksUTC": "639288162419329251",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2995702+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25504,
+      "StartTicksUTC": "639288286679391912",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2997535+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 18968,
+      "StartTicksUTC": "639288420797707470",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.2999397+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1544,
+      "StartTicksUTC": "639288144142459732",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3001240+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1808,
+      "StartTicksUTC": "639288159897845198",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3003081+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 1532,
+      "StartTicksUTC": "639288423479593156",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3004930+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 26016,
+      "StartTicksUTC": "639289021135390717",
+      "Provenance": [
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native12Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3006764+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 288,
+      "StartTicksUTC": "639288294611096505",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3008621+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17260,
+      "StartTicksUTC": "639288294691863210",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3010457+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 10892,
+      "StartTicksUTC": "639288425208145224",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3012295+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 16420,
+      "StartTicksUTC": "639288160444553193",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3014135+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 2732,
+      "StartTicksUTC": "639288861501609656",
+      "Provenance": [
+        "L1/ReleaseEligibility.json",
+        "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed07_Yes.txt.Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3015962+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 21080,
+      "StartTicksUTC": "639288416038649934",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3017816+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24232,
+      "StartTicksUTC": "639288159184847219",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3019672+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 20716,
+      "StartTicksUTC": "639288228429109352",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3021513+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 16848,
+      "StartTicksUTC": "639288425879314854",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3023357+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23784,
+      "StartTicksUTC": "639288150060187558",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3025202+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 23660,
+      "StartTicksUTC": "639288128639701244",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3027201+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 17172,
+      "StartTicksUTC": "639288424161435336",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3029218+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 24052,
+      "StartTicksUTC": "639288425540735378",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3031074+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22520,
+      "StartTicksUTC": "639289003073791470",
+      "Provenance": [
+        "P/FourModesPipeline13.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3032918+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 22340,
+      "StartTicksUTC": "639288149057430222",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3034769+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 25744,
+      "StartTicksUTC": "639288869090250532",
+      "Provenance": [
+        "L1/UserInterruptedOwnClosures01.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3036615+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 16840,
+      "StartTicksUTC": "639288165059222054",
+      "Provenance": [
+        "L1/ReleaseEligibility.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3038505+00:00",
+      "ProcessModifiedOrClosed": false
+    },
+    {
+      "PID": 11480,
+      "StartTicksUTC": "639288931888631992",
+      "Provenance": [
+        "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Native05Ownership.json"
+      ],
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "CurrentProcess": null,
+      "ObservedUTC": "2026-10-29T20:30:00.3040348+00:00",
+      "ProcessModifiedOrClosed": false
+    }
+  ],
+  "DirectedSourceSHA256": "EF9EC63F1D06B8A3647EADCC5C6F1EFD1C8D5F2A84E17BFCD5A51E67DE800804",
+  "FullAcceptanceClaim": false,
+  "NothingClosed": true,
+  "UnknownAcceptedAsAbsent": false
+}

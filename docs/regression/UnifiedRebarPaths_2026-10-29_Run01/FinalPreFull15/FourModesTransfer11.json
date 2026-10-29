@@ -1,0 +1,364 @@
+{
+  "Status": "TRANSFERRED_NATIVE_REVIEW_REQUIRED",
+  "AtUTC": "2026-10-29T19:45:08.2810384+00:00",
+  "Files": [
+    {
+      "Path": "src/Common/modSectionRecipeTypes.bas",
+      "BeforeSHA256": "BA2D352D3152561C612369EF0E4664D4C3F19F57E23C90EA6339CDBEBBB8D0C4",
+      "AfterSHA256": "65313AFF0EAA5B25DE490A5BEB56832D3488D9DE5E5AEEF6AD0B817150568638",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modSectionRecipeTypes.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Common\\modSectionRecipeTypes.bas"
+    },
+    {
+      "Path": "src/Section/CSectionInputReader.cls",
+      "BeforeSHA256": "186C27D6B34A632EFBE765D5A76BC8EB62642BDFD76C20759A79B41C54CA1268",
+      "AfterSHA256": "198073FF55EBA2BF6A5F8DB9F417D434BDE12123386A23598C98DC2B253324AA",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionInputReader.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Section\\CSectionInputReader.cls"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRectangles.cls",
+      "BeforeSHA256": "2E21EA40995EBD6C49E738917B95936EE6D400A6007FAAEB1BE507F2B4F1DAFA",
+      "AfterSHA256": "896C77A97A8942ADF5E426CCE917FDCDB125C83DEE5BB201C1635448C339ED45",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CSectionRecipeRectangles.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Geometry\\CSectionRecipeRectangles.cls"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipePointedSection.cls",
+      "BeforeSHA256": "C26F91AB95108AD62F9390ED7A179222A95611C6783428F29407D3B153B6686F",
+      "AfterSHA256": "1948482622FED9B7B27FECD5F33938A8C8085D81B6A53848ED466D1BC92B76F9",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CSectionRecipePointedSection.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Geometry\\CSectionRecipePointedSection.cls"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "BeforeSHA256": "83F8FCED840A832100EC83E54BBF1669FF229E8AAE2C148F1771E6CB6A85FC67",
+      "AfterSHA256": "A54723E29B27660953AA907DC73B8C45C18705671301FAF0BAEE7FED64C31D54",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CSectionRecipeHollowRectangle.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Geometry\\CSectionRecipeHollowRectangle.cls"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeCircle.cls",
+      "BeforeSHA256": "89B1EA06AF54A10B3BFA8CBCB0EFAD9DE29BBCF8FB7CFB1EB43A501F0351FB6D",
+      "AfterSHA256": "4BEABA60A74285E78B87E03CF88FA9EC0E5B6305F49660495ADD654F27EB5145",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Geometry\\CSectionRecipeCircle.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Geometry\\CSectionRecipeCircle.cls"
+    },
+    {
+      "Path": "src/Section/CRebarRuleExecutor.cls",
+      "BeforeSHA256": "234B1C478B4B5D919F1F346F7CA19CF354EF34A4939810E1DA723B2E0F0F6617",
+      "AfterSHA256": "62D5AAD48BC932D731383B3B7F880B9B678B4148006F853E34A442F36948B071",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CRebarRuleExecutor.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Section\\CRebarRuleExecutor.cls"
+    },
+    {
+      "Path": "src/Section/CRebarRuleOptions.cls",
+      "BeforeSHA256": "C34E7D295F6F6B600A130FDE95631CE586B4CECCF8F052503879BB599841F910",
+      "AfterSHA256": "D6592B046E0B0F019E7FC38CE2F66D094C8469569EA4B0FE0C2040C83020B80D",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CRebarRuleOptions.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Section\\CRebarRuleOptions.cls"
+    },
+    {
+      "Path": "src/Section/CSectionDefinitionBuilder.cls",
+      "BeforeSHA256": "4CD3CC2335D40A768DEFA0277A1CD09EC369DA2A47E1F8A70EB58372227CDE5E",
+      "AfterSHA256": "746C913AA27115F22DB8E4EAEB4C160B9D212579FDDE81916BAB7D8FAE2373FD",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Section\\CSectionDefinitionBuilder.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Section\\CSectionDefinitionBuilder.cls"
+    },
+    {
+      "Path": "tools/build_workbook/GeometryTables.json",
+      "BeforeSHA256": "6F7558ABD582C260BC56FACD0D827EF6CA39022EFB32A067AB1AEB942A71AA6D",
+      "AfterSHA256": "56EA37828F4E0116C2F7EA1469976D35C190D68C245AAFAA281F6094D0B613EC",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\GeometryTables.json",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tools\\build_workbook\\GeometryTables.json"
+    },
+    {
+      "Path": "tools/build_workbook/GeometryTables.ps1",
+      "BeforeSHA256": "F8A429DBE6BC7B1549DDC03F7258EC1C3A5809A8234D2C58C9AF20CF3398629C",
+      "AfterSHA256": "ED8AC4102E81A168EC5D476C54BDE9E6091429C3D46F3D16EC1354A5A380B27B",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\GeometryTables.ps1",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tools\\build_workbook\\GeometryTables.ps1"
+    },
+    {
+      "Path": "tools/build_workbook/SettingsCatalog.ps1",
+      "BeforeSHA256": "B50E55EC7215BA4ACDBC321A1149FA3B99063CDE3611371CD4C1076D7DA7E010",
+      "AfterSHA256": "DEFE92B2AABF877DDB2778AF60BE74647A53FE31C1E07731AA0D44DC02D31AF6",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\SettingsCatalog.ps1",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tools\\build_workbook\\SettingsCatalog.ps1"
+    },
+    {
+      "Path": "tests/modTestAudit02Api.bas",
+      "BeforeSHA256": "0C4DE71888EFD204DCAD3C92BB9123FF551AEE4DD82D77EF5DC9E51D45C027C2",
+      "AfterSHA256": "94B0FF28F6AC0862AFC01E4C25C7CC307053D4514AC2876DC68579A5FD0AB52C",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestAudit02Api.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestAudit02Api.bas"
+    },
+    {
+      "Path": "tests/modTestBatchCalculation.bas",
+      "BeforeSHA256": "EE0C83CB9459D2A112DC525E7CBFCE49CD72274AEADE50F0E5DED98E064A7FAA",
+      "AfterSHA256": "FE3CEC5F0C1FDC6CBB2E40035664B601831F4FC437274578EA143E96427FED94",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestBatchCalculation.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestBatchCalculation.bas"
+    },
+    {
+      "Path": "tests/modTestDeclarativeExamples.bas",
+      "BeforeSHA256": "00195FF7EF036C7C4B140D05E92EAFB2402725F04324D4B81707ABFE48BAF619",
+      "AfterSHA256": "382CC86D7BFE1E58248C9DCC7BE1B1E33D388CDC1ED40151F8B3DA5E99BFE885",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestDeclarativeExamples.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestDeclarativeExamples.bas"
+    },
+    {
+      "Path": "tests/modTestGeometry.bas",
+      "BeforeSHA256": "236D8AD763165881BA6FEB3B9613C83EB2A2C0D09376862C01F04C2C1541D9FE",
+      "AfterSHA256": "54AB046A0870CD4AF74B3A8DEB6E36165613A8508F25CF0ACA51D156C0352279",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometry.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestGeometry.bas"
+    },
+    {
+      "Path": "tests/modTestGeometryFixtures.bas",
+      "BeforeSHA256": "329602E367049D978336F446D2BEC610B9374095A3D0B55C68C94E267924B91F",
+      "AfterSHA256": "0356E152E856C2E40BBF3A5F0F7AA93EAB88B5FEE6D3D7FF19D9A77C381C9853",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestGeometryFixtures.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestGeometryFixtures.bas"
+    },
+    {
+      "Path": "tests/modTestRecipeAnnotations.bas",
+      "BeforeSHA256": "B8EC7FDE2F3DBB58BB23121659C7AD52C16854C575E3B6C2E7DDB62BE55DF801",
+      "AfterSHA256": "456FF10C1E450DCDBD4A32B9A15770026967385C2A9DC54BF840BBBC79355185",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRecipeAnnotations.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestRecipeAnnotations.bas"
+    },
+    {
+      "Path": "tests/modTestRecipeApiCatalogue.bas",
+      "BeforeSHA256": "89CA4E4CBB615831A03B988C57243F402872F32247CF2497B71E0B3C08F1382D",
+      "AfterSHA256": "75D807FC636DD8D8A20587D63D45FD3058FA38A7C41D92FFF2F2379C01730658",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRecipeApiCatalogue.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestRecipeApiCatalogue.bas"
+    },
+    {
+      "Path": "tests/modTestRecipeOperations.bas",
+      "BeforeSHA256": "CC44985A06B1E194C085105FA3397D50B1DB4A71B5A6AEF77071D1577D3ECE3E",
+      "AfterSHA256": "E67C032C919471AAD69E105460A30139947B6F9FF8367C70D0388857E5A12033",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRecipeOperations.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestRecipeOperations.bas"
+    },
+    {
+      "Path": "tests/modTestRecipeSetbacks.bas",
+      "BeforeSHA256": "4FBD8913D94AE0AD59BD7BD01A972A3B8289695EB9194D7D8B41CF7717728A39",
+      "AfterSHA256": "4EF2E9D70EC21081BD6091969C18B61D707A912976888130BF60C2F33BF3276C",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestRecipeSetbacks.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestRecipeSetbacks.bas"
+    },
+    {
+      "Path": "tests/modTestSectionRecipes.bas",
+      "BeforeSHA256": "E5006755CB1D51D035DBB70E10E30413F53B0E01AB37D20574147813CE60F8F5",
+      "AfterSHA256": "0220E53D5D1A2A8F008354F406EFD407CF98BA24763FD416ABFBDAB4A7F368AC",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tests\\modTestSectionRecipes.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tests\\modTestSectionRecipes.bas"
+    },
+    {
+      "Path": "tools/build_workbook/SectionRecipeApiText.py",
+      "BeforeSHA256": "222C21E85C4195706B39F23B9CA4E5649A34EF7CC38DCAD231A35B544FE0A759",
+      "AfterSHA256": "5A3CAA0B8830F042167490B7F5E55E3B19B9AB3F44409CDDB93E94D91F6677D8",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\SectionRecipeApiText.py",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tools\\build_workbook\\SectionRecipeApiText.py"
+    },
+    {
+      "Path": "tools/build_workbook/RecipeArgumentText.py",
+      "BeforeSHA256": "F982016C86D7489BEF59D1A89C5FC7054F4CFBDE07E868EB5454F9F4BB0D4346",
+      "AfterSHA256": "736141F07C3D0B2E5C00AECAEE2A169D3ACF4FE0DD6064BC56596BC1B8A6AB74",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\RecipeArgumentText.py",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tools\\build_workbook\\RecipeArgumentText.py"
+    },
+    {
+      "Path": "docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls",
+      "BeforeSHA256": "3FBB21DDFAB975CE1BC26AE442331469FC32130E78A18F9859F593A03E3C8962",
+      "AfterSHA256": "98C5BD5E251B23C6E178B91321A9D9D5BC8CE0D66A73DBCFFB362159448F808D",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\geometry_refactor\\examples\\CSectionRecipeRoundedTrapezoid.cls",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\docs\\geometry_refactor\\examples\\CSectionRecipeRoundedTrapezoid.cls"
+    },
+    {
+      "Path": "src/Common/modSectionRecipeApiGuide.bas",
+      "BeforeSHA256": "76AF74821DDD6B2E9EC25BA2854F30929B1F9F50E4B015141A36D184E0F0CA3F",
+      "AfterSHA256": "1DBE17E1B4C7A4011A4041AC81F4E7B488E880C5B990A5B689F796CC5C5B223C",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\src\\Common\\modSectionRecipeApiGuide.bas",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\src\\Common\\modSectionRecipeApiGuide.bas"
+    },
+    {
+      "Path": "docs/geometry_refactor/SECTION_RECIPE_AUTHOR_MANIFEST.json",
+      "BeforeSHA256": "A3C528CC4FE4CF4998A33AB42DE5D720552B64B1AAE40E5275A82A8BDFB4B4BF",
+      "AfterSHA256": "54727A8F7073085B6484C895BAA9B333D9F0F4724A7AD65D49B8B49F1352708C",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\geometry_refactor\\SECTION_RECIPE_AUTHOR_MANIFEST.json",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\docs\\geometry_refactor\\SECTION_RECIPE_AUTHOR_MANIFEST.json"
+    },
+    {
+      "Path": "docs/geometry_refactor/SECTION_RECIPE_GUIDE_LAYOUT.json",
+      "BeforeSHA256": "A10EA00AC90F78D77E549439844704BD64A14535F68AFDA27AB8471586FC237A",
+      "AfterSHA256": "D8EB39E35DB285471EEE9C4BCA3FB141AAA9EAFA59B62A0597DDA712C21DEEC1",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\geometry_refactor\\SECTION_RECIPE_GUIDE_LAYOUT.json",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\docs\\geometry_refactor\\SECTION_RECIPE_GUIDE_LAYOUT.json"
+    },
+    {
+      "Path": "docs/geometry_refactor/SECTION_RECIPE_API_MANIFEST.json",
+      "BeforeSHA256": "6F61444281990C5942E188D2B9371B952EE4786F423FDCC1A116995E7E142E5D",
+      "AfterSHA256": "F27309A4E01048569812BE32843A0451E4ECD5675D133080DB8388C74F45D433",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\geometry_refactor\\SECTION_RECIPE_API_MANIFEST.json",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\docs\\geometry_refactor\\SECTION_RECIPE_API_MANIFEST.json"
+    },
+    {
+      "Path": "docs/geometry_refactor/SECTION_RECIPE_API.md",
+      "BeforeSHA256": "58B1F9BF942FAADF9286675655FA05452395D53536D528EA1CE2DB78C2B0A439",
+      "AfterSHA256": "82CCEB015A8441825A1872B29F76C8F02ED42C54BF650E6C3CBEB19BBBFE8651",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\geometry_refactor\\SECTION_RECIPE_API.md",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\docs\\geometry_refactor\\SECTION_RECIPE_API.md"
+    },
+    {
+      "Path": "tools/build_workbook/Build-SectionRecipeApiExamples.py",
+      "BeforeSHA256": "0B7AAC576951A177BC82591AAF78919D32418223D96DA8200E6EED5C789FF398",
+      "AfterSHA256": "736824CAFAF3526FA4395E639A68B485989DA20EC990FED1DF3A2EBBB8796970",
+      "Target": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Build-SectionRecipeApiExamples.py",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredFourModes11\\tools\\build_workbook\\Build-SectionRecipeApiExamples.py"
+    }
+  ],
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\BeforeFourModes11",
+  "OldDirectedSourceSHA256": "FD18AFBA256A87458D4048D67CA8FFF2B74753E38627DCE2EBC0D48790ECCDA0",
+  "OldDirectedInventory": [
+    "Directed12_No",
+    "Directed12_Yes",
+    "DirectedFields13_No",
+    "DirectedFields13_Yes"
+  ],
+  "OldDirectedReportsRead": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed12_No.txt",
+      "Bytes": 557576,
+      "SHA256": "62D65D45A08D88228EA98608E55C25ACC0D2C0C2C1ACFBA2A343B2C9F8545363",
+      "Encoding": "utf-8",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed12_No.txt.stdout.log",
+      "Bytes": 1979,
+      "SHA256": "9FFAAD8C9EEE6714B98263E53CC1C37F2EA584D7C5BB8ECF072171FA7C478B55",
+      "Encoding": "cp866",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed12_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "cp866",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed12_Yes.txt",
+      "Bytes": 557544,
+      "SHA256": "2D540D10FB65819DDBB009A52C45B7A38BF3BF139D734F5B17999804E5FF8D5D",
+      "Encoding": "utf-8",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed12_Yes.txt.stdout.log",
+      "Bytes": 2002,
+      "SHA256": "7A932D0CA9FC9B46B5552137E650060CC11F63F30026DC745E9AC64DA8AFE1D9",
+      "Encoding": "cp866",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed12_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "cp866",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\DirectedFields13_No.txt",
+      "Bytes": 1047720,
+      "SHA256": "8DA6BDC4EEE743950FD7522650E4DA2B548D278C56181846CFF8949C6941A2BA",
+      "Encoding": "utf-8",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\DirectedFields13_No.txt.stdout.log",
+      "Bytes": 532,
+      "SHA256": "B5AB9BE55C6C71BBE95F5C669644675BC790CD600D20AABC73E97BB636CBFA1D",
+      "Encoding": "cp866",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\DirectedFields13_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "cp866",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\DirectedFields13_Yes.txt",
+      "Bytes": 1047722,
+      "SHA256": "7E0C33361766FACD23BC500946851B08B68235DA6149D469D9888CEC44D1D8E8",
+      "Encoding": "utf-8",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\DirectedFields13_Yes.txt.stdout.log",
+      "Bytes": 534,
+      "SHA256": "13A59446099C3703A8DB9D71277E913042ADC84B3628FCBBD9B53BB47E8883B2",
+      "Encoding": "cp866",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\DirectedFields13_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "cp866",
+      "AllBytesRead": true,
+      "ErrorCount": 0
+    }
+  ],
+  "OldDirectedOwnClosures": [
+    {
+      "PID": 14740,
+      "StartTicksUTC": "639288947118142512",
+      "Terminal": true,
+      "ObservedCurrentPID": null,
+      "ForceKilled": false
+    },
+    {
+      "PID": 248,
+      "StartTicksUTC": "639288949844191631",
+      "Terminal": true,
+      "ObservedCurrentPID": null,
+      "ForceKilled": false
+    },
+    {
+      "PID": 12184,
+      "StartTicksUTC": "639288952543105216",
+      "Terminal": true,
+      "ObservedCurrentPID": null,
+      "ForceKilled": false
+    },
+    {
+      "PID": 21992,
+      "StartTicksUTC": "639288975477754833",
+      "Terminal": true,
+      "ObservedCurrentPID": null,
+      "ForceKilled": false
+    }
+  ],
+  "OldDirectedAllOwnClosed": true,
+  "FullAcceptanceClaim": false,
+  "RootWorkbookChanged": false,
+  "HEADChanged": false,
+  "UserDecision": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\FourModesDecision11.json"
+}

@@ -127,7 +127,7 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
 End Function
 
 ' Контактный перенос общего контура добавляется к его исходным as, а не к соединительным отрезкам.
-' Это сохраняет прежний равномерный нормальный перенос всех сторон и проверку попадания на путь при a2/a3=0.
+' Все стороны переносятся на одинаковое дополнительное расстояние по нормали; при a2/a3=0 проверяется попадание на путь.
 Private Function OffsetVariableContour(ByVal pathID As String, ByVal source As CGeometryPath, _
         ByVal original As CGeometryPath, ByVal distance As Double) As CGeometryPath
     Dim values As Variant, addresses As Variant, distances() As Double, references() As String, i As Long

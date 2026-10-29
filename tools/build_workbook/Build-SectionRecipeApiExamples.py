@@ -75,6 +75,32 @@ def evidence():
             body = path.read_text(encoding="utf-8-sig")
             if re.search(r"(?m)^TOTAL[^\r\n]*failed=0\b", body) and not re.search(r"(?m)^FAIL|failed=[1-9]|RUNTIME ERROR", body):
                 result[item["Macro"]].insert(0, path.relative_to(ROOT).as_posix())
+    # Текущие directed-журналы принимаются целиком: exact primary SHA,
+    # завершённый child и нормальное закрытие собственного Excel обязательны.
+    current = ROOT / "docs/regression/UnifiedRebarPaths_2026-10-29_Run01"
+    for path in sorted(current.glob("Directed[0-9]*_*.txt")):
+        review_path = path.with_name(path.name + ".PrimaryReview.json")
+        closure_path = path.with_name(path.name + ".ProcessClosure.json")
+        if not review_path.exists() or not closure_path.exists():
+            continue
+        review = json.loads(review_path.read_text(encoding="utf-8-sig"))
+        closure = json.loads(closure_path.read_text(encoding="utf-8-sig"))
+        if not (review.get("Passed") and review.get("AllBytesRead") and closure.get("Passed")
+                and closure.get("ChildHasExited") and closure.get("ChildExitCode") == 0
+                and closure.get("RunnerCleanupValid") and not closure.get("OrdinaryPathKilledAnything")):
+            continue
+        data = path.read_bytes()
+        if hashlib.sha256(data).hexdigest().upper() != review["PrimarySHA256"]:
+            raise ValueError("Reviewed primary changed: " + str(path))
+        text = data.decode("utf-8-sig")
+        if not re.search(r"(?m)^WATCHDOG_COMPLETED: exit=0; source unchanged=True\s*$", text):
+            continue
+        if re.search(r"(?im)^(?:FAIL:|RUNTIME ERROR:|WATCHDOG_FAILURE:|CLEANUP ERROR:)|failed=[1-9]", text):
+            continue
+        if "SOURCE_SHA256: " + review["SourceSHA256"] not in text:
+            raise ValueError("Directed source SHA differs from reviewed primary")
+        for entry in review["Finished"]:
+            result[entry].insert(0, path.relative_to(ROOT).as_posix())
     return result
 
 
@@ -119,8 +145,16 @@ def build():
         corpus = "\n".join(line[2] for line in routine["lines"])
         typed = defaultdict(set)
         for variable, kind in re.findall(r"\b(\w+)\s+As\s+(?:New\s+)?(\w+)\b", corpus): typed[kind].add(variable)
+        # Читаемый объектный Property Get (например builder.Rules) даёт такой же
+        # типизированный контекст вызова, как локальная переменная executor.
+        typed_paths = {kind: set(names) for kind, names in typed.items()}
+        for accessor in members:
+            if accessor["kind"] != "Property Get" or not accessor.get("resultType"):
+                continue
+            for variable in typed[accessor["owner"]]:
+                typed_paths.setdefault(accessor["resultType"], set()).add(variable + "." + accessor["name"])
         for member in members:
-            names = typed[member["owner"]]
+            names = typed_paths.get(member["owner"], set())
             pattern = r"\b(?:" + "|".join(re.escape(name) for name in names) + r")\." + member["name"] + r"\b" if names else None
             if member["kind"] in ("Enum", "Type", "Const") or member["owner"].startswith("mod"):
                 selectors = [member["name"]]

@@ -369,7 +369,7 @@ End Sub
 
 
 ' Возвращает независимые области только для точной исходной матрицы этого снимка.
-' Изменённая или посторонняя геометрия проходит прежний полный разбор, без округлённых ключей.
+' Изменённая или посторонняя геометрия проходит полный разбор, без округлённых ключей.
 Friend Function TryCopyValidatedConcreteBoundaries(ByRef geometry As Variant, ByRef result As Object) As Boolean
     Validate
     If mValidatedBoundaries Is Nothing Then Exit Function

@@ -17,7 +17,7 @@ Public Sub BeginCalculationSnapshotRead(ByVal workbook As Object, Optional ByVal
     If mReadDepth = 0 Then
         If Not snapshot Is Nothing Then snapshot.Validate
         Set mReadWorkbook = workbook: Set mReadSnapshot = snapshot
-        mReadSourceResolved = Not snapshot Is Nothing ' Готовый набор принадлежит текущему выводу в обоих режимах; ручное чтение без него по-прежнему выбирает Config.
+        mReadSourceResolved = Not snapshot Is Nothing ' Готовый набор принадлежит текущему выводу в обоих режимах; ручное чтение без него выбирает источник по Config.
     ElseIf Not workbook Is mReadWorkbook Then
         Err.Raise 5, "modCalculationSnapshot", "Вложенное чтение относится к другой книге."
     ElseIf Not snapshot Is Nothing Then
@@ -66,7 +66,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
         If mode = "File" Then
             Set snapshot = store.LoadFile(workbook)
         Else
-            store.ClearReference workbook ' Источник Excel — только лист; прежняя служебная привязка ничего не подгружает.
+            store.ClearReference workbook ' Источник Excel — только лист; служебная файловая привязка не участвует в чтении.
             UpdateSectionPlotForWorkbook workbook
             guard.Restore True
     CompleteWorkbookDrawing workbook

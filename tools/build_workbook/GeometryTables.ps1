@@ -154,12 +154,13 @@ function Add-GeometryTableValidation {
                 $cell=$Range.Cells.Item($r,[int]$block.Columns[$key]);$options=@()
                 if($key -like 'bind*'){$options=@('EachBar','EverySecondBar')}
                 elseif($key -like 'pos*'){$options=@('Stacked','SideBySide')}
+                elseif($key -eq 'endMode' -and $rowKey -notlike 'Opening*'){$options=@('IncludeBoth','ExcludeBoth','IncludeStart','IncludeEnd')}
                 elseif($block.Key -eq 'General' -and $rowKey -eq 'Shape'){$options=@('TwoRect','OneRect')}
                 $cell.Validation.Delete()
                 if($options.Count){
                     $list=Get-ConfigValidationListAddress $Range.Worksheet $options
                     $cell.Validation.Add(3,1,1,$list);$cell.Validation.IgnoreBlank=$true;$cell.Validation.InCellDropdown=$true
-                }elseif($key -eq 'n' -and $rowKey -like 'Opening*'){
+                }elseif($key -in @('n','endMode') -and $rowKey -like 'Opening*'){
                     # Прочерк показывает, что количество определяется проекцией наружной арматуры.
                 }elseif($key -eq 'n'){
                     $cell.Validation.Add(1,1,7,'0');$cell.Validation.IgnoreBlank=$true
