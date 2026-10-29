@@ -1,0 +1,60 @@
+{
+  "Status": "PUBLISHED_HELP_TEXT_ONLY_SOURCE_AND_BOTH_WORKBOOKS",
+  "AtUTC": "2026-10-29T08:49:50.355185+00:00",
+  "Branch": "codex/help-export-snapshot-source",
+  "BaseCommit": "4c6e6ece424f821fc071a8b277e276cd7ea93d22",
+  "ChangedHelpCells": [
+    "A52",
+    "A53",
+    "A499"
+  ],
+  "BuildCatalogSynchronized": true,
+  "Books": [
+    {
+      "Name": "Main",
+      "Path": "workbook\\output\\RC_Section_NDM.xlsm",
+      "BeforeSHA256": "0DA6EBCA2E8A21CD12E484E665CF20C9111A6FEC5344F19E3BB0EBB0D2A9D56A",
+      "AfterSHA256": "EBB48E36D168AC033368A4CCE39389BE6F3687760CCCA8BE9C48D4A01E8B26F5",
+      "ChangedZIPParts": [
+        "xl/sharedStrings.xml"
+      ],
+      "PreservedZIPParts": 106,
+      "ChangedHelpCells": [
+        "A52",
+        "A53",
+        "A499"
+      ],
+      "VBAUnchanged": true,
+      "Candidate": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\HelpSnapshotSource_2026-10-29_Run01\\Main\\RC_Section_NDM.xlsm"
+    },
+    {
+      "Name": "Ready30",
+      "Path": "workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM.xlsm",
+      "BeforeSHA256": "4D09B1109916C078824C9D48895B2B3E73B5828E78D6468DF71A0C7F3036C3EF",
+      "AfterSHA256": "6A21BE6E842D88317683D0BEB6228587C387014D24A8D42CA721785F664009C0",
+      "ChangedZIPParts": [
+        "xl/sharedStrings.xml"
+      ],
+      "PreservedZIPParts": 110,
+      "ChangedHelpCells": [
+        "A52",
+        "A53",
+        "A499"
+      ],
+      "VBAUnchanged": true,
+      "Candidate": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\HelpSnapshotSource_2026-10-29_Run01\\Ready30\\RC_Section_NDM.xlsm"
+    }
+  ],
+  "VBA_All_Code_Unchanged": true,
+  "AllNonTextZIPPartsBytePreserved": true,
+  "RuntimeOrCalculationTestsRun": false,
+  "RebuildRun": false,
+  "NativeReadOnlyInspection": true,
+  "AllInspectionOwnProcessesClosed": true,
+  "ForeignFilesUnchanged": {
+    "workbook\\output\\RC_Section_NDM_execution_report.txt": "47962833F2BB2FFB641DDEDF6A718FCF6445C19251D233E0B996B820D122607D",
+    "workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM_execution_report.txt": "2E0D23BE24CAB73DAE4371538D9AFDDBA88DB8E1560F76A38164C1756C81ED49",
+    "workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM_ok.xlsm": "31F188692A01CC421A37CF962598778A5AD1FE6D9AB5D96DD41C29389C0919F7"
+  },
+  "AcceptanceMeaning": "Prior full acceptance remains evidence for identical VBA and calculation data. No full-run PASS is claimed for the new whole-file hashes after this help-only edit."
+}

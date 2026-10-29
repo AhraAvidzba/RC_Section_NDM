@@ -1,0 +1,8 @@
+{
+  "Reason": "Windows PowerShell5.1 treated UTF8 without BOM as ANSI; worksheet Unicode name was decoded incorrectly. Workbook macros disabled, no Save.",
+  "PID": 24088,
+  "StartTicksUTC": "639288604017105729",
+  "Status": "INSPECTION_ENCODING_FAILURE_CLOSED",
+  "ForceKilled": false,
+  "State": "Absent"
+}

@@ -3048,7 +3048,7 @@ function Add-AutoCADGeometryPreparationGuide {
     $row = Add-GuideParagraph $Sheet $row "При смене INPUT пересчитайте вручную уже введенные нагрузки, параметры материалов и размерные настройки Config. Это не относится к сохраненной импортированной геометрии. Если новый импорт завершился ошибкой, прежняя геометрия Results сохраняется."
 
     $row = Add-GuideTitle $Sheet $row "5. Экспорт сохраненных результатов" 13
-    $row = Add-GuideParagraph $Sheet $row "Экспорт идёт в пространство «Модель» активного чертежа, даже если открыт лист. Используется последний расчёт на Results; после изменения нагрузок рассчитайте заново. Геометрия передаётся в мм независимо от OUTPUT. «Очистить подписи в AutoCAD» удаляет оформление, сохраняя бетон, арматуру и контуры; без слоёв оформления очистка сразу завершается." -Emphasis -RowCount 2
+    $row = Add-GuideParagraph $Sheet $row "Экспорт идёт в пространство «Модель» активного чертежа, даже если открыт лист. Источник задаёт Results.SnapshotStorage: Excel — лист Results, File — файл Results.SnapshotName рядом с книгой. После изменения нагрузок рассчитайте заново. Геометрия передаётся в мм независимо от OUTPUT. «Очистить подписи в AutoCAD» удаляет оформление, сохраняя бетон, арматуру и контуры; без слоёв оформления очистка сразу завершается." -Emphasis -RowCount 2
     $row = Add-GuideParagraph $Sheet $row "На Config включите AutoCAD.Export.ContourEnabled = Yes и выберите настройку AutoCAD.Export.ContourFormat:"
     $row = Add-GuideParagraph $Sheet $row "Region (по умолчанию) - бетонная область со всеми отверстиями на AutoCAD.Common.SectionContourLayer. Отдельные бетонные части экспортируются отдельными Region."
     $row = Add-GuideParagraph $Sheet $row "Polyline - отдельные замкнутые полилинии: наружная граница на AutoCAD.Common.SectionContourLayer, отверстия на AutoCAD.Common.OpeningContourLayer. Прямые участки и дуги сохраняются."
@@ -3209,7 +3209,7 @@ function Add-ResultsSheetGuide {
     param([object]$Sheet, [int]$StartRow)
 
     $row = $StartRow
-    $row = Add-GuideParagraph $Sheet $row "Лист Results хранит результаты последнего завершенного запуска, включая не прошедшие проверки. Схема и экспорт в AutoCAD читают эти сохраненные данные. Изменение настроек на листе Config само по себе не обновляет Results." -RowCount 1 -Emphasis
+    $row = Add-GuideParagraph $Sheet $row "Лист Results показывает сохранённые результаты, включая не прошедшие проверки. Схема и экспорт читают лист или файл по настройке Results.SnapshotStorage. Изменение настроек Config не обновляет сохранённые результаты." -RowCount 1 -Emphasis
     $row = Add-GuideParagraph $Sheet $row "Числа выводятся в выбранных OUTPUT и пользовательских знаках. Нагрузки соответствуют правилам Config Sign.N.User, Sign.Mx.User, Sign.My.User; напряжения и деформации сохраняют физический знак: плюс - растяжение, минус - сжатие. Единицы заданы на Config ключами Units.*.Output, где звездочка означает Length, Area, Force, Moment, Stress или Curvature."
     $row = Add-GuideParagraph $Sheet $row "Ширину столбцов можно менять для удобства чтения: расчет и очистка сохраняют ваш выбор. В строках данных перенос текста отключен; при длинном комментарии расширьте столбец."
     $row++

@@ -1,0 +1,24 @@
+{
+  "Status": "NATIVE_HELP_TEXT_READ_ONLY_VERIFIED",
+  "CellsVerified": 6,
+  "AddressesPerBook": [
+    "A52",
+    "A53",
+    "A499"
+  ],
+  "Books": [
+    "Main",
+    "Ready30"
+  ],
+  "MacrosDisabled": true,
+  "Saved": false,
+  "OwnPID": 15188,
+  "StartTicksUTC": "639288604458780454",
+  "OwnState": "Absent",
+  "QuitRequested": true,
+  "ForceKilled": false,
+  "VisualExport": "HelpExportSource.png",
+  "VisualReview": "No clipped text in export paragraph; styles and row sizes preserved.",
+  "InspectionNote": "All six native text assertions and PNG export completed. The inspection host initially waited only six seconds for Excel exit while remaining COM references were alive. Exact PID/startTicks was independently observed Absent after host exit; no extra Excel launch or force termination.",
+  "AtUTC": "2026-10-29T08:49:50.212276+00:00"
+}

@@ -1,0 +1,47 @@
+{
+  "Status": "PREPARED_HELP_TEXT_ONLY",
+  "AtUTC": "2026-10-29T08:44:11.973294+00:00",
+  "BuildCatalog": "tools/build_workbook/SettingsCatalog.ps1",
+  "Books": [
+    {
+      "Name": "Main",
+      "Path": "workbook\\output\\RC_Section_NDM.xlsm",
+      "BeforeSHA256": "0DA6EBCA2E8A21CD12E484E665CF20C9111A6FEC5344F19E3BB0EBB0D2A9D56A",
+      "AfterSHA256": "EBB48E36D168AC033368A4CCE39389BE6F3687760CCCA8BE9C48D4A01E8B26F5",
+      "ChangedZIPParts": [
+        "xl/sharedStrings.xml"
+      ],
+      "PreservedZIPParts": 106,
+      "ChangedHelpCells": [
+        "A52",
+        "A53",
+        "A499"
+      ],
+      "VBAUnchanged": true,
+      "Candidate": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\HelpSnapshotSource_2026-10-29_Run01\\Main\\RC_Section_NDM.xlsm"
+    },
+    {
+      "Name": "Ready30",
+      "Path": "workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM.xlsm",
+      "BeforeSHA256": "4D09B1109916C078824C9D48895B2B3E73B5828E78D6468DF71A0C7F3036C3EF",
+      "AfterSHA256": "6A21BE6E842D88317683D0BEB6228587C387014D24A8D42CA721785F664009C0",
+      "ChangedZIPParts": [
+        "xl/sharedStrings.xml"
+      ],
+      "PreservedZIPParts": 110,
+      "ChangedHelpCells": [
+        "A52",
+        "A53",
+        "A499"
+      ],
+      "VBAUnchanged": true,
+      "Candidate": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\HelpSnapshotSource_2026-10-29_Run01\\Ready30\\RC_Section_NDM.xlsm"
+    }
+  ],
+  "RuntimeTestsRun": false,
+  "NewTexts": {
+    "A52": "Экспорт идёт в пространство «Модель» активного чертежа, даже если открыт лист. Источник задаёт Results.SnapshotStorage: Excel — лист Results, File — файл Results.SnapshotName рядом с книгой. После изменения",
+    "A53": "нагрузок рассчитайте заново. Геометрия передаётся в мм независимо от OUTPUT. «Очистить подписи в AutoCAD» удаляет оформление, сохраняя бетон, арматуру и контуры; без слоёв оформления очистка сразу завершается.",
+    "A499": "Лист Results показывает сохранённые результаты, включая не прошедшие проверки. Схема и экспорт читают лист или файл по настройке Results.SnapshotStorage. Изменение настроек Config не обновляет сохранённые результаты."
+  }
+}
