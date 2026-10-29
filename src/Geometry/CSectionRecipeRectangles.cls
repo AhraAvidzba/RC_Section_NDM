@@ -38,10 +38,6 @@ Private Type TRectangleFace
     Diameter As Double ' Диаметр стержней основного ряда, мм.
     AxisDistance As Double ' Заданный as для явной связи линии арматуры с исходным прямоугольником, мм.
     ContourSource As String ' Исходный верхний или нижний прямоугольник, относительно которого задан as.
-    X1 As Double ' Начальная координата X линии центров арматуры, мм.
-    Y1 As Double ' Начальная координата Y линии центров арматуры, мм.
-    X2 As Double ' Конечная координата X линии центров арматуры, мм.
-    Y2 As Double ' Конечная координата Y линии центров арматуры, мм.
     LabelX As Double ' Компонента X направления выноса подписи.
     LabelY As Double ' Компонента Y направления выноса подписи.
     StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
@@ -95,14 +91,14 @@ End Sub
 ' У одиночного прямоугольника строки нижней части не читаются; выключенные ряды не требуют отступов и привязок.
 Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef sizes As TRectanglesDimensions, ByRef faces() As TRectangleFace)
     If sizes.Shape = "OneRect" Then ReDim faces(1 To 4) Else ReDim faces(1 To 8)
-    ReadRectangleFaces reader, 0, sizes.Offset, sizes.H2, sizes.B1, sizes.H1, faces
-    If sizes.Shape <> "OneRect" Then ReadRectangleFaces reader, 4, 0#, 0#, sizes.B2, sizes.H2, faces
+    ReadRectangleFaces reader, 0, faces
+    If sizes.Shape <> "OneRect" Then ReadRectangleFaces reader, 4, faces
 End Sub
 
 ' Сопоставляет ключи строк таблицы сечения со сторонами одного прямоугольника и готовит их параметры в мм.
-' Отступы считаются от полной грани; направления линий и связанных рядов сохраняются.
+' as всех сторон формирует общий контур осей; s0/s1 отсчитываются по его выбранному участку.
 Private Sub ReadRectangleFaces(ByVal reader As CSectionInputReader, _
-        ByVal base As Long, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByRef faces() As TRectangleFace)
+        ByVal base As Long, ByRef faces() As TRectangleFace)
     Dim side As Long, axisDistance As Double, rowNumber As Long, ids As Variant, keys As Variant
     Dim key As String, prefix As String, suffix As String, captions As Variant
     keys = Array("Left", "Right", "Top", "Bottom")
@@ -114,27 +110,27 @@ Private Sub ReadRectangleFaces(ByVal reader As CSectionInputReader, _
             .ID = CStr(ids(side - 1))
             .Count = reader.Count("Main", key, "n")
             .Diameter = reader.OptionalDiameter("Main", key, "d")
-            If .Count = 0 Or .Diameter = 0# Then GoTo NextSide
+            .Source = reader.SourceReference("Main", key, "as")
+            If base = 0 Then .ContourSource = "Upper" Else .ContourSource = "Lower"
+            If .Count = 0 Or .Diameter = 0# Then
+                .AxisDistance = reader.OptionalRowOffset("Main", key, "as")
+                GoTo NextSide
+            End If
             axisDistance = reader.Length("Main", key, "as")
             .AxisDistance = axisDistance
-            If base = 0 Then .ContourSource = "Upper" Else .ContourSource = "Lower"
             reader.Require "Main", key, "as", axisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-            .StartSetback = reader.Length("Main", key, "s0")
-            .EndSetback = reader.Length("Main", key, "s1")
+            .StartSetback = reader.OptionalRowOffset("Main", key, "s0")
+            .EndSetback = reader.OptionalRowOffset("Main", key, "s1")
             .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
             .Caption = Left$(.ID, 2) & CStr(captions(side - 1))
             Select Case side
                 Case 1 ' Линия арматуры у левой грани: отступ as, снизу вверх.
-                    .X1 = x + axisDistance: .Y1 = y: .X2 = x + axisDistance: .Y2 = y + height
                     .LabelX = -1#
                 Case 2 ' Линия арматуры у правой грани: отступ as, сверху вниз.
-                    .X1 = x + width - axisDistance: .Y1 = y + height: .X2 = x + width - axisDistance: .Y2 = y
                     .LabelX = 1#
                 Case 3 ' Линия арматуры у верхней грани: отступ as, слева направо.
-                    .X1 = x: .Y1 = y + height - axisDistance: .X2 = x + width: .Y2 = y + height - axisDistance
                     .LabelY = 1#
                 Case 4 ' Линия арматуры у нижней грани: отступ as, справа налево.
-                    .X1 = x + width: .Y1 = y + axisDistance: .X2 = x: .Y2 = y + axisDistance
                     .LabelY = -1#
             End Select
             .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
@@ -156,11 +152,11 @@ End Sub
 ' Добавляет контуры верхнего и, если он нужен, нижнего прямоугольника. Через upper,
 ' lower и outer отдаёт их линии и общую наружную границу; для одного прямоугольника lower пуст.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectanglesDimensions, ByRef upper As CGeometryPath, ByRef lower As CGeometryPath, ByRef outer As CGeometryPath)
-    Set upper = facade.RectanglePath("Upper", sizes.Offset, sizes.H2, sizes.B1, sizes.H1) ' Верхняя часть: левый нижний угол, ширина и высота, мм.
+    Set upper = facade.RectanglePath("Upper", sizes.Offset, sizes.H2, sizes.B1, sizes.H1, "Bottom", "Right", "Top", "Left") ' Верхняя часть: левый нижний угол, ширина и высота, мм.
     If sizes.Shape = "OneRect" Then
         Set outer = upper ' У одиночного прямоугольника его контур и есть наружная граница.
     Else
-        Set lower = facade.RectanglePath("Lower", 0#, 0#, sizes.B2, sizes.H2) ' Нижняя часть начинается в (0, 0); B2 и H2 — её габариты, мм.
+        Set lower = facade.RectanglePath("Lower", 0#, 0#, sizes.B2, sizes.H2, "Bottom", "Right", "Top", "Left") ' Нижняя часть начинается в (0, 0); B2 и H2 — её габариты, мм.
         Set outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, sizes.B2, sizes.H2), Array(sizes.Offset, sizes.H2, sizes.B1, sizes.H1))) ' Получаем общую границу двух смежных прямоугольников.
     End If
     facade.Outer "OUTER", outer.ID, "Сегмент контура сечения.", namingPolicy:=SequentialByKind ' Назначаем эту замкнутую линию наружной границей бетона.
@@ -171,10 +167,21 @@ End Sub
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef faces() As TRectangleFace)
     Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions
     Dim tangentSign As Double, i As Long, rowNumber As Long, path As CGeometryPath, options As CRebarRuleOptions
+    Dim contours(1 To 2) As CGeometryPath, groups As Variant, start As Long, side As Long, part As Long
+    groups = Array("Left", "Right", "Top", "Bottom")
+    For part = 1 To UBound(faces) \ 4
+        start = (part - 1) * 4
+        Set contours(part) = facade.OffsetContour("Rebar." & faces(start + 1).ContourSource, faces(start + 1).ContourSource, groups, _
+            Array(faces(start + 1).AxisDistance, faces(start + 2).AxisDistance, faces(start + 3).AxisDistance, faces(start + 4).AxisDistance), _
+            Array(faces(start + 1).Source, faces(start + 2).Source, faces(start + 3).Source, faces(start + 4).Source))
+        For side = 1 To 4
+            If faces(start + side).Count = 0 Or faces(start + side).Diameter = 0# Then facade.RebarContourBaseline "OUTER", faces(start + side).ContourSource, Array(CStr(groups(side - 1))), faces(start + side).AxisDistance, faces(start + side).Source
+        Next side
+    Next part
     For i = 1 To UBound(faces)
         With faces(i)
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
-            Set path = facade.LinePath(.ID, .X1, .Y1, .X2, .Y2) ' Линия центров стержней с подготовленными координатами, мм.
+            Set path = facade.Chain(.ID, contours((i - 1) \ 4 + 1).ID, CStr(groups((i - 1) Mod 4)), 1#, CStr(groups((i - 1) Mod 4)), 0#, False) ' Прежнее направление стороны; концы уже учитывают соседние as.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
             options.PositionOrder = FromPathMiddle ' Нумеруем стержни от середины линии.
@@ -184,7 +191,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
             options.Comment = "Набор прямоугольников: " & .Caption & ", ряд 1"
             facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
-            facade.RebarContour .ID & ".Main", "OUTER", .ContourSource, .AxisDistance, .ID & ".Row2", .ID & ".Row3", normalSign:=-1# ' Связь с исходным прямоугольником и известным направлением в бетон.
+            facade.RebarContour .ID & ".Main", "OUTER", .ContourSource, .AxisDistance, .ID & ".Row2", .ID & ".Row3", sourceSegments:=Array(CStr(groups((i - 1) Mod 4))), normalSign:=-1# ' Связь с исходным прямоугольником и известным направлением в бетон.
             Select Case (i - 1) Mod 4 + 1 ' Повторяем направления сторон Left/Right/Top/Bottom для обоих прямоугольников.
                 Case 1, 4: tangentSign = -1#
                 Case 2, 3: tangentSign = 1#

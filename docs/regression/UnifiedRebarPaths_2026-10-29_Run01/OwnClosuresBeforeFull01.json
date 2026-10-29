@@ -1,0 +1,1463 @@
+{
+  "AtUTC": "2026-10-29T16:06:19.5195804+00:00",
+  "AllOwnClosed": true,
+  "Identities": [
+    {
+      "Name": "powershell",
+      "PID": 15196,
+      "StartTicksUTC": "639288311238457398",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3172412+00:00"
+    },
+    {
+      "Name": "powershell",
+      "PID": 10168,
+      "StartTicksUTC": "639288311234753161",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3287599+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 9552,
+      "StartTicksUTC": "639288311287001172",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3293664+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 4616,
+      "StartTicksUTC": "639288357068166793",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3296414+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22364,
+      "StartTicksUTC": "639288359713381454",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3298784+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 4048,
+      "StartTicksUTC": "639288359921555421",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3301131+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 16228,
+      "StartTicksUTC": "639288362913100181",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3303401+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23844,
+      "StartTicksUTC": "639288363163460774",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3305692+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25528,
+      "StartTicksUTC": "639288364556743104",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3307949+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 18916,
+      "StartTicksUTC": "639288409834471810",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3310215+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 1192,
+      "StartTicksUTC": "639288412550371823",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3312517+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 7888,
+      "StartTicksUTC": "639288412765976063",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3314817+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22908,
+      "StartTicksUTC": "639288415798043213",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3317064+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 21080,
+      "StartTicksUTC": "639288416038649934",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3319294+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20960,
+      "StartTicksUTC": "639288417585133258",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3321545+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17976,
+      "StartTicksUTC": "639288418021902052",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3323768+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 4844,
+      "StartTicksUTC": "639288418459349114",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3326052+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 21112,
+      "StartTicksUTC": "639288418876658121",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3328328+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22308,
+      "StartTicksUTC": "639288419308580323",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3330588+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 5916,
+      "StartTicksUTC": "639288419812818018",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3332854+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 18520,
+      "StartTicksUTC": "639288420341101450",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3335082+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 18968,
+      "StartTicksUTC": "639288420797707470",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3374548+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 12628,
+      "StartTicksUTC": "639288421279324819",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3379130+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 24652,
+      "StartTicksUTC": "639288421854541350",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3381775+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25136,
+      "StartTicksUTC": "639288422347043400",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3384715+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 7724,
+      "StartTicksUTC": "639288422723636962",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3387229+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 3164,
+      "StartTicksUTC": "639288423096834182",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3389641+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 1532,
+      "StartTicksUTC": "639288423479593156",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3392034+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 5032,
+      "StartTicksUTC": "639288423821893739",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3394408+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17172,
+      "StartTicksUTC": "639288424161435336",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3396799+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17284,
+      "StartTicksUTC": "639288424520206012",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3399162+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 10996,
+      "StartTicksUTC": "639288424862339867",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3401530+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 10892,
+      "StartTicksUTC": "639288425208145224",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3403910+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 10308,
+      "StartTicksUTC": "639288425294913748",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3406287+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 6064,
+      "StartTicksUTC": "639288425372987694",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3408715+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 2732,
+      "StartTicksUTC": "639288425456639973",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3411085+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 24052,
+      "StartTicksUTC": "639288425540735378",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3413460+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 19432,
+      "StartTicksUTC": "639288425617431211",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3415850+00:00"
+    },
+    {
+      "Name": "acad",
+      "PID": 24172,
+      "StartTicksUTC": "639288425951392769",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3418236+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 13792,
+      "StartTicksUTC": "639288426055207097",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3420809+00:00"
+    },
+    {
+      "Name": "acad",
+      "PID": 24872,
+      "StartTicksUTC": "639288425706705505",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3423185+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 16848,
+      "StartTicksUTC": "639288425879314854",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3425551+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 9084,
+      "StartTicksUTC": "639288417322662144",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3427940+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 3848,
+      "StartTicksUTC": "639288417509856122",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/AllOwnClosuresReviewed.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3430309+00:00"
+    },
+    {
+      "Name": "powershell",
+      "PID": 1240,
+      "StartTicksUTC": "639288178795120695",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3432676+00:00"
+    },
+    {
+      "Name": "powershell",
+      "PID": 20700,
+      "StartTicksUTC": "639288178791212334",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3435050+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20908,
+      "StartTicksUTC": "639288178843794877",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3437432+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23904,
+      "StartTicksUTC": "639288225715359395",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3439814+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20716,
+      "StartTicksUTC": "639288228429109352",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3442178+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 7552,
+      "StartTicksUTC": "639288228641712270",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3444533+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 992,
+      "StartTicksUTC": "639288231720477632",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3447088+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22676,
+      "StartTicksUTC": "639288231963365301",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3449653+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 21208,
+      "StartTicksUTC": "639288233290259422",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3452054+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23800,
+      "StartTicksUTC": "639288279030801266",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3454427+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 10120,
+      "StartTicksUTC": "639288281695307668",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3456802+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 10168,
+      "StartTicksUTC": "639288281907488985",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3459203+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23508,
+      "StartTicksUTC": "639288284938516052",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3461571+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 2216,
+      "StartTicksUTC": "639288285190814939",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3463935+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 15288,
+      "StartTicksUTC": "639288286755095566",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3466300+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 3484,
+      "StartTicksUTC": "639288287199156776",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3468683+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 8504,
+      "StartTicksUTC": "639288287644127579",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3471046+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25520,
+      "StartTicksUTC": "639288288088798785",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3473411+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 7580,
+      "StartTicksUTC": "639288288576279546",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3475772+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22364,
+      "StartTicksUTC": "639288289112379965",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3478145+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 13444,
+      "StartTicksUTC": "639288289642535381",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3480528+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 19448,
+      "StartTicksUTC": "639288290110676540",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "DifferentIdentityPresent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.3482906+00:00",
+      "ObservedName": "chrome",
+      "ObservedStartTicksUTC": "639288563570543710"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 18840,
+      "StartTicksUTC": "639288290574879756",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4427374+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23852,
+      "StartTicksUTC": "639288291148485744",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4431486+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 15388,
+      "StartTicksUTC": "639288291610907372",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4433631+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 19228,
+      "StartTicksUTC": "639288291988367205",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4435647+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 9748,
+      "StartTicksUTC": "639288292379323732",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4437611+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 9868,
+      "StartTicksUTC": "639288292739106007",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4439579+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 2088,
+      "StartTicksUTC": "639288293097041003",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4441523+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 15704,
+      "StartTicksUTC": "639288293444227032",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4443450+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 19760,
+      "StartTicksUTC": "639288293817251856",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4445373+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25360,
+      "StartTicksUTC": "639288294168118105",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4469632+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 7000,
+      "StartTicksUTC": "639288294523305424",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4472065+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 288,
+      "StartTicksUTC": "639288294611096505",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4474174+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17260,
+      "StartTicksUTC": "639288294691863210",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4476246+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 24764,
+      "StartTicksUTC": "639288294778121697",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4478300+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20708,
+      "StartTicksUTC": "639288294872348221",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4480337+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 16016,
+      "StartTicksUTC": "639288294960805647",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4482353+00:00"
+    },
+    {
+      "Name": "acad",
+      "PID": 9716,
+      "StartTicksUTC": "639288295305859665",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4484373+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 12380,
+      "StartTicksUTC": "639288295413034441",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4486402+00:00"
+    },
+    {
+      "Name": "acad",
+      "PID": 24088,
+      "StartTicksUTC": "639288295059576565",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4488411+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 16512,
+      "StartTicksUTC": "639288295229814585",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4490468+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 10148,
+      "StartTicksUTC": "639288286491928343",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4492483+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25504,
+      "StartTicksUTC": "639288286679391912",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4494494+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 24232,
+      "StartTicksUTC": "639288159184847219",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4496495+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 16840,
+      "StartTicksUTC": "639288165059222054",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4498505+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22536,
+      "StartTicksUTC": "639288140339638291",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4500686+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 12956,
+      "StartTicksUTC": "639288141455382790",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4502700+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 1556,
+      "StartTicksUTC": "639288154739478916",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4504710+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20824,
+      "StartTicksUTC": "639288162419329251",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4506730+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23680,
+      "StartTicksUTC": "639288170155275572",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4508737+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 13444,
+      "StartTicksUTC": "639288170775087771",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4510771+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 16812,
+      "StartTicksUTC": "639288170364522118",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4512774+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 19288,
+      "StartTicksUTC": "639288170570720770",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4514774+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25468,
+      "StartTicksUTC": "639288171825371967",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4516774+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17048,
+      "StartTicksUTC": "639288173140884320",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4518775+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25340,
+      "StartTicksUTC": "639288172284937447",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4520988+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 3812,
+      "StartTicksUTC": "639288172709767375",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4523008+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20664,
+      "StartTicksUTC": "639288175757034427",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4525017+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 21684,
+      "StartTicksUTC": "639288177069574032",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4527019+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25316,
+      "StartTicksUTC": "639288176218761907",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4529039+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 15192,
+      "StartTicksUTC": "639288176639706069",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4531044+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22340,
+      "StartTicksUTC": "639288149057430222",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4533043+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23784,
+      "StartTicksUTC": "639288150060187558",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4535044+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17484,
+      "StartTicksUTC": "639288149370269545",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4537050+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 3640,
+      "StartTicksUTC": "639288149683118644",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4539071+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 1808,
+      "StartTicksUTC": "639288159897845198",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4541078+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 4184,
+      "StartTicksUTC": "639288161467516070",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4543076+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 16420,
+      "StartTicksUTC": "639288160444553193",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4545082+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22568,
+      "StartTicksUTC": "639288160947008017",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4547084+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23660,
+      "StartTicksUTC": "639288128639701244",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4549099+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 11176,
+      "StartTicksUTC": "639288129932039783",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4551100+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 14728,
+      "StartTicksUTC": "639288157572868260",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4553096+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20628,
+      "StartTicksUTC": "639288158052095667",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4555098+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 4044,
+      "StartTicksUTC": "639288158468383363",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4557101+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 21208,
+      "StartTicksUTC": "639288158825034542",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4559116+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 16668,
+      "StartTicksUTC": "639288133105171350",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4561116+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 1544,
+      "StartTicksUTC": "639288144142459732",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4623609+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 7848,
+      "StartTicksUTC": "639288145440960066",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4626274+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 24480,
+      "StartTicksUTC": "639288133428540181",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4628482+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 4280,
+      "StartTicksUTC": "639288156033304347",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4630589+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 5604,
+      "StartTicksUTC": "639288162546506716",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4632646+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 6972,
+      "StartTicksUTC": "639288199089097845",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4634694+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25272,
+      "StartTicksUTC": "639288227624031893",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4636742+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 11400,
+      "StartTicksUTC": "639288300172676694",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "DifferentIdentityPresent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.4638808+00:00",
+      "ObservedName": "msedgewebview2",
+      "ObservedStartTicksUTC": "639288545877257810"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 2076,
+      "StartTicksUTC": "639288303604979522",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5117208+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17060,
+      "StartTicksUTC": "639288305522705814",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5120903+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 1236,
+      "StartTicksUTC": "639288307905913245",
+      "Provenance": "docs/regression/FullSuiteLaunch_2026-10-29_PlotLabels_Run02/ReleaseEligibility.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5123019+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 21844,
+      "StartTicksUTC": "639288844430132510",
+      "Provenance": "Build01",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5125038+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 19400,
+      "StartTicksUTC": "639288849202368023",
+      "Provenance": "Build02",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5127070+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 15824,
+      "StartTicksUTC": "639288854347475434",
+      "Provenance": "Build03",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5129044+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 13196,
+      "StartTicksUTC": "639288860553579971",
+      "Provenance": "Build04",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5131012+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22152,
+      "StartTicksUTC": "639288846890462146",
+      "Provenance": "Directed01_No.txt.ProcessClosure.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5133008+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20436,
+      "StartTicksUTC": "639288847858853888",
+      "Provenance": "Directed02_No.txt.ProcessClosure.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5134960+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 1148,
+      "StartTicksUTC": "639288851534118185",
+      "Provenance": "Directed03_No.txt.ProcessClosure.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5136911+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 19636,
+      "StartTicksUTC": "639288852637742944",
+      "Provenance": "Directed04_Yes.txt.ProcessClosure.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5138879+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 24864,
+      "StartTicksUTC": "639288856685137214",
+      "Provenance": "Directed05_No.txt.ProcessClosure.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5140818+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 11244,
+      "StartTicksUTC": "639288860736603313",
+      "Provenance": "Directed06_No.txt.ProcessClosure.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5142815+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 2732,
+      "StartTicksUTC": "639288861501609656",
+      "Provenance": "Directed07_Yes.txt.ProcessClosure.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5144768+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 19040,
+      "StartTicksUTC": "639288852014048529",
+      "Provenance": "Native02Ownership.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5146711+00:00"
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25992,
+      "StartTicksUTC": "639288862580453028",
+      "Provenance": "Native04Ownership.json",
+      "State": "Absent",
+      "OwnIdentityTerminal": true,
+      "ForceKilled": false,
+      "ObservedUTC": "2026-10-29T16:06:19.5148687+00:00"
+    }
+  ],
+  "AnyProcessClosed": false,
+  "FullAcceptanceClaim": false,
+  "PublicationClaim": false
+}

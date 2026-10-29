@@ -1,0 +1,709 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\UnifiedRebarPaths_2026-10-29_Run01\Build01\RC_Section_NDM.xlsm
+SOURCE_SHA256: 48161CEF199A143F7120D77AD33A1F74D342C6875CCEAF7DDAF8FD7113018040
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=20436; startTicks=639288847858853888
+===== modTestSectionRecipes.RunRecipeDefinitionTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeDefinitionTests; 2026-10-29T18:33:10
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=123830272; privateBytes=93216768; cpu=4.484375
+PASS: definition.sealed
+PASS: definition.loops
+PASS: definition.area
+PASS: definition.concrete
+PASS: definition.hole.a
+PASS: definition.hole.b
+PASS: definition.roles
+PASS: definition.ids
+PASS: definition.contours.copy
+PASS: definition.region.copy
+PASS: definition.invalid.0
+PASS: definition.invalid.1
+PASS: definition.invalid.2
+PASS: definition.invalid.3
+PASS: definition.invalid.4
+TOTAL RECIPE DEFINITION: passed=15; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeDefinitionTests; 2026-10-29T18:33:11
+===== modTestSectionRecipes.RunRecipeRuleTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeRuleTests; 2026-10-29T18:33:12
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=129675264; privateBytes=97800192; cpu=6.265625
+PASS: ends.count.1
+PASS: ends.station.1.1; actual=10; expected=10
+PASS: ends.station.1.2; actual=45; expected=45
+PASS: ends.station.1.3; actual=80; expected=80
+PASS: ends.count.2
+PASS: ends.station.2.1; actual=27.5; expected=27.5
+PASS: ends.station.2.2; actual=45; expected=45
+PASS: ends.station.2.3; actual=62.5; expected=62.5
+PASS: ends.count.3
+PASS: ends.station.3.1; actual=10; expected=10
+PASS: ends.station.3.2; actual=33.3333333333333; expected=33.3333333333333
+PASS: ends.station.3.3; actual=56.6666666666667; expected=56.6666666666667
+PASS: ends.count.4
+PASS: ends.station.4.1; actual=33.3333333333333; expected=33.3333333333333
+PASS: ends.station.4.2; actual=56.6666666666667; expected=56.6666666666667
+PASS: ends.station.4.3; actual=80; expected=80
+PASS: one.midpoint; actual=45; expected=45
+PASS: closed.count
+PASS: closed.start.x; actual=100; expected=100
+PASS: closed.start.y; actual=0; expected=0
+PASS: closed.last.x; actual=-1.83690953073357E-14; expected=0
+PASS: closed.last.y; actual=-100; expected=-100
+PASS: maxstep.count
+PASS: maxstep.first; actual=10; expected=10
+PASS: maxstep.last; actual=80; expected=80
+PASS: maxstep.actual; actual=23.3333333333333; expected=23.3333333333333
+PASS: fixed.count
+PASS: fixed.first; actual=5; expected=5
+PASS: fixed.last; actual=95; expected=95
+PASS: fixed.step.2; actual=30; expected=30
+PASS: fixed.step.3; actual=30; expected=30
+PASS: fixed.step.4; actual=30; expected=30
+PASS: explicit.count
+PASS: explicit.last; actual=90; expected=90
+PASS: dependent.count
+PASS: dependent.first.x; actual=0; expected=0
+PASS: dependent.last.x; actual=100; expected=100
+PASS: dependent.normal; actual=10; expected=10
+PASS: dependent.source
+PASS: projection.count
+PASS: projection.skips
+PASS: projection.x; actual=50; expected=50
+PASS: projection.y; actual=100; expected=100
+PASS: projection.source
+PASS: projection.secondhit.count
+PASS: projection.secondhit.x; actual=50; expected=50
+PASS: projection.secondhit.y; actual=150; expected=150
+PASS: group.perpath
+PASS: group.secondpath; actual=100; expected=100
+PASS: distance.center; actual=100; expected=100
+PASS: distance.inside; actual=20; expected=20
+PASS: distance.outside; actual=40; expected=40
+PASS: rule.invalid.0
+PASS: rule.invalid.1
+PASS: rule.invalid.2
+PASS: rule.invalid.3
+PASS: rule.invalid.4
+PASS: rule.invalid.5
+PASS: rule.invalid.6
+PASS: rule.invalid.7
+PASS: middle.count
+PASS: middle.order.1; actual=45; expected=45
+PASS: middle.order.2; actual=45; expected=45
+PASS: middle.order.3; actual=62.5; expected=62.5
+PASS: middle.order.4; actual=27.5; expected=27.5
+PASS: middle.order.5; actual=80; expected=80
+PASS: middle.order.6; actual=80; expected=80
+PASS: middle.order.7; actual=10; expected=10
+PASS: middle.order.8; actual=10; expected=10
+PASS: middle.first.extra; actual=10; expected=10
+PASS: middle.anchor.first; actual=10; expected=10
+PASS: middle.anchor.last; actual=80; expected=80
+PASS: coincidence.physical.count
+PASS: coincidence.requested
+PASS: coincidence.memberships
+PASS: coincidence.annotation.owner
+PASS: coincidence.labels
+PASS: coincidence.labels.total
+PASS: coincidence.invalid.0
+PASS: coincidence.invalid.1
+PASS: coincidence.invalid.2
+PASS: coincidence.invalid.3
+PASS: coincidence.explicit.owner
+PASS: coincidence.owner.diameter; actual=10; expected=10
+PASS: annotations.partial.physical
+PASS: annotations.partial.groups
+PASS: annotations.partial.first
+PASS: annotations.partial.second
+PASS: annotations.partial.total
+PASS: annotations.repeated.anchor
+PASS: annotations.repeated.total
+PASS: localLabel.single
+PASS: localLabel.resolvedType
+PASS: localLabel.upperBoundary.start; actual=250; expected=250
+PASS: localLabel.upperBoundary.end; actual=250; expected=250
+PASS: localLabel.normal; actual=-1; expected=-1
+PASS: localLabel.barUnchanged.first; actual=290; expected=290
+PASS: localLabel.barUnchanged.second; actual=290; expected=290
+PASS: index.oracle.1.-1.01
+PASS: index.oracle.1.-1
+PASS: index.oracle.1.-0.9
+PASS: index.oracle.1.0
+PASS: index.oracle.1.0.9
+PASS: index.oracle.1.1
+PASS: index.oracle.1.1.01
+PASS: index.oracle.2.-1.01
+PASS: index.oracle.2.-1
+PASS: index.oracle.2.-0.9
+PASS: index.oracle.2.0
+PASS: index.oracle.2.0.9
+PASS: index.oracle.2.1
+PASS: index.oracle.2.1.01
+PASS: index.oracle.3.-1.01
+PASS: index.oracle.3.-1
+PASS: index.oracle.3.-0.9
+PASS: index.oracle.3.0
+PASS: index.oracle.3.0.9
+PASS: index.oracle.3.1
+PASS: index.oracle.3.1.01
+PASS: index.oracle.4.-1.01
+PASS: index.oracle.4.-1
+PASS: index.oracle.4.-0.9
+PASS: index.oracle.4.0
+PASS: index.oracle.4.0.9
+PASS: index.oracle.4.1
+PASS: index.oracle.4.1.01
+PASS: index.oracle.5.-1.01
+PASS: index.oracle.5.-1
+PASS: index.oracle.5.-0.9
+PASS: index.oracle.5.0
+PASS: index.oracle.5.0.9
+PASS: index.oracle.5.1
+PASS: index.oracle.5.1.01
+PASS: index.oracle.6.-1.01
+PASS: index.oracle.6.-1
+PASS: index.oracle.6.-0.9
+PASS: index.oracle.6.0
+PASS: index.oracle.6.0.9
+PASS: index.oracle.6.1
+PASS: index.oracle.6.1.01
+PASS: index.oracle.7.-1.01
+PASS: index.oracle.7.-1
+PASS: index.oracle.7.-0.9
+PASS: index.oracle.7.0
+PASS: index.oracle.7.0.9
+PASS: index.oracle.7.1
+PASS: index.oracle.7.1.01
+PASS: index.clear
+PASS: index.reuse
+PASS: adjacent.area; actual=240000; expected=240000
+PASS: adjacent.closed
+PASS: adjacent.lower
+PASS: adjacent.upper
+PASS: adjacent.concavity
+PASS: adjacent.three.area; actual=30000; expected=30000
+PASS: adjacent.three.concavity
+PASS: adjacent.overlap.rejected
+PASS: adjacent.disjoint.rejected
+PASS: adjacent.corner.rejected
+PASS: measurements.rule.bounds
+PASS: measurements.min.x; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.max.x; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.min.y; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.max.y; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.anchor.x; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.anchor.start; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.anchor.end; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.round.positive; actual=124; expected=124
+PASS: measurements.round.negative; actual=-124; expected=-124
+PASS: measurements.round.exact; actual=123.6; expected=123.6
+PASS: measurements.coordinates.unchanged; actual=123.6; expected=123.6
+PASS: measurements.count
+PASS: joint.rule.default.x; actual=90; expected=90
+PASS: joint.rule.default.y; actual=0; expected=0
+PASS: joint.rule.incoming.x; actual=100; expected=100
+PASS: joint.rule.incoming.y; actual=10; expected=10
+PASS: projection.normal.count
+PASS: projection.normal.x.1; actual=200; expected=200
+PASS: projection.normal.y.1; actual=0; expected=0
+PASS: projection.normal.x.2; actual=141.42135623731; expected=141.42135623731
+PASS: projection.normal.y.2; actual=141.421356237309; expected=141.421356237309
+PASS: projection.normal.x.3; actual=1.22460635382238E-14; expected=1.22460635382238E-14
+PASS: projection.normal.y.3; actual=200; expected=200
+PASS: extreme.anchor.start; actual=6.12303176911189E-15; expected=0
+PASS: extreme.anchor.end; actual=100; expected=100
+PASS: extreme.anchor.y; actual=100; expected=100
+PASS: projection.ordinal.count.0
+PASS: projection.publication.first.0; actual=0; expected=0
+PASS: projection.ordinal.source.x; actual=66.6666666666667; expected=66.6666666666667
+PASS: projection.ordinal.source.y; actual=110; expected=110
+PASS: projection.ordinal.count.1
+PASS: projection.publication.first.1; actual=0; expected=0
+PASS: projection.ordinal.success.x; actual=33.3333333333333; expected=33.3333333333333
+PASS: projection.ordinal.success.y; actual=110; expected=110
+PASS: minimumArea.contourUnusedDepth
+PASS: minimumArea.zero.count
+PASS: minimumArea.filtered.count
+PASS: minimumArea.requestedNotDoubled
+PASS: minimumArea.filtered.ownerZero.1
+PASS: minimumArea.filtered.ownerZero.2
+PASS: minimumArea.filtered.ownerZero.3
+PASS: minimumArea.accepted.owner.4
+PASS: minimumArea.accepted.owner.5
+PASS: minimumArea.accepted.owner.6
+PASS: minimumArea.accepted.owner.7
+PASS: minimumArea.accepted.owner.8
+PASS: minimumArea.accepted.owner.9
+PASS: minimumArea.positionCounts
+PASS: minimumArea.contiguousIDs.1
+PASS: minimumArea.noSmallDiameter.1
+PASS: minimumArea.acceptedTrace.1
+PASS: minimumArea.contiguousIDs.2
+PASS: minimumArea.noSmallDiameter.2
+PASS: minimumArea.acceptedTrace.2
+PASS: minimumArea.contiguousIDs.3
+PASS: minimumArea.noSmallDiameter.3
+PASS: minimumArea.acceptedTrace.3
+PASS: minimumArea.contiguousIDs.4
+PASS: minimumArea.noSmallDiameter.4
+PASS: minimumArea.acceptedTrace.4
+PASS: minimumArea.contiguousIDs.5
+PASS: minimumArea.noSmallDiameter.5
+PASS: minimumArea.acceptedTrace.5
+PASS: minimumArea.contiguousIDs.6
+PASS: minimumArea.noSmallDiameter.6
+PASS: minimumArea.acceptedTrace.6
+PASS: minimumArea.dependent.x.1; actual=0; expected=0
+PASS: minimumArea.dependent.y.1; actual=20; expected=20
+PASS: minimumArea.equalThreshold.1; actual=78.5398163397448; expected=78.5398163397448
+PASS: minimumArea.projected.x.1; actual=0; expected=0
+PASS: minimumArea.projected.y.1; actual=100; expected=100
+PASS: minimumArea.dependent.x.2; actual=50; expected=50
+PASS: minimumArea.dependent.y.2; actual=20; expected=20
+PASS: minimumArea.equalThreshold.2; actual=78.5398163397448; expected=78.5398163397448
+PASS: minimumArea.projected.x.2; actual=50; expected=50
+PASS: minimumArea.projected.y.2; actual=100; expected=100
+PASS: minimumArea.dependent.x.3; actual=100; expected=100
+PASS: minimumArea.dependent.y.3; actual=20; expected=20
+PASS: minimumArea.equalThreshold.3; actual=78.5398163397448; expected=78.5398163397448
+PASS: minimumArea.projected.x.3; actual=100; expected=100
+PASS: minimumArea.projected.y.3; actual=100; expected=100
+PASS: minimumArea.annotations.acceptedOnly
+PASS: minimumArea.filteredBoundsAbsent
+PASS: minimumArea.ruleCounters
+PASS: minimumArea.totalDiagnostics
+PASS: minimumArea.diagnosticCodes
+PASS: minimumArea.zeroRestoresAll
+PASS: minimumArea.zero.x.1; actual=0; expected=0
+PASS: minimumArea.zero.y.1; actual=0; expected=0
+PASS: minimumArea.zero.area.1; actual=50.2654824574367; expected=50.2654824574367
+PASS: minimumArea.zero.x.2; actual=50; expected=50
+PASS: minimumArea.zero.y.2; actual=0; expected=0
+PASS: minimumArea.zero.area.2; actual=50.2654824574367; expected=50.2654824574367
+PASS: minimumArea.zero.x.3; actual=100; expected=100
+PASS: minimumArea.zero.y.3; actual=0; expected=0
+PASS: minimumArea.zero.area.3; actual=50.2654824574367; expected=50.2654824574367
+PASS: minimumArea.zero.x.4; actual=0; expected=0
+PASS: minimumArea.zero.y.4; actual=20; expected=20
+PASS: minimumArea.zero.area.4; actual=78.5398163397448; expected=78.5398163397448
+PASS: minimumArea.zero.x.5; actual=50; expected=50
+PASS: minimumArea.zero.y.5; actual=20; expected=20
+PASS: minimumArea.zero.area.5; actual=78.5398163397448; expected=78.5398163397448
+PASS: minimumArea.zero.x.6; actual=100; expected=100
+PASS: minimumArea.zero.y.6; actual=20; expected=20
+PASS: minimumArea.zero.area.6; actual=78.5398163397448; expected=78.5398163397448
+PASS: minimumArea.zero.x.7; actual=0; expected=0
+PASS: minimumArea.zero.y.7; actual=100; expected=100
+PASS: minimumArea.zero.area.7; actual=113.097335529233; expected=113.097335529233
+PASS: minimumArea.zero.x.8; actual=50; expected=50
+PASS: minimumArea.zero.y.8; actual=100; expected=100
+PASS: minimumArea.zero.area.8; actual=113.097335529233; expected=113.097335529233
+PASS: minimumArea.zero.x.9; actual=100; expected=100
+PASS: minimumArea.zero.y.9; actual=100; expected=100
+PASS: minimumArea.zero.area.9; actual=113.097335529233; expected=113.097335529233
+PASS: minimumArea.coincidence.filteredBeforeSearch
+PASS: minimumArea.coincidence.keptDiameter; actual=10; expected=10
+PASS: minimumArea.empty.rejected
+PASS: minimumArea.empty.address
+PASS: minimumArea.adaptiveDepthStillRequired
+TOTAL RECIPE RULES: passed=279; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeRuleTests; 2026-10-29T18:33:13
+===== modTestSectionRecipes.RunRecipeMeshBoundaryTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeMeshBoundaryTests; 2026-10-29T18:33:13
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=132124672; privateBytes=100257792; cpu=7.484375
+PASS: mesh.touch.full.area.0; actual=800; expected=800
+PASS: mesh.touch.full.cell.0
+PASS: mesh.touch.full.area.0.000000000001; actual=800; expected=800
+PASS: mesh.touch.full.cell.0.000000000001
+PASS: mesh.touch.count.0.000000000001
+PASS: mesh.touch.x.1; actual=20; expected=20
+PASS: mesh.touch.y.1; actual=10; expected=10
+PASS: mesh.touch.area.1; actual=800; expected=800
+PASS: mesh.touch.x.2; actual=60; expected=60
+PASS: mesh.touch.y.2; actual=10; expected=10
+PASS: mesh.touch.area.2; actual=800; expected=800
+PASS: mesh.touch.x.3; actual=100; expected=100
+PASS: mesh.touch.y.3; actual=10; expected=10
+PASS: mesh.touch.area.3; actual=800; expected=800
+PASS: mesh.touch.x.4; actual=140; expected=140
+PASS: mesh.touch.y.4; actual=10; expected=10
+PASS: mesh.touch.area.4; actual=800; expected=800
+PASS: mesh.touch.x.5; actual=20; expected=20
+PASS: mesh.touch.y.5; actual=30; expected=30
+PASS: mesh.touch.area.5; actual=800; expected=800
+PASS: mesh.touch.x.6; actual=50; expected=50
+PASS: mesh.touch.y.6; actual=25; expected=25
+PASS: mesh.touch.area.6; actual=200; expected=200
+PASS: mesh.touch.x.7; actual=70; expected=70
+PASS: mesh.touch.y.7; actual=25; expected=25
+PASS: mesh.touch.area.7; actual=200; expected=200
+PASS: mesh.touch.x.8; actual=45; expected=45
+PASS: mesh.touch.y.8; actual=32.5; expected=32.5
+PASS: mesh.touch.area.8; actual=50; expected=50
+PASS: mesh.touch.x.9; actual=45; expected=45
+PASS: mesh.touch.y.9; actual=37.5; expected=37.5
+PASS: mesh.touch.area.9; actual=50; expected=50
+PASS: mesh.touch.x.10; actual=75; expected=75
+PASS: mesh.touch.y.10; actual=32.5; expected=32.5
+PASS: mesh.touch.area.10; actual=50; expected=50
+PASS: mesh.touch.x.11; actual=75; expected=75
+PASS: mesh.touch.y.11; actual=37.5; expected=37.5
+PASS: mesh.touch.area.11; actual=50; expected=50
+PASS: mesh.touch.x.12; actual=100; expected=100
+PASS: mesh.touch.y.12; actual=30; expected=30
+PASS: mesh.touch.area.12; actual=800; expected=800
+PASS: mesh.touch.x.13; actual=140; expected=140
+PASS: mesh.touch.y.13; actual=30; expected=30
+PASS: mesh.touch.area.13; actual=800; expected=800
+PASS: mesh.touch.x.14; actual=20; expected=20
+PASS: mesh.touch.y.14; actual=50; expected=50
+PASS: mesh.touch.area.14; actual=800; expected=800
+PASS: mesh.touch.x.15; actual=60; expected=60
+PASS: mesh.touch.y.15; actual=50; expected=50
+PASS: mesh.touch.area.15; actual=800; expected=800
+PASS: mesh.touch.x.16; actual=100; expected=100
+PASS: mesh.touch.y.16; actual=50; expected=50
+PASS: mesh.touch.area.16; actual=800; expected=800
+PASS: mesh.touch.x.17; actual=140; expected=140
+PASS: mesh.touch.y.17; actual=50; expected=50
+PASS: mesh.touch.area.17; actual=800; expected=800
+PASS: mesh.touch.x.18; actual=20; expected=20
+PASS: mesh.touch.y.18; actual=70; expected=70
+PASS: mesh.touch.area.18; actual=800; expected=800
+PASS: mesh.touch.x.19; actual=60; expected=60
+PASS: mesh.touch.y.19; actual=70; expected=70
+PASS: mesh.touch.area.19; actual=800; expected=800
+PASS: mesh.touch.x.20; actual=100; expected=100
+PASS: mesh.touch.y.20; actual=70; expected=70
+PASS: mesh.touch.area.20; actual=800; expected=800
+PASS: mesh.touch.x.21; actual=140; expected=140
+PASS: mesh.touch.y.21; actual=70; expected=70
+PASS: mesh.touch.area.21; actual=800; expected=800
+PASS: mesh.touch.x.22; actual=20; expected=20
+PASS: mesh.touch.y.22; actual=90; expected=90
+PASS: mesh.touch.area.22; actual=800; expected=800
+PASS: mesh.touch.x.23; actual=60; expected=60
+PASS: mesh.touch.y.23; actual=90; expected=90
+PASS: mesh.touch.area.23; actual=800; expected=800
+PASS: mesh.touch.x.24; actual=100; expected=100
+PASS: mesh.touch.y.24; actual=90; expected=90
+PASS: mesh.touch.area.24; actual=800; expected=800
+PASS: mesh.touch.x.25; actual=140; expected=140
+PASS: mesh.touch.y.25; actual=90; expected=90
+PASS: mesh.touch.area.25; actual=800; expected=800
+PASS: mesh.touch.x.26; actual=20; expected=20
+PASS: mesh.touch.y.26; actual=110; expected=110
+PASS: mesh.touch.area.26; actual=800; expected=800
+PASS: mesh.touch.x.27; actual=60; expected=60
+PASS: mesh.touch.y.27; actual=110; expected=110
+PASS: mesh.touch.area.27; actual=800; expected=800
+PASS: mesh.touch.x.28; actual=100; expected=100
+PASS: mesh.touch.y.28; actual=110; expected=110
+PASS: mesh.touch.area.28; actual=800; expected=800
+PASS: mesh.touch.x.29; actual=140; expected=140
+PASS: mesh.touch.y.29; actual=110; expected=110
+PASS: mesh.touch.area.29; actual=800; expected=800
+PASS: mesh.touch.full.area.-0.000000000001; actual=800; expected=800
+PASS: mesh.touch.full.cell.-0.000000000001
+PASS: mesh.touch.count.-0.000000000001
+PASS: mesh.touch.x.1; actual=20; expected=20
+PASS: mesh.touch.y.1; actual=10; expected=10
+PASS: mesh.touch.area.1; actual=800; expected=800
+PASS: mesh.touch.x.2; actual=60; expected=60
+PASS: mesh.touch.y.2; actual=10; expected=10
+PASS: mesh.touch.area.2; actual=800; expected=800
+PASS: mesh.touch.x.3; actual=100; expected=100
+PASS: mesh.touch.y.3; actual=10; expected=10
+PASS: mesh.touch.area.3; actual=800; expected=800
+PASS: mesh.touch.x.4; actual=140; expected=140
+PASS: mesh.touch.y.4; actual=10; expected=10
+PASS: mesh.touch.area.4; actual=800; expected=800
+PASS: mesh.touch.x.5; actual=20; expected=20
+PASS: mesh.touch.y.5; actual=30; expected=30
+PASS: mesh.touch.area.5; actual=800; expected=800
+PASS: mesh.touch.x.6; actual=50; expected=50
+PASS: mesh.touch.y.6; actual=25; expected=25
+PASS: mesh.touch.area.6; actual=200; expected=200
+PASS: mesh.touch.x.7; actual=70; expected=70
+PASS: mesh.touch.y.7; actual=25; expected=25
+PASS: mesh.touch.area.7; actual=200; expected=200
+PASS: mesh.touch.x.8; actual=45; expected=45
+PASS: mesh.touch.y.8; actual=32.5; expected=32.5
+PASS: mesh.touch.area.8; actual=50; expected=50
+PASS: mesh.touch.x.9; actual=45; expected=45
+PASS: mesh.touch.y.9; actual=37.5; expected=37.5
+PASS: mesh.touch.area.9; actual=50; expected=50
+PASS: mesh.touch.x.10; actual=75; expected=75
+PASS: mesh.touch.y.10; actual=32.5; expected=32.5
+PASS: mesh.touch.area.10; actual=50; expected=50
+PASS: mesh.touch.x.11; actual=75; expected=75
+PASS: mesh.touch.y.11; actual=37.5; expected=37.5
+PASS: mesh.touch.area.11; actual=50; expected=50
+PASS: mesh.touch.x.12; actual=100; expected=100
+PASS: mesh.touch.y.12; actual=30; expected=30
+PASS: mesh.touch.area.12; actual=800; expected=800
+PASS: mesh.touch.x.13; actual=140; expected=140
+PASS: mesh.touch.y.13; actual=30; expected=30
+PASS: mesh.touch.area.13; actual=800; expected=800
+PASS: mesh.touch.x.14; actual=20; expected=20
+PASS: mesh.touch.y.14; actual=50; expected=50
+PASS: mesh.touch.area.14; actual=800; expected=800
+PASS: mesh.touch.x.15; actual=60; expected=60
+PASS: mesh.touch.y.15; actual=50; expected=50
+PASS: mesh.touch.area.15; actual=800; expected=800
+PASS: mesh.touch.x.16; actual=100; expected=100
+PASS: mesh.touch.y.16; actual=50; expected=50
+PASS: mesh.touch.area.16; actual=800; expected=800
+PASS: mesh.touch.x.17; actual=140; expected=140
+PASS: mesh.touch.y.17; actual=50; expected=50
+PASS: mesh.touch.area.17; actual=800; expected=800
+PASS: mesh.touch.x.18; actual=20; expected=20
+PASS: mesh.touch.y.18; actual=70; expected=70
+PASS: mesh.touch.area.18; actual=800; expected=800
+PASS: mesh.touch.x.19; actual=60; expected=60
+PASS: mesh.touch.y.19; actual=70; expected=70
+PASS: mesh.touch.area.19; actual=800; expected=800
+PASS: mesh.touch.x.20; actual=100; expected=100
+PASS: mesh.touch.y.20; actual=70; expected=70
+PASS: mesh.touch.area.20; actual=800; expected=800
+PASS: mesh.touch.x.21; actual=140; expected=140
+PASS: mesh.touch.y.21; actual=70; expected=70
+PASS: mesh.touch.area.21; actual=800; expected=800
+PASS: mesh.touch.x.22; actual=20; expected=20
+PASS: mesh.touch.y.22; actual=90; expected=90
+PASS: mesh.touch.area.22; actual=800; expected=800
+PASS: mesh.touch.x.23; actual=60; expected=60
+PASS: mesh.touch.y.23; actual=90; expected=90
+PASS: mesh.touch.area.23; actual=800; expected=800
+PASS: mesh.touch.x.24; actual=100; expected=100
+PASS: mesh.touch.y.24; actual=90; expected=90
+PASS: mesh.touch.area.24; actual=800; expected=800
+PASS: mesh.touch.x.25; actual=140; expected=140
+PASS: mesh.touch.y.25; actual=90; expected=90
+PASS: mesh.touch.area.25; actual=800; expected=800
+PASS: mesh.touch.x.26; actual=20; expected=20
+PASS: mesh.touch.y.26; actual=110; expected=110
+PASS: mesh.touch.area.26; actual=800; expected=800
+PASS: mesh.touch.x.27; actual=60; expected=60
+PASS: mesh.touch.y.27; actual=110; expected=110
+PASS: mesh.touch.area.27; actual=800; expected=800
+PASS: mesh.touch.x.28; actual=100; expected=100
+PASS: mesh.touch.y.28; actual=110; expected=110
+PASS: mesh.touch.area.28; actual=800; expected=800
+PASS: mesh.touch.x.29; actual=140; expected=140
+PASS: mesh.touch.y.29; actual=110; expected=110
+PASS: mesh.touch.area.29; actual=800; expected=800
+TOTAL RECIPE MESH BOUNDARY: passed=182; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeMeshBoundaryTests; 2026-10-29T18:33:14
+===== modTestRecipeSetbacks.RunRecipeSetbackUnitTests =====
+SUITE_STARTED: modTestRecipeSetbacks.RunRecipeSetbackUnitTests; 2026-10-29T18:33:15
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=138694656; privateBytes=110862336; cpu=9.328125
+OK: setback.units.count.mm
+OK: setback.units.x.mm.1; actual=-350; expected=-350
+OK: setback.units.y.mm.1; actual=85; expected=85
+OK: setback.units.x.mm.2; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.mm.2; actual=85; expected=85
+OK: setback.units.x.mm.3; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.mm.3; actual=85; expected=85
+OK: setback.units.x.mm.4; actual=-350; expected=-350
+OK: setback.units.y.mm.4; actual=-85; expected=-85
+OK: setback.units.x.mm.5; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.mm.5; actual=-85; expected=-85
+OK: setback.units.x.mm.6; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.mm.6; actual=-85; expected=-85
+OK: setback.units.x.mm.7; actual=-360; expected=-360
+OK: setback.units.y.mm.7; actual=40; expected=40
+OK: setback.units.x.mm.8; actual=-360; expected=-360
+OK: setback.units.y.mm.8; actual=5; expected=5
+OK: setback.units.x.mm.9; actual=-360; expected=-360
+OK: setback.units.y.mm.9; actual=-30; expected=-30
+OK: setback.units.x.mm.10; actual=433.461373814046; expected=433.461373814046
+OK: setback.units.y.mm.10; actual=45.0471906489175; expected=45.0471906489175
+OK: setback.units.x.mm.11; actual=464.723911874667; expected=464.723911874667
+OK: setback.units.y.mm.11; actual=4.9869893354091; expected=4.9869893354091
+OK: setback.units.x.mm.12; actual=441.14358661002; expected=441.14358661002
+OK: setback.units.y.mm.12; actual=-38.6453466522727; expected=-38.6453466522727
+OK: setback.units.count.cm
+OK: setback.units.x.cm.1; actual=-350; expected=-350
+OK: setback.units.y.cm.1; actual=85; expected=85
+OK: setback.units.x.cm.2; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.cm.2; actual=85; expected=85
+OK: setback.units.x.cm.3; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.cm.3; actual=85; expected=85
+OK: setback.units.x.cm.4; actual=-350; expected=-350
+OK: setback.units.y.cm.4; actual=-85; expected=-85
+OK: setback.units.x.cm.5; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.cm.5; actual=-85; expected=-85
+OK: setback.units.x.cm.6; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.cm.6; actual=-85; expected=-85
+OK: setback.units.x.cm.7; actual=-360; expected=-360
+OK: setback.units.y.cm.7; actual=40; expected=40
+OK: setback.units.x.cm.8; actual=-360; expected=-360
+OK: setback.units.y.cm.8; actual=5; expected=5
+OK: setback.units.x.cm.9; actual=-360; expected=-360
+OK: setback.units.y.cm.9; actual=-30; expected=-30
+OK: setback.units.x.cm.10; actual=433.461373814046; expected=433.461373814046
+OK: setback.units.y.cm.10; actual=45.0471906489175; expected=45.0471906489175
+OK: setback.units.x.cm.11; actual=464.723911874667; expected=464.723911874667
+OK: setback.units.y.cm.11; actual=4.9869893354091; expected=4.9869893354091
+OK: setback.units.x.cm.12; actual=441.14358661002; expected=441.14358661002
+OK: setback.units.y.cm.12; actual=-38.6453466522727; expected=-38.6453466522727
+OK: setback.units.count.m
+OK: setback.units.x.m.1; actual=-350; expected=-350
+OK: setback.units.y.m.1; actual=85; expected=85
+OK: setback.units.x.m.2; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.m.2; actual=85; expected=85
+OK: setback.units.x.m.3; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.m.3; actual=85; expected=85
+OK: setback.units.x.m.4; actual=-350; expected=-350
+OK: setback.units.y.m.4; actual=-85; expected=-85
+OK: setback.units.x.m.5; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.m.5; actual=-85; expected=-85
+OK: setback.units.x.m.6; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.m.6; actual=-85; expected=-85
+OK: setback.units.x.m.7; actual=-360; expected=-360
+OK: setback.units.y.m.7; actual=40; expected=40
+OK: setback.units.x.m.8; actual=-360; expected=-360
+OK: setback.units.y.m.8; actual=5; expected=5
+OK: setback.units.x.m.9; actual=-360; expected=-360
+OK: setback.units.y.m.9; actual=-30; expected=-30
+OK: setback.units.x.m.10; actual=433.461373814046; expected=433.461373814046
+OK: setback.units.y.m.10; actual=45.0471906489175; expected=45.0471906489175
+OK: setback.units.x.m.11; actual=464.723911874667; expected=464.723911874667
+OK: setback.units.y.m.11; actual=4.9869893354091; expected=4.9869893354091
+OK: setback.units.x.m.12; actual=441.14358661002; expected=441.14358661002
+OK: setback.units.y.m.12; actual=-38.6453466522727; expected=-38.6453466522727
+TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeSetbacks.RunRecipeSetbackUnitTests; 2026-10-29T18:33:16
+===== modTestRecipeOperations.RunFullBoundaryOffsetTests =====
+SUITE_STARTED: modTestRecipeOperations.RunFullBoundaryOffsetTests; 2026-10-29T18:33:16
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=132956160; privateBytes=101367808; cpu=10.984375
+TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunFullBoundaryOffsetTests; 2026-10-29T18:33:17
+===== modTestRecipeOperations.RunSavedPointedOffsetTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-29T18:33:18
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=149069824; privateBytes=110505984; cpu=20.53125
+TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-29T18:33:27
+===== modTestRecipeOperations.RunSavedOffsetCalculationTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-29T18:33:28
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=155897856; privateBytes=117223424; cpu=27.484375
+OBSERVED_SAVED_CALCULATION: a2=40; Расчет завершен. |  | Геометрия для расчёта загружена с листа Results текущей книги. |  | Обработано сочетаний: 1. |  | Результаты и пояснения всех проверок — на листе Results. |  | Пошаговый отчет сохранен: | C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM_execution_report.txt |  | Время расчёта: 1.47 с. |  | Данные сохранены на листе Results текущей книги.
+OBSERVED_SAVED_CALCULATION: a2=50; Расчет завершен. |  | Геометрия для расчёта загружена с листа Results текущей книги. |  | Обработано сочетаний: 1. |  | Результаты и пояснения всех проверок — на листе Results. |  | Пошаговый отчет сохранен: | C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM_execution_report.txt |  | Время расчёта: 1.40 с. |  | Данные сохранены на листе Results текущей книги.
+TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-29T18:33:34
+===== modTestIndividualContours.RunOffsetNeighborMergeTests =====
+SUITE_STARTED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-29T18:33:34
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=153776128; privateBytes=115281920; cpu=29.21875
+NEIGHBOR_MERGE: kind=0; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=0; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=0; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=0; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=1; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=1; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=1; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=1; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=False; mainLabels=False; physical=4; top=1Ø16; right=1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=False; mainLabels=True; physical=4; top=1Ø10 + 1Ø16; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=True; mainLabels=False; physical=4; top=1Ø16; right=1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=True; mainLabels=True; physical=4; top=1Ø10 + 1Ø16; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=3; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=3; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=3; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=3; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-29T18:33:36
+===== modTestIndividualContours.RunUserRoundedContourTests =====
+SUITE_STARTED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-29T18:33:36
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=153518080; privateBytes=115212288; cpu=30.71875
+USER_CONNECTOR: (280,400) -> (240,400)
+USER_CONNECTOR: (60,400) -> (20,400)
+USER_CASE: reverse=False; top.R2=5; R=40; connectors=40
+USER_CONNECTOR: (280,400) -> (240,400)
+USER_CONNECTOR: (60,400) -> (20,400)
+USER_CASE: reverse=True; top.R2=5; R=40; connectors=40
+COLLAPSED_CORNERS: top=100; reverse=False; top=(20,400)..(280,400); arcs=2
+COLLAPSED_CORNERS: top=120; reverse=False; top=(20,380)..(280,380); arcs=2
+COLLAPSED_CORNERS: top=100; reverse=True; top=(20,400)..(280,400); arcs=2
+COLLAPSED_CORNERS: top=120; reverse=True; top=(20,380)..(280,380); arcs=2
+TOTAL_USER_ROUNDED_CONTOUR: passed=68; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-29T18:33:37
+===== modTestIndividualContours.RunIndividualContourFailureTests =====
+SUITE_STARTED: modTestIndividualContours.RunIndividualContourFailureTests; 2026-10-29T18:33:38
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=20436; workingSet=148111360; privateBytes=109232128; cpu=32.0625
+REJECTED: Источник данных:
+IndividualRectangle[Extra,Side1,2]
+
+Для проверки дополнительного ряда нужна явная связь Main с исходным контуром. Добавьте её через CSectionDefinitionBuilder.RebarContour; as и принадлежность ряда по имени не определяются.
+
+Возможное решение:
+Исправьте значение в указанной ячейке.
+REJECTED: Источник данных:
+IndividualFailure[Main,Side1]
+
+Нельзя однозначно связать линию Main с исходной фигурой при заданном as.
+
+Возможное решение:
+Проверьте исходный контур, переданное расстояние и связь RebarContour.
+REJECTED: Не удалось построить допустимый контур для 2-го ряда арматуры.
+
+Источник данных:
+IndividualRectangle[Extra,Side4,2]; IndividualRectangle[Extra,Side3,2]; IndividualRectangle[Extra,Side2,2]
+
+При заданных отступах прямой участок проверочного контура исчез или изменил направление.
+
+Возможное решение:
+Уменьшите отступы рядов.
+TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_99362999685e4503828e94e30181b34b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunIndividualContourFailureTests; 2026-10-29T18:33:38
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

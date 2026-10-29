@@ -1,0 +1,17 @@
+﻿{
+    "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+    "OwnerVerified":  true,
+    "PID":  19636,
+    "StartTicksUTC":  "639288852637742944",
+    "CloseRequested":  false,
+    "CloseSucceeded":  false,
+    "QuitRequested":  true,
+    "QuitSucceeded":  true,
+    "Errors":  [
+
+               ],
+    "Failed":  true,
+    "FinalExitNotAsserted":  true,
+    "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+    "ObservedUTC":  "2026-10-29T15:42:32.5824177+00:00"
+}

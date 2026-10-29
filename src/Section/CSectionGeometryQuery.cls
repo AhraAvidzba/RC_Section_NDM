@@ -49,6 +49,12 @@ End Sub
 ' с дугой требуется явно заданный скруглённый многоугольник RoundedPolygon.
 Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath, ByVal distance As Double) As CGeometryPath
     If source Is Nothing Then GeometryError "Не передан исходный путь.", "MISSING_PATH", pathID
+    Dim originalContour As CGeometryPath
+    Set originalContour = source.VariableOffsetSource
+    If Not originalContour Is Nothing Then
+        Set OffsetPath = OffsetVariableContour(pathID, source, originalContour, distance)
+        Exit Function
+    End If
     Dim edges() As TRegionEdge, original As TRegionEdge, i As Long, following As Long, count As Long
     Dim radiusValue As Double, radialScale As Double, tx As Double, ty As Double, length As Double, result As CGeometryPath
     count = source.SegmentCount: ReDim edges(1 To count)
@@ -118,6 +124,21 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
     Dim region As CConcreteRegion
     If result.IsClosed Then Set region = RegionFromPath(result) ' Проверяем весь замкнутый контур; выбор одного подходящего участка не должен скрыть самопересечение.
     Set OffsetPath = result
+End Function
+
+' Контактный перенос общего контура добавляется к его исходным as, а не к соединительным отрезкам.
+' Это сохраняет прежний равномерный нормальный перенос всех сторон и проверку попадания на путь при a2/a3=0.
+Private Function OffsetVariableContour(ByVal pathID As String, ByVal source As CGeometryPath, _
+        ByVal original As CGeometryPath, ByVal distance As Double) As CGeometryPath
+    Dim values As Variant, addresses As Variant, distances() As Double, references() As String, i As Long
+    Dim kernel As CGeometryVariableOffset
+    values = source.VariableOffsetDistances: addresses = source.VariableOffsetReferences
+    ReDim distances(1 To original.SegmentCount): ReDim references(1 To original.SegmentCount)
+    For i = 1 To original.SegmentCount
+        distances(i) = CDbl(values(i)) + distance: references(i) = CStr(addresses(i))
+    Next i
+    Set kernel = New CGeometryVariableOffset
+    Set OffsetVariableContour = kernel.BuildPath(pathID, original, distances, Join(addresses, "; "), references)
 End Function
 
 ' Исчезнуть может скругление между двумя касательными прямыми. Прямые после

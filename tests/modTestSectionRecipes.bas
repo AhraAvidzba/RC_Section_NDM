@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestSectionRecipes"
+﻿Attribute VB_Name = "modTestSectionRecipes"
 Option Explicit
 
 ' ==========================================================================
@@ -750,7 +750,7 @@ Public Function RunRoundedRecipeInputTests() As String
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
-    For scenario = 0 To 13
+    For scenario = 0 To 16
         TestFixtureRestoreInputs config, saved
         TestCheck "rounded.input." & CStr(scenario), TestRoundedInputCase(scenario)
     Next scenario
@@ -786,10 +786,10 @@ Private Function TestRoundedInputCase(ByVal scenario As Long) As Boolean
         Case 6
             valid = True: TestFixtureInputCell(range, "Detail", "R2", "left").Value2 = "inactive"
         Case 7
-            valid = True: TestFixtureInputCell(range, "Main", "Left", "n").Value2 = 0: TestFixtureInputCell(range, "Main", "Left", "as").Value2 = "inactive"
+            TestFixtureInputCell(range, "Main", "Left", "n").Value2 = 0: Set invalid = TestFixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = "inactive"
             TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive": TestFixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive"
         Case 8
-            valid = True: TestFixtureInputCell(range, "Main", "Left", "d").Value2 = 0: TestFixtureInputCell(range, "Main", "Left", "as").Value2 = "inactive"
+            TestFixtureInputCell(range, "Main", "Left", "d").Value2 = 0: Set invalid = TestFixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = "inactive"
             TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive": TestFixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive"
         Case 9
             valid = True: TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = 0: TestFixtureInputCell(range, "Extra", "Left", "d3").Value2 = 0
@@ -799,7 +799,14 @@ Private Function TestRoundedInputCase(ByVal scenario As Long) As Boolean
             valid = True: TestFixtureInputCell(range, "Detail", "W", "left").Value2 = 100#
             TestFixtureInputCell(range, "Detail", "R1", "left").Value2 = 220#: TestFixtureInputCell(range, "Detail", "R2", "left").Value2 = 0#
         Case 12: valid = True: TestFixtureInputCell(range, "Detail", "R1", "left").Value2 = 200#: TestFixtureInputCell(range, "Detail", "R1", "right").Value2 = 200#
-        Case 13: Set invalid = TestFixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = 380#
+        Case 13: Set invalid = TestFixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = 600# ' Сторона действительно исчезает с учётом as противоположной стороны; прежние 380 мм оставляют допустимую ширину.
+        Case 14
+            valid = True: TestFixtureInputCell(range, "Main", "Left", "n").Value2 = 0: TestFixtureInputCell(range, "Main", "Left", "as").ClearContents
+            TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive"
+        Case 15
+            valid = True: TestFixtureInputCell(range, "Main", "Left", "d").Value2 = 0: TestFixtureInputCell(range, "Main", "Left", "as").ClearContents
+            TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive"
+        Case 16: valid = True: TestFixtureInputCell(range, "Main", "Left", "as").Value2 = 380# ' Большой as одной стороны не превращается в такой же отступ остальных сторон.
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngPointedSectionGeometry"), units)
     Set table = context.Table("rngPointedSectionGeometry")
@@ -823,7 +830,7 @@ Public Function RunHollowRecipeInputTests() As String
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
-    For scenario = 0 To 19
+    For scenario = 0 To 21
         TestFixtureRestoreInputs config, saved
         TestCheck "hollow.input." & CStr(scenario), TestHollowInputCase(scenario)
     Next scenario
@@ -857,7 +864,7 @@ Private Function TestHollowInputCase(ByVal scenario As Long) As Boolean
         Case 4: Set invalid = TestFixtureInputCell(range, "Detail", "Ro", "val"): invalid.Value2 = -1#
         Case 5: Set invalid = TestFixtureInputCell(range, "Detail", "Xo", "val"): invalid.Value2 = 1000# / factor
         Case 6
-            valid = True: TestFixtureInputCell(range, "Main", "Top", "n").Value2 = 0: TestFixtureInputCell(range, "Main", "Top", "as").Value2 = "inactive"
+            TestFixtureInputCell(range, "Main", "Top", "n").Value2 = 0: Set invalid = TestFixtureInputCell(range, "Main", "Top", "as"): invalid.Value2 = "inactive"
             TestFixtureInputCell(range, "Extra", "Top", "d2").Value2 = "inactive": TestFixtureInputCell(range, "Extra", "Top", "d3").Value2 = "inactive"
         Case 7
             valid = True: TestFixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: TestFixtureInputCell(range, "Extra", "OpeningLeft", "d2").Value2 = "inactive"
@@ -876,6 +883,12 @@ Private Function TestHollowInputCase(ByVal scenario As Long) As Boolean
         Case 17: Set invalid = TestFixtureInputCell(range, "Extra", "Top", "d2"): invalid.Value2 = "TODO"
         Case 18: valid = True: TestFixtureInputCell(range, "Extra", "Top", "d2").ClearContents: TestFixtureInputCell(range, "Extra", "Top", "d3").ClearContents
         Case 19: valid = True: TestFixtureInputCell(range, "Main", "Top", "d").ClearContents
+        Case 20
+            valid = True: TestFixtureInputCell(range, "Main", "Top", "n").Value2 = 0: TestFixtureInputCell(range, "Main", "Top", "as").ClearContents
+            TestFixtureInputCell(range, "Extra", "Top", "d2").Value2 = "inactive"
+        Case 21
+            valid = True: TestFixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: TestFixtureInputCell(range, "Main", "OpeningLeft", "as").ClearContents
+            TestFixtureInputCell(range, "Extra", "OpeningLeft", "d2").Value2 = "inactive"
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry"), units)
     Set table = context.Table("rngHollowRectangleGeometry")

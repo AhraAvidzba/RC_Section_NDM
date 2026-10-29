@@ -19,17 +19,62 @@ Option Explicit
 ' Исходные контуры не изменяет; равномерные смещения строятся отдельными общими методами.
 
 Private Const TOL As Double = GEOM_BOUNDARY_TOLERANCE ' Геометрический допуск стыков и вырождения, мм.
+Private mResult() As TRegionEdge, mResultSource() As Long, mResultCount As Long ' Последний проверенный контур и номера исходных участков; ноль обозначает соединительный отрезок.
+
+' Строит рабочий путь с независимыми смещениями; сохраняет имена прямых, дуг и исчезнувших скруглений.
+' Геометрия и проверки общие с проверочным контуром дополнительных рядов.
+Friend Function BuildPath(ByVal pathID As String, ByVal source As CGeometryPath, ByRef distances() As Double, _
+        ByVal sourceReference As String, ByRef segmentSources() As String) As CGeometryPath
+    Dim original() As TRegionEdge, region As CConcreteRegion, result As CGeometryPath, stations() As Double, starts() As Double
+    Dim i As Long, j As Long, name As String, connector As Long, mapped As Variant
+    ReDim original(1 To source.SegmentCount): ReDim stations(0 To source.SegmentCount): ReDim starts(1 To source.SegmentCount)
+    For i = 1 To source.SegmentCount: source.CopySegment i, original(i): Next i
+    Set region = Build(original, distances, source.SegmentCount, sourceReference, segmentSources)
+    Set result = New CGeometryPath: result.Initialize pathID
+    For i = 1 To mResultCount
+        j = mResultSource(i)
+        If j > 0 Then
+            name = source.SegmentID(j)
+            starts(j) = result.AccumulatedLength
+            result.Append name, mResult(i), source.ID, name
+            stations(j) = result.AccumulatedLength
+        Else
+            connector = connector + 1: name = "Offset.Join." & CStr(connector)
+            Do While source.HasSegmentID(name) Or source.HasCollapsedSegmentID(name)
+                name = name & ".Join"
+            Loop
+            result.Append name, mResult(i), source.ID, name
+        End If
+    Next i
+    For i = source.SegmentCount To 1 Step -1
+        If Not result.HasSegmentID(source.SegmentID(i)) Then
+            stations(i) = result.AccumulatedLength ' При исчезновении последнего сегмента привязка остаётся на замыкающем стыке.
+            For j = i + 1 To source.SegmentCount
+                If result.HasSegmentID(source.SegmentID(j)) Then
+                    stations(i) = starts(j): Exit For
+                End If
+            Next j
+            result.AddCollapsedSegment source.SegmentID(i), stations(i)
+        End If
+    Next i
+    mapped = stations
+    source.CopyCollapsedAnchors result, 0#, source.Length, 0#, segmentStations:=mapped
+    result.SetVariableOffsetSource source, distances, segmentSources
+    result.Seal True
+    Set BuildPath = result
+End Function
 
 ' Строит один замкнутый контур и проверяет его до использования при фильтрации.
 ' distances задаёт расстояние влево по обходу каждого исходного сегмента, мм.
 Friend Function Build(ByRef original() As TRegionEdge, ByRef distances() As Double, ByVal count As Long, _
         ByVal sourceReference As String, Optional ByVal segmentSources As Variant) As CConcreteRegion
     Dim shifted() As TRegionEdge, result() As TRegionEdge, sourceIndex() As Long, kept As Long, radius As Double
-    Dim i As Long, following As Long, resultCount As Long
+    Dim i As Long, following As Long, resultCount As Long, resultSource() As Long
     Dim allReferences As String: allReferences = sourceReference
     Dim edge As TRegionEdge, region As CConcreteRegion, query As CSectionGeometryQuery, before As Double, after As Double
     If count < 1 Then Fail "Проверочный контур не содержит участков.", sourceReference
-    ReDim shifted(1 To count): ReDim result(1 To 2 * count): ReDim sourceIndex(1 To count)
+    mResultCount = 0
+    ReDim shifted(1 To count): ReDim result(1 To 2 * count): ReDim sourceIndex(1 To count): ReDim resultSource(1 To 2 * count)
     For i = 1 To count
         If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, i, i, i)
         before = before + EdgeArea(original(i), original(1).X1, original(1).Y1)
@@ -61,7 +106,7 @@ NextSource:
                     (shifted(i).Y2 - shifted(i).Y1) * (original(sourceIndex(i)).Y2 - original(sourceIndex(i)).Y1) <= TOL * TOL Then _
                 Fail "При заданных отступах прямой участок проверочного контура исчез или изменил направление. Уменьшите отступы рядов.", sourceReference
         End If
-        resultCount = resultCount + 1: result(resultCount) = shifted(i)
+        resultCount = resultCount + 1: result(resultCount) = shifted(i): resultSource(resultCount) = sourceIndex(i)
         If Not modGeometryPrimitives.SamePoint(shifted(i).X2, shifted(i).Y2, shifted(following).X1, shifted(following).Y1) Then
             edge.X1 = shifted(i).X2: edge.Y1 = shifted(i).Y2
             edge.X2 = shifted(following).X1: edge.Y2 = shifted(following).Y1
@@ -78,6 +123,9 @@ NextSource:
     Set region = query.BoundaryRegion(result, resultCount, "DependentRowsVariableOffset")
     query.ValidatePreparedBoundary region
     If region.LoopCount <> 1 Then Fail "Отступы образовали несколько раздельных проверочных контуров.", sourceReference
+    ReDim mResult(1 To resultCount): ReDim mResultSource(1 To resultCount)
+    For i = 1 To resultCount: mResult(i) = result(i): mResultSource(i) = resultSource(i): Next i
+    mResultCount = resultCount
     Set Build = region
     Exit Function
 InvalidContour:

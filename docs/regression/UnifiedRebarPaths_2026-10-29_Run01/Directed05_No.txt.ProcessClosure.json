@@ -1,0 +1,74 @@
+﻿{
+    "Stage":  "AFTER_CHILD_EXIT",
+    "Passed":  true,
+    "ChildHasExited":  true,
+    "ChildExitCode":  1,
+    "Closure":  {
+                    "Passed":  true,
+                    "Identity":  {
+                                     "Valid":  true,
+                                     "PID":  24864,
+                                     "Ticks":  639288856685137214,
+                                     "Reason":  "Primary TEST_EXCEL_PROCESS"
+                                 },
+                    "FinalState":  {
+                                       "State":  "Absent",
+                                       "PID":  24864,
+                                       "StartTicksUTC":  "639288856685137214",
+                                       "Reason":  "Explicit NoProcessFoundForGivenId",
+                                       "ObservedUTC":  "2026-10-29T15:48:43.2818916+00:00"
+                                   },
+                    "Observations":  [
+                                         {
+                                             "State":  "Live",
+                                             "PID":  24864,
+                                             "StartTicksUTC":  "639288856685137214",
+                                             "Reason":  "Exact own Excel is still alive",
+                                             "ObservedUTC":  "2026-10-29T15:48:42.6123996+00:00"
+                                         },
+                                         {
+                                             "State":  "Live",
+                                             "PID":  24864,
+                                             "StartTicksUTC":  "639288856685137214",
+                                             "Reason":  "Exact own Excel is still alive",
+                                             "ObservedUTC":  "2026-10-29T15:48:42.8507587+00:00"
+                                         },
+                                         {
+                                             "State":  "Live",
+                                             "PID":  24864,
+                                             "StartTicksUTC":  "639288856685137214",
+                                             "Reason":  "Exact own Excel is still alive",
+                                             "ObservedUTC":  "2026-10-29T15:48:43.0667020+00:00"
+                                         },
+                                         {
+                                             "State":  "Absent",
+                                             "PID":  24864,
+                                             "StartTicksUTC":  "639288856685137214",
+                                             "Reason":  "Explicit NoProcessFoundForGivenId",
+                                             "ObservedUTC":  "2026-10-29T15:48:43.2818916+00:00"
+                                         }
+                                     ],
+                    "GraceMilliseconds":  3000,
+                    "OrdinaryPathKilledAnything":  false
+                },
+    "RunnerCleanupValid":  true,
+    "RunnerCleanup":  {
+                          "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+                          "OwnerVerified":  true,
+                          "PID":  24864,
+                          "StartTicksUTC":  "639288856685137214",
+                          "CloseRequested":  false,
+                          "CloseSucceeded":  false,
+                          "QuitRequested":  true,
+                          "QuitSucceeded":  true,
+                          "Errors":  [
+
+                                     ],
+                          "Failed":  true,
+                          "FinalExitNotAsserted":  true,
+                          "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+                          "ObservedUTC":  "2026-10-29T15:48:42.4185907+00:00"
+                      },
+    "RunnerCleanupReadError":  null,
+    "OrdinaryPathKilledAnything":  false
+}

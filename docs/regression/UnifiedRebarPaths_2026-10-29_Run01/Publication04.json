@@ -1,0 +1,14 @@
+{
+  "Status": "CLEAN_MAIN_PUBLISHED_FOR_AUTHORIZED_FULL",
+  "PublishedUTC": "2026-10-29T16:06:19.6968549+00:00",
+  "BookSHA256": "4B70AA3AEC5D91B2A94DA8F7303C0FAB4C3491AB8DD027916B8AFCC7947BBFCB",
+  "AllCodeSHA256": "36A1460DCD363E1C39B2C18C293A81963AB0BCD3588593C693C4AF926340F091",
+  "PreviousUserBookSHA256": "6A9598E05DBBC908A2650A5E73E64A5E9B12CC7899EBC0E126B183E66A2C23F5",
+  "UserBackup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\UserMainBefore.xlsm",
+  "ExplicitUserClarification": "Заменить основной файл чистой сборкой; резерв прежней книги оставить",
+  "DirectedAssertions": 2085,
+  "NativeSourceEquality": true,
+  "Components": 181,
+  "FullAcceptanceClaim": false,
+  "OtherUserFilesChanged": false
+}

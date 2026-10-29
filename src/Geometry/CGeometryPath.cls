@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -29,12 +29,40 @@ Private mCount As Long, mCapacity As Long ' Число аналитически�
 Private mSealed As Boolean, mClosed As Boolean ' Завершение построения и фактическая замкнутость линии.
 Private mOffsetBoundary As CGeometryPath ' Полная замкнутая линия, из которой выбран участок; ссылка только на неизменяемую геометрию.
 Private mBoundaryDirection As Double ' Направление участка относительно полной линии: 1 по её обходу, -1 против.
+Private mVariableOffsetSource As CGeometryPath ' Исходный контур проверенного общего смещения; устанавливается только его построителем.
+Private mVariableDistances As Variant, mVariableReferences As Variant ' Независимые снимки as по исходным сегментам и адресов; соединительные отрезки не становятся исходными гранями.
 Private mDiagnostic As CGeometryDiagnostic ' Последняя ошибка построения или обращения к линии.
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic
     Set LastDiagnostic = mDiagnostic
 End Property
+
+' Позволяет исполнителю связать общий смещённый контур с исходными сегментами без угадывания соединительных отрезков.
+Friend Sub SetVariableOffsetSource(ByVal source As CGeometryPath, ByVal distances As Variant, ByVal references As Variant)
+    RequireMutable
+    If Not source.IsClosed Then PathError "Исходная граница индивидуального смещения должна быть замкнутой."
+    Set mVariableOffsetSource = source
+    mVariableDistances = distances: mVariableReferences = references
+End Sub
+
+' Возвращает происхождение только у контура, подготовленного общим построителем индивидуальных смещений.
+Friend Function VariableOffsetSource() As CGeometryPath
+    RequireSealed
+    Set VariableOffsetSource = mVariableOffsetSource
+End Function
+
+' Возвращает копию подписанных as исходных участков для следующего равномерного нормального переноса.
+Friend Function VariableOffsetDistances() As Variant
+    RequireSealed
+    VariableOffsetDistances = mVariableDistances
+End Function
+
+' Возвращает копию адресов исходных as; последующее смещение сохраняет понятные причины вырождения соседних сторон.
+Friend Function VariableOffsetReferences() As Variant
+    RequireSealed
+    VariableOffsetReferences = mVariableReferences
+End Function
 
 ' Начинает описание линии с непустым ID. Допускается только один вызов для объекта.
 Public Sub Initialize(ByVal pathID As String)

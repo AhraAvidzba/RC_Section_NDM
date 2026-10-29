@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -96,8 +96,8 @@ Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes 
 End Sub
 
 ' Заполняет faces параметрами четырёх наружных и четырёх внутренних сторон.
-' У выключенных рядов не читает ненужные параметры. Внутренние as читает всегда:
-' они ограничивают линии у отверстия даже при отсутствии арматуры на соседней стороне.
+' as читает у всех сторон: он ограничивает общий контур и при выключенном ряде.
+' Пустой as выключенной стороны равен нулю; её параметры дополнительных рядов не читаются.
 Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() As THollowFace)
     Dim ids As Variant, captions As Variant, keys As Variant, key As String, i As Long, base As Long, annotationSign As Double
     Dim rowNumber As Long, suffix As String
@@ -115,8 +115,10 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
             .Diameter = reader.OptionalDiameter("Main", key, "d")
             .Active = (.Diameter > 0# And (i > 4 Or .Count > 0))
             If i > 4 Then .Active = .Active And faces(i - 4).Count > 0 And faces(i - 4).Diameter > 0# ' Внутреннему ряду нужны реальные исходные стержни одноимённой наружной стороны.
-            If i > 4 Or .Active Then
+            If .Active Then
                 .AxisDistance = reader.NonNegativeLength("Main", key, "as")
+            Else
+                .AxisDistance = reader.OptionalRowOffset("Main", key, "as")
             End If
             base = (i - 1) Mod 4 + 1 ' Номер стороны 1..4: верх, низ, лево, право; у отверстия та же последовательность.
             annotationSign = 1#
@@ -131,8 +133,8 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
                 .AxisSource = reader.SourceReferences("Main", key, Array("as", "d"))
                 If i <= 4 Then .AxisSource = .AxisSource & "; " & reader.SourceReference("Main", key, "n")
                 reader.Require "Main", key, "as", .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра."
-                .StartSetback = reader.NonNegativeLength("Main", key, "s0")
-                .EndSetback = reader.NonNegativeLength("Main", key, "s1")
+                .StartSetback = reader.OptionalRowOffset("Main", key, "s0")
+                .EndSetback = reader.OptionalRowOffset("Main", key, "s1")
                 .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
                 .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
                 .Diameters(3) = reader.OptionalDiameter("Extra", key, "d3")
@@ -190,18 +192,25 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
     Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions
     Dim normalSign As Double, i As Long, base As Long, path As CGeometryPath, options As CRebarRuleOptions, rowNumber As Long
-    If sizes.Ro = 0# Then
-        facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.TL"), faces(5).AxisDistance, faces(5).Source ' Верхний as ограничивает линии у отверстия даже без верхнего ряда.
-        facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.BR"), faces(6).AxisDistance, faces(6).Source ' Нижний as сохраняется как исходное ограничение.
-        facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.BL"), faces(7).AxisDistance, faces(7).Source ' Левый as сохраняется как исходное ограничение.
-        facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.TR"), faces(8).AxisDistance, faces(8).Source ' Правый as сохраняется как исходное ограничение.
-    End If
+    Dim contours(1 To 2) As CGeometryPath, groups As Variant, sourceID As String, loopID As String, start As Long, part As Long
+    groups = Array("Edge.TL|Corner.TL|Corner.TR", "Edge.BR|Corner.BR|Corner.BL", "Edge.BL", "Edge.TR")
+    For part = 1 To 2
+        start = (part - 1) * 4
+        If part = 1 Then loopID = "OUTER" Else loopID = "OPENING"
+        sourceID = loopID & ".Boundary"
+        Set contours(part) = facade.OffsetContour("Rebar." & sourceID, sourceID, groups, _
+            Array(faces(start + 1).AxisDistance, faces(start + 2).AxisDistance, faces(start + 3).AxisDistance, faces(start + 4).AxisDistance), _
+            Array(faces(start + 1).Source, faces(start + 2).Source, faces(start + 3).Source, faces(start + 4).Source), part = 2)
+        For i = 1 To 4
+            If Not faces(start + i).Active Then facade.RebarContourBaseline loopID, sourceID, Split(CStr(groups(i - 1)), "|"), faces(start + i).AxisDistance, faces(start + i).Source
+        Next i
+    Next part
     For i = 1 To 8
         base = (i - 1) Mod 4 + 1 ' Номер стороны 1..4: верх, низ, лево, право; у отверстия та же последовательность.
         If Not faces(i).Active Then GoTo NextFace
         normalSign = 1#: If base = 1 Or base = 3 Then normalSign = -1# ' Оси горизонталей идут вправо, вертикалей вверх: выбираем сторону нормали внутрь наружного бетона.
         If i > 4 Then normalSign = -normalSign ' У отверстия направление в бетон противоположно направлению внутрь наружного контура.
-        Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon) ' Получаем линию центров стержней выбранной стороны с отступом as.
+        Set path = AxisPath(facade, sizes, faces, i, contours((i - 1) \ 4 + 1)) ' Получаем линию центров стержней выбранной стороны с отступом as.
         Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback ' Отступ от начала и, если задан, от конца линии, мм.
         options.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
@@ -213,12 +222,12 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         If i <= 4 Then
             If base <= 2 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
             facade.RebarByCount faces(i).ID & ".Main", path.ID, faces(i).Count, faces(i).Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
-            facade.RebarContour faces(i).ID & ".Main", "OUTER", "OUTER.Boundary", faces(i).AxisDistance, faces(i).ID & ".Row2", faces(i).ID & ".Row3", normalSign:=normalSign ' Связь наружного семейства с контуром и направлением в бетон.
+            facade.RebarContour faces(i).ID & ".Main", "OUTER", "OUTER.Boundary", faces(i).AxisDistance, faces(i).ID & ".Row2", faces(i).ID & ".Row3", sourceSegments:=Split(CStr(groups(base - 1)), "|"), normalSign:=normalSign ' Связь наружного семейства с контуром и направлением в бетон.
         Else
             options.SourceNormalSign = -normalSign: options.SkipMissingProjection = True ' Проекция идёт к отверстию; пропускаем лучи без пересечения.
             options.SuccessfulProjectionOrdinal = True: options.NewPublicationRoot = True ' Нумеруем только найденные проекции как самостоятельный ряд.
             facade.RebarProjected faces(i).ID & ".Main", path.ID, faces(base).ID & ".Main", faces(i).Diameter, options ' Проецируем стержни наружного ряда на линию у отверстия.
-            facade.RebarContour faces(i).ID & ".Main", "OPENING", "OPENING.Boundary", faces(i).AxisDistance, faces(i).ID & ".Row2", faces(i).ID & ".Row3", normalSign:=normalSign ' Связь семейства с отверстием и направлением в бетон.
+            facade.RebarContour faces(i).ID & ".Main", "OPENING", "OPENING.Boundary", faces(i).AxisDistance, faces(i).ID & ".Row2", faces(i).ID & ".Row3", sourceSegments:=Split(CStr(groups(base - 1)), "|"), normalSign:=normalSign ' Связь семейства с отверстием и направлением в бетон.
         End If
         Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
         extraOptions.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
@@ -239,36 +248,15 @@ End Sub
 
 ' Возвращает линию центров стержней у выбранной наружной стороны или стороны отверстия.
 ' Горизонтальные линии идут слева направо и включают скругления, если они есть; вертикальные — снизу вверх.
-' При нескруглённом отверстии концы задаются отступами соседних внутренних сторон.
+' Концы всех сторон задаются соседними as в общем смещённом контуре, включая нескруглённое отверстие.
 Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, _
-        ByVal index As Long, ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec) As CGeometryPath
+        ByVal index As Long, ByVal shape As CGeometryPath) As CGeometryPath
     On Error GoTo InvalidPath
-    Dim B As Double, H As Double, radius As Double, x As Double, y As Double, offset As Double, base As Long, shape As CGeometryPath
+    Dim base As Long, geometrySource As String
     Dim first As String, last As String, firstParameter As Double, lastParameter As Double
-    Dim polygon As CPolygonSpec, geometrySource As String
-    Set polygon = outerPolygon
     geometrySource = sizes.OuterSource
-    B = sizes.B: H = sizes.H: radius = sizes.R: offset = faces(index).AxisDistance
-    base = (index - 1) Mod 4 + 1 ' Для наружной стороны и соответствующей стороны отверстия получаем общий номер 1..4.
-    If index > 4 Then
-        Set polygon = openingPolygon
-        geometrySource = sizes.OpeningSource
-        B = sizes.Bo: H = sizes.Ho: radius = sizes.Ro: x = sizes.Xo: y = sizes.Yo: offset = -offset ' Отверстие смещается наружу от пустоты в бетон, поэтому геометрический отступ отрицателен.
-        If radius <= GEOM_TOLERANCE Then
-            facade.Source faces(index).ID, faces(index).Source ' Связываем ошибки этой линии с её исходными полями.
-            If base <= 2 Then
-                y = y + IIf(base = 1, 1#, -1#) * (H / 2# - offset)
-                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x - B / 2#, y, x + B / 2#, y) ' Исходная прямая вдоль стороны отверстия.
-                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 1#, 0#, x - B / 2# - faces(7).AxisDistance, 1#, 0#, x + B / 2# + faces(8).AxisDistance) ' Задаём концы линии по отступам соседних внутренних сторон; при необходимости продлеваем её.
-            Else
-                x = x + IIf(base = 3, -1#, 1#) * (B / 2# - offset)
-                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x, y - H / 2#, x, y + H / 2#) ' Исходная прямая вдоль стороны отверстия.
-                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 0#, 1#, y - H / 2# - faces(6).AxisDistance, 0#, 1#, y + H / 2# + faces(5).AxisDistance) ' Задаём концы линии по отступам соседних внутренних сторон; при необходимости продлеваем её.
-            End If
-            Exit Function
-        End If
-    End If
-    Set shape = facade.OffsetRoundedPolygon("Offset." & faces(index).ID, polygon, offset) ' Смещаем наружный контур внутрь, а контур отверстия — в бетон.
+    If index > 4 Then geometrySource = sizes.OpeningSource
+    base = (index - 1) Mod 4 + 1 ' Сохраняем направления сторон и прежние привязки к прямым или исчезнувшим скруглениям.
     Select Case base
         Case 1, 2
             first = "Edge.BL": last = "Edge.TR"

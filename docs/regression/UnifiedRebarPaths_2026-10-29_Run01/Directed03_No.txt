@@ -1,0 +1,187 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\UnifiedRebarPaths_2026-10-29_Run01\Build02\RC_Section_NDM.xlsm
+SOURCE_SHA256: 9EB29377D92A5F43B8852260AE9FF6A8997AB29080CC21DEF8628EC202952B1A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_157bf23eaa2a4b6d9e3fdd049fd613bf\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=1148; startTicks=639288851534118185
+===== modTestRecipeSetbacks.RunRecipeSetbackInputTests =====
+SUITE_STARTED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-29T18:39:18
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=1148; workingSet=125267968; privateBytes=95854592; cpu=11.734375
+OK: rounded.start.header
+OK: rounded.end.header
+OK: rounded.editable.centered
+OK: rounded.zero.first; actual=-360; expected=-360
+OK: rounded.start.actual; actual=-350; expected=-350
+OK: rounded.end.actual; actual=365.518002592747; expected=365.518002592747
+OK: rounded.concrete.unchanged; actual=215943.067096035; expected=215943.067096035
+OK: rounded.count.unchanged
+OK: rounded.opposite.row.unchanged; actual=-85; expected=-85
+OK: rounded.active.empty.isZero
+OK: rounded.active.empty.coordinate; actual=-360; expected=-360
+OK: rounded.active.negative.rejected
+OK: rounded.inactive.error.ignored
+OK: hollow.start.header
+OK: hollow.end.header
+OK: hollow.zero.projected.count
+OK: hollow.projection.filtered
+OK: hollow.skips.diagnostic
+OK: hollow.positions.not.redistributed
+OK: hollow.other.projections.unchanged
+OK: hollow.concrete.unchanged; actual=300000; expected=300000
+OK: unified.rectangle.start.x; actual=30; expected=30
+OK: unified.rectangle.start.y; actual=550; expected=550
+OK: unified.rectangle.end.x; actual=930; expected=930
+OK: unified.rectangle.bar.y.1; actual=550; expected=550
+OK: unified.rectangle.bar.y.2; actual=550; expected=550
+OK: unified.rectangle.bar.y.3; actual=550; expected=550
+OK: unified.rectangle.count
+OK: unified.rectangle.s0; actual=40; expected=40
+OK: unified.rectangle.s1; actual=910; expected=910
+OK: unified.disabled.blank.as.zero; actual=1000; expected=1000
+OK: unified.rectangle.blank.s.accepted
+OK: unified.invalid.s.rejected.5
+OK: unified.invalid.s.rejected.8
+OK: unified.invalid.s.rejected.10
+OK: unified.excludeBoth.first; actual=330; expected=330
+OK: unified.excludeBoth.last; actual=620; expected=620
+OK: unified.pointed.left.length; actual=711.327412287184; expected=711.327412287184
+OK: unified.pointed.arc.start.x; actual=-400; expected=-400
+OK: unified.pointed.arc.start.y; actual=280; expected=280
+OK: unified.pointed.arc.end.x; actual=-480; expected=-480
+OK: unified.pointed.arc.end.y; actual=200; expected=200
+OK: unified.pointed.variable.as.layout
+OK: unified.pointed.top.start.x; actual=-400; expected=-400
+OK: unified.pointed.top.start.y; actual=260; expected=260
+OK: unified.hollow.outer.start.x; actual=-480; expected=-480
+OK: unified.hollow.outer.start.y; actual=260; expected=260
+OK: unified.hollow.outer.end.x; actual=420; expected=420
+OK: unified.hollow.opening.start.x; actual=-230; expected=-230
+OK: unified.hollow.opening.start.y; actual=150; expected=150
+OK: unified.hollow.opening.end.x; actual=270; expected=270
+OK: unified.hollow.variable.as.projections
+OK: unified.disappearing.side.rejected
+TOTAL_RECIPE_SETBACK_INPUT: passed=53; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_157bf23eaa2a4b6d9e3fdd049fd613bf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-29T18:39:26
+===== modTestRecipeSetbacks.RunRecipeSetbackUnitTests =====
+SUITE_STARTED: modTestRecipeSetbacks.RunRecipeSetbackUnitTests; 2026-10-29T18:39:26
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=1148; workingSet=139046912; privateBytes=113270784; cpu=13.390625
+OK: setback.units.count.mm
+OK: setback.units.x.mm.1; actual=-350; expected=-350
+OK: setback.units.y.mm.1; actual=85; expected=85
+OK: setback.units.x.mm.2; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.mm.2; actual=85; expected=85
+OK: setback.units.x.mm.3; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.mm.3; actual=85; expected=85
+OK: setback.units.x.mm.4; actual=-350; expected=-350
+OK: setback.units.y.mm.4; actual=-85; expected=-85
+OK: setback.units.x.mm.5; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.mm.5; actual=-85; expected=-85
+OK: setback.units.x.mm.6; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.mm.6; actual=-85; expected=-85
+OK: setback.units.x.mm.7; actual=-360; expected=-360
+OK: setback.units.y.mm.7; actual=40; expected=40
+OK: setback.units.x.mm.8; actual=-360; expected=-360
+OK: setback.units.y.mm.8; actual=5; expected=5
+OK: setback.units.x.mm.9; actual=-360; expected=-360
+OK: setback.units.y.mm.9; actual=-30; expected=-30
+OK: setback.units.x.mm.10; actual=433.461373814046; expected=433.461373814046
+OK: setback.units.y.mm.10; actual=45.0471906489175; expected=45.0471906489175
+OK: setback.units.x.mm.11; actual=464.723911874667; expected=464.723911874667
+OK: setback.units.y.mm.11; actual=4.9869893354091; expected=4.9869893354091
+OK: setback.units.x.mm.12; actual=441.14358661002; expected=441.14358661002
+OK: setback.units.y.mm.12; actual=-38.6453466522727; expected=-38.6453466522727
+OK: setback.units.count.cm
+OK: setback.units.x.cm.1; actual=-350; expected=-350
+OK: setback.units.y.cm.1; actual=85; expected=85
+OK: setback.units.x.cm.2; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.cm.2; actual=85; expected=85
+OK: setback.units.x.cm.3; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.cm.3; actual=85; expected=85
+OK: setback.units.x.cm.4; actual=-350; expected=-350
+OK: setback.units.y.cm.4; actual=-85; expected=-85
+OK: setback.units.x.cm.5; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.cm.5; actual=-85; expected=-85
+OK: setback.units.x.cm.6; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.cm.6; actual=-85; expected=-85
+OK: setback.units.x.cm.7; actual=-360; expected=-360
+OK: setback.units.y.cm.7; actual=40; expected=40
+OK: setback.units.x.cm.8; actual=-360; expected=-360
+OK: setback.units.y.cm.8; actual=5; expected=5
+OK: setback.units.x.cm.9; actual=-360; expected=-360
+OK: setback.units.y.cm.9; actual=-30; expected=-30
+OK: setback.units.x.cm.10; actual=433.461373814046; expected=433.461373814046
+OK: setback.units.y.cm.10; actual=45.0471906489175; expected=45.0471906489175
+OK: setback.units.x.cm.11; actual=464.723911874667; expected=464.723911874667
+OK: setback.units.y.cm.11; actual=4.9869893354091; expected=4.9869893354091
+OK: setback.units.x.cm.12; actual=441.14358661002; expected=441.14358661002
+OK: setback.units.y.cm.12; actual=-38.6453466522727; expected=-38.6453466522727
+OK: setback.units.count.m
+OK: setback.units.x.m.1; actual=-350; expected=-350
+OK: setback.units.y.m.1; actual=85; expected=85
+OK: setback.units.x.m.2; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.m.2; actual=85; expected=85
+OK: setback.units.x.m.3; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.m.3; actual=85; expected=85
+OK: setback.units.x.m.4; actual=-350; expected=-350
+OK: setback.units.y.m.4; actual=-85; expected=-85
+OK: setback.units.x.m.5; actual=7.75900129637336; expected=7.75900129637336
+OK: setback.units.y.m.5; actual=-85; expected=-85
+OK: setback.units.x.m.6; actual=365.518002592747; expected=365.518002592747
+OK: setback.units.y.m.6; actual=-85; expected=-85
+OK: setback.units.x.m.7; actual=-360; expected=-360
+OK: setback.units.y.m.7; actual=40; expected=40
+OK: setback.units.x.m.8; actual=-360; expected=-360
+OK: setback.units.y.m.8; actual=5; expected=5
+OK: setback.units.x.m.9; actual=-360; expected=-360
+OK: setback.units.y.m.9; actual=-30; expected=-30
+OK: setback.units.x.m.10; actual=433.461373814046; expected=433.461373814046
+OK: setback.units.y.m.10; actual=45.0471906489175; expected=45.0471906489175
+OK: setback.units.x.m.11; actual=464.723911874667; expected=464.723911874667
+OK: setback.units.y.m.11; actual=4.9869893354091; expected=4.9869893354091
+OK: setback.units.x.m.12; actual=441.14358661002; expected=441.14358661002
+OK: setback.units.y.m.12; actual=-38.6453466522727; expected=-38.6453466522727
+TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_157bf23eaa2a4b6d9e3fdd049fd613bf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeSetbacks.RunRecipeSetbackUnitTests; 2026-10-29T18:39:27
+===== modTestRecipeOperations.RunFullBoundaryOffsetTests =====
+SUITE_STARTED: modTestRecipeOperations.RunFullBoundaryOffsetTests; 2026-10-29T18:39:28
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=1148; workingSet=127209472; privateBytes=98611200; cpu=15.125
+TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_157bf23eaa2a4b6d9e3fdd049fd613bf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunFullBoundaryOffsetTests; 2026-10-29T18:39:29
+===== modTestRecipeOperations.RunSavedPointedOffsetTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-29T18:39:29
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=1148; workingSet=152432640; privateBytes=116133888; cpu=24.578125
+TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_157bf23eaa2a4b6d9e3fdd049fd613bf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-29T18:39:38
+===== modTestRecipeOperations.RunSavedOffsetCalculationTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-29T18:39:39
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=1148; workingSet=162189312; privateBytes=125341696; cpu=31.6875
+OBSERVED_SAVED_CALCULATION: a2=40; Расчет завершен. |  | Геометрия для расчёта загружена с листа Results текущей книги. |  | Обработано сочетаний: 1. |  | Результаты и пояснения всех проверок — на листе Results. |  | Пошаговый отчет сохранен: | C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_157bf23eaa2a4b6d9e3fdd049fd613bf\RC_Section_NDM_execution_report.txt |  | Время расчёта: 1.36 с. |  | Данные сохранены на листе Results текущей книги.
+OBSERVED_SAVED_CALCULATION: a2=50; Расчет завершен. |  | Геометрия для расчёта загружена с листа Results текущей книги. |  | Обработано сочетаний: 1. |  | Результаты и пояснения всех проверок — на листе Results. |  | Пошаговый отчет сохранен: | C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_157bf23eaa2a4b6d9e3fdd049fd613bf\RC_Section_NDM_execution_report.txt |  | Время расчёта: 1.37 с. |  | Данные сохранены на листе Results текущей книги.
+TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_157bf23eaa2a4b6d9e3fdd049fd613bf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-29T18:39:45
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

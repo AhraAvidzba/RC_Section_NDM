@@ -1,0 +1,83 @@
+{
+  "Status": "DIRECTED_PASS_NOT_FULL_ACCEPTANCE",
+  "SourceSHA256": "4B70AA3AEC5D91B2A94DA8F7303C0FAB4C3491AB8DD027916B8AFCC7947BBFCB",
+  "AssertionsPassed": 2085,
+  "Failures": 0,
+  "Reports": [
+    {
+      "Report": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed06_No.txt",
+      "AllBytesRead": true,
+      "SHA256": "17D73F022FD7B69E0505EC5338BE731244B7735BF4871CA150C3F97308EB6257",
+      "SourceSHA256": "4B70AA3AEC5D91B2A94DA8F7303C0FAB4C3491AB8DD027916B8AFCC7947BBFCB",
+      "Macros": [
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunSavedOffsetCalculationTests"
+      ],
+      "AssertionsPassed": 302,
+      "Totals": [
+        "TOTAL_RECIPE_SETBACK_INPUT: passed=54; failed=0",
+        "TOTAL ROUNDED INPUT: passed=17; failed=0",
+        "TOTAL HOLLOW INPUT: passed=22; failed=0",
+        "TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0",
+        "TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0",
+        "TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0"
+      ],
+      "OwnClosurePassed": true
+    },
+    {
+      "Report": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed07_Yes.txt",
+      "AllBytesRead": true,
+      "SHA256": "FD6BC8C690897528EF27631768BE9D9382D04999025CBEC6D45ACFC7181A4EFC",
+      "SourceSHA256": "4B70AA3AEC5D91B2A94DA8F7303C0FAB4C3491AB8DD027916B8AFCC7947BBFCB",
+      "Macros": [
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestRecipeOperations.RunCollapsingOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunSavedOffsetCalculationTests",
+        "modTestIndividualContours.RunIndividualContourTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunUserRoundedContourTests",
+        "modTestIndividualContours.RunIndividualContourFailureTests"
+      ],
+      "AssertionsPassed": 1783,
+      "Totals": [
+        "TOTAL_RECIPE_SETBACK_INPUT: passed=54; failed=0",
+        "TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0",
+        "TOTAL RECIPE DEFINITION: passed=15; failed=0",
+        "TOTAL RECIPE RULES: passed=279; failed=0",
+        "TOTAL RECIPE MESH BOUNDARY: passed=182; failed=0",
+        "TOTAL WORKBOOK RECIPE INPUT: passed=287; failed=0",
+        "TOTAL CIRCLE INPUT: passed=5; failed=0",
+        "TOTAL ROUNDED INPUT: passed=17; failed=0",
+        "TOTAL HOLLOW INPUT: passed=22; failed=0",
+        "TOTAL_COLLAPSING_OFFSETS: passed=26; failed=0",
+        "TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0",
+        "TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0",
+        "TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0",
+        "TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0",
+        "TOTAL_USER_ROUNDED_CONTOUR: passed=68; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0"
+      ],
+      "OwnClosurePassed": true
+    }
+  ],
+  "FailedTrialsPreserved": [
+    "Directed04_Yes.txt",
+    "Directed05_No.txt"
+  ],
+  "FullAcceptanceClaim": false
+}

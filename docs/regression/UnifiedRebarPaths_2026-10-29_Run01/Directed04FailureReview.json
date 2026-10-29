@@ -1,0 +1,106 @@
+{
+  "Status": "REVIEWED_DIRECTED_FAIL_PRESERVED",
+  "PrimarySHA256": "EC08C458C6C8FAF50A5D4FA67F35C70ED4703D42C6FEF221C8F6EB4F449ACDBC",
+  "AllBytesRead": true,
+  "Failures": [
+    "FAIL: rounded.input.7",
+    "FAIL: rounded.input.8",
+    "FAIL: rounded.input.13",
+    "FAIL: hollow.input.6"
+  ],
+  "Cause": "New user-approved contract reads disabled-side as; malformed text must be rejected. The old 380mm same-as-everywhere assumption is invalid for independent offsets; actual collapse tested at600mm and380mm now explicitly accepted. No numerical equations or tolerances weakened.",
+  "NewPositiveCases": "Pointed disabled n0/d0 blank as0; Hollow disabled outer/opening blankas0; dependent row on variable-as curve",
+  "Closure": {
+    "Stage": "AFTER_CHILD_EXIT",
+    "Passed": true,
+    "ChildHasExited": true,
+    "ChildExitCode": 1,
+    "Closure": {
+      "Passed": true,
+      "Identity": {
+        "Valid": true,
+        "PID": 19636,
+        "Ticks": 639288852637742944,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      },
+      "FinalState": {
+        "State": "Absent",
+        "PID": 19636,
+        "StartTicksUTC": "639288852637742944",
+        "Reason": "Explicit NoProcessFoundForGivenId",
+        "ObservedUTC": "2026-10-29T15:42:34.1341262+00:00"
+      },
+      "Observations": [
+        {
+          "State": "Live",
+          "PID": 19636,
+          "StartTicksUTC": "639288852637742944",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:42:32.8224371+00:00"
+        },
+        {
+          "State": "Live",
+          "PID": 19636,
+          "StartTicksUTC": "639288852637742944",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:42:33.0499412+00:00"
+        },
+        {
+          "State": "Live",
+          "PID": 19636,
+          "StartTicksUTC": "639288852637742944",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:42:33.2655667+00:00"
+        },
+        {
+          "State": "Live",
+          "PID": 19636,
+          "StartTicksUTC": "639288852637742944",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:42:33.4830469+00:00"
+        },
+        {
+          "State": "Live",
+          "PID": 19636,
+          "StartTicksUTC": "639288852637742944",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:42:33.7005695+00:00"
+        },
+        {
+          "State": "Live",
+          "PID": 19636,
+          "StartTicksUTC": "639288852637742944",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:42:33.9164646+00:00"
+        },
+        {
+          "State": "Absent",
+          "PID": 19636,
+          "StartTicksUTC": "639288852637742944",
+          "Reason": "Explicit NoProcessFoundForGivenId",
+          "ObservedUTC": "2026-10-29T15:42:34.1341262+00:00"
+        }
+      ],
+      "GraceMilliseconds": 3000,
+      "OrdinaryPathKilledAnything": false
+    },
+    "RunnerCleanupValid": true,
+    "RunnerCleanup": {
+      "Stage": "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+      "OwnerVerified": true,
+      "PID": 19636,
+      "StartTicksUTC": "639288852637742944",
+      "CloseRequested": false,
+      "CloseSucceeded": false,
+      "QuitRequested": true,
+      "QuitSucceeded": true,
+      "Errors": [],
+      "Failed": true,
+      "FinalExitNotAsserted": true,
+      "FinalClosureAuthority": "Run-Audit03Watchdog after actual child exit",
+      "ObservedUTC": "2026-10-29T15:42:32.5824177+00:00"
+    },
+    "RunnerCleanupReadError": null,
+    "OrdinaryPathKilledAnything": false
+  }
+}

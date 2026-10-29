@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -78,6 +78,48 @@ Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CP
     RequireOpen
     Set OffsetRoundedPolygon = mQuery.OffsetRoundedPolygon(pathID, polygon, distance)
     mDefinition.AddPath OffsetRoundedPolygon
+End Function
+
+' Строит общий контур осей: каждой группе исходных сегментов назначается свой as.
+' Группы содержат имена через |; положительный as направлен в бетон, у отверстия — наружу.
+' Нулевые скругления допустимы как именованные привязки, но каждый реальный участок задаётся ровно один раз.
+Public Function OffsetContour(ByVal pathID As String, ByVal sourcePathID As String, ByVal groups As Variant, _
+        ByVal axisDistances As Variant, ByVal references As Variant, Optional ByVal opening As Boolean = False) As CGeometryPath
+    RequireOpen
+    Dim source As CGeometryPath, kernel As CGeometryVariableOffset, selected As Object, token As Variant
+    Dim distances() As Double, sources() As String, edge As TRegionEdge, area As Double, i As Long, j As Long
+    Dim reference As String, originX As Double, originY As Double, sign As Double
+    If Not IsArray(groups) Or Not IsArray(axisDistances) Or Not IsArray(references) Then _
+        SectionRecipeError "CSectionDefinitionBuilder", "Группы, as и адреса общего контура должны быть массивами."
+    If LBound(groups) <> LBound(axisDistances) Or UBound(groups) <> UBound(axisDistances) Or _
+            LBound(groups) <> LBound(references) Or UBound(groups) <> UBound(references) Then _
+        SectionRecipeError "CSectionDefinitionBuilder", "Для каждой группы общего контура нужны свой as и адрес исходного поля."
+    Set source = mDefinition.Path(sourcePathID): Set kernel = New CGeometryVariableOffset
+    If Not source.IsClosed Then SectionRecipeError "CSectionDefinitionBuilder", "Для общего отступа нужен замкнутый исходный контур."
+    Set selected = CreateObject("Scripting.Dictionary"): selected.CompareMode = vbBinaryCompare
+    For i = LBound(groups) To UBound(groups)
+        reference = reference & CStr(references(i)) & "; "
+        If axisDistances(i) < 0# Then SectionRecipeError "CSectionDefinitionBuilder", "Отступ as не может быть отрицательным.", CStr(references(i))
+        For Each token In Split(CStr(groups(i)), "|")
+            If Not source.HasSegmentID(CStr(token)) And Not source.HasCollapsedSegmentID(CStr(token)) Then _
+                SectionRecipeError "CSectionDefinitionBuilder", "В группе общего контура указан неизвестный участок '" & CStr(token) & "'.", CStr(references(i))
+            If selected.Exists(CStr(token)) Then SectionRecipeError "CSectionDefinitionBuilder", "Участок общего контура задан дважды.", CStr(references(i))
+            selected.Add CStr(token), i
+        Next token
+    Next i
+    source.CopySegment 1, edge: originX = edge.X1: originY = edge.Y1
+    For j = 1 To source.SegmentCount
+        source.CopySegment j, edge: area = area + kernel.EdgeArea(edge, originX, originY)
+    Next j
+    sign = Sgn(area): If opening Then sign = -sign
+    ReDim distances(1 To source.SegmentCount): ReDim sources(1 To source.SegmentCount)
+    For j = 1 To source.SegmentCount
+        If Not selected.Exists(source.SegmentID(j)) Then SectionRecipeError "CSectionDefinitionBuilder", "Участку общего контура не назначен as.", reference
+        i = CLng(selected(source.SegmentID(j)))
+        distances(j) = sign * CDbl(axisDistances(i)): sources(j) = CStr(references(i))
+    Next j
+    Set OffsetContour = kernel.BuildPath(pathID, source, distances, reference, sources)
+    mDefinition.AddPath OffsetContour
 End Function
 
 ' Добавляет в описание готовую непрерывную линию CGeometryPath, созданную отдельно.

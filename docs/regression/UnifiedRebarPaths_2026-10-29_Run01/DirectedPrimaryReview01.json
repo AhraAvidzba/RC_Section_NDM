@@ -1,0 +1,137 @@
+{
+  "Status": "DIRECTED_PASS_NOT_FULL_ACCEPTANCE",
+  "Reports": [
+    {
+      "Report": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed01_No.txt",
+      "SHA256": "4B83A20748FAA42EF38283D802BA8CBE27AB92C6A5C42D35EB10B74B1FE844F8",
+      "AllBytesRead": true,
+      "Totals": [
+        "TOTAL_RECIPE_SETBACK_INPUT: passed=38; failed=0",
+        "TOTAL_COLLAPSING_OFFSETS: passed=26; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0"
+      ],
+      "Closure": {
+        "Stage": "AFTER_CHILD_EXIT",
+        "Passed": true,
+        "ChildHasExited": true,
+        "ChildExitCode": 0,
+        "Closure": {
+          "Passed": true,
+          "Identity": {
+            "Valid": true,
+            "PID": 22152,
+            "Ticks": 639288846890462146,
+            "Reason": "Primary TEST_EXCEL_PROCESS"
+          },
+          "FinalState": {
+            "State": "Absent",
+            "PID": 22152,
+            "StartTicksUTC": "639288846890462146",
+            "Reason": "Explicit NoProcessFoundForGivenId",
+            "ObservedUTC": "2026-10-29T15:31:44.4724616+00:00"
+          },
+          "Observations": [
+            {
+              "State": "Absent",
+              "PID": 22152,
+              "StartTicksUTC": "639288846890462146",
+              "Reason": "Explicit NoProcessFoundForGivenId",
+              "ObservedUTC": "2026-10-29T15:31:44.4724616+00:00"
+            }
+          ],
+          "GraceMilliseconds": 3000,
+          "OrdinaryPathKilledAnything": false
+        },
+        "RunnerCleanupValid": true,
+        "RunnerCleanup": {
+          "Stage": "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+          "OwnerVerified": true,
+          "PID": 22152,
+          "StartTicksUTC": "639288846890462146",
+          "CloseRequested": false,
+          "CloseSucceeded": false,
+          "QuitRequested": true,
+          "QuitSucceeded": true,
+          "Errors": [],
+          "Failed": false,
+          "FinalExitNotAsserted": true,
+          "FinalClosureAuthority": "Run-Audit03Watchdog after actual child exit",
+          "ObservedUTC": "2026-10-29T15:31:43.6326139+00:00"
+        },
+        "RunnerCleanupReadError": null,
+        "OrdinaryPathKilledAnything": false
+      }
+    },
+    {
+      "Report": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed02_No.txt",
+      "SHA256": "F613A0C64F390906E3A0D82B2490CDAAB45BA953829B4195438B3BDFB5EC230A",
+      "AllBytesRead": true,
+      "Totals": [
+        "TOTAL RECIPE DEFINITION: passed=15; failed=0",
+        "TOTAL RECIPE RULES: passed=279; failed=0",
+        "TOTAL RECIPE MESH BOUNDARY: passed=182; failed=0",
+        "TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0",
+        "TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0",
+        "TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0",
+        "TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0",
+        "TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0",
+        "TOTAL_USER_ROUNDED_CONTOUR: passed=68; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0"
+      ],
+      "Closure": {
+        "Stage": "AFTER_CHILD_EXIT",
+        "Passed": true,
+        "ChildHasExited": true,
+        "ChildExitCode": 0,
+        "Closure": {
+          "Passed": true,
+          "Identity": {
+            "Valid": true,
+            "PID": 20436,
+            "Ticks": 639288847858853888,
+            "Reason": "Primary TEST_EXCEL_PROCESS"
+          },
+          "FinalState": {
+            "State": "Absent",
+            "PID": 20436,
+            "StartTicksUTC": "639288847858853888",
+            "Reason": "Explicit NoProcessFoundForGivenId",
+            "ObservedUTC": "2026-10-29T15:33:39.4795257+00:00"
+          },
+          "Observations": [
+            {
+              "State": "Absent",
+              "PID": 20436,
+              "StartTicksUTC": "639288847858853888",
+              "Reason": "Explicit NoProcessFoundForGivenId",
+              "ObservedUTC": "2026-10-29T15:33:39.4795257+00:00"
+            }
+          ],
+          "GraceMilliseconds": 3000,
+          "OrdinaryPathKilledAnything": false
+        },
+        "RunnerCleanupValid": true,
+        "RunnerCleanup": {
+          "Stage": "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+          "OwnerVerified": true,
+          "PID": 20436,
+          "StartTicksUTC": "639288847858853888",
+          "CloseRequested": false,
+          "CloseSucceeded": false,
+          "QuitRequested": true,
+          "QuitSucceeded": true,
+          "Errors": [],
+          "Failed": false,
+          "FinalExitNotAsserted": true,
+          "FinalClosureAuthority": "Run-Audit03Watchdog after actual child exit",
+          "ObservedUTC": "2026-10-29T15:33:38.8472401+00:00"
+        },
+        "RunnerCleanupReadError": null,
+        "OrdinaryPathKilledAnything": false
+      }
+    }
+  ],
+  "BookSHA256": "48161CEF199A143F7120D77AD33A1F74D342C6875CCEAF7DDAF8FD7113018040",
+  "SourceVersion": "Build01; later changes to comments, help and additional analytic checks require final Build02 proof",
+  "BHAudit": "All registered4recipes: H vertical, B horizontal; Pointed B is base width excluding W; Circle usesD"
+}

@@ -1,0 +1,20 @@
+﻿{
+    "Status":  "COMPILED_CODE_UPDATE_OF_CLEAN_BUILD03",
+    "SourceUserDataCopied":  false,
+    "ChangedComponents":  [
+                              {
+                                  "SHA256":  "418C08AE763B88232A7E51C51D7E406BD66348C02237087C256DC0227CC24EDF",
+                                  "Path":  "src/Geometry/CGeometryPath.cls"
+                              },
+                              {
+                                  "SHA256":  "05734BBD8D5FC3DE56EBC5C4A87CCF58BD1EDCD8F58C1684FFB8275869E1CF9F",
+                                  "Path":  "src/Geometry/CGeometryVariableOffset.cls"
+                              },
+                              {
+                                  "SHA256":  "DE89A718C288A32EB42535E5BA95846427C0A1513B96202C72D1CD7D13888BDC",
+                                  "Path":  "src/Section/CSectionGeometryQuery.cls"
+                              }
+                          ],
+    "BookSHA256":  "4B70AA3AEC5D91B2A94DA8F7303C0FAB4C3491AB8DD027916B8AFCC7947BBFCB",
+    "FinishedUTC":  "2026-10-29T15:54:31.0188488+00:00"
+}

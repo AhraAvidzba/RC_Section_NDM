@@ -1,0 +1,9 @@
+{
+  "UserAuthorization": "как поправишь запусти полные прогоны и следи за ошибками при их возникновении и сразу правь. При ошибках дождись полого завершения и запусти прогон еще раз на исправленной версии при условии завершения до завтра до 11:00",
+  "ReceivedLocalDate": "2026-10-29",
+  "OverallDeadline": "2026-10-30T11:00:00+03:00",
+  "Scope": "All182core12NoYes groups + entireFocused122/26 incl batch15NoYes,stability,asymmetric,realCAD,reopen,independent",
+  "RetryCondition": "Wait all previous own exits, fix exact version, start new full only if whole composition and final review fit deadline",
+  "SourceChangeDuringFull": false,
+  "NoLongRunStartedYet": true
+}

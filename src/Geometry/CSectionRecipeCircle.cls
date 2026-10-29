@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -63,8 +63,8 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByVal diameter 
     rebar.AxisDistance = reader.Length("Main", "Circle", "as")
     reader.Require "Main", "Circle", "as", rebar.AxisDistance > rebar.Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
     reader.Require "Main", "Circle", "as", rebar.AxisDistance < diameter / 2#, "Расстояние до оси должно быть меньше радиуса бетонного круга."
-    rebar.StartSetback = reader.NonNegativeLength("Main", "Circle", "s0")
-    rebar.EndSetback = reader.NonNegativeLength("Main", "Circle", "s1")
+    rebar.StartSetback = reader.OptionalRowOffset("Main", "Circle", "s0")
+    rebar.EndSetback = reader.OptionalRowOffset("Main", "Circle", "s1")
     reader.Require "Main", "Circle", "s0", rebar.StartSetback + rebar.EndSetback < 2# * GEOM_PI * (diameter / 2# - rebar.AxisDistance) - GEOM_TOLERANCE, "Сумма концевых отступов должна быть меньше длины окружности центров стержней."
     rebar.Source = reader.SourceReferences("Main", "Circle", Array("as", "d", "n", "s0", "s1"))
     For rowNumber = 2 To 3

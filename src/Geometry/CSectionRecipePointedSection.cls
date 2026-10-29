@@ -98,7 +98,11 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1)) ' Номер структуры начинается с 1, массивы соответствий Array — с 0; это не номер ячейки.
             key = CStr(keys(i - 1)) ' Короткий ключ строки Main/Extra выбирается из фиксированного списка сторон.
             .Count = reader.Count("Main", key, "n"): .Diameter = reader.OptionalDiameter("Main", key, "d")
-            If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
+            .AxisSource = reader.SourceReference("Main", key, "as")
+            If .Count = 0 Or .Diameter = 0# Then
+                .AxisDistance = reader.OptionalRowOffset("Main", key, "as")
+                GoTo NextFace
+            End If
             .AxisDistance = reader.Length("Main", key, "as")
             reader.Require "Main", key, "as", .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
             .AxisSource = reader.SourceReferences("Main", key, Array("as", "d", "n"))
@@ -108,8 +112,8 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
                 Case "H.Left": .LabelX = -1#
                 Case "H.Right": .LabelX = 1#
             End Select
-            .StartSetback = reader.NonNegativeLength("Main", key, "s0")
-            .EndSetback = reader.NonNegativeLength("Main", key, "s1")
+            .StartSetback = reader.OptionalRowOffset("Main", key, "s0")
+            .EndSetback = reader.OptionalRowOffset("Main", key, "s1")
             .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
             .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
             .Diameters(3) = reader.OptionalDiameter("Extra", key, "d3")
@@ -160,10 +164,23 @@ End Function
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef faces() As TRoundedFace, ByVal polygon As CPolygonSpec)
     Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions
     Dim normalSign As Double, i As Long, rowNumber As Long, path As CGeometryPath, options As CRebarRuleOptions
+    Dim contour As CGeometryPath, groups As Variant, leftGroup As String, rightGroup As String
+    leftGroup = "Corner.TL|Edge.BL|Corner.BL": rightGroup = "Corner.TR|Edge.TR|Corner.BR"
+    For i = 1 To polygon.Count
+        If polygon.VertexID(i) = "LeftNose" Then leftGroup = leftGroup & "|Edge.LeftNose|Corner.LeftNose"
+        If polygon.VertexID(i) = "RightNose" Then rightGroup = rightGroup & "|Edge.RightNose|Corner.RightNose"
+    Next i
+    groups = Array("Edge.TL", "Edge.BR", leftGroup, rightGroup)
+    For i = 1 To 4
+        If faces(i).Count = 0 Or faces(i).Diameter = 0# Then facade.RebarContourBaseline "OUTER", "Boundary", Split(CStr(groups(i - 1)), "|"), faces(i).AxisDistance, faces(i).AxisSource
+    Next i
+    Set contour = facade.OffsetContour("Rebar.Boundary", "Boundary", groups, _
+        Array(faces(1).AxisDistance, faces(2).AxisDistance, faces(3).AxisDistance, faces(4).AxisDistance), _
+        Array(faces(1).AxisSource, faces(2).AxisSource, faces(3).AxisSource, faces(4).AxisSource))
     For i = 1 To 4
         With faces(i)
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
-            Set path = AxisPath(facade, polygon, .ID, .AxisDistance, .AxisSource, "Арматура у стороны «" & .Caption & "»") ' Получаем линию центров стержней выбранной стороны с отступом as.
+            Set path = AxisPath(facade, polygon, contour, .ID, .AxisSource, "Арматура у стороны «" & .Caption & "»") ' Выбираем сторону из общего контура с индивидуальными as.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
             If i >= 3 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
@@ -178,7 +195,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
                 Case "B.Top", "H.Right": normalSign = -1#
                 Case "B.Bottom", "H.Left": normalSign = 1#
             End Select
-            facade.RebarContour .ID & ".Main", "OUTER", "Boundary", .AxisDistance, .ID & ".Row2", .ID & ".Row3", normalSign:=normalSign ' Связь семейства с исходным контуром и направлением в бетон.
+            facade.RebarContour .ID & ".Main", "OUTER", "Boundary", .AxisDistance, .ID & ".Row2", .ID & ".Row3", sourceSegments:=Split(CStr(groups(i - 1)), "|"), normalSign:=normalSign ' Явные исходные участки включают дуги и не зависят от соединительных отрезков общего контура.
             Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
             extraOptions.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
             extraOptions.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
@@ -201,10 +218,8 @@ End Sub
 ' Горизонтальные линии направлены слева направо; боковые включают скругления и идут сверху вниз.
 ' Параметры 0 и 1 задают концы сегмента, а forward выбирает обход исходного контура между ними.
 Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByVal polygon As CPolygonSpec, _
-        ByVal groupID As String, ByVal axisDistance As Double, ByVal sourceReference As String, ByVal rebarCaption As String) As CGeometryPath
+        ByVal offset As CGeometryPath, ByVal groupID As String, ByVal sourceReference As String, ByVal rebarCaption As String) As CGeometryPath
     On Error GoTo InvalidPath
-    Dim offset As CGeometryPath
-    Set offset = facade.OffsetRoundedPolygon("Offset." & groupID, polygon, axisDistance) ' Смещаем тот же многоугольник внутрь бетона на as, мм.
     Select Case groupID
         Case "B.Top"
             Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.TL", 1#) ' Линия центров верхнего ряда, слева направо.

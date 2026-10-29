@@ -1,0 +1,81 @@
+﻿{
+    "Stage":  "AFTER_CHILD_EXIT",
+    "Passed":  true,
+    "ChildHasExited":  true,
+    "ChildExitCode":  0,
+    "Closure":  {
+                    "Passed":  true,
+                    "Identity":  {
+                                     "Valid":  true,
+                                     "PID":  2732,
+                                     "Ticks":  639288861501609656,
+                                     "Reason":  "Primary TEST_EXCEL_PROCESS"
+                                 },
+                    "FinalState":  {
+                                       "State":  "Absent",
+                                       "PID":  2732,
+                                       "StartTicksUTC":  "639288861501609656",
+                                       "Reason":  "Explicit NoProcessFoundForGivenId",
+                                       "ObservedUTC":  "2026-10-29T15:57:24.7734945+00:00"
+                                   },
+                    "Observations":  [
+                                         {
+                                             "State":  "Live",
+                                             "PID":  2732,
+                                             "StartTicksUTC":  "639288861501609656",
+                                             "Reason":  "Exact own Excel is still alive",
+                                             "ObservedUTC":  "2026-10-29T15:57:23.8859855+00:00"
+                                         },
+                                         {
+                                             "State":  "Live",
+                                             "PID":  2732,
+                                             "StartTicksUTC":  "639288861501609656",
+                                             "Reason":  "Exact own Excel is still alive",
+                                             "ObservedUTC":  "2026-10-29T15:57:24.1242163+00:00"
+                                         },
+                                         {
+                                             "State":  "Live",
+                                             "PID":  2732,
+                                             "StartTicksUTC":  "639288861501609656",
+                                             "Reason":  "Exact own Excel is still alive",
+                                             "ObservedUTC":  "2026-10-29T15:57:24.3390316+00:00"
+                                         },
+                                         {
+                                             "State":  "Live",
+                                             "PID":  2732,
+                                             "StartTicksUTC":  "639288861501609656",
+                                             "Reason":  "Exact own Excel is still alive",
+                                             "ObservedUTC":  "2026-10-29T15:57:24.5542605+00:00"
+                                         },
+                                         {
+                                             "State":  "Absent",
+                                             "PID":  2732,
+                                             "StartTicksUTC":  "639288861501609656",
+                                             "Reason":  "Explicit NoProcessFoundForGivenId",
+                                             "ObservedUTC":  "2026-10-29T15:57:24.7734945+00:00"
+                                         }
+                                     ],
+                    "GraceMilliseconds":  3000,
+                    "OrdinaryPathKilledAnything":  false
+                },
+    "RunnerCleanupValid":  true,
+    "RunnerCleanup":  {
+                          "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+                          "OwnerVerified":  true,
+                          "PID":  2732,
+                          "StartTicksUTC":  "639288861501609656",
+                          "CloseRequested":  false,
+                          "CloseSucceeded":  false,
+                          "QuitRequested":  true,
+                          "QuitSucceeded":  true,
+                          "Errors":  [
+
+                                     ],
+                          "Failed":  false,
+                          "FinalExitNotAsserted":  true,
+                          "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+                          "ObservedUTC":  "2026-10-29T15:57:23.6561136+00:00"
+                      },
+    "RunnerCleanupReadError":  null,
+    "OrdinaryPathKilledAnything":  false
+}

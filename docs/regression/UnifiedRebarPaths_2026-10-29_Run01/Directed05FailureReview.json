@@ -1,0 +1,82 @@
+{
+  "Status": "WORKING_CONTACT_OFFSET_DEFECT_FOUND_BEFORE_FULL",
+  "ReportSHA256": "C65E505BBB05F87069C7B7D9802F6F9175A29F6A149436359E24D631E0B73164",
+  "AllBytesRead": true,
+  "Failures": [
+    "FAIL: runtime; -2147215974; Источник данных:"
+  ],
+  "Cause": "Zero-base-offset contact rows called uniform OffsetPath on a common axis contour containing a non-tangent arc/connector joint. The legacy uniform offsetter rejected the joint.",
+  "Fix": "Immutable provenance retains original signed as and addresses. Uniform contact transfer adds distance to original per-segment offsets and uses the same validated variable-offset kernel, preserving legacy boundary-membership filtering and contact placement policies. Positive user-base rows retain individual contour-area checks.",
+  "Closure": {
+    "Stage": "AFTER_CHILD_EXIT",
+    "Passed": true,
+    "ChildHasExited": true,
+    "ChildExitCode": 1,
+    "Closure": {
+      "Passed": true,
+      "Identity": {
+        "Valid": true,
+        "PID": 24864,
+        "Ticks": 639288856685137214,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      },
+      "FinalState": {
+        "State": "Absent",
+        "PID": 24864,
+        "StartTicksUTC": "639288856685137214",
+        "Reason": "Explicit NoProcessFoundForGivenId",
+        "ObservedUTC": "2026-10-29T15:48:43.2818916+00:00"
+      },
+      "Observations": [
+        {
+          "State": "Live",
+          "PID": 24864,
+          "StartTicksUTC": "639288856685137214",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:48:42.6123996+00:00"
+        },
+        {
+          "State": "Live",
+          "PID": 24864,
+          "StartTicksUTC": "639288856685137214",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:48:42.8507587+00:00"
+        },
+        {
+          "State": "Live",
+          "PID": 24864,
+          "StartTicksUTC": "639288856685137214",
+          "Reason": "Exact own Excel is still alive",
+          "ObservedUTC": "2026-10-29T15:48:43.0667020+00:00"
+        },
+        {
+          "State": "Absent",
+          "PID": 24864,
+          "StartTicksUTC": "639288856685137214",
+          "Reason": "Explicit NoProcessFoundForGivenId",
+          "ObservedUTC": "2026-10-29T15:48:43.2818916+00:00"
+        }
+      ],
+      "GraceMilliseconds": 3000,
+      "OrdinaryPathKilledAnything": false
+    },
+    "RunnerCleanupValid": true,
+    "RunnerCleanup": {
+      "Stage": "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+      "OwnerVerified": true,
+      "PID": 24864,
+      "StartTicksUTC": "639288856685137214",
+      "CloseRequested": false,
+      "CloseSucceeded": false,
+      "QuitRequested": true,
+      "QuitSucceeded": true,
+      "Errors": [],
+      "Failed": true,
+      "FinalExitNotAsserted": true,
+      "FinalClosureAuthority": "Run-Audit03Watchdog after actual child exit",
+      "ObservedUTC": "2026-10-29T15:48:42.4185907+00:00"
+    },
+    "RunnerCleanupReadError": null,
+    "OrdinaryPathKilledAnything": false
+  }
+}

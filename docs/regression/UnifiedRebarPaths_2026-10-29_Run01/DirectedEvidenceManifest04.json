@@ -1,0 +1,275 @@
+{
+  "Archive": "DirectedEvidence04.zip",
+  "SHA256": "BB0703B93BE8160B0328BED6CE398EDBE8FF6BFFA9D924963C9CCF1D01E54FE9",
+  "Files": [
+    {
+      "Path": "Directed01_No.txt",
+      "SHA256": "4B83A20748FAA42EF38283D802BA8CBE27AB92C6A5C42D35EB10B74B1FE844F8",
+      "Bytes": 30025
+    },
+    {
+      "Path": "Directed01_No.txt.memory.json",
+      "SHA256": "C5CE3A37D7B41B5EA5F3526EDEFDB20B796CEE07B238D4B1A20331EB58AE9441",
+      "Bytes": 320
+    },
+    {
+      "Path": "Directed01_No.txt.Ownership.json",
+      "SHA256": "6E08120D094120B1F6BF7F6760419B5FF34D670F0AD8F95B08EB20936638E003",
+      "Bytes": 259
+    },
+    {
+      "Path": "Directed01_No.txt.ProcessClosure.json",
+      "SHA256": "5C3CE062A4B5343C6CB53D898949970A4004F0F9B879DF82A44A05FD55789655",
+      "Bytes": 2633
+    },
+    {
+      "Path": "Directed01_No.txt.RunnerCleanup.json",
+      "SHA256": "1C510A04BA87D5AAA83DA5D820DEB118CF82685A4D78E3C5770F2E2D4FDC8547",
+      "Bytes": 511
+    },
+    {
+      "Path": "Directed02_No.txt",
+      "SHA256": "F613A0C64F390906E3A0D82B2490CDAAB45BA953829B4195438B3BDFB5EC230A",
+      "Bytes": 38269
+    },
+    {
+      "Path": "Directed02_No.txt.memory.json",
+      "SHA256": "DD0BBAA61A41EEB737C9AE6893753B2FA19E000640A692616B88919377816022",
+      "Bytes": 320
+    },
+    {
+      "Path": "Directed02_No.txt.Ownership.json",
+      "SHA256": "1B2F8CE3FC63702787DB892E8DDF8C3DD932BEC7CC736D227D71C85122BC2CD2",
+      "Bytes": 259
+    },
+    {
+      "Path": "Directed02_No.txt.ProcessClosure.json",
+      "SHA256": "8CBD26776514F0D8714BBBD55D5A35F3DFD63EB8DC846ADCCD83FE28736DFBE6",
+      "Bytes": 2633
+    },
+    {
+      "Path": "Directed02_No.txt.RunnerCleanup.json",
+      "SHA256": "EBA4C6EF256CCAA934CFAD2C88E2FE5A95C32C584E1986BB937C8E5797676601",
+      "Bytes": 511
+    },
+    {
+      "Path": "Directed03_No.txt",
+      "SHA256": "4E5B21E719DCE92BC819E5137454BAF3387933BADA3937997C6051E7E02DDBAE",
+      "Bytes": 12557
+    },
+    {
+      "Path": "Directed03_No.txt.memory.json",
+      "SHA256": "B606C01771676ABAE8C2E77AA6FC278D9457CD6E93F86990721286F727359ADB",
+      "Bytes": 320
+    },
+    {
+      "Path": "Directed03_No.txt.Ownership.json",
+      "SHA256": "558AD37B2BC7E44505622674AA3B5A7557B51BBDE881BCB86B8DD47477FDB1BB",
+      "Bytes": 258
+    },
+    {
+      "Path": "Directed03_No.txt.ProcessClosure.json",
+      "SHA256": "AE0CD3C3A2B102DA6AC2D2B58306BC830C3D83A7622B714A5EC52B2F852E36F8",
+      "Bytes": 2629
+    },
+    {
+      "Path": "Directed03_No.txt.RunnerCleanup.json",
+      "SHA256": "78D7AB5B9219D695438EE4E8D5B233BD67C8687EF98B96FB43D758C983B10029",
+      "Bytes": 510
+    },
+    {
+      "Path": "Directed04_Yes.txt",
+      "SHA256": "EC08C458C6C8FAF50A5D4FA67F35C70ED4703D42C6FEF221C8F6EB4F449ACDBC",
+      "Bytes": 94845
+    },
+    {
+      "Path": "Directed04_Yes.txt.memory.json",
+      "SHA256": "A689F40C099E2E236C862862F78221BDFD8543F55F50BBB3EEA954D3992AF001",
+      "Bytes": 320
+    },
+    {
+      "Path": "Directed04_Yes.txt.Ownership.json",
+      "SHA256": "55BC217E31AB67BA6A08D7EA33EFBB9561243B9E705D2D5B64E495EB1796D64C",
+      "Bytes": 259
+    },
+    {
+      "Path": "Directed04_Yes.txt.ProcessClosure.json",
+      "SHA256": "91DE941A0AE210EC2360F5C9DB2D44A85CF1C06F54347CF99F0CE4489265E84B",
+      "Bytes": 5566
+    },
+    {
+      "Path": "Directed04_Yes.txt.RunnerCleanup.json",
+      "SHA256": "313F9C6A1D6DACA0E82F67224CAE8B5A7CE2B8093A5126B3C61351AF1727B417",
+      "Bytes": 510
+    },
+    {
+      "Path": "Directed04FailureReview.json",
+      "SHA256": "592FEDDA4B00F7FA83DC6CD4DF0D9587B97C3FA02A8F28D976C506811F78AE40",
+      "Bytes": 3780
+    },
+    {
+      "Path": "Directed05_No.txt",
+      "SHA256": "C65E505BBB05F87069C7B7D9802F6F9175A29F6A149436359E24D631E0B73164",
+      "Bytes": 6020
+    },
+    {
+      "Path": "Directed05_No.txt.memory.json",
+      "SHA256": "A9E8207D04FAED7539CC664D0CD95B0D9C1DA5DD06A228C4169397C61BC9CF8D",
+      "Bytes": 320
+    },
+    {
+      "Path": "Directed05_No.txt.Ownership.json",
+      "SHA256": "9B7FC8FF0F6B2A62E41B47BB90A6BE05292B5DAF6574463AC7D4A792AAB33EA4",
+      "Bytes": 259
+    },
+    {
+      "Path": "Directed05_No.txt.ProcessClosure.json",
+      "SHA256": "48C09EEEBF8DF6060A1E37DAF3E4B474438923FD68848BBAE5E1546D2179A52A",
+      "Bytes": 4099
+    },
+    {
+      "Path": "Directed05_No.txt.RunnerCleanup.json",
+      "SHA256": "7CFD3976D961A01450B1FCF2327707C5BFCC115EB72C38C26A0363BCF625F36A",
+      "Bytes": 510
+    },
+    {
+      "Path": "Directed05FailureReview.json",
+      "SHA256": "50A961662AB51F98D7DE24B700032EDA9059587A940D2EA3BF68CD19A9B0C2AC",
+      "Bytes": 3119
+    },
+    {
+      "Path": "Directed06_No.txt",
+      "SHA256": "17D73F022FD7B69E0505EC5338BE731244B7735BF4871CA150C3F97308EB6257",
+      "Bytes": 9591
+    },
+    {
+      "Path": "Directed06_No.txt.memory.json",
+      "SHA256": "0A68D3A158F3F7E562BBCE0CA8320BC471F5CBFA1E0266FA1BF4124C5F0B4CD4",
+      "Bytes": 320
+    },
+    {
+      "Path": "Directed06_No.txt.Ownership.json",
+      "SHA256": "71AC5927AA8E246872A0822C1851C8CE1FFE5CE5276430D3980DED4D29D2F126",
+      "Bytes": 259
+    },
+    {
+      "Path": "Directed06_No.txt.ProcessClosure.json",
+      "SHA256": "AC513F244E0DCD270C14F800033821B74DC961CE3C8E17E3FDA838464833C1E1",
+      "Bytes": 2633
+    },
+    {
+      "Path": "Directed06_No.txt.RunnerCleanup.json",
+      "SHA256": "638AD8E2B953A9A54F44700BC5532B9E93D1903D6733F29DA0139BD36ACD4BDD",
+      "Bytes": 511
+    },
+    {
+      "Path": "Directed07_Yes.txt",
+      "SHA256": "FD6BC8C690897528EF27631768BE9D9382D04999025CBEC6D45ACFC7181A4EFC",
+      "Bytes": 94018
+    },
+    {
+      "Path": "Directed07_Yes.txt.memory.json",
+      "SHA256": "8B464503979A2248A830E1F5153254D01B5826080C7A31BA6F40F6771FA9A406",
+      "Bytes": 320
+    },
+    {
+      "Path": "Directed07_Yes.txt.Ownership.json",
+      "SHA256": "6F3509B70BA2F05B7A6C76CC30C7FD4A259072FF2B4FE6B8EC50C72F02E8C150",
+      "Bytes": 258
+    },
+    {
+      "Path": "Directed07_Yes.txt.ProcessClosure.json",
+      "SHA256": "B0D8E9C62191DE93268BD87A5725D21C35D71E4830B350DE2D8C313830698854",
+      "Bytes": 4581
+    },
+    {
+      "Path": "Directed07_Yes.txt.RunnerCleanup.json",
+      "SHA256": "79D142AF1CEB57B723E44CA8DFF85FAC4414AC733514B3D0FBC669135ADF9CB7",
+      "Bytes": 510
+    },
+    {
+      "Path": "DirectedFinalReview04.json",
+      "SHA256": "2876A5E809497E6E706EE6C6D11377B98B59905AE5B93A22607927513DD50389",
+      "Bytes": 3974
+    },
+    {
+      "Path": "DirectedPrimaryReview01.json",
+      "SHA256": "6031C09B52020C71FB6E802419577EF3B0CF4CE7EB64CB9C0EF169473EBA72FA",
+      "Bytes": 5261
+    },
+    {
+      "Path": "Native04_CleanStructure.json",
+      "SHA256": "0DB9AD38CDC128D916BDC95E07E604A017F4C6E1FCC6F5C73A692C7090AE5262",
+      "Bytes": 29751
+    },
+    {
+      "Path": "Native04_EmptyPlotContainers.json",
+      "SHA256": "44EF6FC970C4C8713D10B7D86B8AD603A6B8BBFA5E60B805A8F90C1CE8DF6CDA",
+      "Bytes": 278
+    },
+    {
+      "Path": "Native04_NativeVerification.json",
+      "SHA256": "CB6EE19B1F65B6C1986D9E57FA4120F3388854E8BE0554DFE78B5E5110E5A651",
+      "Bytes": 35829
+    },
+    {
+      "Path": "Native04Ownership.json",
+      "SHA256": "E5C338620739DD8C071F43E80AF6BE264143D21A791BA9FE01BD01E7E9A5C5DA",
+      "Bytes": 73
+    },
+    {
+      "Path": "Native04Quit.json",
+      "SHA256": "F0EBF2D2F0A3EBCD362D018D56FE775260CFB67294D8BF061E3B7B7904655FA3",
+      "Bytes": 130
+    },
+    {
+      "Path": "OwnClosuresBeforeFull01.json",
+      "SHA256": "B6C836D25C8243CDFECE2421A02FB4FE874A2EEE1447FA7B223A12BEAB8A8333",
+      "Bytes": 52556
+    },
+    {
+      "Path": "SourceEquality04.json",
+      "SHA256": "E08CDA94A85C2561B2BAA7B4D4A7726D793157C95320E23F370FAC5C2D857FF9",
+      "Bytes": 117153
+    },
+    {
+      "Path": "UserFullAuthorization.json",
+      "SHA256": "C76D1F695BFD132228A3D515CCA14549CFCDD7C0FA7E20DF6E9723947A382FAE",
+      "Bytes": 859
+    },
+    {
+      "Path": "Build01/BuildOwnership.json",
+      "SHA256": "ED246D490E560FBE8C739B03318241227249DDC629F9438683461E56572521F9",
+      "Bytes": 347
+    },
+    {
+      "Path": "Build02/BuildOwnership.json",
+      "SHA256": "693776663194AB40F22324E2EAF806C17F20015F771C15C809168E941ADFBB9F",
+      "Bytes": 347
+    },
+    {
+      "Path": "Build03/BuildOwnership.json",
+      "SHA256": "AFB273DF50FF3E7788D0D715F3816B01E5C576B97F75B2DCBB2A4636A9FD7596",
+      "Bytes": 347
+    },
+    {
+      "Path": "Build04/Build.json",
+      "SHA256": "092FE80EB07BFC66D8A432B78CB004074C3C5D8F28514F4CBE6AE2D430FCF2A1",
+      "Bytes": 1097
+    },
+    {
+      "Path": "Build04/BuildOwnership.json",
+      "SHA256": "9B9C3384ACDD5F889BB7F3D9015769AF0407595A6849043C8A967CF46AAE829E",
+      "Bytes": 283
+    },
+    {
+      "Path": "Build04/Quit.json",
+      "SHA256": "5AF052D72A41CF8AAC672B6984B9A220CE8D040CF2107221626E72F77C7E7011",
+      "Bytes": 130
+    }
+  ],
+  "IncludesFailedTrials": true,
+  "UserDataIncluded": false,
+  "MainPublication": "Pending explicit clarification after automatic approval rejection",
+  "FullLaunched": false
+}

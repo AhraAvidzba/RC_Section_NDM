@@ -1,0 +1,128 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\UnifiedRebarPaths_2026-10-29_Run01\Build03\RC_Section_NDM.xlsm
+SOURCE_SHA256: 6809085E92FD96761646BCB879E6A508DE747D096F3E69303F27C424C54E457A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1b2d03318aac4ab4bfef8d562ce4a65c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=24864; startTicks=639288856685137214
+===== modTestRecipeSetbacks.RunRecipeSetbackInputTests =====
+SUITE_STARTED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-29T18:47:53
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=24864; workingSet=124641280; privateBytes=97443840; cpu=11
+OK: rounded.start.header
+OK: rounded.end.header
+OK: rounded.editable.centered
+OK: rounded.zero.first; actual=-360; expected=-360
+OK: rounded.start.actual; actual=-350; expected=-350
+OK: rounded.end.actual; actual=365.518002592747; expected=365.518002592747
+OK: rounded.concrete.unchanged; actual=215943.067096035; expected=215943.067096035
+OK: rounded.count.unchanged
+OK: rounded.opposite.row.unchanged; actual=-85; expected=-85
+OK: rounded.active.empty.isZero
+OK: rounded.active.empty.coordinate; actual=-360; expected=-360
+OK: rounded.active.negative.rejected
+OK: rounded.inactive.error.ignored
+OK: hollow.start.header
+OK: hollow.end.header
+OK: hollow.zero.projected.count
+OK: hollow.projection.filtered
+OK: hollow.skips.diagnostic
+OK: hollow.positions.not.redistributed
+OK: hollow.other.projections.unchanged
+OK: hollow.concrete.unchanged; actual=300000; expected=300000
+OK: unified.rectangle.start.x; actual=30; expected=30
+OK: unified.rectangle.start.y; actual=550; expected=550
+OK: unified.rectangle.end.x; actual=930; expected=930
+OK: unified.rectangle.bar.y.1; actual=550; expected=550
+OK: unified.rectangle.bar.y.2; actual=550; expected=550
+OK: unified.rectangle.bar.y.3; actual=550; expected=550
+OK: unified.rectangle.count
+OK: unified.rectangle.s0; actual=40; expected=40
+OK: unified.rectangle.s1; actual=910; expected=910
+OK: unified.disabled.blank.as.zero; actual=1000; expected=1000
+OK: unified.rectangle.blank.s.accepted
+OK: unified.invalid.s.rejected.5
+OK: unified.invalid.s.rejected.8
+OK: unified.invalid.s.rejected.10
+OK: unified.excludeBoth.first; actual=330; expected=330
+OK: unified.excludeBoth.last; actual=620; expected=620
+OK: unified.pointed.left.length; actual=711.327412287184; expected=711.327412287184
+OK: unified.pointed.arc.start.x; actual=-400; expected=-400
+OK: unified.pointed.arc.start.y; actual=280; expected=280
+OK: unified.pointed.arc.end.x; actual=-480; expected=-480
+OK: unified.pointed.arc.end.y; actual=200; expected=200
+OK: unified.pointed.variable.as.layout
+FAIL: runtime; -2147215974; Источник данных:
+rngPointedSectionGeometry[28,3]; rngPointedSectionGeometry[28,4]; rngPointedSectionGeometry[28,5]; rngPointedSectionGeometry[28,6]
+
+Клиновидное сечение:
+H - левая грань, ряд 2
+
+Негладкий стык с дугой: задайте согласованное скругление.
+
+Возможное решение:
+Исправьте значение в указанной ячейке.
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1b2d03318aac4ab4bfef8d562ce4a65c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-29T18:48:00
+===== modTestSectionRecipes.RunRoundedRecipeInputTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRoundedRecipeInputTests; 2026-10-29T18:48:01
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=24864; workingSet=135397376; privateBytes=119230464; cpu=25.28125
+PASS: rounded.input.0
+PASS: rounded.input.1
+PASS: rounded.input.2
+PASS: rounded.input.3
+PASS: rounded.input.4
+PASS: rounded.input.5
+PASS: rounded.input.6
+PASS: rounded.input.7
+PASS: rounded.input.8
+PASS: rounded.input.9
+PASS: rounded.input.10
+PASS: rounded.input.11
+PASS: rounded.input.12
+PASS: rounded.input.13
+PASS: rounded.input.14
+PASS: rounded.input.15
+PASS: rounded.input.16
+TOTAL ROUNDED INPUT: passed=17; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1b2d03318aac4ab4bfef8d562ce4a65c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRoundedRecipeInputTests; 2026-10-29T18:48:14
+===== modTestSectionRecipes.RunHollowRecipeInputTests =====
+SUITE_STARTED: modTestSectionRecipes.RunHollowRecipeInputTests; 2026-10-29T18:48:15
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=24864; workingSet=137613312; privateBytes=110657536; cpu=52.671875
+PASS: hollow.input.0
+PASS: hollow.input.1
+PASS: hollow.input.2
+PASS: hollow.input.3
+PASS: hollow.input.4
+PASS: hollow.input.5
+PASS: hollow.input.6
+PASS: hollow.input.7
+PASS: hollow.input.8
+PASS: hollow.input.9
+PASS: hollow.input.10
+PASS: hollow.input.11
+PASS: hollow.input.12
+PASS: hollow.input.13
+PASS: hollow.input.14
+PASS: hollow.input.15
+PASS: hollow.input.16
+PASS: hollow.input.17
+PASS: hollow.input.18
+PASS: hollow.input.19
+PASS: hollow.input.20
+PASS: hollow.input.21
+TOTAL HOLLOW INPUT: passed=22; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1b2d03318aac4ab4bfef8d562ce4a65c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunHollowRecipeInputTests; 2026-10-29T18:48:42
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

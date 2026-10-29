@@ -216,7 +216,8 @@ Public Function RunRecipeSetbackInputTests() As String
     Set changed = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(parameters, faces, True))
     number = Err.Number: reason = Err.Description: Err.Clear
     On Error GoTo Failed
-    TestCheck "rounded.active.empty.rejected", number <> 0 And changed Is Nothing
+    TestCheck "rounded.active.empty.isZero", number = 0 And Not changed Is Nothing
+    If Not changed Is Nothing Then TestNear "rounded.active.empty.coordinate", changed.X(1), original.X(1)
     rounded.Cells(row, 6).Value2 = -1#
     On Error Resume Next
     Set changed = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(parameters, faces, True))
@@ -253,6 +254,7 @@ Public Function RunRecipeSetbackInputTests() As String
     TestCheck "hollow.other.projections.unchanged", TestGroupCount(changed, "Opening.B.Bottom") = TestGroupCount(original, "Opening.B.Bottom")
     TestNear "hollow.concrete.unchanged", def.ConcreteDomain.Area, geometryArea
     hollow.Formula = savedHollow
+    TestUnifiedRebarPaths
     mReport = mReport & "TOTAL_RECIPE_SETBACK_INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 Restore:
     On Error Resume Next
@@ -266,6 +268,112 @@ Failed:
     mFailed = mFailed + 1: mReport = mReport & "FAIL: runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
     Resume Restore
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет общий путь по аналитическим координатам; источник — реальные таблицы рецептов, без расчёта НДС.
+Private Sub TestUnifiedRebarPaths()
+    Dim values As Variant, table As CSectionInputReader, key As Variant, recipe As ISectionRecipe, definition As CSectionDefinition
+    Dim path As CGeometryPath, x As Double, y As Double, tx As Double, ty As Double, reference As String
+    Dim facade As CSectionDefinitionBuilder, contour As CGeometryPath, options As CRebarRuleOptions, layout As CRebarLayout
+    Dim i As Long, minX As Double, maxX As Double, code As Long, reason As String
+    values = TestFixtureRecipeValues("rngRectanglesGeometry")
+    Set table = TestFixtureInput(values)
+    TestFixtureSetInput values, "General", "Shape", "val", "OneRect"
+    TestFixtureSetInput values, "General", "B1", "val", 1000#: TestFixtureSetInput values, "General", "H1", "val", 600#
+    For Each key In table.RowKeys("Main")
+        TestFixtureSetInput values, "Main", CStr(key), "n", 0: TestFixtureSetInput values, "Main", CStr(key), "d", 0#
+        TestFixtureSetInput values, "Main", CStr(key), "as", Empty
+        TestFixtureSetInput values, "Main", CStr(key), "s0", Empty: TestFixtureSetInput values, "Main", CStr(key), "s1", Empty
+        TestFixtureSetInput values, "Extra", CStr(key), "d2", 0#: TestFixtureSetInput values, "Extra", CStr(key), "d3", 0#
+    Next key
+    TestFixtureSetInput values, "Main", "R1.Left", "as", 30#: TestFixtureSetInput values, "Main", "R1.Right", "as", 70#
+    TestFixtureSetInput values, "Main", "R1.Bottom", "as", 90#: TestFixtureSetInput values, "Main", "R1.Top", "as", 50#
+    TestFixtureSetInput values, "Main", "R1.Top", "n", 3: TestFixtureSetInput values, "Main", "R1.Top", "d", 20#
+    TestFixtureSetInput values, "Main", "R1.Top", "s0", 10#: TestFixtureSetInput values, "Main", "R1.Top", "s1", 20#
+    Set recipe = New CSectionRecipeRectangles
+    Set definition = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values)
+    Set path = definition.Path("B1.as_1")
+    path.AtDistance 0#, x, y, tx, ty: TestNear "unified.rectangle.start.x", x, 30#: TestNear "unified.rectangle.start.y", y, 550#
+    path.AtDistance path.Length, x, y, tx, ty: TestNear "unified.rectangle.end.x", x, 930#
+    Set layout = TestFixtureAnnotatedLayout(definition): minX = 1E+30: maxX = -1E+30
+    For i = 1 To layout.Count
+        minX = GeomMin(minX, layout.X(i)): maxX = GeomMax(maxX, layout.X(i))
+        TestNear "unified.rectangle.bar.y." & CStr(i), layout.Y(i), 550#
+    Next i
+    TestCheck "unified.rectangle.count", layout.Count = 3
+    TestNear "unified.rectangle.s0", minX, 40#: TestNear "unified.rectangle.s1", maxX, 910#
+    TestFixtureSetInput values, "Main", "R1.Right", "as", Empty
+    Set definition = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values)
+    Set path = definition.Path("B1.as_1"): path.AtDistance path.Length, x, y, tx, ty
+    TestNear "unified.disabled.blank.as.zero", x, 1000#
+    TestFixtureSetInput values, "Main", "R1.Top", "s0", Empty: TestFixtureSetInput values, "Main", "R1.Top", "s1", Empty
+    Set layout = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values))
+    TestCheck "unified.rectangle.blank.s.accepted", layout.Count = 3
+    For Each key In Array(-1#, "not a length", CVErr(xlErrValue))
+        TestFixtureSetInput values, "Main", "R1.Top", "s0", key
+        code = 0: reason = "": Set definition = Nothing
+        On Error Resume Next
+        Set definition = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values)
+        code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo 0
+        TestCheck "unified.invalid.s.rejected." & CStr(VarType(key)), code <> 0 And definition Is Nothing And InStr(reason, "rngRectanglesGeometry[") > 0
+    Next key
+
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "Test.Unified"
+    Set contour = facade.RectanglePath("Source", 0#, 0#, 1000#, 600#, "Bottom", "Right", "Top", "Left")
+    Set contour = facade.OffsetContour("Axis", "Source", Array("Left", "Right", "Top", "Bottom"), Array(30#, 70#, 50#, 90#), Array("left.as", "right.as", "top.as", "bottom.as"))
+    Set path = facade.Chain("Top", "Axis", "Top", 1#, "Top", 0#, False)
+    facade.Outer "OUTER", "Source"
+    Set options = New CRebarRuleOptions: options.EndMode = ExcludeBoth: options.StartSetback = 10#: options.EndSetback = 20#
+    facade.RebarByCount "Test.Main", path.ID, 2, 20#, options
+    Set layout = TestFixtureAnnotatedLayout(facade.Finish)
+    TestNear "unified.excludeBoth.first", layout.X(1), 330#: TestNear "unified.excludeBoth.last", layout.X(2), 620#
+
+    Dim faces As Variant, dimensions As Variant, edge As TRegionEdge, arcFound As Boolean
+    faces = Array(Array(20#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(80#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(60#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"))
+    dimensions = Array(1000#, 600#, 0#, 0#, 100#, 100#, 0#, 0#)
+    Set definition = TestFixtureRoundedDefinition(dimensions, faces)
+    Set path = definition.Path("H.Left")
+    TestNear "unified.pointed.left.length", path.Length, 460# + 80# * GEOM_PI
+    path.AtDistance 20#, x, y, tx, ty
+    TestNear "unified.pointed.arc.start.x", x, -400#: TestNear "unified.pointed.arc.start.y", y, 280#
+    path.AtDistance 20# + 40# * GEOM_PI, x, y, tx, ty
+    TestNear "unified.pointed.arc.end.x", x, -480#: TestNear "unified.pointed.arc.end.y", y, 200#
+    Set layout = TestFixtureAnnotatedLayout(definition)
+    TestCheck "unified.pointed.variable.as.layout", layout.Count > 0
+    faces(0) = Array(20#, 20#, 3, 12#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+    Set layout = TestFixtureAnnotatedLayout(TestFixtureRoundedDefinition(dimensions, faces))
+    TestCheck "unified.pointed.variable.as.dependent", layout.Count > 12
+    Set path = definition.Path("B.Top"): path.AtDistance 0#, x, y, tx, ty
+    TestNear "unified.pointed.top.start.x", x, -400#: TestNear "unified.pointed.top.start.y", y, 260#
+
+    faces = Array(faces(0), faces(1), faces(2), faces(3), _
+        Array(30#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(70#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(50#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
+        Array(90#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"))
+    Set definition = TestFixtureHollowDefinition(Array(1000#, 600#, 0#, 400#, 200#, 0#), faces)
+    Set path = definition.Path("B.Top"): path.AtDistance 0#, x, y, tx, ty
+    TestNear "unified.hollow.outer.start.x", x, -480#: TestNear "unified.hollow.outer.start.y", y, 260#
+    path.AtDistance path.Length, x, y, tx, ty: TestNear "unified.hollow.outer.end.x", x, 420#
+    Set path = definition.Path("Opening.B.Top"): path.AtDistance 0#, x, y, tx, ty
+    TestNear "unified.hollow.opening.start.x", x, -230#: TestNear "unified.hollow.opening.start.y", y, 150#
+    path.AtDistance path.Length, x, y, tx, ty: TestNear "unified.hollow.opening.end.x", x, 270#
+    Set layout = TestFixtureAnnotatedLayout(definition)
+    TestCheck "unified.hollow.variable.as.projections", TestGroupCount(layout, "Opening.B.Top") > 0
+
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "Test.Collapsed"
+    Set contour = facade.RectanglePath("Source", 0#, 0#, 100#, 100#, "Bottom", "Right", "Top", "Left")
+    code = 0: reason = ""
+    On Error Resume Next
+    Set contour = facade.OffsetContour("Axis", "Source", Array("Left", "Right", "Top", "Bottom"), Array(60#, 60#, 10#, 10#), Array("left.as", "right.as", "top.as", "bottom.as"))
+    code = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "unified.disappearing.side.rejected", code <> 0 And InStr(reason, "исчез") > 0 And InStr(reason, "left.as") > 0 And InStr(reason, "right.as") > 0
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Считает физические стержни, которые состоят в указанной группе, включая дополнительные принадлежности.

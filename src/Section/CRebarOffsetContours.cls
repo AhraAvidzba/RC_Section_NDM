@@ -89,7 +89,7 @@ Friend Sub Initialize(ByVal definition As CSectionDefinition, ByRef rules() As T
         If Not source.IsClosed Then Fail "Исходная фигура для заданного as должна быть замкнутой.", reference
         If IsArray(mLinks(i).SourceSegments) Then
             For Each pathID In mLinks(i).SourceSegments
-                If Not source.HasSegmentID(CStr(pathID)) Then Fail "В связи с контуром указан несуществующий исходный участок.", reference
+                If Not source.HasSegmentID(CStr(pathID)) And Not source.HasCollapsedSegmentID(CStr(pathID)) Then Fail "В связи с контуром указан несуществующий исходный участок.", reference
             Next pathID
         End If
         area = 0#
@@ -113,7 +113,14 @@ Friend Sub Initialize(ByVal definition As CSectionDefinition, ByRef rules() As T
             paths = definition.TargetPaths(mRules(main).Target)
             For Each pathID In paths
                 Set axis = definition.Path(CStr(pathID))
-                RegisterAxis i, axis, source, inward, reference
+                Dim boundary As CGeometryPath, originalBoundary As CGeometryPath
+                Set boundary = axis.OffsetBoundary: Set originalBoundary = Nothing
+                If Not boundary Is Nothing Then Set originalBoundary = boundary.VariableOffsetSource
+                If originalBoundary Is source Then
+                    RegisterContourAxis i, axis, source, inward, reference
+                Else
+                    RegisterAxis i, axis, source, inward, reference
+                End If
             Next pathID
         End If
     Next i
@@ -129,6 +136,35 @@ InvalidMetadata:
     reason = Err.Description: number = Err.Number: owner = Err.Source
     If Len(reference) > 0 And InStr(reason, reference) = 0 Then Fail reason, reference
     Err.Raise number, owner, reason
+End Sub
+
+' У общего смещения соединительные отрезки не являются новыми бетонными гранями.
+' Проверяет происхождение и опоры реальных участков Main; исходные дуги учитывает и после их исчезновения.
+Private Sub RegisterContourAxis(ByVal link As Long, ByVal axis As CGeometryPath, ByVal source As CGeometryPath, _
+        ByVal distance As Double, ByVal reference As String)
+    Dim i As Long, j As Long, part As TRegionEdge, original As TRegionEdge, shifted As TRegionEdge
+    Dim direction As Double, tx As Double, ty As Double, sx As Double, sy As Double, id As String
+    If Not IsArray(mLinks(link).SourceSegments) Or mLinks(link).NormalSign = 0# Or distance = 0# Then _
+        Fail "Для пути общего контура укажите исходные участки и направление Main.", reference
+    direction = mLinks(link).NormalSign * Sgn(distance)
+    For i = 1 To axis.SegmentCount
+        id = axis.SourceSegmentID(i)
+        If source.HasSegmentID(id) Then
+            If Not SelectedSource(link, id) Then Fail "Участок Main не принадлежит заданной группе общего контура.", reference
+            j = source.SegmentIndex(id): source.CopySegment j, original: axis.CopySegment i, part
+            mOffset.ShiftEdge original, distance, shifted, reference
+            If Not SameSupport(part, shifted) Then Fail "Опора Main не соответствует исходному участку и заданному as.", reference
+            modGeometryPrimitives.EdgeTangent part, 0.5, tx, ty: modGeometryPrimitives.EdgeTangent shifted, 0.5, sx, sy
+            If Sgn(tx * sx + ty * sy) <> direction Then Fail "Направление Main не соответствует направлению в бетон.", reference
+        End If
+    Next i
+    For j = 1 To source.SegmentCount
+        If SelectedSource(link, source.SegmentID(j)) Then
+            AppendPart link
+            source.CopySegment j, mParts(mPartCount).Edge
+            mParts(mPartCount).LinkIndex = link: mParts(mPartCount).Distance = distance: mParts(mPartCount).Direction = direction
+        End If
+    Next j
 End Sub
 
 ' Проверяет координаты после нормального и до касательного смещения.

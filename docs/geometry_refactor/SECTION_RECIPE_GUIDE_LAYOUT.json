@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "7f1e7b269073fb86d10624f92391de0ef18bc5b16a5503ec7289fc8f48761426",
+  "bodySHA256": "cd2702074b86bc8989b464f1191d0d4f0a06a5f639313b4ca2c055b382c29124",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "3b4b41cdcbba05b7d42f390973482b86050f833e707ecc25ca5b0eb90b0a087a",
-    "src/Common/modSectionRecipeApiGuide.bas": "fdf0667c10d742654f154dfd2d1534bab1088cdb2035d1958f14cc38e2b031b5"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "581221db2684fff35a29bc7cefdef15a83526770b284379db1a51e4137234729",
+    "src/Common/modSectionRecipeApiGuide.bas": "359b3b517173b6a3fc7ab14f7e567cf1209fd720e03269733f5a088896a0e14b"
   },
   "rows": [
     {
@@ -168,10 +168,16 @@
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 27
+    },
+    {
+      "text": "Общий путь армирования строится командой `OffsetContour`: группы исходных прямых и дуг получают свои `as`, затем `Chain` выбирает сторону. `s0/s1` обрезают этот путь по длине, а правило размещения (включая `ExcludeBoth`) применяется к оставшемуся участку. В рецепте пустые `s0/s1` читаются через `OptionalRowOffset`. Заданный `as` отключённой стороны сохраняется; пустой принимается за ноль. Активный ряд по-прежнему требует `as > d/2`.",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 29
     }
   ],
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 166
+  "members": 167
 }

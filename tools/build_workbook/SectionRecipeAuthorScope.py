@@ -20,7 +20,7 @@ SECTIONS = [
         ('CSectionDefinitionBuilder', 'CirclePath LinePath ArcPath RectanglePath RoundedPolygon AdjacentRectangles AddPath Outer Opening'),
     ]),
     ('04', 'Линии центров стержней и преобразования', [
-        ('CSectionDefinitionBuilder', 'Offset OffsetRoundedPolygon ConstrainLine Chain Slice Transform PathGroup'),
+        ('CSectionDefinitionBuilder', 'Offset OffsetRoundedPolygon OffsetContour ConstrainLine Chain Slice Transform PathGroup'),
     ]),
     ('05', 'Размещение арматуры', [
         ('CSectionDefinitionBuilder', 'RebarByCount RebarByMaxStep RebarByFixedStep RebarAtStations RebarDependent RebarProjected RebarContour RebarContourBaseline'),

@@ -1,0 +1,13 @@
+{
+  "Status": "PREPARED_NOT_LAUNCHED_WAIT_DIRECTED_NATIVE_SOURCE_COMMIT",
+  "ExpectedCore": 182,
+  "CoverageVersion": 7,
+  "FocusedSingles": 122,
+  "FullFocusedRequired": true,
+  "ForecastHours": 4.5,
+  "FinalReviewReserveMinutes": 40,
+  "OverallDeadline": "2026-10-30T11:00:00+03:00",
+  "TaskCreated": false,
+  "AuthorizationProof": "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/UserFullAuthorization.json",
+  "Change": "Shared variable-as rebar path; preserve side directions and EndMode; blank s=0; disabled as given or0"
+}

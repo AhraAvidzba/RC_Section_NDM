@@ -1,0 +1,7 @@
+{
+  "ReceivedUTC": "2026-10-29T16:06:19.1027347+00:00",
+  "Question": "Подтвердите итоговый вариант для основной книги: заменить её чистой актуальной сборкой или сохранить её ручной VBA и данные?",
+  "UserAnswer": "Заменить основной файл чистой сборкой; резерв прежней книги оставить",
+  "SupersedesEarlierPreserveManualVBAAnswer": true,
+  "PreviousAutoReviewRejectionPreserved": true
+}
