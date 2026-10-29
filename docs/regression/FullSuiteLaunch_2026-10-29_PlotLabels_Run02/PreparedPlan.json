@@ -1,0 +1,35 @@
+{
+  "Status": "PREPARED_NOT_LAUNCHED_WAIT_CURRENT_ALL_OWN_AND_PATCH",
+  "PreviousLaunch": "docs/regression/FullSuiteLaunch_2026-10-28_PlotLabels_Run01",
+  "DeferredFix": "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix04/DeferredSourceManifest.json",
+  "ExpectedCore": 182,
+  "CoverageVersion": 7,
+  "FocusedSingles": 122,
+  "FullFocusedRequired": true,
+  "ForecastHours": 4.5,
+  "FinalReviewReserveMinutes": 40,
+  "OverallDeadline": "2026-10-29T12:00:00+03:00",
+  "TaskCreated": false,
+  "ExcelCreated": false,
+  "LaunchRequestCreated": false,
+  "RequiresFreshSourceEpochAfterPatch": true,
+  "RequiresAllPreviousOwnExited": true,
+  "DeferredFixes": [
+    "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix04/DeferredSourceManifest.json",
+    "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix02/DeferredSourceManifest.json",
+    "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix03/DeferredSourceManifest.json"
+  ],
+  "KnownTestOnlyDefects": [
+    "Horizontal visible profile row is valid",
+    "Test-only elapsed time crosses midnight",
+    "Six expected group captions are obsolete",
+    "Optional direct load-ID list is empty before load cases are entered"
+  ],
+  "ExpectedFrozenInputCount": 505,
+  "PreparedTerminalReviewAndClosure": true,
+  "AdditionalDirectedOwnClosure": "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix03/OwnClosure01.json",
+  "AdditionalDirectedOwnClosures": [
+    "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix03/OwnClosure01.json",
+    "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix04/OwnClosure01.json"
+  ]
+}

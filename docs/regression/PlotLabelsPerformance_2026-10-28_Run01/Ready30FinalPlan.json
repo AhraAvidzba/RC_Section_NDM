@@ -3,7 +3,11 @@
   "UserInstruction": "В конце книге с 30 сочетаниями тоже обнови, что там было актуальный код",
   "CanonicalDestination": "workbook/output/NDM_Test_1232_30/RC_Section_NDM.xlsm",
   "HistoricalThirtySource": "C:/Users/avidzba/.codex/visualizations/2026/10/12/01a12ece-8192-7141-89b3-f83f1176184c/ActionLatency_2026-10-28_Run01/StorageRun02/Heavy1232_30_Optimized_ExcelResults.xlsm",
-  "ExpectedOriginalConcreteRebarLoads": [1232, 8, 30],
+  "ExpectedOriginalConcreteRebarLoads": [
+    1232,
+    8,
+    30
+  ],
   "ExpectedHistoricalInputErrCount": 4,
   "PreserveUserOtherCopy": "workbook/output/NDM_Test_1232_30/RC_Section_NDM_ok.xlsm",
   "PreserveUserOtherCopySHA256": "31F188692A01CC421A37CF962598778A5AD1FE6D9AB5D96DD41C29389C0919F7",
@@ -17,5 +21,6 @@
     "A full 30 calculation in File can produce the matching .ndm; load its CCalculationSnapshot before switching Config back to Excel, then UpdateSectionResultsForWorkbook with that prepared snapshot to restore all Excel tables without recalculation. Remove any private helper by transplanting the accepted production vbaProject.bin before publication.",
     "Verify the exact final ready workbook read-only: all 175+6 native components equal accepted main, original geometry and 30 loads preserved, correct Worst selection and meaningful saved results. Preserve companion File snapshot if created. Do not publish a diagnostic helper.",
     "Publish canonical thirty workbook; latest explicit update request authorizes restoring this path despite earlier user deletion. Do not touch _ok or foreign execution_report files. Include approved ready artifact and final proofs in the final commit, main integration and push. Give both main and ready workbook links."
-  ]
+  ],
+  "ExactAcceptedReadyGate": "After actual final main PASS rerun TestCompareReadyStructure01.py against that exact SHA before code-only packaging. Native saved/reopened ready gate now exercises each choice and rejects comma-joined, semicolon-joined and unknown values for five fixed lists and the visible four-profile row; temporary cell values restored, no save/macros."
 }

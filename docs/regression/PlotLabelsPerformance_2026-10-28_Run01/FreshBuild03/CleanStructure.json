@@ -1,0 +1,465 @@
+﻿{
+    "Settings":  {
+                     "Plot.PrincipalAxesMode":  {
+                                                    "Value":  "Transformed",
+                                                    "Address":  "$B$139"
+                                                },
+                     "Stability.SP35.PhiP":  {
+                                                 "Value":  1,
+                                                 "Address":  "$B$80"
+                                             },
+                     "Stability.AccidentalEccentricityUser2":  {
+                                                                   "Value":  10,
+                                                                   "Address":  "$B$72"
+                                                               },
+                     "Solver.ToleranceN":  {
+                                               "Value":  0.0001,
+                                               "Address":  "$B$41"
+                                           },
+                     "Plot.Color.ConcreteCompression":  {
+                                                            "Value":  "125,35,210",
+                                                            "Address":  "$B$148"
+                                                        },
+                     "Capacity.InitialLambda":  {
+                                                    "Value":  1,
+                                                    "Address":  "$B$56"
+                                                },
+                     "SLS.Crack.SP35.RowTolerance":  {
+                                                         "Value":  50,
+                                                         "Address":  "$B$101"
+                                                     },
+                     "SLS.Crack.Phi3":  {
+                                            "Value":  1,
+                                            "Address":  "$B$95"
+                                        },
+                     "SLS.Crack.Phi3Mode":  {
+                                                "Value":  "Auto",
+                                                "Address":  "$B$94"
+                                            },
+                     "Plot.Color.ConcreteTension":  {
+                                                        "Value":  "0,155,85",
+                                                        "Address":  "$B$149"
+                                                    },
+                     "General.DiagramExtension":  {
+                                                      "Value":  "Yes",
+                                                      "Address":  "$B$22"
+                                                  },
+                     "Plot.LoadApplicationPointEnabled":  {
+                                                              "Value":  "Yes",
+                                                              "Address":  "$B$140"
+                                                          },
+                     "General.WorstCombinationCriterion":  {
+                                                               "Value":  "StrengthCapacity",
+                                                               "Address":  "$B$18"
+                                                           },
+                     "Stability.Mu2":  {
+                                           "Value":  2,
+                                           "Address":  "$B$66"
+                                       },
+                     "Stability.PhiLMode":  {
+                                                "Value":  "Auto",
+                                                "Address":  "$B$74"
+                                            },
+                     "Capacity.MaxLambda":  {
+                                                "Value":  1024,
+                                                "Address":  "$B$54"
+                                            },
+                     "AutoCAD.Export.LabelMode":  {
+                                                      "Value":  "NamesAndValues",
+                                                      "Address":  "$B$120"
+                                                  },
+                     "AutoCAD.Export.ContourEnabled":  {
+                                                           "Value":  "Yes",
+                                                           "Address":  "$B$117"
+                                                       },
+                     "Plot.Color.RebarCompression":  {
+                                                         "Value":  "30,80,220",
+                                                         "Address":  "$B$146"
+                                                     },
+                     "AutoCAD.Layer.RebarTension":  {
+                                                        "Value":  "Anno_Rebar_Tension",
+                                                        "Address":  "$B$124"
+                                                    },
+                     "AutoCAD.Color.ConcreteTension":  {
+                                                           "Value":  9,
+                                                           "Address":  "$B$126"
+                                                       },
+                     "Load.ReferenceOffsetX":  {
+                                                   "Value":  0,
+                                                   "Address":  "$B$13"
+                                               },
+                     "Stability.SP63.Ks":  {
+                                               "Value":  0.7,
+                                               "Address":  "$B$76"
+                                           },
+                     "Plot.ResultLabelsEnabled":  {
+                                                      "Value":  "No",
+                                                      "Address":  "$B$136"
+                                                  },
+                     "AutoCAD.Common.ConcreteLayer":  {
+                                                          "Value":  "Concrete",
+                                                          "Address":  "$B$109"
+                                                      },
+                     "AutoCAD.Common.OpeningContourLayer":  {
+                                                                "Value":  "RC_NDM_Opening",
+                                                                "Address":  "$B$112"
+                                                            },
+                     "Plot.AutoUpdateAfterCalculation":  {
+                                                             "Value":  "Yes",
+                                                             "Address":  "$B$134"
+                                                         },
+                     "Stability.AccidentalEccentricityPlanes":  {
+                                                                    "Value":  "OnlyMomentPlane",
+                                                                    "Address":  "$B$73"
+                                                                },
+                     "AutoCAD.Color.Neutral":  {
+                                                   "Value":  8,
+                                                   "Address":  "$B$130"
+                                               },
+                     "Output.CombinationMode":  {
+                                                    "Value":  "Worst",
+                                                    "Address":  "$B$17",
+                                                    "ValidationFormula":  "Worst;User"
+                                                },
+                     "Plot.ResultGradient":  {
+                                                 "Value":  "Yes",
+                                                 "Address":  "$B$135"
+                                             },
+                     "Plot.AxisLabelsEnabled":  {
+                                                    "Value":  "Yes",
+                                                    "Address":  "$B$141"
+                                                },
+                     "Stability.AccidentalEccentricityMode":  {
+                                                                  "Value":  "AutoWithμL",
+                                                                  "Address":  "$B$70"
+                                                              },
+                     "Solver.SecantMaxRestarts":  {
+                                                      "Value":  2,
+                                                      "Address":  "$B$45"
+                                                  },
+                     "Mesh.StepMode":  {
+                                           "Value":  "Auto 0.1",
+                                           "Address":  "$B$31"
+                                       },
+                     "AutoCAD.Common.SectionContourLayer":  {
+                                                                "Value":  "RC_NDM_Contour",
+                                                                "Address":  "$B$111"
+                                                            },
+                     "General.ReformatResultsEnabled":  {
+                                                            "Value":  "Yes",
+                                                            "Address":  "$B$7"
+                                                        },
+                     "Stability.ElementLength":  {
+                                                     "Value":  8000,
+                                                     "Address":  "$B$64"
+                                                 },
+                     "SLS.Crack.Allowable":  {
+                                                 "Value":  0.3,
+                                                 "Address":  "$B$86"
+                                             },
+                     "SLS.Crack.ToleranceLambda":  {
+                                                       "Value":  0.01,
+                                                       "Address":  "$B$88"
+                                                   },
+                     "SLS.Crack.SP35.NeighborRatioLimit":  {
+                                                               "Value":  0.2,
+                                                               "Address":  "$B$102"
+                                                           },
+                     "AutoCAD.Layer.ConcreteCompression":  {
+                                                               "Value":  "Anno_Concrete_Compression",
+                                                               "Address":  "$B$123"
+                                                           },
+                     "Plot.LegendEnabled":  {
+                                                "Value":  "Yes",
+                                                "Address":  "$B$144"
+                                            },
+                     "Stability.Mu1":  {
+                                           "Value":  2,
+                                           "Address":  "$B$65"
+                                       },
+                     "Mesh.BoundarySubdivisions":  {
+                                                       "Value":  2,
+                                                       "Address":  "$B$34"
+                                                   },
+                     "SLS.Crack.SP35.RadiusDiameterMode":  {
+                                                               "Value":  "Max",
+                                                               "Address":  "$B$103"
+                                                           },
+                     "General.NonCriticalMessagesEnabled":  {
+                                                                "Value":  "Yes",
+                                                                "Address":  "$B$6"
+                                                            },
+                     "General.ExecutionReportEnabled":  {
+                                                            "Value":  "Yes",
+                                                            "Address":  "$B$5"
+                                                        },
+                     "Mesh.StepY":  {
+                                        "Value":  50,
+                                        "Address":  "$B$33"
+                                    },
+                     "AutoCAD.Export.ContourFormat":  {
+                                                          "Value":  "Region",
+                                                          "Address":  "$B$118"
+                                                      },
+                     "SLS.Crack.SP35.RebarProfile":  {
+                                                         "Value":  "Periodic",
+                                                         "Address":  "$B$105"
+                                                     },
+                     "SLS.Crack.CoverDistanceMode":  {
+                                                         "Value":  "GlobalExtreme",
+                                                         "Address":  "$B$91"
+                                                     },
+                     "SLS.Crack.Code":  {
+                                            "Value":  "SP35",
+                                            "Address":  "$B$85"
+                                        },
+                     "Solver.Method":  {
+                                           "Value":  "Newton",
+                                           "Address":  "$B$38"
+                                       },
+                     "Solver.ToleranceMx":  {
+                                                "Value":  0.0001,
+                                                "Address":  "$B$42"
+                                            },
+                     "AutoCAD.Layer.ConcreteTension":  {
+                                                           "Value":  "Anno_Concrete_Tension",
+                                                           "Address":  "$B$122"
+                                                       },
+                     "Capacity.BaseLoadSteps":  {
+                                                    "Value":  1,
+                                                    "Address":  "$B$59"
+                                                },
+                     "SLS.Crack.TensionZoneMode":  {
+                                                       "Value":  "Effective",
+                                                       "Address":  "$B$90"
+                                                   },
+                     "Geometry.Source":  {
+                                             "Value":  "Generated",
+                                             "Address":  "$B$25"
+                                         },
+                     "Stability.SP63.DeltaEMin":  {
+                                                      "Value":  0.15,
+                                                      "Address":  "$B$77"
+                                                  },
+                     "Solver.ToleranceMy":  {
+                                                "Value":  0.0001,
+                                                "Address":  "$B$43"
+                                            },
+                     "General.PlateauSlopeFactor":  {
+                                                        "Value":  0.001,
+                                                        "Address":  "$B$21"
+                                                    },
+                     "SLS.Crack.SP35.GroupGapTolerance":  {
+                                                              "Value":  10,
+                                                              "Address":  "$B$100"
+                                                          },
+                     "SLS.Crack.Phi2":  {
+                                            "Value":  0.5,
+                                            "Address":  "$B$93"
+                                        },
+                     "Mesh.CellGeometry":  {
+                                               "Value":  "Contour",
+                                               "Address":  "$B$30",
+                                               "ValidationFormula":  "Adaptive;Contour"
+                                           },
+                     "SLS.Crack.Phi1":  {
+                                            "Value":  1.4,
+                                            "Address":  "$B$92"
+                                        },
+                     "AutoCAD.Color.RebarCompression":  {
+                                                            "Value":  6,
+                                                            "Address":  "$B$129"
+                                                        },
+                     "SLS.Crack.SigmaSCrcAveragingMode":  {
+                                                              "Value":  "AllSelected",
+                                                              "Address":  "$B$97"
+                                                          },
+                     "Capacity.SolutionStrategy":  {
+                                                       "Value":  "Auto",
+                                                       "Address":  "$B$49"
+                                                   },
+                     "Mesh.StepX":  {
+                                        "Value":  50,
+                                        "Address":  "$B$32"
+                                    },
+                     "Load.ReferenceOffsetY":  {
+                                                   "Value":  0,
+                                                   "Address":  "$B$14"
+                                               },
+                     "AutoCAD.Export.CrackInteractionLayer":  {
+                                                                  "Value":  "RC_NDM_CrackArea",
+                                                                  "Address":  "$B$121"
+                                                              },
+                     "AutoCAD.Layer.RebarCompression":  {
+                                                            "Value":  "Anno_Rebar_Compression",
+                                                            "Address":  "$B$125"
+                                                        },
+                     "Solver.MaxIterations":  {
+                                                  "Value":  80,
+                                                  "Address":  "$B$39"
+                                              },
+                     "Capacity.MaxRetries":  {
+                                                 "Value":  0,
+                                                 "Address":  "$B$58"
+                                             },
+                     "Plot.AxisLabelsFontSize":  {
+                                                     "Value":  7.5,
+                                                     "Address":  "$B$142"
+                                                 },
+                     "Plot.ResultLabelSpacing":  {
+                                                     "Value":  100,
+                                                     "Address":  "$B$137"
+                                                 },
+                     "AutoCAD.Color.ConcreteCompression":  {
+                                                               "Value":  5,
+                                                               "Address":  "$B$127"
+                                                           },
+                     "Plot.Enabled":  {
+                                          "Value":  "Yes",
+                                          "Address":  "$B$133"
+                                      },
+                     "Plot.NeutralLineEnabled":  {
+                                                     "Value":  "Yes",
+                                                     "Address":  "$B$138"
+                                                 },
+                     "Geometry.Type":  {
+                                           "Value":  "Rectangles",
+                                           "Address":  "$B$26",
+                                           "ValidationFormula":  "Circle;Rectangles;PointedSection;HollowRectangle"
+                                       },
+                     "Results.SnapshotStorage":  {
+                                                     "Value":  "Excel",
+                                                     "Address":  "$B$8",
+                                                     "ValidationFormula":  "Excel;File"
+                                                 },
+                     "SLS.Crack.PsiS":  {
+                                            "Value":  1,
+                                            "Address":  "$B$98"
+                                        },
+                     "Stability.Code":  {
+                                            "Value":  "SP35",
+                                            "Address":  "$B$63"
+                                        },
+                     "Stability.ZeroMomentEccentricitySign1":  {
+                                                                   "Value":  1,
+                                                                   "Address":  "$B$68"
+                                                               },
+                     "SLS.Crack.SP35.InteractionRadiusMode":  {
+                                                                  "Value":  "6d",
+                                                                  "Address":  "$B$104"
+                                                              },
+                     "AutoCAD.Export.LoadPointEnabled":  {
+                                                             "Value":  "Yes",
+                                                             "Address":  "$B$116"
+                                                         },
+                     "Results.SnapshotName":  {
+                                                  "Value":  "NDM_Snapshot",
+                                                  "Address":  "$B$9"
+                                              },
+                     "AutoCAD.Export.PrincipalAxesMode":  {
+                                                              "Value":  "Transformed",
+                                                              "Address":  "$B$115"
+                                                          },
+                     "Capacity.ToleranceLambda":  {
+                                                      "Value":  0.01,
+                                                      "Address":  "$B$57"
+                                                  },
+                     "Calculation.ZeroMomentPerDepth":  {
+                                                            "Value":  0.0005,
+                                                            "Address":  "$B$15"
+                                                        },
+                     "Stability.SP35.NOverNcrLimit":  {
+                                                          "Value":  0.7,
+                                                          "Address":  "$B$81"
+                                                      },
+                     "AutoCAD.Common.RebarLayer":  {
+                                                       "Value":  "Reinf",
+                                                       "Address":  "$B$110"
+                                                   },
+                     "Mesh.MinElementArea":  {
+                                                 "Value":  1E-06,
+                                                 "Address":  "$B$29"
+                                             },
+                     "Plot.ContourEnabled":  {
+                                                 "Value":  "Yes",
+                                                 "Address":  "$B$143"
+                                             },
+                     "Stability.SP63.DeltaEMax":  {
+                                                      "Value":  1.5,
+                                                      "Address":  "$B$78"
+                                                  },
+                     "Capacity.SearchMethod":  {
+                                                   "Value":  "Bisection",
+                                                   "Address":  "$B$55"
+                                               },
+                     "Capacity.SolverMaxIterations":  {
+                                                          "Value":  60,
+                                                          "Address":  "$B$50"
+                                                      },
+                     "SLS.Crack.InitiationSolutionStrategy":  {
+                                                                  "Value":  "Auto",
+                                                                  "Address":  "$B$87"
+                                                              },
+                     "AutoCAD.Export.ExportCrackInteractionContour":  {
+                                                                          "Value":  "Yes",
+                                                                          "Address":  "$B$119"
+                                                                      },
+                     "Plot.Color.RebarTension":  {
+                                                     "Value":  "210,30,20",
+                                                     "Address":  "$B$147"
+                                                 },
+                     "Stability.SystemType":  {
+                                                  "Value":  "Determinate",
+                                                  "Address":  "$B$67"
+                                              },
+                     "AutoCAD.Export.NeutralLineEnabled":  {
+                                                               "Value":  "Yes",
+                                                               "Address":  "$B$114"
+                                                           },
+                     "Solver.LoadSteps":  {
+                                              "Value":  1,
+                                              "Address":  "$B$40"
+                                          },
+                     "Plot.LegendMode":  {
+                                             "Value":  "Separate",
+                                             "Address":  "$B$145"
+                                         },
+                     "Stability.AccidentalEccentricityUser1":  {
+                                                                   "Value":  10,
+                                                                   "Address":  "$B$71"
+                                                               },
+                     "Stability.ZeroMomentEccentricitySign2":  {
+                                                                   "Value":  1,
+                                                                   "Address":  "$B$69"
+                                                               },
+                     "Output.CombinationID":  {
+                                                  "Value":  null,
+                                                  "Address":  "$B$19"
+                                              },
+                     "Capacity.ToleranceStrain":  {
+                                                      "Value":  1E-05,
+                                                      "Address":  "$B$52"
+                                                  },
+                     "AutoCAD.Color.RebarTension":  {
+                                                        "Value":  1,
+                                                        "Address":  "$B$128"
+                                                    },
+                     "SLS.Crack.PsiMode":  {
+                                               "Value":  "AlwaysCalc",
+                                               "Address":  "$B$96"
+                                           }
+                 },
+    "CleanSnapshotAnchors":  {
+                                 "rngNDMSectionProperties":  "$S$156",
+                                 "rngNDMElementGeometry":  "$BR$156",
+                                 "rngNDMElementResults":  "$BG$156",
+                                 "rngNDMSectionAnnotations":  "$CL$156",
+                                 "rngNDMMaterialDiagrams":  "$AA$156",
+                                 "rngNDMSectionGeometry":  "$A$156",
+                                 "rngNDMSectionContours":  "$AN$156"
+                             },
+    "SheetOrder":  "Config|Сечения|Справка|Расчет|Results",
+    "UserLoadsCopied":  false,
+    "PreviousPlotCopied":  false,
+    "CalculationsOrBehaviorTestsRun":  false
+}

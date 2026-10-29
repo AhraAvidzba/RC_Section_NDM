@@ -1,0 +1,42 @@
+﻿[
+    {
+        "Mode":  "No",
+        "Passed":  1326,
+        "Failed":  0,
+        "SaveCloseOpen":  true,
+        "Formula1":  "=$J$39:$M$39",
+        "Source":  "$J$39:$M$39",
+        "SourceRows":  1,
+        "SourceColumns":  4,
+        "Options":  [
+                        "PR1",
+                        "PR2",
+                        "PR3",
+                        "PR4"
+                    ],
+        "EveryOptionAccepted":  true,
+        "JoinedCommaRejected":  true,
+        "JoinedSemicolonRejected":  true,
+        "UnknownRejected":  true
+    },
+    {
+        "Mode":  "Yes",
+        "Passed":  1326,
+        "Failed":  0,
+        "SaveCloseOpen":  true,
+        "Formula1":  "=$J$39:$M$39",
+        "Source":  "$J$39:$M$39",
+        "SourceRows":  1,
+        "SourceColumns":  4,
+        "Options":  [
+                        "PR1",
+                        "PR2",
+                        "PR3",
+                        "PR4"
+                    ],
+        "EveryOptionAccepted":  true,
+        "JoinedCommaRejected":  true,
+        "JoinedSemicolonRejected":  true,
+        "UnknownRejected":  true
+    }
+]

@@ -1,0 +1,22 @@
+{
+  "Status": "ISOLATED_TEST_FIX_VERIFIED_ROOT_DEFERRED",
+  "OriginalFullSourceSHA256": "E70746B7171A81B570F9E10B50ACBE28704B6FB95DA9B92F46759F3F6DF43ECA",
+  "OriginalFullCanPass": false,
+  "DriverStillRunning": true,
+  "Failure": "config.dropdown.L71.vertical",
+  "ActualSource": "Config!$J$39:$M$39",
+  "Cause": "Test incorrectly requires a vertical range; Excel accepts the visible horizontal Profile.DisplayName row",
+  "ProductionProblemConfirmed": false,
+  "ProductionChanges": 0,
+  "Candidate": "ParallelFix01/Source/modTestWorkbookInterface.bas",
+  "DirectedNoPassed": 1326,
+  "DirectedYesPassed": 1326,
+  "SavedReopened": true,
+  "EveryOptionAccepted": true,
+  "JoinedAndUnknownRejected": true,
+  "OwnDirectedPID6972": "Absent",
+  "RootSourceUnchanged": true,
+  "ApplyOnlyAfterAllFullProcessesEnd": true,
+  "FullRepeatRequired": true,
+  "RepeatAuthorizedOnlyIfWholeRemainingCompositionFitsBefore": "2026-10-29T12:00:00+03:00"
+}

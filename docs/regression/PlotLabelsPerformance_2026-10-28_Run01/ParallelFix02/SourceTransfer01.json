@@ -1,0 +1,10 @@
+{
+  "Status": "TEST_TIMER_TRANSFERRED_AFTER_ALL_FULL_OWN_EXITED",
+  "AtUTC": "2026-10-29T00:28:57.724714+00:00",
+  "Source": "tests/modTestMaterialDiagrams.bas",
+  "OriginalSHA256": "0D6CF1055C575CC2285D01C1F1D90308279A5E86CDB477791B6D6CB5AEAC48ED",
+  "CandidateSHA256": "BC581B09A51296938450766DCEDCD5476AA0C65935800005F186C70177491564",
+  "ProductionChanged": false,
+  "OnlyElapsedReportChanged": true,
+  "CompileAndFullRepeatStillRequired": true
+}

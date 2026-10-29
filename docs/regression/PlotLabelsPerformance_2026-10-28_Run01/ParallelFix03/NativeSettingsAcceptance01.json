@@ -1,0 +1,22 @@
+﻿[
+    {
+        "Mode":  "No",
+        "Passed":  620,
+        "Failed":  0,
+        "SaveCloseOpen":  true,
+        "ExpectedCaption":  "Нагрузки, сочетания и диаграммы материалов",
+        "VisibleCaptionCount":  1,
+        "AllOriginalAssertionsPreserved":  true,
+        "ProductionChanged":  false
+    },
+    {
+        "Mode":  "Yes",
+        "Passed":  620,
+        "Failed":  0,
+        "SaveCloseOpen":  true,
+        "ExpectedCaption":  "Нагрузки, сочетания и диаграммы материалов",
+        "VisibleCaptionCount":  1,
+        "AllOriginalAssertionsPreserved":  true,
+        "ProductionChanged":  false
+    }
+]

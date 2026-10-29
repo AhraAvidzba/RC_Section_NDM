@@ -1,0 +1,4 @@
+{
+  "Status": "NO_SOURCE_CHANGE",
+  "Reason": "Nested PS5.1 inherited module discovery without Utility; explicit native Utility import added before unchanged closure verifier. Failure occurred before any source write."
+}

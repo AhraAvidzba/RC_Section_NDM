@@ -1,0 +1,46 @@
+{
+  "Status": "PASS_ISOLATED_CURRENT_CAPTION_TEST_ONLY",
+  "AcceptedPassed": 1240,
+  "AcceptedFailed": 0,
+  "OriginalSixFailuresReproduced": true,
+  "SaveCloseOpenBothModes": true,
+  "ProductionChanged": false,
+  "RootSourceUnchanged": true,
+  "Primary": [
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix03\\NativeSettings01\\Original_No.txt",
+      "Bytes": 99928,
+      "SHA256": "9C478754F34AEC818A2C8CA2C20B6290A9B8BC41F8C03ECAAF87E7B157783A63",
+      "AllBytesRead": true,
+      "Passed": 614,
+      "Failed": 6,
+      "Failures": [
+        "FAIL: settings.missing.section.Load.ReferenceOffsetX",
+        "FAIL: settings.missing.section.Load.ReferenceOffsetY",
+        "FAIL: settings.missing.section.Calculation.ZeroMomentPerDepth",
+        "FAIL: settings.missing.section.General.WorstCombinationCriterion",
+        "FAIL: settings.missing.section.General.PlateauSlopeFactor",
+        "FAIL: settings.missing.section.General.DiagramExtension"
+      ]
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix03\\NativeSettings01\\Candidate_No.txt",
+      "Bytes": 99916,
+      "SHA256": "F4079317271CE1AB3C59BC77F47D229979D7911E13CF1457AE0F8B4BD9E9E322",
+      "AllBytesRead": true,
+      "Passed": 620,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix03\\NativeSettings01\\Candidate_Yes.txt",
+      "Bytes": 99916,
+      "SHA256": "F4079317271CE1AB3C59BC77F47D229979D7911E13CF1457AE0F8B4BD9E9E322",
+      "AllBytesRead": true,
+      "Passed": 620,
+      "Failed": 0,
+      "Failures": []
+    }
+  ],
+  "FullPass": false
+}

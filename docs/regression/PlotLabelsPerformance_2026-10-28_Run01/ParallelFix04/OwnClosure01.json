@@ -1,0 +1,20 @@
+{
+  "AtUTC": "2026-10-29T00:28:20.7049374+00:00",
+  "AllOwnClosed": true,
+  "Identities": [
+    {
+      "PID": 11400,
+      "StartTicksUTC": "639288300172676694",
+      "State": "Absent",
+      "ForceKilled": false,
+      "Evidence": "NativeDynamic01"
+    },
+    {
+      "PID": 2076,
+      "StartTicksUTC": "639288303604979522",
+      "State": "Absent",
+      "ForceKilled": false,
+      "Evidence": "NativeDynamic02"
+    }
+  ]
+}

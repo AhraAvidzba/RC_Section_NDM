@@ -46,8 +46,11 @@ Public Function RunMaterialDiagramTests() As String
     TestCachedMaterialTransitions stats
     TestPlateauSlope stats
 
+    Dim elapsedSeconds As Double
+    elapsedSeconds = Timer - t0
+    If elapsedSeconds < 0# Then elapsedSeconds = elapsedSeconds + 86400# ' Timer сбрасывается в полночь; набор длится меньше суток.
     TestAppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
-        "; elapsedSec=" & TestFormatNumberInvariant(Timer - t0)
+        "; elapsedSec=" & TestFormatNumberInvariant(elapsedSeconds)
     RunMaterialDiagramTests = stats.Report
     Exit Function
 

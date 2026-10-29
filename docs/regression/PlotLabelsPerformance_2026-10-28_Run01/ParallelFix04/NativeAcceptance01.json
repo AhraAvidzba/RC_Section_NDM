@@ -1,0 +1,90 @@
+﻿{
+    "Status":  "PASS_ISOLATED_DYNAMIC_ID_AND_HORIZONTAL_PROFILE_TESTS",
+    "Original":  {
+                     "Name":  "Original_Empty",
+                     "Passed":  1323,
+                     "Failed":  2,
+                     "Failures":  [
+                                      "FAIL: config.dropdown.L71.vertical",
+                                      "FAIL: config.dropdown.B19.notEmpty"
+                                  ],
+                     "SaveCloseOpen":  true,
+                     "ReportSHA256":  "703676CAA262B4E3BBCCB172B46BD1219D2FCB9BA8A4D5A3927058F562735F70"
+                 },
+    "Records":  [
+                    {
+                        "Name":  "Normal_No",
+                        "Passed":  1327,
+                        "Failed":  0,
+                        "Failures":  [
+
+                                     ],
+                        "SaveCloseOpen":  true,
+                        "ReportSHA256":  "3FD662A2D62E936D9552729A27686C67CEE765D67AF205A12355AF1357BDB92B"
+                    },
+                    {
+                        "Name":  "Empty_No",
+                        "Passed":  1326,
+                        "Failed":  0,
+                        "Failures":  [
+
+                                     ],
+                        "SaveCloseOpen":  true,
+                        "ReportSHA256":  "EFBA8ACE44AE1AB461EEB59320160CAC3717DBE1EF79605191C41FB11DB0F2A3"
+                    },
+                    {
+                        "Name":  "Normal_Yes",
+                        "Passed":  1327,
+                        "Failed":  0,
+                        "Failures":  [
+
+                                     ],
+                        "SaveCloseOpen":  true,
+                        "ReportSHA256":  "3FD662A2D62E936D9552729A27686C67CEE765D67AF205A12355AF1357BDB92B"
+                    },
+                    {
+                        "Name":  "Empty_Yes",
+                        "Passed":  1326,
+                        "Failed":  0,
+                        "Failures":  [
+
+                                     ],
+                        "SaveCloseOpen":  true,
+                        "ReportSHA256":  "EFBA8ACE44AE1AB461EEB59320160CAC3717DBE1EF79605191C41FB11DB0F2A3"
+                    },
+                    {
+                        "Name":  "WrongIdSource_Empty",
+                        "Passed":  1324,
+                        "Failed":  2,
+                        "Failures":  [
+                                         "FAIL: config.dropdown.B19.directLoadIDs",
+                                         "FAIL: config.dropdown.B19.notEmptyOrUnformedLoadIDs"
+                                     ],
+                        "SaveCloseOpen":  true,
+                        "ReportSHA256":  "084FCC8637FAF8F3D15861868E783454A6A44B4667F58DA1FBC93AF69E1EED48"
+                    },
+                    {
+                        "Name":  "EmptyRequiredProfileSource",
+                        "Passed":  1328,
+                        "Failed":  1,
+                        "Failures":  [
+                                         "FAIL: config.dropdown.L71.notEmptyOrUnformedLoadIDs"
+                                     ],
+                        "SaveCloseOpen":  true,
+                        "ReportSHA256":  "19CE4B7A7FCC66BEF7D2C2DCB6E0BB8CB560A711A109D4C00885E2CA789A3A6A"
+                    },
+                    {
+                        "Name":  "Restored_Empty_Yes",
+                        "Passed":  1326,
+                        "Failed":  0,
+                        "Failures":  [
+
+                                     ],
+                        "SaveCloseOpen":  true,
+                        "ReportSHA256":  "EFBA8ACE44AE1AB461EEB59320160CAC3717DBE1EF79605191C41FB11DB0F2A3"
+                    }
+                ],
+    "ProductionChanged":  false,
+    "RootSourceUnchanged":  true,
+    "FullPass":  false
+}

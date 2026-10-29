@@ -1,0 +1,12 @@
+{
+  "Status": "ISOLATED_NOT_APPLIED_FULL_ACTIVE",
+  "Source": "tests/modTestWorkbookInterface.bas",
+  "OriginalSHA256": "0F6FE2AFA0855E1469C540D694F793DB88FCDBCC4F2CA582B1079BA3FF0883A1",
+  "Candidate": "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix01/Source/modTestWorkbookInterface.bas",
+  "CandidateSHA256": "F914BEDB92E8D37DAC76D2A3675A4DE4FF170B29282C253DF10A42569DADE892",
+  "ActualSource": "Config!$J$39:$M$39, visible Profile.DisplayName row",
+  "Fail": "config.dropdown.L71.vertical",
+  "RootUnchanged": true,
+  "ProductionChanged": false,
+  "Reason": "A one-row source is valid Excel validation; the old test incorrectly required a column after the builder was changed to the visible profile row. Per-option Validation.Value acceptance and rejection of unknown values remain mandatory."
+}

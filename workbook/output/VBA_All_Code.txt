@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-28 23:35:14
+Date: 2026-10-29 03:33:19
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -92127,9 +92127,9 @@ Private Sub TestMissingSettingsSectionNavigation(ByRef stats As TConfigTestStats
         "General.WorstCombinationCriterion", "General.PlateauSlopeFactor", "General.DiagramExtension", _
         "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.ReformatResultsEnabled")
     sections = Array("Геометрия", "Геометрия", "Сетка геометрии", "Сетка геометрии", _
-        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", _
-        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", _
-        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", "Общие", "Общие", "Общие")
+        "Нагрузки, сочетания и диаграммы материалов", "Нагрузки, сочетания и диаграммы материалов", _
+        "Нагрузки, сочетания и диаграммы материалов", "Нагрузки, сочетания и диаграммы материалов", _
+        "Нагрузки, сочетания и диаграммы материалов", "Нагрузки, сочетания и диаграммы материалов", "Общие", "Общие", "Общие")
     For index = LBound(keys) To UBound(keys)
         location = settings.InputLocation(CStr(keys(index)))
         TestCheck stats, "settings.missing.section." & CStr(keys(index)), _
@@ -110590,7 +110590,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestMaterialDiagrams
 TYPE: 1
-LINES: 1651
+LINES: 1654
 ====================================================================================================
 Option Explicit
 
@@ -110639,8 +110639,11 @@ Public Function RunMaterialDiagramTests() As String
     TestCachedMaterialTransitions stats
     TestPlateauSlope stats
 
+    Dim elapsedSeconds As Double
+    elapsedSeconds = Timer - t0
+    If elapsedSeconds < 0# Then elapsedSeconds = elapsedSeconds + 86400# ' Timer сбрасывается в полночь; набор длится меньше суток.
     TestAppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & _
-        "; elapsedSec=" & TestFormatNumberInvariant(Timer - t0)
+        "; elapsedSec=" & TestFormatNumberInvariant(elapsedSeconds)
     RunMaterialDiagramTests = stats.report
     Exit Function
 
@@ -127081,7 +127084,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 9552
+LINES: 9561
 ====================================================================================================
 Option Explicit
 
@@ -135190,10 +135193,14 @@ Private Sub TestConfigDropdownChoices(ByRef stats As TUiTestStats)
     Dim sheet As Object, cells As Object, cell As Object, source As Object, optionCell As Object
     Dim checked As Object, formula As String, prefix As String, saved As Variant
     Dim sample As Object, options As Long, lists As Long, targets As Long
+    Dim outputIDCell As Object, loads As Object, loadIDs As Object, exactLoadIDSource As Boolean
     On Error GoTo Failed
     Set sheet = ThisWorkbook.Worksheets.item("Config")
     Set cells = sheet.cells.SpecialCells(xlCellTypeAllValidation)
     Set checked = CreateObject("Scripting.Dictionary")
+    Set outputIDCell = TestFreshnessSystemCell("Output.CombinationID")
+    Set loads = ThisWorkbook.names.item("rngLoadCombinations").RefersToRange
+    Set loadIDs = loads.cells(2, 1).Resize(loads.rows.count - 1, 1)
     For Each cell In cells.cells
         If cell.MergeCells Then
             If cell.address <> cell.MergeArea.cells(1, 1).address Then GoTo NextCell
@@ -135220,7 +135227,12 @@ Private Sub TestConfigDropdownChoices(ByRef stats As TUiTestStats)
             If left$(formula, 1) = "=" And Not checked.Exists(formula) Then
                 checked.Add formula, True
                 Set source = sheet.range(mid$(formula, 2))
-                TestAssertTrue stats, prefix & ".vertical", source.columns.count = 1
+                exactLoadIDSource = False
+                If cell.address(True, True, xlA1, True) = outputIDCell.address(True, True, xlA1, True) Then
+                    exactLoadIDSource = (source.address(True, True, xlA1, True) = loadIDs.address(True, True, xlA1, True))
+                    TestAssertTrue stats, prefix & ".directLoadIDs", exactLoadIDSource
+                End If
+                TestAssertTrue stats, prefix & ".oneDimensional", (source.columns.count = 1 Or source.rows.count = 1) ' Прямой источник профилей — видимая строка; Excel принимает и строку, и столбец.
                 Set sample = cell
                 saved = sample.formula
                 options = 0
@@ -135239,7 +135251,7 @@ Private Sub TestConfigDropdownChoices(ByRef stats As TUiTestStats)
                 TestAssertTrue stats, prefix & ".rejectsUnknown", Not sample.validation.value
                 sample.formula = saved
                 Set sample = Nothing
-                TestAssertTrue stats, prefix & ".notEmpty", options > 0
+                TestAssertTrue stats, prefix & ".notEmptyOrUnformedLoadIDs", options > 0 Or exactLoadIDSource ' До ввода сочетаний пустым допустим только прямой столбец ID; остальные источники обязаны иметь варианты.
                 lists = lists + 1
             End If
         End If

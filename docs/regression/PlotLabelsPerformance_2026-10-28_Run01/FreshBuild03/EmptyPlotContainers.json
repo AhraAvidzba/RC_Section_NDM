@@ -1,0 +1,11 @@
+﻿{
+    "FromWorkbookLayout":  true,
+    "Charts":  [
+                   {
+                       "Name":  "chtNDMSectionPlot",
+                       "Shapes":  0,
+                       "Series":  0
+                   }
+               ],
+    "ElementShapes":  0
+}

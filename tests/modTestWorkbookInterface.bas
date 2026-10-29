@@ -8106,10 +8106,14 @@ Private Sub TestConfigDropdownChoices(ByRef stats As TUiTestStats)
     Dim sheet As Object, cells As Object, cell As Object, source As Object, optionCell As Object
     Dim checked As Object, formula As String, prefix As String, saved As Variant
     Dim sample As Object, options As Long, lists As Long, targets As Long
+    Dim outputIDCell As Object, loads As Object, loadIDs As Object, exactLoadIDSource As Boolean
     On Error GoTo Failed
     Set sheet = ThisWorkbook.Worksheets.Item("Config")
     Set cells = sheet.Cells.SpecialCells(xlCellTypeAllValidation)
     Set checked = CreateObject("Scripting.Dictionary")
+    Set outputIDCell = TestFreshnessSystemCell("Output.CombinationID")
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    Set loadIDs = loads.Cells(2, 1).Resize(loads.Rows.Count - 1, 1)
     For Each cell In cells.Cells
         If cell.MergeCells Then
             If cell.Address <> cell.MergeArea.Cells(1, 1).Address Then GoTo NextCell
@@ -8136,7 +8140,12 @@ Private Sub TestConfigDropdownChoices(ByRef stats As TUiTestStats)
             If Left$(formula, 1) = "=" And Not checked.Exists(formula) Then
                 checked.Add formula, True
                 Set source = sheet.Range(Mid$(formula, 2))
-                TestAssertTrue stats, prefix & ".vertical", source.Columns.Count = 1
+                exactLoadIDSource = False
+                If cell.Address(True, True, xlA1, True) = outputIDCell.Address(True, True, xlA1, True) Then
+                    exactLoadIDSource = (source.Address(True, True, xlA1, True) = loadIDs.Address(True, True, xlA1, True))
+                    TestAssertTrue stats, prefix & ".directLoadIDs", exactLoadIDSource
+                End If
+                TestAssertTrue stats, prefix & ".oneDimensional", (source.Columns.Count = 1 Or source.Rows.Count = 1) ' Прямой источник профилей — видимая строка; Excel принимает и строку, и столбец.
                 Set sample = cell
                 saved = sample.Formula
                 options = 0
@@ -8155,7 +8164,7 @@ Private Sub TestConfigDropdownChoices(ByRef stats As TUiTestStats)
                 TestAssertTrue stats, prefix & ".rejectsUnknown", Not sample.Validation.Value
                 sample.Formula = saved
                 Set sample = Nothing
-                TestAssertTrue stats, prefix & ".notEmpty", options > 0
+                TestAssertTrue stats, prefix & ".notEmptyOrUnformedLoadIDs", options > 0 Or exactLoadIDSource ' До ввода сочетаний пустым допустим только прямой столбец ID; остальные источники обязаны иметь варианты.
                 lists = lists + 1
             End If
         End If

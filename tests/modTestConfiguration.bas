@@ -862,9 +862,9 @@ Private Sub TestMissingSettingsSectionNavigation(ByRef stats As TConfigTestStats
         "General.WorstCombinationCriterion", "General.PlateauSlopeFactor", "General.DiagramExtension", _
         "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.ReformatResultsEnabled")
     sections = Array("Геометрия", "Геометрия", "Сетка геометрии", "Сетка геометрии", _
-        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", _
-        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", _
-        "Нагрузки и диаграммы материалов", "Нагрузки и диаграммы материалов", "Общие", "Общие", "Общие")
+        "Нагрузки, сочетания и диаграммы материалов", "Нагрузки, сочетания и диаграммы материалов", _
+        "Нагрузки, сочетания и диаграммы материалов", "Нагрузки, сочетания и диаграммы материалов", _
+        "Нагрузки, сочетания и диаграммы материалов", "Нагрузки, сочетания и диаграммы материалов", "Общие", "Общие", "Общие")
     For index = LBound(keys) To UBound(keys)
         location = settings.InputLocation(CStr(keys(index)))
         TestCheck stats, "settings.missing.section." & CStr(keys(index)), _

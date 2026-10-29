@@ -1,0 +1,22 @@
+{
+  "Status": "ISOLATED_NOT_APPLIED_FULL_ACTIVE",
+  "Source": "tests/modTestConfiguration.bas",
+  "OriginalSHA256": "B375CBF3601494DF08F65CC5E742E7C56201DDF4B8963577F628CF954E007BC0",
+  "Candidate": "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix03/Source/modTestConfiguration.bas",
+  "CandidateSHA256": "ABFD8DDCE4805BBD6DA21EE69C10264C2D41A60C60BDF635C41231BB035C9D7B",
+  "ProductionChanged": false,
+  "ExpectedCaption": "Нагрузки, сочетания и диаграммы материалов",
+  "ConfirmedCatalog": "Get-SystemSettingsCatalog LoadDiagramSettings.Title",
+  "ConfirmedWorkingReader": "CSystemSettingsReader.InputSettingsSection",
+  "ChangedOnlySixExpectedStrings": true,
+  "ChecksNotRemovedOrRelaxed": true,
+  "Failures": [
+    "settings.missing.section.Load.ReferenceOffsetX",
+    "settings.missing.section.Load.ReferenceOffsetY",
+    "settings.missing.section.Calculation.ZeroMomentPerDepth",
+    "settings.missing.section.General.WorstCombinationCriterion",
+    "settings.missing.section.General.PlateauSlopeFactor",
+    "settings.missing.section.General.DiagramExtension"
+  ],
+  "RootUnchanged": true
+}

@@ -1,0 +1,14 @@
+{
+  "Status": "ISOLATED_NOT_APPLIED_FULL_ACTIVE",
+  "Source": "tests/modTestMaterialDiagrams.bas",
+  "OriginalSHA256": "0D6CF1055C575CC2285D01C1F1D90308279A5E86CDB477791B6D6CB5AEAC48ED",
+  "Candidate": "docs/regression/PlotLabelsPerformance_2026-10-28_Run01/ParallelFix02/Source/modTestMaterialDiagrams.bas",
+  "CandidateSHA256": "BC581B09A51296938450766DCEDCD5476AA0C65935800005F186C70177491564",
+  "ProductionChanged": false,
+  "ObservedLog": "docs/regression/FullOnOff_2026-10-28_PlotLabels_Run01/Full_Off.txt",
+  "ObservedSummary": "TOTAL_MATERIAL: passed=31097; failed=0; elapsedSec=-86319.1654376984",
+  "Reason": "Test-only Timer difference crosses midnight; production ElapsedSecondsFrom already handles this.",
+  "AffectedBehavior": "Only elapsedSec report text, no assertion or mathematical result changes",
+  "NextGate": "Compile and full material suite on rebuilt exact book; preserve original negative log",
+  "RootUnchanged": true
+}

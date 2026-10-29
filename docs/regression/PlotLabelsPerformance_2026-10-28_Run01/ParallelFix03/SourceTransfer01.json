@@ -1,0 +1,12 @@
+{
+  "Status": "TEST_CAPTION_TRANSFERRED_AFTER_ALL_FULL_OWN_EXITED",
+  "AtUTC": "2026-10-29T00:28:57.724714+00:00",
+  "Source": "tests/modTestConfiguration.bas",
+  "OriginalSHA256": "B375CBF3601494DF08F65CC5E742E7C56201DDF4B8963577F628CF954E007BC0",
+  "CandidateSHA256": "ABFD8DDCE4805BBD6DA21EE69C10264C2D41A60C60BDF635C41231BB035C9D7B",
+  "ProductionChanged": false,
+  "OnlySixExpectedStringsChanged": true,
+  "NativePassed": 1240,
+  "NativeFailed": 0,
+  "CompileAndFullRepeatStillRequired": true
+}

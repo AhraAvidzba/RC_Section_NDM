@@ -1,0 +1,147 @@
+{
+  "Status": "ALL_RAW_PRIMARY_REPORTS_READ",
+  "Records": [
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic01\\Empty_No.txt",
+      "Bytes": 64819,
+      "SHA256": "EFBA8ACE44AE1AB461EEB59320160CAC3717DBE1EF79605191C41FB11DB0F2A3",
+      "Passed": 1326,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic01\\Empty_Yes.txt",
+      "Bytes": 64819,
+      "SHA256": "EFBA8ACE44AE1AB461EEB59320160CAC3717DBE1EF79605191C41FB11DB0F2A3",
+      "Passed": 1326,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic01\\EmptyRequiredProfileSource.txt",
+      "Bytes": 64985,
+      "SHA256": "E2D5827B1DC68D326D727034C97721CC6FE4431C5A93C10798EC99991BF4639D",
+      "Passed": 1330,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic01\\Normal_No.txt",
+      "Bytes": 64854,
+      "SHA256": "3FD662A2D62E936D9552729A27686C67CEE765D67AF205A12355AF1357BDB92B",
+      "Passed": 1327,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic01\\Normal_Yes.txt",
+      "Bytes": 64854,
+      "SHA256": "3FD662A2D62E936D9552729A27686C67CEE765D67AF205A12355AF1357BDB92B",
+      "Passed": 1327,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic01\\Original_Empty.txt",
+      "Bytes": 64738,
+      "SHA256": "703676CAA262B4E3BBCCB172B46BD1219D2FCB9BA8A4D5A3927058F562735F70",
+      "Passed": 1323,
+      "Failed": 2,
+      "Failures": [
+        "FAIL: config.dropdown.L71.vertical",
+        "FAIL: config.dropdown.B19.notEmpty"
+      ]
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic01\\WrongIdSource_Empty.txt",
+      "Bytes": 64823,
+      "SHA256": "084FCC8637FAF8F3D15861868E783454A6A44B4667F58DA1FBC93AF69E1EED48",
+      "Passed": 1324,
+      "Failed": 2,
+      "Failures": [
+        "FAIL: config.dropdown.B19.directLoadIDs",
+        "FAIL: config.dropdown.B19.notEmptyOrUnformedLoadIDs"
+      ]
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic02\\Empty_No.txt",
+      "Bytes": 64819,
+      "SHA256": "EFBA8ACE44AE1AB461EEB59320160CAC3717DBE1EF79605191C41FB11DB0F2A3",
+      "Passed": 1326,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic02\\Empty_Yes.txt",
+      "Bytes": 64819,
+      "SHA256": "EFBA8ACE44AE1AB461EEB59320160CAC3717DBE1EF79605191C41FB11DB0F2A3",
+      "Passed": 1326,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic02\\EmptyRequiredProfileSource.txt",
+      "Bytes": 64952,
+      "SHA256": "19CE4B7A7FCC66BEF7D2C2DCB6E0BB8CB560A711A109D4C00885E2CA789A3A6A",
+      "Passed": 1328,
+      "Failed": 1,
+      "Failures": [
+        "FAIL: config.dropdown.L71.notEmptyOrUnformedLoadIDs"
+      ]
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic02\\Normal_No.txt",
+      "Bytes": 64854,
+      "SHA256": "3FD662A2D62E936D9552729A27686C67CEE765D67AF205A12355AF1357BDB92B",
+      "Passed": 1327,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic02\\Normal_Yes.txt",
+      "Bytes": 64854,
+      "SHA256": "3FD662A2D62E936D9552729A27686C67CEE765D67AF205A12355AF1357BDB92B",
+      "Passed": 1327,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic02\\Original_Empty.txt",
+      "Bytes": 64738,
+      "SHA256": "703676CAA262B4E3BBCCB172B46BD1219D2FCB9BA8A4D5A3927058F562735F70",
+      "Passed": 1323,
+      "Failed": 2,
+      "Failures": [
+        "FAIL: config.dropdown.L71.vertical",
+        "FAIL: config.dropdown.B19.notEmpty"
+      ]
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic02\\Restored_Empty_Yes.txt",
+      "Bytes": 64819,
+      "SHA256": "EFBA8ACE44AE1AB461EEB59320160CAC3717DBE1EF79605191C41FB11DB0F2A3",
+      "Passed": 1326,
+      "Failed": 0,
+      "Failures": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\PlotLabelsPerformance_2026-10-28_Run01\\ParallelFix04\\NativeDynamic02\\WrongIdSource_Empty.txt",
+      "Bytes": 64823,
+      "SHA256": "084FCC8637FAF8F3D15861868E783454A6A44B4667F58DA1FBC93AF69E1EED48",
+      "Passed": 1324,
+      "Failed": 2,
+      "Failures": [
+        "FAIL: config.dropdown.B19.directLoadIDs",
+        "FAIL: config.dropdown.B19.notEmptyOrUnformedLoadIDs"
+      ]
+    }
+  ],
+  "PositiveRecords": 5,
+  "AcceptedPassed": 6632,
+  "AcceptedFailed": 0,
+  "WrongIdSourceRejected": true,
+  "OtherEmptySourceRejected": true,
+  "FirstAttemptPreserved": true,
+  "FirstAttemptIssue": "Negative harness range Z1:Z2 contained data; repeated with an explicitly cleared private source. Production and candidate unchanged.",
+  "FullPass": false
+}
