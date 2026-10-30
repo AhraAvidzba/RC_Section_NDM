@@ -1,0 +1,20 @@
+{
+  "Passed": true,
+  "ProductionFilesSearched": 124,
+  "CatalogLiteralKeysWithProductionReferences": 119,
+  "UnreferencedCatalogKeys": [],
+  "ReaderAudit": [
+    "CSystemSettingsReader: six pre-existing ignored Config fields and nine INTERNAL cells",
+    "Four CSectionRecipe implementations: four projected n and four projected endMode fields",
+    "CSectionInputTable/CSectionInputReader: value errors deferred until requested; structural keys retained",
+    "CCalculationProfileCatalog/CUnitSystem: actual input/output units and USER signs remain validated",
+    "Workbook builders GeometryTables/SettingsCatalog: applicability by row/column role; no value requirements for 23 ignored fields"
+  ],
+  "RemainingDashChecks": [
+    "Numeric sign parsing",
+    "Required unit metadata of saved calculated states for plot and AutoCAD export"
+  ],
+  "IgnoredFieldCount": 23,
+  "ActualPhysicalAndNormativeInputChecksPreserved": true,
+  "FullAcceptanceClaim": false
+}

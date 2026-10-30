@@ -1,0 +1,140 @@
+﻿[
+    {
+        "Sheet":  "Config",
+        "Address":  "J29",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J107",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "I109",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "I113",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "I114",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "I116",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "E112",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "H112",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "E113",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "H113",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "E114",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "H114",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "E115",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Сечения",
+        "Address":  "H115",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J4",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J5",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J6",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J7",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J8",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J9",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J13",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J14",
+        "Type":  null,
+        "RestrictsInput":  false
+    },
+    {
+        "Sheet":  "Config",
+        "Address":  "J15",
+        "Type":  null,
+        "RestrictsInput":  false
+    }
+]

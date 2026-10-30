@@ -582,7 +582,7 @@ Private Sub TestExplicitEndModes()
     Set definition = TestFixtureRecipeDefinition(recipe, "rngHollowRectangleGeometry", values)
     code = Err.Number: reason = Err.Description: Err.Clear
     On Error GoTo 0
-    TestCheck "endMode.projection.inapplicable.address", code <> 0 And InStr(reason, "проекц") > 0 And InStr(reason, "rngHollowRectangleGeometry[") > 0
+    TestCheck "endMode.projection.ignored", code = 0 And Not definition Is Nothing
     TestMainCoincidenceLabels
     TestCircleSingleEndModes
     TestCircleClosedEndModes

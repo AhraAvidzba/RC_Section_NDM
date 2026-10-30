@@ -1,0 +1,100 @@
+{
+  "Status": "UNUSED_CELL_CONTRACT_NATIVE_PASS",
+  "Passed": true,
+  "IgnoredFields": 23,
+  "ProbeVariantsPerField": 6,
+  "DataValidationRestrictionsAbsentOnIgnoredFields": true,
+  "SourceAudit": "SourceAudit.json",
+  "Macros": [
+    {
+      "Macro": "modTestBatchCalculation.RunAudit03InactiveConfigCellTests",
+      "Passed": 278,
+      "Failed": 0,
+      "PrimaryFullyRead": true
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+      "Passed": 3859,
+      "Failed": 0,
+      "PrimaryFullyRead": true
+    },
+    {
+      "Macro": "modTestSectionSolver.RunSettingsReaderContractTests",
+      "Passed": 1626,
+      "Failed": 0,
+      "PrimaryFullyRead": true
+    }
+  ],
+  "DirectedPassed": 5763,
+  "DirectedFailed": 0,
+  "FullAcceptanceClaim": false,
+  "UserInputDataPreserved": true,
+  "OtherZipPartsByteExact": 105,
+  "NativeSavedReadonlyReopen": true,
+  "VBAComponents": 181,
+  "SourcesMatched": 175,
+  "AllOwnTerminal": true,
+  "Publication": {
+    "Passed": true,
+    "AtUTC": "2026-10-30T16:35:47.2053400+00:00",
+    "BookSHA256": "2B8968404D0197D756DFCBED36CA27E353B8197C6C6A27BBB22FCBC2D8A1F074",
+    "AllCodeSHA256": "80A60E8EFEE370C7680B6637441CAF900C00EF0B353D9B0191B3BFD553348B3B",
+    "IgnoredFields": 23,
+    "DirectedPassed": 5763,
+    "DirectedFailed": 0,
+    "VBAComponents": 181,
+    "OtherZipPartsByteExact": 105,
+    "InputDataChanged": false,
+    "FullAcceptanceClaim": false
+  },
+  "Evidence": [
+    {
+      "Path": "InitialNativeHarnessFailure.json",
+      "SHA256": "0A8DAFD22268E3C15DD7DCD6B7C78EB1AAEDEF554AF60F330CB6BBC9CA5677AA"
+    },
+    {
+      "Path": "modTestBatchCalculation.RunAudit03InactiveConfigCellTests.txt",
+      "SHA256": "A39BF11B21A568A8D2E4F5587BFCFD6AB726C3EEF67781DE2D8EC1B520375528"
+    },
+    {
+      "Path": "modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+      "SHA256": "7A71EFC91899EB31D14CD8624DA8A0003B187A5C9C27BCE93E2F7F9C6729462C"
+    },
+    {
+      "Path": "modTestSectionSolver.RunSettingsReaderContractTests.txt",
+      "SHA256": "3940C73D427D763E2BA726473C0D45365DABB88FA71C4298D23832A09883B17A"
+    },
+    {
+      "Path": "Native02.json",
+      "SHA256": "A00EAC5BEF6442782E64114597D47DDC9E1D005BCDA6227F7FCCA7931A0EE8E2"
+    },
+    {
+      "Path": "OwnClosures.json",
+      "SHA256": "F3F56B0D65EF91EA96051355E1E890A958DC0AA1A29138E431A7E8813DEAC134"
+    },
+    {
+      "Path": "PackageReview.json",
+      "SHA256": "7C80C297E188A638023BCDD6120E290C5242E869A37A2764ECCFAFCC05889870"
+    },
+    {
+      "Path": "Publication.json",
+      "SHA256": "C10F247F3BF9B6143B3F860958A4EEAD872007A5CB96D69FA0A828D617B4B5CB"
+    },
+    {
+      "Path": "SourceAudit.json",
+      "SHA256": "9B71BB7B21A294E505971754B912A5729E6DC8C8A25F76E61ACA80E9AC0AD41D"
+    },
+    {
+      "Path": "SourceEquality.json",
+      "SHA256": "17A6FC13B582492C3B9D2412B96C114DCB77837E48AFB8105CB32D1F08045C8D"
+    },
+    {
+      "Path": "ValidationReadback02.json",
+      "SHA256": "EC03F9A11B7DA89524A9BE6D20BA8FC9413EA36D386720AE4DC09A80D9335CA5"
+    },
+    {
+      "Path": "VisualReview.json",
+      "SHA256": "7299B11B07C1702055EF751203F953F09860C91B6D4C38AF3897EFD2C7CCABA6"
+    }
+  ]
+}

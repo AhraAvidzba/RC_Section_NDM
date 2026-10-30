@@ -1,0 +1,20 @@
+{
+  "Viewed": true,
+  "DeliveryToUserClaimed": false,
+  "Files": [
+    {
+      "Name": "Help1.png",
+      "SHA256": "7785F6F7FC19DDA0733A7D7F4B5B64F0ECB82E7A68D5C4C8426183FD71DF143C"
+    },
+    {
+      "Name": "Help2.png",
+      "SHA256": "8D63D0EBE0397266057C369681B8F475E37E3D04F70EF8D9657170E6D2FA519D"
+    },
+    {
+      "Name": "Help3.png",
+      "SHA256": "4FA8E23FA0B84764C35BD99C26DE2E5463C60CD7EBDE4A403589D2D8027E1322"
+    }
+  ],
+  "SameStylesAndBounds": true,
+  "TextReadableNotClipped": true
+}

@@ -77,6 +77,21 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет чтение каталога, используемые ключи и реальные преобразования единиц без решения НДС.
+Public Function RunSettingsReaderContractTests() As String
+    Dim stats As TSectionSolverTestStats
+    On Error GoTo Failed
+    TestSystemSettingsReader stats
+    TestSystemSettingsCatalog stats
+    TestUnitSystemConversions stats
+    TestAppendLine stats, "TOTAL_SETTINGS_READER_CONTRACT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunSettingsReaderContractTests = stats.Report
+    Exit Function
+Failed:
+    RunSettingsReaderContractTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' короткая приемка общего центрированного ядра без Excel UI suite.
 Public Function RunCenteredNumericalTests() As String
     Dim stats As TSectionSolverTestStats
@@ -397,14 +412,18 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
 
     Dim requiredKeys As Variant
     requiredKeys = Array( _
-        "Units.Length.Input", "Units.Length.Internal", "Units.Length.Output", _
-        "Units.Area.Input", "Units.Area.Internal", "Units.Area.Output", _
-        "Units.Force.Input", "Units.Force.Internal", "Units.Force.Output", _
-        "Units.Moment.Input", "Units.Moment.Internal", "Units.Moment.Output", _
-        "Units.Stress.Input", "Units.Stress.Internal", "Units.Stress.Output", _
-        "Units.Curvature.Input", "Units.Curvature.Internal", "Units.Curvature.Output", _
-        "Sign.N.User", "Sign.N.Internal", "Sign.Mx.User", "Sign.Mx.Internal", "Sign.My.User", "Sign.My.Internal")
+        "Units.Length.Input", "Units.Length.Output", _
+        "Units.Area.Input", "Units.Area.Output", _
+        "Units.Force.Input", "Units.Force.Output", _
+        "Units.Moment.Input", "Units.Moment.Output", _
+        "Units.Stress.Input", "Units.Stress.Output", _
+        "Units.Curvature.Input", "Units.Curvature.Output", _
+        "Sign.N.User", "Sign.Mx.User", "Sign.My.User")
     TestAssertRequiredKeys stats, requiredKeys
+    Dim settingIndex As Long
+    For settingIndex = 1 To reader.KeyCount
+        TestAssertTrue stats, "settings.catalog.inputKey." & reader.KeyAt(settingIndex), Right$(reader.KeyAt(settingIndex), 9) <> ".Internal"
+    Next settingIndex
 
     requiredKeys = Array( _
         "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "Calculation.ZeroMomentPerDepth", _

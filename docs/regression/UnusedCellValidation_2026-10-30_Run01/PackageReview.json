@@ -1,0 +1,168 @@
+{
+  "Passed": true,
+  "IgnoredFields": [
+    {
+      "Range": "rngConcreteMaterialParameters",
+      "Sheet": "Config",
+      "Address": "J29",
+      "Key": "Concrete.Rb.mc2"
+    },
+    {
+      "Range": "rngPlotAnnotationSettings",
+      "Sheet": "Config",
+      "Address": "J107",
+      "Key": "LineEnabled"
+    },
+    {
+      "Range": "rngPlotAnnotationSettings",
+      "Sheet": "Config",
+      "Address": "I109",
+      "Key": "ExtensionLineWeight"
+    },
+    {
+      "Range": "rngPlotAnnotationSettings",
+      "Sheet": "Config",
+      "Address": "I113",
+      "Key": "ArrowType"
+    },
+    {
+      "Range": "rngPlotAnnotationSettings",
+      "Sheet": "Config",
+      "Address": "I114",
+      "Key": "ArrowSize"
+    },
+    {
+      "Range": "rngPlotAnnotationSettings",
+      "Sheet": "Config",
+      "Address": "I116",
+      "Key": "ExtensionLineColor"
+    },
+    {
+      "Range": "rngHollowRectangleGeometry",
+      "Sheet": "Сечения",
+      "Address": "E112",
+      "Key": "OpeningTop"
+    },
+    {
+      "Range": "rngHollowRectangleGeometry",
+      "Sheet": "Сечения",
+      "Address": "H112",
+      "Key": "OpeningTop"
+    },
+    {
+      "Range": "rngHollowRectangleGeometry",
+      "Sheet": "Сечения",
+      "Address": "E113",
+      "Key": "OpeningBottom"
+    },
+    {
+      "Range": "rngHollowRectangleGeometry",
+      "Sheet": "Сечения",
+      "Address": "H113",
+      "Key": "OpeningBottom"
+    },
+    {
+      "Range": "rngHollowRectangleGeometry",
+      "Sheet": "Сечения",
+      "Address": "E114",
+      "Key": "OpeningLeft"
+    },
+    {
+      "Range": "rngHollowRectangleGeometry",
+      "Sheet": "Сечения",
+      "Address": "H114",
+      "Key": "OpeningLeft"
+    },
+    {
+      "Range": "rngHollowRectangleGeometry",
+      "Sheet": "Сечения",
+      "Address": "E115",
+      "Key": "OpeningRight"
+    },
+    {
+      "Range": "rngHollowRectangleGeometry",
+      "Sheet": "Сечения",
+      "Address": "H115",
+      "Key": "OpeningRight"
+    },
+    {
+      "Range": "rngUnitSettings",
+      "Sheet": "Config",
+      "Address": "J4",
+      "Key": "Length"
+    },
+    {
+      "Range": "rngUnitSettings",
+      "Sheet": "Config",
+      "Address": "J5",
+      "Key": "Area"
+    },
+    {
+      "Range": "rngUnitSettings",
+      "Sheet": "Config",
+      "Address": "J6",
+      "Key": "Force"
+    },
+    {
+      "Range": "rngUnitSettings",
+      "Sheet": "Config",
+      "Address": "J7",
+      "Key": "Moment"
+    },
+    {
+      "Range": "rngUnitSettings",
+      "Sheet": "Config",
+      "Address": "J8",
+      "Key": "Stress"
+    },
+    {
+      "Range": "rngUnitSettings",
+      "Sheet": "Config",
+      "Address": "J9",
+      "Key": "Curvature"
+    },
+    {
+      "Range": "rngSignConventionSettings",
+      "Sheet": "Config",
+      "Address": "J13",
+      "Key": "+N"
+    },
+    {
+      "Range": "rngSignConventionSettings",
+      "Sheet": "Config",
+      "Address": "J14",
+      "Key": "+Mx"
+    },
+    {
+      "Range": "rngSignConventionSettings",
+      "Sheet": "Config",
+      "Address": "J15",
+      "Key": "+My"
+    }
+  ],
+  "NoDataValidationOnIgnoredFields": true,
+  "HelpEdits": [
+    {
+      "Address": "B606",
+      "Before": "На листе Config в таблице «Единицы измерения» выберите единицы ввода в столбце INPUT и единицы результатов в столбце OUTPUT. Столбец INTERNAL показывает постоянные внутренние единицы программы; его не меняйте.",
+      "After": "На листе Config в таблице «Единицы измерения» выберите единицы ввода в столбце INPUT и единицы результатов в столбце OUTPUT. Столбец INTERNAL справочный; его значения программа не читает."
+    },
+    {
+      "Address": "B617",
+      "Before": "На Config в таблице «Система знаков» выберите правила в колонке USER: Sign.N.User - для силы N, Sign.Mx.User и Sign.My.User - для моментов Mx и My. Один пользовательский выбор действует при вводе и выводе. INTERNAL показывает фиксированное внутреннее правило.",
+      "After": "На Config в таблице «Система знаков» выберите правила в колонке USER: Sign.N.User - для силы N, Sign.Mx.User и Sign.My.User - для моментов Mx и My. Один пользовательский выбор действует при вводе и выводе. INTERNAL справочный и не влияет на знаки расчёта."
+    },
+    {
+      "Address": "B742",
+      "Before": "Количество стержней n и способ расстановки endMode у отверстия вводить не нужно: в обоих полях стоят прочерки, а положения стержней получаются проекцией основного наружного ряда на линию раскладки у отверстия. Если проекция не попала на рабочую длину этой линии, стержень не добавляется. Для включённого ряда арматуры у отверстия задайте собственные d, as, s0 и s1. Без соответствующего наружного ряда он не создаётся. Пустое поле диаметра d или значение 0 отключает этот ряд арматуры.",
+      "After": "Количество стержней n и способ расстановки endMode у отверстия вводить не нужно: эти поля не читаются, а положения стержней получаются проекцией основного наружного ряда на линию раскладки у отверстия. Если проекция не попала на рабочую длину этой линии, стержень не добавляется. Для включённого ряда арматуры у отверстия задайте собственные d, as, s0 и s1. Без соответствующего наружного ряда он не создаётся. Пустое поле диаметра d или значение 0 отключает этот ряд арматуры."
+    }
+  ],
+  "ChangedZipParts": [
+    "xl/worksheets/sheet3.xml",
+    "xl/vbaProject.bin"
+  ],
+  "OtherZipPartsByteExact": 105,
+  "BeforeSHA256": "F01AF907FE10FADE488B650F01740666E727333BCC70A45E728B93F507C63347",
+  "AfterSHA256": "2B8968404D0197D756DFCBED36CA27E353B8197C6C6A27BBB22FCBC2D8A1F074"
+}

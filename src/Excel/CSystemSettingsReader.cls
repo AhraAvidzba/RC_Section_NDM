@@ -439,7 +439,7 @@ Private Sub AppendPlotAnnotationValue(ByRef data As Variant, ByVal keyValue As S
         ConfigCellText(data(rowIndex, 5), "комментарий", rowIndex, keyValue, True, 5)
 End Sub
 
-' Разворачивает таблицу INPUT/INTERNAL/OUTPUT в общие массивы ключей Units.*.
+' Читает INPUT/OUTPUT; справочный INTERNAL не является настройкой и не проверяется.
 Private Sub AppendUnitSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -449,15 +449,13 @@ Private Sub AppendUnitSettings(ByRef data As Variant)
             Dim value As String
             value = ConfigCellText(data(rowIndex, 2), "INPUT", rowIndex, "Units." & quantity & ".Input", False, 2)
             AppendSetting "Units." & quantity & ".Input", value, value, "Пользовательская единица ввода", rowIndex, 2
-            value = ConfigCellText(data(rowIndex, 3), "INTERNAL", rowIndex, "Units." & quantity & ".Internal", False, 3)
-            AppendSetting "Units." & quantity & ".Internal", value, value, "Фиксированная внутренняя единица", rowIndex, 3
             value = ConfigCellText(data(rowIndex, 4), "OUTPUT", rowIndex, "Units." & quantity & ".Output", False, 4)
             AppendSetting "Units." & quantity & ".Output", value, value, "Пользовательская единица вывода", rowIndex, 4
         End If
     Next rowIndex
 End Sub
 
-' Загружает выбранные пользователем правила знаков N, Mx и My.
+' Загружает пользовательские знаки N, Mx и My; справочный INTERNAL не читается.
 Private Sub AppendSignConventionSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -467,8 +465,6 @@ Private Sub AppendSignConventionSettings(ByRef data As Variant)
             Dim value As String
             value = ConfigCellText(data(rowIndex, 2), "USER", rowIndex, "Sign." & quantity & ".User", False, 2)
             AppendSetting "Sign." & quantity & ".User", value, value, "Пользовательское правило знаков", rowIndex, 2
-            value = ConfigCellText(data(rowIndex, 3), "INTERNAL", rowIndex, "Sign." & quantity & ".Internal", False, 3)
-            AppendSetting "Sign." & quantity & ".Internal", value, value, "Фиксированное внутреннее правило знаков", rowIndex, 3
         End If
     Next rowIndex
 End Sub

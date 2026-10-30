@@ -99,6 +99,7 @@ End Sub
 ' Заполняет faces параметрами четырёх наружных и четырёх внутренних сторон.
 ' as читает у всех сторон: он ограничивает общий контур и при выключенном ряде.
 ' Пустой as выключенной стороны равен нулю; её параметры дополнительных рядов не читаются.
+' Служебные n/endMode сторон отверстия не читаются: позиции определяет проекция наружного ряда.
 Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() As THollowFace)
     Dim ids As Variant, captions As Variant, keys As Variant, key As String, i As Long, base As Long, annotationSign As Double
     Dim rowNumber As Long, suffix As String
@@ -112,10 +113,6 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
             .RowComment = "Пустотелый прямоугольник: арматура " & .Caption & ", ряд "
             key = CStr(keys(i - 1))
             .Source = reader.SourceReference("Main", key, "as")
-            If i > 4 Then
-                Dim projectionMode As String: projectionMode = reader.Text("Main", key, "endMode", "")
-                reader.Require "Main", key, "endMode", projectionMode = "-" Or projectionMode = ChrW$(&H2014), "У ряда, полученного проекцией, способ расстановки не задаётся. Оставьте дефис: допустимый участок определяется s0 и s1."
-            End If
             If i <= 4 Then .Count = reader.Count("Main", key, "n")
             .Diameter = reader.OptionalDiameter("Main", key, "d")
             .Active = (.Diameter > 0# And (i > 4 Or .Count > 0))
@@ -142,8 +139,10 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
                 .EndSetback = reader.OptionalRowOffset("Main", key, "s1")
                 If i <= 4 Then
                     .EndMode = reader.RebarEndMode("Main", key)
+                    .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1", "endMode"))
+                Else
+                    .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
                 End If
-                .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1", "endMode"))
                 .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
                 .Diameters(3) = reader.OptionalDiameter("Extra", key, "d3")
                 For rowNumber = 2 To 3

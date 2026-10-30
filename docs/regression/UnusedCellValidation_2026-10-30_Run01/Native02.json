@@ -1,0 +1,13 @@
+﻿{
+    "Passed":  true,
+    "FullAcceptanceClaim":  false,
+    "Macros":  [
+                   "modTestBatchCalculation.RunAudit03InactiveConfigCellTests",
+                   "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+                   "modTestSectionSolver.RunSettingsReaderContractTests"
+               ],
+    "BookSHA256":  "2B8968404D0197D756DFCBED36CA27E353B8197C6C6A27BBB22FCBC2D8A1F074",
+    "IgnoredFields":  23,
+    "Components":  181,
+    "QuitRequested":  true
+}

@@ -10013,7 +10013,7 @@ Private Function TestAudit03TableNodePhiM(ByVal data As Variant, ByVal row As Lo
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет десять явно неприменимых клеток Config через настоящий reader.
+' Проверяет 23 служебные ячейки Config и сечений: они не меняют настройки, единицы и геометрию.
 ' Адреса ищутся внутри именованных таблиц по применимым колонкам и маркеру,
 ' а не по координатам шаблона. Изменение подписи не должно создавать новый
 ' параметр или менять нормализованный payload для downstream consumers.
@@ -10043,18 +10043,24 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
     Set range = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     For Each name In Array("OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
         fields.Add TestFixtureInputCell(range, "Main", CStr(name), "n")
+        fields.Add TestFixtureInputCell(range, "Main", CStr(name), "endMode")
     Next name
-    TestAssertTrue stats, "audit03.inactive.count", fields.Count = 10
+    For Each name In Array("rngUnitSettings", "rngSignConventionSettings")
+        Set range = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        For row = 2 To range.Rows.Count: fields.Add range.Cells(row, 3): Next row
+    Next name
+    TestAssertTrue stats, "audit03.inactive.count", fields.Count = 23
     TestAssertTrue stats, "audit03.inactive.baseline", TestAudit03TryConfigPayload(baseline, errorText)
     For Each cell In fields
         saved = cell.Formula: hasSavedCell = True
-        For invalidIndex = 0 To 4
+        For invalidIndex = 0 To 5
             Select Case invalidIndex
                 Case 0: cell.Value2 = 777#
                 Case 1: cell.Value2 = "abc"
                 Case 2: cell.Value2 = CVErr(2015)
                 Case 3: cell.Value2 = Empty
                 Case 4: cell.Formula = "=NA()"
+                Case 5: cell.Value2 = "IncludeBoth"
             End Select
             prefix = "audit03.inactive." & cell.Address(False, False) & "." & CStr(invalidIndex)
             TestAssertTrue stats, prefix & ".accepted", TestAudit03TryConfigPayload(actual, errorText)

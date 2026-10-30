@@ -1,0 +1,9 @@
+﻿{
+    "Passed":  false,
+    "FullAcceptanceClaim":  false,
+    "Macros":  [
+
+               ],
+    "Error":  "System.Management.Automation.RuntimeException: Validation on ignored cell: J29",
+    "QuitRequested":  true
+}
