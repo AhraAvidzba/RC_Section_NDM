@@ -1,0 +1,13 @@
+﻿{
+    "Passed":  true,
+    "AtUTC":  "2026-10-30T16:16:36.8085008+00:00",
+    "BookSHA256":  "F01AF907FE10FADE488B650F01740666E727333BCC70A45E728B93F507C63347",
+    "AllCodeSHA256":  "1802338B7BC0C30B3D30CC8D3DC86B64052ED63CFC6A05665262129AA91D33D5",
+    "Markers":  13,
+    "SourceComponents":  175,
+    "ExportComponents":  181,
+    "DirectedPassed":  3859,
+    "DirectedFailed":  0,
+    "OtherZipPartsByteExact":  105,
+    "FullAcceptanceClaim":  false
+}

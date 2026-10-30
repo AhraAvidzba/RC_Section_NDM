@@ -1,0 +1,77 @@
+{
+  "Passed": true,
+  "Cells": [
+    {
+      "Address": "H107",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "E112",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "H112",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "E113",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "H113",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "E114",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "H114",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "E115",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "H115",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "E120",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "F120",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "I120",
+      "Before": "—",
+      "After": "-"
+    },
+    {
+      "Address": "J120",
+      "Before": "—",
+      "After": "-"
+    }
+  ],
+  "ChangedZipParts": [
+    "xl/worksheets/sheet2.xml",
+    "xl/vbaProject.bin"
+  ],
+  "OtherZipPartsByteExact": 105,
+  "BeforeSHA256": "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA",
+  "AfterSHA256": "F01AF907FE10FADE488B650F01740666E727333BCC70A45E728B93F507C63347"
+}

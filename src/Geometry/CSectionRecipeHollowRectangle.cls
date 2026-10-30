@@ -112,7 +112,10 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
             .RowComment = "Пустотелый прямоугольник: арматура " & .Caption & ", ряд "
             key = CStr(keys(i - 1))
             .Source = reader.SourceReference("Main", key, "as")
-            If i > 4 Then reader.Require "Main", key, "endMode", reader.Text("Main", key, "endMode", "") = ChrW$(&H2014), "У ряда, полученного проекцией, способ расстановки не задаётся. Оставьте прочерк: допустимый участок определяется s0 и s1."
+            If i > 4 Then
+                Dim projectionMode As String: projectionMode = reader.Text("Main", key, "endMode", "")
+                reader.Require "Main", key, "endMode", projectionMode = "-" Or projectionMode = ChrW$(&H2014), "У ряда, полученного проекцией, способ расстановки не задаётся. Оставьте дефис: допустимый участок определяется s0 и s1."
+            End If
             If i <= 4 Then .Count = reader.Count("Main", key, "n")
             .Diameter = reader.OptionalDiameter("Main", key, "d")
             .Active = (.Diameter > 0# And (i > 4 Or .Count > 0))
