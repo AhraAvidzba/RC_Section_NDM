@@ -1,0 +1,6 @@
+OK: plotContainer.created.notice
+OK: plotContainer.reused.noNotice
+FAIL: plotContainer.reused.identity
+OK: plotContainer.reused.bounds
+FAIL: plotContainer.runtime.1004.Метод Paste из класса Worksheet завершен неверно
+TOTAL_PLOT_CONTAINER: passed=3; failed=2

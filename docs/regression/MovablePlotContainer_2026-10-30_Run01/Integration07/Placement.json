@@ -1,0 +1,74 @@
+﻿[
+    {
+        "Stage":  "SavedReopened",
+        "Sheet":  "Лист схемы",
+        "Name":  "chtNDMSectionPlot",
+        "Left":  73,
+        "Top":  91,
+        "Width":  720,
+        "Height":  460,
+        "ElementShapes":  96,
+        "Series":  1,
+        "NoReplacementOnCalculationSheet":  true
+    },
+    {
+        "Stage":  "FormationPreviewAfterReopen",
+        "Sheet":  "Лист схемы",
+        "Name":  "chtNDMSectionPlot",
+        "Left":  73,
+        "Top":  91,
+        "Width":  720,
+        "Height":  460,
+        "ElementShapes":  96,
+        "Series":  1,
+        "NoReplacementOnCalculationSheet":  true
+    },
+    {
+        "Stage":  "ManualUpdateExcel",
+        "Sheet":  "Лист схемы",
+        "Name":  "chtNDMSectionPlot",
+        "Left":  73,
+        "Top":  91,
+        "Width":  720,
+        "Height":  460,
+        "ElementShapes":  96,
+        "Series":  1,
+        "NoReplacementOnCalculationSheet":  true
+    },
+    {
+        "Stage":  "AutomaticAfterCalculation",
+        "Sheet":  "Лист схемы",
+        "Name":  "chtNDMSectionPlot",
+        "Left":  73,
+        "Top":  91,
+        "Width":  720,
+        "Height":  460,
+        "ElementShapes":  96,
+        "Series":  1,
+        "NoReplacementOnCalculationSheet":  true
+    },
+    {
+        "Stage":  "FormationFile",
+        "Sheet":  "Лист схемы",
+        "Name":  "chtNDMSectionPlot",
+        "Left":  73,
+        "Top":  91,
+        "Width":  720,
+        "Height":  460,
+        "ElementShapes":  96,
+        "Series":  1,
+        "NoReplacementOnCalculationSheet":  true
+    },
+    {
+        "Stage":  "ManualUpdateFile",
+        "Sheet":  "Лист схемы",
+        "Name":  "chtNDMSectionPlot",
+        "Left":  73,
+        "Top":  91,
+        "Width":  720,
+        "Height":  460,
+        "ElementShapes":  96,
+        "Series":  1,
+        "NoReplacementOnCalculationSheet":  true
+    }
+]

@@ -1,0 +1,157 @@
+{
+  "Passed": true,
+  "AtUTC": "2026-10-30T15:28:52.5805483+00:00",
+  "OwnProcesses": [
+    {
+      "Evidence": "Build/BuildOwnership.json",
+      "PID": 21416,
+      "ExpectedStartTicksUTC": "639289683990089483",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Build02/BuildOwnership.json",
+      "PID": 4388,
+      "ExpectedStartTicksUTC": "639289695105619196",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Native01/Ownership.json",
+      "PID": 7708,
+      "ExpectedStartTicksUTC": "639289697508688576",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Native02/Ownership.json",
+      "PID": 12148,
+      "ExpectedStartTicksUTC": "639289706243260021",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Patch02/Ownership.json",
+      "PID": 888,
+      "ExpectedStartTicksUTC": "639289686945047929",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Patch03/Ownership.json",
+      "PID": 25512,
+      "ExpectedStartTicksUTC": "639289688056546954",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Patch04/Ownership.json",
+      "PID": 25060,
+      "ExpectedStartTicksUTC": "639289688999329244",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Directed01/Ownership.json",
+      "PID": 2148,
+      "ExpectedStartTicksUTC": "639289686228562605",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Directed02/Ownership.json",
+      "PID": 19856,
+      "ExpectedStartTicksUTC": "639289687337740391",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Directed03/Ownership.json",
+      "PID": 4184,
+      "ExpectedStartTicksUTC": "639289688316450325",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Directed04/Ownership.json",
+      "PID": 22320,
+      "ExpectedStartTicksUTC": "639289689355411284",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Integration05/Ownership.json",
+      "PID": 12676,
+      "ExpectedStartTicksUTC": "639289690301059923",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Integration06/Ownership.json",
+      "PID": 11692,
+      "ExpectedStartTicksUTC": "639289694126477268",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Integration07/Ownership.json",
+      "PID": 18188,
+      "ExpectedStartTicksUTC": "639289698228597295",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    },
+    {
+      "Evidence": "Final03/Ownership.json",
+      "PID": 9520,
+      "ExpectedStartTicksUTC": "639289705435922290",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null,
+      "IndependentCIMName": null,
+      "IndependentCreationUTC": null
+    }
+  ],
+  "ForceKilled": true
+}

@@ -1,0 +1,2 @@
+FAIL: plotContainer.runtime.-2147217188.Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка J18): Цвет RGB задан неверно: "140140140". Введённое значение: "140140140". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+TOTAL_PLOT_CONTAINER: passed=0; failed=1

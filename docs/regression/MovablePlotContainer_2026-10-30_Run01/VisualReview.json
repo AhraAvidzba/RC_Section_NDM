@@ -1,0 +1,15 @@
+{
+  "ReviewedInsideConversation": true,
+  "Views": [
+    "PointedSection",
+    "HollowRectangle",
+    "Config",
+    "Help",
+    "Calculation",
+    "Results",
+    "PlotContainerHelp"
+  ],
+  "RequestedValuesRetained": true,
+  "ContainerHelpReadableAndLinked": true,
+  "ClaimedDeliveredToUser": false
+}

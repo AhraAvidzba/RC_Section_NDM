@@ -29,6 +29,7 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     TestAudit03GeneralPlotContracts stats
     TestAudit03AnnotationLayoutContracts stats
     TestAudit03PlotEnableContracts stats
+    TestPlotContainerContracts stats
     TestAudit03SnapshotMetadataContracts stats
     TestAudit03AutoPlotContracts stats
     TestAudit03ContourArcContracts stats
@@ -38,6 +39,144 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     passed = stats.Passed: failed = stats.Failed
     RunAudit03GeneralPlotTests = stats.Report
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет общий контейнер при рисовании, очистке, переносе и восстановлении; не решает НДС и не сохраняет рабочую книгу.
+Public Function RunPlotContainerTests() As String
+    Dim stats As TUiTestStats
+    TestPlotContainerContracts stats
+    TestAppendLine stats, "TOTAL_PLOT_CONTAINER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunPlotContainerTests = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Возвращает итоговый флаг и текст ручного обновления полной книги без модального окна.
+Public Function TestUpdatePlotContainerNotice(ByVal workbook As Object) As String
+    Dim notice As String, hasWarning As Boolean
+    UpdateSectionResultsForWorkbook workbook, , notice, hasWarning
+    TestUpdatePlotContainerNotice = CStr(hasWarning) & "|" & notice
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Перехватывает ожидаемый отказ пустого снимка и возвращает полный текст, включая сообщение о восстановленной области.
+Public Function TestEmptyPlotRecoveryMessage(ByVal workbook As Object) As String
+    On Error GoTo ExpectedFailure
+    UpdateSectionResultsForWorkbook workbook
+    TestEmptyPlotRecoveryMessage = "EXPECTED_ERROR_NOT_RAISED"
+    Exit Function
+ExpectedFailure:
+    TestEmptyPlotRecoveryMessage = "EXPECTED_ERROR|" & CStr(Err.Number) & "|" & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Строит маленький сохранённый снимок в отдельной книге; именованные входы берёт из проверяемой сборки.
+Private Function TestCreatePlotContainerFixture() As Object
+    Dim fixture As Object, config As Object, sheet As Object, source As Object, target As Object
+    Dim name As Variant, addresses As Variant, i As Long, props(1 To 2, 1 To 4) As Variant
+    Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "Config"
+    Set sheet = fixture.Worksheets.Add: sheet.Name = "Results"
+    fixture.Worksheets.Add.Name = "Расчет": fixture.Worksheets.Add.Name = "Схема пользователя"
+    addresses = Array("A5", "H5", "P5", "P25")
+    For Each name In Array("rngSystemSettings", "rngPlotAnnotationSettings", "rngUnitSettings", "rngSignConventionSettings")
+        Set source = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        Set target = config.Range(CStr(addresses(i))).Resize(source.Rows.Count, source.Columns.Count)
+        target.NumberFormat = "@": target.Value2 = source.Value2
+        fixture.Names.Add Name:=CStr(name), RefersTo:="=Config!" & target.Address: i = i + 1
+    Next name
+    Set target = fixture.Names.Item("rngSystemSettings").RefersToRange
+    TestAudit03SetPlotSetting target, "Plot.Enabled", "Yes"
+    sheet.Range("A5").Resize(3, 15).Value2 = TestAudit03ContourGeometrySnapshot("CONTOUR_LINE")
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    TestAudit03PrepareContourFixture fixture, "CONTOUR_LINE"
+    props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
+    props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
+    sheet.Range("R5").Resize(2, 4).Value2 = props
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$R$5"
+    Set TestCreatePlotContainerFixture = fixture
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет один и тот же объект, независимые чужие диаграммы и сохранность обоих рисунков до отказа при дубликатах.
+Private Sub TestPlotContainerContracts(ByRef stats As TUiTestStats)
+    Dim fixture As Object, sheet As Object, chart As Object, other As Object, moved As Object, marker As Object, relocated As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim notice As String, reason As String, code As Long, saved As Variant, actual As Variant, solves As Long
+    Dim generated As Long, count As Long, shape As Object, index As Long, beforeSeries As Long
+    On Error GoTo Failed
+    solves = SectionEquilibriumSolveCount()
+    Set fixture = TestCreatePlotContainerFixture(): Set sheet = fixture.Worksheets.Item("Расчет")
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook fixture
+    Set reader = New CSectionPlotDataReader: reader.LoadGeometryPreviewFromWorkbook fixture, settings
+    Set plotter = New CSectionPlotter
+    saved = fixture.Worksheets.Item("Results").Range("A1:FP20").Value2
+    Set other = fixture.Worksheets.Item("Схема пользователя").ChartObjects.Add(10#, 20#, 300#, 210#)
+    other.Name = "UserChart": other.Chart.HasTitle = True: other.Chart.ChartTitle.Text = "Чужая диаграмма"
+    plotter.Draw fixture, reader, settings, notice
+    Set chart = sheet.ChartObjects("chtNDMSectionPlot")
+    TestAssertTrue stats, "plotContainer.created.notice", InStr(notice, "автоматически создана") > 0 And InStr(notice, "Расчет") > 0
+    chart.Left = 41#: chart.Top = 53#: chart.Width = 700#: chart.Height = 480#
+    chart.ShapeRange.Item(1).AlternativeText = "TEST_CONTAINER_PERSISTENT"
+    plotter.Draw fixture, reader, settings, notice
+    TestAssertTrue stats, "plotContainer.reused.noNotice", Len(notice) = 0
+    TestAssertTrue stats, "plotContainer.reused.identity", sheet.ChartObjects("chtNDMSectionPlot").ShapeRange.Item(1).AlternativeText = "TEST_CONTAINER_PERSISTENT"
+    TestAssertTrue stats, "plotContainer.reused.bounds", chart.Left = 41# And chart.Top = 53# And chart.Width = 700# And chart.Height = 480#
+    Set relocated = chart.Chart.Location(2, "Схема пользователя"): Set moved = relocated.Parent
+    TestAppendLine stats, "MOVED_CONTAINER_EXCEL_NAME: " & moved.Name
+    moved.Name = "chtNDMSectionPlot" ' После ручного переноса пользователь сохраняет контрактное имя контейнера.
+    moved.Left = 71#: moved.Top = 83#: moved.Width = 640#: moved.Height = 430#
+    UpdateSectionGeometryPreviewForWorkbook fixture, notice
+    TestAssertTrue stats, "plotContainer.moved.noNotice", Len(notice) = 0
+    TestAssertTrue stats, "plotContainer.moved.noReplacement", sheet.ChartObjects.Count = 0
+    TestAssertTrue stats, "plotContainer.moved.bounds", moved.Left = 71# And moved.Top = 83# And moved.Width = 640# And moved.Height = 430#
+    For Each shape In moved.Chart.Shapes
+        If Left$(shape.Name, Len("NDMPlot_Element")) = "NDMPlot_Element" Then generated = generated + 1
+    Next shape
+    TestAssertTrue stats, "plotContainer.moved.elements", generated > 0
+    plotter.ClearExisting fixture, "Схема очищена для проверки", notice
+    count = 0
+    For Each shape In moved.Chart.Shapes
+        If Left$(shape.Name, Len("NDMPlot_Element")) = "NDMPlot_Element" Then count = count + 1
+    Next shape
+    TestAssertTrue stats, "plotContainer.clear.moved", count = 0 And moved.Chart.SeriesCollection.Count = 0 And Len(notice) = 0
+    TestAssertTrue stats, "plotContainer.clear.bounds", moved.Left = 71# And moved.Top = 83# And moved.Width = 640# And moved.Height = 430#
+    plotter.Draw fixture, reader, settings, notice
+    Set marker = moved.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_ContainerSentinel"
+    beforeSeries = moved.Chart.SeriesCollection.Count
+    Set chart = sheet.ChartObjects.Add(41#, 53#, 700#, 480#): chart.Name = "chtNDMSectionPlot"
+    Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_ContainerSentinel"
+    For index = 0 To 1
+        On Error Resume Next
+        Err.Clear
+        If index = 0 Then plotter.Draw fixture, reader, settings, notice Else plotter.ClearExisting fixture, "Не должно очиститься", notice
+        code = Err.Number: reason = Err.Description
+        On Error GoTo Failed
+        TestAssertTrue stats, "plotContainer.duplicate.rejected." & CStr(index), code = vbObjectError + 4814
+        TestAssertTrue stats, "plotContainer.duplicate.reason." & CStr(index), InStr(reason, "Расчет") > 0 And InStr(reason, "Схема пользователя") > 0 And InStr(reason, "chtNDMSectionPlot") > 0
+        TestAssertTrue stats, "plotContainer.duplicate.firstPreserved." & CStr(index), TestAudit03PlotShapeExists(chart, "ContainerSentinel")
+        TestAssertTrue stats, "plotContainer.duplicate.secondPreserved." & CStr(index), TestAudit03PlotShapeExists(moved, "ContainerSentinel") And moved.Chart.SeriesCollection.Count = beforeSeries
+    Next index
+    chart.Delete
+    UpdateSectionGeometryPreviewForWorkbook fixture, notice
+    TestAssertTrue stats, "plotContainer.recovery.publicPreview", Len(notice) = 0 And sheet.ChartObjects.Count = 0
+    moved.Delete
+    plotter.ClearExisting fixture, "Восстановлено", notice
+    TestAssertTrue stats, "plotContainer.clearCreates.notice", InStr(notice, "автоматически создана") > 0 And sheet.ChartObjects.Count = 1
+    sheet.ChartObjects("chtNDMSectionPlot").Delete
+    plotter.Draw fixture, reader, settings, notice
+    TestAssertTrue stats, "plotContainer.drawCreates.notice", InStr(notice, "автоматически создана") > 0 And sheet.ChartObjects.Count = 1
+    TestAssertTrue stats, "plotContainer.otherChartPreserved", other.Name = "UserChart" And other.Chart.ChartTitle.Text = "Чужая диаграмма"
+    actual = fixture.Worksheets.Item("Results").Range("A1:FP20").Value2
+    TestAudit03ComparePlainSnapshot stats, "plotContainer.results", saved, actual, 1
+    TestAssertTrue stats, "plotContainer.noSolve", SectionEquilibriumSolveCount() = solves
+    GoTo Cleanup
+Failed:
+    TestAssertTrue stats, "plotContainer.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    Application.CutCopyMode = False
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет отдельно разделение схемы подписей и расчетных аннотаций трещин.

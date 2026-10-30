@@ -1,0 +1,22 @@
+﻿[
+    {
+        "Macro":  "modTestPlotConfig.RunPlotContainerTests",
+        "Passed":  true,
+        "Seconds":  0.6944981
+    },
+    {
+        "Macro":  "modTestPlotConfig.RunAudit03AutoPlotTests",
+        "Passed":  true,
+        "Seconds":  15.0051043
+    },
+    {
+        "Macro":  "modTestWorkbookInterface.RunFormationPreviewTests",
+        "Passed":  true,
+        "Seconds":  5.8550337
+    },
+    {
+        "Macro":  "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+        "Passed":  true,
+        "Seconds":  21.317655
+    }
+]

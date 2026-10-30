@@ -53,10 +53,13 @@ Public Sub UpdateSectionPlot()
     On Error GoTo Failed
     Dim informationEnabled As Boolean
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
-    UpdateSectionResultsForWorkbook ThisWorkbook
-    If informationEnabled Then
-        ShowWorkbookMessage WorkbookMessageAfterOutcome("Схема и таблицы обновлены без повторного расчёта.", _
-            SnapshotActionDataOrigin(ThisWorkbook, "Update")), vbInformation, "RC Section NDM"
+    Dim plotWarning As String, plotHasWarning As Boolean, message As String
+    UpdateSectionResultsForWorkbook ThisWorkbook, , plotWarning, plotHasWarning
+    If informationEnabled Or plotHasWarning Then
+        message = WorkbookMessageAfterOutcome("Схема и таблицы обновлены без повторного расчёта.", _
+            SnapshotActionDataOrigin(ThisWorkbook, "Update"))
+        message = WorkbookMessageParagraph(message, plotWarning)
+        ShowWorkbookMessage message, IIf(plotHasWarning, vbExclamation, vbInformation), "RC Section NDM"
     End If
     Exit Sub
 
@@ -86,7 +89,9 @@ End Sub
 ' Читает выбранное НДС из Results и перерисовывает схему указанной книги.
 ' Если расчётных результатов ещё нет, может показать сформированную
 ' геометрию. НДС и таблицы Results при этом не меняются.
-Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal raiseIfNoData As Boolean = True)
+Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal raiseIfNoData As Boolean = True, _
+        Optional ByRef containerNotice As String = "")
+    containerNotice = vbNullString
     If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
@@ -106,10 +111,10 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
         Else
             If Not CanUseGeometryPreview(workbook, settings) Then
                 ClearSectionPlotForNoData workbook, _
-                    "Схема не обновлена: в Results нет выбранного состояния НДС."
+                    "Схема не обновлена: в Results нет выбранного состояния НДС.", containerNotice
                 If raiseIfNoData Then
                     Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
-                        "В Results нет выбранного состояния для схемы. Выполните расчет или проверьте ProfileId и Visualization.State."
+                        WorkbookMessageParagraph("В Results нет выбранного состояния для схемы. Выполните расчет или проверьте ProfileId и Visualization.State.", containerNotice)
                 End If
                 Exit Sub
             End If
@@ -121,7 +126,7 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
 
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
-    plotter.Draw workbook, reader, settings
+    plotter.Draw workbook, reader, settings, containerNotice
     CompleteWorkbookDrawing workbook
 End Sub
 
@@ -164,17 +169,20 @@ End Function
 ' Очищает содержимое существующего ChartObject без удаления окна схемы.
 ' Сохранённый рисунок не должен выглядеть как результат нового запуска,
 ' если пригодные данные отсутствуют или обновление схемы ещё не выполнено.
-Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText As String)
-    On Error GoTo Done
+Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText As String, Optional ByRef containerNotice As String = "")
+    On Error GoTo Failed
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
-    plotter.ClearExisting workbook, titleText
-Done:
+    plotter.ClearExisting workbook, titleText, containerNotice
+    Exit Sub
+Failed:
+    containerNotice = "Предупреждение:" & vbCrLf & "Схема не очищена." & vbCrLf & vbCrLf & Err.Description
 End Sub
 
 ' Показывает сформированное сечение до расчёта НДС.
 ' Оформление читает из Config, координаты и характеристики — из Results.
-Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
+Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object, Optional ByRef containerNotice As String = "")
+    containerNotice = vbNullString
     If workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
@@ -189,7 +197,7 @@ Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
 
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
-    plotter.Draw workbook, reader, settings
+    plotter.Draw workbook, reader, settings, containerNotice
     CompleteWorkbookDrawing workbook
 End Sub
 
@@ -256,7 +264,8 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
     End If
     Dim savedDestination As String: savedDestination = "на листе Results"
     If previewStore.StorageMode(workbook) = "File" Then savedDestination = "в файле «" & previewStore.SelectedFileName(workbook) & "»"
-    ClearSectionPlotForNoData workbook, "Сечение сформировано. Схема не обновлена."
+    Dim containerNotice As String
+    ClearSectionPlotForNoData workbook, "Сечение сформировано. Схема не обновлена.", containerNotice
     If importer Is Nothing Then
         FormSectionCore = "Сечение сформировано и сохранено " & savedDestination & "." & vbCrLf & vbCrLf & _
             "Бетонных элементов: " & CStr(section.ConcreteCount) & "." & vbCrLf & _
@@ -268,14 +277,22 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
             "Сечение сформировано и сохранено " & savedDestination & ". Для расчёта нажмите «Выполнить расчёт»."
     End If
     If Len(section.GeometryWarningText) > 0 Then FormSectionCore = WorkbookMessageParagraph(FormSectionCore, section.GeometryWarningText)
+    If Len(containerNotice) > 0 Then
+        requiresAttention = True
+        FormSectionCore = WorkbookMessageParagraph(FormSectionCore, containerNotice)
+    End If
     CalculateResultsSheet workbook
-    Dim plotErrorNumber As Long, plotError As String
+    Dim plotErrorNumber As Long, plotError As String, previewNotice As String
     On Error Resume Next
     Err.Clear
-    UpdateSectionGeometryPreviewForWorkbook workbook ' Оформление использует уже сохранённый снимок и не запускает расчёт. Ошибка схемы не отменяет успешное формирование сечения.
+    UpdateSectionGeometryPreviewForWorkbook workbook, previewNotice ' Оформление использует уже сохранённый снимок и не запускает расчёт. Ошибка схемы не отменяет успешное формирование сечения.
     plotErrorNumber = Err.Number: plotError = Err.Description
     Err.Clear
     On Error GoTo Failed
+    If Len(previewNotice) > 0 Then
+        requiresAttention = True
+        FormSectionCore = WorkbookMessageParagraph(FormSectionCore, previewNotice)
+    End If
     If plotErrorNumber <> 0 Then
         requiresAttention = True
         FormSectionCore = FormSectionCore & vbCrLf & vbCrLf & _

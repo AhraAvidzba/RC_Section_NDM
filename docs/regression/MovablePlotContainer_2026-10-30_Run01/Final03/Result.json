@@ -1,0 +1,11 @@
+﻿{
+    "Passed":  true,
+    "FreshBase":  "Build02/RC_Section_NDM.xlsm",
+    "UserDataCopied":  false,
+    "BookSHA256":  "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA",
+    "EmptySnapshotNotice":  true,
+    "NoFalseSecondNotice":  true,
+    "ContainerPassed":  24,
+    "QuitRequested":  true,
+    "SourceAfterSHA256":  "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA"
+}

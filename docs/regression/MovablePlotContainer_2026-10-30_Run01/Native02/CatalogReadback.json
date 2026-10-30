@@ -1,0 +1,3242 @@
+﻿[
+    {
+        "Type":  "Circle",
+        "Block":  "General",
+        "Row":  "D",
+        "Field":  "val",
+        "Value":  300,
+        "Address":  "$C$6"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "General",
+        "Row":  "D",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$6"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "General",
+        "Row":  "D",
+        "Field":  "note",
+        "Value":  "Наружный диаметр бетонного круга.",
+        "Address":  "$E$6"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Main",
+        "Row":  "Circle",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$12"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Main",
+        "Row":  "Circle",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$12"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Main",
+        "Row":  "Circle",
+        "Field":  "n",
+        "Value":  8,
+        "Address":  "$E$12"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Main",
+        "Row":  "Circle",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$12"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Main",
+        "Row":  "Circle",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$12"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Main",
+        "Row":  "Circle",
+        "Field":  "endMode",
+        "Value":  "IncludeStart",
+        "Address":  "$H$12"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Main",
+        "Row":  "Circle",
+        "Field":  "note",
+        "Value":  "as — расстояние от края бетона до осей стержней; s0 и s1 — отступы вдоль окружности от верхней точки по часовой стрелке.",
+        "Address":  "$I$12"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$18"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$18"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$18"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$18"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$18"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$18"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$18"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$18"
+    },
+    {
+        "Type":  "Circle",
+        "Block":  "Extra",
+        "Row":  "Circle",
+        "Field":  "note",
+        "Value":  "a2 и a3 — независимые базовые смещения от основного ряда, мм.",
+        "Address":  "$K$18"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "Shape",
+        "Field":  "val",
+        "Value":  "TwoRect",
+        "Address":  "$C$25"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "Shape",
+        "Field":  "unit",
+        "Value":  "—",
+        "Address":  "$D$25"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "Shape",
+        "Field":  "note",
+        "Value":  "TwoRect — два смежных прямоугольника с заданным смещением; OneRect — один прямоугольник.",
+        "Address":  "$E$25"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "H1",
+        "Field":  "val",
+        "Value":  550,
+        "Address":  "$C$26"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "H1",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$26"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "H1",
+        "Field":  "note",
+        "Value":  "Высота верхнего прямоугольника; для OneRect — высота всего сечения.",
+        "Address":  "$E$26"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "B1",
+        "Field":  "val",
+        "Value":  250,
+        "Address":  "$C$27"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "B1",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$27"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "B1",
+        "Field":  "note",
+        "Value":  "Ширина верхнего прямоугольника; для OneRect — ширина всего сечения.",
+        "Address":  "$E$27"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "H2",
+        "Field":  "val",
+        "Value":  250,
+        "Address":  "$C$28"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "H2",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$28"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "H2",
+        "Field":  "note",
+        "Value":  "Высота нижнего прямоугольника; для OneRect не используется.",
+        "Address":  "$E$28"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "B2",
+        "Field":  "val",
+        "Value":  600,
+        "Address":  "$C$29"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "B2",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$29"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "B2",
+        "Field":  "note",
+        "Value":  "Ширина нижнего прямоугольника; для OneRect не используется.",
+        "Address":  "$E$29"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "XOffset",
+        "Field":  "val",
+        "Value":  0,
+        "Address":  "$C$30"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "XOffset",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$30"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "General",
+        "Row":  "XOffset",
+        "Field":  "note",
+        "Value":  "Для TwoRect: смещение верхнего прямоугольника относительно нижнего; плюс — вправо.",
+        "Address":  "$E$30"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Top",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$36"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Top",
+        "Field":  "d",
+        "Value":  32,
+        "Address":  "$D$36"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Top",
+        "Field":  "n",
+        "Value":  2,
+        "Address":  "$E$36"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Top",
+        "Field":  "s0",
+        "Value":  40,
+        "Address":  "$F$36"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Top",
+        "Field":  "s1",
+        "Value":  40,
+        "Address":  "$G$36"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Top",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$36"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Top",
+        "Field":  "note",
+        "Value":  "Верхняя грань B1.",
+        "Address":  "$I$36"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Bottom",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$37"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Bottom",
+        "Field":  "d",
+        "Value":  32,
+        "Address":  "$D$37"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Bottom",
+        "Field":  "n",
+        "Value":  2,
+        "Address":  "$E$37"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Bottom",
+        "Field":  "s0",
+        "Value":  40,
+        "Address":  "$F$37"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Bottom",
+        "Field":  "s1",
+        "Value":  40,
+        "Address":  "$G$37"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Bottom",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$37"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Bottom",
+        "Field":  "note",
+        "Value":  "Нижняя грань B1.",
+        "Address":  "$I$37"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Left",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$38"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Left",
+        "Field":  "d",
+        "Value":  32,
+        "Address":  "$D$38"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Left",
+        "Field":  "n",
+        "Value":  5,
+        "Address":  "$E$38"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Left",
+        "Field":  "s0",
+        "Value":  40,
+        "Address":  "$F$38"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Left",
+        "Field":  "s1",
+        "Value":  40,
+        "Address":  "$G$38"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Left",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$38"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Left",
+        "Field":  "note",
+        "Value":  "Левая грань H1.",
+        "Address":  "$I$38"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Right",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$39"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Right",
+        "Field":  "d",
+        "Value":  32,
+        "Address":  "$D$39"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Right",
+        "Field":  "n",
+        "Value":  5,
+        "Address":  "$E$39"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Right",
+        "Field":  "s0",
+        "Value":  40,
+        "Address":  "$F$39"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Right",
+        "Field":  "s1",
+        "Value":  40,
+        "Address":  "$G$39"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Right",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$39"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R1.Right",
+        "Field":  "note",
+        "Value":  "Правая грань H1.",
+        "Address":  "$I$39"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Top",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$40"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Top",
+        "Field":  "d",
+        "Value":  32,
+        "Address":  "$D$40"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Top",
+        "Field":  "n",
+        "Value":  5,
+        "Address":  "$E$40"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Top",
+        "Field":  "s0",
+        "Value":  40,
+        "Address":  "$F$40"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Top",
+        "Field":  "s1",
+        "Value":  40,
+        "Address":  "$G$40"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Top",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$40"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Top",
+        "Field":  "note",
+        "Value":  "Верхняя грань B2.",
+        "Address":  "$I$40"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Bottom",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$41"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Bottom",
+        "Field":  "d",
+        "Value":  32,
+        "Address":  "$D$41"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Bottom",
+        "Field":  "n",
+        "Value":  5,
+        "Address":  "$E$41"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Bottom",
+        "Field":  "s0",
+        "Value":  40,
+        "Address":  "$F$41"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Bottom",
+        "Field":  "s1",
+        "Value":  40,
+        "Address":  "$G$41"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Bottom",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$41"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Bottom",
+        "Field":  "note",
+        "Value":  "Нижняя грань B2.",
+        "Address":  "$I$41"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Left",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$42"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Left",
+        "Field":  "d",
+        "Value":  32,
+        "Address":  "$D$42"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Left",
+        "Field":  "n",
+        "Value":  2,
+        "Address":  "$E$42"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Left",
+        "Field":  "s0",
+        "Value":  40,
+        "Address":  "$F$42"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Left",
+        "Field":  "s1",
+        "Value":  40,
+        "Address":  "$G$42"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Left",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$42"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Left",
+        "Field":  "note",
+        "Value":  "Левая грань H2.",
+        "Address":  "$I$42"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Right",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$43"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Right",
+        "Field":  "d",
+        "Value":  32,
+        "Address":  "$D$43"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Right",
+        "Field":  "n",
+        "Value":  2,
+        "Address":  "$E$43"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Right",
+        "Field":  "s0",
+        "Value":  40,
+        "Address":  "$F$43"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Right",
+        "Field":  "s1",
+        "Value":  40,
+        "Address":  "$G$43"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Right",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$43"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Main",
+        "Row":  "R2.Right",
+        "Field":  "note",
+        "Value":  "Правая грань H2.",
+        "Address":  "$I$43"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Top",
+        "Field":  "note",
+        "Value":  "a2 и a3 — независимые базовые смещения от основного ряда, мм.",
+        "Address":  "$K$49"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Bottom",
+        "Field":  "note",
+        "Value":  "Пустой или нулевой диаметр отключает только соответствующий дополнительный ряд.",
+        "Address":  "$K$50"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Left",
+        "Field":  "note",
+        "Value":  "EachBar — привязка к каждому стержню; EverySecondBar — через один.",
+        "Address":  "$K$51"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R1.Right",
+        "Field":  "note",
+        "Value":  "Stacked — смещение в бетон; SideBySide — вдоль линии размещения.",
+        "Address":  "$K$52"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Top",
+        "Field":  "note",
+        "Value":  "a2 и a3 — независимые базовые смещения от основного ряда, мм.",
+        "Address":  "$K$53"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Bottom",
+        "Field":  "note",
+        "Value":  "Пустой или нулевой диаметр отключает только соответствующий дополнительный ряд.",
+        "Address":  "$K$54"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Left",
+        "Field":  "note",
+        "Value":  "EachBar — привязка к каждому стержню; EverySecondBar — через один.",
+        "Address":  "$K$55"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$56"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$56"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$56"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$56"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$56"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$56"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$56"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$56"
+    },
+    {
+        "Type":  "Rectangles",
+        "Block":  "Extra",
+        "Row":  "R2.Right",
+        "Field":  "note",
+        "Value":  "Stacked — смещение в бетон; SideBySide — вдоль линии размещения.",
+        "Address":  "$K$56"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "B",
+        "Field":  "val",
+        "Value":  800,
+        "Address":  "$C$63"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "B",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$63"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "B",
+        "Field":  "note",
+        "Value":  "Длина горизонтальной базы без дополнительного выноса наклонных торцов.",
+        "Address":  "$E$63"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "H",
+        "Field":  "val",
+        "Value":  250,
+        "Address":  "$C$64"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "H",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$64"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "H",
+        "Field":  "note",
+        "Value":  "Полная высота бетонного сечения.",
+        "Address":  "$E$64"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.W",
+        "Field":  "val",
+        "Value":  0,
+        "Address":  "$C$65"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.W",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$65"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.W",
+        "Field":  "note",
+        "Value":  "Вынос бокового выступа до скругления. При W = 0 сторона без выступа; при W \u003e 0 — с выступом.",
+        "Address":  "$E$65"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.R1",
+        "Field":  "val",
+        "Value":  100,
+        "Address":  "$C$66"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.R1",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$66"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.R1",
+        "Field":  "note",
+        "Value":  "Радиус верхнего и нижнего скруглений соответствующего торца.",
+        "Address":  "$E$66"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.R2",
+        "Field":  "val",
+        "Value":  0,
+        "Address":  "$C$67"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.R2",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$67"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Left.R2",
+        "Field":  "note",
+        "Value":  "Радиус вершины бокового выступа; используется только при W \u003e 0.",
+        "Address":  "$E$67"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.W",
+        "Field":  "val",
+        "Value":  150,
+        "Address":  "$C$68"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.W",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$68"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.W",
+        "Field":  "note",
+        "Value":  "Вынос бокового выступа до скругления. При W = 0 сторона без выступа; при W \u003e 0 — с выступом.",
+        "Address":  "$E$68"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.R1",
+        "Field":  "val",
+        "Value":  40,
+        "Address":  "$C$69"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.R1",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$69"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.R1",
+        "Field":  "note",
+        "Value":  "Радиус верхнего и нижнего скруглений соответствующего торца.",
+        "Address":  "$E$69"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.R2",
+        "Field":  "val",
+        "Value":  50,
+        "Address":  "$C$70"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.R2",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$70"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "General",
+        "Row":  "Right.R2",
+        "Field":  "note",
+        "Value":  "Радиус вершины бокового выступа; используется только при W \u003e 0.",
+        "Address":  "$E$70"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$76"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$76"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "n",
+        "Value":  8,
+        "Address":  "$E$76"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$76"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$76"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$76"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "note",
+        "Value":  "Арматура по верхнему прямому участку B между скруглениями.",
+        "Address":  "$I$76"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$77"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$77"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "n",
+        "Value":  8,
+        "Address":  "$E$77"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$77"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$77"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$77"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "note",
+        "Value":  "Арматура по нижнему прямому участку B между скруглениями.",
+        "Address":  "$I$77"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$78"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$78"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "n",
+        "Value":  3,
+        "Address":  "$E$78"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$78"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$78"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "endMode",
+        "Value":  "ExcludeBoth",
+        "Address":  "$H$78"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "note",
+        "Value":  "Арматура вдоль левой боковой траектории H.",
+        "Address":  "$I$78"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$79"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$79"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "n",
+        "Value":  3,
+        "Address":  "$E$79"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$79"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$79"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "endMode",
+        "Value":  "ExcludeBoth",
+        "Address":  "$H$79"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "note",
+        "Value":  "Арматура вдоль правой боковой траектории H.",
+        "Address":  "$I$79"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "note",
+        "Value":  "a2 и a3 — независимые базовые смещения от основного ряда, мм.",
+        "Address":  "$K$85"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "note",
+        "Value":  "Пустой или нулевой диаметр отключает только соответствующий дополнительный ряд.",
+        "Address":  "$K$86"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "note",
+        "Value":  "EachBar — привязка к каждому стержню; EverySecondBar — через один.",
+        "Address":  "$K$87"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$88"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$88"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$88"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$88"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$88"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$88"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$88"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$88"
+    },
+    {
+        "Type":  "PointedSection",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "note",
+        "Value":  "Stacked — смещение в бетон; SideBySide — вдоль линии размещения.",
+        "Address":  "$K$88"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "B",
+        "Field":  "val",
+        "Value":  500,
+        "Address":  "$C$95"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "B",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$95"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "B",
+        "Field":  "note",
+        "Value":  "Наружный размер по горизонтали.",
+        "Address":  "$E$95"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "H",
+        "Field":  "val",
+        "Value":  800,
+        "Address":  "$C$96"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "H",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$96"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "H",
+        "Field":  "note",
+        "Value":  "Наружный размер по вертикали.",
+        "Address":  "$E$96"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "R",
+        "Field":  "val",
+        "Value":  180,
+        "Address":  "$C$97"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "R",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$97"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "R",
+        "Field":  "note",
+        "Value":  "Радиус скругления наружного контура.",
+        "Address":  "$E$97"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Bo",
+        "Field":  "val",
+        "Value":  200,
+        "Address":  "$C$98"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Bo",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$98"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Bo",
+        "Field":  "note",
+        "Value":  "Размер отверстия по горизонтали.",
+        "Address":  "$E$98"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Ho",
+        "Field":  "val",
+        "Value":  500,
+        "Address":  "$C$99"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Ho",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$99"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Ho",
+        "Field":  "note",
+        "Value":  "Размер отверстия по вертикали.",
+        "Address":  "$E$99"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Ro",
+        "Field":  "val",
+        "Value":  30,
+        "Address":  "$C$100"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Ro",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$100"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Ro",
+        "Field":  "note",
+        "Value":  "Радиус скругления углов отверстия.",
+        "Address":  "$E$100"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Xo",
+        "Field":  "val",
+        "Value":  0,
+        "Address":  "$C$101"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Xo",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$101"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Xo",
+        "Field":  "note",
+        "Value":  "Смещение центра отверстия относительно центра наружного контура; плюс — вправо.",
+        "Address":  "$E$101"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Yo",
+        "Field":  "val",
+        "Value":  0,
+        "Address":  "$C$102"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Yo",
+        "Field":  "unit",
+        "Value":  "mm",
+        "Address":  "$D$102"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "General",
+        "Row":  "Yo",
+        "Field":  "note",
+        "Value":  "Смещение центра отверстия относительно центра наружного контура; плюс — вверх.",
+        "Address":  "$E$102"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$108"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$108"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "n",
+        "Value":  5,
+        "Address":  "$E$108"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$108"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$108"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "endMode",
+        "Value":  "ExcludeBoth",
+        "Address":  "$H$108"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Top",
+        "Field":  "note",
+        "Value":  "Арматура вдоль верхней наружной грани B между началами скруглений.",
+        "Address":  "$I$108"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$109"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$109"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "n",
+        "Value":  5,
+        "Address":  "$E$109"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$109"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$109"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "endMode",
+        "Value":  "ExcludeBoth",
+        "Address":  "$H$109"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Bottom",
+        "Field":  "note",
+        "Value":  "Арматура вдоль нижней наружной грани B между началами скруглений.",
+        "Address":  "$I$109"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$110"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$110"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "n",
+        "Value":  6,
+        "Address":  "$E$110"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$110"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$110"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$110"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Left",
+        "Field":  "note",
+        "Value":  "Арматура вдоль левой наружной грани H.",
+        "Address":  "$I$110"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$111"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$111"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "n",
+        "Value":  6,
+        "Address":  "$E$111"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$111"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$111"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "endMode",
+        "Value":  "IncludeBoth",
+        "Address":  "$H$111"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "Right",
+        "Field":  "note",
+        "Value":  "Арматура вдоль правой наружной грани H.",
+        "Address":  "$I$111"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningTop",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$112"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningTop",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$112"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningTop",
+        "Field":  "n",
+        "Value":  "—",
+        "Address":  "$E$112"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningTop",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$112"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningTop",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$112"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningTop",
+        "Field":  "endMode",
+        "Value":  "—",
+        "Address":  "$H$112"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningTop",
+        "Field":  "note",
+        "Value":  "Число стержней определяется проецированием наружного ряда; вручную не задаётся.",
+        "Address":  "$I$112"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningBottom",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$113"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningBottom",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$113"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningBottom",
+        "Field":  "n",
+        "Value":  "—",
+        "Address":  "$E$113"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningBottom",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$113"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningBottom",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$113"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningBottom",
+        "Field":  "endMode",
+        "Value":  "—",
+        "Address":  "$H$113"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningBottom",
+        "Field":  "note",
+        "Value":  "Число стержней определяется проецированием наружного ряда; вручную не задаётся.",
+        "Address":  "$I$113"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningLeft",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$114"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningLeft",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$114"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningLeft",
+        "Field":  "n",
+        "Value":  "—",
+        "Address":  "$E$114"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningLeft",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$114"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningLeft",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$114"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningLeft",
+        "Field":  "endMode",
+        "Value":  "—",
+        "Address":  "$H$114"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningLeft",
+        "Field":  "note",
+        "Value":  "Число стержней определяется проецированием наружного ряда; вручную не задаётся.",
+        "Address":  "$I$114"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningRight",
+        "Field":  "as",
+        "Value":  40,
+        "Address":  "$C$115"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningRight",
+        "Field":  "d",
+        "Value":  20,
+        "Address":  "$D$115"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningRight",
+        "Field":  "n",
+        "Value":  "—",
+        "Address":  "$E$115"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningRight",
+        "Field":  "s0",
+        "Value":  0,
+        "Address":  "$F$115"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningRight",
+        "Field":  "s1",
+        "Value":  0,
+        "Address":  "$G$115"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningRight",
+        "Field":  "endMode",
+        "Value":  "—",
+        "Address":  "$H$115"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Main",
+        "Row":  "OpeningRight",
+        "Field":  "note",
+        "Value":  "Число стержней определяется проецированием наружного ряда; вручную не задаётся.",
+        "Address":  "$I$115"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Top",
+        "Field":  "note",
+        "Value":  "a2 и a3 — независимые базовые смещения от основного ряда, мм.",
+        "Address":  "$K$121"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Bottom",
+        "Field":  "note",
+        "Value":  "Пустой или нулевой диаметр отключает только соответствующий дополнительный ряд.",
+        "Address":  "$K$122"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Left",
+        "Field":  "note",
+        "Value":  "EachBar — привязка к каждому стержню; EverySecondBar — через один.",
+        "Address":  "$K$123"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "Right",
+        "Field":  "note",
+        "Value":  "Stacked — смещение в бетон; SideBySide — вдоль линии размещения.",
+        "Address":  "$K$124"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningTop",
+        "Field":  "note",
+        "Value":  "a2 и a3 — независимые базовые смещения от основного ряда, мм.",
+        "Address":  "$K$125"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningBottom",
+        "Field":  "note",
+        "Value":  "Пустой или нулевой диаметр отключает только соответствующий дополнительный ряд.",
+        "Address":  "$K$126"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningLeft",
+        "Field":  "note",
+        "Value":  "EachBar — привязка к каждому стержню; EverySecondBar — через один.",
+        "Address":  "$K$127"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "d2",
+        "Value":  null,
+        "Address":  "$C$128"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "a2",
+        "Value":  0,
+        "Address":  "$D$128"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "bind2",
+        "Value":  "EachBar",
+        "Address":  "$E$128"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "pos2",
+        "Value":  "Stacked",
+        "Address":  "$F$128"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "d3",
+        "Value":  null,
+        "Address":  "$G$128"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "a3",
+        "Value":  0,
+        "Address":  "$H$128"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "bind3",
+        "Value":  "EachBar",
+        "Address":  "$I$128"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "pos3",
+        "Value":  "Stacked",
+        "Address":  "$J$128"
+    },
+    {
+        "Type":  "HollowRectangle",
+        "Block":  "Extra",
+        "Row":  "OpeningRight",
+        "Field":  "note",
+        "Value":  "Stacked — смещение в бетон; SideBySide — вдоль линии размещения.",
+        "Address":  "$K$128"
+    }
+]

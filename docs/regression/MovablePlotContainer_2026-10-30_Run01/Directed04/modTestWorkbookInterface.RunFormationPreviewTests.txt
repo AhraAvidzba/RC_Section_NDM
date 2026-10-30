@@ -1,0 +1,26 @@
+OK: formPreview.saved
+OK: formPreview.drawn
+OK: formPreview.annotations
+OK: formPreview.noSolver
+OK: formPreview.error.warning
+OK: formPreview.error.typedWarning
+OK: formPreview.error.reason
+OK: formPreview.error.snapshot
+OK: formPreview.error.noSolver
+OK: formPreview.disabled.saved
+OK: formPreview.disabled.noTypedWarning
+OK: formPreview.disabled.noDrawing
+OK: formPreview.disabled.noSolver
+OK: geometryWarning.Excel.formation.warns
+OK: geometryWarning.Excel.formation.paragraph
+OK: geometryWarning.Excel.formation.noSolver
+OK: geometryWarning.Excel.calculation.completed
+OK: geometryWarning.Excel.calculation.solved
+OK: geometryWarning.Excel.calculation.noRepeat
+OK: geometryWarning.File.formation.warns
+OK: geometryWarning.File.formation.paragraph
+OK: geometryWarning.File.formation.noSolver
+OK: geometryWarning.File.calculation.completed
+OK: geometryWarning.File.calculation.solved
+OK: geometryWarning.File.calculation.noRepeat
+TOTAL_FORMATION_PREVIEW: passed=25; failed=0

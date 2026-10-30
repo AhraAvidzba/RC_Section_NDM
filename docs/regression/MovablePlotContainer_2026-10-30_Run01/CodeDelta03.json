@@ -1,0 +1,12 @@
+﻿{
+    "Passed":  true,
+    "ComponentsCompared":  181,
+    "ChangedComponents":  [
+                              "modWorkbookCalculation",
+                              "modTestPlotConfig"
+                          ],
+    "ProductionChangeOnlyEmptySnapshotMessage":  true,
+    "Other179BodiesEqual":  true,
+    "IntegrationSHA":  "6B3F4F0F483B0A5AAD45B1B564B6F62A2A348664F5F16EF542A484ACE2B1536B",
+    "FinalSHA":  "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA"
+}

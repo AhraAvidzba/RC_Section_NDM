@@ -1,0 +1,362 @@
+{
+  "Status": "DIRECTED_CONTAINER_NATIVE_REOPEN_AND_PUBLICATION_PASS",
+  "PrimaryLogsEntirelyRead": true,
+  "Directed": [
+    {
+      "Macro": "modTestPlotConfig.RunPlotContainerTests",
+      "Passed": 24,
+      "Failed": 0,
+      "PrimarySHA256": "956ED472B40D894D0CA90727CE9C13A251BF0E26A04C0A8F5A3A75FFF1C39DD4"
+    },
+    {
+      "Macro": "modTestPlotConfig.RunAudit03AutoPlotTests",
+      "Passed": 86,
+      "Failed": 0,
+      "PrimarySHA256": "E42EE9869338026FF19F22D6101E0F72252D5D8FDB1E62E6C2AF178C5730C356"
+    },
+    {
+      "Macro": "modTestWorkbookInterface.RunFormationPreviewTests",
+      "Passed": 25,
+      "Failed": 0,
+      "PrimarySHA256": "23B6CEE113655B9204FB64B64E60BDAC533003BA70A8FBE09FAFFD1BFB710C8E"
+    },
+    {
+      "Macro": "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+      "Passed": 116,
+      "Failed": 0,
+      "PrimarySHA256": "3E573D0DEE573B4E022A49105EF69102AEC98110F484F3E23B8A6138C40D6504"
+    }
+  ],
+  "DirectedPassed": 251,
+  "DirectedFailed": 0,
+  "FinalBuildContainerChecks": 24,
+  "PlacementStages": [
+    {
+      "Stage": "SavedReopened",
+      "Sheet": "Лист схемы",
+      "Name": "chtNDMSectionPlot",
+      "Left": 73,
+      "Top": 91,
+      "Width": 720,
+      "Height": 460,
+      "ElementShapes": 96,
+      "Series": 1,
+      "NoReplacementOnCalculationSheet": true
+    },
+    {
+      "Stage": "FormationPreviewAfterReopen",
+      "Sheet": "Лист схемы",
+      "Name": "chtNDMSectionPlot",
+      "Left": 73,
+      "Top": 91,
+      "Width": 720,
+      "Height": 460,
+      "ElementShapes": 96,
+      "Series": 1,
+      "NoReplacementOnCalculationSheet": true
+    },
+    {
+      "Stage": "ManualUpdateExcel",
+      "Sheet": "Лист схемы",
+      "Name": "chtNDMSectionPlot",
+      "Left": 73,
+      "Top": 91,
+      "Width": 720,
+      "Height": 460,
+      "ElementShapes": 96,
+      "Series": 1,
+      "NoReplacementOnCalculationSheet": true
+    },
+    {
+      "Stage": "AutomaticAfterCalculation",
+      "Sheet": "Лист схемы",
+      "Name": "chtNDMSectionPlot",
+      "Left": 73,
+      "Top": 91,
+      "Width": 720,
+      "Height": 460,
+      "ElementShapes": 96,
+      "Series": 1,
+      "NoReplacementOnCalculationSheet": true
+    },
+    {
+      "Stage": "FormationFile",
+      "Sheet": "Лист схемы",
+      "Name": "chtNDMSectionPlot",
+      "Left": 73,
+      "Top": 91,
+      "Width": 720,
+      "Height": 460,
+      "ElementShapes": 96,
+      "Series": 1,
+      "NoReplacementOnCalculationSheet": true
+    },
+    {
+      "Stage": "ManualUpdateFile",
+      "Sheet": "Лист схемы",
+      "Name": "chtNDMSectionPlot",
+      "Left": 73,
+      "Top": 91,
+      "Width": 720,
+      "Height": 460,
+      "ElementShapes": 96,
+      "Series": 1,
+      "NoReplacementOnCalculationSheet": true
+    }
+  ],
+  "FormationManualAndAutomaticRecoveryNoticeVerified": true,
+  "Native181AndSourceEquality": true,
+  "FinalBookSHA256": "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA",
+  "HistoricalStoppedOwnTestForceTerminated": {
+    "PID": 12676,
+    "StartTicksUTC": "639289690301059923",
+    "Exited": true,
+    "ForceKilled": true,
+    "AtUTC": "2026-10-30T15:03:00.3123965+00:00"
+  },
+  "UserApprovedFinalTestTermination": {
+    "PID": 18188,
+    "StartTicksUTC": "639289698228597295",
+    "Exited": true,
+    "ForceKilled": true,
+    "UserExplicitlyApproved": true,
+    "AtUTC": "2026-10-30T15:20:04.1093595+00:00"
+  },
+  "PostIntegrationChange": {
+    "Passed": true,
+    "ComponentsCompared": 181,
+    "ChangedComponents": [
+      "modWorkbookCalculation",
+      "modTestPlotConfig"
+    ],
+    "ProductionChangeOnlyEmptySnapshotMessage": true,
+    "Other179BodiesEqual": true,
+    "IntegrationSHA": "6B3F4F0F483B0A5AAD45B1B564B6F62A2A348664F5F16EF542A484ACE2B1536B",
+    "FinalSHA": "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA"
+  },
+  "EmptySnapshotRecoveryNotice": true,
+  "AllOwnTerminal": true,
+  "FullAcceptanceClaim": false,
+  "Manifest": [
+    {
+      "Path": "Backup.json",
+      "SHA256": "523FE6256AD00D25444456CCF3A4AE20A3DCADD119AA195654427FFC1420796D"
+    },
+    {
+      "Path": "CatalogChanges.json",
+      "SHA256": "AAD557DA4B6DB3AAACF04239AF51DC50D1B880269A48185A8871393F2EA25FBE"
+    },
+    {
+      "Path": "FinalBuildStart02.json",
+      "SHA256": "AC1005F940A6243012D66D97A805B2662BA20730223CB58C284C83EFD43C167E"
+    },
+    {
+      "Path": "Build02.log",
+      "SHA256": "734C0ED775EE80AB93F70C81BEE77AE7D9330BD61C543FE299D619CFBD8CBBF7"
+    },
+    {
+      "Path": "Build/BuildOwnership.json",
+      "SHA256": "123B953CB3E16E3423C41BEAAA91CF4F7BDF85B74771BB6D5D9E507C92A08330"
+    },
+    {
+      "Path": "Build02/BuildOwnership.json",
+      "SHA256": "72D538D97FBC29F71E5713C5DC99A835EBB36FBF76E27A46E7D50DC559A2C145"
+    },
+    {
+      "Path": "Native01/Result.json",
+      "SHA256": "3DC4F3C203A3A31E21B0953C24B2B500236EC5E46A3CD68006986BB7CE10B829"
+    },
+    {
+      "Path": "Native01/Ownership.json",
+      "SHA256": "64BE76B1597488CD36632651E66BC4CB2B97697661A6D44C6983DE679DF1C1D2"
+    },
+    {
+      "Path": "Native01/CatalogReadback.json",
+      "SHA256": "A5E3304577DFC9A149B7C23ABE2AAB2C728A942C68DB332CE2A36ABC4A9B4983"
+    },
+    {
+      "Path": "Native01/NativeDropdowns.json",
+      "SHA256": "05BBA38A0DA27EDDEA29FDE954B4094141DAAEFD3CDEC4904DBCB444B107992B"
+    },
+    {
+      "Path": "SourceEquality.json",
+      "SHA256": "FD106751D9C61353147A3663C90C948D1CD0E0F7799A8261CA47226E4296344E"
+    },
+    {
+      "Path": "OwnClosures.json",
+      "SHA256": "7DF173947DDA8B61DB19790CDEB6B3272CDBBC81BF08431B0857939D1E90056D"
+    },
+    {
+      "Path": "Publication.json",
+      "SHA256": "065D6E21DE38158DDD775F77B75A048B8AE65DD6AC440D9564FA2CEA2AECFB5F"
+    },
+    {
+      "Path": "VisualReview.json",
+      "SHA256": "279D468653F5AE63B4ABBA3DBA420D2810181EB5B344F09799357B98E88C3664"
+    },
+    {
+      "Path": "TestNativeDefaults01.ps1",
+      "SHA256": "5D1E85F257A62F953EC336E265BACB7CCF6C04A13FBFC4C1D733BDECFDE91BC5"
+    },
+    {
+      "Path": "TestOwnClosures01.ps1",
+      "SHA256": "3C14FCB948626A1019588E976473AB8099373D8B6A9BE9E23F294A1AC6B75B31"
+    },
+    {
+      "Path": "TestVerifySource.ps1",
+      "SHA256": "EB155F815D522B62B337CC89C72801001E7F4D14C60D4867BB6EDF8EDF7941A7"
+    },
+    {
+      "Path": "TestPublish01.ps1",
+      "SHA256": "B47630C6106E972ED06C319C875D21AEDA025E39869565ECC872BDA6E16F98CC"
+    },
+    {
+      "Path": "TestIntegration07.ps1",
+      "SHA256": "80A20509B7AD91FEBD869EC3CEA31E6064B016056F2F8A189A670B80089FAA1F"
+    },
+    {
+      "Path": "TestFinalize08.py",
+      "SHA256": "D81AC6C0D344C3349A48251A9405039B3DA654A207B665A327EB99DBD07DCB7D"
+    },
+    {
+      "Path": "Integration07/Result.json",
+      "SHA256": "682C21F62D9E0490AF84AF0FB7833224DFA3CB95B0E3807FA6CE10344BB621AB"
+    },
+    {
+      "Path": "Integration07/Ownership.json",
+      "SHA256": "0B628CC54B47027776875B47D907F42B7C414325196D63FF040F360195ACA09B"
+    },
+    {
+      "Path": "Integration07/Placement.json",
+      "SHA256": "7A28C0978071A6FB19DFDB21EDC40A4A9AC1469E91903A33C7855B39083BB449"
+    },
+    {
+      "Path": "Integration07/FormationMessage.txt",
+      "SHA256": "19CAFC1202BB70FBEA876C366DD7AC687B37504CEE02D86E646B6344372C4FDD"
+    },
+    {
+      "Path": "Integration07/ManualRecoveryNotice.txt",
+      "SHA256": "1C62E6982FCC4B3A14F866419988FD3BD54F61CCB39F1E82F7E0F35D80F33600"
+    },
+    {
+      "Path": "Integration07/CalculationMessage.txt",
+      "SHA256": "4E286B7AB6AD04AAD3658C30DCF7F5EA608FF30D49A0FC6372D6872E7896D133"
+    },
+    {
+      "Path": "Integration07/CalculationFileMessage.txt",
+      "SHA256": "7800E54744C3FDCD1AF28D2CC72D5DBEA4D80887B3D8155B7E5D837E682FC489"
+    },
+    {
+      "Path": "Integration07/AutomaticRecoveryMessage.txt",
+      "SHA256": "5575E7206047DFF4AFCD4E8F11BF4B00D9330C324780F38B44E7BC3510DED2D0"
+    },
+    {
+      "Path": "Integration07/modTestPlotConfig.RunPlotContainerTests.txt",
+      "SHA256": "956ED472B40D894D0CA90727CE9C13A251BF0E26A04C0A8F5A3A75FFF1C39DD4"
+    },
+    {
+      "Path": "Directed04/Macros.json",
+      "SHA256": "68407E2C76370C6E979FFD6B4EEE3217BFA2A92018A992326E9E49B1A346FDE3"
+    },
+    {
+      "Path": "Integration05/StoppedTestEvidence.json",
+      "SHA256": "3B7378C5E5CD4CC514AEB9C20BF6EF478319A097FB66126760812C8145A57A41"
+    },
+    {
+      "Path": "Integration05/OwnTermination.json",
+      "SHA256": "73D563B7A1AD6771BA5C3D9688B47D8F6A733F2214619FB00E4EF543777DA980"
+    },
+    {
+      "Path": "Native02/Result.json",
+      "SHA256": "842EEC1603FB0DD42BEBE58A7468E19FF74C42269293B9EFFF1DAC07B2D364F4"
+    },
+    {
+      "Path": "Native02/Ownership.json",
+      "SHA256": "A3ADD6C7E0550BDC5CED23CB0A71CCFCA8CB8616130BF239889010A5BDF7C032"
+    },
+    {
+      "Path": "Native02/CatalogReadback.json",
+      "SHA256": "A5E3304577DFC9A149B7C23ABE2AAB2C728A942C68DB332CE2A36ABC4A9B4983"
+    },
+    {
+      "Path": "Native02/NativeDropdowns.json",
+      "SHA256": "05BBA38A0DA27EDDEA29FDE954B4094141DAAEFD3CDEC4904DBCB444B107992B"
+    },
+    {
+      "Path": "SourceEquality03.json",
+      "SHA256": "381FC81AD8720B9EB56B5DC449DC103B58958259738C1CB935B92DCCAC029281"
+    },
+    {
+      "Path": "CodeDelta03.json",
+      "SHA256": "9E99C8CE5CB76A0C280BAA2FEF8A17B30FCBD58F1E08C80E0177844C128A80AE"
+    },
+    {
+      "Path": "TestReviewCodeDelta03.ps1",
+      "SHA256": "3AFB7E92441FCE92523F17C527FE77EE75FE0433C2538C0ABD1CF4AD40213044"
+    },
+    {
+      "Path": "TestFinalizeCode03.ps1",
+      "SHA256": "C624FCF5C892B96FCCF0C8BF13C6EF87FEFF9EF804EDED49360CA43F46E2B595"
+    },
+    {
+      "Path": "Final03/Ownership.json",
+      "SHA256": "7ABE46F559AC0CBF6B49C951CEBAD9E4B7E51580320A6B62F4A2A53F467D7DFF"
+    },
+    {
+      "Path": "Final03/Result.json",
+      "SHA256": "2856DF959AD9B341E79A2FF2022071D5C2BCCF93B659973809A062BD42B17C8A"
+    },
+    {
+      "Path": "Final03/EmptyRecoveryMessage.txt",
+      "SHA256": "3C999ACDECCD2170C28263D714A23D57A7AA4E605A4A59E8B14CD978251AF4DB"
+    },
+    {
+      "Path": "Final03/ContainerPrimary.txt",
+      "SHA256": "956ED472B40D894D0CA90727CE9C13A251BF0E26A04C0A8F5A3A75FFF1C39DD4"
+    },
+    {
+      "Path": "FinalVisualEquivalence03.json",
+      "SHA256": "8FA60673BEA6C2EFFD2D643E74D352EB3572CC73246DEBCA74E082A4ED73AE2D"
+    },
+    {
+      "Path": "TestNativeDefaults02.ps1",
+      "SHA256": "B9F400A73B103B060609953D32C7D80CDAF39AF3219B68F980A090DD58DF2EBF"
+    },
+    {
+      "Path": "Integration07/OwnTermination.json",
+      "SHA256": "DE41A7AF41477D278233981C3CC9CE5E70B01C8D90693418CE66D7C97DB3B438"
+    },
+    {
+      "Path": "Integration07/UserTerminationAuthorization.json",
+      "SHA256": "E01CBA9F7AD796C0FFD4AC232AC3D167CEAEB7369E3B546FA353E23DF2FC26B1"
+    },
+    {
+      "Path": "Directed04/modTestPlotConfig.RunPlotContainerTests.txt",
+      "SHA256": "956ED472B40D894D0CA90727CE9C13A251BF0E26A04C0A8F5A3A75FFF1C39DD4"
+    },
+    {
+      "Path": "Directed04/modTestPlotConfig.RunAudit03AutoPlotTests.txt",
+      "SHA256": "E42EE9869338026FF19F22D6101E0F72252D5D8FDB1E62E6C2AF178C5730C356"
+    },
+    {
+      "Path": "Directed04/modTestWorkbookInterface.RunFormationPreviewTests.txt",
+      "SHA256": "23B6CEE113655B9204FB64B64E60BDAC533003BA70A8FBE09FAFFD1BFB710C8E"
+    },
+    {
+      "Path": "Directed04/modTestWorkbookInterface.RunSectionWorkflowCalculationTests.txt",
+      "SHA256": "3E573D0DEE573B4E022A49105EF69102AEC98110F484F3E23B8A6138C40D6504"
+    },
+    {
+      "Path": "Directed01/modTestPlotConfig.RunPlotContainerTests.txt",
+      "SHA256": "2409EB434A086EC701EF3EE2A872035993C810693A60AC14ADC7C5DFFB40704A"
+    },
+    {
+      "Path": "Directed02/modTestPlotConfig.RunPlotContainerTests.txt",
+      "SHA256": "41C92A4AC67BD89B56C493CD49E227DB8864F4C32826F1FDAF1A00B609951C7D"
+    },
+    {
+      "Path": "Directed03/modTestPlotConfig.RunPlotContainerTests.txt",
+      "SHA256": "0EDB779EB580C4505235B74F887F44FEEC796039D6E0F385D50519E929D5C2A9"
+    }
+  ]
+}

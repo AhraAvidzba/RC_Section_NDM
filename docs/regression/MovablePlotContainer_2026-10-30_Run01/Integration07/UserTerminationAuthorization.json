@@ -1,0 +1,11 @@
+{
+  "UserAuthorization": "Разрешаю завершить только PID 18188",
+  "PID": 18188,
+  "StartTicksUTC": "639289698228597295",
+  "AtUTC": "2026-10-30T15:20:04.0430995+00:00",
+  "PreviousAutoReview": "Repeated Quit rejected while CPU was rising; user subsequently explicitly approved termination of this exact PID",
+  "TestPassed": true,
+  "OrdinaryQuitAlreadyRequested": true,
+  "PrivateTestDirectory": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\MovablePlotContainer_2026-10-30_Run01\\Integration07",
+  "CPU": 582.25
+}

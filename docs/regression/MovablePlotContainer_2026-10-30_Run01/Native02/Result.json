@@ -1,0 +1,26 @@
+﻿{
+    "Passed":  true,
+    "BookSHA256":  "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA",
+    "SavedReopened":  true,
+    "ReadOnly":  true,
+    "MacrosRun":  false,
+    "SavedAgain":  false,
+    "FullAcceptanceClaim":  false,
+    "Components":  181,
+    "CatalogCells":  405,
+    "Dropdowns":  106,
+    "ProjectionDashes":  8,
+    "CleanLoadsResultsAndPlot":  true,
+    "SheetOrder":  "Config|Сечения|Справка|Расчет|Results",
+    "NamedPlaceholderPresentAtBuild":  true,
+    "ContainerHelp":  {
+                          "Move":  "Схема заполняет единственную диаграмму с именем chtNDMSectionPlot на любом обычном листе этой книги. Её можно перемещать между листами и менять размер, сохраняя имя. Копии должны иметь другие имена.",
+                          "Restore":  "Если область не найдена, программа создаёт её на листе «Расчет» и сообщает об этом. Если областей с таким именем несколько, обновление требует переименовать или удалить лишние копии.",
+                          "Enable":  "Yes обновляет схему в области chtNDMSectionPlot. No сохраняет готовую схему без обновления.",
+                          "Address":  "$B$1294",
+                          "Link":  "\u0027Справка\u0027!A1290"
+                      },
+    "QuitRequested":  true,
+    "ForceKilled":  false,
+    "BookAfterSHA256":  "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA"
+}

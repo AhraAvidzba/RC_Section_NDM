@@ -12,8 +12,8 @@ Option Explicit
 ' ==========================================================================
 ' Отрисовка расчётного сечения на диаграмме Excel
 ' ==========================================================================
-' Рисует схему по сохранённым данным Results, прочитанным CSectionPlotDataReader.
-' Из Config получает оформление; геометрию и нагрузки берёт из сохранённого снимка Results.
+' Рисует схему в единственной именованной диаграмме любого обычного листа книги.
+' Из Config получает оформление; CSectionPlotDataReader читает выбранный сохранённый источник Excel/File.
 ' На обычных и средних сетках выводит элементы через Chart.Shapes с сохранением
 ' их размеров. Для очень больших сеток применяет ряды диаграммы с группировкой
 ' по цвету, чтобы ограничить объём отрисовки.
@@ -76,7 +76,7 @@ Private Const AXIS_LABEL_Y_HEIGHT As Double = 48# ' Высота вертика�
 Private Const AXIS_LABEL_TEXT_HEIGHT As Double = 14# ' Толщина текстового блока подписи оси.
 
 Private mChart As Object ' Excel Chart, внутри которого рисуются series и аннотационные Shapes.
-Private mChartObject As Object ' Контейнер ChartObject на листе Расчет; пользователь может двигать/масштабировать его.
+Private mChartObject As Object ' Единственный именованный ChartObject книги; пользователь выбирает его лист, положение и размер.
 Private mMinX As Double ' Минимум оси X после добавления полей для аннотаций.
 Private mMaxX As Double ' Максимум оси X после добавления полей для аннотаций.
 Private mMinY As Double ' Минимум оси Y после добавления полей для аннотаций.
@@ -139,7 +139,9 @@ End Sub
 ' Перестраивает схему по данным сохранённого сечения.
 ' Метод управляет порядком операций: подготовка chart, равный масштаб X/Y,
 ' расчетные элементы, Shape-аннотации и верхний служебный Shape-оверлей.
-Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader, _
+        Optional ByRef containerNotice As String = "")
+    containerNotice = vbNullString
     If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
     If data Is Nothing Then Err.Raise vbObjectError + 4801, "CSectionPlotter", "Данные схемы не переданы."
     If settings Is Nothing Then Err.Raise vbObjectError + 4802, "CSectionPlotter", "Настройки Config не переданы."
@@ -187,7 +189,7 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
         mLoadPointEnabled = settings.GetRequiredBoolean("Plot.LoadApplicationPointEnabled")
     End If
 
-    Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
+    Set mChartObject = EnsureChart(workbook, containerNotice)
     Set mChart = mChartObject.Chart
 
     mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
@@ -210,10 +212,11 @@ End Sub
 
 ' Очищает элементы, подписи и заголовок текущей схемы, сохраняя саму диаграмму,
 ' её положение и размер. Устаревший расчёт не должен выглядеть текущим.
-Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
+Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String, Optional ByRef containerNotice As String = "")
+    containerNotice = vbNullString
     If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
 
-    Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
+    Set mChartObject = EnsureChart(workbook, containerNotice)
     Set mChart = mChartObject.Chart
 
 
@@ -228,20 +231,39 @@ Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
     MarkWorkbookDrawingPending workbook
 End Sub
 
-' Возвращает существующий ChartObject или создает его при первом запуске.
-' При последующих обновлениях контейнер не пересоздается, чтобы пользователь
-' мог вручную перемещать и менять размер схемы на листе.
-Private Function EnsureChart(ByVal sheet As Object) As Object
-    Dim chartObject As Object
-    On Error Resume Next
-    Set chartObject = sheet.ChartObjects(CHART_NAME)
-    On Error GoTo 0
+' Находит единственный контейнер по всем обычным листам до изменения рисунка.
+' Перенос и размер сохраняются; отсутствие восстанавливается с сообщением, дубликаты требуют выбора пользователя.
+Private Function EnsureChart(ByVal workbook As Object, ByRef containerNotice As String) As Object
+    Dim chartObject As Object, candidate As Object, sheet As Object, matches As Long, locations As String
+    For Each sheet In workbook.Worksheets
+        For Each candidate In sheet.ChartObjects
+            If StrComp(CStr(candidate.Name), CHART_NAME, vbTextCompare) = 0 Then
+                matches = matches + 1
+                If matches > 1 Then locations = locations & ", "
+                locations = locations & "«" & CStr(sheet.Name) & "»"
+                Set chartObject = candidate
+            End If
+        Next candidate
+    Next sheet
+    If matches > 1 Then Err.Raise vbObjectError + 4814, "CSectionPlotter", _
+        "Найдено несколько областей схемы «" & CHART_NAME & "»." & vbCrLf & vbCrLf & _
+        "Листы: " & locations & "." & vbCrLf & vbCrLf & _
+        "Оставьте это имя только у одной диаграммы; остальные переименуйте или удалите."
 
     If chartObject Is Nothing Then
+        Set sheet = Nothing
+        On Error Resume Next
+        Set sheet = workbook.Worksheets.Item("Расчет")
+        On Error GoTo 0
+        If sheet Is Nothing Then Err.Raise vbObjectError + 4815, "CSectionPlotter", _
+            "Область схемы «" & CHART_NAME & "» не найдена, а лист «Расчет» отсутствует." & vbCrLf & vbCrLf & _
+            "Восстановите лист «Расчет» для автоматического создания схемы либо задайте это имя диаграмме на другом листе."
         Dim anchor As Object
         Set anchor = sheet.Range("AP1")
         Set chartObject = sheet.ChartObjects.Add(anchor.Left, anchor.Top, 820, 540)
         chartObject.Name = CHART_NAME
+        containerNotice = "Предупреждение:" & vbCrLf & "Область схемы «" & CHART_NAME & _
+            "» не найдена. На листе «Расчет» автоматически создана новая область схемы."
     End If
     Select Case chartObject.Chart.ChartType ' Существующая XY-схема уже имеет две числовые оси. Повторное присвоение ChartType заполненной Shape-схеме сбивает подсветку ссылок Excel. Новый контейнер или вручную изменённый иной тип переводим в XY один раз.
         Case XL_XY_SCATTER, XL_XY_SCATTER_SMOOTH, XL_XY_SCATTER_SMOOTH_NO_MARKERS, _

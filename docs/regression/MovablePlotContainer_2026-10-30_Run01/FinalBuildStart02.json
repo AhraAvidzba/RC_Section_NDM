@@ -1,0 +1,37 @@
+{
+  "FreeRAMGiB": 17.90625,
+  "FreeCommitGiB": 23.525630950927734,
+  "StartedUTC": "2026-10-30T15:05:09.6166367+00:00",
+  "FromWorkbooksAdd": true,
+  "UserDataCopied": false,
+  "SourceFence": [
+    {
+      "Path": "src/Excel/CSectionPlotter.cls",
+      "SHA256": "C100A52839BC724627403096BAD04DEF1A7E3978D6B4DB6120059999F77BB4C3"
+    },
+    {
+      "Path": "src/Excel/modWorkbookCalculation.bas",
+      "SHA256": "19863643F3E8E0DDABD2AFDBCC8C17651849951A648BD05E1F6B9A67819FE96E"
+    },
+    {
+      "Path": "src/Excel/modCalculationSnapshot.bas",
+      "SHA256": "5973520551EC99EB2BBAA9EECC8328300F7BE62277E0350797A1F22DF79AE30E"
+    },
+    {
+      "Path": "tests/modTestPlotConfig.bas",
+      "SHA256": "9533CA0BBE496E5A19436DD3FB6F983E995EF7B7E56F576D17EABC26113135D3"
+    },
+    {
+      "Path": "tools/build_workbook/SettingsCatalog.ps1",
+      "SHA256": "1C3C356345009DFBA9AB9539392BE231DEAF1418C5BB7DE9D1D43F573AF7544E"
+    },
+    {
+      "Path": "tools/build_workbook/GeometryTables.json",
+      "SHA256": "A16EED80BAEA8C0C8AFC2F12FD98DC4F97E4C594083B8481E2E3CC25B3A133F2"
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookLayout.json",
+      "SHA256": "A1DAE94D71A98AAF2AA83B71544A327FA5BA395F0309C9AF96D7670BA8A8608F"
+    }
+  ]
+}

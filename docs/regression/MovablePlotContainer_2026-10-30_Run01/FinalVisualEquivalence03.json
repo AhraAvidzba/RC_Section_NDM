@@ -1,0 +1,37 @@
+[
+  {
+    "View": "PointedSection",
+    "FinalSHA256": "597DFC2459A8363C90B9A14F0F9CC87EC06A43A051AC49210649F4CC2B9D3E32",
+    "IdenticalToPreviouslyViewed": true
+  },
+  {
+    "View": "HollowRectangle",
+    "FinalSHA256": "B42FCB0C79F96EBE35F2C8E3E4A583E3DBA2580CDC871165392CD2E382E47E0E",
+    "IdenticalToPreviouslyViewed": true
+  },
+  {
+    "View": "Config",
+    "FinalSHA256": "31FF2C3ECB1D85A0688F05933487E4DF853F6974FD60E94F07AD6DB7E7394F23",
+    "IdenticalToPreviouslyViewed": true
+  },
+  {
+    "View": "Help",
+    "FinalSHA256": "F508F9AC68979A3C0530627B1E1BB10990BC6DF078831F70FA7A27A83AAD8FA5",
+    "IdenticalToPreviouslyViewed": true
+  },
+  {
+    "View": "Calculation",
+    "FinalSHA256": "B60ADB33F67C5117277BEFD8800A41F4E3F9F0076D41A5A7F16280882471C261",
+    "IdenticalToPreviouslyViewed": true
+  },
+  {
+    "View": "Results",
+    "FinalSHA256": "64DAF7573A84CD2E34660F7CEEF659B8CEC06912E1F2A4A2F63999399377950A",
+    "IdenticalToPreviouslyViewed": true
+  },
+  {
+    "View": "PlotContainerHelp",
+    "FinalSHA256": "FE137C9373D9F151D6425F25C762BFF2D3B2287CC947DB96AC88F179A78FAA14",
+    "IdenticalToPreviouslyViewed": true
+  }
+]

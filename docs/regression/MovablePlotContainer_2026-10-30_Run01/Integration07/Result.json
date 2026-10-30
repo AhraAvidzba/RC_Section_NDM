@@ -1,0 +1,18 @@
+﻿{
+    "Passed":  true,
+    "SourceSHA256":  "6B3F4F0F483B0A5AAD45B1B564B6F62A2A348664F5F16EF542A484ACE2B1536B",
+    "FullAcceptanceClaim":  false,
+    "AutomaticCalculationRecoveryNotice":  true,
+    "PlacementStages":  6,
+    "Macros":  [
+                   {
+                       "Macro":  "modTestPlotConfig.RunPlotContainerTests",
+                       "Passed":  true,
+                       "Seconds":  0.7399823
+                   }
+               ],
+    "FormationRecoveryNotice":  true,
+    "QuitRequested":  true,
+    "ForceKilled":  false,
+    "SourceAfterSHA256":  "6B3F4F0F483B0A5AAD45B1B564B6F62A2A348664F5F16EF542A484ACE2B1536B"
+}

@@ -1,0 +1,388 @@
+OK: audit03.autoPlot.ownedCopy
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v1.warning
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v1.address
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v1.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v1.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p0.Plot.Enabled.v1|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.Enabled (лист Config, ячейка B133): Обязательное значение не задано. Ячейка значения не заполнена. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.48 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v2.warning
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v2.address
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v2.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v2.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p0.Plot.Enabled.v2|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.Enabled (лист Config, ячейка B133): Обязательное значение не задано. Введённое значение: "TODO". Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.45 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v3.warning
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v3.address
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v3.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v3.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p0.Plot.Enabled.v3|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.Enabled (лист Config, ячейка B133): Значение переключателя не распознано. Введённое значение: "INVALID". Выберите Yes или No.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v4.warning
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v4.address
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v4.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v4.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p0.Plot.Enabled.v4|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.Enabled (лист Config, ячейка B133) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5.warning
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5.address
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка B134): Обязательное значение не задано. Ячейка значения не заполнена. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.42 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6.warning
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6.address
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка B134): Обязательное значение не задано. Введённое значение: "TODO". Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7.warning
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7.address
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка B134): Значение переключателя не распознано. Введённое значение: "INVALID". Выберите Yes или No.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8.warning
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8.address
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка B134) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.missing.p0
+OK: audit03.autoPlot.inactive.p0
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v9.warning
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v9.address
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v9.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v9.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p1.Plot.Enabled.v9|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.Enabled (лист Config, ячейка CI930): Обязательное значение не задано. Ячейка значения не заполнена. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v10.warning
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v10.address
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v10.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v10.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p1.Plot.Enabled.v10|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.Enabled (лист Config, ячейка CI930): Обязательное значение не задано. Введённое значение: "TODO". Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v11.warning
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v11.address
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v11.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v11.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p1.Plot.Enabled.v11|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.Enabled (лист Config, ячейка CI930): Значение переключателя не распознано. Введённое значение: "INVALID". Выберите Yes или No.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v12.warning
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v12.address
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v12.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v12.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p1.Plot.Enabled.v12|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.Enabled (лист Config, ячейка CI930) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.42 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13.warning
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13.address
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка CI931): Обязательное значение не задано. Ячейка значения не заполнена. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.42 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14.warning
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14.address
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка CI931): Обязательное значение не задано. Введённое значение: "TODO". Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.42 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15.warning
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15.address
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка CI931): Значение переключателя не распознано. Введённое значение: "INVALID". Выберите Yes или No.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.42 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16.warning
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16.address
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16.chart
+AUTO_PLOT_WARNING: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Схема не обновлена. Расчётные результаты сохранены.
+Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка CI931) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется.
+
+Время расчёта: 0.46 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.missing.p1
+OK: audit03.autoPlot.inactive.p1
+OK: audit03.autoPlot.noState.mode0.completed
+OK: audit03.autoPlot.noState.mode0.noSolve
+OK: audit03.autoPlot.noState.mode0.validProfile
+OK: audit03.autoPlot.noState.mode0.preserved
+AUTO_PLOT_RUN: audit03.autoPlot.noState.mode0|OK|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.42 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.noState.mode1.completed
+OK: audit03.autoPlot.noState.mode1.noSolve
+OK: audit03.autoPlot.noState.mode1.validProfile
+OK: audit03.autoPlot.noState.mode1.preserved
+AUTO_PLOT_RUN: audit03.autoPlot.noState.mode1|OK|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.47 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.noState.mode2.completed
+OK: audit03.autoPlot.noState.mode2.noSolve
+OK: audit03.autoPlot.noState.mode2.validProfile
+OK: audit03.autoPlot.noState.mode2.preserved
+AUTO_PLOT_RUN: audit03.autoPlot.noState.mode2|OK|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.42 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.noState.mode3.completed
+OK: audit03.autoPlot.noState.mode3.noSolve
+OK: audit03.autoPlot.noState.mode3.validProfile
+OK: audit03.autoPlot.noState.mode3.cleared
+AUTO_PLOT_RUN: audit03.autoPlot.noState.mode3|OK|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.42 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.autoPlot.noSolve
+AUTO_PLOT_CASES: variants=20; workbookFixtures=1; equilibriumCases=0
+TOTAL_AUDIT03_AUTO_PLOT: passed=86; failed=0

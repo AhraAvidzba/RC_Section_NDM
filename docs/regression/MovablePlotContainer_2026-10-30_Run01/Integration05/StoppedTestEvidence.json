@@ -1,0 +1,13 @@
+{
+  "AtUTC": "2026-10-30T15:02:59.8198834+00:00",
+  "PID": 12676,
+  "StartTicksUTC": "639289690301059923",
+  "Title": "Microsoft Visual Basic for Applications - TestWorkbook.xlsm [break] - [modWorkbookCalculation (Code)]",
+  "Reason": "Test switched to File before forming its file snapshot; expected missing-file error left own VBA in break mode. UI capture unavailable; the stopped test is unnecessary.",
+  "OwnOnly": true,
+  "NoActiveCalculation": true,
+  "PrivateBook": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\MovablePlotContainer_2026-10-30_Run01\\Integration05\\TestWorkbook.xlsm",
+  "SourceSHA256": "14EAB377830F8328FAC55279536F16C8DD6306F9A2C288300CB1366D8A910489",
+  "ExecutionReportSHA256": "A3E7F3E6E08D738134D021EA183C3CC87124F69F6C2A1C5AC225893CBE313267",
+  "ForceTerminationRequired": true
+}

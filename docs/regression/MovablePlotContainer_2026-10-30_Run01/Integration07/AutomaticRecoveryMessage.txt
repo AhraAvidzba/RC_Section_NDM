@@ -1,0 +1,17 @@
+Расчет завершен.
+
+Геометрия для расчёта загружена из файла «TestMovablePlotContainer.ndm».
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Предупреждение:
+Область схемы «chtNDMSectionPlot» не найдена. На листе «Расчет» автоматически создана новая область схемы.
+
+Пошаговый отчет сохранен:
+C:\Users\avidzba\.codex\visualizations\2026\10\12\01a12ece-8192-7141-89b3-f83f1176184c\MovablePlotContainer_2026-10-30_Run01\Integration07\RC_Section_NDM_execution_report.txt
+
+Время расчёта: 0.84 с.
+
+Данные сохранены в файле «TestMovablePlotContainer.ndm».

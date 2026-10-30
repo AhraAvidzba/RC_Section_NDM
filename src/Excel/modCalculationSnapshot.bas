@@ -54,7 +54,7 @@ End Function
 ' Ручное обновление Excel читает схему с листа и не восстанавливает верхние сводки.
 Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional ByVal prepared As CCalculationSnapshot = Nothing, _
         Optional ByRef plotWarning As String = "", Optional ByRef plotHasWarning As Boolean = False)
-    plotHasWarning = False
+    plotHasWarning = False: plotWarning = vbNullString
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
     Dim entered As Boolean
     On Error GoTo Failed
@@ -67,7 +67,8 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
             Set snapshot = store.LoadFile(workbook)
         Else
             store.ClearReference workbook ' Источник Excel — только лист; служебная файловая привязка не участвует в чтении.
-            UpdateSectionPlotForWorkbook workbook
+            UpdateSectionPlotForWorkbook workbook, True, plotWarning
+            plotHasWarning = (Len(plotWarning) > 0)
             guard.Restore True
     CompleteWorkbookDrawing workbook
             Exit Sub
@@ -92,9 +93,11 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
         store.LinkFile workbook
     End If
     If snapshot.IsGeometryPreview Then
-        UpdateSectionGeometryPreviewForWorkbook workbook
+        UpdateSectionGeometryPreviewForWorkbook workbook, plotWarning
+        plotHasWarning = (Len(plotWarning) > 0)
     ElseIf prepared Is Nothing Then
-        UpdateSectionPlotForWorkbook workbook, False
+        UpdateSectionPlotForWorkbook workbook, False, plotWarning
+        plotHasWarning = (Len(plotWarning) > 0)
     Else
         plotWarning = TryUpdateCalculatedSnapshotPlot(workbook, snapshot, plotHasWarning)
     End If
@@ -229,12 +232,17 @@ Private Function TryUpdateCalculatedSnapshotPlot(ByVal workbook As Object, ByVal
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook workbook
     If Not settings.GetRequiredBoolean("Plot.Enabled") Then Exit Function
     If Not settings.GetRequiredBoolean("Plot.AutoUpdateAfterCalculation") Then Exit Function
+    Dim containerNotice As String
     If snapshot.TableRowCount("rngNDMElementResults") <= 1 Then
         Dim plotter As CSectionPlotter: Set plotter = New CSectionPlotter
-        plotter.ClearExisting workbook, "Схема не обновлена: нет доступных расчётных состояний LC."
+        plotter.ClearExisting workbook, "Схема не обновлена: нет доступных расчётных состояний LC.", containerNotice
+        plotHasWarning = (Len(containerNotice) > 0)
+        TryUpdateCalculatedSnapshotPlot = containerNotice
         Exit Function
     End If
-    UpdateSectionPlotForWorkbook workbook, False
+    UpdateSectionPlotForWorkbook workbook, False, containerNotice
+    plotHasWarning = (Len(containerNotice) > 0)
+    TryUpdateCalculatedSnapshotPlot = containerNotice
     Exit Function
 Failed:
     plotHasWarning = True

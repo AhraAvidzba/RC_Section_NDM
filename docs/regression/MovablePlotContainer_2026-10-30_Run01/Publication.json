@@ -1,0 +1,20 @@
+{
+  "Passed": true,
+  "AtUTC": "2026-10-30T15:28:53.0531186+00:00",
+  "CleanRebuild": true,
+  "InputsAndResultsCopied": false,
+  "Files": [
+    {
+      "Target": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "982F9E68674B0F9F6296DF1B90A8FAE5CB7FA358EC197BEEBCBBFDA4F5316CDA",
+      "PreviousSHA256": "04FC2D91726F6112A9C41698896309401CFB88ABFA227C3B4F899043C444C130",
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\MovablePlotContainer_2026-10-30_Run01\\BeforePublication\\RC_Section_NDM.xlsm"
+    },
+    {
+      "Target": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "09CAE00EC65D8BBD956D995FE0052E0E664EEEEBA9E1C83523F745DDD4BB1353",
+      "PreviousSHA256": "C5B356769AA452EACC6A91CCEDE92882E3711A1FE823463D9EAE38AF18AC90E6",
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\MovablePlotContainer_2026-10-30_Run01\\BeforePublication\\VBA_All_Code.txt"
+    }
+  ]
+}

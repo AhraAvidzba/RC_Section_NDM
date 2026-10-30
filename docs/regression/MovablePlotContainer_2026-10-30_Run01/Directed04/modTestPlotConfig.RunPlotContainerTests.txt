@@ -1,0 +1,26 @@
+OK: plotContainer.created.notice
+OK: plotContainer.reused.noNotice
+OK: plotContainer.reused.identity
+OK: plotContainer.reused.bounds
+MOVED_CONTAINER_EXCEL_NAME: chtNDMSectionPlot
+OK: plotContainer.moved.noNotice
+OK: plotContainer.moved.noReplacement
+OK: plotContainer.moved.bounds
+OK: plotContainer.moved.elements
+OK: plotContainer.clear.moved
+OK: plotContainer.clear.bounds
+OK: plotContainer.duplicate.rejected.0
+OK: plotContainer.duplicate.reason.0
+OK: plotContainer.duplicate.firstPreserved.0
+OK: plotContainer.duplicate.secondPreserved.0
+OK: plotContainer.duplicate.rejected.1
+OK: plotContainer.duplicate.reason.1
+OK: plotContainer.duplicate.firstPreserved.1
+OK: plotContainer.duplicate.secondPreserved.1
+OK: plotContainer.recovery.publicPreview
+OK: plotContainer.clearCreates.notice
+OK: plotContainer.drawCreates.notice
+OK: plotContainer.otherChartPreserved
+OK: plotContainer.results.exactValue2
+OK: plotContainer.noSolve
+TOTAL_PLOT_CONTAINER: passed=24; failed=0
