@@ -1,0 +1,19 @@
+﻿{
+    "Status":  "STARTED",
+    "HostPID":  12192,
+    "HostStartTicks":  "639289181836304925",
+    "PID":  25420,
+    "StartTicks":  "639289181840254393",
+    "Started":  "2026-10-30T03:49:41.7201518+03:00",
+    "Deadline":  "2026-10-30T11:00:00.0000000+03:00",
+    "SourceSHA256":  "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+    "SourceCommit":  "8910245966806984e349b004cc8e0da0d4dccb86",
+    "Branch":  "codex/unified-rebar-paths",
+    "EvidenceDirectory":  "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03",
+    "ExpectedSuites":  182,
+    "IncludesFocusedAcceptance":  true,
+    "CoverageVersion":  7,
+    "AllCodeSHA256":  "EE281EA320BAF190C85B49F33194D3FA78619E343536F45F727FEA4B591C65DC",
+    "RequestSHA256":  "944E55EF0300B5D1DD2BE2A8843B1CF8811E0C9BDF3B41E3A1B7116FA94AFDA9",
+    "ScheduledTaskName":  "RC_NDM_Full_20261029_UnifiedRebar_Run03"
+}

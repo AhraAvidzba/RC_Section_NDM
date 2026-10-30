@@ -1,0 +1,376 @@
+{
+  "Status": "PASS_ALL_REQUIRED_ACCEPTANCE_AND_READY30_PUBLISHED",
+  "ObservedUTC": "2026-10-30T04:53:39.695364+00:00",
+  "AcceptedSourceCommit": "8910245966806984e349b004cc8e0da0d4dccb86",
+  "MainSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "AllCodeSHA256": "EE281EA320BAF190C85B49F33194D3FA78619E343536F45F727FEA4B591C65DC",
+  "Ready30SHA256": "2CD43036E4C8146FB4B3589ED74DEBAB3678ECEDE6B0C0F846A10418A59686DD",
+  "CoreGroups": 12,
+  "CoreMacros": 182,
+  "FocusedRecords": 26,
+  "FocusedSingleCases": 122,
+  "AllPrimaryFilesRead": 40,
+  "FullRunMinutes": 233.62329210000001,
+  "CorePassedAssertions": 870268,
+  "FocusedPassedAssertions": 13967,
+  "IndependentIntegrals": 560,
+  "IndependentModels": 5,
+  "ExpectedNumFailStatesIndividuallyAccepted": 10,
+  "IndependentUnsupported": 0,
+  "FullOwnTerminal": 44,
+  "AllGoalOwnTerminal": 276,
+  "Original505InputsUnchanged": true,
+  "ReadyDataResultsAndPlotPreserved": true,
+  "Ready30OriginalLoadCount": 30,
+  "Ready30HistoricalInputErrIDs": [
+    "PERF_14",
+    "PERF_21",
+    "PERF_27",
+    "PERF_28"
+  ],
+  "ReadySolverRecalculated": false,
+  "MainClean": true,
+  "OptionalNDMCompanionPublished": false,
+  "HistoricalRun02StillReviewRequired": true,
+  "PrivateFullArchiveSHA256": "FC4B062815CC953C4F67AA79BEF16A8544C2E0D71CF7A56573551F280FB23C24",
+  "PrimaryArchiveSHA256": "BB45BE9A47ACE250BD5E50ECFAF8670C417BD8FE28ABBDF816FB22C4CD2A5B98",
+  "PrimaryArchiveBytes": 4436884,
+  "UserMainBackupPrivatePreserved": true,
+  "ReadyOriginalBackupPrivatePreserved": true,
+  "FeatureBranch": "codex/unified-rebar-paths",
+  "FeaturePushVerified": false,
+  "MainIntegrationRequiresUserAgreement": true,
+  "CopiedProofs": [
+    {
+      "Path": "Launch/LaunchRequest.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\LaunchRequest.json",
+      "Bytes": 143004,
+      "SHA256": "944E55EF0300B5D1DD2BE2A8843B1CF8811E0C9BDF3B41E3A1B7116FA94AFDA9"
+    },
+    {
+      "Path": "Launch/SourceEpoch.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\SourceEpoch.json",
+      "Bytes": 2017,
+      "SHA256": "EAD9FDA6B7E154D0ED1A25B2E47FEC78C0AA59FFCC75A7FF1032ED6FB7038C0F"
+    },
+    {
+      "Path": "Launch/ReleaseEligibility.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\ReleaseEligibility.json",
+      "Bytes": 178025,
+      "SHA256": "583B21614EB7C96A3096482AC621441073886BF34F0FECDD45BA0E3CCB04C3DD"
+    },
+    {
+      "Path": "Launch/FullLaunch.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\FullLaunch.json",
+      "Bytes": 913,
+      "SHA256": "CC7FCBD7692F39F625C111FFCF538C87256AF848754C39BEBE91CA0C69E83438"
+    },
+    {
+      "Path": "Launch/Completion.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\Completion.json",
+      "Bytes": 676,
+      "SHA256": "0DEE5897D35BCA260E1A874EB78F973CE212C59ABE75D7CFC1BC8ABAD796B215"
+    },
+    {
+      "Path": "Launch/DriverRun.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\DriverRun.json",
+      "Bytes": 310,
+      "SHA256": "22FE6CCE22971A015F72D33D57000E225BCDA80FFDC60C654CCC109E0ED41657"
+    },
+    {
+      "Path": "Launch/HostRun.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\HostRun.json",
+      "Bytes": 201,
+      "SHA256": "2500465C4871351ECD410D696426EDE27BD6FA6F24B235786A189534468DFCA6"
+    },
+    {
+      "Path": "Launch/TerminalScopeReview.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\TerminalScopeReview.json",
+      "Bytes": 84040,
+      "SHA256": "5435E0DB4CD589AB97B0B66E7DCFF398E4C042C67943CDD6FD01AE4FF1CBC010"
+    },
+    {
+      "Path": "Launch/AllOwnClosuresReviewed.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\AllOwnClosuresReviewed.json",
+      "Bytes": 33124,
+      "SHA256": "6E251A470BD741370400F85724B6F5C764AE9534D838467F6515A2FEE982B519"
+    },
+    {
+      "Path": "Launch/ScheduledTaskCleanup01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\ScheduledTaskCleanup01.json",
+      "Bytes": 1327,
+      "SHA256": "834153A0D8C217D5786565A58EE1299E08A219DAB485860AE97D68795E3ECC6E"
+    },
+    {
+      "Path": "Acceptance/Summary.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Summary.json",
+      "Bytes": 79955,
+      "SHA256": "A65B14596F210F639B29B3E055C09E4662A08615E545D918B41EB7D32DFB3A98"
+    },
+    {
+      "Path": "Acceptance/CompleteCurrentAcceptance.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CompleteCurrentAcceptance.json",
+      "Bytes": 1015,
+      "SHA256": "1A18445592777AE68CF836C21B77652DA2C7DE2D33E42C4F25ED224F62A0C53F"
+    },
+    {
+      "Path": "Acceptance/Completion.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Completion.json",
+      "Bytes": 354,
+      "SHA256": "37FD384DE7E1278B2681A94990FDF29AC7808EA427C0D34466B69ED1E3AB662A"
+    },
+    {
+      "Path": "Acceptance/Run.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Run.json",
+      "Bytes": 27422,
+      "SHA256": "02957612A2AA7DC4DC817AA27FAD2DCE55E42774131482A23A38C369C5E8A67E"
+    },
+    {
+      "Path": "Acceptance/Focused/Run.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Run.json",
+      "Bytes": 18821,
+      "SHA256": "EB7251519CE9D7221231D3D1214A0604DC31EBAA0A22EA1F9CA742610117CC24"
+    },
+    {
+      "Path": "Acceptance/Focused/Acceptance.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Acceptance.json",
+      "Bytes": 1656,
+      "SHA256": "B8F969CACE2784E5F02B2EE2F44AA477A040462EAE1C251F0C54DBE440668C7D"
+    },
+    {
+      "Path": "Acceptance/Focused/CombinedAcceptance.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\CombinedAcceptance.json",
+      "Bytes": 849,
+      "SHA256": "49945941790A2D0CC518B278159DDA7C0D30AE3D721D46B7E0ED93E107DE5ED6"
+    },
+    {
+      "Path": "Acceptance/Focused/Independent.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Independent.json",
+      "Bytes": 193573,
+      "SHA256": "01F1820AC480FB090E98594923AF099DBDE155919D8A955B3843CCA153D0F003"
+    },
+    {
+      "Path": "Acceptance/Focused/Probe/Preparation.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\Preparation.json",
+      "Bytes": 998,
+      "SHA256": "321C22C60D223E27A8166635C43172FB4B4999924DAA91384D7E0B991369BEA5"
+    },
+    {
+      "Path": "Acceptance/Focused/NativeCAD/Stage.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\Stage.json",
+      "Bytes": 787,
+      "SHA256": "D319E230CAE07764860AC88F806660D7099203BD7B3F6B030C7F8742EFB17CFB"
+    },
+    {
+      "Path": "Proofs/Ready30SchemaPreparation02.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaPreparation02.json",
+      "Bytes": 57528,
+      "SHA256": "735578E54705EBD3839F434E4EC20BA3B6EF8F412073F60A9EE30AA84EF4EB3C"
+    },
+    {
+      "Path": "Proofs/Ready30SchemaEquality02.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaEquality02.json",
+      "Bytes": 117153,
+      "SHA256": "510ACC05A6D730E12DDECCBBC435E7022AAD51D7B24817B0CF40A07324770087"
+    },
+    {
+      "Path": "Proofs/Ready30FinalReview03.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30FinalReview03.json",
+      "Bytes": 4698,
+      "SHA256": "18F65942FEE92FB89CF3339C08CA1266203740C909ACEC8496E3AFF1AF31EDF1"
+    },
+    {
+      "Path": "Proofs/Ready30Publication03.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30Publication03.json",
+      "Bytes": 1720,
+      "SHA256": "96D20EDB1A22803C7C5ED6F649A6251CFBDB9F34359DCD80D56ED86207C33D22"
+    },
+    {
+      "Path": "Proofs/Ready30SchemaNative02/NativeVerification.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\NativeVerification.json",
+      "Bytes": 37591,
+      "SHA256": "44D15ECB62073EA44467F6830B88F9DA77171EF33F0D0A96BEEB2EB8EABE3254"
+    },
+    {
+      "Path": "Proofs/Ready30SchemaNative02/DropdownAcceptance.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\DropdownAcceptance.json",
+      "Bytes": 4974,
+      "SHA256": "F425B3606A630E56B9F43D58E630C75239CA303333B77A884C82AB9DFBD782F4"
+    },
+    {
+      "Path": "Proofs/Ready30SchemaNative02/SchemaNativeAcceptance.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\SchemaNativeAcceptance.json",
+      "Bytes": 449,
+      "SHA256": "F161DCC1C70346D29FFED96D7BFA2BF36DA8E0E0060904F3362BFB9798004183"
+    },
+    {
+      "Path": "Proofs/Ready30SchemaNative02/OwnClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\OwnClosure.json",
+      "Bytes": 167,
+      "SHA256": "ED6B6E6A0D506DCD9509F846D6F9C46690F26BC2ADC4E7B9CF4798BCC8D307BF"
+    },
+    {
+      "Path": "Proofs/Ready30SchemaNative02/Quit.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\Quit.json",
+      "Bytes": 168,
+      "SHA256": "8764AEC483534704F3B96AD3F00F4D88AD8EB93400358832760866E8FB95F383"
+    },
+    {
+      "Path": "Proofs/AllPreFullOwnClosures20.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\AllPreFullOwnClosures20.json",
+      "Bytes": 191391,
+      "SHA256": "090F90139A1083A42E82EB4085DFB0E03E48E759C129658438D8B9AD7C6BED43"
+    },
+    {
+      "Path": "Proofs/AllGoalOwnClosuresFinal01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\AllGoalOwnClosuresFinal01.json",
+      "Bytes": 241075,
+      "SHA256": "3C05073A9D2A37ACAD2F55C3E65F9D833CB2AE5B357FA40067CFA6C533E0E63B"
+    },
+    {
+      "Path": "Proofs/Run03TerminalStdIOReview01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run03TerminalStdIOReview01.json",
+      "Bytes": 868,
+      "SHA256": "44A820566896634DA26FA2A74B0F9670BC95C6ACC641C2B6A421B1A3CE6D7262"
+    },
+    {
+      "Path": "Proofs/Run03ObservationTransition01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run03ObservationTransition01.json",
+      "Bytes": 853,
+      "SHA256": "55F49E59C19AE83351A79AF2C32F9EC704E2ACDD052D8D38B5E2FBCED93AF921"
+    },
+    {
+      "Path": "Proofs/Ready30PreparationFailure01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30PreparationFailure01.json",
+      "Bytes": 788,
+      "SHA256": "9697E101B3379D6BD256C3E49158BD8D7079B3642581824D5E6E061939AD7AD3"
+    },
+    {
+      "Path": "Proofs/Ready30NamedAnchorSelftest01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30NamedAnchorSelftest01.json",
+      "Bytes": 997,
+      "SHA256": "43EA78BA8951429EF91CCBF8AFE8E0FA29B9D09805FA13C802597879D1D554E0"
+    },
+    {
+      "Path": "Proofs/Ready30MetadataCorrection01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30MetadataCorrection01.json",
+      "Bytes": 615,
+      "SHA256": "57001A5A7D310B51730C712FF5CBE14F7FEF8D8486F0EEA5AA93E99876789F41"
+    },
+    {
+      "Path": "Proofs/FinalOwnGuardPreparation01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\FinalOwnGuardPreparation01.json",
+      "Bytes": 1232,
+      "SHA256": "CB52A58FAF36B4261E7F7B6F03826BC64D381DDE68449D29BD78BDC0775C3F07"
+    },
+    {
+      "Path": "Proofs/Run03TaskBeforeCleanup01.xml",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run03TaskBeforeCleanup01.xml",
+      "Bytes": 3184,
+      "SHA256": "A0D351E48C2EE684761496BEEB2E517123D30BD3762AC56B656C0E5707DA7E89"
+    },
+    {
+      "Path": "Proofs/Run03FinalArchive01/Manifest.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run03FinalArchive01\\Manifest.json",
+      "Bytes": 173131,
+      "SHA256": "2E28787614EA472172586F9371AA2355E21777079E415E0C790E88167EBB014D"
+    },
+    {
+      "Path": "Proofs/Ready30PublicationOwnReview03_639289325792521168.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30PublicationOwnReview03_639289325792521168.json",
+      "Bytes": 19308,
+      "SHA256": "5CD3595833E8AB025CBCB7CEB02E8379C7D1A2AFAC56CDC7A23F81B28C7AC257"
+    },
+    {
+      "Path": "Tools/TestPrepareReady30Schema02.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestPrepareReady30Schema02.py",
+      "Bytes": 13664,
+      "SHA256": "826891A6C78C8D94F79E0382A47A7CE64BF929BDBA7050B8F4658E63443E702B"
+    },
+    {
+      "Path": "Tools/TestReady30SchemaTools02.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReady30SchemaTools02.py",
+      "Bytes": 14933,
+      "SHA256": "16AD42F2CA13F5B9FB7993064E45A4CD37D42AB783C0AA9D090DF09D373F4197"
+    },
+    {
+      "Path": "Tools/TestPrepareReady30Current01.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestPrepareReady30Current01.py",
+      "Bytes": 10324,
+      "SHA256": "097CAE71A052BCB93B227C2C1B2C0A1E420DAD1EAAD473C524AA1F5F40F03DC6"
+    },
+    {
+      "Path": "Tools/TestReady30MainSchemaSelftest03.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReady30MainSchemaSelftest03.py",
+      "Bytes": 8256,
+      "SHA256": "982F19BA097721A3A32A393576A77E9598B1AD8600C5401EC43BFBCB6CB08816"
+    },
+    {
+      "Path": "Tools/TestReady30NamedAnchorSelftest01.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReady30NamedAnchorSelftest01.py",
+      "Bytes": 4444,
+      "SHA256": "7EFD2368A07C91FF134290F3DC9B6180EF6A73CC49E1EE8EFE43D1C603DA44D1"
+    },
+    {
+      "Path": "Tools/TestNativeReady30Schema02.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestNativeReady30Schema02.ps1",
+      "Bytes": 16720,
+      "SHA256": "A49A52112857D7266CA79E1B48FAB6888DF8D51F580566B4082590BCB010F9FB"
+    },
+    {
+      "Path": "Tools/TestVerifySource.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestVerifySource.ps1",
+      "Bytes": 11491,
+      "SHA256": "EB155F815D522B62B337CC89C72801001E7F4D14C60D4867BB6EDF8EDF7941A7"
+    },
+    {
+      "Path": "Tools/TestReviewReady30Final03.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReviewReady30Final03.py",
+      "Bytes": 10434,
+      "SHA256": "8B83CE480CCCD1BE3DC92CB3CDC5D93B81450F8422242A5925E7D6DE527AC5EE"
+    },
+    {
+      "Path": "Tools/TestPublishReady30Final03.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestPublishReady30Final03.ps1",
+      "Bytes": 6735,
+      "SHA256": "955DC97EDC43547939AC57ADC753C2448277B581F35E807E53DEF034CEF3F8F7"
+    },
+    {
+      "Path": "Tools/TestObserveOwnIdentityFinal01.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestObserveOwnIdentityFinal01.ps1",
+      "Bytes": 3156,
+      "SHA256": "D038434748F17294AE476CE144849EF981CC5A3FCB21408940B13BD8CC9524F2"
+    },
+    {
+      "Path": "Tools/TestReviewAllGoalOwnFinal01.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReviewAllGoalOwnFinal01.ps1",
+      "Bytes": 6167,
+      "SHA256": "DF3C0217BAA16E2A697F9F0C95365D5F1A0BD6434285EF7422DE721AFD310BC8"
+    },
+    {
+      "Path": "Tools/TestCleanupFullRun03Task01.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestCleanupFullRun03Task01.ps1",
+      "Bytes": 5831,
+      "SHA256": "8A4EB045A7D96235279500B8DF339DC963E1DAFCA23901E9CF7638CBF9994F1F"
+    },
+    {
+      "Path": "Tools/TestArchiveRun03Final01.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestArchiveRun03Final01.py",
+      "Bytes": 7941,
+      "SHA256": "53EB330238ADFA3AB40F375E44B151A374E7AED0F35ACFB506B39D7040853EA6"
+    },
+    {
+      "Path": "Tools/TestPrepareFinalRun03Evidence01.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestPrepareFinalRun03Evidence01.py",
+      "Bytes": 10569,
+      "SHA256": "3F1CDA41359B3C41AE2631D8B7915722CBBF71E0C82BCDCB71AC8F389E2A9DAD"
+    },
+    {
+      "Path": "Proofs/FinalPublicationFenceRun03_01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\FinalPublicationFenceRun03_01.json",
+      "Bytes": 1271,
+      "SHA256": "CDE0A1AC78D19F0761FA0E9C50D0B58C3668286D9E81060059C8831F021ADF83"
+    }
+  ],
+  "BackupAndUnrelatedCopyFence": "Proofs/FinalPublicationFenceRun03_01.json"
+}

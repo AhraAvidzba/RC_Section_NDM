@@ -1,0 +1,1999 @@
+{
+  "Status": "ENTIRE_TERMINAL_PRIMARY_READ_NOT_ACCEPTANCE",
+  "CheckedUTC": "2026-10-30T04:43:24.974920+00:00",
+  "SourceSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "SourceCommit": "8910245966806984e349b004cc8e0da0d4dccb86",
+  "PrimaryLogsReviewed": true,
+  "CoreReportsRead": 12,
+  "CoreMacrosReviewed": 182,
+  "FocusedRecordCount": 26,
+  "FocusedSingleCasesReviewed": 122,
+  "FocusedCaseIDs": {
+    "Rectangles_Generated_No": [
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "mixedC1_-1"
+    ],
+    "Rectangles_Generated_Yes": [
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "mixedC1_-1"
+    ],
+    "Circle_Generated_No": [
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "mixedC1_-1"
+    ],
+    "Circle_Generated_Yes": [
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "mixedC1_-1"
+    ],
+    "PointedSection_Generated_No": [
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "mixedC1_-1"
+    ],
+    "PointedSection_Generated_Yes": [
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "mixedC1_-1"
+    ],
+    "HollowRectangle_Generated_No": [
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "mixedC1_-1"
+    ],
+    "HollowRectangle_Generated_Yes": [
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "mixedC1_-1"
+    ],
+    "SavedWorkbook_Saved_No": [
+      "zero",
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "tinyMx1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "biaxial1_-1_10",
+      "biaxial1_-1_1000000",
+      "biaxial1_-1_0.000001",
+      "mixedC1_-1",
+      "axialC0.95",
+      "axialC1",
+      "overloadMixed1",
+      "axialC1.05",
+      "axialC2",
+      "overloadMixed1000000",
+      "N500",
+      "N1000",
+      "N2098Plateau",
+      "N500TinyMoment"
+    ],
+    "SavedWorkbook_Saved_Yes": [
+      "zero",
+      "axialSmall-1",
+      "Mx-1",
+      "My-1",
+      "mixedT-1_1",
+      "tinyMx1",
+      "axialSmall1",
+      "Mx1",
+      "My1",
+      "biaxial1_-1_10",
+      "biaxial1_-1_1000000",
+      "biaxial1_-1_0.000001",
+      "mixedC1_-1",
+      "axialC0.95",
+      "axialC1",
+      "overloadMixed1",
+      "axialC1.05",
+      "axialC2",
+      "overloadMixed1000000",
+      "N500",
+      "N1000",
+      "N2098Plateau",
+      "N500TinyMoment"
+    ],
+    "SavedWorkbook_Paths_No": [
+      "pathAuto",
+      "pathMx",
+      "pathMy",
+      "pathMxy",
+      "pathN",
+      "pathNMxy"
+    ],
+    "SavedWorkbook_Paths_Yes": [
+      "pathAuto",
+      "pathMx",
+      "pathMy",
+      "pathMxy",
+      "pathN",
+      "pathNMxy"
+    ]
+  },
+  "Primary": [
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt",
+      "Role": "Core",
+      "Bytes": 17734267,
+      "SHA256": "56DBBD4E1BB6574A2EB88695435A1B0ABCBBE11D161A73D6107B0C0DED4C0A49",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Finished": [
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL: passed=4056; failed=0",
+        "TOTAL_MATERIAL: passed=31097; failed=0; elapsedSec=95.1455078125",
+        "TOTAL_SECTION_SOLVER: passed=3341; failed=0; elapsedSec=2.2646484375",
+        "TOTAL_CAPACITY: passed=5423; failed=0; elapsedSec=207.283203125",
+        "TOTAL_CRACK: passed=2604; failed=0; elapsedSec=44.8828125",
+        "TOTAL TYPED STATUS POLICY: passed=13863; failed=0",
+        "TOTAL_AUDIT03_SEARCH_CONFIG: passed=1853; failed=0",
+        "TOTAL_AUDIT03_CAPACITY_NUMERIC_CONFIG: passed=2965; failed=0",
+        "TOTAL_AUDIT03_STABILITY_CONFIG: passed=10024; failed=0",
+        "TOTAL_AUDIT03_UNIVERSAL_PATH: passed=945; failed=0",
+        "TOTAL_GENERAL_GEOMETRY_CONFIG: passed=2293; failed=0",
+        "TOTAL_AUDIT03_SP35_INVALID: passed=1621; failed=0",
+        "TOTAL_AUDIT03_SP35_BEHAVIOR: fields=144; passed=937; failed=0",
+        "TOTAL_AUDIT03_INACTIVE_CONFIG: fields=10; passed=102; failed=0",
+        "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=105; failed=0",
+        "TOTAL_AUDIT03_USER_PSI_FALLBACK: passed=440; failed=0",
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL LOCALE SAVED CONTRACTS: passed=25; failed=0",
+        "TOTAL STATE DEPTH GEOMETRY: passed=290; failed=0; cases=48",
+        "TOTAL_BATCH: passed=46262; failed=0; elapsedSec=1420.666015625",
+        "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=620; failed=0",
+        "TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=157; failed=0",
+        "TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=152; failed=0",
+        "TOTAL_CIRCLE_CONFIG: passed=46; failed=0",
+        "TOTAL_CIRCLE_REBAR_INPUT: passed=461; failed=0; cases=139",
+        "TOTAL_SHAPE_CONFIG: passed=206; failed=0",
+        "TOTAL_REBAR_COUNTER: passed=33; failed=0",
+        "TOTAL_REQUIRED_GEOMETRY: passed=922; failed=0",
+        "TOTAL_REBAR_FIELD_CONFIG: passed=8789; failed=0; cases=2297",
+        "TOTAL_AUDIT03_LOAD_TABLE: passed=11813; failed=0; cases=880",
+        "TOTAL_AUDIT03_PROFILE_FAILURE_SCOPE: passed=3572; failed=0; cases=64",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_RESULT_COLUMN_WIDTHS: passed=1116; failed=0",
+        "TOTAL_AUDIT03_PROFILE_CONFIG: passed=8860; failed=0; cases=292",
+        "TOTAL_AUDIT03_RELOCATED_INPUT: passed=868; failed=0; cases=116",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=12853; failed=0; cases=643",
+        "TOTAL_AUDIT03_PRESENTATION_CONFIG: passed=681; failed=0; cases=105",
+        "TOTAL_AUDIT03_GENERAL_PLOT: passed=4681; failed=0",
+        "TOTAL_AUTOCAD_CONFIG: passed=1243; failed=0",
+        "TOTAL_WORKBOOK_UI: passed=71047; failed=0; elapsedSec=4011.0537109375",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=1.333984375"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt",
+      "Role": "Core",
+      "Bytes": 1703720,
+      "SHA256": "3F7A87C869F220CD1E64A613E1BE912B6BADBF745E2F8F4635F0E57764F88077",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestDeclarativeGeometry.RunCoreGeometryTests",
+        "modTestPolygonSpec.RunPolygonSpecTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestGeometryPublication.RunAnnotationIsolationTests",
+        "modTestGeometryPublication.RunRecipeContextFreezeTests",
+        "modTestGeometryPublication.RunPublishedBuildTests",
+        "modTestGeometryPublication.RunDefinitionLifecycleTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunResolveAnchorTests",
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+        "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestAudit02Api.RunAudit02PolygonApiTests",
+        "modTestAudit02Api.RunAudit02OptionsTests",
+        "modTestAudit02Api.RunAudit02InputTests",
+        "modTestAudit02Api.RunAudit02AnnotationTests",
+        "modTestAudit02Api.RunAudit02GuideExamplesTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestGeometryReview.RunGeometryReviewTests",
+        "modTestGeometryReview.RunPointedWidthInputTests",
+        "modTestRecipeOperations.RunCollapsingOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestIndividualContours.RunIndividualContourTests",
+        "modTestIndividualContours.RunIndividualContourFailureTests",
+        "modTestIndividualContours.RunIndividualContourWorkbookTests",
+        "modTestIndividualContours.RunUserRoundedContourTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunIndividualContourPerformanceTests"
+      ],
+      "Finished": [
+        "modTestDeclarativeGeometry.RunCoreGeometryTests",
+        "modTestPolygonSpec.RunPolygonSpecTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestGeometryPublication.RunAnnotationIsolationTests",
+        "modTestGeometryPublication.RunRecipeContextFreezeTests",
+        "modTestGeometryPublication.RunPublishedBuildTests",
+        "modTestGeometryPublication.RunDefinitionLifecycleTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunResolveAnchorTests",
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+        "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestAudit02Api.RunAudit02PolygonApiTests",
+        "modTestAudit02Api.RunAudit02OptionsTests",
+        "modTestAudit02Api.RunAudit02InputTests",
+        "modTestAudit02Api.RunAudit02AnnotationTests",
+        "modTestAudit02Api.RunAudit02GuideExamplesTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestGeometryReview.RunGeometryReviewTests",
+        "modTestGeometryReview.RunPointedWidthInputTests",
+        "modTestRecipeOperations.RunCollapsingOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestIndividualContours.RunIndividualContourTests",
+        "modTestIndividualContours.RunIndividualContourFailureTests",
+        "modTestIndividualContours.RunIndividualContourWorkbookTests",
+        "modTestIndividualContours.RunUserRoundedContourTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunIndividualContourPerformanceTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL ANALYTIC PATHS: passed=276; failed=0",
+        "TOTAL PATH ANCHORS: passed=61; failed=0",
+        "TOTAL ROUNDED POLYGONS: passed=36; failed=0",
+        "TOTAL ROUNDED OFFSET: passed=27; failed=0",
+        "TOTAL INPUT TABLES: passed=45; failed=0",
+        "TOTAL POLYGON SPEC: passed=52; failed=0",
+        "TOTAL RECIPE DEFINITION: passed=15; failed=0",
+        "TOTAL RECIPE RULES: passed=279; failed=0",
+        "TOTAL RECIPE MESH BOUNDARY: passed=182; failed=0",
+        "TOTAL RECIPE ANNOTATIONS: passed=92; failed=0",
+        "TOTAL ANNOTATION ISOLATION: passed=12; failed=0",
+        "TOTAL CONTEXT FREEZE: passed=11; failed=0",
+        "TOTAL PUBLISHED BUILD: passed=20; failed=0",
+        "TOTAL DEFINITION LIFECYCLE: passed=10; failed=0",
+        "TOTAL RECIPE OPERATIONS: passed=32; failed=0",
+        "TOTAL RECIPE DIAGNOSTICS: passed=35; failed=0",
+        "TOTAL RESOLVE ANCHOR: passed=1475; failed=0",
+        "TOTAL: passed=1319; failed=0",
+        "TOTAL ARBITRARY ANNOTATION GEOMETRY: passed=168; failed=0",
+        "TOTAL RECIPE ANNOTATION SNAPSHOT: passed=24; failed=0",
+        "TOTAL IMPORTED DIMENSIONS: passed=23; failed=0",
+        "TOTAL ANNOTATION SECTION SCALE: passed=12; failed=0",
+        "TOTAL_CONTOUR_MESH: passed=47347; failed=0",
+        "TOTAL AUDIT02 POLYGON API: passed=16; failed=0",
+        "TOTAL AUDIT02 OPTIONS: passed=15; failed=0",
+        "TOTAL AUDIT02 INPUT: passed=5; failed=0",
+        "TOTAL AUDIT02 ANNOTATIONS: passed=9; failed=0",
+        "TOTAL AUDIT02 GUIDE EXAMPLES: passed=11; failed=0",
+        "TOTAL AUDIT02 CLOSEOUT CONTACT: passed=23; failed=0",
+        "TOTAL AUDIT02 CLOSEOUT RECTANGLES INPUT: passed=309; failed=0",
+        "TOTAL_GEOMETRY_REVIEW: passed=742; failed=0",
+        "TOTAL_COLLAPSED_INPUT_MESSAGES: passed=65; failed=0",
+        "TOTAL_COLLAPSED_INPUT_ADDRESSES: passed=40; failed=0",
+        "TOTAL_POINTED_WIDTH_INPUT: passed=64; failed=0",
+        "TOTAL_COLLAPSING_OFFSETS: passed=26; failed=0",
+        "TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=656; failed=0",
+        "TOTAL_USER_ROUNDED_CONTOUR: passed=68; failed=0",
+        "TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOUR_PERFORMANCE: passed=73227; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt",
+      "Role": "Core",
+      "Bytes": 47232,
+      "SHA256": "DAB3501A8BAD0EBA33B26A88AB7DDFD8DF218A8D0C2F647306A61ECD52DA2F5A",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35EndToEndTests"
+      ],
+      "Finished": [
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35EndToEndTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_SP35_FORMULA: passed=27; failed=0",
+        "TOTAL_SP35_LOCAL_OPENING: passed=36; failed=0",
+        "TOTAL_SP35_PREPARATION: passed=405; failed=0",
+        "TOTAL_SP35_NEIGHBOR_SETTINGS: passed=18; failed=0",
+        "TOTAL_SP35_PIPELINE: passed=34; failed=0",
+        "TOTAL_SP35_END_TO_END: passed=270; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt",
+      "Role": "Core",
+      "Bytes": 574202,
+      "SHA256": "85CECF46D5C6595F4C3BDF1E109CE3D2F4F9BA7E7D23AE1A9E8D0B343506DBE5",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestAudit02Api.RunRebarContactBuilderTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestSectionRecipes.RunCircleBindingTests",
+        "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeCaptionTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples",
+        "modTestSectionInputReader.RunSectionInputReaderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+        "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+        "modTestAudit02Api.RunCircleSetbackTests",
+        "modTestAudit02Api.RunOffsetWallCollisionTests",
+        "modTestWorkbookInterface.RunConfigComparisonContractTests"
+      ],
+      "Finished": [
+        "modTestAudit02Api.RunRebarContactBuilderTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestSectionRecipes.RunCircleBindingTests",
+        "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeCaptionTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples",
+        "modTestSectionInputReader.RunSectionInputReaderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+        "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+        "modTestAudit02Api.RunCircleSetbackTests",
+        "modTestAudit02Api.RunOffsetWallCollisionTests",
+        "modTestWorkbookInterface.RunConfigComparisonContractTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL REBAR CONTACT BUILDER: passed=97; failed=0",
+        "TOTAL WORKBOOK RECIPE INPUT: passed=287; failed=0",
+        "TOTAL RECIPE DEFINITION: passed=15; failed=0",
+        "TOTAL CIRCLE INPUT: passed=5; failed=0",
+        "TOTAL ROUNDED INPUT: passed=17; failed=0",
+        "TOTAL HOLLOW INPUT: passed=22; failed=0",
+        "TOTAL CIRCLE BINDINGS: passed=4774; failed=0",
+        "TOTAL CIRCLE BINDING WORKBOOK: passed=19; failed=0",
+        "TOTAL RECIPE ANNOTATIONS: passed=92; failed=0",
+        "TOTAL RECIPE RULES: passed=279; failed=0",
+        "TOTAL RECIPE CAPTIONS: passed=84; failed=0",
+        "TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0",
+        "TOTAL_RECIPE_SETBACK_INPUT: passed=295; failed=0",
+        "TOTAL RECIPE OPERATIONS: passed=32; failed=0",
+        "TOTAL RECIPE DIAGNOSTICS: passed=35; failed=0",
+        "TOTAL AUDIT02 CLOSEOUT RECTANGLES INPUT: passed=309; failed=0",
+        "TOTAL AUDIT02 CLOSEOUT CONTACT: passed=23; failed=0",
+        "TOTAL ADVANCED GUIDE EXAMPLES: passed=16; failed=0",
+        "TOTAL_SECTION_INPUT_READER: passed=107; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET BUILDER: passed=99; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=112; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET WORKBOOK: passed=154; failed=0",
+        "TOTAL OFFSET OPENING ANNOTATION: passed=10; failed=0",
+        "TOTAL CIRCLE SETBACKS: passed=146; failed=0",
+        "TOTAL OFFSET WALL COLLISION: passed=4; failed=0",
+        "TOTAL_CONFIG_COMPARISON_CONTRACT: passed=6; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt",
+      "Role": "Core",
+      "Bytes": 3390,
+      "SHA256": "7490BD5B17C05D6504B06F42D545A52446D3A76681037B010D11AD8CCA1ABBBD",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunSavedOffsetCalculationTests"
+      ],
+      "Finished": [
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunSavedOffsetCalculationTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0",
+        "TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt",
+      "Role": "Core",
+      "Bytes": 329918,
+      "SHA256": "DA2E6D42C01E4993FB0C6DB837DBBA0A735068E20664724FB2112003C06A1F0B",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestDiscreteForces.RunDiscreteForceTests",
+        "modTestAudit02Api.RunProgramMessageTests",
+        "modTestAudit02Api.RunProgramMessagePresentationTests",
+        "modTestAudit02Api.RunInputOnlyDialogTests",
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestElementGeometry.RunElementGeometryTests",
+        "modTestElementGeometry.RunContourCellMeshTests",
+        "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+        "modTestElementGeometryViews.RunElementGeometryViewTests",
+        "modTestCalculationSnapshot.RunGeometryHashTests",
+        "modTestCalculationSnapshot.RunWorkbookActionCompletionTests"
+      ],
+      "Finished": [
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestDiscreteForces.RunDiscreteForceTests",
+        "modTestAudit02Api.RunProgramMessageTests",
+        "modTestAudit02Api.RunProgramMessagePresentationTests",
+        "modTestAudit02Api.RunInputOnlyDialogTests",
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestElementGeometry.RunElementGeometryTests",
+        "modTestElementGeometry.RunContourCellMeshTests",
+        "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+        "modTestElementGeometryViews.RunElementGeometryViewTests",
+        "modTestCalculationSnapshot.RunGeometryHashTests",
+        "modTestCalculationSnapshot.RunWorkbookActionCompletionTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_AUTO_MESH: passed=131181; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=956; failed=0",
+        "TOTAL DISCRETE FORCES: passed=266; failed=0",
+        "TOTAL PROGRAM MESSAGES: passed=38; failed=0",
+        "TOTAL MESSAGE PRESENTATION: passed=29; failed=0",
+        "TOTAL INPUT ONLY DIALOG: passed=1122; failed=0",
+        "TOTAL_ADAPTIVE_BOUNDARY_MESH: passed=109; failed=0",
+        "TOTAL: passed=151; failed=0",
+        "TOTAL: passed=2713; failed=0",
+        "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=123; failed=0",
+        "TOTAL_ELEMENT_GEOMETRY_VIEWS: passed=82; failed=0",
+        "TOTAL_GEOMETRY_HASH: passed=203; failed=0",
+        "TOTAL_ACTION_COMPLETION: passed=13; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt",
+      "Role": "Core",
+      "Bytes": 17738177,
+      "SHA256": "B2C7C99A78234C0736ABCA101E3C37C04DC3AE0DD3D99906B4A17795A3CE595A",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Finished": [
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL: passed=4056; failed=0",
+        "TOTAL_MATERIAL: passed=31097; failed=0; elapsedSec=73.0234375",
+        "TOTAL_SECTION_SOLVER: passed=3341; failed=0; elapsedSec=1.62109375",
+        "TOTAL_CAPACITY: passed=5423; failed=0; elapsedSec=211.904296875",
+        "TOTAL_CRACK: passed=2604; failed=0; elapsedSec=44.634765625",
+        "TOTAL TYPED STATUS POLICY: passed=13863; failed=0",
+        "TOTAL_AUDIT03_SEARCH_CONFIG: passed=1853; failed=0",
+        "TOTAL_AUDIT03_CAPACITY_NUMERIC_CONFIG: passed=2965; failed=0",
+        "TOTAL_AUDIT03_STABILITY_CONFIG: passed=10024; failed=0",
+        "TOTAL_AUDIT03_UNIVERSAL_PATH: passed=945; failed=0",
+        "TOTAL_GENERAL_GEOMETRY_CONFIG: passed=2293; failed=0",
+        "TOTAL_AUDIT03_SP35_INVALID: passed=1621; failed=0",
+        "TOTAL_AUDIT03_SP35_BEHAVIOR: fields=144; passed=937; failed=0",
+        "TOTAL_AUDIT03_INACTIVE_CONFIG: fields=10; passed=102; failed=0",
+        "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=105; failed=0",
+        "TOTAL_AUDIT03_USER_PSI_FALLBACK: passed=440; failed=0",
+        "TOTAL LOCALE NUMBERS: passed=184; failed=0",
+        "TOTAL LOCALE BOUNDARIES: passed=148; failed=0",
+        "TOTAL LOCALE SAVED CONTRACTS: passed=25; failed=0",
+        "TOTAL STATE DEPTH GEOMETRY: passed=290; failed=0; cases=48",
+        "TOTAL_BATCH: passed=46262; failed=0; elapsedSec=1322.10546875",
+        "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=620; failed=0",
+        "TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=157; failed=0",
+        "TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=152; failed=0",
+        "TOTAL_CIRCLE_CONFIG: passed=46; failed=0",
+        "TOTAL_CIRCLE_REBAR_INPUT: passed=461; failed=0; cases=139",
+        "TOTAL_SHAPE_CONFIG: passed=206; failed=0",
+        "TOTAL_REBAR_COUNTER: passed=33; failed=0",
+        "TOTAL_REQUIRED_GEOMETRY: passed=922; failed=0",
+        "TOTAL_REBAR_FIELD_CONFIG: passed=8789; failed=0; cases=2297",
+        "TOTAL_AUDIT03_LOAD_TABLE: passed=11813; failed=0; cases=880",
+        "TOTAL_AUDIT03_PROFILE_FAILURE_SCOPE: passed=3572; failed=0; cases=64",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0",
+        "TOTAL_AUDIT03_RESULT_COLUMN_WIDTHS: passed=1116; failed=0",
+        "TOTAL_AUDIT03_PROFILE_CONFIG: passed=8860; failed=0; cases=292",
+        "TOTAL_AUDIT03_RELOCATED_INPUT: passed=868; failed=0; cases=116",
+        "TOTAL_AUDIT03_DURATION_CONFIG: passed=12853; failed=0; cases=643",
+        "TOTAL_AUDIT03_PRESENTATION_CONFIG: passed=681; failed=0; cases=105",
+        "TOTAL_AUDIT03_GENERAL_PLOT: passed=4681; failed=0",
+        "TOTAL_AUTOCAD_CONFIG: passed=1243; failed=0",
+        "TOTAL_WORKBOOK_UI: passed=71047; failed=0; elapsedSec=3931.390625",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=1.203125"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt",
+      "Role": "Core",
+      "Bytes": 1703891,
+      "SHA256": "88B5EFF01DECE76F2E4A9AE8C5F4A4CD557E2498C456D3C29CD62BE664FDF985",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestDeclarativeGeometry.RunCoreGeometryTests",
+        "modTestPolygonSpec.RunPolygonSpecTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestGeometryPublication.RunAnnotationIsolationTests",
+        "modTestGeometryPublication.RunRecipeContextFreezeTests",
+        "modTestGeometryPublication.RunPublishedBuildTests",
+        "modTestGeometryPublication.RunDefinitionLifecycleTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunResolveAnchorTests",
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+        "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestAudit02Api.RunAudit02PolygonApiTests",
+        "modTestAudit02Api.RunAudit02OptionsTests",
+        "modTestAudit02Api.RunAudit02InputTests",
+        "modTestAudit02Api.RunAudit02AnnotationTests",
+        "modTestAudit02Api.RunAudit02GuideExamplesTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestGeometryReview.RunGeometryReviewTests",
+        "modTestGeometryReview.RunPointedWidthInputTests",
+        "modTestRecipeOperations.RunCollapsingOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestIndividualContours.RunIndividualContourTests",
+        "modTestIndividualContours.RunIndividualContourFailureTests",
+        "modTestIndividualContours.RunIndividualContourWorkbookTests",
+        "modTestIndividualContours.RunUserRoundedContourTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunIndividualContourPerformanceTests"
+      ],
+      "Finished": [
+        "modTestDeclarativeGeometry.RunCoreGeometryTests",
+        "modTestPolygonSpec.RunPolygonSpecTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestGeometryPublication.RunAnnotationIsolationTests",
+        "modTestGeometryPublication.RunRecipeContextFreezeTests",
+        "modTestGeometryPublication.RunPublishedBuildTests",
+        "modTestGeometryPublication.RunDefinitionLifecycleTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunResolveAnchorTests",
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+        "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestAudit02Api.RunAudit02PolygonApiTests",
+        "modTestAudit02Api.RunAudit02OptionsTests",
+        "modTestAudit02Api.RunAudit02InputTests",
+        "modTestAudit02Api.RunAudit02AnnotationTests",
+        "modTestAudit02Api.RunAudit02GuideExamplesTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestGeometryReview.RunGeometryReviewTests",
+        "modTestGeometryReview.RunPointedWidthInputTests",
+        "modTestRecipeOperations.RunCollapsingOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestIndividualContours.RunIndividualContourTests",
+        "modTestIndividualContours.RunIndividualContourFailureTests",
+        "modTestIndividualContours.RunIndividualContourWorkbookTests",
+        "modTestIndividualContours.RunUserRoundedContourTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunIndividualContourPerformanceTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL ANALYTIC PATHS: passed=276; failed=0",
+        "TOTAL PATH ANCHORS: passed=61; failed=0",
+        "TOTAL ROUNDED POLYGONS: passed=36; failed=0",
+        "TOTAL ROUNDED OFFSET: passed=27; failed=0",
+        "TOTAL INPUT TABLES: passed=45; failed=0",
+        "TOTAL POLYGON SPEC: passed=52; failed=0",
+        "TOTAL RECIPE DEFINITION: passed=15; failed=0",
+        "TOTAL RECIPE RULES: passed=279; failed=0",
+        "TOTAL RECIPE MESH BOUNDARY: passed=182; failed=0",
+        "TOTAL RECIPE ANNOTATIONS: passed=92; failed=0",
+        "TOTAL ANNOTATION ISOLATION: passed=12; failed=0",
+        "TOTAL CONTEXT FREEZE: passed=11; failed=0",
+        "TOTAL PUBLISHED BUILD: passed=20; failed=0",
+        "TOTAL DEFINITION LIFECYCLE: passed=10; failed=0",
+        "TOTAL RECIPE OPERATIONS: passed=32; failed=0",
+        "TOTAL RECIPE DIAGNOSTICS: passed=35; failed=0",
+        "TOTAL RESOLVE ANCHOR: passed=1475; failed=0",
+        "TOTAL: passed=1319; failed=0",
+        "TOTAL ARBITRARY ANNOTATION GEOMETRY: passed=168; failed=0",
+        "TOTAL RECIPE ANNOTATION SNAPSHOT: passed=24; failed=0",
+        "TOTAL IMPORTED DIMENSIONS: passed=23; failed=0",
+        "TOTAL ANNOTATION SECTION SCALE: passed=12; failed=0",
+        "TOTAL_CONTOUR_MESH: passed=47347; failed=0",
+        "TOTAL AUDIT02 POLYGON API: passed=16; failed=0",
+        "TOTAL AUDIT02 OPTIONS: passed=15; failed=0",
+        "TOTAL AUDIT02 INPUT: passed=5; failed=0",
+        "TOTAL AUDIT02 ANNOTATIONS: passed=9; failed=0",
+        "TOTAL AUDIT02 GUIDE EXAMPLES: passed=11; failed=0",
+        "TOTAL AUDIT02 CLOSEOUT CONTACT: passed=23; failed=0",
+        "TOTAL AUDIT02 CLOSEOUT RECTANGLES INPUT: passed=309; failed=0",
+        "TOTAL_GEOMETRY_REVIEW: passed=742; failed=0",
+        "TOTAL_COLLAPSED_INPUT_MESSAGES: passed=65; failed=0",
+        "TOTAL_COLLAPSED_INPUT_ADDRESSES: passed=40; failed=0",
+        "TOTAL_POINTED_WIDTH_INPUT: passed=64; failed=0",
+        "TOTAL_COLLAPSING_OFFSETS: passed=26; failed=0",
+        "TOTAL_FULL_BOUNDARY_OFFSETS: passed=168; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=656; failed=0",
+        "TOTAL_USER_ROUNDED_CONTOUR: passed=68; failed=0",
+        "TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0",
+        "TOTAL_INDIVIDUAL_CONTOUR_PERFORMANCE: passed=73227; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt",
+      "Role": "Core",
+      "Bytes": 47244,
+      "SHA256": "EB60D066CCEF9B5EA15025AB3C0C6D0BD4E9D1AE3D796672DAD843CE0B10E67A",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35EndToEndTests"
+      ],
+      "Finished": [
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35EndToEndTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_SP35_FORMULA: passed=27; failed=0",
+        "TOTAL_SP35_LOCAL_OPENING: passed=36; failed=0",
+        "TOTAL_SP35_PREPARATION: passed=405; failed=0",
+        "TOTAL_SP35_NEIGHBOR_SETTINGS: passed=18; failed=0",
+        "TOTAL_SP35_PIPELINE: passed=34; failed=0",
+        "TOTAL_SP35_END_TO_END: passed=270; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt",
+      "Role": "Core",
+      "Bytes": 574212,
+      "SHA256": "379A2C45207816DFB777872902047D1004D5D5BF40265D7703897B101EC3E7C2",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestAudit02Api.RunRebarContactBuilderTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestSectionRecipes.RunCircleBindingTests",
+        "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeCaptionTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples",
+        "modTestSectionInputReader.RunSectionInputReaderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+        "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+        "modTestAudit02Api.RunCircleSetbackTests",
+        "modTestAudit02Api.RunOffsetWallCollisionTests",
+        "modTestWorkbookInterface.RunConfigComparisonContractTests"
+      ],
+      "Finished": [
+        "modTestAudit02Api.RunRebarContactBuilderTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestSectionRecipes.RunCircleBindingTests",
+        "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeCaptionTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestRecipeApiCatalogue.TestRunAdvancedGuideExamples",
+        "modTestSectionInputReader.RunSectionInputReaderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+        "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+        "modTestAudit02Api.RunCircleSetbackTests",
+        "modTestAudit02Api.RunOffsetWallCollisionTests",
+        "modTestWorkbookInterface.RunConfigComparisonContractTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL REBAR CONTACT BUILDER: passed=97; failed=0",
+        "TOTAL WORKBOOK RECIPE INPUT: passed=287; failed=0",
+        "TOTAL RECIPE DEFINITION: passed=15; failed=0",
+        "TOTAL CIRCLE INPUT: passed=5; failed=0",
+        "TOTAL ROUNDED INPUT: passed=17; failed=0",
+        "TOTAL HOLLOW INPUT: passed=22; failed=0",
+        "TOTAL CIRCLE BINDINGS: passed=4774; failed=0",
+        "TOTAL CIRCLE BINDING WORKBOOK: passed=19; failed=0",
+        "TOTAL RECIPE ANNOTATIONS: passed=92; failed=0",
+        "TOTAL RECIPE RULES: passed=279; failed=0",
+        "TOTAL RECIPE CAPTIONS: passed=84; failed=0",
+        "TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0",
+        "TOTAL_RECIPE_SETBACK_INPUT: passed=295; failed=0",
+        "TOTAL RECIPE OPERATIONS: passed=32; failed=0",
+        "TOTAL RECIPE DIAGNOSTICS: passed=35; failed=0",
+        "TOTAL AUDIT02 CLOSEOUT RECTANGLES INPUT: passed=309; failed=0",
+        "TOTAL AUDIT02 CLOSEOUT CONTACT: passed=23; failed=0",
+        "TOTAL ADVANCED GUIDE EXAMPLES: passed=16; failed=0",
+        "TOTAL_SECTION_INPUT_READER: passed=107; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET BUILDER: passed=99; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=112; failed=0",
+        "TOTAL INDEPENDENT ROW OFFSET WORKBOOK: passed=154; failed=0",
+        "TOTAL OFFSET OPENING ANNOTATION: passed=10; failed=0",
+        "TOTAL CIRCLE SETBACKS: passed=146; failed=0",
+        "TOTAL OFFSET WALL COLLISION: passed=4; failed=0",
+        "TOTAL_CONFIG_COMPARISON_CONTRACT: passed=6; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt",
+      "Role": "Core",
+      "Bytes": 3390,
+      "SHA256": "CB27BD338E8753E475CA5DB5E7207E7ACB81C115E344AF74E8EDABB3D1A10B6F",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunSavedOffsetCalculationTests"
+      ],
+      "Finished": [
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunSavedOffsetCalculationTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_SAVED_POINTED_OFFSETS: passed=33; failed=0",
+        "TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt",
+      "Role": "Core",
+      "Bytes": 329179,
+      "SHA256": "7A2C3BFF1CC5133876A1E7A867544965734C62BF26F382F1E7B0ADB1338588FA",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+      ],
+      "Started": [
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestDiscreteForces.RunDiscreteForceTests",
+        "modTestAudit02Api.RunProgramMessageTests",
+        "modTestAudit02Api.RunProgramMessagePresentationTests",
+        "modTestAudit02Api.RunInputOnlyDialogTests",
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestElementGeometry.RunElementGeometryTests",
+        "modTestElementGeometry.RunContourCellMeshTests",
+        "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+        "modTestElementGeometryViews.RunElementGeometryViewTests",
+        "modTestCalculationSnapshot.RunGeometryHashTests",
+        "modTestCalculationSnapshot.RunWorkbookActionCompletionTests"
+      ],
+      "Finished": [
+        "modTestContourMesh.RunAutomaticMeshTests",
+        "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+        "modTestDiscreteForces.RunDiscreteForceTests",
+        "modTestAudit02Api.RunProgramMessageTests",
+        "modTestAudit02Api.RunProgramMessagePresentationTests",
+        "modTestAudit02Api.RunInputOnlyDialogTests",
+        "modTestContourMesh.RunAdaptiveBoundaryMeshTests",
+        "modTestElementGeometry.RunElementGeometryTests",
+        "modTestElementGeometry.RunContourCellMeshTests",
+        "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+        "modTestElementGeometryViews.RunElementGeometryViewTests",
+        "modTestCalculationSnapshot.RunGeometryHashTests",
+        "modTestCalculationSnapshot.RunWorkbookActionCompletionTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_AUTO_MESH: passed=131181; failed=0",
+        "TOTAL CALCULATION SNAPSHOT: passed=956; failed=0",
+        "TOTAL DISCRETE FORCES: passed=266; failed=0",
+        "TOTAL PROGRAM MESSAGES: passed=38; failed=0",
+        "TOTAL MESSAGE PRESENTATION: passed=29; failed=0",
+        "TOTAL INPUT ONLY DIALOG: passed=1122; failed=0",
+        "TOTAL_ADAPTIVE_BOUNDARY_MESH: passed=109; failed=0",
+        "TOTAL: passed=151; failed=0",
+        "TOTAL: passed=2713; failed=0",
+        "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=123; failed=0",
+        "TOTAL_ELEMENT_GEOMETRY_VIEWS: passed=82; failed=0",
+        "TOTAL_GEOMETRY_HASH: passed=203; failed=0",
+        "TOTAL_ACTION_COMPLETION: passed=13; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt",
+      "Role": "Focused",
+      "Bytes": 77979,
+      "SHA256": "350C793CA4B9A2D964557A7B6530ED211E4A0AC27A66A7D96056D887E4A0E0A6",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Rectangles; group=Generated; cases=8; maxSeconds=3.892578125; passed=714; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 76346,
+      "SHA256": "EA31961559748887E3F9D2B9FA55821EA0B48DEA83BC0B17999D5F33DAC2B6B7",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Rectangles; group=Generated; cases=8; maxSeconds=3.833984375; passed=683; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt",
+      "Role": "Focused",
+      "Bytes": 75747,
+      "SHA256": "02E5314E5BD6DF7CD64E8056E953E6E91772096BDB58F39470C99C05F527BEC4",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Circle; group=Generated; cases=8; maxSeconds=3.69921875; passed=714; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 74259,
+      "SHA256": "BBC834D978E9FF71134EE52A5CD86E94D61F1B7B2D9A1AACB24E6CD21A9C3874",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=Circle; group=Generated; cases=8; maxSeconds=3.697265625; passed=683; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt",
+      "Role": "Focused",
+      "Bytes": 80215,
+      "SHA256": "05D535800E7237B99EC87A741CAA8CDE0C742599B995AD9C8A1E59B0F0A7A164",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=PointedSection; group=Generated; cases=8; maxSeconds=4.623046875; passed=714; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 78465,
+      "SHA256": "C16C9F267D9B3C33E5AEF3306421DB92EB7F6881E44199D7204C2B7D3BA73130",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=PointedSection; group=Generated; cases=8; maxSeconds=4.685546875; passed=683; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt",
+      "Role": "Focused",
+      "Bytes": 80647,
+      "SHA256": "3AB4858BC0389AB5D07DBDA2586643ADE6D64B9037B642B31FB01B2654B80238",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=HollowRectangle; group=Generated; cases=8; maxSeconds=4.28125; passed=714; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 78880,
+      "SHA256": "1D84374AFA84CAFDD5552C87E12A2EF4D2784DC45E1A90ED8C1BF1A755996342",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=HollowRectangle; group=Generated; cases=8; maxSeconds=3.978515625; passed=683; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt",
+      "Role": "Focused",
+      "Bytes": 265257,
+      "SHA256": "09EDA4D54CB7BA08346C98E770532B9E0BCA9FF8718289231F4011BD769F2684",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=23; maxSeconds=7.2109375; passed=1950; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 255264,
+      "SHA256": "CE7F90B6EFC942852ED7DF896A4A163059FD3FD53A5BCC6DB9D74296E9B08DD6",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=23; maxSeconds=2.486328125; passed=1931; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt",
+      "Role": "Focused",
+      "Bytes": 61359,
+      "SHA256": "1351E9ED839EE5CC12C6047FEC3D6878B4D174FDD0A24B5ED31B1840A4644071",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Paths; cases=6; maxSeconds=3.0078125; passed=533; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 60115,
+      "SHA256": "67DC04C109D93AE71D53F5D3C7B77F6C7F69E2DDECA39BE6EF49001444B12792",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedAcceptanceCases"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Paths; cases=6; maxSeconds=3.0390625; passed=510; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt",
+      "Role": "Focused",
+      "Bytes": 116250,
+      "SHA256": "8CB121A91DF45A9892FC1893007D5BEE3B8775134C95B1B394DC55725E135D87",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunCoreRegressionBatch15"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunCoreRegressionBatch15"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_CORE_BATCH15: seconds=3.830078125; passed=910; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt",
+      "Role": "Focused",
+      "Bytes": 11043,
+      "SHA256": "C8F6FF07A7FCFC6502BB65814BE1480083C81565304DEEF63D4992136C01F04B",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_SPECIAL: case=Stability; elapsedSec=3.; passed=92; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt",
+      "Role": "Focused",
+      "Bytes": 11511,
+      "SHA256": "32AA34AA2BEE9F9277554C92FF791290A60577E7B9B8166289F35AAFC6D6B463",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_SPECIAL: case=AsymmetricSteel; elapsedSec=3.01171875; passed=92; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 114542,
+      "SHA256": "96DD2230308FF62E3F1CC6A74E2E1D07711C55DB1A539080B2283F8A5963CF8E",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunCoreRegressionBatch15"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunCoreRegressionBatch15"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_CORE_BATCH15: seconds=3.525390625; passed=861; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 10833,
+      "SHA256": "B98A69DE4518C06BE418D84B8E86E3937C342175ED981B6844C8C7ADA6A4ABA4",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_SPECIAL: case=Stability; elapsedSec=2.99609375; passed=87; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt",
+      "Role": "Focused",
+      "Bytes": 11268,
+      "SHA256": "E624F0BF7087225A22A1A1CFFC5E98441C2D903A8D3F7F158E66E77D14C13A61",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestRunFocusedSpecialCase"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_FOCUSED_SPECIAL: case=AsymmetricSteel; elapsedSec=3.107421875; passed=87; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt",
+      "Role": "Focused",
+      "Bytes": 20320,
+      "SHA256": "5D4C03DF510E26DC4DDCC61DFA9160C53094A3DF83269353A41CB06FF9BF3D76",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Errors": [],
+      "TotalLines": []
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt",
+      "Role": "Focused",
+      "Bytes": 17998,
+      "SHA256": "38A7224C1FF501026876CE190599C45F354FEC16BEC2B701E5AD04C4B00604C6",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Errors": [],
+      "TotalLines": []
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt",
+      "Role": "Focused",
+      "Bytes": 42765,
+      "SHA256": "B4C572CCDBE5A31FD4EFC35F205B37D7695C0578D1718EC007A4906C44A1E182",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Errors": [],
+      "TotalLines": []
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt",
+      "Role": "Focused",
+      "Bytes": 24875,
+      "SHA256": "3CABF806E4FD6E46438BEC06CD36ABCB476EBFBB48E6AF6144B8C92BB7DC285B",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Errors": [],
+      "TotalLines": []
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt",
+      "Role": "Focused",
+      "Bytes": 15332,
+      "SHA256": "5070218933694EF63669DD2F6247EB50C8FE00998A7A94ED6B34401820A24223",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Finished": [
+        "modTestBatchCalculation.TestDumpFocusedForceBoundsExact"
+      ],
+      "Errors": [],
+      "TotalLines": []
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt",
+      "Role": "Focused",
+      "Bytes": 65985,
+      "SHA256": "339928BC241509F03B5DFBA8361915CA316318667BDC4C5E1813F0915EE13526",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": true,
+      "SourceSHA256": [
+        "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+      ],
+      "Started": [
+        "RunConfigPresentationTests"
+      ],
+      "Finished": [
+        "RunConfigPresentationTests"
+      ],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_CONFIG_PRESENTATION: passed=1326; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/Stage.json",
+      "Role": "FocusedJSON",
+      "Bytes": 787,
+      "SHA256": "D319E230CAE07764860AC88F806660D7099203BD7B3F6B030C7F8742EFB17CFB",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": null,
+      "SourceSHA256": [],
+      "Started": [],
+      "Finished": [],
+      "Errors": [],
+      "TotalLines": []
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "Role": "NativeCADChild",
+      "Bytes": 22427,
+      "SHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": null,
+      "SourceSHA256": [],
+      "Started": [],
+      "Finished": [],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=495; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "Role": "NativeCADChild",
+      "Bytes": 31071,
+      "SHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": null,
+      "SourceSHA256": [],
+      "Started": [],
+      "Finished": [],
+      "Errors": [],
+      "TotalLines": [
+        "TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=551; failed=0"
+      ]
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Independent.json",
+      "Role": "FocusedJSON",
+      "Bytes": 193573,
+      "SHA256": "01F1820AC480FB090E98594923AF099DBDE155919D8A955B3843CCA153D0F003",
+      "AllBytesRead": true,
+      "Closed": true,
+      "SourceMatches": null,
+      "SourceSHA256": [],
+      "Started": [],
+      "Finished": [],
+      "Errors": [],
+      "TotalLines": []
+    }
+  ],
+  "Identities": [
+    {
+      "Name": "powershell",
+      "PID": 25420,
+      "StartTicksUTC": "639289181840254393",
+      "Provenance": [
+        "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/DriverRun.json"
+      ]
+    },
+    {
+      "Name": "powershell",
+      "PID": 12192,
+      "StartTicksUTC": "639289181836304925",
+      "Provenance": [
+        "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/HostRun.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25752,
+      "StartTicksUTC": "639289181893831539",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 13728,
+      "StartTicksUTC": "639289240463008862",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25308,
+      "StartTicksUTC": "639289243269522195",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25604,
+      "StartTicksUTC": "639289243482296141",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17776,
+      "StartTicksUTC": "639289246717935078",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 27068,
+      "StartTicksUTC": "639289246968555122",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 26760,
+      "StartTicksUTC": "639289248311570271",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 7460,
+      "StartTicksUTC": "639289304876690310",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 26256,
+      "StartTicksUTC": "639289307645464230",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 10996,
+      "StartTicksUTC": "639289307853479653",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 11284,
+      "StartTicksUTC": "639289311096077816",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 26268,
+      "StartTicksUTC": "639289311335596062",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17428,
+      "StartTicksUTC": "639289313054251849",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 7956,
+      "StartTicksUTC": "639289313514655006",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 26428,
+      "StartTicksUTC": "639289313978322689",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 15220,
+      "StartTicksUTC": "639289314410849691",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 3596,
+      "StartTicksUTC": "639289314856140750",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 8260,
+      "StartTicksUTC": "639289315376689533",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 1456,
+      "StartTicksUTC": "639289315917393827",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 23712,
+      "StartTicksUTC": "639289316389338268",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 5064,
+      "StartTicksUTC": "639289316861880943",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22320,
+      "StartTicksUTC": "639289317459350062",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20316,
+      "StartTicksUTC": "639289317920971563",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 3120,
+      "StartTicksUTC": "639289318296427657",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25884,
+      "StartTicksUTC": "639289318675981913",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 12924,
+      "StartTicksUTC": "639289319042753068",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22260,
+      "StartTicksUTC": "639289319392696871",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 27320,
+      "StartTicksUTC": "639289319738323988",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 22904,
+      "StartTicksUTC": "639289320100505147",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 300,
+      "StartTicksUTC": "639289320449268545",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 26240,
+      "StartTicksUTC": "639289320799188441",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 26276,
+      "StartTicksUTC": "639289320887844095",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 25828,
+      "StartTicksUTC": "639289320967522624",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 4680,
+      "StartTicksUTC": "639289321052431552",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17800,
+      "StartTicksUTC": "639289321140220811",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 26716,
+      "StartTicksUTC": "639289321221260859",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt",
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt.Ownership.json"
+      ]
+    },
+    {
+      "Name": "acad",
+      "PID": 13680,
+      "StartTicksUTC": "639289321514160733",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 26288,
+      "StartTicksUTC": "639289321622760963",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json"
+      ]
+    },
+    {
+      "Name": "acad",
+      "PID": 17116,
+      "StartTicksUTC": "639289321316525839",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 20656,
+      "StartTicksUTC": "639289321432244054",
+      "Provenance": [
+        "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17632,
+      "StartTicksUTC": "639289312755890743",
+      "Provenance": [
+        "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/FullLaunch.stdout.log"
+      ]
+    },
+    {
+      "Name": "EXCEL",
+      "PID": 17204,
+      "StartTicksUTC": "639289312978369329",
+      "Provenance": [
+        "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/FullLaunch.stdout.log"
+      ]
+    }
+  ],
+  "InventoryErrors": [],
+  "Failures": [],
+  "InputsChecked": 505,
+  "ChangedInputs": [],
+  "HEADUnchanged": true,
+  "FullAcceptanceClaim": false
+}

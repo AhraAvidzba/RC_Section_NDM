@@ -1,0 +1,86 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "IndividualCases": 122,
+  "PassedAssertions": 13967,
+  "ElapsedSeconds": 909.4569425,
+  "Errors": [],
+  "Stages": [
+    {
+      "ID": "Rectangles_Generated_No",
+      "Passed": true
+    },
+    {
+      "ID": "Rectangles_Generated_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "Circle_Generated_No",
+      "Passed": true
+    },
+    {
+      "ID": "Circle_Generated_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "PointedSection_Generated_No",
+      "Passed": true
+    },
+    {
+      "ID": "PointedSection_Generated_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "HollowRectangle_Generated_No",
+      "Passed": true
+    },
+    {
+      "ID": "HollowRectangle_Generated_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "SavedWorkbook_Saved_No",
+      "Passed": true
+    },
+    {
+      "ID": "SavedWorkbook_Saved_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "SavedWorkbook_Paths_No",
+      "Passed": true
+    },
+    {
+      "ID": "SavedWorkbook_Paths_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "Batch15_No",
+      "Passed": true
+    },
+    {
+      "ID": "Stability_No",
+      "Passed": true
+    },
+    {
+      "ID": "AsymmetricSteel_No",
+      "Passed": true
+    },
+    {
+      "ID": "Batch15_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "Stability_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "AsymmetricSteel_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "OutputPresentation",
+      "Passed": true
+    }
+  ]
+}

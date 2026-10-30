@@ -1,0 +1,14 @@
+{
+  "Status": "PREPARATION_METADATA_CORRECTED_TO_ACTUAL_BYTE_CHANGES",
+  "ObservedUTC": "2026-10-30T04:49:19.032638+00:00",
+  "BeforeProofSHA256": "B70F69EE44C9ACAB5E4107E3420796F040A833DDBAE4D8428EF61D865D65988E",
+  "AfterProofSHA256": "735578E54705EBD3839F434E4EC20BA3B6EF8F412073F60A9EE30AA84EF4EB3C",
+  "ByteIdenticalRewrittenParts": [
+    "xl/worksheets/_rels/sheet3.xml.rels"
+  ],
+  "ReadySHA256": "2CD43036E4C8146FB4B3589ED74DEBAB3678ECEDE6B0C0F846A10418A59686DD",
+  "ReadyBookChanged": false,
+  "NativeVerificationStillSameBook": true,
+  "ProductionCodeChanged": false,
+  "Published": false
+}

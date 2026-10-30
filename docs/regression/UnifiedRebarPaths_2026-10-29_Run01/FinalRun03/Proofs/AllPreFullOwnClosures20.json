@@ -1,0 +1,3713 @@
+﻿{
+    "Status":  "ALL_RECOVERY_AND_PRIOR_OWN_IDENTITIES_TERMINAL",
+    "CheckedUTC":  "2026-10-30T00:38:55.9543592+00:00",
+    "AllOwnIdentitiesTerminal":  true,
+    "UniqueOwnCount":  231,
+    "Identities":  [
+                       {
+                           "PID":  5604,
+                           "StartTicksUTC":  "639288162546506716",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5085330+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  9716,
+                           "StartTicksUTC":  "639288295305859665",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5175088+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  10892,
+                           "StartTicksUTC":  "639288425208145224",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5234932+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24372,
+                           "StartTicksUTC":  "639289162006275126",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5294784+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24380,
+                           "StartTicksUTC":  "639289028527772893",
+                           "Name":  "powershell",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5344650+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  4588,
+                           "StartTicksUTC":  "639289018600730792",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5404488+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22260,
+                           "StartTicksUTC":  "639288869035155307",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5464332+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25804,
+                           "StartTicksUTC":  "639289152414958358",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5514195+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25760,
+                           "StartTicksUTC":  "639289165722271676",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5574033+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7848,
+                           "StartTicksUTC":  "639288145440960066",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5643848+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  3848,
+                           "StartTicksUTC":  "639288417509856122",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5703689+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16768,
+                           "StartTicksUTC":  "639289163957257023",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5763532+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25232,
+                           "StartTicksUTC":  "639289159925399734",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5813397+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25272,
+                           "StartTicksUTC":  "639288227624031893",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5883495+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7232,
+                           "StartTicksUTC":  "639288979802612777",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5943042+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7552,
+                           "StartTicksUTC":  "639288228641712270",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.5992912+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22152,
+                           "StartTicksUTC":  "639288846890462146",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6052757+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7000,
+                           "StartTicksUTC":  "639288294523305424",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6122573+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22308,
+                           "StartTicksUTC":  "639288419308580323",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6192390+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17172,
+                           "StartTicksUTC":  "639288424161435336",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6252224+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16640,
+                           "StartTicksUTC":  "639289155902760603",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6322039+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  19760,
+                           "StartTicksUTC":  "639288293817251856",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6401808+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25528,
+                           "StartTicksUTC":  "639288364556743104",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6491573+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  4048,
+                           "StartTicksUTC":  "639288359921555421",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6571356+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  18840,
+                           "StartTicksUTC":  "639288290574879756",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6651142+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  4752,
+                           "StartTicksUTC":  "639289164306817614",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6720951+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24172,
+                           "StartTicksUTC":  "639288425951392769",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6780806+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  6972,
+                           "StartTicksUTC":  "639288199089097845",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6850616+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  248,
+                           "StartTicksUTC":  "639288949844191631",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6900485+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  13516,
+                           "StartTicksUTC":  "639289012740712736",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.6960327+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  10168,
+                           "StartTicksUTC":  "639288311234753161",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7030138+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  14728,
+                           "StartTicksUTC":  "639288157572868260",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7080008+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16016,
+                           "StartTicksUTC":  "639288294960805647",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7139843+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  10308,
+                           "StartTicksUTC":  "639288425294913748",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7199956+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  3212,
+                           "StartTicksUTC":  "639288938693209364",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7259796+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  21844,
+                           "StartTicksUTC":  "639288844430132510",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7319671+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  15196,
+                           "StartTicksUTC":  "639288311238457398",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7379507+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17048,
+                           "StartTicksUTC":  "639288173140884320",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7439329+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26200,
+                           "StartTicksUTC":  "639289009782970383",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7509142+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23784,
+                           "StartTicksUTC":  "639288150060187558",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7569046+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  11048,
+                           "StartTicksUTC":  "639288938031663184",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7638801+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  3812,
+                           "StartTicksUTC":  "639288172709767375",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7698632+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25524,
+                           "StartTicksUTC":  "639288935797716392",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7768152+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17484,
+                           "StartTicksUTC":  "639288149370269545",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7827992+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25360,
+                           "StartTicksUTC":  "639288294168118105",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7888161+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  2088,
+                           "StartTicksUTC":  "639288293097041003",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.7947997+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24572,
+                           "StartTicksUTC":  "639289165462146961",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8007822+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  8892,
+                           "StartTicksUTC":  "639289028577042260",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8077632+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7456,
+                           "StartTicksUTC":  "639289157357661406",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8137166+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7312,
+                           "StartTicksUTC":  "639288869051319327",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8197007+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  10964,
+                           "StartTicksUTC":  "639289093925202253",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8257127+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  13792,
+                           "StartTicksUTC":  "639288426055207097",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8316965+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  21080,
+                           "StartTicksUTC":  "639288416038649934",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8376528+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1544,
+                           "StartTicksUTC":  "639288144142459732",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8436656+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  19288,
+                           "StartTicksUTC":  "639288170570720770",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8496488+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  12956,
+                           "StartTicksUTC":  "639288141455382790",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8556325+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22340,
+                           "StartTicksUTC":  "639288149057430222",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8626143+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24232,
+                           "StartTicksUTC":  "639288159184847219",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8686001+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  5032,
+                           "StartTicksUTC":  "639288423821893739",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8745846+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26020,
+                           "StartTicksUTC":  "639289003341338722",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8805687+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17284,
+                           "StartTicksUTC":  "639288424520206012",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8865525+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  5916,
+                           "StartTicksUTC":  "639288419812818018",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8925363+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  3484,
+                           "StartTicksUTC":  "639288287199156776",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.8985199+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  15824,
+                           "StartTicksUTC":  "639289171903683513",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "P/DirectedMatrix19.json/Directed19_Yes"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9055001+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  21112,
+                           "StartTicksUTC":  "639289007360320979",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9114839+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  10996,
+                           "StartTicksUTC":  "639288424862339867",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9184653+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23508,
+                           "StartTicksUTC":  "639288284938516052",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9244496+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1808,
+                           "StartTicksUTC":  "639288159897845198",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9314304+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20700,
+                           "StartTicksUTC":  "639288178791212334",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9374153+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26292,
+                           "StartTicksUTC":  "639289169165897061",
+                           "Name":  "powershell",
+                           "Provenance":  [
+                                              "P/RecoveryPipeline19.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9443981+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25316,
+                           "StartTicksUTC":  "639288176218761907",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9503815+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23660,
+                           "StartTicksUTC":  "639289169244156033",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "E/Build13/Build.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9563662+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16848,
+                           "StartTicksUTC":  "639288425879314854",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9623501+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25420,
+                           "StartTicksUTC":  "639288869031318951",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9683336+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20908,
+                           "StartTicksUTC":  "639288178843794877",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9743181+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  11176,
+                           "StartTicksUTC":  "639288129932039783",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9803030+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  19228,
+                           "StartTicksUTC":  "639288291988367205",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9862860+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20780,
+                           "StartTicksUTC":  "639289158558264381",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9922697+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  13444,
+                           "StartTicksUTC":  "639288289642535381",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:54.9982542+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22364,
+                           "StartTicksUTC":  "639288289112379965",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0032398+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16228,
+                           "StartTicksUTC":  "639288362913100181",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0092244+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  18408,
+                           "StartTicksUTC":  "639289092335902835",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0151781+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26420,
+                           "StartTicksUTC":  "639289166202289577",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0221593+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16668,
+                           "StartTicksUTC":  "639288133105171350",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0291681+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25708,
+                           "StartTicksUTC":  "639289166093456313",
+                           "Name":  "acad",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0351528+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  14640,
+                           "StartTicksUTC":  "639289165634973415",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0411387+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  5488,
+                           "StartTicksUTC":  "639289165018821034",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0471230+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  9552,
+                           "StartTicksUTC":  "639288311287001172",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0541023+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22536,
+                           "StartTicksUTC":  "639288140339638291",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0630784+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16812,
+                           "StartTicksUTC":  "639288170364522118",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0700305+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16512,
+                           "StartTicksUTC":  "639288295229814585",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0760146+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22676,
+                           "StartTicksUTC":  "639288231963365301",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0830311+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20664,
+                           "StartTicksUTC":  "639288175757034427",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0890092+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  19432,
+                           "StartTicksUTC":  "639288425617431211",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.0959933+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24480,
+                           "StartTicksUTC":  "639288133428540181",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1019766+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1556,
+                           "StartTicksUTC":  "639288154739478916",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1079604+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1240,
+                           "StartTicksUTC":  "639288178795120695",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1139440+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23576,
+                           "StartTicksUTC":  "639289022707546707",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1199286+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  12676,
+                           "StartTicksUTC":  "639289007334097494",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1259134+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  12184,
+                           "StartTicksUTC":  "639288952543105216",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1320230+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23660,
+                           "StartTicksUTC":  "639288128639701244",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1380346+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  10120,
+                           "StartTicksUTC":  "639288281695307668",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1436950+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24764,
+                           "StartTicksUTC":  "639288294778121697",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1506741+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17060,
+                           "StartTicksUTC":  "639288305522705814",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1566574+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  2732,
+                           "StartTicksUTC":  "639288425456639973",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1626418+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1192,
+                           "StartTicksUTC":  "639288412550371823",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1686253+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24052,
+                           "StartTicksUTC":  "639288425540735378",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1736121+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  9868,
+                           "StartTicksUTC":  "639288292739106007",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1795960+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  8888,
+                           "StartTicksUTC":  "639289024019308053",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1855804+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  21684,
+                           "StartTicksUTC":  "639288177069574032",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1925619+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22908,
+                           "StartTicksUTC":  "639288415798043213",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.1985453+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  2520,
+                           "StartTicksUTC":  "639289158985332392",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2035320+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  21208,
+                           "StartTicksUTC":  "639288158825034542",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2105137+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20708,
+                           "StartTicksUTC":  "639288294872348221",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2174852+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  27004,
+                           "StartTicksUTC":  "639289165902491497",
+                           "Name":  "acad",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2235345+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  12176,
+                           "StartTicksUTC":  "639288934326474512",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2305445+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25136,
+                           "StartTicksUTC":  "639288422347043400",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2365291+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  15288,
+                           "StartTicksUTC":  "639288286755095566",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2434805+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  11960,
+                           "StartTicksUTC":  "639289165373595801",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2504944+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22140,
+                           "StartTicksUTC":  "639289159406644426",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2564764+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  14740,
+                           "StartTicksUTC":  "639288947118142512",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2624615+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20436,
+                           "StartTicksUTC":  "639288847858853888",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2684466+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16840,
+                           "StartTicksUTC":  "639288165059222054",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2744287+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16980,
+                           "StartTicksUTC":  "639289160442135379",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2804129+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25520,
+                           "StartTicksUTC":  "639288288088798785",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2863967+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  15704,
+                           "StartTicksUTC":  "639288293444227032",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2923805+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24652,
+                           "StartTicksUTC":  "639288421854541350",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.2983643+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  10168,
+                           "StartTicksUTC":  "639288281907488985",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3043490+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  11244,
+                           "StartTicksUTC":  "639288860736603313",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3103323+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20716,
+                           "StartTicksUTC":  "639288228429109352",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3172839+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26632,
+                           "StartTicksUTC":  "639289163240056935",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3232962+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26336,
+                           "StartTicksUTC":  "639288929590464189",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3292816+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23904,
+                           "StartTicksUTC":  "639288225715359395",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3352665+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  4844,
+                           "StartTicksUTC":  "639288418459349114",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3412508+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  18228,
+                           "StartTicksUTC":  "639288939285899664",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3472363+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  992,
+                           "StartTicksUTC":  "639288231720477632",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3532175+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25652,
+                           "StartTicksUTC":  "639289166020654722",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3592016+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7956,
+                           "StartTicksUTC":  "639288869101230095",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3651904+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  11480,
+                           "StartTicksUTC":  "639288931888631992",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3721664+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  27004,
+                           "StartTicksUTC":  "639289157575410255",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3781557+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16668,
+                           "StartTicksUTC":  "639289028523835508",
+                           "Name":  "powershell",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3851261+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  15824,
+                           "StartTicksUTC":  "639288854347475434",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3921120+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16796,
+                           "StartTicksUTC":  "639289155659615340",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.3980962+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26016,
+                           "StartTicksUTC":  "639289021135390717",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4040841+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26368,
+                           "StartTicksUTC":  "639289171386609026",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "P/Native13Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4100673+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23680,
+                           "StartTicksUTC":  "639288170155275572",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4160506+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7724,
+                           "StartTicksUTC":  "639288422723636962",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4220343+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22364,
+                           "StartTicksUTC":  "639288359713381454",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4280170+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20960,
+                           "StartTicksUTC":  "639288417585133258",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4369963+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24864,
+                           "StartTicksUTC":  "639288856685137214",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4429778+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  18916,
+                           "StartTicksUTC":  "639288409834471810",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4489619+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25468,
+                           "StartTicksUTC":  "639288171825371967",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4549467+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26276,
+                           "StartTicksUTC":  "639289162470275728",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4609305+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  2216,
+                           "StartTicksUTC":  "639288285190814939",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4669142+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  14556,
+                           "StartTicksUTC":  "639288944451955251",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4728989+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  19040,
+                           "StartTicksUTC":  "639288852014048529",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4788818+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23696,
+                           "StartTicksUTC":  "639289164662084569",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4848651+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26252,
+                           "StartTicksUTC":  "639289161391264457",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4908493+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25504,
+                           "StartTicksUTC":  "639288286679391912",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.4968331+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20628,
+                           "StartTicksUTC":  "639288158052095667",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5049275+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  13196,
+                           "StartTicksUTC":  "639288860553579971",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5109120+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7888,
+                           "StartTicksUTC":  "639288412765976063",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5174988+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  13364,
+                           "StartTicksUTC":  "639289149420245905",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5255051+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23800,
+                           "StartTicksUTC":  "639288279030801266",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5324861+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  4044,
+                           "StartTicksUTC":  "639288158468383363",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5414624+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17488,
+                           "StartTicksUTC":  "639289001274205725",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5484438+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17976,
+                           "StartTicksUTC":  "639288418021902052",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5544282+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25992,
+                           "StartTicksUTC":  "639288862580453028",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5604141+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  27468,
+                           "StartTicksUTC":  "639289158113463822",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5663929+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  11768,
+                           "StartTicksUTC":  "639289092589690828",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5723816+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  2076,
+                           "StartTicksUTC":  "639288303604979522",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5783658+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23664,
+                           "StartTicksUTC":  "639289086071017169",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5843495+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  21112,
+                           "StartTicksUTC":  "639288418876658121",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5903334+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17456,
+                           "StartTicksUTC":  "639288869082250504",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.5963172+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  3640,
+                           "StartTicksUTC":  "639288149683118644",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6023018+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  18520,
+                           "StartTicksUTC":  "639288420341101450",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6082856+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  2732,
+                           "StartTicksUTC":  "639288861501609656",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6142695+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23844,
+                           "StartTicksUTC":  "639288363163460774",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6192560+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24600,
+                           "StartTicksUTC":  "639289009534884306",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6272355+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1148,
+                           "StartTicksUTC":  "639288851534118185",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6332192+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  7580,
+                           "StartTicksUTC":  "639288288576279546",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6392033+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  27292,
+                           "StartTicksUTC":  "639289163603189091",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6451867+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  16420,
+                           "StartTicksUTC":  "639288160444553193",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6501733+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24872,
+                           "StartTicksUTC":  "639288425706705505",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6561583+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  13444,
+                           "StartTicksUTC":  "639288170775087771",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6621414+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  5352,
+                           "StartTicksUTC":  "639288999097254635",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6691521+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  3164,
+                           "StartTicksUTC":  "639288423096834182",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6761084+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20600,
+                           "StartTicksUTC":  "639288927515842826",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6820868+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  9748,
+                           "StartTicksUTC":  "639288292379323732",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6880723+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  18968,
+                           "StartTicksUTC":  "639288420797707470",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.6940605+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  288,
+                           "StartTicksUTC":  "639288294611096505",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7010071+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20824,
+                           "StartTicksUTC":  "639288162419329251",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7070214+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  8504,
+                           "StartTicksUTC":  "639288287644127579",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7130027+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  15388,
+                           "StartTicksUTC":  "639288291610907372",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7189866+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  4616,
+                           "StartTicksUTC":  "639288357068166793",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7249713+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  9408,
+                           "StartTicksUTC":  "639289089041855846",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7329517+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25744,
+                           "StartTicksUTC":  "639288869090250532",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7399338+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  11400,
+                           "StartTicksUTC":  "639288300172676694",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "ReusedByDifferentProcess",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  "msedgewebview2",
+                           "ObservedStartTicksUTC":  "639288545877257810",
+                           "Proof":  "Get-Process exact UTC start and executable name",
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7528945+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1532,
+                           "StartTicksUTC":  "639288423479593156",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7598808+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  21208,
+                           "StartTicksUTC":  "639288233290259422",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7658635+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  24088,
+                           "StartTicksUTC":  "639288295059576565",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7718478+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  14500,
+                           "StartTicksUTC":  "639289160917010147",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7768043+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  12628,
+                           "StartTicksUTC":  "639288421279324819",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7828207+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25340,
+                           "StartTicksUTC":  "639288172284937447",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7888031+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  25604,
+                           "StartTicksUTC":  "639288941487699235",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.7947880+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  17260,
+                           "StartTicksUTC":  "639288294691863210",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8007700+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  15192,
+                           "StartTicksUTC":  "639288176639706069",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8067542+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1808,
+                           "StartTicksUTC":  "639288942011545896",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8127383+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  12380,
+                           "StartTicksUTC":  "639288295413034441",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8177247+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  8376,
+                           "StartTicksUTC":  "639289157656493417",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8246756+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22028,
+                           "StartTicksUTC":  "639289088832301963",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8316568+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  2640,
+                           "StartTicksUTC":  "639289152205042604",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8376409+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  4184,
+                           "StartTicksUTC":  "639288161467516070",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8446222+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  19400,
+                           "StartTicksUTC":  "639288849202368023",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8506058+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  19448,
+                           "StartTicksUTC":  "639288290110676540",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "ReusedByDifferentProcess",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  "chrome",
+                           "ObservedStartTicksUTC":  "639288563570543717",
+                           "Proof":  "Get-Process exact UTC start and executable name",
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8586136+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  13064,
+                           "StartTicksUTC":  "639289171650255449",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "P/DirectedMatrix19.json/Directed19_No"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8645997+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20748,
+                           "StartTicksUTC":  "639289165549983359",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8715806+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  1236,
+                           "StartTicksUTC":  "639288307905913245",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8775647+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  18100,
+                           "StartTicksUTC":  "639289162855746890",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8835187+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  9084,
+                           "StartTicksUTC":  "639288417322662144",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8895372+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  10148,
+                           "StartTicksUTC":  "639288286491928343",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.8955172+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22520,
+                           "StartTicksUTC":  "639289003073791470",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9015008+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  4280,
+                           "StartTicksUTC":  "639288156033304347",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9074846+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20700,
+                           "StartTicksUTC":  "639289003090835819",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9134391+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  6064,
+                           "StartTicksUTC":  "639288425372987694",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9184564+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  20768,
+                           "StartTicksUTC":  "639288946728594222",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9244455+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  21992,
+                           "StartTicksUTC":  "639288975477754833",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9304233+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  26120,
+                           "StartTicksUTC":  "639289165809324651",
+                           "Name":  "EXCEL",
+                           "Provenance":  [
+                                              "L2/AllOwnClosuresReviewed.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9364073+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  19636,
+                           "StartTicksUTC":  "639288852637742944",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9423931+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  22568,
+                           "StartTicksUTC":  "639288160947008017",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9483750+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       },
+                       {
+                           "PID":  23852,
+                           "StartTicksUTC":  "639288291148485744",
+                           "Name":  "",
+                           "Provenance":  [
+                                              "P/AllPreFullOwnClosures15.json"
+                                          ],
+                           "State":  "Absent",
+                           "OwnIdentityTerminal":  true,
+                           "ObservedName":  null,
+                           "ObservedStartTicksUTC":  null,
+                           "Proof":  null,
+                           "Error":  null,
+                           "ObservedUTC":  "2026-10-30T00:38:55.9543592+00:00",
+                           "ProcessModifiedOrClosed":  false
+                       }
+                   ],
+    "SourceSHA256":  "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+    "HistoricalFullSourceSHA256":  "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+    "CurrentFullOwnCount":  44,
+    "PreviousOwnCount":  182,
+    "SourceInputFenceVerified":  505,
+    "AllowedPostRunChanges":  5,
+    "AnyProcessClosed":  false,
+    "UnknownAcceptedAsAbsent":  false,
+    "FullAcceptanceClaim":  false
+}

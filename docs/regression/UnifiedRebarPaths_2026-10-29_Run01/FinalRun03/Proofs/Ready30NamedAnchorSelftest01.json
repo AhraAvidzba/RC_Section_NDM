@@ -1,0 +1,22 @@
+{
+  "Status": "NAMED_MAIN_ANCHOR_AND_DATA_PROTECTION_SELFTEST_PASS",
+  "ObservedUTC": "2026-10-30T04:47:08.007827+00:00",
+  "Checks": [
+    "IncludeBoth: exact user values/comment/styles/validation retained",
+    "ExcludeBoth: exact user values/comment/styles/validation retained",
+    "IncludeStart: exact user values/comment/styles/validation retained",
+    "IncludeEnd: exact user values/comment/styles/validation retained",
+    "User comment formula and cached value retained",
+    "Reserved user text rejected",
+    "Reserved user formula rejected",
+    "Existing user note validation rejected",
+    "Wrong list separator rejected without normalization",
+    "Prefix-only ambiguous Main lookup rejected",
+    "Shared key prefix resolved by exact named-table bounds with comments preserved",
+    "Truncated named-table boundary rejected",
+    "Foreign named sheet rejected"
+  ],
+  "RealWorkbookChanged": false,
+  "ExcelStarted": false,
+  "ProductionCodeChanged": false
+}

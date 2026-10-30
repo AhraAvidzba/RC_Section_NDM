@@ -1,0 +1,2318 @@
+{
+  "Status": "ENTIRE_ACCEPTED_RUN03_AND_READY30_PROOFS_ARCHIVED",
+  "ObservedUTC": "2026-10-30T04:50:15.396159+00:00",
+  "SourceSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "SourceCommit": "8910245966806984e349b004cc8e0da0d4dccb86",
+  "CoreMacrosRead": 182,
+  "FocusedSingleCasesRead": 122,
+  "FocusedRecordsRead": 26,
+  "OriginalCompletionStatus": "PASS_PENDING_PRIMARY_LOG_REVIEW",
+  "AcceptanceStatus": "PASS",
+  "ReadySHA256": "2CD43036E4C8146FB4B3589ED74DEBAB3678ECEDE6B0C0F846A10418A59686DD",
+  "AllOwnIdentitiesTerminal": true,
+  "OriginalEvidenceRewritten": false,
+  "Archive": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run03FinalArchive01\\ReviewedFullRun03AndReady30.zip",
+  "ArchiveBytes": 45393363,
+  "ArchiveSHA256": "FC4B062815CC953C4F67AA79BEF16A8544C2E0D71CF7A56573551F280FB23C24",
+  "FileCount": 383,
+  "Files": [
+    {
+      "Path": "PrivateProofs/AllGoalOwnClosuresFinal01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\AllGoalOwnClosuresFinal01.json",
+      "Bytes": 241075,
+      "SHA256": "3C05073A9D2A37ACAD2F55C3E65F9D833CB2AE5B357FA40067CFA6C533E0E63B"
+    },
+    {
+      "Path": "PrivateProofs/AllPreFullOwnClosures20.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\AllPreFullOwnClosures20.json",
+      "Bytes": 191391,
+      "SHA256": "090F90139A1083A42E82EB4085DFB0E03E48E759C129658438D8B9AD7C6BED43"
+    },
+    {
+      "Path": "PrivateProofs/FinalOwnGuardPreparation01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\FinalOwnGuardPreparation01.json",
+      "Bytes": 1232,
+      "SHA256": "CB52A58FAF36B4261E7F7B6F03826BC64D381DDE68449D29BD78BDC0775C3F07"
+    },
+    {
+      "Path": "PrivateProofs/Ready30FinalReview03.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30FinalReview03.json",
+      "Bytes": 4698,
+      "SHA256": "18F65942FEE92FB89CF3339C08CA1266203740C909ACEC8496E3AFF1AF31EDF1"
+    },
+    {
+      "Path": "PrivateProofs/Ready30MetadataCorrection01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30MetadataCorrection01.json",
+      "Bytes": 615,
+      "SHA256": "57001A5A7D310B51730C712FF5CBE14F7FEF8D8486F0EEA5AA93E99876789F41"
+    },
+    {
+      "Path": "PrivateProofs/Ready30NamedAnchorSelftest01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30NamedAnchorSelftest01.json",
+      "Bytes": 997,
+      "SHA256": "43EA78BA8951429EF91CCBF8AFE8E0FA29B9D09805FA13C802597879D1D554E0"
+    },
+    {
+      "Path": "PrivateProofs/Ready30PreparationFailure01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30PreparationFailure01.json",
+      "Bytes": 788,
+      "SHA256": "9697E101B3379D6BD256C3E49158BD8D7079B3642581824D5E6E061939AD7AD3"
+    },
+    {
+      "Path": "PrivateProofs/Ready30Publication03.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30Publication03.json",
+      "Bytes": 1720,
+      "SHA256": "96D20EDB1A22803C7C5ED6F649A6251CFBDB9F34359DCD80D56ED86207C33D22"
+    },
+    {
+      "Path": "PrivateProofs/Ready30PublicationOwnReview03_639289325792521168.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30PublicationOwnReview03_639289325792521168.json",
+      "Bytes": 19308,
+      "SHA256": "5CD3595833E8AB025CBCB7CEB02E8379C7D1A2AFAC56CDC7A23F81B28C7AC257"
+    },
+    {
+      "Path": "PrivateProofs/Ready30SchemaEquality02.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaEquality02.json",
+      "Bytes": 117153,
+      "SHA256": "510ACC05A6D730E12DDECCBBC435E7022AAD51D7B24817B0CF40A07324770087"
+    },
+    {
+      "Path": "PrivateProofs/Ready30SchemaNative02/NativeVerification.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\NativeVerification.json",
+      "Bytes": 37591,
+      "SHA256": "44D15ECB62073EA44467F6830B88F9DA77171EF33F0D0A96BEEB2EB8EABE3254"
+    },
+    {
+      "Path": "PrivateProofs/Ready30SchemaNative02/OwnClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\OwnClosure.json",
+      "Bytes": 167,
+      "SHA256": "ED6B6E6A0D506DCD9509F846D6F9C46690F26BC2ADC4E7B9CF4798BCC8D307BF"
+    },
+    {
+      "Path": "PrivateProofs/Ready30SchemaNative02/Quit.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\Quit.json",
+      "Bytes": 168,
+      "SHA256": "8764AEC483534704F3B96AD3F00F4D88AD8EB93400358832760866E8FB95F383"
+    },
+    {
+      "Path": "PrivateProofs/Ready30SchemaNative02/VBA_All_Code.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaNative02\\VBA_All_Code.txt",
+      "Bytes": 9167784,
+      "SHA256": "7414F0C84981ADB22D0AA26CD0EF01B148F8F7909B62407AD4F02991289715CF"
+    },
+    {
+      "Path": "PrivateProofs/Ready30SchemaPreparation02.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30SchemaPreparation02.json",
+      "Bytes": 57528,
+      "SHA256": "735578E54705EBD3839F434E4EC20BA3B6EF8F412073F60A9EE30AA84EF4EB3C"
+    },
+    {
+      "Path": "PrivateProofs/Run03ObservationTransition01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run03ObservationTransition01.json",
+      "Bytes": 853,
+      "SHA256": "55F49E59C19AE83351A79AF2C32F9EC704E2ACDD052D8D38B5E2FBCED93AF921"
+    },
+    {
+      "Path": "PrivateProofs/Run03TaskBeforeCleanup01.xml",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run03TaskBeforeCleanup01.xml",
+      "Bytes": 3184,
+      "SHA256": "A0D351E48C2EE684761496BEEB2E517123D30BD3762AC56B656C0E5707DA7E89"
+    },
+    {
+      "Path": "PrivateProofs/Run03TerminalStdIOReview01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run03TerminalStdIOReview01.json",
+      "Bytes": 868,
+      "SHA256": "44A820566896634DA26FA2A74B0F9670BC95C6ACC641C2B6A421B1A3CE6D7262"
+    },
+    {
+      "Path": "PrivateProofs/TestArchiveRun03Final01.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestArchiveRun03Final01.py",
+      "Bytes": 7941,
+      "SHA256": "53EB330238ADFA3AB40F375E44B151A374E7AED0F35ACFB506B39D7040853EA6"
+    },
+    {
+      "Path": "PrivateProofs/TestNativeReady30Schema02.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestNativeReady30Schema02.ps1",
+      "Bytes": 16720,
+      "SHA256": "A49A52112857D7266CA79E1B48FAB6888DF8D51F580566B4082590BCB010F9FB"
+    },
+    {
+      "Path": "PrivateProofs/TestObserveOwnIdentityFinal01.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestObserveOwnIdentityFinal01.ps1",
+      "Bytes": 3156,
+      "SHA256": "D038434748F17294AE476CE144849EF981CC5A3FCB21408940B13BD8CC9524F2"
+    },
+    {
+      "Path": "PrivateProofs/TestPrepareReady30Schema02.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestPrepareReady30Schema02.py",
+      "Bytes": 13664,
+      "SHA256": "826891A6C78C8D94F79E0382A47A7CE64BF929BDBA7050B8F4658E63443E702B"
+    },
+    {
+      "Path": "PrivateProofs/TestPublishReady30Final03.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestPublishReady30Final03.ps1",
+      "Bytes": 6735,
+      "SHA256": "955DC97EDC43547939AC57ADC753C2448277B581F35E807E53DEF034CEF3F8F7"
+    },
+    {
+      "Path": "PrivateProofs/TestReady30NamedAnchorSelftest01.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReady30NamedAnchorSelftest01.py",
+      "Bytes": 4444,
+      "SHA256": "7EFD2368A07C91FF134290F3DC9B6180EF6A73CC49E1EE8EFE43D1C603DA44D1"
+    },
+    {
+      "Path": "PrivateProofs/TestReady30SchemaTools02.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReady30SchemaTools02.py",
+      "Bytes": 14933,
+      "SHA256": "16AD42F2CA13F5B9FB7993064E45A4CD37D42AB783C0AA9D090DF09D373F4197"
+    },
+    {
+      "Path": "PrivateProofs/TestReviewAllGoalOwnFinal01.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReviewAllGoalOwnFinal01.ps1",
+      "Bytes": 6167,
+      "SHA256": "DF3C0217BAA16E2A697F9F0C95365D5F1A0BD6434285EF7422DE721AFD310BC8"
+    },
+    {
+      "Path": "PrivateProofs/TestReviewReady30Final03.py",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\TestReviewReady30Final03.py",
+      "Bytes": 10434,
+      "SHA256": "8B83CE480CCCD1BE3DC92CB3CDC5D93B81450F8422242A5925E7D6DE527AC5EE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CompleteCurrentAcceptance.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CompleteCurrentAcceptance.json",
+      "Bytes": 1015,
+      "SHA256": "1A18445592777AE68CF836C21B77652DA2C7DE2D33E42C4F25ED224F62A0C53F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Completion.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Completion.json",
+      "Bytes": 354,
+      "SHA256": "37FD384DE7E1278B2681A94990FDF29AC7808EA427C0D34466B69ED1E3AB662A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_Off.txt",
+      "Bytes": 329918,
+      "SHA256": "DA2E6D42C01E4993FB0C6DB837DBBA0A735068E20664724FB2112003C06A1F0B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "7CCB745D738BFB599E1502394481135E62F9A03A86A2E8997EA3730F0EE72D46"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_Off.txt.ProcessClosure.json",
+      "Bytes": 4589,
+      "SHA256": "1A8B13EA28AFBDB7B39EC275F445058B2FA18545C8D88A83F2673989BD7508A2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "D546B52C75C9125D4FFE98CD8DF8FED5941B5CA6B4369686F80B8127B2175B1E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "C8DB2075464070D00E9AF8C81BD890A6099298BE377131058E9C52D7A15EE8D5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_Off.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_Off.txt.stdout.log",
+      "Bytes": 1325,
+      "SHA256": "C7ED322CECD11C6524C77E21E3F12AA9FF7340C1543298F3EE09256D41AC8C08"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_On.txt",
+      "Bytes": 329179,
+      "SHA256": "7A2C3BFF1CC5133876A1E7A867544965734C62BF26F382F1E7B0ADB1338588FA"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "085AE86B2D255B19E337DC413881E0D874D3D7BA80D165FD33BA8706F96EA40E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_On.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "9D051BEF425905F83A9BD8802A37DC66CF6162F96774D4B4F0AB4BCF22C765A4"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "73E5F7F59CAB4981F7602148B025525A8CD9C884F10E6F4AFB20DE35160438A0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "29B9C8BEEAC78B96FB9CFF773A1AAE0A0A7660382FFBB699AF36B5F42FEDFC09"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/CurrentFeatures_On.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\CurrentFeatures_On.txt.stdout.log",
+      "Bytes": 1339,
+      "SHA256": "777D0B42CCA3C2571E29ACCF34E8FE50A42C9744F99B228E4D718B2D847ADE9B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Finalize.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Finalize.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Finalize.stdout.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Finalize.stdout.json",
+      "Bytes": 1872,
+      "SHA256": "BAD9E1C7CBAF82C7793E4BA6FC0936FDFD5FF16CE43084BFF67A2CFDA827D736"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Acceptance.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Acceptance.json",
+      "Bytes": 1656,
+      "SHA256": "B8F969CACE2784E5F02B2EE2F44AA477A040462EAE1C251F0C54DBE440668C7D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_No.txt",
+      "Bytes": 11511,
+      "SHA256": "32AA34AA2BEE9F9277554C92FF791290A60577E7B9B8166289F35AAFC6D6B463"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "5B1BBB7A9DBCBB5B45D6BA1CE49B4476DF6209A8A0576828779DDBB107F781B3"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "A5BA165296FD73CA3C298645B1059156599DA179765A482209D8AFDD5A91F881"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "4BA3A8A119F3B7A5DCEF7ECE57415865D15410BC0C28D71672CD6CA18FCEDBD8"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "AE1FE3ACCD43250920591E9353DD72375929673687036D601204A5010A46E144"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_No.txt.stdout.log",
+      "Bytes": 571,
+      "SHA256": "4E319AE41ED4E3F37FC2A5BE058BF266757076F9BE8E1F2DEDF405175AAD45CB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_Yes.txt",
+      "Bytes": 11268,
+      "SHA256": "E624F0BF7087225A22A1A1CFFC5E98441C2D903A8D3F7F158E66E77D14C13A61"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_Yes.txt.Ownership.json",
+      "Bytes": 257,
+      "SHA256": "E9E1B35C0C788BC1013CF448C05F81A6BF2907300AE17D201964653C0DCDEFCC"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_Yes.txt.ProcessClosure.json",
+      "Bytes": 2625,
+      "SHA256": "1C1149CC46991B543A7DAFFC96F7FE0B22C5053857EE024A9FAC57679E9F3781"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_Yes.txt.RunnerCleanup.json",
+      "Bytes": 509,
+      "SHA256": "0ED30BDEAD2638AAD2410D0A4D6354BEC684B16C43FDF628167ADE13B0016276"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "C46C3E3E74E154913EA004F6DCCC13A6101491572F905052EE32435835A3FA7C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/AsymmetricSteel_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\AsymmetricSteel_Yes.txt.stdout.log",
+      "Bytes": 574,
+      "SHA256": "CFB488AB15115B73E828E9ACB4DE7A8B24A41AD71060C2771A0ED46AAF1F79FD"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_No.txt",
+      "Bytes": 116250,
+      "SHA256": "8CB121A91DF45A9892FC1893007D5BEE3B8775134C95B1B394DC55725E135D87"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "8A551EE065944311A8C0CF3E547EE2D20A59F084665D11BADC6173C2B015459D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "CCD167799C709AF27E31F1AF65BD4572AAA7387304A1260078019DF72C756EB5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "451C2D194DF62398F105BA4BB0612613D43AF72A89C986E8C149897028773C6E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "08E86C3C6E81BE1224D453AD76E2442C53CFD9CE96FDF8B41E5FA53DE0D48F47"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_No.txt.stdout.log",
+      "Bytes": 545,
+      "SHA256": "35C80F658A90A79610EDF2E9B58900A3BB92C7A553AB4826CE93AE5DDEB56A33"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_Yes.txt",
+      "Bytes": 114542,
+      "SHA256": "96DD2230308FF62E3F1CC6A74E2E1D07711C55DB1A539080B2283F8A5963CF8E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "C8A45B260A1241B59FAE06D698204FAEDAE54348564E79B413050FFF4FEF9399"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "6F75BF016A683CDBCD8C0FBAD9F7FE57F756EBBC32880CDB9D7724B0A2A44378"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "85AA4BADA5A1B43B400D6CEDDEA924D62E7F2EE5A7E27FE4D913B2F742B5DC79"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "1FEF24C31349FD4F1904B4004C56B1FF46CC5AD64D9E6645D8A06D41089DC464"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Batch15_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Batch15_Yes.txt.stdout.log",
+      "Bytes": 547,
+      "SHA256": "A19DCB5CDC109906BFC6E47FC604D727344A17768599769657FB0D8C2ECF9CF8"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_No.txt",
+      "Bytes": 75747,
+      "SHA256": "02E5314E5BD6DF7CD64E8056E953E6E91772096BDB58F39470C99C05F527BEC4"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "273A488A845C35C187F0EBE72A7DAF61854AD11DA6A458DC5CBCD20D8613A0EC"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "1D535DA6345DDD9B49B2410B6C88BC4AC4DD671CCCFFD4D37B27E54B54342BDC"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "C7867F02179C6D79C5AA555072901CCC2E89A72FEB7B597D00E84C30885799AA"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_No.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "2875D2AAA21B6B5F959EBE73116B32532A3148CD17904FE09B24DE7E27787786"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_No.txt.progress.txt",
+      "Bytes": 140188,
+      "SHA256": "EE3BCDE4FF4E03BF4775D7AD9B6A25535873C3003E318BE270FC7C05C5FF9FFC"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_No.txt.stdout.log",
+      "Bytes": 593,
+      "SHA256": "A843677046B9B19DCC96D15DC2C002DB6E0A86837A87E06E419935A8409C1897"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_Yes.txt",
+      "Bytes": 74259,
+      "SHA256": "BBC834D978E9FF71134EE52A5CD86E94D61F1B7B2D9A1AACB24E6CD21A9C3874"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "17033D9DFDAA4CE0F67B9D2381E706D5382EFF6A11754DFB14F4D98DFA936FEE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "F32BACCD661EF501B5B71188E883EDBD557CF5999E7B56AF5E2C6DE74629CFF4"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "5AE94053A741BF253C89A348EAA17A100176ED290AA439943AD3C719140F5C3C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "F868FA233FF0B51CDCEA034A332913E6AC6D7E58E704C6FE619C2404ABFBC291"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_Yes.txt.progress.txt",
+      "Bytes": 137208,
+      "SHA256": "FF9D646371CD00B475FB239371164E6C9D72F0790A04C3664D027310627EBE8A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Circle_Generated_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Circle_Generated_Yes.txt.stdout.log",
+      "Bytes": 596,
+      "SHA256": "CF4BB2C0C5F8644B5587B1819D008DC4A78BB2A8B69E961B0CC55C4A35B865C0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Combined.bas",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Combined.bas",
+      "Bytes": 24432,
+      "SHA256": "8563593A78F7155714B25095794E1EF052EFD6682140627DE06374DD9A9483F6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/CombinedAcceptance.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\CombinedAcceptance.json",
+      "Bytes": 849,
+      "SHA256": "49945941790A2D0CC518B278159DDA7C0D30AE3D721D46B7E0ED93E107DE5ED6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/CoreRegressionBatchProbe.bas",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\CoreRegressionBatchProbe.bas",
+      "Bytes": 6045,
+      "SHA256": "36B7CFB24E1CA8E49AA6FD2F953D7E3BC712A539FEE05F69737554E4A941052E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/FocusedAcceptanceProbe.bas",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\FocusedAcceptanceProbe.bas",
+      "Bytes": 26264,
+      "SHA256": "F84263B90E613EC7C4C3A36373DC3D12994D3D8CD4F9D514ED23B9E507C65D91"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/FocusedForceBounds.bas",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\FocusedForceBounds.bas",
+      "Bytes": 6404,
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/FocusedRunner.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\FocusedRunner.ps1",
+      "Bytes": 7486,
+      "SHA256": "1FE70882E03EDDEA764AEDC1538E30C8B157FA86E363C105C7485747F17775FA"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/FocusedSpecialProbe.bas",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\FocusedSpecialProbe.bas",
+      "Bytes": 11976,
+      "SHA256": "17EABF6A2CF8510CB94FD27E643335978C33F3F63E3B8BA8E047B1076DA8A196"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_No.txt",
+      "Bytes": 80647,
+      "SHA256": "3AB4858BC0389AB5D07DBDA2586643ADE6D64B9037B642B31FB01B2654B80238"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "A649542B942F2C8DD948765D562FDF7063F4748EDB04F8F82AB213BF115137CE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_No.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "1F7D851FD7784FB2FB1E775AF91336456732E4A8ABE95D9DE8AA02CD3E73054F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "995A72344AEC8A0A377ABF0A4FD8FE715DB76394B81F2CB125639D3E54923630"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "6202BCF820F201CA05EBA54D21D556264711BB26B20E148116D0B0EF0AF82A20"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_No.txt.progress.txt",
+      "Bytes": 149980,
+      "SHA256": "8D09330FF4F5F86A6BCDAA5D034B4E1282837BF9F65ECEDA3FBDB4FB23A7F8CB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_No.txt.stdout.log",
+      "Bytes": 599,
+      "SHA256": "3AA3D4601D002AFB54A1651B1C96949F040BA498EA31DBD3352B6B095AF1508D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_Yes.txt",
+      "Bytes": 78880,
+      "SHA256": "1D84374AFA84CAFDD5552C87E12A2EF4D2784DC45E1A90ED8C1BF1A755996342"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "2C49AA93FB2D525B77379A7B8E2F3AAC3747A999FB909999566312BD965D693C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "0965208E3279B71D85A4801C5A1D0F7961476BA639E8BD57CBC15B4037B5B155"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "712BAFD8D8341A43C07F0A1A4FB2DDC66D6B1514A2C029FB7477F6F018E51FF6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "4606326581F6B32419C2E82418D1BD7FF51BCD2BD3FB562DC25D50CC58E933A8"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_Yes.txt.progress.txt",
+      "Bytes": 146430,
+      "SHA256": "21831F996446107C0DE1AB442BA78F015AA5242CEB656FACAF258713F7126314"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/HollowRectangle_Generated_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\HollowRectangle_Generated_Yes.txt.stdout.log",
+      "Bytes": 605,
+      "SHA256": "0480DF2F34E24DC6A763512A52A949F1B3107C6B26F6F2256163165DF2ED1C5B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Independent.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Independent.json",
+      "Bytes": 193573,
+      "SHA256": "01F1820AC480FB090E98594923AF099DBDE155919D8A955B3843CCA153D0F003"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/IndependentVerifier.py",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\IndependentVerifier.py",
+      "Bytes": 22901,
+      "SHA256": "25AAB7C88741D90F0A3D7BE658BE862B87DCEDEF68184F49B49E02A2D1D23C67"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Circle.txt",
+      "Bytes": 17998,
+      "SHA256": "38A7224C1FF501026876CE190599C45F354FEC16BEC2B701E5AD04C4B00604C6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Circle.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "B78BCEEBC6707C2813A3C2BA13607EB848D9D7E38DD46BBC4B451D867E64E4F7"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Circle.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "3073D78EC13B2294FC516179D0158CA19C4CA163EDDDB5E6F53BD0BB5C3488CD"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Circle.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "0F1343DD9DAA4A330ABC381BBF1D7AC2DEFE7D949801C319432453F12616C856"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Circle.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "F7BFAC81320E6FCD5CE267A4F5AEF8A8F65B0F8679D522C50A3716ACA9FC95E5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Circle.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Circle.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Circle.txt.stdout.log",
+      "Bytes": 482,
+      "SHA256": "D2261DC88FF6D9A00227D50A8FC89E49E8194D24B0DE7DBDB327C67AC8274313"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_HollowRectangle.txt",
+      "Bytes": 24875,
+      "SHA256": "3CABF806E4FD6E46438BEC06CD36ABCB476EBFBB48E6AF6144B8C92BB7DC285B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_HollowRectangle.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "D343F3796B9D2025B28002E8E1EFBC0DB1E331C385238AFA39424581945C420C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_HollowRectangle.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "35A61BF486351027060AB166BB80F490DEC81E5ADF2FFF016ACDBC85AADFCEA7"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_HollowRectangle.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "D16DA272EEF5071B6DDF8D09EFA41C902C873C33272181EFD651734D41666C8A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_HollowRectangle.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "383D1A5E0872E14015A1E16B29366E4EE1D535622A3842E82C79B029814070A2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_HollowRectangle.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_HollowRectangle.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_HollowRectangle.txt.stdout.log",
+      "Bytes": 482,
+      "SHA256": "E796379806EF6CC338E69C9EC99DF6421B625E8C2A698F61CF0C3EC5346D4385"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_PointedSection.txt",
+      "Bytes": 42765,
+      "SHA256": "B4C572CCDBE5A31FD4EFC35F205B37D7695C0578D1718EC007A4906C44A1E182"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_PointedSection.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "341E66574A2BEBC510AB719F6B964E943162FD9F83BF6152D3DD4D3AD1CD7582"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_PointedSection.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "D7DCD3A5669E4D26F1B474AFA983A72ECDC642DCACD23E226DE4BA5057B9397B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_PointedSection.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "08B55A94D84116A9BA8E85B34D43A9BE49D29876AB60AB31E17881E29CF186D0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_PointedSection.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "0DD0F394AE812D8C490C957FF9D575BE7BF94D0626A14B09073A4687FD028ABB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_PointedSection.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_PointedSection.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_PointedSection.txt.stdout.log",
+      "Bytes": 482,
+      "SHA256": "2D735B53D289F5102A9806CA0E3FEEF5972A0385AF6665A0292A015EAC06B21F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Rectangles.txt",
+      "Bytes": 20320,
+      "SHA256": "5D4C03DF510E26DC4DDCC61DFA9160C53094A3DF83269353A41CB06FF9BF3D76"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Rectangles.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "0DA0796C77767B183D338204F762F8963043F6BDEFC5B784F0C26CF2FDF8E1EF"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Rectangles.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "E8663FF01CEBA47DA6EC2D8793869A5B62E85EF8B8B7F0212C3FE8A3FF2D2187"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Rectangles.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "0CBC6A507508404A1DA6957EA838D00C649BBFBCD93BA28DF81049833E6986C0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Rectangles.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "B5B94FC1AD240F7061E78CB4460E0E70F69F5FFAB4EC3222BBCC713E439B7B38"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Rectangles.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_Rectangles.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_Rectangles.txt.stdout.log",
+      "Bytes": 482,
+      "SHA256": "167F994695948925C0E31EAE4DA8E3C524E0F1588048B412D0D48AF26908F604"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_SavedWorkbook.txt",
+      "Bytes": 15332,
+      "SHA256": "5070218933694EF63669DD2F6247EB50C8FE00998A7A94ED6B34401820A24223"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_SavedWorkbook.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "72AFC97214551A78C12596BCB542E726A884550BD6B4FFF39D26176A96010470"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_SavedWorkbook.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "5B96BC42B61D464CA2DA1CDB8F759E9C9C5DD54A73FD048916E9D561611FBD12"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_SavedWorkbook.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "27C0498E36FD58E4B38A1557291D0978F49A369C6BA2FA33786E92E6D1956253"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_SavedWorkbook.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "25A163C70EBA492F5A5119433DE4085D85A97839C7DC15B98ECC0EA547D2A9E1"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_SavedWorkbook.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Model_SavedWorkbook.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Model_SavedWorkbook.txt.stdout.log",
+      "Bytes": 482,
+      "SHA256": "7D24E7A63BD30D428EA89FC816BCDFE356F5B9B7D633A9283EA718BBFDFE3FE1"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/NativeRunner.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\NativeRunner.ps1",
+      "Bytes": 17113,
+      "SHA256": "589EC2D913662BB72A9C060514095CEA8EF2B747B66492BB302469F5B815CB1E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/FarOrigin_1000m.dwg",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\FarOrigin_1000m.dwg",
+      "Bytes": 18693,
+      "SHA256": "D06B53E1C7CF4F982A3F6AC0FDB81C7C98667A02F515CC22A3051D8959E0B3AC"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/MemoryBeforeCADCOM.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\MemoryBeforeCADCOM.json",
+      "Bytes": 494,
+      "SHA256": "77E9190D53C64C49EB87FABF86530FDAC406EBC557A7F2F4BBD52898A5DCC6FB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/MemoryBeforeExcel.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\MemoryBeforeExcel.json",
+      "Bytes": 493,
+      "SHA256": "63A89AB1C40BB588F5FFED60D539AD30EF8E38A73F01F3D8BFECB79F9C3F3EF8"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeCAD.progress.txt",
+      "Bytes": 28363,
+      "SHA256": "56EA76207257F7DA9389B89D393A4141BD7D4C0B6FC1E5251D5C34A26DCC52C5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeCAD.txt",
+      "Bytes": 31071,
+      "SHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "5ECFEA450C5A8AEA2880B6C6D28CBC226EE288232643E7523DEB38206AD601E4"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeCADOwnership.json",
+      "Bytes": 263,
+      "SHA256": "5849C42DDB42EBFA844972906FF002E164C4D36704411A4D10F832974FD9AF69"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeExcelOwnership.json",
+      "Bytes": 154,
+      "SHA256": "9DA75798877D08C78FBC3DFEE9FF684217B298AE462EFAE17A6075BD8B539867"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\NativeInvocation.json",
+      "Bytes": 592,
+      "SHA256": "49420F769AF345032DF32E4327AB8D3D322DB191B5560A93EB008BAAB69583EF"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/RC_Section_NDM.xlsm",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\RC_Section_NDM.xlsm",
+      "Bytes": 10149991,
+      "SHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarCapacityTests\\stdout.log",
+      "Bytes": 247,
+      "SHA256": "6E3318202DCF82F3EF1289A5785C4F8DA4A5B189955C4444808134A1ABF20D24"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/FarOrigin_1000m.dwg",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\FarOrigin_1000m.dwg",
+      "Bytes": 18661,
+      "SHA256": "7CB219CACCB43550C27CA1D046983B5CD33336D9E81FD41677775C2FE1601F9A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/MemoryBeforeCADCOM.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\MemoryBeforeCADCOM.json",
+      "Bytes": 495,
+      "SHA256": "B356EB5BCF9D14C9C9D529AA0F38EFD8977B369C2CD1DEAD9B2C29CEE7F093A2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/MemoryBeforeExcel.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\MemoryBeforeExcel.json",
+      "Bytes": 492,
+      "SHA256": "31BCFB4028BE68894243D8FCD5205683EADC59007A4F70A58F0F1A629872F512"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\NativeCAD.progress.txt",
+      "Bytes": 23152,
+      "SHA256": "8AD3ED2676BC905177AC971716C9DAC03491FA624D1D47A6E710109E0E657C7C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\NativeCAD.txt",
+      "Bytes": 22427,
+      "SHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "EB0FA442D9429E845BF73A6A30EBB157651C3748C0B76226BF03577516D77E5E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\NativeCADOwnership.json",
+      "Bytes": 263,
+      "SHA256": "D6940DDE2466C390BDD893424B81600B1BD53CD61333CF1C6C4691144519FA01"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\NativeExcelOwnership.json",
+      "Bytes": 154,
+      "SHA256": "231E889044F9C69BA4B30BB8CA5EB5B5DAFFCAF4C7BFFA1E3468752B40AB68B7"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\NativeInvocation.json",
+      "Bytes": 590,
+      "SHA256": "A75C3A7D2FF0B5BC1745ACC89A9C6A25057A1A13D4E81815EBC54E7232D63EA2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/RC_Section_NDM.xlsm",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\RC_Section_NDM.xlsm",
+      "Bytes": 10149991,
+      "SHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/RunRealAutoCADFarOriginTests/stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\RunRealAutoCADFarOriginTests\\stdout.log",
+      "Bytes": 247,
+      "SHA256": "9BB243418151039A544129BD4EC85CD17D280732E53795AA72DF9E48B27FF080"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/NativeCAD/Stage.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\NativeCAD\\Stage.json",
+      "Bytes": 787,
+      "SHA256": "D319E230CAE07764860AC88F806660D7099203BD7B3F6B030C7F8742EFB17CFB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\OutputPresentation.txt",
+      "Bytes": 65985,
+      "SHA256": "339928BC241509F03B5DFBA8361915CA316318667BDC4C5E1813F0915EE13526"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\OutputPresentation.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "E5F37DA55AF8924AAE92B4E15E380CFDC5EF3A680E97CBAB805B70A736F80511"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\OutputPresentation.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "7472EE35FDB2B6BAF105EABA287D4EFE6BEA7878820A961D9EF2577F61BBDAEB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\OutputPresentation.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "532986DD001CD05C4EC19E6A45F6512783535D545DAD0DA6CA267F2EE3AC3E99"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\OutputPresentation.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "1F27F7ECEA69D8F2DEF11FCC4C16E6C0EBDA3287EBE6869AE0730C71BA971F20"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\OutputPresentation.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/OutputPresentation.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\OutputPresentation.txt.stdout.log",
+      "Bytes": 532,
+      "SHA256": "8E0458C1AE66420F876E55541C05BC911EE420725563B202FB527830121CE1AD"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_No.txt",
+      "Bytes": 80215,
+      "SHA256": "05D535800E7237B99EC87A741CAA8CDE0C742599B995AD9C8A1E59B0F0A7A164"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "BF6B422B04725699D3E10DDA216305EFE3644E6D51A11F77D3E99AA2C3F33934"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_No.txt.ProcessClosure.json",
+      "Bytes": 3605,
+      "SHA256": "AB303F63EEBFC3F3CA48E6744FB50751BCCD198AC513132156BA90E2AE47FFF7"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "2D2C84C324AE3EFD240A84E4CA0457AE8022AA9FC37F8930AF0D7A137B520ACE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "86FF9804F9156DA156450DFA5C2E6E7D800D1BC25B48C5BBE9405FBAC27F8B00"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_No.txt.progress.txt",
+      "Bytes": 149112,
+      "SHA256": "2DB4C643C2FEC8440CE1FE55606CE76D90AA4F6FC0272DFA711572695DCB3B63"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_No.txt.stdout.log",
+      "Bytes": 602,
+      "SHA256": "357E876A855D6DBCA56E066104EE3AF9273A49FBDB29E899CE691945FBD5FB4D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_Yes.txt",
+      "Bytes": 78465,
+      "SHA256": "C16C9F267D9B3C33E5AEF3306421DB92EB7F6881E44199D7204C2B7D3BA73130"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_Yes.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "75E4DCC971F5442EBE3C0CBB6C512CD5CA7CEDCF66C3847D46C06F2D9CB8E334"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_Yes.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "3356E350C21DA65038157FD5AA60852892494CE95F2F1481809E8C2335620665"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_Yes.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "6AB27FC76382AB210C22CF2B38DA2A2450B366FE34D94B6553A0688AC95B678C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "17C16636A02F93D01D75ECC9A3FA520CFF9755CE499842A2B574A6537F7D0FB0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_Yes.txt.progress.txt",
+      "Bytes": 145606,
+      "SHA256": "5F37CB2F2D262E8481C2DA1029B03740BA049E9A384B3973BEEDAF97D7650137"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/PointedSection_Generated_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\PointedSection_Generated_Yes.txt.stdout.log",
+      "Bytes": 604,
+      "SHA256": "CA262FEA0158F7AB4F482E31CEB0EF0A946F9791EA87C2EA0C9B6CAFC1449247"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/Circle_Generated_Manifest.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\Circle_Generated_Manifest.txt",
+      "Bytes": 730,
+      "SHA256": "C796A40FBE6DFBBE0E60062DA63EFCAC72EB98587A2C7A18F11828F103FE23F8"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/DescribeMemory/MemoryBeforeExcel.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\DescribeMemory\\MemoryBeforeExcel.json",
+      "Bytes": 464,
+      "SHA256": "8DF2AF41E42141D2AE3369B3F5B2F2F21419E53AA6F5AAC68C027561646697E6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/HollowRectangle_Generated_Manifest.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\HollowRectangle_Generated_Manifest.txt",
+      "Bytes": 731,
+      "SHA256": "F1274CA0B12EA10A7F1BEB70E482C0161C0AD70F6FAA58F649C476234DEF56C6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/InputManifest.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\InputManifest.json",
+      "Bytes": 3572,
+      "SHA256": "7BCA055F793EA20E9617634BFD3A61949CA6ABC9093FFC1EEC10E0E55BE826A0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/MemoryBeforeExcel.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\MemoryBeforeExcel.json",
+      "Bytes": 457,
+      "SHA256": "2060F51CB706D9EE69C63D4889F2C57B6C7690B9CE96D657C409D24ADAC95F1B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/PointedSection_Generated_Manifest.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\PointedSection_Generated_Manifest.txt",
+      "Bytes": 740,
+      "SHA256": "6982EA86E2323030133ACAAB26F37426A5F6B5C1B8D6F7F2CA2A62BECB268F69"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/Preparation.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\Preparation.json",
+      "Bytes": 998,
+      "SHA256": "321C22C60D223E27A8166635C43172FB4B4999924DAA91384D7E0B991369BEA5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/RC_Section_NDM.xlsm",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\RC_Section_NDM.xlsm",
+      "Bytes": 10214116,
+      "SHA256": "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/Rectangles_Generated_Manifest.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\Rectangles_Generated_Manifest.txt",
+      "Bytes": 735,
+      "SHA256": "123D4E11E982327C458B57C48711222EC59C0F0F463AF6E45CD9FB8DA5F9980D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/SavedWorkbook_Paths_Manifest.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\SavedWorkbook_Paths_Manifest.txt",
+      "Bytes": 707,
+      "SHA256": "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Probe/SavedWorkbook_Saved_Manifest.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Probe\\SavedWorkbook_Saved_Manifest.txt",
+      "Bytes": 1867,
+      "SHA256": "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_No.txt",
+      "Bytes": 77979,
+      "SHA256": "350C793CA4B9A2D964557A7B6530ED211E4A0AC27A66A7D96056D887E4A0E0A6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "74921934E435A0265372F0AC4363248CA991948D62647E2E2544F6C66CA570A1"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "F4EE8376471C213893A9B6C2CEC83C2C8BE25605152865479483FA9B0B5B9CA0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "C19393A80C6A53212D4D6DA2401D2B03364115112C680270B51E078AE5FFE2B9"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_No.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "C11DFCF20FD4D0030D02106B4E4AD1289FCF3B88162E49C65C004084A639F511"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_No.txt.progress.txt",
+      "Bytes": 144644,
+      "SHA256": "27BE85267AC16A18CE2CC607783B1368B7A9A129A9A5D732BA6211CD6875721D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_No.txt.stdout.log",
+      "Bytes": 598,
+      "SHA256": "8303E6AA84374ECB1E356F4DFD75679687C996A3E38FB21CECC459152EB503D1"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_Yes.txt",
+      "Bytes": 76346,
+      "SHA256": "EA31961559748887E3F9D2B9FA55821EA0B48DEA83BC0B17999D5F33DAC2B6B7"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_Yes.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "E07F53C05D35A67B1864A7AAA6822F909390FE7AB18A72AE065AB8414AE01542"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_Yes.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "4E8DC5D1B534C66B38EF34C21801057E766F1E0F894C181E669A4D6BEF9B480C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_Yes.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "28A19696CEDDE11A46A93C017862F50FCA740D82195303EF996B83F0989C35C5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "96FC1B4077264D4C82A640A6D6D5723C56F4E5086AB8CA244F56D1FE1F3A8093"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_Yes.txt.progress.txt",
+      "Bytes": 141376,
+      "SHA256": "0E8C8660E37B33B865FB5256159DDE9F42397E2ED804D4A80B1C852A3DDB495C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Rectangles_Generated_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Rectangles_Generated_Yes.txt.stdout.log",
+      "Bytes": 600,
+      "SHA256": "7A996B1A01ECB080A8A431A504A05A73F410CD9452594204855A9D6AAE571334"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Run.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Run.json",
+      "Bytes": 18821,
+      "SHA256": "EB7251519CE9D7221231D3D1214A0604DC31EBAA0A22EA1F9CA742610117CC24"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedSectionFixture.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedSectionFixture.json",
+      "Bytes": 90873,
+      "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_No.txt",
+      "Bytes": 61359,
+      "SHA256": "1351E9ED839EE5CC12C6047FEC3D6878B4D174FDD0A24B5ED31B1840A4644071"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "8506B2E208275CE62BCD09E82187FD955274927AFF5D8F40A355C9252AD8A5F5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "C26A313F8DF2A4FC3E10848AAE407051E7D66D46FC067538497B4FAECB1B6184"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "02DF4B07C798E69DDE6806E36E013D051BC1D20ADD46444186A4466D5C852D7E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_No.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "8EB19ADDC3D4803B80D7B687F9FAFAC7C9575004A29F8708BA697A0342BA6549"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_No.txt.progress.txt",
+      "Bytes": 112854,
+      "SHA256": "F795A47728C5B07FFDFACD3040F198BE44B41C324315133D0610B63FC83BB71B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_No.txt.stdout.log",
+      "Bytes": 595,
+      "SHA256": "EFDC4159911AAD8B45DE51969A3AFB99E4B4C6AE96A4D6A29344E8BCD2DA57CA"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_Yes.txt",
+      "Bytes": 60115,
+      "SHA256": "67DC04C109D93AE71D53F5D3C7B77F6C7F69E2DDECA39BE6EF49001444B12792"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_Yes.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "71BB79248ED03C75050072919C596AA9CDEBF7C47E5170C38B04042E31CD86A4"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_Yes.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "BB48A58600E04387C93AD0246D9028D6828B1044DE1D361ABB18772BF8E79FBD"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_Yes.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "BDDB519697EFB629BB727F63629BB76FAB689F75C5DB90E7F0FA7883B5540FC2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "4F5B1887E05ACB9C3046A83CE0A744FC69124F4916EA3E367A67886B981D0E09"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "Bytes": 110362,
+      "SHA256": "D3AAB2C6FCDFE076AFD52D8CD316A20499333B5AFCB8DD99C9104A03EB1D53D2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Paths_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Paths_Yes.txt.stdout.log",
+      "Bytes": 597,
+      "SHA256": "D5CBCE087C1BD0E0BE7EFD95B3A2E3E07A2CB6A5ED2831EB9668A141AB21280D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_No.txt",
+      "Bytes": 265257,
+      "SHA256": "09EDA4D54CB7BA08346C98E770532B9E0BCA9FF8718289231F4011BD769F2684"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "AC1346C5901467F7BC8ABA6140FE87E7C7232E2B4EF6576D8A07B83402BAD63F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_No.txt.ProcessClosure.json",
+      "Bytes": 4581,
+      "SHA256": "29DB5B4285A17A9DA1B1093F9BDBF3DBCB2499254C5BA865BB533A25047FDAAE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "8DB2FC699DE67FA9E03B32F7BE283F57146B29281E64C76C18D477C0D3A71CF0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "F0CE2C074F77FDB8EA9EB95A4E020C9FBA3761A5309809D1DFA53186F2026EA2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_No.txt.progress.txt",
+      "Bytes": 466916,
+      "SHA256": "2A9A8879CC1A4C9F9A50B48C7A9F94A18FBB0376E8E6A4301651DD84196594F8"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_No.txt.stdout.log",
+      "Bytes": 597,
+      "SHA256": "D1C63E4D1691EF179FBEE1365EF2649F6C435C4ECF4AD408C5ED2D2B75772001"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_Yes.txt",
+      "Bytes": 255264,
+      "SHA256": "CE7F90B6EFC942852ED7DF896A4A163059FD3FD53A5BCC6DB9D74296E9B08DD6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "A27405C78A3E46E8C0AF280BBD633E54324D911D501259DB3E9757D9C7993DF6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "9E4C06584571C0FF5DCBB7DF4A0A5CED866665AFF6DA47E04E9F132CBD1A1F61"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "B3AFC6F2CEC9ECC36539481DB21638AB4DB6132FA51C79A4E1872F03BDAD71EB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "B0BBB95C1B905D68885055B3765BDD6AA59246E51DAE34F6C835D0E0876D523A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "Bytes": 455814,
+      "SHA256": "A6DDDBE159ACA175ABA8C6D61CCCCA1422714C6F485F98CC7627807663710500"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/SavedWorkbook_Saved_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\SavedWorkbook_Saved_Yes.txt.stdout.log",
+      "Bytes": 601,
+      "SHA256": "CC0035BA2E0E706DA0958A99AE26757B4DFF6EB3CF6D78463EFB611603AD6E6F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_No.txt",
+      "Bytes": 11043,
+      "SHA256": "C8F6FF07A7FCFC6502BB65814BE1480083C81565304DEEF63D4992136C01F04B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "0386A26B8391BE439C5ADF3A0202355F97BAC634689CCEAFED76752289290E97"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "08E026DB7402B51FA3667FC035E864DCB2E90C57339601FAC2633ED9F6D86486"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "B6E87D8C5B863C7668B150797706147E3DF8CD23EF73922DE786D687D8675304"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "B6E04BCEFF0E2781B402AE2A156BCADFF791F4C917409B0D544823CE94BB0DE0"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_No.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_No.txt.stdout.log",
+      "Bytes": 557,
+      "SHA256": "9C9ACA2F9FE96C5505FF82B46DA69FEC6F79F3D7E9F27B8810E7A921A3EAE6B2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_Yes.txt",
+      "Bytes": 10833,
+      "SHA256": "B98A69DE4518C06BE418D84B8E86E3937C342175ED981B6844C8C7ADA6A4ABA4"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "5B02F896C4A96E1F1C15D3C1D6992757891216CBD045410E1BCCC5098A6C9349"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "7874E7E2B7B28AA88D10B9D4DA5573BD221472FA9615C2DD35481358F43A601E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "2437BE427EBB6FFB1D06CA5F09AA8843F1359B623E7129D6C1F3F1D6F9ED518B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "C99400709F6A0D8AEC6CF81E6DACD46A9D24BEB12787411A2BF0684CD06B0176"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Focused/Stability_Yes.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Focused\\Stability_Yes.txt.stdout.log",
+      "Bytes": 567,
+      "SHA256": "D4047D287B53060F122D02C5C4E450371776EDF5B2B3351FE032FBFD662AE759"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/FullRunner.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\FullRunner.ps1",
+      "Bytes": 13868,
+      "SHA256": "C51C70BBBBF155F7950B1405942B8D5B03BFC385BD7A57885AC63A4FEED8CB61"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_Off.txt",
+      "Bytes": 17734267,
+      "SHA256": "56DBBD4E1BB6574A2EB88695435A1B0ABCBBE11D161A73D6107B0C0DED4C0A49"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "6257A469BF9A723DCD1C910F05B438874C7E6E11C6E004AC33CC8B8180B56EBC"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_Off.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "EE54BE247E668555A926AEFFD6D877611F1CFE97C26D262F3AE42043E67C9F2C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "B51E7092130C853B8F4B7BC7D3FF26841EC88164E83C6EB0EB3576CCA1E1F039"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "45906A543A1F9F31824FB3BF91CA844242B49CA19246705C7B71BFFE3B8DBE15"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_Off.txt.progress.txt",
+      "Bytes": 1941032,
+      "SHA256": "9CB6A8E0B237F2BBA48E0A0C66864D42C99E55BE76ECDF7BDFF966DC4D19728D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_Off.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_Off.txt.stdout.log",
+      "Bytes": 3282,
+      "SHA256": "1CD6FFA19BAADAC9C8EBF6D8DBC40750491C8CAF3D026634B7180CEC0F64762B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_On.txt",
+      "Bytes": 17738177,
+      "SHA256": "B2C7C99A78234C0736ABCA101E3C37C04DC3AE0DD3D99906B4A17795A3CE595A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "916756B4393979869DEBB7E93545182D1563B0C2B8FA7CD0F29D662AF70E5AC6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_On.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "52361E8C938A68AF34E348231DFEF5420897BE614A7AA6CA93DC74314E4D0EF4"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "03DC8AE07E2D388BB67C6723602D6B1F70AAEAD78E07011C4D1D31E573DFA4F7"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "7D6C9C9FE09141D6D48CF603D3FA4D3F1224D40EF4488DA663740F043326E426"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt.progress.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_On.txt.progress.txt",
+      "Bytes": 1941032,
+      "SHA256": "9CB6A8E0B237F2BBA48E0A0C66864D42C99E55BE76ECDF7BDFF966DC4D19728D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Full_On.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Full_On.txt.stdout.log",
+      "Bytes": 3279,
+      "SHA256": "7F4818661287D016B5F0A55AE93774D024B5087A1B1C34F52506806E19B13794"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_Off.txt",
+      "Bytes": 1703720,
+      "SHA256": "3F7A87C869F220CD1E64A613E1BE912B6BADBF745E2F8F4635F0E57764F88077"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "8A4ADF7E712B9135BBAD021B45B1C324FB21E6C085D6C07C18984139FE8A32B7"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_Off.txt.ProcessClosure.json",
+      "Bytes": 4100,
+      "SHA256": "8CE84BDB7409BA3762233008E1BE018D7FBA90474B9D3FE9A4E1AE557F8ECFA3"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "D70A1B064CAAAD9BCEBC967537275D855F27A37E7346FD9E9975BD8725D4ABDF"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "3808A86AACD4CCE4173DAD8C2B8FE5F96E5857F4EB1074AF181C896EA1796E16"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_Off.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_Off.txt.stdout.log",
+      "Bytes": 3266,
+      "SHA256": "DCFCAE3F34A85A7B9DD98E9E5FE984EE65BA902077EC57C18AC22A168BE5E389"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_On.txt",
+      "Bytes": 1703891,
+      "SHA256": "88B5EFF01DECE76F2E4A9AE8C5F4A4CD557E2498C456D3C29CD62BE664FDF985"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_On.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "114CFD91AFA07B00F50B80DFCFFF112567E9203FEA514B7DEEA5F443D2A6DEAB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_On.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "9C09BB4B7864E29685EDF796F3AC5280EC6E1C3D59339B9C8451556CEE69E99D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_On.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "249312B1B5294D540FD983B4005B14F0E835A23FA649D1B18970AE6F12B55B19"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "522B3C47EA3C43DE8892F4D844FC33DA2DC07A316B33E6145E633757467E0992"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Geometry_On.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Geometry_On.txt.stdout.log",
+      "Bytes": 3303,
+      "SHA256": "CE693899FD807B5B0DB61E600215DC0C1880EDB0B5418009481897281DA445A3"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/ModeRunner.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\ModeRunner.ps1",
+      "Bytes": 24353,
+      "SHA256": "0CD9C34BEBFE3593C0F8BBD40D3DD03400F37F729C232E3076A01DB4596956FA"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_Off.txt",
+      "Bytes": 574202,
+      "SHA256": "85CECF46D5C6595F4C3BDF1E109CE3D2F4F9BA7E7D23AE1A9E8D0B343506DBE5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "32C48C9389410E39946E029E5FEE66FDBEC299619B4F1A7B4561637FE9F112E1"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_Off.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "B4DD10E3B75924968DE5E747C6E74579C51930CD994A56220169E6C8B9427385"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "A1A088AC99AE447890171C9A9957057827B093F37CCFD2C423CA470779D156EE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "A1EADE7592F16ACA5D780A5DC89322C3BD5656EC130D572964303DB736DB6957"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_Off.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_Off.txt.stdout.log",
+      "Bytes": 2319,
+      "SHA256": "8EF63E559362D1AF9DDDA5137B882921BB8CFEA847FBA582491D122C3EF32C13"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_On.txt",
+      "Bytes": 574212,
+      "SHA256": "379A2C45207816DFB777872902047D1004D5D5BF40265D7703897B101EC3E7C2"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "99B79BA1AAC43562A9A5CA1190C2FC9EFED0BEC1F2ECFF309588AD4EFFE7C952"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_On.txt.ProcessClosure.json",
+      "Bytes": 4100,
+      "SHA256": "AA6F4A4261308A005A34DBF4017CA834EFE6E522BE5AC5AD4B58A83DDCC4CAA1"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "84BDFB2F3C69C6C63476F48EAC4A7A40385FEDEC04E783EA8C90CD2C9557BFD9"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "47D4E8AEBB98E0773CCCB27958E0BE8C461D24EB17627C47D1CF05D7C4C3E419"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Recipes_On.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Recipes_On.txt.stdout.log",
+      "Bytes": 2346,
+      "SHA256": "3BE69AC50C8053BA5D979D980D971764413724FB6553329322D99B59B4C61074"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Run.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Run.json",
+      "Bytes": 27422,
+      "SHA256": "02957612A2AA7DC4DC817AA27FAD2DCE55E42774131482A23A38C369C5E8A67E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_Off.txt",
+      "Bytes": 47232,
+      "SHA256": "DAB3501A8BAD0EBA33B26A88AB7DDFD8DF218A8D0C2F647306A61ECD52DA2F5A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "887225AB68DAE598B2D8391B7A2356F135C9EC2FF0DD184D6ACC37F2F0251B81"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_Off.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "E498C04B6732149099494F207B180CA34CBEF99D5B2928FB51A6B1D5622F3A3C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "B51C86697A07081CCF862EC41646881DED4227F10FF48F798E5275F12B170262"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "542EF349886517D54A9710895481E25316577082A4601ADF18E580BC5AE2657B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_Off.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_Off.txt.stdout.log",
+      "Bytes": 857,
+      "SHA256": "A9B94F912F56C212C381EACC1C5A2397B6218B78B4F338960570F5E02FAE29DA"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_On.txt",
+      "Bytes": 47244,
+      "SHA256": "EB60D066CCEF9B5EA15025AB3C0C6D0BD4E9D1AE3D796672DAD843CE0B10E67A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "4F9A222EEBD1F43D7E86FFDE3EA5E2DEF847EE56CAF192783B35E4DB12020BBF"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_On.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "B906A537A3925B10728FA032BF60452B4552CCF08B48B8AAA750DF48F7AE6681"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "0DC34428ABF9A064E593EFB4759F5763C99740063D3A8539802F72EBE8C5F2B5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_On.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "0134461414B5A703DCF61E1C66FAAC93B1670C3AF98F6ACCEB53FBCC12CF4737"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SP35_On.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SP35_On.txt.stdout.log",
+      "Bytes": 864,
+      "SHA256": "B5D142906347D96A8830AA55FEE8691686B7E8553553E9903F738EEE5EB7CC5D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_Off.txt",
+      "Bytes": 3390,
+      "SHA256": "7490BD5B17C05D6504B06F42D545A52446D3A76681037B010D11AD8CCA1ABBBD"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_Off.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "119C391AF07EB72EFDE0B4DE4278B46D9D4CDB9B38AA73CE04C38A0376D15143"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_Off.txt.ProcessClosure.json",
+      "Bytes": 3611,
+      "SHA256": "3B8E5F6D2E632BE8FEF4F6E4980ED5B769B0A22432980770DE9EDB07F98FB963"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_Off.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "DB63E1B087D7A50DE5565E6548186E182BB20B5AF72E20C8D332E7FF72DD5277"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_Off.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "5FA89341A5D9544E0FCFAAC83D846D663E1BCE6FD87E718336B02020406A7A82"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_Off.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_Off.txt.stdout.log",
+      "Bytes": 599,
+      "SHA256": "FC545821265EEB35A16139A4095F13D3DA5EE6C4EF2530BA0EC0A5CC8F791D0B"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_On.txt",
+      "Bytes": 3390,
+      "SHA256": "CB27BD338E8753E475CA5DB5E7207E7ACB81C115E344AF74E8EDABB3D1A10B6F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt.Ownership.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_On.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "F3951010E9E1D0E44F7FABD95E3C4B0095C22485CFDD2E0BE07E0CBE1755B478"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt.ProcessClosure.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_On.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "DEFDD2176B606D6DA509079F9DF4489DF845D1BDAF14D2209C4D4D34E2B3477D"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt.RunnerCleanup.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_On.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "329F3E1E220D1C3E01EE80F1C6CE5D8B3FF5B41DF3AF7B399727684DB78BDF9C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt.memory.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_On.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "E50D9D834F4AADE6338F1852768BAFEA116E568DEBD8A3C6C8D2913E3B99CB13"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/SavedOffsets_On.txt.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\SavedOffsets_On.txt.stdout.log",
+      "Bytes": 602,
+      "SHA256": "ED7A528893A6DB485AE280EEB34CC6281B0C34FB1714E6B72623D3947F0DBD26"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Source/RC_Section_NDM.xlsm",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Source\\RC_Section_NDM.xlsm",
+      "Bytes": 10149991,
+      "SHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Summary.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Summary.json",
+      "Bytes": 79955,
+      "SHA256": "A65B14596F210F639B29B3E055C09E4662A08615E545D918B41EB7D32DFB3A98"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Summary.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Summary.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Repository/docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03/Summary.stdout.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Summary.stdout.json",
+      "Bytes": 2018,
+      "SHA256": "5B5EE1353B41EADFA98B250E591CD05C880547C0EF040FC040FFE9277B4228F6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/AllClosedJobsReview.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\AllClosedJobsReview.json",
+      "Bytes": 63399,
+      "SHA256": "03B22A563A9902ED9303D27A6EAB6AC0DCE93C8804FE5AF0AED91A364697247A"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/AllOwnClosuresReviewed.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\AllOwnClosuresReviewed.json",
+      "Bytes": 33124,
+      "SHA256": "6E251A470BD741370400F85724B6F5C764AE9534D838467F6515A2FEE982B519"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/Completion.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\Completion.json",
+      "Bytes": 676,
+      "SHA256": "0DEE5897D35BCA260E1A874EB78F973CE212C59ABE75D7CFC1BC8ABAD796B215"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/CoordinatorPulseLast.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\CoordinatorPulseLast.json",
+      "Bytes": 16957,
+      "SHA256": "5EF0E67C5243D663ED64450035C607B8B09AE15CA541C489EE2BDB5091461820"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/DriverRun.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\DriverRun.json",
+      "Bytes": 310,
+      "SHA256": "22FE6CCE22971A015F72D33D57000E225BCDA80FFDC60C654CCC109E0ED41657"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/FullDriver.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\FullDriver.ps1",
+      "Bytes": 5341,
+      "SHA256": "D900EAB2E86D87C371CC3C716B4DD40F0806FB8C949DD5CC1B41073ABD30A38E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/FullDriverHost.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\FullDriverHost.ps1",
+      "Bytes": 1750,
+      "SHA256": "C5C31733902D6394B620EF963D1F966C31FF313A494DC58CB86988388BD02A93"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/FullLaunch.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\FullLaunch.json",
+      "Bytes": 913,
+      "SHA256": "CC7FCBD7692F39F625C111FFCF538C87256AF848754C39BEBE91CA0C69E83438"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/FullLaunch.stderr.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\FullLaunch.stderr.log",
+      "Bytes": 4016,
+      "SHA256": "B384F6D9A2AF1E552DC6E1C885A9ECF621011157945EF4535445D9DE19D9B11E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/FullLaunch.stdout.log",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\FullLaunch.stdout.log",
+      "Bytes": 15328,
+      "SHA256": "BD6A50A1FC5017D46CDE1B5685FF1D9E87D9FA09CC8268B78959E4D6B626B606"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/HostCompletion.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\HostCompletion.json",
+      "Bytes": 93,
+      "SHA256": "035A66B6E130B155B39E19910336100EC115013B8F95C62F9D010F18E6A87FA3"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/HostRun.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\HostRun.json",
+      "Bytes": 201,
+      "SHA256": "2500465C4871351ECD410D696426EDE27BD6FA6F24B235786A189534468DFCA6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/Launch.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\Launch.ps1",
+      "Bytes": 12642,
+      "SHA256": "5127689A834E704A778F6E73D01F7EF755F7D84CA39A3BFFCE5697921DFE26AB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/LaunchRequest.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\LaunchRequest.json",
+      "Bytes": 143004,
+      "SHA256": "944E55EF0300B5D1DD2BE2A8843B1CF8811E0C9BDF3B41E3A1B7116FA94AFDA9"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/MonitorLast.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\MonitorLast.json",
+      "Bytes": 25146,
+      "SHA256": "CF9A4235BE6B1231DD675C55649214A15961C3F87FCD25139568F2EDB9AF92CD"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/PreparedPlan.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\PreparedPlan.json",
+      "Bytes": 985,
+      "SHA256": "659FEC3B193C57FD1D7ABAFED5861ACEE97B74DDAB25B86436D3190A7861531C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/Read-CurrentStatus.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\Read-CurrentStatus.ps1",
+      "Bytes": 12453,
+      "SHA256": "0CC99CFDD4B32AFADB99807B7B846454A5D2EECA1E1B41BF7FDC575A11E3E9E1"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/Read-UiProgressSupplement.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\Read-UiProgressSupplement.ps1",
+      "Bytes": 7608,
+      "SHA256": "D2891895659FE071B3DF5DB95A53C6D3C4E66D2FAA46C85F5B57B2E8A37691E6"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/ReleaseEligibility.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\ReleaseEligibility.json",
+      "Bytes": 178025,
+      "SHA256": "583B21614EB7C96A3096482AC621441073886BF34F0FECDD45BA0E3CCB04C3DD"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/ScheduledTask.xml",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\ScheduledTask.xml",
+      "Bytes": 1628,
+      "SHA256": "78F39DF8B2C23F7E6249C027F6E02579FF89DBC9AE2A1E9F3638560D71A81FB4"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/ScheduledTaskCleanup01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\ScheduledTaskCleanup01.json",
+      "Bytes": 1327,
+      "SHA256": "834153A0D8C217D5786565A58EE1299E08A219DAB485860AE97D68795E3ECC6E"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/SourceEpoch.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\SourceEpoch.json",
+      "Bytes": 2017,
+      "SHA256": "EAD9FDA6B7E154D0ED1A25B2E47FEC78C0AA59FFCC75A7FF1032ED6FB7038C0F"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/TerminalScopeReview.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\TerminalScopeReview.json",
+      "Bytes": 84040,
+      "SHA256": "5435E0DB4CD589AB97B0B66E7DCFF398E4C042C67943CDD6FD01AE4FF1CBC010"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/TerminalScopeReviewPartial.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\TerminalScopeReviewPartial.json",
+      "Bytes": 80894,
+      "SHA256": "CB0F6CCEE2E89F07E0927F1DB9DAC72502D91914330A11B1790125573518ED16"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/Test-ObserverSelftest.py",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\Test-ObserverSelftest.py",
+      "Bytes": 5750,
+      "SHA256": "4DC6D8D2419F48C84FD538E15F5483F9CA0DEE06DFFC1001B5A5C42C3C256FD5"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/Test-ReviewPrimaryScope.py",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\Test-ReviewPrimaryScope.py",
+      "Bytes": 9512,
+      "SHA256": "8D8BC20463A44F4336619AB5C5F96DB69F91B70EDAC8A1D7AC0FDF9C71B9BDAB"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/Test-VerifyAllOwnClosures.ps1",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\Test-VerifyAllOwnClosures.ps1",
+      "Bytes": 6591,
+      "SHA256": "6FC972E332A9583C09A2DF963E871DF7648919D9BCC4B1CFDA8E2E3B94D29A6C"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/TestObserveCompleted.py",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\TestObserveCompleted.py",
+      "Bytes": 8777,
+      "SHA256": "1D758D2838FE670DE86E9F83C8E2A45137D957A64DC16F748F7E647F34FE5009"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/UiProgressSupplementLast.json",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\UiProgressSupplementLast.json",
+      "Bytes": 710,
+      "SHA256": "215A71B8E58678B9A93DF68C0BEC2021DF0CD4E0D0B2C466DB218D57C51D2A27"
+    },
+    {
+      "Path": "Repository/docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03/__pycache__/TestObserveCompleted.cpython-312.pyc",
+      "OriginalPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03\\__pycache__\\TestObserveCompleted.cpython-312.pyc",
+      "Bytes": 12974,
+      "SHA256": "F5A3B94C9594CFD8591DEF8DF29F7643F2DC577273C0D89044B425452A0FC6DA"
+    }
+  ]
+}

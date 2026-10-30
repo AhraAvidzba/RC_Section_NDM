@@ -1,0 +1,1938 @@
+{
+  "Status": "PREPARED_PRIVATE_NATIVE_REVIEW_REQUIRED",
+  "LaunchDirectory": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03",
+  "AcceptedMainSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "AcceptedCommit": "8910245966806984e349b004cc8e0da0d4dccb86",
+  "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_Test_1232_30\\RC_Section_NDM.xlsm",
+  "SourceSHA256": "6A21BE6E842D88317683D0BEB6228587C387014D24A8D42CA721785F664009C0",
+  "SourceBackup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30Schema02\\Before_Ready30.xlsm",
+  "Ready": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Ready30Schema02\\RC_Section_NDM.xlsm",
+  "ReadySHA256": "2CD43036E4C8146FB4B3589ED74DEBAB3678ECEDE6B0C0F846A10418A59686DD",
+  "Published": false,
+  "FullSourcePassVerified": true,
+  "CurrentFullOwnClosed": true,
+  "DataAndLoadsRecalculated": false,
+  "ResultsPartByteExact": true,
+  "CalculationSheetPartByteExact": true,
+  "OriginalSharedStringsByteExact": true,
+  "UnchangedParts": [
+    {
+      "Part": "[Content_Types].xml",
+      "Bytes": 2942,
+      "SHA256": "FF38B559703DC8096870B1D00DA5283204D16E30E96B06E6C4D7A71E2F86A637"
+    },
+    {
+      "Part": "_rels/.rels",
+      "Bytes": 588,
+      "SHA256": "73E5A29F48D5AB979EEDA062493BC7E679265C1344EF936978B8BECEC5549497"
+    },
+    {
+      "Part": "xl/drawings/drawing4.xml",
+      "Bytes": 2653063,
+      "SHA256": "9A6418DA3C991F6A6F226BAE4072846D4D3E9B451734D1D363C101EC331F614A"
+    },
+    {
+      "Part": "xl/_rels/workbook.xml.rels",
+      "Bytes": 1518,
+      "SHA256": "136C07FFC97ABE705CB51CE343A3545D2FF68D819854B4168A2AAF017136AE24"
+    },
+    {
+      "Part": "xl/workbook.xml",
+      "Bytes": 4331,
+      "SHA256": "66432FA043F1CEE1245DEBFAB72A69B491D14664D081796FCDFB4047A1781AA5"
+    },
+    {
+      "Part": "xl/worksheets/sheet5.xml",
+      "Bytes": 57952906,
+      "SHA256": "2979CF1B1EFDDA2D39EDFF8DB74D341C7D409789626E4E40CE24E4454C9A1F5D"
+    },
+    {
+      "Part": "xl/media/image59.png",
+      "Bytes": 2972,
+      "SHA256": "76FF7574822EA165F91D555ADADB5A47F283902FD82C8AA70C0FB16AA6DE0FCC"
+    },
+    {
+      "Part": "xl/media/image58.png",
+      "Bytes": 1540,
+      "SHA256": "00295DBDA0A2EE732449635B3FD618040C361EB53A9AD4C5F2E67097EE80FEC0"
+    },
+    {
+      "Part": "xl/media/image57.png",
+      "Bytes": 3636,
+      "SHA256": "B8C83046B22870B9D6B09F23D83FED6FD1F8A91C17FA515A348A204C3AB13E6B"
+    },
+    {
+      "Part": "xl/media/image56.png",
+      "Bytes": 6291,
+      "SHA256": "D8E43B773480BEC619AAD1BB91287D6B18F89B3FEFBF354599AA1A254E96A47C"
+    },
+    {
+      "Part": "xl/media/image60.png",
+      "Bytes": 2991,
+      "SHA256": "D0B42A5DF1EF2888DE65B0FD9A55890B8DFB18FEBE0F2DFF1F2A57F77A53C1C6"
+    },
+    {
+      "Part": "xl/media/image61.png",
+      "Bytes": 1918,
+      "SHA256": "9551C1A7E4A84774F0607A7454AB9CF0589EA304F91C52899C9B0A1299A053CC"
+    },
+    {
+      "Part": "xl/media/image62.png",
+      "Bytes": 1747,
+      "SHA256": "372BA8F536FC39EE9EA7067D9727F465F1EE8F1199B4C0CD0FEB79690F889C41"
+    },
+    {
+      "Part": "xl/media/image63.png",
+      "Bytes": 2186,
+      "SHA256": "6157FE8976A3DD77CA27AAC45E4775E2705CE595C2FE7CA2B91DF9EF64503E20"
+    },
+    {
+      "Part": "xl/media/image64.png",
+      "Bytes": 4259,
+      "SHA256": "3AB15D0A12485BA80260156A733B3FF6B6C48408CE99728364F4AEE41E78762E"
+    },
+    {
+      "Part": "xl/media/image65.png",
+      "Bytes": 4795,
+      "SHA256": "58859FDB4CEEA054E5DB69431F321E0D6295FB3370DFE03DABB45219351DEDD7"
+    },
+    {
+      "Part": "xl/media/image55.png",
+      "Bytes": 1625,
+      "SHA256": "B4C7118F6E6283526C9C2F2F3AAA81B7797DA3713C9960C6C0C638DD35354786"
+    },
+    {
+      "Part": "xl/media/image54.png",
+      "Bytes": 2452,
+      "SHA256": "44CEB7F39E70AA512D2C86FB913B1C22EF281F4B48D175FE757BFBE5093C86C8"
+    },
+    {
+      "Part": "xl/media/image53.png",
+      "Bytes": 4692,
+      "SHA256": "1A2C1B0166E7B0E10F843B62D867C94CB86024E9553D42148215B9B498EEA917"
+    },
+    {
+      "Part": "xl/media/image46.png",
+      "Bytes": 18600,
+      "SHA256": "EDBA4626C53FA96A286BB3AE878548A642E0EC0B8DF19081584445EE1AFA15C7"
+    },
+    {
+      "Part": "xl/media/image45.png",
+      "Bytes": 2474,
+      "SHA256": "6B25FD100EA4D3CAEDC350ACDB126086CCE2F9CBF6C29F5304336257B6DB5624"
+    },
+    {
+      "Part": "xl/media/image44.png",
+      "Bytes": 3267,
+      "SHA256": "5B3DACCA7CBADF14BCEC033C5A929E9C91E0DDFDCDDE219721E480C005C74DC9"
+    },
+    {
+      "Part": "xl/media/image47.png",
+      "Bytes": 4451,
+      "SHA256": "3EEBB17DAE25DD80ED8C638E903933A28285A36DFC2066E9D7E802E22772A6EA"
+    },
+    {
+      "Part": "xl/media/image48.png",
+      "Bytes": 1383,
+      "SHA256": "52A192355CEEAF25AE7A4F88597FB3030FCABD9713DC1D26C74C307774E05DBB"
+    },
+    {
+      "Part": "xl/media/image49.png",
+      "Bytes": 2442,
+      "SHA256": "BA36C64A46E6034F64685DB1012B8CC32D97C59B514BCF2F6F0A1EC115DA6534"
+    },
+    {
+      "Part": "xl/media/image50.png",
+      "Bytes": 2211,
+      "SHA256": "FCC86904981F4631A208D51DE5B5E49D4DA2C873CFDC957873C564683BB4BC3C"
+    },
+    {
+      "Part": "xl/media/image51.png",
+      "Bytes": 1732,
+      "SHA256": "564B136460F2126AA7BEFA8CE5BDE3FD5371B4BD5D54F6B8DE12DE39AB210F92"
+    },
+    {
+      "Part": "xl/media/image52.png",
+      "Bytes": 1764,
+      "SHA256": "4F47516358EE411FE271DC9172570547ACF0D249D712ED4FE87257E5806693A6"
+    },
+    {
+      "Part": "xl/media/image66.png",
+      "Bytes": 1627,
+      "SHA256": "B1005E195641CE4FB53AEAE620B02E9161D5DE09803D0DB3C4484F1134A39CC1"
+    },
+    {
+      "Part": "xl/media/image67.png",
+      "Bytes": 2599,
+      "SHA256": "DC7F30F55137FE955870C12FF1FD6D790BD2F80E3199A893754065A7C99E701E"
+    },
+    {
+      "Part": "xl/media/image68.png",
+      "Bytes": 5149,
+      "SHA256": "C6EAED6BB6DD299EFAF77E1A624E70083E5A6A20E480D74975357CBD1A9045A2"
+    },
+    {
+      "Part": "xl/worksheets/_rels/sheet2.xml.rels",
+      "Bytes": 322,
+      "SHA256": "FE0FFFB5EC78558E2B46557177888C220C2B7D2389C24965089ED5618D66BE54"
+    },
+    {
+      "Part": "xl/worksheets/_rels/sheet1.xml.rels",
+      "Bytes": 464,
+      "SHA256": "046F319D2B01BF9529DA901AE33CB1CF8C7C7D06395167875FA0C4ADD6BF34C3"
+    },
+    {
+      "Part": "xl/worksheets/_rels/sheet4.xml.rels",
+      "Bytes": 464,
+      "SHA256": "0DA1AA08A01D65DB9C1263A1F68D65F90733A64CE020AF4F113388737DF272B4"
+    },
+    {
+      "Part": "xl/worksheets/_rels/sheet5.xml.rels",
+      "Bytes": 322,
+      "SHA256": "65F64F2D5485665D95C01D2FD7736B1B05AA5026AA5D53AE853CD62C2A4A11BE"
+    },
+    {
+      "Part": "xl/drawings/_rels/drawing1.xml.rels",
+      "Bytes": 429,
+      "SHA256": "114CD0A52C81D6ED3F6D808BCE9C5E64ED0210F9CFBFC01054F6C56970566883"
+    },
+    {
+      "Part": "xl/drawings/_rels/drawing3.xml.rels",
+      "Bytes": 293,
+      "SHA256": "A7D739FBFA8D5906C1B749323B8F245F7F37B4B5FC5E735E2DA5C419EFD10BA4"
+    },
+    {
+      "Part": "xl/charts/_rels/chart3.xml.rels",
+      "Bytes": 307,
+      "SHA256": "07F9EBB803D5ADDC858F4777DEF6502803FF498DF4DE781AE635D43FD6DFC57F"
+    },
+    {
+      "Part": "xl/worksheets/sheet4.xml",
+      "Bytes": 45313,
+      "SHA256": "1C5DA83A73888F96DCCAD5B4A7933AF2E0D59372B25DAC16550DAA0E0FB17657"
+    },
+    {
+      "Part": "xl/media/image69.png",
+      "Bytes": 2945,
+      "SHA256": "204DF2A8CA8B77D82692960479A98AA62389526ECF0AC85D22AEB604DDFD6D8B"
+    },
+    {
+      "Part": "xl/media/image70.png",
+      "Bytes": 1311,
+      "SHA256": "06CEA3D9A47AC41C99FE797D4E144E2D9ABEADAAAB9CEF5E17F08CE431A593BC"
+    },
+    {
+      "Part": "xl/media/image71.png",
+      "Bytes": 1721,
+      "SHA256": "B100FFA94D26C6AC95FC9D18584E182E23DE9F5BCAF96977080F7DD73D0CFC66"
+    },
+    {
+      "Part": "xl/media/image72.png",
+      "Bytes": 4190,
+      "SHA256": "66680DC866ED2033BBA3CAC8672C2DC16BF5A4BE83CE7B59C55E5CC84B159563"
+    },
+    {
+      "Part": "xl/media/image73.png",
+      "Bytes": 3310,
+      "SHA256": "0DA7263FBC57BA356D1DB16910870B7A79DF347BFBF7A6AE1121AEAB042E43FB"
+    },
+    {
+      "Part": "xl/media/image74.png",
+      "Bytes": 2405,
+      "SHA256": "FE0C85C0C7BFD37B025395D32EF87471062EC729A2A114E75D46D68CB31BC8BC"
+    },
+    {
+      "Part": "xl/media/image75.png",
+      "Bytes": 1212,
+      "SHA256": "A3D68FF95C9EF8A80D78530F178426ECB3540753D849CF02A9E06BAB4A1B516A"
+    },
+    {
+      "Part": "xl/drawings/drawing3.xml",
+      "Bytes": 9630,
+      "SHA256": "EC7AA2762A00BAB96450788650B710E8C10616EA35818CF82AA237671A437202"
+    },
+    {
+      "Part": "xl/charts/chart3.xml",
+      "Bytes": 3698,
+      "SHA256": "3A7216D44A14EA20B9384F24F0C3869B79A6C41B89A06CB7917814AB4C7FC35C"
+    },
+    {
+      "Part": "xl/media/image42.png",
+      "Bytes": 6850,
+      "SHA256": "708E91A400A7D36DC02C93665E80A5C13C9BFBAE56A3AB221A30A860D9C9490F"
+    },
+    {
+      "Part": "xl/media/image43.png",
+      "Bytes": 3785,
+      "SHA256": "DB20B08034EB25662D22747500F998EB240CC5F1652752472F85B3CD36E1DE43"
+    },
+    {
+      "Part": "xl/media/image40.png",
+      "Bytes": 2647,
+      "SHA256": "CA98C6704C7CC3473D44E60E2545832AC5791A5B7E920067F8556FA224EB3350"
+    },
+    {
+      "Part": "xl/media/image9.png",
+      "Bytes": 2707,
+      "SHA256": "3C98DB84933564962622AF69560F5B24F968A4B424A85A09DF4264AB33C2C451"
+    },
+    {
+      "Part": "xl/media/image8.png",
+      "Bytes": 1845,
+      "SHA256": "BAC44BB18E27EF75B37C8E56072B0137D4097987DA0159959BF7C65CEB4D87D7"
+    },
+    {
+      "Part": "xl/media/image7.png",
+      "Bytes": 3232,
+      "SHA256": "EC38CF69DD89AF9AF6344EFA3F626326E33E5831BFE3EFE8C7D0700E044F1A99"
+    },
+    {
+      "Part": "xl/media/image6.png",
+      "Bytes": 4084,
+      "SHA256": "80C8D4865D98519FD0936A8D0D8197A1126CCF99DC43E9FF16582618D276599E"
+    },
+    {
+      "Part": "xl/media/image10.png",
+      "Bytes": 4829,
+      "SHA256": "9F305BC4D7D0306B1EAF4C2BC609F00859E2990CC468D960ECAD1AE8B8F4BDA7"
+    },
+    {
+      "Part": "xl/media/image11.png",
+      "Bytes": 5696,
+      "SHA256": "1249B7591C982DEE9FED21E807C5F98F0F2C676C6C1DB754EA472E6C350A4ABC"
+    },
+    {
+      "Part": "xl/media/image12.png",
+      "Bytes": 2371,
+      "SHA256": "0353667D301579AC3FC603365D29A5F9265E4BFB416C3555A80DB87E65ECAB46"
+    },
+    {
+      "Part": "xl/media/image41.png",
+      "Bytes": 4504,
+      "SHA256": "8B50DCC4E89DBFB2637BE77DBF2C1BE111F12ED638B67A459B77D065F239A58A"
+    },
+    {
+      "Part": "xl/media/image14.png",
+      "Bytes": 2931,
+      "SHA256": "B66810E7E54269D16CAEFA3F0E485C3DF106CF2DC14E715FA1EAAE9D8F9F87E9"
+    },
+    {
+      "Part": "xl/media/image15.png",
+      "Bytes": 1722,
+      "SHA256": "9A821783DAD6D39A445391D8A55ED9FD62F96996AE28FB87F5DB5E08F87FE69F"
+    },
+    {
+      "Part": "xl/media/image5.png",
+      "Bytes": 2531,
+      "SHA256": "76FA6EF592BD7FF857DE540E9DC6298E8B5A2B823AFD28EDABBBF7743DE9A8E1"
+    },
+    {
+      "Part": "xl/media/image4.png",
+      "Bytes": 5056,
+      "SHA256": "B2D2B03F1AA7B8734EC507166BE795C572F1EC36D43FF3D6ED7B2ABF73E8B2E8"
+    },
+    {
+      "Part": "xl/media/image3.png",
+      "Bytes": 2797,
+      "SHA256": "75FD80522F5907FFDE4B56AC58CDD74B8529E94B7676A8F3E52444BA2D4E2351"
+    },
+    {
+      "Part": "xl/theme/theme1.xml",
+      "Bytes": 8441,
+      "SHA256": "3598D57DFE24BAE9036BA156D22B81A357AF3C716BA82B40EE30CBD54550F143"
+    },
+    {
+      "Part": "xl/sharedStrings.xml",
+      "Bytes": 677633,
+      "SHA256": "8602A9243942CCD4FC5EA449DF1F08F1480E6176E7129250B96570F799598993"
+    },
+    {
+      "Part": "xl/drawings/drawing1.xml",
+      "Bytes": 2365,
+      "SHA256": "E14BA0A138A443143EF1C24700B6B15F816C6F3D6F7E8106C65E1F984F6F59A7"
+    },
+    {
+      "Part": "xl/charts/chart1.xml",
+      "Bytes": 5786,
+      "SHA256": "96445118600F0C70F9E171D0356D8C6775D1A15942CC56B1B05237CCBEC51C44"
+    },
+    {
+      "Part": "xl/charts/chart2.xml",
+      "Bytes": 5949,
+      "SHA256": "472DD0630C923937E372D91F8A783AF95F1984979D1C93DA030F8FF8AD66112C"
+    },
+    {
+      "Part": "xl/media/image1.png",
+      "Bytes": 3248,
+      "SHA256": "6D18B51397153702F1496379121D363A58A42A270309A430245462A46986B2EB"
+    },
+    {
+      "Part": "xl/media/image2.png",
+      "Bytes": 3301,
+      "SHA256": "416C17B7BE3E9D961E272F2E8431C6B1EAC4326A245A4FBA9CDC37175091C1AA"
+    },
+    {
+      "Part": "xl/media/image16.png",
+      "Bytes": 2530,
+      "SHA256": "6BEB3DCBF4A93CC2FCD7006A78A0E50000BFA00E2C0F203983E2361FFB95C084"
+    },
+    {
+      "Part": "xl/media/image13.png",
+      "Bytes": 3414,
+      "SHA256": "FC8D7788101731A1AA7A82BABE0C92BDEBD82E55F8C42366B7915D4C8BB23335"
+    },
+    {
+      "Part": "xl/media/image18.png",
+      "Bytes": 3544,
+      "SHA256": "6C7D40B2D3CC3C3CC978986ECE915C8646D7464A7F2DEF96C7AC26A643A6571D"
+    },
+    {
+      "Part": "xl/media/image33.png",
+      "Bytes": 3255,
+      "SHA256": "AF356892C35BDA20BDC53753CFD54B5DEF38E8DA4C4BD754B54624FEEDC961DD"
+    },
+    {
+      "Part": "xl/media/image32.png",
+      "Bytes": 1379,
+      "SHA256": "9AC1E7A862C652E5EBD77A7D4CA5E39F4BBB622426BC317F736331D70E53AE13"
+    },
+    {
+      "Part": "xl/media/image31.png",
+      "Bytes": 19881,
+      "SHA256": "675C941239967ECB23F62BB818102831F995484609FC1744E5B098CF8E1DC916"
+    },
+    {
+      "Part": "xl/media/image30.png",
+      "Bytes": 4596,
+      "SHA256": "61D9139039437B774A8B5DEBEE8F5AB3AB62CFF8E6E501F49B71964A02552CB6"
+    },
+    {
+      "Part": "xl/media/image34.png",
+      "Bytes": 4020,
+      "SHA256": "D988C2D8A3C729C97660ADFB190F0244930069AD6D0F7AFC2C394B473B8BB5E0"
+    },
+    {
+      "Part": "xl/media/image35.png",
+      "Bytes": 1563,
+      "SHA256": "FDAC419B22DEC3FE911375E0823EF8C1809C60B3F270FCDCA343A0D809726BB9"
+    },
+    {
+      "Part": "xl/media/image36.png",
+      "Bytes": 18388,
+      "SHA256": "4EB28E887380111F37FF9C58BDAE020A334FBB429969B5D9C85BABE5989F9DD8"
+    },
+    {
+      "Part": "xl/media/image37.png",
+      "Bytes": 3240,
+      "SHA256": "1C68CD06F7B03159BCD7758BF2805BB19B1281F9A9EA3D800FD1E774EA382227"
+    },
+    {
+      "Part": "xl/media/image38.png",
+      "Bytes": 17353,
+      "SHA256": "3AB24104FEFEDC03FC174F78D9D7B4140CC274639956435D096939706AB9EC30"
+    },
+    {
+      "Part": "xl/media/image39.png",
+      "Bytes": 3212,
+      "SHA256": "5B74500911B86C66BCDFDC65168DBA5E18569E88C33C9426F71758266F93AB1A"
+    },
+    {
+      "Part": "xl/media/image29.png",
+      "Bytes": 3340,
+      "SHA256": "72E7396CB0869ECEFE29591575A1C3D68CC40B4530CA9892117C32113A935B1B"
+    },
+    {
+      "Part": "xl/media/image17.png",
+      "Bytes": 4508,
+      "SHA256": "C1AC415569FA7DB8070C4FE147C3BE8AAEC1C5F2A193A1FCBBA9A52C9497E366"
+    },
+    {
+      "Part": "xl/media/image24.png",
+      "Bytes": 3935,
+      "SHA256": "8FDC45199E536CEB0D6064087D986E98AF53AD0112939608A3ECDE3A117FBB60"
+    },
+    {
+      "Part": "xl/media/image28.png",
+      "Bytes": 2118,
+      "SHA256": "0C127B9C8BF6F9A88ECF3E5151ED3322A192DF551E0773314BAF01DCEBFE99EA"
+    },
+    {
+      "Part": "xl/media/image25.png",
+      "Bytes": 2140,
+      "SHA256": "F5E2BED70168CE46BB7C0F7DEC96062FC2628837026429276F66CB5858A2BE3A"
+    },
+    {
+      "Part": "xl/media/image26.png",
+      "Bytes": 1837,
+      "SHA256": "4F338E3D1ED901778AF7CB45B1D2DC14DE2547D35DA9BC7D1460FE69D147ED24"
+    },
+    {
+      "Part": "xl/media/image23.png",
+      "Bytes": 3989,
+      "SHA256": "0802F382140FAFCED1D7BEB7D8ACCE37EB54D171479F0748A65D5B29F62A00D5"
+    },
+    {
+      "Part": "xl/media/image22.png",
+      "Bytes": 3417,
+      "SHA256": "EF47F0E03661ECD5270EA5529DBD1D449F743E3C604963F168531C9543E3C713"
+    },
+    {
+      "Part": "xl/media/image20.png",
+      "Bytes": 3226,
+      "SHA256": "442A01690B7F7175C1821B9E17F59E21D89FB0692FB7B43F6F6195B5326873BE"
+    },
+    {
+      "Part": "xl/media/image27.png",
+      "Bytes": 2626,
+      "SHA256": "59F19785CC2B2D244CAE8806AAECF96F1732B304B2A51B123D62C3D3AD33F79D"
+    },
+    {
+      "Part": "xl/media/image19.png",
+      "Bytes": 2760,
+      "SHA256": "8A48A4568FE1D8DCA4D1FED2DCCEA221557B9527F01E7DA64EC5070FD10FF393"
+    },
+    {
+      "Part": "xl/media/image21.png",
+      "Bytes": 4302,
+      "SHA256": "AED1C82AC75713B3E893F1EEB7630857A0EF8C8F9BA9B17922092A4DE37A8B66"
+    },
+    {
+      "Part": "xl/printerSettings/printerSettings4.bin",
+      "Bytes": 7976,
+      "SHA256": "C1E43723EC1344125BC7702DCE8FAD352486B7ACFF8FEFE036BB42B2D3FED502"
+    },
+    {
+      "Part": "xl/printerSettings/printerSettings1.bin",
+      "Bytes": 7976,
+      "SHA256": "C1E43723EC1344125BC7702DCE8FAD352486B7ACFF8FEFE036BB42B2D3FED502"
+    },
+    {
+      "Part": "xl/printerSettings/printerSettings2.bin",
+      "Bytes": 7976,
+      "SHA256": "D5055D9AE356056E0A1A208AE6E63218B1B55770A92502E807767F1605202500"
+    },
+    {
+      "Part": "docProps/app.xml",
+      "Bytes": 2299,
+      "SHA256": "EDAA56F5879817FA168CAF1E6976A04379665A6425B6E0E54089960C81EB18B7"
+    },
+    {
+      "Part": "docProps/core.xml",
+      "Bytes": 673,
+      "SHA256": "E287F9D363CC10048F84190B72A1F721BF07C085A5A596ECD4AD74BB7A6DD396"
+    },
+    {
+      "Part": "xl/calcChain.xml",
+      "Bytes": 3916,
+      "SHA256": "D2A17C8A6DEDE6E8D162C31673C533B2DA6F32C84FC3BE534B4D3485A474A689"
+    },
+    {
+      "Part": "xl/printerSettings/printerSettings3.bin",
+      "Bytes": 7976,
+      "SHA256": "C1E43723EC1344125BC7702DCE8FAD352486B7ACFF8FEFE036BB42B2D3FED502"
+    }
+  ],
+  "ChangedOriginalParts": [
+    "xl/drawings/_rels/drawing2.xml.rels",
+    "xl/drawings/drawing2.xml",
+    "xl/styles.xml",
+    "xl/vbaProject.bin",
+    "xl/worksheets/sheet1.xml",
+    "xl/worksheets/sheet2.xml",
+    "xl/worksheets/sheet3.xml"
+  ],
+  "AddedHelpImages": [
+    {
+      "SourcePart": "xl/media/image13.png",
+      "NewPart": "xl/media/ndm_help_current_image13.png",
+      "Bytes": 3414,
+      "SHA256": "FC8D7788101731A1AA7A82BABE0C92BDEBD82E55F8C42366B7915D4C8BB23335"
+    },
+    {
+      "SourcePart": "xl/media/image18.png",
+      "NewPart": "xl/media/ndm_help_current_image18.png",
+      "Bytes": 3544,
+      "SHA256": "6C7D40B2D3CC3C3CC978986ECE915C8646D7464A7F2DEF96C7AC26A643A6571D"
+    },
+    {
+      "SourcePart": "xl/media/image26.png",
+      "NewPart": "xl/media/ndm_help_current_image26.png",
+      "Bytes": 1837,
+      "SHA256": "4F338E3D1ED901778AF7CB45B1D2DC14DE2547D35DA9BC7D1460FE69D147ED24"
+    },
+    {
+      "SourcePart": "xl/media/image39.png",
+      "NewPart": "xl/media/ndm_help_current_image39.png",
+      "Bytes": 3212,
+      "SHA256": "5B74500911B86C66BCDFDC65168DBA5E18569E88C33C9426F71758266F93AB1A"
+    },
+    {
+      "SourcePart": "xl/media/image21.png",
+      "NewPart": "xl/media/ndm_help_current_image21.png",
+      "Bytes": 4302,
+      "SHA256": "AED1C82AC75713B3E893F1EEB7630857A0EF8C8F9BA9B17922092A4DE37A8B66"
+    },
+    {
+      "SourcePart": "xl/media/image34.png",
+      "NewPart": "xl/media/ndm_help_current_image34.png",
+      "Bytes": 4020,
+      "SHA256": "D988C2D8A3C729C97660ADFB190F0244930069AD6D0F7AFC2C394B473B8BB5E0"
+    },
+    {
+      "SourcePart": "xl/media/image42.png",
+      "NewPart": "xl/media/ndm_help_current_image42.png",
+      "Bytes": 6850,
+      "SHA256": "708E91A400A7D36DC02C93665E80A5C13C9BFBAE56A3AB221A30A860D9C9490F"
+    },
+    {
+      "SourcePart": "xl/media/image47.png",
+      "NewPart": "xl/media/ndm_help_current_image47.png",
+      "Bytes": 4451,
+      "SHA256": "3EEBB17DAE25DD80ED8C638E903933A28285A36DFC2066E9D7E802E22772A6EA"
+    },
+    {
+      "SourcePart": "xl/media/image50.png",
+      "NewPart": "xl/media/ndm_help_current_image50.png",
+      "Bytes": 2211,
+      "SHA256": "FCC86904981F4631A208D51DE5B5E49D4DA2C873CFDC957873C564683BB4BC3C"
+    },
+    {
+      "SourcePart": "xl/media/image55.png",
+      "NewPart": "xl/media/ndm_help_current_image55.png",
+      "Bytes": 1625,
+      "SHA256": "B4C7118F6E6283526C9C2F2F3AAA81B7797DA3713C9960C6C0C638DD35354786"
+    },
+    {
+      "SourcePart": "xl/media/image63.png",
+      "NewPart": "xl/media/ndm_help_current_image63.png",
+      "Bytes": 2186,
+      "SHA256": "6157FE8976A3DD77CA27AAC45E4775E2705CE595C2FE7CA2B91DF9EF64503E20"
+    },
+    {
+      "SourcePart": "xl/media/image68.png",
+      "NewPart": "xl/media/ndm_help_current_image68.png",
+      "Bytes": 5149,
+      "SHA256": "C6EAED6BB6DD299EFAF77E1A624E70083E5A6A20E480D74975357CBD1A9045A2"
+    },
+    {
+      "SourcePart": "xl/media/image7.png",
+      "NewPart": "xl/media/ndm_help_current_image7.png",
+      "Bytes": 3232,
+      "SHA256": "EC38CF69DD89AF9AF6344EFA3F626326E33E5831BFE3EFE8C7D0700E044F1A99"
+    },
+    {
+      "SourcePart": "xl/media/image71.png",
+      "NewPart": "xl/media/ndm_help_current_image71.png",
+      "Bytes": 1721,
+      "SHA256": "B100FFA94D26C6AC95FC9D18584E182E23DE9F5BCAF96977080F7DD73D0CFC66"
+    },
+    {
+      "SourcePart": "xl/media/image2.png",
+      "NewPart": "xl/media/ndm_help_current_image2.png",
+      "Bytes": 3301,
+      "SHA256": "416C17B7BE3E9D961E272F2E8431C6B1EAC4326A245A4FBA9CDC37175091C1AA"
+    },
+    {
+      "SourcePart": "xl/media/image16.png",
+      "NewPart": "xl/media/ndm_help_current_image16.png",
+      "Bytes": 2530,
+      "SHA256": "6BEB3DCBF4A93CC2FCD7006A78A0E50000BFA00E2C0F203983E2361FFB95C084"
+    },
+    {
+      "SourcePart": "xl/media/image29.png",
+      "NewPart": "xl/media/ndm_help_current_image29.png",
+      "Bytes": 3340,
+      "SHA256": "72E7396CB0869ECEFE29591575A1C3D68CC40B4530CA9892117C32113A935B1B"
+    },
+    {
+      "SourcePart": "xl/media/image11.png",
+      "NewPart": "xl/media/ndm_help_current_image11.png",
+      "Bytes": 5696,
+      "SHA256": "1249B7591C982DEE9FED21E807C5F98F0F2C676C6C1DB754EA472E6C350A4ABC"
+    },
+    {
+      "SourcePart": "xl/media/image24.png",
+      "NewPart": "xl/media/ndm_help_current_image24.png",
+      "Bytes": 3935,
+      "SHA256": "8FDC45199E536CEB0D6064087D986E98AF53AD0112939608A3ECDE3A117FBB60"
+    },
+    {
+      "SourcePart": "xl/media/image32.png",
+      "NewPart": "xl/media/ndm_help_current_image32.png",
+      "Bytes": 1379,
+      "SHA256": "9AC1E7A862C652E5EBD77A7D4CA5E39F4BBB622426BC317F736331D70E53AE13"
+    },
+    {
+      "SourcePart": "xl/media/image37.png",
+      "NewPart": "xl/media/ndm_help_current_image37.png",
+      "Bytes": 3240,
+      "SHA256": "1C68CD06F7B03159BCD7758BF2805BB19B1281F9A9EA3D800FD1E774EA382227"
+    },
+    {
+      "SourcePart": "xl/media/image40.png",
+      "NewPart": "xl/media/ndm_help_current_image40.png",
+      "Bytes": 2647,
+      "SHA256": "CA98C6704C7CC3473D44E60E2545832AC5791A5B7E920067F8556FA224EB3350"
+    },
+    {
+      "SourcePart": "xl/media/image45.png",
+      "NewPart": "xl/media/ndm_help_current_image45.png",
+      "Bytes": 2474,
+      "SHA256": "6B25FD100EA4D3CAEDC350ACDB126086CCE2F9CBF6C29F5304336257B6DB5624"
+    },
+    {
+      "SourcePart": "xl/media/image53.png",
+      "NewPart": "xl/media/ndm_help_current_image53.png",
+      "Bytes": 4692,
+      "SHA256": "1A2C1B0166E7B0E10F843B62D867C94CB86024E9553D42148215B9B498EEA917"
+    },
+    {
+      "SourcePart": "xl/media/image58.png",
+      "NewPart": "xl/media/ndm_help_current_image58.png",
+      "Bytes": 1540,
+      "SHA256": "00295DBDA0A2EE732449635B3FD618040C361EB53A9AD4C5F2E67097EE80FEC0"
+    },
+    {
+      "SourcePart": "xl/media/image66.png",
+      "NewPart": "xl/media/ndm_help_current_image66.png",
+      "Bytes": 1627,
+      "SHA256": "B1005E195641CE4FB53AEAE620B02E9161D5DE09803D0DB3C4484F1134A39CC1"
+    },
+    {
+      "SourcePart": "xl/media/image74.png",
+      "NewPart": "xl/media/ndm_help_current_image74.png",
+      "Bytes": 2405,
+      "SHA256": "FE0C85C0C7BFD37B025395D32EF87471062EC729A2A114E75D46D68CB31BC8BC"
+    },
+    {
+      "SourcePart": "xl/media/image5.png",
+      "NewPart": "xl/media/ndm_help_current_image5.png",
+      "Bytes": 2531,
+      "SHA256": "76FA6EF592BD7FF857DE540E9DC6298E8B5A2B823AFD28EDABBBF7743DE9A8E1"
+    },
+    {
+      "SourcePart": "xl/media/image15.png",
+      "NewPart": "xl/media/ndm_help_current_image15.png",
+      "Bytes": 1722,
+      "SHA256": "9A821783DAD6D39A445391D8A55ED9FD62F96996AE28FB87F5DB5E08F87FE69F"
+    },
+    {
+      "SourcePart": "xl/media/image23.png",
+      "NewPart": "xl/media/ndm_help_current_image23.png",
+      "Bytes": 3989,
+      "SHA256": "0802F382140FAFCED1D7BEB7D8ACCE37EB54D171479F0748A65D5B29F62A00D5"
+    },
+    {
+      "SourcePart": "xl/media/image28.png",
+      "NewPart": "xl/media/ndm_help_current_image28.png",
+      "Bytes": 2118,
+      "SHA256": "0C127B9C8BF6F9A88ECF3E5151ED3322A192DF551E0773314BAF01DCEBFE99EA"
+    },
+    {
+      "SourcePart": "xl/media/image36.png",
+      "NewPart": "xl/media/ndm_help_current_image36.png",
+      "Bytes": 18388,
+      "SHA256": "4EB28E887380111F37FF9C58BDAE020A334FBB429969B5D9C85BABE5989F9DD8"
+    },
+    {
+      "SourcePart": "xl/media/image49.png",
+      "NewPart": "xl/media/ndm_help_current_image49.png",
+      "Bytes": 2442,
+      "SHA256": "BA36C64A46E6034F64685DB1012B8CC32D97C59B514BCF2F6F0A1EC115DA6534"
+    },
+    {
+      "SourcePart": "xl/media/image57.png",
+      "NewPart": "xl/media/ndm_help_current_image57.png",
+      "Bytes": 3636,
+      "SHA256": "B8C83046B22870B9D6B09F23D83FED6FD1F8A91C17FA515A348A204C3AB13E6B"
+    },
+    {
+      "SourcePart": "xl/media/image61.png",
+      "NewPart": "xl/media/ndm_help_current_image61.png",
+      "Bytes": 1918,
+      "SHA256": "9551C1A7E4A84774F0607A7454AB9CF0589EA304F91C52899C9B0A1299A053CC"
+    },
+    {
+      "SourcePart": "xl/media/image10.png",
+      "NewPart": "xl/media/ndm_help_current_image10.png",
+      "Bytes": 4829,
+      "SHA256": "9F305BC4D7D0306B1EAF4C2BC609F00859E2990CC468D960ECAD1AE8B8F4BDA7"
+    },
+    {
+      "SourcePart": "xl/media/image19.png",
+      "NewPart": "xl/media/ndm_help_current_image19.png",
+      "Bytes": 2760,
+      "SHA256": "8A48A4568FE1D8DCA4D1FED2DCCEA221557B9527F01E7DA64EC5070FD10FF393"
+    },
+    {
+      "SourcePart": "xl/media/image31.png",
+      "NewPart": "xl/media/ndm_help_current_image31.png",
+      "Bytes": 19881,
+      "SHA256": "675C941239967ECB23F62BB818102831F995484609FC1744E5B098CF8E1DC916"
+    },
+    {
+      "SourcePart": "xl/media/image44.png",
+      "NewPart": "xl/media/ndm_help_current_image44.png",
+      "Bytes": 3267,
+      "SHA256": "5B3DACCA7CBADF14BCEC033C5A929E9C91E0DDFDCDDE219721E480C005C74DC9"
+    },
+    {
+      "SourcePart": "xl/media/image52.png",
+      "NewPart": "xl/media/ndm_help_current_image52.png",
+      "Bytes": 1764,
+      "SHA256": "4F47516358EE411FE271DC9172570547ACF0D249D712ED4FE87257E5806693A6"
+    },
+    {
+      "SourcePart": "xl/media/image60.png",
+      "NewPart": "xl/media/ndm_help_current_image60.png",
+      "Bytes": 2991,
+      "SHA256": "D0B42A5DF1EF2888DE65B0FD9A55890B8DFB18FEBE0F2DFF1F2A57F77A53C1C6"
+    },
+    {
+      "SourcePart": "xl/media/image65.png",
+      "NewPart": "xl/media/ndm_help_current_image65.png",
+      "Bytes": 4795,
+      "SHA256": "58859FDB4CEEA054E5DB69431F321E0D6295FB3370DFE03DABB45219351DEDD7"
+    },
+    {
+      "SourcePart": "xl/media/image73.png",
+      "NewPart": "xl/media/ndm_help_current_image73.png",
+      "Bytes": 3310,
+      "SHA256": "0DA7263FBC57BA356D1DB16910870B7A79DF347BFBF7A6AE1121AEAB042E43FB"
+    },
+    {
+      "SourcePart": "xl/media/image4.png",
+      "NewPart": "xl/media/ndm_help_current_image4.png",
+      "Bytes": 5056,
+      "SHA256": "B2D2B03F1AA7B8734EC507166BE795C572F1EC36D43FF3D6ED7B2ABF73E8B2E8"
+    },
+    {
+      "SourcePart": "xl/media/image9.png",
+      "NewPart": "xl/media/ndm_help_current_image9.png",
+      "Bytes": 2707,
+      "SHA256": "3C98DB84933564962622AF69560F5B24F968A4B424A85A09DF4264AB33C2C451"
+    },
+    {
+      "SourcePart": "xl/media/image14.png",
+      "NewPart": "xl/media/ndm_help_current_image14.png",
+      "Bytes": 2931,
+      "SHA256": "B66810E7E54269D16CAEFA3F0E485C3DF106CF2DC14E715FA1EAAE9D8F9F87E9"
+    },
+    {
+      "SourcePart": "xl/media/image22.png",
+      "NewPart": "xl/media/ndm_help_current_image22.png",
+      "Bytes": 3417,
+      "SHA256": "EF47F0E03661ECD5270EA5529DBD1D449F743E3C604963F168531C9543E3C713"
+    },
+    {
+      "SourcePart": "xl/media/image27.png",
+      "NewPart": "xl/media/ndm_help_current_image27.png",
+      "Bytes": 2626,
+      "SHA256": "59F19785CC2B2D244CAE8806AAECF96F1732B304B2A51B123D62C3D3AD33F79D"
+    },
+    {
+      "SourcePart": "xl/media/image30.png",
+      "NewPart": "xl/media/ndm_help_current_image30.png",
+      "Bytes": 4596,
+      "SHA256": "61D9139039437B774A8B5DEBEE8F5AB3AB62CFF8E6E501F49B71964A02552CB6"
+    },
+    {
+      "SourcePart": "xl/media/image35.png",
+      "NewPart": "xl/media/ndm_help_current_image35.png",
+      "Bytes": 1563,
+      "SHA256": "FDAC419B22DEC3FE911375E0823EF8C1809C60B3F270FCDCA343A0D809726BB9"
+    },
+    {
+      "SourcePart": "xl/media/image43.png",
+      "NewPart": "xl/media/ndm_help_current_image43.png",
+      "Bytes": 3785,
+      "SHA256": "DB20B08034EB25662D22747500F998EB240CC5F1652752472F85B3CD36E1DE43"
+    },
+    {
+      "SourcePart": "xl/media/image48.png",
+      "NewPart": "xl/media/ndm_help_current_image48.png",
+      "Bytes": 1383,
+      "SHA256": "52A192355CEEAF25AE7A4F88597FB3030FCABD9713DC1D26C74C307774E05DBB"
+    },
+    {
+      "SourcePart": "xl/media/image56.png",
+      "NewPart": "xl/media/ndm_help_current_image56.png",
+      "Bytes": 6291,
+      "SHA256": "D8E43B773480BEC619AAD1BB91287D6B18F89B3FEFBF354599AA1A254E96A47C"
+    },
+    {
+      "SourcePart": "xl/media/image64.png",
+      "NewPart": "xl/media/ndm_help_current_image64.png",
+      "Bytes": 4259,
+      "SHA256": "3AB15D0A12485BA80260156A733B3FF6B6C48408CE99728364F4AEE41E78762E"
+    },
+    {
+      "SourcePart": "xl/media/image69.png",
+      "NewPart": "xl/media/ndm_help_current_image69.png",
+      "Bytes": 2945,
+      "SHA256": "204DF2A8CA8B77D82692960479A98AA62389526ECF0AC85D22AEB604DDFD6D8B"
+    },
+    {
+      "SourcePart": "xl/media/image8.png",
+      "NewPart": "xl/media/ndm_help_current_image8.png",
+      "Bytes": 1845,
+      "SHA256": "BAC44BB18E27EF75B37C8E56072B0137D4097987DA0159959BF7C65CEB4D87D7"
+    },
+    {
+      "SourcePart": "xl/media/image51.png",
+      "NewPart": "xl/media/ndm_help_current_image51.png",
+      "Bytes": 1732,
+      "SHA256": "564B136460F2126AA7BEFA8CE5BDE3FD5371B4BD5D54F6B8DE12DE39AB210F92"
+    },
+    {
+      "SourcePart": "xl/media/image72.png",
+      "NewPart": "xl/media/ndm_help_current_image72.png",
+      "Bytes": 4190,
+      "SHA256": "66680DC866ED2033BBA3CAC8672C2DC16BF5A4BE83CE7B59C55E5CC84B159563"
+    },
+    {
+      "SourcePart": "xl/media/image3.png",
+      "NewPart": "xl/media/ndm_help_current_image3.png",
+      "Bytes": 2797,
+      "SHA256": "75FD80522F5907FFDE4B56AC58CDD74B8529E94B7676A8F3E52444BA2D4E2351"
+    },
+    {
+      "SourcePart": "xl/media/image12.png",
+      "NewPart": "xl/media/ndm_help_current_image12.png",
+      "Bytes": 2371,
+      "SHA256": "0353667D301579AC3FC603365D29A5F9265E4BFB416C3555A80DB87E65ECAB46"
+    },
+    {
+      "SourcePart": "xl/media/image17.png",
+      "NewPart": "xl/media/ndm_help_current_image17.png",
+      "Bytes": 4508,
+      "SHA256": "C1AC415569FA7DB8070C4FE147C3BE8AAEC1C5F2A193A1FCBBA9A52C9497E366"
+    },
+    {
+      "SourcePart": "xl/media/image25.png",
+      "NewPart": "xl/media/ndm_help_current_image25.png",
+      "Bytes": 2140,
+      "SHA256": "F5E2BED70168CE46BB7C0F7DEC96062FC2628837026429276F66CB5858A2BE3A"
+    },
+    {
+      "SourcePart": "xl/media/image33.png",
+      "NewPart": "xl/media/ndm_help_current_image33.png",
+      "Bytes": 3255,
+      "SHA256": "AF356892C35BDA20BDC53753CFD54B5DEF38E8DA4C4BD754B54624FEEDC961DD"
+    },
+    {
+      "SourcePart": "xl/media/image38.png",
+      "NewPart": "xl/media/ndm_help_current_image38.png",
+      "Bytes": 17353,
+      "SHA256": "3AB24104FEFEDC03FC174F78D9D7B4140CC274639956435D096939706AB9EC30"
+    },
+    {
+      "SourcePart": "xl/media/image46.png",
+      "NewPart": "xl/media/ndm_help_current_image46.png",
+      "Bytes": 18600,
+      "SHA256": "EDBA4626C53FA96A286BB3AE878548A642E0EC0B8DF19081584445EE1AFA15C7"
+    },
+    {
+      "SourcePart": "xl/media/image59.png",
+      "NewPart": "xl/media/ndm_help_current_image59.png",
+      "Bytes": 2972,
+      "SHA256": "76FF7574822EA165F91D555ADADB5A47F283902FD82C8AA70C0FB16AA6DE0FCC"
+    },
+    {
+      "SourcePart": "xl/media/image67.png",
+      "NewPart": "xl/media/ndm_help_current_image67.png",
+      "Bytes": 2599,
+      "SHA256": "DC7F30F55137FE955870C12FF1FD6D790BD2F80E3199A893754065A7C99E701E"
+    },
+    {
+      "SourcePart": "xl/media/image20.png",
+      "NewPart": "xl/media/ndm_help_current_image20.png",
+      "Bytes": 3226,
+      "SHA256": "442A01690B7F7175C1821B9E17F59E21D89FB0692FB7B43F6F6195B5326873BE"
+    },
+    {
+      "SourcePart": "xl/media/image41.png",
+      "NewPart": "xl/media/ndm_help_current_image41.png",
+      "Bytes": 4504,
+      "SHA256": "8B50DCC4E89DBFB2637BE77DBF2C1BE111F12ED638B67A459B77D065F239A58A"
+    },
+    {
+      "SourcePart": "xl/media/image54.png",
+      "NewPart": "xl/media/ndm_help_current_image54.png",
+      "Bytes": 2452,
+      "SHA256": "44CEB7F39E70AA512D2C86FB913B1C22EF281F4B48D175FE757BFBE5093C86C8"
+    },
+    {
+      "SourcePart": "xl/media/image62.png",
+      "NewPart": "xl/media/ndm_help_current_image62.png",
+      "Bytes": 1747,
+      "SHA256": "372BA8F536FC39EE9EA7067D9727F465F1EE8F1199B4C0CD0FEB79690F889C41"
+    },
+    {
+      "SourcePart": "xl/media/image70.png",
+      "NewPart": "xl/media/ndm_help_current_image70.png",
+      "Bytes": 1311,
+      "SHA256": "06CEA3D9A47AC41C99FE797D4E144E2D9ABEADAAAB9CEF5E17F08CE431A593BC"
+    },
+    {
+      "SourcePart": "xl/media/image75.png",
+      "NewPart": "xl/media/ndm_help_current_image75.png",
+      "Bytes": 1212,
+      "SHA256": "A3D68FF95C9EF8A80D78530F178426ECB3540753D849CF02A9E06BAB4A1B516A"
+    },
+    {
+      "SourcePart": "xl/media/image1.png",
+      "NewPart": "xl/media/ndm_help_current_image1.png",
+      "Bytes": 3248,
+      "SHA256": "6D18B51397153702F1496379121D363A58A42A270309A430245462A46986B2EB"
+    },
+    {
+      "SourcePart": "xl/media/image6.png",
+      "NewPart": "xl/media/ndm_help_current_image6.png",
+      "Bytes": 4084,
+      "SHA256": "80C8D4865D98519FD0936A8D0D8197A1126CCF99DC43E9FF16582618D276599E"
+    }
+  ],
+  "Styles": {
+    "PreservedStylePrefixes": {
+      "numFmts": 5,
+      "fonts": 35,
+      "fills": 18,
+      "borders": 19,
+      "cellStyleXfs": 5,
+      "cellXfs": 173
+    },
+    "FinalStyleCounts": {
+      "numFmts": 5,
+      "fonts": 35,
+      "fills": 18,
+      "borders": 20,
+      "cellStyleXfs": 7,
+      "cellXfs": 253
+    }
+  },
+  "MainSchema": {
+    "ModeCells": [
+      {
+        "Type": "Circle",
+        "Key": "Circle",
+        "Address": "H12",
+        "Value": "IncludeStart"
+      },
+      {
+        "Type": "Rectangles",
+        "Key": "R1.Top",
+        "Address": "H36",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "Rectangles",
+        "Key": "R1.Bottom",
+        "Address": "H37",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "Rectangles",
+        "Key": "R1.Left",
+        "Address": "H38",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "Rectangles",
+        "Key": "R1.Right",
+        "Address": "H39",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "Rectangles",
+        "Key": "R2.Top",
+        "Address": "H40",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "Rectangles",
+        "Key": "R2.Bottom",
+        "Address": "H41",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "Rectangles",
+        "Key": "R2.Left",
+        "Address": "H42",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "Rectangles",
+        "Key": "R2.Right",
+        "Address": "H43",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "PointedSection",
+        "Key": "Top",
+        "Address": "H76",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "PointedSection",
+        "Key": "Bottom",
+        "Address": "H77",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "PointedSection",
+        "Key": "Left",
+        "Address": "H78",
+        "Value": "ExcludeBoth"
+      },
+      {
+        "Type": "PointedSection",
+        "Key": "Right",
+        "Address": "H79",
+        "Value": "ExcludeBoth"
+      },
+      {
+        "Type": "HollowRectangle",
+        "Key": "Top",
+        "Address": "H108",
+        "Value": "ExcludeBoth"
+      },
+      {
+        "Type": "HollowRectangle",
+        "Key": "Bottom",
+        "Address": "H109",
+        "Value": "ExcludeBoth"
+      },
+      {
+        "Type": "HollowRectangle",
+        "Key": "Left",
+        "Address": "H110",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "HollowRectangle",
+        "Key": "Right",
+        "Address": "H111",
+        "Value": "IncludeBoth"
+      },
+      {
+        "Type": "HollowRectangle",
+        "Key": "OpeningTop",
+        "Address": "H112",
+        "Value": "—"
+      },
+      {
+        "Type": "HollowRectangle",
+        "Key": "OpeningBottom",
+        "Address": "H113",
+        "Value": "—"
+      },
+      {
+        "Type": "HollowRectangle",
+        "Key": "OpeningLeft",
+        "Address": "H114",
+        "Value": "—"
+      },
+      {
+        "Type": "HollowRectangle",
+        "Key": "OpeningRight",
+        "Address": "H115",
+        "Value": "—"
+      }
+    ],
+    "PreservedOtherGeometryCells": 1265,
+    "MovedCommentCells": 33,
+    "FixedListModeCells": 17,
+    "TableRowsAndColumnsInserted": false,
+    "NamedSectionBounds": {
+      "rngCircleGeometry": [
+        3,
+        18
+      ],
+      "rngHollowRectangleGeometry": [
+        92,
+        128
+      ],
+      "rngPointedSectionGeometry": [
+        60,
+        88
+      ],
+      "rngRectanglesGeometry": [
+        22,
+        56
+      ]
+    }
+  },
+  "UpdatedGeometryHelpLinks": [
+    {
+      "Cell": "A2",
+      "Before": "'Справка'!A720",
+      "After": "'Справка'!A724"
+    },
+    {
+      "Cell": "A21",
+      "Before": "'Справка'!A742",
+      "After": "'Справка'!A746"
+    },
+    {
+      "Cell": "A59",
+      "Before": "'Справка'!A728",
+      "After": "'Справка'!A732"
+    },
+    {
+      "Cell": "A91",
+      "Before": "'Справка'!A735",
+      "After": "'Справка'!A739"
+    }
+  ],
+  "UpdatedConfigHelpLinks": [
+    {
+      "Cell": "M19",
+      "Before": "'Справка'!A1499",
+      "After": "'Справка'!A1498"
+    },
+    {
+      "Cell": "M20",
+      "Before": "'Справка'!A1505",
+      "After": "'Справка'!A1504"
+    },
+    {
+      "Cell": "M21",
+      "Before": "'Справка'!A1511",
+      "After": "'Справка'!A1510"
+    },
+    {
+      "Cell": "M22",
+      "Before": "'Справка'!A1517",
+      "After": "'Справка'!A1516"
+    },
+    {
+      "Cell": "M23",
+      "Before": "'Справка'!A1522",
+      "After": "'Справка'!A1521"
+    },
+    {
+      "Cell": "M27",
+      "Before": "'Справка'!A1460",
+      "After": "'Справка'!A1459"
+    },
+    {
+      "Cell": "M28",
+      "Before": "'Справка'!A1466",
+      "After": "'Справка'!A1465"
+    },
+    {
+      "Cell": "M29",
+      "Before": "'Справка'!A1472",
+      "After": "'Справка'!A1471"
+    },
+    {
+      "Cell": "M30",
+      "Before": "'Справка'!A1479",
+      "After": "'Справка'!A1478"
+    },
+    {
+      "Cell": "M31",
+      "Before": "'Справка'!A1485",
+      "After": "'Справка'!A1484"
+    },
+    {
+      "Cell": "M32",
+      "Before": "'Справка'!A1491",
+      "After": "'Справка'!A1490"
+    },
+    {
+      "Cell": "M33",
+      "Before": "'Справка'!A1495",
+      "After": "'Справка'!A1494"
+    },
+    {
+      "Cell": "H2",
+      "Before": "'Справка'!A604",
+      "After": "'Справка'!A605"
+    },
+    {
+      "Cell": "H11",
+      "Before": "'Справка'!A615",
+      "After": "'Справка'!A616"
+    },
+    {
+      "Cell": "H17",
+      "Before": "'Справка'!A673",
+      "After": "'Справка'!A674"
+    },
+    {
+      "Cell": "H25",
+      "Before": "'Справка'!A664",
+      "After": "'Справка'!A665"
+    },
+    {
+      "Cell": "H35",
+      "Before": "'Справка'!A681",
+      "After": "'Справка'!A682"
+    },
+    {
+      "Cell": "AI58",
+      "Before": "'Справка'!A656",
+      "After": "'Справка'!A657"
+    },
+    {
+      "Cell": "H69",
+      "Before": "'Справка'!A623",
+      "After": "'Справка'!A624"
+    },
+    {
+      "Cell": "M104",
+      "Before": "'Справка'!A1378",
+      "After": "'Справка'!A1377"
+    },
+    {
+      "Cell": "M105",
+      "Before": "'Справка'!A1383",
+      "After": "'Справка'!A1382"
+    },
+    {
+      "Cell": "M106",
+      "Before": "'Справка'!A1388",
+      "After": "'Справка'!A1387"
+    },
+    {
+      "Cell": "M107",
+      "Before": "'Справка'!A1397",
+      "After": "'Справка'!A1396"
+    },
+    {
+      "Cell": "M108",
+      "Before": "'Справка'!A1402",
+      "After": "'Справка'!A1401"
+    },
+    {
+      "Cell": "M109",
+      "Before": "'Справка'!A1407",
+      "After": "'Справка'!A1406"
+    },
+    {
+      "Cell": "M110",
+      "Before": "'Справка'!A1412",
+      "After": "'Справка'!A1411"
+    },
+    {
+      "Cell": "M111",
+      "Before": "'Справка'!A1421",
+      "After": "'Справка'!A1420"
+    },
+    {
+      "Cell": "M112",
+      "Before": "'Справка'!A1429",
+      "After": "'Справка'!A1428"
+    },
+    {
+      "Cell": "M113",
+      "Before": "'Справка'!A1436",
+      "After": "'Справка'!A1435"
+    },
+    {
+      "Cell": "M114",
+      "Before": "'Справка'!A1441",
+      "After": "'Справка'!A1440"
+    },
+    {
+      "Cell": "M115",
+      "Before": "'Справка'!A1446",
+      "After": "'Справка'!A1445"
+    },
+    {
+      "Cell": "M116",
+      "Before": "'Справка'!A1451",
+      "After": "'Справка'!A1450"
+    },
+    {
+      "Cell": "M117",
+      "Before": "'Справка'!A1456",
+      "After": "'Справка'!A1455"
+    },
+    {
+      "Cell": "H102",
+      "Before": "'Справка'!A701",
+      "After": "'Справка'!A702"
+    },
+    {
+      "Cell": "P69",
+      "Before": "'Справка'!A649",
+      "After": "'Справка'!A650"
+    },
+    {
+      "Cell": "X1",
+      "Before": "'Справка'!A695",
+      "After": "'Справка'!A696"
+    },
+    {
+      "Cell": "E5",
+      "Before": "'Справка'!A750",
+      "After": "'Справка'!A754"
+    },
+    {
+      "Cell": "E6",
+      "Before": "'Справка'!A758",
+      "After": "'Справка'!A762"
+    },
+    {
+      "Cell": "E7",
+      "Before": "'Справка'!A1521",
+      "After": "'Справка'!A1525"
+    },
+    {
+      "Cell": "E8",
+      "Before": "'Справка'!A764",
+      "After": "'Справка'!A768"
+    },
+    {
+      "Cell": "E9",
+      "Before": "'Справка'!A774",
+      "After": "'Справка'!A778"
+    },
+    {
+      "Cell": "E13",
+      "Before": "'Справка'!A781",
+      "After": "'Справка'!A785"
+    },
+    {
+      "Cell": "E14",
+      "Before": "'Справка'!A789",
+      "After": "'Справка'!A793"
+    },
+    {
+      "Cell": "E15",
+      "Before": "'Справка'!A792",
+      "After": "'Справка'!A796"
+    },
+    {
+      "Cell": "E17",
+      "Before": "'Справка'!A801",
+      "After": "'Справка'!A805"
+    },
+    {
+      "Cell": "E18",
+      "Before": "'Справка'!A806",
+      "After": "'Справка'!A810"
+    },
+    {
+      "Cell": "E19",
+      "Before": "'Справка'!A815",
+      "After": "'Справка'!A819"
+    },
+    {
+      "Cell": "E21",
+      "Before": "'Справка'!A820",
+      "After": "'Справка'!A824"
+    },
+    {
+      "Cell": "E22",
+      "Before": "'Справка'!A827",
+      "After": "'Справка'!A831"
+    },
+    {
+      "Cell": "E25",
+      "Before": "'Справка'!A833",
+      "After": "'Справка'!A837"
+    },
+    {
+      "Cell": "E26",
+      "Before": "'Справка'!A841",
+      "After": "'Справка'!A845"
+    },
+    {
+      "Cell": "E29",
+      "Before": "'Справка'!A847",
+      "After": "'Справка'!A851"
+    },
+    {
+      "Cell": "E30",
+      "Before": "'Справка'!A855",
+      "After": "'Справка'!A859"
+    },
+    {
+      "Cell": "E31",
+      "Before": "'Справка'!A865",
+      "After": "'Справка'!A869"
+    },
+    {
+      "Cell": "E32",
+      "Before": "'Справка'!A873",
+      "After": "'Справка'!A877"
+    },
+    {
+      "Cell": "E33",
+      "Before": "'Справка'!A879",
+      "After": "'Справка'!A883"
+    },
+    {
+      "Cell": "E34",
+      "Before": "'Справка'!A882",
+      "After": "'Справка'!A886"
+    },
+    {
+      "Cell": "E38",
+      "Before": "'Справка'!A893",
+      "After": "'Справка'!A897"
+    },
+    {
+      "Cell": "E39",
+      "Before": "'Справка'!A899",
+      "After": "'Справка'!A903"
+    },
+    {
+      "Cell": "E40",
+      "Before": "'Справка'!A905",
+      "After": "'Справка'!A909"
+    },
+    {
+      "Cell": "E41",
+      "Before": "'Справка'!A910",
+      "After": "'Справка'!A914"
+    },
+    {
+      "Cell": "E42",
+      "Before": "'Справка'!A915",
+      "After": "'Справка'!A919"
+    },
+    {
+      "Cell": "E43",
+      "Before": "'Справка'!A920",
+      "After": "'Справка'!A924"
+    },
+    {
+      "Cell": "E45",
+      "Before": "'Справка'!A925",
+      "After": "'Справка'!A929"
+    },
+    {
+      "Cell": "E49",
+      "Before": "'Справка'!A930",
+      "After": "'Справка'!A934"
+    },
+    {
+      "Cell": "E50",
+      "Before": "'Справка'!A937",
+      "After": "'Справка'!A941"
+    },
+    {
+      "Cell": "E52",
+      "Before": "'Справка'!A946",
+      "After": "'Справка'!A950"
+    },
+    {
+      "Cell": "E54",
+      "Before": "'Справка'!A953",
+      "After": "'Справка'!A957"
+    },
+    {
+      "Cell": "E55",
+      "Before": "'Справка'!A960",
+      "After": "'Справка'!A964"
+    },
+    {
+      "Cell": "E56",
+      "Before": "'Справка'!A966",
+      "After": "'Справка'!A970"
+    },
+    {
+      "Cell": "E57",
+      "Before": "'Справка'!A973",
+      "After": "'Справка'!A977"
+    },
+    {
+      "Cell": "E58",
+      "Before": "'Справка'!A980",
+      "After": "'Справка'!A984"
+    },
+    {
+      "Cell": "E59",
+      "Before": "'Справка'!A991",
+      "After": "'Справка'!A995"
+    },
+    {
+      "Cell": "E63",
+      "Before": "'Справка'!A1002",
+      "After": "'Справка'!A1006"
+    },
+    {
+      "Cell": "E64",
+      "Before": "'Справка'!A1009",
+      "After": "'Справка'!A1013"
+    },
+    {
+      "Cell": "E65",
+      "Before": "'Справка'!A1017",
+      "After": "'Справка'!A1021"
+    },
+    {
+      "Cell": "E66",
+      "Before": "'Справка'!A1023",
+      "After": "'Справка'!A1027"
+    },
+    {
+      "Cell": "E67",
+      "Before": "'Справка'!A1026",
+      "After": "'Справка'!A1030"
+    },
+    {
+      "Cell": "E68",
+      "Before": "'Справка'!A1033",
+      "After": "'Справка'!A1037"
+    },
+    {
+      "Cell": "E69",
+      "Before": "'Справка'!A1038",
+      "After": "'Справка'!A1042"
+    },
+    {
+      "Cell": "E70",
+      "Before": "'Справка'!A1041",
+      "After": "'Справка'!A1045"
+    },
+    {
+      "Cell": "E71",
+      "Before": "'Справка'!A1048",
+      "After": "'Справка'!A1052"
+    },
+    {
+      "Cell": "E72",
+      "Before": "'Справка'!A1053",
+      "After": "'Справка'!A1057"
+    },
+    {
+      "Cell": "E73",
+      "Before": "'Справка'!A1056",
+      "After": "'Справка'!A1060"
+    },
+    {
+      "Cell": "E74",
+      "Before": "'Справка'!A1062",
+      "After": "'Справка'!A1066"
+    },
+    {
+      "Cell": "E76",
+      "Before": "'Справка'!A1072",
+      "After": "'Справка'!A1076"
+    },
+    {
+      "Cell": "E77",
+      "Before": "'Справка'!A1076",
+      "After": "'Справка'!A1080"
+    },
+    {
+      "Cell": "E78",
+      "Before": "'Справка'!A1080",
+      "After": "'Справка'!A1084"
+    },
+    {
+      "Cell": "E80",
+      "Before": "'Справка'!A1084",
+      "After": "'Справка'!A1088"
+    },
+    {
+      "Cell": "E81",
+      "Before": "'Справка'!A1088",
+      "After": "'Справка'!A1092"
+    },
+    {
+      "Cell": "E85",
+      "Before": "'Справка'!A1092",
+      "After": "'Справка'!A1096"
+    },
+    {
+      "Cell": "E86",
+      "Before": "'Справка'!A1096",
+      "After": "'Справка'!A1100"
+    },
+    {
+      "Cell": "E87",
+      "Before": "'Справка'!A1104",
+      "After": "'Справка'!A1108"
+    },
+    {
+      "Cell": "E88",
+      "Before": "'Справка'!A1110",
+      "After": "'Справка'!A1114"
+    },
+    {
+      "Cell": "E90",
+      "Before": "'Справка'!A1115",
+      "After": "'Справка'!A1119"
+    },
+    {
+      "Cell": "E91",
+      "Before": "'Справка'!A1122",
+      "After": "'Справка'!A1126"
+    },
+    {
+      "Cell": "E92",
+      "Before": "'Справка'!A1127",
+      "After": "'Справка'!A1131"
+    },
+    {
+      "Cell": "E93",
+      "Before": "'Справка'!A1131",
+      "After": "'Справка'!A1135"
+    },
+    {
+      "Cell": "E94",
+      "Before": "'Справка'!A1135",
+      "After": "'Справка'!A1139"
+    },
+    {
+      "Cell": "E95",
+      "Before": "'Справка'!A1140",
+      "After": "'Справка'!A1144"
+    },
+    {
+      "Cell": "E96",
+      "Before": "'Справка'!A1144",
+      "After": "'Справка'!A1148"
+    },
+    {
+      "Cell": "E97",
+      "Before": "'Справка'!A1151",
+      "After": "'Справка'!A1155"
+    },
+    {
+      "Cell": "E98",
+      "Before": "'Справка'!A1156",
+      "After": "'Справка'!A1160"
+    },
+    {
+      "Cell": "E100",
+      "Before": "'Справка'!A1161",
+      "After": "'Справка'!A1165"
+    },
+    {
+      "Cell": "E101",
+      "Before": "'Справка'!A1165",
+      "After": "'Справка'!A1169"
+    },
+    {
+      "Cell": "E102",
+      "Before": "'Справка'!A1169",
+      "After": "'Справка'!A1173"
+    },
+    {
+      "Cell": "E103",
+      "Before": "'Справка'!A1173",
+      "After": "'Справка'!A1177"
+    },
+    {
+      "Cell": "E104",
+      "Before": "'Справка'!A1177",
+      "After": "'Справка'!A1181"
+    },
+    {
+      "Cell": "E105",
+      "Before": "'Справка'!A1181",
+      "After": "'Справка'!A1185"
+    },
+    {
+      "Cell": "E109",
+      "Before": "'Справка'!A1185",
+      "After": "'Справка'!A1189"
+    },
+    {
+      "Cell": "E110",
+      "Before": "'Справка'!A1194",
+      "After": "'Справка'!A1198"
+    },
+    {
+      "Cell": "E111",
+      "Before": "'Справка'!A1199",
+      "After": "'Справка'!A1203"
+    },
+    {
+      "Cell": "E112",
+      "Before": "'Справка'!A1204",
+      "After": "'Справка'!A1208"
+    },
+    {
+      "Cell": "E114",
+      "Before": "'Справка'!A1209",
+      "After": "'Справка'!A1213"
+    },
+    {
+      "Cell": "E115",
+      "Before": "'Справка'!A1213",
+      "After": "'Справка'!A1217"
+    },
+    {
+      "Cell": "E116",
+      "Before": "'Справка'!A1221",
+      "After": "'Справка'!A1225"
+    },
+    {
+      "Cell": "E117",
+      "Before": "'Справка'!A1225",
+      "After": "'Справка'!A1229"
+    },
+    {
+      "Cell": "E118",
+      "Before": "'Справка'!A1232",
+      "After": "'Справка'!A1236"
+    },
+    {
+      "Cell": "E119",
+      "Before": "'Справка'!A1238",
+      "After": "'Справка'!A1242"
+    },
+    {
+      "Cell": "E120",
+      "Before": "'Справка'!A1244",
+      "After": "'Справка'!A1248"
+    },
+    {
+      "Cell": "E121",
+      "Before": "'Справка'!A1251",
+      "After": "'Справка'!A1255"
+    },
+    {
+      "Cell": "E122",
+      "Before": "'Справка'!A1255",
+      "After": "'Справка'!A1259"
+    },
+    {
+      "Cell": "E123",
+      "Before": "'Справка'!A1260",
+      "After": "'Справка'!A1264"
+    },
+    {
+      "Cell": "E124",
+      "Before": "'Справка'!A1263",
+      "After": "'Справка'!A1267"
+    },
+    {
+      "Cell": "E125",
+      "Before": "'Справка'!A1266",
+      "After": "'Справка'!A1270"
+    },
+    {
+      "Cell": "E126",
+      "Before": "'Справка'!A1269",
+      "After": "'Справка'!A1273"
+    },
+    {
+      "Cell": "E127",
+      "Before": "'Справка'!A1274",
+      "After": "'Справка'!A1278"
+    },
+    {
+      "Cell": "E128",
+      "Before": "'Справка'!A1277",
+      "After": "'Справка'!A1281"
+    },
+    {
+      "Cell": "E129",
+      "Before": "'Справка'!A1280",
+      "After": "'Справка'!A1284"
+    },
+    {
+      "Cell": "E130",
+      "Before": "'Справка'!A1283",
+      "After": "'Справка'!A1287"
+    },
+    {
+      "Cell": "E133",
+      "Before": "'Справка'!A1286",
+      "After": "'Справка'!A1290"
+    },
+    {
+      "Cell": "E134",
+      "Before": "'Справка'!A1291",
+      "After": "'Справка'!A1295"
+    },
+    {
+      "Cell": "E135",
+      "Before": "'Справка'!A1298",
+      "After": "'Справка'!A1302"
+    },
+    {
+      "Cell": "E136",
+      "Before": "'Справка'!A1303",
+      "After": "'Справка'!A1307"
+    },
+    {
+      "Cell": "E137",
+      "Before": "'Справка'!A1309",
+      "After": "'Справка'!A1313"
+    },
+    {
+      "Cell": "E138",
+      "Before": "'Справка'!A1315",
+      "After": "'Справка'!A1319"
+    },
+    {
+      "Cell": "E139",
+      "Before": "'Справка'!A1320",
+      "After": "'Справка'!A1324"
+    },
+    {
+      "Cell": "E140",
+      "Before": "'Справка'!A1327",
+      "After": "'Справка'!A1331"
+    },
+    {
+      "Cell": "E141",
+      "Before": "'Справка'!A1332",
+      "After": "'Справка'!A1336"
+    },
+    {
+      "Cell": "E142",
+      "Before": "'Справка'!A1337",
+      "After": "'Справка'!A1341"
+    },
+    {
+      "Cell": "E143",
+      "Before": "'Справка'!A1342",
+      "After": "'Справка'!A1346"
+    },
+    {
+      "Cell": "E144",
+      "Before": "'Справка'!A1347",
+      "After": "'Справка'!A1351"
+    },
+    {
+      "Cell": "E145",
+      "Before": "'Справка'!A1352",
+      "After": "'Справка'!A1356"
+    },
+    {
+      "Cell": "E146",
+      "Before": "'Справка'!A1357",
+      "After": "'Справка'!A1361"
+    },
+    {
+      "Cell": "E147",
+      "Before": "'Справка'!A1364",
+      "After": "'Справка'!A1368"
+    },
+    {
+      "Cell": "E148",
+      "Before": "'Справка'!A1367",
+      "After": "'Справка'!A1371"
+    },
+    {
+      "Cell": "E149",
+      "Before": "'Справка'!A1370",
+      "After": "'Справка'!A1374"
+    }
+  ],
+  "ChangedPrintNames": [],
+  "OtherCopyUnchanged": true,
+  "OnlyVBAChanged": false,
+  "RewrittenOriginalParts": [
+    "xl/drawings/_rels/drawing2.xml.rels",
+    "xl/drawings/drawing2.xml",
+    "xl/styles.xml",
+    "xl/vbaProject.bin",
+    "xl/worksheets/_rels/sheet3.xml.rels",
+    "xl/worksheets/sheet1.xml",
+    "xl/worksheets/sheet2.xml",
+    "xl/worksheets/sheet3.xml"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "Status": "ENTIRE_TERMINAL_STDIO_READ_NO_UNEXPECTED_ERRORS",
+  "ObservedUTC": "2026-10-30T04:44:28.406481+00:00",
+  "SourceSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "Files": [
+    {
+      "File": "FullLaunch.stdout.log",
+      "Bytes": 15328,
+      "SHA256": "BD6A50A1FC5017D46CDE1B5685FF1D9E87D9FA09CC8268B78959E4D6B626B606",
+      "AllBytesRead": true,
+      "Decoding": [
+        "UTF8"
+      ],
+      "UnexpectedSignals": [],
+      "Lines": 132
+    },
+    {
+      "File": "FullLaunch.stderr.log",
+      "Bytes": 4016,
+      "SHA256": "B384F6D9A2AF1E552DC6E1C885A9ECF621011157945EF4535445D9DE19D9B11E",
+      "AllBytesRead": true,
+      "Decoding": [
+        "UTF8"
+      ],
+      "UnexpectedSignals": [],
+      "Lines": 45
+    }
+  ],
+  "ProofDoesNotReplacePrimaryOrOfficialAcceptance": true
+}

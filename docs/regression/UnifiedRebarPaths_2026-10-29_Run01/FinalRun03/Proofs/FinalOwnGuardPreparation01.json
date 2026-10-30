@@ -1,0 +1,36 @@
+{
+  "Status": "PRIVATE_END_ONLY_OWN_GUARDS_PREPARED_SYNTAX_CHECKED",
+  "ObservedUTC": "2026-10-30T04:01:10.3617484+00:00",
+  "Files": [
+    {
+      "File": "TestObserveOwnIdentityFinal01.ps1",
+      "SHA256": "D038434748F17294AE476CE144849EF981CC5A3FCB21408940B13BD8CC9524F2",
+      "UTF8BOM": true,
+      "PS7Parse": "PASS",
+      "PS5Parse": "PASS",
+      "Executed": false
+    },
+    {
+      "File": "TestReviewAllGoalOwnFinal01.ps1",
+      "SHA256": "DF3C0217BAA16E2A697F9F0C95365D5F1A0BD6434285EF7422DE721AFD310BC8",
+      "UTF8BOM": true,
+      "PS7Parse": "PASS",
+      "PS5Parse": "PASS",
+      "Executed": false
+    },
+    {
+      "File": "TestPublishReady30Final03.ps1",
+      "SHA256": "955DC97EDC43547939AC57ADC753C2448277B581F35E807E53DEF034CEF3F8F7",
+      "UTF8BOM": true,
+      "PS7Parse": "PASS",
+      "PS5Parse": "PASS",
+      "Executed": false
+    }
+  ],
+  "Guard": "Requires entire Run03 PASS and all-own; Ready review also requires native publication",
+  "ParticipatingSourceChanged": false,
+  "NativeStarted": false,
+  "AnyProcessClosed": false,
+  "ReadyPublished": false,
+  "OriginalPublicationScriptBackup": "BeforeOwnReviewPreparation01/TestPublishReady30Final03.ps1"
+}

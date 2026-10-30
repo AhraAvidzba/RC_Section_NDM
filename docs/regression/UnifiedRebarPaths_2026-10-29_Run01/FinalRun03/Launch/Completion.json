@@ -1,0 +1,19 @@
+﻿{
+    "Status":  "PASS_PENDING_PRIMARY_LOG_REVIEW",
+    "FinishedUTC":  "2026-10-30T04:43:19.1176777+00:00",
+    "SourceSHA256":  "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+    "SourceCommit":  "8910245966806984e349b004cc8e0da0d4dccb86",
+    "RunnerExit":  0,
+    "SummaryExit":  0,
+    "FinalizeExit":  0,
+    "CompleteAcceptancePassed":  true,
+    "ExpectedSuites":  182,
+    "CoverageVersion":  7,
+    "PrimaryReviewStillRequired":  true,
+    "ChangedInputs":  [
+
+                      ],
+    "HeadChanged":  false,
+    "DriverError":  "",
+    "EvidenceDirectory":  "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run03"
+}

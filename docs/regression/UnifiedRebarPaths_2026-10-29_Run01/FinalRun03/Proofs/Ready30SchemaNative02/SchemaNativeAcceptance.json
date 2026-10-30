@@ -1,0 +1,14 @@
+﻿{
+    "CommonModeDescriptionRow":  715,
+    "SharedTargets":  [
+                          "$B$730",
+                          "$B$737",
+                          "$B$744",
+                          "$B$752"
+                      ],
+    "MainAcceptedChoices":  68,
+    "MainRejectedChoices":  85,
+    "ProjectionDashes":  4,
+    "SchemaPreparationProof":  "Ready30SchemaPreparation02.json",
+    "HistoricalResultsPreserved":  true
+}

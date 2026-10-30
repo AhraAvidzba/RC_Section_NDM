@@ -1,0 +1,16 @@
+{
+  "Status": "PRIVATE_PREPARATION_STOPPED_BEFORE_OUTPUT",
+  "ObservedUTC": "2026-10-30T04:46:27.8581136+00:00",
+  "Error": "Ambiguous PointedSection Main header; row keys Top/Bottom/Left/Right also prefix the HollowRectangle Main table",
+  "Candidates": [
+    74,
+    106
+  ],
+  "PrivateOutputCreated": false,
+  "OriginalReadySHA256": "6A21BE6E842D88317683D0BEB6228587C387014D24A8D42CA721785F664009C0",
+  "AcceptedMainSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "OriginalReadyReplaced": false,
+  "ProductionCodeChanged": false,
+  "FullAcceptanceAffected": false,
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\BeforeReady30AnchorFix01"
+}

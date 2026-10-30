@@ -1,0 +1,16 @@
+﻿{
+    "Created":  "2026-10-30T07:28:17.1178711+03:00",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-29_UnifiedRebar_Run03\\Source\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+    "ProbeWorkbookSHA256":  "F38F777AC67B68D6EF8F15FA623503D13A92827F5D27F702EB97BEC60510F816",
+    "HelperSHA256":  "F84263B90E613EC7C4C3A36373DC3D12994D3D8CD4F9D514ED23B9E507C65D91",
+    "ExtraHelperSHA256":  "8563593A78F7155714B25095794E1EF052EFD6682140627DE06374DD9A9483F6",
+    "SavedFixtureSHA256":  "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F",
+    "Compiled":  true,
+    "ModifiedComponents":  [
+                               "modWorkbookCalculation",
+                               "modTestBatchCalculation"
+                           ],
+    "CalculationExecuted":  false,
+    "ProductionChanged":  false
+}

@@ -1,0 +1,33 @@
+﻿{
+    "HEAD":  "8910245966806984e349b004cc8e0da0d4dccb86",
+    "Branch":  "codex/unified-rebar-paths",
+    "BookSHA256":  "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+    "AllCodeSHA256":  "EE281EA320BAF190C85B49F33194D3FA78619E343536F45F727FEA4B591C65DC",
+    "AtUTC":  "2026-10-30T00:48:49.6484637+00:00",
+    "NativeComponents":  181,
+    "SourceEqualityProof":  "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/FinalPreFull26/SourceEquality13.json",
+    "CleanPublicationProof":  "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Publication26.json",
+    "AffectedDirectedMacrosPerMode":  3,
+    "HistoricalFailedFullPreserved":  true,
+    "MainEndModes":  [
+                         "IncludeBoth",
+                         "ExcludeBoth",
+                         "IncludeStart",
+                         "IncludeEnd"
+                     ],
+    "RepeatForecast":  {
+                           "BasedOnEntirePreviousFull":  true,
+                           "ProductionExecutableStatementsEqual":  true,
+                           "HistoricalLaunchDirectory":  "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02",
+                           "HistoricalBookSHA256":  "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+                           "HistoricalCompletionSHA256":  "4D38D39E6C4C967D9C96029ACD54B6C9535FDED73653BAAA0D98AC013429552D",
+                           "ActualPreviousFullMinutes":  230.11061054,
+                           "Multiplier":  1.2,
+                           "MinimumForecastHours":  5,
+                           "ForecastHours":  5,
+                           "FinalReviewReserveMinutes":  90,
+                           "OverallDeadline":  "2026-10-30T11:00:00.0000000+03:00",
+                           "SourceOperatorProof":  "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/FinalPreFull26/TransferredSourceReview25.json"
+                       },
+    "FullAcceptanceClaim":  false
+}

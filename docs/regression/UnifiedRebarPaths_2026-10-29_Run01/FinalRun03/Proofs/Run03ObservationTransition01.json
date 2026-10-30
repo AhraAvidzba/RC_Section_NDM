@@ -1,0 +1,22 @@
+{
+  "Status": "TRANSITION_PRIMARY_READER_RETRY_SUCCEEDED",
+  "ObservedUTC": "2026-10-30T04:30:08.1585000+00:00",
+  "LaunchDirectory": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03",
+  "InitialReader": "Test-ReviewPrimaryScope.py",
+  "InitialError": "FileNotFoundError: Focused/Probe/Preparation.json while Focused probe was being created",
+  "InitialObserverSession": 32830,
+  "FullDriverPID": 25420,
+  "FullDriverStartTicksUTC": "639289181840254393",
+  "RepeatedReaderExit": 0,
+  "RepeatedReaderCheckedUTC": "2026-10-30T04:28:37.836762+00:00",
+  "CoreReportsRead": 12,
+  "CoreMacrosReviewed": 182,
+  "Failures": [],
+  "InventoryErrors": [],
+  "InputsChecked": 505,
+  "ChangedInputs": [],
+  "HEADUnchanged": true,
+  "FullRunRestarted": false,
+  "CalculationFailure": false,
+  "ParticipatingSourceChanged": false
+}
