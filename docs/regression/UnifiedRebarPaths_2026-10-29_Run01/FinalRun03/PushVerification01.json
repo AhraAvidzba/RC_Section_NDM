@@ -1,0 +1,21 @@
+{
+  "Status": "FEATURE_ARTIFACT_COMMIT_PUSH_VERIFIED",
+  "ObservedUTC": "2026-10-30T05:00:29.6903714+00:00",
+  "Origin": "https://github.com/AhraAvidzba/RC_Section_NDM.git",
+  "Branch": "codex/unified-rebar-paths",
+  "ArtifactCommit": "193f5056d650d8e0db5e3f630b011f9dcf55add9",
+  "RemoteFeatureHead": "193f5056d650d8e0db5e3f630b011f9dcf55add9",
+  "RemoteMainHead": "4c6e6ece424f821fc071a8b277e276cd7ea93d22",
+  "PushExit": 0,
+  "IndependentLsRemoteConfirmed": true,
+  "ForcePush": false,
+  "AcceptedCodeCommit": "8910245966806984e349b004cc8e0da0d4dccb86",
+  "MainSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "ReadySHA256": "2CD43036E4C8146FB4B3589ED74DEBAB3678ECEDE6B0C0F846A10418A59686DD",
+  "CoreMacros": 182,
+  "FocusedSingles": 122,
+  "FocusedRecords": 26,
+  "AllGoalOwnTerminal": 276,
+  "MainIntegrationRequiresUserAgreement": true,
+  "SubsequentReceiptCommitChangesOnlyReportsAndProofs": true
+}

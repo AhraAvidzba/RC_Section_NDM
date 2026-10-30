@@ -38,7 +38,7 @@
   "UserMainBackupPrivatePreserved": true,
   "ReadyOriginalBackupPrivatePreserved": true,
   "FeatureBranch": "codex/unified-rebar-paths",
-  "FeaturePushVerified": false,
+  "FeaturePushVerified": true,
   "MainIntegrationRequiresUserAgreement": true,
   "CopiedProofs": [
     {
@@ -370,7 +370,16 @@
       "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\FinalPublicationFenceRun03_01.json",
       "Bytes": 1271,
       "SHA256": "CDE0A1AC78D19F0761FA0E9C50D0B58C3668286D9E81060059C8831F021ADF83"
+    },
+    {
+      "Path": "PushVerification01.json",
+      "OriginalPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\PushVerificationRun03_01.json",
+      "Bytes": 957,
+      "SHA256": "B4F9163B84AEB1A9C252183D97FF5C0450B776816FE62822CAF520AE703A5540"
     }
   ],
-  "BackupAndUnrelatedCopyFence": "Proofs/FinalPublicationFenceRun03_01.json"
+  "BackupAndUnrelatedCopyFence": "Proofs/FinalPublicationFenceRun03_01.json",
+  "FeatureArtifactCommit": "193f5056d650d8e0db5e3f630b011f9dcf55add9",
+  "FeaturePushProof": "PushVerification01.json",
+  "FeatureRemoteHeadAtVerification": "193f5056d650d8e0db5e3f630b011f9dcf55add9"
 }
