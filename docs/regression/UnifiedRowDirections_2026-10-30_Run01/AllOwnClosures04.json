@@ -1,0 +1,61 @@
+{
+  "Passed": true,
+  "Count": 6,
+  "ObservedUTC": "2026-10-30T12:16:38.2074552+00:00",
+  "Identities": [
+    {
+      "Directory": "Build_No_01",
+      "PID": 27524,
+      "Ticks": "639289584563758230",
+      "State": "ConfirmedNotFound",
+      "QuitRequested": true,
+      "ObservedName": "",
+      "ObservedTicks": ""
+    },
+    {
+      "Directory": "Build_No_02",
+      "PID": 9880,
+      "Ticks": "639289585544315321",
+      "State": "ConfirmedNotFound",
+      "QuitRequested": true,
+      "ObservedName": "",
+      "ObservedTicks": ""
+    },
+    {
+      "Directory": "Inspect_No_Final03",
+      "PID": 1508,
+      "Ticks": "639289590630916054",
+      "State": "ConfirmedNotFound",
+      "QuitRequested": true,
+      "ObservedName": "",
+      "ObservedTicks": ""
+    },
+    {
+      "Directory": "Test_No_02",
+      "PID": 27628,
+      "Ticks": "639289586449175748",
+      "State": "ConfirmedNotFound",
+      "QuitRequested": true,
+      "ObservedName": "",
+      "ObservedTicks": ""
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "PID": 12656,
+      "Ticks": "639289587344936131",
+      "State": "ConfirmedNotFound",
+      "QuitRequested": true,
+      "ObservedName": "",
+      "ObservedTicks": ""
+    },
+    {
+      "Directory": "Test_Yes_Output04",
+      "PID": 12776,
+      "Ticks": "639289591998713798",
+      "State": "ConfirmedNotFound",
+      "QuitRequested": true,
+      "ObservedName": "",
+      "ObservedTicks": ""
+    }
+  ]
+}

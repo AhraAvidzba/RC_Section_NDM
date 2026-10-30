@@ -213,7 +213,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
     For i = 1 To 8
         base = (i - 1) Mod 4 + 1 ' Номер стороны 1..4: верх, низ, лево, право; у отверстия та же последовательность.
         If Not faces(i).Active Then GoTo NextFace
-        normalSign = 1#: If base = 1 Or base = 3 Then normalSign = -1# ' Оси горизонталей идут вправо, вертикалей вверх: выбираем сторону нормали внутрь наружного бетона.
+        normalSign = 1#: If base = 1 Or base = 4 Then normalSign = -1# ' Горизонтали идут вправо, вертикали вниз; нормаль направлена внутрь наружного бетона.
         If i > 4 Then normalSign = -normalSign ' У отверстия направление в бетон противоположно направлению внутрь наружного контура.
         Set path = AxisPath(facade, sizes, faces, i, contours((i - 1) \ 4 + 1)) ' Получаем линию центров стержней выбранной стороны с отступом as.
         Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
@@ -253,7 +253,7 @@ NextFace:
 End Sub
 
 ' Возвращает линию центров стержней у выбранной наружной стороны или стороны отверстия.
-' Горизонтальные линии идут слева направо и включают скругления, если они есть; вертикальные — снизу вверх.
+' Горизонтальные линии идут слева направо и включают скругления, если они есть; вертикальные — сверху вниз.
 ' Концы всех сторон задаются соседними as в общем смещённом контуре, включая нескруглённое отверстие.
 Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, _
         ByVal index As Long, ByVal shape As CGeometryPath) As CGeometryPath
@@ -275,9 +275,9 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
             End If
             Set AxisPath = facade.Chain(faces(index).ID, shape.ID, first, firstParameter, last, lastParameter, base = 1) ' Линия центров вдоль горизонтальной стороны со скруглениями, слева направо.
         Case 3
-            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.BL", 0#, "Edge.BL", 1#) ' Линия центров у левой грани, снизу вверх.
+            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.BL", 1#, "Edge.BL", 0#, False) ' Линия центров у левой грани, сверху вниз; обход контура обратный.
         Case 4
-            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.TR", 1#, "Edge.TR", 0#, False) ' Линия центров у правой грани, снизу вверх; обход контура обратный.
+            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.TR", 0#, "Edge.TR", 1#) ' Линия центров у правой грани, сверху вниз.
     End Select
     Exit Function
 InvalidPath:

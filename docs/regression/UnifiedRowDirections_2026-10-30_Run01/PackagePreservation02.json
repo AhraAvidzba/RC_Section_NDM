@@ -1,0 +1,23 @@
+{
+  "OriginalSHA256": "E31E1934EC9D2DA935EA148D7AA17B57612F69B084C92DF6C17C7988995C7375",
+  "FinalSHA256": "ADA011C6D58209E9997B056345471358BF011243F9845E3FF87B0930418BAE04",
+  "NativeCandidateSHA256": "BD607C91D2E71B9270061AEEDE6A7A48A085236BD89BDD117E60FD8E889DCBC8",
+  "ChangedZIPParts": [
+    "xl/worksheets/sheet3.xml",
+    "xl/vbaProject.bin"
+  ],
+  "UnchangedZIPParts": 109,
+  "OnlySevenHelpCellsAndTheirRowHeightsChanged": true,
+  "AllOtherHelpXMLIdentical": true,
+  "DataResultsPlotConfigStylesNamesLinksPreserved": true,
+  "SavedResultsRecalculated": false,
+  "HelpCells": [
+    "B714",
+    "B715",
+    "B718",
+    "B720",
+    "B735",
+    "B741",
+    "B750"
+  ]
+}

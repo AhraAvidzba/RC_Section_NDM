@@ -1,0 +1,16 @@
+{
+  "Status": "PUBLISHED_DIRECTED_PASS",
+  "PublishedUTC": "2026-10-30T12:19:37.9938228+00:00",
+  "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+  "OriginalSHA256": "E31E1934EC9D2DA935EA148D7AA17B57612F69B084C92DF6C17C7988995C7375",
+  "WorkbookSHA256": "ADA011C6D58209E9997B056345471358BF011243F9845E3FF87B0930418BAE04",
+  "AllCodeSHA256": "57659FF98DD638431991149655810168A392ED37B8C65443003C3C828B863FD3",
+  "ChangedZIPParts": [
+    "xl/worksheets/sheet3.xml",
+    "xl/vbaProject.bin"
+  ],
+  "UnchangedZIPParts": 109,
+  "UserDataResultsAndPlotPreserved": true,
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRowDirections_2026-10-30_Run01\\BeforePublication04",
+  "FullSuiteRun": false
+}

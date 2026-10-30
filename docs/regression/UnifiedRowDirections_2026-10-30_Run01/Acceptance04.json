@@ -1,0 +1,368 @@
+{
+  "Status": "PASS_DIRECTED",
+  "AssertionsPassed": 7764,
+  "AssertionsFailed": 0,
+  "AcceptedExecutions": [
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+      "Passed": 3859,
+      "Failed": 0,
+      "Bytes": 246811,
+      "SHA256": "146C24CD72345DAB0826FA4100F3F520943367AAE7D39E7639084D1A0521FE9B",
+      "Seconds": 43.8801029
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+      "Passed": 75,
+      "Failed": 0,
+      "Bytes": 4638,
+      "SHA256": "30C137BB09EE10039697EF0E789826369D3B6E07F1BB0DD92A6643CD36BD81D5",
+      "Seconds": 0.584455
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestSectionRecipes.RunRecipeRuleTests",
+      "Passed": 279,
+      "Failed": 0,
+      "Bytes": 12062,
+      "SHA256": "95E4E5525C1507E9151236A38CBD8DFC314C9755906FE2FFC6C30C47907706FE",
+      "Seconds": 0.5165334
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestSectionRecipes.RunRecipeDefinitionTests",
+      "Passed": 15,
+      "Failed": 0,
+      "Bytes": 443,
+      "SHA256": "E41406128DD458E3E2EC29FDDD1D37595C9DFC2E67187C797B2C812D5202D038",
+      "Seconds": 0.0428567
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+      "Passed": 287,
+      "Failed": 0,
+      "Bytes": 21654,
+      "SHA256": "C4A326DD70A0510B1847734537F7673D1FA83DBC0586A221F294D1F0733BD140",
+      "Seconds": 7.553481199999999
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestSectionRecipes.RunRoundedRecipeInputTests",
+      "Passed": 17,
+      "Failed": 0,
+      "Bytes": 440,
+      "SHA256": "363503E5BD9C963C954C5DE155F8492EEF4417601451D705E70B4184903F4D72",
+      "Seconds": 13.493894599999999
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestSectionRecipes.RunHollowRecipeInputTests",
+      "Passed": 22,
+      "Failed": 0,
+      "Bytes": 537,
+      "SHA256": "8CFCCD09041727BF857F4B44BEAE6F570946BC0DFD1CA9B9015C344D43DA3B8F",
+      "Seconds": 27.049220499999997
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestIndividualContours.RunIndividualContourTests",
+      "Passed": 269,
+      "Failed": 0,
+      "Bytes": 25687,
+      "SHA256": "F8A4F87B9DE6DC18157D17CFAF9760F1CD5F6565928BB731D1A3E1B9FC561791",
+      "Seconds": 0.8317785
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestIndividualContours.RunOffsetNeighborMergeTests",
+      "Passed": 264,
+      "Failed": 0,
+      "Bytes": 1621,
+      "SHA256": "FFAB2431E2AE76ECA34334E1ACA58B2DE6F6697225B63DADED997F3A010D4512",
+      "Seconds": 0.4846859
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestIndividualContours.RunIndividualContourWorkbookTests",
+      "Passed": 656,
+      "Failed": 0,
+      "Bytes": 38301,
+      "SHA256": "CFEA4F2BC777CD302F606A54C82ED059105626DE21F9BF161B0EB98E896B5AF9",
+      "Seconds": 13.8018526
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestRecipeAnnotations.RunRecipeAnnotationTests",
+      "Passed": 87,
+      "Failed": 0,
+      "Bytes": 47,
+      "SHA256": "1DCAB23542909F4BBD6C2555EC2525A9F2579E736A14C1C7056741FC2F42E3DA",
+      "Seconds": 0.238362
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+      "Passed": 24,
+      "Failed": 0,
+      "Bytes": 55,
+      "SHA256": "8BEDB40E93097EEC34619F8CA39F1F66E8A0AD9A6D130158482849FE2AE665D9",
+      "Seconds": 0.5398514
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+      "Passed": 92,
+      "Failed": 0,
+      "Bytes": 4055,
+      "SHA256": "A0D3E03AD8F65C98A86FD467D7AC7E9B5A1C960E770D863399CF26F3DB0E1C08",
+      "Seconds": 114.5171115
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestWorkbookInterface.RunFormationPreviewTests",
+      "Passed": 25,
+      "Failed": 0,
+      "Bytes": 1004,
+      "SHA256": "23B6CEE113655B9204FB64B64E60BDAC533003BA70A8FBE09FAFFD1BFB710C8E",
+      "Seconds": 3.1530358
+    },
+    {
+      "Directory": "Test_No_Affected03",
+      "Macro": "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+      "Passed": 116,
+      "Failed": 0,
+      "Bytes": 4821,
+      "SHA256": "8ACD29BA1E7F7A087D399749CBC6EA585974B4D2EFECC62B81030F36DFF91999",
+      "Seconds": 9.687303
+    },
+    {
+      "Directory": "Test_Yes_Output04",
+      "Macro": "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+      "Passed": 24,
+      "Failed": 0,
+      "Bytes": 55,
+      "SHA256": "8BEDB40E93097EEC34619F8CA39F1F66E8A0AD9A6D130158482849FE2AE665D9",
+      "Seconds": 3.2628019999999998
+    },
+    {
+      "Directory": "Test_Yes_Output04",
+      "Macro": "modTestWorkbookInterface.RunFormationPreviewTests",
+      "Passed": 25,
+      "Failed": 0,
+      "Bytes": 1004,
+      "SHA256": "23B6CEE113655B9204FB64B64E60BDAC533003BA70A8FBE09FAFFD1BFB710C8E",
+      "Seconds": 3.5961775
+    },
+    {
+      "Directory": "Test_Yes_Output04",
+      "Macro": "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+      "Passed": 116,
+      "Failed": 0,
+      "Bytes": 4822,
+      "SHA256": "9A9F045B3C5133A643D14197AC5EE7C5CF21F21379E9EFDB9B79E0A06216FAFA",
+      "Seconds": 12.8478602
+    },
+    {
+      "Directory": "Test_Yes_Output04",
+      "Macro": "modTestSectionRecipes.RunHollowRecipeEquilibriumTests",
+      "Passed": 672,
+      "Failed": 0,
+      "Bytes": 52442,
+      "SHA256": "910646543149A8DB055A7A3A3672CEC50BE514076BACB4E90D0E805869BF7E48",
+      "Seconds": 18.0944184
+    },
+    {
+      "Directory": "Test_Yes_Output04",
+      "Macro": "modTestSectionRecipes.RunHollowRecipeEdgeEquilibriumTests",
+      "Passed": 504,
+      "Failed": 0,
+      "Bytes": 39538,
+      "SHA256": "F1A8429A6E1A4AE3C8D53B3E711DC541728B83E3FF3F0BEFDDD3338808D88754",
+      "Seconds": 14.066518499999999
+    },
+    {
+      "Directory": "Test_Yes_Output04",
+      "Macro": "modTestSectionRecipes.RunRoundedRecipeEquilibriumTests",
+      "Passed": 336,
+      "Failed": 0,
+      "Bytes": 24409,
+      "SHA256": "6BF9520A9CC053DA6B851D01B246FA72865CA12E9B3DB8AB9FD477ED89B2645B",
+      "Seconds": 4.9174061
+    }
+  ],
+  "WholeReportsRead": true,
+  "DirectionCases": [
+    [
+      "0",
+      "R1.Top"
+    ],
+    [
+      "0",
+      "R1.Bottom"
+    ],
+    [
+      "0",
+      "R1.Left"
+    ],
+    [
+      "0",
+      "R1.Right"
+    ],
+    [
+      "1",
+      "R1.Top"
+    ],
+    [
+      "1",
+      "R1.Bottom"
+    ],
+    [
+      "1",
+      "R1.Left"
+    ],
+    [
+      "1",
+      "R1.Right"
+    ],
+    [
+      "1",
+      "R2.Top"
+    ],
+    [
+      "1",
+      "R2.Bottom"
+    ],
+    [
+      "1",
+      "R2.Left"
+    ],
+    [
+      "1",
+      "R2.Right"
+    ],
+    [
+      "2",
+      "Top"
+    ],
+    [
+      "2",
+      "Bottom"
+    ],
+    [
+      "2",
+      "Left"
+    ],
+    [
+      "2",
+      "Right"
+    ],
+    [
+      "3",
+      "Top"
+    ],
+    [
+      "3",
+      "Bottom"
+    ],
+    [
+      "3",
+      "Left"
+    ],
+    [
+      "3",
+      "Right"
+    ]
+  ],
+  "ProjectionCases": [
+    [
+      "Top",
+      "3"
+    ],
+    [
+      "Bottom",
+      "3"
+    ],
+    [
+      "Left",
+      "2"
+    ],
+    [
+      "Right",
+      "2"
+    ]
+  ],
+  "ArcCases": [
+    [
+      "2",
+      "Top"
+    ],
+    [
+      "2",
+      "Bottom"
+    ],
+    [
+      "2",
+      "Left"
+    ],
+    [
+      "2",
+      "Right"
+    ],
+    [
+      "3",
+      "Top"
+    ],
+    [
+      "3",
+      "Bottom"
+    ],
+    [
+      "3",
+      "Left"
+    ],
+    [
+      "3",
+      "Right"
+    ]
+  ],
+  "EndModesPerStraightCase": 4,
+  "SingleAndFourBarsChecked": true,
+  "ExtraPlacementsAndEverySecondChecked": true,
+  "ExistingExpectationsPreserved": true,
+  "SourceComponents": 175,
+  "NativeComponents": 181,
+  "FullSuiteRun": false,
+  "SourceMainBookSHA256": "E31E1934EC9D2DA935EA148D7AA17B57612F69B084C92DF6C17C7988995C7375",
+  "FinalBookSHA256": "ADA011C6D58209E9997B056345471358BF011243F9845E3FF87B0930418BAE04",
+  "NativeSavedReopenedCodeEquality": true,
+  "SharedHelpUpdatedWithoutLayoutOrLinkShift": true,
+  "Preservation": {
+    "OriginalSHA256": "E31E1934EC9D2DA935EA148D7AA17B57612F69B084C92DF6C17C7988995C7375",
+    "FinalSHA256": "ADA011C6D58209E9997B056345471358BF011243F9845E3FF87B0930418BAE04",
+    "NativeCandidateSHA256": "BD607C91D2E71B9270061AEEDE6A7A48A085236BD89BDD117E60FD8E889DCBC8",
+    "ChangedZIPParts": [
+      "xl/worksheets/sheet3.xml",
+      "xl/vbaProject.bin"
+    ],
+    "UnchangedZIPParts": 109,
+    "OnlySevenHelpCellsAndTheirRowHeightsChanged": true,
+    "AllOtherHelpXMLIdentical": true,
+    "DataResultsPlotConfigStylesNamesLinksPreserved": true,
+    "SavedResultsRecalculated": false,
+    "HelpCells": [
+      "B714",
+      "B715",
+      "B718",
+      "B720",
+      "B735",
+      "B741",
+      "B750"
+    ]
+  },
+  "AllOwnIdentitiesClosed": 6,
+  "SetupHistory": "Build01 stopped on UTF8 JSON decoding. Build02 compiled and saved; its Excel exit was confirmed after client termination. Original receipts retained.",
+  "DocumentationAudit": "Two existing header omissions in unchanged files; no new omissions in changed files."
+}

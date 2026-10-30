@@ -1,0 +1,12 @@
+{
+  "Status": "PUBLISHED_DIRECTED_PASS",
+  "AssertionsPassed": 7764,
+  "AssertionsFailed": 0,
+  "AcceptedExecutions": 21,
+  "FullSuiteRun": false,
+  "WorkbookSHA256": "ADA011C6D58209E9997B056345471358BF011243F9845E3FF87B0930418BAE04",
+  "AllCodeSHA256": "57659FF98DD638431991149655810168A392ED37B8C65443003C3C828B863FD3",
+  "Acceptance": "Acceptance04.json",
+  "Publication": "Publication04.json",
+  "Report": "docs/reports/UnifiedRowDirections_2026-10-30.md"
+}

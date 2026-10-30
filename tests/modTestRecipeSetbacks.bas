@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestRecipeSetbacks"
+Attribute VB_Name = "modTestRecipeSetbacks"
 Option Explicit
 
 ' ==========================================================================
@@ -586,6 +586,7 @@ Private Sub TestExplicitEndModes()
     TestMainCoincidenceLabels
     TestCircleSingleEndModes
     TestCircleClosedEndModes
+    TestUniformRowDirections
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -804,3 +805,318 @@ Private Function TestCircleFixedStepLayout(ByVal kind As Long) As CRebarLayout
     facade.RebarByFixedStep "Main", path.ID, step, 10#, options
     Set TestCircleFixedStepLayout = TestFixtureAnnotatedLayout(facade.Finish)
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Независимые координаты прямых сторон проверяют единое направление, несимметричные s0/s1, четыре EndMode и n=1/4.
+Private Sub TestUniformRowDirections()
+    Dim kind As Long, key As Variant, keys As Variant, modes As Variant, mode As Long, count As Variant
+    Dim baseline As Variant, values As Variant, definition As CSectionDefinition, path As CGeometryPath, layout As CRebarLayout
+    Dim x0 As Double, y0 As Double, x1 As Double, y1 As Double, x As Double, y As Double, tx As Double, ty As Double
+    Dim length As Double, work As Double, station As Double, step As Double, offset As Double, i As Long, prefix As String, group As String
+    modes = Array("IncludeBoth", "ExcludeBoth", "IncludeStart", "IncludeEnd")
+    For kind = 0 To 3
+        baseline = TestDirectionInputs(kind)
+        If kind < 2 Then
+            keys = Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right")
+            If kind = 1 Then keys = Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
+        Else
+            keys = Array("Top", "Bottom", "Left", "Right")
+        End If
+        For Each key In keys
+            TestDirectionEnds kind, CStr(key), x0, y0, x1, y1, group
+            length = Sqr((x1 - x0) ^ 2 + (y1 - y0) ^ 2): tx = (x1 - x0) / length: ty = (y1 - y0) / length
+            For mode = 0 To 3
+                For Each count In Array(1, 4)
+                    values = baseline
+                    TestFixtureSetInput values, "Main", CStr(key), "n", CLng(count)
+                    TestFixtureSetInput values, "Main", CStr(key), "d", 20#
+                    TestFixtureSetInput values, "Main", CStr(key), "s0", 21#
+                    TestFixtureSetInput values, "Main", CStr(key), "s1", 53#
+                    TestFixtureSetInput values, "Main", CStr(key), "endMode", modes(mode)
+                    Set definition = TestDirectionDefinition(kind, values): Set path = definition.Path(group)
+                    prefix = "direction." & CStr(kind) & "." & CStr(key) & "." & CStr(mode) & ".n" & CStr(count)
+                    path.AtDistance 0#, x, y, step, offset
+                    TestNear prefix & ".path.start.x", x, x0: TestNear prefix & ".path.start.y", y, y0
+                    path.AtDistance path.Length, x, y, step, offset
+                    TestNear prefix & ".path.end.x", x, x1: TestNear prefix & ".path.end.y", y, y1
+                    TestNear prefix & ".path.length", path.Length, length
+                    Set layout = TestFixtureAnnotatedLayout(definition)
+                    TestCheck prefix & ".physical.count", layout.Count = CLng(count)
+                    work = length - 74#
+                    If CLng(count) = 1 Then
+                        station = 21# + work / 2#
+                        If mode = 2 Then station = 21#
+                        If mode = 3 Then station = length - 53#
+                        TestDirectionBar prefix & ".single", layout, x0 + tx * station, y0 + ty * station, 20#
+                    Else
+                        Select Case mode
+                            Case 0: step = work / 3#: offset = 0#
+                            Case 1: step = work / 5#: offset = step
+                            Case 2: step = work / 4#: offset = 0#
+                            Case 3: step = work / 4#: offset = step
+                        End Select
+                        For i = 0 To 3
+                            station = 21# + offset + i * step
+                            TestDirectionBar prefix & ".bar" & CStr(i + 1), layout, x0 + tx * station, y0 + ty * station, 20#
+                        Next i
+                    End If
+                Next count
+            Next mode
+            TestDirectionExtras kind, CStr(key), baseline, x0, y0, x1, y1
+            mReport = mReport & "DIRECTION_CASE: kind=" & CStr(kind) & "; row=" & CStr(key) & "; endModes=4; counts=1,4; extras=4" & vbCrLf
+        Next key
+    Next kind
+    TestDirectionProjections
+    TestDirectionCurves
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит известные размеры без активной арматуры; as=40 у выключенных сторон задаёт концы общего контура.
+Private Function TestDirectionInputs(ByVal kind As Long) As Variant
+    Dim values As Variant, table As CSectionInputReader, key As Variant, tableName As String
+    Select Case kind
+        Case 0, 1: tableName = "rngRectanglesGeometry"
+        Case 2: tableName = "rngPointedSectionGeometry"
+        Case 3: tableName = "rngHollowRectangleGeometry"
+    End Select
+    values = TestFixtureRecipeValues(tableName): Set table = TestFixtureInput(values)
+    For Each key In table.RowKeys("Main")
+        TestFixtureSetInput values, "Main", CStr(key), "as", 40#
+        TestFixtureSetInput values, "Main", CStr(key), "d", 0#
+        TestFixtureSetInput values, "Main", CStr(key), "s0", 0#
+        TestFixtureSetInput values, "Main", CStr(key), "s1", 0#
+        If Left$(CStr(key), 7) <> "Opening" Then
+            TestFixtureSetInput values, "Main", CStr(key), "n", 0
+            TestFixtureSetInput values, "Main", CStr(key), "endMode", "IncludeBoth"
+        End If
+        TestFixtureSetInput values, "Extra", CStr(key), "d2", 0#
+        TestFixtureSetInput values, "Extra", CStr(key), "d3", 0#
+    Next key
+    Select Case kind
+        Case 0, 1
+            TestFixtureSetInput values, "General", "Shape", "val", IIf(kind = 0, "OneRect", "TwoRect")
+            TestFixtureSetInput values, "General", "B1", "val", IIf(kind = 0, 1000#, 600#)
+            TestFixtureSetInput values, "General", "H1", "val", 800#
+            TestFixtureSetInput values, "General", "B2", "val", 1000#
+            TestFixtureSetInput values, "General", "H2", "val", 400#
+            TestFixtureSetInput values, "General", "XOffset", "val", 100#
+        Case 2
+            TestFixtureSetInput values, "General", "B", "val", 1000#
+            TestFixtureSetInput values, "General", "H", "val", 800#
+            For Each key In Array("Left.W", "Right.W", "Left.R1", "Right.R1", "Left.R2", "Right.R2")
+                TestFixtureSetInput values, "General", CStr(key), "val", 0#
+            Next key
+        Case 3
+            TestFixtureSetInput values, "General", "B", "val", 1000#
+            TestFixtureSetInput values, "General", "H", "val", 800#
+            TestFixtureSetInput values, "General", "Bo", "val", 400#
+            TestFixtureSetInput values, "General", "Ho", "val", 200#
+            TestFixtureSetInput values, "General", "R", "val", 0#
+            TestFixtureSetInput values, "General", "Ro", "val", 0#
+            TestFixtureSetInput values, "General", "Xo", "val", 20#
+            TestFixtureSetInput values, "General", "Yo", "val", 10#
+    End Select
+    TestDirectionInputs = values
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Вызывает настоящий рецепт с табличными значениями, не меняя данные книги.
+Private Function TestDirectionDefinition(ByVal kind As Long, ByVal values As Variant) As CSectionDefinition
+    Dim recipe As ISectionRecipe, tableName As String
+    Select Case kind
+        Case 0, 1: Set recipe = New CSectionRecipeRectangles: tableName = "rngRectanglesGeometry"
+        Case 2: Set recipe = New CSectionRecipePointedSection: tableName = "rngPointedSectionGeometry"
+        Case 3: Set recipe = New CSectionRecipeHollowRectangle: tableName = "rngHollowRectangleGeometry"
+    End Select
+    Set TestDirectionDefinition = TestFixtureRecipeDefinition(recipe, tableName, values)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Аналитические концы отступленного на40 прямоугольника: горизонтали вправо, вертикали вниз.
+Private Sub TestDirectionEnds(ByVal kind As Long, ByVal key As String, ByRef x0 As Double, ByRef y0 As Double, _
+        ByRef x1 As Double, ByRef y1 As Double, ByRef group As String)
+    Dim left As Double, right As Double, bottom As Double, top As Double, side As String, rectangle As Long
+    left = -460#: right = 460#: bottom = -360#: top = 360#: side = key
+    If kind < 2 Then
+        rectangle = CLng(Mid$(key, 2, 1)): side = Mid$(key, 4)
+        left = 40#: right = 960#: bottom = 40#: top = 760#
+        If kind = 1 Then
+            If rectangle = 1 Then left = 140#: right = 660#: bottom = 440#: top = 1160# Else top = 360#
+        End If
+    End If
+    Select Case side
+        Case "Top": x0 = left: y0 = top: x1 = right: y1 = top: group = "B.Top"
+        Case "Bottom": x0 = left: y0 = bottom: x1 = right: y1 = bottom: group = "B.Bottom"
+        Case "Left": x0 = left: y0 = top: x1 = left: y1 = bottom: group = "H.Left"
+        Case "Right": x0 = right: y0 = top: x1 = right: y1 = bottom: group = "H.Right"
+    End Select
+    If kind < 2 Then
+        If side = "Top" Then group = "B" & CStr(rectangle) & ".as_1"
+        If side = "Bottom" Then group = "B" & CStr(rectangle) & ".as_2"
+        If side = "Left" Then group = "H" & CStr(rectangle) & ".as_1"
+        If side = "Right" Then group = "H" & CStr(rectangle) & ".as_2"
+    End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет физический стержень по аналитическим координатам и диаметру, независимо от порядка публикации.
+Private Sub TestDirectionBar(ByVal name As String, ByVal layout As CRebarLayout, ByVal x As Double, ByVal y As Double, ByVal diameter As Double)
+    Dim owner As Long: owner = layout.FindBarAt(x, y)
+    TestCheck name & ".exists", owner > 0
+    If owner > 0 Then TestNear name & ".diameter", layout.Diameter(owner), diameter
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет Stacked внутрь бетона, SideBySide вперёд и EverySecondBar от начала пути при нулевом и общем ненулевом a2/a3.
+Private Sub TestDirectionExtras(ByVal kind As Long, ByVal key As String, ByVal baseline As Variant, _
+        ByVal x0 As Double, ByVal y0 As Double, ByVal x1 As Double, ByVal y1 As Double)
+    Dim values As Variant, layout As CRebarLayout, mode As Variant, offset As Variant, row As Variant, i As Long
+    Dim length As Double, tx As Double, ty As Double, nx As Double, ny As Double, x As Double, y As Double
+    Dim n2 As Double, n3 As Double, t2 As Double, t3 As Double, prefix As String
+    length = Sqr((x1 - x0) ^ 2 + (y1 - y0) ^ 2): tx = (x1 - x0) / length: ty = (y1 - y0) / length
+    If InStr(key, "Top") > 0 Then ny = -1#
+    If InStr(key, "Bottom") > 0 Then ny = 1#
+    If InStr(key, "Left") > 0 Then nx = 1#
+    If InStr(key, "Right") > 0 Then nx = -1#
+    For Each mode In Array("Stacked", "SideBySide")
+        For Each offset In Array(0#, 50#)
+            values = baseline
+            TestFixtureSetInput values, "Main", key, "n", 4
+            TestFixtureSetInput values, "Main", key, "d", 20#
+            TestFixtureSetInput values, "Main", key, "s0", 100#
+            TestFixtureSetInput values, "Main", key, "s1", 100#
+            TestFixtureSetInput values, "Extra", key, "d2", 12#
+            TestFixtureSetInput values, "Extra", key, "d3", 10#
+            TestFixtureSetInput values, "Extra", key, "bind2", "EverySecondBar"
+            TestFixtureSetInput values, "Extra", key, "bind3", "EachBar"
+            For Each row In Array("2", "3")
+                TestFixtureSetInput values, "Extra", key, "a" & CStr(row), CDbl(offset)
+                TestFixtureSetInput values, "Extra", key, "pos" & CStr(row), CStr(mode)
+            Next row
+            Set layout = TestFixtureAnnotatedLayout(TestDirectionDefinition(kind, values))
+            prefix = "direction.extra." & CStr(kind) & "." & key & "." & CStr(mode) & ".a" & CStr(offset)
+            TestCheck prefix & ".physical.count", layout.Count = 10
+            n2 = CDbl(offset): n3 = CDbl(offset): t2 = 0#: t3 = 0#
+            If CDbl(offset) = 0# Then
+                If CStr(mode) = "Stacked" Then n2 = 18.5: n3 = 32# Else t2 = 18.5: t3 = 32#
+            Else
+                If CStr(mode) = "Stacked" Then n3 = n3 + 13.5 Else t3 = 13.5
+            End If
+            For i = 0 To 3
+                x = x0 + tx * (100# + i * (length - 200#) / 3#)
+                y = y0 + ty * (100# + i * (length - 200#) / 3#)
+                TestDirectionBar prefix & ".main" & CStr(i), layout, x, y, 20#
+                If i Mod 2 = 0 Then TestDirectionBar prefix & ".row2." & CStr(i), layout, x + nx * n2 + tx * t2, y + ny * n2 + ty * t2, 12#
+                TestDirectionBar prefix & ".row3." & CStr(i), layout, x + nx * n3 + tx * t3, y + ny * n3 + ty * t3, 10#
+            Next i
+        Next offset
+    Next mode
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Асимметричный допустимый участок у отверстия фильтрует исходные позиции без перераспределения; зависимые ряды идут от успешных проекций.
+Private Sub TestDirectionProjections()
+    Dim key As Variant, values As Variant, layout As CRebarLayout, definition As CSectionDefinition, path As CGeometryPath
+    Dim x0 As Double, y0 As Double, x1 As Double, y1 As Double, hx0 As Double, hy0 As Double, hx1 As Double, hy1 As Double
+    Dim tx As Double, ty As Double, nx As Double, ny As Double, length As Double, holeLength As Double, station As Double
+    Dim x As Double, y As Double, along As Double, i As Long, accepted As Long, group As String, prefix As String
+    For Each key In Array("Top", "Bottom", "Left", "Right")
+        values = TestDirectionInputs(3)
+        TestFixtureSetInput values, "Main", CStr(key), "n", 7
+        TestFixtureSetInput values, "Main", CStr(key), "d", 20#
+        TestFixtureSetInput values, "Main", CStr(key), "s0", 20#
+        TestFixtureSetInput values, "Main", CStr(key), "s1", 50#
+        TestFixtureSetInput values, "Main", "Opening" & CStr(key), "d", 16#
+        TestFixtureSetInput values, "Main", "Opening" & CStr(key), "s0", 40#
+        TestFixtureSetInput values, "Main", "Opening" & CStr(key), "s1", 10#
+        TestFixtureSetInput values, "Extra", "Opening" & CStr(key), "d2", 12#
+        TestFixtureSetInput values, "Extra", "Opening" & CStr(key), "a2", 50#
+        TestFixtureSetInput values, "Extra", "Opening" & CStr(key), "bind2", "EverySecondBar"
+        TestFixtureSetInput values, "Extra", "Opening" & CStr(key), "pos2", "SideBySide"
+        TestFixtureSetInput values, "Extra", "Opening" & CStr(key), "d3", 10#
+        TestFixtureSetInput values, "Extra", "Opening" & CStr(key), "a3", 50#
+        TestFixtureSetInput values, "Extra", "Opening" & CStr(key), "bind3", "EachBar"
+        TestFixtureSetInput values, "Extra", "Opening" & CStr(key), "pos3", "SideBySide"
+        TestDirectionEnds 3, CStr(key), x0, y0, x1, y1, group
+        length = Sqr((x1 - x0) ^ 2 + (y1 - y0) ^ 2): tx = (x1 - x0) / length: ty = (y1 - y0) / length
+        nx = 0#: ny = 0#
+        Select Case CStr(key)
+            Case "Top": hx0 = -220#: hy0 = 150#: hx1 = 260#: hy1 = 150#: ny = 1#
+            Case "Bottom": hx0 = -220#: hy0 = -130#: hx1 = 260#: hy1 = -130#: ny = -1#
+            Case "Left": hx0 = -220#: hy0 = 150#: hx1 = -220#: hy1 = -130#: nx = -1#
+            Case "Right": hx0 = 260#: hy0 = 150#: hx1 = 260#: hy1 = -130#: nx = 1#
+        End Select
+        holeLength = Sqr((hx1 - hx0) ^ 2 + (hy1 - hy0) ^ 2)
+        Set definition = TestDirectionDefinition(3, values): Set path = definition.Path("Opening." & group)
+        path.AtDistance 0#, x, y, station, along
+        prefix = "direction.projection." & CStr(key)
+        TestNear prefix & ".path.start.x", x, hx0: TestNear prefix & ".path.start.y", y, hy0
+        path.AtDistance path.Length, x, y, station, along
+        TestNear prefix & ".path.end.x", x, hx1: TestNear prefix & ".path.end.y", y, hy1
+        Set layout = TestFixtureAnnotatedLayout(definition): accepted = 0
+        For i = 0 To 6
+            station = 20# + i * (length - 70#) / 6#
+            x = x0 + tx * station: y = y0 + ty * station
+            If tx <> 0# Then y = hy0 Else x = hx0
+            along = (x - hx0) * tx + (y - hy0) * ty
+            If along >= 40# And along <= holeLength - 10# Then
+                accepted = accepted + 1
+                TestDirectionBar prefix & ".main" & CStr(i), layout, x, y, 16#
+                If accepted Mod 2 = 1 Then TestDirectionBar prefix & ".row2." & CStr(i), layout, x + nx * 50#, y + ny * 50#, 12#
+                TestDirectionBar prefix & ".row3." & CStr(i), layout, x + nx * 50# + tx * 13.5, y + ny * 50# + ty * 13.5, 10#
+            End If
+        Next i
+        TestCheck prefix & ".independent.count", accepted = IIf(tx <> 0#, 3, 2)
+        TestCheck prefix & ".physical.count", layout.Count = 7 + 2 * accepted + (accepted + 1) \ 2
+        mReport = mReport & "DIRECTION_PROJECTION: row=" & CStr(key) & "; accepted=" & CStr(accepted) & vbCrLf
+    Next key
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Четверти окружности радиуса110 дают независимые координаты при неодинаковой обрезке дуг; прямые боковые пути Hollow идут вниз.
+Private Sub TestDirectionCurves()
+    Dim kind As Long, key As Variant, values As Variant, definition As CSectionDefinition, path As CGeometryPath, layout As CRebarLayout
+    Dim x As Double, y As Double, tx As Double, ty As Double, expectedX As Double, expectedY As Double
+    Dim mode As Variant, angle As Double, group As String, prefix As String, sideSign As Double
+    For kind = 2 To 3
+        For Each key In Array("Top", "Bottom", "Left", "Right")
+            values = TestDirectionInputs(kind)
+            If kind = 2 Then
+                TestFixtureSetInput values, "General", "Left.R1", "val", 150#
+                TestFixtureSetInput values, "General", "Right.R1", "val", 150#
+            Else
+                TestFixtureSetInput values, "General", "R", "val", 150#
+            End If
+            TestFixtureSetInput values, "Main", CStr(key), "n", 1
+            TestFixtureSetInput values, "Main", CStr(key), "d", 20#
+            TestFixtureSetInput values, "Main", CStr(key), "s0", 110# * GEOM_PI / 4#
+            TestFixtureSetInput values, "Main", CStr(key), "s1", 110# * GEOM_PI / 6#
+            For Each mode In Array("IncludeStart", "IncludeEnd")
+                TestFixtureSetInput values, "Main", CStr(key), "endMode", CStr(mode)
+                Set definition = TestDirectionDefinition(kind, values)
+                Set layout = TestFixtureAnnotatedLayout(definition)
+                prefix = "direction.curve." & CStr(kind) & "." & CStr(key) & "." & CStr(mode)
+                If kind = 2 And (key = "Top" Or key = "Bottom") Then
+                    expectedY = 360#: If key = "Bottom" Then expectedY = -360#
+                    expectedX = -350# + 110# * GEOM_PI / 4#
+                    If mode = "IncludeEnd" Then expectedX = 350# - 110# * GEOM_PI / 6#
+                ElseIf kind = 3 And (key = "Left" Or key = "Right") Then
+                    expectedX = -460#: If key = "Right" Then expectedX = 460#
+                    expectedY = 250# - 110# * GEOM_PI / 4#
+                    If mode = "IncludeEnd" Then expectedY = -250# + 110# * GEOM_PI / 6#
+                ElseIf kind = 2 Then
+                    sideSign = -1#: If key = "Right" Then sideSign = 1#
+                    expectedX = sideSign * (350# + 110# / Sqr(2#)): expectedY = 250# + 110# / Sqr(2#)
+                    If mode = "IncludeEnd" Then expectedX = sideSign * 405#: expectedY = -250# - 55# * Sqr(3#)
+                Else
+                    sideSign = 1#: If key = "Bottom" Then sideSign = -1#
+                    expectedX = -350# - 110# / Sqr(2#): expectedY = sideSign * (250# + 110# / Sqr(2#))
+                    If mode = "IncludeEnd" Then expectedX = 350# + 55# * Sqr(3#): expectedY = sideSign * 305#
+                End If
+                TestCheck prefix & ".count", layout.Count = 1
+                TestDirectionBar prefix, layout, expectedX, expectedY, 20#
+            Next mode
+            mReport = mReport & "DIRECTION_CURVE: kind=" & CStr(kind) & "; row=" & CStr(key) & "; asymmetricArcSetbacks=True" & vbCrLf
+        Next key
+    Next kind
+End Sub

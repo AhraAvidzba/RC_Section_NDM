@@ -126,13 +126,13 @@ Private Sub ReadRectangleFaces(ByVal reader As CSectionInputReader, _
             .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1", "endMode"))
             .Caption = Left$(.ID, 2) & CStr(captions(side - 1))
             Select Case side
-                Case 1 ' Линия арматуры у левой грани: отступ as, снизу вверх.
+                Case 1 ' Линия арматуры у левой грани: отступ as, сверху вниз.
                     .LabelX = -1#
                 Case 2 ' Линия арматуры у правой грани: отступ as, сверху вниз.
                     .LabelX = 1#
                 Case 3 ' Линия арматуры у верхней грани: отступ as, слева направо.
                     .LabelY = 1#
-                Case 4 ' Линия арматуры у нижней грани: отступ as, справа налево.
+                Case 4 ' Линия арматуры у нижней грани: отступ as, слева направо.
                     .LabelY = -1#
             End Select
             .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
@@ -168,7 +168,7 @@ End Sub
 ' Создаёт линии центров арматуры и задаёт основной и дополнительные ряды по подготовленным сторонам.
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef faces() As TRectangleFace)
     Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions
-    Dim tangentSign As Double, i As Long, rowNumber As Long, path As CGeometryPath, options As CRebarRuleOptions
+    Dim normalSign As Double, forward As Boolean, i As Long, rowNumber As Long, path As CGeometryPath, options As CRebarRuleOptions
     Dim contours(1 To 2) As CGeometryPath, groups As Variant, start As Long, side As Long, part As Long
     groups = Array("Left", "Right", "Top", "Bottom")
     For part = 1 To UBound(faces) \ 4
@@ -183,7 +183,11 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
     For i = 1 To UBound(faces)
         With faces(i)
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
-            Set path = facade.Chain(.ID, contours((i - 1) \ 4 + 1).ID, CStr(groups((i - 1) Mod 4)), 1#, CStr(groups((i - 1) Mod 4)), 0#, False) ' Направления: Left снизу вверх, Right сверху вниз, Top слева направо, Bottom справа налево; концы учитывают соседние as.
+            side = (i - 1) Mod 4 + 1 ' Для обоих прямоугольников: Left/Right сверху вниз, Top/Bottom слева направо.
+            forward = (side = 1 Or side = 4) ' Left и Bottom следуют исходному контуру; Right и Top проходят его в обратную сторону.
+            normalSign = -1#: If forward Then normalSign = 1# ' Знак левой нормали выбранного пути, направленной внутрь соответствующего прямоугольника.
+            Set path = facade.Chain(.ID, contours((i - 1) \ 4 + 1).ID, CStr(groups(side - 1)), _
+                IIf(forward, 0#, 1#), CStr(groups(side - 1)), IIf(forward, 1#, 0#), forward) ' Концы общего смещённого пути учитывают as всех соседних сторон.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
             options.EndMode = .EndMode ' Применяем выбранное правило после концевых отступов.
@@ -195,17 +199,13 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             options.WarnOnCoincidence = True ' Каждый пропуск совпавшего Main фиксируется предупреждением, включая одинаковые диаметры.
             options.Comment = "Набор прямоугольников: " & .Caption & ", ряд 1"
             facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
-            facade.RebarContour .ID & ".Main", "OUTER", .ContourSource, .AxisDistance, .ID & ".Row2", .ID & ".Row3", sourceSegments:=Array(CStr(groups((i - 1) Mod 4))), normalSign:=-1# ' Связь с исходным прямоугольником и известным направлением в бетон.
-            Select Case (i - 1) Mod 4 + 1 ' Повторяем направления сторон Left/Right/Top/Bottom для обоих прямоугольников.
-                Case 1, 4: tangentSign = -1#
-                Case 2, 3: tangentSign = 1#
-            End Select
+            facade.RebarContour .ID & ".Main", "OUTER", .ContourSource, .AxisDistance, .ID & ".Row2", .ID & ".Row3", sourceSegments:=Array(CStr(groups(side - 1))), normalSign:=normalSign ' Связь с исходным прямоугольником и нормалью в бетон.
             Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
             extraOptions.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
             extraOptions.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
             extraOptions.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
             Set contact = New CRebarContactBuilder
-            contact.Initialize .Diameter, -1#, tangentSign, extraOptions ' Stacked направлен в бетон справа от обхода; знак касательной сохраняет выбранную ориентацию SideBySide.
+            contact.Initialize .Diameter, normalSign, 1#, extraOptions ' Stacked направлен в бетон, SideBySide — вперёд по направлению ряда.
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
                     Set options = contact.AppendRow(.Diameters(rowNumber), .Locations(rowNumber), .Bindings(rowNumber), .ExtraSources(rowNumber), .BaseOffsets(rowNumber))
