@@ -1,0 +1,75 @@
+{
+  "Status": "PASS_PRIVATE_ANALYTIC_REVIEW_NOT_NATIVE_ACCEPTANCE",
+  "ProductionExecutableStatementsEqual": true,
+  "PhysicalExpectationsUnchanged": true,
+  "TopRow2RequestedCoordinates": [
+    [
+      200.0,
+      1600
+    ],
+    [
+      700.0,
+      1600
+    ],
+    [
+      1200.0,
+      1600
+    ],
+    [
+      1700.0,
+      1600
+    ],
+    [
+      2200.0,
+      1600
+    ]
+  ],
+  "FirstNeighborOwners": [
+    [
+      200,
+      1600
+    ],
+    [
+      2200,
+      1600
+    ]
+  ],
+  "TopRow2Created": [
+    [
+      700.0,
+      1600
+    ],
+    [
+      1200.0,
+      1600
+    ],
+    [
+      1700.0,
+      1600
+    ]
+  ],
+  "TopRow2Merged": [
+    [
+      200.0,
+      1600
+    ],
+    [
+      2200.0,
+      1600
+    ]
+  ],
+  "TopRow3CreatedX": [
+    700.0,
+    1200.0,
+    1700.0
+  ],
+  "Row2NormalFromMain": 150,
+  "Row3NormalFromMain": 200,
+  "Row3Y": 1550,
+  "IndependentExtraOffsetsConfirmed": true,
+  "TopOnlyRow2Created": 5,
+  "AllSidesPhysicalBars": 48,
+  "RepoSourceChanged": false,
+  "ExcelStarted": false,
+  "FullAcceptanceClaim": false
+}

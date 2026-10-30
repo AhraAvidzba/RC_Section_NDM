@@ -1,0 +1,540 @@
+﻿{
+    "Status":  "ALL_CURRENT_FULL_OWN_IDENTITIES_TERMINAL",
+    "CheckedUTC":  "2026-10-30T00:25:44.1650471+00:00",
+    "SourceSHA256":  "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+    "SourceCommit":  "d475ce4f7f3ef12912c8d1bbaf2c7eae3b327d82",
+    "AllOwnIdentitiesTerminal":  true,
+    "PrimaryLogsReviewed":  true,
+    "CoreMacrosReviewed":  182,
+    "FocusedSingleCasesReviewed":  122,
+    "FocusedRecordCount":  26,
+    "IncludesFocusedComposition":  true,
+    "InputsChecked":  505,
+    "InputsUnchanged":  true,
+    "ScopeReview":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02\\TerminalScopeReview.json",
+    "ScopeReviewSHA256":  "0FDA767248992B45B4CDBDECAB697DC6E98BF7FD2FD6B94D07F1808D409FA1FD",
+    "Identities":  [
+                       {
+                           "Name":  "powershell",
+                           "PID":  24380,
+                           "StartTicksUTC":  "639289028527772893",
+                           "Provenance":  [
+                                              "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/DriverRun.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.8572680+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "powershell",
+                           "PID":  16668,
+                           "StartTicksUTC":  "639289028523835508",
+                           "Provenance":  [
+                                              "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/HostRun.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.8762177+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  8892,
+                           "StartTicksUTC":  "639289028577042260",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Full_Off.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Full_Off.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.8832009+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  23664,
+                           "StartTicksUTC":  "639289086071017169",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Geometry_Off.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Geometry_Off.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.8891852+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  22028,
+                           "StartTicksUTC":  "639289088832301963",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SP35_Off.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SP35_Off.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.8951690+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  9408,
+                           "StartTicksUTC":  "639289089041855846",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Recipes_Off.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Recipes_Off.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9021499+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  18408,
+                           "StartTicksUTC":  "639289092335902835",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SavedOffsets_Off.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SavedOffsets_Off.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9081035+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  11768,
+                           "StartTicksUTC":  "639289092589690828",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/CurrentFeatures_Off.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/CurrentFeatures_Off.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9141175+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  10964,
+                           "StartTicksUTC":  "639289093925202253",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Full_On.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Full_On.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9201014+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  13364,
+                           "StartTicksUTC":  "639289149420245905",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Geometry_On.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Geometry_On.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9260859+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  2640,
+                           "StartTicksUTC":  "639289152205042604",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SP35_On.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SP35_On.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9330674+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  25804,
+                           "StartTicksUTC":  "639289152414958358",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Recipes_On.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Recipes_On.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9390512+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  16796,
+                           "StartTicksUTC":  "639289155659615340",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SavedOffsets_On.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SavedOffsets_On.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9450355+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  16640,
+                           "StartTicksUTC":  "639289155902760603",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/CurrentFeatures_On.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/CurrentFeatures_On.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9510198+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  8376,
+                           "StartTicksUTC":  "639289157656493417",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Rectangles_Generated_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Rectangles_Generated_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9600012+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  27468,
+                           "StartTicksUTC":  "639289158113463822",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Rectangles_Generated_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Rectangles_Generated_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9659752+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  20780,
+                           "StartTicksUTC":  "639289158558264381",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Circle_Generated_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Circle_Generated_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9719626+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  2520,
+                           "StartTicksUTC":  "639289158985332392",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Circle_Generated_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Circle_Generated_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9779162+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  22140,
+                           "StartTicksUTC":  "639289159406644426",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/PointedSection_Generated_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/PointedSection_Generated_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9848975+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  25232,
+                           "StartTicksUTC":  "639289159925399734",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/PointedSection_Generated_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/PointedSection_Generated_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9908815+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  16980,
+                           "StartTicksUTC":  "639289160442135379",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/HollowRectangle_Generated_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/HollowRectangle_Generated_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:43.9968654+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  14500,
+                           "StartTicksUTC":  "639289160917010147",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/HollowRectangle_Generated_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/HollowRectangle_Generated_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0038469+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  26252,
+                           "StartTicksUTC":  "639289161391264457",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Saved_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Saved_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0108280+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  24372,
+                           "StartTicksUTC":  "639289162006275126",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Saved_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Saved_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0178405+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  26276,
+                           "StartTicksUTC":  "639289162470275728",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Paths_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Paths_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0248198+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  18100,
+                           "StartTicksUTC":  "639289162855746890",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Paths_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Paths_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0318026+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  26632,
+                           "StartTicksUTC":  "639289163240056935",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Batch15_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Batch15_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0377913+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  27292,
+                           "StartTicksUTC":  "639289163603189091",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Stability_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Stability_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0437722+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  16768,
+                           "StartTicksUTC":  "639289163957257023",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/AsymmetricSteel_No.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/AsymmetricSteel_No.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0507521+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  4752,
+                           "StartTicksUTC":  "639289164306817614",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Batch15_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Batch15_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0567361+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  23696,
+                           "StartTicksUTC":  "639289164662084569",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Stability_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Stability_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0627202+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  5488,
+                           "StartTicksUTC":  "639289165018821034",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/AsymmetricSteel_Yes.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/AsymmetricSteel_Yes.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0687047+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  11960,
+                           "StartTicksUTC":  "639289165373595801",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_Rectangles.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_Rectangles.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0746886+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  24572,
+                           "StartTicksUTC":  "639289165462146961",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_Circle.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_Circle.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0806420+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  20748,
+                           "StartTicksUTC":  "639289165549983359",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_PointedSection.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_PointedSection.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0866569+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  14640,
+                           "StartTicksUTC":  "639289165634973415",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_HollowRectangle.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_HollowRectangle.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0926399+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  25760,
+                           "StartTicksUTC":  "639289165722271676",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_SavedWorkbook.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_SavedWorkbook.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.0986244+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  26120,
+                           "StartTicksUTC":  "639289165809324651",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/OutputPresentation.txt",
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/OutputPresentation.txt.Ownership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.1056051+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "acad",
+                           "PID":  25708,
+                           "StartTicksUTC":  "639289166093456313",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.1115891+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  26420,
+                           "StartTicksUTC":  "639289166202289577",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.1175429+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "acad",
+                           "PID":  27004,
+                           "StartTicksUTC":  "639289165902491497",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.1235575+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  25652,
+                           "StartTicksUTC":  "639289166020654722",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.1307426+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  7456,
+                           "StartTicksUTC":  "639289157357661406",
+                           "Provenance":  [
+                                              "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/FullLaunch.stdout.log"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.1367260+00:00",
+                           "Error":  null
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  27004,
+                           "StartTicksUTC":  "639289157575410255",
+                           "Provenance":  [
+                                              "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/FullLaunch.stdout.log"
+                                          ],
+                           "State":  "Absent",
+                           "ObservedUTC":  "2026-10-30T00:25:44.1439167+00:00",
+                           "Error":  null
+                       }
+                   ],
+    "FullAcceptanceClaim":  false,
+    "AnyProcessClosed":  false
+}

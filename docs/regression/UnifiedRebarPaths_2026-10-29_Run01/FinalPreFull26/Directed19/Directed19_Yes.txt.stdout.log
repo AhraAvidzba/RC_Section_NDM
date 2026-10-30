@@ -1,0 +1,11 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\UnifiedRebarPaths_2026-10-29_Run01\Build13\RC_Section_NDM.xlsm
+SOURCE_SHA256: D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8dfaf2a265554c6090ba8f2f222e165b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=656; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

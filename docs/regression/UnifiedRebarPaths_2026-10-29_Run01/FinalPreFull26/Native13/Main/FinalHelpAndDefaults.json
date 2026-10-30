@@ -1,0 +1,105 @@
+﻿{
+    "Status":  "SAVED_RECTANGLES_DEFAULTS_AND_CURRENT_HELP_PASS",
+    "ChangedDefaultCells":  16,
+    "SetbackDefaults":  [
+                            {
+                                "Row":  "R1.Top",
+                                "Field":  "s0",
+                                "Value":  40,
+                                "Address":  "$F$36"
+                            },
+                            {
+                                "Row":  "R1.Top",
+                                "Field":  "s1",
+                                "Value":  40,
+                                "Address":  "$G$36"
+                            },
+                            {
+                                "Row":  "R1.Bottom",
+                                "Field":  "s0",
+                                "Value":  40,
+                                "Address":  "$F$37"
+                            },
+                            {
+                                "Row":  "R1.Bottom",
+                                "Field":  "s1",
+                                "Value":  40,
+                                "Address":  "$G$37"
+                            },
+                            {
+                                "Row":  "R1.Left",
+                                "Field":  "s0",
+                                "Value":  40,
+                                "Address":  "$F$38"
+                            },
+                            {
+                                "Row":  "R1.Left",
+                                "Field":  "s1",
+                                "Value":  40,
+                                "Address":  "$G$38"
+                            },
+                            {
+                                "Row":  "R1.Right",
+                                "Field":  "s0",
+                                "Value":  40,
+                                "Address":  "$F$39"
+                            },
+                            {
+                                "Row":  "R1.Right",
+                                "Field":  "s1",
+                                "Value":  40,
+                                "Address":  "$G$39"
+                            },
+                            {
+                                "Row":  "R2.Top",
+                                "Field":  "s0",
+                                "Value":  40,
+                                "Address":  "$F$40"
+                            },
+                            {
+                                "Row":  "R2.Top",
+                                "Field":  "s1",
+                                "Value":  40,
+                                "Address":  "$G$40"
+                            },
+                            {
+                                "Row":  "R2.Bottom",
+                                "Field":  "s0",
+                                "Value":  40,
+                                "Address":  "$F$41"
+                            },
+                            {
+                                "Row":  "R2.Bottom",
+                                "Field":  "s1",
+                                "Value":  40,
+                                "Address":  "$G$41"
+                            },
+                            {
+                                "Row":  "R2.Left",
+                                "Field":  "s0",
+                                "Value":  40,
+                                "Address":  "$F$42"
+                            },
+                            {
+                                "Row":  "R2.Left",
+                                "Field":  "s1",
+                                "Value":  40,
+                                "Address":  "$G$42"
+                            },
+                            {
+                                "Row":  "R2.Right",
+                                "Field":  "s0",
+                                "Value":  40,
+                                "Address":  "$F$43"
+                            },
+                            {
+                                "Row":  "R2.Right",
+                                "Field":  "s1",
+                                "Value":  40,
+                                "Address":  "$G$43"
+                            }
+                        ],
+    "CommonEndModeText":  "Поле «Расстановка» (endMode) задаёт размещение стержней на пути после отступов s0 и s1: IncludeBoth — на обоих концах и между ними; ExcludeBoth — между концами; IncludeStart — в начале и внутри пути; IncludeEnd — в конце и внутри пути. Направление пути указано в справке своего типа сечения.",
+    "HistoricalBehaviorPhrases":  0,
+    "SavedAgain":  false
+}

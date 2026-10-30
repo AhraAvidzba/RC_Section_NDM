@@ -1,0 +1,31 @@
+{
+  "Status": "ENTIRE_TERMINAL_STDIO_REVIEW_KNOWN_FINALIZER_REFUSAL_ONLY",
+  "Files": [
+    {
+      "Name": "FullLaunch.stdout.log",
+      "Bytes": 14617,
+      "SHA256": "7C3189D15FB3A02E438CFDECF1A18C7299EDA80FEF14B962E2FFFEFEECC569D3",
+      "Encoding": "UTF8",
+      "AllBytesRead": true,
+      "Markers": [],
+      "Tracebacks": 0
+    },
+    {
+      "Name": "FullLaunch.stderr.log",
+      "Bytes": 5243,
+      "SHA256": "4C3B67505DE7C6B98F49A05507E192713063768E38E7F535CA9D3310460DDE9F",
+      "Encoding": "Mixed UTF8/CP1251; invalid UTF8 byte runs decoded as CP1251 without replacing original bytes",
+      "AllBytesRead": true,
+      "Markers": [],
+      "Tracebacks": 3
+    }
+  ],
+  "FullAcceptanceClaim": false,
+  "ExpectedFinalizerRefusal": "ValueError: ['Geometry_Off.txt', 'Geometry_On.txt', 'Driver is not successfully complete']",
+  "TracebackTextOccurrencesAreOneRefusalAndPowerShellEcho": true,
+  "SelfTests": {
+    "15testsOKruns": 2,
+    "18testsOKruns": 1
+  },
+  "RawLogsRewritten": false
+}

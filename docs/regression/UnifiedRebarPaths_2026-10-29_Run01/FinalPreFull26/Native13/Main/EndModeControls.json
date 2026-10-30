@@ -1,0 +1,274 @@
+﻿{
+    "Status":  "NATIVE_SAVED_REOPENED_END_MODE_CONTROLS",
+    "PositiveIndividualChoices":  68,
+    "RejectedCombinedOrUnknown":  85,
+    "ProjectionDashes":  4,
+    "OriginalsRestored":  true,
+    "SavedAgain":  false,
+    "Tables":  [
+                   {
+                       "Type":  "Circle",
+                       "Key":  "Circle",
+                       "EndMode":  "IncludeStart",
+                       "Address":  "$H$12",
+                       "CommentAddress":  "$I$12",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$3:$K$18",
+                       "Rows":  16,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "Rectangles",
+                       "Key":  "R1.Top",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$36",
+                       "CommentAddress":  "$I$36",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$22:$K$56",
+                       "Rows":  35,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "Rectangles",
+                       "Key":  "R1.Bottom",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$37",
+                       "CommentAddress":  "$I$37",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$22:$K$56",
+                       "Rows":  35,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "Rectangles",
+                       "Key":  "R1.Left",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$38",
+                       "CommentAddress":  "$I$38",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$22:$K$56",
+                       "Rows":  35,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "Rectangles",
+                       "Key":  "R1.Right",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$39",
+                       "CommentAddress":  "$I$39",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$22:$K$56",
+                       "Rows":  35,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "Rectangles",
+                       "Key":  "R2.Top",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$40",
+                       "CommentAddress":  "$I$40",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$22:$K$56",
+                       "Rows":  35,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "Rectangles",
+                       "Key":  "R2.Bottom",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$41",
+                       "CommentAddress":  "$I$41",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$22:$K$56",
+                       "Rows":  35,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "Rectangles",
+                       "Key":  "R2.Left",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$42",
+                       "CommentAddress":  "$I$42",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$22:$K$56",
+                       "Rows":  35,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "Rectangles",
+                       "Key":  "R2.Right",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$43",
+                       "CommentAddress":  "$I$43",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$22:$K$56",
+                       "Rows":  35,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "PointedSection",
+                       "Key":  "Top",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$76",
+                       "CommentAddress":  "$I$76",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$60:$K$88",
+                       "Rows":  29,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "PointedSection",
+                       "Key":  "Bottom",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$77",
+                       "CommentAddress":  "$I$77",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$60:$K$88",
+                       "Rows":  29,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "PointedSection",
+                       "Key":  "Left",
+                       "EndMode":  "ExcludeBoth",
+                       "Address":  "$H$78",
+                       "CommentAddress":  "$I$78",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$60:$K$88",
+                       "Rows":  29,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "PointedSection",
+                       "Key":  "Right",
+                       "EndMode":  "ExcludeBoth",
+                       "Address":  "$H$79",
+                       "CommentAddress":  "$I$79",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$60:$K$88",
+                       "Rows":  29,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "HollowRectangle",
+                       "Key":  "Top",
+                       "EndMode":  "ExcludeBoth",
+                       "Address":  "$H$108",
+                       "CommentAddress":  "$I$108",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$92:$K$128",
+                       "Rows":  37,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "HollowRectangle",
+                       "Key":  "Bottom",
+                       "EndMode":  "ExcludeBoth",
+                       "Address":  "$H$109",
+                       "CommentAddress":  "$I$109",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$92:$K$128",
+                       "Rows":  37,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "HollowRectangle",
+                       "Key":  "Left",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$110",
+                       "CommentAddress":  "$I$110",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$92:$K$128",
+                       "Rows":  37,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "HollowRectangle",
+                       "Key":  "Right",
+                       "EndMode":  "IncludeBoth",
+                       "Address":  "$H$111",
+                       "CommentAddress":  "$I$111",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$92:$K$128",
+                       "Rows":  37,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "HollowRectangle",
+                       "Key":  "OpeningTop",
+                       "EndMode":  "—",
+                       "Address":  "$H$112",
+                       "CommentAddress":  "$I$112",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$92:$K$128",
+                       "Rows":  37,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "HollowRectangle",
+                       "Key":  "OpeningBottom",
+                       "EndMode":  "—",
+                       "Address":  "$H$113",
+                       "CommentAddress":  "$I$113",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$92:$K$128",
+                       "Rows":  37,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "HollowRectangle",
+                       "Key":  "OpeningLeft",
+                       "EndMode":  "—",
+                       "Address":  "$H$114",
+                       "CommentAddress":  "$I$114",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$92:$K$128",
+                       "Rows":  37,
+                       "Columns":  11
+                   },
+                   {
+                       "Type":  "HollowRectangle",
+                       "Key":  "OpeningRight",
+                       "EndMode":  "—",
+                       "Address":  "$H$115",
+                       "CommentAddress":  "$I$115",
+                       "CommentRightAligned":  true,
+                       "Bounds":  "$A$92:$K$128",
+                       "Rows":  37,
+                       "Columns":  11
+                   }
+               ],
+    "HelpParagraphs":  [
+                           {
+                               "Text":  "Поле «Расстановка» (endMode)",
+                               "Address":  "$B$715",
+                               "FontName":  "Arial",
+                               "FontSize":  10,
+                               "Bold":  false,
+                               "Fill":  16777215,
+                               "HorizontalAlignment":  -4131,
+                               "WrapText":  true
+                           },
+                           {
+                               "Text":  "При n = 1",
+                               "Address":  "$B$717",
+                               "FontName":  "Arial",
+                               "FontSize":  10,
+                               "Bold":  false,
+                               "Fill":  16777215,
+                               "HorizontalAlignment":  -4131,
+                               "WrapText":  true
+                           },
+                           {
+                               "Text":  "При совпадении центров основных стержней Main",
+                               "Address":  "$B$716",
+                               "FontName":  "Arial",
+                               "FontSize":  10,
+                               "Bold":  false,
+                               "Fill":  16777215,
+                               "HorizontalAlignment":  -4131,
+                               "WrapText":  true
+                           }
+                       ],
+    "HelpMatchesExistingParagraphStyle":  true
+}

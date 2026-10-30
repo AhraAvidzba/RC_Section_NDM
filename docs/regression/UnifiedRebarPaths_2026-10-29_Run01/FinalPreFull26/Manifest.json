@@ -1,0 +1,253 @@
+{
+  "Copies": [
+    {
+      "Path": "FullRun02FixTransfer05.json",
+      "Bytes": 4254,
+      "SHA256": "1CA6162F41350ACDF7A865338E6499EF8972795B775DA8C9E5B27B04732109EB"
+    },
+    {
+      "Path": "TransferredSourceReview25.json",
+      "Bytes": 1190,
+      "SHA256": "EBA49DEB479775291FD78B4E8E2B1A668A28B856B97D8146A8275B23F0544004"
+    },
+    {
+      "Path": "RecoveryPrimaryReview19.json",
+      "Bytes": 6139,
+      "SHA256": "7EFF86ACA949CA722E247B31807A1FD80191C513373DC90D82497CA93AA494A9"
+    },
+    {
+      "Path": "Native13VisualReview20.json",
+      "Bytes": 1034,
+      "SHA256": "56465EDC7528C3E96857DE597C5692C37D22CBB5B2496AE347554736F959417D"
+    },
+    {
+      "Path": "AllPreFullOwnClosures20.json",
+      "Bytes": 191391,
+      "SHA256": "090F90139A1083A42E82EB4085DFB0E03E48E759C129658438D8B9AD7C6BED43"
+    },
+    {
+      "Path": "SourceEquality13.json",
+      "Bytes": 117153,
+      "SHA256": "C5B595DAD15EE512F4ECB29A4C7F5A1534E6F7DF46B914347431050F0D8BE6C2"
+    },
+    {
+      "Path": "Native13Ownership.json",
+      "Bytes": 73,
+      "SHA256": "497FE0A0E1E53C5FA3BAF75947C1C830DF5A484E30E6E7B309B906E87C4CAA2C"
+    },
+    {
+      "Path": "Native13Quit.json",
+      "Bytes": 130,
+      "SHA256": "F6A4507820DC2BE05C5DDED935DAC13B33865AB95F7569B07E9AC0D966DDA61D"
+    },
+    {
+      "Path": "Native13OwnClosure.json",
+      "Bytes": 167,
+      "SHA256": "6DC7598A040656D4596D30A19333B446B863ABF3007DCEF53F4B0E3FD03CB2EE"
+    },
+    {
+      "Path": "DirectedMatrix19.json",
+      "Bytes": 14688,
+      "SHA256": "4D1436D6EC2E6E47610CD39ED2C6AA91B52F91F3BDB44C7BB0CB013F32930BF7"
+    },
+    {
+      "Path": "RecoveryPipeline19.json",
+      "Bytes": 607,
+      "SHA256": "849EC3B500D0CFB32CA53C7257C086AC08BCDED8E0C04EA80D50D218EA474D9D"
+    },
+    {
+      "Path": "Run02StdIOFullRead24.json",
+      "Bytes": 1041,
+      "SHA256": "44E020BF9995F7BAC3DB05FB875F7B66CB9F60CD3D2ECC531B6AE93A38B8E58B"
+    },
+    {
+      "Path": "IsolatedFixAnalyticReview07.json",
+      "Bytes": 1125,
+      "SHA256": "E4735E34CD9003429EB54EB99B28530B26B8BEA4895EE3937D66BF39F33C2214"
+    },
+    {
+      "Path": "Native13/Main/NativeVerification.json",
+      "Bytes": 35829,
+      "SHA256": "FCA0C364503600232F3CBA18F41F65762B80CE0F8A128927DE1C2600A7C1D175"
+    },
+    {
+      "Path": "Native13/Main/EndModeControls.json",
+      "Bytes": 11702,
+      "SHA256": "915F83ED95937B10D12DD97EDF392C89D7BAB6A60B4D1A33D489801EED0BAB63"
+    },
+    {
+      "Path": "Native13/Main/EndModeControlCounts.json",
+      "Bytes": 453,
+      "SHA256": "3FBFBA2B6E424483B097BAE0647318F7BDBCAFA02AC5692E4C937E7313B92A01"
+    },
+    {
+      "Path": "Native13/Main/FinalHelpAndDefaults.json",
+      "Bytes": 4967,
+      "SHA256": "D09B0D71329DBCFE300AAF80675A3B6197947CF4F678D0F7D482360171655F65"
+    },
+    {
+      "Path": "Native13/Main/CleanStructure.json",
+      "Bytes": 29751,
+      "SHA256": "0DB9AD38CDC128D916BDC95E07E604A017F4C6E1FCC6F5C73A692C7090AE5262"
+    },
+    {
+      "Path": "Native13/Main/EmptyPlotContainers.json",
+      "Bytes": 278,
+      "SHA256": "44EF6FC970C4C8713D10B7D86B8AD603A6B8BBFA5E60B805A8F90C1CE8DF6CDA"
+    },
+    {
+      "Path": "Native13/Main/Main_EndMode.png",
+      "Bytes": 169530,
+      "SHA256": "3F928C5C0041E7A4913436B9136068E4790822442B32BD859E07F78F48623EB0"
+    },
+    {
+      "Path": "Native13/Main/Help_Common.png",
+      "Bytes": 712708,
+      "SHA256": "86514D18F4AC8B5E3E722B323FFC7C82076ED1A23465B8C126530533359C983A"
+    },
+    {
+      "Path": "Build13/Build.json",
+      "Bytes": 1457,
+      "SHA256": "17E1350B55BD93DB618CB248D025B4047B7EC32216DD7AF5CB984695ED5C2986"
+    },
+    {
+      "Path": "Build13/BuildOwnership.json",
+      "Bytes": 347,
+      "SHA256": "CE245942BADC74FEFCD9A3E48064246352F5BD9CC9C39A29D0AC81C117C3EBE0"
+    },
+    {
+      "Path": "Run02/Completion.json",
+      "Bytes": 661,
+      "SHA256": "4D38D39E6C4C967D9C96029ACD54B6C9535FDED73653BAAA0D98AC013429552D"
+    },
+    {
+      "Path": "Run02/TerminalScopeReview.json",
+      "Bytes": 84814,
+      "SHA256": "0FDA767248992B45B4CDBDECAB697DC6E98BF7FD2FD6B94D07F1808D409FA1FD"
+    },
+    {
+      "Path": "Run02/AllOwnClosuresReviewed.json",
+      "Bytes": 33126,
+      "SHA256": "5670BD11D090EF7E7E6126D959A11C5ABF8680C9B9C8B29DD3CBADCEFF12DE5C"
+    },
+    {
+      "Path": "Run02/ScheduledTaskCleanup03.json",
+      "Bytes": 1050,
+      "SHA256": "1DDD05AEED0FC45D60C5B75D378E455247E2E86E8755A2EAF0BB7DEC99F4D174"
+    },
+    {
+      "Path": "Run02/LaunchRequest.json",
+      "Bytes": 143004,
+      "SHA256": "ABC0A445E44F87737DF6878AFD663E7048424D0D60606EF305E4D9D3683240C9"
+    },
+    {
+      "Path": "Run02/FullLaunch.json",
+      "Bytes": 913,
+      "SHA256": "63EB95E2EF163EF2BB2E32DDF35B26BA52183AC9F309650D37793BF704D85439"
+    },
+    {
+      "Path": "Run02/SourceEpoch.json",
+      "Bytes": 1314,
+      "SHA256": "20A659A7E7BDCFD965B2FCC577B4ABD475CD9AA693AD919A0D760308E8D571F9"
+    },
+    {
+      "Path": "Run02/FullLaunch.stdout.log",
+      "Bytes": 14617,
+      "SHA256": "7C3189D15FB3A02E438CFDECF1A18C7299EDA80FEF14B962E2FFFEFEECC569D3"
+    },
+    {
+      "Path": "Run02/FullLaunch.stderr.log",
+      "Bytes": 5243,
+      "SHA256": "4C3B67505DE7C6B98F49A05507E192713063768E38E7F535CA9D3310460DDE9F"
+    },
+    {
+      "Path": "Run02/WholeArchiveManifest.json",
+      "Bytes": 84747,
+      "SHA256": "1A9470060B27271F1F0FF9835A9E760AFAA58897FCA1F87FC1310CDDC579CF17"
+    },
+    {
+      "Path": "Directed19/Directed19_No.txt",
+      "Bytes": 68181,
+      "SHA256": "F17CA4C2B177C4B3E7BF9F2C4BFABEC284D14EE1CACF7B9BD46E25D48FD5E7C7"
+    },
+    {
+      "Path": "Directed19/Directed19_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "EAE13E8D40A573083E4295F0BB276FB7EA88B90452D33346CE9748F30B70A869"
+    },
+    {
+      "Path": "Directed19/Directed19_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "CB85412B138E5DD3B9A738D73E7D2E7591281E345214C4A5529565AEF6160CD1"
+    },
+    {
+      "Path": "Directed19/Directed19_No.txt.PrimaryReview.json",
+      "Bytes": 5171,
+      "SHA256": "CF93632D3141DB07F1CB260976B5FEDBF4F407CF713390E902187BB30B6762DD"
+    },
+    {
+      "Path": "Directed19/Directed19_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "0AAB31F4CECD6518A3752CD5C4A730ABE90B76A8622918FDB8318971843E4A08"
+    },
+    {
+      "Path": "Directed19/Directed19_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "5FB2063591B014C7AD98B5B6BC7CD31E2179455F1D8C70A06F490541252D8905"
+    },
+    {
+      "Path": "Directed19/Directed19_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Directed19/Directed19_No.txt.stdout.log",
+      "Bytes": 672,
+      "SHA256": "04E6821ADBB4DA7A0F6DB18A1F2DA35EFD0F8770A793461BFF6ADB1481EB9440"
+    },
+    {
+      "Path": "Directed19/Directed19_Yes.txt",
+      "Bytes": 68186,
+      "SHA256": "ED8C9B0F14D004015D14030A65226FDD8DEC2F5FD010272F06CB79CD86BB59E1"
+    },
+    {
+      "Path": "Directed19/Directed19_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "82F74AF7C7E19668BA15A86DEB39933D7FCDAABCE55932426A731531883BCFAF"
+    },
+    {
+      "Path": "Directed19/Directed19_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "ED84A2F48DF83DBD9E1530D8A1D5D47524387975BAE6BA5BFEEAFE483B474B6B"
+    },
+    {
+      "Path": "Directed19/Directed19_Yes.txt.PrimaryReview.json",
+      "Bytes": 5175,
+      "SHA256": "45FD4BBB3151CDE82D0D292C76EBDE4641169BF25F1C2400970CCE5B70269601"
+    },
+    {
+      "Path": "Directed19/Directed19_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "B8C7E41E4CE81B568AB462184C0AF02FDFFC8756C6E917779F7BE39624307F8D"
+    },
+    {
+      "Path": "Directed19/Directed19_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "454DAFC6AB7CF4DC7DA5872ADDB53C8E507A081A0DD289B6DDC9D365A7BA4CD3"
+    },
+    {
+      "Path": "Directed19/Directed19_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Directed19/Directed19_Yes.txt.stdout.log",
+      "Bytes": 676,
+      "SHA256": "FBF51E7796E6B0FDD703665A1CEDD7CA70A49EC64CD276FA66B5CB3AEAF76F3D"
+    }
+  ],
+  "PrimaryFilesInZip": 47,
+  "PrimaryZipBytes": 2750925,
+  "PrimaryZipSHA256": "27C3F6CE5ABB99061B1CD0569C81F0D6B0853219925F94C4EF302A43917BB32D",
+  "FullAcceptanceClaim": false
+}

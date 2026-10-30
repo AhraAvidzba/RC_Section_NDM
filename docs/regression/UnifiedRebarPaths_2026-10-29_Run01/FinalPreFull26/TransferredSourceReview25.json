@@ -1,0 +1,26 @@
+{
+  "Status": "TRANSFERRED_SOURCE_REVIEWED_PRODUCTION_OPERATORS_EQUAL",
+  "CheckedUTC": "2026-10-30T00:30:49.521483+00:00",
+  "OriginalFullSourceSHA256": "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+  "InputsChecked": 505,
+  "ExactPreparedChanges": 5,
+  "OtherInputsUnchanged": 500,
+  "ProductionExecutableStatementsEqual": true,
+  "OnlyExecutableChange": "tests/modTestIndividualContours.bas physical-owner count and four extra assertions; expected3/5 preserved",
+  "ChangedSourceComponents": [
+    {
+      "Path": "src/Geometry/CSectionRecipeRectangles.cls",
+      "StatementsEqual": true,
+      "BeforeSHA256": "896C77A97A8942ADF5E426CCE917FDCDB125C83DEE5BB201C1635448C339ED45",
+      "AfterSHA256": "676074F4DE0D610A265758E05BE6EA47B9756AA1D49B8BB1C2C9822D811709D6"
+    },
+    {
+      "Path": "tests/modTestIndividualContours.bas",
+      "StatementsEqual": false,
+      "BeforeSHA256": "8FB15CFBB3BA19144EE4FFA0145A2421791E545F8EE8C0347EA538A28978FF54",
+      "AfterSHA256": "E270AA37D02F8DF6D522251741BB3713EED7CFADA9EE840EA666F80443FEA8C9"
+    }
+  ],
+  "ActualPreviousFullMinutes": 230.11061053333333,
+  "FullAcceptanceClaim": false
+}

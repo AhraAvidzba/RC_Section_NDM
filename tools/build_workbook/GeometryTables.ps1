@@ -1,5 +1,5 @@
 ﻿# Общая структура таблиц геометрии. Сборщик не меняет ширины столбцов и высоты строк.
-# Схема хранит исходные значения нового шаблона; действующие данные обновляются отдельно.
+# Каталог задаёт значения по умолчанию блоков General/Main/Extra для полной сборки.
 function Get-GeometrySettingsCatalog {
     $catalog=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'GeometryTables.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach($definition in $catalog){Write-Output $definition}

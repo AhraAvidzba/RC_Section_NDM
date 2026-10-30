@@ -213,8 +213,8 @@ def main():
         print(json.dumps({"status": "DOCUMENTATION_CALLS_SYNCHRONIZED" if ready else "DOCUMENTATION_DRAFT", "members": len(actual["members"]), "missingSemantics": 0}))
         return
     if args.sync_example:
-        # Новая цель пользователя запрещает встраивать тела классов/методов.
-        # Флаг сохранён для прежних команд, но полного дубликата больше не создаёт.
+        # Каталог показывает вызовы и ссылки на исходные компоненты без копирования полных тел.
+        # Флаг --sync-example подтверждает режим ссылок и не изменяет исходные компоненты.
         print(json.dumps({"status": "EXAMPLES_REFERENCED_IN_SOURCE_ONLY", "embeddedBodies": 0}))
         return
     if args.semantics_check:

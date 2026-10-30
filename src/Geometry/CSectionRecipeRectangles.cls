@@ -183,7 +183,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
     For i = 1 To UBound(faces)
         With faces(i)
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
-            Set path = facade.Chain(.ID, contours((i - 1) \ 4 + 1).ID, CStr(groups((i - 1) Mod 4)), 1#, CStr(groups((i - 1) Mod 4)), 0#, False) ' Прежнее направление стороны; концы уже учитывают соседние as.
+            Set path = facade.Chain(.ID, contours((i - 1) \ 4 + 1).ID, CStr(groups((i - 1) Mod 4)), 1#, CStr(groups((i - 1) Mod 4)), 0#, False) ' Направления: Left снизу вверх, Right сверху вниз, Top слева направо, Bottom справа налево; концы учитывают соседние as.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
             options.EndMode = .EndMode ' Применяем выбранное правило после концевых отступов.

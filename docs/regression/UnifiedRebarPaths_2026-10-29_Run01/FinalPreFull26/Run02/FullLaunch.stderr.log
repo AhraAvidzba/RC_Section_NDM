@@ -1,0 +1,61 @@
+test_complete_declared_scope (__main__.FullScopeChecks.test_complete_declared_scope) ... ok
+test_duplicate_group_cannot_replace_missing_group (__main__.FullScopeChecks.test_duplicate_group_cannot_replace_missing_group) ... ok
+test_each_omitted_group_is_rejected (__main__.FullScopeChecks.test_each_omitted_group_is_rejected) ... ok
+test_expanded_geometry_cannot_use_old_count (__main__.FullScopeChecks.test_expanded_geometry_cannot_use_old_count) ... ok
+test_expanded_scope_requires_recent_offset_tests (__main__.FullScopeChecks.test_expanded_scope_requires_recent_offset_tests) ... ok
+test_individual_rows_require_all_new_suites (__main__.FullScopeChecks.test_individual_rows_require_all_new_suites) ... ok
+test_lowered_suite_count_is_rejected (__main__.FullScopeChecks.test_lowered_suite_count_is_rejected) ... ok
+test_omitted_hour_plan_is_rejected (__main__.FullScopeChecks.test_omitted_hour_plan_is_rejected) ... ok
+test_unknown_coverage_version_is_rejected (__main__.FullScopeChecks.test_unknown_coverage_version_is_rejected) ... ok
+test_biaxial_analytical_forces_and_displaced_concrete (__main__.IndependentChecks.test_biaxial_analytical_forces_and_displaced_concrete) ... ok
+test_binary_double_decoder_keeps_all_bits (__main__.IndependentChecks.test_binary_double_decoder_keeps_all_bits) ... ok
+test_disabled_extension_clamps_stresses (__main__.IndependentChecks.test_disabled_extension_clamps_stresses) ... ok
+test_highs_proves_impossible_bounded_load (__main__.IndependentChecks.test_highs_proves_impossible_bounded_load) ... ok
+test_independent_solution_blocks_acceptance_of_numfail (__main__.IndependentChecks.test_independent_solution_blocks_acceptance_of_numfail) ... ok
+test_infinite_extension_is_not_bounded_by_saved_knots (__main__.IndependentChecks.test_infinite_extension_is_not_bounded_by_saved_knots) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.599s
+
+OK
+..................
+----------------------------------------------------------------------
+Ran 18 tests in 0.016s
+
+OK
+test_complete_declared_scope (__main__.FullScopeChecks.test_complete_declared_scope) ... ok
+test_duplicate_group_cannot_replace_missing_group (__main__.FullScopeChecks.test_duplicate_group_cannot_replace_missing_group) ... ok
+test_each_omitted_group_is_rejected (__main__.FullScopeChecks.test_each_omitted_group_is_rejected) ... ok
+test_expanded_geometry_cannot_use_old_count (__main__.FullScopeChecks.test_expanded_geometry_cannot_use_old_count) ... ok
+test_expanded_scope_requires_recent_offset_tests (__main__.FullScopeChecks.test_expanded_scope_requires_recent_offset_tests) ... ok
+test_individual_rows_require_all_new_suites (__main__.FullScopeChecks.test_individual_rows_require_all_new_suites) ... ok
+test_lowered_suite_count_is_rejected (__main__.FullScopeChecks.test_lowered_suite_count_is_rejected) ... ok
+test_omitted_hour_plan_is_rejected (__main__.FullScopeChecks.test_omitted_hour_plan_is_rejected) ... ok
+test_unknown_coverage_version_is_rejected (__main__.FullScopeChecks.test_unknown_coverage_version_is_rejected) ... ok
+test_biaxial_analytical_forces_and_displaced_concrete (__main__.IndependentChecks.test_biaxial_analytical_forces_and_displaced_concrete) ... ok
+test_binary_double_decoder_keeps_all_bits (__main__.IndependentChecks.test_binary_double_decoder_keeps_all_bits) ... ok
+test_disabled_extension_clamps_stresses (__main__.IndependentChecks.test_disabled_extension_clamps_stresses) ... ok
+test_highs_proves_impossible_bounded_load (__main__.IndependentChecks.test_highs_proves_impossible_bounded_load) ... ok
+test_independent_solution_blocks_acceptance_of_numfail (__main__.IndependentChecks.test_independent_solution_blocks_acceptance_of_numfail) ... ok
+test_infinite_extension_is_not_bounded_by_saved_knots (__main__.IndependentChecks.test_infinite_extension_is_not_bounded_by_saved_knots) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.583s
+
+OK
+python.exe : Traceback (most recent call last):
+At C:\Users\avidzba\Desktop\–ø—Ä–æ–≥—Ä–∞–º–º—ã\–í_–†–ê–ë–û–¢–ï!\RC_Section_NDM\tools\build_workbook\Run-FullOnOffAcceptance.ps1:192 cha
+r:1
++ & $Python (Join-Path $PSScriptRoot 'Finalize-CompleteAcceptance.py')  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Traceback (most recent call last):
+  File "C:\Users\avidzba\Desktop\ÔÓ„‡ÏÏ˚\¬_–¿¡Œ“≈!\RC_Section_NDM\tools\build_workbook\Finalize-CompleteAcceptance.py", line 61, in <module>
+    args=parser.parse_args();result=finalize(args.core_directory,args.focused_directory)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\avidzba\Desktop\ÔÓ„‡ÏÏ˚\¬_–¿¡Œ“≈!\RC_Section_NDM\tools\build_workbook\Finalize-CompleteAcceptance.py", line 19, in finalize
+    if main['status']!='PASS':raise ValueError(main['errors'])
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: ['Geometry_Off.txt', 'Geometry_On.txt', 'Driver is not successfully complete']

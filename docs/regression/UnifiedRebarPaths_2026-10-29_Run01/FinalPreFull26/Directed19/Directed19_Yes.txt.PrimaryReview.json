@@ -1,0 +1,88 @@
+﻿{
+    "ID":  "Directed19_Yes",
+    "Passed":  true,
+    "Mode":  "Yes",
+    "SourceSHA256":  "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+    "PrimaryBytes":  68186,
+    "PrimarySHA256":  "ED8C9B0F14D004015D14030A65226FDD8DEC2F5FD010272F06CB79CD86BB59E1",
+    "AllBytesRead":  true,
+    "Started":  [
+                    "modTestIndividualContours.RunIndividualContourWorkbookTests",
+                    "modTestIndividualContours.RunOffsetNeighborMergeTests",
+                    "modTestIndividualContours.RunIndividualContourTests"
+                ],
+    "Finished":  [
+                     "modTestIndividualContours.RunIndividualContourWorkbookTests",
+                     "modTestIndividualContours.RunOffsetNeighborMergeTests",
+                     "modTestIndividualContours.RunIndividualContourTests"
+                 ],
+    "Expected":  [
+                     "modTestIndividualContours.RunIndividualContourWorkbookTests",
+                     "modTestIndividualContours.RunOffsetNeighborMergeTests",
+                     "modTestIndividualContours.RunIndividualContourTests"
+                 ],
+    "Errors":  [
+
+               ],
+    "Totals":  [
+                   "TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=656; failed=0",
+                   "TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0",
+                   "TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0"
+               ],
+    "OwnClosure":  {
+                       "Stage":  "AFTER_CHILD_EXIT",
+                       "Passed":  true,
+                       "ChildHasExited":  true,
+                       "ChildExitCode":  0,
+                       "Closure":  {
+                                       "Passed":  true,
+                                       "Identity":  {
+                                                        "Valid":  true,
+                                                        "PID":  15824,
+                                                        "Ticks":  639289171903683513,
+                                                        "Reason":  "Primary TEST_EXCEL_PROCESS"
+                                                    },
+                                       "FinalState":  {
+                                                          "State":  "Absent",
+                                                          "PID":  15824,
+                                                          "StartTicksUTC":  "639289171903683513",
+                                                          "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                          "ObservedUTC":  "2026-10-30T00:33:32.2373808+00:00"
+                                                      },
+                                       "Observations":  [
+                                                            {
+                                                                "State":  "Absent",
+                                                                "PID":  15824,
+                                                                "StartTicksUTC":  "639289171903683513",
+                                                                "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                "ObservedUTC":  "2026-10-30T00:33:32.2373808+00:00"
+                                                            }
+                                                        ],
+                                       "GraceMilliseconds":  3000,
+                                       "OrdinaryPathKilledAnything":  false
+                                   },
+                       "RunnerCleanupValid":  true,
+                       "RunnerCleanup":  {
+                                             "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+                                             "OwnerVerified":  true,
+                                             "PID":  15824,
+                                             "StartTicksUTC":  "639289171903683513",
+                                             "CloseRequested":  false,
+                                             "CloseSucceeded":  false,
+                                             "QuitRequested":  true,
+                                             "QuitSucceeded":  true,
+                                             "Errors":  [
+
+                                                        ],
+                                             "Failed":  false,
+                                             "FinalExitNotAsserted":  true,
+                                             "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+                                             "ObservedUTC":  "2026-10-30T00:33:31.6379670+00:00"
+                                         },
+                       "RunnerCleanupReadError":  null,
+                       "OrdinaryPathKilledAnything":  false
+                   },
+    "RAMBeforeGiB":  15.80859375,
+    "CommitBeforeGiB":  20.310443878173828,
+    "ExitCode":  0
+}

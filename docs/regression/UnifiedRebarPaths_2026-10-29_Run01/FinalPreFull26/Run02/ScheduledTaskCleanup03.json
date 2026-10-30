@@ -1,0 +1,14 @@
+﻿{
+    "Status":  "EXACT_CURRENT_FULL_TASK_REMOVED_AFTER_ALL_OWN_EXIT",
+    "ObservedUTC":  "2026-10-30T00:26:28.4022688+00:00",
+    "TaskName":  "RC_NDM_Full_20261029_UnifiedRebar_Run02",
+    "Execute":  "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "Arguments":  "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \"C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02\\FullDriverHost.ps1\"",
+    "WorkingDirectory":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM",
+    "Triggers":  0,
+    "DeletedByThisCheck":  true,
+    "AllOwnIdentitiesTerminal":  true,
+    "AnyProcessClosed":  false,
+    "SourceSHA256":  "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+    "TaskXMLBackup":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Run02TaskBeforeCleanup03.xml"
+}

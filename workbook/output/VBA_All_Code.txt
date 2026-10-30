@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-29 23:22:05
+Date: 2026-10-30 03:32:30
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -9200,7 +9200,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
     For i = 1 To UBound(faces)
         With faces(i)
             If .count = 0 Or .diameter = 0# Then GoTo NextFace
-            Set path = facade.chain(.id, contours((i - 1) \ 4 + 1).id, CStr(groups((i - 1) Mod 4)), 1#, CStr(groups((i - 1) Mod 4)), 0#, False) ' Прежнее направление стороны; концы уже учитывают соседние as.
+            Set path = facade.chain(.id, contours((i - 1) \ 4 + 1).id, CStr(groups((i - 1) Mod 4)), 1#, CStr(groups((i - 1) Mod 4)), 0#, False) ' Направления: Left снизу вверх, Right сверху вниз, Top слева направо, Bottom справа налево; концы учитывают соседние as.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
             options.EndMode = .EndMode ' Применяем выбранное правило после концевых отступов.
@@ -109110,7 +109110,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestIndividualContours
 TYPE: 1
-LINES: 861
+LINES: 873
 ====================================================================================================
 Option Explicit
 
@@ -109297,13 +109297,14 @@ Finished:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' реальные рецепты OneRect, TwoRect, PointedSection, HollowRectangle и Circle.
+' Проверяет реальные рецепты и считает созданные стержни отдельно от объединённых позиций.
 Public Function RunIndividualContourWorkbookTests() As String
     Dim config As Object, saved As Variant, fixtures As Variant, fixture As String, table As Object, tableName As String
     Dim keyed As CSectionInputReader, keys As Variant, key As Variant, side As Long, scenario As Long, active As Boolean
     Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader, registry As CSectionTypeRegistry
     Dim context As CSectionRecipeContext, definition As CSectionDefinition, executor As CRebarRuleExecutor, layout As CRebarLayout
     Dim source As TRebarPosition, rule As TRebarRule, i As Long, owner As Long, expectedX As Double, expectedY As Double, top2 As Long, top3 As Long
+    Dim top2Positions As Long, top2Merged As Long
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
@@ -109368,7 +109369,7 @@ Public Function RunIndividualContourWorkbookTests() As String
         Set definition = registry.CreateDefinition(fixture, context)
         Set executor = New CRebarRuleExecutor: Set layout = TestBuildLayout(definition, executor)
         TestCheck "recipe." & CStr(scenario) & ".created", layout.count > 0
-        top2 = 0: top3 = 0
+        top2 = 0: top3 = 0: top2Positions = 0: top2Merged = 0
         For i = 1 To executor.PositionCount
             definition.CopyRule definition.RuleIndex(executor.PositionRuleID(i)), rule
             If rule.mode = DependentOffset Then
@@ -109377,11 +109378,22 @@ Public Function RunIndividualContourWorkbookTests() As String
                 expectedY = source.y + rule.TangentOffset * source.tangentY + rule.normalOffset * source.tangentX
                 TestNear "recipe." & CStr(scenario) & ".preserve.x", layout.x(owner), expectedX
                 TestNear "recipe." & CStr(scenario) & ".preserve.y", layout.y(owner), expectedY
-                If rule.ruleID = "B1.as_1.Row2" Then top2 = top2 + 1
-                If rule.ruleID = "B1.as_1.Row3" Then top3 = top3 + 1
+                If rule.ruleID = "B1.as_1.Row2" Then
+                    top2Positions = top2Positions + 1
+                    If StrComp(layout.barID(owner), executor.PositionSourceID(i), vbBinaryCompare) = 0 Then
+                        top2 = top2 + 1 ' Физический стержень создан именно этой позицией верхнего ряда.
+                    Else
+                        top2Merged = top2Merged + 1 ' Позиция ссылается на первого владельца со смежной стороны.
+                    End If
+                End If
+                If rule.ruleID = "B1.as_1.Row3" Then
+                    If StrComp(layout.barID(owner), executor.PositionSourceID(i), vbBinaryCompare) = 0 Then top3 = top3 + 1
+                End If
             End If
         Next i
         If scenario <= 1 Then
+            TestCheck "recipe.OneRect.top2.positions", top2Positions = 5
+            TestCheck "recipe.OneRect.top2.merged", top2Merged = IIf(scenario = 0, 0, 2)
             TestCheck "recipe.OneRect.top2", top2 = IIf(scenario = 0, 5, 3)
             TestCheck "recipe.OneRect.top3", top3 = IIf(scenario = 0, 5, 3)
         End If

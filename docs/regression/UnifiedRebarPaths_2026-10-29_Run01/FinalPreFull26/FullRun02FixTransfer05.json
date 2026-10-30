@@ -1,0 +1,51 @@
+﻿{
+    "Status":  "POST_FULL_RUN02_FIX_AND_CONTRACT_COMMENTS_TRANSFERRED",
+    "AtUTC":  "2026-10-30T00:28:41.3456335+00:00",
+    "SourceCommit":  "d475ce4f7f3ef12912c8d1bbaf2c7eae3b327d82",
+    "HistoricalFailedBookSHA256":  "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+    "OriginalInputsVerified":  505,
+    "ChangedFiles":  [
+                         {
+                             "Path":  "tests/modTestIndividualContours.bas",
+                             "BeforeSHA256":  "8FB15CFBB3BA19144EE4FFA0145A2421791E545F8EE8C0347EA538A28978FF54",
+                             "AfterSHA256":  "E270AA37D02F8DF6D522251741BB3713EED7CFADA9EE840EA666F80443FEA8C9",
+                             "PrivatePath":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\IsolatedFullRun02Fix05\\tests\\modTestIndividualContours.bas"
+                         },
+                         {
+                             "Path":  "src/Geometry/CSectionRecipeRectangles.cls",
+                             "BeforeSHA256":  "896C77A97A8942ADF5E426CCE917FDCDB125C83DEE5BB201C1635448C339ED45",
+                             "AfterSHA256":  "676074F4DE0D610A265758E05BE6EA47B9756AA1D49B8BB1C2C9822D811709D6",
+                             "PrivatePath":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\IsolatedFullRun02Fix05\\src\\Geometry\\CSectionRecipeRectangles.cls"
+                         },
+                         {
+                             "Path":  "tools/build_workbook/Build-SectionRecipeApi.py",
+                             "BeforeSHA256":  "75DE7C320D7E905B549A0A039C7840558D244A73995C38B740CDFBA889660156",
+                             "AfterSHA256":  "8B0FF37BFBA67039D7CD5036121165C6172975DF3FBA1F0C0087CF40B1BB913C",
+                             "PrivatePath":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredToolContractComments04\\tools\\build_workbook\\Build-SectionRecipeApi.py"
+                         },
+                         {
+                             "Path":  "tools/build_workbook/Build-SectionRecipeApiExamples.py",
+                             "BeforeSHA256":  "E377246FFC423E8944E789E0586F417295BABE58CBD4E19FF189847F69BCE8B3",
+                             "AfterSHA256":  "7A7CEDFDAC6B30E2168E3A3A8502BD126A80D03BCC644686ADE186A1B2E715F0",
+                             "PrivatePath":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredToolContractComments04\\tools\\build_workbook\\Build-SectionRecipeApiExamples.py"
+                         },
+                         {
+                             "Path":  "tools/build_workbook/GeometryTables.ps1",
+                             "BeforeSHA256":  "ED8AC4102E81A168EC5D476C54BDE9E6091429C3D46F3D16EC1354A5A380B27B",
+                             "AfterSHA256":  "D3C915459EB83EB611C5893121D08CC4E0E523C28C6C7BC9CBBDD78607ACF9FD",
+                             "PrivatePath":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\DeferredToolContractComments04\\tools\\build_workbook\\GeometryTables.ps1"
+                         }
+                     ],
+    "OtherInputsUnchanged":  500,
+    "Backup":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\BeforeFullRun02Fix05",
+    "AllOwnProofSHA256":  "5670BD11D090EF7E7E6126D959A11C5ABF8680C9B9C8B29DD3CBADCEFF12DE5C",
+    "SourceBookAndAllCodeUnchanged":  true,
+    "OriginalFullEvidenceRewritten":  false,
+    "PhysicalExpectationsUnchanged":  {
+                                          "TopOnlyRow2":  5,
+                                          "AllSidesRow2":  3,
+                                          "AllSidesRow3":  3
+                                      },
+    "NativeFixVerified":  false,
+    "FullAcceptanceClaim":  false
+}

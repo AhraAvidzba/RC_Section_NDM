@@ -1,0 +1,131 @@
+START: Full_Off; 2026-10-29T23:34:15.8861595+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Full_Off.txt
+FINISH: Full_Off; exit=0; 2026-10-30T01:10:05.0213093+03:00
+START: Geometry_Off; 2026-10-30T01:10:05.0373678+03:00
+WATCHDOG_COMPLETED: exit=1; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Geometry_Off.txt
+FINISH: Geometry_Off; exit=1; 2026-10-30T01:14:41.5243693+03:00
+START: SP35_Off; 2026-10-30T01:14:41.5305283+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\SP35_Off.txt
+FINISH: SP35_Off; exit=0; 2026-10-30T01:15:02.4388628+03:00
+START: Recipes_Off; 2026-10-30T01:15:02.4408865+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Recipes_Off.txt
+FINISH: Recipes_Off; exit=0; 2026-10-30T01:20:31.8241838+03:00
+START: SavedOffsets_Off; 2026-10-30T01:20:31.8619972+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\SavedOffsets_Off.txt
+FINISH: SavedOffsets_Off; exit=0; 2026-10-30T01:20:57.2305977+03:00
+START: CurrentFeatures_Off; 2026-10-30T01:20:57.2325924+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\CurrentFeatures_Off.txt
+FINISH: CurrentFeatures_Off; exit=0; 2026-10-30T01:23:10.7842142+03:00
+START: Full_On; 2026-10-30T01:23:10.7862103+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Full_On.txt
+FINISH: Full_On; exit=0; 2026-10-30T02:55:40.2443940+03:00
+START: Geometry_On; 2026-10-30T02:55:40.2687120+03:00
+WATCHDOG_COMPLETED: exit=1; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Geometry_On.txt
+FINISH: Geometry_On; exit=1; 2026-10-30T03:00:18.7185496+03:00
+START: SP35_On; 2026-10-30T03:00:18.7292186+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\SP35_On.txt
+FINISH: SP35_On; exit=0; 2026-10-30T03:00:39.7219277+03:00
+START: Recipes_On; 2026-10-30T03:00:39.7239224+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Recipes_On.txt
+FINISH: Recipes_On; exit=0; 2026-10-30T03:06:04.2458746+03:00
+START: SavedOffsets_On; 2026-10-30T03:06:04.2478691+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\SavedOffsets_On.txt
+FINISH: SavedOffsets_On; exit=0; 2026-10-30T03:06:27.8867582+03:00
+START: CurrentFeatures_On; 2026-10-30T03:06:27.8887535+03:00
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\CurrentFeatures_On.txt
+FINISH: CurrentFeatures_On; exit=0; 2026-10-30T03:08:53.5814016+03:00
+OWNED_EXCEL: id=7456; utcStartTicks=639289157357661406
+True
+True
+True
+True
+True
+FOCUSED_PROBE_READY: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Probe; calculation not executed
+OWNED_EXCEL: id=27004; utcStartTicks=639289157575410255
+FOCUSED_MANIFEST|shape=Rectangles|group=Generated|cases=8|fibers=95|rebars=28
+FOCUSED_MANIFEST|shape=Circle|group=Generated|cases=8|fibers=88|rebars=8
+FOCUSED_MANIFEST|shape=PointedSection|group=Generated|cases=8|fibers=358|rebars=26
+FOCUSED_MANIFEST|shape=HollowRectangle|group=Generated|cases=8|fibers=120|rebars=56
+FOCUSED_MANIFEST|shape=SavedWorkbook|group=Saved|cases=23|fibers=45|rebars=20
+FOCUSED_MANIFEST|shape=SavedWorkbook|group=Paths|cases=6|fibers=45|rebars=20
+FOCUSED_MANIFEST_READY: geometry and loads only; no acceptance calculations executed.
+FOCUSED_STARTED: Rectangles_Generated_No; remaining=3570
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Rectangles_Generated_No.txt
+FOCUSED_FINISHED: Rectangles_Generated_No; passed=True
+FOCUSED_STARTED: Rectangles_Generated_Yes; remaining=3524
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Rectangles_Generated_Yes.txt
+FOCUSED_FINISHED: Rectangles_Generated_Yes; passed=True
+FOCUSED_STARTED: Circle_Generated_No; remaining=3480
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Circle_Generated_No.txt
+FOCUSED_FINISHED: Circle_Generated_No; passed=True
+FOCUSED_STARTED: Circle_Generated_Yes; remaining=3437
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Circle_Generated_Yes.txt
+FOCUSED_FINISHED: Circle_Generated_Yes; passed=True
+FOCUSED_STARTED: PointedSection_Generated_No; remaining=3395
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\PointedSection_Generated_No.txt
+FOCUSED_FINISHED: PointedSection_Generated_No; passed=True
+FOCUSED_STARTED: PointedSection_Generated_Yes; remaining=3343
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\PointedSection_Generated_Yes.txt
+FOCUSED_FINISHED: PointedSection_Generated_Yes; passed=True
+FOCUSED_STARTED: HollowRectangle_Generated_No; remaining=3291
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\HollowRectangle_Generated_No.txt
+FOCUSED_FINISHED: HollowRectangle_Generated_No; passed=True
+FOCUSED_STARTED: HollowRectangle_Generated_Yes; remaining=3244
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\HollowRectangle_Generated_Yes.txt
+FOCUSED_FINISHED: HollowRectangle_Generated_Yes; passed=True
+FOCUSED_STARTED: SavedWorkbook_Saved_No; remaining=3197
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\SavedWorkbook_Saved_No.txt
+FOCUSED_FINISHED: SavedWorkbook_Saved_No; passed=True
+FOCUSED_STARTED: SavedWorkbook_Saved_Yes; remaining=3135
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\SavedWorkbook_Saved_Yes.txt
+FOCUSED_FINISHED: SavedWorkbook_Saved_Yes; passed=True
+FOCUSED_STARTED: SavedWorkbook_Paths_No; remaining=3089
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\SavedWorkbook_Paths_No.txt
+FOCUSED_FINISHED: SavedWorkbook_Paths_No; passed=True
+FOCUSED_STARTED: SavedWorkbook_Paths_Yes; remaining=3050
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\SavedWorkbook_Paths_Yes.txt
+FOCUSED_FINISHED: SavedWorkbook_Paths_Yes; passed=True
+FOCUSED_STARTED: Batch15_No; remaining=3012
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Batch15_No.txt
+FOCUSED_FINISHED: Batch15_No; passed=True
+FOCUSED_STARTED: Stability_No; remaining=2975
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Stability_No.txt
+FOCUSED_FINISHED: Stability_No; passed=True
+FOCUSED_STARTED: AsymmetricSteel_No; remaining=2940
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\AsymmetricSteel_No.txt
+FOCUSED_FINISHED: AsymmetricSteel_No; passed=True
+FOCUSED_STARTED: Batch15_Yes; remaining=2905
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Batch15_Yes.txt
+FOCUSED_FINISHED: Batch15_Yes; passed=True
+FOCUSED_STARTED: Stability_Yes; remaining=2869
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Stability_Yes.txt
+FOCUSED_FINISHED: Stability_Yes; passed=True
+FOCUSED_STARTED: AsymmetricSteel_Yes; remaining=2834
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\AsymmetricSteel_Yes.txt
+FOCUSED_FINISHED: AsymmetricSteel_Yes; passed=True
+FOCUSED_STARTED: Model_Rectangles; remaining=2798
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Model_Rectangles.txt
+FOCUSED_FINISHED: Model_Rectangles; passed=True
+FOCUSED_STARTED: Model_Circle; remaining=2789
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Model_Circle.txt
+FOCUSED_FINISHED: Model_Circle; passed=True
+FOCUSED_STARTED: Model_PointedSection; remaining=2781
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Model_PointedSection.txt
+FOCUSED_FINISHED: Model_PointedSection; passed=True
+FOCUSED_STARTED: Model_HollowRectangle; remaining=2772
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Model_HollowRectangle.txt
+FOCUSED_FINISHED: Model_HollowRectangle; passed=True
+FOCUSED_STARTED: Model_SavedWorkbook; remaining=2763
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\Model_SavedWorkbook.txt
+FOCUSED_FINISHED: Model_SavedWorkbook; passed=True
+FOCUSED_STARTED: OutputPresentation; remaining=2755
+WATCHDOG_COMPLETED: exit=0; report=C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FullOnOff_2026-10-29_UnifiedRebar_Run02\Focused\OutputPresentation.txt
+FOCUSED_FINISHED: OutputPresentation; passed=True
+NATIVE_STARTED: RunRealAutoCADFarOriginTests; budget=419 sec
+TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=495; failed=0
+NATIVE_STARTED: RunRealAutoCADFarCapacityTests; budget=400 sec
+TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=551; failed=0
+NATIVE_FOCUSED_STAGE: passed=True
+{"Passed": true, "ScipyVersion": "1.18.1", "ModelCount": 5, "IndependentIntegrals": 560, "ReviewedNumFailStates": 10, "UnsupportedCount": 0}
+{"Status": "PASS", "SourceSHA256": "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2", "IndividualCases": 122, "PassedAssertions": 13967, "ElapsedSeconds": 907.331593, "Errors": [], "Stages": [{"ID": "Rectangles_Generated_No", "Passed": true}, {"ID": "Rectangles_Generated_Yes", "Passed": true}, {"ID": "Circle_Generated_No", "Passed": true}, {"ID": "Circle_Generated_Yes", "Passed": true}, {"ID": "PointedSection_Generated_No", "Passed": true}, {"ID": "PointedSection_Generated_Yes", "Passed": true}, {"ID": "HollowRectangle_Generated_No", "Passed": true}, {"ID": "HollowRectangle_Generated_Yes", "Passed": true}, {"ID": "SavedWorkbook_Saved_No", "Passed": true}, {"ID": "SavedWorkbook_Saved_Yes", "Passed": true}, {"ID": "SavedWorkbook_Paths_No", "Passed": true}, {"ID": "SavedWorkbook_Paths_Yes", "Passed": true}, {"ID": "Batch15_No", "Passed": true}, {"ID": "Stability_No", "Passed": true}, {"ID": "AsymmetricSteel_No", "Passed": true}, {"ID": "Batch15_Yes", "Passed": true}, {"ID": "Stability_Yes", "Passed": true}, {"ID": "AsymmetricSteel_Yes", "Passed": true}, {"ID": "OutputPresentation", "Passed": true}]}
+{"status": "INCOMPLETE_OR_FAILED", "sourceCommit": "d475ce4f7f3ef12912c8d1bbaf2c7eae3b327d82", "sourceSHA256": "8ba463bf1aec97834f81c0d01add5707d6d0a21266b6fae61aa2bcb6608f84e2", "runnerSHA256": "C51C70BBBBF155F7950B1405942B8D5B03BFC385BD7A57885AC63A4FEED8CB61", "modeRunnerSHA256": "0CD9C34BEBFE3593C0F8BBD40D3DD03400F37F729C232E3076A01DB4596956FA", "coverageDefinition": "AllActiveAcceptanceIncludingFocused", "coverageVersion": 7, "includesFocusedAcceptance": true, "focusedAcceptance": {"ExitCode": 0, "Directory": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused", "AcceptanceSHA256": "A9FD14BCF49FD09830339BE98C6D302019C6B562F28A8FBE13C38A7EFA47E607", "Passed": true}, "inputProvenance": "frozen file", "startedUTC": "2026-10-29T20:34:15.7985771+00:00", "finishedUTC": "2026-10-30T00:24:02.9723461+00:00", "deadline": "2026-10-30T07:34:10.4696510+03:00", "expectedSuites": 182, "completedSuites": 182, "observedSuites": 182, "printedSuccessfulAssertions": 315384, "failedAssertions": 2, "errors": ["Geometry_Off.txt", "Geometry_On.txt", "Driver is not successfully complete"]}

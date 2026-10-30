@@ -1,0 +1,326 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\UnifiedRebarPaths_2026-10-29_Run01\Build13\RC_Section_NDM.xlsm
+SOURCE_SHA256: D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4146cbbde85947cc956bde40e09f6b45\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=13064; startTicks=639289171650255449
+===== modTestIndividualContours.RunIndividualContourWorkbookTests =====
+SUITE_STARTED: modTestIndividualContours.RunIndividualContourWorkbookTests; 2026-10-30T03:32:50
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=13064; workingSet=124813312; privateBytes=93970432; cpu=16.953125
+RECIPE_CASE: 0; Rectangles; bars=30
+Requested=30; Created=30; Merged=0; Skipped=0; FilteredArea=0; Conflicts=0; BarOverlaps=0; DiagnosticRecordsOmitted=0
+Rule=H1.as_1.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=350; StationStepMax=350; CenterStepMin=350; CenterStepMax=350
+Rule=H1.as_2.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=350; StationStepMax=350; CenterStepMin=350; CenterStepMax=350
+Rule=B1.as_1.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+Rule=B1.as_1.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+Rule=B1.as_1.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+Rule=B1.as_2.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+RECIPE_CASE: 1; Rectangles; bars=48
+Requested=60; Created=48; Merged=4; Skipped=8; FilteredArea=0; Conflicts=0; BarOverlaps=0; DiagnosticRecordsOmitted=0
+Предупреждение: после смещения не размещено дополнительных стержней: 8. Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results.
+Сечения!G51; Сечения!H51; Сечения!I51; Сечения!J51: Набор прямоугольников: H1 - левая грань, ряд 3; пропущено 2 стержней.
+Сечения!G52; Сечения!H52; Сечения!I52; Сечения!J52: Набор прямоугольников: H1 - правая грань, ряд 3; пропущено 2 стержней.
+Сечения!G49; Сечения!H49; Сечения!I49; Сечения!J49: Набор прямоугольников: B1 - верхняя грань, ряд 3; пропущено 2 стержней.
+Сечения!G50; Сечения!H50; Сечения!I50; Сечения!J50: Набор прямоугольников: B1 - нижняя грань, ряд 3; пропущено 2 стержней.
+Сечения!G51; Сечения!H51; Сечения!I51; Сечения!J51: H1.as_1.Row3; H1.as_1.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G51; Сечения!H51; Сечения!I51; Сечения!J51: H1.as_1.Row3; H1.as_1.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G52; Сечения!H52; Сечения!I52; Сечения!J52: H1.as_2.Row3; H1.as_2.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G52; Сечения!H52; Сечения!I52; Сечения!J52: H1.as_2.Row3; H1.as_2.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G49; Сечения!H49; Сечения!I49; Сечения!J49: B1.as_1.Row3; B1.as_1.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G49; Сечения!H49; Сечения!I49; Сечения!J49: B1.as_1.Row3; B1.as_1.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G50; Сечения!H50; Сечения!I50; Сечения!J50: B1.as_2.Row3; B1.as_2.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G50; Сечения!H50; Сечения!I50; Сечения!J50: B1.as_2.Row3; B1.as_2.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Предупреждение: объединено дополнительных стержней соседних граней: 4. В расчёте и подписях учтён только первый добавленный стержень с его координатами и диаметром.
+Сечения!C49; Сечения!D49; Сечения!E49; Сечения!F49: Ряд 'B1.as_1.Row2': пересекающийся стержень диаметром 10 мм объединён с первым стержнем 'H1.as_1.Row2.5' ряда 'H1.as_1.Row2'. Сохранены координаты (200; 1600) мм и диаметр 10 мм; вторая площадь не добавлена. Поля первого ряда: Сечения!C51; Сечения!D51; Сечения!E51; Сечения!F51
+Сечения!C49; Сечения!D49; Сечения!E49; Сечения!F49: Ряд 'B1.as_1.Row2': пересекающийся стержень диаметром 10 мм объединён с первым стержнем 'H1.as_2.Row2.1' ряда 'H1.as_2.Row2'. Сохранены координаты (2200; 1600) мм и диаметр 10 мм; вторая площадь не добавлена. Поля первого ряда: Сечения!C52; Сечения!D52; Сечения!E52; Сечения!F52
+Сечения!C50; Сечения!D50; Сечения!E50; Сечения!F50: Ряд 'B1.as_2.Row2': пересекающийся стержень диаметром 10 мм объединён с первым стержнем 'H1.as_2.Row2.5' ряда 'H1.as_2.Row2'. Сохранены координаты (2200; 200) мм и диаметр 10 мм; вторая площадь не добавлена. Поля первого ряда: Сечения!C52; Сечения!D52; Сечения!E52; Сечения!F52
+Сечения!C50; Сечения!D50; Сечения!E50; Сечения!F50: Ряд 'B1.as_2.Row2': пересекающийся стержень диаметром 10 мм объединён с первым стержнем 'H1.as_1.Row2.1' ряда 'H1.as_1.Row2'. Сохранены координаты (200; 200) мм и диаметр 10 мм; вторая площадь не добавлена. Поля первого ряда: Сечения!C51; Сечения!D51; Сечения!E51; Сечения!F51
+Rule=H1.as_1.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=350; StationStepMax=350; CenterStepMin=350; CenterStepMax=350
+Rule=H1.as_1.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=350; StationStepMax=350; CenterStepMin=350; CenterStepMax=350
+Rule=H1.as_1.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=350; StationStepMax=350; CenterStepMin=350; CenterStepMax=350
+Rule=H1.as_2.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=350; StationStepMax=350; CenterStepMin=350; CenterStepMax=350
+Rule=H1.as_2.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=350; StationStepMax=350; CenterStepMin=350; CenterStepMax=350
+Rule=H1.as_2.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=350; StationStepMax=350; CenterStepMin=350; CenterStepMax=350
+Rule=B1.as_1.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+Rule=B1.as_1.Row2; Requested=5; Created=3; Merged=2; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+Rule=B1.as_1.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+Rule=B1.as_2.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+Rule=B1.as_2.Row2; Requested=5; Created=3; Merged=2; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+Rule=B1.as_2.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=500; StationStepMax=500; CenterStepMin=500; CenterStepMax=500
+RECIPE_CASE: 2; Rectangles; bars=106
+Requested=120; Created=106; Merged=0; Skipped=14; FilteredArea=0; Conflicts=0; BarOverlaps=0; DiagnosticRecordsOmitted=0
+Предупреждение: после смещения не размещено дополнительных стержней: 14. Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results.
+Сечения!G51; Сечения!H51; Сечения!I51; Сечения!J51: Набор прямоугольников: H1 - левая грань, ряд 3; пропущено 1 стержней.
+Сечения!G52; Сечения!H52; Сечения!I52; Сечения!J52: Набор прямоугольников: H1 - правая грань, ряд 3; пропущено 1 стержней.
+Сечения!G49; Сечения!H49; Сечения!I49; Сечения!J49: Набор прямоугольников: B1 - верхняя грань, ряд 3; пропущено 2 стержней.
+Сечения!G50; Сечения!H50; Сечения!I50; Сечения!J50: Набор прямоугольников: B1 - нижняя грань, ряд 3; пропущено 2 стержней.
+Сечения!G55; Сечения!H55; Сечения!I55; Сечения!J55: Набор прямоугольников: H2 - левая грань, ряд 3; пропущено 2 стержней.
+Сечения!G56; Сечения!H56; Сечения!I56; Сечения!J56: Набор прямоугольников: H2 - правая грань, ряд 3; пропущено 2 стержней.
+Сечения!G53; Сечения!H53; Сечения!I53; Сечения!J53: Набор прямоугольников: B2 - верхняя грань, ряд 3; пропущено 2 стержней.
+Сечения!G54; Сечения!H54; Сечения!I54; Сечения!J54: Набор прямоугольников: B2 - нижняя грань, ряд 3; пропущено 2 стержней.
+Сечения!G51; Сечения!H51; Сечения!I51; Сечения!J51: H1.as_1.Row3; H1.as_1.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G52; Сечения!H52; Сечения!I52; Сечения!J52: H1.as_2.Row3; H1.as_2.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G49; Сечения!H49; Сечения!I49; Сечения!J49: B1.as_1.Row3; B1.as_1.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G49; Сечения!H49; Сечения!I49; Сечения!J49: B1.as_1.Row3; B1.as_1.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G50; Сечения!H50; Сечения!I50; Сечения!J50: B1.as_2.Row3; B1.as_2.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G50; Сечения!H50; Сечения!I50; Сечения!J50: B1.as_2.Row3; B1.as_2.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G55; Сечения!H55; Сечения!I55; Сечения!J55: H2.as_1.Row3; H2.as_1.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G55; Сечения!H55; Сечения!I55; Сечения!J55: H2.as_1.Row3; H2.as_1.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G56; Сечения!H56; Сечения!I56; Сечения!J56: H2.as_2.Row3; H2.as_2.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G56; Сечения!H56; Сечения!I56; Сечения!J56: H2.as_2.Row3; H2.as_2.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G53; Сечения!H53; Сечения!I53; Сечения!J53: B2.as_1.Row3; B2.as_1.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G53; Сечения!H53; Сечения!I53; Сечения!J53: B2.as_1.Row3; B2.as_1.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G54; Сечения!H54; Сечения!I54; Сечения!J54: B2.as_2.Row3; B2.as_2.Main.1. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Сечения!G54; Сечения!H54; Сечения!I54; Сечения!J54: B2.as_2.Row3; B2.as_2.Main.5. Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.
+Rule=H1.as_1.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=121.25; StationStepMax=121.25; CenterStepMin=121.25; CenterStepMax=121.25
+Rule=H1.as_1.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=121.25; StationStepMax=121.25; CenterStepMin=121.25; CenterStepMax=121.25
+Rule=H1.as_1.Row3; Requested=5; Created=4; Merged=0; Skipped=1; FilteredArea=0; StationSteps=3; StationStepMin=121.25; StationStepMax=121.25; CenterStepMin=121.25; CenterStepMax=121.25
+Rule=H1.as_2.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=121.25; StationStepMax=121.25; CenterStepMin=121.25; CenterStepMax=121.25
+Rule=H1.as_2.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=121.25; StationStepMax=121.25; CenterStepMin=121.25; CenterStepMax=121.25
+Rule=H1.as_2.Row3; Requested=5; Created=4; Merged=0; Skipped=1; FilteredArea=0; StationSteps=3; StationStepMin=121.25; StationStepMax=121.25; CenterStepMin=121.25; CenterStepMax=121.25
+Rule=B1.as_1.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=241.25; StationStepMax=241.25; CenterStepMin=241.25; CenterStepMax=241.25
+Rule=B1.as_1.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=241.25; StationStepMax=241.25; CenterStepMin=241.25; CenterStepMax=241.25
+Rule=B1.as_1.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=241.25; StationStepMax=241.25; CenterStepMin=241.25; CenterStepMax=241.25
+Rule=B1.as_2.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=241.25; StationStepMax=241.25; CenterStepMin=241.25; CenterStepMax=241.25
+Rule=B1.as_2.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=241.25; StationStepMax=241.25; CenterStepMin=241.25; CenterStepMax=241.25
+Rule=B1.as_2.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=241.25; StationStepMax=241.25; CenterStepMin=241.25; CenterStepMax=241.25
+Rule=H2.as_1.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=86.25; StationStepMax=86.25; CenterStepMin=86.25; CenterStepMax=86.25
+Rule=H2.as_1.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=86.25; StationStepMax=86.25; CenterStepMin=86.25; CenterStepMax=86.25
+Rule=H2.as_1.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=86.25; StationStepMax=86.25; CenterStepMin=86.25; CenterStepMax=86.25
+Rule=H2.as_2.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=86.25; StationStepMax=86.25; CenterStepMin=86.25; CenterStepMax=86.25
+Rule=H2.as_2.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=86.25; StationStepMax=86.25; CenterStepMin=86.25; CenterStepMax=86.25
+Rule=H2.as_2.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=86.25; StationStepMax=86.25; CenterStepMin=86.25; CenterStepMax=86.25
+Rule=B2.as_1.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=481.25; StationStepMax=481.25; CenterStepMin=481.25; CenterStepMax=481.25
+Rule=B2.as_1.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=481.25; StationStepMax=481.25; CenterStepMin=481.25; CenterStepMax=481.25
+Rule=B2.as_1.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=481.25; StationStepMax=481.25; CenterStepMin=481.25; CenterStepMax=481.25
+Rule=B2.as_2.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=481.25; StationStepMax=481.25; CenterStepMin=481.25; CenterStepMax=481.25
+Rule=B2.as_2.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=481.25; StationStepMax=481.25; CenterStepMin=481.25; CenterStepMax=481.25
+Rule=B2.as_2.Row3; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=481.25; StationStepMax=481.25; CenterStepMin=481.25; CenterStepMax=481.25
+RECIPE_CASE: 3; PointedSection; bars=60
+Requested=60; Created=60; Merged=0; Skipped=0; FilteredArea=0; Conflicts=0; BarOverlaps=0; DiagnosticRecordsOmitted=0
+Rule=B.Top.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=280.848155988775; StationStepMax=280.848155988775; CenterStepMin=280.848155988775; CenterStepMax=280.848155988775
+Rule=B.Top.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=280.848155988775; StationStepMax=280.848155988775; CenterStepMin=280.848155988775; CenterStepMax=280.848155988775
+Rule=B.Top.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=280.848155988775; StationStepMax=280.848155988775; CenterStepMin=280.848155988775; CenterStepMax=280.848155988775
+Rule=B.Bottom.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=280.848155988775; StationStepMax=280.848155988775; CenterStepMin=280.848155988775; CenterStepMax=280.848155988775
+Rule=B.Bottom.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=280.848155988775; StationStepMax=280.848155988775; CenterStepMin=280.848155988775; CenterStepMax=280.848155988775
+Rule=B.Bottom.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=280.848155988775; StationStepMax=280.848155988775; CenterStepMin=280.848155988775; CenterStepMax=280.848155988775
+Rule=H.Left.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=408.996937395953; StationStepMax=408.996937395953; CenterStepMin=407.412945119892; CenterStepMax=408.996937395953
+Rule=H.Left.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=408.996937395953; StationStepMax=408.996937395953; CenterStepMin=374.898154943173; CenterStepMax=408.996937395953
+Rule=H.Left.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=408.996937395953; StationStepMax=408.996937395953; CenterStepMin=342.432570776825; CenterStepMax=408.996937395953
+Rule=H.Right.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=408.045610184628; StationStepMax=408.045610184628; CenterStepMin=406.478820345811; CenterStepMax=408.045610184628
+Rule=H.Right.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=408.045610184628; StationStepMax=408.045610184628; CenterStepMin=373.955540114669; CenterStepMax=408.045610184628
+Rule=H.Right.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=408.045610184628; StationStepMax=408.045610184628; CenterStepMin=341.482127300531; CenterStepMax=408.045610184628
+RECIPE_CASE: 4; HollowRectangle; bars=84
+Requested=96; Created=84; Merged=0; Skipped=12; FilteredArea=0; Conflicts=0; BarOverlaps=0; DiagnosticRecordsOmitted=0
+Rule=B.Top.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Top.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Top.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Bottom.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=B.Bottom.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=B.Bottom.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=H.Left.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Left.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Left.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=Opening.B.Top.Main; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=391.037509011624; StationStepMax=392.223214779129; CenterStepMin=384.673988823194; CenterStepMax=385.08216067987
+Rule=Opening.B.Top.Row2; Requested=3; Created=3; Merged=0; Skipped=0; FilteredArea=0; StationSteps=2; StationStepMin=391.037509011624; StationStepMax=392.223214779129; CenterStepMin=444.230851706025; CenterStepMax=447.1666183726
+Rule=Opening.B.Top.Row3; Requested=3; Created=3; Merged=0; Skipped=0; FilteredArea=0; StationSteps=2; StationStepMin=391.037509011624; StationStepMax=392.223214779129; CenterStepMin=504.037459715911; CenterStepMax=509.529995500544
+Rule=Opening.B.Bottom.Main; Requested=5; Created=3; Merged=0; Skipped=2; FilteredArea=0; StationSteps=2; StationStepMin=385.443850904898; StationStepMax=386.465770139609; CenterStepMin=380.005074011848; CenterStepMax=380.349694849802
+Rule=Opening.B.Bottom.Row2; Requested=3; Created=3; Merged=0; Skipped=0; FilteredArea=0; StationSteps=2; StationStepMin=385.443850904898; StationStepMax=386.465770139609; CenterStepMin=436.107639317003; CenterStepMax=438.880122840851
+Rule=Opening.B.Bottom.Row3; Requested=3; Created=3; Merged=0; Skipped=0; FilteredArea=0; StationSteps=2; StationStepMin=385.443850904898; StationStepMax=386.465770139609; CenterStepMin=492.416464802704; CenterStepMax=497.64177638654
+Rule=Opening.H.Left.Main; Requested=5; Created=1; Merged=0; Skipped=4; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Left.Row2; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Left.Row3; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Right.Main; Requested=5; Created=1; Merged=0; Skipped=4; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Right.Row2; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Right.Row3; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+RECIPE_CASE: 5; HollowRectangle; bars=72
+Requested=88; Created=72; Merged=0; Skipped=16; FilteredArea=0; Conflicts=0; BarOverlaps=0; DiagnosticRecordsOmitted=0
+Rule=B.Top.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Top.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Top.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Bottom.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=B.Bottom.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=B.Bottom.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=H.Left.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Left.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Left.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=Opening.B.Top.Main; Requested=5; Created=1; Merged=0; Skipped=4; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Top.Row2; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Top.Row3; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Bottom.Main; Requested=5; Created=1; Merged=0; Skipped=4; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Bottom.Row2; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Bottom.Row3; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Left.Main; Requested=5; Created=1; Merged=0; Skipped=4; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Left.Row2; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Left.Row3; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Right.Main; Requested=5; Created=1; Merged=0; Skipped=4; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Right.Row2; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.H.Right.Row3; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+RECIPE_CASE: 6; Circle; bars=36
+Requested=36; Created=36; Merged=0; Skipped=0; FilteredArea=0; Conflicts=0; BarOverlaps=0; DiagnosticRecordsOmitted=0
+Rule=Circle.Main; Requested=12; Created=12; Merged=0; Skipped=0; FilteredArea=0; StationSteps=12; StationStepMin=599.520598060052; StationStepMax=599.520598060052; CenterStepMin=592.695613284772; CenterStepMax=592.695613284773
+Rule=Circle.Row2; Requested=12; Created=12; Merged=0; Skipped=0; FilteredArea=0; StationSteps=12; StationStepMin=599.520598060052; StationStepMax=599.520598060052; CenterStepMin=540.931804264268; CenterStepMax=540.931804264269
+Rule=Circle.Row3; Requested=12; Created=12; Merged=0; Skipped=0; FilteredArea=0; StationSteps=12; StationStepMin=599.520598060052; StationStepMax=599.520598060052; CenterStepMin=489.167995243764; CenterStepMax=489.167995243765
+RECIPE_CASE: 7; HollowRectangle; bars=66
+Requested=74; Created=66; Merged=0; Skipped=8; FilteredArea=0; Conflicts=0; BarOverlaps=0; DiagnosticRecordsOmitted=0
+Rule=B.Top.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Top.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Top.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=382.44836668825; StationStepMax=382.44836668825; CenterStepMin=382.44836668825; CenterStepMax=382.44836668825
+Rule=B.Bottom.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=B.Bottom.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=B.Bottom.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=378.163706143592; StationStepMax=378.163706143592; CenterStepMin=378.163706143592; CenterStepMax=378.163706143592
+Rule=H.Left.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Left.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Left.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Main; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Row2; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=H.Right.Row3; Requested=5; Created=5; Merged=0; Skipped=0; FilteredArea=0; StationSteps=4; StationStepMin=375; StationStepMax=375; CenterStepMin=375; CenterStepMax=375
+Rule=Opening.B.Top.Main; Requested=5; Created=1; Merged=0; Skipped=4; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Top.Row2; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Top.Row3; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Bottom.Main; Requested=5; Created=1; Merged=0; Skipped=4; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Bottom.Row2; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+Rule=Opening.B.Bottom.Row3; Requested=1; Created=1; Merged=0; Skipped=0; FilteredArea=0; StationSteps=0; StationStepMin=0; StationStepMax=0; CenterStepMin=0; CenterStepMax=0
+TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=656; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4146cbbde85947cc956bde40e09f6b45\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunIndividualContourWorkbookTests; 2026-10-30T03:33:03
+===== modTestIndividualContours.RunOffsetNeighborMergeTests =====
+SUITE_STARTED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-30T03:33:03
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=13064; workingSet=129847296; privateBytes=99446784; cpu=18.703125
+NEIGHBOR_MERGE: kind=0; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=0; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=0; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=0; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=1; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=1; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=1; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=1; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=False; mainLabels=False; physical=4; top=1Ø16; right=1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=False; mainLabels=True; physical=4; top=1Ø10 + 1Ø16; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=True; mainLabels=False; physical=4; top=1Ø16; right=1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=True; mainLabels=True; physical=4; top=1Ø10 + 1Ø16; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=3; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=3; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=3; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=3; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4146cbbde85947cc956bde40e09f6b45\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-30T03:33:04
+===== modTestIndividualContours.RunIndividualContourTests =====
+SUITE_STARTED: modTestIndividualContours.RunIndividualContourTests; 2026-10-30T03:33:05
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=13064; workingSet=134422528; privateBytes=103358464; cpu=20.84375
+SKIP: Side1.Second; source=Side1.Main.1; x=50; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Second; source=Side1.Main.5; x=950; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Third; source=Side1.Main.1; x=50; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side1.Third; source=Side1.Main.5; x=950; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side2.Second; source=Side2.Main.1; x=800; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Second; source=Side2.Main.5; x=800; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Third; source=Side2.Main.1; x=750; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.2; x=750; y=575; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.4; x=750; y=225; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.5; x=750; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side3.Second; source=Side3.Main.1; x=950; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Second; source=Side3.Main.5; x=50; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Third; source=Side3.Main.1; x=950; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side3.Third; source=Side3.Main.5; x=50; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side4.Second; source=Side4.Main.1; x=200; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Second; source=Side4.Main.5; x=200; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Third; source=Side4.Main.1; x=250; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.2; x=250; y=225; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.4; x=250; y=575; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.5; x=250; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side1.Second; source=Side1.Main.1; x=50; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Second; source=Side1.Main.5; x=950; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Third; source=Side1.Main.1; x=50; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side1.Third; source=Side1.Main.5; x=950; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side2.Second; source=Side2.Main.1; x=800; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Second; source=Side2.Main.5; x=800; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Third; source=Side2.Main.1; x=750; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.5; x=750; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side3.Second; source=Side3.Main.1; x=950; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Second; source=Side3.Main.5; x=50; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Third; source=Side3.Main.1; x=950; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side3.Third; source=Side3.Main.5; x=50; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side4.Second; source=Side4.Main.1; x=200; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Second; source=Side4.Main.5; x=200; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Third; source=Side4.Main.1; x=250; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.5; x=250; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side1.Second; source=Side1.Main.1; x=950; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Second; source=Side1.Main.5; x=50; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Third; source=Side1.Main.1; x=950; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side1.Third; source=Side1.Main.5; x=50; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side2.Second; source=Side2.Main.1; x=800; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Second; source=Side2.Main.5; x=800; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Third; source=Side2.Main.1; x=750; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.2; x=750; y=225; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.4; x=750; y=575; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.5; x=750; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side3.Second; source=Side3.Main.1; x=50; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Second; source=Side3.Main.5; x=950; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Third; source=Side3.Main.1; x=50; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side3.Third; source=Side3.Main.5; x=950; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side4.Second; source=Side4.Main.1; x=200; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Second; source=Side4.Main.5; x=200; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Third; source=Side4.Main.1; x=250; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.2; x=250; y=575; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.4; x=250; y=225; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.5; x=250; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side1.Second; source=Side1.Main.1; x=950; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Second; source=Side1.Main.5; x=50; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Third; source=Side1.Main.1; x=950; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side1.Third; source=Side1.Main.5; x=50; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side2.Second; source=Side2.Main.1; x=800; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Second; source=Side2.Main.5; x=800; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Third; source=Side2.Main.1; x=750; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.5; x=750; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side3.Second; source=Side3.Main.1; x=50; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Second; source=Side3.Main.5; x=950; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Third; source=Side3.Main.1; x=50; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side3.Third; source=Side3.Main.5; x=950; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side4.Second; source=Side4.Main.1; x=200; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Second; source=Side4.Main.5; x=200; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Third; source=Side4.Main.1; x=250; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.5; x=250; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+CORNER: False; Face1.Second; source=1; segment=Corner.TR; x=910; y=620
+CORNER: False; Face1.Second; source=2; segment=Corner.TR; x=883.639610306789; y=683.639610306789
+CORNER: False; Face1.Second; source=3; segment=Edge.TR; x=505.707963267949; y=710
+CORNER: False; Face1.Second; source=4; segment=Corner.TL; x=110.502525316942; y=689.497474683058
+CORNER: False; Face1.Second; source=5; segment=Corner.TL; x=90; y=640
+CORNER: False; Face1.Third; source=1; segment=Corner.TR; x=880; y=620
+CORNER: False; Face1.Third; source=2; segment=Corner.TR; x=862.426406871193; y=662.426406871193
+CORNER: False; Face1.Third; source=3; segment=Edge.TR; x=505.707963267949; y=680
+CORNER: False; Face1.Third; source=4; segment=Corner.TL; x=131.715728752538; y=668.284271247462
+CORNER: False; Face1.Third; source=5; segment=Corner.TL; x=120; y=640
+CORNER: True; Face1.Second; source=1; segment=Corner.TL; x=90; y=640
+CORNER: True; Face1.Second; source=2; segment=Corner.TL; x=110.502525316942; y=689.497474683058
+CORNER: True; Face1.Second; source=3; segment=Edge.TR; x=505.707963267949; y=710
+CORNER: True; Face1.Second; source=4; segment=Corner.TR; x=883.639610306789; y=683.639610306789
+CORNER: True; Face1.Second; source=5; segment=Corner.TR; x=910; y=620
+CORNER: True; Face1.Third; source=1; segment=Corner.TL; x=120; y=640
+CORNER: True; Face1.Third; source=2; segment=Corner.TL; x=131.715728752538; y=668.284271247462
+CORNER: True; Face1.Third; source=3; segment=Edge.TR; x=505.707963267949; y=680
+CORNER: True; Face1.Third; source=4; segment=Corner.TR; x=862.426406871193; y=662.426406871193
+CORNER: True; Face1.Third; source=5; segment=Corner.TR; x=880; y=620
+DOMAIN_SCOPE: outers=2; openings=2; rows=2,3; independent=True
+TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4146cbbde85947cc956bde40e09f6b45\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunIndividualContourTests; 2026-10-30T03:33:06
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

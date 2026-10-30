@@ -1,0 +1,11 @@
+﻿{
+    "CheckedUTC":  "2026-10-30T00:33:09.3156197+00:00",
+    "Ready":  true,
+    "FreePhysicalGiB":  15.769,
+    "FreeCommitGiB":  20.237,
+    "CommitLimitBytes":  45569380352,
+    "CommittedBytes":  23839809536,
+    "RequiredPhysicalGiB":  4,
+    "RequiredCommitGiB":  8,
+    "NewExcelStarted":  false
+}

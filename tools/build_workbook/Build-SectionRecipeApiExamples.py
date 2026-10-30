@@ -108,8 +108,8 @@ def build():
     members = inventory()["members"]
     paths = list((ROOT / "tests").rglob("*.bas")) + list((DOCS / "examples").glob("*.bas")) + list((DOCS / "examples").glob("*.cls"))
     routines = [routine for path in paths for routine in procedures(path)]
-    # Старые журналы не переписываются после переименования тестовых процедур.
-    # Явная карта связывает прежний entrypoint с тем же проверенным телом;
+    # Имена entrypoint в сохранённых журналах остаются точными источниками доказательств.
+    # Карта сопоставляет эти имена с проверенными методами Test;
     # оба имени сохраняются в результате, чтобы источник доказательства был виден.
     alias_path = DOCS / "SECTION_RECIPE_API_EVIDENCE_ALIASES.json"
     alias_data = json.loads(alias_path.read_text(encoding="utf-8-sig"))

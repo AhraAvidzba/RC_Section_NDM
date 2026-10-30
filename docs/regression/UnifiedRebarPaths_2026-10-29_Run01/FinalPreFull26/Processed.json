@@ -1,0 +1,22 @@
+{
+  "Status": "NATIVE_DIRECTED_RECOVERY_PASS_NEW_FULL_REQUIRED",
+  "CheckedUTC": "2026-10-30T00:42:29.935111+00:00",
+  "BookSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "AllCodeSHA256": "EE281EA320BAF190C85B49F33194D3FA78619E343536F45F727FEA4B591C65DC",
+  "HistoricalFullRun02Status": "REVIEW_REQUIRED",
+  "HistoricalFullSourceSHA256": "8BA463BF1AEC97834F81C0D01ADD5707D6D0A21266B6FAE61AA2BCB6608F84E2",
+  "HistoricalCoreMacrosRead": 182,
+  "HistoricalFocusedSinglesRead": 122,
+  "HistoricalFocusedRecordsRead": 26,
+  "KnownFailure": "recipe.OneRect.top2 in No and Yes; fixed physical-owner count, expected3/5 preserved",
+  "NativeComponents": 181,
+  "AffectedMacrosPerMode": 3,
+  "AllOwnTerminal": 231,
+  "OnlySourceExecutableChangeIsTest": true,
+  "EntireNewFullStillRequired": true,
+  "NewLaunchScriptsPrepared": "docs\\regression\\FullSuiteLaunch_2026-10-29_UnifiedRebar_Run03",
+  "NewFullStarted": false,
+  "UserMainBackupPrivatePreserved": true,
+  "Ready30Updated": false,
+  "FullAcceptanceClaim": false
+}

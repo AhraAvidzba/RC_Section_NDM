@@ -1,0 +1,16 @@
+﻿{
+    "EditableCells":  17,
+    "ModeChoices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+    "ExpectedPositive":  68,
+    "ActualPositive":  68,
+    "ExpectedNegative":  85,
+    "ActualNegative":  85,
+    "ExpectedProjectionDashes":  4,
+    "ActualProjectionDashes":  4,
+    "ActualRows":  21
+}

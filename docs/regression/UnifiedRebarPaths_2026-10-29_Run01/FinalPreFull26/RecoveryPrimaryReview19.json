@@ -1,0 +1,191 @@
+{
+  "Status": "PASS_COMPLETE_AFFECTED_NO_YES_PRIMARY_NATIVE_READ",
+  "CheckedUTC": "2026-10-30T00:33:48.578703+00:00",
+  "SourceSHA256": "D71B27FDA6A7EAF1F8EC708D07111524171C14ACDF1C711B6278491D64E91FBE",
+  "NativeComponents": 181,
+  "NativeIndividualChoices": 68,
+  "RejectedCombinedOrUnknown": 85,
+  "MacrosPerMode": 3,
+  "Modes": [
+    {
+      "Mode": "No",
+      "Macros": [
+        "modTestIndividualContours.RunIndividualContourWorkbookTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunIndividualContourTests"
+      ],
+      "AllEightRecipeCases": [
+        [
+          "0",
+          "Rectangles",
+          "30"
+        ],
+        [
+          "1",
+          "Rectangles",
+          "48"
+        ],
+        [
+          "2",
+          "Rectangles",
+          "106"
+        ],
+        [
+          "3",
+          "PointedSection",
+          "60"
+        ],
+        [
+          "4",
+          "HollowRectangle",
+          "84"
+        ],
+        [
+          "5",
+          "HollowRectangle",
+          "72"
+        ],
+        [
+          "6",
+          "Circle",
+          "36"
+        ],
+        [
+          "7",
+          "HollowRectangle",
+          "66"
+        ]
+      ],
+      "PhysicalExpectationsUnchanged": true
+    },
+    {
+      "Mode": "Yes",
+      "Macros": [
+        "modTestIndividualContours.RunIndividualContourWorkbookTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunIndividualContourTests"
+      ],
+      "AllEightRecipeCases": [
+        [
+          "0",
+          "Rectangles",
+          "30"
+        ],
+        [
+          "1",
+          "Rectangles",
+          "48"
+        ],
+        [
+          "2",
+          "Rectangles",
+          "106"
+        ],
+        [
+          "3",
+          "PointedSection",
+          "60"
+        ],
+        [
+          "4",
+          "HollowRectangle",
+          "84"
+        ],
+        [
+          "5",
+          "HollowRectangle",
+          "72"
+        ],
+        [
+          "6",
+          "Circle",
+          "36"
+        ],
+        [
+          "7",
+          "HollowRectangle",
+          "66"
+        ]
+      ],
+      "PhysicalExpectationsUnchanged": true
+    }
+  ],
+  "Reads": [
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed19_No.txt",
+      "Bytes": 68181,
+      "SHA256": "F17CA4C2B177C4B3E7BF9F2C4BFABEC284D14EE1CACF7B9BD46E25D48FD5E7C7",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed19_No.txt.stdout.log",
+      "Bytes": 672,
+      "SHA256": "04E6821ADBB4DA7A0F6DB18A1F2DA35EFD0F8770A793461BFF6ADB1481EB9440",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed19_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed19_Yes.txt",
+      "Bytes": 68186,
+      "SHA256": "ED8C9B0F14D004015D14030A65226FDD8DEC2F5FD010272F06CB79CD86BB59E1",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed19_Yes.txt.stdout.log",
+      "Bytes": 676,
+      "SHA256": "FBF51E7796E6B0FDD703665A1CEDD7CA70A49EC64CD276FA66B5CB3AEAF76F3D",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\UnifiedRebarPaths_2026-10-29_Run01\\Directed19_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Recovery19_Build13.log",
+      "Bytes": 3242,
+      "SHA256": "05474E4FAE7E92F6C6E62C70CB424597DA7ACF396F3CAFBE9A2565FC5910D8A9",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Recovery19_Native13.log",
+      "Bytes": 104,
+      "SHA256": "87508A27DFBC316BF607EFA55C061C1959DAD383C8669019E887F47A25D7D577",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Recovery19_SourceEquality13.log",
+      "Bytes": 174,
+      "SHA256": "304C0F70AFDCC841B57DFEB6285FBF4BCC12449B054002316A2A58127D65B851",
+      "AllBytesRead": true,
+      "Errors": []
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\UnifiedRebarPaths_2026-10-29_Run01\\Recovery19_DirectedMatrix19.log",
+      "Bytes": 664,
+      "SHA256": "7365A935B745882EAB0D375A90CA19F308F71FA2BE8D185888FA7714B022D50D",
+      "AllBytesRead": true,
+      "Errors": []
+    }
+  ],
+  "PrimaryAndStdoutStderrAllRead": true,
+  "PhysicalExpectationsUnchanged": true,
+  "NativeImagesStillRequireVisualReview": true,
+  "PipelineControllerStillRequiresFreshClosure": true,
+  "RootSourcePublished": false,
+  "FullAcceptanceClaim": false
+}

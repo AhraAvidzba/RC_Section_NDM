@@ -1,0 +1,237 @@
+[
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/CurrentFeatures_Off.txt",
+    "Bytes": 329923,
+    "SHA256": "D0880BF59547BFCFB9247A5C2BA4E06B71F36841725850545BE7AA64519B44A4"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/CurrentFeatures_On.txt",
+    "Bytes": 329177,
+    "SHA256": "C8B29677A32A46957AA27F8028BF45EB68075AF90BAB2836B06D167C85D187E3"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/AsymmetricSteel_No.txt",
+    "Bytes": 11516,
+    "SHA256": "0340C602D6B3EB8FD711E75C6BCCA260885504C152BED37F6C5BD03C4BB7F8A5"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/AsymmetricSteel_Yes.txt",
+    "Bytes": 11266,
+    "SHA256": "4CDA41C2803670762C75920FD90D92553E79280315B53F03650CC649E2E4827F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Batch15_No.txt",
+    "Bytes": 116248,
+    "SHA256": "A6050368BC744ED89FBF01242FFFCA6550C3D73651A7E6D1D7DDF4E93D69677F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Batch15_Yes.txt",
+    "Bytes": 114547,
+    "SHA256": "1C8CB349F257E3F6231EE8B8197B5FAA968BE8476EAB420970DFA74F375B3B26"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Circle_Generated_No.txt",
+    "Bytes": 75760,
+    "SHA256": "262F5011D1D1FA42ACE5CCF176CA28D6552C7207D96B641302184B5E91AF6048"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Circle_Generated_Yes.txt",
+    "Bytes": 74258,
+    "SHA256": "C88AC4BC2C797FEC0AA0AFB07E25E195265A04CDC174D8B3CF7A46BCB867BBF0"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/HollowRectangle_Generated_No.txt",
+    "Bytes": 80661,
+    "SHA256": "A2164301E63E2F98B652A1CCCFC3E25BEFDAA78DA9E2F03F9282D1B75DB6A9CA"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/HollowRectangle_Generated_Yes.txt",
+    "Bytes": 78887,
+    "SHA256": "75228CFBAF7148ED95EABB2CC207FA4A477EAEA98572D19FF0D8A06CB316E7A6"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Independent.json",
+    "Bytes": 193573,
+    "SHA256": "E3F5971EC7615BFCCDC7AFC5357515FCBFE75D6DE5889579B23A51DAE8EF6464"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_Circle.txt",
+    "Bytes": 17998,
+    "SHA256": "06CD416F2D4B6860DF35E9240677D31680A0694A5C81E86DBC0256855F2B725F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_HollowRectangle.txt",
+    "Bytes": 24877,
+    "SHA256": "B058497FE1DA26167E3259508C8821FAFD393950F17DEFE4A5E10E1CEA36D246"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_PointedSection.txt",
+    "Bytes": 42765,
+    "SHA256": "20B94080B94E4EFD24E961AB5888CA39D076D43B2852A148F5FBD612372D4CF8"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_Rectangles.txt",
+    "Bytes": 20320,
+    "SHA256": "31473C7F2EE1A4A16AB818753D1E241AE6E711BA8C9CFC72C6C2524093561CF9"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Model_SavedWorkbook.txt",
+    "Bytes": 15331,
+    "SHA256": "406F10B418A4595B646DDC1C8D568FD6AD655C53D85A6CCD6C37798742CEF0C4"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+    "Bytes": 31071,
+    "SHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+    "Bytes": 22427,
+    "SHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/NativeCAD/Stage.json",
+    "Bytes": 787,
+    "SHA256": "3CA33992DB5F11BD6D822F5A4C7D027F72AFE3369BD8E02AE1F060427FC568F8"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/OutputPresentation.txt",
+    "Bytes": 65983,
+    "SHA256": "176C5F880B34892603BF54C363021DC83507E61B6FAC96920DE49DEEFFAEA77F"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/PointedSection_Generated_No.txt",
+    "Bytes": 80215,
+    "SHA256": "75E380A2D57057B3CFF523B785A76E0709816B977B13FF21F5CE95A704C39595"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/PointedSection_Generated_Yes.txt",
+    "Bytes": 78483,
+    "SHA256": "878C9A73E8AFEEDA89EA6C5CCBE73BB6C3A40B3FD5B5725022698B9B1ACCF136"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Rectangles_Generated_No.txt",
+    "Bytes": 77983,
+    "SHA256": "DBF446A5FBDDB6A04CC40708336770A99C4B47F12423A8BC726EA6EB4B320C21"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Rectangles_Generated_Yes.txt",
+    "Bytes": 76360,
+    "SHA256": "1BFD995E056203AA4C8FC7F95CCD6E4628430BA76674232FAB3729A0C3A465B0"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Paths_No.txt",
+    "Bytes": 61371,
+    "SHA256": "0B9AFA3B87891D0AEAE055AC9BD3EDFAEEF5EF0718D2A5A096A5D9133693A590"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Paths_Yes.txt",
+    "Bytes": 60128,
+    "SHA256": "6507479671B79876C43B66BCE993B8F5E561D3C7158D57F646ED896983AE0946"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Saved_No.txt",
+    "Bytes": 265292,
+    "SHA256": "0B827A3ECDA05095B8F624F0DE017070A628146802289C7264BCD4F57B7DEF1C"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/SavedWorkbook_Saved_Yes.txt",
+    "Bytes": 255279,
+    "SHA256": "12BF06ABFF268855F362E0025761C3DFD158FC90FF0B838C468B2DDD8B9BB529"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Stability_No.txt",
+    "Bytes": 11053,
+    "SHA256": "56E073861BD47F7312F4F15C94D284B2813C1FC6CBE1FAA86C943A9A1C0C75FD"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Focused/Stability_Yes.txt",
+    "Bytes": 10837,
+    "SHA256": "A2D2623116C1BEAD5B6E6ACD567F65C87EF081E5886453E2DAF51827F2F47CD6"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Full_Off.txt",
+    "Bytes": 17734108,
+    "SHA256": "15D51F777EEE15E1D573EBC84801C26CD0A2C4345ED9E2DD10A07676906A7DDB"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Full_On.txt",
+    "Bytes": 17738210,
+    "SHA256": "2509DF11E7BC5E2C607C8E0124C5D7BA9ED619C7A9B51EC4F573C7E47E4DECEF"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Geometry_Off.txt",
+    "Bytes": 1703764,
+    "SHA256": "92CF63838091851B850078DCF49B30D27F4E5024EA92E8B41818D3A21FC9D921"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Geometry_On.txt",
+    "Bytes": 1703949,
+    "SHA256": "51811A7FC6AF2FF6DB74C43F3EBAFBFEEB012B94F4FD11B22F6BAA7304D1706E"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Recipes_Off.txt",
+    "Bytes": 574169,
+    "SHA256": "A9C25D094BF1C0CC0B4FF36EAABD4ECC88F0ACFAA64A7E5F02B80B16B0F40A9D"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/Recipes_On.txt",
+    "Bytes": 574228,
+    "SHA256": "41A9EC033ABCC9CD0647FEDF7571DB9F6CDAC28370B253CA734C7C6C9390B92E"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SavedOffsets_Off.txt",
+    "Bytes": 3388,
+    "SHA256": "15793D2AA58B36454A43F9AD0C3BF4467BC0CE09A1D51121C154C7091DF87A63"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SavedOffsets_On.txt",
+    "Bytes": 3392,
+    "SHA256": "2CC6DD2B8E0C3494BE9640C8C9A0B106D085B99282395A5DF0B8E46939084F8E"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SP35_Off.txt",
+    "Bytes": 47237,
+    "SHA256": "F95E590C74336478B5D7846A5EACFC22DB6EC570E5BEB82EDF277DB36B791283"
+  },
+  {
+    "Path": "docs/regression/FullOnOff_2026-10-29_UnifiedRebar_Run02/SP35_On.txt",
+    "Bytes": 47241,
+    "SHA256": "BDCA5BE985C9D2FCF3FB530456C0489C1DBC1BFC40D53A011194BAF6C4C92D52"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/AllOwnClosuresReviewed.json",
+    "Bytes": 33126,
+    "SHA256": "5670BD11D090EF7E7E6126D959A11C5ABF8680C9B9C8B29DD3CBADCEFF12DE5C"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/Completion.json",
+    "Bytes": 661,
+    "SHA256": "4D38D39E6C4C967D9C96029ACD54B6C9535FDED73653BAAA0D98AC013429552D"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/FullLaunch.stderr.log",
+    "Bytes": 5243,
+    "SHA256": "4C3B67505DE7C6B98F49A05507E192713063768E38E7F535CA9D3310460DDE9F"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/FullLaunch.stdout.log",
+    "Bytes": 14617,
+    "SHA256": "7C3189D15FB3A02E438CFDECF1A18C7299EDA80FEF14B962E2FFFEFEECC569D3"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/LaunchRequest.json",
+    "Bytes": 143004,
+    "SHA256": "ABC0A445E44F87737DF6878AFD663E7048424D0D60606EF305E4D9D3683240C9"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/ScheduledTaskCleanup03.json",
+    "Bytes": 1050,
+    "SHA256": "1DDD05AEED0FC45D60C5B75D378E455247E2E86E8755A2EAF0BB7DEC99F4D174"
+  },
+  {
+    "Path": "docs/regression/FullSuiteLaunch_2026-10-29_UnifiedRebar_Run02/TerminalScopeReview.json",
+    "Bytes": 84814,
+    "SHA256": "0FDA767248992B45B4CDBDECAB697DC6E98BF7FD2FD6B94D07F1808D409FA1FD"
+  }
+]
