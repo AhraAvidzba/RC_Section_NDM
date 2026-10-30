@@ -61,6 +61,7 @@ Public Function RunProgramMessagePresentationTests() As String
     TestCheck "presentation.quoted.value", InStr(WorkbookDialogText(text), """Прочность: 2. Проверьте имя""") > 0
     text = "Слой «Устойчивость: 3. Проверьте имя» не найден. Откройте чертёж."
     TestCheck "presentation.quoted.layer", InStr(WorkbookDialogText(text), "«Устойчивость: 3. Проверьте имя»") > 0
+    TestGeometryWarningParagraphs
     GoTo Finish
 Failed:
     TestCheck "presentation.runtime", False
@@ -1991,3 +1992,35 @@ Restore:
     On Error GoTo 0
     RunProgramMessageTests = mReport & "TOTAL PROGRAM MESSAGES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет реальное предупреждение после счётчиков, несколько причин и точность цитируемых пользовательских строк.
+Private Sub TestGeometryWarningParagraphs()
+    Dim warning As String, message As String, text As String, expected As String
+    warning = "Предупреждение: пропущено совпавших стержней: 8. В каждой совпавшей позиции сохранён первый добавленный стержень с его диаметром и материалом. " & _
+        "На схеме и в расчёте учтены фактически созданные стержни. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results."
+    message = "Сечение сформировано и сохранено на Results." & vbCrLf & vbCrLf & _
+        "Бетонных элементов: 1232." & vbCrLf & "Стержней арматуры: 20."
+    text = WorkbookDialogText(WorkbookMessageParagraph(message, warning))
+    expected = message & vbCrLf & vbCrLf & "Предупреждение:" & vbCrLf & "пропущено совпавших стержней: 8." & vbCrLf & vbCrLf & _
+        "В каждой совпавшей позиции сохранён первый добавленный стержень с его диаметром и материалом. На схеме и в расчёте учтены фактически созданные стержни." & vbCrLf & vbCrLf & _
+        "Подробности и адреса полей:" & vbCrLf & "Geometry.RecipeDiagnostics на Results."
+    TestCheck "presentation.geometry.warning.blocks", text = expected
+    TestCheck "presentation.geometry.warning.single.newline", WorkbookDialogText(message & vbCrLf & warning) = expected
+    TestCheck "presentation.geometry.warning.idempotent", WorkbookDialogText(text) = text
+    TestCheck "presentation.geometry.warning.raw.compact", InStr(warning, vbCrLf) = 0
+    mReport = mReport & "GEOMETRY_WARNING_LAYOUT:" & vbCrLf & text & vbCrLf & "END_GEOMETRY_WARNING_LAYOUT" & vbCrLf
+    warning = "Предупреждение: после смещения не размещено дополнительных стержней: 2. Их положения по нормали оказались вне полного смещённого контура. " & _
+        "Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results." & vbCrLf & _
+        "Предупреждение: объединено дополнительных стержней соседних граней: 3. В расчёте и подписях учтён только первый добавленный стержень с его координатами и диаметром." & vbCrLf & _
+        "По настройке Mesh.MinElementArea пропущено стержней: 4. Площадь каждого из них меньше заданного порога; в расчёте и подписях они не учитываются."
+    text = WorkbookDialogText(warning)
+    TestCheck "presentation.geometry.warning.offset.reason", InStr(text, "2." & vbCrLf & vbCrLf & "Их положения по нормали") > 0
+    TestCheck "presentation.geometry.warning.neighbor.reason", InStr(text, "3." & vbCrLf & vbCrLf & "В расчёте и подписях") > 0
+    TestCheck "presentation.geometry.warning.area.reason", InStr(text, "4." & vbCrLf & vbCrLf & "Площадь каждого из них") > 0
+    TestCheck "presentation.geometry.warning.several.idempotent", WorkbookDialogText(text) = text
+    TestCheck "presentation.geometry.warning.no.extra.blanks", InStr(text, vbCrLf & vbCrLf & vbCrLf) = 0
+    warning = "«Предупреждение: 8. В каждой совпавшей позиции имя. Подробности и адреса полей приведены в Имя»"
+    TestCheck "presentation.geometry.warning.quoted", WorkbookDialogText(warning) = warning
+End Sub

@@ -1,0 +1,11 @@
+{
+  "Status": "PUBLISHED_DIRECTED_PASS",
+  "AssertionsPassed": 1468,
+  "AssertionsFailed": 0,
+  "FullSuiteRun": false,
+  "WorkbookSHA256": "E31E1934EC9D2DA935EA148D7AA17B57612F69B084C92DF6C17C7988995C7375",
+  "AllCodeSHA256": "9590DECC69F7A03C45EBFACFCBE0CB80E493F0E540E33F1BE3AD1CEA1CB680A5",
+  "Publication": "Publication03.json",
+  "Acceptance": "Acceptance03.json",
+  "Report": "docs/reports/RebarLabelAndMessages_2026-10-30.md"
+}

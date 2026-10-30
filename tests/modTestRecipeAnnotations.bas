@@ -135,6 +135,7 @@ Public Function RunRecipeAnnotationTests() As String
     TestCheck "length.kind.unit", annotations.AnnotationType(9) = "MEASUREMENT_LABEL" And annotations.Unit(9) = "Length"
     TestCheck "physical.labels", InStr(annotations.Text(11), "2") > 0 And model.RebarCount = 2
     For i = 0 To 4: TestCheck "invalid." & CStr(i), TestInvalidAnnotation(i): Next i
+    TestPhysicalLabelOwnership
     GoTo Finished
 Failed:
     TestCheck "annotations.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
@@ -312,4 +313,53 @@ End Sub
 ' Сравнивает фактическую и ожидаемую величины с заданным в этом наборе допуском, сохраняя числа в протоколе.
 Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000000001 * (1# + Abs(expected))
+End Sub
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Полностью совпавший ряд не получает подпись ни при одной привязке; частичный ряд показывает только созданные стержни.
+Private Sub TestPhysicalLabelOwnership()
+    Dim kind As Long, partial As Long, facade As CSectionDefinitionBuilder, path As CGeometryPath
+    Dim options As CRebarRuleOptions, definition As CSectionDefinition, executor As CRebarRuleExecutor
+    Dim layout As CRebarLayout, labels As CSectionAnnotations, repeated As CSectionAnnotations, builder As CSectionAnnotationBuilder
+    Dim i As Long, firstText As String, secondText As String, prefix As String
+    For kind = 0 To 3
+        For partial = 0 To 1
+            prefix = "physical.label.kind" & CStr(kind) & ".partial" & CStr(partial)
+            Set facade = New CSectionDefinitionBuilder: facade.Initialize "Test.PhysicalLabels"
+            Set path = facade.RectanglePath("Concrete", 0#, 0#, 600#, 600#): facade.Outer "OUTER", path.ID
+            Set path = facade.LinePath("AxisA", 100#, 100#, 300#, 100#)
+            Set path = facade.LinePath("AxisB", 100# + 200# * partial, 100#, 300# + 200# * partial, 100#)
+            Set options = New CRebarRuleOptions
+            options.Coincidence = KeepPublishedOwner: options.WarnOnCoincidence = True: options.EndMode = IncludeBoth
+            options.AnnotationGroup = "First": facade.RebarByCount "First.Main", "AxisA", 3, 20#, options
+            options.AnnotationGroup = "Second": facade.RebarByCount "Second.Main", "AxisB", 3, 16#, options
+            facade.RebarLabel "First", "AxisA", 0#, -1#
+            Select Case kind
+                Case 0: facade.RebarLabel "Second", "AxisB", 0#, -1#
+                Case 1: facade.RebarRowLabel "Second", "Second.Main", 0#, -1#
+                Case 2: facade.RebarRowExtentLabel "Second", "Second.Main", 0#, -1#
+                Case 3: facade.RebarRowExtremeLabel "Second", "Second.Main", 0#, -1#, 0#, -1#
+            End Select
+            Set definition = facade.Finish: Set executor = New CRebarRuleExecutor
+            Set layout = TestFixtureAnnotatedLayout(definition, executor, labels)
+            TestCheck prefix & ".physical", layout.Count = 3 + 2 * partial
+            TestCheck prefix & ".merged", executor.MergedPositions = 3 - 2 * partial
+            TestCheck prefix & ".labels", labels.Count = 1 + partial
+            firstText = "": secondText = ""
+            For i = 1 To labels.Count
+                If labels.AnnotationID(i) = "REBAR_First" Then firstText = labels.Text(i)
+                If labels.AnnotationID(i) = "REBAR_Second" Then secondText = labels.Text(i)
+            Next i
+            TestCheck prefix & ".first.owner", firstText = "3" & ChrW$(216) & "20"
+            If partial = 0 Then
+                TestCheck prefix & ".empty.hidden", secondText = ""
+            Else
+                TestCheck prefix & ".created.only", secondText = "2" & ChrW$(216) & "16"
+            End If
+            Set builder = New CSectionAnnotationBuilder: Set repeated = New CSectionAnnotations
+            builder.Build definition, layout, repeated, executor
+            TestCheck prefix & ".repeat", repeated.Count = labels.Count And layout.Count = 3 + 2 * partial
+        Next partial
+    Next kind
 End Sub

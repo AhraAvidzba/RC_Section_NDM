@@ -1,0 +1,12 @@
+{
+  "Status": "PUBLISHED_DIRECTED_PASS",
+  "PublishedUTC": "2026-10-30T07:24:43.2627235+00:00",
+  "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+  "WorkbookSHA256": "E31E1934EC9D2DA935EA148D7AA17B57612F69B084C92DF6C17C7988995C7375",
+  "PreviousUserSHA256": "18751407E08684AE1E4DD78F519CD220D550AD62744F5EE4A691A6F1F6B631CF",
+  "AllCodeSHA256": "9590DECC69F7A03C45EBFACFCBE0CB80E493F0E540E33F1BE3AD1CEA1CB680A5",
+  "OnlyVBAChanged": true,
+  "UnchangedZIPParts": 110,
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\RebarLabelAndMessages_2026-10-30_Run01\\PublicationBackup03",
+  "FullSuiteRun": false
+}

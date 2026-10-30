@@ -1,0 +1,91 @@
+{
+  "Status": "PASS_DIRECTED",
+  "FullSuiteRun": false,
+  "AssertionsPassed": 1468,
+  "AssertionsFailed": 0,
+  "AcceptedExecutions": [
+    {
+      "Directory": "Test_No02",
+      "Macro": "modTestAudit02Api.RunProgramMessagePresentationTests",
+      "Passed": 39,
+      "Failed": 0,
+      "Bytes": 3724,
+      "SHA256": "749316F97814D3312921C45D86E6433D820021F1C79727524011C50A9504BD1A"
+    },
+    {
+      "Directory": "Test_No02",
+      "Macro": "modTestAudit02Api.RunInputOnlyDialogTests",
+      "Passed": 1122,
+      "Failed": 0,
+      "Bytes": 39546,
+      "SHA256": "780073C8CCD16F5365E06556406DBE4C7DC71DDE5569942FB5C8DD14E4877D3F"
+    },
+    {
+      "Directory": "Test_No02",
+      "Macro": "modTestRecipeAnnotations.RunRecipeAnnotationTests",
+      "Passed": 87,
+      "Failed": 0,
+      "Bytes": 47,
+      "SHA256": "1DCAB23542909F4BBD6C2555EC2525A9F2579E736A14C1C7056741FC2F42E3DA"
+    },
+    {
+      "Directory": "Test_No02",
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+      "Passed": 92,
+      "Failed": 0,
+      "Bytes": 4055,
+      "SHA256": "A0D3E03AD8F65C98A86FD467D7AC7E9B5A1C960E770D863399CF26F3DB0E1C08"
+    },
+    {
+      "Directory": "Test_No03",
+      "Macro": "modTestAudit02Api.RunProgramMessagePresentationTests",
+      "Passed": 39,
+      "Failed": 0,
+      "Bytes": 3724,
+      "SHA256": "749316F97814D3312921C45D86E6433D820021F1C79727524011C50A9504BD1A"
+    },
+    {
+      "Directory": "Test_No03",
+      "Macro": "modTestWorkbookInterface.RunFormationPreviewTests",
+      "Passed": 25,
+      "Failed": 0,
+      "Bytes": 1004,
+      "SHA256": "23B6CEE113655B9204FB64B64E60BDAC533003BA70A8FBE09FAFFD1BFB710C8E"
+    },
+    {
+      "Directory": "Test_Yes03",
+      "Macro": "modTestAudit02Api.RunProgramMessagePresentationTests",
+      "Passed": 39,
+      "Failed": 0,
+      "Bytes": 3724,
+      "SHA256": "749316F97814D3312921C45D86E6433D820021F1C79727524011C50A9504BD1A"
+    },
+    {
+      "Directory": "Test_Yes03",
+      "Macro": "modTestWorkbookInterface.RunFormationPreviewTests",
+      "Passed": 25,
+      "Failed": 0,
+      "Bytes": 1004,
+      "SHA256": "23B6CEE113655B9204FB64B64E60BDAC533003BA70A8FBE09FAFFD1BFB710C8E"
+    }
+  ],
+  "All92RecipeScenariosPassed": true,
+  "AllFourAnchorKindsSuppressEmptyPhysicalGroup": true,
+  "GeometryWarningsOnlyOnFormationExcelFileNoYes": true,
+  "StableChecksProductionCodeEqualToFinal": true,
+  "OnlyChangeAfterStableChecks": "Test solver counter uses current batch >0 because Execute resets it before every batch.",
+  "HistoricalCounterTestFailureRetained": true,
+  "SourceComponents": 175,
+  "NativeComponents": 181,
+  "UserWorkbookPreservation": {
+    "ChangedParts": [
+      "xl/vbaProject.bin"
+    ],
+    "UnchangedParts": 110,
+    "OriginalSHA256": "18751407E08684AE1E4DD78F519CD220D550AD62744F5EE4A691A6F1F6B631CF",
+    "FinalSHA256": "E31E1934EC9D2DA935EA148D7AA17B57612F69B084C92DF6C17C7988995C7375",
+    "UserDataResultsChartFormattingUnchanged": true
+  },
+  "AllOwnIdentitiesClosed": 8,
+  "GlobalDocumentationAudit": "Two pre-existing missing headers in unchanged files; all changed files have required headers/test markers."
+}

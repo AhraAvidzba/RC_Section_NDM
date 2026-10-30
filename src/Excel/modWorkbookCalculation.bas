@@ -267,7 +267,7 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
         FormSectionCore = importer.ResultMessage(section) & vbCrLf & vbCrLf & _
             "Сечение сформировано и сохранено " & savedDestination & ". Для расчёта нажмите «Выполнить расчёт»."
     End If
-    If Len(section.GeometryWarningText) > 0 Then FormSectionCore = FormSectionCore & vbCrLf & section.GeometryWarningText
+    If Len(section.GeometryWarningText) > 0 Then FormSectionCore = WorkbookMessageParagraph(FormSectionCore, section.GeometryWarningText)
     CalculateResultsSheet workbook
     Dim plotErrorNumber As Long, plotError As String
     On Error Resume Next

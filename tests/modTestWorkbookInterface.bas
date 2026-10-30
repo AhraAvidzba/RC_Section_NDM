@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestWorkbookInterface"
+Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -8608,6 +8608,7 @@ Public Function RunFormationPreviewTests() As String
     TestAssertTrue stats, "formPreview.disabled.noTypedWarning", Not attention
     TestAssertTrue stats, "formPreview.disabled.noDrawing", Not TestPlotVisibleTitleContains("Сформированное сечение")
     TestAssertTrue stats, "formPreview.disabled.noSolver", SectionEquilibriumSolveCount() = solves
+    TestGeometryWarningFormationOnly stats
 Done:
     TestFixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
     TestAppendLine stats, "TOTAL_FORMATION_PREVIEW: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
@@ -9567,3 +9568,32 @@ Public Function RunRectanglesThirdRowRegressionTests() As String
     TestRectanglesIndependentThirdRows stats
     RunRectanglesThirdRowRegressionTests = stats.Report & "TOTAL_RECTANGLES_THIRD_ROWS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' В Excel и File совпавший шов круга предупреждает при формировании; последующий настоящий расчёт не повторяет это предупреждение.
+Private Sub TestGeometryWarningFormationOnly(ByRef stats As TUiTestStats)
+    Dim mode As Variant, values As Variant, message As String, attention As Boolean, solves As Long
+    For Each mode In Array("Excel", "File")
+        TestPrepareCircleInput
+        TestSetSystemSetting "General.ExecutionReportEnabled", "No"
+        TestSetSystemSetting "Plot.Enabled", "No"
+        TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+        TestSetSystemSetting "Results.SnapshotStorage", CStr(mode)
+        TestSetSystemSetting "Results.SnapshotName", "TestWarningFormationOnly_" & CStr(mode) & "_" & Format$(Now, "yyyymmdd_hhnnss")
+        values = ThisWorkbook.Names("rngCircleGeometry").RefersToRange.Value2
+        TestFixtureSetInput values, "Main", "Circle", "s0", 0#
+        TestFixtureSetInput values, "Main", "Circle", "s1", 0#
+        TestFixtureSetInput values, "Main", "Circle", "endMode", "IncludeBoth"
+        ThisWorkbook.Names("rngCircleGeometry").RefersToRange.Value2 = values
+        solves = SectionEquilibriumSolveCount()
+        message = FormSectionForWorkbook(ThisWorkbook, -1#, , attention)
+        TestAssertTrue stats, "geometryWarning." & CStr(mode) & ".formation.warns", attention And InStr(message, "пропущено совпавших стержней: 1") > 0
+        TestAssertTrue stats, "geometryWarning." & CStr(mode) & ".formation.paragraph", InStr(message, vbCrLf & vbCrLf & "Предупреждение:") > 0
+        TestAssertTrue stats, "geometryWarning." & CStr(mode) & ".formation.noSolver", SectionEquilibriumSolveCount() = solves
+        message = RunSectionCalculationForWorkbook(ThisWorkbook, False, -1#, , attention)
+        TestAssertTrue stats, "geometryWarning." & CStr(mode) & ".calculation.completed", InStr(message, "Расчет завершен") > 0
+        TestAssertTrue stats, "geometryWarning." & CStr(mode) & ".calculation.solved", SectionEquilibriumSolveCount() > 0
+        TestAssertTrue stats, "geometryWarning." & CStr(mode) & ".calculation.noRepeat", InStr(message, "пропущено совпавших стержней") = 0 And InStr(message, "Geometry.RecipeDiagnostics") = 0
+    Next mode
+End Sub

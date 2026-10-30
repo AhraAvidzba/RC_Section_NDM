@@ -1,0 +1,36 @@
+{
+  "OriginalSavedBookSHA256": "18751407E08684AE1E4DD78F519CD220D550AD62744F5EE4A691A6F1F6B631CF",
+  "PhysicalRebars": 20,
+  "PrimaryGroups": {
+    "B2.as_2.Main": 3,
+    "H1.as_2.Main": 5,
+    "H1.as_1.Main": 5,
+    "B2.as_1.Main": 3,
+    "H2.as_2.Main": 2,
+    "H2.as_1.Main": 2
+  },
+  "EmptyGroups": [
+    "B1.as_1.Main",
+    "B1.as_2.Main"
+  ],
+  "LowerCornerBarsMM": [
+    [
+      40,
+      40
+    ],
+    [
+      40,
+      210
+    ],
+    [
+      560,
+      210
+    ],
+    [
+      560,
+      40
+    ]
+  ],
+  "FirstOwnerRulePreserved": true,
+  "AnnotationProductionCodeChanged": false
+}

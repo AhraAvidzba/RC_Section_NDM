@@ -59,9 +59,10 @@ Public Function WorkbookDialogText(ByVal message As String) As String
     Dim text As String, caption As Variant, action As Variant, lines As Variant, i As Long
     text = message
     For Each caption In Array("Прочность:", "Устойчивость:", "Трещинообразование:", _
-            "Ширина трещин:", "Продольные трещины:", "НДС:")
+            "Ширина трещин:", "Продольные трещины:", "НДС:", "Предупреждение:")
         text = ReplaceWorkbookMessageFragment(text, "; " & CStr(caption), vbCrLf & vbCrLf & CStr(caption))
         text = ReplaceWorkbookMessageFragment(text, " " & CStr(caption), vbCrLf & vbCrLf & CStr(caption))
+        text = ReplaceWorkbookMessageFragment(text, vbCrLf & CStr(caption), vbCrLf & vbCrLf & CStr(caption))
         text = ReplaceWorkbookMessageFragment(text, CStr(caption) & " ", CStr(caption) & vbCrLf)
     Next caption
     text = ReplaceWorkbookMessageFragment(text, " Настройка ", vbCrLf & vbCrLf & "Настройка ")
@@ -81,6 +82,15 @@ Public Function WorkbookDialogText(ByVal message As String) As String
             "Добавьте ", "Установите ", "Используйте ")
         text = ReplaceWorkbookMessageFragment(text, ". " & CStr(action), "." & vbCrLf & vbCrLf & CStr(action))
     Next action
+    ' Геометрические предупреждения хранятся компактно; только окно разделяет счётчик, причину и техническую ссылку.
+    For Each caption In Array("В каждой совпавшей позиции ", "Их положения по нормали ", _
+            "В расчёте и подписях учтён ", "Площадь каждого из них ")
+        text = ReplaceWorkbookMessageFragment(text, ". " & CStr(caption), "." & vbCrLf & vbCrLf & CStr(caption))
+    Next caption
+    text = ReplaceWorkbookMessageFragment(text, ". Подробности и адреса полей приведены в ", _
+        "." & vbCrLf & vbCrLf & "Подробности и адреса полей:" & vbCrLf)
+    text = ReplaceWorkbookMessageFragment(text, vbCrLf & "По настройке Mesh.MinElementArea ", _
+        vbCrLf & vbCrLf & "По настройке Mesh.MinElementArea ")
     WorkbookDialogText = TrimWorkbookMessage(text)
 End Function
 
