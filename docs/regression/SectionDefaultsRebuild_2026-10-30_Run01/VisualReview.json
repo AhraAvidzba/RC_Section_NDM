@@ -1,0 +1,15 @@
+{
+  "Reviewed": true,
+  "Views": [
+    "PointedSection",
+    "HollowRectangle",
+    "Config",
+    "Help",
+    "Calculation",
+    "Results"
+  ],
+  "ReviewedInsideConversation": true,
+  "ClaimedDeliveredToUser": false,
+  "RequestedValuesVisible": true,
+  "ExistingTableStyleAndBoundsRetained": true
+}

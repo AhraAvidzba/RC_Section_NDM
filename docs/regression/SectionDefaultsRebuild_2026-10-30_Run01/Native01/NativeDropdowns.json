@@ -1,0 +1,1206 @@
+﻿[
+    {
+        "Key":  "Circle/Circle/endMode",
+        "Address":  "$H$12",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Circle/Circle/bind2",
+        "Address":  "$E$18",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Circle/Circle/pos2",
+        "Address":  "$F$18",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Circle/Circle/bind3",
+        "Address":  "$I$18",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Circle/Circle/pos3",
+        "Address":  "$J$18",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R1.Top/endMode",
+        "Address":  "$H$36",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Rectangles/R1.Bottom/endMode",
+        "Address":  "$H$37",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Rectangles/R1.Left/endMode",
+        "Address":  "$H$38",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Rectangles/R1.Right/endMode",
+        "Address":  "$H$39",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Rectangles/R2.Top/endMode",
+        "Address":  "$H$40",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Rectangles/R2.Bottom/endMode",
+        "Address":  "$H$41",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Rectangles/R2.Left/endMode",
+        "Address":  "$H$42",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Rectangles/R2.Right/endMode",
+        "Address":  "$H$43",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "Rectangles/R1.Top/bind2",
+        "Address":  "$E$49",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R1.Top/pos2",
+        "Address":  "$F$49",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R1.Top/bind3",
+        "Address":  "$I$49",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R1.Top/pos3",
+        "Address":  "$J$49",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R1.Bottom/bind2",
+        "Address":  "$E$50",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R1.Bottom/pos2",
+        "Address":  "$F$50",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R1.Bottom/bind3",
+        "Address":  "$I$50",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R1.Bottom/pos3",
+        "Address":  "$J$50",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R1.Left/bind2",
+        "Address":  "$E$51",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R1.Left/pos2",
+        "Address":  "$F$51",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R1.Left/bind3",
+        "Address":  "$I$51",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R1.Left/pos3",
+        "Address":  "$J$51",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R1.Right/bind2",
+        "Address":  "$E$52",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R1.Right/pos2",
+        "Address":  "$F$52",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R1.Right/bind3",
+        "Address":  "$I$52",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R1.Right/pos3",
+        "Address":  "$J$52",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R2.Top/bind2",
+        "Address":  "$E$53",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R2.Top/pos2",
+        "Address":  "$F$53",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R2.Top/bind3",
+        "Address":  "$I$53",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R2.Top/pos3",
+        "Address":  "$J$53",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R2.Bottom/bind2",
+        "Address":  "$E$54",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R2.Bottom/pos2",
+        "Address":  "$F$54",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R2.Bottom/bind3",
+        "Address":  "$I$54",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R2.Bottom/pos3",
+        "Address":  "$J$54",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R2.Left/bind2",
+        "Address":  "$E$55",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R2.Left/pos2",
+        "Address":  "$F$55",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R2.Left/bind3",
+        "Address":  "$I$55",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R2.Left/pos3",
+        "Address":  "$J$55",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R2.Right/bind2",
+        "Address":  "$E$56",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R2.Right/pos2",
+        "Address":  "$F$56",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Rectangles/R2.Right/bind3",
+        "Address":  "$I$56",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "Rectangles/R2.Right/pos3",
+        "Address":  "$J$56",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "PointedSection/Top/endMode",
+        "Address":  "$H$76",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "PointedSection/Bottom/endMode",
+        "Address":  "$H$77",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "PointedSection/Left/endMode",
+        "Address":  "$H$78",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "PointedSection/Right/endMode",
+        "Address":  "$H$79",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "PointedSection/Top/bind2",
+        "Address":  "$E$85",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "PointedSection/Top/pos2",
+        "Address":  "$F$85",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "PointedSection/Top/bind3",
+        "Address":  "$I$85",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "PointedSection/Top/pos3",
+        "Address":  "$J$85",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "PointedSection/Bottom/bind2",
+        "Address":  "$E$86",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "PointedSection/Bottom/pos2",
+        "Address":  "$F$86",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "PointedSection/Bottom/bind3",
+        "Address":  "$I$86",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "PointedSection/Bottom/pos3",
+        "Address":  "$J$86",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "PointedSection/Left/bind2",
+        "Address":  "$E$87",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "PointedSection/Left/pos2",
+        "Address":  "$F$87",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "PointedSection/Left/bind3",
+        "Address":  "$I$87",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "PointedSection/Left/pos3",
+        "Address":  "$J$87",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "PointedSection/Right/bind2",
+        "Address":  "$E$88",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "PointedSection/Right/pos2",
+        "Address":  "$F$88",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "PointedSection/Right/bind3",
+        "Address":  "$I$88",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "PointedSection/Right/pos3",
+        "Address":  "$J$88",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/Top/endMode",
+        "Address":  "$H$108",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "HollowRectangle/Bottom/endMode",
+        "Address":  "$H$109",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "HollowRectangle/Left/endMode",
+        "Address":  "$H$110",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "HollowRectangle/Right/endMode",
+        "Address":  "$H$111",
+        "Choices":  [
+                        "IncludeBoth",
+                        "ExcludeBoth",
+                        "IncludeStart",
+                        "IncludeEnd"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "IncludeBoth;ExcludeBoth;IncludeStart;IncludeEnd"
+    },
+    {
+        "Key":  "HollowRectangle/Top/bind2",
+        "Address":  "$E$121",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/Top/pos2",
+        "Address":  "$F$121",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/Top/bind3",
+        "Address":  "$I$121",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/Top/pos3",
+        "Address":  "$J$121",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/Bottom/bind2",
+        "Address":  "$E$122",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/Bottom/pos2",
+        "Address":  "$F$122",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/Bottom/bind3",
+        "Address":  "$I$122",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/Bottom/pos3",
+        "Address":  "$J$122",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/Left/bind2",
+        "Address":  "$E$123",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/Left/pos2",
+        "Address":  "$F$123",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/Left/bind3",
+        "Address":  "$I$123",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/Left/pos3",
+        "Address":  "$J$123",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/Right/bind2",
+        "Address":  "$E$124",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/Right/pos2",
+        "Address":  "$F$124",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/Right/bind3",
+        "Address":  "$I$124",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/Right/pos3",
+        "Address":  "$J$124",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningTop/bind2",
+        "Address":  "$E$125",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningTop/pos2",
+        "Address":  "$F$125",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningTop/bind3",
+        "Address":  "$I$125",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningTop/pos3",
+        "Address":  "$J$125",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningBottom/bind2",
+        "Address":  "$E$126",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningBottom/pos2",
+        "Address":  "$F$126",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningBottom/bind3",
+        "Address":  "$I$126",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningBottom/pos3",
+        "Address":  "$J$126",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningLeft/bind2",
+        "Address":  "$E$127",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningLeft/pos2",
+        "Address":  "$F$127",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningLeft/bind3",
+        "Address":  "$I$127",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningLeft/pos3",
+        "Address":  "$J$127",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningRight/bind2",
+        "Address":  "$E$128",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningRight/pos2",
+        "Address":  "$F$128",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningRight/bind3",
+        "Address":  "$I$128",
+        "Choices":  [
+                        "EachBar",
+                        "EverySecondBar"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "EachBar;EverySecondBar"
+    },
+    {
+        "Key":  "HollowRectangle/OpeningRight/pos3",
+        "Address":  "$J$128",
+        "Choices":  [
+                        "Stacked",
+                        "SideBySide"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Stacked;SideBySide"
+    },
+    {
+        "Key":  "Mesh.CellGeometry",
+        "Address":  "$B$30",
+        "Choices":  [
+                        "Adaptive",
+                        "Contour"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Adaptive;Contour"
+    },
+    {
+        "Key":  "Geometry.Type",
+        "Address":  "$B$26",
+        "Choices":  [
+                        "Circle",
+                        "Rectangles",
+                        "PointedSection",
+                        "HollowRectangle"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "Circle;Rectangles;PointedSection;HollowRectangle"
+    },
+    {
+        "Key":  "Mesh.StepMode",
+        "Address":  "$B$31",
+        "Choices":  [
+                        "Auto 0.05",
+                        "Auto 0.1",
+                        "Auto 0.2",
+                        "User"
+                    ],
+        "Accepted":  4,
+        "Rejected":  3,
+        "Formula1":  "Auto 0.05;Auto 0.1;Auto 0.2;User"
+    },
+    {
+        "Key":  "Output.CombinationMode",
+        "Address":  "$B$17",
+        "Choices":  [
+                        "Worst",
+                        "User"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Worst;User"
+    },
+    {
+        "Key":  "Results.SnapshotStorage",
+        "Address":  "$B$8",
+        "Choices":  [
+                        "Excel",
+                        "File"
+                    ],
+        "Accepted":  2,
+        "Rejected":  3,
+        "Formula1":  "Excel;File"
+    }
+]

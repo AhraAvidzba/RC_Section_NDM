@@ -1,0 +1,126 @@
+{
+  "PointedSection": {
+    "General": {
+      "B": 800,
+      "H": 250,
+      "Left.W": 0,
+      "Left.R1": 100,
+      "Left.R2": 0,
+      "Right.W": 150,
+      "Right.R1": 40,
+      "Right.R2": 50
+    },
+    "Main": {
+      "Top": [
+        40,
+        20,
+        8,
+        0,
+        0,
+        "IncludeBoth"
+      ],
+      "Bottom": [
+        40,
+        20,
+        8,
+        0,
+        0,
+        "IncludeBoth"
+      ],
+      "Left": [
+        40,
+        20,
+        3,
+        0,
+        0,
+        "ExcludeBoth"
+      ],
+      "Right": [
+        40,
+        20,
+        3,
+        0,
+        0,
+        "ExcludeBoth"
+      ]
+    }
+  },
+  "HollowRectangle": {
+    "General": {
+      "B": 500,
+      "H": 800,
+      "R": 180,
+      "Bo": 200,
+      "Ho": 500,
+      "Ro": 30,
+      "Xo": 0,
+      "Yo": 0
+    },
+    "Main": {
+      "Top": [
+        40,
+        20,
+        5,
+        0,
+        0,
+        "ExcludeBoth"
+      ],
+      "Bottom": [
+        40,
+        20,
+        5,
+        0,
+        0,
+        "ExcludeBoth"
+      ],
+      "Left": [
+        40,
+        20,
+        6,
+        0,
+        0,
+        "IncludeBoth"
+      ],
+      "Right": [
+        40,
+        20,
+        6,
+        0,
+        0,
+        "IncludeBoth"
+      ],
+      "OpeningTop": [
+        40,
+        20,
+        "—",
+        0,
+        0,
+        "—"
+      ],
+      "OpeningBottom": [
+        40,
+        20,
+        "—",
+        0,
+        0,
+        "—"
+      ],
+      "OpeningLeft": [
+        40,
+        20,
+        "—",
+        0,
+        0,
+        "—"
+      ],
+      "OpeningRight": [
+        40,
+        20,
+        "—",
+        0,
+        0,
+        "—"
+      ]
+    }
+  }
+}

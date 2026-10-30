@@ -1,0 +1,18 @@
+﻿{
+    "Passed":  true,
+    "BookSHA256":  "509FB20F705588D82DB75D57281F4AB955260D475355632CF6AD56F7E02474D0",
+    "SavedReopened":  true,
+    "ReadOnly":  true,
+    "MacrosRun":  false,
+    "SavedAgain":  false,
+    "FullAcceptanceClaim":  false,
+    "Components":  181,
+    "CatalogCells":  405,
+    "Dropdowns":  106,
+    "ProjectionDashes":  8,
+    "CleanLoadsResultsAndPlot":  true,
+    "SheetOrder":  "Config|Сечения|Справка|Расчет|Results",
+    "QuitRequested":  true,
+    "ForceKilled":  false,
+    "BookAfterSHA256":  "509FB20F705588D82DB75D57281F4AB955260D475355632CF6AD56F7E02474D0"
+}

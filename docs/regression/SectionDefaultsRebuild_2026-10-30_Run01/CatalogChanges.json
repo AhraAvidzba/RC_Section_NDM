@@ -1,0 +1,87 @@
+{
+  "Status": "BUILD_CATALOG_DEFAULTS_UPDATED",
+  "ChangedCells": [
+    {
+      "Type": "PointedSection",
+      "Block": "General",
+      "Key": "Left.R1",
+      "Column": "val",
+      "Before": 40,
+      "After": 100
+    },
+    {
+      "Type": "PointedSection",
+      "Block": "General",
+      "Key": "Right.R2",
+      "Column": "val",
+      "Before": 80,
+      "After": 50
+    },
+    {
+      "Type": "PointedSection",
+      "Block": "Main",
+      "Key": "Top",
+      "Column": "d",
+      "Before": 32,
+      "After": 20
+    },
+    {
+      "Type": "PointedSection",
+      "Block": "Main",
+      "Key": "Bottom",
+      "Column": "d",
+      "Before": 32,
+      "After": 20
+    },
+    {
+      "Type": "PointedSection",
+      "Block": "Main",
+      "Key": "Left",
+      "Column": "d",
+      "Before": 32,
+      "After": 20
+    },
+    {
+      "Type": "PointedSection",
+      "Block": "Main",
+      "Key": "Left",
+      "Column": "n",
+      "Before": 5,
+      "After": 3
+    },
+    {
+      "Type": "PointedSection",
+      "Block": "Main",
+      "Key": "Right",
+      "Column": "d",
+      "Before": 32,
+      "After": 20
+    },
+    {
+      "Type": "PointedSection",
+      "Block": "Main",
+      "Key": "Right",
+      "Column": "n",
+      "Before": 5,
+      "After": 3
+    },
+    {
+      "Type": "HollowRectangle",
+      "Block": "Main",
+      "Key": "Top",
+      "Column": "n",
+      "Before": 8,
+      "After": 5
+    },
+    {
+      "Type": "HollowRectangle",
+      "Block": "Main",
+      "Key": "Bottom",
+      "Column": "n",
+      "Before": 8,
+      "After": 5
+    }
+  ],
+  "OtherTypesBlocksCommentsAndLayoutsUnchanged": true,
+  "CatalogSHA256": "A16EED80BAEA8C0C8AFC2F12FD98DC4F97E4C594083B8481E2E3CC25B3A133F2"
+}

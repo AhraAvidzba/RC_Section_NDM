@@ -1,0 +1,20 @@
+{
+  "Passed": true,
+  "AtUTC": "2026-10-30T13:11:08.5968406+00:00",
+  "CleanRebuild": true,
+  "InputsAndResultsCopied": false,
+  "Files": [
+    {
+      "Target": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "509FB20F705588D82DB75D57281F4AB955260D475355632CF6AD56F7E02474D0",
+      "PreviousSHA256": "19C5193546F9571AC9B9E93AD830DD15C526277E390A27FDF579ED193A6D7AE4",
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\SectionDefaultsRebuild_2026-10-30_Run01\\BeforePublication\\RC_Section_NDM.xlsm"
+    },
+    {
+      "Target": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "C5B356769AA452EACC6A91CCEDE92882E3711A1FE823463D9EAE38AF18AC90E6",
+      "PreviousSHA256": "57659FF98DD638431991149655810168A392ED37B8C65443003C3C828B863FD3",
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\SectionDefaultsRebuild_2026-10-30_Run01\\BeforePublication\\VBA_All_Code.txt"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "Passed": true,
+  "AtUTC": "2026-10-30T13:11:08.1056248+00:00",
+  "OwnProcesses": [
+    {
+      "Evidence": "Build/BuildOwnership.json",
+      "PID": 384,
+      "ExpectedStartTicksUTC": "639289622835596369",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null
+    },
+    {
+      "Evidence": "Native01/Ownership.json",
+      "PID": 3044,
+      "ExpectedStartTicksUTC": "639289625654604340",
+      "State": "ConfirmedNotFound",
+      "ObservedName": null,
+      "ObservedStartTicksUTC": null
+    }
+  ],
+  "ForceKilled": false
+}
