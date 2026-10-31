@@ -1,0 +1,72 @@
+{
+  "ForcedTerminationUsed": false,
+  "Passed": true,
+  "CompleteCIMSnapshot": true,
+  "Own": [
+    {
+      "PID": 2684,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "ObservedName": null,
+      "Terminal": true,
+      "ObservedStartTicksUTC": null,
+      "ExpectedStartTicksUTC": "639290421823712414"
+    },
+    {
+      "PID": 21120,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "ObservedName": null,
+      "Terminal": true,
+      "ObservedStartTicksUTC": null,
+      "ExpectedStartTicksUTC": "639290431359204088"
+    },
+    {
+      "PID": 888,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "ObservedName": null,
+      "Terminal": true,
+      "ObservedStartTicksUTC": null,
+      "ExpectedStartTicksUTC": "639290427661874199"
+    },
+    {
+      "PID": 4704,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "ObservedName": null,
+      "Terminal": true,
+      "ObservedStartTicksUTC": null,
+      "ExpectedStartTicksUTC": "639290425458735061"
+    },
+    {
+      "PID": 17336,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "ObservedName": null,
+      "Terminal": true,
+      "ObservedStartTicksUTC": null,
+      "ExpectedStartTicksUTC": "639290423194241419"
+    },
+    {
+      "PID": 26012,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "ObservedName": null,
+      "Terminal": true,
+      "ObservedStartTicksUTC": null,
+      "ExpectedStartTicksUTC": "639290424727520920"
+    },
+    {
+      "PID": 10932,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "ObservedName": null,
+      "Terminal": true,
+      "ObservedStartTicksUTC": null,
+      "ExpectedStartTicksUTC": "639290432584086251"
+    },
+    {
+      "PID": 5440,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "ObservedName": null,
+      "Terminal": true,
+      "ObservedStartTicksUTC": null,
+      "ExpectedStartTicksUTC": "639290429335053560"
+    }
+  ],
+  "Reviewed": 8
+}

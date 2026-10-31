@@ -1,0 +1,112 @@
+{
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "TimingsMs": [
+    573.0337,
+    389.5485,
+    317.4846,
+    313.8163,
+    320.2022,
+    335.218,
+    310.5649,
+    323.3809,
+    292.7318,
+    310.5102,
+    303.3271,
+    293.5332,
+    294.8637,
+    295.8578,
+    293.4612,
+    290.6791,
+    294.3683,
+    308.9569,
+    298.7096,
+    292.2472,
+    294.1163,
+    298.0673,
+    290.7624,
+    286.3777,
+    291.2949,
+    295.4171,
+    340.2282,
+    297.2091,
+    302.8128,
+    296.9717,
+    294.6864,
+    296.1553,
+    314.1716,
+    292.2081,
+    299.0137,
+    289.8231,
+    292.4255,
+    315.9288,
+    300.1866,
+    301.1637,
+    298.9757,
+    292.198,
+    294.4621,
+    300.1811,
+    308.1769,
+    308.7322,
+    302.2276,
+    293.5373,
+    291.4386,
+    293.8039,
+    295.4625,
+    295.4351,
+    295.8546,
+    292.2057,
+    299.329,
+    297.4306,
+    311.4166,
+    291.7474,
+    293.3328,
+    300.7022,
+    318.4904,
+    301.2804,
+    296.8164,
+    294.6494
+  ],
+  "Frames": [],
+  "Validation": [
+    {
+      "Value": "Circle",
+      "Accepted": true
+    },
+    {
+      "Value": "Rectangles",
+      "Accepted": true
+    },
+    {
+      "Value": "PointedSection",
+      "Accepted": true
+    },
+    {
+      "Value": "HollowRectangle",
+      "Accepted": true
+    },
+    {
+      "Value": "Circle,Rectangles,PointedSection,HollowRectangle",
+      "Accepted": false
+    },
+    {
+      "Value": "Circle;Rectangles;PointedSection;HollowRectangle",
+      "Accepted": false
+    },
+    {
+      "Value": "Unknown",
+      "Accepted": false
+    }
+  ],
+  "TooltipRemovedAfterSavedReopen": true,
+  "RapidSwitches": 64,
+  "ActivationSelectionRecalcCounters": "0|0|0|",
+  "BuilderInitializerPassed": true,
+  "ScreenUpdatingUnchanged": true,
+  "BoundsAndAspectPreserved": true,
+  "ErrorPathsPreserved": true,
+  "BookSHA256": "2E45634D9B62950A212C2F0403DEC85233CAA6EE871DE9CD345C8A64353BBA68",
+  "SourceComponents": 176,
+  "ExportComponents": 182,
+  "QuitRequested": true
+}

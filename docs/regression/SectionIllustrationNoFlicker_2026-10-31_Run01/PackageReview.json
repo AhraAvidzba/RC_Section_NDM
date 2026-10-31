@@ -1,0 +1,55 @@
+{
+  "Passed": true,
+  "CellReviews": [
+    {
+      "Sheet": "Config",
+      "AllCellDataFormulasStylesExact": true
+    },
+    {
+      "Sheet": "Сечения",
+      "AllCellDataFormulasStylesExact": true
+    },
+    {
+      "Sheet": "Справка",
+      "AllCellDataFormulasStylesExact": true
+    },
+    {
+      "Sheet": "Расчет",
+      "AllCellDataFormulasStylesExact": true
+    },
+    {
+      "Sheet": "Results",
+      "AllCellDataFormulasStylesExact": true
+    }
+  ],
+  "RowsColumnsMergesNamesExact": true,
+  "InitialGraphicsByteExact": true,
+  "OnlyTooltipValidationChanged": true,
+  "ActualSelectedImages": [
+    {
+      "Name": "Circle",
+      "ImageBytesExact": true,
+      "PixelsExact": true,
+      "SHA256": "55D4247084B7ED8EDB848641FAAC509C95AAAF8863DF605CB53701A194BDACF9"
+    },
+    {
+      "Name": "HollowRectangle",
+      "ImageBytesExact": true,
+      "PixelsExact": true,
+      "SHA256": "4C1DFF76B7C5A8D25DF9F11B296BB521CC1A1D5C9D5561BDCBD727325083F70F"
+    },
+    {
+      "Name": "PointedSection",
+      "ImageBytesExact": true,
+      "PixelsExact": true,
+      "SHA256": "0B35B2672604B4A0265035B724D95722B97E3C84B9B73359800B4395D94B5DEE"
+    },
+    {
+      "Name": "Rectangles",
+      "ImageBytesExact": true,
+      "PixelsExact": true,
+      "SHA256": "1E490F9A09F5D7D26FBC4624184CF6D2935313F16B0D8E715D7A3E69F1F842A1"
+    }
+  ],
+  "CandidateSHA256": "2E45634D9B62950A212C2F0403DEC85233CAA6EE871DE9CD345C8A64353BBA68"
+}

@@ -25,9 +25,9 @@ function Set-SectionIllustrationSelector {
     $cell.Validation.IgnoreBlank=$false;$cell.Validation.InCellDropdown=$true
     $cell.Validation.ShowError=$true;$cell.Validation.ErrorTitle='Выбор иллюстрации'
     $cell.Validation.ErrorMessage='Выберите одно название сечения из списка.'
-    $cell.Validation.InputTitle='Справочная картинка'
-    $cell.Validation.InputMessage='Меняет только иллюстрацию CurrentSection; расчётный тип задаётся в Config.'
-    $cell.Validation.ShowInput=$true
+    $cell.Validation.InputTitle=''
+    $cell.Validation.InputMessage=''
+    $cell.Validation.ShowInput=$false
     $cell.Value2='PointedSection'
     $cell.Interior.Color=15135487 # RGB(255,242,230): доступный для ввода выбор.
     $cell.HorizontalAlignment=-4108;$cell.VerticalAlignment=-4108;$cell.WrapText=$false

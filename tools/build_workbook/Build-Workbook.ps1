@@ -583,6 +583,7 @@ try {
     Add-SectionIllustrationPictures $workbook $script:WorkbookLayout
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
     Set-SectionIllustrationSelector $workbook
+    $calc.Activate() # Начальная картинка вставляется на целевой лист; рабочая процедура листы не переключает.
     $excel.Run("'" + $workbook.Name + "'!modSectionIllustrations.SwitchSectionPicture")
     Fit-SettingsInstructionRows $instructions
     Set-HelpSectionOrderAndOutline $workbook -Expanded | Out-Null
