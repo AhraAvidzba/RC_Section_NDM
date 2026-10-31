@@ -5,5 +5,11 @@
     "PointedSection",
     "HollowRectangle"
   ],
-  "Default": "PointedSection"
+  "Default": "PointedSection",
+  "Additional": [
+    {
+      "Name": "Общие_иллюстрации",
+      "File": "Общие_иллюстрации.png"
+    }
+  ]
 }

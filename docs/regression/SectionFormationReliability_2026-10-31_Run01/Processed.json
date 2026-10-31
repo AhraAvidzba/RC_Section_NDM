@@ -1,0 +1,19 @@
+{
+  "Status": "DIRECTED_ACCEPTED_NO_FULL_RUN",
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "BookSHA256": "43177313FB73FCD4A75DE2EEEF5B5E722BE6C547DD751C286D2EB99D9074E976",
+  "AllCodeSHA256": "E45CFB698FFB24D60F1DEC3A8554A597A4AC5D087F8BC6E548059D22A6F3F749",
+  "OwnIdentitiesTerminal": 30,
+  "ForcedTerminationUsed": true,
+  "DataCellsPreserved": 11722,
+  "RealUiChoices": 6,
+  "RepeatedSwitches": 120,
+  "FreshProtectedSwitches": 4,
+  "OfficePlatform": "x86",
+  "UserReportedOOMInTest": true,
+  "UnlimitedSessionGuarantee": false,
+  "HistoricalFailuresPreserved": true,
+  "VbaCacheResetUsed": false,
+  "EvidenceArchiveSHA256": "7A1B74DADE6446A33B6D2648F59BDF11E2859F0DB8DCCB8C0838598AF60243B6"
+}
