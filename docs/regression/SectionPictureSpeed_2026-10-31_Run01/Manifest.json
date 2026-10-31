@@ -1,0 +1,180 @@
+{
+  "ArchiveSHA256": "896E3535B3E28EC9F15F8B0F03EE2387CF0F18995D21B1C9D8719B988EFB5185",
+  "Files": [
+    {
+      "Name": "FinalReview.json",
+      "Bytes": 730,
+      "SHA256": "F9CBCD83D70C4F69203CEA5DC9FEB6D1C9E2EFFC5E9A1EE530F411CEAF38016B"
+    },
+    {
+      "Name": "Publication.json",
+      "Bytes": 479,
+      "SHA256": "364903CD78CF68C0BB72DDC0D5A4DCC786A8876EABE1F81D1147A7AB001F9F53"
+    },
+    {
+      "Name": "AllOwnClosures.json",
+      "Bytes": 1475,
+      "SHA256": "D613288D573097816E677A970693FBEDC1567F7FE6D1326A2D633E1D28C62078"
+    },
+    {
+      "Name": "Backup.json",
+      "Bytes": 393,
+      "SHA256": "DA834A8A82EEAC69DDD4FA6042D450A3D06D1DACCFEA0955E674AE99FAADF8FE"
+    },
+    {
+      "Name": "BuildAssets.json",
+      "Bytes": 763,
+      "SHA256": "ADF4CF9E995151E3D3F7611C661F8E6C8189D5DB8C9C591E03FF4EAD8EDDD505"
+    },
+    {
+      "Name": "ComparisonDecision.json",
+      "Bytes": 735,
+      "SHA256": "878982991FCD865F1CBAC4197CF2A8B1EF2A3DD4C3CB4ECE7230284C0E605EF4"
+    },
+    {
+      "Name": "CompareReview.json",
+      "Bytes": 188,
+      "SHA256": "65C3855331D87DF392A62CCED1FB023264C1EC30D55A5BF50EA90A1E4939AA62"
+    },
+    {
+      "Name": "Compare02Review.json",
+      "Bytes": 10314,
+      "SHA256": "46710E14E6DCCCE8D5F44064DF0B4679918AF1DA4C2CED6BC787BCDD1EFA1523"
+    },
+    {
+      "Name": "CompareOwnership.json",
+      "Bytes": 63,
+      "SHA256": "880C16C3747FD81D5EEF323CD7BAE3494C7A20D34C264C0F072AEC39335A0F5D"
+    },
+    {
+      "Name": "Compare02Ownership.json",
+      "Bytes": 63,
+      "SHA256": "20EECA7296F92B352E3AE227EA57D2AB320DD5CEAB988895CC4705300F00AB71"
+    },
+    {
+      "Name": "CleanDefaultsReview.json",
+      "Bytes": 695,
+      "SHA256": "1C1A47A9831BE3B6C965F02CC228554DEE9336CEDACAC80DB0A83A438EA0140E"
+    },
+    {
+      "Name": "FreshPackageReview.json",
+      "Bytes": 828,
+      "SHA256": "5C665F8905AD2B6690DDD405DCB186B4DB7CD0DEFC551A821055B4E48722860A"
+    },
+    {
+      "Name": "FreshNativeReview.json",
+      "Bytes": 2574,
+      "SHA256": "777A27827DD313380CDEB360F17467C7D29110428A8D978E078BAD31FB6BF721"
+    },
+    {
+      "Name": "FreshNativeOwnership.json",
+      "Bytes": 64,
+      "SHA256": "1A5F48DE4994199A81FDA13AEC6F6CF1CD4A0C8EC2A0C2925156534F8266EF19"
+    },
+    {
+      "Name": "SourceEquality.json",
+      "Bytes": 73195,
+      "SHA256": "A3CC5178059F9FF6432CB4498812F8DE496013F23E30EECA7F447865AE811552"
+    },
+    {
+      "Name": "FreshBuildFinal/BuildOwnership.json",
+      "Bytes": 334,
+      "SHA256": "737D84B3B7248EA34FA5D35AFA4B02FD86D65843EDE199D1CFD49E0464DBC896"
+    },
+    {
+      "Name": "Build.log",
+      "Bytes": 201,
+      "SHA256": "DF4BF36DA12541C8773B9F096CF7150A5F4B85445ED128D841E897C781461DD6"
+    },
+    {
+      "Name": "FreshNative.log",
+      "Bytes": 2640,
+      "SHA256": "0DC2A45538FB0788806908760D8F0E94CFFA62A35A2A1F29474D06656781E254"
+    },
+    {
+      "Name": "SourceEquality.log",
+      "Bytes": 86,
+      "SHA256": "6F8A90709D4E913B7107888AB403982B4F2DC43F4B5E03DE16E9B845F871B198"
+    },
+    {
+      "Name": "TestCompareSwitch01.ps1",
+      "Bytes": 4933,
+      "SHA256": "C7BD0B6E36B19DAB80A25E52557086484C0D254101A714E42D12DD0032277FAF"
+    },
+    {
+      "Name": "TestCompareSwitch02.ps1",
+      "Bytes": 5245,
+      "SHA256": "01DEFDC4F7CDF04C7E505F1DD1A81A8C73F4C8D321E7CB4F42AA2777B75F3CC5"
+    },
+    {
+      "Name": "TestReviewComparison02.py",
+      "Bytes": 1573,
+      "SHA256": "5EB56033721C1613BD40CF0AE1E351351480C0E52BDCD73C0C511387A000551C"
+    },
+    {
+      "Name": "TestReviewCleanDefaults01.py",
+      "Bytes": 6221,
+      "SHA256": "E66FAB6428DD69F41514C03475CD49B69593092796A9FA8FB015B611CA7778F9"
+    },
+    {
+      "Name": "TestFreshPackage.py",
+      "Bytes": 3433,
+      "SHA256": "D6C0CF52514F9B6D6D63739529473F8857F7C60920A2C71DF8783807E0809DAB"
+    },
+    {
+      "Name": "TestNativeBuild01.ps1",
+      "Bytes": 11436,
+      "SHA256": "8761A38752B7ECE5E515076A98DA3CECD4FF7A78E1D34F9CF2A1C4DAECCC6090"
+    },
+    {
+      "Name": "TestVerifySource.ps1",
+      "Bytes": 11491,
+      "SHA256": "EB155F815D522B62B337CC89C72801001E7F4D14C60D4867BB6EDF8EDF7941A7"
+    },
+    {
+      "Name": "TestOwnClosures.ps1",
+      "Bytes": 2207,
+      "SHA256": "342398C4CE7CC589CB99CEDEC155A7508B09CAD49F4AB258506E4066E2A56342"
+    },
+    {
+      "Name": "TestPublishSpeed01.ps1",
+      "Bytes": 2375,
+      "SHA256": "83401DBBD1B2CD4FBFB51308D74C908DE9BB32B3B18631B995AD7DFCFE9A4B93"
+    },
+    {
+      "Name": "TestFinishSpeed01.py",
+      "Bytes": 12638,
+      "SHA256": "395D067C26ECAD928836030CDBB26BB8415463786913B731C17A2CDCEB66555C"
+    },
+    {
+      "Name": "UiSelection0.json",
+      "Bytes": 118,
+      "SHA256": "4F88CC2493E72FA1DAD3F7FEA5CE79E703C45B6697B53692F80DD5157E1A6275"
+    },
+    {
+      "Name": "UiSelection1.json",
+      "Bytes": 122,
+      "SHA256": "CEF44A7E598A4DC4C6502DA19D09F3F998B72A1E7B421FC3C26F515068D0D3E6"
+    },
+    {
+      "Name": "UiSelection2.json",
+      "Bytes": 126,
+      "SHA256": "D34C8AE0C49A0D94F6A611D112FB5C456E2B4534A9126F3BDC40A685F1A2322D"
+    },
+    {
+      "Name": "UiSelection3.json",
+      "Bytes": 127,
+      "SHA256": "6B59E7985A0A8C4C55FFD95A5E129F451FCBD61452636866CE37A7F5A8171EA4"
+    },
+    {
+      "Name": "UiSelection4.json",
+      "Bytes": 108,
+      "SHA256": "8FF36A226967DEB7314F715F10EAF5D6BDCE5E373605ECC77C2713DAB55C21F4"
+    },
+    {
+      "Name": "UiSelection5.json",
+      "Bytes": 127,
+      "SHA256": "A5586C0DBA32F9A9897ADFED314095600F49609A4349007216E2E6FCC8D0FF2C"
+    }
+  ]
+}

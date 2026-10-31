@@ -1,0 +1,22 @@
+{
+  "Passed": true,
+  "Scope": "CLEAN_REBUILD_AND_TARGETED_ILLUSTRATION_UI_SPEED",
+  "FullAcceptanceClaim": false,
+  "BookSHA256": "F5C6BC28F7F60DADE484D94C894739CEC860F203031EB246D0D7202CBED4EAC1",
+  "AllCodeSHA256": "6DC9E09AD869D482B4675BE63897202A10CFA4470B5AFAB59B8B860BB276D2A8",
+  "MedianSecondsBefore": 0.63214255,
+  "MedianSecondsAfter": 0.5182611,
+  "RelativeGain": 0.18015153385893726,
+  "MeasuredSamplesPerVariant": 16,
+  "UiSelections": 6,
+  "SourceComponents": 176,
+  "ExportComponents": 182,
+  "ProjectPngImages": 5,
+  "UserDataCopied": false,
+  "NativeMaxPrivateBytes": 223580160,
+  "OwnIdentitiesTerminal": 4,
+  "ExecutableStatementsEqualMeasuredVariant": true,
+  "VbaCacheResetUsed": false,
+  "Status": "CLEAN_REBUILD_DIRECTED_PASS",
+  "EvidenceArchiveSHA256": "896E3535B3E28EC9F15F8B0F03EE2387CF0F18995D21B1C9D8719B988EFB5185"
+}

@@ -12,6 +12,7 @@ Private Const TARGET_PICTURE As String = "CurrentSection"
 ' Копирует выбранный рисунок, пропорционально вписывая его в текущую рамку.
 ' Источник заменяется вручную; список K2 содержит простое перечисление имён.
 ' Расчётные таблицы и режим пересчёта не используются.
+' Обновление экрана не переключается; исходный лист не активируется.
 Public Sub SwitchSectionPicture()
     Dim sheet As Worksheet, original As Shape, frame As Shape, replacement As Shape
     Dim pictureName As String, fitRatio As Double, previousName As String
@@ -19,7 +20,7 @@ Public Sub SwitchSectionPicture()
     Dim number As Long, description As String, action As String, renamed As Boolean
     Dim attempt As Long, pasteNumber As Long, pasteDescription As String
     ' Сохраняем общие флаги Excel и место пользователя до перехода между листами.
-    previousUpdating = Application.ScreenUpdating
+    previousUpdating = Application.ScreenUpdating ' Флаг нужен только для обработки отложенной перерисовки в конце.
     previousEvents = Application.EnableEvents
     Set previousSheet = Application.ActiveSheet
     If TypeOf Application.Selection Is Range Then Set previousSelection = Application.Selection
@@ -37,7 +38,6 @@ Public Sub SwitchSectionPicture()
     ' Габариты CurrentSection постоянны; коэффициент выбирается по ограничивающей стороне.
     fitRatio = frame.Width / original.Width
     If original.Height * fitRatio > frame.Height Then fitRatio = frame.Height / original.Height
-    Application.ScreenUpdating = False ' Переходы и вставка происходят без промежуточной перерисовки окна.
     Application.EnableEvents = False ' Собственные переходы и выделения не вызывают обработчики книги повторно.
     For attempt = 1 To 3
         original.Copy ' Берём именованный рисунок напрямую, не переключаясь на исходный лист.
@@ -76,13 +76,12 @@ Failed:
     If renamed Then frame.Name = TARGET_PICTURE
 RestoreState:
     On Error Resume Next
-    ' Исходные флаги возвращаются и при отказе вставки; выделение возвращает обычные элементы выбора Excel.
+    ' Возвращаем выделение и состояние событий; режим обновления экрана остаётся у вызывающего кода.
     Application.CutCopyMode = False
     If Not Application.ActiveSheet Is previousSheet Then previousSheet.Activate
     If Not previousSelection Is Nothing Then previousSelection.Select
-    Application.ScreenUpdating = previousUpdating
     Application.EnableEvents = previousEvents
-    If previousUpdating Then DoEvents ' После возврата выделения Excel перерисовывает стрелку списка и освобождает отложенные графические объекты.
+    If previousUpdating Then DoEvents ' Даём Excel обработать отложенную перерисовку и стрелку списка.
     On Error GoTo 0
     If number <> 0 Then Err.Raise number, "SwitchSectionPicture", description
 End Sub
