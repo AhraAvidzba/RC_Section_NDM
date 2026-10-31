@@ -40,10 +40,9 @@ Public Sub SwitchSectionPicture()
     Application.ScreenUpdating = False ' Переходы и вставка происходят без промежуточной перерисовки окна.
     Application.EnableEvents = False ' Собственные переходы и выделения не вызывают обработчики книги повторно.
     For attempt = 1 To 3
-        original.Parent.Activate ' Копируем с активного исходного листа именно этой книги.
-        original.Copy
+        original.Copy ' Берём именованный рисунок напрямую, не переключаясь на исходный лист.
         DoEvents ' Excel должен обработать отложенное заполнение буфера перед Paste.
-        sheet.Activate
+        If Not Application.ActiveSheet Is sheet Then sheet.Activate ' При выборе K2 целевой лист уже активен.
         On Error Resume Next
         Err.Clear
         sheet.Paste
