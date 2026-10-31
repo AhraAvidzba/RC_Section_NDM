@@ -1,0 +1,40 @@
+{
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "BookSHA256": "C94D2EAEF0BB6AC4E45CC7A2F4A8C9510F25C721F6D74EF03AF0054E25721094",
+  "SwitchesWithPerIterationFrameActiveStateOtherNDMAndObjectCountChecks": 200,
+  "FramesTested": 4,
+  "NDMBooks": 2,
+  "OtherOrdinaryBooks": 1,
+  "CounterManualMode": 0,
+  "CounterAutomaticDirectCalls30": 0,
+  "ManualUnsavedReplacementShown": true,
+  "FutureTypeWithoutVBAChangeSavedReopened": true,
+  "CommonIllustrationExcludedFromInlineList": true,
+  "InterruptedStressAttemptRetained": true,
+  "InterruptedStep": "Reopen of PDF-print-adjusted private copy; separately verified by FutureReopen.json",
+  "ProcedureMilliseconds": {
+    "Min": 3.3286,
+    "Median": 3.75805,
+    "Mean": 3.9317435,
+    "Max": 7.9572
+  },
+  "InternalNativePDFPreviewsActuallyInspected": [
+    "ManualPreview",
+    "FreshPreview",
+    "ManualReplacement",
+    "FutureSection"
+  ],
+  "ImageDeliveryClaim": false,
+  "FullPrivateProofSHA256": {
+    "CandidateNative": "BAE42ECE0608F355C2A0AC5FF1176D9CA109C13FACA926D0DCC185B8F61912DE",
+    "SourceEquality": "B5C10BF58EDBF7A990EF66BD46CF012223B3CB4BF603E73F7D81387401DC56DE",
+    "FreshNative": "D541D20B12AEE8544E52B60B9EA2A779D00130E81255ED8A04E605E1C037391B",
+    "FreshSourceEquality": "DA953383A7B0E5B13E69E4419229C56C40D02CDEED2A9FD90838E6833252C12A",
+    "PackageReview": "7FE58B84EFE49CA5211B18E7F7F048035C636DE46C407658641091EBD246DC64",
+    "FutureReopen": "AC4FB1ABE93518EA741264254A3AA44E002A421EF15BA04AA4A550C40244811A",
+    "Attempt05_SwitchStress": "EB82A86865931DA4EF0CA8558071036F6C312DE849BB57B76F48C10E45B49C41",
+    "NoMacroBaseline": "42C75D94AE0436ED25AAAC45D71746571D669A6B296C97C3B54E18E72B8CBA3E",
+    "SwitchDiagnostics": "7095523AEF6EA78830404D7E10A52EEA44AE35ACADA18B9368E1C26F0D91F2D3"
+  }
+}

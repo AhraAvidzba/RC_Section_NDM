@@ -1,0 +1,16 @@
+{
+  "BeforeArea": "$A$1:$K$132",
+  "BeforeNames": [
+    {
+      "Local": "Сечения!Область_печати",
+      "Name": "Сечения!Print_Area"
+    }
+  ],
+  "AfterArea": "",
+  "AfterNames": [
+    {
+      "Local": "Сечения!Print_Area",
+      "Name": "Сечения!Print_Area"
+    }
+  ]
+}

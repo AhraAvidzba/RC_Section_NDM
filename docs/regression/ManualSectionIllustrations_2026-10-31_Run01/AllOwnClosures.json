@@ -1,0 +1,179 @@
+{
+  "Passed": true,
+  "UTC": "2026-10-31T15:49:53.2739543Z",
+  "OwnIdentityCount": 21,
+  "Rows": [
+    {
+      "PID": 26552,
+      "StartTicksUTC": "639290561117980564",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt01_CameraPrototypeOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 23256,
+      "StartTicksUTC": "639290563281091274",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt01_CandidateOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 11012,
+      "StartTicksUTC": "639290570096610361",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt01_SwitchStressOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 18452,
+      "StartTicksUTC": "639290563675593714",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt02_CandidateOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 24080,
+      "StartTicksUTC": "639290574354349593",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt02_SwitchStressOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 14764,
+      "StartTicksUTC": "639290565910764075",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt03_CandidateOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 13764,
+      "StartTicksUTC": "639290576536380147",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt03_SwitchStressOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 8528,
+      "StartTicksUTC": "639290566986557370",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt04_CandidateOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 1692,
+      "StartTicksUTC": "639290578993483659",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt04_SwitchStressOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 9672,
+      "StartTicksUTC": "639290580102001196",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\Attempt05_SwitchStressOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 17044,
+      "StartTicksUTC": "639290561288184523",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\CameraPrototypeOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 16628,
+      "StartTicksUTC": "639290568343294679",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\CandidateOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 15124,
+      "StartTicksUTC": "639290577111893379",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\FreshNativeOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 21404,
+      "StartTicksUTC": "639290585013318612",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\FutureReopenOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 25836,
+      "StartTicksUTC": "639290578374292462",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\NoMacroBaselineOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 13080,
+      "StartTicksUTC": "639290584444656905",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\PrintNamesLocalOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 6496,
+      "StartTicksUTC": "639290583474127034",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\PrintNamesOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 20280,
+      "StartTicksUTC": "639290584097522525",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\PrintPrototypeOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 11580,
+      "StartTicksUTC": "639290577588162147",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\SwitchDiagnosticsOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 10920,
+      "StartTicksUTC": "639290568494901230",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\FreshBuild\\BuildOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    },
+    {
+      "PID": 10932,
+      "StartTicksUTC": "639290573201254402",
+      "Receipt": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01\\FreshBuild02\\BuildOwnership.json",
+      "Terminal": true,
+      "Status": "ConfirmedNotFound"
+    }
+  ],
+  "ForcedTerminationUsed": true,
+  "ForcedIdentities": [
+    {
+      "Reason": "Hidden native modal in private experiment",
+      "PID": 18452,
+      "StartTicksUTC": "639290563675593714"
+    },
+    {
+      "Reason": "Builder event during incomplete initialization",
+      "PID": 10920,
+      "StartTicksUTC": "639290568494901230"
+    },
+    {
+      "StartTicksUTC": "639290566986557370",
+      "Reason": "Idle private candidate Excel after completed test and Quit",
+      "UTC": "2026-10-31T15:49:35.1826254Z",
+      "PID": 8528
+    },
+    {
+      "UTC": "2026-10-31T15:44:52.6959257Z",
+      "StartTicksUTC": "639290580102001196",
+      "PID": 9672,
+      "Reason": "Private read-only FutureTypes reopen blocked by Print_Area conflict; no CPU progress; all files/proofs retained"
+    }
+  ]
+}

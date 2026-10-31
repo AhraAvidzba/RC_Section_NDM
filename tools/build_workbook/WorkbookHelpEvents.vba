@@ -1,4 +1,4 @@
-﻿Option Explicit
+Option Explicit
 
 ' ==========================================================================
 ' События книги: Справка, справочная картинка и сохранение файла подробных НДС
@@ -10,6 +10,21 @@ Private mLastWorkbookFolder As String ' Последняя папка книги
 Private Sub Workbook_Open()
     mLastWorkbookFolder = ThisWorkbook.Path
     ApplyHelpDefaults
+    RefreshSectionIllustration
+End Sub
+
+' Учитывает ручную замену источника при переходе на лист выбора.
+Private Sub Workbook_SheetActivate(ByVal Sh As Object)
+    If Sh.Name = "Расчет" Then RefreshSectionIllustration
+End Sub
+
+' Показывает выбранный вручную обновлённый рисунок, не меняя список и расчётные настройки.
+Private Sub RefreshSectionIllustration()
+    On Error GoTo Failed
+    modSectionIllustrations.SwitchSectionPicture
+    Exit Sub
+Failed:
+    MsgBox "Иллюстрация не обновлена." & vbCrLf & vbCrLf & Err.Description, vbExclamation, "Выбор сечения"
 End Sub
 
 ' Только выбор справочной картинки: расчётные настройки и таблицы не читаются.

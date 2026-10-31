@@ -1,0 +1,143 @@
+{
+  "Status": "PASS_DIRECTED_NATIVE_MANUAL_ILLUSTRATIONS_PUBLISHED",
+  "FullAcceptanceClaim": false,
+  "BaseCommit": "c34e9987c9d0ca587a2a6538df969cf909ff9b63",
+  "BookSHA256": "C94D2EAEF0BB6AC4E45CC7A2F4A8C9510F25C721F6D74EF03AF0054E25721094",
+  "AllCodeSHA256": "137FA8032B3101BA002970076C83EC49A1B0918BDC87F99E0D02C22D53F35C33",
+  "OwnIdentityCount": 21,
+  "ForcedTerminationUsed": true,
+  "ForcedIdentityCount": 4,
+  "UserCellsPreserved": 4397,
+  "NativeSourceComponents": 176,
+  "NativeExportComponents": 182,
+  "SourcePNGsByteExact": true,
+  "FullOnOffRun": false,
+  "ForeignFilesExcluded": [
+    "Типы_сечения.dwg",
+    "workbook/output/*execution_report.txt",
+    "outputs/",
+    "Ready30"
+  ],
+  "Proofs": [
+    {
+      "Path": "Backup.json",
+      "Bytes": 281,
+      "SHA256": "7CADE95F26C3EA5B00F92A419E07A7FF4939DA6A6C6BBC561FAA6DEADA694008"
+    },
+    {
+      "Path": "BuilderManualSources.json",
+      "Bytes": 1597,
+      "SHA256": "2C59808C1A8BFDBA32FDCA54A817465770C932F4574A322F7443B64A047F6012"
+    },
+    {
+      "Path": "CandidateNative.json",
+      "Bytes": 1075,
+      "SHA256": "BAE42ECE0608F355C2A0AC5FF1176D9CA109C13FACA926D0DCC185B8F61912DE"
+    },
+    {
+      "Path": "FreshNative.json",
+      "Bytes": 1074,
+      "SHA256": "D541D20B12AEE8544E52B60B9EA2A779D00130E81255ED8A04E605E1C037391B"
+    },
+    {
+      "Path": "PackageReview.json",
+      "Bytes": 1076,
+      "SHA256": "7FE58B84EFE49CA5211B18E7F7F048035C636DE46C407658641091EBD246DC64"
+    },
+    {
+      "Path": "FinalDirectedReview.json",
+      "Bytes": 1826,
+      "SHA256": "1B512DF93D48C8FDAB7FA36F9AAC18E8DAE9945DB73CC0C3513BEC8CEB18D327"
+    },
+    {
+      "Path": "FutureReopen.json",
+      "Bytes": 919,
+      "SHA256": "AC4FB1ABE93518EA741264254A3AA44E002A421EF15BA04AA4A550C40244811A"
+    },
+    {
+      "Path": "AllOwnClosures.json",
+      "Bytes": 8031,
+      "SHA256": "C868CF2815D86926CFAAFEF4A8ADB6FA980DE3FDD7FAB4A0A2365CB3ECDC058A"
+    },
+    {
+      "Path": "Publication.json",
+      "Bytes": 568,
+      "SHA256": "AE6ACA1A85B2222FC5DD53C4753C9B18D013BADFDEEF8A48CF0FA8EDA209F0E6"
+    },
+    {
+      "Path": "InterruptionReview.json",
+      "Bytes": 170,
+      "SHA256": "45E5A090388EA78E187EB3D8D4D4AB47568668BDAFF379D33F3CD0E1AB0DB249"
+    },
+    {
+      "Path": "Attempt05_SwitchStress.json",
+      "Bytes": 3793,
+      "SHA256": "EB82A86865931DA4EF0CA8558071036F6C312DE849BB57B76F48C10E45B49C41"
+    },
+    {
+      "Path": "Attempt05_FutureReopenBlocked.json",
+      "Bytes": 623,
+      "SHA256": "EE0D022797826A8AB3D5F5312CFB4D4FB7525494D4F78E0A7FDDAAD8B8A0C09E"
+    },
+    {
+      "Path": "Attempt05_ForcedClosure.json",
+      "Bytes": 233,
+      "SHA256": "B4C67918E6FB4AFAADEBB9EC9BADAEF3A64AD138C6DE4A03087A7338712EA65F"
+    },
+    {
+      "Path": "Attempt04_IdleClosureProof.json",
+      "Bytes": 312,
+      "SHA256": "F04B848F5754344FA50AF5667719999DA2145A35AD49FACE0AA774FC6E702D43"
+    },
+    {
+      "Path": "Attempt04_ForcedClosure.json",
+      "Bytes": 180,
+      "SHA256": "F5D2374675C62DBB0F5CE1C13AB4A3BF49D274185B6550C3DD1E7DD7C48C36CE"
+    },
+    {
+      "Path": "Attempt02_HiddenModal.json",
+      "Bytes": 486,
+      "SHA256": "B3D1FF1597B3F4B97D7D51AC035DDB9CAAECE2A85D87D8348CC46EC7A7130531"
+    },
+    {
+      "Path": "Attempt01_BuildInterruption.json",
+      "Bytes": 381,
+      "SHA256": "3D83EF7CCD0BDC7CE2BD0734C9910DC04186EB68F82276282D25FCA377E00774"
+    },
+    {
+      "Path": "NoMacroBaseline.json",
+      "Bytes": 1232,
+      "SHA256": "42C75D94AE0436ED25AAAC45D71746571D669A6B296C97C3B54E18E72B8CBA3E"
+    },
+    {
+      "Path": "SwitchDiagnostics.json",
+      "Bytes": 1264,
+      "SHA256": "7095523AEF6EA78830404D7E10A52EEA44AE35ACADA18B9368E1C26F0D91F2D3"
+    },
+    {
+      "Path": "FutureReopenPreparation.json",
+      "Bytes": 372,
+      "SHA256": "9FD035823D8A931E531C4DB2FE128E363C12C98BD8D51CA3058480B161E0F0DF"
+    },
+    {
+      "Path": "PrintPrototype.json",
+      "Bytes": 329,
+      "SHA256": "FCC7D85B201CDE805AAC5B4D83E7C68B8F41C5E69909DAA2A9EA09A6C1932421"
+    },
+    {
+      "Path": "NativePrintNames.json",
+      "Bytes": 1907,
+      "SHA256": "0565139B964AA231BFE77C4157AE2A733C2AE492141734DC993CCF3E53E51800"
+    },
+    {
+      "Path": "SourceEquality.json",
+      "Bytes": 217,
+      "SHA256": "1FC6111B3397F63DB2C9240E89D2D3C92645B88B8568672F399D0940E2D25177"
+    },
+    {
+      "Path": "FreshSourceEquality.json",
+      "Bytes": 217,
+      "SHA256": "FB6FCFED41C380AB1ACF7B352CBDA1ACC79E60B719D428662D665BF4FC8E86CC"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+[
+  {
+    "Names": [
+      {
+        "Name": "Расчет!Print_Area",
+        "NameLocal": "Расчет!Print_Area",
+        "RefersTo": "=Расчет!$A$1:$AJ$60"
+      },
+      {
+        "Name": "Сечения!Print_Area",
+        "NameLocal": "Сечения!Print_Area",
+        "RefersTo": "=Сечения!$A$1:$K$132"
+      }
+    ],
+    "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01/Candidate.xlsm",
+    "PageSetup": [
+      {
+        "PrintArea": "",
+        "Sheet": "Config"
+      },
+      {
+        "PrintArea": "",
+        "Sheet": "Сечения"
+      },
+      {
+        "PrintArea": "",
+        "Sheet": "Справка"
+      },
+      {
+        "PrintArea": "",
+        "Sheet": "Расчет"
+      },
+      {
+        "PrintArea": "",
+        "Sheet": "Results"
+      }
+    ]
+  },
+  {
+    "Names": [
+      {
+        "Name": "Расчет!Print_Area",
+        "NameLocal": "Расчет!Print_Area",
+        "RefersTo": "=Расчет!$A$1:$AJ$60"
+      },
+      {
+        "Name": "Сечения!Print_Area",
+        "NameLocal": "Сечения!Print_Area",
+        "RefersTo": "=Сечения!$A$1:$K$132"
+      }
+    ],
+    "Path": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ManualSectionIllustrations_2026-10-31_Run01/FreshBuild02/RC_Section_NDM.xlsm",
+    "PageSetup": [
+      {
+        "PrintArea": "",
+        "Sheet": "Config"
+      },
+      {
+        "PrintArea": "",
+        "Sheet": "Сечения"
+      },
+      {
+        "PrintArea": "",
+        "Sheet": "Справка"
+      },
+      {
+        "PrintArea": "",
+        "Sheet": "Расчет"
+      },
+      {
+        "PrintArea": "",
+        "Sheet": "Results"
+      }
+    ]
+  }
+]

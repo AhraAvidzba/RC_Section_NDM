@@ -1,0 +1,9 @@
+{
+  "Names": [
+    "Circle",
+    "Rectangles",
+    "PointedSection",
+    "HollowRectangle"
+  ],
+  "Default": "PointedSection"
+}

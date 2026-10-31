@@ -1,0 +1,6 @@
+{
+  "UTC": "2026-10-31T15:44:52.6959257Z",
+  "StartTicksUTC": "639290580102001196",
+  "PID": 9672,
+  "Reason": "Private read-only FutureTypes reopen blocked by Print_Area conflict; no CPU progress; all files/proofs retained"
+}

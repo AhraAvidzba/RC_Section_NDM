@@ -1,0 +1,45 @@
+{
+  "Passed": true,
+  "Choices": [
+    {
+      "Accepted": true,
+      "Value": "Circle"
+    },
+    {
+      "Accepted": true,
+      "Value": "Rectangles"
+    },
+    {
+      "Accepted": true,
+      "Value": "PointedSection"
+    },
+    {
+      "Accepted": true,
+      "Value": "HollowRectangle"
+    },
+    {
+      "Accepted": true,
+      "Value": "FutureSection"
+    },
+    {
+      "Accepted": false,
+      "Value": "Circle,Rectangles,PointedSection,HollowRectangle,FutureSection"
+    },
+    {
+      "Accepted": false,
+      "Value": "Circle;Rectangles;PointedSection;HollowRectangle;FutureSection"
+    },
+    {
+      "Accepted": false,
+      "Value": "GeneralSpacing"
+    },
+    {
+      "Accepted": false,
+      "Value": "Unknown"
+    }
+  ],
+  "FullAcceptanceClaim": false,
+  "SavedReopened": true,
+  "FutureEventPassed": true,
+  "Formula": "Сечения!$M$152:$Q$164 "
+}

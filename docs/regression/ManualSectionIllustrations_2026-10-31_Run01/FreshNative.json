@@ -1,0 +1,53 @@
+{
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "Choices": [
+    {
+      "Value": "Circle",
+      "Accepted": true
+    },
+    {
+      "Value": "Rectangles",
+      "Accepted": true
+    },
+    {
+      "Value": "PointedSection",
+      "Accepted": true
+    },
+    {
+      "Value": "HollowRectangle",
+      "Accepted": true
+    },
+    {
+      "Value": "Circle,Rectangles,PointedSection,HollowRectangle",
+      "Accepted": false
+    },
+    {
+      "Value": "Circle;Rectangles;PointedSection;HollowRectangle",
+      "Accepted": false
+    },
+    {
+      "Value": "Unknown",
+      "Accepted": false
+    }
+  ],
+  "Switches": 4,
+  "OriginalType": 6,
+  "FrameBefore": [
+    210.0,
+    153.75,
+    283.46457,
+    283.46457
+  ],
+  "Formula": "Сечения!$M$63:$S$82 ",
+  "FrameAfter": [
+    210.0,
+    153.75,
+    283.46457,
+    283.46457
+  ],
+  "GroupCount": 2,
+  "SavedReopened": true,
+  "ReopenedFormula": "Сечения!$M$63:$S$82 ",
+  "BookSHA256": "D2D63727CCE76BAE3E6655BA561B427A8F6FF98856148F2CD45532782DB4449C"
+}

@@ -1,0 +1,72 @@
+{
+  "Passed": false,
+  "FullAcceptanceClaim": false,
+  "Switches": 41,
+  "Milliseconds": [
+    44.8875,
+    47.1638,
+    30.1026,
+    46.9626,
+    31.8698,
+    28.7687,
+    39.6397,
+    26.654,
+    47.8202,
+    31.8929,
+    12.2113,
+    102.0667,
+    84.1238,
+    93.7955,
+    83.5661,
+    87.9668,
+    85.8926,
+    9.0166,
+    12.4296,
+    87.4039,
+    86.5219,
+    86.4237,
+    70.0888,
+    78.1575,
+    9.7872,
+    98.5535,
+    81.2591,
+    85.6996,
+    99.6336,
+    13.6502,
+    93.422,
+    9.2415,
+    94.4272,
+    17.6416,
+    86.8032,
+    87.3143,
+    9.4775,
+    82.357,
+    82.664,
+    9.0002,
+    8.7726
+  ],
+  "BookSHA256": "C94D2EAEF0BB6AC4E45CC7A2F4A8C9510F25C721F6D74EF03AF0054E25721094",
+  "BeforeRunBook": "Книга1",
+  "AfterRunBook": "Книга1",
+  "ActiveStateFailure": {
+    "Actual": [
+      "Книга1",
+      "Расчет",
+      "$A$1"
+    ],
+    "Iteration": 40,
+    "Expected": [
+      "OtherNDM.xlsm",
+      "Расчет",
+      "$A$1"
+    ],
+    "Choice": "Rectangles",
+    "Bounds": [
+      210.0,
+      153.75,
+      283.46457,
+      283.46457
+    ]
+  },
+  "Error": "System.Management.Automation.RuntimeException: Active book/sheet/selection changed"
+}

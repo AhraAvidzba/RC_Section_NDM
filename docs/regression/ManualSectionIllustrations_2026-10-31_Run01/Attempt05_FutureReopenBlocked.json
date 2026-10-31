@@ -1,0 +1,15 @@
+{
+  "Status": "PRIVATE_FUTURE_REOPEN_BLOCKED_PRINT_AREA_DIALOG",
+  "ReadOnlyNDMInputs": true,
+  "WindowTitle": "FutureTypes.xlsm  [Только для чтения] - Excel",
+  "StartTicksUTC": "639290580102001196",
+  "PID": 9672,
+  "CPU": 114.4375,
+  "UTC": "2026-10-31T15:44:39.4882878Z",
+  "FullAcceptanceClaim": false,
+  "FutureCopySHA256": "355224143052F8811C20BB54A805BC480EEB6C7D3DF180F6C6EAD186DD0E467D",
+  "SourceBookSHA256": "C94D2EAEF0BB6AC4E45CC7A2F4A8C9510F25C721F6D74EF03AF0054E25721094",
+  "PreviouslyObservedCPU": 114.4375,
+  "SwitchesReported": 200,
+  "ComputerUseTargetUnavailable": true
+}

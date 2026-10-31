@@ -1,0 +1,54 @@
+{
+  "Passed": true,
+  "ExtractedSourcePNGCount": 4,
+  "SourceWorkbookSHA256": "D81A64B456661120735CE907AD6BBAB859CE2F48A2999F047CF71B43500907F1",
+  "Objects": [
+    {
+      "Name": "CurrentSection",
+      "Left": 210.0,
+      "Top": 153.75,
+      "Width": 283.46456692913387,
+      "Height": 283.46456692913387
+    },
+    {
+      "Name": "Circle",
+      "Left": 1062.75,
+      "Top": 41.25007874015748,
+      "Width": 255.11811023622047,
+      "Height": 254.55307086614172,
+      "Bytes": 199731,
+      "SHA256": "E47F8C2822307CC874C7CD120A83C384403BFF1D1E08A1381B65EC2446EC98EF",
+      "Part": "xl/media/image1.png"
+    },
+    {
+      "Name": "Rectangles",
+      "Left": 1089.75,
+      "Top": 480.0,
+      "Width": 283.46456692913387,
+      "Height": 283.46456692913387,
+      "Bytes": 166194,
+      "SHA256": "82975F441A2CFB02D0392CBC40C4398761AA75504B277DDA857B4BDA9EF68FFF",
+      "Part": "xl/media/image2.png"
+    },
+    {
+      "Name": "PointedSection",
+      "Left": 1078.5,
+      "Top": 959.2500787401575,
+      "Width": 283.46456692913387,
+      "Height": 283.7788188976378,
+      "Bytes": 149595,
+      "SHA256": "18CC12890143C451CA1637A749A3B6E05D46DFDDF220240892D87E5F2F33BF92",
+      "Part": "xl/media/image3.png"
+    },
+    {
+      "Name": "HollowRectangle",
+      "Left": 1105.5,
+      "Top": 1551.75,
+      "Width": 283.46456692913387,
+      "Height": 283.46456692913387,
+      "Bytes": 186946,
+      "SHA256": "7FF77729B8962AB66A49404980AE9A2FD8A29810F94A237D405682DC4E358755",
+      "Part": "xl/media/image4.png"
+    }
+  ]
+}

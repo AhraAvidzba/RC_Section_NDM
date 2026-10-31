@@ -462,6 +462,7 @@ try {
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
     $excel.ScreenUpdating = $false
+    $excel.EnableEvents = $false # Обработчики готовой книги не вызываются во время создания списков и объектов.
 
     $workbook = $excel.Workbooks.Add()
 

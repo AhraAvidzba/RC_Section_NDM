@@ -1,0 +1,13 @@
+{
+  "CandidateSavedChanges": false,
+  "COMStatus": "RPC_E_CALL_REJECTED",
+  "UserWorkbookUnchanged": true,
+  "StartTicksUTC": "639290563675593714",
+  "PID": 18452,
+  "Status": "ABORTED_EXPERIMENT_HIDDEN_NATIVE_MODAL",
+  "CommandLine": "\"C:\\Program Files (x86)\\Microsoft Office\\Root\\Office16\\EXCEL.EXE\" /automation -Embedding",
+  "UTC": "2026-10-31T15:16:11.6731353Z",
+  "CPU": 20.15625,
+  "NoCPUProgressSinceObserved20_140625": true,
+  "SkyWindowNotExposed": true
+}

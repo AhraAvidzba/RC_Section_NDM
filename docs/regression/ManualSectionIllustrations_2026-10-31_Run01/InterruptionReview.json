@@ -1,0 +1,6 @@
+{
+  "SourceBookUnchanged": true,
+  "OriginalError": "0x800A9C68",
+  "Status": "USER_REPORTED_ACCIDENTAL_INTERRUPT",
+  "SuccessfulSwitchesBeforeInterruption": 332
+}

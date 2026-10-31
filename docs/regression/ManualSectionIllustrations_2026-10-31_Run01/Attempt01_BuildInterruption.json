@@ -1,0 +1,11 @@
+{
+  "PID": 10920,
+  "Fix": "Disable events only in own builder before constructing workbook",
+  "UserDataCopied": false,
+  "CPUObservedUnchangedForMinutes": true,
+  "SourceWorkbookUntouched": true,
+  "CPU": 207.71875,
+  "Status": "ABORTED_BUILD_EVENTS_DURING_INCOMPLETE_INITIALIZATION",
+  "StartTicksUTC": "639290568494901230",
+  "UTC": "2026-10-31T15:27:54.2960791Z"
+}
