@@ -1,0 +1,14 @@
+{
+  "Passed": true,
+  "AllFourOriginalPNGBytesEmbedded": true,
+  "ChangedFinalizationZIPParts": [
+    "xl/media/image3.png",
+    "xl/workbook.xml"
+  ],
+  "OtherZIPPartsByteExact": true,
+  "OnlyWorkbookPropertyChanged": "autoCompressPictures=0",
+  "PS5FinalizerPackageContentsExact": true,
+  "CleanBuildUsedUserWorkbook": false,
+  "Components": 182,
+  "FullAcceptanceClaim": false
+}

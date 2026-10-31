@@ -1,0 +1,67 @@
+[
+  {
+    "OriginalName": "PointedSection",
+    "Name": "PointedSection",
+    "Part": "xl/media/image1.png",
+    "File": "PointedSection.png",
+    "SHA256": "0B35B2672604B4A0265035B724D95722B97E3C84B9B73359800B4395D94B5DEE",
+    "BoundsPt": {
+      "Left": 1115.25,
+      "Top": 966.75,
+      "Width": 510.23622047244095,
+      "Height": 298.72456692913386
+    }
+  },
+  {
+    "OriginalName": "HollowRectangle",
+    "Name": "HollowRectangle",
+    "Part": "xl/media/image2.png",
+    "File": "HollowRectangle.png",
+    "SHA256": "4C1DFF76B7C5A8D25DF9F11B296BB521CC1A1D5C9D5561BDCBD727325083F70F",
+    "BoundsPt": {
+      "Left": 1160.25,
+      "Top": 1488.7500787401575,
+      "Width": 283.46456692913387,
+      "Height": 395.0041732283465
+    }
+  },
+  {
+    "OriginalName": "Рисунок 3",
+    "Name": "Circle",
+    "Part": "xl/media/image3.png",
+    "File": "Circle.png",
+    "SHA256": "55D4247084B7ED8EDB848641FAAC509C95AAAF8863DF605CB53701A194BDACF9",
+    "BoundsPt": {
+      "Left": 1083.75,
+      "Top": 70.5,
+      "Width": 226.77165354330708,
+      "Height": 203.75251968503937
+    }
+  },
+  {
+    "OriginalName": "Rectangles",
+    "Name": "Rectangles",
+    "Part": "xl/media/image4.png",
+    "File": "Rectangles.png",
+    "SHA256": "1E490F9A09F5D7D26FBC4624184CF6D2935313F16B0D8E715D7A3E69F1F842A1",
+    "BoundsPt": {
+      "Left": 1118.25,
+      "Top": 408.0,
+      "Width": 283.46456692913387,
+      "Height": 341.4459842519685
+    }
+  },
+  {
+    "OriginalName": "CurrentSection",
+    "Name": "CurrentSection",
+    "Part": "xl/media/image1.png",
+    "File": "CurrentSection.png",
+    "SHA256": "0B35B2672604B4A0265035B724D95722B97E3C84B9B73359800B4395D94B5DEE",
+    "BoundsPt": {
+      "Left": 147.75,
+      "Top": 100.5,
+      "Width": 510.23622047244095,
+      "Height": 298.72456692913386
+    }
+  }
+]

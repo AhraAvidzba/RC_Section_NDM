@@ -1,0 +1,45 @@
+{
+  "Passed": true,
+  "CellReviews": [
+    {
+      "Sheet": "Config",
+      "ChangedCells": [],
+      "DataFormulasAndOtherCellStylesPreserved": true
+    },
+    {
+      "Sheet": "Сечения",
+      "ChangedCells": [
+        "A21",
+        "A91",
+        "A2",
+        "A59"
+      ],
+      "DataFormulasAndOtherCellStylesPreserved": true
+    },
+    {
+      "Sheet": "Справка",
+      "ChangedCells": [],
+      "DataFormulasAndOtherCellStylesPreserved": true
+    },
+    {
+      "Sheet": "Расчет",
+      "ChangedCells": [
+        "L2",
+        "M2",
+        "N2",
+        "K2"
+      ],
+      "DataFormulasAndOtherCellStylesPreserved": true
+    },
+    {
+      "Sheet": "Results",
+      "ChangedCells": [],
+      "DataFormulasAndOtherCellStylesPreserved": true
+    }
+  ],
+  "NamedRangesExact": true,
+  "RowsColumnsExact": true,
+  "OriginalPNGBytesExact": true,
+  "UnrelatedObjectPropertiesExact": true,
+  "CandidateSHA256": "4D623B8541B6B096536EB748BE7692268A7C8251796060F15BF6C69C673163C0"
+}

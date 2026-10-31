@@ -1,8 +1,8 @@
-﻿[
+[
   {
     "RangeName": "rngCircleGeometry",
     "Type": "Circle",
-    "Title": "Круглое сечение",
+    "Title": "Круглое сечение Circle",
     "Blocks": [
       {
         "Key": "General",
@@ -145,7 +145,7 @@
   {
     "RangeName": "rngRectanglesGeometry",
     "Type": "Rectangles",
-    "Title": "Набор прямоугольников (Г-сечение)",
+    "Title": "Набор прямоугольников Rectangles (Г-сечение)",
     "Blocks": [
       {
         "Key": "General",
@@ -491,7 +491,7 @@
   {
     "RangeName": "rngPointedSectionGeometry",
     "Type": "PointedSection",
-    "Title": "Клиновидное сечение",
+    "Title": "Клиновидное сечение PointedSection",
     "Blocks": [
       {
         "Key": "General",
@@ -755,7 +755,7 @@
   {
     "RangeName": "rngHollowRectangleGeometry",
     "Type": "HollowRectangle",
-    "Title": "Пустотелый прямоугольник",
+    "Title": "Пустотелый прямоугольник HollowRectangle",
     "Blocks": [
       {
         "Key": "General",

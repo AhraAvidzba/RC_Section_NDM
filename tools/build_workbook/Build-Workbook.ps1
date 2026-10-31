@@ -398,6 +398,7 @@ function Add-CalculationButtons {
 
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
+. (Join-Path $PSScriptRoot "SectionIllustrations.ps1")
 $script:WorkbookLayout = Read-WorkbookLayout
 . (Join-Path $PSScriptRoot "SectionRecipeGuide.ps1")
 if (-not [string]::IsNullOrWhiteSpace($FormulaImageDirectory)) {
@@ -579,7 +580,10 @@ try {
     # Начальная структура нового шаблона создаётся сборщиком, а не рабочим VBA.
     $excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.UpdateSectionRecipeTypes")
 
+    Add-SectionIllustrationPictures $workbook $script:WorkbookLayout
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
+    Set-SectionIllustrationSelector $workbook
+    $excel.Run("'" + $workbook.Name + "'!modSectionIllustrations.SwitchSectionPicture")
     Fit-SettingsInstructionRows $instructions
     Set-HelpSectionOrderAndOutline $workbook -Expanded | Out-Null
     if (-not (Test-BuildExcelIdentity $excel $ownedExcelProcessId $ownedExcelStartTicks)) {
@@ -613,6 +617,9 @@ finally {
     [GC]::Collect()
     [GC]::WaitForPendingFinalizers()
 }
+
+# Excel уже закрыл файл: закрепляем точные исходные PNG и отключаем их автосжатие.
+Save-SectionIllustrationImageBytes $fullOutputPath
 
 
 

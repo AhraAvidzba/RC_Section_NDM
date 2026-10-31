@@ -3500,10 +3500,10 @@ function Add-SettingsInstructions {
         "Настройка расчетных профилей" = "CalculationProfiles"
         "Контрольные точки диаграмм" = "MaterialDiagramControlTables"
         "Настройки оформления схемы" = "PlotAnnotationSettings"
-        "Круглое сечение" = "CircleGeometry"
-        "Клиновидное сечение" = "PointedSectionGeometry"
-        "Пустотелый прямоугольник" = "HollowRectangleGeometry"
-        "Набор прямоугольников (Г-сечение)" = "RectanglesGeometry"
+        "Круглое сечение Circle" = "CircleGeometry"
+        "Клиновидное сечение PointedSection" = "PointedSectionGeometry"
+        "Пустотелый прямоугольник HollowRectangle" = "HollowRectangleGeometry"
+        "Набор прямоугольников Rectangles (Г-сечение)" = "RectanglesGeometry"
     }
     for ($r = 1; $r -le ($used.Row + $used.Rows.Count + 40); $r++) {
         for ($c = 1; $c -le 40; $c++) {

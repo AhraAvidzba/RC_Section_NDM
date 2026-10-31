@@ -367,7 +367,56 @@
           "Hidden": false
         }
       ],
-      "Objects": [],
+      "Objects": [
+        {
+          "Name": "PointedSection",
+          "Type": 13,
+          "ChartType": null,
+          "Left": 1115.25,
+          "Top": 966.75,
+          "Width": 510.23622047244095,
+          "Height": 298.72456692913386,
+          "Placement": 2,
+          "Visible": -1,
+          "LockAspectRatio": -1
+        },
+        {
+          "Name": "HollowRectangle",
+          "Type": 13,
+          "ChartType": null,
+          "Left": 1160.25,
+          "Top": 1488.7500787401575,
+          "Width": 283.46456692913387,
+          "Height": 395.0041732283465,
+          "Placement": 2,
+          "Visible": -1,
+          "LockAspectRatio": -1
+        },
+        {
+          "Name": "Circle",
+          "Type": 13,
+          "ChartType": null,
+          "Left": 1083.75,
+          "Top": 70.5,
+          "Width": 226.77165354330708,
+          "Height": 203.75251968503937,
+          "Placement": 2,
+          "Visible": -1,
+          "LockAspectRatio": -1
+        },
+        {
+          "Name": "Rectangles",
+          "Type": 13,
+          "ChartType": null,
+          "Left": 1118.25,
+          "Top": 408.0,
+          "Width": 283.46456692913387,
+          "Height": 341.4459842519685,
+          "Placement": 2,
+          "Visible": -1,
+          "LockAspectRatio": -1
+        }
+      ],
       "Tables": [],
       "PrintArea": "$A$1:$K$132"
     },
@@ -4924,6 +4973,18 @@
           "Placement": 1,
           "Visible": -1,
           "LockAspectRatio": 0
+        },
+        {
+          "Name": "CurrentSection",
+          "Type": 13,
+          "ChartType": null,
+          "Left": 147.75,
+          "Top": 100.5,
+          "Width": 510.23622047244095,
+          "Height": 298.72456692913386,
+          "Placement": 2,
+          "Visible": -1,
+          "LockAspectRatio": -1
         }
       ],
       "Tables": [],
@@ -5016,6 +5077,11 @@
       "TableOuterBoundsChanged": false,
       "RowsColumnsDimensionsChanged": false,
       "Reason": "Явный способ расстановки после s1; существующий свободный столбец Main в диапазоне A:K."
+    },
+    "SectionIllustrations": {
+      "WorkbookSHA256": "F80DE642299BB8DF3E7EC6FC6FB4F2B11711D5C8475473D30364456644B63E0A",
+      "Images": "Four user PNGs; CurrentSection initially PointedSection",
+      "Selector": "Расчет!K2"
     }
   }
 }

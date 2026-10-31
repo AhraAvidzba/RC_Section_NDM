@@ -1,0 +1,145 @@
+{
+  "ForcedTerminationUsed": false,
+  "Own": [
+    {
+      "ExpectedStartTicksUTC": "639290400335282143",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 19296,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290409500648284",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 27280,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290402482294191",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 24280,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290409745880134",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 19760,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290404144778506",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 23124,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290412264396868",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 4616,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290401223725733",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 24740,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290405327832749",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 6172,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290399673869372",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 25060,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290401598686574",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 27636,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290404907195049",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 22944,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290409104293763",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 22708,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290398432653429",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 13360,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290401034668377",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 9684,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290398816481884",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 26616,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290406002890672",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 7336,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    },
+    {
+      "ExpectedStartTicksUTC": "639290395814645116",
+      "ObservedName": null,
+      "State": "ConfirmedAbsentInCompleteCIMSnapshot",
+      "PID": 19228,
+      "ObservedStartTicksUTC": null,
+      "Terminal": true
+    }
+  ],
+  "Reviewed": 17,
+  "ObservedUTC": "2026-10-31T11:02:25.8137737Z",
+  "CompleteCIMSnapshot": true,
+  "Passed": true
+}

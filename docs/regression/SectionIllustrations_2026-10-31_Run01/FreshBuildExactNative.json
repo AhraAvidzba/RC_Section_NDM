@@ -1,0 +1,253 @@
+{
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "Frames": [
+    {
+      "Source": "Circle",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 332.47504,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "HollowRectangle",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 214.37064,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "Rectangles",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 247.9952,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "PointedSection",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 510.2362,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "Circle",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 332.47504,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "HollowRectangle",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 214.37064,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "Rectangles",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 247.9952,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "PointedSection",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 510.2362,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "Circle",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 332.47504,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "HollowRectangle",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 214.37064,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "Rectangles",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 247.9952,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "PointedSection",
+      "Frame": [
+        147.75,
+        100.5,
+        510.2362060546875,
+        298.7245788574219
+      ],
+      "PictureWidth": 510.2362,
+      "PictureHeight": 298.72458,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "HollowRectangle",
+      "Frame": [
+        70.0,
+        60.0,
+        200.0,
+        100.0
+      ],
+      "PictureWidth": 71.76197,
+      "PictureHeight": 100.0,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "PointedSection",
+      "Frame": [
+        70.0,
+        60.0,
+        200.0,
+        100.0
+      ],
+      "PictureWidth": 170.80197,
+      "PictureHeight": 100.0,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "Circle",
+      "Frame": [
+        70.0,
+        60.0,
+        200.0,
+        100.0
+      ],
+      "PictureWidth": 111.298035,
+      "PictureHeight": 100.0,
+      "AspectPreserved": true
+    },
+    {
+      "Source": "Rectangles",
+      "Frame": [
+        70.0,
+        60.0,
+        200.0,
+        100.0
+      ],
+      "PictureWidth": 83.01803,
+      "PictureHeight": 100.0,
+      "AspectPreserved": true
+    }
+  ],
+  "Validation": [
+    {
+      "Value": "Circle",
+      "Accepted": true
+    },
+    {
+      "Value": "Rectangles",
+      "Accepted": true
+    },
+    {
+      "Value": "PointedSection",
+      "Accepted": true
+    },
+    {
+      "Value": "HollowRectangle",
+      "Accepted": true
+    },
+    {
+      "Value": "Circle,Rectangles,PointedSection,HollowRectangle",
+      "Accepted": false
+    },
+    {
+      "Value": "Circle;Rectangles;PointedSection;HollowRectangle",
+      "Accepted": false
+    },
+    {
+      "Value": "Unknown",
+      "Accepted": false
+    },
+    {
+      "Value": "",
+      "Accepted": false
+    }
+  ],
+  "TimingsMilliseconds": [
+    98.3446,
+    52.8555,
+    80.0938,
+    60.4495,
+    50.1564,
+    59.4814,
+    59.4418,
+    59.8042,
+    56.8807,
+    52.4832,
+    57.4814,
+    51.5265
+  ],
+  "UnrelatedFormulaCalls": 0,
+  "ErrorPathsPreservedFrame": true,
+  "IgnoresOtherCells": true,
+  "CalculationModePreserved": true,
+  "Components": 182,
+  "BookSHA256": "7685F6B09AB4237A957177382A879B43441F06B211EE6951A7DE8AEB9E24A926",
+  "QuitRequested": true
+}

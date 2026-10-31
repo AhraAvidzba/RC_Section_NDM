@@ -1,0 +1,14 @@
+{
+  "Passed": true,
+  "ActuallyViewedInsideChat": true,
+  "UserImageDeliveryClaim": false,
+  "Reviewed": [
+    "Fit_PointedSection.png",
+    "Fit_HollowRectangle.png",
+    "Heading_2.png",
+    "Heading_21.png",
+    "Heading_59.png",
+    "Heading_91.png"
+  ],
+  "Finding": "Пропорции сохранены, портретное изображение центрировано внутри общей рамки; четыре заголовка и ссылки Подробнее читаемы и оформлены одинаково."
+}
