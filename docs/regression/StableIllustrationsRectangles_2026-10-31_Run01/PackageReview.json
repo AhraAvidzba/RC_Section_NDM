@@ -1,0 +1,75 @@
+{
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "BeforeSHA256": "2E45634D9B62950A212C2F0403DEC85233CAA6EE871DE9CD345C8A64353BBA68",
+  "BookSHA256": "8ABCBD70E3618E1AE749E14283DFE5F15457E6EBA90B1110056CEAA69EF14657",
+  "PreservedCellRecords": 4359,
+  "PreservedCellStylesExact": true,
+  "PreservedTableBoundsAndNames": true,
+  "GeneralKeys": [
+    "H1",
+    "B1",
+    "H2",
+    "B2",
+    "R",
+    "XOffset"
+  ],
+  "SectionSeparatorsRows": 1,
+  "SourceImageAspects": {
+    "PointedSection": 0.9988824743472028,
+    "HollowRectangle": 1.0000093689830447,
+    "Circle": 1.0022295785382225,
+    "Rectangles": 0.9999953878410577
+  },
+  "ButtonsFontSizes": {
+    "btnRunSectionCalculation": 9,
+    "btnImportGeometryFromAutoCAD": 9,
+    "btnClearAutoCADDrawing": 9,
+    "btnExportStressToAutoCAD": 9,
+    "btnUpdateSectionPlot": 9
+  },
+  "Images": {
+    "CurrentSection_Circle": {
+      "SHA256": "E47F8C2822307CC874C7CD120A83C384403BFF1D1E08A1381B65EC2446EC98EF",
+      "Bytes": 199731
+    },
+    "CurrentSection_Rectangles": {
+      "SHA256": "82975F441A2CFB02D0392CBC40C4398761AA75504B277DDA857B4BDA9EF68FFF",
+      "Bytes": 166194
+    },
+    "CurrentSection_PointedSection": {
+      "SHA256": "18CC12890143C451CA1637A749A3B6E05D46DFDDF220240892D87E5F2F33BF92",
+      "Bytes": 149595
+    },
+    "CurrentSection_HollowRectangle": {
+      "SHA256": "7FF77729B8962AB66A49404980AE9A2FD8A29810F94A237D405682DC4E358755",
+      "Bytes": 186946
+    },
+    "PointedSection": {
+      "SHA256": "18CC12890143C451CA1637A749A3B6E05D46DFDDF220240892D87E5F2F33BF92",
+      "Bytes": 149595
+    },
+    "HollowRectangle": {
+      "SHA256": "7FF77729B8962AB66A49404980AE9A2FD8A29810F94A237D405682DC4E358755",
+      "Bytes": 186946
+    },
+    "Circle": {
+      "SHA256": "E47F8C2822307CC874C7CD120A83C384403BFF1D1E08A1381B65EC2446EC98EF",
+      "Bytes": 199731
+    },
+    "Rectangles": {
+      "SHA256": "82975F441A2CFB02D0392CBC40C4398761AA75504B277DDA857B4BDA9EF68FFF",
+      "Bytes": 166194
+    }
+  },
+  "ChangedHelpRows": [
+    626,
+    627,
+    747,
+    748,
+    749,
+    750,
+    751,
+    752
+  ]
+}

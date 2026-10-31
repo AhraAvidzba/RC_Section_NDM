@@ -10,10 +10,15 @@ $hash=(Get-FileHash -LiteralPath $path).Hash
 Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class SectionsValidationWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);}'
 $app=$null;$book=$null;$owned=0;$ticks=0;$defaults=0;$options=0;$preserved=0;$units=New-Object 'System.Collections.Generic.List[object]';$tables=@();$snapshots=@{}
 try{
+ $memory=Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory
+ if($memory.AvailableMBytes-lt8192-or($memory.CommitLimit-$memory.CommittedBytes)-lt14GB){throw 'Insufficient memory reserve.'}
+ $existing=@([Diagnostics.Process]::GetProcessesByName('EXCEL')|ForEach-Object Id)
  $app=New-Object -ComObject Excel.Application
  $app.Visible=$false;$app.DisplayAlerts=$false;$app.EnableEvents=$false;$app.AutomationSecurity=3
  [uint32]$id=0;[void][SectionsValidationWindow]::GetWindowThreadProcessId([IntPtr]$app.Hwnd,[ref]$id)
+ if($existing-contains[int]$id){$app=$null;throw 'Independent own Excel required.'}
  $owned=[int]$id;$ticks=(Get-Process -Id $owned).StartTime.ToUniversalTime().Ticks
+ @{PID=$owned;StartTicksUTC=[string]$ticks}|ConvertTo-Json|Set-Content (Join-Path (Split-Path -Parent $report) 'StructuredGeometryOwnership.json') -Encoding UTF8
  $book=$app.Workbooks.Open($path,0,$true)
  if(-not $book.ReadOnly){throw 'Read-only opening required.'}
  $order=@($book.Worksheets | ForEach-Object {$_.Name})
@@ -27,7 +32,9 @@ try{
  $helperColumns=@($layout.HelperColumns.PSObject.Properties | ForEach-Object {[int]$_.Value})
  $lastHelper=[int]($helperColumns | Measure-Object -Maximum).Maximum
  $values=$config.UsedRange.Value2
- for($r=1;$r -le $values.GetLength(0);$r++){for($c=$lastHelper+1;$c -le $values.GetLength(1);$c++){if($null -ne $values[$r,$c]){throw "Obsolete hidden data R${r}C$c"}}}
+ $obsoleteColumns=@()
+ for($c=$lastHelper+1;$c-le$values.GetLength(1);$c++){if($config.Columns.Item($c).Hidden){$obsoleteColumns+=,$c}}
+ for($r=1;$r-le$values.GetLength(0);$r++){foreach($c in $obsoleteColumns){if($null-ne$values[$r,$c]){throw "Obsolete hidden data R${r}C$c"}}}
  $last=0
  foreach($def in @(Get-GeometrySettingsCatalog)){
   $range=$book.Names.Item($def.RangeName).RefersToRange
@@ -59,15 +66,14 @@ try{
      if($editable -and ($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne -4108)){throw ('Input format: '+$def.RangeName+'/'+$block.Key+'/'+$record[0]+'/'+$key)}
      if(-not $editable -and $cell.Interior.Color -eq 15135487){throw 'Derived field highlighted as input.'}
      if($CheckDefaults){if([string]$cell.Value2 -cne [string]$record[$c-1]){throw ('Default mismatch: '+$def.RangeName+'/'+$block.Key+'/'+$record[0]+'/'+$key)};$defaults++}
-     if($key -in @('bind2','bind3','pos2','pos3') -or ($key -eq 'val' -and $record[0] -eq 'Shape')){
+     if($key -in @('bind2','bind3','pos2','pos3')){
       $formula=[string]$cell.Validation.Formula1
       $expectedList='EachBar,EverySecondBar'
       if($key -like 'pos*'){$expectedList='Stacked,SideBySide'}
-      elseif($record[0] -eq 'Shape'){$expectedList='TwoRect,OneRect'}
-      if($formula.Replace(';',',') -cne $expectedList){throw ('Inline choices mismatch: '+$formula)}
+      if($formula -cne ($expectedList.Split(',') -join [string]$app.International(5))){throw ('Inline choices mismatch: '+$formula)}
       $old=$cell.Formula
       foreach($option in $formula.Split([string]$app.International(5))){$cell.Value2=$option;if(-not $cell.Validation.Value){throw "Valid choice rejected: $($def.RangeName)/$($block.Key)/$($record[0])/$key; option=$option; Formula1=$($cell.Validation.Formula1); Value2=$($cell.Value2); separator=$($app.International(5))"};$options++}
-      $cell.Value2='__INVALID__';if($cell.Validation.Value){throw 'Invalid choice accepted.'};$cell.Formula=$old
+      foreach($invalid in @($expectedList,($expectedList.Split(',') -join ';'),'__INVALID__')){$cell.Value2=$invalid;if($cell.Validation.Value){throw ('Invalid choice accepted: '+$invalid)}};$cell.Formula=$old
      }
     }
    }
@@ -103,7 +109,7 @@ try{
  if($book){$book.Close($false)}
  if($app){$app.Quit();[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
  [GC]::Collect();[GC]::WaitForPendingFinalizers()
- if($owned){$p=Get-Process -Id $owned -ErrorAction SilentlyContinue;if($p -and $p.ProcessName -eq 'EXCEL' -and $p.StartTime.ToUniversalTime().Ticks -eq $ticks){Stop-Process -Id $owned -Force}}
+ # Завершение процесса проверяет вызывающий сценарий после выхода PowerShell; Quit не дополняется принудительным завершением.
 }
 if((Get-FileHash -LiteralPath $path).Hash -cne $hash){throw 'Source changed during read-only check.'}
 Write-Output "SECTIONS_STRUCTURE_PASS: defaults=$defaults; inputs=$preserved; units=$($units.Count); choices=$options"

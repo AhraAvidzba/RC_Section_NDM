@@ -1,0 +1,19 @@
+{
+  "NativeButtonFontSize": 9,
+  "ExistingRightAlignedNoWrapCommentClippingPreserved": true,
+  "ReviewedImages": [
+    "Visual_Rectangles.png",
+    "Visual_Help.png",
+    "Visual_Calculation.png",
+    "Visual_LoadCombinations.png"
+  ],
+  "RenderedFromNativeExcel": true,
+  "ButtonsTextLegible": true,
+  "RBeforeXOffset": true,
+  "HelpLegibleSameParagraphStyle": true,
+  "OneSeparatorPerBlock": true,
+  "Passed": true,
+  "InternalReviewOnly": true,
+  "ImagesDeliveredToUser": false,
+  "LoadCombinationHelpUniqueAndBlankIDLegible": true
+}

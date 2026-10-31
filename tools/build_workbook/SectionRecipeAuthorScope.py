@@ -17,7 +17,7 @@ SECTIONS = [
     ('03', 'Границы бетона и отверстий', [
         ('CPolygonSpec', '*'),
         ('modSectionRecipeTypes', 'EContourNamingPolicy'),
-        ('CSectionDefinitionBuilder', 'CirclePath LinePath ArcPath RectanglePath RoundedPolygon AdjacentRectangles AddPath Outer Opening'),
+        ('CSectionDefinitionBuilder', 'CirclePath LinePath ArcPath RectanglePath RoundedPolygon AdjacentRectangles JoinedPaths AddPath Outer Opening'),
     ]),
     ('04', 'Линии центров стержней и преобразования', [
         ('CSectionDefinitionBuilder', 'Offset OffsetRoundedPolygon OffsetContour ConstrainLine Chain Slice Transform PathGroup'),

@@ -1,0 +1,249 @@
+{
+  "Passed": true,
+  "Status": "COMPLETE_DIRECTED_PRIMARY_REVIEW",
+  "FullAcceptanceClaim": false,
+  "BookSHA256": "8ABCBD70E3618E1AE749E14283DFE5F15457E6EBA90B1110056CEAA69EF14657",
+  "FreshBookSHA256": "75FF1F60FF1657D5A0596E83253524946AE339989952F7E093F3DAE072850CC1",
+  "SourceComponents": 176,
+  "ExportComponents": 182,
+  "PrimaryReportsRead": 16,
+  "Reports": [
+    {
+      "Stage": "Initial",
+      "Macro": "modTestGeometry.RunGeometryTests",
+      "File": "Affected_modTestGeometry.RunGeometryTests.txt",
+      "Bytes": 393886,
+      "SHA256": "72C8AF4208A769C9ABC21EA0067737CEAE7EEF4A4C6521943BED0B294DA289CE",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL: passed=4056; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "Initial",
+      "Macro": "modTestSectionRecipes.RunRecipeDefinitionTests",
+      "File": "Affected_modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+      "Bytes": 271659,
+      "SHA256": "CCE1FD138B7FB5FAD1465ED8F04D35335044A2CCEB678BE274AD7581F1D67124",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL RECIPE DEFINITION: passed=4072; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "Initial",
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+      "File": "Affected_modTestRecipeSetbacks.RunRecipeSetbackUnitTests.txt",
+      "Bytes": 4638,
+      "SHA256": "30C137BB09EE10039697EF0E789826369D3B6E07F1BB0DD92A6643CD36BD81D5",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "Initial",
+      "Macro": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+      "File": "Affected_modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests.txt",
+      "Bytes": 10663,
+      "SHA256": "84009FFE28D67414CC85D1540C3B24B450BAF3116758B930B97FA7416CA2B52D",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL AUDIT02 CLOSEOUT RECTANGLES INPUT: passed=255; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "Initial",
+      "Macro": "modTestIndividualContours.RunIndividualContourWorkbookTests",
+      "File": "Affected_modTestIndividualContours.RunIndividualContourWorkbookTests.txt",
+      "Bytes": 38301,
+      "SHA256": "CFEA4F2BC777CD302F606A54C82ED059105626DE21F9BF161B0EB98E896B5AF9",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=656; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "Initial",
+      "Macro": "modTestGeometryConfig.RunAudit03ShapeConfigTests",
+      "File": "Affected_modTestGeometryConfig.RunAudit03ShapeConfigTests.txt",
+      "Bytes": 20906,
+      "SHA256": "A6BE2E95459EFECD88620425E644AC882ACBA1F81D70068C5C05B530C01F64CB",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL_SHAPE_CONFIG: passed=204; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "Initial",
+      "Macro": "modTestGeometryConfig.RunAudit03RequiredGeometryInputTests",
+      "File": "Affected_modTestGeometryConfig.RunAudit03RequiredGeometryInputTests.txt",
+      "Bytes": 133894,
+      "SHA256": "4BF5CEFBC8CCB250AC0C7E3137C6FB7C325FD86A73EAC5CF67977DF9789285F9",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL_REQUIRED_GEOMETRY: passed=898; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "Initial",
+      "Macro": "modTestGeometryConfig.RunAudit03RebarFieldConfigTests",
+      "File": "Affected_modTestGeometryConfig.RunAudit03RebarFieldConfigTests.txt",
+      "Bytes": 1046490,
+      "SHA256": "E82B4AD21AE8296A644DCBAA9C75A2286132E69BD395CB73B744DD49F66CF31B",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL_REBAR_FIELD_CONFIG: passed=8781; failed=8; cases=2297"
+      ],
+      "HistoricalFailures": [
+        "FAIL: rebarFields.Rectangles.H1.as_1.start.tangentY",
+        "FAIL: rebarFields.Rectangles.H1.as_1.end.tangentY",
+        "FAIL: rebarFields.Rectangles.B1.as_2.start.tangentX",
+        "FAIL: rebarFields.Rectangles.B1.as_2.end.tangentX",
+        "FAIL: rebarFields.Rectangles.H2.as_1.start.tangentY",
+        "FAIL: rebarFields.Rectangles.H2.as_1.end.tangentY",
+        "FAIL: rebarFields.Rectangles.B2.as_2.start.tangentX",
+        "FAIL: rebarFields.Rectangles.B2.as_2.end.tangentX"
+      ],
+      "RunPassed": false
+    },
+    {
+      "Stage": "PhysicalEffectsAndOldFixture",
+      "Macro": "modTestGeometryConfig.RunTestRebarFieldEffects",
+      "File": "Followup_modTestGeometryConfig.RunTestRebarFieldEffects.txt",
+      "Bytes": 269091,
+      "SHA256": "31DDFC74275E2E47E41EEA41370F662D1355DD8540CDE42C84F9AD3ED55258AC",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL_REBAR_FIELD_CONFIG: passed=2334; failed=0; cases=344"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "PhysicalEffectsAndOldFixture",
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+      "File": "Followup_modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
+      "Bytes": 1745,
+      "SHA256": "F3F2AE8DE71204661729DED5337D8E74703A7CDEFDFFD71685153D2E07E1CE85",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL RECIPE ANNOTATIONS: passed=33; failed=1"
+      ],
+      "HistoricalFailures": [
+        "FAIL: annotations.total.runtime: -2147215979; Адреса ячеек:"
+      ],
+      "RunPassed": false
+    },
+    {
+      "Stage": "GeometryAndFirstIDFixture",
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+      "File": "Remaining_modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
+      "Bytes": 4055,
+      "SHA256": "A0D3E03AD8F65C98A86FD467D7AC7E9B5A1C960E770D863399CF26F3DB0E1C08",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL RECIPE ANNOTATIONS: passed=92; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "GeometryAndFirstIDFixture",
+      "Macro": "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+      "File": "Remaining_modTestSectionRecipes.RunRecipeMeshBoundaryTests.txt",
+      "Bytes": 8935,
+      "SHA256": "165D6D7AFC0405559F3615C8100BC201E1A2315C8385B6E016C334435AA9209D",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL RECIPE MESH BOUNDARY: passed=182; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "GeometryAndFirstIDFixture",
+      "Macro": "modTestProfileConfig.RunAudit03RelocatedInputTests",
+      "File": "Remaining_modTestProfileConfig.RunAudit03RelocatedInputTests.txt",
+      "Bytes": 106010,
+      "SHA256": "54A97AC0ED18A57C0E79A8775605E584AD9BE1C2FF3026D6F4BE5FAC6A15D812",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL_AUDIT03_RELOCATED_INPUT: passed=868; failed=0; cases=116"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "GeometryAndFirstIDFixture",
+      "Macro": "modTestWorkbookInterface.RunUniqueCombinationIDTests",
+      "File": "Remaining_modTestWorkbookInterface.RunUniqueCombinationIDTests.txt",
+      "Bytes": 1934,
+      "SHA256": "4B415DE24BF5FA24F0B8EE56C3441018C00D85B333EBF8FB9D63C268B113FFF3",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL UNIQUE COMBINATION IDS: passed=57; failed=2"
+      ],
+      "HistoricalFailures": [
+        "FAIL: uniqueIDs.case7.result",
+        "FAIL: uniqueIDs.case7.count"
+      ],
+      "RunPassed": false
+    },
+    {
+      "Stage": "FinalIDAndActivation",
+      "Macro": "modTestWorkbookInterface.RunUniqueCombinationIDTests",
+      "File": "ID_modTestWorkbookInterface.RunUniqueCombinationIDTests.txt",
+      "Bytes": 1930,
+      "SHA256": "D55FE159144C631AF53C7DB6213EB8B11CCBEA586A2CDA0402467BD4D6E32362",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL UNIQUE COMBINATION IDS: passed=59; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    },
+    {
+      "Stage": "FinalIDAndActivation",
+      "Macro": "modTestWorkbookInterface.RunLoadActivationWorkflowTests",
+      "File": "ID_modTestWorkbookInterface.RunLoadActivationWorkflowTests.txt",
+      "Bytes": 2671,
+      "SHA256": "FED6F6FB0C1D84EDB5593AC138B12EDF851884380B3AA5327B997889E59A4568",
+      "EntirePrimaryRead": true,
+      "Totals": [
+        "TOTAL LOAD ACTIVATION WORKFLOW: passed=78; failed=0"
+      ],
+      "HistoricalFailures": [],
+      "RunPassed": true
+    }
+  ],
+  "UnresolvedFailures": [],
+  "HistoricalFailuresRetained": {
+    "DirectionExpectations": 8,
+    "InactiveDimensionFixture": 1,
+    "ExcelLeadingZeroTestFormat": 2
+  },
+  "AllEightDirectionAssertionsPassedOnRepeat": true,
+  "StressSwitches": 1000,
+  "TwoNDMAndOtherBookSwitches": 240,
+  "TwoExcelSameBasenameSwitches": 40,
+  "ButtonsFontSize": 9,
+  "PreservedCellRecords": 4359,
+  "BlankCombinationIDDisablesRow": true,
+  "DuplicateIDStopsBeforeGeometryAndSolve": true,
+  "ResultsPreservedOnDuplicateID": true
+}

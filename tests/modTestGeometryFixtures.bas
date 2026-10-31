@@ -115,7 +115,7 @@ Public Function TestFixtureCircleDefinition(ByVal parameters As Variant) As CSec
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Rectangles: [B1, H1, B2, H2, offset, subtype]; faces = [H1, H2, B1, B2].
+' Rectangles: [B1, H1, B2, H2, offset, optional R]; faces = [H1, H2, B1, B2].
 ' Каждая пара: [as1,as2,d1,d2,n1,n2,Start1,End1,Start2,End2,
 ' row2d1,row2d2,row3d1,row3d2,loc2,loc3,bind2,bind3,loc2right,loc3right,bind2right,bind3right].
 Public Function TestFixtureRectanglesDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
@@ -123,10 +123,10 @@ Public Function TestFixtureRectanglesDefinition(ByVal dimensions As Variant, Opt
     Dim key As String, recipe As ISectionRecipe, reader As CSectionInputReader, row As Long, extra As Long
     values = TestFixtureRecipeValues("rngRectanglesGeometry")
     Set reader = TestFixtureInput(values)
-    TestFixtureSetInput values, "General", "Shape", "val", "TwoRect"
     TestFixtureSetInput values, "Detail", "XOffset", "val", 0#
     If UBound(dimensions) >= 4 Then TestFixtureSetInput values, "Detail", "XOffset", "val", dimensions(4)
-    If UBound(dimensions) >= 5 Then TestFixtureSetInput values, "General", "Shape", "val", dimensions(5)
+    TestFixtureSetInput values, "General", "R", "val", 0#
+    If UBound(dimensions) >= 5 Then TestFixtureSetInput values, "General", "R", "val", dimensions(5)
     fields = Array("B1", "H1", "B2", "H2")
     For index = 0 To 3: TestFixtureSetInput values, "General", CStr(fields(index)), "val", dimensions(index): Next index
     keys = Array("R1.Left", "R2.Left", "R1.Top", "R2.Top")
@@ -405,9 +405,8 @@ Public Function TestFixtureConfigFieldCell(ByVal key As String) As Object
     Select Case typeID
         Case "Rectangles"
             Select Case field
-                Case "SectionType": rowKey = "Shape"
                 Case "UpperOffsetX": rowKey = "XOffset"
-                Case "H1", "B1", "H2", "B2": rowKey = field
+                Case "H1", "B1", "H2", "B2", "R": rowKey = field
                 Case Else
                     side = CStr(parts(1)): field = CStr(parts(2))
                     index = CLng(Right$(field, 1)): field = Left$(field, Len(field) - 1)

@@ -500,13 +500,13 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     Dim rectanglesBuilder As CRebarRuleExecutor
     Set rectanglesBuilder = New CRebarRuleExecutor
     Dim rectanglesBars As CRebarLayout
-    Set rectanglesBars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set rectanglesBars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(40#, 40#, 20#, 20#, 3, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), TestEmptyFaceSettings(), TestEmptyFaceSettings(), TestEmptyFaceSettings())), rectanglesBuilder, rectanglesLabels)
 
     TestAssertTrue stats, "annotation.rectangles.count", rectanglesLabels.Count = 1
     TestAssertTrue stats, "annotation.rectangles.group", rectanglesLabels.AnnotationID(1) = "REBAR_H1.as_1"
-    TestAssertClose stats, "annotation.rectangles.startY", rectanglesLabels.StartY(1), 250# + 40# + 50#, 0.000001
-    TestAssertClose stats, "annotation.rectangles.endY", rectanglesLabels.EndY(1), 800# - 40# - 70#, 0.000001
+    TestAssertClose stats, "annotation.rectangles.startY", rectanglesLabels.StartY(1), 800# - 40# - 50#, 0.000001
+    TestAssertClose stats, "annotation.rectangles.endY", rectanglesLabels.EndY(1), 250# + 40# + 70#, 0.000001
     TestAssertClose stats, "annotation.rectangles.normalX", rectanglesLabels.NormalX(1), -1#, 0.000001
     TestAssertClose stats, "annotation.rectangles.axisDistance", rectanglesBars.X(1), 40#, 0.000001
 
@@ -521,7 +521,7 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     Dim zeroFaceBuilder As CRebarRuleExecutor
     Set zeroFaceBuilder = New CRebarRuleExecutor
     Dim zeroFaceBars As CRebarLayout
-    Set zeroFaceBars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set zeroFaceBars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(TestEmptyFaceSettings(), TestEmptyFaceSettings(), Array(40#, 40#, 20#, 20#, 0, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), Array(40#, 40#, 20#, 20#, 2, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"))), zeroFaceBuilder, zeroFaceLabels)
     TestAssertTrue stats, "annotation.zeroFace.hasOtherBars", zeroFaceBars.Count = 2
     TestAssertTrue stats, "annotation.zeroFace.noAnchor", Not TestHasAnnotationGroup(zeroFaceLabels, "B1.as_1")
@@ -1172,7 +1172,7 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
     Set builder = New CRebarRuleExecutor
 
     Dim stacked As CRebarLayout
-    Set stacked = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set stacked = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 30#, 0#, "Stacked", "Stacked"), TestEmptyFaceSettings(), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.stacked.count", stacked.Count = 3
@@ -1182,7 +1182,7 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
     TestAssertClose stats, "rectangles.rows.stacked.sameY", stacked.Y(3), stacked.Y(1), 0.000001
 
     Dim sideVertical As CRebarLayout
-    Set sideVertical = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set sideVertical = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 30#, 0#, "SideBySide", "SideBySide"), TestEmptyFaceSettings(), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.side.vertical.count", sideVertical.Count = 3
@@ -1191,7 +1191,7 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
     TestAssertClose stats, "rectangles.rows.side.vertical.row3.y", sideVertical.Y(3), sideVertical.Y(1) - (20# + 2.5 + 25# + 2.5), 0.000001
 
     Dim sideHorizontal As CRebarLayout
-    Set sideHorizontal = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set sideHorizontal = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(TestEmptyFaceSettings(), TestEmptyFaceSettings(), Array(50#, 50#, 20#, 20#, 1, 0, 50#, 50#, 50#, 50#, 20#, 0#, 30#, 0#, "SideBySide", "SideBySide"), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.side.horizontal.count", sideHorizontal.Count = 3
@@ -1200,7 +1200,7 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
     TestAssertClose stats, "rectangles.rows.side.horizontal.sameY", sideHorizontal.Y(3), sideHorizontal.Y(1), 0.000001
 
     Dim thirdOnly As CRebarLayout
-    Set thirdOnly = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set thirdOnly = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 0#, 0#, 30#, 0#, "Stacked", "Stacked"), TestEmptyFaceSettings(), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.thirdOnly.count", thirdOnly.Count = 2
@@ -1208,7 +1208,7 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
     TestAssertClose stats, "rectangles.rows.thirdOnly.sameY", thirdOnly.Y(2), thirdOnly.Y(1), 0.000001
 
     Dim noFirstRow As CRebarLayout
-    Set noFirstRow = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set noFirstRow = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 20#, 20#, 0, 0, 100#, 100#, 100#, 100#, 20#, 20#, 30#, 30#, "Stacked", "Stacked"), Array(50#, 50#, 20#, 20#, 1, 0, 50#, 50#, 100#, 100#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.noFirstRow.ignored", noFirstRow.Count = 1
@@ -1216,7 +1216,7 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
     TestAssertClose stats, "rectangles.rows.noFirstRow.midpoint", noFirstRow.Y(1), 250# / 2#, 0.000001
 
     Dim mixed As CRebarLayout
-    Set mixed = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set mixed = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 30#, 0#, "SideBySide", "Stacked"), TestEmptyFaceSettings(), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.mixed.count", mixed.Count = 3
@@ -1225,7 +1225,7 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
     TestAssertClose stats, "rectangles.rows.mixed.row3.y", mixed.Y(3), mixed.Y(1), 0.000001
 
     Dim separateLineDiameters As CRebarLayout
-    Set separateLineDiameters = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set separateLineDiameters = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 20#, 20#, 1, 1, 100#, 100#, 100#, 100#, 18#, 22#, 28#, 34#, "Stacked", "Stacked"), TestEmptyFaceSettings(), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.separateLineDiameters.count", separateLineDiameters.Count = 6
@@ -1235,7 +1235,7 @@ Private Sub TestRectanglesAdditionalRebarRows(ByRef stats As TTestStats)
     TestAssertClose stats, "rectangles.rows.separateLineDiameters.row3_2.d", separateLineDiameters.Diameter(6), 34#, 0.000001
 
     Dim everySecond As CRebarLayout
-    Set everySecond = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set everySecond = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 20#, 20#, 5, 0, 50#, 50#, 50#, 50#, 20#, 0#, 30#, 0#, "Stacked", "Stacked", "EverySecondBar", "EachBar"), TestEmptyFaceSettings(), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
 
     TestAssertTrue stats, "rectangles.rows.everySecond.count", everySecond.Count = 13
@@ -1296,7 +1296,7 @@ End Sub
 ' смещением верхнего блока по X.
 Private Sub TestRectanglesGeometryModes(ByRef stats As TTestStats)
     Dim rectangle As CGeometryRegion
-    Set rectangle = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "OneRect")).ConcreteDomain)
+    Set rectangle = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 0#, 0#, 0#)).ConcreteDomain)
 
     Dim available As Boolean
     Dim cx As Double
@@ -1312,15 +1312,15 @@ Private Sub TestRectanglesGeometryModes(ByRef stats As TTestStats)
 
     Dim lsection As CGeometryRegion
     Dim twoZero As CGeometryRegion
-    Set lsection = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect")).ConcreteDomain)
-    Set twoZero = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect")).ConcreteDomain)
+    Set lsection = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#)).ConcreteDomain)
+    Set twoZero = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#)).ConcreteDomain)
     TestAssertClose stats, "rectangles.twoZero.areaEqualsL", twoZero.AnalyticalArea(available), lsection.AnalyticalArea(available), 0.000001
     TestAssertClose stats, "rectangles.twoZero.minX", twoZero.MinX, lsection.MinX, 0.000001
     TestAssertClose stats, "rectangles.twoZero.maxX", twoZero.MaxX, lsection.MaxX, 0.000001
     TestAssertTrue stats, "rectangles.twoZero.cutout", Not twoZero.ContainsPoint(500#, 700#)
 
     Dim tshape As CGeometryRegion
-    Set tshape = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(600#, 200#, 250#, 250#, -175#, "TwoRect")).ConcreteDomain)
+    Set tshape = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(600#, 200#, 250#, 250#, -175#)).ConcreteDomain)
     Dim validMessage As String
     TestAssertTrue stats, "rectangles.tshape.valid", tshape.IsValid(validMessage)
     TestAssertClose stats, "rectangles.tshape.minX", tshape.MinX, -175#, 0.000001
@@ -1329,10 +1329,10 @@ Private Sub TestRectanglesGeometryModes(ByRef stats As TTestStats)
     TestAssertTrue stats, "rectangles.tshape.containsWeb", tshape.ContainsPoint(125#, 100#)
 
     Dim shifted As CGeometryRegion
-    Set shifted = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 150#, "TwoRect")).ConcreteDomain)
+    Set shifted = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 150#)).ConcreteDomain)
     shifted.AnalyticalCentroid available, cx, cy
     Dim upperMinX As Double, upperMaxX As Double
-    TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 150#, "TwoRect")).Path("Upper").ProjectionBounds 1#, 0#, upperMinX, upperMaxX
+    TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 150#)).Path("Upper").ProjectionBounds 1#, 0#, upperMinX, upperMaxX
     TestAssertClose stats, "rectangles.shifted.upperMinX", upperMinX, 150#, 0.000001
     TestAssertClose stats, "rectangles.shifted.cx", cx, 288.04347826087, 0.000001
     TestAssertClose stats, "rectangles.shifted.cy", cy, 316.304347826087, 0.000001
@@ -1342,12 +1342,12 @@ Private Sub TestRectanglesGeometryModes(ByRef stats As TTestStats)
     Dim builder As CRebarRuleExecutor
     Set builder = New CRebarRuleExecutor
     Dim shiftedBars As CRebarLayout
-    Set shiftedBars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 150#, "TwoRect"), _
+    Set shiftedBars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 150#), _
         Array(Array(50#, 50#, 20#, 20#, 1, 0, 80#, 80#, 80#, 80#), TestEmptyFaceSettings(), TestEmptyFaceSettings(), TestEmptyFaceSettings())), builder)
     TestAssertClose stats, "rectangles.shifted.rebarX", shiftedBars.X(1), 200#, 0.000001
 
     Dim rectangleBars As CRebarLayout
-    Set rectangleBars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "OneRect"), _
+    Set rectangleBars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 0#, 0#, 0#), _
         Array(TestEmptyFaceSettings(), Array(50#, 50#, 20#, 20#, 2, 2, 80#, 80#, 80#, 80#), Array(50#, 50#, 20#, 20#, 2, 0, 80#, 80#, 80#, 80#), Array(50#, 50#, 20#, 20#, 5, 5, 80#, 80#, 80#, 80#))), builder)
     TestAssertTrue stats, "rectangles.rectangle.rebarSkipsLower", TestCountBarsWithSource(rectangleBars, "H2") = 0 And TestCountBarsWithSource(rectangleBars, "B2") = 0
 End Sub
@@ -1359,7 +1359,7 @@ End Sub
 ' заметный ненулевой I12 после поворота.
 Private Sub TestRectanglesPrincipalAxesAndCoreDistances(ByRef stats As TTestStats)
     Dim geom As CGeometryRegion
-    Set geom = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect")).ConcreteDomain)
+    Set geom = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#)).ConcreteDomain)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -1376,7 +1376,7 @@ Private Sub TestRectanglesPrincipalAxesAndCoreDistances(ByRef stats As TTestStat
     Dim rebarBuilder As CRebarRuleExecutor
     Set rebarBuilder = New CRebarRuleExecutor
     Dim rebars As CRebarLayout
-    Set rebars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set rebars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#), Array(40#, 40#, 32#, 32#, 2, 2, 80#, 80#, 80#, 80#), Array(40#, 40#, 32#, 32#, 2, 2, 80#, 80#, 80#, 80#), Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#))), rebarBuilder)
 
     Dim transformedSection As CSectionModel
@@ -1481,7 +1481,7 @@ Private Sub TestRectanglesAutoRebarLayout(ByRef stats As TTestStats)
     Set builder = New CRebarRuleExecutor
 
     Dim layout As CRebarLayout
-    Set layout = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set layout = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 20#, 20#, 3, 0, 100#, 100#, 100#, 100#), Array(50#, 50#, 20#, 20#, 0, 0, 50#, 50#, 50#, 50#), Array(50#, 50#, 20#, 20#, 2, 0, 60#, 60#, 60#, 60#), Array(50#, 50#, 20#, 20#, 3, 0, 100#, 100#, 100#, 100#))), builder)
 
     TestAssertTrue stats, "rectangles.rebar.count", layout.Count = 8
@@ -1496,22 +1496,22 @@ Private Sub TestRectanglesAutoRebarLayout(ByRef stats As TTestStats)
     TestAssertTrue stats, "rectangles.rebar.zeroFaceSkipped", InStr(1, layout.BarID(1), "H2", vbTextCompare) = 0
 
     Dim noLineByCount As CRebarLayout
-    Set noLineByCount = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set noLineByCount = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 0#, 20#, 0, 0, 100#, 100#, 100#, 100#), Array(50#, 50#, 20#, 20#, 0, 0, 50#, 50#, 50#, 50#), Array(50#, 50#, 20#, 20#, 2, 0, 60#, 60#, 60#, 60#), Array(50#, 50#, 20#, 20#, 3, 0, 100#, 100#, 100#, 100#))), builder)
     TestAssertTrue stats, "rectangles.rebar.zeroCountSkipped", noLineByCount.Count = 5
 
     Dim noLineByDiameter As CRebarLayout
-    Set noLineByDiameter = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set noLineByDiameter = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 0#, 20#, 3, 0, 100#, 100#, 100#, 100#), Array(50#, 50#, 20#, 20#, 0, 0, 50#, 50#, 50#, 50#), Array(50#, 50#, 20#, 20#, 2, 0, 60#, 60#, 60#, 60#), Array(50#, 50#, 20#, 20#, 3, 0, 100#, 100#, 100#, 100#))), builder)
     TestAssertTrue stats, "rectangles.rebar.zeroDiameterSkipped", noLineByDiameter.Count = 5
 
     Dim noBarsByCount As CRebarLayout
-    Set noBarsByCount = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set noBarsByCount = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(50#, 50#, 0#, 0#, 0, 0, 100#, 100#, 100#, 100#), Array(50#, 50#, 0#, 0#, 0, 0, 50#, 50#, 50#, 50#), Array(50#, 50#, 0#, 0#, 0, 0, 60#, 60#, 60#, 60#), Array(50#, 50#, 0#, 0#, 0, 0, 100#, 100#, 100#, 100#))), builder)
     TestAssertTrue stats, "rectangles.rebar.allZeroCounts.builderEmpty", noBarsByCount.Count = 0
 
     Dim geom As CGeometryRegion
-    Set geom = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect")).ConcreteDomain)
+    Set geom = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#)).ConcreteDomain)
 
     Dim i As Long
     For i = 1 To layout.Count
@@ -1525,6 +1525,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Задает разные начальные/конечные отступы противоположным линиям H1.
+' Обе вертикали направлены сверху вниз; FromPathMiddle нумерует чётную пару от нижнего стержня.
 ' Проверяет четыре координаты стержней, чтобы настройки одной линии
 ' не подменяли независимые настройки соседней линии.
 Private Sub TestRectanglesSeparateLineOffsets(ByRef stats As TTestStats)
@@ -1532,12 +1533,12 @@ Private Sub TestRectanglesSeparateLineOffsets(ByRef stats As TTestStats)
     Set builder = New CRebarRuleExecutor
 
     Dim layout As CRebarLayout
-    Set layout = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set layout = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(40#, 60#, 20#, 20#, 2, 2, 80#, 120#, 30#, 70#), Array(40#, 40#, 20#, 20#, 0, 0, 40#, 40#, 40#, 40#), Array(40#, 40#, 20#, 20#, 0, 0, 40#, 40#, 40#, 40#), Array(40#, 40#, 20#, 20#, 0, 0, 40#, 40#, 40#, 40#))), builder)
 
     TestAssertTrue stats, "rectangles.offsets.separate.count", layout.Count = 4
-    TestAssertClose stats, "rectangles.offsets.as_1.firstY", layout.Y(1), 250# + 550# - 40# - 120#, 0.000001
-    TestAssertClose stats, "rectangles.offsets.as_1.edgeY", layout.Y(2), 250# + 40# + 80#, 0.000001
+    TestAssertClose stats, "rectangles.offsets.as_1.firstY", layout.Y(1), 250# + 40# + 120#, 0.000001
+    TestAssertClose stats, "rectangles.offsets.as_1.edgeY", layout.Y(2), 250# + 550# - 40# - 80#, 0.000001
     TestAssertClose stats, "rectangles.offsets.as_2.firstY", layout.Y(3), 250# + 40# + 70#, 0.000001
     TestAssertClose stats, "rectangles.offsets.as_2.edgeY", layout.Y(4), 250# + 550# - 40# - 30#, 0.000001
 End Sub
@@ -1763,7 +1764,7 @@ End Sub
 ' обнулять линейный множитель напряжений по полной матрице I.
 Private Sub TestCoreDistanceWithProductInertiaMatchesLinearBoundary(ByRef stats As TTestStats)
     Dim geom As CGeometryRegion
-    Set geom = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect")).ConcreteDomain)
+    Set geom = TestFixtureGeometry(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#)).ConcreteDomain)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -1773,7 +1774,7 @@ Private Sub TestCoreDistanceWithProductInertiaMatchesLinearBoundary(ByRef stats 
     Set rebarBuilder = New CRebarRuleExecutor
 
     Dim rebars As CRebarLayout
-    Set rebars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#, "TwoRect"), _
+    Set rebars = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(250#, 550#, 600#, 250#, 0#), _
         Array(Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#), Array(40#, 40#, 32#, 32#, 2, 2, 80#, 80#, 80#, 80#), Array(40#, 40#, 32#, 32#, 2, 2, 80#, 80#, 80#, 80#), Array(40#, 40#, 32#, 32#, 5, 5, 80#, 80#, 80#, 80#))), rebarBuilder)
 
     Dim section As CSectionModel
@@ -2667,7 +2668,7 @@ Private Sub TestAssertRectanglesRebarError(ByRef stats As TTestStats, ByVal name
     Dim builder As CRebarRuleExecutor
     Set builder = New CRebarRuleExecutor
     Dim layout As CRebarLayout
-    Set layout = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(upperWidth, upperHeight, lowerWidth, lowerHeight, 0#, "TwoRect"), _
+    Set layout = TestFixtureAnnotatedLayout(TestFixtureRectanglesDefinition(Array(upperWidth, upperHeight, lowerWidth, lowerHeight, 0#), _
         Array(Array(axisDistance, axisDistance, barDiameter, barDiameter, barCount, 0, startOffset, endOffset, startOffset, endOffset), Array(axisDistance, axisDistance, barDiameter, barDiameter, 0, 0, startOffset, endOffset, startOffset, endOffset), Array(axisDistance, axisDistance, barDiameter, barDiameter, 0, 0, startOffset, endOffset, startOffset, endOffset), Array(axisDistance, axisDistance, barDiameter, barDiameter, 0, 0, startOffset, endOffset, startOffset, endOffset))), builder)
     On Error GoTo 0
     TestAssertTrue stats, name, False

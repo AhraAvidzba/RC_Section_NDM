@@ -3,14 +3,34 @@
 # Встраивает исходные изображения в координатах утверждённой раскладки.
 function Add-SectionIllustrationPictures {
     param([object]$Workbook, [object]$Layout)
+    Add-Type -AssemblyName System.Drawing
     foreach($entry in $Layout.Sheets){
         foreach($item in $entry.Objects){
             if($item.Name -notin @('Circle','Rectangles','PointedSection','HollowRectangle','CurrentSection')){continue}
-            $asset=if($item.Name -eq 'CurrentSection'){'PointedSection'}else{[string]$item.Name}
-            $path=Join-Path $PSScriptRoot ('SectionIllustrations/'+$asset+'.png')
             $sheet=$Workbook.Worksheets.Item($entry.Name)
-            $shape=$sheet.Shapes.AddPicture($path,0,-1,$item.Left,$item.Top,$item.Width,$item.Height)
-            $shape.Name=[string]$item.Name
+            if($item.Name -eq 'CurrentSection'){
+                $names=@('CurrentSection_Frame')
+                $border=$sheet.Shapes.AddShape(1,$item.Left,$item.Top,$item.Width,$item.Height)
+                $border.Name=$names[0];$border.Fill.Transparency=1;$border.Line.Visible=0 # Постоянная рамка удерживает габариты при скрытых рисунках.
+                foreach($asset in @('Circle','Rectangles','PointedSection','HollowRectangle')){
+                    $path=Join-Path $PSScriptRoot ('SectionIllustrations/'+$asset+'.png')
+                    $shape=$sheet.Shapes.AddPicture($path,0,-1,$item.Left,$item.Top,$item.Width,$item.Height)
+                    $shape.Name='CurrentSection_'+$asset;$shape.Visible=0;$shape.LockAspectRatio=0
+                    $image=[Drawing.Image]::FromFile($path)
+                    try{$shape.AlternativeText=([string]$image.Width+'|'+[string]$image.Height)}finally{$image.Dispose()}
+                    $names+=,[string]$shape.Name
+                }
+                $shape=$sheet.Shapes.Range($names).Group();$shape.Name='CurrentSection'
+            }else{
+                $path=Join-Path $PSScriptRoot ('SectionIllustrations/'+[string]$item.Name+'.png')
+                $shape=$sheet.Shapes.AddPicture($path,0,-1,$item.Left,$item.Top,$item.Width,$item.Height)
+                $shape.Name=[string]$item.Name
+                $image=[Drawing.Image]::FromFile($path)
+                try{$aspect=[double]$image.Width/[double]$image.Height}finally{$image.Dispose()}
+                $fitHeight=[Math]::Min([double]$item.Height,[double]$item.Width/$aspect)
+                $crop=$shape.PictureFormat.Crop;$crop.PictureWidth=$fitHeight*$aspect;$crop.PictureHeight=$fitHeight
+                $crop.PictureOffsetX=0;$crop.PictureOffsetY=0 # Новые PNG вписываются и на листе-источнике без растяжения.
+            }
         }
     }
 }
@@ -45,12 +65,14 @@ function Save-SectionIllustrationImageBytes {
         $media=@{};$found=@{}
         foreach($entry in @($zip.Entries | Where-Object {$_.FullName -match '^xl/drawings/drawing\d+\.xml$'})){
             $reader=New-Object IO.StreamReader($entry.Open());try{$drawing=[xml]$reader.ReadToEnd()}finally{$reader.Dispose()}
+            if($drawing.SelectNodes('//*[local-name()="pic"]').Count-eq0){continue} # Чертёж только с кнопками или пустой схемой может не иметь файла связей.
             $relsPath='xl/drawings/_rels/'+[IO.Path]::GetFileName($entry.FullName)+'.rels'
             $reader=New-Object IO.StreamReader($zip.GetEntry($relsPath).Open());try{$rels=[xml]$reader.ReadToEnd()}finally{$reader.Dispose()}
             foreach($pic in $drawing.SelectNodes('//*[local-name()="pic"]')){
                 $name=$pic.SelectSingleNode('./*[local-name()="nvPicPr"]/*[local-name()="cNvPr"]').GetAttribute('name')
-                if($name -notin @('Circle','Rectangles','PointedSection','HollowRectangle','CurrentSection')){continue}
-                $asset=if($name -eq 'CurrentSection'){'PointedSection'}else{$name};$found[$asset]=$true
+                $asset=$name -replace '^CurrentSection_',''
+                if($asset -notin @('Circle','Rectangles','PointedSection','HollowRectangle')){continue}
+                $found[$asset]=$true
                 $id=$pic.SelectSingleNode('./*[local-name()="blipFill"]/*[local-name()="blip"]').GetAttribute('embed','http://schemas.openxmlformats.org/officeDocument/2006/relationships')
                 $target=($rels.Relationships.Relationship | Where-Object Id -eq $id).Target
                 $part=([Uri]::new([Uri]('http://package/'+$entry.FullName),[string]$target)).AbsolutePath.TrimStart('/')

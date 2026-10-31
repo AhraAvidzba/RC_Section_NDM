@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestProfileConfig"
+﻿Attribute VB_Name = "modTestProfileConfig"
 Option Explicit
 
 ' ==========================================================================
@@ -333,7 +333,7 @@ Private Function TestRelocatedFields(ByVal source As Object, ByVal rangeName As 
                 Case "rngCircleGeometry": selected = Array("D")
                 Case "rngPointedSectionGeometry": selected = Array("B", "H", "Left.R1")
                 Case "rngHollowRectangleGeometry": selected = Array("B", "H", "Xo")
-                Case Else: selected = Array("Shape", "H1", "B1")
+                Case Else: selected = Array("R", "H1", "B1")
             End Select
             For Each key In selected
                 fields.Add Array(reader.RowIndex("General", CStr(key)), reader.ColumnIndex("General", "val"), rangeName & "." & CStr(key))

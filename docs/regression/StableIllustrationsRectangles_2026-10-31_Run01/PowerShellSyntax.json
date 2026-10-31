@@ -1,0 +1,29 @@
+{
+  "Files": [
+    {
+      "Name": "Build-Workbook.ps1",
+      "Parsed": true
+    },
+    {
+      "Name": "GeometryTables.ps1",
+      "Parsed": true
+    },
+    {
+      "Name": "SettingsCatalog.ps1",
+      "Parsed": true
+    },
+    {
+      "Name": "SectionIllustrations.ps1",
+      "Parsed": true
+    },
+    {
+      "Name": "Test-StructuredGeometryWorkbook.ps1",
+      "Parsed": true
+    },
+    {
+      "Name": "Measure-SnapshotIOPhases.ps1",
+      "Parsed": true
+    }
+  ],
+  "Passed": true
+}

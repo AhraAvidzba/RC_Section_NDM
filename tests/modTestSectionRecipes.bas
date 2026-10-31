@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestSectionRecipes"
+Attribute VB_Name = "modTestSectionRecipes"
 Option Explicit
 
 ' ==========================================================================
@@ -635,6 +635,7 @@ End Sub
 Public Function RunRecipeDefinitionTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
+    TestRectanglesDimensionsAndRadius
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Dim region As CConcreteRegion, copy As CConcreteRegion, query As CSectionGeometryQuery, contours As CSectionContours
     Set facade = TestRuleFacade
@@ -1817,4 +1818,185 @@ Private Sub TestMinimumAreaCoincidenceAndEmpty(ByRef mesh As TSectionMeshOptions
     On Error GoTo 0
     TestCheck "minimumArea.empty.rejected", number = vbObjectError + 5530
     TestCheck "minimumArea.empty.address", InStr(description, "Mesh.MinElementArea") > 0 And InStr(description, "Config!B2") > 0 And InStr(description, "не осталось") > 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет выбор частей размерами, игнорирование неактивного армирования и общие скругления.
+Public Function RunRectanglesDimensionTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    TestRectanglesDimensionsAndRadius
+    GoTo Finished
+Failed:
+    TestCheck "rectDimensions.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunRectanglesDimensionTests = mReport & "TOTAL_RECTANGLES_DIMENSIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Для каждого прямоугольника отдельно проверяет B=0, H=0 и оба нуля при нескольких радиусах.
+' CVErr, текст и отрицательные значения во всех полях отсутствующей арматуры не должны читаться.
+Private Sub TestRectanglesDimensionsAndRadius()
+    Dim values As Variant, changed As Variant, recipe As ISectionRecipe, definition As CSectionDefinition
+    Dim layout As CRebarLayout, reference As CRebarLayout, query As CSectionGeometryQuery
+    Dim radius As Variant, absent As Long, zeroKind As Long, block As Variant, key As Variant, field As Variant, bad As Variant
+    Dim expectedArea As Double, width As Double, height As Double, i As Long, code As Long, reason As String
+    Dim table As CSectionInputReader, inputTable As CSectionInputTable, prefix As String, path As CGeometryPath
+    Set recipe = New CSectionRecipeRectangles: Set query = New CSectionGeometryQuery
+    For Each radius In Array(0#, 50#, 200#)
+        For absent = 0 To 2
+            For zeroKind = 0 To IIf(absent = 0, 0, 2)
+                values = TestRectanglesDimensionsValues(CDbl(radius))
+                If absent > 0 Then
+                    If zeroKind <> 1 Then TestFixtureSetInput values, "General", "B" & CStr(absent), "val", 0#
+                    If zeroKind <> 0 Then TestFixtureSetInput values, "General", "H" & CStr(absent), "val", 0#
+                    TestFixtureSetInput values, "General", "XOffset", "val", CVErr(2015)
+                End If
+                Set definition = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values)
+                Set reference = TestFixtureAnnotatedLayout(definition)
+                width = 800#: height = 1000#
+                If absent = 1 Then width = 1200#: height = 600#
+                expectedArea = width * height - (4# - GEOM_PI) * CDbl(radius) ^ 2
+                If absent = 0 Then expectedArea = 800# * 1000# + 1200# * 600# - 2# * (4# - GEOM_PI) * CDbl(radius) ^ 2
+                prefix = "rectDimensions." & CStr(radius) & "." & CStr(absent) & "." & CStr(zeroKind)
+                TestNear prefix & ".area", definition.ConcreteDomain.Area, expectedArea
+                TestCheck prefix & ".rules", definition.RuleCount = IIf(absent = 0, 8, 4)
+                For i = 1 To reference.Count
+                    TestCheck prefix & ".bar.inside." & CStr(i), query.ContainsPoint(definition.ConcreteDomain, reference.X(i), reference.Y(i))
+                Next i
+                If absent > 0 Then
+                    Set path = definition.Path(IIf(absent = 1, "Lower", "Upper"))
+                    path.ProjectionBounds 1#, 0#, width, height
+                    TestNear prefix & ".single.minX", width, 0#
+                    path.ProjectionBounds 0#, 1#, width, height
+                    TestNear prefix & ".single.minY", width, 0#
+                    Set table = TestFixtureInput(values)
+                    For Each bad In Array("unused text", -1#, CVErr(2015))
+                        changed = values
+                        For Each block In Array("Main", "Extra")
+                            For Each key In table.RowKeys(CStr(block))
+                                If Left$(CStr(key), 3) = "R" & CStr(absent) & "." Then
+                                    If CStr(block) = "Main" Then
+                                        For Each field In Array("as", "d", "n", "s0", "s1", "endMode"): TestFixtureSetInput changed, CStr(block), CStr(key), CStr(field), bad: Next field
+                                    Else
+                                        For Each field In Array("d2", "a2", "bind2", "pos2", "d3", "a3", "bind3", "pos3"): TestFixtureSetInput changed, CStr(block), CStr(key), CStr(field), bad: Next field
+                                    End If
+                                End If
+                            Next key
+                        Next block
+                        Set definition = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", changed)
+                        Set layout = TestFixtureAnnotatedLayout(definition)
+                        TestCheck prefix & ".unused.count", layout.Count = reference.Count
+                        For i = 1 To layout.Count
+                            TestNear prefix & ".unused.x." & CStr(i), layout.X(i), reference.X(i)
+                            TestNear prefix & ".unused.y." & CStr(i), layout.Y(i), reference.Y(i)
+                            TestNear prefix & ".unused.d." & CStr(i), layout.Diameter(i), reference.Diameter(i)
+                        Next i
+                    Next bad
+                End If
+            Next zeroKind
+        Next absent
+    Next radius
+    For Each key In Array("B1", "H1", "B2", "H2", "R")
+        For Each bad In Array(-1#, "invalid", CVErr(2015), Empty)
+            values = TestRectanglesDimensionsValues(0#)
+            TestFixtureSetInput values, "General", CStr(key), "val", bad
+            code = 0: reason = ""
+            On Error Resume Next
+            Set definition = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values)
+            code = Err.Number: reason = Err.Description: Err.Clear
+            On Error GoTo 0
+            Set inputTable = New CSectionInputTable: inputTable.Initialize "rngRectanglesGeometry", values
+            Set table = New CSectionInputReader: table.Initialize inputTable
+            mReport = mReport & "RECTANGLE_INVALID_INPUT: " & CStr(key) & "; " & reason & vbCrLf
+            TestCheck "rectDimensions.invalid." & CStr(key), code <> 0 And InStr(reason, table.SourceReference("General", CStr(key))) > 0
+        Next bad
+    Next key
+    For Each radius In Array(0#, 50#)
+        values = TestRectanglesDimensionsValues(CDbl(radius))
+        TestFixtureSetInput values, "General", "B1", "val", 0#: TestFixtureSetInput values, "General", "H2", "val", 0#
+        code = 0: reason = ""
+        On Error Resume Next
+        Set definition = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values)
+        code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo 0
+        TestCheck "rectDimensions.both.absent", code <> 0 And InStr(reason, "Не задано ни одного прямоугольника") > 0
+    Next radius
+    TestRectanglesHollowAxisParity
+    TestJoinedRoundedPaths
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит только входные данные; геометрию, арматуру и дуги строят рабочие общие классы.
+Private Function TestRectanglesDimensionsValues(ByVal radius As Double) As Variant
+    Dim values As Variant, reader As CSectionInputReader, key As Variant
+    values = TestFixtureRecipeValues("rngRectanglesGeometry"): Set reader = TestFixtureInput(values)
+    TestFixtureSetInput values, "General", "B1", "val", 800#: TestFixtureSetInput values, "General", "H1", "val", 1000#
+    TestFixtureSetInput values, "General", "B2", "val", 1200#: TestFixtureSetInput values, "General", "H2", "val", 600#
+    TestFixtureSetInput values, "General", "XOffset", "val", 50#: TestFixtureSetInput values, "General", "R", "val", radius
+    For Each key In reader.RowKeys("Main")
+        TestFixtureSetInput values, "Main", CStr(key), "as", 40#: TestFixtureSetInput values, "Main", CStr(key), "d", 20#
+        TestFixtureSetInput values, "Main", CStr(key), "n", 5: TestFixtureSetInput values, "Main", CStr(key), "endMode", "IncludeBoth"
+        TestFixtureSetInput values, "Main", CStr(key), "s0", 10#: TestFixtureSetInput values, "Main", CStr(key), "s1", 20#
+        TestFixtureSetInput values, "Extra", CStr(key), "d2", 0#: TestFixtureSetInput values, "Extra", CStr(key), "d3", 0#
+    Next key
+    TestRectanglesDimensionsValues = values
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает все четыре пути с наружной гранью HollowRectangle, включая дуги, направления и разные as.
+Private Sub TestRectanglesHollowAxisParity()
+    Dim rectValues As Variant, hollowValues As Variant, rect As CSectionDefinition, hollow As CSectionDefinition
+    Dim recipe As ISectionRecipe, sides As Variant, rectIDs As Variant, hollowIDs As Variant, offsets As Variant
+    Dim i As Long, j As Long, p As CGeometryPath, q As CGeometryPath, x As Double, y As Double, tx As Double, ty As Double
+    Dim hx As Double, hy As Double, htx As Double, hty As Double
+    rectValues = TestRectanglesDimensionsValues(180#): TestFixtureSetInput rectValues, "General", "B2", "val", 0#
+    hollowValues = TestFixtureRecipeValues("rngHollowRectangleGeometry")
+    TestFixtureSetInput hollowValues, "General", "B", "val", 800#: TestFixtureSetInput hollowValues, "General", "H", "val", 1000#
+    TestFixtureSetInput hollowValues, "General", "R", "val", 180#
+    TestFixtureSetInput hollowValues, "General", "Bo", "val", 100#: TestFixtureSetInput hollowValues, "General", "Ho", "val", 200#
+    TestFixtureSetInput hollowValues, "General", "Ro", "val", 0#: TestFixtureSetInput hollowValues, "General", "Xo", "val", 0#: TestFixtureSetInput hollowValues, "General", "Yo", "val", 0#
+    sides = Array("Top", "Bottom", "Left", "Right"): offsets = Array(40#, 50#, 60#, 70#)
+    rectIDs = Array("B1.as_1", "B1.as_2", "H1.as_1", "H1.as_2"): hollowIDs = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
+    For i = 0 To 3
+        TestFixtureSetInput rectValues, "Main", "R1." & CStr(sides(i)), "as", offsets(i)
+        TestFixtureSetInput hollowValues, "Main", CStr(sides(i)), "as", offsets(i)
+        TestFixtureSetInput hollowValues, "Main", CStr(sides(i)), "d", 20#: TestFixtureSetInput hollowValues, "Main", CStr(sides(i)), "n", 5
+        TestFixtureSetInput hollowValues, "Main", "Opening" & CStr(sides(i)), "d", 0#
+        TestFixtureSetInput hollowValues, "Extra", CStr(sides(i)), "d2", 0#: TestFixtureSetInput hollowValues, "Extra", CStr(sides(i)), "d3", 0#
+    Next i
+    Set recipe = New CSectionRecipeRectangles: Set rect = TestFixtureRecipeDefinition(recipe, "rngRectanglesGeometry", rectValues)
+    Set recipe = New CSectionRecipeHollowRectangle: Set hollow = TestFixtureRecipeDefinition(recipe, "rngHollowRectangleGeometry", hollowValues)
+    For i = 0 To 3
+        Set p = rect.Path(CStr(rectIDs(i))): Set q = hollow.Path(CStr(hollowIDs(i)))
+        TestNear "rectDimensions.hollow.length." & CStr(i), p.Length, q.Length
+        For j = 0 To 10
+            p.AtDistance p.Length * j / 10#, x, y, tx, ty: q.AtDistance q.Length * j / 10#, hx, hy, htx, hty
+            TestNear "rectDimensions.hollow.x", x, hx + 400#: TestNear "rectDimensions.hollow.y", y, hy + 500#
+            TestNear "rectDimensions.hollow.tx", tx, htx: TestNear "rectDimensions.hollow.ty", ty, hty
+        Next j
+    Next i
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет объединение в фасаде и ядре с аналитической площадью и отклонение раздельных частей.
+Private Sub TestJoinedRoundedPaths()
+    Dim facade As CSectionDefinitionBuilder, first As CGeometryPath, second As CGeometryPath, joined As CGeometryPath
+    Dim paths As Collection, query As CSectionGeometryQuery, polygon As CPolygonSpec, code As Long, reason As String
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "TestJoinedPaths"
+    Set first = facade.RectanglePath("A", 0#, 0#, 300#, 200#)
+    Set second = facade.RectanglePath("B", 100#, 200#, 300#, 200#)
+    Set joined = facade.JoinedPaths("AB", Array("A", "B"))
+    Set query = New CSectionGeometryQuery
+    TestNear "joined.facade.area", query.RegionFromPath(joined).Area, 120000#
+    Set paths = New Collection: paths.Add first: paths.Add second
+    Set joined = query.JoinedPaths("AB.Query", paths)
+    TestNear "joined.query.area", query.RegionFromPath(joined).Area, 120000#
+    Set paths = New Collection: paths.Add first
+    Set second = facade.RectanglePath("Separated", 500#, 200#, 300#, 200#): paths.Add second
+    On Error Resume Next
+    Set joined = query.JoinedPaths("Invalid", paths)
+    code = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "joined.disconnected.rejected", code <> 0 And InStr(reason, "связную") > 0
 End Sub

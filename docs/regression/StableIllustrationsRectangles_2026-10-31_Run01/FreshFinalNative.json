@@ -1,0 +1,107 @@
+{
+  "Passed": true,
+  "Kind": "Fresh",
+  "FullAcceptanceClaim": false,
+  "Buttons": [
+    {
+      "Left": 885.0,
+      "Top": 101.5,
+      "Caption": "Выполнить расчет",
+      "FontSize": 9.0,
+      "Height": 32.0,
+      "OnAction": "RunSectionCalculation",
+      "Width": 235.0,
+      "Sheet": "Расчет",
+      "Name": "btnRunSectionCalculation"
+    },
+    {
+      "Left": 885.0,
+      "Top": 61.5,
+      "Caption": "Сформировать сечение",
+      "FontSize": 9.0,
+      "Height": 32.0,
+      "OnAction": "FormSection",
+      "Width": 235.0,
+      "Sheet": "Расчет",
+      "Name": "btnImportGeometryFromAutoCAD"
+    },
+    {
+      "Left": 885.0,
+      "Top": 221.5,
+      "Caption": "Очистить подписи в AutoCAD",
+      "FontSize": 9.0,
+      "Height": 32.0,
+      "OnAction": "ClearAutoCADDrawing",
+      "Width": 235.0,
+      "Sheet": "Расчет",
+      "Name": "btnClearAutoCADDrawing"
+    },
+    {
+      "Left": 885.0,
+      "Top": 181.5,
+      "Caption": "Экспорт в AutoCAD",
+      "FontSize": 9.0,
+      "Height": 32.0,
+      "OnAction": "ExportSectionStressToAutoCAD",
+      "Width": 235.0,
+      "Sheet": "Расчет",
+      "Name": "btnExportStressToAutoCAD"
+    },
+    {
+      "Left": 885.0,
+      "Top": 141.5,
+      "Caption": "Обновить схему и результаты",
+      "FontSize": 9.0,
+      "Height": 32.0,
+      "OnAction": "UpdateSectionPlot",
+      "Width": 235.0,
+      "Sheet": "Расчет",
+      "Name": "btnUpdateSectionPlot"
+    }
+  ],
+  "Choices": [
+    {
+      "Value": "Circle",
+      "Accepted": true
+    },
+    {
+      "Value": "Rectangles",
+      "Accepted": true
+    },
+    {
+      "Value": "PointedSection",
+      "Accepted": true
+    },
+    {
+      "Value": "HollowRectangle",
+      "Accepted": true
+    },
+    {
+      "Value": "Circle,Rectangles,PointedSection,HollowRectangle",
+      "Accepted": false
+    },
+    {
+      "Value": "Circle;Rectangles;PointedSection;HollowRectangle",
+      "Accepted": false
+    },
+    {
+      "Value": "Unknown",
+      "Accepted": false
+    }
+  ],
+  "Components": 182,
+  "GeneralKeys": [
+    "H1",
+    "B1",
+    "H2",
+    "B2",
+    "R",
+    "XOffset"
+  ],
+  "R": 0.0,
+  "DisabledScreenStatePreserved": true,
+  "AllSourcePictureAspectsVerified": true,
+  "BookSHA256": "75FF1F60FF1657D5A0596E83253524946AE339989952F7E093F3DAE072850CC1",
+  "SavedReopenPassed": true,
+  "Compiled": true
+}

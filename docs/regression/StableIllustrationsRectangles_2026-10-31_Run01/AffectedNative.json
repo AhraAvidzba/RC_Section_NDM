@@ -1,0 +1,81 @@
+{
+  "Passed": false,
+  "Stage": "Affected",
+  "FullAcceptanceClaim": false,
+  "Suites": [
+    {
+      "Totals": [
+        "TOTAL: passed=4056; failed=0"
+      ],
+      "Passed": true,
+      "Macro": "modTestGeometry.RunGeometryTests",
+      "Seconds": 34.5295681,
+      "Report": "Affected_modTestGeometry.RunGeometryTests.txt"
+    },
+    {
+      "Totals": [
+        "TOTAL RECIPE DEFINITION: passed=4072; failed=0"
+      ],
+      "Passed": true,
+      "Macro": "modTestSectionRecipes.RunRecipeDefinitionTests",
+      "Seconds": 55.4606648,
+      "Report": "Affected_modTestSectionRecipes.RunRecipeDefinitionTests.txt"
+    },
+    {
+      "Totals": [
+        "TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0"
+      ],
+      "Passed": true,
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+      "Seconds": 0.597581,
+      "Report": "Affected_modTestRecipeSetbacks.RunRecipeSetbackUnitTests.txt"
+    },
+    {
+      "Totals": [
+        "TOTAL AUDIT02 CLOSEOUT RECTANGLES INPUT: passed=255; failed=0"
+      ],
+      "Passed": true,
+      "Macro": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+      "Seconds": 16.037976,
+      "Report": "Affected_modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests.txt"
+    },
+    {
+      "Totals": [
+        "TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=656; failed=0"
+      ],
+      "Passed": true,
+      "Macro": "modTestIndividualContours.RunIndividualContourWorkbookTests",
+      "Seconds": 12.5149468,
+      "Report": "Affected_modTestIndividualContours.RunIndividualContourWorkbookTests.txt"
+    },
+    {
+      "Totals": [
+        "TOTAL_SHAPE_CONFIG: passed=204; failed=0"
+      ],
+      "Passed": true,
+      "Macro": "modTestGeometryConfig.RunAudit03ShapeConfigTests",
+      "Seconds": 94.2352425,
+      "Report": "Affected_modTestGeometryConfig.RunAudit03ShapeConfigTests.txt"
+    },
+    {
+      "Totals": [
+        "TOTAL_REQUIRED_GEOMETRY: passed=898; failed=0"
+      ],
+      "Passed": true,
+      "Macro": "modTestGeometryConfig.RunAudit03RequiredGeometryInputTests",
+      "Seconds": 31.4398571,
+      "Report": "Affected_modTestGeometryConfig.RunAudit03RequiredGeometryInputTests.txt"
+    },
+    {
+      "Totals": [
+        "TOTAL_REBAR_FIELD_CONFIG: passed=8781; failed=8; cases=2297"
+      ],
+      "Passed": false,
+      "Macro": "modTestGeometryConfig.RunAudit03RebarFieldConfigTests",
+      "Seconds": 2534.6160103,
+      "Report": "Affected_modTestGeometryConfig.RunAudit03RebarFieldConfigTests.txt"
+    }
+  ],
+  "BookSHA256": "DC67EDE1789966A4FE0F051FA20E58FF7BE031210CE59E3EA49A0AD9657343BA",
+  "Error": "System.Management.Automation.RuntimeException: Native suite failed: modTestGeometryConfig.RunAudit03RebarFieldConfigTests"
+}

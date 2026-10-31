@@ -1216,6 +1216,34 @@ Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As V
     Set AdjacentRectangles = result
 End Function
 
+' Объединяет заполненные области замкнутых линий, сохраняя точные отрезки и дуги.
+' Внутренние общие участки убирает общий нормализатор; итог — один Outer без отверстий.
+Public Function JoinedPaths(ByVal pathID As String, ByVal paths As Collection) As CGeometryPath
+    If paths Is Nothing Then GeometryError "Не переданы контуры для объединения."
+    If paths.Count = 0 Then GeometryError "Не задан ни один контур для объединения."
+    Dim raw() As TRegionEdge, count As Long, one() As TRegionEdge, oneCount As Long
+    Dim boundary() As TRegionEdge, boundaryCount As Long, i As Long, j As Long
+    Dim path As CGeometryPath, region As CConcreteRegion, result As CGeometryPath
+    For i = 1 To paths.Count
+        Set path = paths(i)
+        Set region = RegionFromPath(path) ' Проверяем каждый источник и приводим обход к бетону слева.
+        If region.LoopCount <> 1 Then GeometryError "Исходная линия должна задавать одну заполненную область."
+        region.CopyEdges one, oneCount
+        For j = 1 To oneCount
+            one(j).LoopID = i
+            AppendEdge raw, count, one(j)
+        Next j
+    Next i
+    NormalizeBoundary raw, count, boundary, boundaryCount ' Пересечения и совпадения обрабатываются тем же ядром, что у остальных контуров.
+    Set region = BoundaryRegion(boundary, boundaryCount)
+    If region.LoopCount <> 1 Then GeometryError "Контуры должны образовывать одну связную область без отверстий. Уменьшите радиус или измените размеры и смещение."
+    region.CopyEdges boundary, boundaryCount
+    Set result = New CGeometryPath: result.Initialize pathID
+    For i = 1 To boundaryCount: result.Append pathID & "." & CStr(i), boundary(i): Next i
+    result.Seal True
+    Set JoinedPaths = result
+End Function
+
 ' Проверяет согласованность массивов координат, радиусов и уникальных имён вершин.
 ' Исходные индексы могут начинаться с любого числа; рабочие массивы переводятся к диапазону 1..count.
 Private Sub ReadPolygonInput(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, _

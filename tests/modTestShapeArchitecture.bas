@@ -186,11 +186,11 @@ Public Sub TestConfigureShapeFixture(ByVal fixture As String)
             TestSetSetting "Rebar.Loc2row", "Stacked": TestSetSetting "Rebar.Loc3row", "SideBySide"
         Case "Rectangle", "LSection", "TwoRectangles"
             shapeName = "Rectangles": Set table = ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange
-            TestFixtureInputCell(table, "General", "Shape", "val").Value2 = IIf(fixture = "Rectangle", "OneRect", "TwoRect")
+            TestFixtureInputCell(table, "General", "R").Value2 = 0#
             TestFixtureInputCell(table, "Detail", "XOffset", "val").Value2 = IIf(fixture = "LSection", 0#, -50#) / factor
             TestFixtureInputCell(table, "General", "H1", "val").Value2 = 400# / factor: TestFixtureInputCell(table, "General", "B1", "val").Value2 = 300# / factor
             ' При as=40 с двух сторон и s0+s1=160 положительному примеру нужна H2>240; H2=400 сохраняет допустимый участок 160 мм и n=5 без изменения проверок.
-            TestFixtureInputCell(table, "General", "H2", "val").Value2 = 400# / factor: TestFixtureInputCell(table, "General", "B2", "val").Value2 = 600# / factor
+            TestFixtureInputCell(table, "General", "H2", "val").Value2 = 400# / factor: TestFixtureInputCell(table, "General", "B2", "val").Value2 = IIf(fixture = "Rectangle", 0#, 600#) / factor
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
             shapeName = "PointedSection": Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
             TestFixtureInputCell(table, "General", "B", "val").Value2 = 600# / factor: TestFixtureInputCell(table, "General", "H", "val").Value2 = 400# / factor
@@ -286,7 +286,7 @@ InactiveSide:
         TestFixtureInputCell(table, "Main", "R1.Bottom", "s0").Value2 = "inactive value"
         TestFixtureInputCell(table, "Extra", "R1.Bottom", "d2").Value2 = "inactive value"
         If fixture = "Rectangle" Then
-            TestFixtureInputCell(table, "General", "H2", "val").Value2 = "inactive value": TestFixtureInputCell(table, "General", "B2", "val").Value2 = "inactive value"
+            TestFixtureInputCell(table, "General", "H2", "val").Value2 = 0#: TestFixtureInputCell(table, "General", "B2", "val").Value2 = 0# ' Числовые размеры исключают часть; ошибочное армирование ниже не читается.
             For i = 15 To 18: TestFixtureInputCell(table, "Main", CStr(keys(i - 11)), "d").Value2 = "inactive value": Next i
         End If
         If fixture = "Rectangle" Then TestFixtureInputCell(table, "Detail", "XOffset", "val").Value2 = "inactive value"

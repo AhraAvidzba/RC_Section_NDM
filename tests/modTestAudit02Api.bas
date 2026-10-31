@@ -849,7 +849,7 @@ Private Function TestCloseoutRectanglesInputMatrix() As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
     Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, table As CSectionInputTable
     Dim fixture As Variant, valueKind As Variant, unit As Variant, aliasName As Variant
-    Dim row As Long, column As Long, maxColumn As Long, offsetRow As Long, shapeRow As Long
+    Dim row As Long, column As Long, maxColumn As Long, offsetRow As Long
     Dim code As Long, source As String, reason As String, expectedAddress As String, area As Double
     Dim result As String, factor As Double, pair As Variant, number As Double, otherCode As Long, otherReason As String
     fieldKeys = Array("H1", "B1", "H2", "B2")
@@ -867,7 +867,6 @@ Private Function TestCloseoutRectanglesInputMatrix() As String
             Set reader = New CSectionInputSnapshotReader
             Set context = reader.Capture(ThisWorkbook, Array("rngRectanglesGeometry"), units): Set table = context.Table("rngRectanglesGeometry"): Set keyed = context.Reader("rngRectanglesGeometry")
             offsetRow = keyed.RowIndex("General", "XOffset")
-            shapeRow = keyed.RowIndex("General", "Shape")
             Set definition = TestRectanglesInputOutcome(settings, units, code, source, reason)
             TestCheck "rect.valid." & CStr(unit) & "." & CStr(fixture), code = 0
             If code <> 0 Then GoTo Failed
@@ -888,6 +887,8 @@ Private Function TestCloseoutRectanglesInputMatrix() As String
                     If CStr(valueKind) = "positive" Then
                         TestCheck "rect.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(column), code = 0
                         TestCheck "rect.unit.once", definition.ConcreteDomain.Area = area
+                    ElseIf CStr(valueKind) = "zero" And CStr(fixture) <> "Rectangle" Then
+                        TestCheck "rect.zero.omits.part." & CStr(unit) & "." & CStr(fixture) & "." & CStr(column), code = 0
                     Else
                         TestCheck "rect.reject.address." & CStr(unit) & "." & CStr(fixture) & "." & CStr(column) & "." & CStr(valueKind), _
                             code <> 0 And InStr(reason, expectedAddress) > 0
@@ -895,10 +896,7 @@ Private Function TestCloseoutRectanglesInputMatrix() As String
                     result = result & TestInputContractRow(CStr(unit), CStr(fixture), CStr(column) & "." & CStr(valueKind), code, source, reason, 0#)
                 Next valueKind
             Next column
-            range.Formula = block ' У OneRect нижние размеры и смещение не используются; у обоих вариантов TwoRect смещение активно.
-            If CStr(fixture) = "Rectangle" Then
-                TestFixtureInputCell(range, "General", "H2").Value2 = "inactive H2": TestFixtureInputCell(range, "General", "B2").Value2 = CVErr(xlErrValue)
-            End If
+            range.Formula = block ' XOffset используется только при двух непустых прямоугольниках.
             If CStr(fixture) = "Rectangle" Then
                 range.Cells(offsetRow, 3).Value2 = "inactive offset"
                 Set definition = TestRectanglesInputOutcome(settings, units, code, source, reason)
@@ -939,12 +937,7 @@ Private Function TestCloseoutRectanglesInputMatrix() As String
                 TestCheck "rect.adjacency.address", code <> 0 And InStr(reason, table.SourceReference(offsetRow, 3)) > 0
                 result = result & TestInputContractRow(CStr(unit), CStr(fixture), "nonadjacent", code, source, reason, 0#)
             End If
-            For Each aliasName In Array("Rectangle", "LSection", "TwoRectangles", "Rectangles", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles")
-                range.Formula = block: range.Cells(shapeRow, 3).Value2 = CStr(aliasName)
-                Set definition = TestRectanglesInputOutcome(settings, units, code, source, reason)
-                TestCheck "rect.removed.choice." & CStr(unit) & "." & CStr(aliasName), code <> 0 And InStr(reason, keyed.SourceReference("General", "Shape")) > 0
-                result = result & TestInputContractRow(CStr(unit), CStr(fixture), CStr(aliasName), code, source, reason, 0#)
-            Next aliasName
+            TestCheck "rect.no.shape.selector." & CStr(unit), InStr("|" & Join(keyed.RowKeys("General"), "|") & "|", "|Shape|") = 0
             range.Formula = block
         Next fixture
     Next unit

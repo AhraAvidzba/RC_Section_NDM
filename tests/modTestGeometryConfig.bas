@@ -275,12 +275,12 @@ End Function
 Private Function TestShapeFields(ByVal shapeName As String) As Variant
     Select Case shapeName
         Case "Rectangles"
-            TestShapeFields = Array(Array("Rectangles.H1", 5, 3, 300#, 350#, -1#), _
-                Array("Rectangles.B1", 6, 3, 200#, 240#, -1#), _
-                Array("Rectangles.H2", 7, 3, 250#, 300#, -1#), _
-                Array("Rectangles.B2", 8, 3, 600#, 650#, -1#), _
+            TestShapeFields = Array(Array("Rectangles.H1", 4, 3, 300#, 350#, -1#), _
+                Array("Rectangles.B1", 5, 3, 200#, 240#, -1#), _
+                Array("Rectangles.H2", 6, 3, 250#, 300#, -1#), _
+                Array("Rectangles.B2", 7, 3, 600#, 650#, -1#), _
                 Array("Rectangles.UpperOffsetX", 9, 3, -50#, -70#, 10000#), _
-                Array("Rectangles.SectionType", 4, 3, "TwoRect", "OneRect", "Unknown"))
+                Array("Rectangles.R", 8, 3, 0#, 10#, -1#))
         Case "PointedSection"
             TestShapeFields = Array(Array("PointedSection.B", 4, 3, 600#, 650#, -1#), _
                 Array("PointedSection.H", 5, 3, 400#, 450#, -1#), _
@@ -580,23 +580,21 @@ Private Sub TestCheckShapeBaseline(ByRef stats As TGeometryConfigStats, ByVal sh
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет именно условно выключенные поля формы: нижний прямоугольник и
-' смещение, а также W/R2 простых боковых граней не меняют активную геометрию.
+' Проверяет условно выключенные поля формы: смещение одиночного прямоугольника, а также W/R2 простых боковых граней не меняют активную геометрию.
 Private Sub TestCheckShapeInactiveModes(ByRef stats As TGeometryConfigStats, ByVal target As Object, ByVal shapeName As String)
     Dim baseline As Variant, item As Variant
     TestConfigureShape target, shapeName
     If shapeName = "Rectangles" Then
-        target.Cells(4, 3).Value2 = "OneRect"
+        TestFixtureInputCell(target, "General", "B2").Value2 = 0#
         baseline = TestShapeSnapshot(TestReadShape())
-        For Each item In Array(Array(7, 3), Array(8, 3), Array(9, 3))
+        For Each item In Array(Array(9, 3))
             target.Cells(CLng(item(0)), CLng(item(1))).Value2 = 100#
             TestCheck stats, "shapeConfig.Rectangles.Rectangle.inactive." & CStr(item(0)) & "." & CStr(item(1)), _
                 TestSameShape(baseline, TestShapeSnapshot(TestReadShape()))
         Next item
         TestConfigureShape target, shapeName
-        target.Cells(4, 3).Value2 = "TwoRect"
         baseline = TestShapeSnapshot(TestReadShape())
-        target.Cells(9, 3).Value2 = 100#
+        TestFixtureInputCell(target, "General", "XOffset").Value2 = 100#
         TestCheck stats, "shapeConfig.Rectangles.TwoRect.active.offset", Not TestSameShape(baseline, TestShapeSnapshot(TestReadShape()))
     ElseIf shapeName = "PointedSection" Then
         target.Cells(6, 3).Value2 = 0#: target.Cells(9, 3).Value2 = 0#
@@ -1076,7 +1074,7 @@ Private Function TestRequiredGeometryKeyCell(ByVal target As Object, ByVal key A
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет неактивные размеры Rectangle и радиусы R2 сторон без выступа. Эти значения
+' Проверяет XOffset одиночного прямоугольника и радиусы R2 сторон без выступа. Эти значения
 ' не участвуют в форме/раскладке, поэтому не должны требовать числового ввода.
 ' Ошибки формул Excel здесь не подменяются пустым значением reader-а.
 Private Sub TestCheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, _
@@ -1085,10 +1083,10 @@ Private Sub TestCheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStat
     Dim description As String, errorNumber As Long, prefix As String
     TestSetKey systemRange, "Geometry.Type", "Rectangles"
     TestConfigureShape rectRange, "Rectangles": TestConfigureRequiredGeometryRebars rectRange, "Rectangles"
-    rectRange.Cells(4, 3).Value2 = "OneRect"
+    TestFixtureInputCell(rectRange, "General", "B2").Value2 = 0#
     For Each route In Array("Geometry", "Rebars")
         baseline = TestRequiredGeometryRouteSnapshot("Rectangles", CStr(route))
-        For Each item In Array(Array(7, 3), Array(8, 3), Array(9, 3))
+        For Each item In Array(Array(9, 3))
             For Each value In Array(vbNullString, "TODO", "abc")
                 rectRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = value
                 errorNumber = 0: description = vbNullString
@@ -1311,7 +1309,7 @@ Private Sub TestCheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, By
                 End If
                 If CStr(shape) = "Rectangles" And CLng(face(1)) >= 9 Then
                     TestConfigureRebarFieldFixture target, "Rectangles", True
-                    TestFixtureInputCell(target, "General", "Shape").Value2 = "OneRect"
+                    TestFixtureInputCell(target, "General", "B2").Value2 = 0#
                     TestCheckInactiveRebarCell stats, target, "Rectangles", face, field, "lowerRectangleOff", cases
                 End If
             Next field
@@ -1385,28 +1383,28 @@ End Sub
 Private Function TestRebarFieldFaces(ByVal shape As String) As Variant
     Select Case shape
         Case "Rectangles"
-            TestRebarFieldFaces = Array(Array("H1.as_1", 7, 20, 1#, 0#, 0#, 1#), _
+            TestRebarFieldFaces = Array(Array("H1.as_1", 7, 20, 1#, 0#, 0#, -1#), _
                 Array("H1.as_2", 8, 21, -1#, 0#, 0#, -1#), _
                 Array("B1.as_1", 5, 18, 0#, -1#, 1#, 0#), _
-                Array("B1.as_2", 6, 19, 0#, 1#, -1#, 0#), _
-                Array("H2.as_1", 11, 24, 1#, 0#, 0#, 1#), _
+                Array("B1.as_2", 6, 19, 0#, 1#, 1#, 0#), _
+                Array("H2.as_1", 11, 24, 1#, 0#, 0#, -1#), _
                 Array("H2.as_2", 12, 25, -1#, 0#, 0#, -1#), _
                 Array("B2.as_1", 9, 22, 0#, -1#, 1#, 0#), _
-                Array("B2.as_2", 10, 23, 0#, 1#, -1#, 0#))
+                Array("B2.as_2", 10, 23, 0#, 1#, 1#, 0#))
         Case "PointedSection"
-            TestRebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, 1#), _
+            TestRebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, -1#), _
                 Array("H.Right", 8, 21, -1#, 0#, 0#, -1#), _
                 Array("B.Top", 5, 18, 0#, -1#, 1#, 0#), _
-                Array("B.Bottom", 6, 19, 0#, 1#, -1#, 0#))
+                Array("B.Bottom", 6, 19, 0#, 1#, 1#, 0#))
         Case "HollowRectangle"
-            TestRebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, 1#), _
+            TestRebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, -1#), _
                 Array("H.Right", 8, 21, -1#, 0#, 0#, -1#), _
                 Array("B.Top", 5, 18, 0#, -1#, 1#, 0#), _
-                Array("B.Bottom", 6, 19, 0#, 1#, -1#, 0#), _
-                Array("Opening.H.Left", 11, 24, -1#, 0#, 0#, 1#), _
+                Array("B.Bottom", 6, 19, 0#, 1#, 1#, 0#), _
+                Array("Opening.H.Left", 11, 24, -1#, 0#, 0#, -1#), _
                 Array("Opening.H.Right", 12, 25, 1#, 0#, 0#, -1#), _
                 Array("Opening.B.Top", 9, 22, 0#, 1#, 1#, 0#), _
-                Array("Opening.B.Bottom", 10, 23, 0#, -1#, -1#, 0#))
+                Array("Opening.B.Bottom", 10, 23, 0#, -1#, 1#, 0#))
         Case Else
             Err.Raise vbObjectError + 5966, "modTestGeometryConfig", "Неизвестная форма арматурного fixture: " & shape
     End Select
@@ -1446,7 +1444,7 @@ Private Sub TestConfigureRebarFieldFixture(ByVal target As Object, ByVal shape A
     Dim face As Variant, mainRow As Long, extraRow As Long, column As Variant
     Select Case shape
         Case "Rectangles"
-            target.Cells(4, 3).Value2 = "TwoRect": TestFixtureInputCell(target, "General", "XOffset").Value2 = 0#
+            TestFixtureInputCell(target, "General", "XOffset").Value2 = 0#
             For Each column In Array("H1", "B1", "H2", "B2"): TestFixtureInputCell(target, "General", CStr(column)).Value2 = 800#: Next column
         Case "PointedSection"
             target.Cells(4, 3).Value2 = 800#: target.Cells(5, 3).Value2 = 800#

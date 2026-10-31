@@ -278,7 +278,7 @@ Private Sub TestUnifiedRebarPaths()
     Dim i As Long, minX As Double, maxX As Double, code As Long, reason As String
     values = TestFixtureRecipeValues("rngRectanglesGeometry")
     Set table = TestFixtureInput(values)
-    TestFixtureSetInput values, "General", "Shape", "val", "OneRect"
+    TestFixtureSetInput values, "General", "B2", "val", 0#
     TestFixtureSetInput values, "General", "B1", "val", 1000#: TestFixtureSetInput values, "General", "H1", "val", 600#
     For Each key In table.RowKeys("Main")
         TestFixtureSetInput values, "Main", CStr(key), "n", 0: TestFixtureSetInput values, "Main", CStr(key), "d", 0#
@@ -558,7 +558,7 @@ Private Sub TestExplicitEndModes()
     TestNear "endMode.closed.unique.spacing", Sqr((layout.X(1) - layout.X(4)) ^ 2 + (layout.Y(1) - layout.Y(4)) ^ 2), Sqr(2#) * 100#
 
     values = TestFixtureRecipeValues("rngRectanglesGeometry")
-    TestFixtureSetInput values, "General", "Shape", "val", "OneRect"
+    TestFixtureSetInput values, "General", "B2", "val", 0#
     For Each key In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right")
         TestFixtureSetInput values, "Main", CStr(key), "n", 0
         TestFixtureSetInput values, "Main", CStr(key), "as", 40#
@@ -894,10 +894,9 @@ Private Function TestDirectionInputs(ByVal kind As Long) As Variant
     Next key
     Select Case kind
         Case 0, 1
-            TestFixtureSetInput values, "General", "Shape", "val", IIf(kind = 0, "OneRect", "TwoRect")
             TestFixtureSetInput values, "General", "B1", "val", IIf(kind = 0, 1000#, 600#)
             TestFixtureSetInput values, "General", "H1", "val", 800#
-            TestFixtureSetInput values, "General", "B2", "val", 1000#
+            TestFixtureSetInput values, "General", "B2", "val", IIf(kind = 0, 0#, 1000#)
             TestFixtureSetInput values, "General", "H2", "val", 400#
             TestFixtureSetInput values, "General", "XOffset", "val", 100#
         Case 2

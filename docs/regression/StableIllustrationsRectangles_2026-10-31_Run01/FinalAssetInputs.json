@@ -1,0 +1,42 @@
+[
+  {
+    "Name": "Circle",
+    "Bytes": 199731,
+    "Dimensions": [
+      903,
+      901
+    ],
+    "SHA256": "E47F8C2822307CC874C7CD120A83C384403BFF1D1E08A1381B65EC2446EC98EF",
+    "MTime": 1793447382.332302
+  },
+  {
+    "Name": "HollowRectangle",
+    "Bytes": 186946,
+    "Dimensions": [
+      903,
+      903
+    ],
+    "SHA256": "7FF77729B8962AB66A49404980AE9A2FD8A29810F94A237D405682DC4E358755",
+    "MTime": 1793447439.6730793
+  },
+  {
+    "Name": "PointedSection",
+    "Bytes": 149595,
+    "Dimensions": [
+      902,
+      903
+    ],
+    "SHA256": "18CC12890143C451CA1637A749A3B6E05D46DFDDF220240892D87E5F2F33BF92",
+    "MTime": 1793447422.4097042
+  },
+  {
+    "Name": "Rectangles",
+    "Bytes": 166194,
+    "Dimensions": [
+      905,
+      905
+    ],
+    "SHA256": "82975F441A2CFB02D0392CBC40C4398761AA75504B277DDA857B4BDA9EF68FFF",
+    "MTime": 1793450679.588414
+  }
+]

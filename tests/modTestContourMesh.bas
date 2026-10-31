@@ -1015,7 +1015,7 @@ Public Function TestMeasureAdaptiveMeshBenchmark(ByVal shape As String, ByVal su
     Next row
     Set table = ThisWorkbook.Names.Item("rngRectanglesGeometry").RefersToRange
     For row = 1 To table.Rows.Count
-        If CStr(table.Cells(row, 1).Value2) = "Shape" Then table.Cells(row, 3).Value2 = IIf(shape = "OneRect", "OneRect", "TwoRect")
+        If CStr(table.Cells(row, 1).Value2) = "B2" And shape = "OneRect" Then table.Cells(row, 3).Value2 = 0#
     Next row
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings

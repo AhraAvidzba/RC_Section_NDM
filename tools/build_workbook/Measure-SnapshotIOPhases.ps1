@@ -219,7 +219,7 @@ End Sub
             [void]$app.Run("'$($book.Name)'!modTestPerformance.TestConfigurePerformanceFixture",'CAPACITY_CRACK_STABILITY_SP63',[int]$count,'Newton','Rectangles','Normal','Yes')
             Set-TestSnapshotPhaseSetting 'Geometry.Source' 'Generated';Set-TestSnapshotPhaseSetting 'Geometry.Type' 'Rectangles';Set-TestSnapshotPhaseSetting 'Mesh.StepMode' 'Auto 0.1';Set-TestSnapshotPhaseSetting 'Mesh.BoundarySubdivisions' '2'
             $table=$book.Names.Item('rngRectanglesGeometry').RefersToRange;$data=$table.Value2
-            for($r=1;$r -le $data.GetLength(0);$r++){switch -CaseSensitive ([string]$data[$r,1]){'Shape'{$table.Cells.Item($r,3).Value2='OneRect'}'H1'{$table.Cells.Item($r,3).Value2='550'}'B1'{$table.Cells.Item($r,3).Value2='250'}}}
+            for($r=1;$r -le $data.GetLength(0);$r++){switch -CaseSensitive ([string]$data[$r,1]){'B2'{$table.Cells.Item($r,3).Value2=0}'H1'{$table.Cells.Item($r,3).Value2='550'}'B1'{$table.Cells.Item($r,3).Value2='250'}}}
         }else{
             $book.Names.Item('rngLoadCombinations').RefersToRange.Value2=$allLoads;$book.Names.Item('rngStabilityDurationLoads').RefersToRange.Value2=$allDuration
             foreach($name in @('rngLoadCombinations','rngStabilityDurationLoads')){$table=$book.Names.Item($name).RefersToRange;if($count+1 -lt $table.Rows.Count){$table.Offset($count+1,0).Resize($table.Rows.Count-$count-1,$table.Columns.Count).ClearContents()}}

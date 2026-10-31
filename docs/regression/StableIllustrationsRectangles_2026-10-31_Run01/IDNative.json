@@ -1,0 +1,25 @@
+{
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "Suites": [
+    {
+      "Seconds": 0.2314719,
+      "Report": "ID_modTestWorkbookInterface.RunUniqueCombinationIDTests.txt",
+      "Totals": [
+        "TOTAL UNIQUE COMBINATION IDS: passed=59; failed=0"
+      ],
+      "Macro": "modTestWorkbookInterface.RunUniqueCombinationIDTests",
+      "Passed": true
+    },
+    {
+      "Seconds": 8.3942476,
+      "Report": "ID_modTestWorkbookInterface.RunLoadActivationWorkflowTests.txt",
+      "Totals": [
+        "TOTAL LOAD ACTIVATION WORKFLOW: passed=78; failed=0"
+      ],
+      "Macro": "modTestWorkbookInterface.RunLoadActivationWorkflowTests",
+      "Passed": true
+    }
+  ],
+  "BookSHA256": "8ABCBD70E3618E1AE749E14283DFE5F15457E6EBA90B1110056CEAA69EF14657"
+}

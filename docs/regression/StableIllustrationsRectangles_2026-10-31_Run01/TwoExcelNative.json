@@ -1,0 +1,17 @@
+{
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "Switches": 40,
+  "Instances": [
+    {
+      "StartTicksUTC": "639290486290315660",
+      "PID": 17232
+    },
+    {
+      "StartTicksUTC": "639290486341495650",
+      "PID": 19600
+    }
+  ],
+  "SameWorkbookBasename": "RC_Section_NDM.xlsm",
+  "OtherInstanceUnchanged": true
+}

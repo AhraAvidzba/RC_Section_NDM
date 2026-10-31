@@ -392,7 +392,7 @@ function Add-CalculationButtons {
     $plotButton.Line.ForeColor.RGB = 5287936
     $plotButton.TextFrame.Characters().Font.Color = 16777215
     $plotButton.TextFrame.Characters().Font.Bold = $true
-    $plotButton.TextFrame.Characters().Font.Size = 8
+    $plotButton.TextFrame.Characters().Font.Size = 9
     Center-ShapeButtonText $plotButton
 }
 
@@ -408,7 +408,7 @@ if (-not [string]::IsNullOrWhiteSpace($FormulaImageDirectory)) {
         throw 'Formula image output must stay inside the workspace.'
     }
 }
-$fullOutputPath = Join-Path $root $OutputPath
+$fullOutputPath = [IO.Path]::GetFullPath((Join-Path $root $OutputPath)) # Excel получает короткий абсолютный путь без сегментов «..».
 $outputDir = Split-Path -Parent $fullOutputPath
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 

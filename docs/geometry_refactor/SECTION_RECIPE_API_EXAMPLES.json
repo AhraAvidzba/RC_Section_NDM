@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "status": "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH",
-  "members": 338,
+  "members": 340,
   "examples": {
     "ISectionRecipe.CreateDefinition": {
       "source": "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas",
@@ -39,7 +39,7 @@
     },
     "CSectionDefinitionBuilder.CirclePath": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1705,
+      "line": 1699,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.CirclePath(\"Full\", 0#, 0#, 100#)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -126,7 +126,7 @@
     },
     "CSectionDefinitionBuilder.RoundedPolygon": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 402,
+      "line": 403,
       "routine": "RunAudit02PolygonApiTests",
       "code": "    Set path = facade.RoundedPolygon(\"Boundary\", crossed)",
       "context": "В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.",
@@ -144,7 +144,7 @@
     },
     "CSectionDefinitionBuilder.OffsetRoundedPolygon": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 662,
+      "line": 663,
       "routine": "RunAudit02GuideExamplesTests",
       "code": "    Set path = facade.OffsetRoundedPolygon(\"OffsetPath\", polygon, 50#)",
       "context": "В теле modTestAudit02Api.RunAudit02GuideExamplesTests с его подготовленными локальными объектами/входом.",
@@ -194,7 +194,7 @@
     },
     "CSectionDefinitionBuilder.AddPath": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 408,
+      "line": 409,
       "routine": "RunAudit02PolygonApiTests",
       "code": "    facade.AddPath path",
       "context": "В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.",
@@ -212,7 +212,7 @@
     },
     "CSectionDefinitionBuilder.Anchor": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 255,
+      "line": 256,
       "routine": "TestAnnotationFacade",
       "code": "        facade.Anchor \"TextNote\", 200#, 0#",
       "context": "В теле modTestRecipeAnnotations.TestAnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -248,7 +248,7 @@
     },
     "CSectionDefinitionBuilder.PathAnchor": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 592,
+      "line": 593,
       "routine": "RunAudit02AnnotationTests",
       "code": "    facade.PathAnchor \"Touch\", path.ID, \"Edge.A\", 0#",
       "context": "В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.",
@@ -288,7 +288,7 @@
     },
     "CSectionDefinitionBuilder.TransformAnchor": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 751,
+      "line": 752,
       "routine": "TestBuildAudit02OperationsDefinition",
       "code": "    facade.TransformAnchor \"MovedA\", \"A\", 0#, 700#",
       "context": "В теле modTestAudit02Api.TestBuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -408,7 +408,7 @@
     },
     "CSectionDefinitionBuilder.Slice": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1708,
+      "line": 1702,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.Slice(\"Half\", path.ID, 50# * GEOM_PI, 150# * GEOM_PI)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -470,18 +470,34 @@
       ]
     },
     "CSectionDefinitionBuilder.RectanglePath": {
-      "source": "tests/modTestRecipeOperations.bas",
-      "line": 214,
-      "routine": "RunResolveAnchorTests",
-      "code": "    Set path = facade.RectanglePath(\"Rect\", 0#, 0#, 400#, 600#)",
-      "context": "В теле modTestRecipeOperations.RunResolveAnchorTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestSectionRecipes.bas",
+      "line": 1987,
+      "routine": "TestJoinedRoundedPaths",
+      "code": "    Set first = facade.RectanglePath(\"A\", 0#, 0#, 300#, 200#)",
+      "context": "В теле modTestSectionRecipes.TestJoinedRoundedPaths с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeOperations.RunResolveAnchorTests",
-          "reportedEntryPoint": "modTestRecipeOperations.RunResolveAnchorTests",
+          "entryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "reportedEntryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunResolveAnchorTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt"
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_No.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.unit-probe.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
           ]
         }
       ]
@@ -503,6 +519,39 @@
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionDefinitionBuilder.JoinedPaths": {
+      "source": "tests/modTestSectionRecipes.bas",
+      "line": 1989,
+      "routine": "TestJoinedRoundedPaths",
+      "code": "    Set joined = facade.JoinedPaths(\"AB\", Array(\"A\", \"B\"))",
+      "context": "В теле modTestSectionRecipes.TestJoinedRoundedPaths с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "reportedEntryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_No.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.unit-probe.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
           ]
         }
       ]
@@ -547,7 +596,7 @@
     },
     "CSectionDefinitionBuilder.Opening": {
       "source": "tests/modTestGeometry.bas",
-      "line": 2265,
+      "line": 2266,
       "routine": "TestHollowRectangleGeometry",
       "code": "    facade.Opening \"VOID\", path.ID, \"OUTER\"",
       "context": "В теле modTestGeometry.TestHollowRectangleGeometry с его подготовленными локальными объектами/входом.",
@@ -721,7 +770,7 @@
     },
     "CSectionDefinitionBuilder.RebarContour": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 784,
+      "line": 795,
       "routine": "TestContactVariants",
       "code": "    facade.RebarContour \"LeftMain\", \"Outer\", \"Boundary\", 50#, \"\", \"\"",
       "context": "В теле modTestIndividualContours.TestContactVariants с его подготовленными локальными объектами/входом.",
@@ -730,6 +779,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -742,7 +793,7 @@
     },
     "CSectionDefinitionBuilder.RebarContourBaseline": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 777,
+      "line": 788,
       "routine": "TestContactVariants",
       "code": "    facade.RebarContourBaseline \"Outer\", \"Boundary\", Array(\"Left\", \"Right\"), 50#, \"IndividualContact[SideLimits]\"",
       "context": "В теле modTestIndividualContours.TestContactVariants с его подготовленными локальными объектами/входом.",
@@ -751,6 +802,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -791,7 +844,7 @@
     },
     "CSectionDefinitionBuilder.RebarProjected": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1731,
+      "line": 1732,
       "routine": "TestMinimumRebarArea",
       "code": "    facade.RebarProjected \"Large\", path.ID, \"Small\", 12#, options",
       "context": "В теле modTestSectionRecipes.TestMinimumRebarArea с его подготовленными локальными объектами/входом.",
@@ -924,7 +977,7 @@
     },
     "CSectionDefinitionBuilder.VerticalDistance": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 261,
+      "line": 262,
       "routine": "TestAnnotationFacade",
       "code": "    If previewPlacement Then facade.VerticalDistance \"VerticalExplicit\", \"v\", -100#, 0#, 150#, 1# Else facade.VerticalDistance \"VerticalExplicit\", \"v\", -100#, 0#, -50#",
       "context": "В теле modTestRecipeAnnotations.TestAnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -960,7 +1013,7 @@
     },
     "CSectionDefinitionBuilder.Dimension": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 260,
+      "line": 261,
       "routine": "TestAnnotationFacade",
       "code": "    facade.Dimension \"Diagonal\", \"A\", \"B\", \"s\"",
       "context": "В теле modTestRecipeAnnotations.TestAnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -996,7 +1049,7 @@
     },
     "CSectionDefinitionBuilder.PathLength": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 272,
+      "line": 273,
       "routine": "TestAnnotationFacade",
       "code": "    facade.PathLength \"Length\", \"Boundary\", \"LengthNote\"",
       "context": "В теле modTestRecipeAnnotations.TestAnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -1032,7 +1085,7 @@
     },
     "CSectionDefinitionBuilder.Radius": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 756,
+      "line": 757,
       "routine": "TestBuildAudit02OperationsDefinition",
       "code": "    facade.Radius \"Radius\", \"Arc\", \"Arc\", 0.5, \"R\"",
       "context": "В теле modTestAudit02Api.TestBuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -1054,7 +1107,7 @@
     },
     "CSectionDefinitionBuilder.Diameter": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 757,
+      "line": 758,
       "routine": "TestBuildAudit02OperationsDefinition",
       "code": "    facade.Diameter \"Diameter\", \"Hole\", \"Hole\", 0.5, \"D\"",
       "context": "В теле modTestAudit02Api.TestBuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -1076,7 +1129,7 @@
     },
     "CSectionDefinitionBuilder.Text": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 758,
+      "line": 759,
       "routine": "TestBuildAudit02OperationsDefinition",
       "code": "    facade.Text \"Note\", \"MovedA\", \"Учебный пример\"",
       "context": "В теле modTestAudit02Api.TestBuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -1165,7 +1218,7 @@
     },
     "CSectionDefinitionBuilder.RebarRowExtentLabel": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1733,
+      "line": 1734,
       "routine": "TestMinimumRebarArea",
       "code": "    facade.RebarRowExtentLabel \"Equal\", \"Equal\", 0#, 1#",
       "context": "В теле modTestSectionRecipes.TestMinimumRebarArea с его подготовленными локальными объектами/входом.",
@@ -1229,7 +1282,7 @@
     },
     "CSectionDefinitionBuilder.RebarRowExtremeLabel": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1734,
+      "line": 1735,
       "routine": "TestMinimumRebarArea",
       "code": "    facade.RebarRowExtremeLabel \"Large\", \"Large\", 0#, 1#, 0#, 1#",
       "context": "В теле modTestSectionRecipes.TestMinimumRebarArea с его подготовленными локальными объектами/входом.",
@@ -1601,7 +1654,7 @@
     },
     "CGeometryPath.SourceSegmentID": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 747,
+      "line": 758,
       "routine": "TestCollapsedUserCorners",
       "code": "        segmentID = path.SourceSegmentID(i)",
       "context": "В теле modTestIndividualContours.TestCollapsedUserCorners с его подготовленными локальными объектами/входом.",
@@ -1783,7 +1836,7 @@
     },
     "CGeometryPath.AtDistance": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1706,
+      "line": 1700,
       "routine": "RunCircleSetbackTests",
       "code": "    path.AtDistance 0#, x, y, tx, ty",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -1807,7 +1860,7 @@
     },
     "CGeometryPath.ValidateNormalTransfer": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1280,
+      "line": 1274,
       "routine": "TestOffsetGeometryDefinition",
       "code": "    If kind = 1 Then path.ValidateNormalTransfer 0#, 10#",
       "context": "В теле modTestAudit02Api.TestOffsetGeometryDefinition с его подготовленными локальными объектами/входом.",
@@ -2021,7 +2074,7 @@
     },
     "CPolygonSpec.Count": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 993,
+      "line": 987,
       "routine": "TestSpecSnapshot",
       "code": "    For i = 1 To polygon.Count",
       "context": "В теле modTestAudit02Api.TestSpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -2079,7 +2132,7 @@
     },
     "CPolygonSpec.X": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 605,
+      "line": 606,
       "routine": "RunAudit02AnnotationTests",
       "code": "    TestCheck \"A03.virtual.not.touch\", x <> polygon.X(1) Or y <> polygon.Y(1)",
       "context": "В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.",
@@ -2096,7 +2149,7 @@
     },
     "CPolygonSpec.Y": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 605,
+      "line": 606,
       "routine": "RunAudit02AnnotationTests",
       "code": "    TestCheck \"A03.virtual.not.touch\", x <> polygon.X(1) Or y <> polygon.Y(1)",
       "context": "В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.",
@@ -2136,7 +2189,7 @@
     },
     "CPolygonSpec.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 994,
+      "line": 988,
       "routine": "TestSpecSnapshot",
       "code": "        TestSpecSnapshot = TestSpecSnapshot & polygon.VertexID(i) & \"|\" & CStr(polygon.X(i)) & \"|\" & CStr(polygon.Y(i)) & _\n            \"|\" & CStr(polygon.FilletRadius(i)) & \"|\" & polygon.SourceReference(i) & vbCrLf",
       "context": "В теле modTestAudit02Api.TestSpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -2209,7 +2262,7 @@
     },
     "CSectionDefinition.AnchorCoordinates": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 423,
+      "line": 424,
       "routine": "RunAudit02PolygonApiTests",
       "code": "    definition.AnchorCoordinates \"A\", x, y",
       "context": "В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.",
@@ -2292,7 +2345,7 @@
     },
     "CSectionDefinition.IsSealed": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 645,
+      "line": 646,
       "routine": "RunRecipeDefinitionTests",
       "code": "    TestCheck \"definition.sealed\", definition.IsSealed",
       "context": "В теле modTestSectionRecipes.RunRecipeDefinitionTests с его подготовленными локальными объектами/входом.",
@@ -2325,7 +2378,7 @@
     },
     "CSectionDefinition.PathCount": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 418,
+      "line": 419,
       "routine": "RunAudit02PolygonApiTests",
       "code": "    TestCheck \"P06.no.partial.path\", definition.PathCount = 3",
       "context": "В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.",
@@ -2343,7 +2396,7 @@
     },
     "CSectionDefinition.LoopCount": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 646,
+      "line": 647,
       "routine": "RunRecipeDefinitionTests",
       "code": "    TestCheck \"definition.loops\", definition.LoopCount = 3 And region.LoopCount = 3",
       "context": "В теле modTestSectionRecipes.RunRecipeDefinitionTests с его подготовленными локальными объектами/входом.",
@@ -2376,7 +2429,7 @@
     },
     "CSectionDefinition.RuleCount": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 495,
+      "line": 506,
       "routine": "TestIndependentContourDomains",
       "code": "    ReDim rules(1 To definition.RuleCount)",
       "context": "В теле modTestIndividualContours.TestIndependentContourDomains с его подготовленными локальными объектами/входом.",
@@ -2385,6 +2438,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -2488,7 +2543,7 @@
     },
     "CSectionDefinition.MaterialContours": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 651,
+      "line": 652,
       "routine": "RunRecipeDefinitionTests",
       "code": "    Set contours = definition.MaterialContours",
       "context": "В теле modTestSectionRecipes.RunRecipeDefinitionTests с его подготовленными локальными объектами/входом.",
@@ -2521,7 +2576,7 @@
     },
     "CSectionDefinition.WriteContours": {
       "source": "tests/modTestGeometry.bas",
-      "line": 2078,
+      "line": 2079,
       "routine": "TestPointedSectionContourAnnotations",
       "code": "    geom.WriteContours model.Contours",
       "context": "В теле modTestGeometry.TestPointedSectionContourAnnotations с его подготовленными локальными объектами/входом.",
@@ -2731,7 +2786,7 @@
     },
     "CRebarRuleOptions.TangentOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 743,
+      "line": 744,
       "routine": "TestBuildAudit02OperationsDefinition",
       "code": "    options.NormalOffset = 40#: options.TangentOffset = 10#",
       "context": "В теле modTestAudit02Api.TestBuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -2753,7 +2808,7 @@
     },
     "CRebarRuleOptions.NormalOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 743,
+      "line": 744,
       "routine": "TestBuildAudit02OperationsDefinition",
       "code": "    options.NormalOffset = 40#: options.TangentOffset = 10#",
       "context": "В теле modTestAudit02Api.TestBuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -2803,7 +2858,7 @@
     },
     "CRebarRuleOptions.EverySecond": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1033,
+      "line": 1027,
       "routine": "TestContactSequence",
       "code": "    TestCheck \"contactBuilder.example.binding\", row.EverySecond",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -2826,7 +2881,7 @@
     },
     "CRebarRuleOptions.IncomingTangentAtJoint": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 703,
+      "line": 704,
       "routine": "TestBuildAudit02DemoDefinition",
       "code": "    options.IncomingTangentAtJoint = True",
       "context": "В теле modTestAudit02Api.TestBuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.",
@@ -2848,7 +2903,7 @@
     },
     "CRebarRuleOptions.DirectionX": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1070,
+      "line": 1064,
       "routine": "TestContactDefaults",
       "code": "    TestCheck \"contactBuilder.clone.DirectionX\", copy.DirectionX = defaults.DirectionX",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2963,7 +3018,7 @@
     },
     "CRebarRuleOptions.SuccessfulProjectionOrdinal": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 516,
+      "line": 517,
       "routine": "RunAudit02OptionsTests",
       "code": "    options.SourceNormalSign = -1#: options.SuccessfulProjectionOrdinal = True",
       "context": "В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.",
@@ -2983,7 +3038,7 @@
     },
     "CRebarRuleOptions.NewPublicationRoot": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 517,
+      "line": 518,
       "routine": "RunAudit02OptionsTests",
       "code": "    options.SkipMissingProjection = True: options.NewPublicationRoot = True",
       "context": "В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.",
@@ -3072,7 +3127,7 @@
     },
     "CRebarRuleOptions.PositionOrder": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 515,
+      "line": 516,
       "routine": "RunAudit02OptionsTests",
       "code": "    options.PositionOrder = FromPathMiddle: options.IncomingTangentAtJoint = True",
       "context": "В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.",
@@ -3138,7 +3193,7 @@
     },
     "CRebarRuleOptions.WarnOnCoincidence": {
       "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 620,
+      "line": 621,
       "routine": "TestMainCoincidenceLabels",
       "code": "        Set copied = options.Clone: options.WarnOnCoincidence = False",
       "context": "В теле modTestRecipeSetbacks.TestMainCoincidenceLabels с его подготовленными локальными объектами/входом.",
@@ -3166,7 +3221,7 @@
     },
     "CRebarRuleOptions.PlacementCheck": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1101,
+      "line": 1095,
       "routine": "TestContactDefaults",
       "code": "    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -3331,7 +3386,7 @@
     },
     "CRebarRuleOptions.Comment": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1084,
+      "line": 1078,
       "routine": "TestContactDefaults",
       "code": "    TestCheck \"contactBuilder.clone.Comment\", copy.Comment = defaults.Comment",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -3354,7 +3409,7 @@
     },
     "CRebarRuleOptions.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1092,
+      "line": 1086,
       "routine": "TestContactDefaults",
       "code": "    defaults.SourceReference = \"ChangedDefaults\"",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -3377,7 +3432,7 @@
     },
     "CRebarRuleOptions.ConfigureDependentContact": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 539,
+      "line": 540,
       "routine": "RunAudit02OptionsTests",
       "code": "    options.ConfigureDependentContact 20#, 12#, RowNormal, 0#, False",
       "context": "В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.",
@@ -3397,7 +3452,7 @@
     },
     "CRebarRuleOptions.Clone": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1060,
+      "line": 1054,
       "routine": "TestContactDefaults",
       "code": "    Set copy = defaults.Clone",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -3420,7 +3475,7 @@
     },
     "CGeometryDiagnostic.Code": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 842,
+      "line": 853,
       "routine": "TestHasOffsetSkip",
       "code": "        If diagnostic.Code = \"OFFSET_POSITION_SKIPPED\" Then",
       "context": "В теле modTestIndividualContours.TestHasOffsetSkip с его подготовленными локальными объектами/входом.",
@@ -3429,6 +3484,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -3646,7 +3703,7 @@
     },
     "CSectionInputTable.RowCount": {
       "source": "tests/modTestSectionSolver.bas",
-      "line": 501,
+      "line": 520,
       "routine": "TestRecipeInputCatalog",
       "code": "            For row = 1 To table.RowCount",
       "context": "В теле modTestSectionSolver.TestRecipeInputCatalog с его подготовленными локальными объектами/входом.",
@@ -3663,7 +3720,7 @@
     },
     "CSectionInputTable.ColumnCount": {
       "source": "tests/modTestSectionSolver.bas",
-      "line": 502,
+      "line": 521,
       "routine": "TestRecipeInputCatalog",
       "code": "                For column = 1 To table.ColumnCount",
       "context": "В теле modTestSectionSolver.TestRecipeInputCatalog с его подготовленными локальными объектами/входом.",
@@ -3728,6 +3785,8 @@
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reportedEntryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -3961,7 +4020,7 @@
     },
     "CSectionInputTable.PositiveLength": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 565,
+      "line": 566,
       "routine": "RunAudit02InputTests",
       "code": "        number = table.PositiveLength(i, 1, units)",
       "context": "В теле modTestAudit02Api.RunAudit02InputTests с его подготовленными локальными объектами/входом.",
@@ -3979,7 +4038,7 @@
     },
     "CSectionInputTable.NonNegativeLength": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 562,
+      "line": 563,
       "routine": "RunAudit02InputTests",
       "code": "    TestCheck \"input.nonnegative.zero\", table.NonNegativeLength(2, 1, units) = 0#",
       "context": "В теле modTestAudit02Api.RunAudit02InputTests с его подготовленными локальными объектами/входом.",
@@ -4036,7 +4095,7 @@
     },
     "CSectionInputTable.OptionalRowOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1401,
+      "line": 1395,
       "routine": "RunIndependentRowOffsetWorkbookTests",
       "code": "    TestCheck \"offset.input.direct.reader\", inputTable.OptionalRowOffset(TestFixtureInput(target.Value2).RowIndex(\"Extra\", \"Circle\"), TestFixtureInput(target.Value2).ColumnIndex(\"Extra\", \"a2\"), units) = 100#",
       "context": "В теле modTestAudit02Api.RunIndependentRowOffsetWorkbookTests с его подготовленными локальными объектами/входом.",
@@ -4293,6 +4352,8 @@
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reportedEntryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4320,6 +4381,8 @@
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reportedEntryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4367,6 +4430,8 @@
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reportedEntryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4413,6 +4478,8 @@
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reportedEntryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4431,7 +4498,7 @@
     },
     "CSectionTypeRegistry.CreateDefinition": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 958,
+      "line": 959,
       "routine": "TestBuildRecipe",
       "code": "    Set definition = registry.CreateDefinition(typeID, context)",
       "context": "В теле modTestSectionRecipes.TestBuildRecipe с его подготовленными локальными объектами/входом.",
@@ -4440,6 +4507,8 @@
           "entryPoint": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
           "reportedEntryPoint": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4506,7 +4575,7 @@
     },
     "CSectionBuilder.Build": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 641,
+      "line": 642,
       "routine": "RunAudit02GuideExamplesTests",
       "code": "    Set model = builder.Build(definition, mesh)",
       "context": "В теле modTestAudit02Api.RunAudit02GuideExamplesTests с его подготовленными локальными объектами/входом.",
@@ -4585,7 +4654,7 @@
     },
     "CRebarRuleExecutor.RequestedPositions": {
       "source": "tests/modTestGeometry.bas",
-      "line": 2126,
+      "line": 2127,
       "routine": "TestPointedSectionRebarLayout",
       "code": "    TestAssertTrue stats, \"rounded.rebar.requested\", builder.RequestedPositions = 16",
       "context": "В теле modTestGeometry.TestPointedSectionRebarLayout с его подготовленными локальными объектами/входом.",
@@ -4657,7 +4726,7 @@
     },
     "CRebarRuleExecutor.FilteredByArea": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1747,
+      "line": 1748,
       "routine": "TestMinimumRebarArea",
       "code": "    TestCheck \"minimumArea.filtered.count\", model.RebarCount = 6 And builder.Rules.FilteredByArea = 3",
       "context": "В теле modTestSectionRecipes.TestMinimumRebarArea с его подготовленными локальными объектами/входом.",
@@ -4703,7 +4772,7 @@
     },
     "CRebarRuleExecutor.MergedPositions": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 729,
+      "line": 740,
       "routine": "TestNonAdjacentRows",
       "code": "    TestCheck \"neighbor.nonadjacent.no.merge\", executor.MergedPositions = 0",
       "context": "В теле modTestIndividualContours.TestNonAdjacentRows с его подготовленными локальными объектами/входом.",
@@ -4712,6 +4781,8 @@
           "entryPoint": "modTestIndividualContours.RunOffsetNeighborMergeTests",
           "reportedEntryPoint": "modTestIndividualContours.RunOffsetNeighborMergeTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4845,7 +4916,7 @@
     },
     "CRebarRuleExecutor.DiagnosticCount": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 840,
+      "line": 851,
       "routine": "TestHasOffsetSkip",
       "code": "    For i = 1 To executor.DiagnosticCount",
       "context": "В теле modTestIndividualContours.TestHasOffsetSkip с его подготовленными локальными объектами/входом.",
@@ -4854,6 +4925,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4890,7 +4963,7 @@
     },
     "CRebarRuleExecutor.DiagnosticAt": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 841,
+      "line": 852,
       "routine": "TestHasOffsetSkip",
       "code": "        Set diagnostic = executor.DiagnosticAt(i)",
       "context": "В теле modTestIndividualContours.TestHasOffsetSkip с его подготовленными локальными объектами/входом.",
@@ -4899,6 +4972,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4935,7 +5010,7 @@
     },
     "CRebarRuleExecutor.PositionCount": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 335,
+      "line": 346,
       "routine": "TestRectangle",
       "code": "    For i = 1 To executor.PositionCount",
       "context": "В теле modTestIndividualContours.TestRectangle с его подготовленными локальными объектами/входом.",
@@ -4944,6 +5019,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -4956,7 +5033,7 @@
     },
     "CRebarRuleExecutor.PositionRuleID": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 404,
+      "line": 415,
       "routine": "TestRoundedCorners",
       "code": "        ruleID = executor.PositionRuleID(i)",
       "context": "В теле modTestIndividualContours.TestRoundedCorners с его подготовленными локальными объектами/входом.",
@@ -4965,6 +5042,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -5011,7 +5090,7 @@
     },
     "CRebarRuleExecutor.PositionPhysicalOwner": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 336,
+      "line": 347,
       "routine": "TestRectangle",
       "code": "        owner = executor.PositionPhysicalOwner(i)",
       "context": "В теле modTestIndividualContours.TestRectangle с его подготовленными локальными объектами/входом.",
@@ -5020,6 +5099,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -5032,7 +5113,7 @@
     },
     "CRebarRuleExecutor.RuleTrace": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1775,
+      "line": 1776,
       "routine": "TestMinimumRebarArea",
       "code": "    Dim trace As String: trace = builder.Rules.RuleTrace(\"Small\")",
       "context": "В теле modTestSectionRecipes.TestMinimumRebarArea с его подготовленными локальными объектами/входом.",
@@ -5144,7 +5225,7 @@
     },
     "CRebarRuleExecutor.GeometryWarningText": {
       "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 735,
+      "line": 736,
       "routine": "TestCircleClosedEndModes",
       "code": "    TestCheck \"endMode.full.circle.dependent.warning\", executor.HasGeometryWarnings And InStr(executor.GeometryWarningText, \"пропущено совпавших стержней: 1\") > 0",
       "context": "В теле modTestRecipeSetbacks.TestCircleClosedEndModes с его подготовленными локальными объектами/входом.",
@@ -6108,7 +6189,7 @@
     },
     "CConcreteRegion.Area": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1172,
+      "line": 1173,
       "routine": "TestAdjacentRectangles",
       "code": "    TestNear \"adjacent.area\", region.Area, 240000#",
       "context": "В теле modTestSectionRecipes.TestAdjacentRectangles с его подготовленными локальными объектами/входом.",
@@ -6745,7 +6826,7 @@
     },
     "CSectionGeometryQuery.ContainsPoint": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1174,
+      "line": 1175,
       "routine": "TestAdjacentRectangles",
       "code": "    TestCheck \"adjacent.lower\", query.ContainsPoint(region, 500#, 100#)",
       "context": "В теле modTestSectionRecipes.TestAdjacentRectangles с его подготовленными локальными объектами/входом.",
@@ -6837,7 +6918,7 @@
     },
     "CSectionGeometryQuery.RoundedPolygon": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 390,
+      "line": 391,
       "routine": "RunAudit02PolygonApiTests",
       "code": "    Set path = query.RoundedPolygon(\"Base\", polygon)",
       "context": "В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.",
@@ -6894,7 +6975,7 @@
     },
     "CSectionGeometryQuery.RegionFromPath": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 395,
+      "line": 396,
       "routine": "RunAudit02PolygonApiTests",
       "code": "    Set region = query.RegionFromPath(path)",
       "context": "В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.",
@@ -6912,7 +6993,7 @@
     },
     "CSectionGeometryQuery.AdjacentRectangles": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1197,
+      "line": 1198,
       "routine": "TestInvalidAdjacentRejected",
       "code": "    Set path = query.AdjacentRectangles(\"Bad\", Array(Array(0#, 0#, 100#, 100#), rect))",
       "context": "В теле modTestSectionRecipes.TestInvalidAdjacentRejected с его подготовленными локальными объектами/входом.",
@@ -6951,6 +7032,39 @@
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.failed-probe.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionGeometryQuery.JoinedPaths": {
+      "source": "tests/modTestSectionRecipes.bas",
+      "line": 1998,
+      "routine": "TestJoinedRoundedPaths",
+      "code": "    Set joined = query.JoinedPaths(\"Invalid\", paths)",
+      "context": "В теле modTestSectionRecipes.TestJoinedRoundedPaths с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "reportedEntryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_No.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.unit-probe.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
           ]
         }
@@ -7141,7 +7255,7 @@
     },
     "modSectionRecipeTypes.EContourNamingPolicy": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 434,
+      "line": 435,
       "routine": "RunAudit02PolygonApiTests",
       "code": "    facade.Outer \"Outer\", path.ID, namingPolicy:=SequentialByKind",
       "context": "В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.",
@@ -7159,7 +7273,7 @@
     },
     "modSectionRecipeTypes.ERebarOffsetAxis": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 522,
+      "line": 523,
       "routine": "RunAudit02OptionsTests",
       "code": "    For Each axis In Array(RowNormal, RowTangent)",
       "context": "В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.",
@@ -7234,6 +7348,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourWorkbookTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourWorkbookTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt"
           ]
@@ -7395,7 +7511,7 @@
     },
     "modSectionRecipeTypes.ERebarPlacementCheck": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1101,
+      "line": 1095,
       "routine": "TestContactDefaults",
       "code": "    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -7486,7 +7602,7 @@
     },
     "modSectionRecipeTypes.TRebarRule": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 457,
+      "line": 468,
       "routine": "TestIndependentContourDomains",
       "code": "    Dim definition As CSectionDefinition, contours As CRebarOffsetContours, rules() As TRebarRule",
       "context": "В теле modTestIndividualContours.TestIndependentContourDomains с его подготовленными локальными объектами/входом.",
@@ -7495,6 +7611,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -7553,7 +7671,7 @@
     },
     "modSectionRecipeTypes.TSectionMeshOptions": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 281,
+      "line": 282,
       "routine": "TestBuildDefinition",
       "code": "    Dim mesh As TSectionMeshOptions",
       "context": "В теле modTestRecipeAnnotations.TestBuildDefinition с его подготовленными локальными объектами/входом.",
@@ -7597,7 +7715,7 @@
     },
     "modSectionRecipeTypes.TRebarPosition": {
       "source": "tests/modTestIndividualContours.bas",
-      "line": 364,
+      "line": 375,
       "routine": "TestRoundedCorners",
       "code": "    Dim parent As TRebarPosition, transfer As TRebarRule, segment As String, parameter As Double, expectedSegment As String",
       "context": "В теле modTestIndividualContours.TestRoundedCorners с его подготовленными локальными объектами/входом.",
@@ -7606,6 +7724,8 @@
           "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reportedEntryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt",
+            "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt",
             "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt",
@@ -7704,7 +7824,7 @@
     },
     "modGeometryTypes.GEOM_TOLERANCE": {
       "source": "tests/modTestGeometry.bas",
-      "line": 2910,
+      "line": 2911,
       "routine": "TestAssertRelative",
       "code": "    If Abs(expected) <= GEOM_TOLERANCE Then",
       "context": "В теле modTestGeometry.TestAssertRelative с его подготовленными локальными объектами/входом.",
@@ -7826,7 +7946,7 @@
     },
     "modGeometryTypes.GeomMax": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1662,
+      "line": 1656,
       "routine": "RunOffsetOpeningAnnotationTests",
       "code": "            maxY = GeomMax(maxY, model.RebarY(i))",
       "context": "В теле modTestAudit02Api.RunOffsetOpeningAnnotationTests с его подготовленными локальными объектами/входом.",
@@ -7902,7 +8022,7 @@
     },
     "modGeometryTypes.TestBuildGeneratedSectionModel": {
       "source": "tests/modTestGeometry.bas",
-      "line": 1668,
+      "line": 1669,
       "routine": "TestRectangularMeshSteps",
       "code": "    Set model = TestBuildGeneratedSectionModel(mesh, Nothing)",
       "context": "В теле modTestGeometry.TestRectangularMeshSteps с его подготовленными локальными объектами/входом.",
@@ -7930,7 +8050,7 @@
     },
     "CRebarContactBuilder.Initialize": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1030,
+      "line": 1024,
       "routine": "TestContactSequence",
       "code": "    contact.Initialize 32#, 1#, 1#, defaults",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -7953,7 +8073,7 @@
     },
     "CRebarContactBuilder.AppendRow": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1035,
+      "line": 1029,
       "routine": "TestContactSequence",
       "code": "    Set row = contact.AppendRow(16#, \"Stacked\", \"EachBar\", \"ContactTest[2,2]\")",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -8355,28 +8475,28 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "05498a9389061dae2b637470481f6f415d5e42eae64a5463a06e2a1825833b70",
-    "tests/modTestAudit02Api.bas": "94b0ff28f6ac0862afc01e4c25c7cc307053d4514ac2876dc68579a5fd0ab52c",
+    "tests/modTestAudit02Api.bas": "3cf92e019f491c6e03a8622c19b57860c7adea51ea448596ed09370bc8d16d06",
     "tests/modTestAutoCADContours.bas": "9db60e63965c048a9fcf77c1bc007d84a646370130be6a03865e4411d4e3ebf7",
     "tests/modTestCalculationSnapshot.bas": "40c6396a92bcf15023f6cc994c2f35334c24b32793d2e20539c5365a375d7ea9",
     "tests/modTestConfiguration.bas": "abfd8ddce4805bbd6da21ee69c10264c2d41a60c60bdf635c41231bb035c9d7b",
     "tests/modTestDeclarativeExamples.bas": "382cc86d7bfe1e58248c9dcc7be1b1e33d388cdc1ed40151f8b3da5e99bfe885",
     "tests/modTestDeclarativeGeometry.bas": "53e9fba682553ee0bcdb1a140bb0f07524f641f9fb1b43ac111ea6579a861345",
     "tests/modTestElementGeometry.bas": "ff7ec5f36ff7bd7ad0e803e8d24bab0adc01f0fc3c5694c3b47fcc959bc75d35",
-    "tests/modTestGeometry.bas": "54ab046a0870cd4af74b3a8deb6e36165613a8508f25cf0aca51d156c0352279",
-    "tests/modTestGeometryConfig.bas": "80863352a8e525adc5ea79706379e5d199ac7563f2205097bc480d03aa07f6fa",
+    "tests/modTestGeometry.bas": "605395b4cbfdc49c9d1b55fd1a4f6bc96399b47d7fb51c38f93b9a278faedded",
+    "tests/modTestGeometryConfig.bas": "b2ffd85aa6cf1ff7d7283ea89df9bbe76be83564269048d706a0f4a847058342",
     "tests/modTestGeometryPublication.bas": "53ccfe826d1a442803c453bc80dadfeb915a8c8c6dbf76cc4bf9e6b1ffe50ebd",
     "tests/modTestGeometryQuery.bas": "d74b38d9aef5d37ddd4096d3e9033a970a0b85f1205b4ef023e32ca1faf4740a",
     "tests/modTestGeometryReview.bas": "341484f21ae15d3b9ec12028d1d6070e34d6c52a8388c281ab5f0e9ff85cadd8",
-    "tests/modTestIndividualContours.bas": "8fb15cfbb3ba19144ee4ffa0145a2421791e545f8ee8c0347ea538a28978ff54",
+    "tests/modTestIndividualContours.bas": "35c2b64119a1e9ef2edce75c40dfe62fc2adb4a963c3681fd1ae4cc5d4a62a5f",
     "tests/modTestMaterialDiagrams.bas": "bc581b09a51296938450766dcedcd5476aa0c65935800005f186c70177491564",
     "tests/modTestPolygonSpec.bas": "3e3a12174e25b92f5bd5ee5b205e241874a9268ac592322addd3174f7409f55e",
-    "tests/modTestRecipeAnnotations.bas": "456ff10c1e450dcdbd4a32b9a15770026967385c2a9dc54bf840bbbc79355185",
+    "tests/modTestRecipeAnnotations.bas": "2dbfde54fda3756d2f5cda2007abb458e317d998c91c1c9db40ec9c13f0b6b0a",
     "tests/modTestRecipeApiCatalogue.bas": "75d807fc636dd8d8a20587d63d45fd3058fa38a7c41d92fff2f2379c01730658",
     "tests/modTestRecipeOperations.bas": "e67c032c919471aad69e105460a30139947b6f9ff8367c70d0388857e5a12033",
-    "tests/modTestRecipeSetbacks.bas": "aca18de2533dcdbd80079a78b66afd70b38b7c19f7bc1823b7ebad605ee0e602",
+    "tests/modTestRecipeSetbacks.bas": "a1032349b774ad64bfb413a770f60280e52eab1fd89c90a07590b329d62bac0b",
     "tests/modTestSectionInputReader.bas": "d7ea646f51e40a197d42511269d095b183fcdc186a84f3e46b7cc540d1cdf211",
-    "tests/modTestSectionRecipes.bas": "0220e53d5d1a2a8f008354f406efd407cf98ba24763fd416abfbdab4a7f368ac",
-    "tests/modTestSectionSolver.bas": "8ecf25c30e3193c9a0f98a7ef8ad1b9f9bd521fde22a38574bf0c247676fc2d1",
+    "tests/modTestSectionRecipes.bas": "e6838efa0e6c586971bb0bc73392009ac70aec8756db33bb23415cf36d74bf02",
+    "tests/modTestSectionSolver.bas": "94ebcb62959553dee3d1887016c5fdcf4f10477ee8c177ed679f6ceb9fb001f2",
     "docs/geometry_refactor/SECTION_RECIPE_API_EVIDENCE_ALIASES.json": "dd19a93f47b91f1453509959bb03ad073ecf0aea985bfd9f59753615523b3b69"
   },
   "reportHashes": {
@@ -8595,7 +8715,11 @@
     "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_No.txt": "62d65d45a08d88228ea98608e55c25acc0d2c0c2c1acfba2a343b2c9f8545363",
     "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed12_Yes.txt": "2d540d10fb65819ddbb009a52c45b7a38bf3bf139d734f5b17999804e5ff8d5d",
     "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_No.txt": "ea7a6087fa9cc8acd9cef3994d3628bfe554094e1f1bfddd28410a8dcf9bfefc",
-    "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt": "59ba39b5b2c4b54fa9faec30af285be96be87263c9ad875cfd8f526050c3d1a0"
+    "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed16_Yes.txt": "59ba39b5b2c4b54fa9faec30af285be96be87263c9ad875cfd8f526050c3d1a0",
+    "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_No.txt": "1020c0887951dd9395103f4a33d3403236468be1c261e2942130e2b86f6d2722",
+    "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed18_Yes.txt": "5da90fdf0ac4fcc232e98ed7f8dc37cfabf0f07ff1b964422b6048885abedb7e",
+    "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_No.txt": "f17ca4c2b177c4b3e7bf9f2c4bfabec284d14ee1cacf7b9bd46e25d48fd5e7c7",
+    "docs/regression/UnifiedRebarPaths_2026-10-29_Run01/Directed19_Yes.txt": "ed8c9b0f14d004015d14030a65226fdd8dec2f5fd010272f06cb79cd86bb59e1"
   },
   "note": "Фрагменты исполняются в явно указанном полном контексте теста/fixture; это не самостоятельные процедуры. Root подтверждён журналом. entryPoint содержит текущее имя, reportedEntryPoint — точное имя в историческом журнале; соответствие после механического Test-переименования задано явной проверенной картой. Новые вычисления этим сопоставлением не подтверждаются."
 }

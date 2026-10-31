@@ -203,10 +203,9 @@ Public Function RunIndividualContourWorkbookTests() As String
             Case 0, 1, 2
                 tableName = "rngRectanglesGeometry"
                 Set table = ThisWorkbook.Names(tableName).RefersToRange
-                TestFixtureInputCell(table, "General", "Shape").Value2 = IIf(scenario = 2, "TwoRect", "OneRect")
                 TestFixtureInputCell(table, "General", "B1").Value2 = IIf(scenario = 2, 1400#, 2400#)
                 TestFixtureInputCell(table, "General", "H1").Value2 = IIf(scenario = 2, 900#, 1800#)
-                TestFixtureInputCell(table, "General", "B2").Value2 = 2400#: TestFixtureInputCell(table, "General", "H2").Value2 = 800#
+                TestFixtureInputCell(table, "General", "B2").Value2 = 2400#: TestFixtureInputCell(table, "General", "H2").Value2 = IIf(scenario = 2, 800#, 0#)
                 TestFixtureInputCell(table, "General", "XOffset").Value2 = 400#
             Case 3
                 tableName = "rngPointedSectionGeometry": Set table = ThisWorkbook.Names(tableName).RefersToRange

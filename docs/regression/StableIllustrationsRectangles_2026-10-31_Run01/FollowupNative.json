@@ -1,0 +1,26 @@
+{
+  "Passed": false,
+  "FullAcceptanceClaim": false,
+  "Suites": [
+    {
+      "Passed": true,
+      "Report": "Followup_modTestGeometryConfig.RunTestRebarFieldEffects.txt",
+      "Totals": [
+        "TOTAL_REBAR_FIELD_CONFIG: passed=2334; failed=0; cases=344"
+      ],
+      "Seconds": 799.4532105,
+      "Macro": "modTestGeometryConfig.RunTestRebarFieldEffects"
+    },
+    {
+      "Passed": false,
+      "Report": "Followup_modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
+      "Totals": [
+        "TOTAL RECIPE ANNOTATIONS: passed=33; failed=1"
+      ],
+      "Seconds": 15.0665039,
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests"
+    }
+  ],
+  "BookSHA256": "F4ED33B30C421E7A45F055E148A6602DC5927D5E07D6806A1AF984A9CA4E7F18",
+  "Error": "System.Management.Automation.RuntimeException: Followup failed: modTestSectionRecipes.RunRecipeAnnotationCountTests"
+}

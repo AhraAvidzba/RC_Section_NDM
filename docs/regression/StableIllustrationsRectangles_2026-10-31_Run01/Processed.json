@@ -1,0 +1,134 @@
+{
+  "Status": "DIRECTED_ACCEPTANCE_COMPLETE",
+  "FullOnOffAcceptanceClaim": false,
+  "SourceBookSHA256": "8ABCBD70E3618E1AE749E14283DFE5F15457E6EBA90B1110056CEAA69EF14657",
+  "AllCodeSHA256": "5017F261D7B3AAEE462CB7041C7D4BDE1A5FB9B3234C8E6FFF99FBC96AFA2C5D",
+  "SourceComponents": 176,
+  "ExportComponents": 182,
+  "PrimaryReportsRead": 16,
+  "HistoricalFailuresPreserved": true,
+  "UnresolvedFailures": [],
+  "BlankIDDisablesRow": true,
+  "DuplicateIDStopsLaunch": true,
+  "OwnProcessesReviewed": 31,
+  "Branch": "codex/section-illustrations",
+  "MainMergeRequiresAgreement": true,
+  "Proofs": [
+    {
+      "Path": "CandidateFinalNative.json",
+      "Bytes": 2554,
+      "SHA256": "21042528679E2E89C3B66B5113399A7A57DCAA56488EE7EDE5FBB3B5C2DFBE2C"
+    },
+    {
+      "Path": "FreshFinalNative.json",
+      "Bytes": 2550,
+      "SHA256": "6E36632EDA8D067B41ECDA652A55FFACD86A0B4FD54487994A4B10783C16DEFF"
+    },
+    {
+      "Path": "CandidateSourceEquality.json",
+      "Bytes": 117811,
+      "SHA256": "42902FE42DD0F771B03A978A22B969D0AD32123B56F0521B0B259A928F35DA7A"
+    },
+    {
+      "Path": "FreshSourceEquality.json",
+      "Bytes": 117811,
+      "SHA256": "F1F24C662927486AA15E1FDEB372A75E69C82F3151A660ECFBDC47CA40308768"
+    },
+    {
+      "Path": "PackageReview.json",
+      "Bytes": 2162,
+      "SHA256": "8A87EB5F7838A72CF4DF67DE5A03B15F60ECA218E51AF4E667B45ECCDD0E3D8D"
+    },
+    {
+      "Path": "ScopedCodeDelta.json",
+      "Bytes": 813,
+      "SHA256": "33241F508A82DE44AD08D34A63604588AE0A80B2418385BFD1873C05699E37CD"
+    },
+    {
+      "Path": "IDNative.json",
+      "Bytes": 786,
+      "SHA256": "A91C98E33AD77DD673DDA100A4E1E71123EED451C3C9BF14F9F05232D50D0821"
+    },
+    {
+      "Path": "RemainingNative.json",
+      "Bytes": 1552,
+      "SHA256": "F17AB78D7BA3B8797DC0F72525AC91FA2CF49F1FE22B400BDCA52F1A752D121B"
+    },
+    {
+      "Path": "AffectedNative.json",
+      "Bytes": 2799,
+      "SHA256": "F67137A56B553195060222B20DE08981FFB94ED0A1AC31D616E1F9A5E978EA7D"
+    },
+    {
+      "Path": "FollowupNative.json",
+      "Bytes": 917,
+      "SHA256": "0706574BD6588EEED9890053B32A4A49EE89BD23668F7900D187C30AFF92C550"
+    },
+    {
+      "Path": "InitialRebarPrimaryReview.json",
+      "Bytes": 513,
+      "SHA256": "8D8D1532BB9504FF7A4EC7E88A6B5B36E6B1924CB8164AC8964B1954AE11ADBA"
+    },
+    {
+      "Path": "DirectionExpectationFix.json",
+      "Bytes": 1740,
+      "SHA256": "B9E0C57D1C22D09CF8A1907088A667E10289120CCDF9F922B3E93F22591E3740"
+    },
+    {
+      "Path": "StressNative.json",
+      "Bytes": 7804,
+      "SHA256": "346DAEC32466F9191BB9BEE482D8A406D2D17CCC0217DEF091361B37E6B7F396"
+    },
+    {
+      "Path": "MultiBookNative.json",
+      "Bytes": 401,
+      "SHA256": "E98A818441A55D55EDAA2739795B3C0D76C7814AA819A99055A7E06086ACB823"
+    },
+    {
+      "Path": "TwoExcelNative.json",
+      "Bytes": 346,
+      "SHA256": "54ECC00AECD720927B46DDB5632270B9EE062E7F05EE6E76C8F5A0B066EA5603"
+    },
+    {
+      "Path": "VisualReview.json",
+      "Bytes": 556,
+      "SHA256": "BCAE6CD813761B1F705CD8AFCEE4B83359402E732A323C1C1E6726908BE1DC56"
+    },
+    {
+      "Path": "FreshStructuredGeometry.json",
+      "Bytes": 2550,
+      "SHA256": "7E36B8A022563AE1648BDB7F8A77E79797FBA150E3092850CE3AC156E4BE7810"
+    },
+    {
+      "Path": "FinalPrimaryReview.json",
+      "Bytes": 9494,
+      "SHA256": "B815542E693DC1FAC08D2C250A807DC8E4D8F2FB0A4CD3F67575F4A25B993608"
+    },
+    {
+      "Path": "AllOwnClosures.json",
+      "Bytes": 7520,
+      "SHA256": "F47834266889162958BE07FEBBF27BE5C7B05388D197EC2F80D16074770CC519"
+    },
+    {
+      "Path": "Publication.json",
+      "Bytes": 465,
+      "SHA256": "7581B9A60ED108EBBB5174E854F446ECD0D7DDFF89347A96B7FA3C922E7A1D9B"
+    },
+    {
+      "Path": "FinalAssetInputs.json",
+      "Bytes": 918,
+      "SHA256": "9616F35D17CC418C9ACA1F58E296D72B9BACDB78F116ACCB2515E10A3433BEFC"
+    },
+    {
+      "Path": "DrawingSource.json",
+      "Bytes": 328,
+      "SHA256": "FDA23F23EB01445ECEE47CD5D22D683E01A990AF9B713737DAC45A94F1A774DE"
+    },
+    {
+      "Path": "PowerShellSyntax.json",
+      "Bytes": 521,
+      "SHA256": "68206213425D29B6BAE2FA7AF4E353037EAA62A2F219605B21ABBEE0479AD722"
+    }
+  ],
+  "PrimaryArchiveSHA256": "EDA685BC17B4718EB23ACD2C26ACE1B078324CFAB3EDD57C9B329D8331030A43"
+}

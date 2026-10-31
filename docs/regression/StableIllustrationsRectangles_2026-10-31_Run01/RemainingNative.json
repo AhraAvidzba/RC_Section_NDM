@@ -1,0 +1,44 @@
+{
+  "Passed": false,
+  "FullAcceptanceClaim": false,
+  "Suites": [
+    {
+      "Passed": true,
+      "Seconds": 117.9164492,
+      "Report": "Remaining_modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
+      "Totals": [
+        "TOTAL RECIPE ANNOTATIONS: passed=92; failed=0"
+      ],
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests"
+    },
+    {
+      "Passed": true,
+      "Seconds": 0.0717228,
+      "Report": "Remaining_modTestSectionRecipes.RunRecipeMeshBoundaryTests.txt",
+      "Totals": [
+        "TOTAL RECIPE MESH BOUNDARY: passed=182; failed=0"
+      ],
+      "Macro": "modTestSectionRecipes.RunRecipeMeshBoundaryTests"
+    },
+    {
+      "Passed": true,
+      "Seconds": 7.1432114,
+      "Report": "Remaining_modTestProfileConfig.RunAudit03RelocatedInputTests.txt",
+      "Totals": [
+        "TOTAL_AUDIT03_RELOCATED_INPUT: passed=868; failed=0; cases=116"
+      ],
+      "Macro": "modTestProfileConfig.RunAudit03RelocatedInputTests"
+    },
+    {
+      "Passed": false,
+      "Seconds": 0.3810604,
+      "Report": "Remaining_modTestWorkbookInterface.RunUniqueCombinationIDTests.txt",
+      "Totals": [
+        "TOTAL UNIQUE COMBINATION IDS: passed=57; failed=2"
+      ],
+      "Macro": "modTestWorkbookInterface.RunUniqueCombinationIDTests"
+    }
+  ],
+  "BookSHA256": "1DF549AF841E41C37B91346C4653CD050F0A1596569EBCE2AD4A0E0C5CFA1EBA",
+  "Error": "System.Management.Automation.RuntimeException: Followup failed: modTestWorkbookInterface.RunUniqueCombinationIDTests"
+}

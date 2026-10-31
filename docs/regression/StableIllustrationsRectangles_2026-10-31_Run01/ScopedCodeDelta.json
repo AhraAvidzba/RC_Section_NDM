@@ -1,0 +1,17 @@
+﻿{
+    "UnchangedComponents":  178,
+    "TestChanges":  "Dimension-driven absent-part fixture and ID tests",
+    "Passed":  true,
+    "GeometryProductionUnchanged":  true,
+    "ChangedComponents":  [
+                              "CLoadCombinationReader",
+                              "modTestShapeArchitecture",
+                              "modWorkbookCalculation",
+                              "modTestWorkbookInterface"
+                          ],
+    "WorkingChanges":  "Only early unique-ID validation and its reader",
+    "NewBookSHA256":  "8ABCBD70E3618E1AE749E14283DFE5F15457E6EBA90B1110056CEAA69EF14657",
+    "OldBookSHA256":  "F4ED33B30C421E7A45F055E148A6602DC5927D5E07D6806A1AF984A9CA4E7F18",
+    "WorkbookEventModulesUnchanged":  true,
+    "IllustrationCodeUnchanged":  true
+}

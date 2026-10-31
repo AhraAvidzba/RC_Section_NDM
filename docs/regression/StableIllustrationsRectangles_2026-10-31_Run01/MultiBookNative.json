@@ -1,0 +1,16 @@
+{
+  "Passed": true,
+  "FullAcceptanceClaim": false,
+  "Switches": 240,
+  "NDMBooks": 2,
+  "OtherBooks": 1,
+  "SameNamedPictures": true,
+  "SourceBookSHA256": "DC67EDE1789966A4FE0F051FA20E58FF7BE031210CE59E3EA49A0AD9657343BA",
+  "ActiveBookCases": [
+    "target NDM",
+    "other NDM",
+    "unrelated book"
+  ],
+  "OtherBookPicturesUnchanged": true,
+  "ActiveSelectionPreserved": true
+}

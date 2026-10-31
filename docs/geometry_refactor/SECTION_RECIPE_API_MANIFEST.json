@@ -956,6 +956,35 @@
     },
     {
       "owner": "CSectionDefinitionBuilder",
+      "name": "JoinedPaths",
+      "kind": "Function",
+      "signature": "Public Function JoinedPaths(ByVal pathID As String, ByVal sourcePathIDs As Variant) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "sourcePathIDs",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathIDs As Variant"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 280,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.JoinedPaths",
+      "anchor": "api-csectiondefinitionbuilder-joinedpaths"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
       "name": "PathGroup",
       "kind": "Sub",
       "signature": "Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)",
@@ -978,7 +1007,7 @@
         }
       ],
       "resultType": null,
-      "line": 280,
+      "line": 290,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.PathGroup",
       "anchor": "api-csectiondefinitionbuilder-pathgroup"
@@ -1047,7 +1076,7 @@
         }
       ],
       "resultType": null,
-      "line": 287,
+      "line": 297,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Outer",
       "anchor": "api-csectiondefinitionbuilder-outer"
@@ -1124,7 +1153,7 @@
         }
       ],
       "resultType": null,
-      "line": 301,
+      "line": 311,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Opening",
       "anchor": "api-csectiondefinitionbuilder-opening"
@@ -1185,7 +1214,7 @@
         }
       ],
       "resultType": null,
-      "line": 315,
+      "line": 325,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByCount",
       "anchor": "api-csectiondefinitionbuilder-rebarbycount"
@@ -1246,7 +1275,7 @@
         }
       ],
       "resultType": null,
-      "line": 326,
+      "line": 336,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByMaxStep",
       "anchor": "api-csectiondefinitionbuilder-rebarbymaxstep"
@@ -1307,7 +1336,7 @@
         }
       ],
       "resultType": null,
-      "line": 335,
+      "line": 345,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByFixedStep",
       "anchor": "api-csectiondefinitionbuilder-rebarbyfixedstep"
@@ -1368,7 +1397,7 @@
         }
       ],
       "resultType": null,
-      "line": 344,
+      "line": 354,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarAtStations",
       "anchor": "api-csectiondefinitionbuilder-rebaratstations"
@@ -1445,7 +1474,7 @@
         }
       ],
       "resultType": null,
-      "line": 353,
+      "line": 363,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarContour",
       "anchor": "api-csectiondefinitionbuilder-rebarcontour"
@@ -1498,7 +1527,7 @@
         }
       ],
       "resultType": null,
-      "line": 368,
+      "line": 378,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarContourBaseline",
       "anchor": "api-csectiondefinitionbuilder-rebarcontourbaseline"
@@ -1551,7 +1580,7 @@
         }
       ],
       "resultType": null,
-      "line": 379,
+      "line": 389,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarDependent",
       "anchor": "api-csectiondefinitionbuilder-rebardependent"
@@ -1612,7 +1641,7 @@
         }
       ],
       "resultType": null,
-      "line": 388,
+      "line": 398,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarProjected",
       "anchor": "api-csectiondefinitionbuilder-rebarprojected"
@@ -1673,7 +1702,7 @@
         }
       ],
       "resultType": null,
-      "line": 409,
+      "line": 419,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.VerticalExtent",
       "anchor": "api-csectiondefinitionbuilder-verticalextent"
@@ -1734,7 +1763,7 @@
         }
       ],
       "resultType": null,
-      "line": 420,
+      "line": 430,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.HorizontalExtent",
       "anchor": "api-csectiondefinitionbuilder-horizontalextent"
@@ -1811,7 +1840,7 @@
         }
       ],
       "resultType": null,
-      "line": 431,
+      "line": 441,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.HorizontalDistance",
       "anchor": "api-csectiondefinitionbuilder-horizontaldistance"
@@ -1880,7 +1909,7 @@
         }
       ],
       "resultType": null,
-      "line": 445,
+      "line": 455,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.VerticalDistance",
       "anchor": "api-csectiondefinitionbuilder-verticaldistance"
@@ -1957,7 +1986,7 @@
         }
       ],
       "resultType": null,
-      "line": 458,
+      "line": 468,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Dimension",
       "anchor": "api-csectiondefinitionbuilder-dimension"
@@ -2010,7 +2039,7 @@
         }
       ],
       "resultType": null,
-      "line": 473,
+      "line": 483,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.PathLength",
       "anchor": "api-csectiondefinitionbuilder-pathlength"
@@ -2071,7 +2100,7 @@
         }
       ],
       "resultType": null,
-      "line": 484,
+      "line": 494,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Radius",
       "anchor": "api-csectiondefinitionbuilder-radius"
@@ -2132,7 +2161,7 @@
         }
       ],
       "resultType": null,
-      "line": 491,
+      "line": 501,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Diameter",
       "anchor": "api-csectiondefinitionbuilder-diameter"
@@ -2177,7 +2206,7 @@
         }
       ],
       "resultType": null,
-      "line": 510,
+      "line": 520,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Text",
       "anchor": "api-csectiondefinitionbuilder-text"
@@ -2222,7 +2251,7 @@
         }
       ],
       "resultType": null,
-      "line": 521,
+      "line": 531,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarlabel"
@@ -2267,7 +2296,7 @@
         }
       ],
       "resultType": null,
-      "line": 530,
+      "line": 540,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowlabel"
@@ -2320,7 +2349,7 @@
         }
       ],
       "resultType": null,
-      "line": 540,
+      "line": 550,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtentLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextentlabel"
@@ -2332,7 +2361,7 @@
       "signature": "Public Function Finish() As CSectionDefinition",
       "parameters": [],
       "resultType": "CSectionDefinition",
-      "line": 552,
+      "line": 562,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Finish",
       "anchor": "api-csectiondefinitionbuilder-finish"
@@ -2393,7 +2422,7 @@
         }
       ],
       "resultType": null,
-      "line": 562,
+      "line": 572,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtremeLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextremelabel"
@@ -7576,6 +7605,35 @@
     },
     {
       "owner": "CSectionGeometryQuery",
+      "name": "JoinedPaths",
+      "kind": "Function",
+      "signature": "Public Function JoinedPaths(ByVal pathID As String, ByVal paths As Collection) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "paths",
+          "type": "Collection",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal paths As Collection"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 1221,
+      "source": "src/Section/CSectionGeometryQuery.cls",
+      "id": "CSectionGeometryQuery.JoinedPaths",
+      "anchor": "api-csectiongeometryquery-joinedpaths"
+    },
+    {
+      "owner": "CSectionGeometryQuery",
       "name": "LineIntervals",
       "kind": "Function",
       "signature": "Public Function LineIntervals(ByVal region As CConcreteRegion, ByVal pointX As Double, ByVal pointY As Double, ByVal directionX As Double, ByVal directionY As Double, Optional ByVal parameterMin As Double = -1E+100, Optional ByVal parameterMax As Double = 1E+100) As Variant",
@@ -7638,7 +7696,7 @@
         }
       ],
       "resultType": "Variant",
-      "line": 1346,
+      "line": 1374,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.LineIntervals",
       "anchor": "api-csectiongeometryquery-lineintervals"
@@ -7707,7 +7765,7 @@
         }
       ],
       "resultType": "Variant",
-      "line": 1408,
+      "line": 1436,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.SampleMaterialIntervals",
       "anchor": "api-csectiongeometryquery-samplematerialintervals"
@@ -7752,7 +7810,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 1440,
+      "line": 1468,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ConcreteCoverFromPointAlongDirection",
       "anchor": "api-csectiongeometryquery-concretecoverfrompointalongdirection"
@@ -7773,7 +7831,7 @@
         }
       ],
       "resultType": "CConcreteRegion",
-      "line": 1606,
+      "line": 1634,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RegionFromContours",
       "anchor": "api-csectiongeometryquery-regionfromcontours"
@@ -7810,7 +7868,7 @@
         }
       ],
       "resultType": null,
-      "line": 1626,
+      "line": 1654,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RegionCentroid",
       "anchor": "api-csectiongeometryquery-regioncentroid"
@@ -7839,7 +7897,7 @@
         }
       ],
       "resultType": null,
-      "line": 1663,
+      "line": 1691,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RegionProperties",
       "anchor": "api-csectiongeometryquery-regionproperties"
@@ -7908,7 +7966,7 @@
         }
       ],
       "resultType": null,
-      "line": 1722,
+      "line": 1750,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.ValidateBoundaryProperties",
       "anchor": "api-csectiongeometryquery-validateboundaryproperties"
@@ -7969,7 +8027,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 1843,
+      "line": 1871,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.TryRectangle",
       "anchor": "api-csectiongeometryquery-tryrectangle"
@@ -9557,7 +9615,7 @@
   "scope": "Все Public члены фасада, его options/результатов и общего ввода/единиц; общие query/region и build diagnostics для проверок. Private/Friend не API рецепта.",
   "sourceHashes": {
     "src/Section/ISectionRecipe.cls": "d963bc8c3c3f105fed9825b07db11a0258e275604286fea66d7322488ad5edf0",
-    "src/Section/CSectionDefinitionBuilder.cls": "746c913aa27115f22db8e4eaeb4c160b9d212579fdde81916bab7d8fae2373fd",
+    "src/Section/CSectionDefinitionBuilder.cls": "b38ef38a97c53d8ea4add1e57608c5b33763ed7b1848e9e89fb118888404779f",
     "src/Geometry/CGeometryPath.cls": "418c08ae763b88232a7e51c51d7e406bd66348c02237087c256dc0227cc24edf",
     "src/Geometry/CPolygonSpec.cls": "dbe2cec2d9a456f01a39fba31149a80f44d84a3ff4179ee7b4ab434ba1c79564",
     "src/Section/CSectionDefinition.cls": "78964c7c87d373648022123d4f807a39263047d044fc5888d1c96018f3652b9c",
@@ -9571,7 +9629,7 @@
     "src/Section/CRebarRuleExecutor.cls": "7a032d1cc2468bef09b4a343899dc946f76050659867fafc66e28efffd77fd73",
     "src/Excel/CUnitSystem.cls": "1166ffb8e73ef235c6abbe4486089c84ea84df790ce8655857d03f3383ad13d3",
     "src/Section/CConcreteRegion.cls": "5f19f30c1df99573c230d62ff6ff4e5c95d0b87b7390972318f97e93597fe5bd",
-    "src/Section/CSectionGeometryQuery.cls": "ab48bc6731e32b87117132d0ea28d98213257d4afbd1c2a68896e5ff7474b393",
+    "src/Section/CSectionGeometryQuery.cls": "341eb372dd785bfbdb4bd9975e2a1a8172340299f0a5c9cb62b3d7a4860b114a",
     "src/Common/modSectionRecipeTypes.bas": "65313aff0eaa5b25de490a5beb56832d3488d9de5e5aeef6ad0b817150568638",
     "src/Common/modGeometryTypes.bas": "4eaec666848fbb3026ec5b3d7155d62d0ba92d4ac7b4afbaf4199210e30e0717",
     "src/Section/CRebarContactBuilder.cls": "2f767080d38bbbf267c788ff75d112b086d2552f0c5835e4e46fa706764bc43c",

@@ -275,6 +275,16 @@ Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As V
     mDefinition.AddPath AdjacentRectangles
 End Function
 
+' Объединяет заданные замкнутые линии в одну наружную границу, включая точные дуги.
+' Общие внутренние участки исключаются; раздельные части и отверстия в результате запрещены.
+Public Function JoinedPaths(ByVal pathID As String, ByVal sourcePathIDs As Variant) As CGeometryPath
+    RequireOpen
+    Dim paths As Collection, key As Variant: Set paths = New Collection
+    For Each key In sourcePathIDs: paths.Add mDefinition.Path(CStr(key)): Next key
+    Set JoinedPaths = mQuery.JoinedPaths(pathID, paths)
+    mDefinition.AddPath JoinedPaths
+End Function
+
 ' Объединяет ID независимых линий в именованную группу, сохраняя их порядок.
 ' Соединяющие отрезки между линиями не добавляются.
 Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)

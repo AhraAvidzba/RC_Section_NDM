@@ -1,0 +1,17 @@
+{
+  "Reason": "Independent tangent expectations must follow +X / -Y contract",
+  "EntirePrimaryRead": true,
+  "Failures": [
+    "H1.as_1.start.tangentY",
+    "H1.as_1.end.tangentY",
+    "B1.as_2.start.tangentX",
+    "B1.as_2.end.tangentX",
+    "H2.as_1.start.tangentY",
+    "H2.as_1.end.tangentY",
+    "B2.as_2.start.tangentX",
+    "B2.as_2.end.tangentX"
+  ],
+  "ProductionDefectsConfirmed": 0,
+  "Bytes": 1046490,
+  "SHA256": "E82B4AD21AE8296A644DCBAA9C75A2286132E69BD395CB73B744DD49F66CF31B"
+}

@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -15,7 +15,7 @@ Option Explicit
 ' Переносит строки rngLoadCombinations в CBatchSectionCalculator. Пустые
 ' компоненты N, Mx и My считаются нулём; полностью нулевая нагрузка пропускается,
 ' а неполные/некорректные строки сохраняются как InvalidInput, чтобы пользователь
-' увидел их в отчете.
+' увидел их в отчете. Повторяющиеся заполненные ID прерывают запуск до добавления строк.
 '
 ' Если передан CUnitSystem, усилия сразу переводятся из INPUT-единиц и
 ' пользовательской системы знаков во внутреннюю систему расчетного ядра.
@@ -30,8 +30,30 @@ End Sub
 ' Читает сочетания из переданного диапазона. Общий способ используется
 ' обычной книгой и тестами без ручного запуска её интерфейса.
 Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
-    If source Is Nothing Then Err.Raise vbObjectError + 3952, "CLoadCombinationReader", "Диапазон сочетаний нагрузок не найден."
     If batch Is Nothing Then Err.Raise vbObjectError + 3953, "CLoadCombinationReader", "Пакетный расчетчик не передан."
+    RequireSourceTable source
+
+    Dim data As Variant
+    data = source.Value2
+    RequireUniqueIDs data, source
+
+    Dim rowIndex As Long
+    For rowIndex = 2 To UBound(data, 1) ' Пустой номер отключает строку, сохраняя введённые нагрузки и её исходное место.
+        If Not IsBlankCell(data(rowIndex, 1)) Then AddRow data, batch, rowIndex, units, source
+    Next rowIndex
+End Sub
+
+' Проверяет заполненные ID до чтения геометрии и запуска расчёта; пустой ID отключает строку.
+' Регистр и крайние пробелы не различаются, как при выборе сохранённого сочетания.
+Public Sub ValidateUniqueIDs(ByVal source As Object)
+    RequireSourceTable source
+    Dim data As Variant: data = source.Value2
+    RequireUniqueIDs data, source
+End Sub
+
+' Проверяет форму именованной таблицы до блочного чтения её значений.
+Private Sub RequireSourceTable(ByVal source As Object)
+    If source Is Nothing Then Err.Raise vbObjectError + 3952, "CLoadCombinationReader", "Диапазон сочетаний нагрузок не найден."
     If source.Areas.Count <> 1 Then Err.Raise vbObjectError + 3956, "CLoadCombinationReader", _
         "Именованный диапазон rngLoadCombinations должен ссылаться на единую прямоугольную таблицу, а не на несколько отдельных областей." & vbCrLf & vbCrLf & _
         "Сейчас указан диапазон: " & source.Worksheet.Name & "!" & source.Address(False, False) & "." & vbCrLf & vbCrLf & _
@@ -41,12 +63,29 @@ Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCal
     If source.Columns.Count < 5 Then Err.Raise vbObjectError + 3955, "CLoadCombinationReader", _
         "rngLoadCombinations должен содержать минимум столбцы CombinationID, N, Mx, My и ProfileId."
 
-    Dim data As Variant
-    data = source.Value2
+End Sub
 
-    Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1) ' Пустой номер отключает строку, сохраняя введённые нагрузки и её исходное место.
-        If Not IsBlankCell(data(rowIndex, 1)) Then AddRow data, batch, rowIndex, units, source
+' Просматривает только ID; нагрузки и остальные поля отключённых строк здесь не читаются.
+' Первый повтор прерывает чтение целиком, прежде чем в batch попадёт хотя бы одна строка.
+Private Sub RequireUniqueIDs(ByRef data As Variant, ByVal source As Object)
+    Dim seen As Object: Set seen = CreateObject("Scripting.Dictionary")
+    seen.CompareMode = vbTextCompare
+    Dim rowIndex As Long, firstRow As Long, identifier As String
+    For rowIndex = 2 To UBound(data, 1)
+        If IsBlankCell(data(rowIndex, 1)) Or IsError(data(rowIndex, 1)) Or IsNull(data(rowIndex, 1)) Then GoTo NextIdentifier
+        identifier = Trim$(CStr(data(rowIndex, 1))) ' Тот же ключ, который AddRow передаёт в пакетный расчёт.
+        If seen.Exists(identifier) Then
+            firstRow = CLng(seen(identifier))
+            Err.Raise vbObjectError + 3957, "CLoadCombinationReader", _
+                "Расчёт не запущен: заполненные ID сочетаний должны быть разными." & vbCrLf & vbCrLf & _
+                "Повторяющийся CombinationID: «" & identifier & "»." & vbCrLf & vbCrLf & _
+                "Адреса ячеек:" & vbCrLf & _
+                CellLocation(source, firstRow, 1, "CombinationID (rngLoadCombinations)") & vbCrLf & _
+                CellLocation(source, rowIndex, 1, "CombinationID (rngLoadCombinations)") & vbCrLf & vbCrLf & _
+                "Задайте каждому сочетанию индивидуальный ID. Чтобы отключить строку, очистите её ID."
+        End If
+        seen.Add identifier, rowIndex
+NextIdentifier:
     Next rowIndex
 End Sub
 

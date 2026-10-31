@@ -1,4 +1,4 @@
-Attribute VB_Name = "modWorkbookCalculation"
+﻿Attribute VB_Name = "modWorkbookCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -360,6 +360,9 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     excelGuard.Enter workbook.Application
     workbook.Application.Calculate ' Один пересчёт всех открытых книг этого Excel: актуализирует внешние формульные зависимости при отключённых событиях, до чтения входов.
 
+    Dim reader As CLoadCombinationReader: Set reader = New CLoadCombinationReader
+    reader.ValidateUniqueIDs workbook.Names.Item("rngLoadCombinations").RefersToRange ' Не читаем сохранённое сечение и не меняем Results при повторе номера.
+
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
@@ -430,8 +433,6 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     report.AddStep "Настройки solver/capacity/crack применены к batch."
     Set batch.ExecutionReport = report
 
-    Dim reader As CLoadCombinationReader
-    Set reader = New CLoadCombinationReader
     report.AddSection "Сочетания нагрузок"
     report.AddStep "Начато чтение rngLoadCombinations."
     reader.LoadFromWorkbook workbook, batch, units

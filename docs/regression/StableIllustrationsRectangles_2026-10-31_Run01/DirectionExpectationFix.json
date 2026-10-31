@@ -1,0 +1,46 @@
+{
+  "ProductionChanged": false,
+  "Contract": "horizontal +X, vertical -Y",
+  "Changes": [
+    {
+      "Before": "TestRebarFieldFaces = Array(Array(\"H1.as_1\", 7, 20, 1#, 0#, 0#, 1#), _",
+      "After": "TestRebarFieldFaces = Array(Array(\"H1.as_1\", 7, 20, 1#, 0#, 0#, -1#), _"
+    },
+    {
+      "Before": "Array(\"B1.as_2\", 6, 19, 0#, 1#, -1#, 0#), _",
+      "After": "Array(\"B1.as_2\", 6, 19, 0#, 1#, 1#, 0#), _"
+    },
+    {
+      "Before": "Array(\"H2.as_1\", 11, 24, 1#, 0#, 0#, 1#), _",
+      "After": "Array(\"H2.as_1\", 11, 24, 1#, 0#, 0#, -1#), _"
+    },
+    {
+      "Before": "Array(\"B2.as_2\", 10, 23, 0#, 1#, -1#, 0#))",
+      "After": "Array(\"B2.as_2\", 10, 23, 0#, 1#, 1#, 0#))"
+    },
+    {
+      "Before": "TestRebarFieldFaces = Array(Array(\"H.Left\", 7, 20, 1#, 0#, 0#, 1#), _",
+      "After": "TestRebarFieldFaces = Array(Array(\"H.Left\", 7, 20, 1#, 0#, 0#, -1#), _"
+    },
+    {
+      "Before": "Array(\"B.Bottom\", 6, 19, 0#, 1#, -1#, 0#))",
+      "After": "Array(\"B.Bottom\", 6, 19, 0#, 1#, 1#, 0#))"
+    },
+    {
+      "Before": "TestRebarFieldFaces = Array(Array(\"H.Left\", 7, 20, 1#, 0#, 0#, 1#), _",
+      "After": "TestRebarFieldFaces = Array(Array(\"H.Left\", 7, 20, 1#, 0#, 0#, -1#), _"
+    },
+    {
+      "Before": "Array(\"B.Bottom\", 6, 19, 0#, 1#, -1#, 0#), _",
+      "After": "Array(\"B.Bottom\", 6, 19, 0#, 1#, 1#, 0#), _"
+    },
+    {
+      "Before": "Array(\"Opening.H.Left\", 11, 24, -1#, 0#, 0#, 1#), _",
+      "After": "Array(\"Opening.H.Left\", 11, 24, -1#, 0#, 0#, -1#), _"
+    },
+    {
+      "Before": "Array(\"Opening.B.Bottom\", 10, 23, 0#, -1#, -1#, 0#))",
+      "After": "Array(\"Opening.B.Bottom\", 10, 23, 0#, -1#, 1#, 0#))"
+    }
+  ]
+}

@@ -15,3 +15,7 @@ Thumbs.db
 /workbook/output/*
 !/workbook/output/RC_Section_NDM.xlsm
 !/workbook/output/VBA_All_Code.txt
+
+# Temporary AutoCAD drawing locks
+*.dwl
+*.dwl2

@@ -1,0 +1,127 @@
+{
+  "Passed": true,
+  "Archive": "ReviewedPrimaryReports.zip",
+  "ArchiveSHA256": "EDA685BC17B4718EB23ACD2C26ACE1B078324CFAB3EDD57C9B329D8331030A43",
+  "Files": [
+    {
+      "Path": "Affected_modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests.txt",
+      "Bytes": 10663,
+      "SHA256": "84009FFE28D67414CC85D1540C3B24B450BAF3116758B930B97FA7416CA2B52D"
+    },
+    {
+      "Path": "Affected_modTestGeometry.RunGeometryTests.txt",
+      "Bytes": 393886,
+      "SHA256": "72C8AF4208A769C9ABC21EA0067737CEAE7EEF4A4C6521943BED0B294DA289CE"
+    },
+    {
+      "Path": "Affected_modTestGeometryConfig.RunAudit03RebarFieldConfigTests.txt",
+      "Bytes": 1046490,
+      "SHA256": "E82B4AD21AE8296A644DCBAA9C75A2286132E69BD395CB73B744DD49F66CF31B"
+    },
+    {
+      "Path": "Affected_modTestGeometryConfig.RunAudit03RequiredGeometryInputTests.txt",
+      "Bytes": 133894,
+      "SHA256": "4BF5CEFBC8CCB250AC0C7E3137C6FB7C325FD86A73EAC5CF67977DF9789285F9"
+    },
+    {
+      "Path": "Affected_modTestGeometryConfig.RunAudit03ShapeConfigTests.txt",
+      "Bytes": 20906,
+      "SHA256": "A6BE2E95459EFECD88620425E644AC882ACBA1F81D70068C5C05B530C01F64CB"
+    },
+    {
+      "Path": "Affected_modTestIndividualContours.RunIndividualContourWorkbookTests.txt",
+      "Bytes": 38301,
+      "SHA256": "CFEA4F2BC777CD302F606A54C82ED059105626DE21F9BF161B0EB98E896B5AF9"
+    },
+    {
+      "Path": "Affected_modTestRecipeSetbacks.RunRecipeSetbackUnitTests.txt",
+      "Bytes": 4638,
+      "SHA256": "30C137BB09EE10039697EF0E789826369D3B6E07F1BB0DD92A6643CD36BD81D5"
+    },
+    {
+      "Path": "Affected_modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+      "Bytes": 271659,
+      "SHA256": "CCE1FD138B7FB5FAD1465ED8F04D35335044A2CCEB678BE274AD7581F1D67124"
+    },
+    {
+      "Path": "Attempt01_Affected_modTestGeometry.RunGeometryTests.txt",
+      "Bytes": 393901,
+      "SHA256": "4CEEE473205E4E5CA67C8A4911267128E5F69DFE94E5AD8192883D2EBBEB8615"
+    },
+    {
+      "Path": "Attempt01_Followup_modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
+      "Bytes": 1745,
+      "SHA256": "F3F2AE8DE71204661729DED5337D8E74703A7CDEFDFFD71685153D2E07E1CE85"
+    },
+    {
+      "Path": "Attempt01_Smoke_modTestSectionRecipes.RunRectanglesDimensionTests.txt",
+      "Bytes": 264799,
+      "SHA256": "46D5C876A173AF6883AE2DA6E3920F29823596D782F1F0873C25CFA0757B9C2A"
+    },
+    {
+      "Path": "Baseline_modTestGeometry.RunGeometryTests.txt",
+      "Bytes": 393901,
+      "SHA256": "7A5B29227524001A5303EC8A6AAD70CD9435891B6E04E3D55F9D93F74D058C47"
+    },
+    {
+      "Path": "BeforeLeadingZeroFix_Remaining_modTestWorkbookInterface.RunUniqueCombinationIDTests.txt",
+      "Bytes": 1934,
+      "SHA256": "4B415DE24BF5FA24F0B8EE56C3441018C00D85B333EBF8FB9D63C268B113FFF3"
+    },
+    {
+      "Path": "Followup_modTestGeometryConfig.RunTestRebarFieldEffects.txt",
+      "Bytes": 269091,
+      "SHA256": "31DDFC74275E2E47E41EEA41370F662D1355DD8540CDE42C84F9AD3ED55258AC"
+    },
+    {
+      "Path": "Followup_modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
+      "Bytes": 1745,
+      "SHA256": "F3F2AE8DE71204661729DED5337D8E74703A7CDEFDFFD71685153D2E07E1CE85"
+    },
+    {
+      "Path": "ID_modTestWorkbookInterface.RunLoadActivationWorkflowTests.txt",
+      "Bytes": 2671,
+      "SHA256": "FED6F6FB0C1D84EDB5593AC138B12EDF851884380B3AA5327B997889E59A4568"
+    },
+    {
+      "Path": "ID_modTestWorkbookInterface.RunUniqueCombinationIDTests.txt",
+      "Bytes": 1930,
+      "SHA256": "D55FE159144C631AF53C7DB6213EB8B11CCBEA586A2CDA0402467BD4D6E32362"
+    },
+    {
+      "Path": "Remaining_modTestProfileConfig.RunAudit03RelocatedInputTests.txt",
+      "Bytes": 106010,
+      "SHA256": "54A97AC0ED18A57C0E79A8775605E584AD9BE1C2FF3026D6F4BE5FAC6A15D812"
+    },
+    {
+      "Path": "Remaining_modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
+      "Bytes": 4055,
+      "SHA256": "A0D3E03AD8F65C98A86FD467D7AC7E9B5A1C960E770D863399CF26F3DB0E1C08"
+    },
+    {
+      "Path": "Remaining_modTestSectionRecipes.RunRecipeMeshBoundaryTests.txt",
+      "Bytes": 8935,
+      "SHA256": "165D6D7AFC0405559F3615C8100BC201E1A2315C8385B6E016C334435AA9209D"
+    },
+    {
+      "Path": "Remaining_modTestWorkbookInterface.RunUniqueCombinationIDTests.txt",
+      "Bytes": 1934,
+      "SHA256": "4B415DE24BF5FA24F0B8EE56C3441018C00D85B333EBF8FB9D63C268B113FFF3"
+    },
+    {
+      "Path": "Smoke_modTestSectionRecipes.RunRectanglesDimensionTests.txt",
+      "Bytes": 264799,
+      "SHA256": "46D5C876A173AF6883AE2DA6E3920F29823596D782F1F0873C25CFA0757B9C2A"
+    },
+    {
+      "Path": "Attempt01_FreshBuild.log",
+      "Bytes": 816,
+      "SHA256": "BAB95BB7CA6C1A467E43A8C209BDCDFE99E01C0C0F34DAB31D2E527F751C2EAE"
+    },
+    {
+      "Path": "Attempt01_FreshBuildReleaseAbsolutePath.log",
+      "Bytes": 524,
+      "SHA256": "282A224F944F6EBC647115C651A2311135AE21F0763452270DE4872D3BCEF767"
+    }
+  ]
+}

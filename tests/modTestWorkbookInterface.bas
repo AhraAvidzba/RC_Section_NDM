@@ -46,6 +46,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAppendLine stats, "RUN: TestButtons"
     TestButtons stats
     TestLoadCombinationsOnConfig stats
+    TestUniqueCombinationIDs stats
     TestAppendLine stats, "RUN: TestSingleCombinationSkipsBlankRows"
     TestSingleCombinationSkipsBlankRows stats
     TestLoadCombinationRangeMinimumRows stats
@@ -2371,8 +2372,6 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.validation.circleLoc3row", _
         TestAnySettingValidationHasOptions("Rebar.Loc3row", Array("Stacked", "SideBySide"))
     TestSetSystemSetting "Geometry.Type", "Rectangles"
-    TestAssertTrue stats, "ui.validation.RectanglesSectionType", _
-        TestRectanglesParameterValidationHasOptions("Rectangles.SectionType", Array("TwoRect", "OneRect"))
     TestAssertTrue stats, "ui.validation.rectanglesLoc2row", _
         TestRectanglesExtraValidationHasOptions("H1 - левая", "положение", 1, Array("Stacked", "SideBySide"))
     TestAssertTrue stats, "ui.validation.rectanglesBind2row", _
@@ -3683,7 +3682,6 @@ Private Sub TestPrepareRectanglesInput()
     TestSetSystemSetting "Geometry.Source", "Generated"
     TestSetSystemSetting "Geometry.Type", "Rectangles"
     TestFixtureResetReinforcement "Rectangles"
-    TestSetSystemSetting "Rectangles.SectionType", "TwoRect"
     TestSetSystemSetting "Rectangles.UpperOffsetX", "0"
     modTestPlotConfig.TestSetOutputCombination ThisWorkbook, "LC_L"
     TestSetSystemSetting "Mesh.StepMode", "User"
@@ -5361,7 +5359,7 @@ Private Sub TestRectanglesIndependentThirdRows(ByRef stats As TUiTestStats)
     On Error GoTo Failed
     Set recipe = New CSectionRecipeRectangles
     values = TestFixtureRecipeValues("rngRectanglesGeometry")
-    TestFixtureSetInput values, "General", "Shape", "val", "OneRect"
+    TestFixtureSetInput values, "General", "B2", "val", 0#
     TestFixtureSetInput values, "General", "H1", "val", 300#: TestFixtureSetInput values, "General", "B1", "val", 300# ' При as=50 и максимальном контактном смещении54 полный проверочный контур должен сохранять положительную ширину: 300-2*(50+54)=92 мм.
     For Each rowKey In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
         TestFixtureSetInput values, "Main", CStr(rowKey), "as", 50#: TestFixtureSetInput values, "Main", CStr(rowKey), "d", 20#
@@ -6230,7 +6228,7 @@ Private Sub TestAudit03RescaleInputTables(ByVal lengthFactor As Double, ByVal st
         Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         Set fieldReader = TestFixtureInput(target.Value2)
         For Each fieldKey In fieldReader.RowKeys("General")
-            If CStr(fieldKey) <> "Shape" And InStr(CStr(fieldKey), ".Type") = 0 Then
+            If InStr(CStr(fieldKey), ".Type") = 0 Then
                 TestAudit03DivideNumericInput TestFixtureInputCell(target, "General", CStr(fieldKey)), lengthFactor
             End If
         Next fieldKey
@@ -8094,7 +8092,6 @@ Private Function TestExpectedConfigDropdownOptions(ByVal key As String) As Strin
         Case "ArrowSize": TestExpectedConfigDropdownOptions = "Small|Medium|Wide"
         Case "Rebar.Loc2row", "Rebar.Loc3row": TestExpectedConfigDropdownOptions = "Stacked|SideBySide"
         Case "Rebar.Bind2row", "Rebar.Bind3row": TestExpectedConfigDropdownOptions = "EachBar|EverySecondBar"
-        Case "Rectangles.SectionType": TestExpectedConfigDropdownOptions = "TwoRect|OneRect"
     End Select
 End Function
 
@@ -9244,6 +9241,7 @@ End Function
 ' Полностью отключённые LC не запускают решатель и сохраняют показанный снимок в обоих хранилищах.
 Public Function RunLoadActivationWorkflowTests() As String
     Dim stats As TUiTestStats
+    TestUniqueCombinationIDs stats
     TestBlankCombinationIDSkipsCalculation stats
     TestNoActiveLoadsPreserveResults stats
     RunLoadActivationWorkflowTests = stats.Report & "TOTAL LOAD ACTIVATION WORKFLOW: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
@@ -9597,3 +9595,111 @@ Private Sub TestGeometryWarningFormationOnly(ByRef stats As TUiTestStats)
         TestAssertTrue stats, "geometryWarning." & CStr(mode) & ".calculation.noRepeat", InStr(message, "пропущено совпавших стержней") = 0 And InStr(message, "Geometry.RecipeDiagnostics") = 0
     Next mode
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет уникальность заполненных ID без решения НДС и сохранность Results при остановке штатной команды.
+Public Function RunUniqueCombinationIDTests() As String
+    Dim stats As TUiTestStats
+    TestUniqueCombinationIDs stats
+    RunUniqueCombinationIDTests = stats.Report & "TOTAL UNIQUE COMBINATION IDS: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Имена диапазонов перемещаются на другой лист: диагностике нужны фактические адреса обеих повторяющихся ячеек.
+' Пустые ID, включая пустую формулу, отключают строки независимо от содержимого остальных полей.
+Private Sub TestUniqueCombinationIDs(ByRef stats As TUiTestStats)
+    Dim sheet As Object, target As Object, originalRef As String, originalSheet As Object
+    Dim reader As CLoadCombinationReader, batch As CBatchSectionCalculator, data(1 To 7, 1 To 7) As Variant
+    Dim headers As Variant, scenario As Long, row As Long, column As Long, code As Long, reason As String
+    Dim shouldReject As Boolean, expectedCount As Long, before As Variant, results As Object, savedSentinel As Variant
+    Dim alerts As Boolean, solves As Long, prefix As String
+    On Error GoTo Failed
+    Set originalSheet = ThisWorkbook.ActiveSheet: alerts = Application.DisplayAlerts
+    originalRef = ThisWorkbook.Names("rngLoadCombinations").RefersTo
+    Set sheet = ThisWorkbook.Worksheets.Add: sheet.Name = "__TestUniqueIDs"
+    Set target = sheet.Cells(100, 35).Resize(7, 7)
+    ThisWorkbook.Names("rngLoadCombinations").RefersTo = "='" & sheet.Name & "'!" & target.Address
+    headers = Array("CombinationID", "N", "Mx", "My", "ProfileId", "LoadPath", "Comment")
+    Set reader = New CLoadCombinationReader
+    For scenario = 0 To 8
+        For row = 1 To 7: For column = 1 To 7: data(row, column) = Empty: Next column: Next row
+        For column = 1 To 7: data(1, column) = headers(column - 1): Next column
+        For row = 2 To 4: data(row, 1) = "LC" & CStr(row - 1): data(row, 2) = 1#: data(row, 5) = "PR1": Next row
+        shouldReject = False: expectedCount = 3
+        Select Case scenario
+            Case 1: data(4, 1) = "LC1": shouldReject = True ' Несмежный повтор.
+            Case 2
+                For row = 2 To 7: data(row, 1) = 1#: Next row
+                shouldReject = True ' Одинаковый номер во всех строках, включая строки с нулевыми нагрузками.
+            Case 3: data(4, 1) = " lc1 ": shouldReject = True
+            Case 4: data(2, 1) = 1#: data(4, 1) = "1": shouldReject = True
+            Case 5
+                data(2, 1) = Empty: data(2, 2) = CVErr(xlErrValue): data(2, 5) = "not a profile"
+                data(3, 1) = "   ": data(3, 2) = "unused": expectedCount = 1
+            Case 6: data(2, 2) = 0#: data(4, 1) = "LC1": shouldReject = True
+            Case 7: data(2, 1) = "01": data(4, 1) = "1" ' Текстовые идентификаторы не округляются и не переводятся в числа.
+            Case 8: data(2, 1) = Empty: expectedCount = 2
+        End Select
+        target.NumberFormat = "General"
+        If scenario = 7 Then target.Cells(2, 1).NumberFormat = "@" ' В Excel текстовый формат сохраняет ведущий ноль; обычная числовая ячейка хранит уже 1.
+        target.Value2 = data
+        If scenario = 8 Then target.Cells(2, 1).Formula = "=""""": target.Cells(2, 1).Calculate
+        before = target.Formula: Set batch = New CBatchSectionCalculator
+        code = 0: reason = vbNullString: prefix = "uniqueIDs.case" & CStr(scenario)
+        On Error Resume Next
+        reader.LoadFromWorkbook ThisWorkbook, batch
+        code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo Failed
+        TestAssertTrue stats, prefix & ".result", (code = vbObjectError + 3957) = shouldReject
+        If shouldReject Then
+            TestAssertTrue stats, prefix & ".noPartialBatch", batch.Count = 0
+            TestAssertTrue stats, prefix & ".rangeName", InStr(reason, "rngLoadCombinations") > 0
+            TestAssertTrue stats, prefix & ".firstAddress", InStr(reason, sheet.Name & "!" & target.Cells(2, 1).Address(False, False)) > 0
+            row = 4: If scenario = 2 Then row = 3
+            TestAssertTrue stats, prefix & ".secondAddress", InStr(reason, sheet.Name & "!" & target.Cells(row, 1).Address(False, False)) > 0
+            TestAssertTrue stats, prefix & ".action", InStr(reason, "индивидуальный ID") > 0
+        Else
+            TestAssertTrue stats, prefix & ".count", code = 0 And batch.Count = expectedCount
+        End If
+        TestAssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
+        TestAssertTrue stats, prefix & ".inputsPreserved", TestUniqueIDSameMatrix(before, target.Formula)
+    Next scenario
+    target.Cells(2, 1).Value2 = "DUP": target.Cells(4, 1).Value2 = "DUP"
+    Set results = ThisWorkbook.Worksheets("Results")
+    savedSentinel = results.Cells(160, 1).Formula: results.Cells(160, 1).Value2 = "UNIQUE_ID_SAVED_RESULT"
+    before = results.UsedRange.Formula: solves = SectionEquilibriumSolveCount(): code = 0: reason = vbNullString
+    On Error Resume Next
+    reason = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    code = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo Failed
+    TestAssertTrue stats, "uniqueIDs.workflow.stopped", code = vbObjectError + 3957 And InStr(reason, "индивидуальный ID") > 0
+    TestAssertTrue stats, "uniqueIDs.workflow.noSolve", SectionEquilibriumSolveCount() = solves
+    TestAssertTrue stats, "uniqueIDs.workflow.resultsPreserved", TestUniqueIDSameMatrix(before, results.UsedRange.Formula)
+    results.Cells(160, 1).Formula = savedSentinel
+    GoTo Restore
+Failed:
+    TestAppendLine stats, "FAIL: uniqueIDs.runtime; " & Err.Number & "; " & Err.Description
+    stats.Failed = stats.Failed + 1
+Restore:
+    On Error Resume Next
+    If Len(originalRef) > 0 Then ThisWorkbook.Names("rngLoadCombinations").RefersTo = originalRef
+    If Not originalSheet Is Nothing Then originalSheet.Activate
+    Application.DisplayAlerts = False: If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = alerts
+    On Error GoTo 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает все ячейки, включая первый столбец; дата и кэш не исключаются из снимка.
+Private Function TestUniqueIDSameMatrix(ByVal before As Variant, ByVal after As Variant) As Boolean
+    On Error GoTo Different
+    If UBound(before, 1) <> UBound(after, 1) Or UBound(before, 2) <> UBound(after, 2) Then Exit Function
+    Dim row As Long, column As Long
+    For row = 1 To UBound(before, 1)
+        For column = 1 To UBound(before, 2)
+            If CStr(before(row, column)) <> CStr(after(row, column)) Then Exit Function
+        Next column
+    Next row
+    TestUniqueIDSameMatrix = True
+Different:
+End Function

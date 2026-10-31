@@ -4976,7 +4976,7 @@
         },
         {
           "Name": "CurrentSection",
-          "Type": 13,
+          "Type": 6,
           "ChartType": null,
           "Left": 147.75,
           "Top": 100.5,
