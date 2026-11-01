@@ -1,0 +1,170 @@
+[
+  {
+    "Key": "SP63_CrackCondition",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 73,
+    "Image": "Im103",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "a_{crc}\\leq a_{crc,ult}"
+  },
+  {
+    "Key": "SP63_CrackWidth",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 76,
+    "Image": "Im1582",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "a_{crc,i}=\\varphi_1\\cdot\\varphi_2\\cdot\\varphi_3\\cdot\\psi_s\\cdot\\frac{\\sigma_s}{E_s}\\cdot l_s"
+  },
+  {
+    "Key": "SP63_TensionCondition",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 73,
+    "Image": "Im1505",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "N>N_{crc}"
+  },
+  {
+    "Key": "SP63_TensionForce",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 76,
+    "Image": "Im1578",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "N_{crc}=A_{red}\\cdot R_{bt,ser}"
+  },
+  {
+    "Key": "SP63_Area",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 76,
+    "Image": "Im1564",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "A_{red}=A+A_s\\cdot\\alpha+A_s^{\\prime}\\cdot\\alpha"
+  },
+  {
+    "Key": "SP63_TensionStrain",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 50,
+    "Image": "Im918",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "\\varepsilon_{bt,ult}=\\varepsilon_{bt2}-(\\varepsilon_{bt2}-\\varepsilon_{bt0})\\cdot\\frac{\\varepsilon_1}{\\varepsilon_2}"
+  },
+  {
+    "Key": "SP63_CrackSpacing",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 79,
+    "Image": "Im1643",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "l_s=0{,}5\\cdot\\frac{A_{bt}}{A_s}\\cdot d_s"
+  },
+  {
+    "Key": "SP63_Psi",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 79,
+    "Image": "Im1651",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "\\psi_s=1-0{,}8\\cdot\\frac{\\sigma_{s,crc}}{\\sigma_s}"
+  },
+  {
+    "Key": "SP63_PhiL",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 43,
+    "Image": "Im689",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "\\varphi_l=1+\\frac{M_{l1}}{M_1}"
+  },
+  {
+    "Key": "SP63_Kb",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 43,
+    "Image": "Im683",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "k_b=\\frac{0{,}15}{\\varphi_l(0{,}3+\\delta_e)}"
+  },
+  {
+    "Key": "SP63_D",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 43,
+    "Image": "Im679",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "D=k_b E_b I+k_s E_s I_s"
+  },
+  {
+    "Key": "SP63_Ncr",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 43,
+    "Image": "Im552",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "N_{cr}=\\frac{\\pi^2\\cdot D}{l_0^2}"
+  },
+  {
+    "Key": "SP63_Eta",
+    "SourceSHA256": "1E2E99985AB65ED69F0F9B0A989404AF8582FADC28FCA04336235F1BFFFFA409",
+    "PDFPageOneBased": 43,
+    "Image": "Im675",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "\\eta=\\frac{1}{1-\\frac{N}{N_{cr}}}"
+  },
+  {
+    "Key": "SP35_Radius",
+    "SourceSHA256": "2C3E9CEDC64A11C159FEA2A16F4273BADE7395147617AA4171E89ECAC04FF985",
+    "PDFPageOneBased": 123,
+    "Image": "Im1925",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "R_r=\\frac{A_r}{\\sum\\beta n d}"
+  },
+  {
+    "Key": "SP35_CrackWidth",
+    "SourceSHA256": "2C3E9CEDC64A11C159FEA2A16F4273BADE7395147617AA4171E89ECAC04FF985",
+    "PDFPageOneBased": 121,
+    "Image": "Im1865",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "a_{cr}=\\frac{\\sigma}{E}\\psi\\leq\\Delta_{cr}"
+  },
+  {
+    "Key": "SP35_PhiL",
+    "SourceSHA256": "2C3E9CEDC64A11C159FEA2A16F4273BADE7395147617AA4171E89ECAC04FF985",
+    "PDFPageOneBased": 91,
+    "Image": "Im1127",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "\\varphi_l=1+M_l/M"
+  },
+  {
+    "Key": "SP35_DeltaMin",
+    "SourceSHA256": "2C3E9CEDC64A11C159FEA2A16F4273BADE7395147617AA4171E89ECAC04FF985",
+    "PDFPageOneBased": 91,
+    "Image": "Im1133",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "\\delta_{\\min}=0{,}5-0{,}01\\frac{l_0}{h}-0{,}01R_b"
+  },
+  {
+    "Key": "SP35_Ncr",
+    "SourceSHA256": "2C3E9CEDC64A11C159FEA2A16F4273BADE7395147617AA4171E89ECAC04FF985",
+    "PDFPageOneBased": 91,
+    "Image": "Im1117",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "N_{cr}=\\frac{6{,}4E_b}{l_0^2}\\left[\\frac{I_b}{\\varphi_l}\\left(\\frac{0{,}11}{0{,}1+\\frac{\\delta}{\\varphi_p}}+0{,}1\\right)+n_1I_s\\right]"
+  },
+  {
+    "Key": "SP35_Eta",
+    "SourceSHA256": "2C3E9CEDC64A11C159FEA2A16F4273BADE7395147617AA4171E89ECAC04FF985",
+    "PDFPageOneBased": 91,
+    "Image": "Im1111",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "\\eta=\\frac{1}{1-\\frac{N}{N_{cr}}}"
+  },
+  {
+    "Key": "SP35_NLimit",
+    "SourceSHA256": "2C3E9CEDC64A11C159FEA2A16F4273BADE7395147617AA4171E89ECAC04FF985",
+    "PDFPageOneBased": 92,
+    "Image": "Im1154",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "N/N_{cr}\\leq 0{,}7"
+  },
+  {
+    "Key": "SP35_Phi",
+    "SourceSHA256": "2C3E9CEDC64A11C159FEA2A16F4273BADE7395147617AA4171E89ECAC04FF985",
+    "PDFPageOneBased": 92,
+    "Image": "Im1160",
+    "ExactDisplayedNotationReviewed": true,
+    "MathText": "\\varphi=\\frac{\\varphi_m}{\\frac{N_l}{N}\\frac{\\varphi_m}{\\varphi_l}+\\frac{N_m}{N}}"
+  }
+]

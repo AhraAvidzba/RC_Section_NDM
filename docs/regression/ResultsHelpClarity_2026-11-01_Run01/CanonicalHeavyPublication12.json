@@ -1,0 +1,16 @@
+{
+  "Status": "CANONICAL_HEAVY_UPDATED_AFTER_USER_CLOSED",
+  "PublishedUTC": "2026-11-01T14:35:34.403280+00:00",
+  "UserInstruction": "тяжелый файл закрыл",
+  "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+  "BeforeSHA256": "E2FEB935EC02841D59EFEA8633417D7503C6DEEB8489268443F0168EF5F9AFA7",
+  "SHA256": "58E2EBC26475EA9291CB822BAF57A67A073350139EA1813C688C81C68E309D50",
+  "MatchesNativeVerifiedBytes": true,
+  "UserDataAndResultsPreserved": true,
+  "Recalculated": false,
+  "SeparateUserNDMPreserved": true,
+  "SeparateUserNDMSHA256": "0E0D3C7B1CF84CF01C1E183D84EFEE169C6E20F408B22A529DC0A14826E42FAF",
+  "Package": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\NDM_HeavyCircle_1232_30_Комплект.zip",
+  "PackageSHA256": "33B24709BF6491740E13ACDBA7BFF207C477EC7A1EA5E151F070264C6965A9DB",
+  "PackagedOriginalSnapshotSHA256": "E48038B73A6E4146A9AB6D594BC57B4E7C26C561D2DBAC3A9FE7496AFA96C9AA"
+}

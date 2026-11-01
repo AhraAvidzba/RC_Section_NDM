@@ -1,0 +1,29 @@
+{
+  "Status": "PUBLISHED_NATIVE_VERIFIED_RESULTS_AND_HELP",
+  "PublishedUTC": "2026-11-01T14:32:24.612784+00:00",
+  "Books": [
+    {
+      "Label": "Main",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "SHA256": "EA6C996F01D43F4802041E0CDFAF31226BA3CD9763A608438C99545516A1BEEC",
+      "StandardPathUpdated": true
+    },
+    {
+      "Label": "Heavy",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_ResultsHelp_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "58E2EBC26475EA9291CB822BAF57A67A073350139EA1813C688C81C68E309D50",
+      "StandardPathUpdated": false,
+      "Reason": "Original file locked by another process; preserved"
+    }
+  ],
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ResultsHelpClarity_2026-11-01_Run01\\BeforePublication09",
+  "AllCodeSHA256": "872502F7B2F859C2F21F832C261500FD3E1A9B316F6831E720F1638FEBBBE3E4",
+  "Package": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_ResultsHelp_2026-11-01\\NDM_HeavyCircle_1232_30_Комплект.zip",
+  "PackageSHA256": "80B03527A232E4430534CDF60AE602214C67B5B56412B854A52FA9B1F46240CA",
+  "NewHeavySidecarSHA256": "E48038B73A6E4146A9AB6D594BC57B4E7C26C561D2DBAC3A9FE7496AFA96C9AA",
+  "PackagedOriginalSnapshotSHA256": "E48038B73A6E4146A9AB6D594BC57B4E7C26C561D2DBAC3A9FE7496AFA96C9AA",
+  "OriginalHeavyFileAndSidecarNotOverwritten": true,
+  "ForeignFilesPreserved": true,
+  "UserApplicationsClosed": false,
+  "FullOnOffPerformed": false
+}

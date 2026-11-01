@@ -1,0 +1,96 @@
+﻿{
+    "Status":  "ALL_OWN_TERMINAL",
+    "ObservedUTC":  "2026-11-01T14:32:23.3042508Z",
+    "Processes":  [
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ResultsHelpClarity_2026-11-01_Run01\\DirectedResults01_Attempt1\\No\\Own.json",
+                          "PID":  53828,
+                          "UTCStartTicks":  "639291378629143011",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ResultsHelpClarity_2026-11-01_Run01\\DirectedResults01_Attempt1\\Yes\\Own.json",
+                          "PID":  69000,
+                          "UTCStartTicks":  "639291379710616947",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ResultsHelpClarity_2026-11-01_Run01\\HeavyIndexedRead07\\Own.json",
+                          "PID":  63992,
+                          "UTCStartTicks":  "639291402037924441",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ResultsHelpClarity_2026-11-01_Run01\\HeavyNative06\\Own.json",
+                          "PID":  80180,
+                          "UTCStartTicks":  "639291401270451267",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ResultsHelpClarity_2026-11-01_Run01\\MainNative06\\Own.json",
+                          "PID":  86144,
+                          "UTCStartTicks":  "639291401010521849",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ResultsHelpClarity_2026-11-01_Run01\\NativeClean03\\Own.json",
+                          "PID":  80552,
+                          "UTCStartTicks":  "639291394280352495",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\ResultsHelpClarity_2026-11-01_Run01\\NativeClean06\\Own.json",
+                          "PID":  88612,
+                          "UTCStartTicks":  "639291399987896517",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultsHelpClarity_2026-11-01_Run01\\Build01\\BuildOwnership.json",
+                          "PID":  13440,
+                          "UTCStartTicks":  "639291385295309503",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultsHelpClarity_2026-11-01_Run01\\Build02\\BuildOwnership.json",
+                          "PID":  86052,
+                          "UTCStartTicks":  "639291390248684285",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultsHelpClarity_2026-11-01_Run01\\Build03\\BuildOwnership.json",
+                          "PID":  23980,
+                          "UTCStartTicks":  "639291397117864220",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      }
+                  ]
+}

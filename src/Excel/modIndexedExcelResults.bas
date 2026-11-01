@@ -5,13 +5,11 @@ Option Explicit
 ' Адресный индекс видимой таблицы результатов элементов Excel
 ' ==========================================================================
 ' Один якорь справа от аннотаций, относительные строки и фактически сохранённые ключи.
-' От ручной перестановки защищены только результаты элементов и индекс; остальные ячейки доступны.
-' Структурную защиту нельзя снимать для изменения результатов: сформируйте новый расчёт либо очистите их.
+' Результаты элементов и индекс помечаются Locked; защиту листа включает только пользователь.
+' Чтение не требует защиты: размеры, ключи и выбранные участки проверяются по фактическим данным.
 Private Const INDEX_NAME As String = "rngNDMElementResultIndex"
-Private Const INDEX_FORMAT As String = "NDMResultIndex02"
-Private Const PROTECTION_PASSWORD As String = "NDM_ResultIndex_v1"
-Private Const PROTECTION_OWNER As String = "NDM.ElementResultIndex.Protection"
-Private Const INDEX_COLUMNS As Long = 14
+Private Const INDEX_FORMAT As String = "NDMResultIndex03"
+Private Const INDEX_COLUMNS As Long = 9
 Private mTestRowsRead As Double, mTestBlocksRead As Long, mTestBootstrapRows As Double
 
 ' Находит единственный якорь, не создавая имён или скрытых копий для отдельных состояний.
@@ -46,21 +44,12 @@ Public Function EnsureElementResultIndexAnchor(ByVal workbook As Object, ByVal r
     Set EnsureElementResultIndexAnchor = anchor
 End Function
 
-' Возвращает принадлежность структурной защиты этому модулю без снятия чужой защиты.
-Private Function OwnProtection(ByVal workbook As Object) As Boolean
-    On Error Resume Next
-    OwnProtection = CStr(workbook.CustomDocumentProperties.Item(PROTECTION_OWNER).Value) = INDEX_FORMAT
-    On Error GoTo 0
-End Function
-
-' Восстанавливает UserInterfaceOnly после повторного открытия, чтобы рабочие макросы могли писать.
-' Ручные сортировка, вставка, удаление и перенос защищённых строк при этом запрещены.
+' Проверяет пользовательскую защиту до записи, не включает и не снимает её.
+' UserInterfaceOnly допускается только если пользователь сам разрешил запись макросам.
 Public Sub PrepareIndexedResultsWrite(ByVal workbook As Object)
     Dim sheet As Object: Set sheet = workbook.Names.Item("rngNDMElementResults").RefersToRange.Worksheet
-    If OwnProtection(workbook) Then
-        If Not sheet.ProtectContents Or Not sheet.ProtectionMode Then sheet.Protect Password:=PROTECTION_PASSWORD, DrawingObjects:=False, Contents:=True, Scenarios:=False, UserInterfaceOnly:=True
-    ElseIf sheet.ProtectContents Then
-        Err.Raise 5, , "Results защищён пользователем. Снимите пользовательскую защиту перед записью расчёта."
+    If sheet.ProtectContents And Not sheet.ProtectionMode Then
+        Err.Raise 5, "PrepareIndexedResultsWrite", "Лист Results защищён пользователем. Снимите защиту листа перед записью результатов; программа не меняет ваш пароль и режим защиты."
     End If
 End Sub
 
@@ -78,17 +67,16 @@ End Sub
 
 ' Готовит малую таблицу из общего индекса внутри измеряемого полного сохранения.
 Public Function ElementResultIndexMatrix(ByVal index As CResultBlockIndex) As Variant
-    Dim data() As Variant, names As Variant, column As Long, block As Long, sample As Variant, header As Variant
-    names = Array("IndexKind", "RunID", "TableRows", "TableColumns", "FirstRow", "RowCount", "LoadCase", "ProfileId", "StateType", "ElementID", "MaterialType", "Strain", "Stress", "PhysicalState")
+    Dim data() As Variant, names As Variant, column As Long, block As Long, sample As Variant
+    names = Array("IndexKind", "RunID", "TableRows", "TableColumns", "FirstRow", "RowCount", "LoadCase", "ProfileId", "StateType")
     ReDim data(1 To index.Count + 2, 1 To INDEX_COLUMNS)
     For column = 1 To INDEX_COLUMNS: data(1, column) = names(column - 1): Next column
-    header = index.Header: data(1, 13) = header(1, 8)
     data(2, 1) = INDEX_FORMAT: data(2, 2) = index.RunID: data(2, 3) = index.TotalRows: data(2, 4) = 9: data(2, 5) = 0: data(2, 6) = index.Count
     For block = 1 To index.Count
         sample = index.Representative(block)
         data(block + 2, 1) = "Block": data(block + 2, 2) = sample(1, 1)
         data(block + 2, 5) = index.FirstRow(block): data(block + 2, 6) = index.RowCount(block)
-        For column = 2 To 9: data(block + 2, column + 5) = sample(1, column): Next column
+        For column = 2 To 4: data(block + 2, column + 5) = sample(1, column): Next column
     Next block
     ElementResultIndexMatrix = data
 End Function
@@ -101,24 +89,18 @@ Public Sub PublishElementResultIndex(ByVal workbook As Object, ByRef data As Var
     Dim sheet As Object: Set sheet = elements.Worksheet
     PrepareIndexedResultsWrite workbook
     On Error GoTo Failed
-    If Not OwnProtection(workbook) Then
-        sheet.Cells.Locked = False ' Защищается только явно выбранная техническая структура, остальные ячейки остаются доступны.
-        workbook.CustomDocumentProperties.Add PROTECTION_OWNER, False, 4, INDEX_FORMAT
-    End If
     Dim column As Variant
-    For Each column In Array(7, 8, 9, 10, 11, 14): anchor.Resize(UBound(data, 1), INDEX_COLUMNS).Columns.Item(CLng(column)).NumberFormat = "@": Next column
+    For Each column In Array(7, 8, 9): anchor.Resize(UBound(data, 1), INDEX_COLUMNS).Columns.Item(CLng(column)).NumberFormat = "@": Next column
     anchor.Resize(UBound(data, 1), INDEX_COLUMNS).Value2 = data
     formatter.FormatResultsBlock anchor, UBound(data, 1), INDEX_COLUMNS, "Индекс сохранённых состояний элементов", data
     anchor.Offset(1, 1).Resize(UBound(data, 1) - 1, 1).NumberFormat = "dd.mm.yy"
     elements.Resize(CLng(data(2, 3)), 9).Locked = True
     anchor.Offset(-1, 0).Resize(UBound(data, 1) + 1, INDEX_COLUMNS).Locked = True
-    If Not sheet.ProtectContents Or Not sheet.ProtectionMode Then sheet.Protect Password:=PROTECTION_PASSWORD, DrawingObjects:=False, Contents:=True, Scenarios:=False, UserInterfaceOnly:=True
     Exit Sub
 Failed:
     Dim number As Long, reason As String: number = Err.Number: reason = Err.Description
     On Error Resume Next
     anchor.Offset(1, 0).Value2 = "Invalid"
-    If OwnProtection(workbook) Then sheet.Protect Password:=PROTECTION_PASSWORD, DrawingObjects:=False, Contents:=True, Scenarios:=False, UserInterfaceOnly:=True
     On Error GoTo 0
     Err.Raise number, "PublishElementResultIndex", reason
 End Sub
@@ -147,19 +129,18 @@ Private Function BootstrapElementResultIndex(ByVal workbook As Object, ByVal ele
     Set BootstrapElementResultIndex = index
 End Function
 
-' Читает небольшой опубликованный индекс и проверяет его структурную защиту.
-' Снятая защита, частичная публикация или противоречивые метаданные дают явную ошибку.
+' Читает компактный опубликованный индекс и проверяет размеры и ключи.
+' Частичная публикация и противоречивые метаданные дают явную ошибку независимо от защиты листа.
 Private Function ReadElementResultIndex(ByVal workbook As Object, ByVal elements As Object) As CResultBlockIndex
     Dim anchor As Object: Set anchor = ExistingIndexAnchor(workbook)
     Dim rows As Long
     If anchor Is Nothing Then
-        If OwnProtection(workbook) Then Err.Raise 5, , "Опубликованный индекс удалён. Очистите Results и выполните расчёт заново."
         rows = AnchoredRowCount(elements): If rows < 1 Then rows = 1
         Set ReadElementResultIndex = BootstrapElementResultIndex(workbook, elements, rows): Exit Function
     End If
     Dim metadata As Variant: metadata = anchor.Resize(2, INDEX_COLUMNS).Value2
     mTestRowsRead = mTestRowsRead + 2
-    If Len(CStr(metadata(1, 1))) = 0 And Not OwnProtection(workbook) Then
+    If Len(CStr(metadata(1, 1))) = 0 Then
         rows = AnchoredRowCount(elements): If rows < 1 Then rows = 1
         Set ReadElementResultIndex = BootstrapElementResultIndex(workbook, elements, rows): Exit Function
     End If
@@ -170,7 +151,7 @@ Private Function ReadElementResultIndex(ByVal workbook As Object, ByVal elements
         End If
         Err.Raise 5, , "Индекс не опубликован; завершите расчёт либо очистите Results."
     End If
-    If Len(CStr(metadata(2, 1))) = 0 And Not OwnProtection(workbook) Then
+    If Len(CStr(metadata(2, 1))) = 0 Then
         rows = AnchoredRowCount(elements): If rows < 1 Then rows = 1
         Set ReadElementResultIndex = BootstrapElementResultIndex(workbook, elements, rows): Exit Function
     End If
@@ -179,12 +160,7 @@ Private Function ReadElementResultIndex(ByVal workbook As Object, ByVal elements
     Dim count As Long: count = ExactIndexLong(metadata(2, 6))
     If rows < 1 Or ExactIndexLong(metadata(2, 4)) <> 9 Or count > rows - 1 Then Err.Raise 5, , "Повреждены размеры индекса."
     If CDbl(elements.Row) + rows - 1 > elements.Worksheet.Rows.Count Or CDbl(anchor.Row) + count + 1 > anchor.Worksheet.Rows.Count Then Err.Raise 5, , "Индекс выходит за границы листа."
-    If Not OwnProtection(workbook) Or Not elements.Worksheet.ProtectContents Then Err.Raise 5, , "Структурная защита результатов снята; индекс больше не подтверждает порядок строк. Очистите Results и выполните расчёт заново."
-    If Not CBool(elements.Cells(1, 1).Locked) Then Err.Raise 5, , "Якорь результатов перемещён из защищённой структуры."
-    Dim locked As Variant: locked = anchor.Resize(count + 2, INDEX_COLUMNS).Locked
-    If IsNull(locked) Then Err.Raise 5, , "Часть индекса результатов не защищена."
-    If Not CBool(locked) Then Err.Raise 5, , "Индекс результатов не защищён."
-    ' Полная область была защищена при публикации. Здесь проверяется граница, без сканирования RunID-столбца.
+    ' Граница и ключи проверяются без обхода всей таблицы и без обязательной защиты листа.
     If elements.Row + rows <= elements.Worksheet.Rows.Count Then
         If Len(CStr(elements.Offset(rows, 0).Value2)) > 0 Then Err.Raise 5, , "За сохранённой границей результатов появились строки без индекса."
         mTestRowsRead = mTestRowsRead + 1
@@ -198,7 +174,7 @@ Private Function ReadElementResultIndex(ByVal workbook As Object, ByVal elements
         For row = 1 To count
             If CStr(values(row, 1)) <> "Block" Then Err.Raise 5, , "Повреждена запись индекса состояний."
             sample(1, 1) = values(row, 2)
-            For column = 2 To 9: sample(1, column) = values(row, column + 5): Next column
+            For column = 2 To 4: sample(1, column) = values(row, column + 5): Next column
             index.Append ExactIndexLong(values(row, 5)), ExactIndexLong(values(row, 6)), sample
         Next row
     End If

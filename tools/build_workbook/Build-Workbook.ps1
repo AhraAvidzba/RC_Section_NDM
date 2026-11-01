@@ -508,7 +508,6 @@ try {
     # Размеры столбцов Config уже назначены Add-SystemSettings; повторно их не меняем.
     $results.Range("A1:AE1").Font.Bold = $true
     # Заливка относится только к построенному снимку, не ко всей строке листа.
-    $results.Range("A154:CO154").Interior.Color = 15652797
     $results.Cells.Item(154, 1).Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
     $results.Cells.Item(154, 1).Font.Name = "Arial"
     $results.Cells.Item(154, 1).Font.Size = 12
@@ -585,6 +584,7 @@ try {
 
     Add-SectionIllustrationPictures $workbook $script:WorkbookLayout
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
+    Set-ResultsSnapshotTitleBand $workbook
     Set-SectionIllustrationSelector $workbook
     $calc.Activate() # Начальный выбор и обычная справочная картинка сохраняются на целевом листе.
     $excel.Run("'" + $workbook.Name + "'!modSectionIllustrations.SwitchSectionPicture")

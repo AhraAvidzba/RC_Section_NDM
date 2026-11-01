@@ -175,33 +175,35 @@ Finished:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Имитирует сброс UserInterfaceOnly при открытии; очищает сводки в обоих режимах оформления и возвращает исходные результаты.
+' Проверяет добровольную пользовательскую защиту: программа не включает её, не снимает и не меняет пароль.
 Private Sub TestSnapshotProtectedSummaryClear(ByVal original As CCalculationSnapshot)
     Dim writer As New CNDMResultsWriter, summary As New CBatchResultWriter
     writer.RestoreSnapshotBase ThisWorkbook, original, False, True
     summary.RestoreSummary ThisWorkbook, original, False
     Dim sheet As Worksheet: Set sheet = ThisWorkbook.Names("rngNDMElementResults").RefersToRange.Worksheet
-    Dim fullFormatting As Variant
+    Dim fullFormatting As Variant, number As Long, reason As String, states As Variant
     For Each fullFormatting In Array(False, True)
-        sheet.Protect Password:="NDM_ResultIndex_v1", DrawingObjects:=False, Contents:=True, Scenarios:=False, UserInterfaceOnly:=False
-        TestSnapshotCheck "protectedClear.reopenMode." & CStr(fullFormatting), sheet.ProtectContents And Not sheet.ProtectionMode
+        TestSnapshotCheck "optionalProtection.noAutoProtect." & CStr(fullFormatting), Not sheet.ProtectContents
+        TestSnapshotCheck "optionalProtection.resultLocked." & CStr(fullFormatting), sheet.Range(ThisWorkbook.Names("rngNDMElementResults").RefersToRange.Address).Locked
+        sheet.Protect Password:="NDM_Test_UserOnly", DrawingObjects:=False, Contents:=True, Scenarios:=False, UserInterfaceOnly:=False
+        states = ReadElementResultTable(ThisWorkbook, , , True)
+        TestSnapshotCheck "optionalProtection.readWithUserPassword." & CStr(fullFormatting), IsArray(states) And UBound(states, 2) = 4
+        On Error Resume Next
         summary.ClearSummary ThisWorkbook, CBool(fullFormatting)
-        TestSnapshotCheck "protectedClear.macrosAllowed." & CStr(fullFormatting), sheet.ProtectionMode
-        TestSnapshotCheck "protectedClear.structureStillProtected." & CStr(fullFormatting), sheet.ProtectContents
+        number = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo 0
+        TestSnapshotCheck "optionalProtection.writeRefused." & CStr(fullFormatting), number <> 0 And sheet.ProtectContents And Not sheet.ProtectionMode
+        TestSnapshotCheck "optionalProtection.humanReason." & CStr(fullFormatting), InStr(reason, "Лист защищён") > 0
+        TestSnapshotCheck "optionalProtection.actualAddress." & CStr(fullFormatting), InStr(reason, "rngBatchSummary, Results!") > 0
+        sheet.Unprotect Password:="NDM_Test_UserOnly"
+        summary.ClearSummary ThisWorkbook, CBool(fullFormatting)
+        TestSnapshotCheck "optionalProtection.notReenabled." & CStr(fullFormatting), Not sheet.ProtectContents
         summary.RestoreSummary ThisWorkbook, original, False
     Next fullFormatting
-    sheet.Unprotect Password:="NDM_ResultIndex_v1"
-    sheet.Protect Password:="NDM_Test_Foreign", UserInterfaceOnly:=False
-    Dim number As Long, reason As String
-    On Error Resume Next
+    sheet.Protect Password:="NDM_Test_UserOnly", UserInterfaceOnly:=True
     summary.ClearSummary ThisWorkbook, False
-    number = Err.Number: reason = Err.Description
-    Err.Clear
-    On Error GoTo 0
-    TestSnapshotCheck "protectedClear.foreignRefused", number <> 0 And sheet.ProtectContents And Not sheet.ProtectionMode
-    TestSnapshotCheck "protectedClear.foreignHuman", InStr(reason, "Лист защищён") > 0 And InStr(reason, "подготовить доступ макросов") > 0
-    TestSnapshotCheck "protectedClear.foreignAddress", InStr(reason, "rngBatchSummary, Results!") > 0
-    sheet.Unprotect Password:="NDM_Test_Foreign"
+    TestSnapshotCheck "optionalProtection.userMacroAccessPreserved", sheet.ProtectContents And sheet.ProtectionMode
+    sheet.Unprotect Password:="NDM_Test_UserOnly"
     summary.RestoreSummary ThisWorkbook, original, False
 End Sub
 
@@ -1560,7 +1562,7 @@ Private Sub TestSnapshotElementIndex()
     Dim actual As Variant: actual = snapshot.SelectElementResults("a", "strengthstate", False)
     TestSnapshotCheck "index.nonAdjacentOrder", UBound(actual, 1) = 4 And actual(2, 5) = "Element2" And actual(3, 5) = "Element5" And actual(4, 5) = "Element6"
     actual = snapshot.SelectElementResults("", "", True)
-    TestSnapshotCheck "index.firstRows", UBound(actual, 1) = 5 And actual(2, 5) = "Element2" And actual(3, 5) = "Element3" And actual(4, 5) = "Element4" And actual(5, 5) = "Element7"
+    TestSnapshotCheck "index.stateKeysOnly", UBound(actual, 1) = 5 And UBound(actual, 2) = 4 And actual(2, 2) = "A" And actual(2, 4) = "StrengthState" And actual(3, 4) = "CrackedState" And actual(4, 2) = "B" And actual(5, 4) = "CrackedState"
     actual = snapshot.SelectElementResults("missing", "", False)
     TestSnapshotCheck "index.missingHeaderOnly", UBound(actual, 1) = 1
     actual = snapshot.SelectElementResults("", "", False)

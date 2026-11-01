@@ -59,6 +59,8 @@ Public Function OutputColumnCount(ByVal rangeName As String) As Long
             OutputColumnCount = SECTION_PROPERTY_COLUMNS
         Case "rngndmmaterialdiagrams"
             OutputColumnCount = MATERIAL_DIAGRAM_COLUMNS
+        Case "rngndmelementresultindex"
+            OutputColumnCount = 9
         Case "rngndmsectionannotations"
             OutputColumnCount = ANNOTATION_COLUMNS
         Case Else
@@ -321,10 +323,10 @@ Private Sub WriteSnapshotTitle(ByVal workbook As Object)
     Dim title As Object
     Set title = SnapshotTitleRange(workbook)
     If title Is Nothing Then Exit Sub
+    title.Interior.Color = RGB(189, 215, 238) ' Полоса всегда следует за последней именованной таблицей, включая индекс.
     If mMinimalFormatting Then
         If Len(CStr(title.Resize(1, 1).Value2)) > 0 Then Exit Sub
     End If
-    title.Interior.Color = RGB(189, 215, 238)
     With title.Resize(1, 1)
         .Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
         .Font.Name = "Arial"
@@ -350,7 +352,7 @@ Private Sub ClearSnapshotTitle(ByVal workbook As Object)
 MissingRange:
 End Sub
 
-' Находит границы общего заголовка по именованным началам и размерам пяти таблиц.
+' Находит границы общего заголовка по именованным началам всех нижних таблиц, включая индекс.
 ' При перемещении таблиц заголовок следует за ними и не расширяется на весь лист.
 Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
     Dim anchor As Object, block As Object, name As Variant
@@ -360,7 +362,7 @@ Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
     Dim rightColumn As Long, blockRightColumn As Long
     rightColumn = anchor.Column
     For Each name In Array("rngNDMElementResults", "rngNDMSectionGeometry", _
-            "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry")
+            "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMElementGeometry", "rngNDMElementResultIndex")
         Set block = workbook.Names.Item(CStr(name)).RefersToRange
         blockRightColumn = block.Column + OutputColumnCount(CStr(name)) - 1
         If blockRightColumn > rightColumn Then rightColumn = blockRightColumn

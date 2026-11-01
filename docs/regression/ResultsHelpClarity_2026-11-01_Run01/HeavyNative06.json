@@ -1,0 +1,13 @@
+﻿{
+    "Status":  "PASS_SAVED_READONLY_HELP_COMPACT_INDEX_AND_OPTIONAL_PROTECTION",
+    "WorkbookSHA256":  "58E2EBC26475EA9291CB822BAF57A67A073350139EA1813C688C81C68E309D50",
+    "Components":  187,
+    "Pictures":  80,
+    "HelpLastRow":  1618,
+    "Links":  155,
+    "ProtectionEnabled":  false,
+    "IndexColumns":  9,
+    "BandLastCell":  "$DT$154",
+    "SeparateCrackAndStabilityCodes":  true,
+    "SourceUnchanged":  true
+}

@@ -1,0 +1,103 @@
+{
+  "Status": "PASS_ALL_SIX_REQUESTED_CHANGES_NATIVE_PUBLISHED",
+  "FinishedUTC": "2026-11-01T14:33:35.210126+00:00",
+  "Requirements": [
+    {
+      "ID": 1,
+      "Requirement": "No automatic protection or password; optional user protection",
+      "Status": "PASS",
+      "Evidence": [
+        "DirectedPrimaryReview05.json",
+        "MainNative06.json",
+        "HeavyNative06.json"
+      ]
+    },
+    {
+      "ID": 2,
+      "Requirement": "Compact nine-column state index; selected reads preserved",
+      "Status": "PASS",
+      "Evidence": [
+        "MainNative06.json",
+        "HeavyNative06.json",
+        "HeavyIndexedRead07.json"
+      ]
+    },
+    {
+      "ID": 3,
+      "Requirement": "Blue Results title band reaches final index column",
+      "Status": "PASS",
+      "Evidence": [
+        "CleanNative06.json",
+        "MainNative06.json",
+        "HeavyNative06.json"
+      ]
+    },
+    {
+      "ID": 4,
+      "Requirement": "Sharp freshly typeset formulas matching normative notation",
+      "Status": "PASS",
+      "Evidence": [
+        "NormativeExpressionReview01.json",
+        "WholeHelpFinalReview08.json"
+      ]
+    },
+    {
+      "ID": 5,
+      "Requirement": "Separate coherent SP63/SP35 stability subsections",
+      "Status": "PASS",
+      "Evidence": [
+        "WholeHelpFinalReview08.json"
+      ]
+    },
+    {
+      "ID": 6,
+      "Requirement": "Whole Help narrative order and explicit SP63/SP35 cracks",
+      "Status": "PASS",
+      "Evidence": [
+        "WholeHelpTextReview02.json",
+        "WholeHelpFinalReview08.json"
+      ]
+    }
+  ],
+  "DirectedMacroCalls": 12,
+  "AssertionsPassed": 5632,
+  "AssertionsFailed": 0,
+  "NativeSourceComponents": 181,
+  "NativeDocumentComponents": 6,
+  "HelpPagesReviewed": 35,
+  "HelpPictures": 80,
+  "HelpLinks": 155,
+  "SettingsBlocksReviewed": 152,
+  "NormativeFormulasTypeset": 21,
+  "OwnProcessesTerminal": 10,
+  "PublishedBooks": [
+    {
+      "Label": "Main",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "SHA256": "EA6C996F01D43F4802041E0CDFAF31226BA3CD9763A608438C99545516A1BEEC",
+      "StandardPathUpdated": true
+    },
+    {
+      "Label": "Heavy",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "58E2EBC26475EA9291CB822BAF57A67A073350139EA1813C688C81C68E309D50",
+      "StandardPathUpdated": true,
+      "Reason": "Updated after user closed; original source SHA unchanged"
+    }
+  ],
+  "UserInputAndSavedResultsPreserved": true,
+  "FullOnOffPerformed": false,
+  "FocusedPerformed": false,
+  "MainMergePerformed": false,
+  "FeaturePushPending": true,
+  "NonProductIssues": [
+    "First private preparation refused existing Invalid index; it was preserved as Invalid, not promoted to a valid index.",
+    "PS5 test helper syntax corrected before starting Excel; application tests passed after correction.",
+    "Help wording guard joined visual line breaks before matching a phrase; native text was unchanged.",
+    "Original heavy file became locked by another process during publication; main succeeded, heavy published safely into a new folder."
+  ],
+  "ArchiveSHA256": "CC4BF1D33D54AB2CAD4784C06B87959FC9CB3D3C6D0112C7127FF6161CE3AF83",
+  "OriginalHeavyFileBlockedAtInitialPublication": true,
+  "CanonicalHeavyUpdatedAfterUserClosed": true,
+  "CanonicalHeavyPublicationProof": "CanonicalHeavyPublication12.json"
+}

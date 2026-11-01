@@ -5110,7 +5110,7 @@
       "Selector": "Расчет!K2"
     },
     "IndexedResults": {
-      "Format": "NDMResultIndex02",
+      "Format": "NDMResultIndex03",
       "Anchor": "rngNDMElementResultIndex",
       "Address": "Results!DL156",
       "GapAfterAnnotations": 2,

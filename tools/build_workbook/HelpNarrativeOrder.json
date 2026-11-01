@@ -1,0 +1,113 @@
+{
+  "Order": [
+    {
+      "Key": "Load.ReferenceOffsetX",
+      "Paragraphs": [
+        1,
+        2,
+        3,
+        0,
+        4,
+        5
+      ]
+    },
+    {
+      "Key": "Calculation.ZeroMomentPerDepth",
+      "Paragraphs": [
+        1,
+        2,
+        3,
+        4,
+        0,
+        5,
+        6
+      ]
+    },
+    {
+      "Key": "Geometry.Source",
+      "Paragraphs": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        0
+      ]
+    },
+    {
+      "Key": "Solver.Method",
+      "Paragraphs": [
+        2,
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "Key": "Capacity.SolverMaxIterations",
+      "Paragraphs": [
+        0,
+        2,
+        1,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "Key": "Stability.SystemType",
+      "Paragraphs": [
+        1,
+        2,
+        3,
+        4,
+        0,
+        5
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityMode",
+      "Paragraphs": [
+        1,
+        2,
+        3,
+        4,
+        0
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityPlanes",
+      "Paragraphs": [
+        1,
+        2,
+        3,
+        0
+      ]
+    },
+    {
+      "Key": "Stability.PhiLMode",
+      "Paragraphs": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        0,
+        8
+      ]
+    }
+  ],
+  "Lead": [
+    {
+      "Key": "Plot.PrincipalAxesMode",
+      "Text": "Настройка выбирает, главные оси какого сохранённого сечения показывать на схеме, либо скрывает их. Она меняет отображение, а не рассчитанные характеристики."
+    },
+    {
+      "Key": "AutoCAD.Export.ContourFormat",
+      "Text": "Настройка задаёт вид объектов, которыми в AutoCAD передаются точный наружный контур и отверстия. Выберите Region для бетонных областей или Polyline для отдельных замкнутых границ."
+    }
+  ]
+}

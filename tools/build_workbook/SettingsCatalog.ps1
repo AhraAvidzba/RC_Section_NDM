@@ -1081,7 +1081,7 @@ function Get-SettingInstructionLines {
             "Задайте положительное число. Некорректный ввод дает InputErr до расчетов, в том числе при неактивной ветви СП 35; допустимость числа не означает нормативного подтверждения произвольного коэффициента."
         ) }
         "Stability.SP35.NOverNcrLimit" { return @(
-            "Предел отношения N/N_cr для ветви η СП 35. В Results условие выводится как коэффициент запаса NOverNcrLimit·N_cr/N: значение больше 1 означает, что оно выполняется.",
+            "Предел отношения N/N_cr для ветви η СП 35. В Results условие выводится как коэффициент запаса NOverNcrLimit·N_cr/N: значение не меньше 1 означает, что оно выполняется.",
             "Задайте положительное число. Некорректный ввод дает InputErr с адресом Config, в том числе при неактивной ветви СП 35."
         ) }
         "SLS.Crack.Code" { return @(
@@ -1612,6 +1612,21 @@ function Get-SettingsInstructionCatalog {
     if ($finalHelpBlock.Count -ne 1) { throw 'В каталоге справки должен быть один блок General.ReformatResultsEnabled.' }
     $items.Remove($finalHelpBlock[0]) | Out-Null
     $items.Add($finalHelpBlock[0]) | Out-Null
+    # Явно проверенный порядок сохраняет каждый абзац: смысл, зависимость, составляющие и ограничения ввода.
+    $narrative = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'HelpNarrativeOrder.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($ordering in $narrative.Order) {
+        $entry = @($items | Where-Object { $_.Key -ceq $ordering.Key })
+        if ($entry.Count -ne 1) { throw "Неоднозначный блок порядка справки: $($ordering.Key)" }
+        $lines = @($entry[0].Lines | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+        $indices = @($ordering.Paragraphs)
+        if ($indices.Count -ne $lines.Count -or (@($indices | Sort-Object -Unique).Count -ne $lines.Count)) { throw "Изменён состав абзацев: $($ordering.Key)" }
+        $entry[0].Lines = @($indices | ForEach-Object { if ($_ -lt 0 -or $_ -ge $lines.Count) { throw 'Некорректный номер абзаца' }; [string]$lines[[int]$_] })
+    }
+    foreach ($lead in $narrative.Lead) {
+        $entry = @($items | Where-Object { $_.Key -ceq $lead.Key })
+        if ($entry.Count -ne 1) { throw "Неоднозначное вводное пояснение: $($lead.Key)" }
+        $entry[0].Lines = @([string]$lead.Text) + @($entry[0].Lines)
+    }
     $items
 }
 
@@ -1923,8 +1938,9 @@ function New-TextFormulaImage {
     $extraGap = if ($referenceMath.Width -gt 0) { $referenceGap } else { 0 }
     $width = [int][Math]::Ceiling($math.Width + $extraGap + $referenceMath.Width + 2 * $paddingX)
     $height = [int][Math]::Ceiling([Math]::Max($math.Height, $referenceMath.Height) + 2 * $paddingY)
-    $bitmap = New-Object System.Drawing.Bitmap($width, $height)
+    $bitmap = New-Object System.Drawing.Bitmap(($width * 2), ($height * 2))
     $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+    $graphics.ScaleTransform(2, 2) # Четыре пикселя на пункт при неизменном размере формулы на листе.
     $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
     $graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
     $graphics.Clear([System.Drawing.Color]::FromArgb(250, 250, 252))
@@ -1991,8 +2007,9 @@ function New-FractionFormulaImage {
     $measureGraphics.Dispose()
     $measureBitmap.Dispose()
 
-    $bitmap = New-Object System.Drawing.Bitmap($width, $height)
+    $bitmap = New-Object System.Drawing.Bitmap(($width * 2), ($height * 2))
     $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+    $graphics.ScaleTransform(2, 2) # Четыре пикселя на пункт при неизменном размере формулы на листе.
     $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
     $graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
     $graphics.Clear([System.Drawing.Color]::FromArgb(250, 250, 252))
@@ -2120,8 +2137,9 @@ function New-CompositeFormulaImage {
     $measureGraphics.Dispose()
     $measureBitmap.Dispose()
 
-    $bitmap = New-Object System.Drawing.Bitmap($width, $height)
+    $bitmap = New-Object System.Drawing.Bitmap(($width * 2), ($height * 2))
     $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+    $graphics.ScaleTransform(2, 2) # Четыре пикселя на пункт при неизменном размере формулы на листе.
     $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
     $graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
     $graphics.Clear([System.Drawing.Color]::FromArgb(250, 250, 252))
@@ -2328,8 +2346,9 @@ function New-MatrixFormulaImage {
         $measureGraphics.Dispose()
         $measureBitmap.Dispose()
 
-        $bitmap = New-Object System.Drawing.Bitmap($width, $height)
+        $bitmap = New-Object System.Drawing.Bitmap(($width * 2), ($height * 2))
         $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+    $graphics.ScaleTransform(2, 2) # Четыре пикселя на пункт при неизменном размере формулы на листе.
         $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
         $graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
         $graphics.Clear([System.Drawing.Color]::FromArgb(250, 250, 252))
@@ -2395,8 +2414,9 @@ function New-MatrixFormulaImage {
     $measureGraphics.Dispose()
     $measureBitmap.Dispose()
 
-    $bitmap = New-Object System.Drawing.Bitmap($width, $height)
+    $bitmap = New-Object System.Drawing.Bitmap(($width * 2), ($height * 2))
     $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+    $graphics.ScaleTransform(2, 2) # Четыре пикселя на пункт при неизменном размере формулы на листе.
     $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
     $graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
     $graphics.Clear([System.Drawing.Color]::FromArgb(250, 250, 252))
@@ -2600,10 +2620,13 @@ function Add-DirectStateMethodologyGuide {
     param([object]$Sheet, [int]$StartRow)
 
     $row = Add-GuideParagraph $Sheet $StartRow "Прямой расчет определяет НДС сечения при заданных N, Mx и My и проверяет равновесие и предельные деформации материалов. СП 63, пп. 8.1.20–8.1.24 и 8.1.29–8.1.30."
-    $row = Add-GuideTitle $Sheet $row "1. Расчетный профиль и материалы" 13
-    $row = Add-GuideParagraph $Sheet $row "На Config в расчетном профиле включите Calculation.Strength.DirectState = Yes. Материалы этой проверки задаются там же настройками MaterialModel.Strength.ValueSet, MaterialModel.Strength.ConcreteDiagram, MaterialModel.Strength.ConcreteTension и MaterialModel.Strength.SteelDiagram: набор характеристик, диаграммы бетона и стали, работа растянутого бетона."
-    $row = Add-GuideParagraph $Sheet $row "Ошибки обязательных настроек сопровождаются ключом, текущим адресом Config и требуемым исправлением. Удаленную строку следует восстановить в указанном разделе, утраченную ссылку на таблицу - через «Формулы → Диспетчер имен»."
-    $row = Add-GuideParagraph $Sheet $row "Таблицы допускается перемещать с сохранением именованного диапазона на всю таблицу, включая заголовок. Диапазон должен оставаться непрерывным. Адреса диагностики определяются при чтении данных; комментарии ранее сохраненного Results относятся к предыдущему запуску."
+    $row = Add-GuideTitle $Sheet $row "1. Условия равновесия" 13
+    $row = Add-GuideParagraph $Sheet $row "Напряжения определяются по деформациям элементов и выбранным диаграммам материалов. Параметры плоскости деформаций уточняются до выполнения трех условий равновесия: СП 63, пп. 8.1.20–8.1.21 и 8.1.24–8.1.25."
+    $row = Add-GuideFormula $Sheet $row "N_int = Σσ_i·A_i;    Mx_int = Σσ_i·A_i·y_i;    My_int = Σσ_i·A_i·x_i"
+    $row = Add-GuideParagraph $Sheet $row "Сечение разделено на бетонные элементы и стержни. Напряжение σ_i каждого элемента умножается на его площадь A_i; сумма даёт внутреннюю силу N_int. Для моментов тот же вклад умножается на координату центра элемента относительно расчётной точки. Полученные усилия должны уравновесить заданные N, Mx и My. Это дискретная запись равновесия НДМ по СП 63, пп. 8.1.20–8.1.25."
+    $row = Add-GuideFormula $Sheet $row "|N_int - N| ≤ T_N;    |Mx_int - Mx| ≤ T_Mx;    |My_int - My| ≤ T_My"
+    $row = Add-GuideParagraph $Sheet $row "N_int, Mx_int и My_int - внутренние усилия. T_N, T_Mx и T_My задаются настройками Solver.ToleranceN, Solver.ToleranceMx и Solver.ToleranceMy на Config."
+    $row = Add-GuideParagraph $Sheet $row "Допуски вводятся в INPUT Force и INPUT Moment - единицах ввода силы и момента. Они определяют точность равновесия, а не число знаков в таблице. Малые моменты зануляет другая настройка Config, Calculation.ZeroMomentPerDepth; 0 отключает такое зануление."
     $row = Add-GuideTitle $Sheet $row "2. Нагрузки и поле деформаций" 13
     $row = Add-GuideParagraph $Sheet $row "Внесите N, Mx и My в таблицу сочетаний на Config в единицах INPUT. Пользовательская точка приложения отсчитывается от центра бетона без арматуры. Ее смещения задаются настройками Config Load.ReferenceOffsetX и Load.ReferenceOffsetY."
     $row = Add-GuideFormula $Sheet $row "M_x = M_{x,user} + N·(Y_ref - Y_calc)"
@@ -2612,11 +2635,10 @@ function Add-DirectStateMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "X_ref и X_calc - координаты тех же точек по X. Моменты от эксцентриситета N учитываются при переносе усилий."
     $row = Add-GuideFormula $Sheet $row "ε(x,y) = ε_0 + κ_x·y + κ_y·x"
     $row = Add-GuideParagraph $Sheet $row "ε_0 - деформация в начале координат; κ_x и κ_y - кривизны. Во внутренней системе знаков растяжение положительно, сжатие отрицательно. Гипотеза плоских сечений — СП 63, п. 8.1.20; уравнения НДМ — пп. 8.1.23–8.1.25."
-    $row = Add-GuideTitle $Sheet $row "3. Условия равновесия" 13
-    $row = Add-GuideParagraph $Sheet $row "Напряжения определяются по деформациям элементов и выбранным диаграммам материалов. Параметры плоскости деформаций уточняются до выполнения трех условий равновесия: СП 63, пп. 8.1.20–8.1.21 и 8.1.24–8.1.25."
-    $row = Add-GuideFormula $Sheet $row "|N_int - N| ≤ T_N;    |Mx_int - Mx| ≤ T_Mx;    |My_int - My| ≤ T_My"
-    $row = Add-GuideParagraph $Sheet $row "N_int, Mx_int и My_int - внутренние усилия. T_N, T_Mx и T_My задаются настройками Solver.ToleranceN, Solver.ToleranceMx и Solver.ToleranceMy на Config."
-    $row = Add-GuideParagraph $Sheet $row "Допуски вводятся в INPUT Force и INPUT Moment - единицах ввода силы и момента. Они определяют точность равновесия, а не число знаков в таблице. Малые моменты зануляет другая настройка Config, Calculation.ZeroMomentPerDepth; 0 отключает такое зануление."
+    $row = Add-GuideTitle $Sheet $row "3. Расчетный профиль и материалы" 13
+    $row = Add-GuideParagraph $Sheet $row "На Config в расчетном профиле включите Calculation.Strength.DirectState = Yes. Материалы этой проверки задаются там же настройками MaterialModel.Strength.ValueSet, MaterialModel.Strength.ConcreteDiagram, MaterialModel.Strength.ConcreteTension и MaterialModel.Strength.SteelDiagram: набор характеристик, диаграммы бетона и стали, работа растянутого бетона."
+    $row = Add-GuideParagraph $Sheet $row "Ошибки обязательных настроек сопровождаются ключом, текущим адресом Config и требуемым исправлением. Удаленную строку следует восстановить в указанном разделе, утраченную ссылку на таблицу - через «Формулы → Диспетчер имен»."
+    $row = Add-GuideParagraph $Sheet $row "Таблицы допускается перемещать с сохранением именованного диапазона на всю таблицу, включая заголовок. Диапазон должен оставаться непрерывным. Адреса диагностики определяются при чтении данных; комментарии ранее сохраненного Results относятся к предыдущему запуску."
     $row = Add-GuideTitle $Sheet $row "4. Численный метод и параметры итераций" 13
     $row = Add-GuideParagraph $Sheet $row "В настройке Solver.Method выберите Newton или Secant. Newton использует касательную жесткость сечения, а Secant уточняет приближенную матрицу чувствительности по предыдущим состояниям." -RowCount 1
     $row = Add-GuideParagraph $Sheet $row "Solver.MaxIterations ограничивает число итераций на ступени нагрузки. Solver.LoadSteps задает число ступеней; их увеличение может повысить устойчивость сходимости ценой дополнительного времени."
@@ -2640,22 +2662,8 @@ function Add-CapacityMethodologyGuide {
     param([object]$Sheet, [int]$StartRow)
 
     $row = Add-GuideParagraph $Sheet $StartRow "Несущая способность определяется достижением предельной деформации бетона или арматуры на выбранной траектории нагружения. Множитель λ = 1 соответствует заданному сочетанию. Критерии деформаций — СП 63, пп. 8.1.20, 8.1.29–8.1.30; траектория поиска задаётся программой."
-    $row = Add-GuideTitle $Sheet $row "1. Расчетный профиль и путь нагружения" 13
-    $row = Add-GuideParagraph $Sheet $row "Расчет включается в профиле настройкой Calculation.Strength.Capacity = Yes. Используется модель прочности MaterialModel.Strength.*, общая с прямым расчетом НДС."
-    $row = Add-GuideParagraph $Sheet $row "LoadPath в строке сочетания задает масштабируемые составляющие: Mx, My, оба момента, N или все усилия. Auto выбирает путь по ненулевым составляющим; пустое значение принимается как Auto."
-    $row = Add-GuideParagraph $Sheet $row "При N + M режим Auto последовательно пробует моментный путь, λ*N и λ*NMxy до получения предельной точки. Найденный предел с λ < 1 завершает поиск. Явно заданный путь не заменяется другим."
-    $row = Add-GuideTitle $Sheet $row "2. Постоянная и увеличиваемая части" 13
-    $row = Add-GuideFormula $Sheet $row "N(λ) = N_0 + λ·N_base"
-    $row = Add-GuideParagraph $Sheet $row "N_0 - постоянная часть силы; N_base - масштабируемая составляющая."
-    $row = Add-GuideFormula $Sheet $row "M_x(λ) = M_{x,0} + λ·M_{x,base};    M_y(λ) = M_{y,0} + λ·M_{y,base}"
-    $row = Add-GuideParagraph $Sheet $row "Индексы 0 и base у моментов также обозначают постоянную и масштабируемую части. При λ = 1 восстанавливается исходное сочетание."
-    $row = Add-GuideParagraph $Sheet $row "Если сила приложена со смещением, заданным на Config настройками Load.ReferenceOffsetX и Load.ReferenceOffsetY, ее добавочный момент увеличивается вместе с N. Пользовательский момент масштабируется только тогда, когда выбранный путь включает этот момент."
-    $row = Add-GuideParagraph $Sheet $row "Например, задано N = 100 тс и Mx = 50 тс·м; смещение силы добавляет еще 10 тс·м. При пути λ*N получаем N = λ·100 и Mx = 50 + λ·10. При λ*Mxy сила и ее добавка остаются постоянными: N = 100, Mx = 10 + λ·50."
-    $row = Add-GuideTitle $Sheet $row "3. Поиск предельного состояния" 13
-    $row = Add-GuideParagraph $Sheet $row "В настройке Capacity.SolutionStrategy выберите способ поиска. UltimateStrain совместно решает условия равновесия и предельной деформации, а LoadMultiplier уточняет λ последовательными расчетами равновесия. Auto начинает с UltimateStrain и при численной неудаче повторяет тот же путь через LoadMultiplier." -RowCount 2
-    $row = Add-GuideParagraph $Sheet $row "Длина численного шага выбирается автоматически. Если обычный шаг UltimateStrain не улучшает решение, программа пробует резервный шаг. Успех подтверждается только равновесием и достижением физического предела с заданными допусками; сам по себе малый шаг не означает успешный расчет."
-    $row = Add-GuideParagraph $Sheet $row "Для силового осевого пути λ*N и для λ*NMxy без пользовательских моментов применяется LoadMultiplier. На горизонтальном участке диаграммы прямой поиск предельной деформации может не дать единственного устойчивого решения."
-    $row = Add-GuideParagraph $Sheet $row "Контролируются сжатие и растяжение бетона и стали. Растяжение бетона проверяется только при включенной растянутой ветви. Пределы берутся из диаграмм выбранной модели, а не из численных допусков." -Emphasis
+    $row = Add-GuideFormula $Sheet $row "SF_capacity = λ_ult"
+    $row = Add-GuideParagraph $Sheet $row "SF_capacity - коэффициент запаса по несущей способности; λ_ult - найденный предельный множитель. При λ_ult ≥ 1 заданная нагрузка проходит проверку, при λ_ult < 1 - не проходит."
     $row = Add-GuideCompositeFormula $Sheet $row @(
         @{ Kind = "Text"; Text = "max(" },
         @{ Kind = "Fraction"; Numerator = "|ε_b|"; Denominator = "ε_{b,ult}" },
@@ -2664,15 +2672,29 @@ function Add-CapacityMethodologyGuide {
         @{ Kind = "Text"; Text = ") = 1" }
     ) "" "max(|ε_b|/ε_{b,ult}; |ε_s|/ε_{s,ult}) = 1"
     $row = Add-GuideParagraph $Sheet $row "ε_b,ult и ε_s,ult - модули соответствующих предельных деформаций сжатия или растяжения. Максимум определяется по всем активным пределам бетона и арматуры."
+    $row = Add-GuideTitle $Sheet $row "1. Поиск предельного состояния" 13
+    $row = Add-GuideParagraph $Sheet $row "В настройке Capacity.SolutionStrategy выберите способ поиска. UltimateStrain совместно решает условия равновесия и предельной деформации, а LoadMultiplier уточняет λ последовательными расчетами равновесия. Auto начинает с UltimateStrain и при численной неудаче повторяет тот же путь через LoadMultiplier." -RowCount 2
+    $row = Add-GuideParagraph $Sheet $row "Длина численного шага выбирается автоматически. Если обычный шаг UltimateStrain не улучшает решение, программа пробует резервный шаг. Успех подтверждается только равновесием и достижением физического предела с заданными допусками; сам по себе малый шаг не означает успешный расчет."
+    $row = Add-GuideParagraph $Sheet $row "Для силового осевого пути λ*N и для λ*NMxy без пользовательских моментов применяется LoadMultiplier. На горизонтальном участке диаграммы прямой поиск предельной деформации может не дать единственного устойчивого решения."
+    $row = Add-GuideParagraph $Sheet $row "Контролируются сжатие и растяжение бетона и стали. Растяжение бетона проверяется только при включенной растянутой ветви. Пределы берутся из диаграмм выбранной модели, а не из численных допусков." -Emphasis
     $row = Add-GuideParagraph $Sheet $row "Точность UltimateStrain задает настройка Config Capacity.ToleranceStrain. Число итераций обоих способов ограничивает Capacity.SolverMaxIterations. Допуски равновесия задаются на Config настройками Solver.ToleranceN, Solver.ToleranceMx и Solver.ToleranceMy."
+    $row = Add-GuideTitle $Sheet $row "2. Постоянная и увеличиваемая части" 13
+    $row = Add-GuideFormula $Sheet $row "N(λ) = N_0 + λ·N_base"
+    $row = Add-GuideParagraph $Sheet $row "N_0 - постоянная часть силы; N_base - масштабируемая составляющая."
+    $row = Add-GuideFormula $Sheet $row "M_x(λ) = M_{x,0} + λ·M_{x,base};    M_y(λ) = M_{y,0} + λ·M_{y,base}"
+    $row = Add-GuideParagraph $Sheet $row "Индексы 0 и base у моментов также обозначают постоянную и масштабируемую части. При λ = 1 восстанавливается исходное сочетание."
+    $row = Add-GuideParagraph $Sheet $row "Если сила приложена со смещением, заданным на Config настройками Load.ReferenceOffsetX и Load.ReferenceOffsetY, ее добавочный момент увеличивается вместе с N. Пользовательский момент масштабируется только тогда, когда выбранный путь включает этот момент."
+    $row = Add-GuideParagraph $Sheet $row "Например, задано N = 100 тс и Mx = 50 тс·м; смещение силы добавляет еще 10 тс·м. При пути λ*N получаем N = λ·100 и Mx = 50 + λ·10. При λ*Mxy сила и ее добавка остаются постоянными: N = 100, Mx = 10 + λ·50."
+    $row = Add-GuideTitle $Sheet $row "3. Расчетный профиль и путь нагружения" 13
+    $row = Add-GuideParagraph $Sheet $row "Расчет включается в профиле настройкой Calculation.Strength.Capacity = Yes. Используется модель прочности MaterialModel.Strength.*, общая с прямым расчетом НДС."
+    $row = Add-GuideParagraph $Sheet $row "LoadPath в строке сочетания задает масштабируемые составляющие: Mx, My, оба момента, N или все усилия. Auto выбирает путь по ненулевым составляющим; пустое значение принимается как Auto."
+    $row = Add-GuideParagraph $Sheet $row "При N + M режим Auto последовательно пробует моментный путь, λ*N и λ*NMxy до получения предельной точки. Найденный предел с λ < 1 завершает поиск. Явно заданный путь не заменяется другим."
     $row = Add-GuideTitle $Sheet $row "4. Настройки пробного поиска" 13
     $row = Add-GuideParagraph $Sheet $row "Для LoadMultiplier на Config настройка Capacity.InitialLambda задает первую положительную пробу, Capacity.MaxLambda - техническую границу расширения поиска, Capacity.ToleranceLambda - точность λ. MaxLambda не увеличивает физическую несущую способность и не ограничивает успешный прямой поиск UltimateStrain."
     $row = Add-GuideParagraph $Sheet $row "Настройка Config Capacity.SearchMethod выбирает уточнение интервала: Bisection делит его пополам; Brent сочетает деление с ускоренными пробами; Secant использует изменение результата между предыдущими пробами. Методы ищут один и тот же физический предел."
     $row = Add-GuideParagraph $Sheet $row "На Config Capacity.BaseLoadSteps задает число ступеней приложения нагрузки одной пробы, Capacity.MaxRetries - дополнительные попытки при численной несходимости. На каждом повторе число ступеней удваивается; численный шаг выбирается автоматически. Значения λ и усилий этой пробы не меняются."
     $row = Add-GuideParagraph $Sheet $row "Настройка Config General.DiagramExtension может помогать найти равновесие пробной нагрузки за пределами диаграммы. Физический критерий по деформациям остается исходным: численное продолжение не прибавляет сечению несущую способность."
     $row = Add-GuideTitle $Sheet $row "5. Результаты поиска" 13
-    $row = Add-GuideFormula $Sheet $row "SF_capacity = λ_ult"
-    $row = Add-GuideParagraph $Sheet $row "SF_capacity - коэффициент запаса по несущей способности; λ_ult - найденный предельный множитель. При λ_ult ≥ 1 заданная нагрузка проходит проверку, при λ_ult < 1 - не проходит."
     $row = Add-GuideParagraph $Sheet $row "BaseFail означает подтвержденный физический отказ постоянной части при λ = 0. NumFail означает, что предельную точку не удалось надежно найти численно; сам по себе он не доказывает разрушение. Комментарий объясняет причину и использованный путь."
     $row = Add-GuideParagraph $Sheet $row "В Results также показаны N_ult, Mx_ult и My_ult - усилия в найденной предельной точке, фактический метод и LoadPath. Усилия возвращаются к пользовательской точке приложения и выводятся в OUTPUT и пользовательских знаках; напряжения и деформации сохраняют физические знаки."
     return $row + 2
@@ -2688,48 +2710,40 @@ function Add-CrackWidthMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Обе методики используют текущее НДС и границы бетона для площади взаимодействия. Точные контуры уточняют расчет трещин, но не меняют характеристики бетонной сетки для устойчивости. Методика устойчивости выбирается независимо настройкой Config Stability.Code."
     $row = Add-GuideTitle $Sheet $row "СП 63: расчет ширины нормальных трещин" 15
     $row = Add-SP63CrackWidthMethodologyGuide $Sheet $row
-    return (Add-SP35CrackWidthMethodologyGuide $Sheet $row)
+    $row = Add-SP35CrackWidthMethodologyGuide $Sheet $row
+    return (Add-LongitudinalCrackGuide $Sheet $row)
 }
 
-# Сохраняет последовательное объяснение существующей методики СП 63;
-# меняется только общее вычисление геометрии, но не формула и ее коэффициенты.
+# Объясняет ширину трещины по СП 63: общая зависимость, её составляющие, применимость и результат.
 function Add-SP63CrackWidthMethodologyGuide {
     param([object]$Sheet, [int]$StartRow)
 
     $row = Add-GuideParagraph $Sheet $StartRow "Расчет применяется при SLS.Crack.Code = SP63 и Calculation.Crack.Width = Yes в назначенном профиле. Реализовано продолжительное раскрытие для сочетаний II группы; расчет непродолжительного раскрытия по нескольким состояниям не предусмотрен."
     $row = Add-GuideTitle $Sheet $row "1. Условие проверки и общая формула" 13
     $row = Add-GuideNormativeFormula $Sheet $row "SP63_CrackCondition"
-    $row = Add-GuideParagraph $Sheet $row "a_crc,ult задается настройкой SLS.Crack.Allowable в INPUT Length. Расчетная ширина a_crc выводится в OUTPUT Length."
+    $row = Add-GuideParagraph $Sheet $row "Найденная ширина a_crc сравнивается с допустимой a_crc,ult. Допуск задайте в SLS.Crack.Allowable в единицах INPUT Length по условиям проекта. В Results программа переведёт найденную ширину в OUTPUT Length; изменение единиц не меняет саму проверку."
     $row = Add-GuideNormativeFormula $Sheet $row "SP63_CrackWidth"
     $row = Add-GuideParagraph $Sheet $row "φ_1, φ_2 и φ_3 учитывают длительность нагрузки, поверхность арматуры и характер работы элемента; ψ_s - неравномерность деформаций арматуры между трещинами. σ_s - напряжение выбранной растянутой арматуры; E_s - ее модуль упругости; l_s - расчетное расстояние между трещинами. СП 63, п. 8.2.15."
 
-    $row = Add-GuideTitle $Sheet $row "2. Трещинообразование и применимость расчета" 13
-    $row = Add-GuideParagraph $Sheet $row "Проверка трещинообразования предшествует расчету ширины. Текущее НДС для раскрытия определяется при заданном сочетании без учета растянутого бетона. СП 63, пп. 8.2.14–8.2.16."
-    $row = Add-GuideParagraph $Sheet $row "Путь поиска задается столбцом LoadPath в таблице сочетаний на Config; пустое значение означает Auto. Численный способ выбирается настройкой Config SLS.Crack.InitiationSolutionStrategy. Допуск уточнения λ методом LoadMultiplier задается отдельно в SLS.Crack.ToleranceLambda. Отдельного пути только для трещин нет."
-    $row = Add-GuideFormula $Sheet $row "λ_crc ≤ 1: трещина образуется;    λ_crc > 1: трещина еще не образуется"
-    $row = Add-GuideParagraph $Sheet $row "λ_crc - найденный множитель выбранной части нагрузки в момент образования трещины. λ = 1 соответствует текущему сочетанию. Нормальная трещина может быть также достоверно исключена без найденной пороговой точки; тогда выводится NotCracked."
-    $row = Add-GuideParagraph $Sheet $row "Подтвержденный NotCracked исключает расчет ширины: статус проверки N/A, численная ячейка a_crc остается пустой. Это не расчетная ширина, равная нулю. Проверка продольных трещин при этом сохраняется." -Emphasis
-    $row = Add-GuideParagraph $Sheet $row "Отказ более высокой пробной нагрузки не означает отказа текущего сочетания. Если допустимое равновесие при λ = 1 не достигает критерия трещины, а более высокая проба достигает другого физического предела, текущее сочетание остается NotCracked."
+    $row = Add-GuideTitle $Sheet $row "2. Ширина, запас и результат" 13
+    $row = Add-GuideFractionFormula $Sheet $row "SF_crc =" "a_crc,ult" "a_crc" ""
+    $row = Add-GuideParagraph $Sheet $row "SF_crc - коэффициент запаса по ширине. Если он меньше 1, допуск превышен и статус - FAIL. Для неприменимой или пропущенной проверки ширина и запас не выводятся. Рассчитанное a_crc = 0 - другой случай, не подтверждение отсутствия трещины."
+    $row = Add-GuideParagraph $Sheet $row "Подробный блок Results содержит площадь, состав арматуры, напряжения, коэффициенты и ширину. В сводке выводятся общий статус и минимальный запас; в ResultComment - причины пропуска и предупреждения."
 
-    $row = Add-GuideTitle $Sheet $row "3. Центральное растяжение" 13
-    $row = Add-GuideParagraph $Sheet $row "Центральное растяжение определяется относительно приведенного центра сечения бетон + арматура. При смещении точки приложения, заданном на Config настройками Load.ReferenceOffsetX и Load.ReferenceOffsetY, даже одна сила N может создавать изгиб и требовать общей проверки."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_TensionCondition"
-    $row = Add-GuideParagraph $Sheet $row "N - растягивающая сила; N_crc - сила образования нормальных трещин при центральном растяжении."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_TensionForce"
-    $row = Add-GuideParagraph $Sheet $row "A_red - приведенная площадь для проверки центрального растяжения; R_bt,ser задается в колонке растяжения строки Concrete.R.SLS(II)."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_Area"
-    $row = Add-GuideParagraph $Sheet $row "Обозначения СП: A — площадь бетона; A_s и A_s′ — площади растянутой и сжатой арматуры; α = E_s/E_b. При центральном растяжении в программе суммируется вся продольная арматура. Модули заданы в Concrete.E и Steel.E."
-    $row = Add-GuideFractionFormula $Sheet $row "λ_crc =" "N_crc" "N" ""
-    $row = Add-GuideParagraph $Sheet $row "Для центрального растяжения множитель равен отношению пороговой силы к текущей. При расчете ширины берется вся площадь бетона за вычетом отверстий и вся фактически растянутая арматура."
+    $row = Add-GuideTitle $Sheet $row "3. Арматура, напряжение и эквивалентный диаметр" 13
+    $row = Add-GuideParagraph $Sheet $row "A_s - сумма площадей растянутых стержней, оси которых попали в расчетную зону. Напряжение этих стержней усредняется по площади:"
+    $row = Add-GuideFractionFormula $Sheet $row "σ_s =" "Σ(A_s,i · σ_s,i)" "ΣA_s,i" ""
+    $row = Add-GuideParagraph $Sheet $row "Суммирование выполняется по выбранным растянутым стержням; A_s,i и σ_s,i - площадь и текущее напряжение i-го стержня. Усреднение по площади принято в программе как обобщение НДМ для произвольного сечения; отдельной формулой СП 63 оно не является."
+    $row = Add-GuideFractionFormula $Sheet $row "d_s,eq =" "Σ(n_i·d_i^2)" "Σ(n_i·d_i)" ""
+    $row = Add-GuideParagraph $Sheet $row "d_s,eq - эквивалентный диаметр; n_i - число выбранных стержней диаметра d_i. Для смешанных диаметров применено инженерное дополнение по EN 1992-1-1; общий случай отдельно не раскрыт в СП 63."
 
-    $row = Add-GuideTitle $Sheet $row "4. Образование трещины при изгибе и внецентренной силе" 13
-    $row = Add-GuideParagraph $Sheet $row "В общем случае точка трещинообразования определяется достижением предельной растягивающей деформации бетона. При одновременном сжатии и растяжении сечения: СП 63, пп. 8.2.14 и 8.1.30."
-    $row = Add-GuideFormula $Sheet $row "ε_{bt,ult} = ε_{bt2}      СП 63, п. 8.2.14 и 8.1.30"
-    $row = Add-GuideParagraph $Sheet $row "ε_bt,ult - критерий трещинообразования; ε_bt2 - предельная деформация растянутой ветви диаграммы бетона. СП 63, пп. 8.2.14 и 8.1.30."
-    $row = Add-GuideParagraph $Sheet $row "Если все сечение растянуто, но кривизна ненулевая, применяется формула:"
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_TensionStrain"
-    $row = Add-GuideParagraph $Sheet $row "ε_bt0 - деформация начала предельного участка растянутой диаграммы; ε_1 и ε_2 - растягивающие деформации противоположных граней. Используется модель MaterialModel.CrackInitiation.* назначенного профиля."
-    $row = Add-GuideParagraph $Sheet $row "Настройка Config General.DiagramExtension может помочь численному поиску равновесия, но не увеличивает физический порог образования. На Results сохраняются сила и момент найденной точки, использованный путь и причина неудачи, если точка не найдена."
+    $row = Add-GuideTitle $Sheet $row "4. Расстояние между трещинами" 13
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_CrackSpacing"
+    $row = Add-GuideParagraph $Sheet $row "В (8.136) d_s — номинальный диаметр арматуры. Для смешанных диаметров программа подставляет d_s,eq; исходное l_s до ограничений обозначается l_s,0. A_bt и A_s относятся к выбранной расчетной зоне."
+    $row = Add-GuideFormula $Sheet $row "l_s = max(l_{s,0}; 10·d_s,eq; 100 мм)"
+    $row = Add-GuideParagraph $Sheet $row "Сначала применяется нижняя граница: принятое расстояние l_s не меньше 10 диаметров и 100 мм. СП 63, п. 8.2.17."
+    $row = Add-GuideFormula $Sheet $row "l_s = min(l_s; 40·d_s,eq; 400 мм)      СП 63, п. 8.2.17"
+    $row = Add-GuideParagraph $Sheet $row "Затем применяется верхняя граница: не больше 40 диаметров и 400 мм. Если d_s,eq больше 40 мм, нижнее и верхнее ограничения противоречат друг другу. Программа использует верхнюю границу 400 мм и явно предупреждает об этом в комментарии выполненного расчета. Нормативные границы — СП 63, п. 8.2.17; разрешение противоречия при d_s,eq > 40 мм принято в программе."
 
     $row = Add-GuideTitle $Sheet $row "5. Текущее НДС и площадь взаимодействия" 13
     $row = Add-GuideParagraph $Sheet $row "Для расчета ширины используются напряжения текущего сочетания. В профиле задаются MaterialModel.CrackedState.ValueSet = SLS(II) и MaterialModel.CrackedState.ConcreteTension = Ignore."
@@ -2740,22 +2754,7 @@ function Add-SP63CrackWidthMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Если x_t меньше 2a_s, Effective расширяет бетонную полосу до 2a_s, но не глубже 0,5h. Она может зайти за НЛ. Сжатые стержни из этой полосы все равно не входят в расчет раскрытия: выбирается только растянутая арматура. Границы 2a_s и 0,5h — СП 63, п. 8.2.17."
     $row = Add-GuideParagraph $Sheet $row "Площадь считается по пересечению полосы с бетоном и выбранными отверстиями. Правила четырех случаев задания контуров приведены в конце раздела подготовки AutoCAD. Без точного наружного контура граница по сетке приближенная; реальная площадь и инерции элементов для НДС не заменяются."
 
-    $row = Add-GuideTitle $Sheet $row "6. Арматура, напряжение и эквивалентный диаметр" 13
-    $row = Add-GuideParagraph $Sheet $row "A_s - сумма площадей растянутых стержней, оси которых попали в расчетную зону. Напряжение этих стержней усредняется по площади:"
-    $row = Add-GuideFractionFormula $Sheet $row "σ_s =" "Σ(A_s,i · σ_s,i)" "ΣA_s,i" ""
-    $row = Add-GuideParagraph $Sheet $row "Суммирование выполняется по выбранным растянутым стержням; A_s,i и σ_s,i - площадь и текущее напряжение i-го стержня. Усреднение по площади принято в программе как обобщение НДМ для произвольного сечения; отдельной формулой СП 63 оно не является."
-    $row = Add-GuideFractionFormula $Sheet $row "d_s,eq =" "Σ(n_i·d_i^2)" "Σ(n_i·d_i)" ""
-    $row = Add-GuideParagraph $Sheet $row "d_s,eq - эквивалентный диаметр; n_i - число выбранных стержней диаметра d_i. Для смешанных диаметров применено инженерное дополнение по EN 1992-1-1; общий случай отдельно не раскрыт в СП 63."
-
-    $row = Add-GuideTitle $Sheet $row "7. Расстояние между трещинами" 13
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_CrackSpacing"
-    $row = Add-GuideParagraph $Sheet $row "В (8.136) d_s — номинальный диаметр арматуры. Для смешанных диаметров программа подставляет d_s,eq; исходное l_s до ограничений обозначается l_s,0. A_bt и A_s относятся к выбранной расчетной зоне."
-    $row = Add-GuideFormula $Sheet $row "l_s = max(l_{s,0}; 10·d_s,eq; 100 мм)"
-    $row = Add-GuideParagraph $Sheet $row "Сначала применяется нижняя граница: принятое расстояние l_s не меньше 10 диаметров и 100 мм. СП 63, п. 8.2.17."
-    $row = Add-GuideFormula $Sheet $row "l_s = min(l_s; 40·d_s,eq; 400 мм)      СП 63, п. 8.2.17"
-    $row = Add-GuideParagraph $Sheet $row "Затем применяется верхняя граница: не больше 40 диаметров и 400 мм. Если d_s,eq больше 40 мм, нижнее и верхнее ограничения противоречат друг другу. Программа использует верхнюю границу 400 мм и явно предупреждает об этом в комментарии выполненного расчета. Нормативные границы — СП 63, п. 8.2.17; разрешение противоречия при d_s,eq > 40 мм принято в программе."
-
-    $row = Add-GuideTitle $Sheet $row "8. Коэффициенты, задаваемые на Config" 13
+    $row = Add-GuideTitle $Sheet $row "6. Коэффициенты, задаваемые на Config" 13
     $row = Add-GuideParagraph $Sheet $row "SLS.Crack.Phi1 задает φ_1: для продолжительного раскрытия 1,4. SLS.Crack.Phi2 задает φ_2: 0,5 для периодического профиля и 0,8 для гладкой арматуры. Применимость коэффициентов определяется расчетной ситуацией. СП 63, п. 8.2.15."
     $row = Add-GuideParagraph $Sheet $row "Настройка Config SLS.Crack.Phi3Mode = Auto принимает φ_3 = 1,2 при растягивающей продольной силе и 1,0 в остальных реализованных случаях. При User используется число из настройки Config SLS.Crack.Phi3. СП 63, п. 8.2.15."
     $row = Add-GuideParagraph $Sheet $row "Настройка SLS.Crack.PsiMode на листе Config выбирает правило определения ψ_s. User использует число из SLS.Crack.PsiS, если получены пригодные данные трещинообразования. Auto сначала принимает 1 и уточняет коэффициент только при превышении допуска ширины. AlwaysCalc выполняет уточнение всегда, когда оно возможно." -RowCount 2
@@ -2765,12 +2764,43 @@ function Add-SP63CrackWidthMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Если пригодной точки образования нет либо выбранная арматура в ней не растянута, но растянута при текущем сочетании, ширина продолжает считаться с ψ_s = 1 во всех режимах. Предупреждение выводится только если это значение действительно использовано в формуле. Допущение ψ_s = 1 предусмотрено СП 63, п. 8.2.15; порядок его применения при непригодной пороговой точке задан программой." -Emphasis
     $row = Add-GuideParagraph $Sheet $row "При подтвержденном NotCracked формула ширины не вызывается, пользовательское SLS.Crack.PsiS не меняется и предупреждения о ψ_s = 1 нет. Отсутствие или физический отказ текущего НДС блокирует обе проверки трещин; ошибочные обязательные настройки требуют исправления."
 
-    $row = Add-GuideTitle $Sheet $row "9. Ширина, запас и результат" 13
-    $row = Add-GuideFractionFormula $Sheet $row "SF_crc =" "a_crc,ult" "a_crc" ""
-    $row = Add-GuideParagraph $Sheet $row "SF_crc - коэффициент запаса по ширине. Если он меньше 1, допуск превышен и статус - FAIL. Для неприменимой или пропущенной проверки ширина и запас не выводятся. Рассчитанное a_crc = 0 - другой случай, не подтверждение отсутствия трещины."
-    $row = Add-GuideParagraph $Sheet $row "Подробный блок Results содержит площадь, состав арматуры, напряжения, коэффициенты и ширину. В сводке выводятся общий статус и минимальный запас; в ResultComment - причины пропуска и предупреждения."
+    $row = Add-GuideTitle $Sheet $row "7. Трещинообразование и применимость расчета" 13
+    $row = Add-GuideParagraph $Sheet $row "Проверка трещинообразования предшествует расчету ширины. Текущее НДС для раскрытия определяется при заданном сочетании без учета растянутого бетона. СП 63, пп. 8.2.14–8.2.16."
+    $row = Add-GuideParagraph $Sheet $row "Путь поиска задается столбцом LoadPath в таблице сочетаний на Config; пустое значение означает Auto. Численный способ выбирается настройкой Config SLS.Crack.InitiationSolutionStrategy. Допуск уточнения λ методом LoadMultiplier задается отдельно в SLS.Crack.ToleranceLambda. Отдельного пути только для трещин нет."
+    $row = Add-GuideFormula $Sheet $row "λ_crc ≤ 1: трещина образуется;    λ_crc > 1: трещина еще не образуется"
+    $row = Add-GuideParagraph $Sheet $row "λ_crc - найденный множитель выбранной части нагрузки в момент образования трещины. λ = 1 соответствует текущему сочетанию. Нормальная трещина может быть также достоверно исключена без найденной пороговой точки; тогда выводится NotCracked."
+    $row = Add-GuideParagraph $Sheet $row "Подтвержденный NotCracked исключает расчет ширины: статус проверки N/A, численная ячейка a_crc остается пустой. Это не расчетная ширина, равная нулю. Проверка продольных трещин при этом сохраняется." -Emphasis
+    $row = Add-GuideParagraph $Sheet $row "Отказ более высокой пробной нагрузки не означает отказа текущего сочетания. Если допустимое равновесие при λ = 1 не достигает критерия трещины, а более высокая проба достигает другого физического предела, текущее сочетание остается NotCracked."
 
-    $row = Add-GuideTitle $Sheet $row "10. Независимая проверка продольных трещин" 13
+    $row = Add-GuideTitle $Sheet $row "8. Центральное растяжение" 13
+    $row = Add-GuideParagraph $Sheet $row "Центральное растяжение определяется относительно приведенного центра сечения бетон + арматура. При смещении точки приложения, заданном на Config настройками Load.ReferenceOffsetX и Load.ReferenceOffsetY, даже одна сила N может создавать изгиб и требовать общей проверки."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_TensionCondition"
+    $row = Add-GuideParagraph $Sheet $row "N - растягивающая сила; N_crc - сила образования нормальных трещин при центральном растяжении."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_TensionForce"
+    $row = Add-GuideParagraph $Sheet $row "A_red - приведенная площадь для проверки центрального растяжения; R_bt,ser задается в колонке растяжения строки Concrete.R.SLS(II)."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_Area"
+    $row = Add-GuideParagraph $Sheet $row "Обозначения СП: A — площадь бетона; A_s и A_s′ — площади растянутой и сжатой арматуры; α = E_s/E_b. При центральном растяжении в программе суммируется вся продольная арматура. Модули заданы в Concrete.E и Steel.E."
+    $row = Add-GuideFractionFormula $Sheet $row "λ_crc =" "N_crc" "N" ""
+    $row = Add-GuideParagraph $Sheet $row "Для центрального растяжения множитель равен отношению пороговой силы к текущей. При расчете ширины берется вся площадь бетона за вычетом отверстий и вся фактически растянутая арматура."
+
+    $row = Add-GuideTitle $Sheet $row "9. Образование трещины при изгибе и внецентренной силе" 13
+    $row = Add-GuideParagraph $Sheet $row "В общем случае точка трещинообразования определяется достижением предельной растягивающей деформации бетона. При одновременном сжатии и растяжении сечения: СП 63, пп. 8.2.14 и 8.1.30."
+    $row = Add-GuideFormula $Sheet $row "ε_{bt,ult} = ε_{bt2}      СП 63, п. 8.2.14 и 8.1.30"
+    $row = Add-GuideParagraph $Sheet $row "ε_bt,ult - критерий трещинообразования; ε_bt2 - предельная деформация растянутой ветви диаграммы бетона. СП 63, пп. 8.2.14 и 8.1.30."
+    $row = Add-GuideParagraph $Sheet $row "Если все сечение растянуто, но кривизна ненулевая, применяется формула:"
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_TensionStrain"
+    $row = Add-GuideParagraph $Sheet $row "ε_bt0 - деформация начала предельного участка растянутой диаграммы; ε_1 и ε_2 - растягивающие деформации противоположных граней. Используется модель MaterialModel.CrackInitiation.* назначенного профиля."
+    $row = Add-GuideParagraph $Sheet $row "Настройка Config General.DiagramExtension может помочь численному поиску равновесия, но не увеличивает физический порог образования. На Results сохраняются сила и момент найденной точки, использованный путь и причина неудачи, если точка не найдена."
+
+    return $row + 2
+}
+
+# Объясняет независимую проверку продольных трещин, общую для обеих методик нормальных трещин.
+function Add-LongitudinalCrackGuide {
+    param([object]$Sheet, [int]$StartRow)
+
+    $row = Add-GuideTitle $Sheet $StartRow "Продольные трещины: общая проверка по СП 35" 15
+    $row = Add-GuideParagraph $Sheet $row "Эта отдельная проверка сжатого бетона выполняется при обеих методиках ширины нормальных трещин: SLS.Crack.Code = SP63 и SP35. Ниже приведены её общий критерий, запас и допустимое напряжение."
     $row = Add-GuideParagraph $Sheet $row "Она контролирует максимальное сжимающее напряжение в бетоне текущего НДС и выполняется как часть Calculation.Crack.Width. Отдельный поиск равновесия для этой проверки не нужен."
     $row = Add-GuideFormula $Sheet $row "σ_c,max ≤ R_b,mc2"
     $row = Add-GuideParagraph $Sheet $row "σ_c,max - максимальное по модулю сжимающее напряжение бетона текущего НДС; R_b,mc2 задается настройкой Concrete.Rb.mc2. Запрет продольных трещин и ограничение напряжений — СП 35, п. 7.100; сопротивления — п. 7.97 и таблицы 7.6–7.7."
@@ -2895,18 +2925,47 @@ function Add-SP35CrackWidthMethodologyGuide {
 
     $row = Add-GuideTitle $Sheet $StartRow "СП 35: расчет ширины нормальных трещин" 15
     $row = Add-GuideParagraph $Sheet $row "Ширина нормальных трещин определяется по текущему НДС и площади взаимодействия бетона с растянутой арматурой. Для каждой растянутой группы выполняется отдельная проверка; определяющим является наибольшее раскрытие."
-    $row = Add-GuideParagraph $Sheet $row "Источники положений: [SP35] - требования СП 35; [METHOD] - Методическое пособие 2017 года к СП 35; [NDM] - инженерные допущения реализации. Пояснения пособия и допущения программы не заменяют нормативные требования."
+    $row = Add-GuideParagraph $Sheet $row "Основная зависимость раскрытия и радиус армирования принимаются по СП 35, пп. 7.105, 7.109–7.110. Построение зоны разъясняет Методическое пособие 2017 года, раздел 4.2.3. Геометрические правила программы описаны отдельно там, где норматив не задаёт единственный способ построения; они не выдаются за дополнительные требования СП."
 
-    $row = Add-GuideTitle $Sheet $row "1. Исходные данные и применимость" 13
-    $row = Add-GuideParagraph $Sheet $row "На Config задаются SLS.Crack.Code = SP35 и Calculation.Crack.Width = Yes в профиле, назначенном сочетанию."
-    $row = Add-GuideParagraph $Sheet $row "Допустимая ширина задается настройкой SLS.Crack.Allowable в INPUT Length по требованиям проекта. Автоматическое назначение допуска не предусмотрено."
-    $row = Add-GuideParagraph $Sheet $row "Проверка трещинообразования использует общий LoadPath сочетания; пустое значение принимается как Auto. Способ поиска задается SLS.Crack.InitiationSolutionStrategy, допуск λ для LoadMultiplier - SLS.Crack.ToleranceLambda. Подробные правила приведены в справке соответствующих настроек."
-    $row = Add-GuideParagraph $Sheet $row "При увеличении нагрузки проверяется первый достигнутый предел: образование трещины, сжатие бетона, растяжение или сжатие арматуры. Если другой предел наступает раньше трещины, он не становится точкой трещинообразования. При подтвержденном допустимом НДС исходного сочетания без трещины выводится NotCracked."
-    $row = Add-GuideParagraph $Sheet $row "Подтвержденный NotCracked исключает расчет ширины: статус N/A, численная ячейка пустая. При Cracked раскрытие определяется по напряжениям текущего сочетания."
-    $row = Add-GuideParagraph $Sheet $row "Неудача поиска трещинообразования не блокирует расчет ширины при найденном физически допустимом текущем НДС; причина сохраняется в комментарии. Отсутствие или физическая недопустимость текущего НДС блокирует и ширину, и продольные трещины." -Emphasis
-    $row = Add-GuideParagraph $Sheet $row "Проверка продольных трещин выполняется отдельно по сжатому бетону и сохраняется даже при NotCracked. Ее допустимое напряжение задается на Config настройкой Concrete.Rb.mc2."
+    $row = Add-GuideTitle $Sheet $row "1. Формула ширины и напряжение арматуры" 13
+    $row = Add-GuideParagraph $Sheet $row "Для каждой растянутой группы находится ширина нормальной трещины. Сначала она сравнивается с допустимой, а ниже последовательно определяются напряжение арматуры, коэффициент ψ и площадь взаимодействия, от которой этот коэффициент зависит."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP35_CrackWidth"
+    $row = Add-GuideParagraph $Sheet $row "В (7.93) для ненапрягаемой арматуры σ = σ_s, E = E_s. σ_s — наибольшее растягивающее напряжение стержня рассматриваемой группы; E_s задан в Steel.E, колонке растяжения. Δ_cr — допустимая ширина из SLS.Crack.Allowable."
+    $row = Add-GuideParagraph $Sheet $row "При ψ в сантиметрах формула дает a_cr в сантиметрах. В Results ширина переводится в OUTPUT Length."
+    $row = Add-GuideCompositeFormula $Sheet $row @(
+        @{ Kind = "Text"; Text = "ψ = 1,5 · " }, @{ Kind = "Radical"; Radicand = "R_r" },
+        @{ Kind = "Text"; Text = "  (Periodic);    ψ = 0,35·R_r  (Smooth)" }
+    ) "СП 35, п. 7.109" "ψ = 1,5·√R_r (Periodic); ψ = 0,35·R_r (Smooth)"
+    $row = Add-GuideParagraph $Sheet $row "ψ - размерный коэффициент раскрытия; R_r и ψ в этих зависимостях выражаются в сантиметрах. SLS.Crack.SP35.RebarProfile: Periodic - периодический профиль, Smooth - гладкая арматура."
+    $row = Add-GuideParagraph $Sheet $row "Для арматуры в стенках СП 35, п. 7.109 также предписывает зависимость с квадратным корнем; для неё выберите Periodic."
+    $row = Add-GuideFractionFormula $Sheet $row "a_{cr}[мм] =" "σ_s" "E_s" "· ψ[см] · 10"
+    $row = Add-GuideParagraph $Sheet $row "Напряжения соседних групп и напряжения в точке трещинообразования в формулу раскрытия не подставляются."
+    $row = Add-GuideFormula $Sheet $row "a_{cr} = max(a_{cr,1}; a_{cr,2}; ...)"
+    $row = Add-GuideParagraph $Sheet $row "a_cr,1, a_cr,2, ... - результаты отдельных проверок групп. Определяющая группа выбирается по ширине, а не по максимальному напряжению: большая площадь взаимодействия может дать большее раскрытие при меньшем σ_s."
+    $row = Add-GuideParagraph $Sheet $row "Применение этих зависимостей разъясняется в Методическом пособии 2017 года, разделе 4.2.3, формулах (4.306)–(4.312). Нормативной основой проверки остаются указанные пункты СП 35."
 
-    $row = Add-GuideTitle $Sheet $row "2. Группирование растянутой арматуры" 13
+    $row = Add-GuideTitle $Sheet $row "2. Состав арматуры и расчетное напряжение" 13
+    $row = Add-GuideParagraph $Sheet $row "Группа неделима: центр внутри конечной площади или на ее границе включает всю группу; центр снаружи исключает ее целиком, в том числе отдельные стержни внутри площади. Частичного включения нет." -Emphasis
+    $row = Add-GuideParagraph $Sheet $row "Число стержней, площадь арматуры, сумма диаметров и β относятся к полному составу принятой группы. При этом каждый исходный стержень должен находиться в бетоне; расположение в отверстии или за наружной границей является ошибкой геометрии."
+    $row = Add-GuideParagraph $Sheet $row "Вышележащие растянутые группы, вошедшие в площадь взаимодействия, участвуют в сумме диаметров. Расчетное напряжение принимается только по рассматриваемой группе: максимальное растягивающее напряжение ее стержней в текущем НДС. Радиус взаимодействия — СП 35, п. 7.110; расчётное растягивающее напряжение — п. 7.105."
+    $row = Add-GuideParagraph $Sheet $row "Остальные группы проверяются в отдельных итерациях со своими площадями взаимодействия и напряжениями. Если центр рассматриваемой группы не входит в ее конечную площадь, пропускается только эта проверка."
+
+    $row = Add-GuideTitle $Sheet $row "3. Площадь бетона и радиус армирования" 13
+    $row = Add-GuideFormula $Sheet $row "A_r = A_{бет,1} + A_{бет,2} + ... - (A_{отв,1} + A_{отв,2} + ...)"
+    $row = Add-GuideParagraph $Sheet $row "A_r - площадь бетона конечного участка взаимодействия; A_бет,1, A_бет,2, ... - площади его бетонных частей до вычитания отверстий; A_отв,1, A_отв,2, ... - площади отверстий в пределах участка."
+    $row = Add-GuideParagraph $Sheet $row "Можно учитывать несколько отверстий и несколько бетонных частей. В полом сечении рассматривается стенка, где находится выбранная группа; противоположная стенка через пустоту в эту область не добавляется."
+    $row = Add-GuideParagraph $Sheet $row "Если точные границы заданы, учитываются их прямые участки и круговые дуги. Иначе используются границы бетонной сетки. Четыре случая выбора границ перечислены в конце раздела «Подготовка геометрии в AutoCAD и импорт». Для формулы, схемы и экспорта используется одна и та же конечная область."
+    $row = Add-GuideParagraph $Sheet $row "P1...P5 и Q1...Q5 в Results и на схеме - контрольные пересечения с противоположными границами по пяти направлениям. Площадь определяется по всему контуру, включая отверстия между контрольными направлениями."
+    $row = Add-GuideFormulaPicture $Sheet $row (New-SP35GuideScheme 'Contours') "Отверстия образуют местные вырезы, включая отверстия между контрольными направлениями P/Q."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP35_Radius"
+    $row = Add-GuideParagraph $Sheet $row "R_r - радиус армирования, расчетная характеристика, не геометрический отступ. Знаменатель учитывает все принятые целые группы: β - коэффициент группы, n - число стержней, d - диаметр."
+    $row = Add-GuideParagraph $Sheet $row "Для одинаковых диаметров вклад группы равен β·n·d; для разных - β, умноженному на сумму фактических диаметров группы:"
+    $row = Add-GuideFormula $Sheet $row "Σβnd = β_1·D_1 + β_2·D_2 + ..."
+    $row = Add-GuideParagraph $Sheet $row "D_1, D_2, ... - суммы диаметров стержней принятых групп; β_1, β_2, ... - коэффициенты этих групп. Индексы обозначают группы, не ряды."
+    $row = Add-GuideFormula $Sheet $row "Σβnd = 0.85·(20 + 25) + 1.00·16 = 54.25 мм"
+    $row = Add-GuideParagraph $Sheet $row "Пример для группы из двух стержней 20 и 25 мм и одиночного стержня 16 мм. При A_r в мм2 радиус R_r получается в мм. RadiusDiameterMode влияет на геометрические отступы r, но не на сумму фактических диаметров в знаменателе."
+
+    $row = Add-GuideTitle $Sheet $row "4. Группирование растянутой арматуры" 13
     $row = Add-GuideParagraph $Sheet $row "Отбираются стержни с положительными напряжением и деформацией в текущем НДС. Пользовательская система знаков нагрузок на отбор не влияет."
     $row = Add-GuideParagraph $Sheet $row "Группа содержит один или несколько растянутых стержней, объединенных по расстоянию между поверхностями. Предельный зазор задается SLS.Crack.SP35.GroupGapTolerance в INPUT Length; значение новой книги - 10 мм."
     $row = Add-GuideParagraph $Sheet $row "Если стержни 1 и 2 связаны по зазору, а стержни 2 и 3 также связаны, все три образуют одну группу 1-2-3. Сжатые стержни в группировании не участвуют. Ненулевой допуск зазора — допущение [NDM], а не требование СП." -RowCount 1
@@ -2924,13 +2983,13 @@ function Add-SP35CrackWidthMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Геометрическая середина между крайними стержнями не используется вместо центра по площадям."
     $row = Add-GuideFormulaPicture $Sheet $row (New-SP35GuideScheme 'Groups') "Группы стержней: число стержней, коэффициент β и положение центра."
 
-    $row = Add-GuideTitle $Sheet $row "3. Площадь взаимодействия и бетонная граница" 13
+    $row = Add-GuideTitle $Sheet $row "5. Площадь взаимодействия и бетонная граница" 13
     $row = Add-GuideParagraph $Sheet $row "Для каждой растянутой группы строится отдельная площадь взаимодействия с окружающим бетоном. Все группы рассматриваются последовательно."
     $row = Add-GuideParagraph $Sheet $row "Границы задаются в направлениях вдоль нейтральной линии (НЛ) и по нормали к ней, независимо от поворота сечения."
     $row = Add-GuideParagraph $Sheet $row "Со стороны растянутой поверхности используется фактическая граница бетонной части, содержащей рассматриваемую группу. Вышележащие стержни не заменяют эту границу. Отверстия вычитаются из полученной площади."
     $row = Add-GuideParagraph $Sheet $row "После построения боковых границ и ограничения к НЛ определяется пересечение участка с бетонной областью. Отверстия образуют локальные вырезы без изменения боковых границ за пределами отверстий."
 
-    $row = Add-GuideTitle $Sheet $row "4. Боковые границы" 13
+    $row = Add-GuideTitle $Sheet $row "6. Боковые границы" 13
     $row = Add-GuideFormula $Sheet $row "r_бок = k·d_бок"
     $row = Add-GuideParagraph $Sheet $row "r_бок - исходное расстояние для определения боковых границ площади взаимодействия от центра рассматриваемой группы; k - множитель 3, 5 или 6; d_бок - принятый диаметр стержней этой группы."
     $row = Add-GuideParagraph $Sheet $row "Множитель выбирается на Config настройкой SLS.Crack.SP35.InteractionRadiusMode: 3d, 5d или 6d. Диаметр выбирается там же настройкой SLS.Crack.SP35.RadiusDiameterMode: Max - наибольший, Min - наименьший, Average - среднее арифметическое диаметров. Эти два выбора используются и сбоку, и в сторону НЛ."
@@ -2954,7 +3013,7 @@ function Add-SP35CrackWidthMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Если соседа с этой стороны нет, остается полный r_бок. Группа с той же проекцией на НЛ не считается левым или правым соседом. Если два соседа одинаково близки, используется устойчивый порядок их номеров."
     $row = Add-GuideParagraph $Sheet $row "Боковые границы - две нормали к НЛ. Близость бетонной грани или отверстия не меняет их положения: расчетный участок обрезается по фактическому контуру бетона."
 
-    $row = Add-GuideTitle $Sheet $row "5. Ряды и граница в сторону НЛ" 13
+    $row = Add-GuideTitle $Sheet $row "7. Ряды и граница в сторону НЛ" 13
     $row = Add-GuideParagraph $Sheet $row "В боковом участке группы объединяются в ряды по координате вдоль нормали к НЛ. Максимальный разнос центров одного ряда задается SLS.Crack.SP35.RowTolerance в INPUT Length; значение по умолчанию 50 мм."
     $row = Add-GuideParagraph $Sheet $row "Ряд 1 - ближайший к растянутой бетонной границе; нумерация возрастает к НЛ. RowTolerance определяет только состав рядов и не изменяет боковые границы." -Emphasis
     $row = Add-GuideParagraph $Sheet $row "По СП 35: Расстояние r к НЛ откладывается от оси последнего растянутого ряда. Если площадь его арматуры строго меньше половины площади каждого другого ряда участка, отсчет переносится на предпоследний полный ряд (п. 7.110, абзац о крайнем ряде)."
@@ -2965,42 +3024,14 @@ function Add-SP35CrackWidthMethodologyGuide {
     $row = Add-GuideFormulaPicture $Sheet $row (New-SP35GuideScheme 'Rows') "Ряды нумеруются от бетона к НЛ; r откладывается от выбранного опорного ряда."
     $row = Add-GuideParagraph $Sheet $row "Методическое пояснение: Примеры областей показаны на рисунке 4.42 Методического пособия 2017 года, раздел 4.2.3. Правило переноса отсчета на предпоследний ряд приведено в самом СП 35."
 
-    $row = Add-GuideTitle $Sheet $row "6. Состав арматуры и расчетное напряжение" 13
-    $row = Add-GuideParagraph $Sheet $row "Группа неделима: центр внутри конечной площади или на ее границе включает всю группу; центр снаружи исключает ее целиком, в том числе отдельные стержни внутри площади. Частичного включения нет." -Emphasis
-    $row = Add-GuideParagraph $Sheet $row "Число стержней, площадь арматуры, сумма диаметров и β относятся к полному составу принятой группы. При этом каждый исходный стержень должен находиться в бетоне; расположение в отверстии или за наружной границей является ошибкой геометрии."
-    $row = Add-GuideParagraph $Sheet $row "Вышележащие растянутые группы, вошедшие в площадь взаимодействия, участвуют в сумме диаметров. Расчетное напряжение принимается только по рассматриваемой группе: максимальное растягивающее напряжение ее стержней в текущем НДС. Радиус взаимодействия — СП 35, п. 7.110; расчётное растягивающее напряжение — п. 7.105."
-    $row = Add-GuideParagraph $Sheet $row "Остальные группы проверяются в отдельных итерациях со своими площадями взаимодействия и напряжениями. Если центр рассматриваемой группы не входит в ее конечную площадь, пропускается только эта проверка."
-
-    $row = Add-GuideTitle $Sheet $row "7. Площадь бетона и радиус армирования" 13
-    $row = Add-GuideFormula $Sheet $row "A_r = A_{бет,1} + A_{бет,2} + ... - (A_{отв,1} + A_{отв,2} + ...)"
-    $row = Add-GuideParagraph $Sheet $row "A_r - площадь бетона конечного участка взаимодействия; A_бет,1, A_бет,2, ... - площади его бетонных частей до вычитания отверстий; A_отв,1, A_отв,2, ... - площади отверстий в пределах участка."
-    $row = Add-GuideParagraph $Sheet $row "Можно учитывать несколько отверстий и несколько бетонных частей. В полом сечении рассматривается стенка, где находится выбранная группа; противоположная стенка через пустоту в эту область не добавляется."
-    $row = Add-GuideParagraph $Sheet $row "Если точные границы заданы, учитываются их прямые участки и круговые дуги. Иначе используются границы бетонной сетки. Четыре случая выбора границ перечислены в конце раздела «Подготовка геометрии в AutoCAD и импорт». Для формулы, схемы и экспорта используется одна и та же конечная область."
-    $row = Add-GuideParagraph $Sheet $row "P1...P5 и Q1...Q5 в Results и на схеме - контрольные пересечения с противоположными границами по пяти направлениям. Площадь определяется по всему контуру, включая отверстия между контрольными направлениями."
-    $row = Add-GuideFormulaPicture $Sheet $row (New-SP35GuideScheme 'Contours') "Отверстия образуют местные вырезы, включая отверстия между контрольными направлениями P/Q."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP35_Radius"
-    $row = Add-GuideParagraph $Sheet $row "R_r - радиус армирования, расчетная характеристика, не геометрический отступ. Знаменатель учитывает все принятые целые группы: β - коэффициент группы, n - число стержней, d - диаметр."
-    $row = Add-GuideParagraph $Sheet $row "Для одинаковых диаметров вклад группы равен β·n·d; для разных - β, умноженному на сумму фактических диаметров группы:"
-    $row = Add-GuideFormula $Sheet $row "Σβnd = β_1·D_1 + β_2·D_2 + ..."
-    $row = Add-GuideParagraph $Sheet $row "D_1, D_2, ... - суммы диаметров стержней принятых групп; β_1, β_2, ... - коэффициенты этих групп. Индексы обозначают группы, не ряды."
-    $row = Add-GuideFormula $Sheet $row "Σβnd = 0.85·(20 + 25) + 1.00·16 = 54.25 мм"
-    $row = Add-GuideParagraph $Sheet $row "Пример для группы из двух стержней 20 и 25 мм и одиночного стержня 16 мм. При A_r в мм2 радиус R_r получается в мм. RadiusDiameterMode влияет на геометрические отступы r, но не на сумму фактических диаметров в знаменателе."
-
-    $row = Add-GuideTitle $Sheet $row "8. Формула ширины и напряжение арматуры" 13
-    $row = Add-GuideCompositeFormula $Sheet $row @(
-        @{ Kind = "Text"; Text = "ψ = 1,5 · " }, @{ Kind = "Radical"; Radicand = "R_r" },
-        @{ Kind = "Text"; Text = "  (Periodic);    ψ = 0,35·R_r  (Smooth)" }
-    ) "СП 35, п. 7.109" "ψ = 1,5·√R_r (Periodic); ψ = 0,35·R_r (Smooth)"
-    $row = Add-GuideParagraph $Sheet $row "ψ - размерный коэффициент раскрытия; R_r и ψ в этих зависимостях выражаются в сантиметрах. SLS.Crack.SP35.RebarProfile: Periodic - периодический профиль, Smooth - гладкая арматура."
-    $row = Add-GuideParagraph $Sheet $row "По СП 35: Для арматуры в стенках п. 7.109 также предписывает первую зависимость; в этом случае применяется Periodic."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP35_CrackWidth"
-    $row = Add-GuideParagraph $Sheet $row "В (7.93) для ненапрягаемой арматуры σ = σ_s, E = E_s. σ_s — наибольшее растягивающее напряжение стержня рассматриваемой группы; E_s задан в Steel.E, колонке растяжения. Δ_cr — допустимая ширина из SLS.Crack.Allowable."
-    $row = Add-GuideParagraph $Sheet $row "При ψ в сантиметрах формула дает a_cr в сантиметрах. В Results ширина переводится в OUTPUT Length."
-    $row = Add-GuideFractionFormula $Sheet $row "a_{cr}[мм] =" "σ_s" "E_s" "· ψ[см] · 10"
-    $row = Add-GuideParagraph $Sheet $row "Напряжения соседних групп и напряжения в точке трещинообразования в формулу раскрытия не подставляются."
-    $row = Add-GuideFormula $Sheet $row "a_{cr} = max(a_{cr,1}; a_{cr,2}; ...)"
-    $row = Add-GuideParagraph $Sheet $row "a_cr,1, a_cr,2, ... - результаты отдельных проверок групп. Определяющая группа выбирается по ширине, а не по максимальному напряжению: большая площадь взаимодействия может дать большее раскрытие при меньшем σ_s."
-    $row = Add-GuideParagraph $Sheet $row "Методическое пояснение: Формулы и пояснения приведены в разделе 4.2.3 Методического пособия 2017 года, формулы (4.306)-(4.312)."
+    $row = Add-GuideTitle $Sheet $row "8. Исходные данные и применимость" 13
+    $row = Add-GuideParagraph $Sheet $row "На Config задаются SLS.Crack.Code = SP35 и Calculation.Crack.Width = Yes в профиле, назначенном сочетанию."
+    $row = Add-GuideParagraph $Sheet $row "Допустимая ширина задается настройкой SLS.Crack.Allowable в INPUT Length по требованиям проекта. Автоматическое назначение допуска не предусмотрено."
+    $row = Add-GuideParagraph $Sheet $row "Проверка трещинообразования использует общий LoadPath сочетания; пустое значение принимается как Auto. Способ поиска задается SLS.Crack.InitiationSolutionStrategy, допуск λ для LoadMultiplier - SLS.Crack.ToleranceLambda. Подробные правила приведены в справке соответствующих настроек."
+    $row = Add-GuideParagraph $Sheet $row "При увеличении нагрузки проверяется первый достигнутый предел: образование трещины, сжатие бетона, растяжение или сжатие арматуры. Если другой предел наступает раньше трещины, он не становится точкой трещинообразования. При подтвержденном допустимом НДС исходного сочетания без трещины выводится NotCracked."
+    $row = Add-GuideParagraph $Sheet $row "Подтвержденный NotCracked исключает расчет ширины: статус N/A, численная ячейка пустая. При Cracked раскрытие определяется по напряжениям текущего сочетания."
+    $row = Add-GuideParagraph $Sheet $row "Неудача поиска трещинообразования не блокирует расчет ширины при найденном физически допустимом текущем НДС; причина сохраняется в комментарии. Отсутствие или физическая недопустимость текущего НДС блокирует и ширину, и продольные трещины." -Emphasis
+    $row = Add-GuideParagraph $Sheet $row "Проверка продольных трещин выполняется отдельно по сжатому бетону и сохраняется даже при NotCracked. Ее допустимое напряжение задается на Config настройкой Concrete.Rb.mc2."
 
     $row = Add-GuideTitle $Sheet $row "9. Центральное растяжение" 13
     $row = Add-GuideParagraph $Sheet $row "По СП 35: При центральном растяжении берется вся площадь бетона за вычетом отверстий. НЛ отсутствует, поэтому локальные боковые границы и отсчет r от ряда не строятся. СП 35, п. 7.110."
@@ -3103,29 +3134,29 @@ function Add-StabilityMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Для каждого сочетания с включенной устойчивостью добавьте строку с тем же CombinationID. В этой строке пустые N, Mx и My означают 0, а отсутствие самой строки является ошибкой ввода. Ошибочная формула и текст требуют исправления; длительную часть программа сама не выделяет и полной нагрузкой автоматически не ограничивает." -RowCount 1
     $row = Add-GuideParagraph $Sheet $row "Если устойчивость не проходит, прочность и трещины продолжаются с исходными усилиями для полноты диагностики. Общий статус сохраняет отказ устойчивости. При успешной проверке последующие расчеты получают увеличенные моменты." -Emphasis
 
-    $row = Add-GuideTitle $Sheet $row "2. Главные плоскости и характеристики" 13
-    $row = Add-GuideParagraph $Sheet $row "Программа переносит усилия от пользовательской точки к центру приведенного сечения бетон + арматура и поворачивает их в главные оси. Пользовательская точка задается на Config настройками Load.ReferenceOffsetX и Load.ReferenceOffsetY относительно центра бетона без арматуры."
-    $row = Add-GuideFormula $Sheet $row "M_1 = M_x,red·cos α + M_y,red·sin α;    M_2 = -M_x,red·sin α + M_y,red·cos α"
-    $row = Add-GuideParagraph $Sheet $row "M_1/M_2 - моменты в главных плоскостях; M_x,red/M_y,red - моменты по X/Y относительно приведенного центра. α - угол главной оси 1 от X. Для почти изотропного сечения фиксируется α = 0."
-    $row = Add-GuideParagraph $Sheet $row "При α = 0 плоскость 1 соответствует Mx и размеру по Y, плоскость 2 - My и размеру по X. Площадь и инерции для устойчивости берутся по расчетной сетке; точные контуры трещин эту проверку не меняют."
-    $row = Add-GuideFractionFormula $Sheet $row "n_s =" "E_s" "E_b" ""
-    $row = Add-GuideParagraph $Sheet $row "Коэффициент приведения n_s определяется по модулям выбранной модели: Steel.E и Concrete.E на Config. СП 35, п. 7.48; СП 63, п. 8.2.12."
-    $row = Add-GuideFormula $Sheet $row "A_red = A_b + (n_s - 1)·A_s"
-    $row = Add-GuideParagraph $Sheet $row "A_red - приведенная площадь; A_b - площадь бетона, A_s - площадь арматуры. Вычитается единица, потому что бетон в месте стержней уже входит в сетку."
-    $row = Add-GuideCompositeFormula $Sheet $row @(
-        @{ Kind = "Text"; Text = "i = " },
-        @{ Kind = "Text"; Text = "√(" },
-        @{ Kind = "Fraction"; Numerator = "I_red"; Denominator = "A_red" },
-        @{ Kind = "Text"; Text = ")" }
-    ) "" "i = √(I_red/A_red)"
-    $row = Add-GuideParagraph $Sheet $row "i и I_red - радиус и приведенный момент инерции проверяемой главной плоскости."
-    $row = Add-GuideFractionFormula $Sheet $row "r =" "I_red" "A_red·c" ""
-    $row = Add-GuideParagraph $Sheet $row "r - ядровое расстояние для выбора ветви СП 35; c - расстояние от приведенного центра до соответствующей крайней бетонной границы. r относится к линейному приведенному сечению, а не к точному началу растяжения при нелинейном НДС."
+    $row = Add-GuideParagraph $Sheet $row "Во всех формулах этого раздела N — положительный модуль сжимающей силы, а не знак N в таблице ввода. Сначала показан результат каждой нормативной методики, затем зависимости его составляющих. Расчётные длины и характеристики главных плоскостей разъяснены в общем блоке после двух методик."
+    $row = Add-GuideTitle $Sheet $row "СП 63: расчёт продольного изгиба и устойчивости" 15
+    $row = Add-GuideTitle $Sheet $row "1. Расчётный момент и его увеличение" 13
+    $row = Add-GuideFormula $Sheet $row "M_design = η·N·e_0"
+    $row = Add-GuideParagraph $Sheet $row "M_design — момент с учётом прогиба сжатого элемента. Сжимающая сила N действует с расчётным эксцентриситетом e_0, а коэффициент η увеличивает этот момент из-за продольного изгиба. Ниже сначала определяется η, затем его критическая сила N_cr и условная жёсткость D. Проверка ведётся отдельно в каждой главной плоскости. СП 63, пп. 8.1.2, 8.1.7 и 8.1.15."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_Eta"
+    $row = Add-GuideParagraph $Sheet $row "η - коэффициент увеличения момента. При гибкости l_0/i ≤ 14 он принимается равным 1, хотя N_cr выводится справочно. Если N достигла N_cr, положительный коэффициент получить нельзя и устойчивость получает FAIL. Порог гибкости — СП 63, п. 8.1.2; коэффициент η — п. 8.1.15."
+    $row = Add-GuideTitle $Sheet $row "2. Критическая сила и условная жёсткость" 13
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_Ncr"
+    $row = Add-GuideParagraph $Sheet $row "Критическая сила N_cr характеризует влияние продольного изгиба в выбранной главной плоскости. Она зависит от условной жёсткости D и расчётной длины l_0: большая длина уменьшает N_cr. Именно эту силу используют в знаменателе формулы η, а не найденную несущую способность сечения. СП 63, п. 8.1.15."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_D"
+    $row = Add-GuideParagraph $Sheet $row "Условная жёсткость D складывается из бетонного и арматурного вкладов. E_b и E_s — модули упругости материалов, I и I_s — их моменты инерции в рассматриваемой плоскости. В Results бетонная инерция обозначается также I_b. Коэффициент k_b определяется следующей формулой; нормативное k_s = 0,7 задаётся в Stability.SP63.Ks. СП 63, п. 8.1.15."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP63_Kb"
+    $row = Add-GuideParagraph $Sheet $row "Коэффициент k_b уменьшает бетонный вклад E_b·I в условную жёсткость D. В знаменателе учитываются длительность нагрузки через φ_l и относительный эксцентриситет δ_e. Поэтому сначала определяется плечо силы относительно размера сечения, а длительная часть нагрузки вводится отдельно. СП 63, п. 8.1.15."
+    $row = Add-GuideFractionFormula $Sheet $row "δ_e =" "e_0" "h" "      СП 63, п. 8.1.15"
+    $row = Add-GuideParagraph $Sheet $row "δ_e — относительный эксцентриситет; e_0 в этой нормативной зависимости принимается по модулю. Его границы на Config задают Stability.SP63.DeltaEMin и Stability.SP63.DeltaEMax."
+    $row = Add-GuideTitle $Sheet $row "3. Расчётный и случайный эксцентриситеты" 13
+    $row = Add-GuideFractionFormula $Sheet $row "e_stat =" "M" "N" ""
+    $row = Add-GuideParagraph $Sheet $row "e_stat - эксцентриситет исходной нагрузки в проверяемой главной плоскости. В формулах устойчивости N принимается положительным модулем сжимающей силы."
+    $row = Add-GuideParagraph $Sheet $row "На Config настройка Stability.SystemType = Determinate задает статически определимую схему: фактическое и случайное плечи складываются. Indeterminate - статически неопределимую: берется большее по модулю с направлением расчетного момента. СП 63, п. 8.1.7."
+    $row = Add-GuideFormula $Sheet $row "Determinate: e_0 = e_stat + e_a;    Indeterminate: e_0 = sign·max(|e_stat|; |e_a|)"
+    $row = Add-GuideParagraph $Sheet $row "e_0 - расчетный эксцентриситет СП 63; sign - направление расчетного момента. Порог обнуления малых моментов задается Calculation.ZeroMomentPerDepth."
 
-    $row = Add-GuideTitle $Sheet $row "3. Длина и случайный эксцентриситет" 13
-    $row = Add-GuideFormula $Sheet $row "l_0,1 = μ_1·L;    l_0,2 = μ_2·L"
-    $row = Add-GuideParagraph $Sheet $row "L = Stability.ElementLength; μ_1/μ_2 задаются в Stability.Mu1/Mu2 по принятой расчетной схеме. l_0,1/l_0,2 - расчетные длины главных плоскостей."
-    $row = Add-GuideParagraph $Sheet $row "Настройка Config Stability.AccidentalEccentricityMode выбирает правило: AutoWithL - по L; AutoWithμL - по расчетной длине; User - значения из Stability.AccidentalEccentricityUser1 и Stability.AccidentalEccentricityUser2. AutoWithμL - проверочная опция программы, не замена нормативного правила по геометрической длине."
     $row = Add-GuideCompositeFormula $Sheet $row @(
         @{ Kind = "Text"; Text = "e_a = max(" },
         @{ Kind = "Fraction"; Numerator = "L"; Denominator = "600" },
@@ -3134,45 +3165,30 @@ function Add-StabilityMethodologyGuide {
         @{ Kind = "Text"; Text = "; 10 мм)" }
     ) "СП 63, п. 8.1.7" "e_a = max(L/600; h/30; 10 мм)"
     $row = Add-GuideParagraph $Sheet $row "e_a - случайный эксцентриситет по СП 63; h - бетонный габарит проверяемой плоскости. СП 63, п. 8.1.7."
-    $row = Add-GuideFractionFormula $Sheet $row "e_{c,sl} =" "l" "400" "      СП 35, п. 7.52"
-    $row = Add-GuideParagraph $Sheet $row "e_c,sl - случайный эксцентриситет по СП 35. Он учитывается в усилиях без смещения геометрии сечения. СП 35, п. 7.52."
-    $row = Add-GuideParagraph $Sheet $row "Настройка Config Stability.AccidentalEccentricityPlanes: BothPlanes учитывает его в обеих главных плоскостях; OnlyMomentPlane - только в плоскости с моментом, если момент задан в одной. Последний вариант - принятое упрощение проекта."
-    $row = Add-GuideParagraph $Sheet $row "При ненулевом моменте случайное плечо направляется в сторону увеличения его модуля. При нулевом моменте направление задают настройки Config Stability.ZeroMomentEccentricitySign1 и Stability.ZeroMomentEccentricitySign2: 1 или -1."
-
-    $row = Add-GuideTitle $Sheet $row "4. Расчетный эксцентриситет" 13
-    $row = Add-GuideFractionFormula $Sheet $row "e_stat =" "M" "N" ""
-    $row = Add-GuideParagraph $Sheet $row "e_stat - эксцентриситет исходной нагрузки в проверяемой главной плоскости. В формулах устойчивости N принимается положительным модулем сжимающей силы."
-    $row = Add-GuideParagraph $Sheet $row "На Config настройка Stability.SystemType = Determinate задает статически определимую схему: фактическое и случайное плечи складываются. Indeterminate - статически неопределимую: берется большее по модулю с направлением расчетного момента. СП 63, п. 8.1.7; СП 35, п. 7.52."
-    $row = Add-GuideFormula $Sheet $row "Determinate: e_0 = e_stat + e_a;    Indeterminate: e_0 = sign·max(|e_stat|; |e_a|)"
-    $row = Add-GuideParagraph $Sheet $row "e_0 - расчетный эксцентриситет СП 63; sign - направление расчетного момента. Для СП 35 используются e_c и e_c,sl. Порог обнуления малых моментов задается Calculation.ZeroMomentPerDepth."
-
-    $row = Add-GuideTitle $Sheet $row "5. Продольный изгиб по СП 63" 13
+    $row = Add-GuideTitle $Sheet $row "4. Влияние длительной нагрузки" 13
     $row = Add-GuideNormativeFormula $Sheet $row "SP63_PhiL"
-    $row = Add-GuideParagraph $Sheet $row "φ_l - коэффициент длительности. В этой нормативной формуле M_1 - полный момент относительно наиболее растянутого или наименее сжатого стержня, M_l1 - соответствующая длительная часть. Здесь индекс 1 обозначает эти нормативные моменты, не номер главной плоскости. При отсутствии арматуры используется край бетона. СП 63, п. 8.1.15."
-    $row = Add-GuideFractionFormula $Sheet $row "δ_e =" "e_0" "h" "      СП 63, п. 8.1.15"
-    $row = Add-GuideParagraph $Sheet $row "δ_e — относительный эксцентриситет; e_0 в этой нормативной зависимости принимается по модулю. Его границы на Config задают Stability.SP63.DeltaEMin и Stability.SP63.DeltaEMax."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_Kb"
-    $row = Add-GuideParagraph $Sheet $row "k_b - коэффициент бетонного вклада в жесткость."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_D"
-    $row = Add-GuideParagraph $Sheet $row "D — условная жесткость; I и I_s — моменты инерции бетона и арматуры в обозначениях СП 63. В программе бетонная инерция также обозначается I_b. Нормативное k_s = 0,7 задаётся в Stability.SP63.Ks; φ_l не больше 2."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_Ncr"
-    $row = Add-GuideParagraph $Sheet $row "N_cr - критическая сила; l_0 - расчетная длина проверяемой плоскости."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP63_Eta"
-    $row = Add-GuideParagraph $Sheet $row "η - коэффициент увеличения момента. При гибкости l_0/i ≤ 14 он принимается равным 1, хотя N_cr выводится справочно. Если N достигла N_cr, положительный коэффициент получить нельзя и устойчивость получает FAIL. Порог гибкости — СП 63, п. 8.1.2; коэффициент η — п. 8.1.15."
-    $row = Add-GuideFormula $Sheet $row "M_design = η·N·e_0"
-    $row = Add-GuideParagraph $Sheet $row "M_design - момент с учетом продольного изгиба. Stability.PhiLMode = PhiL2 задает φ_l = 2; Auto определяет его по нагрузкам с ограничением 1...2."
-
-    $row = Add-GuideTitle $Sheet $row "6. СП 35 при большом эксцентриситете" 13
+    $row = Add-GuideParagraph $Sheet $row "φ_l - коэффициент длительности. В этой нормативной формуле M_1 - полный момент относительно наиболее растянутого или наименее сжатого стержня, M_l1 - соответствующая длительная часть. Здесь индекс 1 обозначает эти нормативные моменты, не номер главной плоскости. Для сечения без арматуры программа использует край бетона как проектное обобщение. Нормативное определение моментов относительно арматуры приведено в СП 63, п. 8.1.15."
+    $row = Add-GuideParagraph $Sheet $row "Auto определяет φ_l по указанным постоянным и длительным нагрузкам, в пределах 1…2; PhiL2 принимает φ_l = 2. Выбор находится в Stability.PhiLMode. Коэффициент длительности меняет бетонный вклад в D, через него — N_cr и коэффициент η."
+    $row = Add-GuideTitle $Sheet $row "СП 35: расчёт продольного изгиба и устойчивости" 15
+    $row = Add-GuideParagraph $Sheet $row "Сначала сравниваются расчётный эксцентриситет e_c и ядровое расстояние r приведённого сечения. При |e_c| > r определяется увеличенный момент; при |e_c| ≤ r — предельная сжимающая сила. Это две ветви одной проверки, а не одновременное применение двух коэффициентов. СП 35, пп. 7.54–7.55 и 7.69."
+    $row = Add-GuideTitle $Sheet $row "1. Большой эксцентриситет: момент и критическая сила" 13
+    $row = Add-GuideFormula $Sheet $row "M_design = η·N·e_c"
+    $row = Add-GuideParagraph $Sheet $row "M_design — момент с учётом продольного изгиба; e_c — расчётный эксцентриситет по СП 35. Для коэффициента η сначала находится критическая сила N_cr. Её сравнение с полной силой также ограничивает применимость этой ветви. СП 35, п. 7.54, формулы (7.8), (7.10) и (7.14)."
     $row = Add-GuideNormativeFormula $Sheet $row "SP35_Eta"
     $row = Add-GuideParagraph $Sheet $row "При |e_c| > r применяются критическая сила и увеличение момента. Коэффициент длительности считается по моментам относительно наиболее растянутой или наименее сжатой грани бетона:"
+    $row = Add-GuideNormativeFormula $Sheet $row "SP35_Ncr"
+    $row = Add-GuideParagraph $Sheet $row "В (7.10) n_1 = E_s/E_b; дополнительного множителя π² нет. Вспомогательные δ_p, k_1 и D выше раскрывают эту зависимость для программы: N_cr = D/l_0². Расчётный момент — η·N·e_c, η берётся по (7.8)."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP35_NLimit"
+    $row = Add-GuideParagraph $Sheet $row "Проверяется отношение N/N_cr. Его предел задается на Config настройкой Stability.SP35.NOverNcrLimit; запас равен этому пределу, умноженному на N_cr/N. При запасе меньше 1 устойчивость не проходит. Нормативный предел 0,7 — СП 35, п. 7.54, формула (7.14)."
+    $row = Add-GuideTitle $Sheet $row "2. Составляющие критической силы" 13
     $row = Add-GuideNormativeFormula $Sheet $row "SP35_PhiL"
     $row = Add-GuideParagraph $Sheet $row "M - полный момент относительно этой грани, M_l - его постоянная часть. При противоположных знаках: если |e_c| ≥ 0,1h, берется φ_l = 1, иначе 1,05. Настройка Config Stability.PhiLMode = PhiL2 принимает 2. СП 35, п. 7.54."
     $row = Add-GuideNormativeFormula $Sheet $row "SP35_DeltaMin"
     $row = Add-GuideParagraph $Sheet $row "По СП 35 δ = e_c/h, но не меньше δ_min по (7.12); для выбора ветви e_c — модуль эксцентриситета. R_b — сопротивление бетона сжатию в МПа из Config Concrete.R.ULS(I). СП 35, п. 7.54."
     $row = Add-GuideFractionFormula $Sheet $row "δ_p =" "δ" "φ_p" ""
-    $row = Add-GuideParagraph $Sheet $row "φ_p задается настройкой Stability.SP35.PhiP."
+    $row = Add-GuideParagraph $Sheet $row "Коэффициент φ_p учитывает предварительное напряжение в нормативной записи. Проект поддерживает ненапрягаемую арматуру: в этом случае φ_p = 1. Его значение задано в Stability.SP35.PhiP. Величина δ_p — только удобное обозначение отношения δ/φ_p при раскрытии формулы N_cr. СП 35, п. 7.54, формула (7.13)."
     $row = Add-GuideFractionFormula $Sheet $row "k_1 =" "0.11" "0.1 + δ_p" "+ 0.1"
-    $row = Add-GuideParagraph $Sheet $row "k_1 учитывает бетонный вклад в условную жесткость."
+    $row = Add-GuideParagraph $Sheet $row "Величина k_1 объединяет скобку 0,11/(0,1 + δ/φ_p) + 0,1 из формулы N_cr. Это вспомогательное обозначение позволяет показать бетонный вклад в D отдельно от арматурного; нового нормативного коэффициента оно не вводит. СП 35, п. 7.54, формула (7.10)."
     $row = Add-GuideCompositeFormula $Sheet $row @(
         @{ Kind = "Text"; Text = "D = 6.4·E_b·[" },
         @{ Kind = "Fraction"; Numerator = "I_b"; Denominator = "φ_l" },
@@ -3181,26 +3197,52 @@ function Add-StabilityMethodologyGuide {
         @{ Kind = "Text"; Text = "·I_s]" }
     ) "" "D = 6.4·E_b·[I_b/φ_l·k_1 + (E_s/E_b)·I_s]"
     $row = Add-GuideParagraph $Sheet $row "D - условная жесткость этой ветви; модули E_b/E_s и инерции I_b/I_s имеют тот же смысл, что выше."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP35_Ncr"
-    $row = Add-GuideParagraph $Sheet $row "В (7.10) n_1 = E_s/E_b; дополнительного множителя π² нет. Вспомогательные δ_p, k_1 и D выше раскрывают эту зависимость для программы: N_cr = D/l_0². Расчётный момент — η·N·e_c, η берётся по (7.8)."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP35_NLimit"
-    $row = Add-GuideParagraph $Sheet $row "Проверяется отношение N/N_cr. Его предел задается на Config настройкой Stability.SP35.NOverNcrLimit; запас равен этому пределу, умноженному на N_cr/N. При запасе меньше 1 устойчивость не проходит. Нормативный предел 0,7 — СП 35, п. 7.54, формула (7.14)."
 
-    $row = Add-GuideTitle $Sheet $row "7. СП 35 при малом эксцентриситете" 13
+    $row = Add-GuideTitle $Sheet $row "3. Малый эксцентриситет: предельная сжимающая сила" 13
+    $row = Add-GuideFormula $Sheet $row "N_ult,stab = φ·(R_b·A_b,stab + R_sc·A_s)"
+    $row = Add-GuideParagraph $Sheet $row "N_ult,stab - предельная сила по устойчивости; R_sc задается в Steel.R.ULS(I). A_b,stab - бетонная площадь с поправкой данной ветви; A_s - площадь арматуры. Условие для ненапрягаемой арматуры следует из СП 35, п. 7.69, перечисление а), формула (7.31)."
+    $row = Add-GuideFractionFormula $Sheet $row "SF_stab =" "N_ult,stab" "N" ""
+    $row = Add-GuideParagraph $Sheet $row "SF_stab - коэффициент запаса устойчивости. Если он меньше 1, полная сила превышает найденный предел."
+    $row = Add-GuideNormativeFormula $Sheet $row "SP35_Phi"
+    $row = Add-GuideParagraph $Sheet $row "φ - итоговый коэффициент снижения несущей способности с учетом постоянной части. При ее отсутствии он равен φ_m, при полностью постоянной нагрузке - φ_l."
     $row = Add-GuideParagraph $Sheet $row "При |e_c| ≤ r коэффициенты берутся из таблицы 7.21 на Config. φ_m - коэффициент кратковременной нагрузки, φ_l - длительной; они интерполируются по гибкости l_0/i и, для φ_m, по отношению |e_c|/r. СП 35, п. 7.55 и таблица 7.21."
     $row = Add-GuideFractionFormula $Sheet $row "q_l =" "N_l" "N" ""
     $row = Add-GuideParagraph $Sheet $row "q_l - доля постоянной сжимающей силы из таблицы нагрузок для устойчивости. Она не является табличным коэффициентом φ_l."
     $row = Add-GuideFractionFormula $Sheet $row "φ_{ml} =" "φ_m" "φ_l" ""
     $row = Add-GuideParagraph $Sheet $row "φ_m и φ_l принимаются по таблице 7.21; φ_ml - их отношение."
-    $row = Add-GuideNormativeFormula $Sheet $row "SP35_Phi"
-    $row = Add-GuideParagraph $Sheet $row "φ - итоговый коэффициент снижения несущей способности с учетом постоянной части. При ее отсутствии он равен φ_m, при полностью постоянной нагрузке - φ_l."
-    $row = Add-GuideFormula $Sheet $row "N_ult,stab = φ·(R_b·A_b,stab + R_sc·A_s)"
-    $row = Add-GuideParagraph $Sheet $row "N_ult,stab - предельная сила по устойчивости; R_sc задается в Steel.R.ULS(I). A_b,stab - бетонная площадь с поправкой данной ветви; A_s - площадь арматуры. Условие для ненапрягаемой арматуры следует из СП 35, п. 7.69, перечисление а), формула (7.31)."
     $row = Add-GuideParagraph $Sheet $row "Если A_s больше 3% площади бетона, бетонный вклад уменьшается на A_s. Это поправка только данной формулы, не повторное вычитание арматуры из приведенного сечения. Настройка Config Stability.PhiLMode здесь не заменяет табличный φ_l. СП 35, п. 7.69."
-    $row = Add-GuideFractionFormula $Sheet $row "SF_stab =" "N_ult,stab" "N" ""
-    $row = Add-GuideParagraph $Sheet $row "SF_stab - коэффициент запаса устойчивости. Если он меньше 1, полная сила превышает найденный предел."
 
-    $row = Add-GuideTitle $Sheet $row "8. Результаты проверки" 13
+    $row = Add-GuideTitle $Sheet $row "4. Случайный эксцентриситет СП 35" 13
+    $row = Add-GuideFractionFormula $Sheet $row "e_{c,sl} =" "l" "400" "      СП 35, п. 7.52"
+    $row = Add-GuideParagraph $Sheet $row "e_c,sl - случайный эксцентриситет по СП 35. Он учитывается в усилиях без смещения геометрии сечения. СП 35, п. 7.52."
+    $row = Add-GuideParagraph $Sheet $row "Фактический эксцентриситет равен M/N в рассматриваемой главной плоскости. Для статически определимой схемы случайное плечо прибавляется в сторону увеличения момента; для неопределимой берётся большее из фактического и случайного плеч. Длина l в п. 7.52 соответствует геометрической длине элемента. Выбор схемы — Stability.SystemType."
+    $row = Add-GuideTitle $Sheet $row "Общие характеристики и расчётные длины" 15
+    $row = Add-GuideTitle $Sheet $row "Главные плоскости и характеристики сечения" 13
+    $row = Add-GuideParagraph $Sheet $row "Программа переносит усилия от пользовательской точки к центру приведенного сечения бетон + арматура и поворачивает их в главные оси. Пользовательская точка задается на Config настройками Load.ReferenceOffsetX и Load.ReferenceOffsetY относительно центра бетона без арматуры."
+    $row = Add-GuideFormula $Sheet $row "M_1 = M_x,red·cos α + M_y,red·sin α;    M_2 = -M_x,red·sin α + M_y,red·cos α"
+    $row = Add-GuideParagraph $Sheet $row "M_1/M_2 - моменты в главных плоскостях; M_x,red/M_y,red - моменты по X/Y относительно приведенного центра. α - угол главной оси 1 от X. Для почти изотропного сечения фиксируется α = 0."
+    $row = Add-GuideParagraph $Sheet $row "При α = 0 плоскость 1 соответствует Mx и размеру по Y, плоскость 2 - My и размеру по X. Площадь и инерции для устойчивости берутся по расчетной сетке; точные контуры трещин эту проверку не меняют."
+    $row = Add-GuideFormula $Sheet $row "A_red = A_b + (n_s - 1)·A_s"
+    $row = Add-GuideParagraph $Sheet $row "A_red - приведенная площадь; A_b - площадь бетона, A_s - площадь арматуры. Вычитается единица, потому что бетон в месте стержней уже входит в сетку."
+    $row = Add-GuideFractionFormula $Sheet $row "n_s =" "E_s" "E_b" ""
+    $row = Add-GuideParagraph $Sheet $row "Коэффициент приведения n_s определяется по модулям выбранной модели: Steel.E и Concrete.E на Config. СП 35, п. 7.48; СП 63, п. 8.2.12."
+    $row = Add-GuideCompositeFormula $Sheet $row @(
+        @{ Kind = "Text"; Text = "i = " },
+        @{ Kind = "Text"; Text = "√(" },
+        @{ Kind = "Fraction"; Numerator = "I_red"; Denominator = "A_red" },
+        @{ Kind = "Text"; Text = ")" }
+    ) "" "i = √(I_red/A_red)"
+    $row = Add-GuideParagraph $Sheet $row "Радиус инерции i связывает приведённый момент инерции I_red с приведённой площадью A_red. По отношению расчётной длины l_0 к этому радиусу получают гибкость. Для каждой главной плоскости используются собственные I_red и i, поэтому результаты двух плоскостей могут различаться."
+    $row = Add-GuideFractionFormula $Sheet $row "r =" "I_red" "A_red·c" ""
+    $row = Add-GuideParagraph $Sheet $row "r - ядровое расстояние для выбора ветви СП 35; c - расстояние от приведенного центра до соответствующей крайней бетонной границы. r относится к линейному приведенному сечению, а не к точному началу растяжения при нелинейном НДС."
+
+    $row = Add-GuideFormula $Sheet $row "l_0,1 = μ_1·L;    l_0,2 = μ_2·L"
+    $row = Add-GuideParagraph $Sheet $row "L = Stability.ElementLength; μ_1/μ_2 задаются в Stability.Mu1/Mu2 по принятой расчетной схеме. l_0,1/l_0,2 - расчетные длины главных плоскостей."
+    $row = Add-GuideParagraph $Sheet $row "Настройка Config Stability.AccidentalEccentricityMode выбирает правило: AutoWithL - по L; AutoWithμL - по расчетной длине; User - значения из Stability.AccidentalEccentricityUser1 и Stability.AccidentalEccentricityUser2. AutoWithμL - проверочная опция программы, не замена нормативного правила по геометрической длине."
+    $row = Add-GuideParagraph $Sheet $row "Настройка Config Stability.AccidentalEccentricityPlanes: BothPlanes учитывает его в обеих главных плоскостях; OnlyMomentPlane - только в плоскости с моментом, если момент задан в одной. Последний вариант - принятое упрощение проекта."
+    $row = Add-GuideParagraph $Sheet $row "При ненулевом моменте случайное плечо направляется в сторону увеличения его модуля. При нулевом моменте направление задают настройки Config Stability.ZeroMomentEccentricitySign1 и Stability.ZeroMomentEccentricitySign2: 1 или -1."
+
+    $row = Add-GuideTitle $Sheet $row "Результаты проверки устойчивости" 13
     $row = Add-GuideParagraph $Sheet $row "Подробная таблица показывает итоги, данные обеих главных плоскостей и только выбранный нормативный блок. При растяжении без сжатой силы проверка устойчивости неприменима и получает N/A."
     $row = Add-GuideParagraph $Sheet $row "Моменты приведены по главным осям, по центральным осям X/Y и в пользовательской точке. OUTPUT и пользовательские знаки выбираются на Config в таблицах единиц и знаков. Комментарий показывает ветвь, причину отказа или ошибку исходных данных."
     return $row + 2
@@ -3238,10 +3280,14 @@ function Add-ResultsSheetGuide {
     $row++
     $row = Add-GuideTitle $Sheet $row "3. Деформации и напряжения элементов" 13
     $row = Add-GuideParagraph $Sheet $row "В режиме Excel в таблице rngNDMElementResults сохраняются деформации и напряжения каждого элемента для полученных расчетных состояний. StrengthState — текущее НДС по прочности, CapacityState — предельное состояние, PreCrackState — состояние перед образованием трещины, PostCrackState — сразу после ее образования, CrackedState — текущее НДС с отключенным растянутым бетоном." -RowCount 2
-    $row = Add-GuideParagraph $Sheet $row "В Excel подробная таблица Results остаётся читаемой. Справа от аннотаций находится rngNDMElementResultIndex: небольшой служебный каталог относительных строк. Схема читает только выбранные участки. Результаты элементов и индекс защищены от ручной сортировки, вставки и удаления; остальные области доступны. Для изменения результатов выполните расчёт заново. При чтении книги без индекса он строится один раз по ключевым столбцам; сохраните книгу. Кнопка «Обновить схему и результаты» обновляет только схему. В режиме File снимок с именем Results.SnapshotName хранится рядом с книгой. Та же кнопка читает его для схемы и обновляет справочные таблицы без нового расчёта; полные состояния и границы элементов остаются в файле, на листе — их шапки." -RowCount 6
+    $row = Add-GuideParagraph $Sheet $row "В Excel подробная таблица Results остаётся читаемой. Справа от аннотаций находится rngNDMElementResultIndex: небольшой служебный каталог относительных строк. Схема читает только выбранные участки. Технические ячейки помечены как блокируемые, но защита листа включается только пользователем по желанию. Не сортируйте и не удаляйте части таблицы вручную: для изменения результатов выполните расчёт заново. При чтении книги без индекса он строится один раз по ключевым столбцам; сохраните книгу. Кнопка «Обновить схему и результаты» обновляет только схему. В режиме File снимок с именем Results.SnapshotName хранится рядом с книгой. Та же кнопка читает его для схемы и обновляет справочные таблицы без нового расчёта; полные состояния и границы элементов остаются в файле, на листе — их шапки." -RowCount 6
     $row = Add-GuideParagraph $Sheet $row "Новые файлы NDMSNP06 содержат каталог независимых блоков. Просмотр проверяет каталог и только прочитанные блоки; повреждение другого состояния обнаружится при его чтении, полном восстановлении либо VerifyFile. Форматы NDMSNP04/05 и расширение .ndms читаются без конвертации; для них требуется полное чтение. Файловая привязка и обновление времени не выполняют скрытый полный SHA-проход по NDMSNP06." -RowCount 3
     $row = Add-GuideParagraph $Sheet $row "Сохраняются только фактически полученные состояния. Для схемы и AutoCAD выберите на Config в профиле Visualization.State и Visualization.Quantity: Stress - напряжение, Strain - деформация. Если выбранного состояния нет, программа сообщит причину и не подменит его другим."
     $row++
+    $row = Add-GuideTitle $Sheet $row "Индекс сохранённых состояний элементов" 13
+    $row = Add-GuideParagraph $Sheet $row "В Excel большая таблица результатов разделена на блоки одного сочетания, профиля и состояния. Таблица rngNDMElementResultIndex показывает, где начинается каждый блок и сколько строк он занимает. Поэтому при смене сочетания или состояния читается нужный блок, а не весь расчёт. В File адресный каталог хранится в самом снимке."
+    $row = Add-GuideParagraph $Sheet $row "LoadCase, ProfileId и StateType обозначают сочетание, профиль и состояние. FirstRow — начало относительно именованного якоря таблицы результатов, RowCount — число строк блока. RunID связывает индекс с расчётом; TableRows и TableColumns задают размер основной таблицы. Строка Block описывает один участок. Напряжения, деформации и ElementID хранятся только в самой таблице результатов элементов."
+    $row = Add-GuideParagraph $Sheet $row "Защита листа необязательна: программа её не включает и не меняет пароль. Если хотите запретить ручное редактирование результатов и индекса, включите защиту Results со своим паролем; технические ячейки уже помечены как блокируемые. Перед расчётом или очисткой снимите защиту, если она запрещает запись макросам. Чтение и просмотр готовых результатов не требуют снятия или включения защиты."
     $row = Add-GuideTitle $Sheet $row "4. Свойства всего сечения" 13
     $row = Add-GuideParagraph $Sheet $row "Таблица rngNDMSectionProperties показывает два представления: Concrete - только бетон; Transformed - приведенное сечение, где арматура заменена эквивалентной по жесткости площадью бетона."
     $row = Add-GuideFractionFormula $Sheet $row "n_s =" "E_s" "E_b" ""
@@ -3370,9 +3416,9 @@ function Add-SettingsInstructions {
             if ([string]::IsNullOrWhiteSpace([string]$line)) {
                 continue # Пустые слоты каталога не создают строки между пояснениями настройки.
             }
-            Set-InstructionParagraphNumber $InstructionSheet.Cells.Item($row, 1) $lineNumber
+            $InstructionSheet.Cells.Item($row, 1).Value2 = "" # Пояснение читается как связные абзацы, без искусственного списка пунктов.
             $InstructionSheet.Cells.Item($row, 2).Value2 = $line
-            $InstructionSheet.Cells.Item($row, 2).IndentLevel = 1
+            $InstructionSheet.Cells.Item($row, 2).IndentLevel = 0
             if ($line.StartsWith("Формула")) {
                 $formulaCell = $InstructionSheet.Cells.Item($row, 2)
                 $formulaCell.Font.Name = "Arial"

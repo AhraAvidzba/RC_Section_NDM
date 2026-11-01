@@ -13,7 +13,7 @@ Option Explicit
 ' Общий индекс фактических непрерывных участков результатов элементов
 ' ==========================================================================
 ' Знает ключи и относительные строки; физические адреса файла и Excel сюда не входят.
-' Индекс хранит первую полную строку каждого участка для контракта indexOnly.
+' Для indexOnly возвращает только RunID/LC/Profile/State; значения элементов читаются отдельным запросом.
 Private mBlocks As Collection ' Каждый элемент: FirstRow, RowCount и девять исходных ячеек первой строки.
 Private mHeader As Variant ' Исходная шапка сохраняет подписи и единицы.
 Private mRunID As Double, mTotalRows As Long
@@ -109,7 +109,7 @@ Public Function SelectBlocks(ByVal combinationID As String, ByVal stateType As S
     Set SelectBlocks = selected
 End Function
 
-' Перечень состояний сохраняет контракт первой полной строки для каждой пары LC/State.
+' Перечень состояний содержит только используемые ключи каждой пары LC/State, без копии результатов элемента.
 ' Ключ с длиной исключает коллизии встроенных разделителей в Unicode-идентификаторах.
 Public Function StateRows(ByVal combinationID As String, ByVal stateType As String, Optional ByVal profileID As String = "") As Variant
     Dim selected As Collection: Set selected = SelectBlocks(combinationID, stateType, profileID)
@@ -119,12 +119,12 @@ Public Function StateRows(ByVal combinationID As String, ByVal stateType As Stri
         sample = Representative(CLng(block)): identity = CStr(Len(CStr(sample(1, 2)))) & ":" & CStr(sample(1, 2)) & CStr(sample(1, 4))
         If Not seen.Exists(identity) Then seen.Add identity, CLng(block): count = count + 1
     Next block
-    Dim values() As Variant: ReDim values(1 To count + 1, 1 To 9)
-    For column = 1 To 9: values(1, column) = mHeader(1, column): Next column
+    Dim values() As Variant: ReDim values(1 To count + 1, 1 To 4)
+    For column = 1 To 4: values(1, column) = mHeader(1, column): Next column
     row = 1
     For Each block In seen.Items
         row = row + 1: sample = Representative(CLng(block))
-        For column = 1 To 9: values(row, column) = sample(1, column): Next column
+        For column = 1 To 4: values(row, column) = sample(1, column): Next column
     Next block
     StateRows = values
 End Function

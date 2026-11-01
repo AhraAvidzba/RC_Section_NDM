@@ -1,0 +1,118 @@
+{
+  "Status": "PASS_AFFECTED_NO_YES_PRIMARY",
+  "MacroCalls": 12,
+  "Passed": 5632,
+  "Failed": 0,
+  "FullOnOffPerformed": false,
+  "FocusedPerformed": false,
+  "Records": [
+    {
+      "Mode": "No",
+      "Macro": "RunCalculationSnapshotTests",
+      "Bytes": 36248,
+      "SHA256": "B2150FDBA4CF7EDBF5E373C1EC7AC138206BBD2A6484A8CFD28186CA1F61456B",
+      "Passed": 1007,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunPreparedSnapshotReuseTests",
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82",
+      "Passed": 69,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunGeometryPreviewStorageTests",
+      "Bytes": 2570,
+      "SHA256": "67535841814FBD580981BBADFE80CA3033C86FC35BC759C3BE255A0A90CA27E7",
+      "Passed": 62,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunResultsFormattingTests",
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95",
+      "Passed": 64,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunTestCalculationFreshnessWorkflow",
+      "Bytes": 22412,
+      "SHA256": "24CC87896AB1F7800421E6EE76965257D82031F53A1C89CF0BAF13E3DEA1CAC3",
+      "Passed": 371,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunAudit03AutoCADConfigTests",
+      "Bytes": 180345,
+      "SHA256": "8C07B3F7151EDAA7D0E132DE2B72DEA89A4FCC38E3E14B6DCFCFDEACD1845EC9",
+      "Passed": 1243,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunCalculationSnapshotTests",
+      "Bytes": 36248,
+      "SHA256": "B2150FDBA4CF7EDBF5E373C1EC7AC138206BBD2A6484A8CFD28186CA1F61456B",
+      "Passed": 1007,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunPreparedSnapshotReuseTests",
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82",
+      "Passed": 69,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunGeometryPreviewStorageTests",
+      "Bytes": 2570,
+      "SHA256": "67535841814FBD580981BBADFE80CA3033C86FC35BC759C3BE255A0A90CA27E7",
+      "Passed": 62,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunResultsFormattingTests",
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95",
+      "Passed": 64,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunTestCalculationFreshnessWorkflow",
+      "Bytes": 22412,
+      "SHA256": "BA89F4FED4A477C6D3DBE89452744C4655A101EA6F95E4F68D5E6BF260B3094B",
+      "Passed": 371,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunAudit03AutoCADConfigTests",
+      "Bytes": 180345,
+      "SHA256": "8C07B3F7151EDAA7D0E132DE2B72DEA89A4FCC38E3E14B6DCFCFDEACD1845EC9",
+      "Passed": 1243,
+      "Failed": 0,
+      "EntirePrimaryRead": true
+    }
+  ]
+}

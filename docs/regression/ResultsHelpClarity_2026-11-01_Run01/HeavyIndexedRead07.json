@@ -1,0 +1,42 @@
+﻿{
+    "Status":  "PASS_REAL_HEAVY_SELECTED_READ",
+    "WorkbookSHA256":  "58E2EBC26475EA9291CB822BAF57A67A073350139EA1813C688C81C68E309D50",
+    "Concrete":  1232,
+    "Rebar":  8,
+    "Combinations":  30,
+    "StateBlocks":  92,
+    "TotalResultRows":  114080,
+    "StateKeyColumns":  4,
+    "StateListCounters":  "97|0|0",
+    "Selected":  [
+                     {
+                         "LoadCase":  "PERF_01",
+                         "Profile":  "PR1",
+                         "State":  "StrengthState",
+                         "Rows":  1240,
+                         "Seconds":  0.0186061,
+                         "Counters":  "1337|1|0",
+                         "ExactIEEEAndTextEqual":  true
+                     },
+                     {
+                         "LoadCase":  "PERF_15",
+                         "Profile":  "PR1",
+                         "State":  "CrackedState",
+                         "Rows":  1240,
+                         "Seconds":  0.0176557,
+                         "Counters":  "1337|1|0",
+                         "ExactIEEEAndTextEqual":  true
+                     },
+                     {
+                         "LoadCase":  "PERF_30",
+                         "Profile":  "PR1",
+                         "State":  "CrackedState",
+                         "Rows":  1240,
+                         "Seconds":  0.0130689,
+                         "Counters":  "1337|1|0",
+                         "ExactIEEEAndTextEqual":  true
+                     }
+                 ],
+    "Recalculated":  false,
+    "Saved":  false
+}
