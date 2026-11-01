@@ -89,7 +89,7 @@
   "FullOnOffPerformed": false,
   "FocusedPerformed": false,
   "MainMergePerformed": false,
-  "FeaturePushPending": true,
+  "FeaturePushPending": false,
   "NonProductIssues": [
     "First private preparation refused existing Invalid index; it was preserved as Invalid, not promoted to a valid index.",
     "PS5 test helper syntax corrected before starting Excel; application tests passed after correction.",
@@ -99,5 +99,7 @@
   "ArchiveSHA256": "CC4BF1D33D54AB2CAD4784C06B87959FC9CB3D3C6D0112C7127FF6161CE3AF83",
   "OriginalHeavyFileBlockedAtInitialPublication": true,
   "CanonicalHeavyUpdatedAfterUserClosed": true,
-  "CanonicalHeavyPublicationProof": "CanonicalHeavyPublication12.json"
+  "CanonicalHeavyPublicationProof": "CanonicalHeavyPublication12.json",
+  "SourceDeliveryVerifiedCommit": "283e7c567bb4152f1ae08e47736596b19da3b304",
+  "SourceDeliveryProof": "PushVerification14.json"
 }
