@@ -1,0 +1,137 @@
+{
+  "Status": "PASS_FINAL_CALCULATION_AND_OTHER_BUTTON_CONSUMERS_NO_YES",
+  "Invocations": 14,
+  "AssertionsPassed": 5882,
+  "AssertionsFailed": 0,
+  "Records": [
+    {
+      "Mode": "No",
+      "Macro": "RunTestCalculationFreshnessWorkflow",
+      "Passed": 371,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 22412,
+      "SHA256": "0F29E7F65A788FB2E55728B876ACD099E6DF3AEC86458CB1C680ADBA4977EC8C"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunSectionWorkflowCalculationTests",
+      "Passed": 116,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 4827,
+      "SHA256": "6CC8862E447BE1B2EC17773B3B108AF2C45E1594F007D5FFDEA5D3E1FE190E77"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunWorkflowSnapshotTests",
+      "Passed": 151,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunExcelGuardWorkflowTests",
+      "Passed": 55,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2406,
+      "SHA256": "888FDAD1D1C672C1DFC9C95C2DB64277D0F5F1EDC54DDA603D8FC87BC83695D6"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunCalculationSnapshotTests",
+      "Passed": 1001,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunCleanupLayerPreflightTests",
+      "Passed": 4,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 205,
+      "SHA256": "3D6D36EBFEF9AAC015FA8574ED6E2F7732944C5F94BDF3E1E5908273AD41D528"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunAudit03AutoCADConfigTests",
+      "Passed": 1243,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 180345,
+      "SHA256": "8C07B3F7151EDAA7D0E132DE2B72DEA89A4FCC38E3E14B6DCFCFDEACD1845EC9"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunTestCalculationFreshnessWorkflow",
+      "Passed": 371,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 22412,
+      "SHA256": "64BDEAA90E2614E0DCED0292D21BACDE56218E06E3F39F5FCF7F1DBB7D477E87"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunSectionWorkflowCalculationTests",
+      "Passed": 116,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 4827,
+      "SHA256": "D0A8B3CE4A65802691B6A0B9D35DCA9BFE31A30F338F8C5A0BE2038B1638BE9A"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunWorkflowSnapshotTests",
+      "Passed": 151,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunExcelGuardWorkflowTests",
+      "Passed": 55,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2406,
+      "SHA256": "1D08B72B1443E353CBDA05305A43BDB1CA4A475034EB347174A9023DF0FEC8DB"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunCalculationSnapshotTests",
+      "Passed": 1001,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunCleanupLayerPreflightTests",
+      "Passed": 4,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 205,
+      "SHA256": "3D6D36EBFEF9AAC015FA8574ED6E2F7732944C5F94BDF3E1E5908273AD41D528"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunAudit03AutoCADConfigTests",
+      "Passed": 1243,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 180345,
+      "SHA256": "8C07B3F7151EDAA7D0E132DE2B72DEA89A4FCC38E3E14B6DCFCFDEACD1845EC9"
+    }
+  ],
+  "NativeAutoCADPerformed": false,
+  "FullOnOffPerformed": false,
+  "FullAcceptanceClaim": false
+}

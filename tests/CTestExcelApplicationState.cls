@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "CTestExcelApplicationState"
+Attribute VB_Name = "CTestExcelApplicationState"
 Option Explicit
 
 ' ==========================================================================
@@ -14,7 +14,9 @@ Public FaultNumber As Long ' Номер имитируемой ошибки.
 Public TestNativeApplication As Object ' Необязательный реальный Excel: свойства и Calculate делегируются только в приватной книге native-теста.
 Public TestCalculateCalls As Long ' Число явных Application.Calculate; пересчёт листа Results сюда не входит.
 Public TestCalculateFault As Long ' Искусственная ошибка самого пересчёта до первого чтения входных таблиц.
-Public TestCalculateGuarded As Boolean ' Все вызовы Calculate произошли при Manual и отключённых событиях/экране/окнах.
+Public TestCalculateGuarded As Boolean ' Все вызовы Calculate произошли при Manual, отключённых событиях/окнах и ожидаемом режиме экрана.
+Public TestExpectedScreenUpdating As Boolean ' Ожидаемый исходный показ для формирования и расчёта НДС.
+Public TestScreenWrites As Long ' Счётчик попыток записи ScreenUpdating, включая восстановление.
 Public GetterFault As String ' Имя свойства, при чтении которого нужно имитировать отказ.
 Private mCancel As Long ' Текущее подставное значение режима обработки прерывания.
 Private mScreen As Boolean ' Текущее подставное значение обновления экрана.
@@ -68,6 +70,7 @@ End Property
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' сохраняет состояние обновления экрана после проверки отказа записи.
 Public Property Let ScreenUpdating(ByVal value As Boolean)
+    TestScreenWrites = TestScreenWrites + 1
     TestBeforeSet "ScreenUpdating"
     If TestNativeApplication Is Nothing Then mScreen = value Else TestNativeApplication.ScreenUpdating = value
 End Property
@@ -120,7 +123,14 @@ End Property
 ' искусственный отказ позволяет проверить cleanup до чтения настроек.
 Public Sub Calculate()
     TestCalculateCalls = TestCalculateCalls + 1
-    TestCalculateGuarded = TestCalculateGuarded And (Calculation = -4135 And Not EnableEvents And Not ScreenUpdating And Not DisplayAlerts)
+    TestCalculateGuarded = TestCalculateGuarded And (Calculation = -4135 And Not EnableEvents And ScreenUpdating = TestExpectedScreenUpdating And Not DisplayAlerts)
     If TestCalculateFault <> 0 Then Err.Raise TestCalculateFault, "CTestExcelApplicationState.Calculate", "Непредвиденный отказ пересчёта для проверки восстановления Excel."
     If Not TestNativeApplication Is Nothing Then TestNativeApplication.Calculate
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Передаёт проверки свободного места под индекс реальному Excel; отдельный процесс не создаётся.
+Public Property Get WorksheetFunction() As Object
+    If TestNativeApplication Is Nothing Then Err.Raise 5, "CTestExcelApplicationState", "Для WorksheetFunction требуется приватный native Excel."
+    Set WorksheetFunction = TestNativeApplication.WorksheetFunction
+End Property

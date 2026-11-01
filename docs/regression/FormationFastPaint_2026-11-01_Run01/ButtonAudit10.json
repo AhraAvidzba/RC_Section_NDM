@@ -1,0 +1,38 @@
+{
+  "Status": "ALL_FIVE_BUILDER_BUTTON_ACTIONS_AUDITED",
+  "Actions": [
+    "RunSectionCalculation",
+    "FormSection",
+    "ClearAutoCADDrawing",
+    "ExportSectionStressToAutoCAD",
+    "UpdateSectionPlot"
+  ],
+  "ScreenPreserved": [
+    "FormSection",
+    "RunSectionCalculation",
+    "UpdateSectionPlot"
+  ],
+  "NoExcelScreenToggle": [
+    "ExportSectionStressToAutoCAD",
+    "ClearAutoCADDrawing",
+    "ClearSectionResults",
+    "SwitchSectionPicture"
+  ],
+  "AutoCADCleanup": {
+    "NoLayersSkipsModelSpace": true,
+    "RegenOnlyAfterActualDeletion": true
+  },
+  "AutoCADValidation": "Existing fake-document consumer tests, no native DWG timing or native AutoCAD acceptance claimed",
+  "NonButtonAdministrativeGuard": "modSectionRecipeSetup.UpdateSectionRecipeTypes retains default guard; not assigned to a workbook button",
+  "NoFullCalculationFromExportOrCleanup": true,
+  "UserDrawingsTouched": false,
+  "SourceSHA256": {
+    "src/Excel/modWorkbookCalculation.bas": "15B25C9CC619DC509B0DBFF93D108B8E6366DDF44CB0E078FB545ACE4AD207A8",
+    "src/Excel/modCalculationSnapshot.bas": "094B88976E9DBFD2106ADFD9898051C309AD73E7482BE5B3AEA4A1F19D5DE79E",
+    "src/Excel/modAutoCADStressExport.bas": "5859430D81F5581AE65F553CCF29A970759F18F6DACBE1EA28860AB67470ADA0",
+    "src/Excel/modSectionIllustrations.bas": "F11BB4BF9DAA8983E72B07D47C71B34F6AF745B3BBA418A95E5585F0C764A338",
+    "src/Excel/CExcelAppStateGuard.cls": "E364E31B1AADB69133D439B730690ECDE4BED1B13E12700653D11F1CD7067A75",
+    "src/Excel/modWorkbookMessages.bas": "900B9C07FDC9C80C6210E789B5E09ADB4396EDF3DA7C33A3BBF89189817BC70B"
+  },
+  "FullOnOffPerformed": false
+}

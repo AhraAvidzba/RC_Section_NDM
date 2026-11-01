@@ -134,15 +134,17 @@ Failed:
 End Sub
 
 ' Загружает последнее сформированное или импортированное сечение из Results
-' для визуального контроля до расчёта. Читает геометрию и аннотации без НДС
+' для визуального контроля до расчёта. Prepared принадлежит только текущему успешно записанному формированию.
+' Читает геометрию и аннотации без НДС
 ' и нейтральной линии. При ошибке не оставляет частично прочитанный снимок.
-Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
+Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
+        Optional ByVal prepared As CCalculationSnapshot = Nothing)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
     On Error GoTo Failed
     Dim snapshotReadEntered As Boolean
-    BeginCalculationSnapshotRead workbook: snapshotReadEntered = True
+    BeginCalculationSnapshotRead workbook, prepared: snapshotReadEntered = True
     ResetReaderState
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mGeometryOnly = True

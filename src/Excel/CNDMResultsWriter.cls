@@ -19,6 +19,7 @@ Option Explicit
 ' При расчёте сохраняет полученное НДС; при формировании — снимок геометрии без НДС.
 ' Исходные таблицы геометрии при записи не перечитываются.
 
+Private mGeometryPreviewCapture As CCalculationSnapshot ' Готовые массивы только текущего формирования; после вывода схемы межоперационного кэша нет.
 Private mPendingElementIndex As CResultBlockIndex
 Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник полного результата до сохранения и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
@@ -168,6 +169,7 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
         WriteSnapshotTitle workbook
     End If
     Dim runID As Date: runID = Now
+    If Not mGeometryPreviewCapture Is Nothing Then mGeometryPreviewCapture.RunID = CDbl(runID)
     If Not mCapturedSnapshot Is Nothing Then mCapturedSnapshot.RunID = CDbl(runID)
     WriteSectionGeometry workbook, section, runID, units
     WriteSectionContours workbook, section.Contours, runID, units
@@ -178,6 +180,29 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
 End Sub
 
 
+
+' Записывает штатный Excel-preview и возвращает те же проверенные массивы для немедленной схемы.
+' Источник между действиями не кэшируется; обычное ручное обновление продолжает читать Results.
+Public Function WriteGeometryPreviewForDisplay(ByVal workbook As Object, ByVal section As CSectionModel, _
+        ByVal properties As CSectionPropertiesCalculator, ByVal units As CUnitSystem, ByVal fullFormatting As Boolean) As CCalculationSnapshot
+    On Error GoTo Failed
+    Set mGeometryPreviewCapture = New CCalculationSnapshot
+    Dim kind(1 To 1, 1 To 1) As Variant: kind(1, 1) = "GeometryPreview"
+    mGeometryPreviewCapture.AddTable "Snapshot.Kind", kind
+    WriteGeometryPreview workbook, section, properties, units, fullFormatting
+    Dim diagrams() As Variant: ReDim diagrams(1 To 1, 1 To MATERIAL_DIAGRAM_COLUMNS)
+    PutMaterialDiagramHeaders diagrams, units
+    mGeometryPreviewCapture.AddTable "rngNDMMaterialDiagrams", diagrams
+    mGeometryPreviewCapture.Validate
+    Set WriteGeometryPreviewForDisplay = mGeometryPreviewCapture
+    Set mGeometryPreviewCapture = Nothing
+    Exit Function
+Failed:
+    Dim number As Long, reason As String, origin As String
+    number = Err.Number: reason = Err.Description: origin = Err.Source
+    Set mGeometryPreviewCapture = Nothing
+    Err.Raise number, origin, reason
+End Function
 
 ' Собирает обязательную геометрию в памяти, не очищая показанные Results или действующую привязку файла.
 Public Function PrepareGeometryPreviewSnapshot(ByVal workbook As Object, ByVal section As CSectionModel, _
@@ -500,6 +525,7 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         rowIndex = rowIndex + 1
     Next i
 
+    If Not mGeometryPreviewCapture Is Nothing Then mGeometryPreviewCapture.AddTable "rngNDMSectionGeometry", data
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "rngNDMSectionGeometry", data
         Exit Sub
@@ -540,6 +566,7 @@ Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSec
         data(row, 15) = contours.SourceID(i): data(row, 16) = contours.Comment(i)
         data(row, 17) = OutputLengthUnit(units)
     Next i
+    If Not mGeometryPreviewCapture Is Nothing Then mGeometryPreviewCapture.AddTable "rngNDMSectionContours", data
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "rngNDMSectionContours", data
         Exit Sub
@@ -606,6 +633,7 @@ Private Sub WriteElementGeometry(ByVal workbook As Object, ByVal section As CSec
     Dim total As Long: total = UBound(data, 1) - 1
     mPreparedElementGeometry = Empty: Set mPreparedBoundaryOwner = Nothing
     Set mPreparedFirstBoundary = Nothing: Set mPreparedLastBoundary = Nothing
+    If Not mGeometryPreviewCapture Is Nothing Then mGeometryPreviewCapture.AddTable "rngNDMElementGeometry", data
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "rngNDMElementGeometry", data
         Exit Sub
@@ -1242,6 +1270,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     PutProperty data, rowIndex, runID, "ALL", "Output.CurvatureUnit", OutputCurvatureUnit(units), "-", "Единица вывода кривизны на момент формирования сечения."
     PutConcreteSectionProperties data, rowIndex, runID, section, concreteProps, units
 
+    If Not mGeometryPreviewCapture Is Nothing Then mGeometryPreviewCapture.AddTable "rngNDMSectionProperties", data
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "rngNDMSectionProperties", data
         Exit Sub
@@ -1331,6 +1360,7 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
     Next region
 
     Dim textColumn As Variant
+    If Not mGeometryPreviewCapture Is Nothing Then mGeometryPreviewCapture.AddTable "rngNDMSectionAnnotations", data
     If Not mCapturedSnapshot Is Nothing Then
         If mCapturedSnapshot.IsGeometryPreview Then
             mCapturedSnapshot.AddTable "rngNDMSectionAnnotations", data
@@ -1356,6 +1386,7 @@ Private Sub WriteEmptyElementResults(ByVal workbook As Object, ByVal runID As Va
     ReDim data(1 To 1, 1 To ELEMENT_RESULT_COLUMNS)
     PutElementResultHeaders data, units
 
+    If Not mGeometryPreviewCapture Is Nothing Then mGeometryPreviewCapture.AddTable "rngNDMElementResults", data
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "rngNDMElementResults", data
         Exit Sub

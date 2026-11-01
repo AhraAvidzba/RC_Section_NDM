@@ -1,0 +1,1022 @@
+{
+  "Status": "PASS_LIGHT_HEAVY_FULL_BUTTON_PHASE_PARITY",
+  "Measurements": [
+    {
+      "Kind": "Light",
+      "Mode": "Excel",
+      "BeforeMedianSeconds": 1.0266605,
+      "AfterMedianSeconds": 0.4905735,
+      "BeforeRestoreSeconds": 0.620695,
+      "AfterRestoreSeconds": 0.003996,
+      "SamplesPerVariant": 4,
+      "AllSevenPhysicalTablesExactExceptRunID": true,
+      "RGBPixelExact": true,
+      "ActualSolverCallsPerRun": 3,
+      "Inputs": "DIRECT test profiles and distinct test loads; authentic saved geometry",
+      "Checks": [
+        {
+          "Variant": "Baseline",
+          "EntireTableComparison": "PASS|Capture=False|Cells=13852",
+          "RGBSHA256": "17143E5A417256F76BE93D86DCF92AEDE26DD2F1998176C896A23F2C07DDF99E"
+        },
+        {
+          "Variant": "Candidate",
+          "EntireTableComparison": "PASS|Capture=False|Cells=13852",
+          "RGBSHA256": "17143E5A417256F76BE93D86DCF92AEDE26DD2F1998176C896A23F2C07DDF99E"
+        },
+        {
+          "Variant": "CandidateAgain",
+          "EntireTableComparison": "PASS|Capture=False|Cells=13852",
+          "RGBSHA256": "17143E5A417256F76BE93D86DCF92AEDE26DD2F1998176C896A23F2C07DDF99E"
+        },
+        {
+          "Variant": "BaselineAgain",
+          "EntireTableComparison": "PASS|Capture=False|Cells=13852",
+          "RGBSHA256": "17143E5A417256F76BE93D86DCF92AEDE26DD2F1998176C896A23F2C07DDF99E"
+        }
+      ],
+      "RawSamples": [
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "Warmup",
+          "Index": 0,
+          "ExternalSeconds": 1.3519081,
+          "Result": "Total=1.345404|Enter=0.003693|InputCalculate=0.000178|Preparation=0.176985|Batch=0.011213|Capture=0.063077|SaveAndDisplay=0.472686|MessageAndReport=0.001357|ResultsCalculate=0.000261|Restore=0.598654|FinishAndRelease=0.017294|SolverCalls=3|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.345404",
+            "Enter": "0.003693",
+            "InputCalculate": "0.000178",
+            "Preparation": "0.176985",
+            "Batch": "0.011213",
+            "Capture": "0.063077",
+            "SaveAndDisplay": "0.472686",
+            "MessageAndReport": "0.001357",
+            "ResultsCalculate": "0.000261",
+            "Restore": "0.598654",
+            "FinishAndRelease": "0.017294",
+            "SolverCalls": "3",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "Baseline",
+          "Index": 1,
+          "ExternalSeconds": 1.0340852999999999,
+          "Result": "Total=1.032211|Enter=0.004588|InputCalculate=0.000322|Preparation=0.104991|Batch=0.009588|Capture=0.062232|SaveAndDisplay=0.208703|MessageAndReport=0.001313|ResultsCalculate=0.000351|Restore=0.625033|FinishAndRelease=0.015083|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.032211",
+            "Enter": "0.004588",
+            "InputCalculate": "0.000322",
+            "Preparation": "0.104991",
+            "Batch": "0.009588",
+            "Capture": "0.062232",
+            "SaveAndDisplay": "0.208703",
+            "MessageAndReport": "0.001313",
+            "ResultsCalculate": "0.000351",
+            "Restore": "0.625033",
+            "FinishAndRelease": "0.015083",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "Baseline",
+          "Index": 2,
+          "ExternalSeconds": 1.109072,
+          "Result": "Total=1.021110|Enter=0.003742|InputCalculate=0.000515|Preparation=0.103429|Batch=0.009220|Capture=0.066177|SaveAndDisplay=0.211855|MessageAndReport=0.001608|ResultsCalculate=0.000409|Restore=0.608768|FinishAndRelease=0.015379|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.021110",
+            "Enter": "0.003742",
+            "InputCalculate": "0.000515",
+            "Preparation": "0.103429",
+            "Batch": "0.009220",
+            "Capture": "0.066177",
+            "SaveAndDisplay": "0.211855",
+            "MessageAndReport": "0.001608",
+            "ResultsCalculate": "0.000409",
+            "Restore": "0.608768",
+            "FinishAndRelease": "0.015379",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "Candidate",
+          "Index": 3,
+          "ExternalSeconds": 0.4646472,
+          "Result": "Total=0.463161|Enter=0.017381|InputCalculate=0.000213|Preparation=0.094281|Batch=0.010294|Capture=0.060910|SaveAndDisplay=0.264453|MessageAndReport=0.001440|ResultsCalculate=0.000313|Restore=0.003795|FinishAndRelease=0.010072|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "0.463161",
+            "Enter": "0.017381",
+            "InputCalculate": "0.000213",
+            "Preparation": "0.094281",
+            "Batch": "0.010294",
+            "Capture": "0.060910",
+            "SaveAndDisplay": "0.264453",
+            "MessageAndReport": "0.001440",
+            "ResultsCalculate": "0.000313",
+            "Restore": "0.003795",
+            "FinishAndRelease": "0.010072",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "Candidate",
+          "Index": 4,
+          "ExternalSeconds": 0.4806626,
+          "Result": "Total=0.468836|Enter=0.004385|InputCalculate=0.000197|Preparation=0.101975|Batch=0.013622|Capture=0.067025|SaveAndDisplay=0.266926|MessageAndReport=0.001313|ResultsCalculate=0.000369|Restore=0.003813|FinishAndRelease=0.009205|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "0.468836",
+            "Enter": "0.004385",
+            "InputCalculate": "0.000197",
+            "Preparation": "0.101975",
+            "Batch": "0.013622",
+            "Capture": "0.067025",
+            "SaveAndDisplay": "0.266926",
+            "MessageAndReport": "0.001313",
+            "ResultsCalculate": "0.000369",
+            "Restore": "0.003813",
+            "FinishAndRelease": "0.009205",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "CandidateAgain",
+          "Index": 5,
+          "ExternalSeconds": 0.5150032999999999,
+          "Result": "Total=0.512311|Enter=0.014912|InputCalculate=0.000205|Preparation=0.099577|Batch=0.014688|Capture=0.078643|SaveAndDisplay=0.287066|MessageAndReport=0.001338|ResultsCalculate=0.000348|Restore=0.004179|FinishAndRelease=0.011348|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "0.512311",
+            "Enter": "0.014912",
+            "InputCalculate": "0.000205",
+            "Preparation": "0.099577",
+            "Batch": "0.014688",
+            "Capture": "0.078643",
+            "SaveAndDisplay": "0.287066",
+            "MessageAndReport": "0.001338",
+            "ResultsCalculate": "0.000348",
+            "Restore": "0.004179",
+            "FinishAndRelease": "0.011348",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "CandidateAgain",
+          "Index": 6,
+          "ExternalSeconds": 0.6029008,
+          "Result": "Total=0.512639|Enter=0.003863|InputCalculate=0.000188|Preparation=0.114186|Batch=0.010015|Capture=0.065745|SaveAndDisplay=0.300583|MessageAndReport=0.001366|ResultsCalculate=0.000300|Restore=0.005181|FinishAndRelease=0.011204|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "0.512639",
+            "Enter": "0.003863",
+            "InputCalculate": "0.000188",
+            "Preparation": "0.114186",
+            "Batch": "0.010015",
+            "Capture": "0.065745",
+            "SaveAndDisplay": "0.300583",
+            "MessageAndReport": "0.001366",
+            "ResultsCalculate": "0.000300",
+            "Restore": "0.005181",
+            "FinishAndRelease": "0.011204",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "BaselineAgain",
+          "Index": 7,
+          "ExternalSeconds": 1.1091761,
+          "Result": "Total=1.106052|Enter=0.003771|InputCalculate=0.000220|Preparation=0.138429|Batch=0.013820|Capture=0.072529|SaveAndDisplay=0.232424|MessageAndReport=0.001420|ResultsCalculate=0.000211|Restore=0.627694|FinishAndRelease=0.015526|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.106052",
+            "Enter": "0.003771",
+            "InputCalculate": "0.000220",
+            "Preparation": "0.138429",
+            "Batch": "0.013820",
+            "Capture": "0.072529",
+            "SaveAndDisplay": "0.232424",
+            "MessageAndReport": "0.001420",
+            "ResultsCalculate": "0.000211",
+            "Restore": "0.627694",
+            "FinishAndRelease": "0.015526",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "Excel",
+          "Variant": "BaselineAgain",
+          "Index": 8,
+          "ExternalSeconds": 1.1102165,
+          "Result": "Total=1.020719|Enter=0.004779|InputCalculate=0.000185|Preparation=0.097998|Batch=0.009753|Capture=0.062818|SaveAndDisplay=0.210257|MessageAndReport=0.001345|ResultsCalculate=0.000311|Restore=0.616357|FinishAndRelease=0.016907|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.020719",
+            "Enter": "0.004779",
+            "InputCalculate": "0.000185",
+            "Preparation": "0.097998",
+            "Batch": "0.009753",
+            "Capture": "0.062818",
+            "SaveAndDisplay": "0.210257",
+            "MessageAndReport": "0.001345",
+            "ResultsCalculate": "0.000311",
+            "Restore": "0.616357",
+            "FinishAndRelease": "0.016907",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        }
+      ]
+    },
+    {
+      "Kind": "Light",
+      "Mode": "File",
+      "BeforeMedianSeconds": 1.119836,
+      "AfterMedianSeconds": 0.585685,
+      "BeforeRestoreSeconds": 0.6262540000000001,
+      "AfterRestoreSeconds": 0.0037535,
+      "SamplesPerVariant": 4,
+      "AllSevenPhysicalTablesExactExceptRunID": true,
+      "RGBPixelExact": true,
+      "ActualSolverCallsPerRun": 3,
+      "Inputs": "DIRECT test profiles and distinct test loads; authentic saved geometry",
+      "Checks": [
+        {
+          "Variant": "Baseline",
+          "EntireTableComparison": "PASS|Capture=False|Cells=2695",
+          "RGBSHA256": "BC3DFDDE6D86AF0557472FA93280AF19ED0C86C236ECFB820BCB1BDA1114F9C0"
+        },
+        {
+          "Variant": "Candidate",
+          "EntireTableComparison": "PASS|Capture=False|Cells=2695",
+          "RGBSHA256": "BC3DFDDE6D86AF0557472FA93280AF19ED0C86C236ECFB820BCB1BDA1114F9C0"
+        },
+        {
+          "Variant": "CandidateAgain",
+          "EntireTableComparison": "PASS|Capture=False|Cells=2695",
+          "RGBSHA256": "BC3DFDDE6D86AF0557472FA93280AF19ED0C86C236ECFB820BCB1BDA1114F9C0"
+        },
+        {
+          "Variant": "BaselineAgain",
+          "EntireTableComparison": "PASS|Capture=False|Cells=2695",
+          "RGBSHA256": "BC3DFDDE6D86AF0557472FA93280AF19ED0C86C236ECFB820BCB1BDA1114F9C0"
+        }
+      ],
+      "RawSamples": [
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "Warmup",
+          "Index": 0,
+          "ExternalSeconds": 1.3907346999999999,
+          "Result": "Total=1.378510|Enter=0.003644|InputCalculate=0.000199|Preparation=0.150087|Batch=0.012705|Capture=0.072440|SaveAndDisplay=0.501563|MessageAndReport=0.002404|ResultsCalculate=0.000330|Restore=0.587768|FinishAndRelease=0.047363|SolverCalls=3|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.378510",
+            "Enter": "0.003644",
+            "InputCalculate": "0.000199",
+            "Preparation": "0.150087",
+            "Batch": "0.012705",
+            "Capture": "0.072440",
+            "SaveAndDisplay": "0.501563",
+            "MessageAndReport": "0.002404",
+            "ResultsCalculate": "0.000330",
+            "Restore": "0.587768",
+            "FinishAndRelease": "0.047363",
+            "SolverCalls": "3",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "Baseline",
+          "Index": 1,
+          "ExternalSeconds": 1.2175677999999999,
+          "Result": "Total=1.216442|Enter=0.004823|InputCalculate=0.000291|Preparation=0.149988|Batch=0.012999|Capture=0.074045|SaveAndDisplay=0.255244|MessageAndReport=0.001752|ResultsCalculate=0.000263|Restore=0.678589|FinishAndRelease=0.038441|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.216442",
+            "Enter": "0.004823",
+            "InputCalculate": "0.000291",
+            "Preparation": "0.149988",
+            "Batch": "0.012999",
+            "Capture": "0.074045",
+            "SaveAndDisplay": "0.255244",
+            "MessageAndReport": "0.001752",
+            "ResultsCalculate": "0.000263",
+            "Restore": "0.678589",
+            "FinishAndRelease": "0.038441",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "Baseline",
+          "Index": 2,
+          "ExternalSeconds": 1.226891,
+          "Result": "Total=1.118986|Enter=0.004467|InputCalculate=0.000232|Preparation=0.138275|Batch=0.009866|Capture=0.068115|SaveAndDisplay=0.239538|MessageAndReport=0.003151|ResultsCalculate=0.000259|Restore=0.613696|FinishAndRelease=0.041380|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.118986",
+            "Enter": "0.004467",
+            "InputCalculate": "0.000232",
+            "Preparation": "0.138275",
+            "Batch": "0.009866",
+            "Capture": "0.068115",
+            "SaveAndDisplay": "0.239538",
+            "MessageAndReport": "0.003151",
+            "ResultsCalculate": "0.000259",
+            "Restore": "0.613696",
+            "FinishAndRelease": "0.041380",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "Candidate",
+          "Index": 3,
+          "ExternalSeconds": 0.5610322999999999,
+          "Result": "Total=0.560070|Enter=0.019362|InputCalculate=0.000216|Preparation=0.132112|Batch=0.010513|Capture=0.068939|SaveAndDisplay=0.287231|MessageAndReport=0.002474|ResultsCalculate=0.000321|Restore=0.003779|FinishAndRelease=0.035117|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "0.560070",
+            "Enter": "0.019362",
+            "InputCalculate": "0.000216",
+            "Preparation": "0.132112",
+            "Batch": "0.010513",
+            "Capture": "0.068939",
+            "SaveAndDisplay": "0.287231",
+            "MessageAndReport": "0.002474",
+            "ResultsCalculate": "0.000321",
+            "Restore": "0.003779",
+            "FinishAndRelease": "0.035117",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "Candidate",
+          "Index": 4,
+          "ExternalSeconds": 0.5885533,
+          "Result": "Total=0.580421|Enter=0.003818|InputCalculate=0.000281|Preparation=0.140948|Batch=0.019773|Capture=0.070111|SaveAndDisplay=0.305722|MessageAndReport=0.001637|ResultsCalculate=0.000300|Restore=0.003601|FinishAndRelease=0.034221|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "0.580421",
+            "Enter": "0.003818",
+            "InputCalculate": "0.000281",
+            "Preparation": "0.140948",
+            "Batch": "0.019773",
+            "Capture": "0.070111",
+            "SaveAndDisplay": "0.305722",
+            "MessageAndReport": "0.001637",
+            "ResultsCalculate": "0.000300",
+            "Restore": "0.003601",
+            "FinishAndRelease": "0.034221",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "CandidateAgain",
+          "Index": 5,
+          "ExternalSeconds": 0.6001544,
+          "Result": "Total=0.598179|Enter=0.018572|InputCalculate=0.000331|Preparation=0.150026|Batch=0.012716|Capture=0.070108|SaveAndDisplay=0.301422|MessageAndReport=0.002519|ResultsCalculate=0.000322|Restore=0.003881|FinishAndRelease=0.038272|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "0.598179",
+            "Enter": "0.018572",
+            "InputCalculate": "0.000331",
+            "Preparation": "0.150026",
+            "Batch": "0.012716",
+            "Capture": "0.070108",
+            "SaveAndDisplay": "0.301422",
+            "MessageAndReport": "0.002519",
+            "ResultsCalculate": "0.000322",
+            "Restore": "0.003881",
+            "FinishAndRelease": "0.038272",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "CandidateAgain",
+          "Index": 6,
+          "ExternalSeconds": 0.6029774999999999,
+          "Result": "Total=0.590949|Enter=0.004120|InputCalculate=0.000270|Preparation=0.147547|Batch=0.009891|Capture=0.083022|SaveAndDisplay=0.308966|MessageAndReport=0.001315|ResultsCalculate=0.000448|Restore=0.003728|FinishAndRelease=0.031634|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "0.590949",
+            "Enter": "0.004120",
+            "InputCalculate": "0.000270",
+            "Preparation": "0.147547",
+            "Batch": "0.009891",
+            "Capture": "0.083022",
+            "SaveAndDisplay": "0.308966",
+            "MessageAndReport": "0.001315",
+            "ResultsCalculate": "0.000448",
+            "Restore": "0.003728",
+            "FinishAndRelease": "0.031634",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "BaselineAgain",
+          "Index": 7,
+          "ExternalSeconds": 1.1225072999999999,
+          "Result": "Total=1.120686|Enter=0.003679|InputCalculate=0.000148|Preparation=0.127052|Batch=0.013022|Capture=0.067876|SaveAndDisplay=0.225391|MessageAndReport=0.001125|ResultsCalculate=0.000246|Restore=0.638812|FinishAndRelease=0.043326|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.120686",
+            "Enter": "0.003679",
+            "InputCalculate": "0.000148",
+            "Preparation": "0.127052",
+            "Batch": "0.013022",
+            "Capture": "0.067876",
+            "SaveAndDisplay": "0.225391",
+            "MessageAndReport": "0.001125",
+            "ResultsCalculate": "0.000246",
+            "Restore": "0.638812",
+            "FinishAndRelease": "0.043326",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        },
+        {
+          "Kind": "Light",
+          "Mode": "File",
+          "Variant": "BaselineAgain",
+          "Index": 8,
+          "ExternalSeconds": 1.2156372,
+          "Result": "Total=1.107629|Enter=0.003507|InputCalculate=0.000206|Preparation=0.129479|Batch=0.011180|Capture=0.075569|SaveAndDisplay=0.222669|MessageAndReport=0.001518|ResultsCalculate=0.000270|Restore=0.608934|FinishAndRelease=0.054290|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "1.107629",
+            "Enter": "0.003507",
+            "InputCalculate": "0.000206",
+            "Preparation": "0.129479",
+            "Batch": "0.011180",
+            "Capture": "0.075569",
+            "SaveAndDisplay": "0.222669",
+            "MessageAndReport": "0.001518",
+            "ResultsCalculate": "0.000270",
+            "Restore": "0.608934",
+            "FinishAndRelease": "0.054290",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 3
+        }
+      ]
+    },
+    {
+      "Kind": "Heavy",
+      "Mode": "Excel",
+      "BeforeMedianSeconds": 3.0963450000000003,
+      "AfterMedianSeconds": 2.545811,
+      "BeforeRestoreSeconds": 0.70711,
+      "AfterRestoreSeconds": 0.0054529999999999995,
+      "SamplesPerVariant": 4,
+      "AllSevenPhysicalTablesExactExceptRunID": true,
+      "RGBPixelExact": true,
+      "ActualSolverCallsPerRun": 30,
+      "Inputs": "DIRECT test profiles and distinct test loads; authentic saved geometry",
+      "Checks": [
+        {
+          "Variant": "Baseline",
+          "EntireTableComparison": "PASS|Capture=False|Cells=362028",
+          "RGBSHA256": "A87344BD1F6F8C306D1115089FE474402FC113135AE6748A94E240F2DD21FEE9"
+        },
+        {
+          "Variant": "Candidate",
+          "EntireTableComparison": "PASS|Capture=False|Cells=362028",
+          "RGBSHA256": "A87344BD1F6F8C306D1115089FE474402FC113135AE6748A94E240F2DD21FEE9"
+        },
+        {
+          "Variant": "CandidateAgain",
+          "EntireTableComparison": "PASS|Capture=False|Cells=362028",
+          "RGBSHA256": "A87344BD1F6F8C306D1115089FE474402FC113135AE6748A94E240F2DD21FEE9"
+        },
+        {
+          "Variant": "BaselineAgain",
+          "EntireTableComparison": "PASS|Capture=False|Cells=362028",
+          "RGBSHA256": "A87344BD1F6F8C306D1115089FE474402FC113135AE6748A94E240F2DD21FEE9"
+        }
+      ],
+      "RawSamples": [
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "Warmup",
+          "Index": 0,
+          "ExternalSeconds": 5.633761799999999,
+          "Result": "Total=5.632296|Enter=2.428265|InputCalculate=0.000270|Preparation=0.205973|Batch=0.335270|Capture=0.479266|SaveAndDisplay=1.446697|MessageAndReport=0.006010|ResultsCalculate=0.000213|Restore=0.701646|FinishAndRelease=0.028680|SolverCalls=30|ReadReleased=True",
+          "Metrics": {
+            "Total": "5.632296",
+            "Enter": "2.428265",
+            "InputCalculate": "0.000270",
+            "Preparation": "0.205973",
+            "Batch": "0.335270",
+            "Capture": "0.479266",
+            "SaveAndDisplay": "1.446697",
+            "MessageAndReport": "0.006010",
+            "ResultsCalculate": "0.000213",
+            "Restore": "0.701646",
+            "FinishAndRelease": "0.028680",
+            "SolverCalls": "30",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "Baseline",
+          "Index": 1,
+          "ExternalSeconds": 3.3839501,
+          "Result": "Total=3.212452|Enter=0.004275|InputCalculate=0.000188|Preparation=0.200410|Batch=0.410123|Capture=0.599772|SaveAndDisplay=1.263986|MessageAndReport=0.005189|ResultsCalculate=0.000202|Restore=0.687316|FinishAndRelease=0.040980|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "3.212452",
+            "Enter": "0.004275",
+            "InputCalculate": "0.000188",
+            "Preparation": "0.200410",
+            "Batch": "0.410123",
+            "Capture": "0.599772",
+            "SaveAndDisplay": "1.263986",
+            "MessageAndReport": "0.005189",
+            "ResultsCalculate": "0.000202",
+            "Restore": "0.687316",
+            "FinishAndRelease": "0.040980",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "Baseline",
+          "Index": 2,
+          "ExternalSeconds": 3.1602240999999998,
+          "Result": "Total=3.061268|Enter=0.005108|InputCalculate=0.000230|Preparation=0.201954|Batch=0.344797|Capture=0.464349|SaveAndDisplay=1.308463|MessageAndReport=0.005351|ResultsCalculate=0.000172|Restore=0.697315|FinishAndRelease=0.033521|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "3.061268",
+            "Enter": "0.005108",
+            "InputCalculate": "0.000230",
+            "Preparation": "0.201954",
+            "Batch": "0.344797",
+            "Capture": "0.464349",
+            "SaveAndDisplay": "1.308463",
+            "MessageAndReport": "0.005351",
+            "ResultsCalculate": "0.000172",
+            "Restore": "0.697315",
+            "FinishAndRelease": "0.033521",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "Candidate",
+          "Index": 3,
+          "ExternalSeconds": 2.4165588,
+          "Result": "Total=2.411484|Enter=0.017895|InputCalculate=0.000217|Preparation=0.217749|Batch=0.279826|Capture=0.476008|SaveAndDisplay=1.380800|MessageAndReport=0.005464|ResultsCalculate=0.000310|Restore=0.005489|FinishAndRelease=0.027716|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.411484",
+            "Enter": "0.017895",
+            "InputCalculate": "0.000217",
+            "Preparation": "0.217749",
+            "Batch": "0.279826",
+            "Capture": "0.476008",
+            "SaveAndDisplay": "1.380800",
+            "MessageAndReport": "0.005464",
+            "ResultsCalculate": "0.000310",
+            "Restore": "0.005489",
+            "FinishAndRelease": "0.027716",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "Candidate",
+          "Index": 4,
+          "ExternalSeconds": 2.6288959999999997,
+          "Result": "Total=2.571524|Enter=0.006999|InputCalculate=0.000244|Preparation=0.205327|Batch=0.339219|Capture=0.557378|SaveAndDisplay=1.419536|MessageAndReport=0.005955|ResultsCalculate=0.000775|Restore=0.005692|FinishAndRelease=0.030391|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.571524",
+            "Enter": "0.006999",
+            "InputCalculate": "0.000244",
+            "Preparation": "0.205327",
+            "Batch": "0.339219",
+            "Capture": "0.557378",
+            "SaveAndDisplay": "1.419536",
+            "MessageAndReport": "0.005955",
+            "ResultsCalculate": "0.000775",
+            "Restore": "0.005692",
+            "FinishAndRelease": "0.030391",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "CandidateAgain",
+          "Index": 5,
+          "ExternalSeconds": 2.5243347,
+          "Result": "Total=2.520098|Enter=0.017877|InputCalculate=0.000213|Preparation=0.282512|Batch=0.326107|Capture=0.446600|SaveAndDisplay=1.405609|MessageAndReport=0.005865|ResultsCalculate=0.000211|Restore=0.005157|FinishAndRelease=0.029940|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.520098",
+            "Enter": "0.017877",
+            "InputCalculate": "0.000213",
+            "Preparation": "0.282512",
+            "Batch": "0.326107",
+            "Capture": "0.446600",
+            "SaveAndDisplay": "1.405609",
+            "MessageAndReport": "0.005865",
+            "ResultsCalculate": "0.000211",
+            "Restore": "0.005157",
+            "FinishAndRelease": "0.029940",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "CandidateAgain",
+          "Index": 6,
+          "ExternalSeconds": 2.6628008,
+          "Result": "Total=2.606014|Enter=0.005745|InputCalculate=0.000233|Preparation=0.193295|Batch=0.380293|Capture=0.513069|SaveAndDisplay=1.474446|MessageAndReport=0.005116|ResultsCalculate=0.000161|Restore=0.005417|FinishAndRelease=0.028233|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.606014",
+            "Enter": "0.005745",
+            "InputCalculate": "0.000233",
+            "Preparation": "0.193295",
+            "Batch": "0.380293",
+            "Capture": "0.513069",
+            "SaveAndDisplay": "1.474446",
+            "MessageAndReport": "0.005116",
+            "ResultsCalculate": "0.000161",
+            "Restore": "0.005417",
+            "FinishAndRelease": "0.028233",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "BaselineAgain",
+          "Index": 7,
+          "ExternalSeconds": 3.0457305,
+          "Result": "Total=3.043872|Enter=0.003787|InputCalculate=0.000160|Preparation=0.203866|Batch=0.350050|Capture=0.481843|SaveAndDisplay=1.249766|MessageAndReport=0.005034|ResultsCalculate=0.000211|Restore=0.716905|FinishAndRelease=0.032243|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "3.043872",
+            "Enter": "0.003787",
+            "InputCalculate": "0.000160",
+            "Preparation": "0.203866",
+            "Batch": "0.350050",
+            "Capture": "0.481843",
+            "SaveAndDisplay": "1.249766",
+            "MessageAndReport": "0.005034",
+            "ResultsCalculate": "0.000211",
+            "Restore": "0.716905",
+            "FinishAndRelease": "0.032243",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "Excel",
+          "Variant": "BaselineAgain",
+          "Index": 8,
+          "ExternalSeconds": 3.2580012999999997,
+          "Result": "Total=3.131422|Enter=0.004523|InputCalculate=0.000192|Preparation=0.229547|Batch=0.351746|Capture=0.482180|SaveAndDisplay=1.279054|MessageAndReport=0.005321|ResultsCalculate=0.000174|Restore=0.727963|FinishAndRelease=0.050713|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "3.131422",
+            "Enter": "0.004523",
+            "InputCalculate": "0.000192",
+            "Preparation": "0.229547",
+            "Batch": "0.351746",
+            "Capture": "0.482180",
+            "SaveAndDisplay": "1.279054",
+            "MessageAndReport": "0.005321",
+            "ResultsCalculate": "0.000174",
+            "Restore": "0.727963",
+            "FinishAndRelease": "0.050713",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        }
+      ]
+    },
+    {
+      "Kind": "Heavy",
+      "Mode": "File",
+      "BeforeMedianSeconds": 2.8124275,
+      "AfterMedianSeconds": 2.297338,
+      "BeforeRestoreSeconds": 0.713979,
+      "AfterRestoreSeconds": 0.005194000000000001,
+      "SamplesPerVariant": 4,
+      "AllSevenPhysicalTablesExactExceptRunID": true,
+      "RGBPixelExact": true,
+      "ActualSolverCallsPerRun": 30,
+      "Inputs": "DIRECT test profiles and distinct test loads; authentic saved geometry",
+      "Checks": [
+        {
+          "Variant": "Baseline",
+          "EntireTableComparison": "PASS|Capture=False|Cells=20652",
+          "RGBSHA256": "A87344BD1F6F8C306D1115089FE474402FC113135AE6748A94E240F2DD21FEE9"
+        },
+        {
+          "Variant": "Candidate",
+          "EntireTableComparison": "PASS|Capture=False|Cells=20652",
+          "RGBSHA256": "A87344BD1F6F8C306D1115089FE474402FC113135AE6748A94E240F2DD21FEE9"
+        },
+        {
+          "Variant": "CandidateAgain",
+          "EntireTableComparison": "PASS|Capture=False|Cells=20652",
+          "RGBSHA256": "A87344BD1F6F8C306D1115089FE474402FC113135AE6748A94E240F2DD21FEE9"
+        },
+        {
+          "Variant": "BaselineAgain",
+          "EntireTableComparison": "PASS|Capture=False|Cells=20652",
+          "RGBSHA256": "A87344BD1F6F8C306D1115089FE474402FC113135AE6748A94E240F2DD21FEE9"
+        }
+      ],
+      "RawSamples": [
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "Warmup",
+          "Index": 0,
+          "ExternalSeconds": 2.989759,
+          "Result": "Total=2.983723|Enter=0.004182|InputCalculate=0.000182|Preparation=0.250627|Batch=0.387688|Capture=0.516511|SaveAndDisplay=1.027273|MessageAndReport=0.005231|ResultsCalculate=0.000170|Restore=0.728604|FinishAndRelease=0.063248|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.983723",
+            "Enter": "0.004182",
+            "InputCalculate": "0.000182",
+            "Preparation": "0.250627",
+            "Batch": "0.387688",
+            "Capture": "0.516511",
+            "SaveAndDisplay": "1.027273",
+            "MessageAndReport": "0.005231",
+            "ResultsCalculate": "0.000170",
+            "Restore": "0.728604",
+            "FinishAndRelease": "0.063248",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "Baseline",
+          "Index": 1,
+          "ExternalSeconds": 2.8121818999999997,
+          "Result": "Total=2.810799|Enter=0.004166|InputCalculate=0.000235|Preparation=0.268573|Batch=0.371560|Capture=0.488285|SaveAndDisplay=0.883398|MessageAndReport=0.004902|ResultsCalculate=0.000184|Restore=0.731537|FinishAndRelease=0.057950|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.810799",
+            "Enter": "0.004166",
+            "InputCalculate": "0.000235",
+            "Preparation": "0.268573",
+            "Batch": "0.371560",
+            "Capture": "0.488285",
+            "SaveAndDisplay": "0.883398",
+            "MessageAndReport": "0.004902",
+            "ResultsCalculate": "0.000184",
+            "Restore": "0.731537",
+            "FinishAndRelease": "0.057950",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "Baseline",
+          "Index": 2,
+          "ExternalSeconds": 2.9448675,
+          "Result": "Total=2.814056|Enter=0.004497|InputCalculate=0.000167|Preparation=0.247171|Batch=0.379029|Capture=0.467635|SaveAndDisplay=0.942584|MessageAndReport=0.005816|ResultsCalculate=0.000205|Restore=0.707381|FinishAndRelease=0.059563|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.814056",
+            "Enter": "0.004497",
+            "InputCalculate": "0.000167",
+            "Preparation": "0.247171",
+            "Batch": "0.379029",
+            "Capture": "0.467635",
+            "SaveAndDisplay": "0.942584",
+            "MessageAndReport": "0.005816",
+            "ResultsCalculate": "0.000205",
+            "Restore": "0.707381",
+            "FinishAndRelease": "0.059563",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "Candidate",
+          "Index": 3,
+          "ExternalSeconds": 2.3296064,
+          "Result": "Total=2.328329|Enter=0.025954|InputCalculate=0.000235|Preparation=0.251320|Batch=0.363687|Capture=0.545219|SaveAndDisplay=1.076900|MessageAndReport=0.005065|ResultsCalculate=0.000867|Restore=0.005409|FinishAndRelease=0.053666|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.328329",
+            "Enter": "0.025954",
+            "InputCalculate": "0.000235",
+            "Preparation": "0.251320",
+            "Batch": "0.363687",
+            "Capture": "0.545219",
+            "SaveAndDisplay": "1.076900",
+            "MessageAndReport": "0.005065",
+            "ResultsCalculate": "0.000867",
+            "Restore": "0.005409",
+            "FinishAndRelease": "0.053666",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "Candidate",
+          "Index": 4,
+          "ExternalSeconds": 2.2563115,
+          "Result": "Total=2.201881|Enter=0.005608|InputCalculate=0.000215|Preparation=0.257917|Batch=0.371961|Capture=0.490280|SaveAndDisplay=1.013984|MessageAndReport=0.006400|ResultsCalculate=0.000266|Restore=0.005131|FinishAndRelease=0.050111|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.201881",
+            "Enter": "0.005608",
+            "InputCalculate": "0.000215",
+            "Preparation": "0.257917",
+            "Batch": "0.371961",
+            "Capture": "0.490280",
+            "SaveAndDisplay": "1.013984",
+            "MessageAndReport": "0.006400",
+            "ResultsCalculate": "0.000266",
+            "Restore": "0.005131",
+            "FinishAndRelease": "0.050111",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "CandidateAgain",
+          "Index": 5,
+          "ExternalSeconds": 2.3482023,
+          "Result": "Total=2.344071|Enter=0.020694|InputCalculate=0.000217|Preparation=0.310211|Batch=0.386025|Capture=0.474570|SaveAndDisplay=1.088955|MessageAndReport=0.004921|ResultsCalculate=0.000179|Restore=0.005031|FinishAndRelease=0.053260|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.344071",
+            "Enter": "0.020694",
+            "InputCalculate": "0.000217",
+            "Preparation": "0.310211",
+            "Batch": "0.386025",
+            "Capture": "0.474570",
+            "SaveAndDisplay": "1.088955",
+            "MessageAndReport": "0.004921",
+            "ResultsCalculate": "0.000179",
+            "Restore": "0.005031",
+            "FinishAndRelease": "0.053260",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "CandidateAgain",
+          "Index": 6,
+          "ExternalSeconds": 2.3272147,
+          "Result": "Total=2.266347|Enter=0.005668|InputCalculate=0.000205|Preparation=0.263112|Batch=0.395536|Capture=0.491777|SaveAndDisplay=1.050619|MessageAndReport=0.004571|ResultsCalculate=0.000241|Restore=0.005257|FinishAndRelease=0.049347|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.266347",
+            "Enter": "0.005668",
+            "InputCalculate": "0.000205",
+            "Preparation": "0.263112",
+            "Batch": "0.395536",
+            "Capture": "0.491777",
+            "SaveAndDisplay": "1.050619",
+            "MessageAndReport": "0.004571",
+            "ResultsCalculate": "0.000241",
+            "Restore": "0.005257",
+            "FinishAndRelease": "0.049347",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "BaselineAgain",
+          "Index": 7,
+          "ExternalSeconds": 2.9031968,
+          "Result": "Total=2.731789|Enter=0.005245|InputCalculate=0.000219|Preparation=0.244019|Batch=0.317791|Capture=0.481172|SaveAndDisplay=0.891855|MessageAndReport=0.004888|ResultsCalculate=0.000191|Restore=0.720577|FinishAndRelease=0.065821|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "2.731789",
+            "Enter": "0.005245",
+            "InputCalculate": "0.000219",
+            "Preparation": "0.244019",
+            "Batch": "0.317791",
+            "Capture": "0.481172",
+            "SaveAndDisplay": "0.891855",
+            "MessageAndReport": "0.004888",
+            "ResultsCalculate": "0.000191",
+            "Restore": "0.720577",
+            "FinishAndRelease": "0.065821",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        },
+        {
+          "Kind": "Heavy",
+          "Mode": "File",
+          "Variant": "BaselineAgain",
+          "Index": 8,
+          "ExternalSeconds": 3.0793656,
+          "Result": "Total=3.000460|Enter=0.007059|InputCalculate=0.000239|Preparation=0.257321|Batch=0.430670|Capture=0.609312|SaveAndDisplay=0.946050|MessageAndReport=0.005150|ResultsCalculate=0.000278|Restore=0.686227|FinishAndRelease=0.058145|SolverCalls=0|ReadReleased=True",
+          "Metrics": {
+            "Total": "3.000460",
+            "Enter": "0.007059",
+            "InputCalculate": "0.000239",
+            "Preparation": "0.257321",
+            "Batch": "0.430670",
+            "Capture": "0.609312",
+            "SaveAndDisplay": "0.946050",
+            "MessageAndReport": "0.005150",
+            "ResultsCalculate": "0.000278",
+            "Restore": "0.686227",
+            "FinishAndRelease": "0.058145",
+            "SolverCalls": "0",
+            "ReadReleased": "True"
+          },
+          "ActualSolverCallsAfterResetDerived": 30
+        }
+      ]
+    }
+  ],
+  "RepeatedCalculationActuallyExecuted": true,
+  "NoCrossRunSolverReuseClaim": true,
+  "CounterClarification": "Raw SolverCalls is a difference across counters reset by Execute; cumulative deltas recover 3/30 actual calls. Future helper writes final count directly.",
+  "FullOnOffPerformed": false,
+  "FullAcceptanceClaim": false
+}

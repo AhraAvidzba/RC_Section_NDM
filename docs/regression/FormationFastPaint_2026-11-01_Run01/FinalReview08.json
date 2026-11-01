@@ -1,0 +1,157 @@
+{
+  "Status": "PASS_FINAL_AFFECTED_PRIMARY_AND_SAVED_NATIVE",
+  "AdditionalInvocations": 12,
+  "AdditionalAssertionsPassed": 3166,
+  "EarlierInvocations": 20,
+  "EarlierAssertionsPassed": 3758,
+  "TotalActualInvocations": 32,
+  "TotalActualAssertionsPassed": 6924,
+  "AssertionsFailed": 0,
+  "Records": [
+    {
+      "Group": "GuardIntegration06_Attempt1",
+      "Mode": "No",
+      "Macro": "RunFormationDisplayStateTests",
+      "Passed": 47,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2083,
+      "SHA256": "A405AD7ED2C3630E310AC6E59973543D7F1AA36034608C2DB218416C4B62FFB6"
+    },
+    {
+      "Group": "GuardIntegration06_Attempt1",
+      "Mode": "No",
+      "Macro": "RunExcelGuardWorkflowTests",
+      "Passed": 55,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2406,
+      "SHA256": "AD736F46AB3A655681F0935A27DF5F739206E17767342BB47D5F69AE1D1EFF77"
+    },
+    {
+      "Group": "GuardIntegration06_Attempt1",
+      "Mode": "Yes",
+      "Macro": "RunFormationDisplayStateTests",
+      "Passed": 47,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2083,
+      "SHA256": "A405AD7ED2C3630E310AC6E59973543D7F1AA36034608C2DB218416C4B62FFB6"
+    },
+    {
+      "Group": "GuardIntegration06_Attempt1",
+      "Mode": "Yes",
+      "Macro": "RunExcelGuardWorkflowTests",
+      "Passed": 55,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2406,
+      "SHA256": "F9C9DAE993BB4D64B7D922D79BBD4FDE9D86695148A4FF9E0B287E07F825B94C"
+    },
+    {
+      "Group": "DirectedUpdate08_Attempt1",
+      "Mode": "No",
+      "Macro": "RunTestCalculationFreshnessWorkflow",
+      "Passed": 347,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 21154,
+      "SHA256": "3AAA5C4797E5E9B643FAE17711D0B4C86ED281CB1C01C1BA5AD5909B2F188845"
+    },
+    {
+      "Group": "DirectedUpdate08_Attempt1",
+      "Mode": "No",
+      "Macro": "RunPreparedSnapshotReuseTests",
+      "Passed": 69,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82"
+    },
+    {
+      "Group": "DirectedUpdate08_Attempt1",
+      "Mode": "No",
+      "Macro": "RunCalculationSnapshotTests",
+      "Passed": 1001,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Group": "DirectedUpdate08_Attempt1",
+      "Mode": "No",
+      "Macro": "RunResultsFormattingTests",
+      "Passed": 64,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95"
+    },
+    {
+      "Group": "DirectedUpdate08_Attempt1",
+      "Mode": "Yes",
+      "Macro": "RunTestCalculationFreshnessWorkflow",
+      "Passed": 347,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 21154,
+      "SHA256": "A8E7A4E1156F45FCBE4901AFB28EE2081DC92931A6A181FC3495176A49C052FC"
+    },
+    {
+      "Group": "DirectedUpdate08_Attempt1",
+      "Mode": "Yes",
+      "Macro": "RunPreparedSnapshotReuseTests",
+      "Passed": 69,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82"
+    },
+    {
+      "Group": "DirectedUpdate08_Attempt1",
+      "Mode": "Yes",
+      "Macro": "RunCalculationSnapshotTests",
+      "Passed": 1001,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Group": "DirectedUpdate08_Attempt1",
+      "Mode": "Yes",
+      "Macro": "RunResultsFormattingTests",
+      "Passed": 64,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95"
+    }
+  ],
+  "SavedFormation": {
+    "ColdSeconds": 3.2715646,
+    "WarmupCount": 3,
+    "MeasuredSamples": 10,
+    "MedianSeconds": 0.55561005,
+    "MinimumSeconds": 0.5146064,
+    "MaximumSeconds": 1.112701,
+    "SamplesSeconds": [
+      1.112701,
+      0.5409488,
+      0.5836051,
+      0.5146064,
+      0.554966,
+      0.5600547,
+      0.561807,
+      0.5562541,
+      0.5217978,
+      0.5421047
+    ],
+    "CompleteNativeAction": true,
+    "NoProfilingCode": true,
+    "UniversalHalfSecondGuarantee": false
+  },
+  "FullOnOffPerformed": false,
+  "FullAcceptanceClaim": false
+}

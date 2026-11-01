@@ -67,7 +67,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
     Dim entered As Boolean
     On Error GoTo Failed
-    guard.Enter workbook.Application
+    guard.Enter workbook.Application, True ' Ручное обновление сохраняет текущий показ; вложенный вывод после расчёта оставляет экран внешнему guard-у.
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim mode As String: mode = store.StorageMode(workbook)
     Dim snapshot As CCalculationSnapshot: Set snapshot = prepared

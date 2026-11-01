@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -21,12 +21,13 @@ Private mApplication As CTestExcelApplicationState ' Делегат состоя
 Public TestNameReads As Long ' Число обращений к коллекции имён за действие.
 Public TestNamesBeforeCalculate As Long ' Чтения имён до актуализации входов запрещены для Form/Calculate.
 Public TestNamesFault As Long ' Отказ обязательной входной таблицы после успешного Calculate.
+Public TestNamesFaultAfterReads As Long ' Сколько обращений пропустить до имитации отказа следующей обязательной таблицы.
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Связывает прокси с настоящей приватной книгой; владение Excel остаётся у harness.
 Public Sub TestInitialize(ByVal workbook As Object, ByVal app As CTestExcelApplicationState)
     Set mWorkbook = workbook: Set mApplication = app
-    TestNameReads = 0: TestNamesBeforeCalculate = 0: TestNamesFault = 0
+    TestNameReads = 0: TestNamesBeforeCalculate = 0: TestNamesFault = 0: TestNamesFaultAfterReads = 0
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -40,7 +41,7 @@ End Property
 Public Property Get Names(Optional ByVal index As Variant) As Object
     TestNameReads = TestNameReads + 1
     If mApplication.TestCalculateCalls = 0 Then TestNamesBeforeCalculate = TestNamesBeforeCalculate + 1
-    If TestNamesFault <> 0 Then Err.Raise TestNamesFault, "CTestWorkflowWorkbook.Names", "Имитирован недоступный именованный диапазон."
+    If TestNamesFault <> 0 And TestNameReads > TestNamesFaultAfterReads Then Err.Raise TestNamesFault, "CTestWorkflowWorkbook.Names", "Имитирован недоступный именованный диапазон."
     If IsMissing(index) Then Set Names = mWorkbook.Names Else Set Names = mWorkbook.Names(index)
 End Property
 
@@ -60,4 +61,16 @@ End Property
 ' Возвращает исходный каталог только для штатного отключённого в тестах отчёта.
 Public Property Get Path() As String
     Path = mWorkbook.Path
+End Property
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Передаёт служебные свойства реальной книги: индекс результатов хранит в них принадлежность защиты.
+Public Property Get CustomDocumentProperties() As Object
+    Set CustomDocumentProperties = mWorkbook.CustomDocumentProperties
+End Property
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Передаёт только окна собственной приватной книги для завершения штатной перерисовки.
+Public Property Get Windows() As Object
+    Set Windows = mWorkbook.Windows
 End Property

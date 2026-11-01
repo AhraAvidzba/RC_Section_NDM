@@ -1,0 +1,189 @@
+{
+  "Status": "PASS_20_AFFECTED_FORMATION_SUITES",
+  "Suites": 20,
+  "AssertionsPassed": 3758,
+  "AssertionsFailed": 0,
+  "Records": [
+    {
+      "Mode": "No",
+      "Macro": "RunFormationDisplayStateTests",
+      "Passed": 47,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2083,
+      "SHA256": "A405AD7ED2C3630E310AC6E59973543D7F1AA36034608C2DB218416C4B62FFB6"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunTestCalculationFreshnessWorkflow",
+      "Passed": 344,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 20987,
+      "SHA256": "D6C5A39ED9EE3A12E29A0901D835DAFD129AE22ED35189685108581ED670852A"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunExcelGuardWorkflowTests",
+      "Passed": 8,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 379,
+      "SHA256": "21EFF008A97C5B98EBBB3A6C4018B18FDE87D75EE2D5654D7AB32F5518D2B9A1"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunSectionWorkflowUiTests",
+      "Passed": 17,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 542,
+      "SHA256": "FF698A5987ACE83EFD80CE6F05CDFCA0A75D19DEAF06465D68F20ED574D82B4C"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunSectionWorkflowCalculationTests",
+      "Passed": 116,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 4826,
+      "SHA256": "B47EF3F3994C024022CE26D0FD16CD541D430E4D53B1FE2FDB8A04BA5074CD44"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunWorkflowSnapshotTests",
+      "Passed": 151,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunGeometryPreviewStorageTests",
+      "Passed": 62,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2995,
+      "SHA256": "1B47B82ED0C3E192D093FE578E63047F65956AAF60BB1291C8FF2C019C2905CB"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunPreparedSnapshotReuseTests",
+      "Passed": 69,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunCalculationSnapshotTests",
+      "Passed": 1001,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Mode": "No",
+      "Macro": "RunResultsFormattingTests",
+      "Passed": 64,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunFormationDisplayStateTests",
+      "Passed": 47,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2083,
+      "SHA256": "A405AD7ED2C3630E310AC6E59973543D7F1AA36034608C2DB218416C4B62FFB6"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunTestCalculationFreshnessWorkflow",
+      "Passed": 344,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 20987,
+      "SHA256": "D796685210FB475821DC20E47909269F3DBC6EDD49951F0C85C6E55CAAE871E9"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunExcelGuardWorkflowTests",
+      "Passed": 8,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 379,
+      "SHA256": "737C89091B0D4ED073F77C5FDA4CFB01D45454F5EF8CD2FEDBA02130A3C29410"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunSectionWorkflowUiTests",
+      "Passed": 17,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 542,
+      "SHA256": "FF698A5987ACE83EFD80CE6F05CDFCA0A75D19DEAF06465D68F20ED574D82B4C"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunSectionWorkflowCalculationTests",
+      "Passed": 116,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 4827,
+      "SHA256": "062119C0CC7ADF0DA180816330310411AE018B827E4E9C87117D9F2E8FD91FFE"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunWorkflowSnapshotTests",
+      "Passed": 151,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunGeometryPreviewStorageTests",
+      "Passed": 62,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2995,
+      "SHA256": "1B47B82ED0C3E192D093FE578E63047F65956AAF60BB1291C8FF2C019C2905CB"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunPreparedSnapshotReuseTests",
+      "Passed": 69,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunCalculationSnapshotTests",
+      "Passed": 1001,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Mode": "Yes",
+      "Macro": "RunResultsFormattingTests",
+      "Passed": 64,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95"
+    }
+  ],
+  "FullAcceptanceClaim": false
+}

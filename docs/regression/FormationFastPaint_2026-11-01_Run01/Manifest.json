@@ -1,0 +1,626 @@
+{
+  "ArchiveSHA256": "FDF9EA0254ADE554480D514AD6C80F4843AA297E14C1E3E73D1A1630784CD8C7",
+  "Bytes": 1905565,
+  "Files": [
+    {
+      "Path": "AllOwnClosures08.json",
+      "Bytes": 19946,
+      "SHA256": "AAFC601202CCEFA30795ECF36B40E6551C8C92283BBE39A53B3D73678ADC7EE3"
+    },
+    {
+      "Path": "ButtonAudit10.json",
+      "Bytes": 1669,
+      "SHA256": "B11D5386E0C715CB1D585773EFD29E3EC17303561DA1EA8CFEEB5C609A8DDE5F"
+    },
+    {
+      "Path": "CalculationBench09/Light/Excel_BaselineAgain_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "0711445650FB8D48DE496865EABA216F196E1EEB69A6F12111EF0E68CC2011D0"
+    },
+    {
+      "Path": "CalculationBench09/Light/Excel_Baseline_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "0711445650FB8D48DE496865EABA216F196E1EEB69A6F12111EF0E68CC2011D0"
+    },
+    {
+      "Path": "CalculationBench09/Light/Excel_CandidateAgain_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "0711445650FB8D48DE496865EABA216F196E1EEB69A6F12111EF0E68CC2011D0"
+    },
+    {
+      "Path": "CalculationBench09/Light/Excel_Candidate_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "0711445650FB8D48DE496865EABA216F196E1EEB69A6F12111EF0E68CC2011D0"
+    },
+    {
+      "Path": "CalculationBench09/Light/Excel_Warmup_Parity.txt",
+      "Bytes": 34,
+      "SHA256": "64B7A34049FCBC4979A37772497627DFBB578EAB4551A06E1E5141739BF92687"
+    },
+    {
+      "Path": "CalculationBench09/Light/Samples.json",
+      "Bytes": 4822,
+      "SHA256": "86CB9F0B589D4EFD4503696690A6DCA9AFC9B5F0051A5E36DB133C15036B9056"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/Excel_BaselineAgain_Parity.txt",
+      "Bytes": 36,
+      "SHA256": "06A9070210B29F25FAC51ABE54FFFE965EE71755E26CCB7A603B566FFE7A8AB1"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/Excel_Baseline_Parity.txt",
+      "Bytes": 36,
+      "SHA256": "06A9070210B29F25FAC51ABE54FFFE965EE71755E26CCB7A603B566FFE7A8AB1"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/Excel_CandidateAgain_Parity.txt",
+      "Bytes": 36,
+      "SHA256": "06A9070210B29F25FAC51ABE54FFFE965EE71755E26CCB7A603B566FFE7A8AB1"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/Excel_Candidate_Parity.txt",
+      "Bytes": 36,
+      "SHA256": "06A9070210B29F25FAC51ABE54FFFE965EE71755E26CCB7A603B566FFE7A8AB1"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/Excel_Warmup_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "D239EED3CABE3D947E4686255D2646B9ED2240888C4317FCC21D3B5D375D11FF"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/File_BaselineAgain_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "4D4DB7926B2524950E047C6AC360F3D27124776FFA60DBDEB72ACD154C923BA7"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/File_Baseline_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "4D4DB7926B2524950E047C6AC360F3D27124776FFA60DBDEB72ACD154C923BA7"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/File_CandidateAgain_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "4D4DB7926B2524950E047C6AC360F3D27124776FFA60DBDEB72ACD154C923BA7"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/File_Candidate_Parity.txt",
+      "Bytes": 35,
+      "SHA256": "4D4DB7926B2524950E047C6AC360F3D27124776FFA60DBDEB72ACD154C923BA7"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/File_Warmup_Parity.txt",
+      "Bytes": 34,
+      "SHA256": "51B4A05831EF99198F796C435A9D43F36E69FF404B948A25C39D74B4D79786A9"
+    },
+    {
+      "Path": "CalculationBench10/Heavy/Samples.json",
+      "Bytes": 8080,
+      "SHA256": "A318396B866519F8C35A53222997BF2C7DBFB19B8A3B516D9F826018CF98D4DF"
+    },
+    {
+      "Path": "CalculationBench10/Light/File_BaselineAgain_Parity.txt",
+      "Bytes": 34,
+      "SHA256": "1843554F7B7AD44E293A86B43D035AAFDBC7A563732FC3D19D07A05D10232E1F"
+    },
+    {
+      "Path": "CalculationBench10/Light/File_Baseline_Parity.txt",
+      "Bytes": 34,
+      "SHA256": "1843554F7B7AD44E293A86B43D035AAFDBC7A563732FC3D19D07A05D10232E1F"
+    },
+    {
+      "Path": "CalculationBench10/Light/File_CandidateAgain_Parity.txt",
+      "Bytes": 34,
+      "SHA256": "1843554F7B7AD44E293A86B43D035AAFDBC7A563732FC3D19D07A05D10232E1F"
+    },
+    {
+      "Path": "CalculationBench10/Light/File_Candidate_Parity.txt",
+      "Bytes": 34,
+      "SHA256": "1843554F7B7AD44E293A86B43D035AAFDBC7A563732FC3D19D07A05D10232E1F"
+    },
+    {
+      "Path": "CalculationBench10/Light/File_Warmup_Parity.txt",
+      "Bytes": 33,
+      "SHA256": "BAE966709F49013CF749B7FE9FDB4DE3CA7534826404BA76932A272D63771CFF"
+    },
+    {
+      "Path": "CalculationBench10/Light/Samples.json",
+      "Bytes": 4063,
+      "SHA256": "780403ED147F0CCBCDC37C9C52D3342584E3A8120E1CB04EFB78DD8DC85326A9"
+    },
+    {
+      "Path": "CalculationReview10.json",
+      "Bytes": 44177,
+      "SHA256": "735CBB187C91870F86EB93CDFE44F743D213A927A3EB758A0D9C6FD7CA72AB19"
+    },
+    {
+      "Path": "Candidate06Review.json",
+      "Bytes": 495,
+      "SHA256": "42FB2F95499A74094672E1C1CB949DE977B571E20E2C98DDA35C56E4C3F3595A"
+    },
+    {
+      "Path": "CleanNative10/Native.json",
+      "Bytes": 1646,
+      "SHA256": "985AAEFAED4D99EA802FDBF02168645DBDA3E9024AA85C0EDAE030B20ADC3486"
+    },
+    {
+      "Path": "CleanNative10/Own.json",
+      "Bytes": 125,
+      "SHA256": "A3FB8A64A23229614CA1FB365EF3721875C9B3131D04A7021BB5DDA4D97DAB1A"
+    },
+    {
+      "Path": "CleanNative10/Quit.json",
+      "Bytes": 154,
+      "SHA256": "37844609D16F9D1958D1DF826A8E24896948DE38EB11C6EA7F20488CEB6B9C26"
+    },
+    {
+      "Path": "CleanNative10/SourceEquality.json",
+      "Bytes": 136,
+      "SHA256": "7170941D4674D8BB7B1DBD6438A801A3C50D46641993DD9005914E98FA470CFF"
+    },
+    {
+      "Path": "CleanNative10/VBA_All_Code.txt",
+      "Bytes": 9362492,
+      "SHA256": "12958F48EC885331956624C9848F88FF7679FEB10A82D8104AB84BC2097C26CC"
+    },
+    {
+      "Path": "CodeDonor10/BeforeSourceEquality.json",
+      "Bytes": 142,
+      "SHA256": "3DFFEA4C7DCD23E2D809F4460AE752479298F15EC0AF86F044B2A08502FBAB72"
+    },
+    {
+      "Path": "CodeDonor10/Build.json",
+      "Bytes": 211,
+      "SHA256": "0E1E3607B0665B358C082D97C86EB45A66541014B6AEF28794FD104632D06B04"
+    },
+    {
+      "Path": "CodeDonor10/SourceEquality.json",
+      "Bytes": 136,
+      "SHA256": "7170941D4674D8BB7B1DBD6438A801A3C50D46641993DD9005914E98FA470CFF"
+    },
+    {
+      "Path": "Directed06_Attempt1/No/Error.txt",
+      "Bytes": 129,
+      "SHA256": "30C0F714C1BBA7663EBB0A13BE891615F48024E49155E39335C86FE6DBB1DE46"
+    },
+    {
+      "Path": "Directed06_Attempt2/No/Error.txt",
+      "Bytes": 129,
+      "SHA256": "30C0F714C1BBA7663EBB0A13BE891615F48024E49155E39335C86FE6DBB1DE46"
+    },
+    {
+      "Path": "Directed06_Attempt3/Complete.json",
+      "Bytes": 126,
+      "SHA256": "67B5EAFF115707904B3453592A553DCAAA034E5035B03DD9813BCED888A40B13"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunCalculationSnapshotTests.txt",
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunExcelGuardWorkflowTests.txt",
+      "Bytes": 379,
+      "SHA256": "21EFF008A97C5B98EBBB3A6C4018B18FDE87D75EE2D5654D7AB32F5518D2B9A1"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunFormationDisplayStateTests.txt",
+      "Bytes": 2083,
+      "SHA256": "A405AD7ED2C3630E310AC6E59973543D7F1AA36034608C2DB218416C4B62FFB6"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunGeometryPreviewStorageTests.txt",
+      "Bytes": 2995,
+      "SHA256": "1B47B82ED0C3E192D093FE578E63047F65956AAF60BB1291C8FF2C019C2905CB"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunPreparedSnapshotReuseTests.txt",
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunResultsFormattingTests.txt",
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunSectionWorkflowCalculationTests.txt",
+      "Bytes": 4826,
+      "SHA256": "B47EF3F3994C024022CE26D0FD16CD541D430E4D53B1FE2FDB8A04BA5074CD44"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunSectionWorkflowUiTests.txt",
+      "Bytes": 542,
+      "SHA256": "FF698A5987ACE83EFD80CE6F05CDFCA0A75D19DEAF06465D68F20ED574D82B4C"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunTestCalculationFreshnessWorkflow.txt",
+      "Bytes": 20987,
+      "SHA256": "D6C5A39ED9EE3A12E29A0901D835DAFD129AE22ED35189685108581ED670852A"
+    },
+    {
+      "Path": "Directed06_Attempt3/No/RunWorkflowSnapshotTests.txt",
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunCalculationSnapshotTests.txt",
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunExcelGuardWorkflowTests.txt",
+      "Bytes": 379,
+      "SHA256": "737C89091B0D4ED073F77C5FDA4CFB01D45454F5EF8CD2FEDBA02130A3C29410"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunFormationDisplayStateTests.txt",
+      "Bytes": 2083,
+      "SHA256": "A405AD7ED2C3630E310AC6E59973543D7F1AA36034608C2DB218416C4B62FFB6"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunGeometryPreviewStorageTests.txt",
+      "Bytes": 2995,
+      "SHA256": "1B47B82ED0C3E192D093FE578E63047F65956AAF60BB1291C8FF2C019C2905CB"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunPreparedSnapshotReuseTests.txt",
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunResultsFormattingTests.txt",
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunSectionWorkflowCalculationTests.txt",
+      "Bytes": 4827,
+      "SHA256": "062119C0CC7ADF0DA180816330310411AE018B827E4E9C87117D9F2E8FD91FFE"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunSectionWorkflowUiTests.txt",
+      "Bytes": 542,
+      "SHA256": "FF698A5987ACE83EFD80CE6F05CDFCA0A75D19DEAF06465D68F20ED574D82B4C"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunTestCalculationFreshnessWorkflow.txt",
+      "Bytes": 20987,
+      "SHA256": "D796685210FB475821DC20E47909269F3DBC6EDD49951F0C85C6E55CAAE871E9"
+    },
+    {
+      "Path": "Directed06_Attempt3/Yes/RunWorkflowSnapshotTests.txt",
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt1/No/Error.txt",
+      "Bytes": 1724,
+      "SHA256": "0C06336AE94E5315311FEC520ADC147FC6179FF1405DE704768FCD143D5978AB"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/Complete.json",
+      "Bytes": 126,
+      "SHA256": "18397B58B6C10D8D6693A7E178D124CB24F42367E6CF07FDB1F780F62FCE568D"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/No/RunAudit03AutoCADConfigTests.txt",
+      "Bytes": 180345,
+      "SHA256": "8C07B3F7151EDAA7D0E132DE2B72DEA89A4FCC38E3E14B6DCFCFDEACD1845EC9"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/No/RunCalculationSnapshotTests.txt",
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/No/RunCleanupLayerPreflightTests.txt",
+      "Bytes": 205,
+      "SHA256": "3D6D36EBFEF9AAC015FA8574ED6E2F7732944C5F94BDF3E1E5908273AD41D528"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/No/RunExcelGuardWorkflowTests.txt",
+      "Bytes": 2406,
+      "SHA256": "888FDAD1D1C672C1DFC9C95C2DB64277D0F5F1EDC54DDA603D8FC87BC83695D6"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/No/RunSectionWorkflowCalculationTests.txt",
+      "Bytes": 4827,
+      "SHA256": "6CC8862E447BE1B2EC17773B3B108AF2C45E1594F007D5FFDEA5D3E1FE190E77"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/No/RunTestCalculationFreshnessWorkflow.txt",
+      "Bytes": 22412,
+      "SHA256": "0F29E7F65A788FB2E55728B876ACD099E6DF3AEC86458CB1C680ADBA4977EC8C"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/No/RunWorkflowSnapshotTests.txt",
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/Yes/RunAudit03AutoCADConfigTests.txt",
+      "Bytes": 180345,
+      "SHA256": "8C07B3F7151EDAA7D0E132DE2B72DEA89A4FCC38E3E14B6DCFCFDEACD1845EC9"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/Yes/RunCalculationSnapshotTests.txt",
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/Yes/RunCleanupLayerPreflightTests.txt",
+      "Bytes": 205,
+      "SHA256": "3D6D36EBFEF9AAC015FA8574ED6E2F7732944C5F94BDF3E1E5908273AD41D528"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/Yes/RunExcelGuardWorkflowTests.txt",
+      "Bytes": 2406,
+      "SHA256": "1D08B72B1443E353CBDA05305A43BDB1CA4A475034EB347174A9023DF0FEC8DB"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/Yes/RunSectionWorkflowCalculationTests.txt",
+      "Bytes": 4827,
+      "SHA256": "D0A8B3CE4A65802691B6A0B9D35DCA9BFE31A30F338F8C5A0BE2038B1638BE9A"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/Yes/RunTestCalculationFreshnessWorkflow.txt",
+      "Bytes": 22412,
+      "SHA256": "64BDEAA90E2614E0DCED0292D21BACDE56218E06E3F39F5FCF7F1DBB7D477E87"
+    },
+    {
+      "Path": "DirectedCalculation10_Attempt2/Yes/RunWorkflowSnapshotTests.txt",
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "Path": "DirectedFinalReview10.json",
+      "Bytes": 4024,
+      "SHA256": "30A07ACE6215FD21F416509099DAFF18B345C83B4D6DCF924D349C0481B76409"
+    },
+    {
+      "Path": "DirectedPrimaryReview06.json",
+      "Bytes": 5505,
+      "SHA256": "0C3A2D81AC90EEF0B30F5348C4C86CF04E96A15BABA76A5CACBEB600421E0243"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/Complete.json",
+      "Bytes": 125,
+      "SHA256": "173E92F98209BE1A9DFD5BFFCBD680689EE9955D74EA7E61049519886045E3DC"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/No/RunCalculationSnapshotTests.txt",
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/No/RunPreparedSnapshotReuseTests.txt",
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/No/RunResultsFormattingTests.txt",
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/No/RunTestCalculationFreshnessWorkflow.txt",
+      "Bytes": 21154,
+      "SHA256": "3AAA5C4797E5E9B643FAE17711D0B4C86ED281CB1C01C1BA5AD5909B2F188845"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/Yes/RunCalculationSnapshotTests.txt",
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/Yes/RunPreparedSnapshotReuseTests.txt",
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/Yes/RunResultsFormattingTests.txt",
+      "Bytes": 2263,
+      "SHA256": "13ECA49741F6E08669C7C326390BE08924D6E138D37D3672B13C1025A17D8C95"
+    },
+    {
+      "Path": "DirectedUpdate08_Attempt1/Yes/RunTestCalculationFreshnessWorkflow.txt",
+      "Bytes": 21154,
+      "SHA256": "A8E7A4E1156F45FCBE4901AFB28EE2081DC92931A6A181FC3495176A49C052FC"
+    },
+    {
+      "Path": "FinalReview08.json",
+      "Bytes": 4664,
+      "SHA256": "F39B7D204882ADE0F2EA72C25A16FBA9A32F99CA92860CD887C70B749FE8DE0D"
+    },
+    {
+      "Path": "FinalSavedPerformance08/Complete.json",
+      "Bytes": 269,
+      "SHA256": "DAAC1C925942D45E2490C61D1704DA25F1BDA61259D3DC0A1D51EE6054DB95B5"
+    },
+    {
+      "Path": "FinalSavedPerformance08/Samples.json",
+      "Bytes": 7152,
+      "SHA256": "2FA2746C3B5552CE72BD55DE97D0C8DC33D609D425922887EDE7506D1C15CC16"
+    },
+    {
+      "Path": "GuardIntegration06_Attempt1/Complete.json",
+      "Bytes": 125,
+      "SHA256": "F5C94B4326FB489FFDD90B10C538CACDF2E301CB8032E34216A18844B614B0CA"
+    },
+    {
+      "Path": "GuardIntegration06_Attempt1/No/RunExcelGuardWorkflowTests.txt",
+      "Bytes": 2406,
+      "SHA256": "AD736F46AB3A655681F0935A27DF5F739206E17767342BB47D5F69AE1D1EFF77"
+    },
+    {
+      "Path": "GuardIntegration06_Attempt1/No/RunFormationDisplayStateTests.txt",
+      "Bytes": 2083,
+      "SHA256": "A405AD7ED2C3630E310AC6E59973543D7F1AA36034608C2DB218416C4B62FFB6"
+    },
+    {
+      "Path": "GuardIntegration06_Attempt1/Yes/RunExcelGuardWorkflowTests.txt",
+      "Bytes": 2406,
+      "SHA256": "F9C9DAE993BB4D64B7D922D79BBD4FDE9D86695148A4FF9E0B287E07F825B94C"
+    },
+    {
+      "Path": "GuardIntegration06_Attempt1/Yes/RunFormationDisplayStateTests.txt",
+      "Bytes": 2083,
+      "SHA256": "A405AD7ED2C3630E310AC6E59973543D7F1AA36034608C2DB218416C4B62FFB6"
+    },
+    {
+      "Path": "HeavyNative10/Native.json",
+      "Bytes": 1646,
+      "SHA256": "674E734E3735D1D71BCC1C168252CF78A7AE48544768141F6990A414D63C779B"
+    },
+    {
+      "Path": "HeavyNative10/Own.json",
+      "Bytes": 125,
+      "SHA256": "69364C220EDBABB5C8F04E5A564515B2AEA3328995D3BBA9F4B0160EB277E8D1"
+    },
+    {
+      "Path": "HeavyNative10/Quit.json",
+      "Bytes": 154,
+      "SHA256": "4FF078BA47D81F988081BA6984752F6627379A97DE1306472DCD724F92C37F55"
+    },
+    {
+      "Path": "HeavyNative10/SourceEquality.json",
+      "Bytes": 136,
+      "SHA256": "7170941D4674D8BB7B1DBD6438A801A3C50D46641993DD9005914E98FA470CFF"
+    },
+    {
+      "Path": "MainNative10/Native.json",
+      "Bytes": 1646,
+      "SHA256": "4DAE073F6CC9F338467C17B03EABE9B5E3DCF1A78A79638306E25B49B23BB6A4"
+    },
+    {
+      "Path": "MainNative10/Own.json",
+      "Bytes": 125,
+      "SHA256": "BC1F8E7FC92967A504EFFC1BF4832E6E0BE2774DC8184E599D1639066C055006"
+    },
+    {
+      "Path": "MainNative10/Quit.json",
+      "Bytes": 154,
+      "SHA256": "101FA68C08D2F767DCE8A239A18E91EF63956836CC5F5F62C46C279073FBA25D"
+    },
+    {
+      "Path": "MainNative10/SourceEquality.json",
+      "Bytes": 136,
+      "SHA256": "7170941D4674D8BB7B1DBD6438A801A3C50D46641993DD9005914E98FA470CFF"
+    },
+    {
+      "Path": "PreparedOutputs08.json",
+      "Bytes": 2354,
+      "SHA256": "BEF69113BFCFE8D7A3ABB60A5FA4C4AF78A07405AD76C70920EB9420679B9FBB"
+    },
+    {
+      "Path": "PreparedOutputs10.json",
+      "Bytes": 2355,
+      "SHA256": "7E89D21CA4038192865C63C2414D3CDD7BBFC5C4CAC6B689D1BE9522C3AC9C0E"
+    },
+    {
+      "Path": "Publication08.json",
+      "Bytes": 1902,
+      "SHA256": "ACA88AF172B4FB00CB38790FDD5CC5460459EEEF0C6BC4A23D56C70BAE42D394"
+    },
+    {
+      "Path": "Publication10.json",
+      "Bytes": 1902,
+      "SHA256": "8A7859BE834CB3613001096C71BFE43A7E0E8C5CD1F249FFDDFAA4EE4FE1E2A5"
+    },
+    {
+      "Path": "TestAllOwn08.ps1",
+      "Bytes": 1815,
+      "SHA256": "05B4AAD9E2A829FB6197AF2C4CB2B2D79B4E0A54D5CC50B4149921CDCB206A09"
+    },
+    {
+      "Path": "TestBuildDonor10.ps1",
+      "Bytes": 5423,
+      "SHA256": "9FE7FF4C832CE95A0AFA267D7FD0B5E10FC0963C717125B8C25F07B221355BFF"
+    },
+    {
+      "Path": "TestCalculationBench09.ps1",
+      "Bytes": 5486,
+      "SHA256": "44D526E3B3E7041CCCF3D2FF3967E2271BD25E16D3AE782CC14E989034CCA8E5"
+    },
+    {
+      "Path": "TestCalculationBench10.ps1",
+      "Bytes": 5543,
+      "SHA256": "DAF03B5D11B1711CC4C522010DA994E0639C94E1AB23A54ED323FBE5E46D5017"
+    },
+    {
+      "Path": "TestDirectedCalculation10.ps1",
+      "Bytes": 6123,
+      "SHA256": "0BD4325E7D69397F5C65E29954EC152CCA350769F78E8F901C885A7296BF5776"
+    },
+    {
+      "Path": "TestFinalNative10.ps1",
+      "Bytes": 1505,
+      "SHA256": "12EBF384EB466FCA1B2C8ADFA46E0B57BBF81EF55571A336523676A217C4D289"
+    },
+    {
+      "Path": "TestFinalSavedPerformance08.ps1",
+      "Bytes": 4118,
+      "SHA256": "42A8F946607E7215D25D490782FC988CE4A2709CFCBDF7E71420E4D5DEC8669B"
+    },
+    {
+      "Path": "TestPrepareCalculation09.py",
+      "Bytes": 2277,
+      "SHA256": "43CD96C9E984E932A462F8BADA579195D89D5BC5EEE1F937312E17A567FB4490"
+    },
+    {
+      "Path": "TestPrepareOutputs10.py",
+      "Bytes": 2749,
+      "SHA256": "D1C0E35BD71F5C032E4D3893A3EF1143C90B29909D52200E9BC34B4E1B61452F"
+    },
+    {
+      "Path": "TestPublishOutputs10.py",
+      "Bytes": 7134,
+      "SHA256": "9FE5F43D50B9D6F296F2788130084792F948CB888636601A68B015BDA7AA09D2"
+    },
+    {
+      "Path": "TestReadOnlyOutput10.ps1",
+      "Bytes": 4986,
+      "SHA256": "8B60E32A556A010CE79DDABC2DF7CFAAC0365B08CB9E0FB20100524F028E2B55"
+    },
+    {
+      "Path": "TestRecordButtonAudit10.py",
+      "Bytes": 2597,
+      "SHA256": "0F3F87453CACD9FB74FF67A8A7CA9D131D549DF8971EDD80AF6AA76CD42DAEA1"
+    },
+    {
+      "Path": "TestReviewCalculation10.py",
+      "Bytes": 4225,
+      "SHA256": "B58D73B443314245D93591769FFE99808326237374AC741467E5253C2C1983BD"
+    },
+    {
+      "Path": "TestReviewDirected10.py",
+      "Bytes": 1543,
+      "SHA256": "88D52826AB62FD8BDA45F4B5DC51F0FA42D7DD52DF31BDFF118A96C776B109F3"
+    },
+    {
+      "Path": "TestReviewFinal08.py",
+      "Bytes": 3480,
+      "SHA256": "8A35D80FC8F9DD12436861F17FC6D7B043282154AF546D3A21192A5A846CDBC2"
+    },
+    {
+      "Path": "TestVerifySource10.py",
+      "Bytes": 1935,
+      "SHA256": "2644D0A1FC8FB231FAADDEC00C76FA3DBD02D72CE1FF7E999E0691AC202DB0E5"
+    },
+    {
+      "Path": "UpdateReview08.json",
+      "Bytes": 2477,
+      "SHA256": "C73929CC03A3FC80B4783A6291D3E72D12AE4260F135F87287D95D1603C0409F"
+    },
+    {
+      "Path": "modTestCalculationTiming.bas",
+      "Bytes": 6707,
+      "SHA256": "914554589826681D4B7B5D118AE36821DAA104A4873D68041AC56ADDC8D4A47E"
+    },
+    {
+      "Path": "modTestCalculationTiming09_DeltaBeforeCounterClarification.bas",
+      "Bytes": 6681,
+      "SHA256": "D6EF5ED83073D1547D66C887CA263CBAAA45F0A138FC34939451F9CFCF41DFA3"
+    }
+  ]
+}

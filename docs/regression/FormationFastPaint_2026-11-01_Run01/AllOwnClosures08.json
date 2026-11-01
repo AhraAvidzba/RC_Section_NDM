@@ -1,0 +1,321 @@
+﻿{
+    "Status":  "ALL_OWN_TERMINAL",
+    "ObservedUTC":  "2026-11-01T13:20:00.5885479Z",
+    "Processes":  [
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\CalculationBench09\\Light\\Own.json",
+                          "PID":  78212,
+                          "UTCStartTicks":  "639291352384756420",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\CalculationBench10\\Heavy\\Own.json",
+                          "PID":  76108,
+                          "UTCStartTicks":  "639291353450115143",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\CalculationBench10\\Light\\Own.json",
+                          "PID":  11560,
+                          "UTCStartTicks":  "639291353112913524",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Candidate04Run01\\Own.json",
+                          "PID":  20732,
+                          "UTCStartTicks":  "639291322581845514",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Candidate04Run02\\Own.json",
+                          "PID":  80508,
+                          "UTCStartTicks":  "639291324590884529",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Candidate05Run01\\Own.json",
+                          "PID":  64328,
+                          "UTCStartTicks":  "639291326846695723",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Candidate06Run01\\Own.json",
+                          "PID":  58408,
+                          "UTCStartTicks":  "639291328052645313",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\CleanNative08\\Own.json",
+                          "PID":  78520,
+                          "UTCStartTicks":  "639291349682047125",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\CleanNative10\\Own.json",
+                          "PID":  73656,
+                          "UTCStartTicks":  "639291358804072608",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\CodeDonor06\\Own.json",
+                          "PID":  27720,
+                          "UTCStartTicks":  "639291336394552933",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\CodeDonor08\\Own.json",
+                          "PID":  59244,
+                          "UTCStartTicks":  "639291347996354162",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\CodeDonor10\\Own.json",
+                          "PID":  47756,
+                          "UTCStartTicks":  "639291357615994286",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Directed06_Attempt1\\No\\Own.json",
+                          "PID":  32848,
+                          "UTCStartTicks":  "639291330459998951",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Directed06_Attempt2\\No\\Own.json",
+                          "PID":  78520,
+                          "UTCStartTicks":  "639291331846347292",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Directed06_Attempt3\\No\\Own.json",
+                          "PID":  69948,
+                          "UTCStartTicks":  "639291332886894595",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Directed06_Attempt3\\Yes\\Own.json",
+                          "PID":  37196,
+                          "UTCStartTicks":  "639291334036966461",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\DirectedCalculation10_Attempt1\\No\\Own.json",
+                          "PID":  58224,
+                          "UTCStartTicks":  "639291354618900801",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\DirectedCalculation10_Attempt2\\No\\Own.json",
+                          "PID":  40172,
+                          "UTCStartTicks":  "639291355448441005",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\DirectedCalculation10_Attempt2\\Yes\\Own.json",
+                          "PID":  70096,
+                          "UTCStartTicks":  "639291356521120880",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\DirectedUpdate08_Attempt1\\No\\Own.json",
+                          "PID":  14740,
+                          "UTCStartTicks":  "639291346074544542",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\DirectedUpdate08_Attempt1\\Yes\\Own.json",
+                          "PID":  76396,
+                          "UTCStartTicks":  "639291347015129752",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\FinalSavedPerformance08\\Own.json",
+                          "PID":  66912,
+                          "UTCStartTicks":  "639291350479539852",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Freeze03\\Own.json",
+                          "PID":  82196,
+                          "UTCStartTicks":  "639291319344101792",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\GuardIntegration06_Attempt1\\No\\Own.json",
+                          "PID":  20268,
+                          "UTCStartTicks":  "639291335815164398",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\GuardIntegration06_Attempt1\\Yes\\Own.json",
+                          "PID":  23784,
+                          "UTCStartTicks":  "639291336092663305",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\HeavyNative08\\Own.json",
+                          "PID":  64640,
+                          "UTCStartTicks":  "639291350202750121",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\HeavyNative10\\Own.json",
+                          "PID":  33464,
+                          "UTCStartTicks":  "639291359432972357",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\MainNative08\\Own.json",
+                          "PID":  66940,
+                          "UTCStartTicks":  "639291349944426930",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\MainNative10\\Own.json",
+                          "PID":  68180,
+                          "UTCStartTicks":  "639291359111032407",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\UpdateBench07\\Light\\Own.json",
+                          "PID":  31596,
+                          "UTCStartTicks":  "639291339391137024",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\UpdateBench08\\Heavy\\Own.json",
+                          "PID":  78372,
+                          "UTCStartTicks":  "639291341534070085",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\UpdateBench08\\Light\\Own.json",
+                          "PID":  76652,
+                          "UTCStartTicks":  "639291340974165744",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\UpdateBench09\\Heavy\\Own.json",
+                          "PID":  82336,
+                          "UTCStartTicks":  "639291343589818631",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Variants01\\Own.json",
+                          "PID":  43452,
+                          "UTCStartTicks":  "639291317206090934",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      },
+                      {
+                          "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Variants02\\Own.json",
+                          "PID":  79120,
+                          "UTCStartTicks":  "639291318250041379",
+                          "State":  "ConfirmedNotFound",
+                          "ObservedTicks":  "",
+                          "CIMExecutable":  "",
+                          "CIMCreation":  ""
+                      }
+                  ]
+}

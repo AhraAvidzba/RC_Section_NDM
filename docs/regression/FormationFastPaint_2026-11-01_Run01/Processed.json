@@ -1,0 +1,60 @@
+{
+  "Status": "PASS_DIRECTED_FORMATION_CALCULATION_UPDATE_BUTTON_AUDIT",
+  "FinishedUTC": "2026-11-01T13:20:04.734021+00:00",
+  "FinalDirectedInvocations": 14,
+  "FinalAssertionsPassed": 5882,
+  "FinalAssertionsFailed": 0,
+  "EarlierAssertionsPassed": 6924,
+  "FullOnOffPerformed": false,
+  "FullAcceptanceClaim": false,
+  "OwnProcessesReviewed": 35,
+  "AllOwnTerminal": true,
+  "KilledProcesses": 0,
+  "UserApplicationsClosed": false,
+  "UserDataAndResultsCommitted": false,
+  "PublicWorkbook": "Only clean verified template",
+  "FormationFinalSaved": {
+    "ColdSeconds": 3.2715646,
+    "WarmupCount": 3,
+    "MeasuredSamples": 10,
+    "MedianSeconds": 0.55561005,
+    "MinimumSeconds": 0.5146064,
+    "MaximumSeconds": 1.112701,
+    "SamplesSeconds": [
+      1.112701,
+      0.5409488,
+      0.5836051,
+      0.5146064,
+      0.554966,
+      0.5600547,
+      0.561807,
+      0.5562541,
+      0.5217978,
+      0.5421047
+    ],
+    "CompleteNativeAction": true,
+    "NoProfilingCode": true,
+    "UniversalHalfSecondGuarantee": false
+  },
+  "StrictHalfSecondFormationTargetAchieved": false,
+  "Books": [
+    {
+      "Label": "Main",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "SHA256": "A31DBB9C444FEF51AEA44AC55CDD16DAF0A4D868E2807483521E63C4FA39A681",
+      "StandardPathUpdated": true,
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120,
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\BeforePublication10\\Main\\RC_Section_NDM.xlsm"
+    },
+    {
+      "Label": "Heavy",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "E2FEB935EC02841D59EFEA8633417D7503C6DEEB8489268443F0168EF5F9AFA7",
+      "StandardPathUpdated": true,
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120,
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\BeforePublication10\\Heavy\\RC_Section_NDM_HeavyCircle_1232_30.xlsm"
+    }
+  ]
+}

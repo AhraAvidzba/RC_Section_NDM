@@ -6,6 +6,7 @@ Option Explicit
 ' ==========================================================================
 ' Сохраняет настройки приложения, отключает обновления на время работы
 ' и восстанавливает исходные значения при выходе, в том числе после ошибки.
+' В режиме preserveScreenUpdating сохраняет управление экраном у вызывающего кода без записи этого свойства.
 ' Настройки Application общие для всех книг одного экземпляра Excel.
 ' Esc/Ctrl+Break передаются обработчику как ошибка 18; команда End, сброс
 ' проекта в VBE и завершение процесса обходят обычное восстановление VBA.
@@ -17,7 +18,7 @@ Private mActive As Boolean ' Признак сохранённых настро�
 
 ' Сначала сохраняет полный снимок. При частичном отказе Enter возвращает уже
 ' изменённые свойства и сохраняет исходную ошибку, включая ошибку прерывания.
-Public Sub Enter(ByVal excelApplication As Object)
+Public Sub Enter(ByVal excelApplication As Object, Optional ByVal preserveScreenUpdating As Boolean = False)
     If excelApplication Is Nothing Then Err.Raise vbObjectError + 4180, "CExcelAppStateGuard.Enter", "Excel.Application не передан."
     If mActive Then Restore True
 
@@ -31,7 +32,11 @@ Public Sub Enter(ByVal excelApplication As Object)
     mActive = True
     For i = 0 To 4
         mPending(i) = Not IsError(mValues(i)) ' Без открытых книг Excel может вернуть ошибку вместо режима пересчёта. Такое значение нельзя восстановить присваиванием; сохраняем фактическую причину ошибки записи свойства.
-        WriteProperty i, fastValues(i)
+        If i = 1 And preserveScreenUpdating Then
+            mPending(i) = False ' Вызывающий код сохраняет текущий показ; глобальный переход False -> True не требуется.
+        Else
+            WriteProperty i, fastValues(i)
+        End If
     Next i
     Exit Sub
 Failed:

@@ -596,6 +596,7 @@ End Function
 ' но после завершения должен вернуть настройки текущего Excel.Application
 ' ровно в исходное состояние.
 Private Sub TestExcelApplicationStateGuardRestoresSettings(ByRef stats As TUiTestStats)
+    TestFormationDisplayState stats
     TestPrepareCircleInput
     TestSetSystemSetting "General.ExecutionReportEnabled", "No"
 
@@ -9043,6 +9044,10 @@ End Function
 Private Function TestFreshnessInvoke(ByVal form As Boolean, ByVal workbook As Object, _
         ByRef message As String, ByRef informationEnabled As Boolean) As Long
     On Error GoTo Failed
+    If Not workbook Is Nothing Then
+        Dim observed As Object: Set observed = workbook.Application
+        If TypeOf observed Is CTestExcelApplicationState Then observed.TestExpectedScreenUpdating = observed.ScreenUpdating
+    End If
     If form Then
         message = FormSectionForWorkbook(workbook, -1#, informationEnabled)
     Else
@@ -9060,6 +9065,7 @@ Private Sub TestFreshnessAssertAction(ByRef stats As TUiTestStats, ByVal proxy A
         ByVal observed As CTestExcelApplicationState, ByVal expected As Variant, ByVal label As String)
     TestAssertTrue stats, label & ".oneApplicationCalculate", observed.TestCalculateCalls = 1
     TestAssertTrue stats, label & ".calculateInsideGuard", observed.TestCalculateGuarded
+    TestAssertTrue stats, label & ".noScreenWrite", observed.TestScreenWrites = 0
     TestAssertTrue stats, label & ".noInputBeforeCalculate", proxy.TestNamesBeforeCalculate = 0
     TestFreshnessAssertState stats, observed.TestNativeApplication, expected, label & ".restored"
 End Sub
@@ -9149,6 +9155,9 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         observed.TestCalculateCalls = 0
         UpdateSectionPlotForWorkbook proxy ' Plot.Enabled=No: ранний выход не требует актуализации входов.
         UpdateSectionGeometryPreviewForWorkbook proxy
+        observed.TestScreenWrites = 0
+        UpdateSectionResultsForWorkbook proxy
+        TestAssertTrue stats, label & ".manualUpdateNoScreenWrite", observed.TestScreenWrites = 0
         TestAssertTrue stats, label & ".disabledPlotNoCalculate", observed.TestCalculateCalls = 0
         TestSetSystemSetting "Plot.Enabled", "Yes"
         solves = SectionEquilibriumSolveCount()
@@ -9162,6 +9171,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         For Each action In Array(True, False)
             Set observed = New CTestExcelApplicationState: Set observed.TestNativeApplication = app
             proxy.TestInitialize ThisWorkbook, observed: proxy.TestNamesFault = 1004
+            If Not CBool(action) Then proxy.TestNamesFaultAfterReads = 1 ' Расчёт сначала проверяет уникальность ID в rngLoadCombinations; отказ адресуется следующему reader-у единиц.
             code = TestFreshnessInvoke(CBool(action), proxy, message, informationEnabled)
             label = "freshness.expectedError." & mode & "." & CStr(action)
             TestAssertTrue stats, label & ".addressedReason", code = vbObjectError + 4316 And InStr(message, "rngUnitSettings") > 0
@@ -9702,4 +9712,56 @@ Private Function TestUniqueIDSameMatrix(ByVal before As Variant, ByVal after As 
     Next row
     TestUniqueIDSameMatrix = True
 Different:
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Формирование не записывает ScreenUpdating; остальные свойства, отказ входа и вложенный Enter восстанавливаются.
+Private Sub TestFormationDisplayState(ByRef stats As TUiTestStats)
+    Dim app As CTestExcelApplicationState, guard As CExcelAppStateGuard
+    Dim screen As Variant, mode As Variant, code As Long, label As String
+    On Error GoTo Failed
+    For Each screen In Array(False, True)
+        For Each mode In Array(xlCalculationAutomatic, xlCalculationManual, xlCalculationSemiautomatic)
+            Set app = New CTestExcelApplicationState: Set guard = New CExcelAppStateGuard
+            app.ScreenUpdating = CBool(screen): app.Calculation = CLng(mode): app.TestScreenWrites = 0
+            label = "formation.screen." & CStr(screen) & "." & CStr(mode)
+            guard.Enter app, True
+            TestAssertTrue stats, label & ".unchangedInside", app.ScreenUpdating = CBool(screen)
+            TestAssertTrue stats, label & ".manual", app.Calculation = xlCalculationManual
+            TestAssertTrue stats, label & ".eventsOff", Not app.EnableEvents And Not app.DisplayAlerts
+            TestAssertTrue stats, label & ".noWriteInside", app.TestScreenWrites = 0
+            guard.Restore True
+            TestAssertTrue stats, label & ".restored", app.ScreenUpdating = CBool(screen) And app.Calculation = CLng(mode)
+            TestAssertTrue stats, label & ".otherRestored", app.EnableEvents And app.DisplayAlerts And app.EnableCancelKey = xlInterrupt
+            TestAssertTrue stats, label & ".noWriteAfter", app.TestScreenWrites = 0
+        Next mode
+    Next screen
+    Set app = New CTestExcelApplicationState: Set guard = New CExcelAppStateGuard
+    app.FaultProperty = "EnableEvents": app.FaultsRemaining = 1: app.FaultNumber = 18
+    On Error Resume Next
+    guard.Enter app, True
+    code = Err.Number: Err.Clear
+    On Error GoTo Failed
+    TestAssertTrue stats, "formation.screen.error18", code = 18
+    TestAssertTrue stats, "formation.screen.errorRestored", TestFakeExcelRestored(app)
+    TestAssertTrue stats, "formation.screen.errorNoWrite", app.TestScreenWrites = 0
+    Set app = New CTestExcelApplicationState: Set guard = New CExcelAppStateGuard
+    guard.Enter app, True: guard.Enter app, True: guard.Restore True
+    TestAssertTrue stats, "formation.screen.reenterRestored", TestFakeExcelRestored(app) And app.TestScreenWrites = 0
+    Set app = New CTestExcelApplicationState: Set guard = New CExcelAppStateGuard
+    guard.Enter app: guard.Restore True
+    TestAssertTrue stats, "formation.screen.defaultContract", TestFakeExcelRestored(app) And app.TestScreenWrites = 2
+    GoTo Finished
+Failed:
+    TestAssertTrue stats, "formation.screen.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    If Not guard Is Nothing Then guard.Restore
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отдельно запускает ту же проверку экрана, которая входит в штатную общую проверку guard-а.
+Public Function RunFormationDisplayStateTests() As String
+    Dim stats As TUiTestStats
+    TestFormationDisplayState stats
+    RunFormationDisplayStateTests = stats.Report & "TOTAL_FORMATION_DISPLAY_STATE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function

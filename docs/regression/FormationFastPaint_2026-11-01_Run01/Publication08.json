@@ -1,0 +1,30 @@
+{
+  "Status": "PUBLISHED_NATIVE_VERIFIED_FAST_PAINT",
+  "PublishedUTC": "2026-11-01T13:05:27.902787+00:00",
+  "Books": [
+    {
+      "Label": "Main",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "SHA256": "275A2042E47D3853999C0EDF874CD4BAD11B76793A1FE50DC3AB7291EE289130",
+      "StandardPathUpdated": true,
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120,
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\BeforePublication08\\Main\\RC_Section_NDM.xlsm"
+    },
+    {
+      "Label": "Heavy",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "FCAD6936758B8EBEBC5BDD6DED9CF47CC92EB8A6A761897F9DB15785684946FE",
+      "StandardPathUpdated": true,
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120,
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\BeforePublication08\\Heavy\\RC_Section_NDM_HeavyCircle_1232_30.xlsm"
+    }
+  ],
+  "SeparateLocalSnapshotSHA256": "0E0D3C7B1CF84CF01C1E183D84EFEE169C6E20F408B22A529DC0A14826E42FAF",
+  "PackagedOriginalSnapshotSHA256": "E48038B73A6E4146A9AB6D594BC57B4E7C26C561D2DBAC3A9FE7496AFA96C9AA",
+  "Package": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\NDM_HeavyCircle_1232_30_Комплект.zip",
+  "PackageSHA256": "E0F9E9E9864EABEC46976C2A738CCAC2493006A9892D377362F10F74C8E5889A",
+  "UserApplicationsClosed": false,
+  "FullOnOffPerformed": false
+}

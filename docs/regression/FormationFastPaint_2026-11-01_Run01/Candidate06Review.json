@@ -1,0 +1,16 @@
+{
+  "Selected": "Candidate06",
+  "AllSevenTablesExactExceptRunID": true,
+  "RGBPixelExact": true,
+  "SourceFiles": [
+    "CExcelAppStateGuard.cls",
+    "CNDMResultsWriter.cls",
+    "CSectionPlotDataReader.cls",
+    "modWorkbookCalculation.bas"
+  ],
+  "CalculationPolicyUnchanged": true,
+  "WindowAPIAdded": false,
+  "FullAcceptanceClaim": false,
+  "MedianSeconds": 0.46871450000000003,
+  "SevenTableDumpSHA256": "15C08DE1ED849A5166172D92871FE03A59B9FC00CD9658D508F2DDAB0FFE2709"
+}

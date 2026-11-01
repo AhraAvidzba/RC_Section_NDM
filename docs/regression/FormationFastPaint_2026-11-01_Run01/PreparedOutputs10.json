@@ -1,0 +1,38 @@
+{
+  "Status": "PREPARED_NATIVE_REOPEN_REQUIRED",
+  "Books": [
+    {
+      "Label": "Clean",
+      "Source": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Prepared08\\Clean\\RC_Section_NDM.xlsm",
+      "SourceSHA256": "51378F8C21D3E35961E34B17C77A2E0F5A94FECF43B11DE538CD290CA7FDFE83",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Prepared10\\Clean\\RC_Section_NDM.xlsm",
+      "PreparedSHA256": "E377406DC47913C8812D1E9BE9B91E505FDF60D254788C5E9B0969FD356E7EA8",
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 115,
+      "DataResultsPicturesSettingsAndLayoutByteExact": true,
+      "DocumentCodeNamesEqual": true
+    },
+    {
+      "Label": "Main",
+      "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "SourceSHA256": "275A2042E47D3853999C0EDF874CD4BAD11B76793A1FE50DC3AB7291EE289130",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Prepared10\\Main\\RC_Section_NDM.xlsm",
+      "PreparedSHA256": "A31DBB9C444FEF51AEA44AC55CDD16DAF0A4D868E2807483521E63C4FA39A681",
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120,
+      "DataResultsPicturesSettingsAndLayoutByteExact": true,
+      "DocumentCodeNamesEqual": true
+    },
+    {
+      "Label": "Heavy",
+      "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SourceSHA256": "FCAD6936758B8EBEBC5BDD6DED9CF47CC92EB8A6A761897F9DB15785684946FE",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FormationFastPaint_2026-11-01_Run01\\Prepared10\\Heavy\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "PreparedSHA256": "E2FEB935EC02841D59EFEA8633417D7503C6DEEB8489268443F0168EF5F9AFA7",
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120,
+      "DataResultsPicturesSettingsAndLayoutByteExact": true,
+      "DocumentCodeNamesEqual": true
+    }
+  ]
+}

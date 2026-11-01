@@ -181,19 +181,25 @@ End Sub
 
 ' Показывает сформированное сечение до расчёта НДС.
 ' Оформление читает из Config, координаты и характеристики — из Results.
-Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object, Optional ByRef containerNotice As String = "")
+Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object, Optional ByRef containerNotice As String = "", _
+        Optional ByVal prepared As CCalculationSnapshot = Nothing, _
+        Optional ByVal runSettings As CSystemSettingsReader = Nothing)
     containerNotice = vbNullString
     If workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
-    Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook workbook
+    If runSettings Is Nothing Then
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook workbook
+    Else
+        Set settings = runSettings ' Внутри формирования оформление использует тот же неизменённый снимок Config, что и геометрия.
+    End If
 
     If Not settings.GetRequiredBoolean("Plot.Enabled") Then Exit Sub
 
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader
-    reader.LoadGeometryPreviewFromWorkbook workbook, settings
+    reader.LoadGeometryPreviewFromWorkbook workbook, settings, prepared
 
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
@@ -224,7 +230,7 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
     If startedAt < 0# Then startedAt = Timer
     If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "FormSectionForWorkbook", "Книга Excel не передана."
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
-    guard.Enter workbook.Application
+    guard.Enter workbook.Application, True
     workbook.Application.Calculate ' Один пересчёт всех открытых книг этого Excel: актуализирует внешние формульные зависимости при отключённых событиях, до чтения входов.
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
@@ -252,7 +258,8 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
         section.ConcreteCount + section.RebarCount, 0, 0, section.AnnotationCount, section.Contours.Count, 2, writer.EstimatedElementGeometryRows(section)
     If issues.Count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", ResultsOutputLayoutMessage(0, issues)
     Dim previewStore As CCalculationSnapshotStore: Set previewStore = New CCalculationSnapshotStore
-    If previewStore.StorageMode(workbook) = "File" Then
+    Dim storageMode As String: storageMode = previewStore.StorageMode(workbook)
+    If storageMode = "File" Then
         Dim geometryPreview As CCalculationSnapshot
         Set geometryPreview = writer.PrepareGeometryPreviewSnapshot(workbook, section, snapshot, units)
         previewStore.SaveFile workbook, geometryPreview ' Capture, проверка A/c/I и сохранение завершаются до очистки прежних Results.
@@ -261,10 +268,10 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
         previewStore.LinkFile workbook
     Else
         summary.ClearSummary workbook, fullFormatting
-        writer.WriteGeometryPreview workbook, section, snapshot, units, fullFormatting
+        Set geometryPreview = writer.WriteGeometryPreviewForDisplay(workbook, section, snapshot, units, fullFormatting)
     End If
     Dim savedDestination As String: savedDestination = "на листе Results"
-    If previewStore.StorageMode(workbook) = "File" Then savedDestination = "в файле «" & previewStore.SelectedFileName(workbook) & "»"
+    If storageMode = "File" Then savedDestination = "в файле «" & previewStore.SelectedFileName(workbook) & "»"
     Dim containerNotice As String
     ClearSectionPlotForNoData workbook, "Сечение сформировано. Схема не обновлена.", containerNotice
     If importer Is Nothing Then
@@ -286,7 +293,7 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
     Dim plotErrorNumber As Long, plotError As String, previewNotice As String
     On Error Resume Next
     Err.Clear
-    UpdateSectionGeometryPreviewForWorkbook workbook, previewNotice ' Оформление использует уже сохранённый снимок и не запускает расчёт. Ошибка схемы не отменяет успешное формирование сечения.
+    UpdateSectionGeometryPreviewForWorkbook workbook, previewNotice, geometryPreview, settings ' Оформление использует уже сохранённый снимок и не запускает расчёт. Ошибка схемы не отменяет успешное формирование сечения.
     plotErrorNumber = Err.Number: plotError = Err.Description
     Err.Clear
     On Error GoTo Failed
@@ -358,7 +365,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
 
     Dim excelGuard As CExcelAppStateGuard
     Set excelGuard = New CExcelAppStateGuard
-    excelGuard.Enter workbook.Application
+    excelGuard.Enter workbook.Application, True ' Блочная запись и схема сохраняют текущий режим экрана без глобального False -> True в конце расчёта.
     workbook.Application.Calculate ' Один пересчёт всех открытых книг этого Excel: актуализирует внешние формульные зависимости при отключённых событиях, до чтения входов.
 
     Dim reader As CLoadCombinationReader: Set reader = New CLoadCombinationReader

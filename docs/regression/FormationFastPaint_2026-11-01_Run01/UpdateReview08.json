@@ -1,0 +1,115 @@
+{
+  "Status": "PASS_CURRENT_LIGHT_AND_HEAVY_UPDATE_PARITY",
+  "HeavyConcrete": 1232,
+  "HeavyRebar": 8,
+  "HeavyLoadCases": 30,
+  "HeavyStates": 92,
+  "HeavyRows": 114080,
+  "FullAcceptanceClaim": false,
+  "Measurements": [
+    {
+      "Kind": "Light",
+      "Mode": "Excel",
+      "BeforeMedianSeconds": 0.824572,
+      "AfterMedianSeconds": 0.24720350000000002,
+      "BeforeSamples": [
+        0.805615,
+        0.804571,
+        0.804586,
+        0.855849,
+        0.849979,
+        0.843529
+      ],
+      "AfterSamples": [
+        0.251656,
+        0.261225,
+        0.23603,
+        0.250056,
+        0.239818,
+        0.244351
+      ],
+      "DataParity": true,
+      "PixelParity": true,
+      "NoSolver": true,
+      "ReadScopeReleased": true
+    },
+    {
+      "Kind": "Light",
+      "Mode": "File",
+      "BeforeMedianSeconds": 1.181029,
+      "AfterMedianSeconds": 0.7005399999999999,
+      "BeforeSamples": [
+        1.28374,
+        1.204396,
+        1.651225,
+        1.15502,
+        1.157662,
+        1.152578
+      ],
+      "AfterSamples": [
+        0.684943,
+        0.66883,
+        0.716137,
+        0.682038,
+        0.736838,
+        0.729711
+      ],
+      "DataParity": true,
+      "PixelParity": true,
+      "NoSolver": true,
+      "ReadScopeReleased": true
+    },
+    {
+      "Kind": "Heavy",
+      "Mode": "Excel",
+      "BeforeMedianSeconds": 1.4454675,
+      "AfterMedianSeconds": 0.8456265000000001,
+      "BeforeSamples": [
+        1.500288,
+        1.485095,
+        1.435852,
+        1.4043,
+        1.455083,
+        1.426369
+      ],
+      "AfterSamples": [
+        0.884619,
+        0.887612,
+        0.844278,
+        0.846975,
+        0.834465,
+        0.837471
+      ],
+      "DataParity": true,
+      "PixelParity": true,
+      "NoSolver": true,
+      "ReadScopeReleased": true
+    },
+    {
+      "Kind": "Heavy",
+      "Mode": "File",
+      "BeforeMedianSeconds": 1.6273170000000001,
+      "AfterMedianSeconds": 1.068304,
+      "BeforeSamples": [
+        1.591062,
+        1.55865,
+        1.627036,
+        1.664837,
+        1.71695,
+        1.627598
+      ],
+      "AfterSamples": [
+        1.036849,
+        1.08718,
+        1.040152,
+        1.166443,
+        1.187225,
+        1.049428
+      ],
+      "DataParity": true,
+      "PixelParity": true,
+      "NoSolver": true,
+      "ReadScopeReleased": true
+    }
+  ]
+}
