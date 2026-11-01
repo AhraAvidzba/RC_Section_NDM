@@ -185,7 +185,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает typed-операции с неизменным внешним словарём на всей матрице
-' 11статусов ×20причин ×7видов; смена комментария не меняет классификацию.
+' 11статусов, 20причин и 7видов; смена комментария не меняет классификацию.
 Public Function RunTypedStatusPolicyTests(Optional ByRef passedCount As Long = 0, Optional ByRef failedCount As Long = 0) As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed

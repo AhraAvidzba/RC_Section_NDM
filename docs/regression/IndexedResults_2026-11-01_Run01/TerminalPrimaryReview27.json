@@ -1,0 +1,102 @@
+{
+  "Status": "PASS_ALL_12_TARGETED_PRIMARY_FULLY_READ",
+  "Primary": [
+    {
+      "Path": "Directed19_Attempt3/No/RunPreparedSnapshotReuseTests.txt",
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82",
+      "Passed": 69,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/No/RunGeometryPreviewStorageTests.txt",
+      "Bytes": 2570,
+      "SHA256": "67535841814FBD580981BBADFE80CA3033C86FC35BC759C3BE255A0A90CA27E7",
+      "Passed": 62,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/No/RunConcreteGeometrySnapshotTests.txt",
+      "Bytes": 3325,
+      "SHA256": "39CC2A0CF3B60E82769BD5F72FD9C623C6FD6354852E33F8C8533DF80F11F889",
+      "Passed": 123,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/No/RunSnapshotOutputPolicyTests.txt",
+      "Bytes": 2064,
+      "SHA256": "43559DD4073A66EB777F73BCA0C41052671F839CFA6157ED69B363E11CE6F917",
+      "Passed": 48,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/No/RunElementGeometryViewTests.txt",
+      "Bytes": 5793,
+      "SHA256": "04C3A70B6895BDE5FF1EC1FF320C8F4442E2B65ACF413C82AB20470B1ED1003B",
+      "Passed": 82,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/No/RunCalculationSnapshotTests.txt",
+      "Bytes": 35566,
+      "SHA256": "D05EFF77CF7177B23BBD529363A9EA71C7C90414D765CD0A2ACB8435C01078FA",
+      "Passed": 992,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/Yes/RunPreparedSnapshotReuseTests.txt",
+      "Bytes": 2384,
+      "SHA256": "4604BF315BF34F2EC1E0C6A41AC6D1F9858A4BA9237B5C993A4CBA52C6DD5D82",
+      "Passed": 69,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/Yes/RunGeometryPreviewStorageTests.txt",
+      "Bytes": 2570,
+      "SHA256": "67535841814FBD580981BBADFE80CA3033C86FC35BC759C3BE255A0A90CA27E7",
+      "Passed": 62,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/Yes/RunConcreteGeometrySnapshotTests.txt",
+      "Bytes": 3325,
+      "SHA256": "39CC2A0CF3B60E82769BD5F72FD9C623C6FD6354852E33F8C8533DF80F11F889",
+      "Passed": 123,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/Yes/RunSnapshotOutputPolicyTests.txt",
+      "Bytes": 2064,
+      "SHA256": "43559DD4073A66EB777F73BCA0C41052671F839CFA6157ED69B363E11CE6F917",
+      "Passed": 48,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/Yes/RunElementGeometryViewTests.txt",
+      "Bytes": 5797,
+      "SHA256": "EF7C8D60B21A5E3CB20783CAAB8416FA8E158492A0EB465A6CCFC4DC6E1DC403",
+      "Passed": 82,
+      "Failed": 0,
+      "FullyRead": true
+    },
+    {
+      "Path": "Directed19_Attempt3/Yes/RunCalculationSnapshotTests.txt",
+      "Bytes": 35566,
+      "SHA256": "D05EFF77CF7177B23BBD529363A9EA71C7C90414D765CD0A2ACB8435C01078FA",
+      "Passed": 992,
+      "Failed": 0,
+      "FullyRead": true
+    }
+  ],
+  "FullAcceptanceClaim": false
+}

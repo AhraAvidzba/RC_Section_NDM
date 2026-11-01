@@ -7,23 +7,23 @@ Option Explicit
 ' После расчёта вывод использует готовые данные в памяти. Кнопка в File
 ' читает текущий выбранный файл расчёта либо геометрии; Excel читает только Results.
 ' Кратковременный контекст чтения принадлежит одной операции и одной книге.
+Private mReadView As CResultReadSource ' Адресный источник существует только внутри одной операции.
+Private mReadViewResolved As Boolean
 Private mReadSnapshot As CCalculationSnapshot ' Неизменяемый набор только на время одной операции чтения.
 Private mReadWorkbook As Object ' Книга, которой принадлежит текущий контекст.
 Private mReadDepth As Long ' Вложенные чтения схемы и экспорта не уничтожают внешний контекст.
-Private mReadSourceResolved As Boolean ' Выбор Excel/File проверяется один раз на операцию, в том числе при отсутствии файла в Excel.
 
 ' Открывает короткую область чтения; между пользовательскими действиями кэша нет.
 Public Sub BeginCalculationSnapshotRead(ByVal workbook As Object, Optional ByVal snapshot As CCalculationSnapshot = Nothing)
     If mReadDepth = 0 Then
+        Set mReadView = Nothing: mReadViewResolved = False
         If Not snapshot Is Nothing Then snapshot.Validate
         Set mReadWorkbook = workbook: Set mReadSnapshot = snapshot
-        mReadSourceResolved = Not snapshot Is Nothing ' Готовый набор принадлежит текущему выводу в обоих режимах; ручное чтение без него выбирает источник по Config.
     ElseIf Not workbook Is mReadWorkbook Then
         Err.Raise 5, "modCalculationSnapshot", "Вложенное чтение относится к другой книге."
     ElseIf Not snapshot Is Nothing Then
         snapshot.Validate
-        Set mReadSnapshot = snapshot
-        mReadSourceResolved = True
+        Set mReadSnapshot = snapshot: Set mReadView = Nothing: mReadViewResolved = False
     End If
     mReadDepth = mReadDepth + 1
 End Sub
@@ -31,26 +31,35 @@ End Sub
 ' Освобождает большие массивы и ссылку на книгу после успеха или ошибки.
 Public Sub EndCalculationSnapshotRead()
     If mReadDepth > 0 Then mReadDepth = mReadDepth - 1
-    If mReadDepth = 0 Then Set mReadSnapshot = Nothing: Set mReadWorkbook = Nothing: mReadSourceResolved = False
+    If mReadDepth = 0 Then
+        Set mReadSnapshot = Nothing: Set mReadWorkbook = Nothing
+        Set mReadView = Nothing: mReadViewResolved = False
+    End If
 End Sub
 
 ' Выбирает источник только по текущему Excel/File. File сразу читает указанное имя,
 ' Excel не обращается к файлу независимо от прежней привязки или смены имени.
 Public Function CurrentCalculationSnapshot(ByVal workbook As Object) As CCalculationSnapshot
-    If workbook Is mReadWorkbook Then
-        If mReadSourceResolved Then Set CurrentCalculationSnapshot = mReadSnapshot: Exit Function
-    End If
-    Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-    Dim snapshot As CCalculationSnapshot
-    If store.StorageMode(workbook) = "File" Then
-        If workbook Is mReadWorkbook Then Set snapshot = mReadSnapshot ' Уже проверенные данные текущего сохранения/загрузки не читаются повторно в той же операции.
-        If snapshot Is Nothing Then Set snapshot = store.LoadFile(workbook)
-    End If
-    If mReadDepth > 0 And workbook Is mReadWorkbook Then Set mReadSnapshot = snapshot: mReadSourceResolved = True
-    Set CurrentCalculationSnapshot = snapshot
+    Dim source As CResultReadSource: Set source = CurrentResultSource(workbook)
+    If Not source Is Nothing Then Set CurrentCalculationSnapshot = source.LoadAll
 End Function
 
-' Выводит готовый расчёт из памяти либо восстанавливает полный снимок File.
+' Возвращает адресный File либо готовый снимок текущего вывода; Excel без prepared читает лист.
+Public Function CurrentResultSource(ByVal workbook As Object) As CResultReadSource
+    If workbook Is mReadWorkbook Then
+        If mReadViewResolved Then Set CurrentResultSource = mReadView: Exit Function
+    End If
+    Dim source As CResultReadSource, store As New CCalculationSnapshotStore
+    If workbook Is mReadWorkbook And Not mReadSnapshot Is Nothing Then
+        Set source = New CResultReadSource: source.UsePrepared mReadSnapshot
+    ElseIf store.StorageMode(workbook) = "File" Then
+        Set source = New CResultReadSource: source.OpenWorkbook workbook, store
+    End If
+    If mReadDepth > 0 And workbook Is mReadWorkbook Then Set mReadView = source: mReadViewResolved = True
+    Set CurrentResultSource = source
+End Function
+
+' Выводит готовый расчёт из памяти; ручной File читает общие блоки и выбранное НДС.
 ' Ручное обновление Excel читает схему с листа и не восстанавливает верхние сводки.
 Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional ByVal prepared As CCalculationSnapshot = Nothing, _
         Optional ByRef plotWarning As String = "", Optional ByRef plotHasWarning As Boolean = False)
@@ -64,7 +73,10 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Dim snapshot As CCalculationSnapshot: Set snapshot = prepared
     If snapshot Is Nothing Then
         If mode = "File" Then
-            Set snapshot = store.LoadFile(workbook)
+            UpdateIndexedResultsForWorkbook workbook, plotWarning, plotHasWarning
+            guard.Restore True
+            CompleteWorkbookDrawing workbook
+            Exit Sub
         Else
             store.ClearReference workbook ' Источник Excel — только лист; служебная файловая привязка не участвует в чтении.
             UpdateSectionPlotForWorkbook workbook, True, plotWarning
@@ -115,7 +127,7 @@ Failed:
 End Sub
 
 ' Проверяет вместимость готовых таблиц до очистки; число LC не берётся из текущего Config.
-Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, ByVal includeElements As Boolean)
+Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snapshot As Object, ByVal includeElements As Boolean)
     Dim key As Variant, values As Variant, anchor As Object, rowCount As Long
     Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange ' В старом payload её может не быть; текущая книга всё равно выводит шапку до любых очисток.
     If Not ResultRowsFitSheet(anchor.Row, 1, anchor.Worksheet.Rows.Count) Then Err.Raise 5, "ValidateRestoredSnapshotLayout", "Не помещается шапка rngNDMElementGeometry."
@@ -154,7 +166,7 @@ End Sub
 ' Проверяет таблицы, остающиеся на листе при File, без копирования матриц.
 ' Используется только при отказе вместимости таблицы состояний: File нельзя
 ' предлагать, если общая геометрия или готовые сводки тоже не помещаются.
-Private Function RestoredSnapshotMandatoryRowsFit(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot) As Boolean
+Private Function RestoredSnapshotMandatoryRowsFit(ByVal workbook As Object, ByVal snapshot As Object) As Boolean
     Dim key As Variant, anchor As Object
     For Each key In snapshot.BaseKeys()
         If CStr(key) <> "rngNDMElementResults" And CStr(key) <> "rngNDMElementGeometry" And CStr(key) <> "rngNDMSectionAnnotations" Then
@@ -325,6 +337,8 @@ End Sub
 
 ' Удаляет привязку готового расчёта перед обычной записью preview или тестового writer.
 Public Sub ClearPublishedCalculationSnapshot(ByVal workbook As Object)
+    InvalidateElementResultIndex workbook
+    PrepareIndexedResultsWrite workbook
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     store.ClearReference workbook
 End Sub
@@ -332,5 +346,32 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Доказывает освобождение большого снимка и книги после законченной операции.
 Public Function TestCalculationSnapshotReadReleased() As Boolean
-    TestCalculationSnapshotReadReleased = (mReadDepth = 0 And mReadSnapshot Is Nothing And mReadWorkbook Is Nothing)
+    TestCalculationSnapshotReadReleased = (mReadDepth = 0 And mReadSnapshot Is Nothing And mReadWorkbook Is Nothing And mReadView Is Nothing)
 End Function
+
+' Ручное обновление File восстанавливает общие таблицы и выбранную схему без всех НДС.
+' Источник сначала проверяет обязательные общие блоки, затем допускает изменение Results.
+Private Sub UpdateIndexedResultsForWorkbook(ByVal workbook As Object, ByRef plotWarning As String, ByRef plotHasWarning As Boolean)
+    Dim entered As Boolean
+    On Error GoTo Failed
+    BeginCalculationSnapshotRead workbook: entered = True
+    Dim source As CResultReadSource: Set source = CurrentResultSource(workbook)
+    source.ValidateForDisplay
+    ValidateRestoredSnapshotLayout workbook, source, False
+    Dim writer As New CNDMResultsWriter, summary As New CBatchResultWriter, store As New CCalculationSnapshotStore
+    Dim settings As New CSystemSettingsReader: settings.LoadFromWorkbook workbook
+    Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
+    writer.RestoreIndexedBase workbook, source, fullFormatting
+    If source.IsGeometryPreview Then summary.ClearSummary workbook, fullFormatting Else summary.RestoreIndexedSummary workbook, source, fullFormatting
+    store.LinkFile workbook
+    If source.IsGeometryPreview Then UpdateSectionGeometryPreviewForWorkbook workbook, plotWarning Else UpdateSectionPlotForWorkbook workbook, False, plotWarning
+    plotHasWarning = (Len(plotWarning) > 0)
+    EndCalculationSnapshotRead
+    entered = False
+    Exit Sub
+Failed:
+    Dim number As Long, reason As String, origin As String
+    number = Err.Number: reason = Err.Description: origin = Err.Source
+    If entered Then EndCalculationSnapshotRead
+    Err.Raise number, origin, reason
+End Sub

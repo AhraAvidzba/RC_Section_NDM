@@ -992,6 +992,18 @@ End Property
 
 ' Восстанавливает общую и три подробные сводки из одних сохранённых массивов.
 Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
+    snapshot.Validate
+    RestoreSummaryTables workbook, snapshot, fullFormatting
+End Sub
+
+' Восстанавливает только готовые общие сводки из проверенного адресного источника.
+Public Sub RestoreIndexedSummary(ByVal workbook As Object, ByVal source As CResultReadSource, ByVal fullFormatting As Boolean)
+    source.ValidateForDisplay
+    RestoreSummaryTables workbook, source, fullFormatting
+End Sub
+
+' Записывает те же массивы и оформление для двух явно проверенных входных контрактов.
+Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Object, ByVal fullFormatting As Boolean)
     Set mCapturedSnapshot = Nothing
     mMinimalFormatting = Not fullFormatting
     Dim data() As Variant: data = SummaryForDisplay(snapshot)
@@ -1002,14 +1014,26 @@ Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculati
     Dim strength As CStrengthSummaryWriter: Set strength = New CStrengthSummaryWriter
     Dim cracks As CCrackSummaryWriter: Set cracks = New CCrackSummaryWriter
     Dim stability As CStabilitySummaryWriter: Set stability = New CStabilitySummaryWriter
-    strength.RestoreSummary workbook, snapshot, fullFormatting
-    cracks.RestoreSummary workbook, snapshot, fullFormatting
-    stability.RestoreSummary workbook, snapshot, fullFormatting
+    If TypeOf snapshot Is CResultReadSource Then
+        strength.RestoreIndexedSummary workbook, snapshot, fullFormatting
+    Else
+        strength.RestoreSummary workbook, snapshot, fullFormatting
+    End If
+    If TypeOf snapshot Is CResultReadSource Then
+        cracks.RestoreIndexedSummary workbook, snapshot, fullFormatting
+    Else
+        cracks.RestoreSummary workbook, snapshot, fullFormatting
+    End If
+    If TypeOf snapshot Is CResultReadSource Then
+        stability.RestoreIndexedSummary workbook, snapshot, fullFormatting
+    Else
+        stability.RestoreSummary workbook, snapshot, fullFormatting
+    End If
 End Sub
 
 ' Читает поддерживаемые файловые снимки без блока нагрузок, не придумывая исходный ввод.
 ' Это совместимость внешнего формата: текущий Config и содержимое файла не меняются.
-Private Function SummaryForDisplay(ByVal snapshot As CCalculationSnapshot) As Variant
+Private Function SummaryForDisplay(ByVal snapshot As Object) As Variant
     Dim saved As Variant: saved = snapshot.Table("Summary")
     If UBound(saved, 2) = TARGET_COLUMNS Then
         saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
@@ -1032,7 +1056,7 @@ Private Function SummaryForDisplay(ByVal snapshot As CCalculationSnapshot) As Va
 End Function
 
 ' Получает сохранённую единицу файлового снимка, независимо от текущих настроек.
-Private Function SavedSummaryUnit(ByVal snapshot As CCalculationSnapshot, ByVal key As String) As String
+Private Function SavedSummaryUnit(ByVal snapshot As Object, ByVal key As String) As String
     Dim data As Variant, row As Long: data = snapshot.Table("rngNDMSectionProperties")
     For row = 2 To UBound(data, 1)
         If CStr(data(row, 3)) = key Then SavedSummaryUnit = CStr(data(row, 4)): Exit Function

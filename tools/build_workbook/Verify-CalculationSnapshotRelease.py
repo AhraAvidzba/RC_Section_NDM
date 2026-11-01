@@ -30,8 +30,8 @@ def normalized_vba(text):
             # VBE переписывает малые десятичные литералы в экспоненциальную форму.
             # VBE также ограничивает текст числовой константы 15 значащими цифрами
             # и убирает избыточный # у дробного Double. Целые, Single и Currency не меняем.
-            part = re.sub(r'(?<![\w&])(?:\d+\.\d*(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?|\d+[eE][+-]?\d+)#?(?![\w@!#])',
-                          lambda match: '<double:' + format(float(match[0].rstrip('#')), '.15g') + '>', part)
+            part = re.sub(r'(?<![\w&])(?:\d+\.\d*(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?|\d+[eE][+-]?\d+|\d{16,}#)#?(?![\w@!#])',
+                          lambda match: '<double:' + format(float(match[0].rstrip('#')), '.17g' if 1e15 <= abs(float(match[0].rstrip('#'))) <= 9007199254740992 else '.15g') + '>', part)
             return re.sub(r'\s+', '', part).casefold()
         result.append(''.join(part if part.startswith(('"', "'")) else code(part) for part in parts))
     return result
@@ -128,11 +128,11 @@ def verify_fresh(after_path, export_path, root):
                   and int(re.search(r'\d+$', address)[0]) not in (154, 155, 156)]
     if unexpected:
         errors.append(f'В чистой книге остались расчётные результаты: {unexpected[:8]}')
-    order = ['rngNDMSectionGeometry', 'rngNDMSectionProperties', 'rngNDMMaterialDiagrams', 'rngNDMElementResults', 'rngNDMSectionContours', 'rngNDMSectionAnnotations']
+    order = ['rngNDMSectionGeometry', 'rngNDMSectionProperties', 'rngNDMMaterialDiagrams', 'rngNDMSectionContours', 'rngNDMElementResults', 'rngNDMElementGeometry', 'rngNDMSectionAnnotations', 'rngNDMElementResultIndex']
     if 'rngNDMLoadCaseResults' in book['names']:
         errors.append('В книге остался удалённый архивный диапазон rngNDMLoadCaseResults')
     positions = [rectangle(book, name) for name in order]
-    widths = [16, 6, 11, 9, 17, 24]
+    widths = [16, 6, 11, 17, 9, 18, 24, 14]
     if len({item[2] for item in positions}) != 1 or any(b[1] - a[1] - width != 2 for a, b, width in zip(positions, positions[1:], widths)):
         errors.append('Нарушен порядок нижних таблиц или промежуток в два свободных столбца')
     for name, sheet in book['sheets'].items():
@@ -185,16 +185,16 @@ def verify(before_path, after_path, export_path, root):
                 errors.append(f'Изменена прежняя верхняя таблица Results!{address}: {field}')
     added_names = set(new['names']) - set(old['names'])
     removed_names = set(old['names']) - set(new['names'])
-    if added_names or removed_names != ({'rngNDMLoadCaseResults'} & set(old['names'])):
+    if added_names != ({'rngNDMElementResultIndex'} - set(old['names'])) or removed_names != ({'rngNDMLoadCaseResults'} & set(old['names'])):
         errors.append(f'Неожиданное изменение именованных диапазонов: added={sorted(added_names)}, removed={sorted(removed_names)}')
     for name, width in [('rngNDMSectionGeometry', 16), ('rngNDMSectionContours', 17), ('rngNDMMaterialDiagrams', 11), ('rngNDMElementResults', 9), ('rngNDMSectionProperties', 6), ('rngNDMSectionAnnotations', 24)]:
         previous, actual = anchored_table(old, name, width), anchored_table(new, name, width)
         checks += sum(map(len, previous))
         if previous != actual:
             errors.append(f'Изменены прежние технические результаты: {name}')
-    order = ['rngNDMSectionGeometry', 'rngNDMSectionProperties', 'rngNDMMaterialDiagrams', 'rngNDMElementResults', 'rngNDMSectionContours', 'rngNDMSectionAnnotations']
+    order = ['rngNDMSectionGeometry', 'rngNDMSectionProperties', 'rngNDMMaterialDiagrams', 'rngNDMSectionContours', 'rngNDMElementResults', 'rngNDMElementGeometry', 'rngNDMSectionAnnotations', 'rngNDMElementResultIndex']
     positions = [rectangle(new, name) for name in order]
-    widths = [16, 6, 11, 9, 17, 24]
+    widths = [16, 6, 11, 17, 9, 18, 24, 14]
     if len({item[2] for item in positions}) != 1 or any(b[1] - a[1] - width != 2 for a, b, width in zip(positions, positions[1:], widths)):
         errors.append('Нарушен порядок нижних таблиц или промежуток в два свободных столбца')
     sources, documents, source_errors = verify_native_sources(export_path, root)

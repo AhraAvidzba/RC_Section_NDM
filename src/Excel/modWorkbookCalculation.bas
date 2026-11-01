@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modWorkbookCalculation"
+Attribute VB_Name = "modWorkbookCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -333,10 +333,10 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
         Optional ByVal startedAt As Double = -1#, Optional ByRef informationEnabled As Boolean = False, _
         Optional ByRef requiresAttention As Boolean = False) As String
     If startedAt < 0# Then startedAt = Timer
-    Dim completed As Boolean, destination As String, message As String
-    message = CalculateSectionCore(workbook, showMessages, startedAt, informationEnabled, requiresAttention, completed, destination)
+    Dim completed As Boolean, destination As String, message As String, savedRunID As Double
+    message = CalculateSectionCore(workbook, showMessages, startedAt, informationEnabled, requiresAttention, completed, destination, savedRunID)
     If completed Then
-        message = FinishWorkbookAction(workbook, message, startedAt, "Время расчёта", requiresAttention, True)
+        message = FinishWorkbookAction(workbook, message, startedAt, "Время расчёта", requiresAttention, True, savedRunID)
         message = WorkbookMessageParagraph(message, "Данные сохранены " & destination & ".")
     End If
     RunSectionCalculationForWorkbook = message
@@ -346,7 +346,7 @@ End Function
 Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False, _
         Optional ByVal startedAt As Double = -1#, Optional ByRef informationEnabled As Boolean = False, _
         Optional ByRef requiresAttention As Boolean = False, _
-        Optional ByRef completed As Boolean = False, Optional ByRef savedDestination As String = "") As String
+        Optional ByRef completed As Boolean = False, Optional ByRef savedDestination As String = "", Optional ByRef savedRunID As Double = 0#) As String
     completed = False
     On Error GoTo Failed
     requiresAttention = False
@@ -510,6 +510,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     excelGuard.Restore True
     savedDestination = "на листе Results текущей книги"
     If snapshotStore.StorageMode(workbook) = "File" Then savedDestination = "в файле «" & snapshotStore.SelectedFileName(workbook) & "»"
+    savedRunID = savedSnapshot.RunID
     completed = True
     Exit Function
 
@@ -1355,16 +1356,15 @@ End Sub
 ' Завершает показ после освобождения расчётных объектов и учитывает подготовку, запись, отчёт и отрисовку.
 ' Время ожидания OK сюда не входит; после возвращения остаётся только форматирование самого окна.
 Private Function FinishWorkbookAction(ByVal workbook As Object, ByVal message As String, ByVal startedAt As Double, _
-        ByVal timeCaption As String, ByRef requiresAttention As Boolean, Optional ByVal calculated As Boolean = False) As String
+        ByVal timeCaption As String, ByRef requiresAttention As Boolean, Optional ByVal calculated As Boolean = False, Optional ByVal expectedRunID As Double = 0#) As String
     Dim warning As String: warning = TryCompleteWorkbookDrawing(workbook)
     If Len(warning) > 0 Then requiresAttention = True: message = WorkbookMessageParagraph(message, warning)
     If calculated Then
-        Dim snapshot As CCalculationSnapshot: Set snapshot = New CCalculationSnapshot
-        snapshot.ElapsedSeconds = ElapsedSecondsFrom(startedAt)
+        Dim elapsed As Double: elapsed = ElapsedSecondsFrom(startedAt)
         Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
-        store.UpdateSavedElapsed workbook, snapshot
+        store.UpdateElapsedValue workbook, elapsed, expectedRunID
         Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
-        summary.UpdateElapsedSeconds workbook, snapshot.ElapsedSeconds
+        summary.UpdateElapsedSeconds workbook, elapsed
         Dim finalWarning As String: finalWarning = TryCompleteWorkbookDrawing(workbook) ' Диаграмма не перестраивается: закрывается только показ последней ячейки времени.
         If Len(finalWarning) > 0 And finalWarning <> warning Then requiresAttention = True: message = WorkbookMessageParagraph(message, finalWarning)
     End If

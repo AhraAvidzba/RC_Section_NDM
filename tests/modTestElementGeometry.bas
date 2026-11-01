@@ -197,7 +197,7 @@ Private Sub TestHollowTangentCells(ByRef stats As TTestStats)
         TestTrue stats, "tangent.hollow.cell.positive." & CStr(index), properties.Area > 0#
         TestClose stats, "tangent.hollow.cell.oneLoop." & CStr(index), CDbl(cell.LoopCount), 1#, 0#
     Next index
-    expected = 150# - (5# * Sqr(875#) + 900# * Atn(5# / Sqr(875#))) / 2# ' Интеграл 30-sqrt(900-x²) от -5 до 0, без геометрического ядра как эталона.
+    expected = 150# - (5# * Sqr(875#) + 900# * Atn(5# / Sqr(875#))) / 2# ' Интеграл 30-sqrt(900-x*x) от -5 до 0, без геометрического ядра как эталона.
     TestClose stats, "tangent.hollow.cell.arcIntegral", properties.Area, expected, 0.00000001
 End Sub
 

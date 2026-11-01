@@ -32,6 +32,7 @@ Private Type TGeometryHashBits
 End Type
 Private mGeometrySeedA As Double, mGeometrySeedB As Double ' Подпись общей шапки одной неизменяемой пары матриц.
 Private mGeometrySeedReady As Boolean ' Разрешает PreparedGeometryHash только после явной подготовки текущих заголовков.
+Private mStreamProvider As LongPtr, mStreamHash As LongPtr
 Private mGeometryProvider As LongPtr ' Один штатный провайдер Windows на операцию, без открытия для каждого элемента.
 Private Declare PtrSafe Function HashGeometryMemory Lib "advapi32" Alias "CryptHashData" (ByVal hash As LongPtr, ByVal data As LongPtr, ByVal count As Long, ByVal flags As Long) As Long
 
@@ -180,6 +181,8 @@ End Function
 
 ' Освобождает единственный провайдер операции; файловый SHA256 использует собственные локальные дескрипторы.
 Private Sub Class_Terminate()
+    CancelDigest
+    If mStreamProvider <> 0 Then CryptReleaseContext mStreamProvider, 0: mStreamProvider = 0
     If mGeometryProvider <> 0 Then CryptReleaseContext mGeometryProvider, 0
 End Sub
 
@@ -237,3 +240,34 @@ Friend Function TestGeometryHashNumber(ByVal value As Double) As String
     Dim values(1 To 1) As Double, pieces As Collection: values(1) = value
     TestGeometryHashNumber = NativeGeometryHash(values, vbNullString, pieces)
 End Function
+
+' Начинает независимый SHA256-блок, повторно используя только провайдер Windows.
+Public Sub BeginDigest()
+    If mStreamHash <> 0 Then Err.Raise 5, , "Предыдущая контрольная сумма не завершена."
+    If mStreamProvider = 0 Then
+        If CryptAcquireContextW(mStreamProvider, 0, 0, 24, &HF0000000) = 0 Then Err.Raise 5, , "Не удалось открыть SHA256 Windows."
+    End If
+    If CryptCreateHash(mStreamProvider, &H800C&, 0, 0, mStreamHash) = 0 Then Err.Raise 5, , "Не удалось создать SHA256 блока."
+End Sub
+
+' Учитывает уже подготовленную память без файлового прохода и промежуточного массива.
+Friend Sub DigestMemory(ByVal address As LongPtr, ByVal count As Long)
+    If mStreamHash = 0 Or count < 0 Then Err.Raise 5, , "Не начата контрольная сумма блока."
+    If count = 0 Then Exit Sub
+    If HashGeometryMemory(mStreamHash, address, count, 0) = 0 Then Err.Raise 5, , "Ошибка SHA256 блока."
+End Sub
+
+' Завершает только текущий блок; соседний блок получает новый объект hash.
+Public Function EndDigest() As String
+    If mStreamHash = 0 Then Err.Raise 5, , "Контрольная сумма не начата."
+    Dim digest(0 To 31) As Byte, count As Long, i As Long
+    count = 32
+    If CryptGetHashParam(mStreamHash, 2, digest(0), count, 0) = 0 Or count <> 32 Then Err.Raise 5, , "Не удалось получить SHA256 блока."
+    For i = 0 To 31: EndDigest = EndDigest & Right$("0" & Hex$(digest(i)), 2): Next i
+    CancelDigest
+End Function
+
+' Освобождает незавершённую сумму после ошибки, не меняя геометрический hash.
+Public Sub CancelDigest()
+    If mStreamHash <> 0 Then CryptDestroyHash mStreamHash: mStreamHash = 0
+End Sub

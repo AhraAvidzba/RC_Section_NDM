@@ -1,0 +1,22 @@
+{
+  "Status": "HELP_ACCEPTED_STORAGE_REFACTOR_PENDING",
+  "WorkbookSHA256": "A5C7E6B7E6105E9107C260DF888B7C77FE15386080DD8AD4B235B9CDE1AED540",
+  "PreviousWorkbookSHA256": "FD20CB2D26C7B6D476BE04C7AC203A1E70E463DC57C16D5BACAEBDB14203BFE7",
+  "AllCodeSHA256": "6DC9E09AD869D482B4675BE63897202A10CFA4470B5AFAB59B8B860BB276D2A8",
+  "Pictures": 78,
+  "NumberedNormativeFormulas": 18,
+  "UnnumberedExactNormativeFormulas": 3,
+  "ClauseBasedExplanations": 6,
+  "AuxiliaryFormulas": 47,
+  "Schemes": 4,
+  "MethodologyTextReferences": 36,
+  "SettingReferences": 23,
+  "NativeReadonly": true,
+  "OwnProcessesTerminal": 8,
+  "UserDataAndResultsPreserved": true,
+  "VBAUnchanged": true,
+  "StorageSourceUnchanged": true,
+  "StoragePerformanceMeasured": false,
+  "ArchiveSHA256": "A5514F13D6221FE83B048ECEFA27C23A9CE08A1B70B0A1285BCBF9E177253665",
+  "PublishedUTC": "2026-11-01T08:44:30.963954+00:00"
+}

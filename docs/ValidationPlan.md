@@ -456,3 +456,8 @@ Baseline менять только с инженерным объяснение�
 неуспешные первые попытки; они не засчитываются вместо завершённых наборов.
 Это не общий PASS полных ON/OFF. Перечень актуальных сообщений строится
 командой `python tools/build_workbook/Audit-ProgramMessages.py --output tmp/ProgramMessagesAudit`.
+
+
+## Адресное хранение результатов
+
+После изменений IO выполнять RunCalculationSnapshotTests, RunPreparedSnapshotReuseTests, RunGeometryPreviewStorageTests, RunConcreteGeometrySnapshotTests, RunSnapshotOutputPolicyTests и RunElementGeometryViewTests на частных книгах No/Yes. Перед каждым набором явно выбирать Excel; File-сценарии задают имя своего снимка сами. Для NDMSNP06 отдельно проверять выбранный/непрочитанный повреждённый блок, каталог, VerifyFile, v4/v5 и .ndms, атомарную запись и Save As. Excel: Invalid после отказа, очистка, одноразовый bootstrap, защита сортировки/вставки/удаления и перенос таблицы целиком. Пример и 19 нативных проб, 12 первичных журналов, ABBA-замеры 292/20 и сохранённого 1240/30: docs/regression/IndexedResults_2026-11-01_Run01/ReviewedIndexedEvidence.zip. Проверки адресные и не заменяют общий ON/OFF+Focused.

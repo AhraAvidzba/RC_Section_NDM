@@ -941,6 +941,18 @@ End Property
 
 ' Восстанавливает готовую подробную таблицу и её сохранённое оформление без решения НДС.
 Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
+    snapshot.Validate
+    RestoreSummaryTables workbook, snapshot, fullFormatting
+End Sub
+
+' Восстанавливает только готовые общие сводки из проверенного адресного источника.
+Public Sub RestoreIndexedSummary(ByVal workbook As Object, ByVal source As CResultReadSource, ByVal fullFormatting As Boolean)
+    source.ValidateForDisplay
+    RestoreSummaryTables workbook, source, fullFormatting
+End Sub
+
+' Записывает те же массивы и оформление для двух явно проверенных входных контрактов.
+Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Object, ByVal fullFormatting As Boolean)
     Set mCapturedSnapshot = Nothing
     mMinimalFormatting = Not fullFormatting
     Dim data As Variant: data = snapshot.Table("Stability.Data")

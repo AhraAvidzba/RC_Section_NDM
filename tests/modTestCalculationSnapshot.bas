@@ -415,7 +415,7 @@ Private Sub TestSnapshotGeometryPreview(ByVal original As CCalculationSnapshot, 
     TestSnapshotCheck "preview.file.header18", UBound(physical, 1) = 1 And UBound(physical, 2) = 18
     TestSnapshotCheck "preview.file.oldRowsCleared", Application.CountA(ThisWorkbook.Names.Item("rngNDMElementGeometry").RefersToRange.Offset(1, 0).Resize(UBound(boundaries, 1) - 1, 18)) = 0
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile: file.OpenRead store.SnapshotPath(ThisWorkbook)
-    TestSnapshotCheck "preview.file.version05", file.ReadASCII(8) = "NDMSNP05" And file.ReadLong() = 5
+    TestSnapshotCheck "preview.file.version06", file.ReadASCII(8) = "NDMSNP06" And file.ReadLong() = 6
     file.CloseFile
     Dim checksum As CFileChecksum: Set checksum = New CFileChecksum
     Dim path As String: path = store.SnapshotPath(ThisWorkbook)
@@ -461,7 +461,7 @@ Private Sub TestSnapshotGeometryPreview(ByVal original As CCalculationSnapshot, 
     TestSnapshotCheck "preview.adaptive.noBoundaryRows", adaptivePreview.TableRowCount("rngNDMElementGeometry") = 1
     store.SaveFile ThisWorkbook, adaptivePreview
     file.OpenRead path
-    TestSnapshotCheck "preview.adaptive.requires05", file.ReadASCII(8) = "NDMSNP05" And file.ReadLong() = 5
+    TestSnapshotCheck "preview.adaptive.indexed06", file.ReadASCII(8) = "NDMSNP06" And file.ReadLong() = 6
     file.CloseFile
     SaveAndDisplayCalculationSnapshot ThisWorkbook, preview ' Внешний reopen gate получает тот же точный контурный набор.
     If Not original Is Nothing Then SaveAndDisplayCalculationSnapshot ThisWorkbook, original
@@ -562,26 +562,30 @@ Private Sub TestSnapshotBoundaryFileCodec(ByVal original As CCalculationSnapshot
             Case Else: legacy.AddTable CStr(key), original.Table(CStr(key))
         End Select
     Next key
-    store.SaveFile ThisWorkbook, legacy
+    TestSnapshotWriteLegacy savedPath, legacy, 4
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
     file.OpenRead savedPath
     TestSnapshotCheck "boundary.file.legacy04Header", file.ReadASCII(8) = "NDMSNP04" And file.ReadLong() = 4
     file.CloseFile
     Dim loaded As CCalculationSnapshot: Set loaded = store.LoadFile(ThisWorkbook)
     TestSnapshotCheck "boundary.file.legacy04Read", Not loaded.HasTable("rngNDMElementGeometry") And TestSnapshotSameMatrix(legacyGeometry, loaded.Table("rngNDMSectionGeometry"))
+    ' Проверка чтения v5 не зависит от текущего writer-а v6.
+    TestSnapshotWriteLegacy savedPath, sample, 5
+    Set loaded = store.LoadFile(ThisWorkbook)
+    TestSnapshotEqual "boundary.file.legacy05Read", sample, loaded
     store.SaveFile ThisWorkbook, sample
     file.OpenRead savedPath
     Dim signature As String: signature = file.ReadASCII(8)
     Dim version As Long: version = file.ReadLong()
-    TestSnapshotCheck "boundary.file.new05Header", signature = "NDMSNP05" And version = 5
+    TestSnapshotCheck "boundary.file.new06Header", signature = "NDMSNP06" And version = 6
     TestSnapshotCheck "boundary.file.old04ReaderRejectsNew", signature <> "NDMSNP04" And version <> 4
     file.Position = file.Size - 8
-    TestSnapshotCheck "boundary.file.new05Footer", file.ReadASCII(8) = signature
+    TestSnapshotCheck "boundary.file.new06Footer", file.ReadASCII(8) = "NDMIDX06"
     file.CloseFile
     store.UpdateSavedElapsed ThisWorkbook, sample
     Set loaded = store.LoadFile(ThisWorkbook)
     TestSnapshotCheck "boundary.file.ndmMatrixExact", TestSnapshotSameMatrix(boundaries, loaded.Table("rngNDMElementGeometry"))
-    TestSnapshotCheck "boundary.file.elapsed05", loaded.ElapsedSeconds = sample.ElapsedSeconds
+    TestSnapshotCheck "boundary.file.elapsed06", loaded.ElapsedSeconds = sample.ElapsedSeconds
     Dim map As Object, loadedGeometry As Variant, loadedBoundaries As Variant
     loadedGeometry = loaded.Table("rngNDMSectionGeometry"): loadedBoundaries = loaded.Table("rngNDMElementGeometry")
     Set map = ReadConcreteBoundaryMap(loadedBoundaries, loadedGeometry)
@@ -599,7 +603,7 @@ Private Sub TestSnapshotBoundaryFileCodec(ByVal original As CCalculationSnapshot
         query.ValidateBoundaryProperties restored.ConcreteGeometry(i), restored.ConcreteX(i), restored.ConcreteY(i), _
             restored.ConcreteArea(i), restored.ConcreteLocalIx(i), restored.ConcreteLocalIy(i), restored.ConcreteLocalIxy(i)
     Next i
-    fileSystem.MoveFile savedPath, legacyPath: ownsLegacy = True ' Как в TestSnapshotLegacyFile: BSTR-путь сохраняет символ α независимо от системной ANSI-страницы.
+    fileSystem.MoveFile savedPath, legacyPath: ownsLegacy = True ' Как в TestSnapshotLegacyFile: BSTR-путь сохраняет букву альфа независимо от системной ANSI-страницы.
     Set loaded = store.LoadFile(ThisWorkbook)
     TestSnapshotCheck "boundary.file.ndmsMatrixExact", TestSnapshotSameMatrix(boundaries, loaded.Table("rngNDMElementGeometry"))
     fileSystem.MoveFile legacyPath, savedPath: ownsLegacy = False
@@ -1510,19 +1514,21 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Индекс обязан сохранять несмежные группы, регистр, порядок и произвольные позиции колонок.
 Private Sub TestSnapshotElementIndex()
-    Dim snapshot As CCalculationSnapshot: Set snapshot = New CCalculationSnapshot
-    Dim data(1 To 7, 1 To 9) As Variant, row As Long
-    data(1, 1) = "RunID": data(1, 5) = "LoadCase": data(1, 3) = "StateType"
+    Dim snapshot As New CCalculationSnapshot: snapshot.RunID = 1#
+    Dim data(1 To 7, 1 To 9) As Variant, row As Long, column As Long, names As Variant
+    ' Fixture использует девять рабочих колонок; перестановка значений между колонками не является результатом НДС.
+    names = Array("RunID", "LoadCase", "ProfileId", "StateType", "ElementID", "MaterialType", "Strain", "Stress", "PhysicalState")
+    For column = 1 To 9: data(1, column) = names(column - 1): Next column
     For row = 2 To 7
-        data(row, 1) = 1#: data(row, 2) = "Element" & CStr(row)
-        data(row, 5) = IIf(row = 4 Or row = 7, "B", "A")
-        data(row, 3) = IIf(row = 3 Or row = 7, "CrackedState", "StrengthState")
+        data(row, 1) = 1#: data(row, 5) = "Element" & CStr(row): data(row, 3) = "ULS"
+        data(row, 2) = IIf(row = 4 Or row = 7, "B", "A")
+        data(row, 4) = IIf(row = 3 Or row = 7, "CrackedState", "StrengthState")
     Next row
     snapshot.AddTable "rngNDMElementResults", data
     Dim actual As Variant: actual = snapshot.SelectElementResults("a", "strengthstate", False)
-    TestSnapshotCheck "index.nonAdjacentOrder", UBound(actual, 1) = 4 And actual(2, 2) = "Element2" And actual(3, 2) = "Element5" And actual(4, 2) = "Element6"
+    TestSnapshotCheck "index.nonAdjacentOrder", UBound(actual, 1) = 4 And actual(2, 5) = "Element2" And actual(3, 5) = "Element5" And actual(4, 5) = "Element6"
     actual = snapshot.SelectElementResults("", "", True)
-    TestSnapshotCheck "index.firstRows", UBound(actual, 1) = 5 And actual(2, 2) = "Element2" And actual(3, 2) = "Element3" And actual(4, 2) = "Element4" And actual(5, 2) = "Element7"
+    TestSnapshotCheck "index.firstRows", UBound(actual, 1) = 5 And actual(2, 5) = "Element2" And actual(3, 5) = "Element3" And actual(4, 5) = "Element4" And actual(5, 5) = "Element7"
     actual = snapshot.SelectElementResults("missing", "", False)
     TestSnapshotCheck "index.missingHeaderOnly", UBound(actual, 1) = 1
     actual = snapshot.SelectElementResults("", "", False)
@@ -2297,3 +2303,25 @@ Finished:
     On Error GoTo 0
     RunWorkbookActionCompletionTests = mTestReport & "TOTAL_ACTION_COMPLETION: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт частный совместимый v4/v5 fixture; рабочая запись всегда использует v6.
+' Контейнер и SHA соответствуют формату, матрицы используют сохранённый колонковый кодек.
+Private Sub TestSnapshotWriteLegacy(ByVal path As String, ByVal snapshot As CCalculationSnapshot, ByVal version As Long)
+    If version <> 4 And version <> 5 Then Err.Raise 5, , "Test legacy version"
+    Dim file As New CBinarySnapshotFile, codec As New CCalculationSnapshotStore
+    Dim key As Variant, count As Long, values As Variant, signature As String
+    For Each key In snapshot.Keys(): count = count + 1: Next key
+    signature = "NDMSNP0" & CStr(version)
+    file.OpenWrite path
+    file.WriteASCII signature: file.WriteLong version
+    file.WriteDouble snapshot.RunID: file.WriteDouble snapshot.ElapsedSeconds: file.WriteLong count
+    For Each key In snapshot.Keys()
+        file.WriteSizedUTF16 CStr(key): values = snapshot.Table(CStr(key))
+        codec.WriteIndexedValues file, values
+    Next key
+    file.CloseFile
+    Dim digest As New CFileChecksum, hash As String: hash = digest.FileSHA256(path)
+    file.OpenUpdate path: file.Position = file.Size
+    file.WriteASCII hash: file.WriteASCII signature: file.CloseFile
+End Sub

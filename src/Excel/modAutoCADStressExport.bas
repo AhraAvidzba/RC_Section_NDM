@@ -257,7 +257,7 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     profiles.LoadFromWorkbook workbook, True, Not snapshot Is Nothing
 
     Dim profile As CCalculationProfile
@@ -290,12 +290,12 @@ End Sub
 ' Явный файловый GeometryPreview также не содержит состояний. Полный File-снимок
 ' и повреждённый сохранённый расчёт остаются на строгом пути чтения.
 Private Function IsGeometryOnlyExportSource(ByVal workbook As Object) As Boolean
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     If Not snapshot Is Nothing Then
         IsGeometryOnlyExportSource = snapshot.IsGeometryPreview
         Exit Function
     End If
-    Dim data As Variant: data = ReadPhysicalResultTable(workbook, "rngNDMElementResults")
+    Dim data As Variant: data = ReadElementResultTable(workbook, , , True)
     If HasResultTableRows(data) Then Exit Function
     data = ReadPhysicalResultTable(workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then IsGeometryOnlyExportSource = True: Exit Function
@@ -554,7 +554,7 @@ Private Function ExportCombinationHasCrackWidth(ByVal combinationID As String) A
     profileId = ReadProfileIdForLoadCase(workbook, combinationID)
     If Len(profileId) = 0 Then Exit Function
 
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     If Not snapshot Is Nothing Then
         Dim savedProfile As CCalculationProfile: Set savedProfile = snapshot.SavedVisualizationProfile(profileId)
         ExportCombinationHasCrackWidth = savedProfile.CrackWidthEnabled

@@ -399,6 +399,7 @@ function Add-CalculationButtons {
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
 . (Join-Path $PSScriptRoot "SectionIllustrations.ps1")
+. (Join-Path $PSScriptRoot "IndexedResultsTable.ps1")
 $script:WorkbookLayout = Read-WorkbookLayout
 . (Join-Path $PSScriptRoot "SectionRecipeGuide.ps1")
 if (-not [string]::IsNullOrWhiteSpace($FormulaImageDirectory)) {
@@ -539,6 +540,7 @@ try {
     Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AA$156'
     Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$CL$156'
     Add-WorkbookName $workbook "rngNDMElementGeometry" $results '$BR$156'
+    Add-IndexedResultsTable $workbook $script:WorkbookLayout
     $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
     # Постоянные подписи создаются один раз при сборке шаблона.
     # Поэлементная запись обходит ограничение COM-адаптера PowerShell для этой шапки.
@@ -622,6 +624,9 @@ finally {
 
 # Excel уже закрыл файл: закрепляем точные исходные PNG и отключаем их автосжатие.
 Save-SectionIllustrationImageBytes $fullOutputPath
+# Сохраняем встроенный префикс областей печати после локализованного COM-save.
+$printAreas = @(Get-WorkbookPrintAreas $fullOutputPath)
+Restore-WorkbookPrintAreas $fullOutputPath $printAreas
 
 
 

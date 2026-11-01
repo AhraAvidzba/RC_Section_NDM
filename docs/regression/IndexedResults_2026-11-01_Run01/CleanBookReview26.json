@@ -1,0 +1,25 @@
+{
+  "Status": "PASS",
+  "Mode": "FreshBuild",
+  "WorkbookSHA256": "7A85A8E92B3BAAA381F2E12B0064B390C216A52D87A65C01930FDDCB622A2738",
+  "SourceComponents": 181,
+  "DocumentComponents": 6,
+  "DefaultSettings": {
+    "Results.SnapshotStorage": "Excel",
+    "Results.SnapshotName": "NDM_Snapshot",
+    "Mesh.StepMode": "Auto 0.1",
+    "Mesh.BoundarySubdivisions": "2"
+  },
+  "SavedResultsAbsent": true,
+  "LowerOrder": [
+    "rngNDMSectionGeometry",
+    "rngNDMSectionProperties",
+    "rngNDMMaterialDiagrams",
+    "rngNDMSectionContours",
+    "rngNDMElementResults",
+    "rngNDMElementGeometry",
+    "rngNDMSectionAnnotations",
+    "rngNDMElementResultIndex"
+  ],
+  "Errors": []
+}

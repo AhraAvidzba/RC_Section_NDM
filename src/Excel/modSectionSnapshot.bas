@@ -135,7 +135,7 @@ End Function
 ' Читает определяющее сочетание сохранённого расчёта, не доверяя справочной сводке при File.
 ' Переключатели выбора сочетания остаются в Config; Worst принадлежит конкретному снимку.
 Public Function ReadSavedWorstCombinationID(ByVal workbook As Object) As String
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     If Not snapshot Is Nothing Then
         If snapshot.IsGeometryPreview Then Exit Function
         Dim summary As Variant: summary = snapshot.Table("Summary")
@@ -167,7 +167,8 @@ End Function
 ' Общие свойства ALL не являются сочетанием. Отсутствующая необязательная таблица пропускается.
 Private Function FirstOutputCombinationInTable(ByVal workbook As Object, ByVal rangeName As String) As String
     On Error GoTo Failed
-    Dim data As Variant: data = ReadAnchoredResultTable(workbook, rangeName)
+    Dim data As Variant
+    If rangeName = "rngNDMElementResults" Then data = ReadElementResultTable(workbook, , , True) Else data = ReadAnchoredResultTable(workbook, rangeName)
     If Not HasResultTableRows(data) Then Exit Function
     Dim column As Long: column = ResultColumn(data, "LoadCase")
     Dim row As Long, candidate As String
@@ -193,7 +194,7 @@ Public Function ReadSavedConcreteBoundaries(ByVal workbook As Object, Optional B
     On Error Resume Next
     Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange
     On Error GoTo 0
-    Dim saved As CCalculationSnapshot: Set saved = CurrentCalculationSnapshot(workbook)
+    Dim saved As CResultReadSource: Set saved = CurrentResultSource(workbook)
     If Not saved Is Nothing Then
         Dim checked As Object
         If saved.TryCopyValidatedConcreteBoundaries(data, checked) Then
@@ -833,7 +834,7 @@ End Function
 ' В File ни одна геометрическая таблица не дополняется ячейками листа.
 ' Для расчёта достаточно общих таблиц, для схемы/экспорта добавляются записи сочетаний.
 Public Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     If Not snapshot Is Nothing Then
         If rangeName = "rngNDMElementGeometry" And Not snapshot.HasTable(rangeName) Then Exit Function ' Старый Adaptive-снимок может не иметь необязательной матрицы границ; Contour проверяется snapshot.Validate.
         If workbook Is mSnapshotReadWorkbook And mSnapshotReadGeometryOnly Then
@@ -878,45 +879,10 @@ End Function
 ' Выбирает сохранённое сочетание или только перечень состояний. Внешний файл
 ' проверяется так же, как при полном чтении; новые НДС и импорт не выполняются.
 Public Function ReadElementResultTable(ByVal workbook As Object, Optional ByVal combinationID As String = "", _
-        Optional ByVal stateType As String = "", Optional ByVal indexOnly As Boolean = False) As Variant
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
-    If Not snapshot Is Nothing Then ReadElementResultTable = snapshot.SelectElementResults(combinationID, stateType, indexOnly): Exit Function
-    Dim data As Variant: data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
-    If Len(combinationID) = 0 And Len(stateType) = 0 And Not indexOnly Then ReadElementResultTable = data: Exit Function
-    Dim rows As Long, i As Long, j As Long, used As Long, identity As String, seen As Object
-    Dim caseColumn As Long: caseColumn = ResultColumn(data, "LoadCase")
-    Dim stateColumn As Long: stateColumn = ResultColumn(data, "StateType")
-    Set seen = CreateObject("Scripting.Dictionary"): seen.CompareMode = vbTextCompare
-    For i = 2 To UBound(data, 1)
-        If (Len(combinationID) = 0 Or StrComp(CStr(data(i, caseColumn)), combinationID, vbTextCompare) = 0) And _
-                (Len(stateType) = 0 Or StrComp(CStr(data(i, stateColumn)), stateType, vbTextCompare) = 0) Then
-            If indexOnly Then
-                identity = CStr(data(i, caseColumn)) & Chr$(30) & CStr(data(i, stateColumn))
-                If Not seen.Exists(identity) Then seen.Add identity, i: rows = rows + 1
-            Else
-                rows = rows + 1
-            End If
-        End If
-    Next i
-    Dim selected() As Variant: ReDim selected(1 To rows + 1, 1 To UBound(data, 2))
-    For j = 1 To UBound(data, 2): selected(1, j) = data(1, j): Next j
-    used = 1
-    For i = 2 To UBound(data, 1)
-        If (Len(combinationID) = 0 Or StrComp(CStr(data(i, caseColumn)), combinationID, vbTextCompare) = 0) And _
-                (Len(stateType) = 0 Or StrComp(CStr(data(i, stateColumn)), stateType, vbTextCompare) = 0) Then
-            If indexOnly Then
-                identity = CStr(data(i, caseColumn)) & Chr$(30) & CStr(data(i, stateColumn))
-                If seen.Exists(identity) Then
-                    If CLng(seen.Item(identity)) = i Then
-                        used = used + 1: For j = 1 To UBound(data, 2): selected(used, j) = data(i, j): Next j
-                    End If
-                End If
-            Else
-                used = used + 1: For j = 1 To UBound(data, 2): selected(used, j) = data(i, j): Next j
-            End If
-        End If
-    Next i
-    ReadElementResultTable = selected
+        Optional ByVal stateType As String = "", Optional ByVal indexOnly As Boolean = False, Optional ByVal profileID As String = "") As Variant
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
+    If Not snapshot Is Nothing Then ReadElementResultTable = snapshot.SelectElementResults(combinationID, stateType, indexOnly, profileID): Exit Function
+    ReadElementResultTable = ReadIndexedExcelElementResults(workbook, combinationID, stateType, indexOnly, profileID)
 End Function
 
 ' Определяет ширину таблицы по непрерывной строке заголовков.
@@ -1051,7 +1017,7 @@ Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional 
         Optional ByVal preservedWriter As CNDMResultsWriter = Nothing) As CSectionModel
     On Error GoTo Failed
     BeginSectionSnapshotRead workbook, True ' Модель использует только общую геометрию, без загрузки массивов расчётных состояний.
-    Dim savedSnapshot As CCalculationSnapshot: Set savedSnapshot = CurrentCalculationSnapshot(workbook) ' Проверяем файл до опционального чтения подписи источника: его ошибку нельзя выдать за пустой Results.
+    Dim savedSnapshot As CResultReadSource: Set savedSnapshot = CurrentResultSource(workbook) ' Проверяем файл до опционального чтения подписи источника: его ошибку нельзя выдать за пустой Results.
     Dim source As String: source = ResultsGeometrySource(workbook)
     If Len(source) = 0 Then Err.Raise vbObjectError + 4380, "ReadFormedSectionFromResults", _
         "В Results нет сформированного сечения. Сначала нажмите «Сформировать сечение»."

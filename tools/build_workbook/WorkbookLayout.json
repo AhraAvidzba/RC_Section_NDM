@@ -208,6 +208,14 @@
       "Address": "$H$3:$K$9",
       "Rows": 7,
       "Columns": 4
+    },
+    {
+      "Name": "rngNDMElementResultIndex",
+      "RefersTo": "=Results!$DL$156",
+      "Sheet": "Results",
+      "Address": "$DL$156",
+      "Rows": 1,
+      "Columns": 1
     }
   ],
   "Sheets": [
@@ -5055,6 +5063,12 @@
           "Last": 107,
           "Width": 8.57,
           "Hidden": false
+        },
+        {
+          "First": 116,
+          "Last": 129,
+          "Width": 14,
+          "Hidden": false
         }
       ],
       "Rows": [],
@@ -5094,6 +5108,13 @@
       "WorkbookSHA256": "F80DE642299BB8DF3E7EC6FC6FB4F2B11711D5C8475473D30364456644B63E0A",
       "Images": "Four user PNGs; CurrentSection initially PointedSection",
       "Selector": "Расчет!K2"
+    },
+    "IndexedResults": {
+      "Format": "NDMResultIndex02",
+      "Anchor": "rngNDMElementResultIndex",
+      "Address": "Results!DL156",
+      "GapAfterAnnotations": 2,
+      "ExistingTableLocationsUnchanged": true
     }
   }
 }

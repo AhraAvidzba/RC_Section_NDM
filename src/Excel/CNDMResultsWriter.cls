@@ -19,6 +19,7 @@ Option Explicit
 ' При расчёте сохраняет полученное НДС; при формировании — снимок геометрии без НДС.
 ' Исходные таблицы геометрии при записи не перечитываются.
 
+Private mPendingElementIndex As CResultBlockIndex
 Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник полного результата до сохранения и оформления листа.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 Private mPreservedWorkbook As Object ' Владелец исходных таблиц, прочитанных до расчёта в пределах одной операции.
@@ -99,6 +100,7 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
         ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal preserveGeometry As Boolean = False, Optional ByVal fullFormatting As Boolean = True)
     mMinimalFormatting = Not fullFormatting
+    Set mPendingElementIndex = Nothing
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
     If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Готовые характеристики снимка не переданы."
@@ -142,6 +144,11 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     WriteSectionAnnotations workbook, section, runID, units, batch, previousAnnotations
     Set mPreservedWorkbook = Nothing: mPreservedFromFile = False
     mPreservedGeometry = Empty: mPreservedContours = Empty: mPreservedElementGeometry = Empty: mPreservedAnnotations = Empty: mPreservedDiagnostics = vbNullString
+    If Not mPendingElementIndex Is Nothing Then
+        Dim indexData As Variant: indexData = ElementResultIndexMatrix(mPendingElementIndex)
+        PublishElementResultIndex workbook, indexData, Me
+        Set mPendingElementIndex = Nothing
+    End If
 End Sub
 
 ' После формирования или импорта записывает геометрию без расчёта сочетаний.
@@ -382,29 +389,37 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To ELEMENT_RESULT_COLUMNS)
     PutElementResultHeaders data, units
+    Dim blockIndex As New CResultBlockIndex, indexHeader(1 To 1, 1 To 9) As Variant, indexColumn As Long, firstStateRow As Long
+    For indexColumn = 1 To 9: indexHeader(1, indexColumn) = data(1, indexColumn): Next indexColumn
+    blockIndex.Initialize indexHeader, CDbl(runID)
 
     Dim rowIndex As Long
     rowIndex = 2
     If Not mCapturedSnapshot Is Nothing Then
         For preparedIndex = 1 To preparedCount ' Очередь сохраняет исходный порядок LC и НДС; Repository.StateAt повторно не обходится.
+            firstStateRow = rowIndex
             PutCombinationElementResults data, rowIndex, section, batch, preparedCombinations(preparedIndex), _
                 preparedStates(preparedIndex), runID, units
+            blockIndex.AppendPreparedBlock data, firstStateRow, rowIndex - firstStateRow
         Next preparedIndex
     Else
         For i = 1 To batch.Count ' Прямой вывод использует резерв по числу состояний и оформление листа без очереди сохранения.
             For stateIndex = 1 To batch.ResultAt(i).StateRepository.StateCount
+                firstStateRow = rowIndex
                 PutCombinationElementResults data, rowIndex, section, batch, i, _
                     batch.ResultAt(i).StateRepository.StateAt(stateIndex), runID, units
+                blockIndex.AppendPreparedBlock data, firstStateRow, rowIndex - firstStateRow
             Next stateIndex
         Next i
     End If
 
     If Not mCapturedSnapshot Is Nothing Then
-        mCapturedSnapshot.AddPreparedElementResults data, rowIndex - 1
+        mCapturedSnapshot.AddPreparedElementResults data, rowIndex - 1, blockIndex
         Exit Sub
     End If
     target.Resize(rowCount, ELEMENT_RESULT_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, ELEMENT_RESULT_COLUMNS, "Результаты элементов по сочетаниям"
+    Set mPendingElementIndex = blockIndex
 End Sub
 
 ' ------------------------------
@@ -1944,7 +1959,7 @@ End Property
 ' При последующей подготовке файла используются эти массивы, а не ячейки Results.
 Friend Sub PreparePreservedSnapshotSource(ByVal workbook As Object)
     Set mPreservedWorkbook = Nothing ' Неудачное новое чтение не оставляет действительной привязку предыдущего набора.
-    Dim source As CCalculationSnapshot: Set source = CurrentCalculationSnapshot(workbook)
+    Dim source As CResultReadSource: Set source = CurrentResultSource(workbook)
     mPreservedFromFile = Not source Is Nothing
     mPreservedGeometry = CalculationGeometryTable(ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry"))
     mPreservedContours = ReadAnchoredResultTable(workbook, "rngNDMSectionContours")
@@ -2054,8 +2069,31 @@ End Function
 ' общие характеристики и диаграммы. В Excel LC-свойства и области трещин
 ' остаются читаемыми строками Results; в File состояния, аннотации и собственные границы остаются только в снимке.
 Public Sub RestoreSnapshotBase(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True, Optional ByVal includeElements As Boolean = True)
+    If snapshot Is Nothing Then Err.Raise 5, , "Снимок для восстановления не передан."
+    snapshot.Validate
+    Dim indexData As Variant, indexAnchor As Object
+    If includeElements Then
+        indexData = ElementResultIndexMatrix(snapshot.ElementIndex)
+        Set indexAnchor = EnsureElementResultIndexAnchor(workbook, UBound(indexData, 1))
+    End If
+    InvalidateElementResultIndex workbook
+    PrepareIndexedResultsWrite workbook
+    RestoreBaseTables workbook, snapshot, fullFormatting, includeElements
+    If includeElements Then PublishElementResultIndex workbook, indexData, Me
+End Sub
+
+' Восстанавливает общие таблицы File; адресный источник не выдаётся за полный снимок.
+Public Sub RestoreIndexedBase(ByVal workbook As Object, ByVal source As CResultReadSource, ByVal fullFormatting As Boolean)
+    source.ValidateForDisplay
+    InvalidateElementResultIndex workbook
+    PrepareIndexedResultsWrite workbook
+    RestoreBaseTables workbook, source, fullFormatting, False
+End Sub
+
+' Общее блочное оформление вызывается только после проверки явно типизированного источника.
+Private Sub RestoreBaseTables(ByVal workbook As Object, ByVal snapshot As Object, ByVal fullFormatting As Boolean, ByVal includeElements As Boolean)
     If snapshot Is Nothing Then Err.Raise 5, "CNDMResultsWriter.RestoreSnapshotBase", "Снимок для восстановления не передан."
-    snapshot.Validate ' Публичный прямой вызов также отклоняет потерю обязательной границы до очистки первой ячейки Results.
+
     Set mCapturedSnapshot = Nothing: mMinimalFormatting = Not fullFormatting
     If Not includeElements Or Not snapshot.HasTable("rngNDMElementGeometry") Then
         Dim emptySection As CSectionModel: Set emptySection = New CSectionModel

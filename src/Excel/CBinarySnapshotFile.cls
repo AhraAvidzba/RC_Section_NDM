@@ -28,6 +28,10 @@ Private mPath As String ' Имя для сообщения о фактическ
 Private mWriteBuffer(0 To 65535) As Byte ' Объединяет короткие записи служебных полей в блоки по 64 КиБ.
 Private mBuffered As Long ' Логическая позиция включает эти ещё не отправленные Windows байты.
 Private mReadBuffer(0 To 65535) As Byte ' Небольшие поля и строки читаются блоками, без отдельного ReadFile для каждого значения.
+Private mDigest As CFileChecksum ' Потоковая сумма блока; не требует сброса буфера между состояниями.
+Private mDigestWriting As Boolean, mDigestReading As Boolean, mDigestStart As Long
+Private mReadLimit As Long ' Конец текущего проверяемого окна, исключая соседние блоки из prefetch.
+Private mBytesRead As Double, mReadCalls As Long
 Private mReadCount As Long, mReadOffset As Long ' Физический указатель опережает Position только на непрочитанный остаток этого буфера.
 
 ' Открывает существующий файл на чтение, не создавая пустой файл при опечатке.
@@ -53,13 +57,15 @@ Private Sub OpenFile(ByVal path As String, ByVal access As Long, ByVal sharing A
     If mHandle = -1 Then mHandle = 0: Err.Raise 5, "CBinarySnapshotFile", "Не удалось открыть файл: " & path & ". Код Windows: " & CStr(Err.LastDllError)
     Dim high As Long: mSize = GetFileSize(mHandle, VarPtr(high))
     If high <> 0 Or mSize < 0 Then CloseFile: Err.Raise 5, "CBinarySnapshotFile", "Снимок превышает поддерживаемый размер 2 ГиБ: " & path
-    mPosition = 0
+    mPosition = 0: mReadLimit = mSize: mBytesRead = 0#: mReadCalls = 0
 End Sub
 
 ' Закрывает только собственный дескриптор, в том числе после ошибки вызывающего кода.
 Public Sub CloseFile()
     On Error GoTo Failed
     If mHandle <> 0 Then FlushWrites: CloseHandle mHandle: mHandle = 0
+    If Not mDigest Is Nothing Then mDigest.CancelDigest
+    mDigestWriting = False: mDigestReading = False
     mReadCount = 0: mReadOffset = 0
     Exit Sub
 Failed:
@@ -87,6 +93,8 @@ End Property
 
 ' Перемещает позицию только внутри существующего файла; случайные пропуски запрещены.
 Public Property Let Position(ByVal value As Long)
+    If mDigestWriting Or mDigestReading Then Err.Raise 5, , "Перемещение внутри незавершённого блока запрещено."
+    mReadLimit = mSize
     If value < 0 Or value > mSize Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Неверное смещение снимка: " & mPath
     FlushWrites
     If SetFilePointer(mHandle, value, 0, 0) <> value Then Err.Raise 5, "CBinarySnapshotFile", "Не удалось изменить позицию: " & mPath
@@ -96,7 +104,7 @@ End Property
 ' Читает строго заданное число байтов, не допускает незаметного усечения массива.
 Private Sub ReadExact(ByVal target As LongPtr, ByVal count As Long)
     Dim done As Long, copied As Long, take As Long, remaining As Long
-    If count < 0 Or count > mSize - mPosition Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Файл снимка оборван: " & mPath
+    If count < 0 Or count > mReadLimit - mPosition Or mHandle = 0 Then Err.Raise 5, "CBinarySnapshotFile", "Файл снимка оборван: " & mPath
     If count = 0 Then Exit Sub
     FlushWrites
     Do While copied < count
@@ -107,11 +115,15 @@ Private Sub ReadExact(ByVal target As LongPtr, ByVal count As Long)
             mReadOffset = mReadOffset + take: mPosition = mPosition + take: copied = copied + take
         ElseIf remaining >= 65536 Then
             If ReadFile(mHandle, target + copied, remaining, done, 0) = 0 Or done <> remaining Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка чтения файла: " & mPath
+            mBytesRead = mBytesRead + remaining: mReadCalls = mReadCalls + 1
+            If mDigestReading Then mDigest.DigestMemory target + copied, remaining
             mPosition = mPosition + remaining: copied = count
             mReadCount = 0: mReadOffset = 0
         Else
-            take = mSize - mPosition: If take > 65536 Then take = 65536
+            take = mReadLimit - mPosition: If take > 65536 Then take = 65536
             If ReadFile(mHandle, VarPtr(mReadBuffer(0)), take, done, 0) = 0 Or done <> take Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка чтения файла: " & mPath
+            mBytesRead = mBytesRead + take: mReadCalls = mReadCalls + 1
+            If mDigestReading Then mDigest.DigestMemory VarPtr(mReadBuffer(0)), take
             mReadCount = take: mReadOffset = 0
         End If
     Loop
@@ -133,6 +145,7 @@ Private Sub WriteExact(ByVal source As LongPtr, ByVal count As Long)
     Else
         FlushWrites
         If WriteFile(mHandle, source, count, done, 0) = 0 Or done <> count Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка записи файла: " & mPath
+        If mDigestWriting Then mDigest.DigestMemory source, count
     End If
     mPosition = mPosition + count
     If mPosition > mSize Then mSize = mPosition
@@ -144,6 +157,10 @@ Private Sub FlushWrites()
     If mBuffered = 0 Then Exit Sub
     Dim done As Long
     If WriteFile(mHandle, VarPtr(mWriteBuffer(0)), mBuffered, done, 0) = 0 Or done <> mBuffered Then Err.Raise 5, "CBinarySnapshotFile", "Ошибка блочной записи файла: " & mPath
+    If mDigestWriting Then
+        If mBuffered > mDigestStart Then mDigest.DigestMemory VarPtr(mWriteBuffer(mDigestStart)), mBuffered - mDigestStart
+        mDigestStart = 0
+    End If
     mBuffered = 0
 End Sub
 
@@ -168,7 +185,7 @@ End Sub
 ' Пустые строки, встроенный NUL и любые кодовые единицы Unicode сохраняются побайтно.
 Public Function ReadSizedUTF16(ByVal maximumBytes As Long) As String
     Dim count As Long: count = ReadLong()
-    If count < 0 Or count > maximumBytes Or count Mod 2 <> 0 Or count > mSize - mPosition Then Err.Raise 5, , "Неверная длина строки снимка."
+    If count < 0 Or count > maximumBytes Or count Mod 2 <> 0 Or count > mReadLimit - mPosition Then Err.Raise 5, , "Неверная длина строки снимка."
     If count = 0 Then Exit Function
     ReadSizedUTF16 = String$(count \ 2, vbNullChar)
     ReadExact StrPtr(ReadSizedUTF16), count
@@ -201,7 +218,7 @@ End Sub
 
 ' Получает плотный массив байтов с проверкой длины до выделения памяти.
 Public Function ReadBytes(ByVal count As Long) As Variant
-    If count < 1 Or count > mSize - mPosition Then Err.Raise 5, "CBinarySnapshotFile", "Неверная длина байтов снимка."
+    If count < 1 Or count > mReadLimit - mPosition Then Err.Raise 5, "CBinarySnapshotFile", "Неверная длина байтов снимка."
     Dim values() As Byte: ReDim values(0 To count - 1)
     ReadExact VarPtr(values(0)), count: ReadBytes = values
 End Function
@@ -213,7 +230,7 @@ End Sub
 
 ' Читает числовую колонку без цикла по файловым операциям.
 Public Function ReadDoubles(ByVal count As Long) As Variant
-    If count < 1 Or CDbl(count) * 8 > mSize - mPosition Then Err.Raise 5, "CBinarySnapshotFile", "Неверная длина числовой колонки."
+    If count < 1 Or CDbl(count) * 8 > mReadLimit - mPosition Then Err.Raise 5, "CBinarySnapshotFile", "Неверная длина числовой колонки."
     Dim values() As Double: ReDim values(1 To count)
     ReadExact VarPtr(values(1)), count * 8: ReadDoubles = values
 End Function
@@ -225,7 +242,7 @@ End Sub
 
 ' Читает индексы словаря с проверкой размера до выделения массива.
 Public Function ReadLongs(ByVal count As Long) As Variant
-    If count < 1 Or CDbl(count) * 4 > mSize - mPosition Then Err.Raise 5, "CBinarySnapshotFile", "Неверная длина индексов словаря."
+    If count < 1 Or CDbl(count) * 4 > mReadLimit - mPosition Then Err.Raise 5, "CBinarySnapshotFile", "Неверная длина индексов словаря."
     Dim values() As Long: ReDim values(1 To count)
     ReadExact VarPtr(values(1)), count * 4: ReadLongs = values
 End Function
@@ -239,3 +256,47 @@ End Sub
 Public Function ReadASCII(ByVal count As Long) As String
     Dim values() As Byte: values = ReadBytes(count): ReadASCII = StrConv(values, vbUnicode)
 End Function
+
+' Начинает сумму следующего записываемого блока без физического сброса 64-КиБ буфера.
+Public Sub BeginWriteDigest()
+    If mDigestWriting Or mDigestReading Then Err.Raise 5, , "Контрольная сумма предыдущего блока не завершена."
+    If mDigest Is Nothing Then Set mDigest = New CFileChecksum
+    mDigest.BeginDigest: mDigestStart = mBuffered: mDigestWriting = True
+End Sub
+
+' Учитывает оставшийся хвост блока, оставляя его в общем буфере записи.
+Public Function EndWriteDigest() As String
+    If Not mDigestWriting Then Err.Raise 5, , "Не начата запись проверяемого блока."
+    If mBuffered > mDigestStart Then mDigest.DigestMemory VarPtr(mWriteBuffer(mDigestStart)), mBuffered - mDigestStart
+    EndWriteDigest = mDigest.EndDigest: mDigestWriting = False: mDigestStart = mBuffered
+End Function
+
+' Ограничивает физическое чтение ровно выбранным блоком до выделения его матриц.
+Public Sub BeginReadDigest(ByVal offset As Long, ByVal bytes As Long)
+    If mDigestWriting Or mDigestReading Then Err.Raise 5, , "Предыдущий блок не завершён."
+    If offset < 0 Or bytes < 1 Or CDbl(offset) + bytes > mSize Then Err.Raise 5, , "Блок выходит за границы файла."
+    Position = offset: mReadLimit = offset + bytes
+    If mDigest Is Nothing Then Set mDigest = New CFileChecksum
+    mDigest.BeginDigest: mDigestReading = True
+End Sub
+
+' Полное потребление ограниченного блока обязательно: лишние байты также являются ошибкой.
+Public Function EndReadDigest() As String
+    If Not mDigestReading Or mPosition <> mReadLimit Then Err.Raise 5, , "Длина прочитанного блока не совпадает с каталогом."
+    EndReadDigest = mDigest.EndDigest: mDigestReading = False: mReadLimit = mSize
+End Function
+
+' Возвращает доступный остаток текущего блока для проверки размеров до выделения памяти.
+Public Property Get RemainingBytes() As Long
+    RemainingBytes = mReadLimit - mPosition
+End Property
+
+' Счётчик реальных байтов ReadFile включает все проверки, но не логические обращения к буферу.
+Public Property Get BytesRead() As Double
+    BytesRead = mBytesRead
+End Property
+
+' Счётчик физических обращений к Windows показывает действие буферизации.
+Public Property Get ReadCalls() As Long
+    ReadCalls = mReadCalls
+End Property

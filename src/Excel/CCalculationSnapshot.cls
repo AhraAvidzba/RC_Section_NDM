@@ -22,9 +22,7 @@ Private mRunID As Double ' Точная дата одного согласова
 Private mValidated As Boolean ' Повторная проверка того же неизменённого набора не копирует большие массивы.
 Private mValidatedBoundaries As Object ' Проверенные точные области принадлежат только неизменяемым таблицам этого снимка; наружу выдаются независимые копии.
 Private mElements As Variant ' Большая матрица принадлежит снимку; служебный словарь содержит только её ключ.
-Private mElementFirst() As Long, mElementLast() As Long ' Непрерывные группы строк в исходном порядке.
-Private mElementCase() As String, mElementState() As String ' Точные подписи группы; поиск не зависит от регистра.
-Private mElementGroupCount As Long ' Число групп; ноль также означает ещё не построенный индекс.
+Private mElementIndex As CResultBlockIndex ' Общий индекс фактических участков для обоих носителей.
 
 ' Создаёт отдельный набор, не разделяющий состояние с другими расчётами.
 Private Sub Class_Initialize()
@@ -64,7 +62,7 @@ Public Sub AddTable(ByVal key As String, ByVal values As Variant)
     If key = "rngNDMElementResults" Then
         mElements = values
         mTables.Add key, Empty
-        mElementGroupCount = 0
+        Set mElementIndex = Nothing
     Else
         mTables.Add key, values
     End If
@@ -91,7 +89,7 @@ End Sub
 
 ' Принимает большой готовый массив writer-а одной независимой копией.
 ' Незанятый резерв при несошедшемся состоянии не попадает в сохранённый снимок.
-Friend Sub AddPreparedElementResults(ByRef values() As Variant, ByVal usedRows As Long)
+Friend Sub AddPreparedElementResults(ByRef values() As Variant, ByVal usedRows As Long, Optional ByVal preparedIndex As CResultBlockIndex = Nothing)
     If mTables.Exists("rngNDMElementResults") Then Err.Raise 5, "CCalculationSnapshot", "Повторная таблица rngNDMElementResults."
     If LBound(values, 1) <> 1 Or LBound(values, 2) <> 1 Or UBound(values, 2) <> 9 Or usedRows < 1 Or usedRows > UBound(values, 1) Then Err.Raise 5, "CCalculationSnapshot", "Неверный размер готовых результатов элементов."
     If usedRows = UBound(values, 1) Then
@@ -106,32 +104,18 @@ Friend Sub AddPreparedElementResults(ByRef values() As Variant, ByVal usedRows A
     End If
     mTables.Add "rngNDMElementResults", Empty
     mTableRows.Add "rngNDMElementResults", usedRows
-    mElementGroupCount = 0: mValidated = False: Set mValidatedBoundaries = Nothing
+    Set mElementIndex = preparedIndex
+    If Not mElementIndex Is Nothing Then
+        If mElementIndex.TotalRows <> usedRows Or mElementIndex.RunID <> mRunID Then Err.Raise 5, , "Готовый индекс не соответствует массиву результатов."
+    End If
+    mValidated = False: Set mValidatedBoundaries = Nothing
 End Sub
 
 ' Возвращает настройки просмотра сохранённого профиля, отсутствующего в текущем Config.
 ' Расчётные модели по этим строкам не создаются: используются только готовые НДС.
 Public Function SavedVisualizationProfile(ByVal profileID As String) As CCalculationProfile
     Dim values As Variant: values = Table("Calculation.Profiles")
-    Dim column As Long, selected As Long, row As Long
-    For row = 1 To UBound(values, 1)
-        For column = 3 To UBound(values, 2)
-            If StrComp(CStr(values(row, column)), profileID, vbTextCompare) = 0 Then selected = column: Exit For
-        Next column
-        If selected > 0 Then Exit For
-    Next row
-    If selected = 0 Then Err.Raise 5, , "В снимке отсутствует сохранённый профиль: " & profileID
-    Dim fields As Object: Set fields = CreateObject("Scripting.Dictionary"): fields.CompareMode = vbTextCompare
-    For row = 1 To UBound(values, 1)
-        If Len(CStr(values(row, 2))) > 0 Then fields.Item(CStr(values(row, 2))) = CStr(values(row, selected))
-    Next row
-    Dim profile As CCalculationProfile: Set profile = New CCalculationProfile
-    profile.Initialize profileID, CStr(fields.Item("Profile.DisplayName")), CStr(fields.Item("Profile.Description")), _
-        CStr(fields.Item("Calculation.Strength.DirectState")) = "Yes", CStr(fields.Item("Calculation.Strength.Capacity")) = "Yes", _
-        CStr(fields.Item("Calculation.Crack.Width")) = "Yes", CStr(fields.Item("Calculation.Stability.Enabled")) = "Yes"
-    profile.SetVisualization CStr(fields.Item("Visualization.State")), CStr(fields.Item("Visualization.Quantity")), _
-        CStr(fields.Item("Visualization.StressPrecision")), CStr(fields.Item("Visualization.StrainPrecision"))
-    Set SavedVisualizationProfile = profile
+    Set SavedVisualizationProfile = SnapshotVisualizationProfile(values, profileID)
 End Function
 
 ' Получает матрицу без повторного расчёта и чтения пользовательского ввода.
@@ -142,17 +126,6 @@ Public Function Table(ByVal key As String) As Variant
     If key = "Summary" And mElapsedSeconds > 0# Then values(4, 1) = mElapsedSeconds
     Table = values
 End Function
-
-' Передаёт большую таблицу элементов кодеку по ссылке, без независимой копии для записи.
-' Кодек только читает массив; публичный Table возвращает независимые данные.
-Friend Sub WritePreparedTable(ByVal key As String, ByVal store As CCalculationSnapshotStore, ByVal file As CBinarySnapshotFile)
-    If key = "rngNDMElementResults" Then
-        store.WritePreparedMatrix file, mElements, TableRowCount("rngNDMSectionGeometry") - 1
-    Else
-        Dim values As Variant: values = Table(key)
-        store.WritePreparedMatrix file, values
-    End If
-End Sub
 
 ' Возвращает размер без копирования всей матрицы ради одного UBound.
 Public Function TableRowCount(ByVal key As String) As Long
@@ -178,70 +151,37 @@ End Function
 
 ' Выбирает только нужные строки по кратковременному индексу неизменяемого снимка.
 ' Несмежные повторения сочетания и состояния сохраняют исходный порядок.
-Public Function SelectElementResults(ByVal combinationID As String, ByVal stateType As String, ByVal indexOnly As Boolean) As Variant
-    If Len(combinationID) = 0 And Len(stateType) = 0 And Not indexOnly Then SelectElementResults = Table("rngNDMElementResults"): Exit Function
-    BuildElementIndex
-    Dim group As Long, rows As Long, seen As Object, identity As String, include() As Boolean
-    Set seen = CreateObject("Scripting.Dictionary"): seen.CompareMode = vbTextCompare
-    ReDim include(0 To mElementGroupCount)
-    For group = 1 To mElementGroupCount
-        If (Len(combinationID) = 0 Or StrComp(mElementCase(group), combinationID, vbTextCompare) = 0) And _
-                (Len(stateType) = 0 Or StrComp(mElementState(group), stateType, vbTextCompare) = 0) Then
-            identity = CStr(Len(mElementCase(group))) & ":" & mElementCase(group) & mElementState(group)
-            If Not indexOnly Or Not seen.Exists(identity) Then
-                include(group) = True
-                If indexOnly Then rows = rows + 1: seen.Item(identity) = True Else rows = rows + mElementLast(group) - mElementFirst(group) + 1
-            End If
-        End If
-    Next group
-    Dim selected() As Variant, row As Long, column As Long, used As Long, last As Long
-    ReDim selected(1 To rows + 1, 1 To UBound(mElements, 2))
-    For column = 1 To UBound(mElements, 2): selected(1, column) = mElements(1, column): Next column
+Public Function SelectElementResults(ByVal combinationID As String, ByVal stateType As String, ByVal indexOnly As Boolean, Optional ByVal profileID As String = "") As Variant
+    If Len(combinationID) = 0 And Len(stateType) = 0 And Len(profileID) = 0 And Not indexOnly Then SelectElementResults = Table("rngNDMElementResults"): Exit Function
+    Dim index As CResultBlockIndex: Set index = ElementIndex
+    If indexOnly Then SelectElementResults = index.StateRows(combinationID, stateType, profileID): Exit Function
+    Dim blocks As Collection: Set blocks = index.SelectBlocks(combinationID, stateType, profileID)
+    Dim block As Variant, rows As Long, row As Long, column As Long, used As Long, selected() As Variant
+    For Each block In blocks: rows = rows + index.RowCount(CLng(block)): Next block
+    ReDim selected(1 To rows + 1, 1 To 9)
+    For column = 1 To 9: selected(1, column) = mElements(1, column): Next column
     used = 1
-    For group = 1 To mElementGroupCount
-        If include(group) Then
-            last = mElementLast(group): If indexOnly Then last = mElementFirst(group)
-            For row = mElementFirst(group) To last
-                used = used + 1
-                For column = 1 To UBound(mElements, 2): selected(used, column) = mElements(row, column): Next column
-            Next row
-        End If
-    Next group
+    For Each block In blocks
+        For row = index.FirstRow(CLng(block)) To index.FirstRow(CLng(block)) + index.RowCount(CLng(block)) - 1
+            used = used + 1
+            For column = 1 To 9: selected(used, column) = mElements(row, column): Next column
+        Next row
+    Next block
     SelectElementResults = selected
 End Function
 
-' Один раз на объект снимка находит непрерывные группы; Excel и файлового ввода здесь нет.
-Private Sub BuildElementIndex()
-    If mElementGroupCount > 0 Or UBound(mElements, 1) < 2 Then Exit Sub
-    On Error GoTo Failed
-    Dim caseColumn As Long, stateColumn As Long, row As Long, capacity As Long
-    caseColumn = ResultColumn(mElements, "LoadCase"): stateColumn = ResultColumn(mElements, "StateType")
-    capacity = 32
-    ReDim mElementFirst(1 To capacity): ReDim mElementLast(1 To capacity)
-    ReDim mElementCase(1 To capacity): ReDim mElementState(1 To capacity)
-    Dim loadCase As String, state As String, newGroup As Boolean
-    For row = 2 To UBound(mElements, 1)
-        loadCase = CStr(mElements(row, caseColumn)): state = CStr(mElements(row, stateColumn))
-        newGroup = (mElementGroupCount = 0)
-        If Not newGroup Then newGroup = StrComp(loadCase, mElementCase(mElementGroupCount), vbTextCompare) <> 0 Or StrComp(state, mElementState(mElementGroupCount), vbTextCompare) <> 0
-        If newGroup Then
-            mElementGroupCount = mElementGroupCount + 1
-            If mElementGroupCount > capacity Then
-                capacity = capacity * 2
-                ReDim Preserve mElementFirst(1 To capacity): ReDim Preserve mElementLast(1 To capacity)
-                ReDim Preserve mElementCase(1 To capacity): ReDim Preserve mElementState(1 To capacity)
-            End If
-            mElementFirst(mElementGroupCount) = row
-            mElementCase(mElementGroupCount) = loadCase: mElementState(mElementGroupCount) = state
-        End If
-        mElementLast(mElementGroupCount) = row
-    Next row
-    Exit Sub
-Failed:
-    Dim number As Long, reason As String: number = Err.Number: reason = Err.Description
-    mElementGroupCount = 0
-    Erase mElementFirst: Erase mElementLast: Erase mElementCase: Erase mElementState
-    Err.Raise number, "CCalculationSnapshot.BuildElementIndex", reason
+' Один индекс относится только к неизменяемому массиву данного снимка.
+Friend Property Get ElementIndex() As CResultBlockIndex
+    If mElementIndex Is Nothing Then
+        Set mElementIndex = New CResultBlockIndex
+        mElementIndex.Build mElements, mRunID, mValidated
+    End If
+    Set ElementIndex = mElementIndex
+End Property
+
+' Передаёт принадлежащий снимку массив непосредственно последовательному v6-writer.
+Friend Sub WriteIndexedElementBlocks(ByVal target As CIndexedSnapshotFile)
+    target.WriteElements mElements, ElementIndex
 End Sub
 
 ' Проверяет наличие необязательной части до её чтения.
@@ -388,22 +328,7 @@ End Function
 ' Сравнивает размеры, типы и значения всех ячеек, включая единицы, ID и метаданные.
 ' При неопределённом значении выбирается безопасный обычный разбор вместо повторного использования.
 Private Function SameConcreteGeometryMatrix(ByRef actual As Variant, ByRef expected As Variant) As Boolean
-    On Error GoTo Different
-    If Not IsArray(actual) Or Not IsArray(expected) Then Exit Function
-    If LBound(actual, 1) <> 1 Or LBound(actual, 2) <> 1 Then Exit Function
-    If UBound(actual, 1) <> UBound(expected, 1) Or UBound(actual, 2) <> UBound(expected, 2) Then Exit Function
-    Dim row As Long, column As Long
-    For row = 1 To UBound(actual, 1)
-        For column = 1 To UBound(actual, 2)
-            If VarType(actual(row, column)) <> VarType(expected(row, column)) Then Exit Function
-            If IsError(actual(row, column)) Or IsNull(actual(row, column)) Or IsObject(actual(row, column)) Or IsArray(actual(row, column)) Then Exit Function
-            If actual(row, column) <> expected(row, column) Then Exit Function
-        Next column
-    Next row
-    SameConcreteGeometryMatrix = True
-    Exit Function
-Different:
-    Err.Clear
+    SameConcreteGeometryMatrix = SnapshotMatricesEqual(actual, expected)
 End Function
 
 ' Проверяет запуск непосредственно в принадлежащем снимку массиве, без копии для обхода.
@@ -418,30 +343,7 @@ End Sub
 
 ' Проверяет фиксированный контракт матриц до любой записи в Results.
 Private Sub ValidateTableShape(ByVal key As String, ByRef values As Variant)
-    Dim columns As Long, rows As Long
-    Select Case key
-        Case "rngNDMElementResults": columns = 9
-        Case "rngNDMSectionGeometry": columns = 16
-        Case "rngNDMSectionContours": columns = 17
-        Case "rngNDMElementGeometry": columns = 18
-        Case "rngNDMSectionProperties", "LoadCase.Properties": columns = 6
-        Case "rngNDMMaterialDiagrams": columns = 11
-        Case "rngNDMSectionAnnotations", "LoadCase.Annotations": columns = 24
-        Case "Summary"
-            columns = 33
-            If UBound(values, 2) = 26 Then columns = 26 ' Формат сводки из 26 колонок не содержит блока исходных нагрузок.
-        Case "Strength.Headers": columns = 49: rows = 4
-        Case "Strength.Data": columns = 49
-        Case "Cracks.Headers": columns = 72: rows = 4
-        Case "Cracks.Data": columns = 72
-        Case "Stability.Labels": columns = 84: rows = 1
-        Case "Stability.Data": columns = 84
-        Case "Calculation.Profiles"
-            If UBound(values, 2) < 3 Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Повреждены сохранённые профили расчёта."
-            Exit Sub
-    End Select
-    If UBound(values, 2) <> columns Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Неверная структура таблицы снимка: " & key
-    If rows > 0 Then If UBound(values, 1) <> rows Then Err.Raise 5, "CCalculationSnapshot", "Неверная шапка таблицы снимка: " & key
+    ValidateSnapshotTableShape key, values
 End Sub
 
 ' Объединяет общие и LC-зависимые записи для чтения схемой и экспортом.
@@ -451,16 +353,9 @@ Public Function ResultTable(ByVal key As String) As Variant
     If key = "rngNDMSectionProperties" Then extra = "LoadCase.Properties"
     If key = "rngNDMSectionAnnotations" Then extra = "LoadCase.Annotations"
     If Len(extra) = 0 Or IsGeometryPreview Then ResultTable = Table(key): Exit Function
-    Dim common As Variant, cases As Variant, joined() As Variant, i As Long, j As Long
+    Dim common As Variant, cases As Variant
     common = Table(key): cases = Table(extra)
-    ReDim joined(1 To UBound(common, 1) + UBound(cases, 1) - 1, 1 To UBound(common, 2))
-    For i = 1 To UBound(common, 1)
-        For j = 1 To UBound(common, 2): joined(i, j) = common(i, j): Next j
-    Next i
-    For i = 2 To UBound(cases, 1)
-        For j = 1 To UBound(cases, 2): joined(UBound(common, 1) + i - 1, j) = cases(i, j): Next j
-    Next i
-    ResultTable = joined
+    ResultTable = JoinSnapshotTables(common, cases)
 End Function
 
 ' Разделяет готовые свойства или аннотации, не вычисляя их заново.

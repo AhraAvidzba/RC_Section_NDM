@@ -36,7 +36,7 @@ Public Sub LinkFile(ByVal workbook As Object)
     Dim digest As CFileChecksum: Set digest = New CFileChecksum
     SetLink workbook, "File", fileSystem.GetFileName(path)
     SetLink workbook, "Folder", fileSystem.GetParentFolderName(path)
-    SetLink workbook, "Hash", digest.FileSHA256(path)
+    SetLink workbook, "Hash", FileIdentity(path)
 End Sub
 
 ' Читает прежнюю служебную привязку для проверки переноса/диагностики.
@@ -45,7 +45,7 @@ Public Function LoadLinkedFile(ByVal workbook As Object) As CCalculationSnapshot
     Dim path As String: path = CStr(workbook.Path) & Application.PathSeparator & LinkText(workbook, "File")
     If Not FileExists(path) Then path = LinkText(workbook, "Folder") & Application.PathSeparator & LinkText(workbook, "File")
     Dim digest As CFileChecksum: Set digest = New CFileChecksum
-    If digest.FileSHA256(path) <> LinkText(workbook, "Hash") Then Err.Raise vbObjectError + 4955, , _
+    If FileIdentity(path) <> LinkText(workbook, "Hash") Then Err.Raise vbObjectError + 4955, , _
         "Файл показанного расчёта изменился: " & path & ". Нажмите «Обновить схему и результаты», чтобы загрузить выбранный снимок."
     Dim snapshot As CCalculationSnapshot: Set snapshot = ReadBinary(path): snapshot.Validate
     Set LoadLinkedFile = snapshot
@@ -125,7 +125,7 @@ End Function
 
 ' Выбирает файл текущего имени Config; .ndm имеет приоритет перед .ndms.
 ' Повреждённый .ndm не подменяется файлом .ndms: после выбора проверяется SHA256.
-Private Function SelectedReadPath(ByVal workbook As Object) As String
+Friend Function SelectedReadPath(ByVal workbook As Object) As String
     SelectedReadPath = SnapshotPath(workbook)
     If FileExists(SelectedReadPath) Then Exit Function
     Dim previous As String: previous = Left$(SelectedReadPath, Len(SelectedReadPath) - Len(FILE_EXTENSION)) & LEGACY_FILE_EXTENSION
@@ -170,47 +170,16 @@ Public Function LoadFile(ByVal workbook As Object) As CCalculationSnapshot
     Set LoadFile = snapshot
 End Function
 
-' Записывает матрицы плотным колоночным кодеком. Обязательная фактическая
-' граница и явный GeometryPreview требуют NDMSNP05; полный компактный расчёт сохраняет NDMSNP04.
-Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot)
-    Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
-    Dim count As Long, key As Variant, hash As String, signature As String, version As Long
-    On Error GoTo Failed
-    For Each key In snapshot.Keys()
-        count = count + 1
-    Next key
-    signature = MAGIC: version = 4
-    If HasConcreteBoundaries(snapshot) Or snapshot.IsGeometryPreview Then signature = BOUNDARY_MAGIC: version = 5
-    file.OpenWrite path
-    file.WriteASCII signature: file.WriteLong version: file.WriteDouble snapshot.RunID: file.WriteDouble snapshot.ElapsedSeconds: file.WriteLong count
-    For Each key In snapshot.Keys()
-        PutText file, CStr(key): snapshot.WritePreparedTable CStr(key), Me, file
-    Next key
-    file.CloseFile
-    Dim digest As CFileChecksum: Set digest = New CFileChecksum: hash = digest.FileSHA256(path)
-    file.OpenUpdate path: file.Position = file.Size
-    file.WriteASCII hash: file.WriteASCII signature: file.CloseFile
-    Exit Sub
-Failed:
-    Dim reason As String: reason = Err.Description
-    file.CloseFile
-    Err.Raise vbObjectError + 4953, "CCalculationSnapshotStore.WriteBinary", reason
-End Sub
-
 ' Отличает новую обязательную геометрию от пустой дополнительной шапки.
 ' Contour без обязательных границ отклоняется snapshot.Validate до начала записи.
 Private Function HasConcreteBoundaries(ByVal snapshot As CCalculationSnapshot) As Boolean
     If snapshot.HasTable("rngNDMElementGeometry") Then HasConcreteBoundaries = snapshot.TableRowCount("rngNDMElementGeometry") > 1
 End Function
 
-' Записывает переданный снимком массив без копирования большой матрицы элементов.
-' Таблица остаётся собственностью снимка; ни значения, ни порядок строк не меняются.
-Friend Sub WritePreparedMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Variant, Optional ByVal elementCount As Long = 0)
-    WriteMatrix file, values, elementCount
-End Sub
-
-' Проверяет контрольную сумму до выделения матриц и чтения значений.
+' Полное восстановление v6 проверяет каждый блок; v4/v5 проверяет общий SHA до выделения матриц.
 Private Function ReadBinary(ByVal path As String) As CCalculationSnapshot
+    Dim indexed As New CIndexedSnapshotFile
+    If indexed.OpenRead(path, Me) Then Set ReadBinary = indexed.LoadAll: Exit Function
     Dim file As CBinarySnapshotFile: Set file = New CBinarySnapshotFile
     Dim signature As String, footer As String, hash As String, version As Long, count As Long, i As Long, key As String, values As Variant
     On Error GoTo Failed
@@ -226,7 +195,7 @@ Private Function ReadBinary(ByVal path As String) As CCalculationSnapshot
     If signature <> footer Or count < 1 Or count > 64 Then Err.Raise 5, , "Неизвестный формат снимка."
     If Not ((signature = MAGIC And version = 4) Or (signature = BOUNDARY_MAGIC And version = 5)) Then Err.Raise 5, , "Неизвестная версия формата снимка."
     For i = 1 To count
-        key = GetText(file): values = ReadMatrix(file): snapshot.AddTable key, values
+        key = GetText(file): values = ReadIndexedValues(file): snapshot.AddTable key, values
     Next i
     If version = 4 And (HasConcreteBoundaries(snapshot) Or snapshot.HasTable("Snapshot.Kind")) Then Err.Raise 5, , "Обязательные границы элементов требуют версии снимка 5."
     If file.Position <> file.Size - 72 Then Err.Raise 5, , "Неверная длина снимка."
@@ -237,86 +206,6 @@ Failed:
     Dim reason As String: reason = Err.Description
     file.CloseFile
     Err.Raise vbObjectError + 4954, "CCalculationSnapshotStore.ReadBinary", "Не удалось прочитать снимок " & path & ": " & reason
-End Function
-
-' Сохраняет колонку плотными массивами типов, чисел и индексов Unicode-словаря.
-' Повторяющиеся имена сочетаний и материалов не записываются заново для каждого элемента.
-Private Sub WriteMatrix(ByVal file As CBinarySnapshotFile, ByRef values As Variant, Optional ByVal elementCount As Long = 0)
-    Dim rows As Long, columns As Long, i As Long, j As Long, flags() As Byte, numbers() As Double, codes() As Long
-    Dim dictionary As Object, item As Variant, mask As Byte, count As Long, kind As Long
-    Dim text As String, previousText As String, previousCode As Long
-    rows = UBound(values, 1): columns = UBound(values, 2)
-    file.WriteLong rows: file.WriteLong columns
-    For j = 1 To columns
-        If rows <= 128 Then
-            file.WriteByte 5
-            For i = 1 To rows: WriteScalar file, values(i, j): Next i
-            GoTo NextColumn
-        End If
-        If WriteRepeatedColumn(file, values, j, rows) Then GoTo NextColumn
-        If elementCount > 0 And j = 5 Then
-            If WriteRepeatedElementIDs(file, values, rows, elementCount) Then GoTo NextColumn
-        End If
-        ReDim flags(1 To rows): ReDim numbers(1 To rows): ReDim codes(1 To rows)
-        Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbBinaryCompare: mask = 0: previousCode = 0
-        For i = 1 To rows
-            kind = VarType(values(i, j))
-            Select Case kind
-                Case vbEmpty
-                Case vbString
-                    flags(i) = 1: mask = mask Or 2
-                    text = CStr(values(i, j))
-                    If previousCode = 0 Or StrComp(text, previousText, vbBinaryCompare) <> 0 Then
-                        If Not dictionary.Exists(text) Then dictionary.Add text, dictionary.Count + 1
-                        previousCode = CLng(dictionary.Item(text)): previousText = text
-                    End If
-                    codes(i) = previousCode
-                Case vbBoolean
-                    flags(i) = 3: mask = mask Or 1
-                    If CBool(values(i, j)) Then numbers(i) = 1#
-                Case vbByte, vbInteger, vbLong, vbSingle, vbDouble, vbCurrency, vbDate
-                    flags(i) = 2: numbers(i) = CDbl(values(i, j)): mask = mask Or 1
-                Case Else: Err.Raise 5, , "Неподдерживаемое значение снимка, тип " & CStr(kind)
-            End Select
-        Next i
-        file.WriteByte mask: file.WriteBytes flags
-        If (mask And 1) <> 0 Then file.WriteDoubles numbers
-        If (mask And 2) <> 0 Then
-            file.WriteLongs codes: count = dictionary.Count: file.WriteLong count
-            If Not WritePackedDictionary(file, dictionary) Then
-        For Each item In dictionary.Keys: PutText file, CStr(item): Next item
-    End If
-        End If
-NextColumn:
-    Next j
-End Sub
-
-' Проверяет повторение точного списка ElementID во всех сохранённых состояниях.
-' Создаёт словарь первого блока; несовпадение выбирает обычный кодек до записи байтов.
-Private Function WriteRepeatedElementIDs(ByVal file As CBinarySnapshotFile, ByRef values As Variant, ByVal rows As Long, ByVal elementCount As Long) As Boolean
-    If elementCount < 1 Or rows < 4096 Then Exit Function
-    If (rows - 1) Mod elementCount <> 0 Or (rows - 1) \ elementCount < 2 Then Exit Function
-    Dim dictionary As Object: Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbBinaryCompare
-    Dim flags() As Byte, codes() As Long, row As Long, first As Long, text As String, key As Variant
-    ReDim flags(1 To rows): ReDim codes(1 To rows)
-    For row = 1 To elementCount + 1
-        If VarType(values(row, 5)) <> vbString Then Exit Function
-        text = CStr(values(row, 5))
-        If dictionary.Exists(text) Then Exit Function
-        dictionary.Add text, row: flags(row) = 1: codes(row) = row
-    Next row
-    first = 2
-    For row = elementCount + 2 To rows
-        If VarType(values(row, 5)) <> vbString Then Exit Function
-        If StrComp(CStr(values(row, 5)), CStr(values(first, 5)), vbBinaryCompare) <> 0 Then Exit Function
-        flags(row) = 1: codes(row) = first
-        first = first + 1: If first > elementCount + 1 Then first = 2
-    Next row
-    file.WriteByte 2: file.WriteBytes flags: file.WriteLongs codes: file.WriteLong dictionary.Count
-    If Not WritePackedDictionary(file, dictionary) Then
-        For Each key In dictionary.Keys: PutText file, CStr(key): Next key
-    End If
-    WriteRepeatedElementIDs = True
 End Function
 
 ' Готовит крупный словарь в один непрерывный блок с Long-длинами и текстом UTF-16LE.
@@ -366,58 +255,14 @@ Private Function ReadScalar(ByVal file As CBinarySnapshotFile) As Variant
     End Select
 End Function
 
-' Служебные поля состояния хранятся сериями без словарного COM-вызова на каждый элемент.
-' На плотной колонке проба прекращается рано; числа сравниваются по всем восьми байтам.
-Private Function WriteRepeatedColumn(ByVal file As CBinarySnapshotFile, ByRef values As Variant, ByVal column As Long, ByVal rows As Long) As Boolean
-    If rows < 256 Then Exit Function
-    Dim limit As Long: limit = rows \ 128
-    If limit < 8 Then limit = 8
-    If limit > 512 Then limit = 512
-    Dim lengths() As Long, items() As Variant, runs As Long, row As Long, value As Variant, previous As Variant
-    ReDim lengths(1 To limit): ReDim items(1 To limit)
-    Dim kind As Long, previousKind As Long, number As Double, bits As Currency, previousBits As Currency, same As Boolean
-    For row = 1 To rows
-        value = values(row, column): kind = VarType(value): same = False
-        If kind = previousKind And runs > 0 Then
-            Select Case kind
-                Case vbEmpty: same = True
-                Case vbString: same = (StrComp(CStr(value), CStr(previous), vbBinaryCompare) = 0)
-                Case vbBoolean: same = (CBool(value) = CBool(previous))
-                Case vbByte, vbInteger, vbLong, vbSingle, vbDouble, vbCurrency, vbDate
-                    number = CDbl(value): CopySnapshotBits bits, number, 8
-                    same = (bits = previousBits)
-            End Select
-        End If
-        If Not same Then
-            If runs = limit Then Exit Function
-            runs = runs + 1: items(runs) = value: previous = value: previousKind = kind
-            If IsNumeric(value) And kind <> vbString And kind <> vbBoolean Then
-                number = CDbl(value): CopySnapshotBits previousBits, number, 8
-            End If
-        End If
-        lengths(runs) = lengths(runs) + 1
-    Next row
-    file.WriteByte 4: file.WriteLong runs
-    For row = 1 To runs
-        file.WriteLong lengths(row): kind = VarType(items(row))
-        Select Case kind
-            Case vbEmpty: file.WriteByte 0
-            Case vbString: file.WriteByte 1: PutText file, CStr(items(row))
-            Case vbBoolean
-                file.WriteByte 3: file.WriteDouble CDbl(items(row))
-            Case vbByte, vbInteger, vbLong, vbSingle, vbDouble, vbCurrency, vbDate
-                file.WriteByte 2: file.WriteDouble CDbl(items(row))
-            Case Else: Err.Raise 5, , "Неподдерживаемое значение серии снимка, тип " & CStr(kind)
-        End Select
-    Next row
-    WriteRepeatedColumn = True
-End Function
-
 ' Восстанавливает значения без десятичных преобразований и без исполнения формул.
-Private Function ReadMatrix(ByVal file As CBinarySnapshotFile) As Variant
+Friend Function ReadIndexedValues(ByVal file As CBinarySnapshotFile, Optional ByVal expectedRows As Long = 0, Optional ByVal expectedColumns As Long = 0) As Variant
     Dim rows As Long, columns As Long, i As Long, j As Long, count As Long, mask As Byte
     rows = file.ReadLong: columns = file.ReadLong
     If rows < 1 Or rows > 10000000 Or columns < 1 Or columns > 256 Or CDbl(rows) * columns > 100000000# Then Err.Raise 5, , "Неверный размер матрицы снимка."
+    If expectedRows > 0 Then If rows <> expectedRows Then Err.Raise 5, , "Число строк блока не совпадает с каталогом."
+    If expectedColumns > 0 Then If columns <> expectedColumns Then Err.Raise 5, , "Число колонок блока не совпадает с каталогом."
+    If expectedRows = 0 And expectedColumns = 17 Then If rows > 100000 Then Err.Raise 5, , "Превышено число записей каталога."
     Dim values() As Variant, flags() As Byte, numbers() As Double, codes() As Long, strings() As String
     ReDim values(1 To rows, 1 To columns)
     For j = 1 To columns
@@ -453,7 +298,7 @@ Private Function ReadMatrix(ByVal file As CBinarySnapshotFile) As Variant
         Next i
 NextColumn:
     Next j
-    ReadMatrix = values
+    ReadIndexedValues = values
 End Function
 
 ' Восстанавливает серию с проверкой вместимости до заполнения массива.
@@ -493,27 +338,62 @@ Public Sub EnsureBesideWorkbook(ByVal workbook As Object, Optional ByVal previou
     If Not HasFileReference(workbook) Then Exit Sub
     If StorageMode(workbook) <> "File" Then Exit Sub
     Dim fileSystem As Object: Set fileSystem = CreateObject("Scripting.FileSystemObject")
-    If StrComp(fileSystem.GetBaseName(SnapshotPath(workbook)), fileSystem.GetBaseName(LinkText(workbook, "File")), vbTextCompare) <> 0 Then Exit Sub ' Старый показанный файл не подменяет новый выбор Config даже при SaveAs.
-    Dim target As String: target = CStr(workbook.Path) & Application.PathSeparator & LinkText(workbook, "File")
-    Dim source As String: source = LinkText(workbook, "Folder") & Application.PathSeparator & LinkText(workbook, "File")
-    Dim digest As CFileChecksum: Set digest = New CFileChecksum
-    If Not fileSystem.FileExists(target) Then
-        If Len(previousFolder) > 0 Then
-            Dim previous As String: previous = previousFolder & Application.PathSeparator & LinkText(workbook, "File")
-            If fileSystem.FileExists(previous) Then
-                If digest.FileSHA256(previous) = LinkText(workbook, "Hash") Then source = previous
-            End If
-        End If
-        If digest.FileSHA256(source) <> LinkText(workbook, "Hash") Then Err.Raise 5, , "Исходный снимок изменился: " & source
-        fileSystem.CopyFile source, target, False
+    Dim name As String: name = LinkText(workbook, "File")
+    If name <> fileSystem.GetFileName(name) Then Err.Raise 5, , "В привязке снимка требуется имя без пути."
+    If StrComp(fileSystem.GetBaseName(SnapshotPath(workbook)), fileSystem.GetBaseName(name), vbTextCompare) <> 0 Then Exit Sub
+    Dim target As String: target = CStr(workbook.Path) & Application.PathSeparator & name
+    Dim source As String: source = LinkText(workbook, "Folder") & Application.PathSeparator & name
+    If fileSystem.FileExists(target) Then
+        If FileIdentity(target) <> LinkText(workbook, "Hash") Then Err.Raise 5, , "Рядом с книгой находится другой одноимённый снимок: " & target
+        Exit Sub ' Обычное сохранение книги проверяет каталог v6; подробные блоки остаются адресными.
     End If
-    If digest.FileSHA256(target) <> LinkText(workbook, "Hash") Then Err.Raise 5, , _
-        "Рядом с книгой находится другой одноимённый снимок: " & target & ". Исходный файл сохранён в " & source
+    If Len(previousFolder) > 0 Then
+        Dim previous As String: previous = previousFolder & Application.PathSeparator & name
+        If fileSystem.FileExists(previous) Then
+            If FileIdentity(previous) = LinkText(workbook, "Hash") Then source = previous
+        End If
+    End If
+    If FileIdentity(source) <> LinkText(workbook, "Hash") Then Err.Raise 5, , "Исходный снимок изменился: " & source
+    Dim temporary As String: temporary = target & ".part"
+    Dim ownsTemporary As Boolean
+    On Error GoTo Failed
+    If FileExists(temporary) Then Err.Raise 5, , "Временный файл переноса занят: " & temporary
+    ownsTemporary = True: fileSystem.CopyFile source, temporary, False
+    If FileIdentity(temporary) <> LinkText(workbook, "Hash") Then Err.Raise 5, , "Копия не соответствует привязанному снимку."
+    VerifyPath temporary ' Проверка всех блоков выполняется только при фактическом переносе, до публикации копии.
+    If MoveFileExW(StrPtr(temporary), StrPtr(target), 8) = 0 Then Err.Raise 5, , "Не удалось опубликовать снимок рядом с новой книгой. Код Windows: " & CStr(Err.LastDllError)
+    Exit Sub
+Failed:
+    Dim number As Long, reason As String: number = Err.Number: reason = Err.Description
+    On Error Resume Next
+    If ownsTemporary Then If FileExists(temporary) Then DeleteFile temporary
+    On Error GoTo 0
+    Err.Raise number, "CCalculationSnapshotStore.EnsureBesideWorkbook", reason
+End Sub
+
+' Явно проверяет все блоки текущего выбранного файла, не выдавая локальную проверку за полную.
+Public Sub VerifyFile(ByVal workbook As Object)
+    VerifyPath SelectedReadPath(workbook)
+End Sub
+
+' Для v6 проверяет весь поток по блоковым SHA; v4/v5 сохраняют полный совместимый reader.
+Private Sub VerifyPath(ByVal path As String)
+    Dim indexed As New CIndexedSnapshotFile
+    If indexed.OpenRead(path, Me) Then
+        indexed.VerifyAllBlocks
+    Else
+        Dim snapshot As CCalculationSnapshot: Set snapshot = ReadBinary(path): snapshot.Validate
+    End If
 End Sub
 
 ' Обновляет только фиксированное поле времени и SHA256, не собирая большие таблицы заново.
 ' Excel-режим хранит время только в верхней сводке, без сериализованного дополнения.
 Public Sub UpdateSavedElapsed(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot)
+    UpdateElapsedValue workbook, snapshot.ElapsedSeconds, snapshot.RunID
+End Sub
+
+' Обновляет только длительность подтверждённого запуска; не принимает частичный объект полного снимка.
+Public Sub UpdateElapsedValue(ByVal workbook As Object, ByVal seconds As Double, Optional ByVal expectedRunID As Double = 0#)
     If StorageMode(workbook) = "Excel" Then Exit Sub
     Dim target As String: target = SnapshotPath(workbook)
     Dim temporary As String: temporary = target & ".part"
@@ -522,11 +402,20 @@ Public Sub UpdateSavedElapsed(ByVal workbook As Object, ByVal snapshot As CCalcu
     On Error GoTo Failed
     If FileExists(temporary) Then Err.Raise 5, , "Временный файл снимка занят: " & temporary
     ownsTemporary = True: CreateObject("Scripting.FileSystemObject").CopyFile target, temporary, False
+    Dim indexed As New CIndexedSnapshotFile
+    If indexed.OpenRead(temporary, Me) Then
+        If expectedRunID <> 0# Then If indexed.RunID <> expectedRunID Then Err.Raise 5, , "Обновляемое время относится к другому расчёту."
+        indexed.UpdateElapsed temporary, seconds
+        Set indexed = Nothing
+        If MoveFileExW(StrPtr(temporary), StrPtr(target), 9) = 0 Then Err.Raise 5, , "Не удалось обновить время снимка: " & target
+        LinkFile workbook
+        Exit Sub
+    End If
     file.OpenRead temporary: signature = file.ReadASCII(8): version = file.ReadLong
     file.Position = file.Size - 8: footer = file.ReadASCII(8): file.CloseFile
     If signature <> footer Or Not ((signature = MAGIC And version = 4) Or (signature = BOUNDARY_MAGIC And version = 5)) Then _
         Err.Raise 5, , "Неизвестная версия формата снимка при обновлении времени."
-    file.OpenUpdate temporary: file.Position = 20: file.WriteDouble snapshot.ElapsedSeconds
+    file.OpenUpdate temporary: file.Position = 20: file.WriteDouble seconds
     Dim size As Long: size = file.Size: file.CloseFile
     Dim digest As CFileChecksum: Set digest = New CFileChecksum: hash = digest.FileSHA256(temporary, size - 72)
     file.OpenUpdate temporary: file.Position = size - 72
@@ -538,6 +427,8 @@ Failed:
     Dim reason As String: reason = Err.Description
     On Error Resume Next
     file.CloseFile
+    indexed.CloseFile
+    Set indexed = Nothing
     If ownsTemporary Then If FileExists(temporary) Then DeleteFile temporary
     On Error GoTo 0
     Err.Raise 5, "CCalculationSnapshotStore.UpdateSavedElapsed", reason
@@ -552,3 +443,129 @@ End Function
 Private Sub DeleteFile(ByVal path As String)
     CreateObject("Scripting.FileSystemObject").DeleteFile path, True
 End Sub
+
+' Пишет только переданный непрерывный участок исходного массива, не копируя всю таблицу.
+' Штатный колоночный кодек и повторяющиеся серии сохранены; индексы колонок не зависят от Excel.
+Friend Sub WriteIndexedValues(ByVal file As CBinarySnapshotFile, ByRef values As Variant, Optional ByVal first As Long = 1, Optional ByVal last As Long = 0, Optional ByVal firstColumn As Long = 1, Optional ByVal lastColumn As Long = 0)
+    Dim rows As Long, columns As Long, i As Long, j As Long, flags() As Byte, numbers() As Double, codes() As Long
+    Dim dictionary As Object, item As Variant, mask As Byte, count As Long, kind As Long
+    Dim text As String, previousText As String, previousCode As Long
+    If last = 0 Then last = UBound(values, 1)
+    If lastColumn = 0 Then lastColumn = UBound(values, 2)
+    If first < 1 Or first > last Or last > UBound(values, 1) Or firstColumn < 1 Or firstColumn > lastColumn Or lastColumn > UBound(values, 2) Then Err.Raise 5, , "Неверные границы записываемого участка."
+    rows = last - first + 1: columns = lastColumn - firstColumn + 1
+    file.WriteLong rows: file.WriteLong columns
+    For j = firstColumn To lastColumn
+        If rows <= 128 Then
+            file.WriteByte 5
+            For i = 1 To rows: WriteScalar file, values(i + first - 1, j): Next i
+            GoTo NextColumn
+        End If
+        If WriteIndexedRepeatedColumn(file, values, j, rows, first) Then GoTo NextColumn
+        ReDim flags(1 To rows): ReDim numbers(1 To rows): ReDim codes(1 To rows)
+        Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbBinaryCompare: mask = 0: previousCode = 0
+        For i = 1 To rows
+            kind = VarType(values(i + first - 1, j))
+            Select Case kind
+                Case vbEmpty
+                Case vbString
+                    flags(i) = 1: mask = mask Or 2
+                    text = CStr(values(i + first - 1, j))
+                    If previousCode = 0 Or StrComp(text, previousText, vbBinaryCompare) <> 0 Then
+                        If Not dictionary.Exists(text) Then dictionary.Add text, dictionary.Count + 1
+                        previousCode = CLng(dictionary.Item(text)): previousText = text
+                    End If
+                    codes(i) = previousCode
+                Case vbBoolean
+                    flags(i) = 3: mask = mask Or 1
+                    If CBool(values(i + first - 1, j)) Then numbers(i) = 1#
+                Case vbByte, vbInteger, vbLong, vbSingle, vbDouble, vbCurrency, vbDate
+                    flags(i) = 2: numbers(i) = CDbl(values(i + first - 1, j)): mask = mask Or 1
+                Case Else: Err.Raise 5, , "Неподдерживаемое значение снимка, тип " & CStr(kind)
+            End Select
+        Next i
+        file.WriteByte mask: file.WriteBytes flags
+        If (mask And 1) <> 0 Then file.WriteDoubles numbers
+        If (mask And 2) <> 0 Then
+            file.WriteLongs codes: count = dictionary.Count: file.WriteLong count
+            If Not WritePackedDictionary(file, dictionary) Then
+        For Each item In dictionary.Keys: PutText file, CStr(item): Next item
+    End If
+        End If
+NextColumn:
+    Next j
+End Sub
+
+
+' Сжимает серии одного участка с точным сравнением Double и Unicode.
+Private Function WriteIndexedRepeatedColumn(ByVal file As CBinarySnapshotFile, ByRef values As Variant, ByVal column As Long, ByVal rows As Long, ByVal first As Long) As Boolean
+    If rows < 256 Then Exit Function
+    Dim limit As Long: limit = rows \ 128
+    If limit < 8 Then limit = 8
+    If limit > 512 Then limit = 512
+    Dim lengths() As Long, items() As Variant, runs As Long, row As Long, value As Variant, previous As Variant
+    ReDim lengths(1 To limit): ReDim items(1 To limit)
+    Dim kind As Long, previousKind As Long, number As Double, bits As Currency, previousBits As Currency, same As Boolean
+    For row = 1 To rows
+        value = values(row + first - 1, column): kind = VarType(value): same = False
+        If kind = previousKind And runs > 0 Then
+            Select Case kind
+                Case vbEmpty: same = True
+                Case vbString: same = (StrComp(CStr(value), CStr(previous), vbBinaryCompare) = 0)
+                Case vbBoolean: same = (CBool(value) = CBool(previous))
+                Case vbByte, vbInteger, vbLong, vbSingle, vbDouble, vbCurrency, vbDate
+                    number = CDbl(value): CopySnapshotBits bits, number, 8
+                    same = (bits = previousBits)
+            End Select
+        End If
+        If Not same Then
+            If runs = limit Then Exit Function
+            runs = runs + 1: items(runs) = value: previous = value: previousKind = kind
+            If IsNumeric(value) And kind <> vbString And kind <> vbBoolean Then
+                number = CDbl(value): CopySnapshotBits previousBits, number, 8
+            End If
+        End If
+        lengths(runs) = lengths(runs) + 1
+    Next row
+    file.WriteByte 4: file.WriteLong runs
+    For row = 1 To runs
+        file.WriteLong lengths(row): kind = VarType(items(row))
+        Select Case kind
+            Case vbEmpty: file.WriteByte 0
+            Case vbString: file.WriteByte 1: PutText file, CStr(items(row))
+            Case vbBoolean
+                file.WriteByte 3: file.WriteDouble CDbl(items(row))
+            Case vbByte, vbInteger, vbLong, vbSingle, vbDouble, vbCurrency, vbDate
+                file.WriteByte 2: file.WriteDouble CDbl(items(row))
+            Case Else: Err.Raise 5, , "Неподдерживаемое значение серии снимка, тип " & CStr(kind)
+        End Select
+    Next row
+    WriteIndexedRepeatedColumn = True
+End Function
+
+
+' Скалярный кодек общий для плотных таблиц и четырёх ключей независимого блока.
+Friend Sub WriteIndexedScalar(ByVal file As CBinarySnapshotFile, ByRef value As Variant)
+    WriteScalar file, value
+End Sub
+
+' Восстанавливает тип скалярного ключа без преобразования строки в число.
+Friend Function ReadIndexedScalar(ByVal file As CBinarySnapshotFile) As Variant
+    ReadIndexedScalar = ReadScalar(file)
+End Function
+
+' Новые сохранения используют индексированный v6; v4/v5 остаются читаемыми без конвертации.
+Private Sub WriteBinary(ByVal path As String, ByVal snapshot As CCalculationSnapshot)
+    Dim indexed As New CIndexedSnapshotFile
+    indexed.WriteFile path, snapshot, Me
+End Sub
+
+' Проверяет каталог v6 для привязки; совместимость v4/v5 использует их полный файловый SHA256.
+Private Function FileIdentity(ByVal path As String) As String
+    Dim indexed As New CIndexedSnapshotFile
+    If indexed.OpenRead(path, Me) Then
+        FileIdentity = indexed.Identity
+    Else
+        Dim digest As New CFileChecksum: FileIdentity = digest.FileSHA256(path)
+    End If
+End Function

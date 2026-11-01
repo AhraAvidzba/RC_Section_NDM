@@ -1,0 +1,543 @@
+{
+  "Status": "PAIRED_LIGHT_HEAVY_NATIVE_MEASURED",
+  "UTC": "2026-11-01T10:16:05.923442+00:00",
+  "Method": "Three ABBA cycles, six samples per version and phase; warm-ups excluded; no OS cache flush",
+  "PreparedIndexIncluded": true,
+  "CandidateFilesSHA256": {
+    "CBatchResultWriter.cls": "9F5FEF90B6F0859AC88FA419610466555D517F4F08B8304919D20B3DDC232048",
+    "CBinarySnapshotFile.cls": "DDDE8EAFD6B12269FD297AF6BEF711B64A7921F0B5415EE6E99E453A0BD5B06E",
+    "CCalculationSnapshot.cls": "D70DD5408602142B65D6E5BB6D7520BC7FD7CED96094B84C6E1E7A7FED433406",
+    "CCalculationSnapshotStore.cls": "4366DC92404E629F06CE6A90A8EED782CBCC2B37B5E73DD3EC02FBE2F05766CA",
+    "CCrackSummaryWriter.cls": "7945D180162E1AC0F83440BB90C8F01D650CEB4DFC26B59DEEC3F8F33AD6397A",
+    "CFileChecksum.cls": "09584BAA5D1FC45E86EDE5E7328B977F4631C4C2C7255360A0115EAB3B297699",
+    "CIndexedSnapshotFile.cls": "10A9985953772897C45AA925E706159C85DB7BC32DA2DD3BC186CCD1A2B1DFA5",
+    "CNDMResultsWriter.cls": "48006BD94BE115417EE1D9007A7581BF6D9AF407055E1614AA7E3903FDA1370B",
+    "CResultBlockIndex.cls": "57CDAD38F8C3A8BAFE4A712D621824A639C4CC7FFA56FBDCA66AD00D493CEAD9",
+    "CResultReadSource.cls": "29F247730A9AAB378DB3B3A40EC10E1A93A7738423B96EC246CDF3DB9FD7A7DD",
+    "CSectionPlotDataReader.cls": "91966A35FE8EFE253AEC761B8A14A7F5745EDA6876FACE03C445FFF46AAF746D",
+    "CStabilitySummaryWriter.cls": "C262321F35C058E6A7FB61F33968F32004DE95A081D961233E0D9A62ADB73E8F",
+    "CStrengthSummaryWriter.cls": "80F3C6210BDA4DF4713126BBC60DBF15872DBB6E50F99876E16BF248A1C8CC44",
+    "modAutoCADStressExport.bas": "5859430D81F5581AE65F553CCF29A970759F18F6DACBE1EA28860AB67470ADA0",
+    "modCalculationSnapshot.bas": "A626B5F8722B0D842DEBC257BC6B1D3AD6E691B3CE8BF3C3BCA244056F98EC6D",
+    "modIndexedExcelResults.bas": "841FF10D199C501F755DD58F6FD14EFEB4F7FE41239392D5103FEB242F33A45A",
+    "modSectionSnapshot.bas": "5570C7934332116A38CE7397AD0290A9F9FC3117822A108DD4BF1D1D8D07AC74",
+    "modSnapshotTables.bas": "A351FE7C37FBC71D7B113D1745041A2875D3A4FE0E6DDD6BBD6E64D4534D3826",
+    "modWorkbookCalculation.bas": "2AD9EFC45859A49F2D9C2A6BC9CEC80EAF8B1581741E71CD1AA314C5DA06A42C"
+  },
+  "Datasets": {
+    "Light": {
+      "RawSHA256": "202FED4DBF9A9D37CE8B0C27C7070CD425D9251DB711EDDD655D30E3E81EE109",
+      "Actions": {
+        "SavePreparedFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.5255619999952614,
+            "Min": 0.44999659998575225,
+            "Max": 0.5688923000125214,
+            "Metrics": [
+              "Bytes=5643228|PhysicalReadCalls=90|RangeCells=7168|ExtentCells=7168|RangeCalls=7"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.4004605999798514,
+            "Min": 0.3773943999549374,
+            "Max": 0.4776570000103675,
+            "Metrics": [
+              "Bytes=106863|PhysicalReadCalls=18|RangeCells=8192|ExtentCells=8192|RangeCalls=8"
+            ]
+          },
+          "BeforeOverAfter": 1.312393778618182
+        },
+        "FirstFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.28561039999476634,
+            "Min": 0.2569169999915175,
+            "Max": 0.3135653000208549,
+            "Metrics": [
+              "Bytes=2788950|PhysicalReadCalls=41|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=292"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.021392950002336875,
+            "Min": 0.017016500001773238,
+            "Max": 0.048467000015079975,
+            "Metrics": [
+              "Bytes=46775|PhysicalReadCalls=8|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=292"
+            ]
+          },
+          "BeforeOverAfter": 13.350678609708687
+        },
+        "RepeatFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.2724977499747183,
+            "Min": 0.25088909995974973,
+            "Max": 0.3772607000428252,
+            "Metrics": [
+              "Bytes=2788950|PhysicalReadCalls=41|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=292"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.020235949981724843,
+            "Min": 0.016302800038829446,
+            "Max": 0.03364000003784895,
+            "Metrics": [
+              "Bytes=46775|PhysicalReadCalls=8|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=292"
+            ]
+          },
+          "BeforeOverAfter": 13.466022115137267
+        },
+        "SwitchFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.27331600000616163,
+            "Min": 0.2614830000093207,
+            "Max": 0.3933397000073455,
+            "Metrics": [
+              "Bytes=2788950|PhysicalReadCalls=41|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=292"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.021929649985395372,
+            "Min": 0.016692700039129704,
+            "Max": 0.02552500000456348,
+            "Metrics": [
+              "Bytes=45384|PhysicalReadCalls=8|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=292"
+            ]
+          },
+          "BeforeOverAfter": 12.463308816519353
+        },
+        "RestoreFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.2572657000273466,
+            "Min": 0.21675060002598912,
+            "Max": 0.36146139999618754,
+            "Metrics": [
+              "Bytes=2788950|PhysicalReadCalls=41|RangeCells=0|ExtentCells=0|RangeCalls=0"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.34183550003217533,
+            "Min": 0.31803659995784983,
+            "Max": 0.44415290001779795,
+            "Metrics": [
+              "Bytes=1028377|PhysicalReadCalls=108|RangeCells=0|ExtentCells=0|RangeCalls=0"
+            ]
+          },
+          "BeforeOverAfter": 0.7526008855228068
+        },
+        "UpdateFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.6647079499962274,
+            "Min": 0.6015999999945052,
+            "Max": 0.7463551000109874,
+            "Metrics": [
+              "Bytes=4183389|PhysicalReadCalls=63|RangeCells=7168|ExtentCells=7168|RangeCalls=7"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.43380919998162426,
+            "Min": 0.41338420001557097,
+            "Max": 0.46142899995902553,
+            "Metrics": [
+              "Bytes=624503|PhysicalReadCalls=35|RangeCells=8192|ExtentCells=8192|RangeCalls=8"
+            ]
+          },
+          "BeforeOverAfter": 1.5322587672746077
+        },
+        "SavePreparedExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 2.259558499994455,
+            "Min": 2.0950548999826424,
+            "Max": 2.5247289999970235,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=41984|ExtentCells=41984|RangeCalls=13"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.5797394499822985,
+            "Min": 0.5585303000407293,
+            "Max": 0.6193575999932364,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=45056|ExtentCells=45056|RangeCalls=16"
+            ]
+          },
+          "BeforeOverAfter": 3.8975413870204054
+        },
+        "FirstExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.07111580000491813,
+            "Min": 0.068706700054463,
+            "Max": 0.08622449997346848,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=242249|ExtentCells=32000|RangeCalls=7|SelectedRows=292"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.005757250008173287,
+            "Min": 0.0049638000200502574,
+            "Max": 0.010522599972318858,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=3787|ExtentCells=0|RangeCalls=6|SelectedRows=292"
+            ]
+          },
+          "BeforeOverAfter": 12.35239044751548
+        },
+        "RepeatExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.06969740003114566,
+            "Min": 0.06607130001066253,
+            "Max": 0.11868840001989156,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=242249|ExtentCells=32000|RangeCalls=7|SelectedRows=292"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.005600349977612495,
+            "Min": 0.005081099981907755,
+            "Max": 0.0057963000144809484,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=3787|ExtentCells=0|RangeCalls=6|SelectedRows=292"
+            ]
+          },
+          "BeforeOverAfter": 12.445186516871683
+        },
+        "SwitchExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.06639844999881461,
+            "Min": 0.059863199945539236,
+            "Max": 0.08129529998404905,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=242249|ExtentCells=32000|RangeCalls=7|SelectedRows=292"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.005384749994846061,
+            "Min": 0.004756899958010763,
+            "Max": 0.0070401999983005226,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=3787|ExtentCells=0|RangeCalls=6|SelectedRows=292"
+            ]
+          },
+          "BeforeOverAfter": 12.330832455056775
+        },
+        "RestoreExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.05439669999759644,
+            "Min": 0.05274409998673946,
+            "Max": 0.0603395999642089,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=299378|ExtentCells=43776|RangeCalls=31"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.05292624997673556,
+            "Min": 0.05134750000433996,
+            "Max": 0.057125800056383014,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=299378|ExtentCells=43776|RangeCalls=31"
+            ]
+          },
+          "BeforeOverAfter": 1.027783000335509
+        },
+        "UpdateExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.4257064000121318,
+            "Min": 0.40277069999137893,
+            "Max": 0.4678134999703616,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=536500|ExtentCells=75776|RangeCalls=34"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.30026079999515787,
+            "Min": 0.28149119997397065,
+            "Max": 0.3954381999792531,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=56948|ExtentCells=11776|RangeCalls=31"
+            ]
+          },
+          "BeforeOverAfter": 1.4177888023311631
+        }
+      }
+    },
+    "Heavy": {
+      "RawSHA256": "CEDF9161E2632A9A11B4155AEBBD67FAB4DF9E4356D1C82CC1C8C9D82C9AAE81",
+      "Actions": {
+        "SavePreparedFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 1.0397977500106208,
+            "Min": 0.9740387999918312,
+            "Max": 1.386088799976278,
+            "Metrics": [
+              "Bytes=18099348|PhysicalReadCalls=278|RangeCells=9216|ExtentCells=9216|RangeCalls=8"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.6815776999865193,
+            "Min": 0.640566999965813,
+            "Max": 0.8846389999962412,
+            "Metrics": [
+              "Bytes=123741|PhysicalReadCalls=18|RangeCells=10240|ExtentCells=10240|RangeCalls=9"
+            ]
+          },
+          "BeforeOverAfter": 1.5255747804413007
+        },
+        "FirstFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.66871534998063,
+            "Min": 0.6287950999685563,
+            "Max": 0.7247121999971569,
+            "Metrics": [
+              "Bytes=9017010|PhysicalReadCalls=90|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=1240"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.028012650029268116,
+            "Min": 0.02384319994598627,
+            "Max": 0.030930199951399118,
+            "Metrics": [
+              "Bytes=88891|PhysicalReadCalls=8|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=1240"
+            ]
+          },
+          "BeforeOverAfter": 23.871906059653202
+        },
+        "RepeatFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.6594399000168778,
+            "Min": 0.6223875000141561,
+            "Max": 0.672942100034561,
+            "Metrics": [
+              "Bytes=9017010|PhysicalReadCalls=90|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=1240"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.027469249995192513,
+            "Min": 0.02318880002712831,
+            "Max": 0.03001600003335625,
+            "Metrics": [
+              "Bytes=88891|PhysicalReadCalls=8|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=1240"
+            ]
+          },
+          "BeforeOverAfter": 24.00647633744236
+        },
+        "SwitchFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.663977749994956,
+            "Min": 0.6241037999861874,
+            "Max": 0.6969359999638982,
+            "Metrics": [
+              "Bytes=9017010|PhysicalReadCalls=90|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=1240"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.026038949959911406,
+            "Min": 0.023996400006581098,
+            "Max": 0.03183430002536625,
+            "Metrics": [
+              "Bytes=88891|PhysicalReadCalls=8|RangeCells=0|ExtentCells=0|RangeCalls=0|SelectedRows=1240"
+            ]
+          },
+          "BeforeOverAfter": 25.499405737066635
+        },
+        "RestoreFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.513646150007844,
+            "Min": 0.4809125000028871,
+            "Max": 0.5404419000260532,
+            "Metrics": [
+              "Bytes=9017010|PhysicalReadCalls=90|RangeCells=0|ExtentCells=0|RangeCalls=0"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.8889841499913018,
+            "Min": 0.8469104000250809,
+            "Max": 0.9574770000181161,
+            "Metrics": [
+              "Bytes=2801692|PhysicalReadCalls=116|RangeCells=0|ExtentCells=0|RangeCalls=0"
+            ]
+          },
+          "BeforeOverAfter": 0.5777899977326589
+        },
+        "UpdateFile": {
+          "Before": {
+            "Count": 6,
+            "Median": 1.6100299500103574,
+            "Min": 1.5431671000551432,
+            "Max": 1.7257162000169046,
+            "Metrics": [
+              "Bytes=13525479|PhysicalReadCalls=159|RangeCells=9216|ExtentCells=9216|RangeCalls=8"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.8478974499739707,
+            "Min": 0.8140176999731921,
+            "Max": 0.9122619000263512,
+            "Metrics": [
+              "Bytes=507487|PhysicalReadCalls=31|RangeCells=10240|ExtentCells=10240|RangeCalls=9"
+            ]
+          },
+          "BeforeOverAfter": 1.8988498550854036
+        },
+        "SavePreparedExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 7.907764400006272,
+            "Min": 7.841059800004587,
+            "Max": 7.9865589999826625,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=140288|ExtentCells=140288|RangeCalls=16"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 1.862296850013081,
+            "Min": 1.8543277999851853,
+            "Max": 1.889991000003647,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=143360|ExtentCells=143360|RangeCalls=19"
+            ]
+          },
+          "BeforeOverAfter": 4.246242697532741
+        },
+        "FirstExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.3277243499760516,
+            "Min": 0.3166037000482902,
+            "Max": 0.3416628999984823,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=1157033|ExtentCells=130304|RangeCalls=10|SelectedRows=1240"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.010492199973668903,
+            "Min": 0.00930599996354431,
+            "Max": 0.011041499965358526,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=12487|ExtentCells=0|RangeCalls=6|SelectedRows=1240"
+            ]
+          },
+          "BeforeOverAfter": 31.235046110301425
+        },
+        "RepeatExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.3268023999989964,
+            "Min": 0.3092744000023231,
+            "Max": 0.34753440000349656,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=1157033|ExtentCells=130304|RangeCalls=10|SelectedRows=1240"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.010630950011545792,
+            "Min": 0.008915200014598668,
+            "Max": 0.011353300011251122,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=12487|ExtentCells=0|RangeCalls=6|SelectedRows=1240"
+            ]
+          },
+          "BeforeOverAfter": 30.74065813911938
+        },
+        "SwitchExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.3227801000175532,
+            "Min": 0.3154394999728538,
+            "Max": 0.33382060000440106,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=1157033|ExtentCells=130304|RangeCalls=10|SelectedRows=1240"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.009807149996049702,
+            "Min": 0.009270100039429963,
+            "Max": 0.010570900049060583,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=12487|ExtentCells=0|RangeCalls=6|SelectedRows=1240"
+            ]
+          },
+          "BeforeOverAfter": 32.91273205238711
+        },
+        "RestoreExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 0.22049924999009818,
+            "Min": 0.21224100003018975,
+            "Max": 0.22296659997664392,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=1215059|ExtentCells=142080|RangeCalls=34"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.22285530000226572,
+            "Min": 0.21543979999842122,
+            "Max": 0.23001649999059737,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=1215059|ExtentCells=142080|RangeCalls=34"
+            ]
+          },
+          "BeforeOverAfter": 0.9894278932915502
+        },
+        "UpdateExcel": {
+          "Before": {
+            "Count": 6,
+            "Median": 1.3178654499934055,
+            "Min": 1.2748276999918744,
+            "Max": 1.3536404999904335,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=2384995|ExtentCells=274432|RangeCalls=41"
+            ]
+          },
+          "After": {
+            "Count": 6,
+            "Median": 0.733651499991538,
+            "Min": 0.6628746000351384,
+            "Max": 0.8059329999960028,
+            "Metrics": [
+              "Bytes=0|PhysicalReadCalls=0|RangeCells=84743|ExtentCells=13824|RangeCalls=32"
+            ]
+          },
+          "BeforeOverAfter": 1.7963098964680178
+        }
+      }
+    }
+  }
+}

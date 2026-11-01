@@ -102,7 +102,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     On Error GoTo Failed
     Dim snapshotReadEntered As Boolean
     BeginCalculationSnapshotRead workbook: snapshotReadEntered = True
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     If Not snapshot Is Nothing Then
         If snapshot.IsGeometryPreview Then
             LoadGeometryPreviewFromWorkbook workbook, settings
@@ -213,7 +213,7 @@ Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     profiles.LoadFromWorkbook workbook, True, Not snapshot Is Nothing
 
     Dim profile As CCalculationProfile
@@ -292,7 +292,7 @@ Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCas
     On Error GoTo Failed
     If Len(Trim$(loadCase)) = 0 Then Exit Function
 
-    Dim snapshot As CCalculationSnapshot: Set snapshot = CurrentCalculationSnapshot(workbook)
+    Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     If Not snapshot Is Nothing Then
         Dim summary As Variant, summaryRow As Long: summary = snapshot.Table("Summary")
         For summaryRow = 13 To UBound(summary, 1)
