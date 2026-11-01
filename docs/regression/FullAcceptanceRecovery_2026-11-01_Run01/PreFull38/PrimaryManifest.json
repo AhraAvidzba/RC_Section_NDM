@@ -1,0 +1,276 @@
+{
+  "ArchiveSHA256": "8350B4F6111F87B66322FDCF69768A6961F57A089450C5007E25C7E68F107CCD",
+  "Bytes": 2802984,
+  "Files": [
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Full_Off.txt",
+      "SHA256": "1754F289445CB1CA862C41774B5ED487772334079A24ADA338B2A94B3E8F6072",
+      "Bytes": 17244526
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Geometry_Off.txt",
+      "SHA256": "027661C1BC7B1207CE5BC666E674A58096AFD1F225790DB36BC48A95136E93F7",
+      "Bytes": 1978816
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/SP35_Off.txt",
+      "SHA256": "3071CA795D4FFE58ACB49605C0FAC1D5E392B2A96A6D8075C12D6A6E1612BBFD",
+      "Bytes": 48308
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Recipes_Off.txt",
+      "SHA256": "4B9AD371CA90F8131E0729C1B03833F42969FE8507A1634CC4670CD961FA3669",
+      "Bytes": 1078093
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/SavedOffsets_Off.txt",
+      "SHA256": "7E8F5F3877499C06A4AEF450F53098CBF262F0F7CDE033F4352A990AE548A7B5",
+      "Bytes": 3745
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/CurrentFeatures_Off.txt",
+      "SHA256": "9DAEF11BAC8AA10D7D9ED1F0AEE8C061533DF02BE78D15C80A75EAA9655030EA",
+      "Bytes": 336482
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Full_On.txt",
+      "SHA256": "4102BAF6F38FEF938F64BF3F54F81AF766B913F64660D9D6CB12C5A60301ACFF",
+      "Bytes": 17248460
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Geometry_On.txt",
+      "SHA256": "88EE3FBD31B24ED29813AA372CEB9917F0324BC195A8B0D8043530638718D207",
+      "Bytes": 1978979
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/SP35_On.txt",
+      "SHA256": "F3DA84A4C5AA3D9BACF30B0DA8431043C411BA4B0C03E2E1D892D72DF534C1FA",
+      "Bytes": 48298
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Recipes_On.txt",
+      "SHA256": "F9E851A2D3C983916AEA0AFD2F528F4B0FFE99AE6346E707882A13C26720DA62",
+      "Bytes": 1078129
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/SavedOffsets_On.txt",
+      "SHA256": "D208FB09D540F7F1F1C951927FA78E41200DB5B937CF623F18AB810768BBFEE1",
+      "Bytes": 3748
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/CurrentFeatures_On.txt",
+      "SHA256": "6A58604F29B488446BA67ED08C770655D2939CEAD5AA766F9725E2B01A9131FD",
+      "Bytes": 335712
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Rectangles_Generated_No.txt",
+      "SHA256": "4D78BC03BE6E485E07579E98C64865919A50BE743ECB4319B90B0A958156A95A",
+      "Bytes": 78131
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Rectangles_Generated_Yes.txt",
+      "SHA256": "1B36576B1CBBB85587F0528D024F22674D7D2D6BDA053041644D004916F2EEFE",
+      "Bytes": 76527
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Circle_Generated_No.txt",
+      "SHA256": "222D2FB2328CB5EEE777CF6E07BFC5378D334C456492D7C958633659178CF84D",
+      "Bytes": 75906
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Circle_Generated_Yes.txt",
+      "SHA256": "8B7B83DFD44D6D31E333F9E4649CE47768F9164083A73280FA05820842F36A78",
+      "Bytes": 74406
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/PointedSection_Generated_No.txt",
+      "SHA256": "07B649C64A0F1E3E109EEA4B45E70D8716D9C153BA73B434C6B95AC2918043B6",
+      "Bytes": 80477
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/PointedSection_Generated_Yes.txt",
+      "SHA256": "322CF315ED6A683DA09059C45212BB3B0D61BCBC69251D8B0643B0B5EE7B40E1",
+      "Bytes": 78729
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/HollowRectangle_Generated_No.txt",
+      "SHA256": "2640527657F3BF8A6DD0D58CB8B4DDF7AC2C11DD05F3CB7D0EE9084BFEA641E4",
+      "Bytes": 80893
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/HollowRectangle_Generated_Yes.txt",
+      "SHA256": "5E1FF79EFD4C1EEC6F215C6CA8C5C48378C941DF743D607DF7256B907D0AF15C",
+      "Bytes": 79297
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/SavedWorkbook_Saved_No.txt",
+      "SHA256": "0399F9DC76F808793ED6C6DC4E76F53C171EDA15E5BEA51F5D8701CBD4E12F9E",
+      "Bytes": 265486
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/SavedWorkbook_Saved_Yes.txt",
+      "SHA256": "D5F05206BEAA877EED416ACABBD9176C24E3F845D52AE5E7600C0B02144119B2",
+      "Bytes": 255470
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/SavedWorkbook_Paths_No.txt",
+      "SHA256": "6850A92D715F54A1CE7CA81D77DED572C64654BFB105CB1DACDB05B882ABCAD5",
+      "Bytes": 61611
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/SavedWorkbook_Paths_Yes.txt",
+      "SHA256": "07A725605E84A096A4DCC3774A9D86D43167FD04046996025FBCD2ED149C8120",
+      "Bytes": 60355
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Batch15_No.txt",
+      "SHA256": "3A92AFE064780B6A560FD0B8664B54C95C481C93561A98D901F1AD987DCA0D77",
+      "Bytes": 116510
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Stability_No.txt",
+      "SHA256": "2D9FDC0688B9CBC1A43EFCB142958E3A462A59248C0FBA525C70CC1B27A43AE2",
+      "Bytes": 11315
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/AsymmetricSteel_No.txt",
+      "SHA256": "C7B0426F34B746DBEE82D285D9D0D069C93DC904A5B3B656B4AB2CEE93156F8D",
+      "Bytes": 11867
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Batch15_Yes.txt",
+      "SHA256": "618FA6EB170171EE4FE5AA86E9F2B13F72C43CD25EEC86A53DC654D2C620B1FE",
+      "Bytes": 114894
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Stability_Yes.txt",
+      "SHA256": "000B8AFFE078A0092FE76B191675126E1515877984468537E4BA4EF0608C7CEC",
+      "Bytes": 11100
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/AsymmetricSteel_Yes.txt",
+      "SHA256": "7A132B34358CCFAD160F6583CFEB1F27BFE1E56C26F6C4582B53A692822FA0FD",
+      "Bytes": 11538
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Model_Rectangles.txt",
+      "SHA256": "E75FE58A57661D2B1DC620D6C23802A9F185AF1DDC681E4A6F5B0EF114EC379B",
+      "Bytes": 20588
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Model_Circle.txt",
+      "SHA256": "6D3064778F647BF0EDC8C732AEA09F5A5F231C252346826E4A03183333C565B4",
+      "Bytes": 18261
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Model_PointedSection.txt",
+      "SHA256": "B82A3F7F06E881652815E7198776ED1F4A1C62D39A3E696D1F4779BFA050B95F",
+      "Bytes": 42857
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Model_HollowRectangle.txt",
+      "SHA256": "F81D2C2F8FA84D7B23E7A6F200E2286283BE22F8F50ED5BF49622D680F044EF1",
+      "Bytes": 25143
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Model_SavedWorkbook.txt",
+      "SHA256": "3CFEBF09E3ADF1A34C171D01ACC8B0D0910E640B8F9A6292F7A1095A9CBC6EBF",
+      "Bytes": 15596
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/OutputPresentation.txt",
+      "SHA256": "653E2EE84294B641EB94C9A19BD6E1B31F98DC93BEDD6A21B6D34A7BA89F4470",
+      "Bytes": 66249
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/NativeCAD/Stage.json",
+      "SHA256": "4B702969A4C62F15B01DAA369E7429D35C1FEA6AAF61CE5740B9F74DA12A56A7",
+      "Bytes": 787
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "SHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F",
+      "Bytes": 22427
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "SHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607",
+      "Bytes": 31071
+    },
+    {
+      "Name": "FirstFull/docs/regression/FullOnOff_2026-11-01_Current_Run01/Focused/Independent.json",
+      "SHA256": "782FE58F6595C3F92B66C1491CAF0D7E2D8F3136A081AB005170095BD3A6B952",
+      "Bytes": 193449
+    },
+    {
+      "Name": "Recovery/Affected03_No.txt",
+      "SHA256": "C7D7554ACBBB54B41B095E4935E16CF049DCDEEF63B9E508F742F0B30C1BA0FD",
+      "Bytes": 1063781
+    },
+    {
+      "Name": "Recovery/Affected03_No.txt.PrimaryReview.json",
+      "SHA256": "64338E730135EAC321CCC2110F6A3F884A6F96918019251FCB0F730A55EFBB5D",
+      "Bytes": 7175
+    },
+    {
+      "Name": "Recovery/Affected03_No.txt.ProcessClosure.json",
+      "SHA256": "1A53EED21412D22C89ACB15DA24FD2796CC2928768AB073AAABE945D6EFA099C",
+      "Bytes": 3611
+    },
+    {
+      "Name": "Recovery/Affected03_Yes.txt",
+      "SHA256": "93D05994BC25EA1444F352832CF9DE5C4E2C21C33959A9E93702897B88714B4E",
+      "Bytes": 1064131
+    },
+    {
+      "Name": "Recovery/Affected03_Yes.txt.PrimaryReview.json",
+      "SHA256": "08F13D937E2937BEF061972847789F3C1860FB9B00070E80FE647370DC82949C",
+      "Bytes": 5880
+    },
+    {
+      "Name": "Recovery/Affected03_Yes.txt.ProcessClosure.json",
+      "SHA256": "FF2BDB891D933929F0C5E119B83F74F40DAB9887A7A5327017EB9195E5364315",
+      "Bytes": 2633
+    },
+    {
+      "Name": "FirstDirectedFailure/Affected_No.txt",
+      "SHA256": "2FC91F0554EEC223AE43FA5F1F3574BEB2ACEE3466742134D7446A704640141C",
+      "Bytes": 937012
+    },
+    {
+      "Name": "FirstDirectedFailure/Affected_No.txt.PrimaryReview.json",
+      "SHA256": "52F7C06AF5F62A15E60BA6AA688894CEBEDCE904375D781103C21DBA89FDB3C5",
+      "Bytes": 8407
+    },
+    {
+      "Name": "FirstDirectedFailure/Affected_No.txt.ProcessClosure.json",
+      "SHA256": "94B3DDB29D6E126C8FEDBAAEC6795101DF72941C0D0EE0BF17599BAB99E54E8B",
+      "Bytes": 4596
+    },
+    {
+      "Name": "RecoveryPipeline/Recovery46_Build04.log",
+      "SHA256": "F426D74DE13F0E6A34761499199BE3320A50003379229BC1452CE67090F41C89",
+      "Bytes": 2682
+    },
+    {
+      "Name": "RecoveryPipeline/Recovery46_Native187.log",
+      "SHA256": "A068D52228CB79B6AD605FB2DF621371D27718BABF1145606F122FAB7FBD187B",
+      "Bytes": 2056
+    },
+    {
+      "Name": "RecoveryPipeline/Recovery46_AffectedNoYes.log",
+      "SHA256": "1635CA8F89F2E9289EF4AD13DBAB8A62348F6B93A4B7167D4B624AB4D5DA388C",
+      "Bytes": 36890
+    },
+    {
+      "Name": "FirstFull/OfficialSummaryTerminal24.log",
+      "SHA256": "25CA8A465D3B2FAB3AA6F93FCBD7CD37A2D50C32F92120E0E349AF8098E01CE1",
+      "Bytes": 1089
+    },
+    {
+      "Name": "FirstFull/OfficialFinalizeTerminal24.log",
+      "SHA256": "01C3F84A881C5ADB33A6E09C7D98DA48CD586F51318D5B5B2B56216030101616",
+      "Bytes": 748
+    }
+  ]
+}

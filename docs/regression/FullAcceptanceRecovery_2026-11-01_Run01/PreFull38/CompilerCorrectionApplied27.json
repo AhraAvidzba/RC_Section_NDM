@@ -1,0 +1,24 @@
+﻿{
+    "Status":  "ONE_NEW_ASSERT_CALL_CORRECTED_AFTER_OWN_CLOSURE",
+    "AtUTC":  "2026-11-01T20:28:36.1339229+00:00",
+    "Manifest":  {
+                     "Status":  "PRIVATE_COMPILER_CORRECTION_PREPARED",
+                     "AtUTC":  "2026-11-01T20:27:20.380563+00:00",
+                     "Reason":  "Новый тест вызывал TestAssertTextEquals, объявленный Private в другом модуле; используется локальный TestAssertTrue с тем же точным сравнением.",
+                     "Path":  "tests/modTestPlotConfig.bas",
+                     "BeforeSHA256":  "C43C63953824D478852CB4EBA9982CDB036187B1717E0C5DE84DAAF4B53117E5",
+                     "AfterSHA256":  "5343D94D91739E01FB5306A20C66C67E1D3F40FDCF2DA83ECE79A8449464FCF3",
+                     "ReplacementCount":  1,
+                     "BeforeExpression":  "TestAssertTextEquals stats, \"indexedFixture.baseline.element\", CStr(actual(3, 5)), \"R1\"",
+                     "AfterExpression":  "TestAssertTrue stats, \"indexedFixture.baseline.element\", CStr(actual(3, 5)) = \"R1\"",
+                     "NumericalExpectationsUnchanged":  true,
+                     "RepositoryChanged":  false,
+                     "FullAcceptanceClaim":  false
+                 },
+    "FailedBuildPreserved":  true,
+    "UserMainUnchanged":  true,
+    "OriginalInputs":  522,
+    "ChangedComponents":  3,
+    "OtherInputsUnchanged":  519,
+    "FullAcceptanceClaim":  false
+}

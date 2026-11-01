@@ -1,0 +1,18 @@
+﻿{
+    "ObservedUTC":  "2026-11-01T20:13:12.4581124+00:00",
+    "TaskName":  "RC_NDM_Full_20261101_Current_Run01",
+    "SourceSHA256":  "A5B0CCDB88627D36EEEEEA78C440EB662440C19454337E7801191EEFF8BDA1F6",
+    "SourceCommit":  "047e0fe96bd9eb09067398dfb5ca2fe4b8ca9e8b",
+    "AllOwnIdentitiesTerminal":  true,
+    "InputsChecked":  522,
+    "AnyProcessClosed":  false,
+    "DeletedByThisCheck":  true,
+    "OwnProofSHA256":  "A697111B78282F21B490C6427491FB2EE7F6C901CEEA4980843097F083BF145B",
+    "Status":  "EXACT_CURRENT_FULL_TASK_REMOVED_AFTER_ALL_OWN_EXIT",
+    "Execute":  "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "Arguments":  "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \"C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullSuiteLaunch_2026-11-01_Current_Run01\\FullDriverHost.ps1\"",
+    "WorkingDirectory":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM",
+    "Triggers":  0,
+    "TaskXMLBackup":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\CurrentRun01TaskBeforeCleanup06.xml",
+    "TaskXMLSHA256":  "F6B211D59DD443EEB3CEC34FF3FB14E3CDED85516AEBD10DD8F74AC3257B663E"
+}

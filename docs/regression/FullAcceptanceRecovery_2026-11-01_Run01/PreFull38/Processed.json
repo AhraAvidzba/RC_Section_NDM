@@ -1,0 +1,139 @@
+{
+  "Status": "NATIVE_DIRECTED_PASS_NEW_FULL_REQUIRED",
+  "AtUTC": "2026-11-01T20:58:42.067820+00:00",
+  "FirstFullStatus": "REVIEW_REQUIRED",
+  "FirstFullSourceSHA256": "A5B0CCDB88627D36EEEEEA78C440EB662440C19454337E7801191EEFF8BDA1F6",
+  "FirstFullCoreMacros": 182,
+  "FirstFullFocusedRecords": 26,
+  "FirstFullFocusedSingleCases": 122,
+  "FirstFullFailureLines": 430,
+  "FirstFullExpectedSameFailureLinesPerMode": 215,
+  "AcceptedCandidateSHA256": "831D725C06439CA1B771645F18B0D546169C1E22A97BA7688D64CB3F8509B74A",
+  "SourceComponents": 181,
+  "DocumentComponents": 6,
+  "AffectedEntryPointsPerMode": 4,
+  "Modes": [
+    "No",
+    "Yes"
+  ],
+  "NumericalExpectationsChanged": false,
+  "UserMainPreserved": true,
+  "HeavyBookPreserved": true,
+  "FirstFullFAILPreserved": true,
+  "WholeNewFullRequired": true,
+  "FullAcceptanceClaim": false,
+  "PrimaryArchiveSHA256": "8350B4F6111F87B66322FDCF69768A6961F57A089450C5007E25C7E68F107CCD",
+  "PrimaryArchiveBytes": 2802984,
+  "Proofs": [
+    {
+      "Name": "FirstFullCompletion.json",
+      "SHA256": "E0C1C6E77779DF191E19F29614C91EE5C2E0CA913BD6EAD18C347BDA4BB17989",
+      "Bytes": 656
+    },
+    {
+      "Name": "FirstFullTerminalScopeReview.json",
+      "SHA256": "B1A8FA4A558235CF563818C06FDEB69439250C4F470015DA03F046F505B0B78F",
+      "Bytes": 203021
+    },
+    {
+      "Name": "FirstFullAllOwnClosures.json",
+      "SHA256": "A697111B78282F21B490C6427491FB2EE7F6C901CEEA4980843097F083BF145B",
+      "Bytes": 32728
+    },
+    {
+      "Name": "FirstFullTaskCleanup.json",
+      "SHA256": "87D0C996A9E1A8FF0E696435D4281EE586DB070499B15F94A8466D42A214A7B3",
+      "Bytes": 1321
+    },
+    {
+      "Name": "FirstFullPrivateArchiveManifest.json",
+      "SHA256": "58967DCE603DC56021B606FE9AC56F53F9840ACA0C632D6ECD944846B8E9F473",
+      "Bytes": 82488
+    },
+    {
+      "Name": "FailureScope13.json",
+      "SHA256": "E0E5ED6E435B8DEE3FD9D193F9FCA9E16A24BE380B5427EBAFF4397B43AD57E1",
+      "Bytes": 3757
+    },
+    {
+      "Name": "FailureScope45.json",
+      "SHA256": "73DBBD9BB6E7261B98B08BA3AD91B6F99B868592938BB952CF9A6F47B5553AAC",
+      "Bytes": 4016
+    },
+    {
+      "Name": "FixTransfer15.json",
+      "SHA256": "8033EB3CC0CFFE01A847AF3F96AB5D61CF1050BEC6046F858440C7EFE023E631",
+      "Bytes": 2411
+    },
+    {
+      "Name": "CompilerCorrectionApplied27.json",
+      "SHA256": "E18C9113DD6BAEF505955D9A629C50ABEA8B5223D52DEBD09B0086FA0E337FD4",
+      "Bytes": 1528
+    },
+    {
+      "Name": "Build01FailedOwnClosure25.json",
+      "SHA256": "425776331E385C2CDC4F6E812FC9BE1BE2FE593CF0198136F82698F8B99D96A7",
+      "Bytes": 1371
+    },
+    {
+      "Name": "Build01Failure.json",
+      "SHA256": "B05D9C2A273CF8252AB32F22FC956B1B8FCAFA5EF7967083073EFC220D4BB440",
+      "Bytes": 399
+    },
+    {
+      "Name": "Build04.json",
+      "SHA256": "893AD5A6E494369E838C78B36665023CE2D8945EB8D0820AF4BB74BA931395EB",
+      "Bytes": 1172
+    },
+    {
+      "Name": "AcceptedNative.json",
+      "SHA256": "28A7C2FE9C93C3DFF7163AD5B1B3A91291B328F9B22F0A1A1EB2BD64D71263DB",
+      "Bytes": 920
+    },
+    {
+      "Name": "Native.json",
+      "SHA256": "F9579908FA9BFEF6254E57A99D682055784035B08C318B82B1617156DE4B0910",
+      "Bytes": 437
+    },
+    {
+      "Name": "NativeOwnClosure.json",
+      "SHA256": "BC6F0BB7E8AE0C2C80B1642DDCADC43E91E40C04396D1AB2103F18CC0D7C14D5",
+      "Bytes": 224
+    },
+    {
+      "Name": "SourceEquality.json",
+      "SHA256": "8F9A40D4E201A8BDE5FAF6FA361721A888DFFA11A9CCC4A19467B72F8ED81D96",
+      "Bytes": 121057
+    },
+    {
+      "Name": "RecoveryDirected48.json",
+      "SHA256": "515B17BA3F418B7171BAECB1B34E90A3A0562F27B4EB19C64E8AE631A54F043B",
+      "Bytes": 18120
+    },
+    {
+      "Name": "FixtureOffsetsApplied34.json",
+      "SHA256": "F14D8043F426DB7A507D81AB96413A4A32C4F05317CC1D7F5DE387D745748CB3",
+      "Bytes": 2225
+    },
+    {
+      "Name": "SnapshotCoverageApplied45.json",
+      "SHA256": "E3A2F8BC0A0273159050F785710C0E848315B22602A94FDFF2F844B410C23B77",
+      "Bytes": 1449
+    },
+    {
+      "Name": "FinalRecoveryOwnClosures.json",
+      "SHA256": "0DBFC4B096EBE5E7F39D386C7D071624C8B458D66E12B6FEF448165543F7DEF5",
+      "Bytes": 7636
+    },
+    {
+      "Name": "FirstDirectedFailure.json",
+      "SHA256": "4A740EB9835677D700C440AA35C692F11B55396AB1EFE1D8083F1D3F57892094",
+      "Bytes": 11671
+    },
+    {
+      "Name": "UserFullAuthorization.json",
+      "SHA256": "6883C050E3E8D003B71E51081AA5D151FB515CE1B2A26575E6F750DB7960985B",
+      "Bytes": 1040
+    }
+  ]
+}

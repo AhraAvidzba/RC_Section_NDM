@@ -26,6 +26,7 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     Dim stats As TUiTestStats
     TestUnifiedOutputSelectionContracts stats
     TestUnifiedOutputConfigContracts stats
+    TestIndexedFixtureIntegrity stats
     TestAudit03GeneralPlotContracts stats
     TestAudit03AnnotationLayoutContracts stats
     TestAudit03PlotEnableContracts stats
@@ -1019,7 +1020,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
         elements(row, 5) = -0.0001: elements(row, 6) = -1.25: elements(row, 7) = "Compression"
     Next row
     elements(2, 4) = "C1": elements(3, 4) = "R1"
-    sheet.Range("R35").Resize(3, 7).Value2 = elements
+    modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), elements
     keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "CoordinateUnit")
     For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
     annotations(2, 1) = "DIMENSION": annotations(2, 2) = -5#: annotations(2, 3) = 0#
@@ -1076,7 +1077,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
         annotations(2, 2) = -50#: annotations(2, 4) = 50#: annotations(2, 9) = "mm": sheet.Range("A20").Resize(2, 9).Value2 = annotations
         TestSnapshotMetadataAdapterParity stats, fixture, settings, reader, anchor
         TestLocaleSavedNumbers stats, fixture, settings, reader, anchor
-        baseline = sheet.Range("A5:X37").Value2
+        baseline = sheet.Range("A5:Z37").Value2
         For Each row In Array(11, 12, 14, 15, 16, 17)
             Set cell = anchor.Cells(row, 3)
             For Each bad In Array("", "TODO", "INVALID", CVErr(2015))
@@ -1115,7 +1116,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
             TestAssertTrue stats, "audit03.snapshotMetadata.status.p" & CStr(position) & "." & CStr(state), reader.DirectStateStatus = CStr(state)
         Next state
         anchor.Cells(12, 3).Value2 = "OK"
-        actual = sheet.Range("A5:X37").Value2: TestAudit03ComparePlainSnapshot stats, "audit03.snapshotMetadata.unchanged.p" & CStr(position), baseline, actual, 1
+        actual = sheet.Range("A5:Z37").Value2: TestAudit03ComparePlainSnapshot stats, "audit03.snapshotMetadata.unchanged.p" & CStr(position), baseline, actual, 1
         values = anchor.Resize(18, 4).Value2 ' Unit и Value распознаются по шапке, а не по взаимному смещению.
         actual = values
         For row = 1 To 18
@@ -1242,7 +1243,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     Next row
     elements(4, 5) = 0.0002: elements(4, 6) = 9.5: elements(4, 7) = "Tension"
     elements(5, 5) = -0.0003: elements(5, 6) = -7.25: elements(5, 7) = "Compression"
-    sheet.Range("R35").Resize(5, 7).Value2 = elements
+    modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), elements
     fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Results!$R$35"
     keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "CoordinateUnit")
     For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
@@ -1374,7 +1375,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
                 changedElements(row, 6) = IIf(compression, -2.75, 2.75)
                 changedElements(row, 7) = IIf(compression, "Compression", "Tension")
             Next row
-            sheet.Range("R35").Resize(5, 7).Value2 = changedElements
+            modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), changedElements
             table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
             TestAudit03SetPlotSetting table, "Plot.LegendMode", "Separate"
             TestAudit03SetPlotSetting table, "Plot.ResultGradient", "No"
@@ -1393,7 +1394,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         ' Для отношения 1.25/2.75 независимый RGB oracle равен 164,169,173.
         changedElements = elements
         changedElements(3, 5) = -0.0002: changedElements(3, 6) = -2.75: changedElements(3, 7) = "Compression"
-        sheet.Range("R35").Resize(5, 7).Value2 = changedElements
+        modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), changedElements
         table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
         TestAudit03SetPlotSetting table, "Plot.ResultGradient", "No"
         TestAudit03SetPlotSetting table, "Plot.Color.ConcreteCompression", "10,20,30"
@@ -1412,7 +1413,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         Set marker = TestAudit03PlotShape(chart, "ElementConcrete")
         TestAssertTrue stats, "audit03.generalPlot.gradient.p" & CStr(position) & ".shape", Not marker Is Nothing
         If Not marker Is Nothing Then TestAssertTrue stats, "audit03.generalPlot.gradient.p" & CStr(position) & ".effect", marker.Fill.ForeColor.RGB = RGB(164, 169, 173)
-        sheet.Range("R35").Resize(5, 7).Value2 = elements
+        modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), elements
         table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
         TestSetOutputCombinationInTable table, "ALT"
         TestAudit03SetPlotSetting table, "Plot.ResultLabelsEnabled", "Yes"
@@ -1521,7 +1522,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         gridResults(row, 4) = grid(row, 1): gridResults(row, 6) = -CDbl((row - 2) Mod 17)
     Next row
     sheet.Range("AF5").Resize(5002, 15).Value2 = grid
-    sheet.Range("AV5").Resize(5002, 7).Value2 = gridResults
+    modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("AV5"), gridResults
     fixture.Names.Item("rngNDMSectionGeometry").RefersTo = "=Results!$AF$5"
     fixture.Names.Item("rngNDMElementResults").RefersTo = "=Results!$AV$5"
     table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
@@ -1997,10 +1998,12 @@ Private Sub TestSnapshotMetadataAdapterParity(ByRef stats As TUiTestStats, ByVal
         ByVal settings As CSystemSettingsReader, ByVal reader As CSectionPlotDataReader, ByVal anchor As Object)
     Dim state As Variant, value As Variant, flags As Variant, expected As Variant, statuses As Variant, canonical As Variant
     Dim i As Long, j As Long, row As Long, field As String, prefix As String, code As Long, reason As String, export As String
-    Dim originalUnits As Variant
+    Dim originalUnits As Variant, originalElements As Variant, stateElements As Variant, elementAnchor As Object
     Dim profiles As Object, cell As Object, parsedFlag As Boolean, parsedStatus As String, accepted As Boolean
     Set profiles = fixture.Names.Item("rngCalculationProfiles").RefersToRange
     originalUnits = anchor.Cells(1, 4).Resize(18, 1).Value2
+    Set elementAnchor = fixture.Names.Item("rngNDMElementResults").RefersToRange.Cells(1, 1)
+    originalElements = elementAnchor.Resize(3, 9).Value2
     anchor.Cells(2, 4).Resize(6, 1).Value2 = "mm"
     anchor.Cells(9, 4).Resize(2, 1).Value2 = "1/mm"
     anchor.Cells(11, 3).Resize(2, 1).NumberFormat = "@" ' Неверные числовые строки должны оставаться строками, а не преобразовываться Excel при записи.
@@ -2021,7 +2024,9 @@ Private Sub TestSnapshotMetadataAdapterParity(ByRef stats As TUiTestStats, ByVal
             field = Choose(row - 7, "Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
             anchor.Cells(row, 2).Value2 = "State." & CStr(state) & "." & field
         Next row
-        fixture.Worksheets("Results").Range("T36:T37").Value2 = state
+        stateElements = originalElements
+        For row = 2 To UBound(stateElements, 1): stateElements(row, 4) = state: Next row
+        TestWriteIndexedElementFixture fixture, elementAnchor, stateElements ' StateType и индекс описывают одно контрольное состояние.
         For row = 2 To profiles.Rows.Count
             If CStr(profiles.Cells(row, 2).Value2) = "Visualization.State" Then profiles.Cells(row, 3).Value2 = state
         Next row
@@ -2087,7 +2092,7 @@ Private Sub TestSnapshotMetadataAdapterParity(ByRef stats As TUiTestStats, ByVal
         field = Choose(row - 7, "Epsilon0", "KappaX", "KappaY", "ExtensionUsed", "Status")
         anchor.Cells(row, 2).Value2 = "State.StrengthState." & field
     Next row
-    fixture.Worksheets("Results").Range("T36:T37").Value2 = "StrengthState"
+    TestWriteIndexedElementFixture fixture, elementAnchor, originalElements
     For row = 2 To profiles.Rows.Count
         If CStr(profiles.Cells(row, 2).Value2) = "Visualization.State" Then profiles.Cells(row, 3).Value2 = "StrengthState"
     Next row
@@ -2118,7 +2123,7 @@ Private Sub TestLocaleSavedNumbers(ByRef stats As TUiTestStats, ByVal fixture As
             Select Case field
                 Case 0: Set cell = anchor.Cells(8, 3)
                 Case 1: Set cell = annotation.Cells(2, 2)
-                Case 2: Set cell = elements.Cells(2, 6)
+                Case 2: Set cell = elements.Cells(2, 8) ' Stress находится в восьмом физическом столбце, MaterialType не изменяется.
                 Case 3: Set cell = geometry.Cells(2, 3)
             End Select
             original = cell.Value2: cell.NumberFormat = "@"
@@ -2237,10 +2242,20 @@ Private Sub TestUnifiedOutputSelectionContracts(ByRef stats As TUiTestStats)
         TestAssertTrue stats, "output.rejectsBadMode." & CStr(VarType(bad)) & "." & CStr(Len(reason)), code <> 0 And InStr(1, reason, "Output.CombinationMode", vbTextCompare) > 0
     Next bad
     table.Cells(2, 2).Value2 = "Worst": settings.LoadFromRange table: sheet.Range("H2").ClearContents
-    sheet.Range("J1").Value2 = "LoadCase": sheet.Range("J2").Value2 = "ELEMENT_FALLBACK"
-    fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Selection!$J$1"
+    Dim selectionResults(1 To 2, 1 To 9) As Variant, emptyResults(1 To 1, 1 To 9) As Variant
+    Dim selectionHeaders As Variant, selectionColumn As Long
+    selectionHeaders = Array("RunID", "LoadCase", "ProfileId", "StateType", "ElementID", "MaterialType", "Strain", "Stress", "PhysicalState")
+    For selectionColumn = 1 To 9
+        selectionResults(1, selectionColumn) = selectionHeaders(selectionColumn - 1)
+        emptyResults(1, selectionColumn) = selectionHeaders(selectionColumn - 1)
+    Next selectionColumn
+    selectionResults(2, 1) = 46023#: selectionResults(2, 2) = "ELEMENT_FALLBACK": selectionResults(2, 3) = "PR1"
+    selectionResults(2, 4) = "StrengthState": selectionResults(2, 5) = "C1": selectionResults(2, 6) = "Concrete"
+    selectionResults(2, 7) = 0#: selectionResults(2, 8) = 0#: selectionResults(2, 9) = "NearZero"
+    TestWriteIndexedElementFixture fixture, sheet.Range("J10"), selectionResults
     TestAssertTrue stats, "output.Worst.savedElementFallback", ReadOutputCombinationID(fixture, settings) = "ELEMENT_FALLBACK"
-    sheet.Range("J2").ClearContents
+    sheet.Range("J11").Resize(1, 9).ClearContents
+    TestWriteIndexedElementFixture fixture, sheet.Range("J10"), emptyResults
     sheet.Range("P1").Value2 = "LoadCase": sheet.Range("Q1").Value2 = "Parameter"
     sheet.Range("P2").Value2 = "ALL": sheet.Range("Q2").Value2 = "Bounds.MaxX"
     sheet.Range("P3").Value2 = "PROPERTIES_FALLBACK": sheet.Range("Q3").Value2 = "ProfileId"
@@ -2320,5 +2335,124 @@ Restore:
         id.Formula = savedID: loads.Cells(2, 1).Formula = savedSourceID
         display.Cells(1, 1).Formula = savedProfile: loads.Cells(2, 5).Formula = savedAssigned
     End If
+    On Error GoTo 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Публикует синтетические результаты в девяти колонках и согласованный индекс.
+' Семь входных полей фабрики: LC/Profile/State/ElementID/Strain/Stress/PhysicalState.
+' Контрольные числа и статусы копируются без вычисления НДС; C/R обозначают материал fixture.
+' Девятиколоночный вход используется для негативных примеров полноценного снимка.
+Public Sub TestWriteIndexedElementFixture(ByVal workbook As Object, ByVal anchor As Object, ByRef source As Variant)
+    Dim values As Variant, row As Long, column As Long, headers As Variant, identity As String
+    If UBound(source, 2) = 7 Then
+        ReDim values(1 To UBound(source, 1), 1 To 9)
+        headers = Array("RunID", "LoadCase", "ProfileId", "StateType", "ElementID", "MaterialType", "Strain", "Stress", "PhysicalState")
+        For column = 1 To 9: values(1, column) = headers(column - 1): Next column
+        values(1, 8) = source(1, 6) ' Сохраняет единицу контрольного напряжения в заголовке.
+        For row = 2 To UBound(source, 1)
+            values(row, 1) = 46023#
+            For column = 1 To 4: values(row, column + 1) = source(row, column): Next column
+            identity = CStr(source(row, 4))
+            Select Case Left$(identity, 1)
+                Case "C": values(row, 6) = "Concrete"
+                Case "R": values(row, 6) = "Rebar"
+                Case Else: Err.Raise 5, "TestWriteIndexedElementFixture", "В fixture требуется ElementID с префиксом C или R."
+            End Select
+            For column = 5 To 7: values(row, column + 2) = source(row, column): Next column
+        Next row
+    ElseIf UBound(source, 2) = 9 Then
+        values = source
+    Else
+        Err.Raise 5, "TestWriteIndexedElementFixture", "Неверное число входных полей fixture."
+    End If
+    workbook.Names.Add Name:="rngNDMElementResults", RefersTo:="='" & Replace(anchor.Worksheet.Name, "'", "''") & "'!" & anchor.Cells(1, 1).Address
+    anchor.Resize(UBound(values, 1), 9).Value2 = values
+    Dim indexAnchor As Object
+    On Error Resume Next
+    Set indexAnchor = workbook.Names.Item("rngNDMElementResultIndex").RefersToRange
+    On Error GoTo 0
+    If indexAnchor Is Nothing Then
+        ' Собственная область временной книги не пересекается с геометрией и GR-таблицей контуров.
+        Set indexAnchor = anchor.Worksheet.Cells(5, 230)
+        If workbook.Application.WorksheetFunction.CountA(indexAnchor.Resize(UBound(values, 1) + 2, 9)) <> 0 Then Err.Raise 5, "TestWriteIndexedElementFixture", "Место индекса fixture занято."
+        workbook.Names.Add Name:="rngNDMElementResultIndex", RefersTo:="='" & Replace(anchor.Worksheet.Name, "'", "''") & "'!" & indexAnchor.Address
+    End If
+    Dim index As CResultBlockIndex: Set index = New CResultBlockIndex
+    Dim runID As Double
+    If UBound(values, 1) > 1 Then runID = CDbl(values(2, 1))
+    index.Build values, runID
+    Dim matrix As Variant: matrix = ElementResultIndexMatrix(index)
+    Dim formatter As CNDMResultsWriter: Set formatter = New CNDMResultsWriter
+    PublishElementResultIndex workbook, matrix, formatter
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет, что чтение отклоняет изменённые после публикации ключи и удалённые строки.
+' Индекс при таком чтении не перестраивается; восстановленная согласованная копия читается.
+Public Function RunIndexedFixtureIntegrityTests() As String
+    Dim stats As TUiTestStats
+    TestIndexedFixtureIntegrity stats
+    RunIndexedFixtureIntegrityTests = stats.Report & "TOTAL_INDEXED_FIXTURE_INTEGRITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Мутации делают напрямую в собственных ячейках после записи индекса; фабрика при повреждении не вызывается.
+' Проверяет фактический адрес, неизменность индекса и отсутствие решения НДС.
+Private Sub TestIndexedFixtureIntegrity(ByRef stats As TUiTestStats)
+    Dim fixture As Object, sheet As Object, anchor As Object, indexAnchor As Object, damaged As Object
+    Dim compact(1 To 3, 1 To 7) As Variant, headers As Variant, column As Long, row As Long
+    Dim actual As Variant, indexBefore As Variant, indexAfter As Variant, mutation As Variant
+    Dim code As Long, reason As String, prefix As String, solves As Long
+    On Error GoTo Failed
+    solves = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(xlWBATWorksheet)
+    Set sheet = fixture.Worksheets(1): sheet.Name = "TestIndexedFixture"
+    Set anchor = sheet.Range("A5")
+    headers = Array("LoadCase", "ProfileId", "StateType", "ElementID", "Strain", "Stress, MPa", "PhysicalState")
+    For column = 1 To 7: compact(1, column) = headers(column - 1): Next column
+    For row = 2 To 3
+        compact(row, 1) = "IDX": compact(row, 2) = "PR1": compact(row, 3) = "StrengthState"
+        compact(row, 5) = -0.0001: compact(row, 6) = 2.75: compact(row, 7) = "Tension"
+    Next row
+    compact(2, 4) = "C1": compact(3, 4) = "R1"
+    TestWriteIndexedElementFixture fixture, anchor, compact
+    actual = ReadIndexedExcelElementResults(fixture, "IDX", "StrengthState", False)
+    TestAssertTrue stats, "indexedFixture.baseline.rows", UBound(actual, 1) = 3 And UBound(actual, 2) = 9
+    TestAssertTrue stats, "indexedFixture.baseline.element", CStr(actual(3, 5)) = "R1"
+    TestAssertClose stats, "indexedFixture.baseline.stress", CDbl(actual(3, 8)), 2.75, 0#
+    actual = ReadIndexedExcelElementResults(fixture, "", "", True)
+    TestAssertTrue stats, "indexedFixture.availability.keysOnly", UBound(actual, 1) = 2 And UBound(actual, 2) = 4
+    For Each mutation In Array("Profile", "RemovedRow")
+        TestWriteIndexedElementFixture fixture, anchor, compact
+        Set indexAnchor = fixture.Names.Item("rngNDMElementResultIndex").RefersToRange
+        indexBefore = indexAnchor.Resize(3, 9).Value2
+        If mutation = "Profile" Then
+            Set damaged = anchor.Cells(3, 3): damaged.Value2 = "WRONG_PROFILE"
+        Else
+            Set damaged = anchor.Cells(3, 1): anchor.Cells(3, 1).Resize(1, 9).ClearContents
+        End If
+        code = 0: reason = vbNullString
+        On Error Resume Next
+        actual = ReadIndexedExcelElementResults(fixture, "IDX", "StrengthState", False)
+        code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo Failed
+        prefix = "indexedFixture.stale." & CStr(mutation)
+        TestAssertTrue stats, prefix & ".rejected", code <> 0
+        TestAssertTrue stats, prefix & ".reason", InStr(1, reason, "без обновления индекса", vbTextCompare) > 0
+        TestAssertTrue stats, prefix & ".address", InStr(1, reason, damaged.Address(External:=True), vbBinaryCompare) > 0
+        indexAfter = indexAnchor.Resize(3, 9).Value2
+        TestAudit03ComparePlainSnapshot stats, prefix & ".indexUnchanged", indexBefore, indexAfter, 1
+        TestWriteIndexedElementFixture fixture, anchor, compact
+        actual = ReadIndexedExcelElementResults(fixture, "IDX", "StrengthState", False)
+        TestAssertTrue stats, prefix & ".recovery", UBound(actual, 1) = 3 And CStr(actual(3, 5)) = "R1"
+    Next mutation
+    TestAssertTrue stats, "indexedFixture.noSolve", SectionEquilibriumSolveCount() = solves
+    GoTo Cleanup
+Failed:
+    TestAssertTrue stats, "indexedFixture.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
 End Sub

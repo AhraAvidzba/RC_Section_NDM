@@ -1,0 +1,125 @@
+﻿{
+    "Status":  "ALL_FIFTEEN_RECOVERY_OWN_IDENTITIES_TERMINAL",
+    "AtUTC":  "2026-11-01T20:58:28.8330357+00:00",
+    "Identities":  [
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  57788,
+                           "StartTicksUTC":  "639291609041694723",
+                           "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullAcceptanceRecovery_2026-11-01_Run01\\Build01\\BuildOwnership.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  97416,
+                           "StartTicksUTC":  "639291617452672450",
+                           "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullAcceptanceRecovery_2026-11-01_Run01\\Build02\\BuildOwnership.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  84728,
+                           "StartTicksUTC":  "639291623319357058",
+                           "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullAcceptanceRecovery_2026-11-01_Run01\\Build03\\BuildOwnership.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  58960,
+                           "StartTicksUTC":  "639291629266362314",
+                           "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullAcceptanceRecovery_2026-11-01_Run01\\Build04\\BuildOwnership.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  90780,
+                           "StartTicksUTC":  "639291619986851913",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryNative02\\Own.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  92828,
+                           "StartTicksUTC":  "639291625675628445",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryNative03\\Own.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  85052,
+                           "StartTicksUTC":  "639291631640970918",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryNative04\\Own.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  100184,
+                           "StartTicksUTC":  "639291620688801654",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryDirected29.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  85372,
+                           "StartTicksUTC":  "639291626069099449",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryDirected37.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  84264,
+                           "StartTicksUTC":  "639291627406158528",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryDirected37.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  99016,
+                           "StartTicksUTC":  "639291632048308941",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryDirected48.json"
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  98380,
+                           "StartTicksUTC":  "639291633306491420",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryDirected48.json"
+                       },
+                       {
+                           "Name":  "powershell",
+                           "PID":  100360,
+                           "StartTicksUTC":  "639291608824880122",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryPipeline21.json"
+                       },
+                       {
+                           "Name":  "powershell",
+                           "PID":  90896,
+                           "StartTicksUTC":  "639291623188280974",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryResume35.json"
+                       },
+                       {
+                           "Name":  "powershell",
+                           "PID":  83552,
+                           "StartTicksUTC":  "639291629137124225",
+                           "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\RecoveryResume46.json"
+                       }
+                   ],
+    "AllOwnIdentitiesTerminal":  true,
+    "PreviousFullOwnCount":  44,
+    "OriginalInputsChecked":  522,
+    "ChangedSourceComponents":  3,
+    "OtherOriginalInputsUnchanged":  519,
+    "AcceptedSourceSHA256":  "831D725C06439CA1B771645F18B0D546169C1E22A97BA7688D64CB3F8509B74A",
+    "Logs":  [
+                 {
+                     "Name":  "Recovery46_Build04.log",
+                     "Bytes":  2682,
+                     "SHA256":  "F426D74DE13F0E6A34761499199BE3320A50003379229BC1452CE67090F41C89",
+                     "AllBytesRead":  true
+                 },
+                 {
+                     "Name":  "Recovery46_Native187.log",
+                     "Bytes":  2056,
+                     "SHA256":  "A068D52228CB79B6AD605FB2DF621371D27718BABF1145606F122FAB7FBD187B",
+                     "AllBytesRead":  true
+                 },
+                 {
+                     "Name":  "Recovery46_AffectedNoYes.log",
+                     "Bytes":  36890,
+                     "SHA256":  "1635CA8F89F2E9289EF4AD13DBAB8A62348F6B93A4B7167D4B624AB4D5DA388C",
+                     "AllBytesRead":  true
+                 }
+             ],
+    "FailedBuilderForceClosureByExplicitUserConsent":  true,
+    "AcceptedBuilderNativeAndDirectedOrdinaryExit":  true,
+    "FullAcceptanceClaim":  false
+}

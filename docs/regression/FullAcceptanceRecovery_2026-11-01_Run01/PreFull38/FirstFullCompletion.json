@@ -1,0 +1,19 @@
+﻿{
+    "Status":  "REVIEW_REQUIRED",
+    "FinishedUTC":  "2026-11-01T20:10:34.2611523+00:00",
+    "SourceSHA256":  "A5B0CCDB88627D36EEEEEA78C440EB662440C19454337E7801191EEFF8BDA1F6",
+    "SourceCommit":  "047e0fe96bd9eb09067398dfb5ca2fe4b8ca9e8b",
+    "RunnerExit":  1,
+    "SummaryExit":  1,
+    "FinalizeExit":  1,
+    "CompleteAcceptancePassed":  false,
+    "ExpectedSuites":  182,
+    "CoverageVersion":  7,
+    "PrimaryReviewStillRequired":  true,
+    "ChangedInputs":  [
+
+                      ],
+    "HeadChanged":  false,
+    "DriverError":  "",
+    "EvidenceDirectory":  "docs/regression/FullOnOff_2026-11-01_Current_Run01"
+}

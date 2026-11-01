@@ -1,0 +1,28 @@
+﻿{
+    "Status":  "NESTED_FIXTURE_OFFSETS_TRANSFERRED_AFTER_DIRECTED_OWN_CLOSURE",
+    "AtUTC":  "2026-11-01T20:38:18.7452809+00:00",
+    "Manifest":  {
+                     "Status":  "NESTED_TEST_FIXTURE_OFFSETS_PREPARED",
+                     "AtUTC":  "2026-11-01T20:37:51.120439+00:00",
+                     "Path":  "tests/modTestPlotConfig.bas",
+                     "BeforeSHA256":  "5343D94D91739E01FB5306A20C66C67E1D3F40FDCF2DA83ECE79A8449464FCF3",
+                     "AfterSHA256":  "5CDCC9C433BAD6751B0D176FE2978867219BFE83AB16A57203E42A16D853D96A",
+                     "PreparedPath":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\FixtureOffsets33\\modTestPlotConfig.bas",
+                     "FailedPrimary":  "docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/Affected_No.txt",
+                     "FailedPrimarySHA256":  "2FC91F0554EEC223AE43FA5F1F3574BEB2ACEE3466742134D7446A704640141C",
+                     "Cause":  "Вложенный adapter-тест менял StateType по физическому адресу T36:T37 семиколоночной фабрики, который теперь содержит ProfileId; локальный locale-тест менял колонку MaterialType вместо Stress.",
+                     "Resolution":  "StateType меняется в четвёртом столбце локальной матрицы и публикуется с согласованным индексом; Stress проверяется в столбце 8. Отдельная stale-index проверка сохранена.",
+                     "AssertionsRemoved":  0,
+                     "NumericalExpectationsUnchanged":  true,
+                     "ProductionChanged":  false,
+                     "RepositoryChanged":  false,
+                     "FullAcceptanceClaim":  false
+                 },
+    "DirectedFailurePreserved":  true,
+    "PriorBuildAndNativeOwnTerminal":  true,
+    "DirectedOwnTerminal":  true,
+    "ChangedComponents":  3,
+    "OtherInputsUnchanged":  519,
+    "UserMainUnchanged":  true,
+    "FullAcceptanceClaim":  false
+}

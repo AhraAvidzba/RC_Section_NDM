@@ -1,0 +1,11 @@
+{
+  "GoalText": "Запроси полные прогоны и следи за ошибками, параллельно их исправляй если они будут. После завершения прогона и исправления ошибок при из наличии запусти прогон заново пока все тесты не пройдут, при условии завершения до 10:00 завтра",
+  "ExplicitUserAuthorization": "Заранее разрешаю запуск всех прогонов",
+  "ReceivedDateMoscow": "2026-11-01",
+  "OverallDeadlineMoscow": "2026-11-02T10:00:00+03:00",
+  "Scope": "182 основных макроса в 12 группах No/Yes и весь Focused122/26, batch15 обоих режимов, устойчивость, асимметричная сталь, 2realCAD, reopen, independent",
+  "ForecastHours": 6,
+  "FinalReserveMinutes": 90,
+  "RepeatOnlyAfterEntirePreviousRunAndAllOwnClosures": true,
+  "PrepareFixesIsolatedWhileLive": true
+}

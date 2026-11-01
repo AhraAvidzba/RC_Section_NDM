@@ -1,0 +1,23 @@
+﻿{
+    "Status":  "IMMUTABILITY_CHECK_EXTENDED_TO_ALL_NINE_COLUMNS",
+    "AtUTC":  "2026-11-01T20:48:14.9508451+00:00",
+    "Fix":  {
+                "Status":  "PRIVATE_IMMUTABILITY_COVERAGE_CORRECTION_PREPARED",
+                "AtUTC":  "2026-11-01T20:44:56.300920+00:00",
+                "Path":  "tests/modTestPlotConfig.bas",
+                "BeforeSHA256":  "5CDCC9C433BAD6751B0D176FE2978867219BFE83AB16A57203E42A16D853D96A",
+                "AfterSHA256":  "3410F4F15D535FC9CF26F66A2975F3936DBCF23453DC5E584F527FC028B549DE",
+                "PreparedPath":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\SnapshotCoverage44\\modTestPlotConfig.bas",
+                "ReplacementCount":  2,
+                "Reason":  "Сверка неизменности snapshot должна включать Stress/PhysicalState, расположенные в Y/Z после перехода физической таблицы на девять полей.",
+                "AssertionsRemoved":  0,
+                "NumericalExpectationsUnchanged":  true,
+                "ProductionChanged":  false,
+                "FullAcceptanceClaim":  false
+            },
+    "PreviousDirectedNoYesPassed":  true,
+    "PreviousRecoveryOwnTerminal":  true,
+    "ChangedComponents":  3,
+    "OtherInputsUnchanged":  519,
+    "FullAcceptanceClaim":  false
+}

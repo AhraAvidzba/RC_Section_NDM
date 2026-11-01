@@ -1,0 +1,5 @@
+﻿{
+    "Status":  "FAIL",
+    "Reason":  "Проект VBA не скомпилирован; новая книга не сохранена.",
+    "ScriptStackTrace":  "at \u003cScriptBlock\u003e, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Build-Workbook.ps1: line 602\r\nat \u003cScriptBlock\u003e, \u003cNo file\u003e: line 1"
+}

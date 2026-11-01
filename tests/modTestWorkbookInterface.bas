@@ -7141,7 +7141,7 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     results(2, 5) = -0.0001: results(2, 6) = -1.25: results(2, 7) = "Compression"
     results(3, 1) = "LATE": results(3, 2) = "PR1": results(3, 3) = "StrengthState": results(3, 4) = "R1"
     results(3, 5) = 0.000015: results(3, 6) = 2.75: results(3, 7) = "Tension"
-    sheet.Range("R15").Resize(3, 7).Value2 = results
+    modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R15"), results
     fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Snapshot!$R$15"
     units = Array("mm", "cm", "m"): factors = Array(1#, 10#, 1000#)
     For position = 0 To 1
@@ -7486,7 +7486,7 @@ Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
     results(2, 5) = -0.0001: results(2, 6) = -1.25: results(2, 7) = "Compression"
     results(3, 1) = "LIFE": results(3, 2) = "PR1": results(3, 3) = "StrengthState": results(3, 4) = "R1"
     results(3, 5) = 0.000015: results(3, 6) = 2.75: results(3, 7) = "Tension"
-    sheet.Range("R35").Resize(3, 7).Value2 = results
+    modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), results
     fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=ReadLifecycle!$R$35"
     configuration(1, 1) = "Параметр": configuration(1, 2) = "Значение": configuration(1, 3) = "Комментарий"
     configuration(2, 1) = "Output.CombinationID": configuration(2, 2) = "LIFE"
@@ -7562,26 +7562,26 @@ Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
         target.Resize(22, 4).Value2 = props
         For column = 5 To 6
             For badIndex = 0 To 4
-                sheet.Range("R35").Cells(3, column).Value2 = badValues(badIndex)
+                sheet.Range("R35").Cells(3, column + 2).Value2 = badValues(badIndex)
                 TestAudit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
                 prefix = "audit03.readLifecycle.element.p" & CStr(position) & ".column" & CStr(column) & ".bad" & CStr(badIndex)
                 cases = cases + 1
                 TestAssertTrue stats, prefix & ".error", code = vbObjectError + 4719
                 TestAssertTrue stats, prefix & ".field", InStr(1, reason, CStr(results(1, column)), vbTextCompare) > 0
-                TestAssertTrue stats, prefix & ".address", InStr(1, reason, sheet.Name & "!" & sheet.Range("R35").Cells(3, column).Address(False, False), vbBinaryCompare) > 0
+                TestAssertTrue stats, prefix & ".address", InStr(1, reason, sheet.Name & "!" & sheet.Range("R35").Cells(3, column + 2).Address(False, False), vbBinaryCompare) > 0
                 TestAssertTrue stats, prefix & ".empty", reader.Count = 0
                 TestAppendLine stats, "READ_LIFECYCLE_ELEMENT: " & prefix & "|" & reason
-                sheet.Range("R35").Resize(3, 7).Value2 = results
+                modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), results
                 TestAudit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
                 TestAssertTrue stats, prefix & ".recovery", code = 0 And reader.Count = 2
             Next badIndex
         Next column
-        sheet.Range("R35").Cells(2, 5).Value2 = "-0.0001"
-        sheet.Range("R35").Cells(3, 6).Value2 = "2.75"
+        sheet.Range("R35").Cells(2, 7).Value2 = "-0.0001"
+        sheet.Range("R35").Cells(3, 8).Value2 = "2.75"
         TestAudit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
         TestAssertTrue stats, "audit03.readLifecycle.element.numericText.p" & CStr(position), code = 0 And reader.Count = 2
         TestAssertClose stats, "audit03.readLifecycle.element.numericValue.p" & CStr(position), reader.ResultValue(2), 2.75, 0#
-        sheet.Range("R35").Resize(3, 7).Value2 = results
+        modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), results
         actual = target.Resize(22, 4).Value2
         TestAudit03ComparePlainSnapshot stats, "audit03.readLifecycle.snapshotUnchanged.p" & CStr(position), props, actual, 1
     Next position
@@ -9566,7 +9566,12 @@ Private Sub TestFullPlotPutMatrix(ByVal rangeName As String, ByRef values As Var
     Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange.Cells(1, 1)
     If clearRows < UBound(values, 1) Then clearRows = UBound(values, 1)
     anchor.Resize(clearRows, UBound(values, 2)).ClearContents
-    anchor.Resize(UBound(values, 1), UBound(values, 2)).Value2 = values
+    If rangeName = "rngNDMElementResults" Then
+        ' Негативный пример проверяет payload и metadata, поэтому его индекс согласован с этим примером.
+        modTestPlotConfig.TestWriteIndexedElementFixture ThisWorkbook, anchor, values
+    Else
+        anchor.Resize(UBound(values, 1), UBound(values, 2)).Value2 = values
+    End If
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

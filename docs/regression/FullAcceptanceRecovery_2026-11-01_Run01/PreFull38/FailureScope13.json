@@ -1,0 +1,70 @@
+{
+  "Status": "KNOWN_FULL_FAILURES_ISOLATED_FIXES_PENDING_NATIVE_AND_FULL_REPEAT",
+  "CheckedUTC": "2026-11-01T19:35:13.527665+00:00",
+  "SourceSHA256": "A5B0CCDB88627D36EEEEEA78C440EB662440C19454337E7801191EEFF8BDA1F6",
+  "SourceCommit": "047e0fe96bd9eb09067398dfb5ca2fe4b8ca9e8b",
+  "PrimaryPath": "docs/regression/FullOnOff_2026-11-01_Current_Run01/Full_Off.txt",
+  "PrimarySHA256": "1754F289445CB1CA862C41774B5ED487772334079A24ADA338B2A94B3E8F6072",
+  "PrimaryBytes": 17244526,
+  "PrimaryAllBytesRead": true,
+  "Failures": 215,
+  "TotalFailureMessages": 430,
+  "ClosedFailedReports": [
+    {
+      "Path": "docs/regression/FullOnOff_2026-11-01_Current_Run01/Full_Off.txt",
+      "SHA256": "1754F289445CB1CA862C41774B5ED487772334079A24ADA338B2A94B3E8F6072",
+      "Bytes": 17244526,
+      "Failures": 215
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-11-01_Current_Run01/Full_On.txt",
+      "SHA256": "4102BAF6F38FEF938F64BF3F54F81AF766B913F64660D9D6CB12C5A60301ACFF",
+      "Bytes": 17248460,
+      "Failures": 215
+    }
+  ],
+  "AllClosedFailureMessagesIdentical": true,
+  "FailureGroups": {
+    "audit03.geometrySnapshot": 2,
+    "audit03.readLifecycle": 398,
+    "output.runtime": 2,
+    "audit03.generalPlot": 2,
+    "audit03.snapshotMetadata": 8,
+    "fullPlot.Excel": 14,
+    "fullPlot.File": 4
+  },
+  "CoreReportsRead": 7,
+  "CoreMacrosReviewed": 99,
+  "SourceInputsUnchanged": true,
+  "InputsChecked": 522,
+  "PreparedFiles": [
+    {
+      "Path": "src/Excel/CSectionPlotDataReader.cls",
+      "PreparedPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\IsolatedReaderFix11\\CSectionPlotDataReader.cls",
+      "OriginalSHA256": "3F09E4B1EBCF4A45A1757FC8AAEE908DB981BE0B43A95B55424F9FA85334C5DC",
+      "PreparedSHA256": "3BE99B822BD4A86CD7752CE0C15C5DC834EBF9CB5AD958D6F80779D698A00B69"
+    },
+    {
+      "Path": "tests/modTestWorkbookInterface.bas",
+      "PreparedPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\IsolatedReaderFix11\\modTestWorkbookInterface.bas",
+      "OriginalSHA256": "70166C2DF1AE9842AC60A21509C44DF0A928CE69AFB98A0275C72A011808EED8",
+      "PreparedSHA256": "4030E8997536123480AE3F5774D6D480CFA3A229F09A6E3478E6BD68A1C5991B"
+    },
+    {
+      "Path": "tests/modTestPlotConfig.bas",
+      "PreparedPath": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\FullAcceptance_2026-11-01_Run01\\IsolatedReaderFix11\\modTestPlotConfig.bas",
+      "OriginalSHA256": "A553F90882D038E45CB087EC98BF7336058856F84B5A03E47F76C1281546D3E5",
+      "PreparedSHA256": "C43C63953824D478852CB4EBA9982CDB036187B1717E0C5DE84DAAF4B53117E5"
+    }
+  ],
+  "StaticFindings": [
+    "Синтетические таблицы с семью полями и одноколоночный fallback не соответствуют девятиколоночному writer/index.",
+    "Негативные FullPlot-примеры меняют исходные ключи/число строк; их индекс требуется подготовить из того же намеренно повреждённого payload.",
+    "Production читает четырёхколоночный глобальный индекс как payload выбранного диагностического LC; отдельно подготовлена общая ветвь Excel/File."
+  ],
+  "NativeProcessesStarted": 0,
+  "NativeValidationRun": false,
+  "FullAcceptanceClaim": false,
+  "TransferAllowedNow": false,
+  "MustWaitForEntireRunAndAllOwn": true
+}

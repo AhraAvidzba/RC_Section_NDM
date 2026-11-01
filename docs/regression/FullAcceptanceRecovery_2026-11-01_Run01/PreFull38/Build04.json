@@ -1,0 +1,24 @@
+﻿{
+    "Status":  "PRIVATE_CLEAN_BUILD_COMPILED_AFTER_FULL",
+    "AtUTC":  "2026-11-01T20:52:36.4121381+00:00",
+    "Output":  "docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/Build04/RC_Section_NDM.xlsm",
+    "BookSHA256":  "831D725C06439CA1B771645F18B0D546169C1E22A97BA7688D64CB3F8509B74A",
+    "SourceHEAD":  "047e0fe96bd9eb09067398dfb5ca2fe4b8ca9e8b",
+    "SourceComponents":  181,
+    "ExpectedDocumentComponents":  6,
+    "UserDataCopied":  false,
+    "CompileCommandID":  578,
+    "BuiltFromWorkbooksAdd":  true,
+    "RAMBeforeGiB":  16.5244140625,
+    "CommitBeforeGiB":  21.508613586425781,
+    "Owner":  {
+                  "Status":  "BUILDING",
+                  "PID":  58960,
+                  "StartTicksUTC":  "639291629266362314",
+                  "OutputPath":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullAcceptanceRecovery_2026-11-01_Run01\\Build04\\RC_Section_NDM.xlsm",
+                  "StartedUTC":  "2026-11-01T20:48:47.7684287+00:00"
+              },
+    "OwnIdentityTerminal":  true,
+    "ForceKilled":  false,
+    "FullAcceptanceClaim":  false
+}

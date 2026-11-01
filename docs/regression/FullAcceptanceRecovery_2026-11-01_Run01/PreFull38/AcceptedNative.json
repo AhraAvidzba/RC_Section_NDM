@@ -1,0 +1,18 @@
+﻿{
+    "Status":  "CLEAN_SAVED_NATIVE_SOURCE187_VERIFIED",
+    "AtUTC":  "2026-11-01T20:53:13.0978838+00:00",
+    "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullAcceptanceRecovery_2026-11-01_Run01\\Build04\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "831D725C06439CA1B771645F18B0D546169C1E22A97BA7688D64CB3F8509B74A",
+    "SourceComponents":  181,
+    "DocumentComponents":  6,
+    "NativeOwner":  {
+                        "PID":  85052,
+                        "UTCStartTicks":  "639291631640970918",
+                        "StartedUTC":  "2026-11-01T20:52:45.2773249Z",
+                        "WorkbookSHA256":  "831D725C06439CA1B771645F18B0D546169C1E22A97BA7688D64CB3F8509B74A"
+                    },
+    "OwnIdentityTerminal":  true,
+    "ReadOnly":  true,
+    "UserDataCopied":  false,
+    "FullAcceptanceClaim":  false
+}

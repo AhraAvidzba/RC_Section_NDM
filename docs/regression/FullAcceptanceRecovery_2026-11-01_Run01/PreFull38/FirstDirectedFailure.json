@@ -1,0 +1,133 @@
+﻿{
+    "Status":  "REVIEW_REQUIRED",
+    "StartedUTC":  "2026-11-01T20:34:21.3466177+00:00",
+    "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullAcceptanceRecovery_2026-11-01_Run01\\Build02\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "1D5C0CBEF76786ECD0A61C4A4DECA233216A05E5A348EF9101CE600C51FD4727",
+    "Current":  "Affected_No",
+    "Completed":  [
+                      {
+                          "Mode":  "No",
+                          "Passed":  false,
+                          "Primary":  "docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/Affected_No.txt",
+                          "Bytes":  937012,
+                          "SHA256":  "2FC91F0554EEC223AE43FA5F1F3574BEB2ACEE3466742134D7446A704640141C",
+                          "AllBytesRead":  true,
+                          "Expected":  [
+                                           "modTestWorkbookInterface.RunAudit03GeometrySnapshotTests",
+                                           "modTestWorkbookInterface.RunAudit03ReadLifecycleTests",
+                                           "modTestPlotConfig.RunAudit03GeneralPlotTests",
+                                           "modTestWorkbookInterface.TestRunFullPlotStateIntegrityTests"
+                                       ],
+                          "Started":  [
+                                          "modTestWorkbookInterface.RunAudit03GeometrySnapshotTests",
+                                          "modTestWorkbookInterface.RunAudit03ReadLifecycleTests",
+                                          "modTestPlotConfig.RunAudit03GeneralPlotTests"
+                                      ],
+                          "Finished":  [
+                                           "modTestWorkbookInterface.RunAudit03GeometrySnapshotTests",
+                                           "modTestWorkbookInterface.RunAudit03ReadLifecycleTests",
+                                           "modTestPlotConfig.RunAudit03GeneralPlotTests"
+                                       ],
+                          "Errors":  [
+                                         "FAIL: audit03.snapshotMetadata.runtime.5.Результаты изменены без обновления индекса: [Лист9]Results!$T$36"
+                                     ],
+                          "Totals":  [
+                                         "TOTAL_AUDIT03_GEOMETRY_SNAPSHOT: passed=1264; failed=0",
+                                         "TOTAL_AUDIT03_READ_LIFECYCLE: passed=3929; failed=0",
+                                         "TOTAL_AUDIT03_GENERAL_PLOT: passed=3044; failed=1"
+                                     ],
+                          "NativeOwner":  {
+                                              "Name":  "EXCEL",
+                                              "PID":  100184,
+                                              "StartTicksUTC":  "639291620688801654"
+                                          },
+                          "OwnIdentityTerminal":  true,
+                          "ProcessClosure":  {
+                                                 "Stage":  "AFTER_CHILD_EXIT",
+                                                 "Passed":  true,
+                                                 "ChildHasExited":  true,
+                                                 "ChildExitCode":  1,
+                                                 "Closure":  {
+                                                                 "Passed":  true,
+                                                                 "Identity":  {
+                                                                                  "Valid":  true,
+                                                                                  "PID":  100184,
+                                                                                  "Ticks":  639291620688801654,
+                                                                                  "Reason":  "Primary TEST_EXCEL_PROCESS"
+                                                                              },
+                                                                 "FinalState":  {
+                                                                                    "State":  "Absent",
+                                                                                    "PID":  100184,
+                                                                                    "StartTicksUTC":  "639291620688801654",
+                                                                                    "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                                    "ObservedUTC":  "2026-11-01T20:35:43.7215394+00:00"
+                                                                                },
+                                                                 "Observations":  [
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  100184,
+                                                                                          "StartTicksUTC":  "639291620688801654",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-01T20:35:42.6927502+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  100184,
+                                                                                          "StartTicksUTC":  "639291620688801654",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-01T20:35:42.9529721+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  100184,
+                                                                                          "StartTicksUTC":  "639291620688801654",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-01T20:35:43.1986988+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  100184,
+                                                                                          "StartTicksUTC":  "639291620688801654",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-01T20:35:43.4751665+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Absent",
+                                                                                          "PID":  100184,
+                                                                                          "StartTicksUTC":  "639291620688801654",
+                                                                                          "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                                          "ObservedUTC":  "2026-11-01T20:35:43.7215394+00:00"
+                                                                                      }
+                                                                                  ],
+                                                                 "GraceMilliseconds":  3000,
+                                                                 "OrdinaryPathKilledAnything":  false
+                                                             },
+                                                 "RunnerCleanupValid":  true,
+                                                 "RunnerCleanup":  {
+                                                                       "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+                                                                       "OwnerVerified":  true,
+                                                                       "PID":  100184,
+                                                                       "StartTicksUTC":  "639291620688801654",
+                                                                       "CloseRequested":  false,
+                                                                       "CloseSucceeded":  false,
+                                                                       "QuitRequested":  true,
+                                                                       "QuitSucceeded":  true,
+                                                                       "Errors":  [
+
+                                                                                  ],
+                                                                       "Failed":  true,
+                                                                       "FinalExitNotAsserted":  true,
+                                                                       "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+                                                                       "ObservedUTC":  "2026-11-01T20:35:42.1272365+00:00"
+                                                                   },
+                                                 "RunnerCleanupReadError":  null,
+                                                 "OrdinaryPathKilledAnything":  false
+                                             },
+                          "RAMBeforeGiB":  16.1005859375,
+                          "CommitBeforeGiB":  20.813899993896484,
+                          "ExitCode":  1
+                      }
+                  ],
+    "FullAcceptanceClaim":  false,
+    "Error":  "System.Management.Automation.RuntimeException: Affected No failed; primary and own proofs saved"
+}

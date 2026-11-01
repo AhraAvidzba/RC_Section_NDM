@@ -483,7 +483,17 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object, ByVal stateFields A
     Dim missingSelectedState As Boolean: missingSelectedState = Not HasRows(results)
     If missingSelectedState Then
         results = ReadElementResultTable(workbook, mLoadCase) ' Только этот LC: весь его payload проверяется в существующем проходе перед геометрической схемой.
-        If Not HasRows(results) Then results = ReadElementResultTable(workbook, , , True) ' Глобальный индекс отличает диагностический LC без строк от полного отсутствия результатов.
+        If Not HasRows(results) Then
+            ' Индекс содержит только ключи состояний, без ElementID/Strain/Stress.
+            ' Он доказывает наличие результатов в Full, но не заменяет строки выбранного LC.
+            Dim availableStates As Variant: availableStates = ReadElementResultTable(workbook, , , True)
+            If Not HasRows(availableStates) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
+                "На листе Results нет результатов элементов."
+            Dim emptyCaseStates As Object: Set emptyCaseStates = CreateObject("Scripting.Dictionary")
+            emptyCaseStates.CompareMode = vbTextCompare
+            RequireMissingStateFullSnapshot workbook, stateFields, emptyCaseStates, geom
+            Err.Raise vbObjectError + 4706, "CSectionPlotDataReader", MissingStateMessage(mLoadCase, mStateType)
+        End If
     End If
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."

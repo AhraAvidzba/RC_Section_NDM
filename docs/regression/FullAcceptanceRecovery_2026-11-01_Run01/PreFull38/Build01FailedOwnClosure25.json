@@ -1,0 +1,29 @@
+{
+  "Status": "FAILED_PRIVATE_BUILDER_USER_AUTHORIZED_RETIREMENT",
+  "AtUTC": "2026-11-01T20:27:53.2436219+00:00",
+  "PID": 57788,
+  "StartTicksUTC": "639291609041694723",
+  "CPU": 187.53125,
+  "Owner": {
+    "Status": "BUILDING",
+    "PID": 57788,
+    "StartTicksUTC": "639291609041694723",
+    "OutputPath": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullAcceptanceRecovery_2026-11-01_Run01\\Build01\\RC_Section_NDM.xlsm",
+    "StartedUTC": "2026-11-01T23:15:05.1941202+03:00"
+  },
+  "Failure": {
+    "Status": "FAIL",
+    "Reason": "Проект VBA не скомпилирован; новая книга не сохранена.",
+    "ScriptStackTrace": "at <ScriptBlock>, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Build-Workbook.ps1: line 602\r\nat <ScriptBlock>, <No file>: line 1"
+  },
+  "CandidateSaved": false,
+  "UserDataCopied": false,
+  "ControllerOwnAbsent": true,
+  "OrdinaryQuitAttemptedByBuilder": true,
+  "COMAttachFailure": "RPC_E_SYS_CALL_FAILED",
+  "ApprovalQuestionItem": "call_67846a53d0124030b2b272184987a11f/0",
+  "UserAnswer": "Разрешаю завершить только PID 57788",
+  "ForceKilled": true,
+  "AllOwnTerminal": true,
+  "FinishedUTC": "2026-11-01T20:27:53.3739158+00:00"
+}
