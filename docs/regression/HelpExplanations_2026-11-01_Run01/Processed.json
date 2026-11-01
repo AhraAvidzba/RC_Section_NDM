@@ -44,7 +44,6 @@
   "CleanWorkbookSHA256": "A5B0CCDB88627D36EEEEEA78C440EB662440C19454337E7801191EEFF8BDA1F6",
   "ProductionSourcesChanged": false,
   "NewFullCalculationAcceptanceClaim": false,
-  "FeaturePushPending": true,
   "Branch": "codex/help-explanations",
   "MainMergeRequiresUserAgreement": true,
   "OwnProcessesTerminal": 10,
@@ -58,5 +57,7 @@
     "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\HelpExplanations_2026-11-01_Run01\\Before",
     "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\HelpExplanations_2026-11-01_Run01\\BeforePublication16",
     "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\HelpExplanations_2026-11-01_Run01\\BeforePublication20"
-  ]
+  ],
+  "SourceDeliveryVerifiedCommit": "0653f803ffcc50bf5045692cf821b6ccdecdda15",
+  "PushProof": "SourceDelivery23.json"
 }

@@ -1,0 +1,11 @@
+{
+  "Status": "PUSH_AND_LS_REMOTE_VERIFIED",
+  "Repository": "https://github.com/AhraAvidzba/RC_Section_NDM.git",
+  "Branch": "codex/help-explanations",
+  "SourceDeliveryVerifiedCommit": "0653f803ffcc50bf5045692cf821b6ccdecdda15",
+  "RemoteRef": "refs/heads/codex/help-explanations",
+  "RemoteCommit": "0653f803ffcc50bf5045692cf821b6ccdecdda15",
+  "ObservedUTC": "2026-11-01T16:12:25.695339+00:00",
+  "CleanTemplateAndProofsOnly": true,
+  "UserDataCommitted": false
+}
