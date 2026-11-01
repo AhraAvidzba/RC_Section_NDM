@@ -269,10 +269,42 @@ Public Function CalculationResultMessage(ByVal batch As CBatchSectionCalculator,
     If Len(reference) > 0 Then CalculationResultMessage = CalculationResultMessage & " Исходная строка сочетания: " & reference & "."
 End Function
 
+' Распознаёт только общее системное описание Excel, которое само по себе не называет причину.
+' Код 1004 не используется как диагноз: он относится ко многим разным отказам.
+Public Function IsUnexplainedExcelError(ByVal reason As String) As Boolean
+    Select Case LCase$(Trim$(reason))
+        Case "application-defined or object-defined error", "ошибка, определяемая приложением или объектом", _
+                "ошибка, определенная приложением или объектом", "ошибка, определённая приложением или объектом"
+            IsUnexplainedExcelError = True
+    End Select
+End Function
+
+' Называет фактическое действие и место остановки; защиту указывает только после проверки листа.
+' Исходное описание остаётся технической подробностью, а неизвестная причина не подменяется предположением.
+Public Function WorkbookOperationFailureText(ByVal action As String, ByVal reason As String, _
+        Optional ByVal location As String = "", Optional ByVal protectionBlocksMacros As Boolean = False) As String
+    WorkbookOperationFailureText = "Не удалось " & action & "."
+    If protectionBlocksMacros Then
+        WorkbookOperationFailureText = WorkbookOperationFailureText & vbCrLf & vbCrLf & _
+            "Лист защищён, и изменение его ячеек из макросов недоступно."
+    ElseIf IsUnexplainedExcelError(reason) Then
+        WorkbookOperationFailureText = WorkbookOperationFailureText & vbCrLf & vbCrLf & _
+            "Excel не сообщил точную причину отказа."
+    ElseIf Len(Trim$(reason)) > 0 Then
+        WorkbookOperationFailureText = WorkbookOperationFailureText & vbCrLf & vbCrLf & reason
+    End If
+    If Len(location) > 0 Then WorkbookOperationFailureText = WorkbookOperationFailureText & vbCrLf & vbCrLf & "Место остановки:" & vbCrLf & location
+    WorkbookOperationFailureText = WorkbookOperationFailureText & vbCrLf & vbCrLf & _
+        "Возможное решение:" & vbCrLf & "Сохраните копию книги. Если ошибка повторяется в актуальной сборке, передайте разработчику полный текст этого сообщения."
+    If IsUnexplainedExcelError(reason) Or protectionBlocksMacros Then WorkbookOperationFailureText = WorkbookOperationFailureText & _
+        vbCrLf & vbCrLf & "Технические сведения:" & vbCrLf & "Сообщение Excel: " & reason
+End Function
+
 ' Сохраняет исходную причину ошибки кнопки и технический источник для проверки разработчиком.
 ' При пустом системном описании пользователь всё равно получает код и место остановки.
 Public Function WorkbookErrorMessage(ByVal operation As String, ByVal number As Long, _
         ByVal source As String, ByVal reason As String) As String
+    If IsUnexplainedExcelError(reason) Then reason = WorkbookOperationFailureText("выполнить действие в Excel", reason)
     WorkbookErrorMessage = operation & ":" & vbCrLf & vbCrLf
     If Len(Trim$(reason)) > 0 Then
         WorkbookErrorMessage = WorkbookErrorMessage & ErrorReasonParagraphs(reason)
@@ -288,8 +320,13 @@ End Function
 ' Дополняет причину отказа формирования понятными действиями. Причина, слои
 ' и альтернативный способ задания сечения отделены пустыми строками.
 Public Function SectionFormationFailureText(ByVal reason As String, ByVal source As String, _
-        ByVal settings As CSystemSettingsReader) As String
+        ByVal settings As CSystemSettingsReader, Optional ByVal inputStage As Boolean = True) As String
+    If IsUnexplainedExcelError(reason) Then
+        SectionFormationFailureText = WorkbookOperationFailureText("сформировать сечение", reason)
+        Exit Function
+    End If
     SectionFormationFailureText = SectionRecipeErrorText(reason)
+    If Not inputStage Then Exit Function ' После подготовки модели отказ вывода не означает ошибку размеров или слоёв импорта.
     If StrComp(source, "AutoCAD", vbTextCompare) = 0 Then
         Dim solutionTitle As String
         solutionTitle = "Возможное решение:"

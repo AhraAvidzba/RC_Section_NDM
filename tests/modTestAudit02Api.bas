@@ -61,6 +61,7 @@ Public Function RunProgramMessagePresentationTests() As String
     TestCheck "presentation.quoted.value", InStr(WorkbookDialogText(text), """Прочность: 2. Проверьте имя""") > 0
     text = "Слой «Устойчивость: 3. Проверьте имя» не найден. Откройте чертёж."
     TestCheck "presentation.quoted.layer", InStr(WorkbookDialogText(text), "«Устойчивость: 3. Проверьте имя»") > 0
+    TestUnexplainedExcelMessages
     TestGeometryWarningParagraphs
     GoTo Finish
 Failed:
@@ -69,6 +70,27 @@ Failed:
 Finish:
     RunProgramMessagePresentationTests = mReport & "TOTAL MESSAGE PRESENTATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Общий отказ Excel не считается ошибкой геометрии; подтверждённая защита и технический текст показаны отдельно.
+Private Sub TestUnexplainedExcelMessages()
+    Dim raw As String, text As String, settings As CSystemSettingsReader
+    raw = "Application-defined or object-defined error"
+    text = WorkbookErrorMessage("Сечение не сформировано", 1004, "VBAProject", raw)
+    TestCheck "presentation.excel.humanFirst", InStr(text, "Не удалось выполнить действие в Excel.") > 0
+    TestCheck "presentation.excel.unknownHonest", InStr(text, "точную причину") > 0 And InStr(text, "Лист защищён") = 0
+    TestCheck "presentation.excel.rawTechnical", InStr(text, "Сообщение Excel: " & raw) > InStr(text, "Технические сведения:")
+    TestCheck "presentation.excel.code", InStr(text, "Код ошибки: 1004.") > 0
+    TestCheck "presentation.excel.unknownNotInput", InStr(SectionFormationFailureText(raw, "AutoCAD", settings), "Слои, указанные") = 0
+    text = WorkbookOperationFailureText("очистить общую сводку результатов", raw, "rngBatchSummary, Results!A1:AG50", True)
+    text = SectionFormationFailureText(text, "AutoCAD", settings, False)
+    TestCheck "presentation.excel.protection", InStr(text, "Лист защищён") > 0
+    TestCheck "presentation.excel.place", InStr(text, "rngBatchSummary, Results!A1:AG50") > 0
+    TestCheck "presentation.excel.outputNotInput", InStr(text, "Размеры и армирование") = 0 And InStr(text, "Проверьте активный чертёж") = 0
+    text = WorkbookOperationFailureText("очистить сводку", "Именованный диапазон не найден.", "rngBatchSummary")
+    TestCheck "presentation.excel.specificPreserved", InStr(text, "Именованный диапазон не найден.") > 0
+    TestCheck "presentation.excel.specificNotGeneric", InStr(text, "точную причину") = 0
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет все типизированные статусы каждого этапа, смешанный отказ и InputErr,

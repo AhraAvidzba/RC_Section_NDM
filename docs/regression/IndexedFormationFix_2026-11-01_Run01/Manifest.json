@@ -1,0 +1,340 @@
+{
+  "ArchiveSHA256": "6945DF22113832E1E484E592BEC4C3B637D43804D16E025F155B916B1C5C7187",
+  "Files": [
+    {
+      "File": "AfterExcel/Own.json",
+      "Bytes": 125,
+      "SHA256": "746A1C2DB8ADC45717D4BE8AB871B592DD0F6DCDD4D2FA32CF748512AB25A317"
+    },
+    {
+      "File": "AfterExcel/Quit.json",
+      "Bytes": 154,
+      "SHA256": "A44E113D1FF5B122A3CC852D7307B5383DB391E7104A328D7DDD6630E4F45523"
+    },
+    {
+      "File": "AfterExcel/Result.txt",
+      "Bytes": 396,
+      "SHA256": "863347FF576E982B7A9D873CA24B3AEFC5356D616CD0E2C27AD30BE36E1B6483"
+    },
+    {
+      "File": "AfterFile/Own.json",
+      "Bytes": 125,
+      "SHA256": "992C5318BC5640437FE3185EC7CBCE68A3A2864CF2E3338B18C613A5B9A25012"
+    },
+    {
+      "File": "AfterFile/Quit.json",
+      "Bytes": 154,
+      "SHA256": "BC60A60F2050C8E3A60082020C4B14CCAA47359845DB93AB51F384C41FBF5608"
+    },
+    {
+      "File": "AfterFile/Result.txt",
+      "Bytes": 413,
+      "SHA256": "DC1DCEF0E222C1C8F669CE01662492B51605D9D0B555F3ABA9295B95BFBF955F"
+    },
+    {
+      "File": "Before/Own.json",
+      "Bytes": 125,
+      "SHA256": "3C0437D3ED3B12D06AD4D485502B08765EFE48BD9D8955190EB7163F01C38812"
+    },
+    {
+      "File": "Before/Quit.json",
+      "Bytes": 154,
+      "SHA256": "33FC2CB2116F4413171ABEA90951605622F98A57157574ED8273ECDBD28E6A83"
+    },
+    {
+      "File": "Before/Result.txt",
+      "Bytes": 511,
+      "SHA256": "C7BBA599C2183B72ED8ED1756E8EF1B89733CB21B44F314F37204528F358D331"
+    },
+    {
+      "File": "CleanNative/Native.json",
+      "Bytes": 314,
+      "SHA256": "B1A6A529D63D9C122F8EE3579DFDF31C1F2DF7159FA53C65A793AB11DAC65CE1"
+    },
+    {
+      "File": "CleanNative/Own.json",
+      "Bytes": 125,
+      "SHA256": "21D3DBF43D29032A9ED46D706BFE76A0F7B3A80F6795A77AEE0686AEDEA35DC9"
+    },
+    {
+      "File": "CleanNative/Quit.json",
+      "Bytes": 154,
+      "SHA256": "E6E9B07B924C69A501BBA6800FE0058B1555CC936E332F8756CA76E9BAC8F4F6"
+    },
+    {
+      "File": "CleanNative/VBA_All_Code.txt",
+      "Bytes": 9352093,
+      "SHA256": "7D692BB15B6B5271C070A8E7D5787AAA6E68F86B5C8C215BD1B6F6F4C6E91610"
+    },
+    {
+      "File": "CodeDonor/Build.json",
+      "Bytes": 116,
+      "SHA256": "4B5E567051E0E5CE2450DCE79625280F9DC32E85A5FC0D155AF9CB1B88143B19"
+    },
+    {
+      "File": "CodeDonor/Own.json",
+      "Bytes": 125,
+      "SHA256": "2FC7F5E1FDAE3E02CE36EBFAE471E84952880DA481CA66A1F57AA5296858BA72"
+    },
+    {
+      "File": "CodeDonor/Quit.json",
+      "Bytes": 154,
+      "SHA256": "18AF891AAC380860E1B1B3766655D614B6183867EBB63819220A6FFD9F795159"
+    },
+    {
+      "File": "CodeDonorNative/Native.json",
+      "Bytes": 314,
+      "SHA256": "84CCB4DA72E99EE4F5E25FAB975F409049CADA5255E34FB1EB2FF58536996400"
+    },
+    {
+      "File": "CodeDonorNative/Own.json",
+      "Bytes": 125,
+      "SHA256": "2688A6A56326C35B423CB73EC22873757ABB912B76D455FA7E6D3ED02C69B080"
+    },
+    {
+      "File": "CodeDonorNative/Quit.json",
+      "Bytes": 154,
+      "SHA256": "1F2683608E636131DFE9EECAD4DF018A6D2BF9DB6BB1D3EAD3A6C71B720807A8"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/Own.json",
+      "Bytes": 144,
+      "SHA256": "DDBDEC67E671EF0302187B5AA221501805CF78B0E83DE377EAEA4BE9A73E701F"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/Quit.json",
+      "Bytes": 153,
+      "SHA256": "CB81F54E647CE27D46FAEE6CD317A27783294D5AC95731269E0423EE922FC105"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/RC_Section_NDM_execution_report.txt",
+      "Bytes": 33486,
+      "SHA256": "ABAD7CAAAF7BBAEAA5C0F4F0212C18D0AC072F8598E623CDB90C93676366C3CF"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/RunAudit03BatchInputMessageTests.txt",
+      "Bytes": 3103,
+      "SHA256": "6CE12937C785CD46231B330C5588EDE61F6E4ED948A375A3DF07DC84E96037B8"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/RunAudit03CommentCompositionTests.txt",
+      "Bytes": 4213,
+      "SHA256": "B4A23AD8F8A6DD9D528ACD9C0C626E6D0A3371EE3F46B253CB9F466CF8210001"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/RunCalculationSnapshotTests.txt",
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/RunInputOnlyDialogTests.txt",
+      "Bytes": 40299,
+      "SHA256": "2426DAEF72002D3B59510866D9EAA88BAA05E553E0EB92411262DF648730523B"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/RunProgramMessagePresentationTests.txt",
+      "Bytes": 4117,
+      "SHA256": "6FA54E9AA73135B879F99DC38ACB14D6728655D048D7C8AEC10BA4BA224A9D1C"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/RunSectionWorkflowCalculationTests.txt",
+      "Bytes": 4827,
+      "SHA256": "4243D2FDE97F6CAA95679C5D5520CB5513AF2C9FF2BF7A2239D4B7E850131538"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/No/RunWorkflowSnapshotTests.txt",
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Run.json",
+      "Bytes": 3561,
+      "SHA256": "678077F0FEC41711A5C2A32C128F77A5CEC9484875D6B2F58337181DA2D4CCA5"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/Own.json",
+      "Bytes": 146,
+      "SHA256": "2F72FE00BAA8C9DE1652647B1659869C0825ACD91A36C4ED164A3A061169EE37"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/Quit.json",
+      "Bytes": 154,
+      "SHA256": "BF1C3A496478FB524B7367EBE0864214F1BB5E8559C906399EC025B0BFE7C75F"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/RC_Section_NDM_execution_report.txt",
+      "Bytes": 33522,
+      "SHA256": "71F73B96225827B506ACC5496F08B4D78C3BD2E0CB27770430FA1A64DDED90BE"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/RunAudit03BatchInputMessageTests.txt",
+      "Bytes": 3103,
+      "SHA256": "6CE12937C785CD46231B330C5588EDE61F6E4ED948A375A3DF07DC84E96037B8"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/RunAudit03CommentCompositionTests.txt",
+      "Bytes": 4213,
+      "SHA256": "B4A23AD8F8A6DD9D528ACD9C0C626E6D0A3371EE3F46B253CB9F466CF8210001"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/RunCalculationSnapshotTests.txt",
+      "Bytes": 35930,
+      "SHA256": "0CC17F07327E0EF4C11C96E0A2211FF78E602D0443C4F1F8BF60D64F71A599C7"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/RunInputOnlyDialogTests.txt",
+      "Bytes": 39551,
+      "SHA256": "4972D06F6A6CA76241CAEFEE99FF82B04CF2F410780BC02A28DB2CFAAB83E3FD"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/RunProgramMessagePresentationTests.txt",
+      "Bytes": 4117,
+      "SHA256": "6FA54E9AA73135B879F99DC38ACB14D6728655D048D7C8AEC10BA4BA224A9D1C"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/RunSectionWorkflowCalculationTests.txt",
+      "Bytes": 4824,
+      "SHA256": "15056AE96D6A50D55975C7338A42966FB78F3764FEBEBD5EF1897CBD896051D4"
+    },
+    {
+      "File": "DirectedMessages_Attempt1/Yes/RunWorkflowSnapshotTests.txt",
+      "Bytes": 4648,
+      "SHA256": "3E7EEDA48B0ED73E4A102ECB27AE7232785073C85C0A6DD17EFC8FA5F42195CC"
+    },
+    {
+      "File": "FinalClear/Own.json",
+      "Bytes": 125,
+      "SHA256": "AA709B508D457C863C3077843F398F39383EFEF17D89B6E75B77C53748A91876"
+    },
+    {
+      "File": "FinalClear/Quit.json",
+      "Bytes": 154,
+      "SHA256": "F226956A78B7B082FA08521B249067800B47667E1DC0D4C7B2B656DE900E68B4"
+    },
+    {
+      "File": "FinalClear/Result.txt",
+      "Bytes": 47,
+      "SHA256": "EEECC2A6F5ADEDFC94AD5E85A72FB3A015629BE278CA322A1F415D1B1DD8EBDF"
+    },
+    {
+      "File": "FinalExcel/Own.json",
+      "Bytes": 125,
+      "SHA256": "A73F4EF8E4632DD38E7143B97895AC0C0929A4DC37FCD3ABBFEB327D2DB2F3FE"
+    },
+    {
+      "File": "FinalExcel/Quit.json",
+      "Bytes": 154,
+      "SHA256": "0A93FBA6D3B258836D4D690F4797AD4C9C40509C7B1C5A7951E739EB744E0D8C"
+    },
+    {
+      "File": "FinalExcel/Result.txt",
+      "Bytes": 396,
+      "SHA256": "96CE74177884CD39DA542C26A5EFABB93B8C5ABA4F7B10257DAC9DE46D4C2788"
+    },
+    {
+      "File": "FinalFile/Own.json",
+      "Bytes": 125,
+      "SHA256": "2150F6B4B2EF121D5760705C63E59D95875E3187AAA4C6846ACDBC97A333CFC3"
+    },
+    {
+      "File": "FinalFile/Quit.json",
+      "Bytes": 154,
+      "SHA256": "60C6BB842B1A597DD2CEF256CDD4DA72F368710006AB6DE83597DE8D122D0F84"
+    },
+    {
+      "File": "FinalFile/Result.txt",
+      "Bytes": 413,
+      "SHA256": "DEF86982485400FA4BABD1B472933A8E665EF6ED7B0257A1DE27DEBB7BE420F1"
+    },
+    {
+      "File": "HeavyNative/Native.json",
+      "Bytes": 314,
+      "SHA256": "4F1DF3472CC9C65F525B30CE16335B1E80C4116FD44E48F5A6480E14B5E0D1DB"
+    },
+    {
+      "File": "HeavyNative/Own.json",
+      "Bytes": 125,
+      "SHA256": "F523C2FD9C69E97A9808C9274DC238351F0D224E94913EE38C936637BFF040C0"
+    },
+    {
+      "File": "HeavyNative/Quit.json",
+      "Bytes": 154,
+      "SHA256": "0E9B555DBA3D5E50A075F199B8B913B02D34EEB761C12F69F6B5EAC3C12E722D"
+    },
+    {
+      "File": "MainNative/Native.json",
+      "Bytes": 314,
+      "SHA256": "BA5AFB06621B0CC83439AD4399030C9E82A15D04AEB38E710EF3315977FC8471"
+    },
+    {
+      "File": "MainNative/Own.json",
+      "Bytes": 125,
+      "SHA256": "807576080C589CFA1EC71A379AED28067EE48B8872FA50AD8647DC45FFF18DD6"
+    },
+    {
+      "File": "MainNative/Quit.json",
+      "Bytes": 154,
+      "SHA256": "9F74293EA85FDED81A22E9BEF032F908E62FD676B1F9A93379BBC038BAB226D7"
+    },
+    {
+      "File": "modTestFormationReopen.bas",
+      "Bytes": 2704,
+      "SHA256": "E02C597E175873A3C3913A16896FA78B7A9AC5111389D008079F7C7E85FFB29F"
+    },
+    {
+      "File": "PreparationAttempt1Error.txt",
+      "Bytes": 208,
+      "SHA256": "5ACB675A32E5B17C58EF3FAB3D6A273A212B9CFD3D686E2322D540E1D0A22A7F"
+    },
+    {
+      "File": "TestAllOwn.ps1",
+      "Bytes": 1813,
+      "SHA256": "86D5BB3998B3B93E9AD40F20A59871A6223A1808AA76277700E512C192637150"
+    },
+    {
+      "File": "TestBuildCodeDonor.ps1",
+      "Bytes": 3648,
+      "SHA256": "AE8E403D50A279EB8ED484B1F0F5DD3B547B1001AE14162CEB6170F0BECDD87F"
+    },
+    {
+      "File": "TestDirectedMessages.ps1",
+      "Bytes": 5989,
+      "SHA256": "6BE7067071FDEA426F36691C68E912BFAF5C0D5746E5B45C29561E4214DFEFF1"
+    },
+    {
+      "File": "TestEditMessages.py",
+      "Bytes": 10586,
+      "SHA256": "F9B3E25F2A8BA52596A1976718D270854AC6664272DE3B054C1E1B31686C3678"
+    },
+    {
+      "File": "TestPrepareOutputs.py",
+      "Bytes": 3913,
+      "SHA256": "1C2BBE6214C91CD91E09779C57E9294658784FEC38F90EAD3FCA01464BAA3C63"
+    },
+    {
+      "File": "TestPublishOutputs.py",
+      "Bytes": 7309,
+      "SHA256": "D31D08BB9F83E90C2697C3CD98D4F07D02995B8CAD19019CABB684D95B045A2B"
+    },
+    {
+      "File": "TestRecordFinal.py",
+      "Bytes": 11716,
+      "SHA256": "373BDAA90F1C38206B34AC08BAB54968A98BDEAE4C2DA151257CDF086E9C0B9B"
+    },
+    {
+      "File": "TestReopenFinal.ps1",
+      "Bytes": 3168,
+      "SHA256": "4EA01B9430771516F5DE1485B953BB6E1BBEE0F2BD430FE6AD32D053623D982F"
+    },
+    {
+      "File": "TestReopenForm.ps1",
+      "Bytes": 3855,
+      "SHA256": "4A0474C368416C388E4B87227803BED416C5E633FC21CF1F95BF83B53DBE5487"
+    },
+    {
+      "File": "TestVerifyPrepared.ps1",
+      "Bytes": 1776,
+      "SHA256": "7A6FBF3D48AD3A9F6A2F341B4FA00BF0F457C79F05B59A010E5DCBB2C1AE20A1"
+    }
+  ]
+}

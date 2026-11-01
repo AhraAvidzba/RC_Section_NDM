@@ -188,10 +188,32 @@ End Sub
 Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
     mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 3972, "CBatchResultWriter", "Книга Excel не передана."
+    On Error GoTo Failed
+    Dim action As String, rangeName As String
+    action = "подготовить доступ макросов к сводкам результатов": rangeName = "rngBatchSummary"
+    PrepareIndexedResultsWrite workbook ' UserInterfaceOnly не сохраняется в файле: доступ макросов нужен до первой очистки и смены заливки сводки.
+    action = "очистить общую сводку результатов"
     ClearSummaryBody SummaryClearRange(workbook)
+    action = "очистить сводку прочности": rangeName = "rngStrengthSummaryAnchor"
     ClearStrengthSummary workbook
+    action = "очистить сводку трещин": rangeName = "rngCrackSummaryAnchor"
     ClearCrackSummary workbook
+    action = "очистить сводку устойчивости": rangeName = "rngStabilitySummaryAnchor"
     ClearStabilitySummary workbook
+    Exit Sub
+Failed:
+    Dim number As Long, reason As String, origin As String, location As String, blocked As Boolean, target As Object
+    number = Err.Number: reason = Err.Description: origin = Err.Source
+    location = rangeName
+    On Error Resume Next ' Диагностика не должна скрыть исходный отказ, если повреждено и само имя диапазона.
+    Set target = workbook.Names.Item(rangeName).RefersToRange
+    If Not target Is Nothing Then
+        location = rangeName & ", " & target.Worksheet.Name & "!" & target.Address(False, False)
+        blocked = target.Worksheet.ProtectContents And Not target.Worksheet.ProtectionMode
+    End If
+    On Error GoTo 0
+    reason = WorkbookOperationFailureText(action, reason, location, blocked)
+    Err.Raise number, "CBatchResultWriter.ClearSummary / " & origin, reason
 End Sub
 
 ' После записи Results и построения схемы дописывает полное время запуска.

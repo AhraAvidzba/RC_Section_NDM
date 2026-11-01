@@ -1,0 +1,68 @@
+{
+  "Status": "PASS_AFFECTED_FORMATION_PROTECTION_AND_MESSAGES",
+  "ProcessedUTC": "2026-11-01T11:41:23.024875+00:00",
+  "Suites": 14,
+  "AssertionsPassed": 4970,
+  "AssertionsFailed": 0,
+  "ActualSavedReopen": [
+    "ExcelFormation",
+    "FileFormation",
+    "ClearResults"
+  ],
+  "NativeSourceComponents": 181,
+  "NativeDocumentComponents": 6,
+  "OwnTerminal": 13,
+  "ForcedTerminations": 0,
+  "DataResultsPicturesSettingsAndLayoutByteExact": true,
+  "FullOnOffPerformed": false,
+  "FullAcceptanceClaim": false,
+  "Sources": [
+    {
+      "File": "src/Excel/CBatchResultWriter.cls",
+      "SHA256": "09FC678391708C3DEF471D7FE300BF443DACBCFAA85050FAD3B91F7691A35855"
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "SHA256": "E7841575F76AB0DBEDAB2327F84B1B0DD3EEA170AA17646E9608D4A3A3C6EFEB"
+    },
+    {
+      "File": "src/Excel/modWorkbookMessages.bas",
+      "SHA256": "900B9C07FDC9C80C6210E789B5E09ADB4396EDF3DA7C33A3BBF89189817BC70B"
+    },
+    {
+      "File": "tests/modTestCalculationSnapshot.bas",
+      "SHA256": "0DE2B2D68ABA55546FC27EE0508D601099B090406CABBA5756EB5E8E29A3B59D"
+    },
+    {
+      "File": "tests/modTestAudit02Api.bas",
+      "SHA256": "55EF2AAD11EAA1700115927E5EFE6A28AE9B82E3F20E1F4EDB215BAB091F10A4"
+    }
+  ],
+  "CleanGitWorkbookSHA256": "C3D6ECCACF7B1289AD442C702D2DE89CEB860020207A37F714EE8ED6D16BD978",
+  "PublishedBooks": [
+    {
+      "Label": "Main",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "SHA256": "9CD804DF3DA52C4D173AB7DE03A016456269BD86C87E020306B3A96788D5235F",
+      "StandardPathUpdated": true,
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\IndexedFormationFix_2026-11-01_Run01\\BeforePublication\\Main\\RC_Section_NDM.xlsm",
+      "BackupSHA256": "DD9E31DAD225D6B8EE9CFDB9B0711463D37D42178547DB7C9842A94B91EF48FF",
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120
+    },
+    {
+      "Label": "Heavy",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "79614AF6F246ACBD9549A29CA2C55DECD0DFAA97A70CBDDD45A124528479BA11",
+      "StandardPathUpdated": true,
+      "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\IndexedFormationFix_2026-11-01_Run01\\BeforePublication\\Heavy\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "BackupSHA256": "93F817D72892BD22BFA9AA41AB47973746D4070AD4255C513E833892B833CC35",
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120
+    }
+  ],
+  "EvidenceSHA256": "6945DF22113832E1E484E592BEC4C3B637D43804D16E025F155B916B1C5C7187",
+  "HarnessNotes": [
+    "First preparation attempt stopped before publication because a Python helper search path was missing; fixed and resumed from the already verified donor."
+  ]
+}

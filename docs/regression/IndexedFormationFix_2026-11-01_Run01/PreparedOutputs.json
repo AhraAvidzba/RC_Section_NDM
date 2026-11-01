@@ -1,0 +1,41 @@
+{
+  "Status": "PREPARED_NATIVE_REOPEN_REQUIRED",
+  "SourceComponents": 181,
+  "DocumentComponents": 6,
+  "Errors": [],
+  "Books": [
+    {
+      "Label": "Clean",
+      "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\IndexedResults_2026-11-01_Run01\\CleanBuild\\RC_Section_NDM.xlsm",
+      "SourceSHA256": "7A85A8E92B3BAAA381F2E12B0064B390C216A52D87A65C01930FDDCB622A2738",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\IndexedFormationFix_2026-11-01_Run01\\Prepared\\Clean\\RC_Section_NDM.xlsm",
+      "PreparedSHA256": "C3D6ECCACF7B1289AD442C702D2DE89CEB860020207A37F714EE8ED6D16BD978",
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 115,
+      "DataResultsPicturesSettingsAndLayoutByteExact": true,
+      "DocumentCodeNamesEqual": true
+    },
+    {
+      "Label": "Main",
+      "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "SourceSHA256": "DD9E31DAD225D6B8EE9CFDB9B0711463D37D42178547DB7C9842A94B91EF48FF",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\IndexedFormationFix_2026-11-01_Run01\\Prepared\\Main\\RC_Section_NDM.xlsm",
+      "PreparedSHA256": "9CD804DF3DA52C4D173AB7DE03A016456269BD86C87E020306B3A96788D5235F",
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120,
+      "DataResultsPicturesSettingsAndLayoutByteExact": true,
+      "DocumentCodeNamesEqual": true
+    },
+    {
+      "Label": "Heavy",
+      "Source": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SourceSHA256": "93F817D72892BD22BFA9AA41AB47973746D4070AD4255C513E833892B833CC35",
+      "Prepared": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\IndexedFormationFix_2026-11-01_Run01\\Prepared\\Heavy\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "PreparedSHA256": "79614AF6F246ACBD9549A29CA2C55DECD0DFAA97A70CBDDD45A124528479BA11",
+      "OnlyVBAChanged": true,
+      "UnchangedParts": 120,
+      "DataResultsPicturesSettingsAndLayoutByteExact": true,
+      "DocumentCodeNamesEqual": true
+    }
+  ]
+}

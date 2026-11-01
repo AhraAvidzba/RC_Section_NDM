@@ -160,6 +160,7 @@ Public Function RunCalculationSnapshotTests() As String
     TestSnapshotColumnCodec second, store
     TestSnapshotRepeatedElementIDs second, store
     TestSnapshotMinimalFormatting
+    TestSnapshotProtectedSummaryClear second
     GoTo Finished
 Failed:
     TestSnapshotCheck "runtime " & CStr(Err.Number) & ": " & Err.Description, False
@@ -172,6 +173,37 @@ Finished:
     On Error GoTo 0
     RunCalculationSnapshotTests = mTestReport & "TOTAL CALCULATION SNAPSHOT: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Имитирует сброс UserInterfaceOnly при открытии; очищает сводки в обоих режимах оформления и возвращает исходные результаты.
+Private Sub TestSnapshotProtectedSummaryClear(ByVal original As CCalculationSnapshot)
+    Dim writer As New CNDMResultsWriter, summary As New CBatchResultWriter
+    writer.RestoreSnapshotBase ThisWorkbook, original, False, True
+    summary.RestoreSummary ThisWorkbook, original, False
+    Dim sheet As Worksheet: Set sheet = ThisWorkbook.Names("rngNDMElementResults").RefersToRange.Worksheet
+    Dim fullFormatting As Variant
+    For Each fullFormatting In Array(False, True)
+        sheet.Protect Password:="NDM_ResultIndex_v1", DrawingObjects:=False, Contents:=True, Scenarios:=False, UserInterfaceOnly:=False
+        TestSnapshotCheck "protectedClear.reopenMode." & CStr(fullFormatting), sheet.ProtectContents And Not sheet.ProtectionMode
+        summary.ClearSummary ThisWorkbook, CBool(fullFormatting)
+        TestSnapshotCheck "protectedClear.macrosAllowed." & CStr(fullFormatting), sheet.ProtectionMode
+        TestSnapshotCheck "protectedClear.structureStillProtected." & CStr(fullFormatting), sheet.ProtectContents
+        summary.RestoreSummary ThisWorkbook, original, False
+    Next fullFormatting
+    sheet.Unprotect Password:="NDM_ResultIndex_v1"
+    sheet.Protect Password:="NDM_Test_Foreign", UserInterfaceOnly:=False
+    Dim number As Long, reason As String
+    On Error Resume Next
+    summary.ClearSummary ThisWorkbook, False
+    number = Err.Number: reason = Err.Description
+    Err.Clear
+    On Error GoTo 0
+    TestSnapshotCheck "protectedClear.foreignRefused", number <> 0 And sheet.ProtectContents And Not sheet.ProtectionMode
+    TestSnapshotCheck "protectedClear.foreignHuman", InStr(reason, "Лист защищён") > 0 And InStr(reason, "подготовить доступ макросов") > 0
+    TestSnapshotCheck "protectedClear.foreignAddress", InStr(reason, "rngBatchSummary, Results!") > 0
+    sheet.Unprotect Password:="NDM_Test_Foreign"
+    summary.RestoreSummary ThisWorkbook, original, False
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет обязательные контуры элементов без нового расчёта: линии, дуги,

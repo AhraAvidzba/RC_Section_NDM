@@ -244,6 +244,7 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
     requiresAttention = section.HasGeometryWarnings
     If Not importer Is Nothing Then requiresAttention = requiresAttention Or importer.HasImportWarnings
     Dim snapshot As CSectionPropertiesCalculator: Set snapshot = PrepareSectionSnapshot(section)
+    Dim outputStage As Boolean: outputStage = True ' Модель готова: последующие отказы относятся к сохранению или выводу, а не к вводу геометрии.
     Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
     Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
     Dim issues As Collection: Set issues = New Collection
@@ -307,7 +308,7 @@ Failed:
     Dim number As Long, origin As String, description As String
     number = Err.Number: origin = Err.Source: description = Err.Description
     If Not guard Is Nothing Then guard.Restore
-    description = SectionFormationFailureText(description, source, settings)
+    description = SectionFormationFailureText(description, source, settings, Not outputStage)
     Err.Raise number, origin, description
 End Function
 
