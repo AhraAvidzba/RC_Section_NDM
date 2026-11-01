@@ -1,0 +1,9 @@
+﻿{
+    "Status":  "PASS_ALL_FORMULAS_LOCAL_GLOSSARY_AND_INPUT_ORDER",
+    "FormulaOccurrences":  76,
+    "SchemeOccurrences":  4,
+    "PreservedAllCaptions":  true,
+    "LocalDefinitionsForEveryOccurrence":  true,
+    "LengthsBeforeSP63AndSP35":  true,
+    "FullAcceptanceClaim":  false
+}

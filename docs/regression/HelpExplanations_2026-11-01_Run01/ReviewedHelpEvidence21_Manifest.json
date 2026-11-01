@@ -1,0 +1,53 @@
+{
+  "Status": "ALL_ARCHIVE_MEMBERS_REOPENED_AND_HASH_VERIFIED",
+  "File": "ReviewedHelpEvidence21.zip",
+  "SHA256": "35DCAD9710758F10FE58B19C5926FFB68F8FD58B862A29BA5845239078BF660E",
+  "Bytes": 1532839,
+  "Files": [
+    {
+      "Name": "NativeClean18/AllHelpText.json",
+      "Bytes": 796742,
+      "SHA256": "0F7FEA28EC7C005C422B7D2A5836951755975477D6A10D1D2E8DD3DAABFF5CC1"
+    },
+    {
+      "Name": "NativeClean18/Pictures.json",
+      "Bytes": 23457,
+      "SHA256": "4255724583F560932C821943A5220883F87174B4AE86445155471BFD6DB81AD6"
+    },
+    {
+      "Name": "NativeClean18/Links.json",
+      "Bytes": 28097,
+      "SHA256": "2F7BE5F741F9889C5559F589D13DC118F4EAACDEBD4EFE9E1BAC9B665B5ABBE5"
+    },
+    {
+      "Name": "NativeClean18/LocalDefinitions.json",
+      "Bytes": 53104,
+      "SHA256": "34F20DD5B3D84F7082B777481B39E6184FE311320A2A820E36F055B780EAAD9A"
+    },
+    {
+      "Name": "NativeClean18/WholeHelp.pdf",
+      "Bytes": 1660402,
+      "SHA256": "41C10A644B1141897FCD299CDFA2EBB8296DCCDB026EA2108DDA69E9CB8655B7"
+    },
+    {
+      "Name": "MockGuideRecords05.json",
+      "Bytes": 172419,
+      "SHA256": "FEAADF99FF0287453D1C88786920FA994217448452002E56495A707DF12565ED"
+    },
+    {
+      "Name": "TestNativeHelpReadback13.ps1",
+      "Bytes": 11050,
+      "SHA256": "8FBE06B85F220606EBB8ABEFB5C9DEC5EF204A7D37087F7DB842A21379535B76"
+    },
+    {
+      "Name": "TestFinalReview18.py",
+      "Bytes": 3949,
+      "SHA256": "C72755353B59B9B3564982ABEBC8D4BD97B041F365E47C0293838D47F6F1522B"
+    },
+    {
+      "Name": "TestRecordSourceAudit10.py",
+      "Bytes": 8892,
+      "SHA256": "B6800CD2463EC3C3F244779818978C17C3177C5757C0E2B2CF5CCD06C07F674F"
+    }
+  ]
+}

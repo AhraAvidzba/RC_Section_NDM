@@ -1,0 +1,9 @@
+{
+  "UserCorrection": "Не случайное плечо а случайный эксцентриситет",
+  "SourcesUpdated": [
+    "tools/build_workbook/SettingsCatalog.ps1",
+    "tools/build_workbook/HelpSettingsDescriptions.json",
+    "tools/build_workbook/HelpFormulaExplanations.json"
+  ],
+  "RuntimeChanged": false
+}

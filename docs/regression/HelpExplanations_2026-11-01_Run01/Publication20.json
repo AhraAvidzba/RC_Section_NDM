@@ -1,0 +1,32 @@
+{
+  "Status": "PUBLISHED_HELP_ONLY_NATIVE_VERIFIED_WITH_BACKUPS",
+  "PublishedUTC": "2026-11-01T16:09:15.341877+00:00",
+  "Books": [
+    {
+      "Label": "Main",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "BeforeSHA256": "89CE9F11A23C5F5F4E1721FEE80F516BD4D7B1F24DAE0741729EE6D22708746D",
+      "SHA256": "7CCBDCD1DC145C73DBCEE5C61AC07F9F1FFA7520688A1D3D28518C1EA3ABA2A8",
+      "VBAByteExact": true,
+      "ResultsByteExact": true,
+      "UserInputPreserved": true
+    },
+    {
+      "Label": "Heavy",
+      "Destination": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "BeforeSHA256": "85711EA44832D1E0CE93D5AF6EA2F43B586FD2E051AFA391011DCDC930FB3CEE",
+      "SHA256": "C564C4237A2A4BD51AAFEAB7A388572D016E43F7EDC0C5CF862AF21FEFD2F5C6",
+      "VBAByteExact": true,
+      "ResultsByteExact": true,
+      "UserInputPreserved": true
+    }
+  ],
+  "AllCodeByteExact": true,
+  "AllCodeSHA256": "872502F7B2F859C2F21F832C261500FD3E1A9B316F6831E720F1638FEBBBE3E4",
+  "SeparateUserNDMPreserved": true,
+  "SeparateUserNDMSHA256": "0E0D3C7B1CF84CF01C1E183D84EFEE169C6E20F408B22A529DC0A14826E42FAF",
+  "PackagedOriginalNDMSHA256": "E48038B73A6E4146A9AB6D594BC57B4E7C26C561D2DBAC3A9FE7496AFA96C9AA",
+  "HeavyPackageSHA256": "4187BC5F60417DC4FD6332543AB72B4B4D631FE17654C30741530E4023A3D0D9",
+  "Backup": "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\HelpExplanations_2026-11-01_Run01\\BeforePublication20",
+  "RecalculationPerformed": false
+}

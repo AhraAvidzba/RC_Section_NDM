@@ -1,0 +1,3795 @@
+{
+  "Status": "ALL_152_HELP_BLOCKS_REVIEWED_AGAINST_SOURCE",
+  "Scope": "Объяснения и соответствие контрактам кода; не новая нормативная или расчётная приёмка.",
+  "Blocks": [
+    {
+      "Key": "Units",
+      "Title": "Единицы измерения",
+      "Paragraphs": 9,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Excel/CUnitSystem.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "SignConvention",
+      "Title": "Система знаков",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Excel/CUnitSystem.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "LoadCombinations",
+      "Title": "Сочетания нагрузок",
+      "Paragraphs": 14,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Excel/CLoadCombinationReader.cls",
+        "src/Common/CLoadPathDescriptor.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "StabilityLoads",
+      "Title": "Нагрузки для устойчивости",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Excel/CSystemSettingsReader.cls",
+        "src/Stability/CStabilityCalculator.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "SP35Table721",
+      "Title": "Таблица 7.21 СП 35",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Excel/CSystemSettingsReader.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "ConcreteMaterialParameters",
+      "Title": "Параметры бетона",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "SteelMaterialParameters",
+      "Title": "Параметры арматуры",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "CalculationProfiles",
+      "Title": "Настройка расчетных профилей",
+      "Paragraphs": 13,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Batch/CCalculationProfile.cls",
+        "src/Batch/CCalculationProfileCatalog.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "MaterialDiagramControlTables",
+      "Title": "Контрольные точки диаграмм",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "PlotAnnotationSettings",
+      "Title": "Настройки оформления схемы",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/CSectionPlotter.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "DependentRebarRows",
+      "Title": "Как задать сечение и армирование",
+      "Paragraphs": 11,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Section/CRebarRuleExecutor.cls",
+        "src/Section/CSectionInputReader.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "CircleGeometry",
+      "Title": "Круглое сечение",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Geometry/CSectionRecipeCircle.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "PointedSectionGeometry",
+      "Title": "Клиновидное сечение",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Geometry/CSectionRecipePointedSection.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "HollowRectangleGeometry",
+      "Title": "Пустотелый прямоугольник",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Geometry/CSectionRecipeHollowRectangle.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "RectanglesGeometry",
+      "Title": "Набор прямоугольников (Г-сечение)",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Поля, режимы, применимость и последовательность действий сверены с указанными обработчиками.",
+      "SourceFiles": [
+        "src/Geometry/CSectionRecipeRectangles.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "General.ExecutionReportEnabled",
+      "Title": "General.ExecutionReportEnabled",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены Yes/No, путь и перезапись отчёта выполнения.",
+      "SourceFiles": [
+        "src/Excel/CExecutionReport.cls",
+        "src/Excel/modWorkbookCalculation.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CExecutionReport.cls",
+          "Line": 44,
+          "Method": "Initialize",
+          "Code": "mEnabled = settings.GetRequiredBoolean(\"General.ExecutionReportEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "General.NonCriticalMessagesEnabled",
+      "Title": "General.NonCriticalMessagesEnabled",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверено отключение штатных уведомлений при сохранении сообщений об ошибках и предупреждений.",
+      "SourceFiles": [
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 237,
+          "Method": "FormSectionCore",
+          "Code": "informationEnabled = settings.GetRequiredBoolean(\"General.NonCriticalMessagesEnabled\") ' Кнопка получает проверенный флаг из того же снимка; ошибка обнаруживается до изменения Results."
+        },
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 334,
+          "Method": "NonCriticalMessagesEnabled",
+          "Code": "NonCriticalMessagesEnabled = settings.GetRequiredBoolean(\"General.NonCriticalMessagesEnabled\")"
+        },
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 377,
+          "Method": "CalculateSectionCore",
+          "Code": "informationEnabled = settings.GetRequiredBoolean(\"General.NonCriticalMessagesEnabled\") ' Кнопка получает проверенный флаг из того же снимка; ошибка обнаруживается до изменения Results."
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 71,
+          "Method": "ExportSectionStressToAutoCAD",
+          "Code": "Dim informationEnabled As Boolean: informationEnabled = settings.GetRequiredBoolean(\"General.NonCriticalMessagesEnabled\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 115,
+          "Method": "ClearAutoCADDrawing",
+          "Code": "informationEnabled = settings.GetRequiredBoolean(\"General.NonCriticalMessagesEnabled\") ' Используем тот же снимок Config и проверяем флаг до удаления объектов."
+        }
+      ]
+    },
+    {
+      "Key": "Results.SnapshotStorage",
+      "Title": "Results.SnapshotStorage",
+      "Paragraphs": 8,
+      "Reviewed": true,
+      "Check": "Проверены источники Excel/File, чтение текущего имени, справочный Results и обновление без расчёта.",
+      "SourceFiles": [
+        "src/Excel/CCalculationSnapshotStore.cls",
+        "src/Excel/CResultReadSource.cls",
+        "src/Excel/modCalculationSnapshot.bas",
+        "src/Excel/modWorkbookCalculation.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CCalculationSnapshotStore.cls",
+          "Line": 83,
+          "Method": "StorageMode",
+          "Code": "StorageMode = settings.GetRequiredString(\"Results.SnapshotStorage\")"
+        },
+        {
+          "File": "src/Excel/CCalculationSnapshotStore.cls",
+          "Line": 85,
+          "Method": "StorageMode",
+          "Code": "settings.InputErrorMessage(\"Results.SnapshotStorage\", \"Допустимы Excel или File.\", \"Выберите место сохранения снимка.\")"
+        },
+        {
+          "File": "src/Excel/modCalculationSnapshot.bas",
+          "Line": 207,
+          "Method": "ExternalSnapshotStorageAdvice",
+          "Code": "ExternalSnapshotStorageAdvice = \"На Config установите Results.SnapshotStorage = File (\" & settings.InputLocation(\"Results.SnapshotStorage\") & _"
+        },
+        {
+          "File": "src/Excel/modCalculationSnapshot.bas",
+          "Line": 333,
+          "Method": "OfferExternalCalculationSnapshot",
+          "Code": "If CStr(values(i, 1)) = \"Results.SnapshotStorage\" Then table.Cells(i, 2).Value2 = \"File\": Exit Sub"
+        }
+      ]
+    },
+    {
+      "Key": "Results.SnapshotName",
+      "Title": "Results.SnapshotName",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены источники Excel/File, чтение текущего имени, справочный Results и обновление без расчёта.",
+      "SourceFiles": [
+        "src/Excel/CCalculationSnapshotStore.cls",
+        "src/Excel/CResultReadSource.cls",
+        "src/Excel/modCalculationSnapshot.bas",
+        "src/Excel/modWorkbookCalculation.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CCalculationSnapshotStore.cls",
+          "Line": 97,
+          "Method": "SnapshotPath",
+          "Code": "Dim name As String: name = Trim$(settings.GetRequiredString(\"Results.SnapshotName\"))"
+        },
+        {
+          "File": "src/Excel/CCalculationSnapshotStore.cls",
+          "Line": 118,
+          "Method": "SnapshotPath",
+          "Code": "\"Results.SnapshotName\", \"Требуется допустимое имя снимка без пути.\", \"Введите, например, NDM_Snapshot; расширение .ndm добавляется автоматически.\")"
+        },
+        {
+          "File": "src/Excel/CCalculationSnapshotStore.cls",
+          "Line": 122,
+          "Method": "SnapshotPath",
+          "Code": "If Len(SnapshotPath) > 245 Then Err.Raise 5, , settings.InputErrorMessage(\"Results.SnapshotName\", _"
+        },
+        {
+          "File": "src/Excel/CCalculationSnapshotStore.cls",
+          "Line": 166,
+          "Method": "LoadFile",
+          "Code": "\"Настройка: \" & settings.InputLocation(\"Results.SnapshotName\") & vbCrLf & \"Ожидаемый файл:\" & vbCrLf & path"
+        }
+      ]
+    },
+    {
+      "Key": "Load.ReferenceOffsetX",
+      "Title": "Load.ReferenceOffsetX",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены перенос усилий, фильтр малых моментов и единицы вводимых величин.",
+      "SourceFiles": [
+        "src/Common/CSectionLoadState.cls",
+        "src/Excel/CLoadCombinationReader.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Load.ReferenceOffsetY",
+      "Title": "Load.ReferenceOffsetY",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены перенос усилий, фильтр малых моментов и единицы вводимых величин.",
+      "SourceFiles": [
+        "src/Common/CSectionLoadState.cls",
+        "src/Excel/CLoadCombinationReader.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Calculation.ZeroMomentPerDepth",
+      "Title": "Calculation.ZeroMomentPerDepth",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Проверены перенос усилий, фильтр малых моментов и единицы вводимых величин.",
+      "SourceFiles": [
+        "src/Common/CSectionLoadState.cls",
+        "src/Excel/CLoadCombinationReader.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 287,
+          "Method": "ApplySettings",
+          "Code": "mZeroMomentPerDepth = settings.GetRequiredDouble(\"Calculation.ZeroMomentPerDepth\")"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 346,
+          "Method": "ApplySettings",
+          "Code": "conversionKey = \"Calculation.ZeroMomentPerDepth\""
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 379,
+          "Method": "ApplySettings",
+          "Code": "mSettingsError = settings.InputErrorMessage(\"Calculation.ZeroMomentPerDepth\", _"
+        }
+      ]
+    },
+    {
+      "Key": "Output.CombinationMode",
+      "Title": "Output.CombinationMode",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены выбор Worst/User, сохранённый определяющий ID, активность поля и источник состояния.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotDataReader.cls",
+        "src/Excel/modSnapshotTables.bas",
+        "src/Excel/CBatchResultWriter.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "General.WorstCombinationCriterion",
+      "Title": "General.WorstCombinationCriterion",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Проверены выбор Worst/User, сохранённый определяющий ID, активность поля и источник состояния.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotDataReader.cls",
+        "src/Excel/modSnapshotTables.bas",
+        "src/Excel/CBatchResultWriter.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Output.CombinationID",
+      "Title": "Output.CombinationID",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены выбор Worst/User, сохранённый определяющий ID, активность поля и источник состояния.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotDataReader.cls",
+        "src/Excel/modSnapshotTables.bas",
+        "src/Excel/CBatchResultWriter.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "General.PlateauSlopeFactor",
+      "Title": "General.PlateauSlopeFactor",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены наклон плато/продолжения, физические пределы и отличие продолжения от допустимого НДС.",
+      "SourceFiles": [
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Materials/CMaterialModelProvider.cls",
+          "Line": 71,
+          "Method": "Initialize",
+          "Code": "mPlateauSlopeFactor = settings.GetRequiredDouble(\"General.PlateauSlopeFactor\")"
+        },
+        {
+          "File": "src/Materials/CMaterialModelProvider.cls",
+          "Line": 73,
+          "Method": "Initialize",
+          "Code": "settings.InputErrorMessage(\"General.PlateauSlopeFactor\", \"Коэффициент наклона плато отрицателен.\", _"
+        }
+      ]
+    },
+    {
+      "Key": "General.DiagramExtension",
+      "Title": "General.DiagramExtension",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены наклон плато/продолжения, физические пределы и отличие продолжения от допустимого НДС.",
+      "SourceFiles": [
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Materials/CMaterialModelProvider.cls",
+          "Line": 112,
+          "Method": "ReadDiagramExtensionSetting",
+          "Code": "ReadDiagramExtensionSetting = settings.GetRequiredBoolean(\"General.DiagramExtension\")"
+        }
+      ]
+    },
+    {
+      "Key": "Geometry.Source",
+      "Title": "Geometry.Source",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены отдельное формирование и чтение типа из реестра; расчёт не генерирует геометрию.",
+      "SourceFiles": [
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/CSectionTypeRegistry.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 242,
+          "Method": "FormSectionCore",
+          "Code": "Dim source As String: source = settings.GetRequiredChoice(\"Geometry.Source\", Array(\"Generated\", \"AutoCAD\"))"
+        },
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 1288,
+          "Method": "BuildWorkbookSectionModel",
+          "Code": "geometrySource = settings.GetRequiredChoice(\"Geometry.Source\", Array(\"Generated\", \"AutoCAD\"))"
+        }
+      ]
+    },
+    {
+      "Key": "Geometry.Type",
+      "Title": "Geometry.Type",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены отдельное формирование и чтение типа из реестра; расчёт не генерирует геометрию.",
+      "SourceFiles": [
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/CSectionTypeRegistry.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionTypeRegistry.cls",
+          "Line": 68,
+          "Method": "SelectedRecipeType",
+          "Code": "SelectedRecipeType = settings.GetRequiredChoice(\"Geometry.Type\", RegisteredRecipeTypes)"
+        }
+      ]
+    },
+    {
+      "Key": "Mesh.MinElementArea",
+      "Title": "Mesh.MinElementArea",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены Auto/User, независимые шаги, единицы площади и Adaptive/Contour; неиспользуемые поля не требуются.",
+      "SourceFiles": [
+        "src/Excel/modMeshConfiguration.bas",
+        "src/Geometry/CFiberMeshBuilder.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 42,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "options.SourceReference = \"Mesh.MinElementArea: \" & settings.InputLocation(\"Mesh.MinElementArea\") & _"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 57,
+          "Method": "ReadMinimumElementArea",
+          "Code": "value = settings.GetRequiredDouble(\"Mesh.MinElementArea\")"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 59,
+          "Method": "ReadMinimumElementArea",
+          "Code": "settings.InputErrorMessage(\"Mesh.MinElementArea\", \"Порог площади не может быть отрицательным.\", \"Введите ноль для отключения фильтра или положительную площадь в INPUT Area.\")"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 66,
+          "Method": "ReadMinimumElementArea",
+          "Code": "settings.InputErrorMessage(\"Mesh.MinElementArea\", \"Площадь слишком велика для перевода в мм2.\", \"Уменьшите число и проверьте выбранную единицу INPUT Area.\")"
+        }
+      ]
+    },
+    {
+      "Key": "Mesh.CellGeometry",
+      "Title": "Mesh.CellGeometry",
+      "Paragraphs": 8,
+      "Reviewed": true,
+      "Check": "Проверены Auto/User, независимые шаги, единицы площади и Adaptive/Contour; неиспользуемые поля не требуются.",
+      "SourceFiles": [
+        "src/Excel/modMeshConfiguration.bas",
+        "src/Geometry/CFiberMeshBuilder.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 46,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "If settings.HasKey(\"Mesh.CellGeometry\") Then options.SourceReference = options.SourceReference & \"; Mesh.CellGeometry: \" & settings.InputLocation(\"Mesh.CellGeometry\")"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 75,
+          "Method": "ReadMeshCellGeometry",
+          "Code": "If settings.HasKey(\"Mesh.CellGeometry\") Then ReadMeshCellGeometry = settings.GetRequiredChoice(\"Mesh.CellGeometry\", Array(\"Adaptive\", \"Contour\"))"
+        }
+      ]
+    },
+    {
+      "Key": "Mesh.StepMode",
+      "Title": "Mesh.StepMode",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены Auto/User, независимые шаги, единицы площади и Adaptive/Contour; неиспользуемые поля не требуются.",
+      "SourceFiles": [
+        "src/Excel/modMeshConfiguration.bas",
+        "src/Geometry/CFiberMeshBuilder.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 30,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "mode = settings.GetRequiredChoice(\"Mesh.StepMode\", Array(\"Auto 0.05\", \"Auto 0.1\", \"Auto 0.2\", \"User\"))"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 43,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "\"; Mesh.StepMode: \" & settings.InputLocation(\"Mesh.StepMode\")"
+        }
+      ]
+    },
+    {
+      "Key": "Mesh.StepX",
+      "Title": "Mesh.StepX",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены Auto/User, независимые шаги, единицы площади и Adaptive/Contour; неиспользуемые поля не требуются.",
+      "SourceFiles": [
+        "src/Excel/modMeshConfiguration.bas",
+        "src/Geometry/CFiberMeshBuilder.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 36,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "options.StepX = ReadMeshStep(settings, units, \"Mesh.StepX\")"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 45,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "\"; Mesh.StepX: \" & settings.InputLocation(\"Mesh.StepX\") & \"; Mesh.StepY: \" & settings.InputLocation(\"Mesh.StepY\")"
+        }
+      ]
+    },
+    {
+      "Key": "Mesh.StepY",
+      "Title": "Mesh.StepY",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены Auto/User, независимые шаги, единицы площади и Adaptive/Contour; неиспользуемые поля не требуются.",
+      "SourceFiles": [
+        "src/Excel/modMeshConfiguration.bas",
+        "src/Geometry/CFiberMeshBuilder.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 37,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "options.StepY = ReadMeshStep(settings, units, \"Mesh.StepY\")"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 45,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "\"; Mesh.StepX: \" & settings.InputLocation(\"Mesh.StepX\") & \"; Mesh.StepY: \" & settings.InputLocation(\"Mesh.StepY\")"
+        }
+      ]
+    },
+    {
+      "Key": "Mesh.BoundarySubdivisions",
+      "Title": "Mesh.BoundarySubdivisions",
+      "Paragraphs": 9,
+      "Reviewed": true,
+      "Check": "Проверены Auto/User, независимые шаги, единицы площади и Adaptive/Contour; неиспользуемые поля не требуются.",
+      "SourceFiles": [
+        "src/Excel/modMeshConfiguration.bas",
+        "src/Geometry/CFiberMeshBuilder.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 47,
+          "Method": "ReadSectionMeshOptions",
+          "Code": "If options.CellGeometry = \"Adaptive\" Then options.SourceReference = options.SourceReference & \"; Mesh.BoundarySubdivisions: \" & settings.InputLocation(\"Mesh.BoundarySubdivisions\")"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 100,
+          "Method": "ReadMeshBoundarySubdivisions",
+          "Code": "If settings.HasKey(\"Mesh.BoundarySubdivisions\") Then"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 102,
+          "Method": "ReadMeshBoundarySubdivisions",
+          "Code": "rawValue = Trim$(settings.GetRawString(\"Mesh.BoundarySubdivisions\"))"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 104,
+          "Method": "ReadMeshBoundarySubdivisions",
+          "Code": "settings.InputErrorMessage(\"Mesh.BoundarySubdivisions\", \"Число подъячеек не задано.\", \"Введите целое число не меньше 1.\")"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 106,
+          "Method": "ReadMeshBoundarySubdivisions",
+          "Code": "ReadMeshBoundarySubdivisions = settings.GetRequiredLong(\"Mesh.BoundarySubdivisions\")"
+        },
+        {
+          "File": "src/Excel/modMeshConfiguration.bas",
+          "Line": 108,
+          "Method": "ReadMeshBoundarySubdivisions",
+          "Code": "settings.InputErrorMessage(\"Mesh.BoundarySubdivisions\", \"Число подъячеек меньше 1.\", \"Введите целое число не меньше 1.\")"
+        }
+      ]
+    },
+    {
+      "Key": "Solver.Method",
+      "Title": "Solver.Method",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены единицы допусков, ступени нагрузки, лимиты и применение Newton/Secant.",
+      "SourceFiles": [
+        "src/Solver/CSectionSolver.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 143,
+          "Method": "ApplySettings",
+          "Code": "If settings.HasKey(\"Solver.Method\") Then"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 144,
+          "Method": "ApplySettings",
+          "Code": "mSolverMethod = settings.GetRawString(\"Solver.Method\", vbNullString)"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 327,
+          "Method": "SolveSelectedLoadStep",
+          "Code": "mStopReason = ConfigurationMessage(\"Solver.Method\", \"Выберите Newton или Secant. Введено: \"\"\" & mSolverMethod & \"\"\".\")"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 328,
+          "Method": "SolveSelectedLoadStep",
+          "Code": "mFailureSettingKeys = \"Solver.Method\""
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 1307,
+          "Method": "ValidateSolverMethod",
+          "Code": "mStopReason = ConfigurationMessage(\"Solver.Method\", \"Выберите Newton или Secant. Введено: \"\"\" & mSolverMethod & \"\"\".\")"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 1308,
+          "Method": "ValidateSolverMethod",
+          "Code": "mFailureSettingKeys = \"Solver.Method\""
+        }
+      ]
+    },
+    {
+      "Key": "Solver.MaxIterations",
+      "Title": "Solver.MaxIterations",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены единицы допусков, ступени нагрузки, лимиты и применение Newton/Secant.",
+      "SourceFiles": [
+        "src/Solver/CSectionSolver.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 138,
+          "Method": "ApplySettings",
+          "Code": "mMaxIterations = settings.GetLong(\"Solver.MaxIterations\", mMaxIterations, False)"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 1271,
+          "Method": "ValidateInputs",
+          "Code": "SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage(\"Solver.MaxIterations\", \"Число итераций должно быть больше нуля. Сейчас: \" & CStr(mMaxIterations) & \".\"), \"Solver.MaxIterations\""
+        }
+      ]
+    },
+    {
+      "Key": "Solver.LoadSteps",
+      "Title": "Solver.LoadSteps",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены единицы допусков, ступени нагрузки, лимиты и применение Newton/Secant.",
+      "SourceFiles": [
+        "src/Solver/CSectionSolver.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 139,
+          "Method": "ApplySettings",
+          "Code": "mLoadSteps = settings.GetLong(\"Solver.LoadSteps\", mLoadSteps, False)"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 1273,
+          "Method": "ValidateInputs",
+          "Code": "SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage(\"Solver.LoadSteps\", \"Число ступеней приложения нагрузки должно быть больше нуля. Сейчас: \" & CStr(mLoadSteps) & \".\"), \"Solver.LoadSteps\""
+        }
+      ]
+    },
+    {
+      "Key": "Solver.ToleranceN",
+      "Title": "Solver.ToleranceN",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены единицы допусков, ступени нагрузки, лимиты и применение Newton/Secant.",
+      "SourceFiles": [
+        "src/Solver/CSectionSolver.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 140,
+          "Method": "ApplySettings",
+          "Code": "mToleranceN = settings.GetDouble(\"Solver.ToleranceN\", mToleranceN, False)"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 1277,
+          "Method": "ValidateInputs",
+          "Code": "SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage(\"Solver.ToleranceN\", \"Допуски равновесия по N, Mx и My должны быть больше нуля.\") & \" \" & _"
+        }
+      ]
+    },
+    {
+      "Key": "Solver.ToleranceMx",
+      "Title": "Solver.ToleranceMx",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены единицы допусков, ступени нагрузки, лимиты и применение Newton/Secant.",
+      "SourceFiles": [
+        "src/Solver/CSectionSolver.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 141,
+          "Method": "ApplySettings",
+          "Code": "mToleranceMx = settings.GetDouble(\"Solver.ToleranceMx\", mToleranceMx, False)"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 1278,
+          "Method": "ValidateInputs",
+          "Code": "ConfigurationMessage(\"Solver.ToleranceMx\", \"Проверьте допуск по Mx.\") & \" \" & ConfigurationMessage(\"Solver.ToleranceMy\", \"Проверьте допуск по My.\"), _"
+        }
+      ]
+    },
+    {
+      "Key": "Solver.ToleranceMy",
+      "Title": "Solver.ToleranceMy",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены единицы допусков, ступени нагрузки, лимиты и применение Newton/Secant.",
+      "SourceFiles": [
+        "src/Solver/CSectionSolver.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 142,
+          "Method": "ApplySettings",
+          "Code": "mToleranceMy = settings.GetDouble(\"Solver.ToleranceMy\", mToleranceMy, False)"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 1278,
+          "Method": "ValidateInputs",
+          "Code": "ConfigurationMessage(\"Solver.ToleranceMx\", \"Проверьте допуск по Mx.\") & \" \" & ConfigurationMessage(\"Solver.ToleranceMy\", \"Проверьте допуск по My.\"), _"
+        }
+      ]
+    },
+    {
+      "Key": "Solver.SecantMaxRestarts",
+      "Title": "Solver.SecantMaxRestarts",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены единицы допусков, ступени нагрузки, лимиты и применение Newton/Secant.",
+      "SourceFiles": [
+        "src/Solver/CSectionSolver.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 148,
+          "Method": "ApplySettings",
+          "Code": "mSecantMaxRestarts = settings.GetLong(\"Solver.SecantMaxRestarts\", mSecantMaxRestarts, False)"
+        },
+        {
+          "File": "src/Solver/CSectionSolver.cls",
+          "Line": 1275,
+          "Method": "ValidateInputs",
+          "Code": "SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage(\"Solver.SecantMaxRestarts\", \"Число перезапусков метода Secant не может быть отрицательным. Сейчас: \" & CStr(mSecantMaxRestarts) & \".\"), \"Solver.SecantMaxRestarts\""
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.SolutionStrategy",
+      "Title": "Capacity.SolutionStrategy",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 300,
+          "Method": "ApplySettings",
+          "Code": "mCapacitySolutionStrategy = CapacityTextSetting(settings, \"Capacity.SolutionStrategy\")"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 393,
+          "Method": "CapacityTextSetting",
+          "Code": "If key = \"Capacity.SolutionStrategy\" Then"
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.SolverMaxIterations",
+      "Title": "Capacity.SolverMaxIterations",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 153,
+          "Method": "ApplySettings",
+          "Code": "mSolverMaxIterations = settings.GetLong(\"Capacity.SolverMaxIterations\", mSolverMaxIterations, False)"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1234,
+          "Method": "ValidateLoadPathCapacityInputs",
+          "Code": "SetInvalidConfiguration \"Число итераций решателя несущей способности должно быть положительным.\", \"Capacity.SolverMaxIterations\""
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 77,
+          "Method": "ValidateSettings",
+          "Code": "If mCapacitySolverMaxIterations <= 0 Then RaiseInvalidSearchSetting \"Capacity.SolverMaxIterations\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 307,
+          "Method": "ApplySettings",
+          "Code": "mCapacitySolverMaxIterations = settings.GetLong(\"Capacity.SolverMaxIterations\", mCapacitySolverMaxIterations, False)"
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.ToleranceStrain",
+      "Title": "Capacity.ToleranceStrain",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 145,
+          "Method": "ApplySettings",
+          "Code": "mStrainTolerance = settings.GetDouble(\"Capacity.ToleranceStrain\", mStrainTolerance, False)"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1296,
+          "Method": "ValidateUltimateStrainSettings",
+          "Code": "SetInvalidConfiguration \"На листе Config в строке Capacity.ToleranceStrain задайте допуск предельной деформации больше нуля.\", \"Capacity.ToleranceStrain\""
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 79,
+          "Method": "ValidateSettings",
+          "Code": "If mStrainTolerance <= 0# Then RaiseInvalidSearchSetting \"Capacity.ToleranceStrain\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 304,
+          "Method": "ApplySettings",
+          "Code": "mCapacityToleranceStrain = settings.GetDouble(\"Capacity.ToleranceStrain\", mCapacityToleranceStrain, False)"
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.MaxLambda",
+      "Title": "Capacity.MaxLambda",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 143,
+          "Method": "ApplySettings",
+          "Code": "mMaxLambda = settings.GetDouble(\"Capacity.MaxLambda\", mMaxLambda, False)"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1277,
+          "Method": "ValidateLoadMultiplierSettings",
+          "Code": "SetInvalidConfiguration \"На листе Config в строке Capacity.MaxLambda задайте верхнюю границу поиска больше нуля.\", \"Capacity.MaxLambda\""
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 81,
+          "Method": "ValidateSettings",
+          "Code": "If mMaxLambda <= 0# Then RaiseInvalidSearchSetting \"Capacity.MaxLambda\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 302,
+          "Method": "ApplySettings",
+          "Code": "mCapacityMaxLambda = settings.GetDouble(\"Capacity.MaxLambda\", mCapacityMaxLambda, False)"
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.SearchMethod",
+      "Title": "Capacity.SearchMethod",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 146,
+          "Method": "ApplySettings",
+          "Code": "If settings.HasKey(\"Capacity.SearchMethod\") Then"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 147,
+          "Method": "ApplySettings",
+          "Code": "mSearchMethod = settings.GetRawString(\"Capacity.SearchMethod\", vbNullString)"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1271,
+          "Method": "ValidateLoadMultiplierSettings",
+          "Code": "SetInvalidConfiguration \"Capacity.SearchMethod должен быть Bisection, Brent или Secant.\", \"Capacity.SearchMethod\""
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 301,
+          "Method": "ApplySettings",
+          "Code": "mCapacitySearchMethod = CapacityTextSetting(settings, \"Capacity.SearchMethod\")"
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.InitialLambda",
+      "Title": "Capacity.InitialLambda",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 142,
+          "Method": "ApplySettings",
+          "Code": "mInitialLambdaStep = settings.GetDouble(\"Capacity.InitialLambda\", mInitialLambdaStep, False)"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1273,
+          "Method": "ValidateLoadMultiplierSettings",
+          "Code": "SetInvalidConfiguration \"На листе Config в строке Capacity.InitialLambda задайте начальный шаг больше нуля.\", \"Capacity.InitialLambda\""
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 83,
+          "Method": "ValidateSettings",
+          "Code": "If mInitialLambdaStep <= 0# Then RaiseInvalidSearchSetting \"Capacity.InitialLambda\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 299,
+          "Method": "ApplySettings",
+          "Code": "mCapacityInitialLambda = settings.GetDouble(\"Capacity.InitialLambda\", mCapacityInitialLambda, False)"
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.ToleranceLambda",
+      "Title": "Capacity.ToleranceLambda",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 144,
+          "Method": "ApplySettings",
+          "Code": "mLambdaTolerance = settings.GetDouble(\"Capacity.ToleranceLambda\", mLambdaTolerance, False)"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1275,
+          "Method": "ValidateLoadMultiplierSettings",
+          "Code": "SetInvalidConfiguration \"На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля.\", \"Capacity.ToleranceLambda\""
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 85,
+          "Method": "ValidateSettings",
+          "Code": "If mLambdaTolerance <= 0# Then RaiseInvalidSearchSetting \"Capacity.ToleranceLambda\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 303,
+          "Method": "ApplySettings",
+          "Code": "mCapacityToleranceLambda = settings.GetDouble(\"Capacity.ToleranceLambda\", mCapacityToleranceLambda, False)"
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.MaxRetries",
+      "Title": "Capacity.MaxRetries",
+      "Paragraphs": 9,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 151,
+          "Method": "ApplySettings",
+          "Code": "mMaxRetries = settings.GetLong(\"Capacity.MaxRetries\", mMaxRetries, False)"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1279,
+          "Method": "ValidateLoadMultiplierSettings",
+          "Code": "SetInvalidConfiguration \"На листе Config в строке Capacity.MaxRetries задайте неотрицательное число повторных попыток.\", \"Capacity.MaxRetries\""
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 87,
+          "Method": "ValidateSettings",
+          "Code": "If mMaxRetries < 0 Then RaiseInvalidSearchSetting \"Capacity.MaxRetries\", _"
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 96,
+          "Method": "ValidateSettings",
+          "Code": "If mMaxRetries > maximumRetries Then RaiseInvalidSearchSetting \"Capacity.MaxRetries\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 305,
+          "Method": "ApplySettings",
+          "Code": "mCapacityMaxRetries = settings.GetLong(\"Capacity.MaxRetries\", mCapacityMaxRetries, False)"
+        }
+      ]
+    },
+    {
+      "Key": "Capacity.BaseLoadSteps",
+      "Title": "Capacity.BaseLoadSteps",
+      "Paragraphs": 9,
+      "Reviewed": true,
+      "Check": "Проверены выбранная стратегия, пределы поиска, повторы и различие физического/численного отказа.",
+      "SourceFiles": [
+        "src/Solver/CCapacitySolver.cls",
+        "src/Solver/CCapacityCalculator.cls",
+        "src/Solver/CLimitSearchCoordinator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 152,
+          "Method": "ApplySettings",
+          "Code": "mSolverBaseLoadSteps = settings.GetLong(\"Capacity.BaseLoadSteps\", mSolverBaseLoadSteps, False)"
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1281,
+          "Method": "ValidateLoadMultiplierSettings",
+          "Code": "SetInvalidConfiguration \"На листе Config в строке Capacity.BaseLoadSteps задайте число ступеней нагрузки больше нуля.\", \"Capacity.BaseLoadSteps\""
+        },
+        {
+          "File": "src/Solver/CCapacitySolver.cls",
+          "Line": 1283,
+          "Method": "ValidateLoadMultiplierSettings",
+          "Code": "SetInvalidConfiguration \"Число ступеней Capacity.BaseLoadSteps не помещается в расчетный счетчик. Уменьшите его до 2147483646 или менее.\", \"Capacity.BaseLoadSteps\""
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 89,
+          "Method": "ValidateSettings",
+          "Code": "If mBaseLoadSteps <= 0 Then RaiseInvalidSearchSetting \"Capacity.BaseLoadSteps\", _"
+        },
+        {
+          "File": "src/Solver/CCapacityCalculator.cls",
+          "Line": 94,
+          "Method": "ValidateSettings",
+          "Code": "If maximumRetries < 0 Then RaiseInvalidSearchSetting \"Capacity.BaseLoadSteps\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 306,
+          "Method": "ApplySettings",
+          "Code": "mCapacityBaseLoadSteps = settings.GetLong(\"Capacity.BaseLoadSteps\", mCapacityBaseLoadSteps, False)"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.Code",
+      "Title": "Stability.Code",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 172,
+          "Method": "ValidateSettings",
+          "Code": "If code <> CODE_SP63 And code <> CODE_SP35 Then RaiseSettingInput \"Stability.Code\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 308,
+          "Method": "ApplySettings",
+          "Code": "mStabilityCode = StabilityTextSetting(settings, \"Stability.Code\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.ElementLength",
+      "Title": "Stability.ElementLength",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 174,
+          "Method": "ValidateSettings",
+          "Code": "If elementLength <= 0# Then RaiseSettingInput \"Stability.ElementLength\", _"
+        },
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 245,
+          "Method": "ValidateEffectiveLengthRange",
+          "Code": "message = settings.InputErrorMessage(\"Stability.ElementLength\", reason, correction) & \" \" & _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 309,
+          "Method": "ApplySettings",
+          "Code": "mStabilityElementLength = StabilityNumericSetting(settings, \"Stability.ElementLength\")"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 334,
+          "Method": "ApplySettings",
+          "Code": "conversionKey = \"Stability.ElementLength\""
+        }
+      ]
+    },
+    {
+      "Key": "Stability.Mu1",
+      "Title": "Stability.Mu1",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 176,
+          "Method": "ValidateSettings",
+          "Code": "If mu1 <= 0# Then RaiseSettingInput \"Stability.Mu1\", _"
+        },
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 180,
+          "Method": "ValidateSettings",
+          "Code": "ValidateEffectiveLengthRange elementLength, mu1, \"Stability.Mu1\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 310,
+          "Method": "ApplySettings",
+          "Code": "mStabilityMu1 = StabilityNumericSetting(settings, \"Stability.Mu1\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.Mu2",
+      "Title": "Stability.Mu2",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 178,
+          "Method": "ValidateSettings",
+          "Code": "If mu2 <= 0# Then RaiseSettingInput \"Stability.Mu2\", _"
+        },
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 181,
+          "Method": "ValidateSettings",
+          "Code": "ValidateEffectiveLengthRange elementLength, mu2, \"Stability.Mu2\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 311,
+          "Method": "ApplySettings",
+          "Code": "mStabilityMu2 = StabilityNumericSetting(settings, \"Stability.Mu2\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.SystemType",
+      "Title": "Stability.SystemType",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 184,
+          "Method": "ValidateSettings",
+          "Code": "RaiseSettingInput \"Stability.SystemType\", \"Неизвестная расчетная схема.\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 312,
+          "Method": "ApplySettings",
+          "Code": "mStabilitySystemType = settings.GetRequiredString(\"Stability.SystemType\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign1",
+      "Title": "Stability.ZeroMomentEccentricitySign1",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 186,
+          "Method": "ValidateSettings",
+          "Code": "If zeroMomentSign1 <> 1# And zeroMomentSign1 <> -1# Then RaiseSettingInput \"Stability.ZeroMomentEccentricitySign1\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 313,
+          "Method": "ApplySettings",
+          "Code": "mStabilityZeroSign1 = StabilityNumericSetting(settings, \"Stability.ZeroMomentEccentricitySign1\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign2",
+      "Title": "Stability.ZeroMomentEccentricitySign2",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 188,
+          "Method": "ValidateSettings",
+          "Code": "If zeroMomentSign2 <> 1# And zeroMomentSign2 <> -1# Then RaiseSettingInput \"Stability.ZeroMomentEccentricitySign2\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 314,
+          "Method": "ApplySettings",
+          "Code": "mStabilityZeroSign2 = StabilityNumericSetting(settings, \"Stability.ZeroMomentEccentricitySign2\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityMode",
+      "Title": "Stability.AccidentalEccentricityMode",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 1289,
+          "Method": "NormalizeAccidentalMode",
+          "Code": "RaiseSettingInput \"Stability.AccidentalEccentricityMode\", \"Неизвестный режим случайного эксцентриситета.\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 316,
+          "Method": "ApplySettings",
+          "Code": "mStabilityAccidentalEccentricityMode = StabilityTextSetting(settings, \"Stability.AccidentalEccentricityMode\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser1",
+      "Title": "Stability.AccidentalEccentricityUser1",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 196,
+          "Method": "ValidateSettings",
+          "Code": "RaiseSettingInput \"Stability.AccidentalEccentricityUser1\", \"Требуется модуль, а не знаковый эксцентриситет.\", _"
+        },
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 470,
+          "Method": "PreparePlanes",
+          "Code": "accidentalMode, accidentalUserValue1, \"Stability.AccidentalEccentricityUser1\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 318,
+          "Method": "ApplySettings",
+          "Code": "mStabilityAccidentalEccentricityUser1 = StabilityNumericSetting(settings, \"Stability.AccidentalEccentricityUser1\")"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 336,
+          "Method": "ApplySettings",
+          "Code": "conversionKey = \"Stability.AccidentalEccentricityUser1\""
+        }
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser2",
+      "Title": "Stability.AccidentalEccentricityUser2",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 199,
+          "Method": "ValidateSettings",
+          "Code": "RaiseSettingInput \"Stability.AccidentalEccentricityUser2\", \"Требуется модуль, а не знаковый эксцентриситет.\", _"
+        },
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 473,
+          "Method": "PreparePlanes",
+          "Code": "accidentalMode, accidentalUserValue2, \"Stability.AccidentalEccentricityUser2\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 319,
+          "Method": "ApplySettings",
+          "Code": "mStabilityAccidentalEccentricityUser2 = StabilityNumericSetting(settings, \"Stability.AccidentalEccentricityUser2\")"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 338,
+          "Method": "ApplySettings",
+          "Code": "conversionKey = \"Stability.AccidentalEccentricityUser2\""
+        }
+      ]
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityPlanes",
+      "Title": "Stability.AccidentalEccentricityPlanes",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 1303,
+          "Method": "NormalizeAccidentalPlanes",
+          "Code": "RaiseSettingInput \"Stability.AccidentalEccentricityPlanes\", \"Неизвестный выбор главных плоскостей.\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 317,
+          "Method": "ApplySettings",
+          "Code": "mStabilityAccidentalEccentricityPlanes = StabilityTextSetting(settings, \"Stability.AccidentalEccentricityPlanes\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.PhiLMode",
+      "Title": "Stability.PhiLMode",
+      "Paragraphs": 9,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 192,
+          "Method": "ValidateSettings",
+          "Code": "RaiseSettingInput \"Stability.PhiLMode\", \"Неизвестный режим учета длительности.\", \"Выберите Auto или PhiL2.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 315,
+          "Method": "ApplySettings",
+          "Code": "mStabilityPhiLMode = StabilityTextSetting(settings, \"Stability.PhiLMode\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.SP63.Ks",
+      "Title": "Stability.SP63.Ks",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 201,
+          "Method": "ValidateSettings",
+          "Code": "If sp63Ks <= 0# Then RaiseSettingInput \"Stability.SP63.Ks\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 320,
+          "Method": "ApplySettings",
+          "Code": "mStabilitySP63Ks = StabilityNumericSetting(settings, \"Stability.SP63.Ks\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMin",
+      "Title": "Stability.SP63.DeltaEMin",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 203,
+          "Method": "ValidateSettings",
+          "Code": "If sp63DeltaEMin < 0# Then RaiseSettingInput \"Stability.SP63.DeltaEMin\", _"
+        },
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 208,
+          "Method": "ValidateSettings",
+          "Code": "RaiseSettingInput \"Stability.SP63.DeltaEMin\", \"Нижняя граница больше верхней.\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 321,
+          "Method": "ApplySettings",
+          "Code": "mStabilitySP63DeltaEMin = StabilityNumericSetting(settings, \"Stability.SP63.DeltaEMin\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMax",
+      "Title": "Stability.SP63.DeltaEMax",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 205,
+          "Method": "ValidateSettings",
+          "Code": "If sp63DeltaEMax < 0# Then RaiseSettingInput \"Stability.SP63.DeltaEMax\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 322,
+          "Method": "ApplySettings",
+          "Code": "mStabilitySP63DeltaEMax = StabilityNumericSetting(settings, \"Stability.SP63.DeltaEMax\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.SP35.PhiP",
+      "Title": "Stability.SP35.PhiP",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 210,
+          "Method": "ValidateSettings",
+          "Code": "If sp35PhiP <= 0# Then RaiseSettingInput \"Stability.SP35.PhiP\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 323,
+          "Method": "ApplySettings",
+          "Code": "mStabilitySP35PhiP = StabilityNumericSetting(settings, \"Stability.SP35.PhiP\")"
+        }
+      ]
+    },
+    {
+      "Key": "Stability.SP35.NOverNcrLimit",
+      "Title": "Stability.SP35.NOverNcrLimit",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены чтение параметра, главные плоскости, выбор длины/ветви, ограничения и влияние на усилия.",
+      "SourceFiles": [
+        "src/Stability/CStabilityCalculator.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Stability/CStabilityCalculator.cls",
+          "Line": 212,
+          "Method": "ValidateSettings",
+          "Code": "If sp35NOverNcrLimit <= 0# Then RaiseSettingInput \"Stability.SP35.NOverNcrLimit\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 324,
+          "Method": "ApplySettings",
+          "Code": "mStabilitySP35NOverNcrLimit = StabilityNumericSetting(settings, \"Stability.SP35.NOverNcrLimit\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Code",
+      "Title": "SLS.Crack.Code",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 268,
+          "Method": "ApplySettings",
+          "Code": "mStandardCode = settings.GetRequiredChoice(\"SLS.Crack.Code\", Array(\"SP63\", \"SP35\"))"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1127,
+          "Method": "ValidateSettings",
+          "Code": "Case Else: RaiseInvalidSetting 3786, \"SLS.Crack.Code\", \"Неизвестная методика ширины трещин.\", \"Выберите SP63 или SP35.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 258,
+          "Method": "ApplySettings",
+          "Code": "mCrackStandardCode = settings.GetRequiredChoice(\"SLS.Crack.Code\", Array(\"SP63\", \"SP35\")) ' Параметры трещин обязательны: пустая ячейка или отсутствующий ключ должны дать ошибку, а не изменить методику подстановкой начального значения."
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Allowable",
+      "Title": "SLS.Crack.Allowable",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 269,
+          "Method": "ApplySettings",
+          "Code": "mAllowableCrackWidth = settings.GetRequiredDouble(\"SLS.Crack.Allowable\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1129,
+          "Method": "ValidateSettings",
+          "Code": "If mAllowableCrackWidth <= 0# Then RaiseInvalidSetting 3710, \"SLS.Crack.Allowable\", \"Допустимая ширина должна быть положительной.\", \"Введите ширину больше нуля в единицах INPUT Length.\", settings"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1181,
+          "Method": "ValidateSettings",
+          "Code": "If mAllowableCrackWidth <= 0# Then RaiseInvalidSetting 3710, \"SLS.Crack.Allowable\", \"Допустимая ширина должна быть положительной.\", \"Введите ширину больше нуля в единицах INPUT Length.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 259,
+          "Method": "ApplySettings",
+          "Code": "mCrackAllowable = settings.GetRequiredDouble(\"SLS.Crack.Allowable\")"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 326,
+          "Method": "ApplySettings",
+          "Code": "conversionKey = \"SLS.Crack.Allowable\""
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.InitiationSolutionStrategy",
+      "Title": "SLS.Crack.InitiationSolutionStrategy",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackFormationCalculator.cls",
+          "Line": 122,
+          "Method": "ApplySettings",
+          "Code": "mCrackFormationSolutionStrategy = settings.GetRequiredString(\"SLS.Crack.InitiationSolutionStrategy\")"
+        },
+        {
+          "File": "src/Crack/CCrackFormationCalculator.cls",
+          "Line": 1894,
+          "Method": "NormalizeCrackFormationSolutionStrategy",
+          "Code": "If Not settings Is Nothing Then message = settings.InputErrorMessage(\"SLS.Crack.InitiationSolutionStrategy\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 260,
+          "Method": "ApplySettings",
+          "Code": "mCrackFormationSolutionStrategy = settings.GetRequiredString(\"SLS.Crack.InitiationSolutionStrategy\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.ToleranceLambda",
+      "Title": "SLS.Crack.ToleranceLambda",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackFormationCalculator.cls",
+          "Line": 130,
+          "Method": "ApplySettings",
+          "Code": "mLambdaTolerance = settings.GetRequiredDouble(\"SLS.Crack.ToleranceLambda\")"
+        },
+        {
+          "File": "src/Crack/CCrackFormationCalculator.cls",
+          "Line": 306,
+          "Method": "ValidateSearchSettings",
+          "Code": "If Not settings Is Nothing Then message = settings.InputErrorMessage(\"SLS.Crack.ToleranceLambda\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 264,
+          "Method": "ApplySettings",
+          "Code": "mCrackToleranceLambda = settings.GetRequiredDouble(\"SLS.Crack.ToleranceLambda\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.TensionZoneMode",
+      "Title": "SLS.Crack.TensionZoneMode",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 280,
+          "Method": "ApplySettings",
+          "Code": "mTensionZoneMode = settings.GetRequiredString(\"SLS.Crack.TensionZoneMode\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1168,
+          "Method": "ValidateSettings",
+          "Code": "Case Else: RaiseInvalidSetting 3708, \"SLS.Crack.TensionZoneMode\", \"Неизвестный способ выбора растянутой зоны.\", \"Выберите Effective или FullTension.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 279,
+          "Method": "ApplySettings",
+          "Code": "mCrackTensionZoneMode = settings.GetRequiredString(\"SLS.Crack.TensionZoneMode\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.CoverDistanceMode",
+      "Title": "SLS.Crack.CoverDistanceMode",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 281,
+          "Method": "ApplySettings",
+          "Code": "mCoverMode = settings.GetRequiredString(\"SLS.Crack.CoverDistanceMode\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1177,
+          "Method": "ValidateSettings",
+          "Code": "RaiseInvalidSetting 3721, \"SLS.Crack.CoverDistanceMode\", \"Неизвестный способ определения расстояния до границы бетона.\", \"Выберите NearestContour или GlobalExtreme.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 280,
+          "Method": "ApplySettings",
+          "Code": "mCrackCoverDistanceMode = settings.GetRequiredString(\"SLS.Crack.CoverDistanceMode\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Phi1",
+      "Title": "SLS.Crack.Phi1",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 282,
+          "Method": "ApplySettings",
+          "Code": "mPhi1Input = settings.GetRequiredDouble(\"SLS.Crack.Phi1\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1182,
+          "Method": "ValidateSettings",
+          "Code": "If mPhi1Input <= 0# Then RaiseInvalidSetting 3717, \"SLS.Crack.Phi1\", \"Коэффициент должен быть положительным.\", \"Введите коэффициент больше нуля.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 281,
+          "Method": "ApplySettings",
+          "Code": "mCrackPhi1 = settings.GetRequiredDouble(\"SLS.Crack.Phi1\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Phi2",
+      "Title": "SLS.Crack.Phi2",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 283,
+          "Method": "ApplySettings",
+          "Code": "mPhi2Input = settings.GetRequiredDouble(\"SLS.Crack.Phi2\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1183,
+          "Method": "ValidateSettings",
+          "Code": "If mPhi2Input <= 0# Then RaiseInvalidSetting 3718, \"SLS.Crack.Phi2\", \"Коэффициент должен быть положительным.\", \"Введите коэффициент больше нуля.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 282,
+          "Method": "ApplySettings",
+          "Code": "mCrackPhi2 = settings.GetRequiredDouble(\"SLS.Crack.Phi2\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Phi3Mode",
+      "Title": "SLS.Crack.Phi3Mode",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 284,
+          "Method": "ApplySettings",
+          "Code": "mPhi3Mode = settings.GetRequiredString(\"SLS.Crack.Phi3Mode\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1162,
+          "Method": "ValidateSettings",
+          "Code": "RaiseInvalidSetting 3709, \"SLS.Crack.Phi3Mode\", \"Неизвестный режим коэффициента phi3.\", \"Выберите User или Auto.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 283,
+          "Method": "ApplySettings",
+          "Code": "mCrackPhi3Mode = settings.GetRequiredString(\"SLS.Crack.Phi3Mode\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.Phi3",
+      "Title": "SLS.Crack.Phi3",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 285,
+          "Method": "ApplySettings",
+          "Code": "mPhi3Input = settings.GetRequiredDouble(\"SLS.Crack.Phi3\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1184,
+          "Method": "ValidateSettings",
+          "Code": "If mPhi3Input <= 0# Then RaiseInvalidSetting 3719, \"SLS.Crack.Phi3\", \"Коэффициент должен быть положительным.\", \"Введите коэффициент больше нуля.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 284,
+          "Method": "ApplySettings",
+          "Code": "mCrackPhi3 = settings.GetRequiredDouble(\"SLS.Crack.Phi3\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.PsiMode",
+      "Title": "SLS.Crack.PsiMode",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 278,
+          "Method": "ApplySettings",
+          "Code": "mPsiMode = settings.GetRequiredString(\"SLS.Crack.PsiMode\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1143,
+          "Method": "ValidateSettings",
+          "Code": "RaiseInvalidSetting 3707, \"SLS.Crack.PsiMode\", \"Неизвестный режим коэффициента psi_s.\", \"Выберите User, Auto или AlwaysCalc.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 277,
+          "Method": "ApplySettings",
+          "Code": "mCrackPsiMode = settings.GetRequiredString(\"SLS.Crack.PsiMode\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SigmaSCrcAveragingMode",
+      "Title": "SLS.Crack.SigmaSCrcAveragingMode",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 279,
+          "Method": "ApplySettings",
+          "Code": "mSigmaSCrcAveragingMode = settings.GetRequiredString(\"SLS.Crack.SigmaSCrcAveragingMode\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1152,
+          "Method": "ValidateSettings",
+          "Code": "RaiseInvalidSetting 3736, \"SLS.Crack.SigmaSCrcAveragingMode\", _"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 278,
+          "Method": "ApplySettings",
+          "Code": "mCrackSigmaSCrcAveragingMode = settings.GetRequiredString(\"SLS.Crack.SigmaSCrcAveragingMode\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.PsiS",
+      "Title": "SLS.Crack.PsiS",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 286,
+          "Method": "ApplySettings",
+          "Code": "mPsiSInput = settings.GetRequiredDouble(\"SLS.Crack.PsiS\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1185,
+          "Method": "ValidateSettings",
+          "Code": "If mPsiSInput <= 0# Then RaiseInvalidSetting 3720, \"SLS.Crack.PsiS\", \"Коэффициент должен быть положительным.\", \"Введите коэффициент больше нуля.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 285,
+          "Method": "ApplySettings",
+          "Code": "mCrackPsiS = settings.GetRequiredDouble(\"SLS.Crack.PsiS\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.GroupGapTolerance",
+      "Title": "SLS.Crack.SP35.GroupGapTolerance",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 271,
+          "Method": "ApplySettings",
+          "Code": "mSP35GroupGapTolerance = settings.GetRequiredDouble(\"SLS.Crack.SP35.GroupGapTolerance\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1193,
+          "Method": "ValidateSP35Settings",
+          "Code": "If mSP35GroupGapTolerance < 0# Then RaiseInvalidSetting 3787, \"SLS.Crack.SP35.GroupGapTolerance\", \"Чистый зазор не может быть отрицательным.\", \"Введите неотрицательную длину в единицах INPUT Length.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 270,
+          "Method": "ApplySettings",
+          "Code": "mCrackSP35GroupGap = settings.GetRequiredDouble(\"SLS.Crack.SP35.GroupGapTolerance\")"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 329,
+          "Method": "ApplySettings",
+          "Code": "conversionKey = \"SLS.Crack.SP35.GroupGapTolerance\""
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.RowTolerance",
+      "Title": "SLS.Crack.SP35.RowTolerance",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 272,
+          "Method": "ApplySettings",
+          "Code": "mSP35RowTolerance = settings.GetRequiredDouble(\"SLS.Crack.SP35.RowTolerance\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1194,
+          "Method": "ValidateSP35Settings",
+          "Code": "If mSP35RowTolerance < 0# Then RaiseInvalidSetting 3788, \"SLS.Crack.SP35.RowTolerance\", \"Допуск ряда не может быть отрицательным.\", \"Введите неотрицательную длину в единицах INPUT Length.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 271,
+          "Method": "ApplySettings",
+          "Code": "mCrackSP35RowTolerance = settings.GetRequiredDouble(\"SLS.Crack.SP35.RowTolerance\")"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 331,
+          "Method": "ApplySettings",
+          "Code": "conversionKey = \"SLS.Crack.SP35.RowTolerance\""
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.NeighborRatioLimit",
+      "Title": "SLS.Crack.SP35.NeighborRatioLimit",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 273,
+          "Method": "ApplySettings",
+          "Code": "mSP35NeighborRatioLimit = settings.GetRequiredDouble(\"SLS.Crack.SP35.NeighborRatioLimit\")"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1196,
+          "Method": "ValidateSP35Settings",
+          "Code": "RaiseInvalidSetting 3792, \"SLS.Crack.SP35.NeighborRatioLimit\", \"Порог отношения t/L должен быть от 0 до 1.\", \"Введите число от 0 до 1; начальное значение 0.2.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 272,
+          "Method": "ApplySettings",
+          "Code": "mCrackSP35NeighborRatioLimit = settings.GetRequiredDouble(\"SLS.Crack.SP35.NeighborRatioLimit\")"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.RadiusDiameterMode",
+      "Title": "SLS.Crack.SP35.RadiusDiameterMode",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 274,
+          "Method": "ApplySettings",
+          "Code": "mSP35RadiusDiameterMode = settings.GetRequiredChoice(\"SLS.Crack.SP35.RadiusDiameterMode\", Array(\"Max\", \"Min\", \"Average\"))"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1201,
+          "Method": "ValidateSP35Settings",
+          "Code": "Case Else: RaiseInvalidSetting 3789, \"SLS.Crack.SP35.RadiusDiameterMode\", \"Неизвестный способ выбора диаметра радиуса.\", \"Выберите Max, Min или Average.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 273,
+          "Method": "ApplySettings",
+          "Code": "mCrackSP35DiameterMode = settings.GetRequiredChoice(\"SLS.Crack.SP35.RadiusDiameterMode\", Array(\"Max\", \"Min\", \"Average\"))"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.InteractionRadiusMode",
+      "Title": "SLS.Crack.SP35.InteractionRadiusMode",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 275,
+          "Method": "ApplySettings",
+          "Code": "mSP35InteractionRadiusMode = settings.GetRequiredChoice(\"SLS.Crack.SP35.InteractionRadiusMode\", Array(\"3d\", \"5d\", \"6d\"))"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1205,
+          "Method": "ValidateSP35Settings",
+          "Code": "Case Else: RaiseInvalidSetting 3790, \"SLS.Crack.SP35.InteractionRadiusMode\", \"Неизвестный радиус взаимодействия.\", \"Выберите 3d, 5d или 6d.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 274,
+          "Method": "ApplySettings",
+          "Code": "mCrackSP35RadiusMode = settings.GetRequiredChoice(\"SLS.Crack.SP35.InteractionRadiusMode\", Array(\"3d\", \"5d\", \"6d\"))"
+        }
+      ]
+    },
+    {
+      "Key": "SLS.Crack.SP35.RebarProfile",
+      "Title": "SLS.Crack.SP35.RebarProfile",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены методика СП, применимость настройки, подготовка области и использование в формуле/поиске.",
+      "SourceFiles": [
+        "src/Crack/CCrackFormationCalculator.cls",
+        "src/Crack/CCrackWidthCalculator.cls",
+        "src/Crack/CSP35CrackData.cls",
+        "src/Batch/CBatchSectionCalculator.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 276,
+          "Method": "ApplySettings",
+          "Code": "mSP35RebarProfile = settings.GetRequiredChoice(\"SLS.Crack.SP35.RebarProfile\", Array(\"Periodic\", \"Smooth\"))"
+        },
+        {
+          "File": "src/Crack/CCrackWidthCalculator.cls",
+          "Line": 1210,
+          "Method": "ValidateSP35Settings",
+          "Code": "Case Else: RaiseInvalidSetting 3791, \"SLS.Crack.SP35.RebarProfile\", \"Неизвестный профиль арматуры.\", \"Выберите Periodic или Smooth.\", settings"
+        },
+        {
+          "File": "src/Batch/CBatchSectionCalculator.cls",
+          "Line": 275,
+          "Method": "ApplySettings",
+          "Code": "mCrackSP35RebarProfile = settings.GetRequiredChoice(\"SLS.Crack.SP35.RebarProfile\", Array(\"Periodic\", \"Smooth\"))"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Common.ConcreteLayer",
+      "Title": "AutoCAD.Common.ConcreteLayer",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 137,
+          "Method": "MissingDrawingLayerNames",
+          "Code": "For Each key In Array(\"AutoCAD.Common.ConcreteLayer\", \"AutoCAD.Common.RebarLayer\")"
+        },
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 400,
+          "Method": "ValidateContourLayerMapping",
+          "Code": "keys = Array(\"AutoCAD.Common.ConcreteLayer\", \"AutoCAD.Common.RebarLayer\", \"AutoCAD.Common.SectionContourLayer\", \"AutoCAD.Common.OpeningContourLayer\")"
+        },
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 829,
+          "Method": "ValidateImportedModel",
+          "Code": "MissingImportedMaterialMessage(\"AutoCAD.Common.ConcreteLayer\", \"После чтения объектов и фильтрации по площади не осталось бетонных Region.\", settings)"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1445,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": "If cleanupLayers.Exists(options.ConcreteLayer) Then RaiseGeometryLayerCollision settings, \"AutoCAD.Common.ConcreteLayer\""
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1455,
+          "Method": "ReadAutoCADCommonMaterialLayers",
+          "Code": "concreteLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Common.ConcreteLayer\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Common.RebarLayer",
+      "Title": "AutoCAD.Common.RebarLayer",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 137,
+          "Method": "MissingDrawingLayerNames",
+          "Code": "For Each key In Array(\"AutoCAD.Common.ConcreteLayer\", \"AutoCAD.Common.RebarLayer\")"
+        },
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 400,
+          "Method": "ValidateContourLayerMapping",
+          "Code": "keys = Array(\"AutoCAD.Common.ConcreteLayer\", \"AutoCAD.Common.RebarLayer\", \"AutoCAD.Common.SectionContourLayer\", \"AutoCAD.Common.OpeningContourLayer\")"
+        },
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 831,
+          "Method": "ValidateImportedModel",
+          "Code": "MissingImportedMaterialMessage(\"AutoCAD.Common.RebarLayer\", \"После чтения объектов и фильтрации по площади не осталось арматурных Region.\", settings)"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1446,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": "If cleanupLayers.Exists(options.RebarLayer) Then RaiseGeometryLayerCollision settings, \"AutoCAD.Common.RebarLayer\""
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1456,
+          "Method": "ReadAutoCADCommonMaterialLayers",
+          "Code": "rebarLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Common.RebarLayer\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1458,
+          "Method": "ReadAutoCADCommonMaterialLayers",
+          "Code": "settings.InputErrorMessage(\"AutoCAD.Common.RebarLayer\", \"Слои бетона и арматуры совпадают; тип Region нельзя определить однозначно.\", _"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Common.SectionContourLayer",
+      "Title": "AutoCAD.Common.SectionContourLayer",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 187,
+          "Method": "ImportConfiguredModelSpace",
+          "Code": "contourLayer = OptionalContourLayer(settings, \"AutoCAD.Common.SectionContourLayer\") ' Точные наружные контуры и отверстия необязательны при наличии готовой сетки. Заданное имя слоя проверяется; пустой существующий слой не превращает необязательный контур в требование."
+        },
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 400,
+          "Method": "ValidateContourLayerMapping",
+          "Code": "keys = Array(\"AutoCAD.Common.ConcreteLayer\", \"AutoCAD.Common.RebarLayer\", \"AutoCAD.Common.SectionContourLayer\", \"AutoCAD.Common.OpeningContourLayer\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 747,
+          "Method": "ReadGeometryExportSettings",
+          "Code": "If hasOuter Then options.ContourLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Common.SectionContourLayer\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1436,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".ContourLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Common.SectionContourLayer\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Common.OpeningContourLayer",
+      "Title": "AutoCAD.Common.OpeningContourLayer",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 188,
+          "Method": "ImportConfiguredModelSpace",
+          "Code": "openingLayer = OptionalContourLayer(settings, \"AutoCAD.Common.OpeningContourLayer\")"
+        },
+        {
+          "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+          "Line": 400,
+          "Method": "ValidateContourLayerMapping",
+          "Code": "keys = Array(\"AutoCAD.Common.ConcreteLayer\", \"AutoCAD.Common.RebarLayer\", \"AutoCAD.Common.SectionContourLayer\", \"AutoCAD.Common.OpeningContourLayer\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 748,
+          "Method": "ReadGeometryExportSettings",
+          "Code": "If hasOpening Then options.OpeningContourLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Common.OpeningContourLayer\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1437,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".OpeningContourLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Common.OpeningContourLayer\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.NeutralLineEnabled",
+      "Title": "AutoCAD.Export.NeutralLineEnabled",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1429,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".NeutralLineEnabled = settings.GetRequiredBoolean(\"AutoCAD.Export.NeutralLineEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.PrincipalAxesMode",
+      "Title": "AutoCAD.Export.PrincipalAxesMode",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1500,
+          "Method": "AutoCADPrincipalAxesMode",
+          "Code": "rawValue = settings.GetRequiredString(\"AutoCAD.Export.PrincipalAxesMode\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1502,
+          "Method": "AutoCADPrincipalAxesMode",
+          "Code": "AutoCADPrincipalAxesMode = NormalizePrincipalAxesMode(rawValue, \"AutoCAD.Export.PrincipalAxesMode\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1506,
+          "Method": "AutoCADPrincipalAxesMode",
+          "Code": "settings.InputErrorMessage(\"AutoCAD.Export.PrincipalAxesMode\", \"Вариант главных осей не распознан.\", _"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.LoadPointEnabled",
+      "Title": "AutoCAD.Export.LoadPointEnabled",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1431,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".LoadPointEnabled = settings.GetRequiredBoolean(\"AutoCAD.Export.LoadPointEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.ContourEnabled",
+      "Title": "AutoCAD.Export.ContourEnabled",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 740,
+          "Method": "ReadGeometryExportSettings",
+          "Code": "options.ContourEnabled = settings.GetRequiredBoolean(\"AutoCAD.Export.ContourEnabled\")"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1432,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".ContourEnabled = settings.GetRequiredBoolean(\"AutoCAD.Export.ContourEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.ContourFormat",
+      "Title": "AutoCAD.Export.ContourFormat",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 742,
+          "Method": "ReadGeometryExportSettings",
+          "Code": "options.ContourFormat = settings.GetRequiredChoice(\"AutoCAD.Export.ContourFormat\", Array(\"Region\", \"Polyline\"))"
+        },
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1440,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".ContourFormat = settings.GetRequiredChoice(\"AutoCAD.Export.ContourFormat\", Array(\"Region\", \"Polyline\"))"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.ExportCrackInteractionContour",
+      "Title": "AutoCAD.Export.ExportCrackInteractionContour",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1433,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".ExportCrackInteractionContour = settings.GetRequiredBoolean(\"AutoCAD.Export.ExportCrackInteractionContour\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.LabelMode",
+      "Title": "AutoCAD.Export.LabelMode",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1428,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".IncludeElementNames = AutoCADLabelModeIncludesNames(settings.GetRequiredChoice(\"AutoCAD.Export.LabelMode\", Array(\"ValuesOnly\", \"NamesAndValues\")))"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Export.CrackInteractionLayer",
+      "Title": "AutoCAD.Export.CrackInteractionLayer",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1441,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": "If forCleanup Or .ExportCrackInteractionContour Then .CrackInteractionLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Export.CrackInteractionLayer\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteTension",
+      "Title": "AutoCAD.Layer.ConcreteTension",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1418,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".ConcreteTensionLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Layer.ConcreteTension\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteCompression",
+      "Title": "AutoCAD.Layer.ConcreteCompression",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1419,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".ConcreteCompressionLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Layer.ConcreteCompression\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarTension",
+      "Title": "AutoCAD.Layer.RebarTension",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1420,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".RebarTensionLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Layer.RebarTension\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarCompression",
+      "Title": "AutoCAD.Layer.RebarCompression",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1421,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".RebarCompressionLayer = RequiredAutoCADLayerName(settings, \"AutoCAD.Layer.RebarCompression\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteTension",
+      "Title": "AutoCAD.Color.ConcreteTension",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1423,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".ConcreteTensionColor = RequiredAutoCADColor(settings, \"AutoCAD.Color.ConcreteTension\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteCompression",
+      "Title": "AutoCAD.Color.ConcreteCompression",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1424,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".ConcreteCompressionColor = RequiredAutoCADColor(settings, \"AutoCAD.Color.ConcreteCompression\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.RebarTension",
+      "Title": "AutoCAD.Color.RebarTension",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1425,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".RebarTensionColor = RequiredAutoCADColor(settings, \"AutoCAD.Color.RebarTension\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.RebarCompression",
+      "Title": "AutoCAD.Color.RebarCompression",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1426,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".RebarCompressionColor = RequiredAutoCADColor(settings, \"AutoCAD.Color.RebarCompression\")"
+        }
+      ]
+    },
+    {
+      "Key": "AutoCAD.Color.Neutral",
+      "Title": "AutoCAD.Color.Neutral",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены слои, RGB, WCS, единицы мм, применимость экспорта и сохранение геометрии при очистке.",
+      "SourceFiles": [
+        "src/Excel/CAutoCADSectionModelImporter.cls",
+        "src/Excel/CAutoCADContourReader.cls",
+        "src/Excel/modAutoCADStressExport.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modAutoCADStressExport.bas",
+          "Line": 1427,
+          "Method": "ReadAutoCADExportSettings",
+          "Code": ".NeutralColor = RequiredAutoCADColor(settings, \"AutoCAD.Color.Neutral\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.Enabled",
+      "Title": "Plot.Enabled",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 101,
+          "Method": "UpdateSectionPlotForWorkbook",
+          "Code": "If Not settings.GetRequiredBoolean(\"Plot.Enabled\") Then Exit Sub"
+        },
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 198,
+          "Method": "UpdateSectionGeometryPreviewForWorkbook",
+          "Code": "If Not settings.GetRequiredBoolean(\"Plot.Enabled\") Then Exit Sub"
+        },
+        {
+          "File": "src/Excel/modCalculationSnapshot.bas",
+          "Line": 245,
+          "Method": "TryUpdateCalculatedSnapshotPlot",
+          "Code": "If Not settings.GetRequiredBoolean(\"Plot.Enabled\") Then Exit Function"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.AutoUpdateAfterCalculation",
+      "Title": "Plot.AutoUpdateAfterCalculation",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modCalculationSnapshot.bas",
+          "Line": 246,
+          "Method": "TryUpdateCalculatedSnapshotPlot",
+          "Code": "If Not settings.GetRequiredBoolean(\"Plot.AutoUpdateAfterCalculation\") Then Exit Function"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.ResultGradient",
+      "Title": "Plot.ResultGradient",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 155,
+          "Method": "Draw",
+          "Code": "mResultGradientEnabled = settings.GetRequiredBoolean(\"Plot.ResultGradient\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.ResultLabelsEnabled",
+      "Title": "Plot.ResultLabelsEnabled",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 179,
+          "Method": "Draw",
+          "Code": "mResultLabelsEnabled = settings.GetRequiredBoolean(\"Plot.ResultLabelsEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.ResultLabelSpacing",
+      "Title": "Plot.ResultLabelSpacing",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 182,
+          "Method": "Draw",
+          "Code": "mResultLabelSpacing = settings.GetRequiredDouble(\"Plot.ResultLabelSpacing\")"
+        },
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 184,
+          "Method": "Draw",
+          "Code": "settings.InputErrorMessage(\"Plot.ResultLabelSpacing\", \"Шаг подписей должен быть больше нуля.\", \"Введите положительное расстояние в мм.\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.NeutralLineEnabled",
+      "Title": "Plot.NeutralLineEnabled",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 178,
+          "Method": "Draw",
+          "Code": "mNeutralLineEnabled = settings.GetRequiredBoolean(\"Plot.NeutralLineEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.PrincipalAxesMode",
+      "Title": "Plot.PrincipalAxesMode",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 1365,
+          "Method": "PlotPrincipalAxesMode",
+          "Code": "rawValue = settings.GetRequiredString(\"Plot.PrincipalAxesMode\")"
+        },
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 1382,
+          "Method": "NormalizePrincipalAxesMode",
+          "Code": "settings.InputErrorMessage(\"Plot.PrincipalAxesMode\", \"Режим главных осей не распознан.\", \"Выберите Transformed, Concrete или None.\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.LoadApplicationPointEnabled",
+      "Title": "Plot.LoadApplicationPointEnabled",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 189,
+          "Method": "Draw",
+          "Code": "mLoadPointEnabled = settings.GetRequiredBoolean(\"Plot.LoadApplicationPointEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.AxisLabelsEnabled",
+      "Title": "Plot.AxisLabelsEnabled",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 163,
+          "Method": "Draw",
+          "Code": "mAxisLabelsEnabled = settings.GetRequiredBoolean(\"Plot.AxisLabelsEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.AxisLabelsFontSize",
+      "Title": "Plot.AxisLabelsFontSize",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 165,
+          "Method": "Draw",
+          "Code": "mAxisLabelFontSize = settings.GetRequiredDouble(\"Plot.AxisLabelsFontSize\")"
+        },
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 167,
+          "Method": "Draw",
+          "Code": "settings.InputErrorMessage(\"Plot.AxisLabelsFontSize\", \"Высота подписей осей должна быть больше нуля.\", \"Введите положительное число в пунктах Excel.\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.ContourEnabled",
+      "Title": "Plot.ContourEnabled",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 169,
+          "Method": "Draw",
+          "Code": "mContourEnabled = settings.GetRequiredBoolean(\"Plot.ContourEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.LegendEnabled",
+      "Title": "Plot.LegendEnabled",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 180,
+          "Method": "Draw",
+          "Code": "mLegendEnabled = settings.GetRequiredBoolean(\"Plot.LegendEnabled\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.LegendMode",
+      "Title": "Plot.LegendMode",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 156,
+          "Method": "Draw",
+          "Code": "mLegendMode = settings.GetRequiredChoice(\"Plot.LegendMode\", Array(\"Separate\", \"Common\"))"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.Color.RebarCompression",
+      "Title": "Plot.Color.RebarCompression",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 157,
+          "Method": "Draw",
+          "Code": "mRebarCompressionColor = settings.GetRequiredRgbColor(\"Plot.Color.RebarCompression\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.Color.RebarTension",
+      "Title": "Plot.Color.RebarTension",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 158,
+          "Method": "Draw",
+          "Code": "mRebarTensionColor = settings.GetRequiredRgbColor(\"Plot.Color.RebarTension\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.Color.ConcreteCompression",
+      "Title": "Plot.Color.ConcreteCompression",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 160,
+          "Method": "Draw",
+          "Code": "mConcreteCompressionColor = settings.GetRequiredRgbColor(\"Plot.Color.ConcreteCompression\")"
+        }
+      ]
+    },
+    {
+      "Key": "Plot.Color.ConcreteTension",
+      "Title": "Plot.Color.ConcreteTension",
+      "Paragraphs": 1,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/CSectionPlotter.cls",
+          "Line": 161,
+          "Method": "Draw",
+          "Code": "mConcreteTensionColor = settings.GetRequiredRgbColor(\"Plot.Color.ConcreteTension\")"
+        }
+      ]
+    },
+    {
+      "Key": "Enabled",
+      "Title": "Настройки оформления схемы: Enabled",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Placement",
+      "Title": "Настройки оформления схемы: Placement",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Offset",
+      "Title": "Настройки оформления схемы: Offset",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "LineEnabled",
+      "Title": "Настройки оформления схемы: LineEnabled",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "LineWeight",
+      "Title": "Настройки оформления схемы: LineWeight",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "ExtensionLineWeight",
+      "Title": "Настройки оформления схемы: ExtensionLineWeight",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "TextUnits",
+      "Title": "Настройки оформления схемы: TextUnits",
+      "Paragraphs": 7,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "TextHeight",
+      "Title": "Настройки оформления схемы: TextHeight",
+      "Paragraphs": 6,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "TextGap",
+      "Title": "Настройки оформления схемы: TextGap",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "ArrowType",
+      "Title": "Настройки оформления схемы: ArrowType",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "ArrowSize",
+      "Title": "Настройки оформления схемы: ArrowSize",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Color",
+      "Title": "Настройки оформления схемы: Color",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "ExtensionLineColor",
+      "Title": "Настройки оформления схемы: ExtensionLineColor",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "ContourLineWeight",
+      "Title": "Настройки оформления схемы: ContourLineWeight",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены включение, условия чтения, единицы/масштаб, элементы оформления и автоматическое/ручное обновление.",
+      "SourceFiles": [
+        "src/Excel/CSectionPlotter.cls",
+        "src/Excel/CPlotAnnotationLayout.cls",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Concrete.R.ULS(I)",
+      "Title": "Concrete.R.ULS(I)",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Concrete.R.SLS(II)",
+      "Title": "Concrete.R.SLS(II)",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Concrete.Rb.mc2",
+      "Title": "Concrete.Rb.mc2",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Materials/CConcreteMaterialParameters.cls",
+          "Line": 44,
+          "Method": "LoadFromSettings",
+          "Code": "mRbMc2 = settings.GetRequiredDouble(\"Concrete.Rb.mc2\")"
+        },
+        {
+          "File": "src/Materials/CConcreteMaterialParameters.cls",
+          "Line": 74,
+          "Method": "Validate",
+          "Code": "RequirePositive settings, \"Concrete.Rb.mc2\", mRbMc2, 3203"
+        }
+      ]
+    },
+    {
+      "Key": "Concrete.E",
+      "Title": "Concrete.E",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Concrete.TwoLine.Eb1Red",
+      "Title": "Concrete.TwoLine.Eb1Red",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Concrete.ThreeLine.Eb0",
+      "Title": "Concrete.ThreeLine.Eb0",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Concrete.TwoThreeLine.Eb2",
+      "Title": "Concrete.TwoThreeLine.Eb2",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Steel.R.ULS(I)",
+      "Title": "Steel.R.ULS(I)",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Steel.R.SLS(II)",
+      "Title": "Steel.R.SLS(II)",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Steel.E",
+      "Title": "Steel.E",
+      "Paragraphs": 4,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": []
+    },
+    {
+      "Key": "Steel.TwoLine.Es2",
+      "Title": "Steel.TwoLine.Es2",
+      "Paragraphs": 3,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Materials/CSteelMaterialParameters.cls",
+          "Line": 46,
+          "Method": "LoadFromSettings",
+          "Code": "mTwoLineEs2 = settings.GetRequiredDouble(\"Steel.TwoLine.Es2\")"
+        },
+        {
+          "File": "src/Materials/CSteelMaterialParameters.cls",
+          "Line": 70,
+          "Method": "Validate",
+          "Code": "RequirePositive settings, \"Steel.TwoLine.Es2\", mTwoLineEs2, 3207"
+        },
+        {
+          "File": "src/Materials/CMaterialModelProvider.cls",
+          "Line": 251,
+          "Method": "BuildSteelTwoLine",
+          "Code": "vbNullString, \"Steel.Rs.\" & suffix & \";Steel.Es\", \"Steel.TwoLine.Es2\"), \"арматуры TwoLine\""
+        }
+      ]
+    },
+    {
+      "Key": "Steel.ThreeLine.Es2",
+      "Title": "Steel.ThreeLine.Es2",
+      "Paragraphs": 2,
+      "Reviewed": true,
+      "Check": "Проверены сопротивления/модули, индексы деформаций и использование в выбранной диаграмме.",
+      "SourceFiles": [
+        "src/Materials/CConcreteMaterialParameters.cls",
+        "src/Materials/CSteelMaterialParameters.cls",
+        "src/Materials/CMaterialModelProvider.cls",
+        "src/Materials/CMaterialDiagram.cls"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Materials/CSteelMaterialParameters.cls",
+          "Line": 48,
+          "Method": "LoadFromSettings",
+          "Code": "mThreeLineEs2 = settings.GetRequiredDouble(\"Steel.ThreeLine.Es2\")"
+        },
+        {
+          "File": "src/Materials/CSteelMaterialParameters.cls",
+          "Line": 72,
+          "Method": "Validate",
+          "Code": "RequirePositive settings, \"Steel.ThreeLine.Es2\", mThreeLineEs2, 3209"
+        },
+        {
+          "File": "src/Materials/CMaterialModelProvider.cls",
+          "Line": 292,
+          "Method": "BuildSteelThreeLine",
+          "Code": "compressionKeys, vbNullString, tensionKeys, tensionKeys, tensionKeys, \"Steel.ThreeLine.Es2\"), \"арматуры ThreeLine\""
+        }
+      ]
+    },
+    {
+      "Key": "General.ReformatResultsEnabled",
+      "Title": "General.ReformatResultsEnabled",
+      "Paragraphs": 5,
+      "Reviewed": true,
+      "Check": "Проверено оформление только Results при записи и независимость схемы.",
+      "SourceFiles": [
+        "src/Excel/modResultsFormatting.bas",
+        "src/Excel/modWorkbookCalculation.bas",
+        "src/Excel/modCalculationSnapshot.bas"
+      ],
+      "ExactKeyReferences": [
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 240,
+          "Method": "FormSectionCore",
+          "Code": "Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean(\"General.ReformatResultsEnabled\")"
+        },
+        {
+          "File": "src/Excel/modWorkbookCalculation.bas",
+          "Line": 378,
+          "Method": "CalculateSectionCore",
+          "Code": "Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean(\"General.ReformatResultsEnabled\")"
+        },
+        {
+          "File": "src/Excel/modCalculationSnapshot.bas",
+          "Line": 95,
+          "Method": "UpdateSectionResultsForWorkbook",
+          "Code": "Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean(\"General.ReformatResultsEnabled\")"
+        },
+        {
+          "File": "src/Excel/modCalculationSnapshot.bas",
+          "Line": 363,
+          "Method": "UpdateIndexedResultsForWorkbook",
+          "Code": "Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean(\"General.ReformatResultsEnabled\")"
+        }
+      ]
+    }
+  ],
+  "FormulaGlossaryUniqueCaptions": 79,
+  "FormulaAndSchemeOccurrences": 80,
+  "ProductionVBAChanged": false,
+  "FullCalculationRuns": 0,
+  "SourceHashes": {
+    "src/Excel/CUnitSystem.cls": "1166FFB8E73EF235C6ABBE4486089C84EA84DF790CE8655857D03F3383AD13D3",
+    "src/Excel/CLoadCombinationReader.cls": "E84F588DA074ECC933EC554AAE61E7EB10FCC17258F2F46AB245F7A94F120B60",
+    "src/Common/CLoadPathDescriptor.cls": "62CEF9812972105D87A78D44D3E6ED0F6C0180D2313ABEB631DABA720AD71F19",
+    "src/Batch/CBatchSectionCalculator.cls": "1FAEB9AEC7209A149D77D77C955E32A2955AE62FBB8ACDA35CC63E2B76C50425",
+    "src/Excel/CSystemSettingsReader.cls": "BA5A2E5525BA80C07E9C9816B4DCD682F48F2B7FB1B4F474A6A81203557643AB",
+    "src/Stability/CStabilityCalculator.cls": "2DC5F47F4CCCF226D691FA1A00690196CB5008298E307B62A0EE41A49413C3C8",
+    "src/Materials/CConcreteMaterialParameters.cls": "9D9A9B2E62060EB32CCDCF8C56FF27C8C26C56292B2DB825E4BC55A6564889E3",
+    "src/Materials/CMaterialDiagram.cls": "3BB8F27184832DB07D73230B47717F24CE4FDC5756267EBCCEA80D87404B2BE7",
+    "src/Materials/CSteelMaterialParameters.cls": "4892B7954916023BF325536ACD4F075189D56776B0B57F5787A9C67D860E7045",
+    "src/Batch/CCalculationProfile.cls": "EA7B4CD68A4A7F4EBBDBEBA54F7270DC4FBC014CA27CAC9E2A245ACEB8D7FC37",
+    "src/Batch/CCalculationProfileCatalog.cls": "9E59FD085725ACEC85605899B084E6136364CED0E8A6B587A18580F777B39C63",
+    "src/Materials/CMaterialModelProvider.cls": "81A645F00F53E9E498CF64BB1BD5E284E1587551B63FB3716B14B1F8B48FFE13",
+    "src/Excel/CPlotAnnotationLayout.cls": "51B9485D6E667AE4B82386E6D7D1C7F926DA1F0BA988DD3EFBFA7F77AF42BFB3",
+    "src/Excel/CSectionPlotter.cls": "C100A52839BC724627403096BAD04DEF1A7E3978D6B4DB6120059999F77BB4C3",
+    "src/Section/CRebarRuleExecutor.cls": "7A032D1CC2468BEF09B4A343899DC946F76050659867FAFC66E28EFFFD77FD73",
+    "src/Section/CSectionInputReader.cls": "198073FF55EBA2BF6A5F8DB9F417D434BDE12123386A23598C98DC2B253324AA",
+    "src/Geometry/CSectionRecipeCircle.cls": "4BEABA60A74285E78B87E03CF88FA9EC0E5B6305F49660495ADD654F27EB5145",
+    "src/Geometry/CSectionRecipePointedSection.cls": "1948482622FED9B7B27FECD5F33938A8C8085D81B6A53848ED466D1BC92B76F9",
+    "src/Geometry/CSectionRecipeHollowRectangle.cls": "8BA27A9B8F20A70F8B632927568D16A7DFC09F5A76FDFB2B05F402DAB658F586",
+    "src/Geometry/CSectionRecipeRectangles.cls": "1482AF4ECB5BFE6696A7B0D0CC4BCC2B16B57B4C7B244F7CF6E67069B5323C99",
+    "src/Excel/CExecutionReport.cls": "A7EA0E3AD369DA44EA8084FB47315F8AE66F1A322D1941650A6F910AB29EB6A9",
+    "src/Excel/modWorkbookCalculation.bas": "15B25C9CC619DC509B0DBFF93D108B8E6366DDF44CB0E078FB545ACE4AD207A8",
+    "src/Excel/modAutoCADStressExport.bas": "5859430D81F5581AE65F553CCF29A970759F18F6DACBE1EA28860AB67470ADA0",
+    "src/Excel/CCalculationSnapshotStore.cls": "4193251D8279F421CA6AFC64821B3E68077B010026B1B0261E2C831E75E88F75",
+    "src/Excel/CResultReadSource.cls": "29F247730A9AAB378DB3B3A40EC10E1A93A7738423B96EC246CDF3DB9FD7A7DD",
+    "src/Excel/modCalculationSnapshot.bas": "094B88976E9DBFD2106ADFD9898051C309AD73E7482BE5B3AEA4A1F19D5DE79E",
+    "src/Common/CSectionLoadState.cls": "FA7CDA72CC31DA6CA5DE087D25318926C44191D7F7A4D9AEB7110B03171FFA66",
+    "src/Excel/CSectionPlotDataReader.cls": "3F09E4B1EBCF4A45A1757FC8AAEE908DB981BE0B43A95B55424F9FA85334C5DC",
+    "src/Excel/modSnapshotTables.bas": "A351FE7C37FBC71D7B113D1745041A2875D3A4FE0E6DDD6BBD6E64D4534D3826",
+    "src/Excel/CBatchResultWriter.cls": "09FC678391708C3DEF471D7FE300BF443DACBCFAA85050FAD3B91F7691A35855",
+    "src/Excel/CSectionTypeRegistry.cls": "B4C7E7E060E33A77E455B0C69A9D497A0EB5C7513869E81A49133B961A66DE8D",
+    "src/Excel/modMeshConfiguration.bas": "EA3DC58EE8EA7938C49D19CE8325E610B73C0A3D78D4CA9E6173138464138518",
+    "src/Geometry/CFiberMeshBuilder.cls": "0E8F56F8EE2B74CFB52A4B2AE1CD5C5280EFA4267ABC36E76D571E2044DF112C",
+    "src/Solver/CSectionSolver.cls": "CA646695E4E7307EFA37B386D9DD8021F77D75780CDA748968BAB56A588AE0DC",
+    "src/Solver/CCapacitySolver.cls": "611B74359248CDA7213174C3562238E18B9DA7A0A3D2B10A5E3221CDE920D2B3",
+    "src/Solver/CCapacityCalculator.cls": "8A00B333019203F67EE987A9D6AF906B641AF9F852FFF5D6BB79BC6798E141BD",
+    "src/Solver/CLimitSearchCoordinator.cls": "E8AEC6491AA26549AB38009001C6B46A535274901447CA0AA1CE41A3E1832389",
+    "src/Crack/CCrackFormationCalculator.cls": "50FF969DE9005BA886F54FB34F5962902E0E2003E77E837A7A196136EC07D38A",
+    "src/Crack/CCrackWidthCalculator.cls": "B406CED94F98A1B0A75E311E7013DA16BC15AC29A8E9F8B316A0B6C085B2A2C1",
+    "src/Crack/CSP35CrackData.cls": "17FF57D7B5D69EEA3B94D9C9BB2AED7B8C170A74696538376BB2820E35A9F0BC",
+    "src/Excel/CAutoCADSectionModelImporter.cls": "E5B6BAB34AEFC3405196676252A7BA53F7F93EAF26D72B88EF5A90DAEA219A11",
+    "src/Excel/CAutoCADContourReader.cls": "3CF402E60E0190D7C6266B77EE7F02A3EE75ACAD639EA94173FD2069055E9DCB",
+    "src/Excel/modResultsFormatting.bas": "B249CD30E16C448006C6C52DDA8F6F8AD7D70BD6B43F7F4ED7F9A12189FE4623"
+  }
+}

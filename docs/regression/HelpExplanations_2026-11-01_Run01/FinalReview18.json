@@ -1,0 +1,20 @@
+{
+  "Status": "PASS_COMPLETE_HELP_SOURCE_NATIVE_AND_VISUAL_REVIEW",
+  "HelpBlocksReviewed": 152,
+  "NativeCatalogParagraphsVerified": 643,
+  "NativeFullTextRead": true,
+  "FormulaOccurrences": 76,
+  "SchemeOccurrences": 4,
+  "LocalDefinitionsVerified": 80,
+  "NativeBooks": 3,
+  "ComponentsPerBook": 187,
+  "LinksPerBook": 155,
+  "PDFPagesActuallyReviewed": 39,
+  "RuntimeSourceFilesUnchanged": 182,
+  "FormulaCaptionsPreserved": true,
+  "InputLengthBeforeCodes": true,
+  "SP35ProfileLimitationDisclosed": true,
+  "UserDataAndResultsPreserved": true,
+  "RecalculationPerformed": false,
+  "FullCalculationAcceptanceClaim": false
+}

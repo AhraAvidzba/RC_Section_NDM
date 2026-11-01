@@ -1,0 +1,17 @@
+{
+  "StartedUTC": "2026-11-01T15:10:50.5723727Z",
+  "Branch": "codex/help-explanations",
+  "MainBase": "4c6e6ece424f821fc071a8b277e276cd7ea93d22",
+  "DependencyHead": "c8fa000ff756b18f925c7164f31a84b2c3a1b33d",
+  "Books": [
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "EA6C996F01D43F4802041E0CDFAF31226BA3CD9763A608438C99545516A1BEEC"
+    },
+    {
+      "Path": "workbook/output/NDM_HeavyCircle_1232_30_2026-11-01/RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "58E2EBC26475EA9291CB822BAF57A67A073350139EA1813C688C81C68E309D50"
+    }
+  ],
+  "AllCodeSHA256": "872502F7B2F859C2F21F832C261500FD3E1A9B316F6831E720F1638FEBBBE3E4"
+}
