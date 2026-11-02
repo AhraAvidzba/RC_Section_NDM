@@ -1,0 +1,71 @@
+{
+  "Status": "PASS",
+  "AtUTC": "2026-11-02T08:53:41.4374392Z",
+  "Count": 9,
+  "Identities": [
+    {
+      "Label": "FreshBuild",
+      "PID": 136580,
+      "StartTicksUTC": "639292046181703366",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    },
+    {
+      "Label": "FreshBuild02",
+      "PID": 120576,
+      "StartTicksUTC": "639292051226192912",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    },
+    {
+      "Label": "FreshBuild03",
+      "PID": 118596,
+      "StartTicksUTC": "639292056892296291",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    },
+    {
+      "Label": "Directed/NoTable",
+      "PID": 107380,
+      "StartTicksUTC": "639292049461639177",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    },
+    {
+      "Label": "Directed02/NoTable",
+      "PID": 15432,
+      "StartTicksUTC": "639292054919637244",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    },
+    {
+      "Label": "Directed03/NoTable",
+      "PID": 14960,
+      "StartTicksUTC": "639292060428661418",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    },
+    {
+      "Label": "Directed03/NoDiagnosticReopen",
+      "PID": 138352,
+      "StartTicksUTC": "639292060818578456",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    },
+    {
+      "Label": "Directed03/YesTable",
+      "PID": 84692,
+      "StartTicksUTC": "639292061250180685",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    },
+    {
+      "Label": "SavedNative",
+      "PID": 118972,
+      "StartTicksUTC": "639292062627765486",
+      "ExactIdentityTerminal": true,
+      "CurrentObservation": "Absent"
+    }
+  ],
+  "ForcedClosures": 0
+}

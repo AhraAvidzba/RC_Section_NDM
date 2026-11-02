@@ -219,7 +219,7 @@ try {
         Add-Check $checks "SP35 table 7.21 range" (
             ($sp35TableRange.Worksheet.Name -eq "Config") -and
             (Test-SavedNamedRange $sp35TableRange "rngSP35Table721") -and
-            ($sp35TableRange.Columns.Count -eq 8) -and ($sp35TableRange.Rows.Count -ge 2)
+            ($sp35TableRange.Columns.Count -eq 6) -and ($sp35TableRange.Rows.Count -ge 2)
         ) ("Address=$($sp35TableRange.Address()); Rows=$($sp35TableRange.Rows.Count); Columns=$($sp35TableRange.Columns.Count)")
     }
 

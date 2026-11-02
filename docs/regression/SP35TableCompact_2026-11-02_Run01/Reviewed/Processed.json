@@ -1,0 +1,25 @@
+{
+  "Status": "DIRECTED_TABLE_BOTH_MODES_NATIVE_AND_PUBLICATION_PASS",
+  "WorkbookSHA256": "15B1DD505F9BC9B955F698921F38F9D0B007E6BE48294D506DA1A153654218A1",
+  "DataRows": 19,
+  "Columns": 6,
+  "FieldsEachMode": 114,
+  "MacroExecutions": 6,
+  "RawEvidenceFiles": 39,
+  "ReviewedPrimaryArchiveSHA256": "b522ae364149823b1740231a2cf4cc1802c5482b9dc4c4fb72590e954c7b12b4",
+  "HistoricalFailures": {
+    "FirstSetup": 18,
+    "SecondOracle": 6,
+    "Reason": "New test assumed zero ec/r from zero applied moments; final independent oracle includes required accidental eccentricity and kern radius."
+  },
+  "AcceptedBehaviorAssertionsPerMode": 900,
+  "AcceptedInvalidInputAssertionsPerMode": 1709,
+  "DiagnosticsAndStatusSaveReopen": true,
+  "AllOwnIdentitiesTerminal": 9,
+  "ForcedClosures": 0,
+  "SourceEquality": {
+    "SourceComponents": 181,
+    "ExportComponents": 187
+  },
+  "FullSuiteClaim": false
+}

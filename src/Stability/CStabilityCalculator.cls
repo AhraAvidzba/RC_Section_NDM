@@ -1086,8 +1086,7 @@ Private Function CoreDistanceForEccentricity(ByRef plane As TPlaneResult) As Dou
 End Function
 
 ' Интерполирует таблицу 7.21 СП 35, переданную с листа Config. В книге
-' таблица сохранена в человекочитаемом виде: l0/b, l0/d, l0/i, далее phi_m
-' для нескольких ec/r и табличный phi_l. Расчет использует l0/i и phi-колонки.
+' таблица содержит l0/i, четыре phi_m для ec/r = 0; 0.25; 0.5; 1 и phi_l.
 Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As Double, ByVal q As Double, _
         ByRef phiM As Double, ByRef phiL As Double)
     If Len(mSP35TableInputError) > 0 Then RaiseInput mSP35TableInputError
@@ -1102,7 +1101,7 @@ Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As
     Dim rowCount As Long, numericRow As Long, numericColumn As Long, numericValue As Double
     rowCount = UBound(table721, 1)
     For numericRow = 2 To rowCount
-        For numericColumn = 3 To 8
+        For numericColumn = 1 To 6
             If Not TryReadStrictDouble(table721(numericRow, numericColumn), numericValue) Then RaiseInput "Таблица 7.21 СП 35 содержит неверное число."
             table721(numericRow, numericColumn) = numericValue ' Только локальная копия проверенной таблицы: интерполяция получает однозначные Double независимо от написания десятичного знака.
         Next numericColumn
@@ -1118,15 +1117,15 @@ Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As
     Dim phiLUpper As Double
     phiMLower = InterpolatePhiMByQ(table721, lowerRow, q)
     phiMUpper = InterpolatePhiMByQ(table721, upperRow, q)
-    phiLLower = CDbl(table721(lowerRow, 8))
-    phiLUpper = CDbl(table721(upperRow, 8))
+    phiLLower = CDbl(table721(lowerRow, 6))
+    phiLUpper = CDbl(table721(upperRow, 6))
 
     Dim t As Double
     If lowerRow = upperRow Then
         t = 0#
     Else
-        t = (slenderness - CDbl(table721(lowerRow, 3))) / _
-            (CDbl(table721(upperRow, 3)) - CDbl(table721(lowerRow, 3)))
+        t = (slenderness - CDbl(table721(lowerRow, 1))) / _
+            (CDbl(table721(upperRow, 1)) - CDbl(table721(lowerRow, 1)))
     End If
     phiM = phiMLower + t * (phiMUpper - phiMLower)
     phiL = phiLLower + t * (phiLUpper - phiLLower)
@@ -1134,7 +1133,7 @@ End Sub
 
 ' Проверяет расчетные колонки таблицы без обращения к Excel и без скрытых
 ' нормативных defaults. Возвращает первую неверную строку/колонку для адресной
-' диагностики вызывающего слоя. Две справочные колонки l0/b и l0/d не читаются.
+' диагностики вызывающего слоя. Гибкость неотрицательна; коэффициенты положительны.
 ' Положительность phi и возрастающие узлы защищают интерполяцию и предельную
 ' силу; дополнительные ограничения вроде phi <= 1 здесь не навязываются.
 Public Function TryValidateSP35Table721(ByVal table721 As Variant, ByRef invalidRow As Long, _
@@ -1148,24 +1147,24 @@ Public Function TryValidateSP35Table721(ByVal table721 As Variant, ByRef invalid
     Dim rowCount As Long, columnCount As Long, firstValue As Variant
     rowCount = UBound(table721, 1): columnCount = UBound(table721, 2)
     If LBound(table721, 1) <> 1 Or LBound(table721, 2) <> 1 Or _
-            rowCount < 2 Or columnCount < 8 Then GoTo InvalidStructure
-    firstValue = table721(2, 3)
+            rowCount < 2 Or columnCount <> 6 Then GoTo InvalidStructure
+    firstValue = table721(2, 1)
     On Error GoTo 0
 
     Dim row As Long, column As Long, value As Double, previousNode As Double
     For row = 2 To rowCount
-        For column = 3 To 8
+        For column = 1 To 6
             invalidRow = row: invalidColumn = column
-            If Not SP35TablePositiveNumber(table721(row, column), value) Then
-                If column = 3 Then
-                    reason = "Гибкость l0/i должна быть числом больше нуля. Исправьте значение в таблице."
+            If Not SP35TableNumber(table721(row, column), value, column = 1) Then
+                If column = 1 Then
+                    reason = "Гибкость l0/i должна быть числом не меньше нуля. Исправьте значение в таблице."
                 Else
                     reason = "Коэффициент " & SP35TableColumnName(column) & _
                         " должен быть числом больше нуля. Заполните ячейку корректным коэффициентом."
                 End If
                 Exit Function
             End If
-            If column = 3 Then
+            If column = 1 Then
                 If row > 2 And value <= previousNode Then
                     reason = "Узлы l0/i должны строго возрастать сверху вниз. Исправьте эту строку или предыдущий узел."
                     Exit Function
@@ -1179,20 +1178,20 @@ Public Function TryValidateSP35Table721(ByVal table721 As Variant, ByRef invalid
     Exit Function
 InvalidStructure:
     invalidRow = 0: invalidColumn = 0
-    reason = "Нужен единый прямоугольный диапазон с заголовком, строками данных и восемью колонками: " & _
-        "l0/b, l0/d, l0/i, phi_m(0), phi_m(0.25), phi_m(0.5), phi_m(1), phi_l. Восстановите структуру таблицы."
+    reason = "Нужен единый прямоугольный диапазон с заголовком, строками данных и шестью колонками: " & _
+        "l0/i, phi_m(0), phi_m(0.25), phi_m(0.5), phi_m(1), phi_l. Восстановите структуру таблицы."
 End Function
 
 ' Отличает пустоту, ошибку формулы и нечисловое значение от допустимого
-' положительного коэффициента. Числовые строки остаются допустимыми;
+' числа: ноль допускается только для узла гибкости. Числовые строки допустимы;
 ' логические значения и даты не трактуются как инженерные числа.
-Private Function SP35TablePositiveNumber(ByVal rawValue As Variant, ByRef value As Double) As Boolean
+Private Function SP35TableNumber(ByVal rawValue As Variant, ByRef value As Double, ByVal allowZero As Boolean) As Boolean
     On Error GoTo InvalidValue
     If IsError(rawValue) Or IsEmpty(rawValue) Or IsNull(rawValue) Then Exit Function
     If IsObject(rawValue) Or IsArray(rawValue) Then Exit Function
     If VarType(rawValue) = vbBoolean Or VarType(rawValue) = vbDate Then Exit Function
     If Not TryReadStrictDouble(rawValue, value) Then Exit Function
-    SP35TablePositiveNumber = (value > 0#)
+    SP35TableNumber = (value > 0# Or (allowZero And value = 0#))
     Exit Function
 InvalidValue:
 End Function
@@ -1201,11 +1200,11 @@ End Function
 ' оставалось понятным и при автономном расчете без Excel-адреса.
 Private Function SP35TableColumnName(ByVal column As Long) As String
     Select Case column
-        Case 4: SP35TableColumnName = "phi_m при ec/r = 0"
-        Case 5: SP35TableColumnName = "phi_m при ec/r = 0.25"
-        Case 6: SP35TableColumnName = "phi_m при ec/r = 0.5"
-        Case 7: SP35TableColumnName = "phi_m при ec/r = 1"
-        Case 8: SP35TableColumnName = "phi_l"
+        Case 2: SP35TableColumnName = "phi_m при ec/r = 0"
+        Case 3: SP35TableColumnName = "phi_m при ec/r = 0.25"
+        Case 4: SP35TableColumnName = "phi_m при ec/r = 0.5"
+        Case 5: SP35TableColumnName = "phi_m при ec/r = 1"
+        Case 6: SP35TableColumnName = "phi_l"
     End Select
 End Function
 
@@ -1216,14 +1215,14 @@ Private Sub FindBoundingRows(ByVal tableData As Variant, ByVal rowCount As Long,
     upperRow = rowCount
     Dim r As Long
     For r = 2 To rowCount
-        If CDbl(tableData(r, 3)) <= slenderness Then lowerRow = r
-        If CDbl(tableData(r, 3)) >= slenderness Then
+        If CDbl(tableData(r, 1)) <= slenderness Then lowerRow = r
+        If CDbl(tableData(r, 1)) >= slenderness Then
             upperRow = r
             Exit For
         End If
     Next r
-    If slenderness <= CDbl(tableData(2, 3)) Then lowerRow = 2: upperRow = 2
-    If slenderness >= CDbl(tableData(rowCount, 3)) Then lowerRow = rowCount: upperRow = rowCount
+    If slenderness <= CDbl(tableData(2, 1)) Then lowerRow = 2: upperRow = 2
+    If slenderness >= CDbl(tableData(rowCount, 1)) Then lowerRow = rowCount: upperRow = rowCount
 End Sub
 
 ' Интерполяция phi_m по отношению ec/r.
@@ -1231,11 +1230,11 @@ Private Function InterpolatePhiMByQ(ByVal tableData As Variant, ByVal rowIndex A
     Dim qValues(1 To 4) As Double
     qValues(1) = 0#: qValues(2) = 0.25: qValues(3) = 0.5: qValues(4) = 1#
     If q <= qValues(1) Then
-        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 4))
+        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 2))
         Exit Function
     End If
     If q >= qValues(4) Then
-        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 7))
+        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 5))
         Exit Function
     End If
 
@@ -1244,8 +1243,8 @@ Private Function InterpolatePhiMByQ(ByVal tableData As Variant, ByVal rowIndex A
         If q >= qValues(i) And q <= qValues(i + 1) Then
             Dim t As Double
             t = (q - qValues(i)) / (qValues(i + 1) - qValues(i))
-            InterpolatePhiMByQ = CDbl(tableData(rowIndex, i + 3)) + _
-                t * (CDbl(tableData(rowIndex, i + 4)) - CDbl(tableData(rowIndex, i + 3)))
+            InterpolatePhiMByQ = CDbl(tableData(rowIndex, i + 1)) + _
+                t * (CDbl(tableData(rowIndex, i + 2)) - CDbl(tableData(rowIndex, i + 1)))
             Exit Function
         End If
     Next i

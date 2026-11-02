@@ -1,6 +1,6 @@
 # Связывает directed runtime с каждым фактическим полем таблицы СП35 и N/A.
-# Справочные колонки остаются в знаменателе, но не становятся расчетными
-# настройками. Структурная проверка не является нормативной верификацией.
+# Все шесть колонок являются расчётными; полнота определяется фактическими полями.
+# Структурная проверка не является нормативной верификацией.
 param(
     [Parameter(Mandatory=$true)][string]$RegistryPath,
     [Parameter(Mandatory=$true)][string]$BehaviorReport,
@@ -47,14 +47,14 @@ foreach ($match in [regex]::Matches($behavior,'(?m)^SP35_BEHAVIOR: (audit03\.tab
     $cells[$cell] = @{ Prefix=$match.Groups[1].Value; Row=[int]$match.Groups[2].Value; Column=[int]$match.Groups[3].Value; Reference=$match.Groups[5].Value -eq 'True' }
 }
 $fields = @($registry.Fields | Where-Object Block -eq 'rngSP35Table721')
-if ($fields.Count -ne 144 -or $cells.Count -ne 144) { throw 'All 144 actual table cells must remain in scope.' }
+if ($fields.Count -lt 6 -or $cells.Count -ne $fields.Count) { throw 'Every actual table field must remain in scope.' }
 foreach ($field in $fields) {
     $cell = ([string]$field.Address -split '!')[-1]
     if (-not $cells.ContainsKey($cell)) { throw "No table behavior at the actual address: $cell" }
     $entry = $cells[$cell]
     $assertions = if ($entry.Reference) { @('referenceM','referenceL','referenceNult') }
-        elseif ($entry.Column -eq 3) { @('inputValid','changedWeight','active') }
-        elseif ($entry.Column -eq 8) { @('activeL','unaffectedM','forceChanged') }
+        elseif ($entry.Column -eq 1) { @('inputValid','changedWeight','active') }
+        elseif ($entry.Column -eq 6) { @('activeL','unaffectedM','forceChanged') }
         else { @('activeM','unaffectedL','forceChanged') }
     foreach ($assertion in $assertions) {
         if ($behavior -notmatch ('(?m)^OK: '+[regex]::Escape($entry.Prefix+'.'+$assertion)+'(?:;|\r?$)')) { throw "Missing independent behavior assertion: $cell/$assertion" }
@@ -62,12 +62,13 @@ foreach ($field in $fields) {
     if (-not $entry.Reference) {
         for ($variant=0; $variant -lt 5; $variant++) {
             $test = "audit03.table.invalid.$($entry.Row).$($entry.Column).$variant"
-            foreach ($suffix in @('status','notNumFail','comment')) {
+            $suffixes=if($entry.Row -eq 2 -and $entry.Column -eq 1 -and $variant -eq 3){@('zeroAccepted')}else{@('status','notNumFail','comment')}
+            foreach ($suffix in $suffixes) {
                 if ($invalid -notmatch ('(?m)^OK: '+[regex]::Escape($test+'.'+$suffix)+'\r?$')) { throw "Missing invalid table test: $test/$suffix" }
             }
         }
     }
-    $field.Type = if ($entry.Reference) { 'Reference table value; not a solver input' } else { 'Positive dimensionless table value' }
+    $field.Type = if ($entry.Column -eq 1) { 'Nonnegative dimensionless slenderness node' } else { 'Positive dimensionless coefficient' }
     $field.InternalUnits = '-'
     $field.RuntimeDefault = 'No fallback for an active invalid table; inactive branch does not consume it'
     $field.ExpectedEffect = if ($entry.Reference) { 'Changing reference columns leaves interpolation and Nult unchanged' } else { 'Independent interpolation weights or phi affect the active SP35 branch; other branches remain independent' }

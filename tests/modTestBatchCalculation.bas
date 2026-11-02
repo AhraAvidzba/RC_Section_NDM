@@ -6222,17 +6222,62 @@ Private Function TestSP35InterpolatedPhiM(ByVal q As Double) As Double
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет продление таблицы снизу и сверху по независимым коэффициентам и весам ec/r.
+Private Sub TestSP35ZeroExtension(ByRef stats As TBatchTestStats)
+    Dim table As Variant, column As Long, index As Long, query As Variant, q As Variant, expected As Variant
+    Dim section As CSectionModel, provider As CMaterialModelProvider, props As CSectionPropertiesCalculator
+    Dim calc As CStabilityCalculator
+    table = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    TestAssertClose stats, "sp35.extension.firstNode", CDbl(table(2, 1)), 0#, 0#
+    TestAssertClose stats, "sp35.extension.secondNode", CDbl(table(3, 1)), 14#, 0#
+    For column = 2 To 6
+        TestAssertClose stats, "sp35.extension.same14." & CStr(column), CDbl(table(2, column)), CDbl(table(3, column)), 0#
+    Next column
+    Set section = TestBuildCircleStabilitySection(500#, 4, 12#): Set provider = TestMaterialProvider()
+    Set props = New CSectionPropertiesCalculator: props.CalculateTransformedByModuli section, 32500#, 200000#
+    q = Array(0#, 0.125, 0.25, 0.375, 0.5, 0.75, 1#)
+    expected = Array(1#, 0.95, 0.9, 0.855, 0.81, 0.75, 0.69)
+    expected(0) = 1# - 0.4 / props.PrincipalPlaneCoreDistance(section, 1, True, False)
+    For Each query In Array(0.001, 7#, 14#)
+        For index = 0 To UBound(q)
+            Set calc = TestAudit03SP35TableProbe(section, provider, props, table, CDbl(query), CDbl(q(index)))
+            If index = 0 Then
+                TestAssertClose stats, "sp35.extension.zeroMoment.ea." & CStr(query), calc.Eccentricity1, 1#, 0.00000001
+                TestAssertClose stats, "sp35.extension.zeroMoment.core." & CStr(query), calc.CoreDistance1, props.PrincipalPlaneCoreDistance(section, 1, True, False), 0.00000001
+            End If
+            TestAssertTrue stats, "sp35.extension.low.valid." & CStr(query) & "." & CStr(index), calc.InputValid
+            TestAssertClose stats, "sp35.extension.low.phiM." & CStr(query) & "." & CStr(index), calc.PhiM1, CDbl(expected(index)), 0.00000001
+            TestAssertClose stats, "sp35.extension.low.phiL." & CStr(query) & "." & CStr(index), calc.PhiLTable1, 1#, 0.00000001
+        Next index
+    Next query
+    expected = Array(0.33, 0.305, 0.28, 0.26, 0.24, 0.225, 0.21)
+    expected(0) = 0.33 - 0.2 / props.PrincipalPlaneCoreDistance(section, 1, True, False)
+    For Each query In Array(150#, 1000000#, 2000000#)
+        For index = 0 To UBound(q)
+            Set calc = TestAudit03SP35TableProbe(section, provider, props, table, CDbl(query), CDbl(q(index)))
+            If index = 0 Then
+                TestAssertClose stats, "sp35.extension.zeroMoment.ea." & CStr(query), calc.Eccentricity1, 1#, 0.00000001
+                TestAssertClose stats, "sp35.extension.zeroMoment.core." & CStr(query), calc.CoreDistance1, props.PrincipalPlaneCoreDistance(section, 1, True, False), 0.00000001
+            End If
+            TestAssertTrue stats, "sp35.extension.high.valid." & CStr(query) & "." & CStr(index), calc.InputValid
+            TestAssertClose stats, "sp35.extension.high.phiM." & CStr(query) & "." & CStr(index), calc.PhiM1, CDbl(expected(index)), 0.00000001
+            TestAssertClose stats, "sp35.extension.high.phiL." & CStr(query) & "." & CStr(index), calc.PhiLTable1, 0.06, 0.00000001
+        Next index
+    Next query
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Искусственная таблица 7.21 с двумя строками по l0/i = 10 и 20.
 Private Function TestSP35InterpolationTable() As Variant
-    Dim tableData(1 To 3, 1 To 8) As Variant
-    tableData(1, 1) = "l0/b": tableData(1, 2) = "l0/d": tableData(1, 3) = "l0/i"
-    tableData(1, 4) = "phi_m q=0": tableData(1, 5) = "phi_m q=0.25"
-    tableData(1, 6) = "phi_m q=0.50": tableData(1, 7) = "phi_m q=1.00"
-    tableData(1, 8) = "phi_l"
-    tableData(2, 3) = 10#: tableData(2, 4) = 1#: tableData(2, 5) = 2#
-    tableData(2, 6) = 3#: tableData(2, 7) = 5#: tableData(2, 8) = 1.1
-    tableData(3, 3) = 20#: tableData(3, 4) = 11#: tableData(3, 5) = 12#
-    tableData(3, 6) = 13#: tableData(3, 7) = 15#: tableData(3, 8) = 1.3
+    Dim tableData(1 To 3, 1 To 6) As Variant
+    tableData(1, 1) = "l0/i"
+    tableData(1, 2) = "phi_m q=0": tableData(1, 3) = "phi_m q=0.25"
+    tableData(1, 4) = "phi_m q=0.50": tableData(1, 5) = "phi_m q=1.00"
+    tableData(1, 6) = "phi_l"
+    tableData(2, 1) = 10#: tableData(2, 2) = 1#: tableData(2, 3) = 2#
+    tableData(2, 4) = 3#: tableData(2, 5) = 5#: tableData(2, 6) = 1.1
+    tableData(3, 1) = 20#: tableData(3, 2) = 11#: tableData(3, 3) = 12#
+    tableData(3, 4) = 13#: tableData(3, 5) = 15#: tableData(3, 6) = 1.3
     TestSP35InterpolationTable = tableData
 End Function
 
@@ -9804,7 +9849,7 @@ End Sub
 ' ========================== ДЛЯ ТЕСТОВ: AUDIT03 SP35 TABLE ==========================
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет реальные 18 строк таблицы Config во всех расчетных колонках.
+' Проверяет все строки таблицы Config во всех расчетных колонках.
 ' Варианты выполняются в существующем test module и возвращают исходные
 ' формулы таблицы; нормативные defaults не подменяются результатами теста.
 Public Function TestRunAudit03SP35TableInvalidReproducer(Optional ByRef passed As Long = 0, _
@@ -9823,18 +9868,19 @@ Public Function TestRunAudit03SP35TableInvalidReproducer(Optional ByRef passed A
     Set policy = New CResultStatusPolicy
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli section, 32500#, 200000#
-    TestAssertTrue stats, "audit03.table.shape", tableRange.Rows.Count = 19 And tableRange.Columns.Count = 8
+    TestAssertTrue stats, "audit03.table.shape", tableRange.Rows.Count = 20 And tableRange.Columns.Count = 6
     For row = 2 To tableRange.Rows.Count
-        For column = 3 To 8
+        For column = 1 To 6
             For invalidIndex = 0 To 4
                 tableRange.Formula = saved
                 data = tableRange.Value2
-                slenderness = CDbl(data(row, 3))
+                slenderness = CDbl(data(row, 1))
+                If slenderness = 0# Then slenderness = 7#
                 Select Case column
-                    Case 4: q = 0.125
-                    Case 5: q = 0.25
-                    Case 6: q = 0.5
-                    Case 7: q = 0.75
+                    Case 2: q = 0.125
+                    Case 3: q = 0.25
+                    Case 4: q = 0.5
+                    Case 5: q = 0.75
                     Case Else: q = 0.5
                 End Select
                 Select Case invalidIndex
@@ -9848,9 +9894,13 @@ Public Function TestRunAudit03SP35TableInvalidReproducer(Optional ByRef passed A
                 data = tableRange.Value2
                 Set calc = TestAudit03SP35TableProbe(section, provider, props, data, slenderness, q)
                 prefix = "audit03.table.invalid." & CStr(row) & "." & CStr(column) & "." & CStr(invalidIndex)
-                TestAssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
-                TestAssertTrue stats, prefix & ".notNumFail", calc.ResultMeta.InternalStatus <> rsNumericalFailure
-                TestAssertTrue stats, prefix & ".comment", Len(calc.ResultMeta.ResultComment) > 0
+                If row = 2 And column = 1 And invalidIndex = 3 Then
+                    TestAssertTrue stats, prefix & ".zeroAccepted", calc.InputValid
+                Else
+                    TestAssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
+                    TestAssertTrue stats, prefix & ".notNumFail", calc.ResultMeta.InternalStatus <> rsNumericalFailure
+                    TestAssertTrue stats, prefix & ".comment", Len(calc.ResultMeta.ResultComment) > 0
+                End If
                 TestAppendLine stats, "SP35_INVALID: " & prefix & "|cell=" & tableRange.Cells(row, column).Address(False, False) & _
                     "|status=" & policy.ExternalStatus(calc.ResultMeta) & "|comment=" & calc.ResultMeta.ResultComment
             Next invalidIndex
@@ -9875,9 +9925,9 @@ RestoreFailed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет наблюдаемый смысл каждой из 144 ячеек. Узлы и коэффициенты
+' Проверяет наблюдаемый смысл каждого рабочего поля таблицы. Узлы и коэффициенты
 ' проверяются раздельно: по точным табличным значениям и независимым весам
-' интерполяции; две справочные колонки не должны вмешиваться в расчет.
+' интерполяции, включая влияние нулевого и крайнего узлов.
 Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim stats As TBatchTestStats, tableRange As Object, saved As Variant, original As Variant
@@ -9886,9 +9936,10 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
     Dim baseline As CStabilityCalculator, q As Double, node As Double, prefix As String
     Dim expectedM As Double, expectedL As Double, weight As Double, delta As Double
     Dim previous As Double, nextNode As Double, shift As Double, query As Double, expected As Double
-    Dim covered As Long
+    Dim covered As Long, probeNode As Double, rowWeight As Double
     On Error GoTo Failed
     TestLocaleSP35Interpolation stats
+    TestSP35ZeroExtension stats
     Set tableRange = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange
     saved = tableRange.Formula: original = tableRange.Value2
     Set section = TestBuildCircleStabilitySection(500#, 4, 12#)
@@ -9896,46 +9947,52 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli section, 32500#, 200000#
     For row = 2 To tableRange.Rows.Count
-        node = CDbl(original(row, 3))
-        For column = 1 To 8
+        node = CDbl(original(row, 1))
+        For column = 1 To 6
             tableRange.Formula = saved
             prefix = "audit03.table.behavior." & CStr(row) & "." & CStr(column)
             q = 0.5: weight = 0#: delta = 0.05
             Select Case column
-                Case 4: q = 0.125: weight = 0.5
-                Case 5: q = 0.25: weight = 1#
-                Case 6: q = 0.5: weight = 1#
-                Case 7: q = 0.75: weight = 0.5
+                Case 2: q = 0.125: weight = 0.5
+                Case 3: q = 0.25: weight = 1#
+                Case 4: q = 0.5: weight = 1#
+                Case 5: q = 0.75: weight = 0.5
             End Select
-            If column = 3 Then
+            If column = 1 Then
                 ' Только диагностические phi делают все узлы наблюдаемыми,
                 ' включая последнюю строку с одинаковыми штатными phi.
                 ' Сами l0/i читаются из настоящей таблицы Config.
                 data = tableRange.Value2
                 For j = 2 To UBound(data, 1)
-                    data(j, 4) = 1# + j * 0.01: data(j, 5) = data(j, 4)
-                    data(j, 6) = data(j, 4): data(j, 7) = data(j, 4)
-                    data(j, 8) = 1# + j * 0.005
+                    data(j, 2) = 1# + j * 0.01: data(j, 3) = data(j, 2)
+                    data(j, 4) = data(j, 2): data(j, 5) = data(j, 2)
+                    data(j, 6) = 1# + j * 0.005
                 Next j
                 If row < UBound(data, 1) Then
-                    nextNode = CDbl(original(row + 1, 3))
-                    If row = 2 Then previous = 0# Else previous = CDbl(original(row - 1, 3))
+                    nextNode = CDbl(original(row + 1, 1))
+                    If row = 2 Then previous = 0# Else previous = CDbl(original(row - 1, 1))
                     shift = 0.25 * GeomMin(node - previous, nextNode - node)
                     query = node + 0.25 * (nextNode - node)
-                    expected = CDbl(data(row, 4)) + 0.25 * 0.01
+                    expected = CDbl(data(row, 2)) + 0.25 * 0.01
                     Set baseline = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
                     TestAssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
-                    data(row, 3) = node - shift
-                    expected = CDbl(data(row, 4)) + (query - (node - shift)) / (nextNode - (node - shift)) * 0.01
+                    If row = 2 And node = 0# Then
+                        shift = 0.125 * (nextNode - node)
+                        data(row, 1) = node + shift
+                        expected = CDbl(data(row, 2)) + (query - (node + shift)) / (nextNode - (node + shift)) * 0.01
+                    Else
+                        data(row, 1) = node - shift
+                        expected = CDbl(data(row, 2)) + (query - (node - shift)) / (nextNode - (node - shift)) * 0.01
+                    End If
                 Else
-                    previous = CDbl(original(row - 1, 3))
+                    previous = CDbl(original(row - 1, 1))
                     shift = 0.25 * (node - previous)
                     query = previous + 0.75 * (node - previous)
-                    expected = CDbl(data(row - 1, 4)) + 0.75 * 0.01
+                    expected = CDbl(data(row - 1, 2)) + 0.75 * 0.01
                     Set baseline = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
                     TestAssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
-                    data(row, 3) = node + shift
-                    expected = CDbl(data(row - 1, 4)) + (query - previous) / (node + shift - previous) * 0.01
+                    data(row, 1) = node + shift
+                    expected = CDbl(data(row - 1, 2)) + (query - previous) / (node + shift - previous) * 0.01
                 End If
                 tableRange.Cells(row, column).Value2 = data(row, column)
                 Set calc = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
@@ -9943,40 +10000,38 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
                 TestAssertClose stats, prefix & ".changedWeight", calc.PhiM1, expected, 0.00000001
                 TestAssertTrue stats, prefix & ".active", Abs(calc.PhiM1 - baseline.PhiM1) > 0.000000001
             Else
-                Set baseline = TestAudit03SP35TableProbe(section, provider, props, original, node, q)
+                probeNode = node: rowWeight = 1#
+                If node = 0# Then probeNode = 0.5 * CDbl(original(row + 1, 1)): rowWeight = 0.5
+                Set baseline = TestAudit03SP35TableProbe(section, provider, props, original, probeNode, q)
                 expectedM = TestAudit03TableNodePhiM(original, row, q)
-                expectedL = CDbl(original(row, 8))
+                expectedL = CDbl(original(row, 6))
+                If node = 0# Then
+                    expectedM = 0.5 * (expectedM + TestAudit03TableNodePhiM(original, row + 1, q))
+                    expectedL = 0.5 * (expectedL + CDbl(original(row + 1, 6)))
+                End If
                 TestAssertTrue stats, prefix & ".baselineValid", baseline.InputValid
                 TestAssertClose stats, prefix & ".baselineM", baseline.PhiM1, expectedM, 0.00000001
                 TestAssertClose stats, prefix & ".baselineL", baseline.PhiLTable1, expectedL, 0.00000001
-                If column < 3 Then
-                    tableRange.Cells(row, column).Value2 = CDbl(original(row, column)) * 1.25
-                Else
-                    tableRange.Cells(row, column).Value2 = CDbl(original(row, column)) + delta
-                End If
+                tableRange.Cells(row, column).Value2 = CDbl(original(row, column)) + delta
                 data = tableRange.Value2
-                Set calc = TestAudit03SP35TableProbe(section, provider, props, data, node, q)
-                If column < 3 Then
-                    TestAssertClose stats, prefix & ".referenceM", calc.PhiM1, expectedM, 0.00000001
-                    TestAssertClose stats, prefix & ".referenceL", calc.PhiLTable1, expectedL, 0.00000001
-                    TestAssertClose stats, prefix & ".referenceNult", calc.Nultimate1, baseline.Nultimate1, 0.000001
-                ElseIf column = 8 Then
-                    TestAssertClose stats, prefix & ".activeL", calc.PhiLTable1, expectedL + delta, 0.00000001
+                Set calc = TestAudit03SP35TableProbe(section, provider, props, data, probeNode, q)
+                If column = 6 Then
+                    TestAssertClose stats, prefix & ".activeL", calc.PhiLTable1, expectedL + rowWeight * delta, 0.00000001
                     TestAssertClose stats, prefix & ".unaffectedM", calc.PhiM1, expectedM, 0.00000001
                     TestAssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
                 Else
-                    TestAssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + weight * delta, 0.00000001
+                    TestAssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + rowWeight * weight * delta, 0.00000001
                     TestAssertClose stats, prefix & ".unaffectedL", calc.PhiLTable1, expectedL, 0.00000001
                     TestAssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
                 End If
             End If
             TestAppendLine stats, "SP35_BEHAVIOR: " & prefix & "|cell=" & tableRange.Cells(row, column).Address(False, False) & _
-                "|reference=" & CStr(column < 3) & "|phiM=" & TestFormatNumberInvariant(calc.PhiM1) & _
+                "|reference=" & CStr(False) & "|phiM=" & TestFormatNumberInvariant(calc.PhiM1) & _
                 "|phiL=" & TestFormatNumberInvariant(calc.PhiLTable1)
             covered = covered + 1
         Next column
     Next row
-    TestAssertTrue stats, "audit03.table.all144", covered = 144
+    TestAssertTrue stats, "audit03.table.allFields", covered = (tableRange.Rows.Count - 1) * tableRange.Columns.Count
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
@@ -10000,13 +10055,13 @@ End Function
 ' заданными q. Он не читает actual из calculator и не вызывает Search/State.
 Private Function TestAudit03TableNodePhiM(ByVal data As Variant, ByVal row As Long, ByVal q As Double) As Double
     If q = 0.125 Then
-        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 4)) + CDbl(data(row, 5)))
+        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 2)) + CDbl(data(row, 3)))
     ElseIf q = 0.25 Then
-        TestAudit03TableNodePhiM = CDbl(data(row, 5))
+        TestAudit03TableNodePhiM = CDbl(data(row, 3))
     ElseIf q = 0.5 Then
-        TestAudit03TableNodePhiM = CDbl(data(row, 6))
+        TestAudit03TableNodePhiM = CDbl(data(row, 4))
     ElseIf q = 0.75 Then
-        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 6)) + CDbl(data(row, 7)))
+        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 4)) + CDbl(data(row, 5)))
     Else
         Err.Raise vbObjectError + 4498, "Audit03TableNodePhiM", "Не задан независимый тестовый oracle для q."
     End If
@@ -10122,9 +10177,15 @@ Private Function TestAudit03SP35TableProbe(ByVal section As CSectionModel, _
     Set calc = New CStabilityCalculator
     core1 = props.PrincipalPlaneCoreDistance(section, 1, True, False)
     core2 = props.PrincipalPlaneCoreDistance(section, 2, True, False)
+    Dim accidental1 As Double, accidental2 As Double, accidentalPlanes As String
+    accidental1 = q * core1: accidental2 = q * core2: accidentalPlanes = "BothPlanes"
+    If q = 0# Then
+        ' При чистом сжатии обе плоскости учитывают ea = 1 мм; независимый эталон использует фактическое ec/r = 1/r.
+        accidentalPlanes = "OnlyMomentPlane": accidental1 = 1#: accidental2 = 1#
+    End If
     calc.Calculate section, provider, mvsULS, code, nValue, 0#, 0#, -50000#, 0#, 0#, _
         slenderness * props.PrincipalRadius1, 1#, props.PrincipalRadius2 / props.PrincipalRadius1, _
-        "Determinate", 1#, 1#, "Auto", "User", "BothPlanes", q * core1, q * core2, _
+        "Determinate", 1#, 1#, "Auto", "User", accidentalPlanes, accidental1, accidental2, _
         0.7, 0.15, 1.5, 1#, 0.7, table, Nothing, tableInputError
     Set TestAudit03SP35TableProbe = calc
 End Function
@@ -10154,19 +10215,19 @@ Public Function RunAudit03SP35TableDiagnosticTests(Optional ByRef passed As Long
     Set props = New CSectionPropertiesCalculator: props.CalculateTransformedByModuli section, 32500#, 200000#
 
     For row = 3 To original.Rows.Count
-        data = original.Value2: data(row, 3) = data(row - 1, 3)
+        data = original.Value2: data(row, 1) = data(row - 1, 1)
         TestAssertTrue stats, "audit03.table.order.duplicate." & CStr(row), _
             Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
-        TestAssertTrue stats, "audit03.table.order.duplicateLocation." & CStr(row), badRow = row And badColumn = 3
-        data(row, 3) = 0.5 * CDbl(data(row - 1, 3))
+        TestAssertTrue stats, "audit03.table.order.duplicateLocation." & CStr(row), badRow = row And badColumn = 1
+        data(row, 1) = CDbl(data(row - 1, 1)) - 1#
         TestAssertTrue stats, "audit03.table.order.descending." & CStr(row), _
             Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
     Next row
-    For row = 2 To original.Rows.Count
-        data = original.Value2: data(row, 1) = CVErr(2015): data(row, 2) = Empty
-        TestAssertTrue stats, "audit03.table.referenceIgnored." & CStr(row), _
-            validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
-    Next row
+    data = original.Value2
+    TestAssertTrue stats, "audit03.table.zeroNodeAccepted", validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
+    data(2, 1) = -1#
+    TestAssertTrue stats, "audit03.table.negativeNodeRejected", Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
+    TestAssertTrue stats, "audit03.table.negativeNodeLocation", badRow = 2 And badColumn = 1
 
     TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
     TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
@@ -10934,11 +10995,11 @@ Private Sub TestLocaleSP35Interpolation(ByRef stats As TBatchTestStats)
             For Each slenderness In Array(10#, 15#, 20#)
                 textTable = numeric
                 For row = 2 To UBound(textTable, 1)
-                    For column = 3 To 8
+                    For column = 1 To 6
                         textTable(row, column) = Replace$(CStr(textTable(row, column)), Mid$(CStr(0.5), 2, 1), CStr(separator))
                     Next column
                 Next row
-                original = CStr(textTable(2, 8))
+                original = CStr(textTable(2, 6))
                 Set baseline = TestAudit03SP35TableProbe(section, provider, props, numeric, CDbl(slenderness), CDbl(q))
                 Set actual = TestAudit03SP35TableProbe(section, provider, props, textTable, CDbl(slenderness), CDbl(q))
                 prefix = "locale.sp35." & CStr(separator) & "." & CStr(q) & "." & CStr(slenderness)
@@ -10947,7 +11008,7 @@ Private Sub TestLocaleSP35Interpolation(ByRef stats As TBatchTestStats)
                 TestAssertClose stats, prefix & ".phiM2", actual.PhiM2, baseline.PhiM2, 0#
                 TestAssertClose stats, prefix & ".phiL1", actual.PhiLTable1, baseline.PhiLTable1, 0#
                 TestAssertClose stats, prefix & ".phiL2", actual.PhiLTable2, baseline.PhiLTable2, 0#
-                TestAssertTrue stats, prefix & ".sourceUnchanged", VarType(textTable(2, 8)) = vbString And CStr(textTable(2, 8)) = original
+                TestAssertTrue stats, prefix & ".sourceUnchanged", VarType(textTable(2, 6)) = vbString And CStr(textTable(2, 6)) = original
             Next slenderness
         Next q
     Next separator

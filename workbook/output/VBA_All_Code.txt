@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-01 23:52:49
+Date: 2026-11-02 11:51:06
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -102,7 +102,6 @@ Private Sub RevealHelpOutlineGroup(ByVal helpSheet As Worksheet, ByVal targetRow
 SafeExit:
 End Sub
 
-
 ====================================================================================================
 COMPONENT: Лист1
 TYPE: 100
@@ -111,7 +110,6 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
-
 ====================================================================================================
 COMPONENT: Лист2
 TYPE: 100
@@ -120,7 +118,6 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
-
 ====================================================================================================
 COMPONENT: Лист3
 TYPE: 100
@@ -129,7 +126,6 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
-
 ====================================================================================================
 COMPONENT: Лист4
 TYPE: 100
@@ -138,7 +134,6 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
-
 ====================================================================================================
 COMPONENT: Лист5
 TYPE: 100
@@ -147,7 +142,6 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
-
 ====================================================================================================
 COMPONENT: CLoadPathDescriptor
 TYPE: 2
@@ -443,7 +437,6 @@ Public Function vector() As CLoadPathVector
     result.Initialize nOffset, nBase, mxOffset, mxBase, myOffset, myBase
     Set vector = result
 End Function
-
 
 ====================================================================================================
 COMPONENT: CLoadPathMath
@@ -756,7 +749,6 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
-
 ====================================================================================================
 COMPONENT: CLoadPathVector
 TYPE: 2
@@ -854,7 +846,6 @@ Public Property Get myBase() As Double
     myBase = mMyBase
 End Property
 
-
 ====================================================================================================
 COMPONENT: CMomentZeroFilter
 TYPE: 2
@@ -911,7 +902,6 @@ End Function
 Public Property Get MomentPerDepth() As Double
     MomentPerDepth = mMomentPerDepth
 End Property
-
 
 ====================================================================================================
 COMPONENT: CResultMeta
@@ -1142,7 +1132,6 @@ Public Property Get DiagnosticText() As String
         ResultInternalStatusToText(mInternalStatus) & " / " & ResultCodeToText(mResultCode)
     If Len(Trim$(mResultComment)) > 0 Then DiagnosticText = DiagnosticText & "; " & mResultComment
 End Property
-
 
 ====================================================================================================
 COMPONENT: CResultStatusPolicy
@@ -1404,7 +1393,6 @@ Public Function StatusPriority(ByVal statusText As String) As Long
     End Select
 End Function
 
-
 ====================================================================================================
 COMPONENT: CSectionLoadState
 TYPE: 2
@@ -1570,7 +1558,6 @@ Private Function NormalizeMy(ByVal momentValue As Double) As Double
         NormalizeMy = mMomentFilter.NormalizeMoment(momentValue, mConcreteDepthForMy)
     End If
 End Function
-
 
 ====================================================================================================
 COMPONENT: modCalculationPurpose
@@ -1895,7 +1882,6 @@ Public Function IsStateBasePurpose(ByVal purpose As ECalculationPurpose) As Bool
     IsStateBasePurpose = (purpose = cpStrength Or purpose = cpCrackedNDS)
 End Function
 
-
 ====================================================================================================
 COMPONENT: modGeometryPrimitives
 TYPE: 1
@@ -2157,7 +2143,6 @@ Private Sub GeometryError(ByVal reason As String)
     Err.Raise vbObjectError + 5401, "modGeometryPrimitives", reason
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modGeometryTypes
 TYPE: 1
@@ -2351,7 +2336,6 @@ Public Function TestBuildGeneratedSectionModel(ByVal mesh As CFiberMeshBuilder, 
     Set TestBuildGeneratedSectionModel = builder.BuildFromGenerated(mesh, rebars, sourceType)
 End Function
 
-
 ====================================================================================================
 COMPONENT: modResultStatus
 TYPE: 1
@@ -2490,7 +2474,6 @@ Public Function ResultKindToText(ByVal value As EResultKind) As String
         Case Else: ResultKindToText = "Generic"
     End Select
 End Function
-
 ====================================================================================================
 COMPONENT: modSectionRecipeApiGuide
 TYPE: 1
@@ -6227,7 +6210,6 @@ LINES: 3731
 '         Public Property Get SourceReference() As String
 '
 
-
 ====================================================================================================
 COMPONENT: modSectionRecipeTypes
 TYPE: 1
@@ -6538,7 +6520,6 @@ Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal sourceReferen
     Err.Raise number, source, reason
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modSolverWorkStats
 TYPE: 1
@@ -6604,7 +6585,6 @@ End Sub
 Public Function UltimateStrainIterationCount() As Long
     UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Function
-
 ====================================================================================================
 COMPONENT: ILimitSearchProblem
 TYPE: 2
@@ -6879,7 +6859,6 @@ Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason 
         ByVal transitionMessage As String, ByVal successMessage As String, _
         Optional ByVal firstSearchExecuted As Boolean = False)
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CFiberMeshBuilder
@@ -7191,7 +7170,6 @@ Public Property Get TestBuildSeconds() As Double
     TestBuildSeconds = mBuildSeconds
 End Property
 
-
 ====================================================================================================
 COMPONENT: CGeometryDiagnostic
 TYPE: 2
@@ -7231,7 +7209,6 @@ Public Property Get detail1() As Double: detail1 = mDetail1: End Property
 Public Property Get detail2() As Double: detail2 = mDetail2: End Property
 ' Возвращает адрес исходного параметра или текстовую ссылку на место его задания.
 Public Property Get sourceReference() As String: sourceReference = mSource: End Property
-
 
 ====================================================================================================
 COMPONENT: CGeometryPath
@@ -7853,7 +7830,6 @@ Private Sub PathError(ByVal description As String, Optional ByVal code As String
     Err.Raise vbObjectError + 5520, "CGeometryPath", SectionRecipeErrorText(description, context:="Геометрическая линия '" & mid & "':")
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CGeometryRegion
 TYPE: 2
@@ -7984,7 +7960,6 @@ Public Sub BuildContours(ByVal contours As CSectionContours)
     contours.clear
     contours.AddMaterialRegion mRegion, "REGION", "Достоверный контур бетонной области."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CGeometryVariableOffset
@@ -8196,7 +8171,6 @@ Private Sub Fail(ByVal reason As String, ByVal sourceReference As String)
     SectionRecipeError "CGeometryVariableOffset", reason, sourceReference
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CPolygonSpec
 TYPE: 2
@@ -8357,7 +8331,6 @@ Private Sub SpecError(ByVal reason As String, Optional ByVal sourceReference As 
     Err.Raise vbObjectError + 5470, "CPolygonSpec", reason
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CSectionRecipeCircle
 TYPE: 2
@@ -8487,7 +8460,6 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByVal diam
     If rebar.count > 0 And rebar.diameter > 0# Then facade.RebarLabel "Circle", "Circle.Axis", 0#, 1# ' Общая подпись всех круговых рядов над сечением.
     facade.VerticalExtent "DIM_CIRCLE_D", "CONTOUR_CIRCLE", "D", -diameter / 2#, -1#, "Диаметр параметрического круглого сечения." ' Диаметр бетонного круга; размер вынесен влево.
 End Sub
-
 ====================================================================================================
 COMPONENT: CSectionRecipeHollowRectangle
 TYPE: 2
@@ -8791,7 +8763,6 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     facade.VerticalExtent "DIM_H_OPENING", "OPENING.Boundary", "H_o", sizes.b / 2#, 1#, "Высота внутреннего отверстия Opening." ' Высота отверстия; размер справа от сечения.
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CSectionRecipePointedSection
 TYPE: 2
@@ -9048,7 +9019,6 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     If sizes.widths(1) > 0# And -sizes.b / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.b / 2#, sizes.h / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1# ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
     If sizes.widths(2) > 0# And maxX - sizes.b / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_RIGHT", "W'", sizes.b / 2#, maxX, sizes.h / 2#, 1#, "Фактический вынос правого края бетона относительно правого торца базы B.", 1# ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionRecipeRectangles
@@ -9325,7 +9295,6 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     End If
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CConcreteElement
 TYPE: 2
@@ -9546,7 +9515,6 @@ Friend Sub RememberGeometryHash(ByVal value As String)
     If Not mExactGeometry Is Nothing Then mExactGeometry.RememberGeometryHash value
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CConcreteRegion
 TYPE: 2
@@ -9734,7 +9702,6 @@ Friend Function MatchesPreparedProperties(ByVal x As Double, ByVal y As Double, 
         mPreparedProperties(3) = ix And mPreparedProperties(4) = iy And mPreparedProperties(5) = ixy)
 End Function
 
-
 ====================================================================================================
 COMPONENT: CRebarContactBuilder
 TYPE: 2
@@ -9842,7 +9809,6 @@ Failed:
     If Len(sourceReference) > 0 And InStr(1, reason, sourceReference, vbBinaryCompare) = 0 Then reason = sourceReference & ": " & reason
     Err.Raise number, owner, reason
 End Function
-
 ====================================================================================================
 COMPONENT: CRebarGroupAnnotationBuilder
 TYPE: 2
@@ -9928,7 +9894,6 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     If right$(textValue, 1) = "." Then textValue = left$(textValue, Len(textValue) - 1)
     FormatNumberInvariant = textValue
 End Function
-
 
 ====================================================================================================
 COMPONENT: CRebarLayout
@@ -10215,7 +10180,6 @@ End Property
 Private Sub RequireMutable()
     If mReadOnly Then Err.Raise vbObjectError + 3110, "CRebarLayout", "Опубликованную арматурную раскладку нельзя изменять. Создайте новую раскладку."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CRebarOffsetContours
@@ -10674,7 +10638,6 @@ End Function
 Private Sub Fail(ByVal reason As String, ByVal sourceReference As String)
     SectionRecipeError "CRebarOffsetContours", reason, sourceReference
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CRebarRuleExecutor
@@ -11790,7 +11753,6 @@ Friend Sub TestCopyTransfer(ByVal positionIndex As Long, ByRef source As TRebarP
     rule = mRules(mPositions(positionIndex).RuleIndex)
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CRebarRuleOptions
 TYPE: 2
@@ -11920,7 +11882,6 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.AnnotationGroup = AnnotationGroup: rule.comment = comment
     rule.sourceReference = sourceReference
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionAnnotationBuilder
@@ -12351,7 +12312,6 @@ Private Function ApproxSign() As String
     ApproxSign = ChrW$(&H2248)
 End Function
 
-
 ====================================================================================================
 COMPONENT: CSectionAnnotations
 TYPE: 2
@@ -12545,7 +12505,6 @@ Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Индекс аннотации вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CSectionBuilder
 TYPE: 2
@@ -12633,7 +12592,6 @@ Private Sub RequireCurrentModel()
     If mModel Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной модели."
     If mModel.revision <> mModelRevision Then SectionRecipeError "CSectionBuilder", "После сборки геометрия модели изменилась; сохранённые сетка, арматура и правила больше не соответствуют модели. Выполните новую сборку."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionContours
@@ -12812,7 +12770,6 @@ End Property
 Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionContours", "Индекс сегмента контура вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionDefinition
@@ -13245,7 +13202,6 @@ Private Sub DefinitionError(ByVal reason As String, Optional ByVal entityID As S
     mDiagnostic.Initialize code, entityID, relatedEntityID, reason, 0#, 0#, reference
     SectionRecipeError "CSectionDefinition", "Определение '" & mTypeID & "': " & reason, reference
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionDefinitionBuilder
@@ -13830,7 +13786,6 @@ End Sub
 Private Sub RequireOpen()
     If mDefinition Is Nothing Or mFinished Then SectionRecipeError "CSectionDefinitionBuilder", "Фасад не открыт для описания сечения."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionGeometryQuery
@@ -16097,7 +16052,6 @@ Friend Property Get TestDomainBuildCount() As Long
     TestDomainBuildCount = mDomainBuildCount
 End Property
 
-
 ====================================================================================================
 COMPONENT: CSectionInputReader
 TYPE: 2
@@ -16333,7 +16287,6 @@ End Function
 Private Sub InvalidCell(ByVal row As Long, ByVal column As Long, ByVal reason As String)
     Err.Raise vbObjectError + 5525, "CSectionInputReader", mTable.sourceReference(row, column) & " (" & mTable.name & "): " & reason
 End Sub
-
 ====================================================================================================
 COMPONENT: CSectionInputTable
 TYPE: 2
@@ -16610,7 +16563,6 @@ Private Sub inputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
     End If
     Err.Raise vbObjectError + 5525, "CSectionInputTable", SectionRecipeErrorText(reason, location)
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionModel
@@ -17800,7 +17752,6 @@ Public Property Get TestForceProbeCount() As Long
     TestForceProbeCount = mForceProbeCount
 End Property
 
-
 ====================================================================================================
 COMPONENT: CSectionModelBuilder
 TYPE: 2
@@ -17867,7 +17818,6 @@ Public Sub AppendConcreteMesh(ByVal model As CSectionModel, ByVal mesh As CFiber
             localIx, localIy, localIxy, False, region ' Точная граница и её A/c/I публикуются одной атомарной операцией.
     Next i
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionPropertiesCalculator
@@ -18702,7 +18652,6 @@ Public Property Get TestLastCalculationSeconds() As Double
     TestLastCalculationSeconds = mLastCalculationSeconds
 End Property
 
-
 ====================================================================================================
 COMPONENT: CSectionRecipeContext
 TYPE: 2
@@ -18769,7 +18718,6 @@ Public Property Get units() As CUnitSystem
     If Not mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст еще не опубликован."
     Set units = mUnits
 End Property
-
 ====================================================================================================
 COMPONENT: ISectionRecipe
 TYPE: 2
@@ -18788,7 +18736,6 @@ Option Explicit
 ' по входным таблицам и системе единиц переданного контекста.
 Public Function CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
 End Function
-
 ====================================================================================================
 COMPONENT: CConcreteMaterialParameters
 TYPE: 2
@@ -18984,7 +18931,6 @@ Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
     mEbt2 = ebt2
     Validate
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CMaterialDiagram
@@ -19532,7 +19478,6 @@ Public Sub TestInitialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal e
         TestInitializeFromTwoCompressionPoints eps1, stress1, eps2, CDbl(stress2)
     End If
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CMaterialModelProvider
@@ -20510,7 +20455,6 @@ Public Sub TestInitializeFromParameters(ByVal concreteParameters As CConcreteMat
     mInitialized = True
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CMaterialModelSpec
 TYPE: 2
@@ -20613,7 +20557,6 @@ End Property
 Public Property Get steelDiagramText() As String
     steelDiagramText = SteelDiagramKindToText(mSteelDiagram)
 End Property
-
 
 ====================================================================================================
 COMPONENT: CSteelMaterialParameters
@@ -20783,7 +20726,6 @@ Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
     Validate
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CTestLinearConcreteMaterial
 TYPE: 2
@@ -20836,7 +20778,6 @@ End Function
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     GetSecantModulus = mElasticModulus
 End Function
-
 ====================================================================================================
 COMPONENT: CTestLinearSteelMaterial
 TYPE: 2
@@ -20889,7 +20830,6 @@ End Function
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     GetSecantModulus = mElasticModulus
 End Function
-
 ====================================================================================================
 COMPONENT: CCapacityCalculator
 TYPE: 2
@@ -21214,7 +21154,6 @@ Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
 
     Set CreateConfiguredSolver = cap
 End Function
-
 
 ====================================================================================================
 COMPONENT: CCapacityLimitSearchProblem
@@ -21747,7 +21686,6 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(format$(value, "0.############"), ",", ".")
 End Function
 
-
 ====================================================================================================
 COMPONENT: CCapacityResult
 TYPE: 2
@@ -22174,7 +22112,6 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCapacityResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CCapacitySolver
@@ -24351,7 +24288,6 @@ Public Property Get TestCriticalStrainUtilization() As Double
     TestCriticalStrainUtilization = mCriticalStrainUtilization
 End Property
 
-
 ====================================================================================================
 COMPONENT: CCrackLimitSearchProblem
 TYPE: 2
@@ -24771,7 +24707,6 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
         FormatNumberInvariant = left$(FormatNumberInvariant, Len(FormatNumberInvariant) - 1)
 End Function
 
-
 ====================================================================================================
 COMPONENT: CDiscreteForceIntegrator
 TYPE: 2
@@ -24926,7 +24861,6 @@ Public Function TryForces(ByVal diagram As CMaterialDiagram, ByVal eps As Double
     Loop
     TryForces = True
 End Function
-
 
 ====================================================================================================
 COMPONENT: CLimitSearchCoordinator
@@ -25221,7 +25155,6 @@ Private Function NormalizeStrategy(ByVal value As String) As String
             NormalizeStrategy = Trim$(value)
     End Select
 End Function
-
 
 ====================================================================================================
 COMPONENT: CLimitSearchRequest
@@ -25554,7 +25487,6 @@ Private Sub ClearLoadPathSelection()
     mPureAxialLoad = False
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CLimitSearchResult
 TYPE: 2
@@ -25787,7 +25719,6 @@ Public Property Get PointState() As CSectionStateResult
     Set PointState = mPointState
 End Property
 
-
 ====================================================================================================
 COMPONENT: CLinearSystem3x3
 TYPE: 2
@@ -25993,7 +25924,6 @@ End Property
 Public Property Get TestAbsoluteResidual() As Double
     TestAbsoluteResidual = mAbsoluteResidual
 End Property
-
 
 ====================================================================================================
 COMPONENT: CLoadMultiplierSearch
@@ -26809,7 +26739,6 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
-
 ====================================================================================================
 COMPONENT: CSectionNumericalFrame
 TYPE: 2
@@ -26921,7 +26850,6 @@ End Property
 Friend Property Get lengthScale() As Double
     lengthScale = mLength
 End Property
-
 
 ====================================================================================================
 COMPONENT: CSectionSolver
@@ -28674,7 +28602,6 @@ Public Property Get TestMatrixRestartCount() As Long
     TestMatrixRestartCount = mMatrixRestartCount
 End Property
 
-
 ====================================================================================================
 COMPONENT: CSectionStrainLimits
 TYPE: 2
@@ -28811,7 +28738,6 @@ End Property
 Public Property Get description() As String
     description = mDescription
 End Property
-
 
 ====================================================================================================
 COMPONENT: CStateGuessBuilder
@@ -29479,7 +29405,6 @@ End Function
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
-
 
 ====================================================================================================
 COMPONENT: CStateSolutionRunner
@@ -30283,7 +30208,6 @@ End Function
 Friend Property Get TestRetryAttemptCount() As Long
     If Not mRetryAttemptFailures Is Nothing Then TestRetryAttemptCount = mRetryAttemptFailures.count
 End Property
-
 
 ====================================================================================================
 COMPONENT: CUltimateStrainSearch
@@ -31304,7 +31228,6 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
-
 ====================================================================================================
 COMPONENT: modLimitSearchRequestFactory
 TYPE: 1
@@ -31352,7 +31275,6 @@ Public Sub InitializeCrackFormationSearchRequest(ByVal request As CLimitSearchRe
         solutionStrategy, CrackFormationPath, targetN, targetMx, targetMy, _
         momentMxAtReference, momentMyAtReference, referenceX, referenceY
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modNonlinearStepControl
@@ -31404,7 +31326,6 @@ Public Function NonlinearMaterialTransitions(ByVal section As CSectionModel, _
     Next i
     NonlinearMaterialTransitions = first > 0#
 End Function
-
 
 ====================================================================================================
 COMPONENT: CCrackFormationCalculator
@@ -33562,7 +33483,6 @@ Private Function ExecuteFormationSearch(ByVal request As CLimitSearchRequest) As
     Set ExecuteFormationSearch = coordinator.ExecuteCrackFormation(request)
 End Function
 
-
 ====================================================================================================
 COMPONENT: CCrackFormationResult
 TYPE: 2
@@ -33812,7 +33732,6 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CCrackResult
 TYPE: 2
@@ -34004,7 +33923,6 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCrackResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CCrackWidthCalculator
@@ -35622,7 +35540,6 @@ Friend Sub TestRefinalizeWithSpacingText(ByVal text As String)
     FinalizeWidth "Контроль представления готовой формулы."
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CCrackWidthResult
 TYPE: 2
@@ -35942,7 +35859,6 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CLongitudinalCrackCalculator
 TYPE: 2
@@ -36032,7 +35948,6 @@ Public Function BlockedByDependency(ByVal dependencyName As String, ByVal reason
         0#, RbMc2, 0#
     Set BlockedByDependency = result
 End Function
-
 
 ====================================================================================================
 COMPONENT: CLongitudinalCrackResult
@@ -36130,7 +36045,6 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CLongitudinalCrackResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSP35CrackData
@@ -36796,11 +36710,10 @@ Private Function minValue(ByVal first As Double, ByVal second As Double) As Doub
     If first < second Then minValue = first Else minValue = second
 End Function
 
-
 ====================================================================================================
 COMPONENT: CStabilityCalculator
 TYPE: 2
-LINES: 1711
+LINES: 1710
 ====================================================================================================
 Option Explicit
 
@@ -37881,8 +37794,7 @@ Private Function CoreDistanceForEccentricity(ByRef plane As TPlaneResult) As Dou
 End Function
 
 ' Интерполирует таблицу 7.21 СП 35, переданную с листа Config. В книге
-' таблица сохранена в человекочитаемом виде: l0/b, l0/d, l0/i, далее phi_m
-' для нескольких ec/r и табличный phi_l. Расчет использует l0/i и phi-колонки.
+' таблица содержит l0/i, четыре phi_m для ec/r = 0; 0.25; 0.5; 1 и phi_l.
 Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As Double, ByVal q As Double, _
         ByRef phiM As Double, ByRef phiL As Double)
     If Len(mSP35TableInputError) > 0 Then RaiseInput mSP35TableInputError
@@ -37897,7 +37809,7 @@ Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As
     Dim rowCount As Long, numericRow As Long, numericColumn As Long, numericValue As Double
     rowCount = UBound(table721, 1)
     For numericRow = 2 To rowCount
-        For numericColumn = 3 To 8
+        For numericColumn = 1 To 6
             If Not TryReadStrictDouble(table721(numericRow, numericColumn), numericValue) Then RaiseInput "Таблица 7.21 СП 35 содержит неверное число."
             table721(numericRow, numericColumn) = numericValue ' Только локальная копия проверенной таблицы: интерполяция получает однозначные Double независимо от написания десятичного знака.
         Next numericColumn
@@ -37913,15 +37825,15 @@ Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As
     Dim phiLUpper As Double
     phiMLower = InterpolatePhiMByQ(table721, lowerRow, q)
     phiMUpper = InterpolatePhiMByQ(table721, upperRow, q)
-    phiLLower = CDbl(table721(lowerRow, 8))
-    phiLUpper = CDbl(table721(upperRow, 8))
+    phiLLower = CDbl(table721(lowerRow, 6))
+    phiLUpper = CDbl(table721(upperRow, 6))
 
     Dim t As Double
     If lowerRow = upperRow Then
         t = 0#
     Else
-        t = (slenderness - CDbl(table721(lowerRow, 3))) / _
-            (CDbl(table721(upperRow, 3)) - CDbl(table721(lowerRow, 3)))
+        t = (slenderness - CDbl(table721(lowerRow, 1))) / _
+            (CDbl(table721(upperRow, 1)) - CDbl(table721(lowerRow, 1)))
     End If
     phiM = phiMLower + t * (phiMUpper - phiMLower)
     phiL = phiLLower + t * (phiLUpper - phiLLower)
@@ -37929,7 +37841,7 @@ End Sub
 
 ' Проверяет расчетные колонки таблицы без обращения к Excel и без скрытых
 ' нормативных defaults. Возвращает первую неверную строку/колонку для адресной
-' диагностики вызывающего слоя. Две справочные колонки l0/b и l0/d не читаются.
+' диагностики вызывающего слоя. Гибкость неотрицательна; коэффициенты положительны.
 ' Положительность phi и возрастающие узлы защищают интерполяцию и предельную
 ' силу; дополнительные ограничения вроде phi <= 1 здесь не навязываются.
 Public Function TryValidateSP35Table721(ByVal table721 As Variant, ByRef invalidRow As Long, _
@@ -37943,24 +37855,24 @@ Public Function TryValidateSP35Table721(ByVal table721 As Variant, ByRef invalid
     Dim rowCount As Long, columnCount As Long, firstValue As Variant
     rowCount = UBound(table721, 1): columnCount = UBound(table721, 2)
     If LBound(table721, 1) <> 1 Or LBound(table721, 2) <> 1 Or _
-            rowCount < 2 Or columnCount < 8 Then GoTo InvalidStructure
-    firstValue = table721(2, 3)
+            rowCount < 2 Or columnCount <> 6 Then GoTo InvalidStructure
+    firstValue = table721(2, 1)
     On Error GoTo 0
 
     Dim row As Long, column As Long, value As Double, previousNode As Double
     For row = 2 To rowCount
-        For column = 3 To 8
+        For column = 1 To 6
             invalidRow = row: invalidColumn = column
-            If Not SP35TablePositiveNumber(table721(row, column), value) Then
-                If column = 3 Then
-                    reason = "Гибкость l0/i должна быть числом больше нуля. Исправьте значение в таблице."
+            If Not SP35TableNumber(table721(row, column), value, column = 1) Then
+                If column = 1 Then
+                    reason = "Гибкость l0/i должна быть числом не меньше нуля. Исправьте значение в таблице."
                 Else
                     reason = "Коэффициент " & SP35TableColumnName(column) & _
                         " должен быть числом больше нуля. Заполните ячейку корректным коэффициентом."
                 End If
                 Exit Function
             End If
-            If column = 3 Then
+            If column = 1 Then
                 If row > 2 And value <= previousNode Then
                     reason = "Узлы l0/i должны строго возрастать сверху вниз. Исправьте эту строку или предыдущий узел."
                     Exit Function
@@ -37974,20 +37886,20 @@ Public Function TryValidateSP35Table721(ByVal table721 As Variant, ByRef invalid
     Exit Function
 InvalidStructure:
     invalidRow = 0: invalidColumn = 0
-    reason = "Нужен единый прямоугольный диапазон с заголовком, строками данных и восемью колонками: " & _
-        "l0/b, l0/d, l0/i, phi_m(0), phi_m(0.25), phi_m(0.5), phi_m(1), phi_l. Восстановите структуру таблицы."
+    reason = "Нужен единый прямоугольный диапазон с заголовком, строками данных и шестью колонками: " & _
+        "l0/i, phi_m(0), phi_m(0.25), phi_m(0.5), phi_m(1), phi_l. Восстановите структуру таблицы."
 End Function
 
 ' Отличает пустоту, ошибку формулы и нечисловое значение от допустимого
-' положительного коэффициента. Числовые строки остаются допустимыми;
+' числа: ноль допускается только для узла гибкости. Числовые строки допустимы;
 ' логические значения и даты не трактуются как инженерные числа.
-Private Function SP35TablePositiveNumber(ByVal rawValue As Variant, ByRef value As Double) As Boolean
+Private Function SP35TableNumber(ByVal rawValue As Variant, ByRef value As Double, ByVal allowZero As Boolean) As Boolean
     On Error GoTo invalidValue
     If IsError(rawValue) Or IsEmpty(rawValue) Or IsNull(rawValue) Then Exit Function
     If IsObject(rawValue) Or IsArray(rawValue) Then Exit Function
     If VarType(rawValue) = vbBoolean Or VarType(rawValue) = vbDate Then Exit Function
     If Not TryReadStrictDouble(rawValue, value) Then Exit Function
-    SP35TablePositiveNumber = (value > 0#)
+    SP35TableNumber = (value > 0# Or (allowZero And value = 0#))
     Exit Function
 invalidValue:
 End Function
@@ -37996,11 +37908,11 @@ End Function
 ' оставалось понятным и при автономном расчете без Excel-адреса.
 Private Function SP35TableColumnName(ByVal column As Long) As String
     Select Case column
-        Case 4: SP35TableColumnName = "phi_m при ec/r = 0"
-        Case 5: SP35TableColumnName = "phi_m при ec/r = 0.25"
-        Case 6: SP35TableColumnName = "phi_m при ec/r = 0.5"
-        Case 7: SP35TableColumnName = "phi_m при ec/r = 1"
-        Case 8: SP35TableColumnName = "phi_l"
+        Case 2: SP35TableColumnName = "phi_m при ec/r = 0"
+        Case 3: SP35TableColumnName = "phi_m при ec/r = 0.25"
+        Case 4: SP35TableColumnName = "phi_m при ec/r = 0.5"
+        Case 5: SP35TableColumnName = "phi_m при ec/r = 1"
+        Case 6: SP35TableColumnName = "phi_l"
     End Select
 End Function
 
@@ -38011,14 +37923,14 @@ Private Sub FindBoundingRows(ByVal tableData As Variant, ByVal rowCount As Long,
     upperRow = rowCount
     Dim r As Long
     For r = 2 To rowCount
-        If CDbl(tableData(r, 3)) <= slenderness Then lowerRow = r
-        If CDbl(tableData(r, 3)) >= slenderness Then
+        If CDbl(tableData(r, 1)) <= slenderness Then lowerRow = r
+        If CDbl(tableData(r, 1)) >= slenderness Then
             upperRow = r
             Exit For
         End If
     Next r
-    If slenderness <= CDbl(tableData(2, 3)) Then lowerRow = 2: upperRow = 2
-    If slenderness >= CDbl(tableData(rowCount, 3)) Then lowerRow = rowCount: upperRow = rowCount
+    If slenderness <= CDbl(tableData(2, 1)) Then lowerRow = 2: upperRow = 2
+    If slenderness >= CDbl(tableData(rowCount, 1)) Then lowerRow = rowCount: upperRow = rowCount
 End Sub
 
 ' Интерполяция phi_m по отношению ec/r.
@@ -38026,11 +37938,11 @@ Private Function InterpolatePhiMByQ(ByVal tableData As Variant, ByVal rowIndex A
     Dim qValues(1 To 4) As Double
     qValues(1) = 0#: qValues(2) = 0.25: qValues(3) = 0.5: qValues(4) = 1#
     If q <= qValues(1) Then
-        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 4))
+        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 2))
         Exit Function
     End If
     If q >= qValues(4) Then
-        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 7))
+        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 5))
         Exit Function
     End If
 
@@ -38039,8 +37951,8 @@ Private Function InterpolatePhiMByQ(ByVal tableData As Variant, ByVal rowIndex A
         If q >= qValues(i) And q <= qValues(i + 1) Then
             Dim t As Double
             t = (q - qValues(i)) / (qValues(i + 1) - qValues(i))
-            InterpolatePhiMByQ = CDbl(tableData(rowIndex, i + 3)) + _
-                t * (CDbl(tableData(rowIndex, i + 4)) - CDbl(tableData(rowIndex, i + 3)))
+            InterpolatePhiMByQ = CDbl(tableData(rowIndex, i + 1)) + _
+                t * (CDbl(tableData(rowIndex, i + 2)) - CDbl(tableData(rowIndex, i + 1)))
             Exit Function
         End If
     Next i
@@ -38512,7 +38424,6 @@ End Property
 Public Property Get PlanePassed2() As Boolean
     PlanePassed2 = mPlanePassed2
 End Property
-
 
 ====================================================================================================
 COMPONENT: CStabilityResult
@@ -39213,7 +39124,6 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CStabilityResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
@@ -41481,7 +41391,6 @@ Public Function TestRepeatCrackCalculation(ByVal index As Long) As CCrackResult
     RunCrackWidth index, profile
 End Function
 
-
 ====================================================================================================
 COMPONENT: CCalculationProfile
 TYPE: 2
@@ -41815,7 +41724,6 @@ Private Function ParseVisualizationPrecision(ByVal valueText As String, ByVal se
             settingName & " должен быть целым числом от 0 до 10."
     ParseVisualizationPrecision = CLng(numericValue)
 End Function
-
 
 ====================================================================================================
 COMPONENT: CCalculationProfileCatalog
@@ -42172,7 +42080,6 @@ Public Property Get ProfileAt(ByVal index As Long) As CCalculationProfile
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, "CCalculationProfileCatalog", "Индекс профиля вне диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
     Set ProfileAt = mProfiles(index)
 End Property
-
 
 ====================================================================================================
 COMPONENT: CCombinationResult
@@ -42592,7 +42499,6 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CDirectStateResult
 TYPE: 2
@@ -42757,7 +42663,6 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CDirectStateResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSectionStateResult
@@ -43392,7 +43297,6 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a <= b Then MinDouble = a Else MinDouble = b
 End Function
 
-
 ====================================================================================================
 COMPONENT: CStateProvider
 TYPE: 2
@@ -43642,7 +43546,6 @@ Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
 
-
 ====================================================================================================
 COMPONENT: CStateRepository
 TYPE: 2
@@ -43835,7 +43738,6 @@ Private Sub AssertWritable()
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CStateRequest
 TYPE: 2
@@ -43943,7 +43845,6 @@ End Property
 Public Property Get AllowRetryStarts() As Boolean
     AllowRetryStarts = mAllowRetryStarts
 End Property
-
 
 ====================================================================================================
 COMPONENT: CStrengthResult
@@ -44078,7 +43979,6 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CStrengthResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CAutoCADContourReader
@@ -44260,7 +44160,6 @@ Private Sub CleanupTemporary(ByVal temporary As Object, ByVal pieces As Variant)
     If Not temporary Is Nothing Then temporary.Delete
     On Error GoTo 0
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CAutoCADSectionModelImporter
@@ -45269,7 +45168,6 @@ End Function
 Public Property Get TestDebugEdgeProbeCount() As Long
     TestDebugEdgeProbeCount = mEdgeProbeCount
 End Property
-
 
 ====================================================================================================
 COMPONENT: CBatchResultWriter
@@ -46355,7 +46253,6 @@ Private Function SavedSummaryUnit(ByVal snapshot As Object, ByVal key As String)
     Err.Raise 5, "CBatchResultWriter", "В снимке отсутствует единица " & key
 End Function
 
-
 ====================================================================================================
 COMPONENT: CBinarySnapshotFile
 TYPE: 2
@@ -46654,7 +46551,6 @@ End Property
 Public Property Get ReadCalls() As Long
     ReadCalls = mReadCalls
 End Property
-
 ====================================================================================================
 COMPONENT: CCalculationSnapshot
 TYPE: 2
@@ -47040,7 +46936,6 @@ Private Function IsCaseProperty(ByRef values As Variant, ByVal row As Long) As B
     Dim key As String: key = CStr(values(row, 3))
     IsCaseProperty = CStr(values(row, 2)) <> "ALL" Or key = "LoadReferenceX" Or key = "LoadReferenceY" Or left$(key, Len("SP35.Slenderness")) = "SP35.Slenderness"
 End Function
-
 
 ====================================================================================================
 COMPONENT: CCalculationSnapshotStore
@@ -47609,7 +47504,6 @@ Private Function FileIdentity(ByVal path As String) As String
         Dim digest As New CFileChecksum: FileIdentity = digest.FileSHA256(path)
     End If
 End Function
-
 
 ====================================================================================================
 COMPONENT: CCrackSummaryWriter
@@ -48752,7 +48646,6 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
     mSnapshotLengthUnit = vbNullString
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CExcelAppStateGuard
 TYPE: 2
@@ -48874,7 +48767,6 @@ End Sub
 Private Sub Class_Terminate()
     Restore
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CExecutionReport
@@ -49545,7 +49437,6 @@ Private Function JoinReportParts(ByRef parts() As String, ByVal count As Long) A
     JoinReportParts = Join(parts, vbCrLf)
 End Function
 
-
 ====================================================================================================
 COMPONENT: CFileChecksum
 TYPE: 2
@@ -49815,7 +49706,6 @@ End Function
 Public Sub CancelDigest()
     If mStreamHash <> 0 Then CryptDestroyHash mStreamHash: mStreamHash = 0
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CIndexedSnapshotFile
@@ -50265,7 +50155,6 @@ End Function
 Public Sub CloseFile()
     If Not mFile Is Nothing Then mFile.CloseFile
 End Sub
-
 ====================================================================================================
 COMPONENT: CLoadCombinationReader
 TYPE: 2
@@ -50482,7 +50371,6 @@ Private Sub AppendError(ByRef errorText As String, ByRef hasError As Boolean, By
     If Len(errorText) > 0 Then errorText = errorText & "; "
     errorText = errorText & item
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CNDMResultsWriter
@@ -52655,7 +52543,6 @@ NextBaseTable:
     WriteSnapshotTitle Workbook
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CPlotAnnotationLayout
 TYPE: 2
@@ -53196,7 +53083,6 @@ Public Property Get dimensionsEnabled() As Boolean: dimensionsEnabled = mDimensi
 ' Активна ли группа подписей арматуры.
 Public Property Get rebarLabelsEnabled() As Boolean: rebarLabelsEnabled = mRebarLabelsEnabled: End Property
 
-
 ====================================================================================================
 COMPONENT: CResultBlockIndex
 TYPE: 2
@@ -53383,7 +53269,6 @@ Friend Sub AppendPreparedBlock(ByRef values() As Variant, ByVal first As Long, B
     Append first, rows, sample
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CResultReadSource
 TYPE: 2
@@ -53556,7 +53441,6 @@ Public Function LoadAll() As CCalculationSnapshot
     If Not mPrepared Is Nothing Then Set LoadAll = mPrepared Else Set LoadAll = mIndexed.LoadAll
 End Function
 
-
 ====================================================================================================
 COMPONENT: CSectionInputSnapshotReader
 TYPE: 2
@@ -53612,7 +53496,6 @@ Private Function columnName(ByVal column As Long) As String
         column = column \ 26
     Loop
 End Function
-
 
 ====================================================================================================
 COMPONENT: CSectionPlotDataReader
@@ -55081,7 +54964,6 @@ Public Property Get AnnotationNormalY(ByVal index As Long) As Double: Annotation
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property
 ' Возвращает прочитанный и проверенный угол без повторного разбора текстовых значений Results.
 Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: AnnotationSweepAngle = mAnnotationSweepAngle(index): End Property
-
 
 ====================================================================================================
 COMPONENT: CSectionPlotter
@@ -57311,7 +57193,6 @@ Public Function TestDrawConcreteRegionShape(ByVal chart As Object, ByVal region 
     Set TestDrawConcreteRegionShape = shape
 End Function
 
-
 ====================================================================================================
 COMPONENT: CSectionTypeRegistry
 TYPE: 2
@@ -57386,7 +57267,6 @@ Public Function CreateDefinition(ByVal typeID As String, ByVal context As CSecti
     Set recipe = CreateRecipe(typeID)
     Set CreateDefinition = recipe.CreateDefinition(context)
 End Function
-
 ====================================================================================================
 COMPONENT: CStabilitySummaryWriter
 TYPE: 2
@@ -58356,7 +58236,6 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
     FormatTable Target, Nothing, data
 End Sub
 
-
 ====================================================================================================
 COMPONENT: CStrengthSummaryWriter
 TYPE: 2
@@ -59214,7 +59093,6 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
     Target.offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
     FormatTable Target, Nothing, data
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CSystemSettingsReader
@@ -60095,7 +59973,6 @@ Public Function KeyAt(ByVal index As Long) As String
     KeyAt = mKeys(index)
 End Function
 
-
 ====================================================================================================
 COMPONENT: CUnitSystem
 TYPE: 2
@@ -60574,7 +60451,6 @@ Private Function ValidMySign(ByVal value As String, ByVal settingKey As String, 
         Case Else: Err.Raise vbObjectError + 4538, "CUnitSystem", settings.InputErrorMessage(settingKey, "Правило знака момента My не распознано.", "Выберите +X tension или -X tension: знак X обозначает сторону растяжения при положительном My.")
     End Select
 End Function
-
 
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
@@ -62963,7 +62839,6 @@ Public Function TestReadStateMetadataForTests(ByVal Workbook As Object, ByVal co
     TestReadStateMetadataForTests = CStr(extension) & "|" & warning
 End Function
 
-
 ====================================================================================================
 COMPONENT: modCalculationSnapshot
 TYPE: 1
@@ -63346,7 +63221,6 @@ Failed:
     Err.Raise number, origin, reason
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modIndexedExcelResults
 TYPE: 1
@@ -63577,7 +63451,6 @@ Public Function TestIndexedExcelReadCounters(Optional ByVal reset As Boolean = F
     TestIndexedExcelReadCounters = CStr(mTestRowsRead) & "|" & CStr(mTestBlocksRead) & "|" & CStr(mTestBootstrapRows)
     If reset Then mTestRowsRead = 0#: mTestBlocksRead = 0: mTestBootstrapRows = 0#
 End Function
-
 ====================================================================================================
 COMPONENT: modMeshConfiguration
 TYPE: 1
@@ -63692,7 +63565,6 @@ Public Function ReadMeshBoundarySubdivisions(ByVal settings As CSystemSettingsRe
         settings.InputErrorMessage("Mesh.BoundarySubdivisions", "Число подъячеек меньше 1.", "Введите целое число не меньше 1.")
 End Function
 
-
 ====================================================================================================
 COMPONENT: modResultsFormatting
 TYPE: 1
@@ -63757,7 +63629,6 @@ Public Sub WriteResultDataSlice(ByVal Target As Object, ByRef data() As Variant,
     Next row
     Target.offset(firstRow - 1, firstColumn - 1).Resize(rows, columns).value2 = output
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modSectionIllustrations
@@ -63850,7 +63721,6 @@ RestoreState:
     On Error GoTo 0
     If number <> 0 Then Err.Raise number, "SwitchSectionPicture", description
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modSectionOptionalData
@@ -64007,7 +63877,6 @@ Private Sub JsonSpace(ByVal text As String, ByRef position As Long)
     Loop
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modSectionRecipeSetup
 TYPE: 1
@@ -64068,7 +63937,6 @@ Private Function RequiredTable(ByVal name As String) As Object
     On Error GoTo 0
     If RequiredTable Is Nothing Then SectionRecipeError "modSectionRecipeSetup", "Не найден диапазон '" & name & "'. Восстановите именованный диапазон Config."
 End Function
-
 
 ====================================================================================================
 COMPONENT: modSectionSnapshot
@@ -65322,7 +65190,6 @@ Public Function TestSavedBoundaryReadCounts(Optional ByVal reset As Boolean = Fa
     If reset Then mTestBoundaryFullReads = 0: mTestBoundaryHashReads = 0
 End Function
 
-
 ====================================================================================================
 COMPONENT: modSnapshotTables
 TYPE: 1
@@ -65432,7 +65299,6 @@ Public Sub ValidateSnapshotRunID(ByRef values As Variant, ByVal key As String, B
         End If
     Next row
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modStatusFormatting
@@ -65559,7 +65425,6 @@ Private Function StatusPolicy() As CResultStatusPolicy
     If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
-
 
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
@@ -66946,7 +66811,6 @@ Private Function FinishWorkbookAction(ByVal Workbook As Object, ByVal message As
     FinishWorkbookAction = WorkbookMessageParagraph(message, timeCaption & ": " & format$(ElapsedSecondsFrom(startedAt), "0.00") & " с.")
 End Function
 
-
 ====================================================================================================
 COMPONENT: modWorkbookMessages
 TYPE: 1
@@ -67383,7 +67247,6 @@ Public Function TestWorkbookDrawingPending(ByVal Workbook As Object) As Boolean
     Next pending
 End Function
 
-
 ====================================================================================================
 COMPONENT: CTestExcelApplicationState
 TYPE: 2
@@ -67524,7 +67387,6 @@ Public Property Get WorksheetFunction() As Object
     If TestNativeApplication Is Nothing Then Err.Raise 5, "CTestExcelApplicationState", "Для WorksheetFunction требуется приватный native Excel."
     Set WorksheetFunction = TestNativeApplication.WorksheetFunction
 End Property
-
 ====================================================================================================
 COMPONENT: CTestFakeAcadContour
 TYPE: 2
@@ -67742,7 +67604,6 @@ End Function
 Public Sub Delete()
     mDeleted = True
 End Sub
-
 
 ====================================================================================================
 COMPONENT: CTestFakeAcadContourExport
@@ -67978,7 +67839,6 @@ End Sub
 Public Sub GetXData(ByVal appName As String, ByRef codes As Variant, ByRef values As Variant)
     codes = mCodes: values = mValues
 End Sub
-
 ====================================================================================================
 COMPONENT: CTestFakeAcadDocument
 TYPE: 2
@@ -68057,7 +67917,6 @@ End Property
 Public Property Get TestVariableReads() As Long
     TestVariableReads = mVariableReads
 End Property
-
 ====================================================================================================
 COMPONENT: CTestFakeAcadLine
 TYPE: 2
@@ -68127,7 +67986,6 @@ End Property
 Public Property Get TestDeleted() As Boolean
     TestDeleted = mDeleted
 End Property
-
 
 ====================================================================================================
 COMPONENT: CTestFakeAcadRegion
@@ -68319,7 +68177,6 @@ End Sub
 Public Property Get TestDeleted() As Boolean
     TestDeleted = mDeleted
 End Property
-
 
 ====================================================================================================
 COMPONENT: CTestLimitSearchProblem
@@ -69199,7 +69056,6 @@ Private Function TestMultiplierFaultReason() As String
     TestMultiplierFaultReason = "Контрольный отказ LoadMultiplier, сценарий " & CStr(mMultiplierScenario) & "."
 End Function
 
-
 ====================================================================================================
 COMPONENT: CTestWorkflowWorkbook
 TYPE: 2
@@ -69272,7 +69128,6 @@ End Property
 Public Property Get Windows() As Object
     Set Windows = mWorkbook.Windows
 End Property
-
 ====================================================================================================
 COMPONENT: modTestAudit02Api
 TYPE: 1
@@ -71319,7 +71174,6 @@ Private Sub TestGeometryWarningParagraphs()
     TestCheck "presentation.geometry.warning.quoted", WorkbookDialogText(warning) = warning
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestAudit02Snapshots
 TYPE: 1
@@ -71626,7 +71480,6 @@ Private Function TestRecipeRuleFields(ByVal definition As CSectionDefinition) As
     Next index
     TestRecipeRuleFields = result
 End Function
-
 
 ====================================================================================================
 COMPONENT: modTestAutoCADConfig
@@ -72959,7 +72812,6 @@ Private Sub TestCheckNativeColors(ByRef stats As TCadStats, ByVal doc As Object,
         End If
     Next entity
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestAutoCADContours
@@ -75642,11 +75494,10 @@ Private Sub TestSetGeometryExportSetting(ByVal system As Object, ByVal key As St
     Err.Raise 5, "modTestAutoCADContours", "В частной книге отсутствует настройка " & key
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 10966
+LINES: 11027
 ====================================================================================================
 Option Explicit
 
@@ -81871,17 +81722,62 @@ Private Function TestSP35InterpolatedPhiM(ByVal q As Double) As Double
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет продление таблицы снизу и сверху по независимым коэффициентам и весам ec/r.
+Private Sub TestSP35ZeroExtension(ByRef stats As TBatchTestStats)
+    Dim table As Variant, column As Long, index As Long, query As Variant, q As Variant, expected As Variant
+    Dim section As CSectionModel, provider As CMaterialModelProvider, props As CSectionPropertiesCalculator
+    Dim calc As CStabilityCalculator
+    table = ThisWorkbook.names.item("rngSP35Table721").RefersToRange.value2
+    TestAssertClose stats, "sp35.extension.firstNode", CDbl(table(2, 1)), 0#, 0#
+    TestAssertClose stats, "sp35.extension.secondNode", CDbl(table(3, 1)), 14#, 0#
+    For column = 2 To 6
+        TestAssertClose stats, "sp35.extension.same14." & CStr(column), CDbl(table(2, column)), CDbl(table(3, column)), 0#
+    Next column
+    Set section = TestBuildCircleStabilitySection(500#, 4, 12#): Set provider = TestMaterialProvider()
+    Set props = New CSectionPropertiesCalculator: props.CalculateTransformedByModuli section, 32500#, 200000#
+    q = Array(0#, 0.125, 0.25, 0.375, 0.5, 0.75, 1#)
+    expected = Array(1#, 0.95, 0.9, 0.855, 0.81, 0.75, 0.69)
+    expected(0) = 1# - 0.4 / props.PrincipalPlaneCoreDistance(section, 1, True, False)
+    For Each query In Array(0.001, 7#, 14#)
+        For index = 0 To UBound(q)
+            Set calc = TestAudit03SP35TableProbe(section, provider, props, table, CDbl(query), CDbl(q(index)))
+            If index = 0 Then
+                TestAssertClose stats, "sp35.extension.zeroMoment.ea." & CStr(query), calc.Eccentricity1, 1#, 0.00000001
+                TestAssertClose stats, "sp35.extension.zeroMoment.core." & CStr(query), calc.CoreDistance1, props.PrincipalPlaneCoreDistance(section, 1, True, False), 0.00000001
+            End If
+            TestAssertTrue stats, "sp35.extension.low.valid." & CStr(query) & "." & CStr(index), calc.inputValid
+            TestAssertClose stats, "sp35.extension.low.phiM." & CStr(query) & "." & CStr(index), calc.PhiM1, CDbl(expected(index)), 0.00000001
+            TestAssertClose stats, "sp35.extension.low.phiL." & CStr(query) & "." & CStr(index), calc.PhiLTable1, 1#, 0.00000001
+        Next index
+    Next query
+    expected = Array(0.33, 0.305, 0.28, 0.26, 0.24, 0.225, 0.21)
+    expected(0) = 0.33 - 0.2 / props.PrincipalPlaneCoreDistance(section, 1, True, False)
+    For Each query In Array(150#, 1000000#, 2000000#)
+        For index = 0 To UBound(q)
+            Set calc = TestAudit03SP35TableProbe(section, provider, props, table, CDbl(query), CDbl(q(index)))
+            If index = 0 Then
+                TestAssertClose stats, "sp35.extension.zeroMoment.ea." & CStr(query), calc.Eccentricity1, 1#, 0.00000001
+                TestAssertClose stats, "sp35.extension.zeroMoment.core." & CStr(query), calc.CoreDistance1, props.PrincipalPlaneCoreDistance(section, 1, True, False), 0.00000001
+            End If
+            TestAssertTrue stats, "sp35.extension.high.valid." & CStr(query) & "." & CStr(index), calc.inputValid
+            TestAssertClose stats, "sp35.extension.high.phiM." & CStr(query) & "." & CStr(index), calc.PhiM1, CDbl(expected(index)), 0.00000001
+            TestAssertClose stats, "sp35.extension.high.phiL." & CStr(query) & "." & CStr(index), calc.PhiLTable1, 0.06, 0.00000001
+        Next index
+    Next query
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Искусственная таблица 7.21 с двумя строками по l0/i = 10 и 20.
 Private Function TestSP35InterpolationTable() As Variant
-    Dim tableData(1 To 3, 1 To 8) As Variant
-    tableData(1, 1) = "l0/b": tableData(1, 2) = "l0/d": tableData(1, 3) = "l0/i"
-    tableData(1, 4) = "phi_m q=0": tableData(1, 5) = "phi_m q=0.25"
-    tableData(1, 6) = "phi_m q=0.50": tableData(1, 7) = "phi_m q=1.00"
-    tableData(1, 8) = "phi_l"
-    tableData(2, 3) = 10#: tableData(2, 4) = 1#: tableData(2, 5) = 2#
-    tableData(2, 6) = 3#: tableData(2, 7) = 5#: tableData(2, 8) = 1.1
-    tableData(3, 3) = 20#: tableData(3, 4) = 11#: tableData(3, 5) = 12#
-    tableData(3, 6) = 13#: tableData(3, 7) = 15#: tableData(3, 8) = 1.3
+    Dim tableData(1 To 3, 1 To 6) As Variant
+    tableData(1, 1) = "l0/i"
+    tableData(1, 2) = "phi_m q=0": tableData(1, 3) = "phi_m q=0.25"
+    tableData(1, 4) = "phi_m q=0.50": tableData(1, 5) = "phi_m q=1.00"
+    tableData(1, 6) = "phi_l"
+    tableData(2, 1) = 10#: tableData(2, 2) = 1#: tableData(2, 3) = 2#
+    tableData(2, 4) = 3#: tableData(2, 5) = 5#: tableData(2, 6) = 1.1
+    tableData(3, 1) = 20#: tableData(3, 2) = 11#: tableData(3, 3) = 12#
+    tableData(3, 4) = 13#: tableData(3, 5) = 15#: tableData(3, 6) = 1.3
     TestSP35InterpolationTable = tableData
 End Function
 
@@ -85453,7 +85349,7 @@ End Sub
 ' ========================== ДЛЯ ТЕСТОВ: AUDIT03 SP35 TABLE ==========================
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет реальные 18 строк таблицы Config во всех расчетных колонках.
+' Проверяет все строки таблицы Config во всех расчетных колонках.
 ' Варианты выполняются в существующем test module и возвращают исходные
 ' формулы таблицы; нормативные defaults не подменяются результатами теста.
 Public Function TestRunAudit03SP35TableInvalidReproducer(Optional ByRef passed As Long = 0, _
@@ -85472,18 +85368,19 @@ Public Function TestRunAudit03SP35TableInvalidReproducer(Optional ByRef passed A
     Set policy = New CResultStatusPolicy
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli section, 32500#, 200000#
-    TestAssertTrue stats, "audit03.table.shape", tableRange.rows.count = 19 And tableRange.columns.count = 8
+    TestAssertTrue stats, "audit03.table.shape", tableRange.rows.count = 20 And tableRange.columns.count = 6
     For row = 2 To tableRange.rows.count
-        For column = 3 To 8
+        For column = 1 To 6
             For invalidIndex = 0 To 4
                 tableRange.formula = saved
                 data = tableRange.value2
-                slenderness = CDbl(data(row, 3))
+                slenderness = CDbl(data(row, 1))
+                If slenderness = 0# Then slenderness = 7#
                 Select Case column
-                    Case 4: q = 0.125
-                    Case 5: q = 0.25
-                    Case 6: q = 0.5
-                    Case 7: q = 0.75
+                    Case 2: q = 0.125
+                    Case 3: q = 0.25
+                    Case 4: q = 0.5
+                    Case 5: q = 0.75
                     Case Else: q = 0.5
                 End Select
                 Select Case invalidIndex
@@ -85497,9 +85394,13 @@ Public Function TestRunAudit03SP35TableInvalidReproducer(Optional ByRef passed A
                 data = tableRange.value2
                 Set calc = TestAudit03SP35TableProbe(section, provider, props, data, slenderness, q)
                 prefix = "audit03.table.invalid." & CStr(row) & "." & CStr(column) & "." & CStr(invalidIndex)
-                TestAssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
-                TestAssertTrue stats, prefix & ".notNumFail", calc.ResultMeta.InternalStatus <> rsNumericalFailure
-                TestAssertTrue stats, prefix & ".comment", Len(calc.ResultMeta.resultComment) > 0
+                If row = 2 And column = 1 And invalidIndex = 3 Then
+                    TestAssertTrue stats, prefix & ".zeroAccepted", calc.inputValid
+                Else
+                    TestAssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
+                    TestAssertTrue stats, prefix & ".notNumFail", calc.ResultMeta.InternalStatus <> rsNumericalFailure
+                    TestAssertTrue stats, prefix & ".comment", Len(calc.ResultMeta.resultComment) > 0
+                End If
                 TestAppendLine stats, "SP35_INVALID: " & prefix & "|cell=" & tableRange.cells(row, column).address(False, False) & _
                     "|status=" & policy.ExternalStatus(calc.ResultMeta) & "|comment=" & calc.ResultMeta.resultComment
             Next invalidIndex
@@ -85524,9 +85425,9 @@ RestoreFailed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет наблюдаемый смысл каждой из 144 ячеек. Узлы и коэффициенты
+' Проверяет наблюдаемый смысл каждого рабочего поля таблицы. Узлы и коэффициенты
 ' проверяются раздельно: по точным табличным значениям и независимым весам
-' интерполяции; две справочные колонки не должны вмешиваться в расчет.
+' интерполяции, включая влияние нулевого и крайнего узлов.
 Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long = 0, _
         Optional ByRef Failed As Long = 0) As String
     Dim stats As TBatchTestStats, tableRange As Object, saved As Variant, original As Variant
@@ -85535,9 +85436,10 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
     Dim baseline As CStabilityCalculator, q As Double, node As Double, prefix As String
     Dim expectedM As Double, expectedL As Double, weight As Double, delta As Double
     Dim previous As Double, nextNode As Double, shift As Double, query As Double, expected As Double
-    Dim covered As Long
+    Dim covered As Long, probeNode As Double, rowWeight As Double
     On Error GoTo Failed
     TestLocaleSP35Interpolation stats
+    TestSP35ZeroExtension stats
     Set tableRange = ThisWorkbook.names.item("rngSP35Table721").RefersToRange
     saved = tableRange.formula: original = tableRange.value2
     Set section = TestBuildCircleStabilitySection(500#, 4, 12#)
@@ -85545,46 +85447,52 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
     Set props = New CSectionPropertiesCalculator
     props.CalculateTransformedByModuli section, 32500#, 200000#
     For row = 2 To tableRange.rows.count
-        node = CDbl(original(row, 3))
-        For column = 1 To 8
+        node = CDbl(original(row, 1))
+        For column = 1 To 6
             tableRange.formula = saved
             prefix = "audit03.table.behavior." & CStr(row) & "." & CStr(column)
             q = 0.5: weight = 0#: delta = 0.05
             Select Case column
-                Case 4: q = 0.125: weight = 0.5
-                Case 5: q = 0.25: weight = 1#
-                Case 6: q = 0.5: weight = 1#
-                Case 7: q = 0.75: weight = 0.5
+                Case 2: q = 0.125: weight = 0.5
+                Case 3: q = 0.25: weight = 1#
+                Case 4: q = 0.5: weight = 1#
+                Case 5: q = 0.75: weight = 0.5
             End Select
-            If column = 3 Then
+            If column = 1 Then
                 ' Только диагностические phi делают все узлы наблюдаемыми,
                 ' включая последнюю строку с одинаковыми штатными phi.
                 ' Сами l0/i читаются из настоящей таблицы Config.
                 data = tableRange.value2
                 For j = 2 To UBound(data, 1)
-                    data(j, 4) = 1# + j * 0.01: data(j, 5) = data(j, 4)
-                    data(j, 6) = data(j, 4): data(j, 7) = data(j, 4)
-                    data(j, 8) = 1# + j * 0.005
+                    data(j, 2) = 1# + j * 0.01: data(j, 3) = data(j, 2)
+                    data(j, 4) = data(j, 2): data(j, 5) = data(j, 2)
+                    data(j, 6) = 1# + j * 0.005
                 Next j
                 If row < UBound(data, 1) Then
-                    nextNode = CDbl(original(row + 1, 3))
-                    If row = 2 Then previous = 0# Else previous = CDbl(original(row - 1, 3))
+                    nextNode = CDbl(original(row + 1, 1))
+                    If row = 2 Then previous = 0# Else previous = CDbl(original(row - 1, 1))
                     shift = 0.25 * GeomMin(node - previous, nextNode - node)
                     query = node + 0.25 * (nextNode - node)
-                    expected = CDbl(data(row, 4)) + 0.25 * 0.01
+                    expected = CDbl(data(row, 2)) + 0.25 * 0.01
                     Set baseline = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
                     TestAssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
-                    data(row, 3) = node - shift
-                    expected = CDbl(data(row, 4)) + (query - (node - shift)) / (nextNode - (node - shift)) * 0.01
+                    If row = 2 And node = 0# Then
+                        shift = 0.125 * (nextNode - node)
+                        data(row, 1) = node + shift
+                        expected = CDbl(data(row, 2)) + (query - (node + shift)) / (nextNode - (node + shift)) * 0.01
+                    Else
+                        data(row, 1) = node - shift
+                        expected = CDbl(data(row, 2)) + (query - (node - shift)) / (nextNode - (node - shift)) * 0.01
+                    End If
                 Else
-                    previous = CDbl(original(row - 1, 3))
+                    previous = CDbl(original(row - 1, 1))
                     shift = 0.25 * (node - previous)
                     query = previous + 0.75 * (node - previous)
-                    expected = CDbl(data(row - 1, 4)) + 0.75 * 0.01
+                    expected = CDbl(data(row - 1, 2)) + 0.75 * 0.01
                     Set baseline = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
                     TestAssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
-                    data(row, 3) = node + shift
-                    expected = CDbl(data(row - 1, 4)) + (query - previous) / (node + shift - previous) * 0.01
+                    data(row, 1) = node + shift
+                    expected = CDbl(data(row - 1, 2)) + (query - previous) / (node + shift - previous) * 0.01
                 End If
                 tableRange.cells(row, column).value2 = data(row, column)
                 Set calc = TestAudit03SP35TableProbe(section, provider, props, data, query, q)
@@ -85592,40 +85500,38 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
                 TestAssertClose stats, prefix & ".changedWeight", calc.PhiM1, expected, 0.00000001
                 TestAssertTrue stats, prefix & ".active", Abs(calc.PhiM1 - baseline.PhiM1) > 0.000000001
             Else
-                Set baseline = TestAudit03SP35TableProbe(section, provider, props, original, node, q)
+                probeNode = node: rowWeight = 1#
+                If node = 0# Then probeNode = 0.5 * CDbl(original(row + 1, 1)): rowWeight = 0.5
+                Set baseline = TestAudit03SP35TableProbe(section, provider, props, original, probeNode, q)
                 expectedM = TestAudit03TableNodePhiM(original, row, q)
-                expectedL = CDbl(original(row, 8))
+                expectedL = CDbl(original(row, 6))
+                If node = 0# Then
+                    expectedM = 0.5 * (expectedM + TestAudit03TableNodePhiM(original, row + 1, q))
+                    expectedL = 0.5 * (expectedL + CDbl(original(row + 1, 6)))
+                End If
                 TestAssertTrue stats, prefix & ".baselineValid", baseline.inputValid
                 TestAssertClose stats, prefix & ".baselineM", baseline.PhiM1, expectedM, 0.00000001
                 TestAssertClose stats, prefix & ".baselineL", baseline.PhiLTable1, expectedL, 0.00000001
-                If column < 3 Then
-                    tableRange.cells(row, column).value2 = CDbl(original(row, column)) * 1.25
-                Else
-                    tableRange.cells(row, column).value2 = CDbl(original(row, column)) + delta
-                End If
+                tableRange.cells(row, column).value2 = CDbl(original(row, column)) + delta
                 data = tableRange.value2
-                Set calc = TestAudit03SP35TableProbe(section, provider, props, data, node, q)
-                If column < 3 Then
-                    TestAssertClose stats, prefix & ".referenceM", calc.PhiM1, expectedM, 0.00000001
-                    TestAssertClose stats, prefix & ".referenceL", calc.PhiLTable1, expectedL, 0.00000001
-                    TestAssertClose stats, prefix & ".referenceNult", calc.Nultimate1, baseline.Nultimate1, 0.000001
-                ElseIf column = 8 Then
-                    TestAssertClose stats, prefix & ".activeL", calc.PhiLTable1, expectedL + delta, 0.00000001
+                Set calc = TestAudit03SP35TableProbe(section, provider, props, data, probeNode, q)
+                If column = 6 Then
+                    TestAssertClose stats, prefix & ".activeL", calc.PhiLTable1, expectedL + rowWeight * delta, 0.00000001
                     TestAssertClose stats, prefix & ".unaffectedM", calc.PhiM1, expectedM, 0.00000001
                     TestAssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
                 Else
-                    TestAssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + weight * delta, 0.00000001
+                    TestAssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + rowWeight * weight * delta, 0.00000001
                     TestAssertClose stats, prefix & ".unaffectedL", calc.PhiLTable1, expectedL, 0.00000001
                     TestAssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
                 End If
             End If
             TestAppendLine stats, "SP35_BEHAVIOR: " & prefix & "|cell=" & tableRange.cells(row, column).address(False, False) & _
-                "|reference=" & CStr(column < 3) & "|phiM=" & TestFormatNumberInvariant(calc.PhiM1) & _
+                "|reference=" & CStr(False) & "|phiM=" & TestFormatNumberInvariant(calc.PhiM1) & _
                 "|phiL=" & TestFormatNumberInvariant(calc.PhiLTable1)
             covered = covered + 1
         Next column
     Next row
-    TestAssertTrue stats, "audit03.table.all144", covered = 144
+    TestAssertTrue stats, "audit03.table.allFields", covered = (tableRange.rows.count - 1) * tableRange.columns.count
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
@@ -85649,13 +85555,13 @@ End Function
 ' заданными q. Он не читает actual из calculator и не вызывает Search/State.
 Private Function TestAudit03TableNodePhiM(ByVal data As Variant, ByVal row As Long, ByVal q As Double) As Double
     If q = 0.125 Then
-        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 4)) + CDbl(data(row, 5)))
+        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 2)) + CDbl(data(row, 3)))
     ElseIf q = 0.25 Then
-        TestAudit03TableNodePhiM = CDbl(data(row, 5))
+        TestAudit03TableNodePhiM = CDbl(data(row, 3))
     ElseIf q = 0.5 Then
-        TestAudit03TableNodePhiM = CDbl(data(row, 6))
+        TestAudit03TableNodePhiM = CDbl(data(row, 4))
     ElseIf q = 0.75 Then
-        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 6)) + CDbl(data(row, 7)))
+        TestAudit03TableNodePhiM = 0.5 * (CDbl(data(row, 4)) + CDbl(data(row, 5)))
     Else
         Err.Raise vbObjectError + 4498, "Audit03TableNodePhiM", "Не задан независимый тестовый oracle для q."
     End If
@@ -85771,9 +85677,15 @@ Private Function TestAudit03SP35TableProbe(ByVal section As CSectionModel, _
     Set calc = New CStabilityCalculator
     core1 = props.PrincipalPlaneCoreDistance(section, 1, True, False)
     core2 = props.PrincipalPlaneCoreDistance(section, 2, True, False)
+    Dim accidental1 As Double, accidental2 As Double, accidentalPlanes As String
+    accidental1 = q * core1: accidental2 = q * core2: accidentalPlanes = "BothPlanes"
+    If q = 0# Then
+        ' При чистом сжатии обе плоскости учитывают ea = 1 мм; независимый эталон использует фактическое ec/r = 1/r.
+        accidentalPlanes = "OnlyMomentPlane": accidental1 = 1#: accidental2 = 1#
+    End If
     calc.Calculate section, provider, mvsULS, code, nValue, 0#, 0#, -50000#, 0#, 0#, _
         slenderness * props.PrincipalRadius1, 1#, props.PrincipalRadius2 / props.PrincipalRadius1, _
-        "Determinate", 1#, 1#, "Auto", "User", "BothPlanes", q * core1, q * core2, _
+        "Determinate", 1#, 1#, "Auto", "User", accidentalPlanes, accidental1, accidental2, _
         0.7, 0.15, 1.5, 1#, 0.7, table, Nothing, tableInputError
     Set TestAudit03SP35TableProbe = calc
 End Function
@@ -85803,19 +85715,19 @@ Public Function RunAudit03SP35TableDiagnosticTests(Optional ByRef passed As Long
     Set props = New CSectionPropertiesCalculator: props.CalculateTransformedByModuli section, 32500#, 200000#
 
     For row = 3 To original.rows.count
-        data = original.value2: data(row, 3) = data(row - 1, 3)
+        data = original.value2: data(row, 1) = data(row - 1, 1)
         TestAssertTrue stats, "audit03.table.order.duplicate." & CStr(row), _
             Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
-        TestAssertTrue stats, "audit03.table.order.duplicateLocation." & CStr(row), badRow = row And badColumn = 3
-        data(row, 3) = 0.5 * CDbl(data(row - 1, 3))
+        TestAssertTrue stats, "audit03.table.order.duplicateLocation." & CStr(row), badRow = row And badColumn = 1
+        data(row, 1) = CDbl(data(row - 1, 1)) - 1#
         TestAssertTrue stats, "audit03.table.order.descending." & CStr(row), _
             Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
     Next row
-    For row = 2 To original.rows.count
-        data = original.value2: data(row, 1) = CVErr(2015): data(row, 2) = Empty
-        TestAssertTrue stats, "audit03.table.referenceIgnored." & CStr(row), _
-            validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
-    Next row
+    data = original.value2
+    TestAssertTrue stats, "audit03.table.zeroNodeAccepted", validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
+    data(2, 1) = -1#
+    TestAssertTrue stats, "audit03.table.negativeNodeRejected", Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
+    TestAssertTrue stats, "audit03.table.negativeNodeLocation", badRow = 2 And badColumn = 1
 
     TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
     TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
@@ -86583,11 +86495,11 @@ Private Sub TestLocaleSP35Interpolation(ByRef stats As TBatchTestStats)
             For Each slenderness In Array(10#, 15#, 20#)
                 textTable = numeric
                 For row = 2 To UBound(textTable, 1)
-                    For column = 3 To 8
+                    For column = 1 To 6
                         textTable(row, column) = Replace$(CStr(textTable(row, column)), mid$(CStr(0.5), 2, 1), CStr(separator))
                     Next column
                 Next row
-                original = CStr(textTable(2, 8))
+                original = CStr(textTable(2, 6))
                 Set baseline = TestAudit03SP35TableProbe(section, provider, props, numeric, CDbl(slenderness), CDbl(q))
                 Set actual = TestAudit03SP35TableProbe(section, provider, props, textTable, CDbl(slenderness), CDbl(q))
                 prefix = "locale.sp35." & CStr(separator) & "." & CStr(q) & "." & CStr(slenderness)
@@ -86596,7 +86508,7 @@ Private Sub TestLocaleSP35Interpolation(ByRef stats As TBatchTestStats)
                 TestAssertClose stats, prefix & ".phiM2", actual.PhiM2, baseline.PhiM2, 0#
                 TestAssertClose stats, prefix & ".phiL1", actual.PhiLTable1, baseline.PhiLTable1, 0#
                 TestAssertClose stats, prefix & ".phiL2", actual.PhiLTable2, baseline.PhiLTable2, 0#
-                TestAssertTrue stats, prefix & ".sourceUnchanged", VarType(textTable(2, 8)) = vbString And CStr(textTable(2, 8)) = original
+                TestAssertTrue stats, prefix & ".sourceUnchanged", VarType(textTable(2, 6)) = vbString And CStr(textTable(2, 6)) = original
             Next slenderness
         Next q
     Next separator
@@ -86613,7 +86525,6 @@ Public Function RunLocaleSP35InterpolationTests() As String
     TestLocaleSP35Interpolation stats
     RunLocaleSP35InterpolationTests = stats.report & "TOTAL LOCALE SP35 INTERPOLATION: passed=" & stats.passed & "; failed=" & stats.Failed
 End Function
-
 
 ====================================================================================================
 COMPONENT: modTestCalculationSnapshot
@@ -88980,7 +88891,6 @@ Private Sub TestSnapshotWriteLegacy(ByVal path As String, ByVal snapshot As CCal
     file.OpenUpdate path: file.position = file.size
     file.WriteASCII hash: file.WriteASCII signature: file.CloseFile
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
@@ -93431,7 +93341,6 @@ Private Sub TestRequestReinitialization(ByRef stats As TCapacityTestStats)
     Next prior
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestConfiguration
 TYPE: 1
@@ -96352,7 +96261,6 @@ Public Function RunExplicitInputOutcomeTests() As String
     RunExplicitInputOutcomeTests = stats.report & "TOTAL EXPLICIT INPUT OUTCOME: passed=" & stats.passed & "; failed=" & stats.Failed
 End Function
 
-
 ====================================================================================================
 COMPONENT: modTestContourMesh
 TYPE: 1
@@ -97429,7 +97337,6 @@ End Function
 Private Function TestAdaptiveNumber(ByVal value As Double) As String
     TestAdaptiveNumber = Replace$(format$(value, "0.000000000"), ",", ".")
 End Function
-
 
 ====================================================================================================
 COMPONENT: modTestCrackWidth
@@ -99602,7 +99509,6 @@ Private Sub TestCrackStopReasonContract(ByRef stats As TCrackTestStats)
     TestAssertTrue stats, "crack.stopReason.noNewSolve", SectionEquilibriumSolveCount() = solves
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestDeclarativeExamples
 TYPE: 1
@@ -99747,7 +99653,6 @@ End Sub
 Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000000001 * (1# + Abs(expected))
 End Sub
-
 ====================================================================================================
 COMPONENT: modTestDeclarativeGeometry
 TYPE: 1
@@ -100625,7 +100530,6 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
     End If
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestDiscreteForces
 TYPE: 1
@@ -100797,7 +100701,6 @@ Private Sub TestForceCheck(ByVal label As String, ByVal condition As Boolean)
         mTestFailed = mTestFailed + 1: mTestReport = mTestReport & "FAIL: " & label & vbCrLf
     End If
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestElementGeometry
@@ -101684,7 +101587,6 @@ Private Sub TestTrue(ByRef stats As TTestStats, ByVal checkLabel As String, ByVa
     End If
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestElementGeometryViews
 TYPE: 1
@@ -101945,7 +101847,6 @@ End Sub
 Private Sub TestNear(ByVal label As String, ByVal actual As Double, ByVal expected As Double, ByVal tolerance As Double)
     TestCheck label & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= tolerance
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestGeneralGeometryConfig
@@ -102560,7 +102461,6 @@ Private Sub TestLogLine(ByRef stats As TGeneralConfigStats, ByVal line As String
     Print #fileNumber, stats.report;
     Close #fileNumber
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestGeometry
@@ -106330,7 +106230,6 @@ Private Sub TestGeometryReviewJointSample(ByRef stats As TTestStats, ByVal path 
     TestAssertTrue stats, prefix & ".normalTransferSameSegment", (failure <> 0) = (edge.sweep <> 0#)
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestGeometryConfig
 TYPE: 1
@@ -108079,7 +107978,6 @@ Finished:
     RunSectionRebarInputSmokeTests = stats.report & "TOTAL_SECTION_REBAR_INPUT_SMOKE: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & "; cases=" & CStr(cases) & vbCrLf
 End Function
 
-
 ====================================================================================================
 COMPONENT: modTestGeometryFixtures
 TYPE: 1
@@ -108671,7 +108569,6 @@ Public Function TestFixtureRunSectionWorkflow(ByVal Workbook As Object, Optional
     TestFixtureRunSectionWorkflow = RunSectionCalculationForWorkbook(Workbook, showMessages)
 End Function
 
-
 ====================================================================================================
 COMPONENT: modTestGeometryPublication
 TYPE: 1
@@ -108967,7 +108864,6 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestGeometryQuery
@@ -109923,7 +109819,6 @@ Private Sub TestCheckGeneratedContoursEqual(ByVal prefix As String, ByVal expect
     Next i
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestGeometryReview
 TYPE: 1
@@ -110784,7 +110679,6 @@ Private Sub TestRecipeErrorParagraphs()
     TestCheck "message.missing.setting.no.fake.address", InStr(text, "Источник данных:" & vbCrLf & "лист Config, раздел") > 0 And InStr(text, "Адреса ячеек:") = 0
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestGeometrySolidSnapshots
 TYPE: 1
@@ -110921,7 +110815,6 @@ Private Function TestBits(ByVal value As Double) As String
     number.value = value: LSet words = number
     TestBits = right$("00000000" & Hex$(words.high), 8) & right$("00000000" & Hex$(words.low), 8)
 End Function
-
 
 ====================================================================================================
 COMPONENT: modTestIndividualContours
@@ -111799,7 +111692,6 @@ End Sub
 Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= GEOM_BOUNDARY_TOLERANCE
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestLoadTableConfig
@@ -112805,7 +112697,6 @@ Finished:
     On Error GoTo 0
     RunTestMultiAreaLoadValidation = stats.report & "TOTAL_MULTI_AREA_LOAD: passed=" & stats.passed & "; failed=" & stats.Failed
 End Function
-
 
 ====================================================================================================
 COMPONENT: modTestMaterialDiagrams
@@ -114466,7 +114357,6 @@ ExpectedError:
     TestMaterialOrderCase = Err.number: description = Err.description
 End Function
 
-
 ====================================================================================================
 COMPONENT: modTestPerformance
 TYPE: 1
@@ -115794,7 +115684,6 @@ Public Function TestCADRoundoffFields(ByVal prefix As String, ByVal Target As Ob
         TestCADRoundoffFields = TestCADRoundoffFields & prefix & "|" & CStr(name) & "|" & kind & "|" & text & vbLf
     Next name
 End Function
-
 
 ====================================================================================================
 COMPONENT: modTestPlotConfig
@@ -118259,7 +118148,6 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestPolygonSpec
 TYPE: 1
@@ -118615,7 +118503,6 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestProfileConfig
@@ -120576,7 +120463,6 @@ Public Function RunExplicitDurationOutcomeTests() As String
     RunExplicitDurationOutcomeTests = RunAudit03DurationConfigTests(explicitOutcomeOnly:=True)
 End Function
 
-
 ====================================================================================================
 COMPONENT: modTestRecipeAnnotations
 TYPE: 1
@@ -120947,7 +120833,6 @@ Private Sub TestPhysicalLabelOwnership()
     Next kind
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestRecipeApiCatalogue
 TYPE: 1
@@ -121248,7 +121133,6 @@ Private Sub TestCheck(ByVal name As String, ByVal passed As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
-
 ====================================================================================================
 COMPONENT: modTestRecipeOperations
 TYPE: 1
@@ -121916,7 +121800,6 @@ Private Sub TestPrepareSavedOffsetCalculationLoad()
     values(1, 7) = "ДЛЯ ТЕСТОВ: сохранённые смещения, собственное сочетание"
     loads.offset(1, 0).Resize(UBound(values, 1), UBound(values, 2)).value2 = values
 End Sub
-
 ====================================================================================================
 COMPONENT: modTestRecipeSetbacks
 TYPE: 1
@@ -123043,7 +122926,6 @@ Private Sub TestDirectionCurves()
     Next kind
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestRegressionBaseline
 TYPE: 1
@@ -123450,7 +123332,6 @@ Private Function TestFormatNumberInvariant(ByVal value As Double) As String
     TestFormatNumberInvariant = Replace$(format$(value, "0.############"), ",", ".")
 End Function
 
-
 ====================================================================================================
 COMPONENT: modTestSectionInputReader
 TYPE: 1
@@ -123640,7 +123521,6 @@ Failed:
 Finished:
     RunSectionInputReaderTests = mReport & "TOTAL_SECTION_INPUT_READER: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
-
 ====================================================================================================
 COMPONENT: modTestSectionRecipes
 TYPE: 1
@@ -125647,7 +125527,6 @@ Private Sub TestJoinedRoundedPaths()
     On Error GoTo 0
     TestCheck "joined.disconnected.rejected", code <> 0 And InStr(reason, "связную") > 0
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestSectionSolver
@@ -127850,7 +127729,6 @@ Failed:
     TestAppendLine stats, "FAIL: audit03.extremeRunner.runtime; " & CStr(Err.number) & "; " & Err.description
 End Sub
 
-
 ====================================================================================================
 COMPONENT: modTestSectionWorkflow
 TYPE: 1
@@ -128342,7 +128220,6 @@ Public Function RunCompactAcceptanceTests() As String
     report = report & RunAnnotationSectionScaleTests()
     RunCompactAcceptanceTests = report
 End Function
-
 
 ====================================================================================================
 COMPONENT: modTestShapeArchitecture
@@ -129199,7 +129076,6 @@ Private Sub TestSetSetting(ByVal key As String, ByVal value As Variant)
     Next name
     Err.Raise vbObjectError + 5291, "modTestShapeArchitecture", "Нет ключа fixture: " & key
 End Sub
-
 
 ====================================================================================================
 COMPONENT: modTestSP35CrackWidth
@@ -130638,7 +130514,6 @@ Restore:
     mReport = mReport & "TOTAL_SP35_END_TO_END: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunSP35EndToEndTests = mReport
 End Function
-
 
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
@@ -140417,7 +140292,6 @@ Public Function RunFormationDisplayStateTests() As String
     RunFormationDisplayStateTests = stats.report & "TOTAL_FORMATION_DISPLAY_STATE: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function
 
-
 ====================================================================================================
 COMPONENT: modTestZeroContourParity
 TYPE: 1
@@ -140513,5 +140387,4 @@ Private Function TestBits(ByVal value As Double) As String
         right$("0" & Hex$(bytes.Byte5), 2) & right$("0" & Hex$(bytes.Byte6), 2) & _
         right$("0" & Hex$(bytes.Byte7), 2) & right$("0" & Hex$(bytes.Byte8), 2)
 End Function
-
 

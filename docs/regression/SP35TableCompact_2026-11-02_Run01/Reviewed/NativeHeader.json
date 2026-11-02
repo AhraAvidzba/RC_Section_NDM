@@ -1,0 +1,18 @@
+﻿{
+    "Status":  "PASS",
+    "WorkbookSHA256":  "15B1DD505F9BC9B955F698921F38F9D0B007E6BE48294D506DA1A153654218A1",
+    "TitleCell":  "Config!X57",
+    "RatioHeader":  "$Y$59:$AB$59",
+    "ZeroExtensionSame14":  true,
+    "TableRows":  20,
+    "TableColumns":  6,
+    "MergedTitle":  "$X$57:$AC$57",
+    "MergedExplanation":  "$X$58:$AC$58",
+    "HelpTarget":  "\u0027Справка\u0027!A903",
+    "HelpText":  "Таблица 7.21 СП 35",
+    "NativeHelpFollowPassed":  true,
+    "NamedRangesChecked":  26,
+    "VBAComponents":  187,
+    "NoNDSCalculation":  true,
+    "Saved":  false
+}

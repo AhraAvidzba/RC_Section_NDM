@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "PreviousRowsPreservedWithoutUnusedColumns": 18,
+  "NewDataRows": 19,
+  "Columns": 6,
+  "ZeroSame14": true,
+  "MillionSame150": true,
+  "Layout": {
+    "Name": "rngSP35Table721",
+    "TitleRowsAbove": 3,
+    "RefersTo": "=Config!$X$60:$AC$79",
+    "Sheet": "Config",
+    "Address": "$X$60:$AC$79",
+    "Rows": 20,
+    "Columns": 6
+  }
+}

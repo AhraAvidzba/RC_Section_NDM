@@ -1,0 +1,78 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "15B1DD505F9BC9B955F698921F38F9D0B007E6BE48294D506DA1A153654218A1",
+  "WholePrimaryRead": true,
+  "EachFieldBothModes": 114,
+  "MacroExecutions": 6,
+  "Reports": [
+    {
+      "Stage": "NoTable",
+      "Mode": "No",
+      "Macros": [
+        "modTestBatchCalculation.RunAudit03SP35TableBehaviorTests",
+        "modTestBatchCalculation.TestRunAudit03SP35TableInvalidReproducer"
+      ],
+      "BytesRead": 320443,
+      "PrimarySHA256": "b0ba38262fbbcd6b0299fb654ed1f047df81c8306f7721360c225dfe811675c8",
+      "Totals": [
+        "TOTAL_AUDIT03_SP35_BEHAVIOR: fields=114; passed=900; failed=0",
+        "TOTAL_AUDIT03_SP35_INVALID: passed=1709; failed=0"
+      ],
+      "ActualFieldsRead": 114,
+      "Owner": {
+        "Valid": true,
+        "PID": 14960,
+        "Ticks": 639292060428661418,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      },
+      "ClosurePassed": true
+    },
+    {
+      "Stage": "NoDiagnosticReopen",
+      "Mode": "No",
+      "Macros": [
+        "modTestBatchCalculation.RunAudit03SP35TableDiagnosticTests"
+      ],
+      "BytesRead": 7711,
+      "PrimarySHA256": "25c7413f5bb97c412ef6735a59a6fa1ad88be8176f600c45ad2a8d8cdfaeb422",
+      "Totals": [
+        "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=93; failed=0"
+      ],
+      "ActualFieldsRead": 0,
+      "Owner": {
+        "Valid": true,
+        "PID": 138352,
+        "Ticks": 639292060818578456,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      },
+      "ClosurePassed": true
+    },
+    {
+      "Stage": "YesTable",
+      "Mode": "Yes",
+      "Macros": [
+        "modTestBatchCalculation.RunAudit03SP35TableBehaviorTests",
+        "modTestBatchCalculation.TestRunAudit03SP35TableInvalidReproducer",
+        "modTestBatchCalculation.RunAudit03SP35TableDiagnosticTests"
+      ],
+      "BytesRead": 327076,
+      "PrimarySHA256": "92b24d94202c1e496b2eb2ab1c3a6c630be0b54df613a11c5868b4352878847e",
+      "Totals": [
+        "TOTAL_AUDIT03_SP35_BEHAVIOR: fields=114; passed=900; failed=0",
+        "TOTAL_AUDIT03_SP35_INVALID: passed=1709; failed=0",
+        "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=93; failed=0"
+      ],
+      "ActualFieldsRead": 114,
+      "Owner": {
+        "Valid": true,
+        "PID": 84692,
+        "Ticks": 639292061250180685,
+        "Reason": "Primary TEST_EXCEL_PROCESS"
+      },
+      "ClosurePassed": true
+    }
+  ],
+  "ZeroAndMillionExtensionsPassed": true,
+  "AddressAndStatusSaveReopenPassed": true,
+  "FullSuiteClaim": false
+}

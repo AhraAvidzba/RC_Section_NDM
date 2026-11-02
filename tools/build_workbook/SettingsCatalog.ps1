@@ -452,7 +452,7 @@ function Apply-ConfigUserInputAlignment {
         @{ Name = "rngPlotAnnotationSettings"; Columns = @(2, 3) },
         @{ Name = "rngLoadCombinations"; Columns = @(1, 2, 3, 4, 5, 6, 7); CommentColumns = @(7) },
         @{ Name = "rngStabilityDurationLoads"; Columns = @(1, 2, 3, 4) },
-        @{ Name = "rngSP35Table721"; Columns = @(1, 2, 3, 4, 5, 6, 7, 8) }
+        @{ Name = "rngSP35Table721"; Columns = @(1, 2, 3, 4, 5, 6) }
     )
 
     foreach ($item in $items) {
@@ -2674,14 +2674,21 @@ function Add-SP35Table721 {
         [int]$StartColumn
     )
 
-    $Sheet.Cells.Item($HeaderRow - 2, $StartColumn).Value2 = "СП 35.13330.2011, таблица 7.21"
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 2, $StartColumn), $Sheet.Cells.Item($HeaderRow - 2, $StartColumn + 7)).Merge() | Out-Null
-    $Sheet.Cells.Item($HeaderRow - 2, $StartColumn).Font.Bold = $true
-    $Sheet.Cells.Item($HeaderRow - 2, $StartColumn).Interior.Color = 15921906
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Верхние значения для ненапрягаемой арматуры; последняя строка пользовательская для очень большой гибкости."
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 7)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 3, $StartColumn).Value2 = "СП 35.13330.2011, таблица 7.21"
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 3, $StartColumn), $Sheet.Cells.Item($HeaderRow - 3, $StartColumn + 5)).Merge() | Out-Null
+    $Sheet.Cells.Item($HeaderRow - 3, $StartColumn).Font.Bold = $true
+    $Sheet.Cells.Item($HeaderRow - 3, $StartColumn).Interior.Color = 15921906
+    $Sheet.Cells.Item($HeaderRow - 2, $StartColumn).Value2 = "Ненапрягаемая арматура; крайние строки — продление таблицы."
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 2, $StartColumn), $Sheet.Cells.Item($HeaderRow - 2, $StartColumn + 5)).Merge() | Out-Null
 
-    $headers = @("l_0/b", "l_0/d", "l_0/i", "φ_m q=0", "φ_m q=0.25", "φ_m q=0.50", "φ_m q=1.00", "φ_l")
+    $ratioHeader=$Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 1), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 4))
+    $ratioHeader.Merge() | Out-Null
+    $ratioHeader.Value2="ec/r"
+    $ratioHeader.HorizontalAlignment=-4108
+    $ratioHeader.Font.Bold=$true
+    $ratioHeader.Interior.Color=$script:ConfigTableHeaderColor
+
+    $headers = @("l_0/i", "φ_m (0)", "φ_m (0.25)", "φ_m (0.50)", "φ_m (1.00)", "φ_l")
     for ($i = 0; $i -lt $headers.Count; $i++) {
         $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
         $cell.Value2 = $headers[$i]
@@ -2689,25 +2696,27 @@ function Add-SP35Table721 {
         $cell.Interior.Color = $script:ConfigTableHeaderColor
     }
 
+    # Крайние узлы продлевают таблицу постоянными коэффициентами, не добавляя нормативных строк.
     $rows = @(
-        @(4, 3.5, 14, 1.00, 0.90, 0.81, 0.69, 1.00),
-        @(10, 8.7, 35, 1.00, 0.86, 0.77, 0.65, 0.84),
-        @(12, 10.4, 40, 0.95, 0.83, 0.74, 0.62, 0.79),
-        @(14, 12.1, 48.5, 0.90, 0.79, 0.70, 0.58, 0.70),
-        @(16, 13.8, 55, 0.86, 0.75, 0.66, 0.55, 0.65),
-        @(18, 15.6, 62.5, 0.82, 0.71, 0.62, 0.51, 0.56),
-        @(20, 17.3, 70, 0.78, 0.67, 0.57, 0.48, 0.47),
-        @(22, 19.1, 75, 0.72, 0.60, 0.52, 0.43, 0.41),
-        @(24, 20.8, 83, 0.67, 0.55, 0.47, 0.38, 0.32),
-        @(26, 22.5, 90, 0.62, 0.51, 0.44, 0.35, 0.25),
-        @(28, 24.3, 97, 0.58, 0.49, 0.43, 0.34, 0.20),
-        @(30, 26.0, 105, 0.53, 0.45, 0.39, 0.32, 0.16),
-        @(32, 27.7, 110, 0.48, 0.41, 0.36, 0.31, 0.14),
-        @(34, 29.0, 120, 0.43, 0.36, 0.31, 0.25, 0.10),
-        @(38, 33.0, 130, 0.38, 0.32, 0.28, 0.24, 0.08),
-        @(40, 34.6, 140, 0.35, 0.29, 0.25, 0.21, 0.07),
-        @(43, 37.5, 150, 0.33, 0.28, 0.24, 0.21, 0.06),
-        @(1000000, 1000000, 1000000, 0.33, 0.28, 0.24, 0.21, 0.06)
+        @(0, 1.00, 0.90, 0.81, 0.69, 1.00),
+        @(14, 1.00, 0.90, 0.81, 0.69, 1.00),
+        @(35, 1.00, 0.86, 0.77, 0.65, 0.84),
+        @(40, 0.95, 0.83, 0.74, 0.62, 0.79),
+        @(48.5, 0.90, 0.79, 0.70, 0.58, 0.70),
+        @(55, 0.86, 0.75, 0.66, 0.55, 0.65),
+        @(62.5, 0.82, 0.71, 0.62, 0.51, 0.56),
+        @(70, 0.78, 0.67, 0.57, 0.48, 0.47),
+        @(75, 0.72, 0.60, 0.52, 0.43, 0.41),
+        @(83, 0.67, 0.55, 0.47, 0.38, 0.32),
+        @(90, 0.62, 0.51, 0.44, 0.35, 0.25),
+        @(97, 0.58, 0.49, 0.43, 0.34, 0.20),
+        @(105, 0.53, 0.45, 0.39, 0.32, 0.16),
+        @(110, 0.48, 0.41, 0.36, 0.31, 0.14),
+        @(120, 0.43, 0.36, 0.31, 0.25, 0.10),
+        @(130, 0.38, 0.32, 0.28, 0.24, 0.08),
+        @(140, 0.35, 0.29, 0.25, 0.21, 0.07),
+        @(150, 0.33, 0.28, 0.24, 0.21, 0.06),
+        @(1000000, 0.33, 0.28, 0.24, 0.21, 0.06)
     )
 
     for ($r = 0; $r -lt $rows.Count; $r++) {
@@ -2718,7 +2727,7 @@ function Add-SP35Table721 {
         }
     }
 
-    Set-WorkbookNameByBounds $Workbook "rngSP35Table721" $Sheet $HeaderRow $StartColumn ($HeaderRow + $rows.Count) ($StartColumn + 7)
+    Set-WorkbookNameByBounds $Workbook "rngSP35Table721" $Sheet $HeaderRow $StartColumn ($HeaderRow + $rows.Count) ($StartColumn + 5)
 }
 
 # Расставляет ссылки "Подробнее" внутри табличных блоков, у которых есть
