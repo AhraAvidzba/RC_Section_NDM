@@ -1,0 +1,1307 @@
+[
+  {
+    "Path": "Private/AdditionalIO74.json",
+    "Bytes": 36793,
+    "SHA256": "B93FA8A5E3A61916233C3C7CF730F8107A9419804B8339D2DE61061429FED37B"
+  },
+  {
+    "Path": "Private/CompletionRequirementMap73.json",
+    "Bytes": 15280,
+    "SHA256": "CEBD252B951F4537EC1AA7AA5831620326D4811C350EB657FBEA9E0916D6F382"
+  },
+  {
+    "Path": "Private/PreparedUserBooks62.json",
+    "Bytes": 53955,
+    "SHA256": "1B1988D3CAAE2CAA388A2E98AF3FBB358F9B8E8B77802FADA034779C69515CC1"
+  },
+  {
+    "Path": "Private/TerminalStdIOReviewed68.json",
+    "Bytes": 21169,
+    "SHA256": "D65B621EFA9771E4309B57C8A2F96D0535FFE55196406E5E28107978747798AE"
+  },
+  {
+    "Path": "Private/UserBooksCodeOnlyPublication64.json",
+    "Bytes": 4235,
+    "SHA256": "F1518BEDF05B6B41260D870611B0A6F722E4DFC4231D6D77C5954089AD237969"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Heavy/Accepted.json",
+    "Bytes": 723,
+    "SHA256": "85E64AF5755262B576FE338D534A69CEA5E74E0BB6009683368C0B1A05F8BEB5"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Heavy/Native.json",
+    "Bytes": 1863,
+    "SHA256": "16BC32DE8575CABEDF6510D4742367706B6E5D780DF485053B2F23B62232D8F0"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Heavy/Own.json",
+    "Bytes": 241,
+    "SHA256": "8F0C26697302719C44C81CBEDD4BC00B58AB108C5382C5EFF32B4674D8DBAF7D"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Heavy/OwnClosure.json",
+    "Bytes": 218,
+    "SHA256": "F9F5E9B47C50EA92017493E98264B702C6E55A95D32C6CB73C37CCC001515020"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Heavy/SourceEquality.json",
+    "Bytes": 121057,
+    "SHA256": "F8B6303682C23C1CED2A382354D1889D72A7712A37B6098BCF2391DDE93FCAF1"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Main/Accepted.json",
+    "Bytes": 722,
+    "SHA256": "BA49606A3924413DE3CBC26F894049B3757309AFBDD4C6275BB3D3574A6602EA"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Main/Native.json",
+    "Bytes": 780,
+    "SHA256": "2220A066EF25B993962281E25709271268779B490752CDB9133B4496CDA5DD20"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Main/Own.json",
+    "Bytes": 241,
+    "SHA256": "AD9BDFA50D42556BA688FE3C7E6EB9E7DD7BB67EB602EFF63E1E8F1DEC741A88"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Main/OwnClosure.json",
+    "Bytes": 219,
+    "SHA256": "805AC92D0B5839DFC6F156BED28284D395FFA45A0EBF7A553114416C01E74754"
+  },
+  {
+    "Path": "Private/UserBooksNative63/Main/SourceEquality.json",
+    "Bytes": 121057,
+    "SHA256": "EC30DA077E5F494DDAA234922322B139A3DFB9DBBEF4419107F3D40779E970BC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_No.txt",
+    "Bytes": 75720,
+    "SHA256": "528C22E3F903209459CEAE4CB548A0F88951AFA15F05F074B04C0576776D8893"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_No.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "A475EE056DAD7F39F2D761E5F1689B76FABB07CD90AD8ACE4EB98A243F5948C7"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_No.txt.PrimaryReview.json",
+    "Bytes": 14726,
+    "SHA256": "3E6B7421C4FF52607E3746854DDFB226075CB3D24D96BB52AD3FE9640A94AA40"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_No.txt.ProcessClosure.json",
+    "Bytes": 6545,
+    "SHA256": "0F6C91DBC18DDA44B805F87AFB5D731399205D9DECF89FCE8FAF4B040551D1E5"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_No.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "24FF39F072B791B097025F57B6E375F7268E650B6D1C69A0C33948E87220B1E7"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "54BED9852BD9B38B53F69620CF90075EE91D12405DD293DC36BED1EC1A52275F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_Yes.txt",
+    "Bytes": 75750,
+    "SHA256": "6A42CDFDD62C5B2C9394B728357DE819780188A2C2AA2BC686E064873A37FFA4"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_Yes.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "E38B29D1C752DF271FFD30E245658248089ECB98E94A909ACC7E26412A03CF52"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_Yes.txt.PrimaryReview.json",
+    "Bytes": 12138,
+    "SHA256": "54A9DD5E039D04F005FA0A87BB51FFA290DAFC123065021AD1E09F630D56EE76"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_Yes.txt.ProcessClosure.json",
+    "Bytes": 4589,
+    "SHA256": "0629F4093FBB0122FB3FD9FDF4E248CF48A79F5F28048E225795A1EF6F873735"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_Yes.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "CB60094476717B43F882FFEA78C64C1CCB78BB7DD858B3C0DA58A34F08E4D08E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_Yes.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "BEFA61CB35D5A3FB48A37EDCAB565D77730E23DE65B8F43028A8DB6D0B325958"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CompleteCurrentAcceptance.json",
+    "Bytes": 1005,
+    "SHA256": "BA3E9B905D7DB5D0458C2DF90E56B7BACCC82E4369D9E737FDEABDA7B9AF9760"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Completion.json",
+    "Bytes": 354,
+    "SHA256": "E01943B711E982117C6B285CF64BA2FFAF022D788E1FBEB542A556DBDBB5C28D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_Off.txt",
+    "Bytes": 343504,
+    "SHA256": "77A00E51BD783E9A50B8EED7C3CD3FCB882CFEE6B60722A2CAA3738641C59843"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_Off.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "430C66CAF426C971AF6ACCD370A08757923A81901B14C8C0C626C6645DB46F97"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_Off.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "D004043554A8D361B63CCA5908C1D422B5B5171DFD1ED08F9C35661595719E6B"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_Off.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "0FFED803DAF41A6FB0343F4A0AFF73FD51D0CFA4742C2BA9D06EE1124E3D3AB1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_Off.txt.memory.json",
+    "Bytes": 319,
+    "SHA256": "B4D8AB7D384459A8E4665AFA76483A8C1C4DF2963347461A51E7C235D7BB3076"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_On.txt",
+    "Bytes": 342802,
+    "SHA256": "28B2BB27EC7CA687C2047F26B667090380984CFFF692FFBA0DE9F9BA421D27BF"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_On.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "9CEEE6CA8230F8AEC2E2347824E4769ADDEEE2D680BA339C1A274C0846948562"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_On.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "F3AC24DEC6CD6798774768A087E24039DD7D57AD7F50DE40C3BCD7B0C4EF9427"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_On.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "54AB007455BED9E58EBDB8CDE062BC2CB76EA5FF99B1B391EE5EB8E42242E769"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/CurrentFeatures_On.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "600E90B1E4F133957A198F80556313F360CFE265CD0F000C2388BE30649C37A2"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Finalize.stdout.json",
+    "Bytes": 1852,
+    "SHA256": "49BFB6362F12237636DFF40B20B76B848925F82088A9932B89E8AA051C17A593"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Acceptance.json",
+    "Bytes": 1657,
+    "SHA256": "0273879DE41AFF46DF09B6819D36C3C3517BC2C7EE743A77707E06AB51091AD3"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_No.txt",
+    "Bytes": 12231,
+    "SHA256": "6B08F142EBAD7FB4A68EF671C6F56A6DFA5092B76453247F7060E8EE75626AAD"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_No.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "69DC7C9CA5673C246ABD282D5A0AE901B17D6727CA48ED9E0A9CD7AA41C71386"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "0019DFE90E47419B81EF2DDF51C9388087F1A124FE6EEB45DBC75498D3F0D1B1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_No.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "DB642DAB9BB5E2ACB3B5E4448C2BBAB8A1D1DF340AB13DC71712AF5D774814B0"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "7FC981AAF77C542502AF582F0A0FD8B1E5C5C4288D5D3F7E3EA7F74B2E59EEDC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_Yes.txt",
+    "Bytes": 11985,
+    "SHA256": "5394FB483E5CEA4111E90588FF7F6E643CE293FD92F2BBF86A61FCF783553849"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_Yes.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "10EF6719CA95406FDF2BE60EDC9283D1D5C4A3728E5B9D691C8A9F6B2C7ACFCC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_Yes.txt.ProcessClosure.json",
+    "Bytes": 3611,
+    "SHA256": "68314CB88AA9E7EEF4220D73034351823A9340FBBED31D7785580CE92FB17C8D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_Yes.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "900D5D0C4D31B0EBE9566AB7C706DAAF715B890A3950157D28E685D45C96CF46"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/AsymmetricSteel_Yes.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "773493C9C37D97D27600497CE130594FBB73451E0EB923D6543D7A2FD0239AFD"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_No.txt",
+    "Bytes": 116970,
+    "SHA256": "5CD0215935FD3DA5177238AFE4C24732D54D26F8732867FCF02EE2FE97795379"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_No.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "04EE327659844B7723C4F01747E0E29A92CC58F60D6413EAB4F557382FCB310A"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_No.txt.ProcessClosure.json",
+    "Bytes": 3611,
+    "SHA256": "868D3E308D6591831430F08A63F3347EDE5FFCD69B3F5E2C89C2A646DFAA4BAB"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_No.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "5DA1D4CC4B6C3CDEC12C42237A63828249A10FAA27FEF2DD6D5EC5CD26DB8C88"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "E8B3D7B093387B600816D246F586CCEEB595C2F850791BE8F65070BE8EC262DC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_Yes.txt",
+    "Bytes": 115265,
+    "SHA256": "709550DAC68919CE6647A7CF3E3A2817A344A4D53ABD9450632DD5360F94DF40"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_Yes.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "0B91574821CDDF4FE6CDD9A7334F1B8510231F9EA832CA2A70A0AB646BE41039"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_Yes.txt.ProcessClosure.json",
+    "Bytes": 2637,
+    "SHA256": "3E5797CBB0D3B691B932D36D6E8DEC2BC199BB3B007711D529038D72911D90F1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_Yes.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "9DE4CDEC44E8D367BEC4F2F984BC7087115FBC9B8F62C1D0F8FBD7CD304D9409"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Batch15_Yes.txt.memory.json",
+    "Bytes": 318,
+    "SHA256": "A56583E9D4C90392A9479E51F94F5725E424484F0B27720224BAF55E845841E4"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_No.txt",
+    "Bytes": 76478,
+    "SHA256": "B1FE3414FE8E27679894956D7BB3EA0297A1DF98A3F0092FAEFE342276A507CB"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_No.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "DB69E8CD69AEDAE9232836DBB28A83AEC4192893231746C4C3A756A49DE7BADA"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_No.txt.ProcessClosure.json",
+    "Bytes": 2637,
+    "SHA256": "F51A7707922137EBDFB8A9362691DA8AE16F97E4D934BBFACDF87CDC93963127"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_No.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "8E4F9950C4961DEDF797E08643D1A102B333261725E3F9910453D6AFC19EAF91"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "0893C5C3C27585FA5DECDABB603E98D0BB2C899DCDEFFC224FA792270B21ECF3"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_Yes.txt",
+    "Bytes": 74979,
+    "SHA256": "68D5B140C9FCD3A5CE97C3DF8D12F7E3D73C72F2022AE325AE8D8518567D3F05"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_Yes.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "7913C685EC22A71CE324FB6E8CF49A6BB3E592FF096EA5ACD881AC5B5796EE84"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_Yes.txt.ProcessClosure.json",
+    "Bytes": 3617,
+    "SHA256": "A4B0F357317ED0313A9B30352AED998777A42844D654BE114FDF9C03294481D4"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_Yes.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "E2E3E820B9C1D0D7C254AA7A1F3E2571A8057A54776E6D35384146CFA3C41A6E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Circle_Generated_Yes.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "9C38DD65BE0E509E5CF00BE55C9D6DC681056ECA60366E44AD0B98A919CE0450"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/CombinedAcceptance.json",
+    "Bytes": 839,
+    "SHA256": "C11B7157BE63A692A74FCFD2B1CC25EB603DA9E643AD7D56AEFD7956543C84A0"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_No.txt",
+    "Bytes": 81363,
+    "SHA256": "2D7ABB2AEEEE2F32147C4C16B228B43934B77B0B9ADCF574D2E2E95F43A4D3C3"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_No.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "526454CD933374403B9E9BDAEACEBDE54F6A8F304CBE60C893BC21EE2398CDDA"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_No.txt.ProcessClosure.json",
+    "Bytes": 3617,
+    "SHA256": "0C3768F59C0822F40A1DD9259FA92D96F0E281EB8EB97401885E60B0EA75384B"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_No.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "9F8F16C7724E8F58458107B4D48179827E90FBFFB24CAA4F4F313D91AEFC0987"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "9BACDD701A8FE18C4ABC7190C3939F5D79A6BB4F01329B2A63903F5A740D4516"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_Yes.txt",
+    "Bytes": 79613,
+    "SHA256": "1ADC2D352930670F875E0CA4DDE25D6DE4FD304956459F756C45E29EE78B8900"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_Yes.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "3FD8F08DE687EF08E12E80E61AD9CEC4560B50520940B1D391D1BEFB127F8380"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_Yes.txt.ProcessClosure.json",
+    "Bytes": 3611,
+    "SHA256": "D5DADB5229DA704D11CFC0EFE332F78DC6FDD9CCF8AA5A09A8741CAFC17116AE"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_Yes.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "8594353012542DA97D0D8C76D1388E548E2F5747863377947AFC624271FF9DDD"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/HollowRectangle_Generated_Yes.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "3ABE4BB942F5288774DB31A5377E179DE95AD571F44CE1DB2EC83CB7F3ECD0FC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Independent.json",
+    "Bytes": 193449,
+    "SHA256": "75D8AA33F3A3C8607B08D76B414A604E218C44356B6AE82447DAF8AE2C5B319D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Circle.txt",
+    "Bytes": 18720,
+    "SHA256": "5D9F6D598679C3B20265649EA548ECE7C3D8AF6305F4BF0A0771B62EB76D9265"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Circle.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "DD34E616F26003E1A896698D6A91A7E3EE8CA03DF38A1F862DCD8009F81C8157"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Circle.txt.ProcessClosure.json",
+    "Bytes": 2637,
+    "SHA256": "24293F0C8424FE632CDBB3EC4F4D800418A16BEAA1CCF8009C3FAA1FAD62C550"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Circle.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "AAB7526B1303A73E6B36D95793976AA0022A5F992FFD988667477E6F0DA8B726"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Circle.txt.memory.json",
+    "Bytes": 319,
+    "SHA256": "27F9B77477013FE6D8A7F27D811639159F6B17BB61592DCBC4CBF4BADE14BC7C"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_HollowRectangle.txt",
+    "Bytes": 25599,
+    "SHA256": "90624E5EAEEB4254BADFA9719E179E13023E6EA862CA5398492502286B0A08E0"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_HollowRectangle.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "3D293793778D81E47E57B341044C80C2F7EE5DF0C4F0BA8CFB3C05B6F0F1F72F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_HollowRectangle.txt.ProcessClosure.json",
+    "Bytes": 3617,
+    "SHA256": "1E1BC9E7EC5E6708CB81762CBAF4759773386086DC43C1957281F69B75F4133B"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_HollowRectangle.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "8E89AB9837388B414C6DA933CCC3242BA2FF73D54A618CDC66D4A48C56E1F197"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_HollowRectangle.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "BF9300A87ED5DD2A4AC73780BF96FDB5FB0208EB20613E74F85C0644A8041F8D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_PointedSection.txt",
+    "Bytes": 43315,
+    "SHA256": "4B1015FD16A06B5913B180E6F7601886AC092D8BF2D79CD89ECEEDE1DFDEC85E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_PointedSection.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "E91CA4D994F96FAC84782025928503144116578C00265217EBF795DF7D09505A"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_PointedSection.txt.ProcessClosure.json",
+    "Bytes": 2637,
+    "SHA256": "9A463FD685C3483214455F76355E1B66E4F1B039D9B2BC64B622914174F275F4"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_PointedSection.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "24C5D85FE4B038164C59D218BD7D68538E1797978523B7C3226431FADD00FE95"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_PointedSection.txt.memory.json",
+    "Bytes": 319,
+    "SHA256": "BF64F88E699616B3BF3D5F4994021D393A788ECF958F071DA70D639A8EC2D0FC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Rectangles.txt",
+    "Bytes": 21040,
+    "SHA256": "A1F9C2B279D0C3A31EABA76DFE66A3A0CF8216CC7B17364E8A10973408789F80"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Rectangles.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "B9A4F0E5C56200C81B62FBA7F7A4E73C86CB5CD5003F7DF5C9695E8B1BCB9B81"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Rectangles.txt.ProcessClosure.json",
+    "Bytes": 4589,
+    "SHA256": "0DCBD70A3BC87CB8C349450C18A2EE9B958CF92F93D794A1B0E0D64A71E3222B"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Rectangles.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "921B359E77F949748C7ABC4A1DCABFF7DDEB6885B04EA923E082EB03456E7BF8"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_Rectangles.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "4A022541D4D0C0959133D6D5B050AC7802B1AAA392E99A94DD8ECC01AA3D7645"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_SavedWorkbook.txt",
+    "Bytes": 16045,
+    "SHA256": "D428B58FAF82B07E2DE7BD74CCAC0711F6BD952055CCD2B785E67906A5FED269"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_SavedWorkbook.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "395DB1AB6ED298D962AA09CC66D65DC99DB446C0EF4891B78759C6B507240171"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_SavedWorkbook.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "AA24CF4DB93AFC7B661CA8A7B129C4ECDC822F7011B5DB357B8B5FD9C5259B76"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_SavedWorkbook.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "1EB521F3F4B721EAA044D5ADC1A93B255829C722F5AD136FAF5FE3E874F71EE9"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Model_SavedWorkbook.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "7D18EE95B60FC4FE928B3FCCCB52EDF4DA7FA36DDFCB436F7748D995FB73DD6D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/MemoryBeforeCADCOM.json",
+    "Bytes": 493,
+    "SHA256": "FA5830A53202DAD636B402867B0B1127CC2459160AF7ED9B4520C3A179A6A8B3"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/MemoryBeforeExcel.json",
+    "Bytes": 504,
+    "SHA256": "0203D568DF1B36F651BBE8DA2E93FA5FB4132D06AAE143AD725E92A00035746A"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+    "Bytes": 31071,
+    "SHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+    "Bytes": 229,
+    "SHA256": "A9994FDC8671843968319A7B2E403A328579487585D789C554AF1B1F5ED82781"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+    "Bytes": 264,
+    "SHA256": "577410B98549FD0B208BA8B1BCB7D51A93B830DE18294BE14D69CB8DE23BA173"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+    "Bytes": 417,
+    "SHA256": "7649F790BCF9C32636A6DD6B927CADA0A35AA325309036D099621788F27A63EC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+    "Bytes": 588,
+    "SHA256": "375BD0FBEF92EDAF7E83F8569EFF2A8E1895A382D79E4692D288B48428F70E33"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/MemoryBeforeCADCOM.json",
+    "Bytes": 493,
+    "SHA256": "25DA74382D93A01E3FD56695981865DAFFAE441D3716391CD55546A5A2644ECB"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/MemoryBeforeExcel.json",
+    "Bytes": 503,
+    "SHA256": "9FDF9EE9068CDE99EF4AD6FE9D7D7A08C5E2AFA3B9AEDE6528F1EC94456AB4F5"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+    "Bytes": 22427,
+    "SHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+    "Bytes": 229,
+    "SHA256": "D85CDAB0DCE09DDE34F39C549954A579E8902010AAE1D614AF4C7F49DE1C41FF"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+    "Bytes": 264,
+    "SHA256": "AE430CA6E5D7C95CC0A4B3AA13F40BA6D53BDDA9DFEC109C4BA21A4DDDAFE8E2"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+    "Bytes": 418,
+    "SHA256": "054222DD4EDA55CA702E8318DEA35452C7213243B14E0A091C9B0E169B1FE6F7"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+    "Bytes": 586,
+    "SHA256": "A30E345C7FA434CE49D18F70F709003458817D8FDB39F2458CC760B6BC849763"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/NativeCAD/Stage.json",
+    "Bytes": 795,
+    "SHA256": "CA4F42D9CE78461DD7D90891EAEAEA913765C7E92DDDBAC51EF3379D73DF2D92"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/OutputPresentation.txt",
+    "Bytes": 66707,
+    "SHA256": "E9537CBF8B32B4F27058D51CF01529A6E2ED3FAA22AA4BAC073F7BEA9DFEBA87"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/OutputPresentation.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "59CA1259A5299479C4C70267C4955E21126FF382DC6C1C13E945495FE876957B"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/OutputPresentation.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "FBFF6D5367F91AFEB38D86E46732D10D313BCC3831E8AD40D2AA3CD32FD3DFEA"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/OutputPresentation.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "175F56A7083F02FC84BBF3DF79F6CD1E9C9B443D93B89593A34E48EA1A5B2B41"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/OutputPresentation.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "CB6EC5221C20230F030A03DCB3D206BF47C93CC000831BA563CFA31F6DCC6F60"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_No.txt",
+    "Bytes": 80963,
+    "SHA256": "DC92243FE56A9F9EDF636B2D51B592FCCD3121E4778B7830A9D7AC4C3698652C"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_No.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "24FE221923099D591BD75A9B6ED6EE311022C532EC429046BE1C36B2D3185A66"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_No.txt.ProcessClosure.json",
+    "Bytes": 3617,
+    "SHA256": "B5311C63ED1B18B714468EEBBBA2B68C915811CC96953F459011268F321854D4"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_No.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "B32B7BD6CB943F0E3139BD01CDA33053AA54CE06B01FC51352D64FBDB736091F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "0906F4220B4218523B1EB9298733EC975CEB6B9954489E9EF69A2FEE13C17806"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_Yes.txt",
+    "Bytes": 79210,
+    "SHA256": "E95190BC92A8047DE0E3BBF2E8FF547B102C7881E2EAAFA7ED43FCFB49EC0E28"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_Yes.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "4022F0FFBDDED9A4FD0EE1D280682C601DC0D0873DFCB27BE2B6DC1540D0A66F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "6D9DAC4911FD78D12F35EE34668410C63485C3BB17F010593B39ED99C42AFCF5"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_Yes.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "83A2B37FC38252F95C616EF9EA876A02A189317BA9D8687B7A672BB52612414B"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/PointedSection_Generated_Yes.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "748DFC9121F711A7290A61370963606DAEC4ACF3B5DC156398D5143FDFAF24AF"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/Circle_Generated_Manifest.txt",
+    "Bytes": 730,
+    "SHA256": "C796A40FBE6DFBBE0E60062DA63EFCAC72EB98587A2C7A18F11828F103FE23F8"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/DescribeMemory/MemoryBeforeExcel.json",
+    "Bytes": 457,
+    "SHA256": "9CED74FFA2C4937BAF9CC93F83F3B5FDF0C6AD5A2AD9311211258941729567D3"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/HollowRectangle_Generated_Manifest.txt",
+    "Bytes": 731,
+    "SHA256": "F1274CA0B12EA10A7F1BEB70E482C0161C0AD70F6FAA58F649C476234DEF56C6"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/InputManifest.json",
+    "Bytes": 3542,
+    "SHA256": "2E63AF1DB04E8EFA329C3493D4A873DBDDDBFEDF137A63BC227635718BCE92C0"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/MemoryBeforeExcel.json",
+    "Bytes": 454,
+    "SHA256": "5F7CBB8171BC1C05BC4CDD2BE7E8AE25247A3B25D287C4DF738D2F87E9AD23E2"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/PointedSection_Generated_Manifest.txt",
+    "Bytes": 740,
+    "SHA256": "E1F39F41C6C23A6DA2CA14DEE61AFEBB0023D47027AF0C850D9C4E598CDC66E8"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/Preparation.json",
+    "Bytes": 993,
+    "SHA256": "F58A5F4AF8A252982814BA075D391E0DE6AB57C9BDA4E028E1807CB057CD97DF"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/Rectangles_Generated_Manifest.txt",
+    "Bytes": 735,
+    "SHA256": "123D4E11E982327C458B57C48711222EC59C0F0F463AF6E45CD9FB8DA5F9980D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/SavedWorkbook_Paths_Manifest.txt",
+    "Bytes": 707,
+    "SHA256": "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Probe/SavedWorkbook_Saved_Manifest.txt",
+    "Bytes": 1867,
+    "SHA256": "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_No.txt",
+    "Bytes": 78691,
+    "SHA256": "02C3D6A904EDFBCD41F21B3A0627994BECA9784DF8CCB8D49AD165D0DFE8FCE5"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_No.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "7E10FE85B4AC7E476B128E5865A0650F9C092A6CE1009D7ADB93CB0D3EC2571A"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_No.txt.ProcessClosure.json",
+    "Bytes": 2637,
+    "SHA256": "AFEBA3C75ED7A26B705AF4F470B0B2FF8313FB39DD50FBFC36228C96198FDE8D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_No.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "12A390ED7326BE44D4CFC74681DE8512CF1D038F0E114CAA551A4B1AF2B1349B"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_No.txt.memory.json",
+    "Bytes": 319,
+    "SHA256": "BF136631AC5116E173CAA5AC28C4D8A080CF6640C4F5EE3C3E87773A2086EED0"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_Yes.txt",
+    "Bytes": 77105,
+    "SHA256": "9CBF9340AE6A100C67B529687BDFD18433A78E2FC17DF2B4BFC5AA886290DAFF"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_Yes.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "C502C509C2DC508DCA46685DD94DD652A1972E972E8EA3860AFBF6511F54FED9"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_Yes.txt.ProcessClosure.json",
+    "Bytes": 2637,
+    "SHA256": "EEBF44ECF82E240231FE08D5A226A16B6780BD9925327BBC65B8F44DFFC190C1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_Yes.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "D7C8EC83D4F8D98241027B3FD221F731061BB28315E3B8629412FF819F32573F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Rectangles_Generated_Yes.txt.memory.json",
+    "Bytes": 319,
+    "SHA256": "6295712D0A8A448226607758FEECCA97DAD0C7A745436E2B8EA900FB5E45512E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Run.json",
+    "Bytes": 18682,
+    "SHA256": "C85D475A0F30B57C6800C2C6D6B9714D1938D7B52856A40D7206D3285B06ACB9"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedSectionFixture.json",
+    "Bytes": 90873,
+    "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_No.txt",
+    "Bytes": 62084,
+    "SHA256": "FCDB9A29D6C19485125417277D6571139DBCFF9A262B7249DA48699AD5C03816"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_No.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "263ADEB88EC28DFD1BC3356FB2B0991FC572B3E0A7CBA2D1D4ACDEF180EA9640"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_No.txt.ProcessClosure.json",
+    "Bytes": 4116,
+    "SHA256": "8E0F17FA4C4B5F680BFB539A4863D33B5E4BA057F6A1898DFBBB697120EE1A3A"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_No.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "36B4A8F78C5995C5BE82533AB8F6705688D3AC7BDB7FBBE72B39E5973CF78640"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "9E85FB2E7C2FED5E6BB3401CBC889B7F6ADB2D16CFC3AD66972EF6093D971253"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_Yes.txt",
+    "Bytes": 60851,
+    "SHA256": "97E6804187860729FAAF74821B36D8A790E36C656B5F2B2ECAB6D014D49EA343"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_Yes.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "FF4D2D10B4219C229994F19A353CE08B8DFBC2711C89C1674373729D9CC4DAC7"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_Yes.txt.ProcessClosure.json",
+    "Bytes": 2637,
+    "SHA256": "FCF4E72CA1F2A9CD375D59F02BD4EB9562E1E27E868F1BCFB2907FE162A7E1A0"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_Yes.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "1EAD4FE50655B7168262270C2FE20A8B65AE15DAE74D6FA09BF7371B47BE9EE1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Paths_Yes.txt.memory.json",
+    "Bytes": 319,
+    "SHA256": "F5D2AF06DB9D08E02A56AC4E1D8F07B408DE03118D20AB9A8DD49E5860322182"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_No.txt",
+    "Bytes": 265992,
+    "SHA256": "AB80456D750F04B8EC3D33B163956348BDEA360D7255035C133EB84ECFA23431"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_No.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "E14ED7EA8E852E2648733CAF6F1386F4245234A336026DA6926392087E35924C"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "D1CEBB22A03D72173EF8006E9E6317307497CF7C9713A0B7F6A66D4AE83D4CB8"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_No.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "B2C8207D62D83085FBCA2F56CA07165E5DCD37693F7B9CBD7AB7CC465893595D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "1E1FC012ADC1C1AA3096A50AC93DF3DCF6EDEE22D2E6CE1A64727B19D6D79C21"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_Yes.txt",
+    "Bytes": 256014,
+    "SHA256": "9931F760716AEAFE2B3ACAB3F0C903A1A611D81761EF0F335EA2D93061902924"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_Yes.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "C48686EF1251A2B249AEFD1CFA147BB6DA28736B4BCEE74C01094D8300484F02"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_Yes.txt.ProcessClosure.json",
+    "Bytes": 4597,
+    "SHA256": "02FA4618F2BBE16893BA6FB4875B1DE4B874CC57E03D8F36207FB3932F21CBD1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_Yes.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "EDA4CCB931A6890E6460D6C7EE9BE4436F6A83C338DB0F04A6CF4721A828C50F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/SavedWorkbook_Saved_Yes.txt.memory.json",
+    "Bytes": 319,
+    "SHA256": "536EF5169214209E6988DE1B5683BB2584C719A26781954229D9FE96CCA42234"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_No.txt",
+    "Bytes": 11769,
+    "SHA256": "F03EC31A725FD74171A6B7566E62A1F40A14E25FED05292F35492A8F6203269A"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_No.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "848DB67724ADFB3BC7B04FA5DB6D8910C47A02F97A0E83B9CCD546339606C5CF"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_No.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "9181191507642853F33F98AAC49099217EFE6C03C23E2F752E0A60B5F509F082"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_No.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "B055E23E9DED57EC562411E285639D7AF313A910B21F5498E049595AC79E31B7"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_No.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "90BBDE6670AA2F104FEA6D17EE65A1DFD080B820948AA639CD6A3EBDBBD2C9DC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_Yes.txt",
+    "Bytes": 11549,
+    "SHA256": "46FE619A0AF879FCDA650873A6C2C8CF86D6FE5E1B13C7D12942557CE852AA04"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_Yes.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "44E377ABAD54D10D5C458AF9F0FDE0CDA7643D1B8CE6CB1C99118C2D6B643061"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_Yes.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "78A64E6E98DC01734792B19624922577AD12693CC455EDCA7C5E97DD987004FF"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_Yes.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "F9568E3A1003CF0018F72B25AF902A651B432E50CC763C5B785A1596F7ED9242"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Focused/Stability_Yes.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "C95BD07B1A15D508C4E5B9A951E4A12C3151EE6D669C534E413846E4912BFFDA"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_Off.txt",
+    "Bytes": 17811209,
+    "SHA256": "002D8E93CA5D3C938E5570B738499DC68EB986E5073BB4945D38F484593F89CC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_Off.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "F7BCFB0AE7234E5E0EC91785878BF60DB907B6D42EFF3284524C72A1FD57911E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_Off.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "62B1EEB2B74B3B9EFCAD56D6914DDA59F6B364AE3CA6CCA558B01D209A200676"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_Off.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "A633F2CD312BC893497BEBE1C8DACCD64C4DDE40B930350405226FCE7C7B63E1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_Off.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "8118B3D37CF25FC2E20063687FE373481D58827BF4AD742A82C41E2760C3EF9F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_On.txt",
+    "Bytes": 17816239,
+    "SHA256": "B673A77291CC5C06C28AC251C52B4D603A0DBF93753827D71A10E79E22C3EB28"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_On.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "3AF8730E9D3A05711A3DEBDF470473A4FA4949BF1AB334B9AF9EA2F3C2B02AA2"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_On.txt.ProcessClosure.json",
+    "Bytes": 2637,
+    "SHA256": "4B7D9575B813B8AF0BAFD972DD0E9F30C16693F854293202BFBE239D30D61501"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_On.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "3E999C4F5341D2B2410200D92D36089474D2B78ED55B2099295D4FEFEC09CF3D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Full_On.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "37303C9A66EE3C02C195A69DF7B685D6956654DAB1F789B971B4AFE152B4ED4D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_Off.txt",
+    "Bytes": 1998412,
+    "SHA256": "E09E0CD0434B5AE2E639F2D8A4DB6ADD218DFDA8BCA902F201B4AE23441D4B49"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_Off.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "67ACFE6E60E377B53794814753FC64AD63EDA8B5BE844A9CBBACC1E376D91703"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_Off.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "69AFDD81193A614F651C6E3585570C40A33ED66A19CF6A5612DF12D29C5D5387"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_Off.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "205C9ECD8C07FBA77AFDFBF1004469B1BDFB3C478190AACC0DB6AD4E48D8FEDA"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_Off.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "607120A5CC0B8FB5B7F832032F51BDC6CE6360C58F0315B06D6AEF2F56D70739"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_On.txt",
+    "Bytes": 1998634,
+    "SHA256": "4F0356266B85E5EA947AE7CF359A5630EE905968C3DE5860749C4F112BFEFD6C"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_On.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "7B645E8E5F2700518A8941508A2AEA1EDED9C1B7F9E6389991C8254D824F8F68"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_On.txt.ProcessClosure.json",
+    "Bytes": 2633,
+    "SHA256": "90E6A22133799EFA4538CA4527CDD848763C2670D4EBC6F2D6F7D658BCDC561E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_On.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "3DA43D495E8715CC3D957FE3D045BED98A73B942A975A581D057E110DA2362FA"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Geometry_On.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "91DC1D58E28FF834B81291275DD55D7C56A18BB66E6EF3CC4D6B1B31F3BCDF31"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_Off.txt",
+    "Bytes": 1092202,
+    "SHA256": "5EA39E08E4E9C905AEBC06192A96D7DA477FFC0B848BA869CDAB53201A76E2B9"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_Off.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "299CC0CA73425865F55F813406FD3272C7D0D938A892E1B11024570F98364DB1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_Off.txt.ProcessClosure.json",
+    "Bytes": 3611,
+    "SHA256": "79C68CA595A1E5105749650593E7A3C6CBE8935620745D0D35E44B4F68BCA230"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_Off.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "394EC5B90A6332704A048BE458C55215B2CFFCC95EAE8F632CA1C0CF713ABE65"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_Off.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "6C018456FD1CF8FF5CE613D56E3192EFF9DE1AC5979D6D2CBBEE05AA11799E76"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_On.txt",
+    "Bytes": 1092294,
+    "SHA256": "F483A64502D843459D2F7BB1D9D4B6969824601115E2EE0995DAD5DDE478E7CA"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_On.txt.Ownership.json",
+    "Bytes": 260,
+    "SHA256": "66594E09F3D7F2B6E8AA01C1D524870A1B00B9F406664A7A173E4965AC1B57F3"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_On.txt.ProcessClosure.json",
+    "Bytes": 4107,
+    "SHA256": "7FD83E739BC90D82AA23799B74016272D3F2108372B1BD67DA44281FC67CE07E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_On.txt.RunnerCleanup.json",
+    "Bytes": 512,
+    "SHA256": "E160496635025E724455909A13DC14CBA4BA2D72EB2878305735B62DB42F1B85"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Recipes_On.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "9F7B4D5C38747E0876554BA0F05BEF44FCD4E42CB0BDB27E7D0665324A3B865E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Run.json",
+    "Bytes": 27410,
+    "SHA256": "0B521ABA6BACDF4655DF93866620352B2B390B665864480A79D5DF99252652B4"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_Off.txt",
+    "Bytes": 51585,
+    "SHA256": "71556D588DDAEEEFD19566C8218B93A23126D5E4F20AB7460FD907C906CE2289"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_Off.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "ACF4341202AB11B51EB34D5F3631B3F4E34CA6EF7EE2EDB193F1E8E52B5F8FA0"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_Off.txt.ProcessClosure.json",
+    "Bytes": 5567,
+    "SHA256": "8FFFA7202EB617DC99B3E2756EFDC58B74A479A28A5E8A5FF169406138278B6A"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_Off.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "10171B80349E12DB0AF17008F6B3BAC6E7516AF005DCF4FC74F7D7576D0EAC48"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_Off.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "6DA244DAEFEA386487BAB37DDF2F741B97F5177F7684C8F7E70E42EEF7BA1BC2"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_On.txt",
+    "Bytes": 51580,
+    "SHA256": "208192873DA1BC884B7DB411EB4B64C7D89C374110D2C0FAD9625FE95F293532"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_On.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "1082EEEEC169ADF79292D5E19E4DFDAC081117DB67C4FB640E1B715521BA4184"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_On.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "CC5086FA8AEB45AB6C729DAD61D0BEC970219A95EDF651BC35C641E55CFE5FF3"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_On.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "5A96F5335ACB8BBAA4158DB89DD9967C569FF921B801BD34FEE353B62F15F900"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SP35_On.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "A480E463195BE9A87CA7F2E4992235D7C93E257DE9F7B5682DD41035D3D7ABF4"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_Off.txt",
+    "Bytes": 4827,
+    "SHA256": "258A2E98372A5FFAA8F315A5A3069701E99C365A83DFF4FA6334F86F3A4D4418"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_Off.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "291CCF5FFFD53320746012EA3098C8A5FFB50A8281496FC9610BDCFBBA35A20A"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_Off.txt.ProcessClosure.json",
+    "Bytes": 4100,
+    "SHA256": "C9B32B8534EC4DD247C56CAFF7256E9E2D49FA17E33E3265E9C8C2AC0DE0123E"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_Off.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "7D3A351F4390626E0E53AAF0AFA6AA3FD84323BBD162CA0AA027C2569E8AC338"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_Off.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "579FC2C7C3DC3D787558207D5C968ED28E80409F7C7E85D0824744320169EEDE"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_On.txt",
+    "Bytes": 4836,
+    "SHA256": "F296AE07F30D787A97A67D531AAFAA12D0738D945FB3285666811CDEA646FC00"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_On.txt.Ownership.json",
+    "Bytes": 259,
+    "SHA256": "E3B29E1ED3F14C35BE4D4545A16738A0241D4C1C846FAB7813A7AE2604E1A521"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_On.txt.ProcessClosure.json",
+    "Bytes": 3611,
+    "SHA256": "D31FACBC5108528F7246C63CCBC327DBBEFAD9FF5086E3C2321F879BCCD26703"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_On.txt.RunnerCleanup.json",
+    "Bytes": 511,
+    "SHA256": "0A981F25F31908A1C359C9D258081C05D85DEBAD85CDB9F67E0C34AF4ED8CBF8"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/SavedOffsets_On.txt.memory.json",
+    "Bytes": 320,
+    "SHA256": "2B5D8B0DEECC4748656A700EFB2D4F3C2E51BB1E858381E618C1987844A88C78"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Summary.json",
+    "Bytes": 79966,
+    "SHA256": "5C157A3324751FF11B310AC486A6CCE638B581B4F5DCF0A9544CA72F5CEF1B87"
+  },
+  {
+    "Path": "Repo/docs/regression/FullOnOff_2026-11-01_Current_Run02/Summary.stdout.json",
+    "Bytes": 2008,
+    "SHA256": "5329E4A755AD51B43EBD4B3E3523FBF24CC4A1EB0C96AC96743CAF5A92C1E019"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/AllClosedJobsReview.json",
+    "Bytes": 63209,
+    "SHA256": "016A645251462ADA94B93E4B223BB3D39BD8A9E751A2D91B16FBC11423D229BD"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/AllOwnClosuresReviewed.json",
+    "Bytes": 32747,
+    "SHA256": "4F3FE32E535F1E9A9E65F3697779CE49CE33406C4C845155546B787AC049F3A2"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/Completion.json",
+    "Bytes": 671,
+    "SHA256": "62A2F60A16848922266C3F67D4764A1B55E9F50667ED938C709092E07E7B2E03"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/CoordinatorPulseLast.json",
+    "Bytes": 16960,
+    "SHA256": "361D10D4177452AD9A58D1AC9A593C06C252D90C05C74A44D7A8DA6CB96123C1"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/DriverRun.json",
+    "Bytes": 310,
+    "SHA256": "33086BF3E765D61424C1820E31C8A145230F140E9995AF46A29B75D13D90BA39"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/FullLaunch.json",
+    "Bytes": 902,
+    "SHA256": "F303366BDDCA7689C46B59A66523EC3C627A1545CD3C0F4100A1A1B3C2FF7A94"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/FullLaunch.stderr.log",
+    "Bytes": 4016,
+    "SHA256": "7E3B383EBB0575665EDA6C7C6648271CB69752E24BEF0EF5F621340F26E7AD4D"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/FullLaunch.stdout.log",
+    "Bytes": 15129,
+    "SHA256": "8A0A4A0BEB045535A1DDC8FFB08D5DF2A8980ABD0A8254485405EECA547BADE5"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/HostCompletion.json",
+    "Bytes": 93,
+    "SHA256": "348610494377CD498D7E688E685E02FFC1DBFC1963986E493A8F7DDF11AAF7FC"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/HostRun.json",
+    "Bytes": 202,
+    "SHA256": "724744E33D287CDA2021EDAA90C098124014CE0B1AC1123B49B72CC0CCA9D9A0"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/LaunchRequest.json",
+    "Bytes": 147909,
+    "SHA256": "353940EC7FB8D5CC8CC6342198A7A03D569D9B2F3AF211C4B3B5A792B90259F3"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/MonitorLast.json",
+    "Bytes": 25161,
+    "SHA256": "255DC570F15A337860734BBA3FDB85F032F9C37EBB67F290A71C73545AF170CB"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/ReleaseEligibility.json",
+    "Bytes": 445623,
+    "SHA256": "A514141E90D0908330D2158ED8FD39F7CACCAE3C3A3ACDF2FA302C4F3D33C93F"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/ScheduledTaskCleanup61.json",
+    "Bytes": 1321,
+    "SHA256": "47C2C7C2953D1B6D44D175682277F5B23CBBF0AFE8D47EB487BB07E67A9EB507"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/SourceEpoch.json",
+    "Bytes": 1526,
+    "SHA256": "B995B390CA8D90D14508A03E1CEC497F106D4602863DDA1882267E2309FBB599"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/TerminalScopeReview.json",
+    "Bytes": 83521,
+    "SHA256": "04327468F255EC16F4BFF1664CBE1F4B2D0F0D7E124384B3100DA99718668966"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/TerminalScopeReviewPartial.json",
+    "Bytes": 83514,
+    "SHA256": "C5A23437F6671E0A66853DCFE17B4741FDDEBC383D237D5CB8DBD085ED1901A9"
+  },
+  {
+    "Path": "Repo/docs/regression/FullSuiteLaunch_2026-11-01_Current_Run02/UiProgressSupplementLast.json",
+    "Bytes": 710,
+    "SHA256": "A599ECA1F35C7A7735353A21F863D65A24E0D22C45F4BF4E75D38711F0856CD0"
+  }
+]

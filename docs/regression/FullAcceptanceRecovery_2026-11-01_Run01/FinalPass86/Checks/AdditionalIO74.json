@@ -1,0 +1,418 @@
+﻿{
+    "Status":  "ADDITIONAL_IO_NINE_ENTRYPOINTS_BOTH_MODES_PASS",
+    "StartedUTC":  "2026-11-02T00:46:05.4295992+00:00",
+    "ControllerPID":  112160,
+    "ControllerStartTicksUTC":  "639291771609042265",
+    "SourceSHA256":  "831D725C06439CA1B771645F18B0D546169C1E22A97BA7688D64CB3F8509B74A",
+    "SourceCommit":  "5f18de1f88a657ae312bc37b0798bc511f4bb218",
+    "ExpectedMacros":  [
+                           "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                           "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                           "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                           "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                           "modTestElementGeometryViews.RunElementGeometryViewTests",
+                           "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                           "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                           "modTestSectionWorkflow.RunCompactSnapshotTests",
+                           "modTestSectionWorkflow.RunWorkflowReadPerformanceTests"
+                       ],
+    "Current":  "",
+    "Completed":  [
+                      {
+                          "Mode":  "No",
+                          "Passed":  true,
+                          "Primary":  "docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_No.txt",
+                          "Bytes":  75720,
+                          "SHA256":  "528C22E3F903209459CEAE4CB548A0F88951AFA15F05F074B04C0576776D8893",
+                          "AllBytesRead":  true,
+                          "Expected":  [
+                                           "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                                           "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                                           "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                           "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                                           "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                           "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                           "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                                           "modTestSectionWorkflow.RunCompactSnapshotTests",
+                                           "modTestSectionWorkflow.RunWorkflowReadPerformanceTests"
+                                       ],
+                          "Started":  [
+                                          "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                                          "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                                          "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                          "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                                          "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                          "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                          "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                                          "modTestSectionWorkflow.RunCompactSnapshotTests",
+                                          "modTestSectionWorkflow.RunWorkflowReadPerformanceTests"
+                                      ],
+                          "Finished":  [
+                                           "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                                           "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                                           "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                           "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                                           "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                           "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                           "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                                           "modTestSectionWorkflow.RunCompactSnapshotTests",
+                                           "modTestSectionWorkflow.RunWorkflowReadPerformanceTests"
+                                       ],
+                          "ExplicitExcelSetups":  [
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                                                          "Mode":  "No"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                                                          "Mode":  "No"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                                          "Mode":  "No"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                                                          "Mode":  "No"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                                          "Mode":  "No"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                                          "Mode":  "No"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                                                          "Mode":  "No"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestSectionWorkflow.RunCompactSnapshotTests",
+                                                          "Mode":  "No"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestSectionWorkflow.RunWorkflowReadPerformanceTests",
+                                                          "Mode":  "No"
+                                                      }
+                                                  ],
+                          "Errors":  [
+
+                                     ],
+                          "Totals":  [
+                                         "TOTAL PREPARED SNAPSHOT REUSE: passed=69; failed=0",
+                                         "TOTAL_GEOMETRY_PREVIEW_STORAGE: passed=62; failed=0",
+                                         "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=123; failed=0",
+                                         "TOTAL_SNAPSHOT_OUTPUT_POLICY: passed=48; failed=0",
+                                         "TOTAL_ELEMENT_GEOMETRY_VIEWS: passed=82; failed=0",
+                                         "TOTAL CALCULATION SNAPSHOT: passed=1007; failed=0",
+                                         "TOTAL_WORKFLOW_SNAPSHOT: passed=151; failed=0",
+                                         "TOTAL_COMPACT_SNAPSHOT: passed=95; failed=0",
+                                         "TOTAL_WORKFLOW_READ: passed=27; failed=0"
+                                     ],
+                          "NativeOwner":  {
+                                              "Name":  "EXCEL",
+                                              "PID":  98204,
+                                              "StartTicksUTC":  "639291771736690792"
+                                          },
+                          "OwnIdentityTerminal":  true,
+                          "ProcessClosure":  {
+                                                 "Stage":  "AFTER_CHILD_EXIT",
+                                                 "Passed":  true,
+                                                 "ChildHasExited":  true,
+                                                 "ChildExitCode":  0,
+                                                 "Closure":  {
+                                                                 "Passed":  true,
+                                                                 "Identity":  {
+                                                                                  "Valid":  true,
+                                                                                  "PID":  98204,
+                                                                                  "Ticks":  639291771736690792,
+                                                                                  "Reason":  "Primary TEST_EXCEL_PROCESS"
+                                                                              },
+                                                                 "FinalState":  {
+                                                                                    "State":  "Absent",
+                                                                                    "PID":  98204,
+                                                                                    "StartTicksUTC":  "639291771736690792",
+                                                                                    "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                                    "ObservedUTC":  "2026-11-02T00:47:49.9566151+00:00"
+                                                                                },
+                                                                 "Observations":  [
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:47.9163469+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:48.2008152+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:48.4486422+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:48.6940117+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:48.9409630+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:49.1875421+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:49.4518349+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:49.6967194+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Absent",
+                                                                                          "PID":  98204,
+                                                                                          "StartTicksUTC":  "639291771736690792",
+                                                                                          "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                                          "ObservedUTC":  "2026-11-02T00:47:49.9566151+00:00"
+                                                                                      }
+                                                                                  ],
+                                                                 "GraceMilliseconds":  3000,
+                                                                 "OrdinaryPathKilledAnything":  false
+                                                             },
+                                                 "RunnerCleanupValid":  true,
+                                                 "RunnerCleanup":  {
+                                                                       "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+                                                                       "OwnerVerified":  true,
+                                                                       "PID":  98204,
+                                                                       "StartTicksUTC":  "639291771736690792",
+                                                                       "CloseRequested":  false,
+                                                                       "CloseSucceeded":  false,
+                                                                       "QuitRequested":  true,
+                                                                       "QuitSucceeded":  true,
+                                                                       "Errors":  [
+
+                                                                                  ],
+                                                                       "Failed":  false,
+                                                                       "FinalExitNotAsserted":  true,
+                                                                       "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+                                                                       "ObservedUTC":  "2026-11-02T00:47:47.6823463+00:00"
+                                                                   },
+                                                 "RunnerCleanupReadError":  null,
+                                                 "OrdinaryPathKilledAnything":  false
+                                             },
+                          "ExitCode":  0,
+                          "RAMBeforeGiB":  15.869140625,
+                          "CommitBeforeGiB":  19.339061737060547
+                      },
+                      {
+                          "Mode":  "Yes",
+                          "Passed":  true,
+                          "Primary":  "docs/regression/FullAcceptanceRecovery_2026-11-01_Run01/AdditionalIO74/IO_Yes.txt",
+                          "Bytes":  75750,
+                          "SHA256":  "6A42CDFDD62C5B2C9394B728357DE819780188A2C2AA2BC686E064873A37FFA4",
+                          "AllBytesRead":  true,
+                          "Expected":  [
+                                           "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                                           "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                                           "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                           "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                                           "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                           "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                           "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                                           "modTestSectionWorkflow.RunCompactSnapshotTests",
+                                           "modTestSectionWorkflow.RunWorkflowReadPerformanceTests"
+                                       ],
+                          "Started":  [
+                                          "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                                          "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                                          "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                          "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                                          "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                          "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                          "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                                          "modTestSectionWorkflow.RunCompactSnapshotTests",
+                                          "modTestSectionWorkflow.RunWorkflowReadPerformanceTests"
+                                      ],
+                          "Finished":  [
+                                           "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                                           "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                                           "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                           "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                                           "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                           "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                           "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                                           "modTestSectionWorkflow.RunCompactSnapshotTests",
+                                           "modTestSectionWorkflow.RunWorkflowReadPerformanceTests"
+                                       ],
+                          "ExplicitExcelSetups":  [
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunPreparedSnapshotReuseTests",
+                                                          "Mode":  "Yes"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunGeometryPreviewStorageTests",
+                                                          "Mode":  "Yes"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests",
+                                                          "Mode":  "Yes"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunSnapshotOutputPolicyTests",
+                                                          "Mode":  "Yes"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestElementGeometryViews.RunElementGeometryViewTests",
+                                                          "Mode":  "Yes"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestCalculationSnapshot.RunCalculationSnapshotTests",
+                                                          "Mode":  "Yes"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestSectionWorkflow.RunWorkflowSnapshotTests",
+                                                          "Mode":  "Yes"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestSectionWorkflow.RunCompactSnapshotTests",
+                                                          "Mode":  "Yes"
+                                                      },
+                                                      {
+                                                          "Macro":  "modTestSectionWorkflow.RunWorkflowReadPerformanceTests",
+                                                          "Mode":  "Yes"
+                                                      }
+                                                  ],
+                          "Errors":  [
+
+                                     ],
+                          "Totals":  [
+                                         "TOTAL PREPARED SNAPSHOT REUSE: passed=69; failed=0",
+                                         "TOTAL_GEOMETRY_PREVIEW_STORAGE: passed=62; failed=0",
+                                         "TOTAL_CONCRETE_GEOMETRY_SNAPSHOT: passed=123; failed=0",
+                                         "TOTAL_SNAPSHOT_OUTPUT_POLICY: passed=48; failed=0",
+                                         "TOTAL_ELEMENT_GEOMETRY_VIEWS: passed=82; failed=0",
+                                         "TOTAL CALCULATION SNAPSHOT: passed=1007; failed=0",
+                                         "TOTAL_WORKFLOW_SNAPSHOT: passed=151; failed=0",
+                                         "TOTAL_COMPACT_SNAPSHOT: passed=95; failed=0",
+                                         "TOTAL_WORKFLOW_READ: passed=27; failed=0"
+                                     ],
+                          "NativeOwner":  {
+                                              "Name":  "EXCEL",
+                                              "PID":  97048,
+                                              "StartTicksUTC":  "639291772782561388"
+                                          },
+                          "OwnIdentityTerminal":  true,
+                          "ProcessClosure":  {
+                                                 "Stage":  "AFTER_CHILD_EXIT",
+                                                 "Passed":  true,
+                                                 "ChildHasExited":  true,
+                                                 "ChildExitCode":  0,
+                                                 "Closure":  {
+                                                                 "Passed":  true,
+                                                                 "Identity":  {
+                                                                                  "Valid":  true,
+                                                                                  "PID":  97048,
+                                                                                  "Ticks":  639291772782561388,
+                                                                                  "Reason":  "Primary TEST_EXCEL_PROCESS"
+                                                                              },
+                                                                 "FinalState":  {
+                                                                                    "State":  "Absent",
+                                                                                    "PID":  97048,
+                                                                                    "StartTicksUTC":  "639291772782561388",
+                                                                                    "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                                    "ObservedUTC":  "2026-11-02T00:49:33.8723232+00:00"
+                                                                                },
+                                                                 "Observations":  [
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  97048,
+                                                                                          "StartTicksUTC":  "639291772782561388",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:49:32.8298073+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  97048,
+                                                                                          "StartTicksUTC":  "639291772782561388",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:49:33.0954557+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  97048,
+                                                                                          "StartTicksUTC":  "639291772782561388",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:49:33.3603801+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Live",
+                                                                                          "PID":  97048,
+                                                                                          "StartTicksUTC":  "639291772782561388",
+                                                                                          "Reason":  "Exact own Excel is still alive",
+                                                                                          "ObservedUTC":  "2026-11-02T00:49:33.6098864+00:00"
+                                                                                      },
+                                                                                      {
+                                                                                          "State":  "Absent",
+                                                                                          "PID":  97048,
+                                                                                          "StartTicksUTC":  "639291772782561388",
+                                                                                          "Reason":  "Explicit NoProcessFoundForGivenId",
+                                                                                          "ObservedUTC":  "2026-11-02T00:49:33.8723232+00:00"
+                                                                                      }
+                                                                                  ],
+                                                                 "GraceMilliseconds":  3000,
+                                                                 "OrdinaryPathKilledAnything":  false
+                                                             },
+                                                 "RunnerCleanupValid":  true,
+                                                 "RunnerCleanup":  {
+                                                                       "Stage":  "CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED",
+                                                                       "OwnerVerified":  true,
+                                                                       "PID":  97048,
+                                                                       "StartTicksUTC":  "639291772782561388",
+                                                                       "CloseRequested":  false,
+                                                                       "CloseSucceeded":  false,
+                                                                       "QuitRequested":  true,
+                                                                       "QuitSucceeded":  true,
+                                                                       "Errors":  [
+
+                                                                                  ],
+                                                                       "Failed":  false,
+                                                                       "FinalExitNotAsserted":  true,
+                                                                       "FinalClosureAuthority":  "Run-Audit03Watchdog after actual child exit",
+                                                                       "ObservedUTC":  "2026-11-02T00:49:32.6020234+00:00"
+                                                                   },
+                                                 "RunnerCleanupReadError":  null,
+                                                 "OrdinaryPathKilledAnything":  false
+                                             },
+                          "ExitCode":  0,
+                          "RAMBeforeGiB":  15.8759765625,
+                          "CommitBeforeGiB":  19.354328155517578
+                      }
+                  ],
+    "FullAcceptanceClaim":  false,
+    "FinishedUTC":  "2026-11-02T00:49:37.1753685+00:00"
+}

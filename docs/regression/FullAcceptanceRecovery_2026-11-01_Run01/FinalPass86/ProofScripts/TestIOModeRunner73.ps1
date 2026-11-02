@@ -1,0 +1,372 @@
+﻿# Выполняет все штатные VBA suites на независимой копии заданной книги.
+# Меняет только глобальную настройку копии: исходная baseline/output книга
+# остаётся неизменной. Подготовку Explicit-On выполняют соответствующие тесты.
+param(
+    [Parameter(Mandatory=$true)][string]$SourceWorkbook,
+    [string]$SettingKey = "General.DiagramExtension",
+    [ValidateSet("Yes", "No")][string]$Mode = "No",
+    [Parameter(Mandatory=$true)][string]$ReportPath,
+    [string[]]$Macro = @(),
+    [string]$MacroArgument1 = "",
+    [string]$MacroArgument2 = "",
+    [ValidateSet("SP35", "SP63")][string]$CrackCode,
+    [ValidateSet("Rectangles", "Circle", "PointedSection", "HollowRectangle")][string]$FixtureGeometryType,
+    [switch]$VerifyResultsReopen,
+    [switch]$VerifyStatusReopen,
+    [switch]$FailFast,
+    [switch]$Visible
+)
+$ErrorActionPreference = "Stop"
+Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
+$Macro = @($Macro | ForEach-Object { $_ -split ',' })
+. (Join-Path 'C:/Users/avidzba/Desktop/программы/В_РАБОТЕ!/RC_Section_NDM' "tools/build_workbook/SettingsCatalog.ps1")
+$root='C:/Users/avidzba/Desktop/программы/В_РАБОТЕ!/RC_Section_NDM'
+$sourcePath = (Resolve-Path -LiteralPath $SourceWorkbook).Path
+$sourceHash = (Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash
+$fixtureRoot = Join-Path ([IO.Path]::GetTempPath()) ("RC_NDM_ModeSuite_" + [Guid]::NewGuid().ToString("N"))
+New-Item -ItemType Directory -Path $fixtureRoot | Out-Null
+$fixturePath = Join-Path $fixtureRoot "RC_Section_NDM.xlsm"
+Copy-Item -LiteralPath $sourcePath -Destination $fixturePath
+$printAreas = @(Get-WorkbookPrintAreas $fixturePath)
+$lines = New-Object System.Collections.Generic.List[string]
+$fullReport = Join-Path $root $ReportPath
+New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullReport) | Out-Null
+$excel = $null
+$workbook = $null
+$failed = $false
+$cleanupOwnerConfirmed=$false;$cleanupPID=0;$cleanupTicks=0L
+$cleanupErrors=New-Object System.Collections.Generic.List[string]
+$cleanupCloseRequested=$false;$cleanupCloseSucceeded=$false;$cleanupQuitRequested=$false;$cleanupQuitSucceeded=$false
+
+# Определяет PID только созданного COM-экземпляра Excel по его окну.
+# Watchdog использует этот идентификатор, не затрагивая пользовательские книги.
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class AuditExcelProcessIdentity {
+    [DllImport("user32.dll")]
+    public static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+}
+'@
+
+# Сохраняет ход прогона до COM-вызова: при зависании видно последнюю suite,
+# а уже завершенные проверки не теряются вместе с тестовым процессом Excel.
+function Save-Progress {
+    # Прямой writer исключает provider-ошибку Set-Content при одновременном
+    # чтении progress внешним watchdog/наблюдателем. Содержимое журнала прежнее.
+    $reportStream=[IO.File]::Open($fullReport,[IO.FileMode]::Create,[IO.FileAccess]::Write,[IO.FileShare]::ReadWrite)
+    $reportWriter=$null
+    try {
+        $reportWriter=New-Object IO.StreamWriter($reportStream,(New-Object Text.UTF8Encoding($true)))
+        foreach ($line in $lines) {$reportWriter.WriteLine([string]$line)}
+    } finally {
+        if ($reportWriter) {$reportWriter.Dispose()} else {$reportStream.Dispose()}
+    }
+}
+
+# Диагностирует потерю COM-свойств после suite без повторного открытия книги
+# и без признания прогона успешным. Прямой IDispatch-вызов позволяет отделить
+# недоступность Excel от проблемы адаптера PowerShell при том же RCW-объекте.
+function Save-ComPropertyDiagnostic {
+    param([object]$Target, [string]$Label, [string[]]$Properties)
+    if ($null -eq $Target) { $lines.Add("COM_DIAGNOSTIC: $Label is null"); return }
+    $type = $Target.GetType()
+    $lines.Add("COM_DIAGNOSTIC: $Label; type=$($type.FullName); isCom=$([Runtime.InteropServices.Marshal]::IsComObject($Target))")
+    foreach ($property in $Properties) {
+        try {
+            $value = $type.InvokeMember($property, [Reflection.BindingFlags]::GetProperty, $null, $Target, $null)
+            if ($null -eq $value) { $detail = 'null' }
+            elseif ([Runtime.InteropServices.Marshal]::IsComObject($value)) {
+                $detail = "COM object; type=$($value.GetType().FullName)"
+                try {
+                    $count = $value.GetType().InvokeMember('Count', [Reflection.BindingFlags]::GetProperty, $null, $value, $null)
+                    $detail += "; rawCount=$count"
+                } catch { $detail += "; countError=$($_.Exception.Message)" }
+            } else { $detail = [string]$value }
+            $lines.Add("COM_DIAGNOSTIC: $Label.$property; raw=$detail")
+        } catch { $lines.Add("COM_DIAGNOSTIC: $Label.$property; rawError=$($_.Exception.Message)") }
+    }
+}
+
+# Читает свойство того же COM-объекта напрямую через IDispatch. После VBA Run
+# адаптер PowerShell может вернуть null для существующей коллекции, тогда как
+# прямой getter видит открытую книгу. Здесь нет reopen, retry или подстановки
+# данных; настоящий null остается ошибкой, COM-коллекция не разворачивается
+# в pipeline и сохраняет собственные Count/Item.
+function Get-RequiredComProperty {
+    param([object]$Target, [string]$Property)
+    if ($null -eq $Target) { throw "COM-объект недоступен при чтении $Property." }
+    $value = $Target.GetType().InvokeMember($Property, [Reflection.BindingFlags]::GetProperty, $null, $Target, $null)
+    if ($null -eq $value) {
+        Save-ComPropertyDiagnostic $Target 'UnavailableTarget' @($Property)
+        throw "COM-свойство $Property недоступно при прямом чтении."
+    }
+    return ,$value
+}
+
+# Находит единственную строку настройки через именованный Range листа Config.
+# Не зависит от промежуточного COM-proxy Workbook.Names после долгого VBA-вызова;
+# неизвестный формат не заменяет настройку другим default или режимом.
+function Get-ModeSettingCell {
+    param([object]$Book, [string]$Key)
+    if ($null -eq $Book) { throw "Книга недоступна при чтении тестового режима $Key." }
+    $worksheets = Get-RequiredComProperty $Book 'Worksheets'
+    $config = $worksheets.Item('Config')
+    if ($null -eq $config) { throw "Лист Config недоступен при чтении тестового режима $Key." }
+    $range = $config.Range('rngSystemSettings')
+    if ($null -eq $range) { throw "rngSystemSettings не ссылается на ячейки при чтении тестового режима $Key." }
+    $data = $range.Value2
+    $row = 0
+    for ($r = 2; $r -le $range.Rows.Count; $r++) {
+        if ([string]$data[$r, 1] -eq $Key) {
+            if ($row) { throw "В тестовой книге несколько строк $Key." }
+            $row = $r
+        }
+    }
+    if (-not $row) { throw "В тестовой книге отсутствует $Key." }
+    return $range.Cells.Item($row, 2)
+}
+
+# Сравнивает только сохраненные значения Results, включая все комментарии.
+# Это gate сохранности данных, а не проверка цветов или внешнего вида.
+function Get-ResultsValueHash([object]$Book) {
+    $worksheets = Get-RequiredComProperty $Book 'Worksheets'
+    $range = $worksheets.Item("Results").UsedRange
+    $data = $range.Value2
+    $payload = ConvertTo-Json -InputObject @{
+        rows = $range.Rows.Count; columns = $range.Columns.Count; values = @($data)
+    } -Depth 8 -Compress
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($payload))).Replace('-', '') }
+    finally { $sha.Dispose() }
+}
+
+# Сохраняет фактическое оформление всех статусных колонок, включая пустые
+# строки, легенду и направленную palette-fixture. DisplayFormat учитывает CF;
+# это проверка Excel COM, а не утверждение о просмотренных пикселях экрана.
+function Get-ResultsStatusStyleHash([object]$Book) {
+    $names = Get-RequiredComProperty $Book 'Names'
+    $rows = [int]$names.Item('rngLoadCombinations').RefersToRange.Rows.Count - 1
+    $records = New-Object 'System.Collections.Generic.List[object]'
+    $blocks = @(
+        @{name='rngBatchSummary'; offset=12; columns=@(4,6,7,8,9,10,11,12,13,14,15)},
+        @{name='rngStrengthSummaryAnchor'; offset=0; columns=@(3,30,49)},
+        @{name='rngCrackSummaryAnchor'; offset=0; columns=@(3,21,24,25,29,44,67,72)},
+        @{name='rngStabilitySummaryAnchor'; offset=0; columns=@(3,38,44,53,59,72,84)}
+    )
+    foreach ($block in $blocks) {
+        $anchor = $names.Item($block.name).RefersToRange
+        for ($r = 0; $r -lt $rows; $r++) {
+            foreach ($column in $block.columns) {
+                $cell = $anchor.Worksheet.Cells.Item($anchor.Row + $block.offset + $r, $anchor.Column + $column - 1)
+                $records.Add(@{block=$block.name; address=$cell.Address(); value=[string]$cell.Value2;
+                    fill=[int]$cell.Interior.Color; pattern=[int]$cell.Interior.Pattern;
+                    display=[int]$cell.DisplayFormat.Interior.Color; displayPattern=[int]$cell.DisplayFormat.Interior.Pattern;
+                    conditionalRules=[int]$cell.FormatConditions.Count})
+            }
+        }
+    }
+    $anchor = $names.Item('rngBatchSummary').RefersToRange
+    for ($r = 7; $r -le 13; $r++) {
+        $cell = $anchor.Worksheet.Cells.Item($anchor.Row + $r, $anchor.Column + 27)
+        $records.Add(@{block='legend'; address=$cell.Address(); value=[string]$cell.Value2;
+            fill=[int]$cell.Interior.Color; display=[int]$cell.DisplayFormat.Interior.Color;
+            conditionalRules=[int]$cell.FormatConditions.Count})
+    }
+    $worksheets = Get-RequiredComProperty $Book 'Worksheets'
+    foreach ($sheet in $worksheets) {
+        if ($sheet.Name -ne '__Audit03Palette') { continue }
+        for ($r = 1; $r -le 12; $r++) {
+            $cell = $sheet.Cells.Item($r, 1)
+            $records.Add(@{block='palette'; address=$cell.Address(); value=[string]$cell.Value2;
+                fill=[int]$cell.Interior.Color; pattern=[int]$cell.Interior.Pattern;
+                display=[int]$cell.DisplayFormat.Interior.Color; displayPattern=[int]$cell.DisplayFormat.Interior.Pattern;
+                conditionalRules=[int]$cell.FormatConditions.Count})
+        }
+    }
+    $payload = ConvertTo-Json -InputObject @($records.ToArray()) -Depth 6 -Compress
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($payload))).Replace('-', '') }
+    finally { $sha.Dispose() }
+}
+
+try {
+    $lines.Add("SOURCE: $sourcePath")
+    $lines.Add("SOURCE_SHA256: $sourceHash")
+    $lines.Add("FIXTURE: $fixturePath")
+    $lines.Add("GLOBAL_MODE: $SettingKey=$Mode; explicit-On tests retain their setup")
+    Save-Progress
+    $preexistingExcelProcessIds = @(Get-Process -Name EXCEL -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
+    $excel = New-Object -ComObject Excel.Application
+    [uint32]$testExcelProcessId = 0
+    [void][AuditExcelProcessIdentity]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd, [ref]$testExcelProcessId)
+    if ([int]$testExcelProcessId -in $preexistingExcelProcessIds) {
+        [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
+        $excel = $null
+        throw 'Excel reused an existing user process; no settings or workbooks were changed.'
+    }
+    if ($testExcelProcessId -eq 0) { throw 'Не удалось определить собственный тестовый процесс Excel.' }
+    $testExcelProcess = Get-Process -Id $testExcelProcessId -ErrorAction Stop
+    $cleanupPID=[int]$testExcelProcessId;$cleanupTicks=$testExcelProcess.StartTime.ToUniversalTime().Ticks
+    if($testExcelProcess.ProcessName -ine 'EXCEL' -or $cleanupTicks -le0){throw 'Own Excel identity could not be verified.'}
+    $cleanupOwnerConfirmed=$true
+    [ordered]@{PID=$cleanupPID;StartTicksUTC=[string]$cleanupTicks;ProcessName='EXCEL';VerifiedNewOwner=$true;SourceSHA256=$sourceHash;BeforeWorkbookOpen=$true}|ConvertTo-Json|Set-Content -LiteralPath ($fullReport+'.Ownership.json') -Encoding UTF8
+    $lines.Add("TEST_EXCEL_PROCESS: id=$testExcelProcessId; startTicks=$($testExcelProcess.StartTime.ToUniversalTime().Ticks)")
+    Save-Progress
+    $excel.Visible = [bool]$Visible
+    $excel.DisplayAlerts = $false
+    $excel.AutomationSecurity = 1
+    $openBooks = Get-RequiredComProperty $excel 'Workbooks'
+    $workbook = $openBooks.Open($fixturePath)
+    # Workbook_Open может вернуть DisplayAlerts=True. Параметр относится только
+    # к собственному тестовому Excel и заново задаётся после каждого открытия.
+    $excel.DisplayAlerts = $false
+    (Get-ModeSettingCell $workbook $SettingKey).Value2 = $Mode
+    (Get-ModeSettingCell $workbook 'Results.SnapshotStorage').Value2 = 'Excel' # Частная база всех адресных наборов; File-сценарий сам выбирает свой файл.
+    if ($CrackCode) {
+        (Get-ModeSettingCell $workbook 'SLS.Crack.Code').Value2 = $CrackCode
+        $lines.Add("EXPLICIT_CRACK_CODE: $CrackCode; fixture only, source unchanged")
+    }
+    if ($FixtureGeometryType) {
+        # Историческая tf-проверка использует стандартную Rectangles-геометрию.
+        # Явно готовим только независимую копию, не подменяя пользовательский ввод.
+        $geometryCell = Get-ModeSettingCell $workbook 'Geometry.Type'
+        $originalGeometryType = [string]$geometryCell.Value2
+        $geometryCell.Value2 = $FixtureGeometryType
+        $lines.Add("EXPLICIT_GEOMETRY_FIXTURE: original=$originalGeometryType; Geometry.Type=$FixtureGeometryType; fixture only, source unchanged")
+    }
+    $workbook.Save()
+    $workbook.Close($false)
+    $workbook = $null
+    Restore-WorkbookPrintAreas $fixturePath $printAreas
+    $macros = @(
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+    )
+    if ($Macro.Count -gt 0) { $macros = $Macro }
+    if (($MacroArgument1 -or $MacroArgument2 -or $VerifyResultsReopen -or $VerifyStatusReopen) -and $macros.Count -ne 1) {
+        throw "Аргументы macro/save-reopen допускаются только для одной явно выбранной проверки."
+    }
+    foreach ($macro in $macros) {
+        $openBooks = Get-RequiredComProperty $excel 'Workbooks'
+        $workbook = $openBooks.Open($fixturePath, $null, $true)
+        $excel.DisplayAlerts = $false
+        $lines.Add("===== $macro =====")
+        $lines.Add("SUITE_STARTED: $macro; $([DateTime]::Now.ToString('s'))")
+        Save-Progress
+        if ([string](Get-ModeSettingCell $workbook $SettingKey).Value2 -ne $Mode) {
+            throw "Перед suite $macro не сохранено требуемое значение $Mode."
+        }
+        (Get-ModeSettingCell $workbook 'Results.SnapshotStorage').Value2 = 'Excel'
+        if([string](Get-ModeSettingCell $workbook 'Results.SnapshotStorage').Value2 -cne 'Excel'){throw 'Explicit Excel fixture failed'}
+        $lines.Add("EXPLICIT_IO_FIXTURE: Results.SnapshotStorage=Excel; macro=$macro; mode=$Mode")
+        Save-Progress
+        $macroName = "'RC_Section_NDM.xlsm'!$macro"
+        # Фоновый тестовый Excel не должен прерывать VBA из-за Escape в другом
+        # приложении. Excel сбрасывает этот режим после idle, поэтому задаем его
+        # перед каждым Run; предельное время выполнения контролирует внешний watchdog.
+        $excel.EnableCancelKey = 0
+        $lines.Add('TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only')
+        $excel.DisplayAlerts = $false
+        $lines.Add("TEST_MACRO_DISPLAY_ALERTS: $($excel.DisplayAlerts); isolated Excel instance only")
+        if ($MacroArgument2) { $result = [string]$excel.Run($macroName, $MacroArgument1, $MacroArgument2) }
+        elseif ($MacroArgument1) { $result = [string]$excel.Run($macroName, $MacroArgument1) }
+        else { $result = [string]$excel.Run($macroName) }
+        foreach ($process in @(Get-Process EXCEL -ErrorAction SilentlyContinue)) {
+            $lines.Add("EXCEL_AFTER_SUITE: pid=$($process.Id); workingSet=$($process.WorkingSet64); privateBytes=$($process.PrivateMemorySize64); cpu=$($process.CPU)")
+        }
+        foreach ($line in ($result -split "`r?`n")) {
+            $lines.Add($line)
+            if ($line -match "failed=([1-9][0-9]*)|^FAIL(?::| )|RUNTIME ERROR") { $failed = $true }
+        }
+        # Получаем заново ссылку на ту же открытую книгу после долгого VBA Run.
+        # Файл не открывается повторно: несохраненные изменения suite остаются
+        # доступными для post-mode и save/reopen проверок, без скрытого reset.
+        $openBooks = Get-RequiredComProperty $excel 'Workbooks'
+        $liveBook = $null
+        for ($bookIndex = 1; $bookIndex -le $openBooks.Count; $bookIndex++) {
+            $candidate = $openBooks.Item($bookIndex)
+            if ([string]::Equals([string]$candidate.FullName, $fixturePath, [StringComparison]::OrdinalIgnoreCase)) {
+                if ($null -ne $liveBook) { throw 'Найдено несколько открытых книг с путем тестовой копии.' }
+                $liveBook = $candidate
+            }
+        }
+        if ($null -eq $liveBook) { throw 'Тестовая книга закрыта или ее путь изменен во время suite.' }
+        if (-not [bool]$liveBook.ReadOnly) { throw 'Тестовая книга перестала быть ReadOnly во время suite.' }
+        $lines.Add("COM_WORKBOOK_AFTER_SUITE: path=$($liveBook.FullName); readOnly=$($liveBook.ReadOnly); sameProxy=$([object]::ReferenceEquals($workbook, $liveBook))")
+        $workbook = $liveBook
+        $modeAfter = [string](Get-ModeSettingCell $workbook $SettingKey).Value2
+        $lines.Add("MODE_AFTER_SUITE: $modeAfter")
+        $lines.Add("SUITE_FINISHED: $macro; $([DateTime]::Now.ToString('s'))")
+        Save-Progress
+        if ($modeAfter -ne $Mode) {
+            $lines.Add("SUITE_MODE_OVERRIDE: explicit test setup left $modeAfter; changes discarded on close")
+        }
+        if ($VerifyResultsReopen -or $VerifyStatusReopen) {
+            $beforeHash = Get-ResultsValueHash $workbook
+            if ($VerifyStatusReopen) { $beforeStyleHash = Get-ResultsStatusStyleHash $workbook }
+            $savedPath = Join-Path $fixtureRoot 'RC_Section_NDM_saved.xlsm'
+            $workbook.SaveAs($savedPath, 52)
+            $workbook.Close($false)
+            $openBooks = Get-RequiredComProperty $excel 'Workbooks'
+            $workbook = $openBooks.Open($savedPath, $null, $true)
+            $excel.DisplayAlerts = $false
+            $afterHash = Get-ResultsValueHash $workbook
+            $lines.Add("RESULTS_SAVE_REOPEN: before=$beforeHash; after=$afterHash; equal=$($beforeHash -eq $afterHash); file=$savedPath")
+            if ($beforeHash -ne $afterHash) { throw "Значения или комментарии Results изменились после save/reopen." }
+            if ($VerifyStatusReopen) {
+                $afterStyleHash = Get-ResultsStatusStyleHash $workbook
+                $lines.Add("STATUS_STYLE_SAVE_REOPEN: before=$beforeStyleHash; after=$afterStyleHash; equal=$($beforeStyleHash -eq $afterStyleHash)")
+                if ($beforeStyleHash -ne $afterStyleHash) { throw "Отображаемая палитра/условное форматирование изменились после save/reopen." }
+            }
+        }
+        $workbook.Close($false)
+        $workbook = $null
+        if ($FailFast -and $failed) {
+            $lines.Add('FAIL_FAST: remaining suites were not run after a completed failed suite')
+            Save-Progress
+            break
+        }
+    }
+    if ((Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash -ne $sourceHash) {
+        throw "Исходная книга изменилась во время проверки независимой копии."
+    }
+    $lines.Add("SOURCE_UNCHANGED: True")
+} catch {
+    $failed = $true
+    $lines.Add("SCRIPT ERROR: $($_.Exception.Message)")
+    $lines.Add("SCRIPT_ERROR_CONTEXT: macro=$macro; exceptionType=$($_.Exception.GetType().FullName)")
+    $lines.Add("SCRIPT_ERROR_POSITION: $($_.InvocationInfo.PositionMessage)")
+    $lines.Add("SCRIPT_ERROR_STACK: $($_.ScriptStackTrace)")
+} finally {
+    # Финальный выход Excel проверяет родитель после завершения этого child: RCW ещё могут жить здесь.
+    if($workbook){
+        if($cleanupOwnerConfirmed){
+            $cleanupCloseRequested=$true
+            try{$workbook.Close($false);$cleanupCloseSucceeded=$true}catch{$cleanupErrors.Add('workbook.Close: '+$_.Exception.Message)}
+        }else{$cleanupErrors.Add('Workbook cleanup skipped: own Excel identity is not verified.')}
+        try{[void][Runtime.InteropServices.Marshal]::ReleaseComObject($workbook)}catch{$cleanupErrors.Add('workbook RCW release: '+$_.Exception.Message)}
+        $workbook=$null
+    }
+    if($excel){
+        if($cleanupOwnerConfirmed){
+            $cleanupQuitRequested=$true
+            try{$excel.Quit();$cleanupQuitSucceeded=$true}catch{$cleanupErrors.Add('Excel.Quit: '+$_.Exception.Message)}
+        }else{$cleanupErrors.Add('Excel.Quit skipped: own Excel identity is not verified.')}
+        try{[void][Runtime.InteropServices.Marshal]::ReleaseComObject($excel)}catch{$cleanupErrors.Add('Excel RCW release: '+$_.Exception.Message)}
+        $excel=$null
+    }
+    [GC]::Collect();[GC]::WaitForPendingFinalizers()
+    foreach($cleanupError in $cleanupErrors){$lines.Add('CLEANUP ERROR: '+$cleanupError);$failed=$true}
+    [ordered]@{Stage='CLOSE_QUIT_REQUESTS_CHILD_NOT_EXITED';OwnerVerified=$cleanupOwnerConfirmed;PID=$cleanupPID;StartTicksUTC=[string]$cleanupTicks;CloseRequested=$cleanupCloseRequested;CloseSucceeded=$cleanupCloseSucceeded;QuitRequested=$cleanupQuitRequested;QuitSucceeded=$cleanupQuitSucceeded;Errors=@($cleanupErrors.ToArray());Failed=$failed;FinalExitNotAsserted=$true;FinalClosureAuthority='Run-Audit03Watchdog after actual child exit';ObservedUTC=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath ($fullReport+'.RunnerCleanup.json') -Encoding UTF8
+    Save-Progress
+    $lines | Where-Object { $_ -match "^SOURCE|^FIXTURE|^GLOBAL_MODE|^TOTAL|^FAIL(?::| )|^SCRIPT ERROR|^RUNTIME ERROR|^MODE_AFTER|^CLEANUP ERROR" }
+}
+
+if ($failed) { exit 1 }

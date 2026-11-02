@@ -1,0 +1,64 @@
+﻿{
+    "Status":  "PASS_SIX_SYNTHETIC_FILE_TRANSACTION_CASES",
+    "AtUTC":  "2026-11-01T21:27:06.9793889+00:00",
+    "Cases":  [
+                  {
+                      "Case":  "Success",
+                      "Passed":  true,
+                      "ExpectedFailure":  false,
+                      "PartialWriteFaultInjected":  0,
+                      "LatestOriginalsPreservedOnFailure":  false,
+                      "ExclusiveHandlesReleased":  true,
+                      "ReceiptSHA256":  "4B8FA1DE9CECC8E2622CBAA359FE4A71C7960145E6F5D25AD30A696F4AE9A21A"
+                  },
+                  {
+                      "Case":  "PartialFirst",
+                      "Passed":  true,
+                      "ExpectedFailure":  true,
+                      "PartialWriteFaultInjected":  1,
+                      "LatestOriginalsPreservedOnFailure":  true,
+                      "ExclusiveHandlesReleased":  true,
+                      "ReceiptSHA256":  "F7BC222A16D8EA122343AD36C5AEF3A80369B32C5C6CC12416896D01C7DEB2CE"
+                  },
+                  {
+                      "Case":  "PartialSecond",
+                      "Passed":  true,
+                      "ExpectedFailure":  true,
+                      "PartialWriteFaultInjected":  2,
+                      "LatestOriginalsPreservedOnFailure":  true,
+                      "ExclusiveHandlesReleased":  true,
+                      "ReceiptSHA256":  "DFEE4940075CBCB19B6F6E7D46C7B211EED208207C7FD41118C0879EA389C48A"
+                  },
+                  {
+                      "Case":  "ModifiedOriginal",
+                      "Passed":  true,
+                      "ExpectedFailure":  true,
+                      "PartialWriteFaultInjected":  0,
+                      "LatestOriginalsPreservedOnFailure":  true,
+                      "ExclusiveHandlesReleased":  true,
+                      "ReceiptSHA256":  "541AA93D33D61535A44D0F00289EEBA94969F4F6470A018971DBA43FF408EAC2"
+                  },
+                  {
+                      "Case":  "LockedSecond",
+                      "Passed":  true,
+                      "ExpectedFailure":  true,
+                      "PartialWriteFaultInjected":  0,
+                      "LatestOriginalsPreservedOnFailure":  true,
+                      "ExclusiveHandlesReleased":  true,
+                      "ReceiptSHA256":  "F4E91454FF9ECD6F034FCD30F21F99FCDDD7039C35CED1DFDDC2B2933D3DFAA7"
+                  },
+                  {
+                      "Case":  "ModifiedCandidate",
+                      "Passed":  true,
+                      "ExpectedFailure":  true,
+                      "PartialWriteFaultInjected":  0,
+                      "LatestOriginalsPreservedOnFailure":  true,
+                      "ExclusiveHandlesReleased":  true,
+                      "ReceiptSHA256":  "9BF3F10A473242B3EF331ABE76D3F39F62BB6B0E50A8BE018B6334E0133B23EC"
+                  }
+              ],
+    "RealWorkbooksTouched":  0,
+    "ExcelOrCADStarted":  0,
+    "FullAcceptanceClaim":  false,
+    "HelperSHA256":  "BDB7E021F1FBCD5DD68291CB98B6555D178030CBC45227D87E08DBE1EB531037"
+}

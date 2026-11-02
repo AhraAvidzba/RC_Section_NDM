@@ -1,0 +1,46 @@
+{
+  "Status": "SEVEN_PRIVATE_HELPERS_PS5_SYNTAX_PASS_PREPARATION_ONLY",
+  "AtUTC": "2026-11-01T22:13:45.5367265+00:00",
+  "Parser": "Windows PowerShell 5.1",
+  "Files": [
+    {
+      "Name": "TestAssertCurrentRun02Pass60.ps1",
+      "SHA256": "910293052AC4FCFCAC1B4AC25ACD28F894C354AE761F74803A31145BF26A7A3D",
+      "ASTPassed": true
+    },
+    {
+      "Name": "TestReadCurrentRun02Pass60.ps1",
+      "SHA256": "0C4F64B262E045B520BA01A77F375E2CD60359D74300E4A51175D168A78BA919",
+      "ASTPassed": true
+    },
+    {
+      "Name": "TestNativeUserBook63.ps1",
+      "SHA256": "15099FE352CEFDA38D789838F713942C17EAEF9BA8BE53EEB155641281B8D517",
+      "ASTPassed": true
+    },
+    {
+      "Name": "TestPublishUserBooksCodeOnly64.ps1",
+      "SHA256": "FF9724F900E15EBF7DFA1337A0BE36161A86ED9143ACE7374ACD58F24D57869A",
+      "ASTPassed": true
+    },
+    {
+      "Name": "TestIOModeRunner73.ps1",
+      "SHA256": "44D17420EA399F7054FE8B1E9D17AF6CA0AD746A0FE99B068731475312AC3BCA",
+      "ASTPassed": true
+    },
+    {
+      "Name": "TestIOWatchdog73.ps1",
+      "SHA256": "992B4D0C4B14ECE8BD224650255E98CC4E0B7956F33C2B8A138D289135731BF5",
+      "ASTPassed": true
+    },
+    {
+      "Name": "TestAdditionalIO74.ps1",
+      "SHA256": "9230A7DD9E7664087A3FB6C775DDDFC1A3DCD97A591C44ED1041BE9DEFDB9353",
+      "ASTPassed": true
+    }
+  ],
+  "NativeStarted": 0,
+  "RealBooksWritten": 0,
+  "FullAcceptanceClaim": false,
+  "InitialCommandQuotingError": "One initial outer command expanded local variables before PS5; no helper body executed. File-based parse then passed for all seven."
+}

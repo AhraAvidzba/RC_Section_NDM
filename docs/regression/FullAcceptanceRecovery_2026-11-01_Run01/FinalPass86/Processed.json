@@ -1,0 +1,57 @@
+{
+  "Status": "FULL_CORE_FOCUSED_AND_ADDITIONAL_IO_PASS_USER_BOOKS_CODE_ONLY_UPDATED",
+  "CheckedUTC": "2026-11-02T00:54:39.762393+00:00",
+  "AcceptedSourceSHA256": "831D725C06439CA1B771645F18B0D546169C1E22A97BA7688D64CB3F8509B74A",
+  "SourceCommit": "5f18de1f88a657ae312bc37b0798bc511f4bb218",
+  "Started": "2026-11-02T00:00:46.7724422+03:00",
+  "FinishedUTC": "2026-11-02T00:43:16.6457879+00:00",
+  "CoreGroups": 12,
+  "CoreMacroExecutions": 182,
+  "FocusedRecords": 26,
+  "FocusedActualSingleIDs": 122,
+  "AdditionalIOMacrosPerMode": 9,
+  "AdditionalIOModes": [
+    "No",
+    "Yes"
+  ],
+  "EntireRawPrimaryReviewed": true,
+  "AllOwnIdentitiesTerminal": true,
+  "InputsChecked": 522,
+  "IndependentModels": 5,
+  "IndependentIntegrals": 560,
+  "IndividuallyReviewedNumFailStates": 10,
+  "ActualCADTests": 2,
+  "UserBooks": [
+    {
+      "Label": "Main",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+      "SHA256": "4F2C72D7962313F0CDC3ABE2A9D4145BCCDA2CA125651FD42EF6B195F3B0671D",
+      "BackupSHA256": "7CCBDCD1DC145C73DBCEE5C61AC07F9F1FFA7520688A1D3D28518C1EA3ABA2A8",
+      "PreservedPartCount": 122,
+      "CodeOnlyChanged": true,
+      "OtherUncompressedPartsByteExact": true,
+      "NativeComponents": 187,
+      "NDSRecalculated": false,
+      "FullPassAppliesOnlyToAcceptedSource": true
+    },
+    {
+      "Label": "Heavy",
+      "Path": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\NDM_HeavyCircle_1232_30_2026-11-01\\RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "B75EB9FC8A901CB72A87DE1C49EA222210BF37A44A165BF7C5CD696D7CC89ACF",
+      "BackupSHA256": "C564C4237A2A4BD51AAFEAB7A388572D016E43F7EDC0C5CF862AF21FEFD2F5C6",
+      "PreservedPartCount": 122,
+      "CodeOnlyChanged": true,
+      "OtherUncompressedPartsByteExact": true,
+      "NativeComponents": 187,
+      "NDSRecalculated": false,
+      "FullPassAppliesOnlyToAcceptedSource": true
+    }
+  ],
+  "ArchiveFile": "ReviewedCurrentRun02Primary.zip",
+  "ArchiveBytes": 2999167,
+  "ArchiveSHA256": "C9E8A8F6CF794B36F28A6794787E62F1DDC05371EA1A694A55CEBC61DA777D17",
+  "ProofFileCount": 261,
+  "NativeProcessesStartedByPackager": 0,
+  "SourceEvidenceChanged": false,
+  "GitCommitAndPushPending": true
+}

@@ -1,0 +1,2 @@
+# Доказательства сохраняются побайтно; CRLF распознаётся как окончание строки.
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
