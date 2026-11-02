@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "AtUTC": "2026-11-02T08:07:26.5986076Z",
+  "Identities": [
+    {
+      "PID": 124596,
+      "StartTicksUTC": "639292031346345404",
+      "ExactIdentityTerminal": true
+    },
+    {
+      "PID": 128096,
+      "StartTicksUTC": "639292034175918754",
+      "ExactIdentityTerminal": true
+    }
+  ],
+  "ForcedClosures": 0
+}

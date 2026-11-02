@@ -155,6 +155,7 @@
     },
     {
       "Name": "rngSP35Table721",
+      "TitleRowsAbove": 2,
       "RefersTo": "=Config!$X$60:$AE$78",
       "Sheet": "Config",
       "Address": "$X$60:$AE$78",

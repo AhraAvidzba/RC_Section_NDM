@@ -15,6 +15,15 @@ try{
  $book=$app.Workbooks.Open($path,0,$true)
  if(-not $book.ReadOnly){throw 'Книга должна открываться только для чтения.'}
  $layout=Get-WorkbookLayoutSnapshot $book $xml
+ # Число строк шапки задаёт состав перемещаемого блока, поэтому сохраняем его при повторном снятии координат.
+ if(Test-Path -LiteralPath $output){
+  $referenceLayout=Read-WorkbookLayout $output
+  foreach($item in $referenceLayout.Names){
+   if($null -eq $item.PSObject.Properties['TitleRowsAbove']){continue}
+   $record=@($layout.Names | Where-Object Name -eq $item.Name)[0]
+   if($record){$record | Add-Member TitleRowsAbove ([int]$item.TitleRowsAbove)}
+  }
+ }
  $layout | Add-Member Provenance ([ordered]@{Workbook=[IO.Path]::GetFileName($path);SHA256=$hash;Captured=(Get-Date).ToString('s')})
  $layout | ConvertTo-Json -Depth 15 | Set-Content -LiteralPath $output -Encoding UTF8
  Write-Output ('LAYOUT_CAPTURED: names='+$layout.Names.Count+'; sheets='+$layout.Sheets.Count+'; objects='+(($layout.Sheets | ForEach-Object {$_.Objects.Count} | Measure-Object -Sum).Sum))

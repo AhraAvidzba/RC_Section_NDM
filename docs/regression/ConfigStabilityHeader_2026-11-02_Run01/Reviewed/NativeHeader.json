@@ -1,0 +1,14 @@
+﻿{
+    "Status":  "PASS",
+    "WorkbookSHA256":  "024827C871294D5B2E66D500AD11427736F711CD2D0328A978D3E8EE2333FD59",
+    "TitleCell":  "Config!X58",
+    "MergedTitle":  "$X$58:$AE$58",
+    "MergedExplanation":  "$X$59:$AE$59",
+    "HelpTarget":  "\u0027Справка\u0027!A903",
+    "HelpText":  "Таблица 7.21 СП 35",
+    "NativeHelpFollowPassed":  true,
+    "NamedRangesChecked":  26,
+    "VBAComponents":  187,
+    "NoNDSCalculation":  true,
+    "Saved":  false
+}

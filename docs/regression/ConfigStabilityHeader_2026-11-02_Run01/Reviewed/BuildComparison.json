@@ -1,0 +1,32 @@
+{
+  "Status": "PASS",
+  "FreshWorkbookSHA256": "024827c871294d5b2e66d500ad11427736f711cd2d0328a978d3e8ee2333fd59",
+  "ChangedValueCells": [
+    [
+      "Config",
+      "AI58",
+      [
+        "СП 35.13330.2011, таблица 7.21 (Подробнее)",
+        null
+      ],
+      null
+    ],
+    [
+      "Config",
+      "X58",
+      null,
+      [
+        "СП 35.13330.2011, таблица 7.21 (Подробнее)",
+        null
+      ]
+    ]
+  ],
+  "NamedRangesUnchanged": 29,
+  "VBAComponentsExact": 187,
+  "AllValidationsUnchanged": true,
+  "EmbeddedImagesUnchanged": 84,
+  "OnlyHeaderMergeMoved": true,
+  "AllOtherCellValuesAndFormulasUnchanged": true,
+  "HelpNavigationVerified": true,
+  "IgnoredRebuildMetadata": "Random Excel validation revision GUIDs only; list separators and formulas remain exact"
+}

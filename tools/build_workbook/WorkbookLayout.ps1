@@ -116,11 +116,15 @@ function Move-WorkbookLayoutTables {
         if($range.Worksheet.Name -eq $item.Sheet -and $range.Address() -eq $item.Address){continue}
         if($range.Rows.Count -ne $item.Rows -or $range.Columns.Count -ne $item.Columns){throw ('Изменилась структура '+$item.Name+'; обновите описание расположения книги.')}
         $top=[int]$range.Row;$left=[int]$range.Column;$width=[int]$range.Columns.Count;$height=[int]$range.Rows.Count
-        $withTitle=($range.Worksheet.Name -eq 'Config' -and $top -gt 1)
-        if($withTitle){$top--;$height++}
+        $titleRows=0;if($range.Worksheet.Name -eq 'Config' -and $top -gt 1){$titleRows=1}
+        # Описание раскладки включает все строки шапки: заголовок со ссылкой и пояснение перемещаются вместе с таблицей.
+        if($null -ne $item.PSObject.Properties['TitleRowsAbove']){$titleRows=[int]$item.TitleRowsAbove}
+        if($titleRows -lt 0 -or $titleRows -ge $top){throw ('Недопустимая высота шапки '+$item.Name)}
+        $top-=$titleRows;$height+=$titleRows
         $block=$range.Worksheet.Cells.Item($top,$left).Resize($height,$width)
         $destination=$Workbook.Worksheets.Item($item.Sheet).Range($item.Address)
-        $targetRow=[int]$destination.Row;if($withTitle){$targetRow--}
+        $targetRow=[int]$destination.Row-$titleRows
+        if($targetRow -lt 1){throw ('Шапка выходит за границы листа: '+$item.Name)}
         $moves.Add([pscustomobject]@{Sheet=$block.Worksheet.Name;Row=$top;Column=$left;Height=$height;Width=$width;Block=$block;TargetSheet=$item.Sheet;TargetRow=$targetRow;TargetColumn=[int]$destination.Column})
     }
     foreach($item in $Layout.OtherTables){
