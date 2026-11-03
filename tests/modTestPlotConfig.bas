@@ -28,6 +28,7 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     TestUnifiedOutputConfigContracts stats
     TestIndexedFixtureIntegrity stats
     TestAudit03GeneralPlotContracts stats
+    TestLegendScaleContracts stats
     TestAudit03AnnotationLayoutContracts stats
     TestAudit03PlotEnableContracts stats
     TestPlotContainerContracts stats
@@ -2456,3 +2457,256 @@ Cleanup:
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
 End Sub
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет масштабирование всей легенды без решения НДС и без изменений рабочей книги.
+Public Function RunLegendScaleTests() As String
+    Dim stats As TUiTestStats
+    TestLegendScaleContracts stats
+    TestAppendLine stats, "TOTAL_LEGEND_SCALE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunLegendScaleTests = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает реальные фигуры при разных масштабах, режимах и размерах диаграммы.
+' Координаты считаются от независимого правого верхнего якоря, а не из полей plotter-а.
+Private Sub TestLegendScaleContracts(ByRef stats As TUiTestStats)
+    Dim fixture As Object, table As Object, chart As Object, settings As CSystemSettingsReader
+    Dim reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim baseline As Object, outside As Object, current As Object, actualOutside As Object
+    Dim mode As Variant, factor As Variant, key As Variant, values As Variant, observed As Variant
+    Dim shape As Object, minTop As Double, maxRight As Double, prefix As String
+    Dim bad As Variant, code As Long, reason As String, signature As String, solveCount As Long
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = TestLegendScaleFixture()
+    Set table = fixture.Names.Item("rngSystemSettings").RefersToRange
+    TestAudit03SetPlotSetting table, "Plot.AxisLabelsEnabled", "No"
+    TestAudit03SetPlotSetting table, "Plot.PrincipalAxesMode", "None"
+    TestAudit03SetPlotSetting table, "Plot.NeutralLineEnabled", "No"
+    TestAudit03SetPlotSetting table, "Plot.LoadApplicationPointEnabled", "No"
+    TestAudit03SetPlotSetting table, "Plot.LegendEnabled", "Yes"
+    TestAudit03SetPlotSetting table, "Plot.LegendScale", 1#
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook fixture
+    Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook fixture, settings
+    Set plotter = New CSectionPlotter: plotter.Draw fixture, reader, settings
+    Set chart = fixture.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    chart.Left = 33#: chart.Top = 44#: chart.Width = 820#: chart.Height = 540#
+    For Each mode In Array("Separate", "Common")
+        TestAudit03SetPlotSetting table, "Plot.LegendMode", CStr(mode)
+        TestAudit03SetPlotSetting table, "Plot.LegendScale", 1#
+        settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        Set baseline = TestLegendShapeSnapshot(chart, True)
+        Set outside = TestLegendShapeSnapshot(chart, False)
+        TestAssertTrue stats, "legendScale.count." & CStr(mode), baseline.Count = IIf(CStr(mode) = "Common", 18, 36)
+        For Each factor In Array(0.125, 0.25, 0.5, 0.7, 1#, 1.25)
+            prefix = "legendScale." & CStr(mode) & "." & CStr(factor)
+            TestAudit03SetPlotSetting table, "Plot.LegendScale", CDbl(factor)
+            settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+            Set current = TestLegendShapeSnapshot(chart, True)
+            Set actualOutside = TestLegendShapeSnapshot(chart, False)
+            TestAssertTrue stats, prefix & ".count", current.Count = baseline.Count
+            minTop = 100000#: maxRight = -100000#
+            For Each key In baseline.Keys
+                TestAssertTrue stats, prefix & ".exists." & CStr(key), current.Exists(key)
+                If current.Exists(key) Then
+                    values = baseline(key): observed = current(key)
+                    TestAssertClose stats, prefix & ".rightOffset." & CStr(key), _
+                        chart.Width - 16# - CDbl(observed(0)) - CDbl(observed(2)), _
+                        (chart.Width - 16# - CDbl(values(0)) - CDbl(values(2))) * CDbl(factor), 0.05
+                    TestAssertClose stats, prefix & ".topOffset." & CStr(key), CDbl(observed(1)) - 36#, (CDbl(values(1)) - 36#) * CDbl(factor), 0.05
+                    TestAssertClose stats, prefix & ".width." & CStr(key), CDbl(observed(2)), CDbl(values(2)) * CDbl(factor), 0.05
+                    TestAssertClose stats, prefix & ".height." & CStr(key), CDbl(observed(3)), CDbl(values(3)) * CDbl(factor), 0.05
+                    If CStr(values(10)) <> "" Then
+                        TestAssertClose stats, prefix & ".font." & CStr(key), CDbl(observed(4)), CDbl(values(4)) * CDbl(factor), 0.01
+                        TestAssertClose stats, prefix & ".marginLeft." & CStr(key), CDbl(observed(5)), CDbl(values(5)) * CDbl(factor), 0.01
+                        TestAssertClose stats, prefix & ".marginRight." & CStr(key), CDbl(observed(6)), CDbl(values(6)) * CDbl(factor), 0.01
+                        TestAssertClose stats, prefix & ".marginTop." & CStr(key), CDbl(observed(7)), CDbl(values(7)) * CDbl(factor), 0.01
+                        TestAssertClose stats, prefix & ".marginBottom." & CStr(key), CDbl(observed(8)), CDbl(values(8)) * CDbl(factor), 0.01
+                        TestAssertTrue stats, prefix & ".text." & CStr(key), CStr(observed(10)) = CStr(values(10))
+                    Else
+                        TestAssertClose stats, prefix & ".stroke." & CStr(key), CDbl(observed(9)), CDbl(values(9)) * CDbl(factor), 0.01
+                        TestAssertTrue stats, prefix & ".color." & CStr(key), CLng(observed(11)) = CLng(values(11))
+                    End If
+                    If CDbl(observed(1)) < minTop Then minTop = CDbl(observed(1))
+                    If CDbl(observed(0)) + CDbl(observed(2)) > maxRight Then maxRight = CDbl(observed(0)) + CDbl(observed(2))
+                End If
+            Next key
+            TestAssertClose stats, prefix & ".anchorRight", maxRight, chart.Width - 16#, 0.05
+            TestAssertClose stats, prefix & ".anchorTop", minTop, 36#, 0.05
+            For Each key In outside.Keys
+                TestAssertTrue stats, prefix & ".outsideExists." & CStr(key), actualOutside.Exists(key)
+                If actualOutside.Exists(key) Then
+                    values = outside(key): observed = actualOutside(key)
+                    TestAssertClose stats, prefix & ".outsideX." & CStr(key), CDbl(observed(0)), CDbl(values(0)), 0.05
+                    TestAssertClose stats, prefix & ".outsideY." & CStr(key), CDbl(observed(1)), CDbl(values(1)), 0.05
+                    TestAssertClose stats, prefix & ".outsideWidth." & CStr(key), CDbl(observed(2)), CDbl(values(2)), 0.05
+                    TestAssertClose stats, prefix & ".outsideHeight." & CStr(key), CDbl(observed(3)), CDbl(values(3)), 0.05
+                End If
+            Next key
+            TestAppendLine stats, "LEGEND_SCALE_CASE: mode=" & CStr(mode) & "; scale=" & CStr(factor) & "; shapes=" & CStr(current.Count)
+        Next factor
+    Next mode
+    TestAudit03SetPlotSetting table, "Plot.LegendScale", 0.5
+    chart.Width = 940#: chart.Height = 620#
+    settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+    Set current = TestLegendShapeSnapshot(chart, True)
+    minTop = 100000#: maxRight = -100000#
+    For Each key In current.Keys
+        observed = current(key)
+        If CDbl(observed(1)) < minTop Then minTop = CDbl(observed(1))
+        If CDbl(observed(0)) + CDbl(observed(2)) > maxRight Then maxRight = CDbl(observed(0)) + CDbl(observed(2))
+    Next key
+    TestAssertClose stats, "legendScale.resize.right", maxRight, 924#, 0.05
+    TestAssertClose stats, "legendScale.resize.top", minTop, 36#, 0.05
+    TestAssertClose stats, "legendScale.container.left", chart.Left, 33#, 0.01
+    TestAssertClose stats, "legendScale.container.top", chart.Top, 44#, 0.01
+    For Each bad In Array(0#, -1#, 0.01, 100#, "abc", CVErr(2015), Empty)
+        signature = TestLegendDrawingSignature(chart)
+        TestAudit03SetPlotSetting table, "Plot.LegendScale", bad
+        settings.LoadFromWorkbook fixture
+        TestAudit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
+        TestAssertTrue stats, "legendScale.invalid.reason." & CStr(VarType(bad)), code <> 0 And InStr(1, reason, "Plot.LegendScale", vbTextCompare) > 0
+        TestAssertTrue stats, "legendScale.invalid.preserved." & CStr(VarType(bad)), signature = TestLegendDrawingSignature(chart)
+    Next bad
+    TestAudit03SetPlotSetting table, "Plot.LegendEnabled", "No"
+    TestAudit03SetPlotSetting table, "Plot.LegendScale", CVErr(2015)
+    settings.LoadFromWorkbook fixture
+    TestAudit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
+    TestAssertTrue stats, "legendScale.inactive", code = 0 And TestLegendShapeSnapshot(chart, True).Count = 0
+    TestAudit03SetPlotSetting table, "Plot.LegendEnabled", "Yes"
+    settings.LoadFromWorkbook fixture: reader.LoadGeometryPreviewFromWorkbook fixture, settings
+    TestAudit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
+    TestAssertTrue stats, "legendScale.geometryOnly", code = 0 And TestLegendShapeSnapshot(chart, True).Count = 0
+    TestAssertTrue stats, "legendScale.noSolve", SectionEquilibriumSolveCount() = solveCount
+    GoTo Finish
+Failed:
+    TestAssertTrue stats, "legendScale.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finish:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Снимает параметры реальных фигур, включая дробный шрифт Office и поля текста.
+Private Function TestLegendShapeSnapshot(ByVal chart As Object, ByVal legendOnly As Boolean) As Object
+    Dim result As Object, shape As Object, isLegend As Boolean, text As String, font As Double
+    Dim marginLeft As Double, marginRight As Double, marginTop As Double, marginBottom As Double
+    Set result = CreateObject("Scripting.Dictionary")
+    For Each shape In chart.Chart.Shapes
+        isLegend = InStr(1, CStr(shape.Name), "Legend", vbTextCompare) > 0
+        If isLegend = legendOnly Then
+            text = "": font = 0#: marginLeft = 0#: marginRight = 0#: marginTop = 0#: marginBottom = 0#
+            If InStr(1, CStr(shape.Name), "LegendText", vbTextCompare) > 0 Then
+                text = shape.TextFrame.Characters().Text
+                font = shape.TextFrame2.TextRange.Font.Size
+                marginLeft = shape.TextFrame.MarginLeft: marginRight = shape.TextFrame.MarginRight
+                marginTop = shape.TextFrame.MarginTop: marginBottom = shape.TextFrame.MarginBottom
+            End If
+            result.Add CStr(shape.Name), Array(shape.Left, shape.Top, shape.Width, shape.Height, font, _
+                marginLeft, marginRight, marginTop, marginBottom, shape.Line.Weight, text, shape.Fill.ForeColor.RGB)
+        End If
+    Next shape
+    Set TestLegendShapeSnapshot = result
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Полная подпись рисунка для доказательства отсутствия очистки при неверном вводе.
+Private Function TestLegendDrawingSignature(ByVal chart As Object) As String
+    Dim shape As Object, text As String
+    For Each shape In chart.Chart.Shapes
+        text = ""
+        On Error Resume Next
+        text = shape.TextFrame.Characters().Text
+        On Error GoTo 0
+        TestLegendDrawingSignature = TestLegendDrawingSignature & shape.Name & "|" & CStr(shape.Left) & "|" & _
+            CStr(shape.Top) & "|" & CStr(shape.Width) & "|" & CStr(shape.Height) & "|" & text & vbLf
+    Next shape
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Собственный малый снимок с бетоном и сталью, общими/раздельными пределами и без вызова решателя.
+Private Function TestLegendScaleFixture() As Object
+    Dim fixture As Object, config As Object, sheet As Object, table As Object, source As Object, annotationTable As Object
+    Dim geometry As Variant, keys As Variant, values As Variant, row As Long, index As Long
+    Dim props(1 To 26, 1 To 4) As Variant, elements(1 To 5, 1 To 7) As Variant, annotations(1 To 3, 1 To 9) As Variant
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167)
+    Set config = fixture.Worksheets(1): config.Name = "PlotConfig"
+    Set sheet = fixture.Worksheets.Add: sheet.Name = "Results"
+    fixture.Worksheets.Add.Name = "Расчет"
+    Set table = TestAudit03NamedGeneralPlotSettingsTable(fixture, config)
+    Set annotationTable = fixture.Names.Item("rngPlotAnnotationSettings").RefersToRange
+    geometry = TestAudit03ContourGeometrySnapshot("CONTOUR_CIRCLE")
+    sheet.Range("A5").Resize(3, 15).Value2 = geometry
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    TestAudit03PrepareContourFixture fixture, "CONTOUR_CIRCLE"
+    Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    config.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Value2 = source.Value2
+    For row = 2 To source.Rows.Count
+        If CStr(source.Cells(row, 2).Value2) = "Visualization.State" Then config.Range("AF5").Cells(row, 3).Value2 = "StrengthState"
+        If CStr(source.Cells(row, 2).Value2) = "Visualization.Quantity" Then config.Range("AF5").Cells(row, 3).Value2 = "Stress"
+        If CStr(source.Cells(row, 2).Value2) = "Visualization.StressPrecision" Then config.Range("AF5").Cells(row, 3).Value2 = 2
+    Next row
+    fixture.Names.Add Name:="rngCalculationProfiles", RefersTo:="=PlotConfig!" & config.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Address
+    keys = Array("Bounds.MinX", "Bounds.MaxX", "Bounds.MinY", "Bounds.MaxY", _
+        "Concrete.CentroidX", "Concrete.CentroidY", "Concrete.PrincipalAngle", _
+        "Transformed.CentroidX", "Transformed.CentroidY", "Transformed.PrincipalAngle", _
+        "LoadReferenceX", "LoadReferenceY", "State.StrengthState.Epsilon0", _
+        "State.StrengthState.KappaX", "State.StrengthState.KappaY", "ProfileId", _
+        "State.StrengthState.ExtensionUsed", "State.StrengthState.Status", "Output.LengthUnit")
+    values = Array(-100#, 100#, -100#, 100#, 0#, 0#, 0.125, 0#, 0#, 0.25, _
+        0#, 0#, -0.0001, 0.000002, 0#, "PR1", "False", "OK", "mm")
+    props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
+    For index = 0 To UBound(keys)
+        row = index + 2: props(row, 1) = "ALL"
+        If index >= 12 And index <= 17 Then props(row, 1) = "PLOT"
+        props(row, 2) = keys(index): props(row, 3) = values(index): props(row, 4) = "mm"
+        If index = 6 Or index = 9 Or index = 12 Or index >= 15 Then props(row, 4) = "-"
+        If index = 13 Or index = 14 Then props(row, 4) = "1/mm"
+    Next index
+    ' Второе сочетание содержит только собственные state-поля: общие свойства
+    ' ALL не дублируются. Его числа специально отличаются от первого сочетания.
+    For index = 0 To 5
+        For row = 1 To 4: props(21 + index, row) = props(14 + index, row): Next row
+        props(21 + index, 1) = "ALT"
+    Next index
+    props(21, 3) = 0.0002
+    sheet.Range("AB5").Resize(26, 4).Value2 = props
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$AB$5"
+    elements(1, 1) = "LoadCase": elements(1, 2) = "ProfileId": elements(1, 3) = "StateType": elements(1, 4) = "ElementID"
+    elements(1, 5) = "Strain": elements(1, 6) = "Stress, MPa": elements(1, 7) = "PhysicalState"
+    elements(2, 1) = "PLOT": elements(2, 2) = "PR1": elements(2, 3) = "StrengthState": elements(2, 4) = "C1"
+    elements(2, 5) = -0.0001: elements(2, 6) = -1.25: elements(2, 7) = "Compression"
+    elements(3, 1) = "PLOT": elements(3, 2) = "PR1": elements(3, 3) = "StrengthState": elements(3, 4) = "R1"
+    elements(3, 5) = 0.000015: elements(3, 6) = 2.75: elements(3, 7) = "Tension"
+    For row = 4 To 5
+        For index = 1 To 7: elements(row, index) = elements(row - 2, index): Next index
+        elements(row, 1) = "ALT"
+    Next row
+    elements(4, 5) = 0.0002: elements(4, 6) = 9.5: elements(4, 7) = "Tension"
+    elements(5, 5) = -0.0003: elements(5, 6) = -7.25: elements(5, 7) = "Compression"
+    modTestPlotConfig.TestWriteIndexedElementFixture fixture, sheet.Range("R35"), elements
+    fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Results!$R$35"
+    keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "CoordinateUnit")
+    For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
+    For row = 2 To 3
+        For index = 2 To 7: annotations(row, index) = 0#: Next index
+        annotations(row, 9) = "mm"
+    Next row
+    annotations(2, 1) = "DIMENSION": annotations(2, 2) = -50#: annotations(2, 4) = 50#: annotations(2, 7) = 1#: annotations(2, 8) = "DIM"
+    annotations(3, 1) = "REBAR_ANNOTATION": annotations(3, 2) = -50#: annotations(3, 4) = 50#: annotations(3, 7) = 1#: annotations(3, 8) = "REBAR"
+    sheet.Range("A20").Resize(3, 9).Value2 = annotations
+    fixture.Names.Add Name:="rngNDMSectionAnnotations", RefersTo:="=Results!$A$20"
+    Set TestLegendScaleFixture = fixture
+    Exit Function
+Failed:
+    Dim code As Long, reason As String
+    code = Err.Number: reason = Err.Description
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    Err.Raise code, "TestLegendScaleFixture", reason
+End Function

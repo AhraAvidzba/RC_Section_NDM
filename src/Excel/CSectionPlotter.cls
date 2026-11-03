@@ -66,6 +66,9 @@ Private Const REFERENCE_AXIS_WEIGHT As Double = 0.56 ' Толщина сплош
 Private Const REFERENCE_BAND_MIN_THICKNESS As Double = 0.4 ' Минимальная толщина Freeform-полосы, чтобы тонкие оси оставались видимыми.
 Private Const PLOT_TITLE_TOP As Double = 6# ' Верхний отступ собственного Shape-заголовка схемы внутри Chart.
 Private Const PLOT_TITLE_HEIGHT As Double = 22# ' Высота собственного Shape-заголовка схемы.
+Private Const LEGEND_BASE_WIDTH As Double = 132# ' Полная ширина легенды до масштабирования, включая заголовок.
+Private Const LEGEND_FONT_SIZE As Double = 8# ' Базовый размер всех надписей легенды, в пунктах.
+Private Const LEGEND_RIGHT_MARGIN As Double = 16# ' Постоянный отступ правого края легенды от края диаграммы.
 Private Const PLOT_FRAME_LEFT As Double = 28# ' Левый край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_TOP As Double = 36# ' Верхний край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_WIDTH_MARGIN As Double = 180# ' Запас справа для легенд и подписей.
@@ -109,6 +112,9 @@ Private mResultGradientEnabled As Boolean ' Включена ли цветова
 Private mDimensionArrowType As String ' Тип стрелок размерных линий из Config.
 Private mDimensionArrowSize As String ' Размер стрелок размерных линий из Config.
 Private mLegendMode As String ' Separate или Common для легенд бетона/арматуры.
+Private mLegendScale As Double ' Общий коэффициент размеров, шрифтов и отступов легенды.
+Private mLegendLeft As Double ' Левый край масштабированного блока внутри диаграммы, в пунктах.
+Private mLegendTop As Double ' Верх блока легенды совпадает с верхом рабочей области схемы.
 Private mRebarCompressionColor As Long ' Цвет максимального сжатия арматуры.
 Private mRebarTensionColor As Long ' Цвет максимального растяжения арматуры.
 Private mConcreteCompressionColor As Long ' Цвет максимального сжатия бетона.
@@ -173,11 +179,17 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
             settings.InputErrorMessage("Plot.ContourLineWeight", "Толщина линий контура должна быть больше нуля.", "Введите положительное число в пунктах Excel.")
     End If
     mNeutralLineEnabled = False: mResultLabelsEnabled = False: mLegendEnabled = False
+    mLegendScale = 1#
     mLoadPointEnabled = False: mPrincipalAxesMode = "None"
     If Not data.GeometryOnly Then
         mNeutralLineEnabled = settings.GetRequiredBoolean("Plot.NeutralLineEnabled")
         mResultLabelsEnabled = settings.GetRequiredBoolean("Plot.ResultLabelsEnabled")
         mLegendEnabled = settings.GetRequiredBoolean("Plot.LegendEnabled")
+        If mLegendEnabled Then
+            mLegendScale = settings.GetRequiredDouble("Plot.LegendScale")
+            If mLegendScale < 1# / LEGEND_FONT_SIZE Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
+                settings.InputErrorMessage("Plot.LegendScale", "Масштаб легенды слишком мал: высота надписей должна быть не меньше 1 пт.", "Введите коэффициент не меньше 0.125; например, 0.5 уменьшает легенду вдвое.")
+        End If
         If mResultLabelsEnabled Then
             mResultLabelSpacing = settings.GetRequiredDouble("Plot.ResultLabelSpacing")
             If mResultLabelSpacing <= 0# Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
@@ -191,6 +203,8 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
 
     Set mChartObject = EnsureChart(workbook, containerNotice)
     Set mChart = mChartObject.Chart
+
+    If mLegendEnabled Then ValidateLegendFrame settings
 
     mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
     mElementGroupingEnabled = Not mElementShapeLayerEnabled
@@ -1532,46 +1546,68 @@ Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing
     Next cellKey
 End Sub
 
-' Рисует одну общую или две раздельные легенды результата.
-' Раздельный режим считает диапазоны бетона и арматуры независимо, поэтому
-' цвета материалов не “слипаются” из-за разных уровней напряжений.
-Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)
-    Dim leftPos As Double, topPos As Double, barW As Double, barH As Double
-    leftPos = mChartObject.Width - 142
-    topPos = 88
-    barW = 18
-    barH = 96
+' Проверяет размещение легенды до очистки существующего рисунка.
+' Сравниваем коэффициент с допустимым, а не умножаем на него: очень большой ввод не вызывает Overflow.
+Private Sub ValidateLegendFrame(ByVal settings As CSystemSettingsReader)
+    Dim baseHeight As Double
+    baseHeight = 142#
+    If Not IsCommonLegendMode() Then baseHeight = 300#
+    If mLegendScale > (mChartObject.Width - 2# * LEGEND_RIGHT_MARGIN) / LEGEND_BASE_WIDTH Or _
+            mLegendScale > (mChartObject.Height - PLOT_FRAME_TOP - LEGEND_RIGHT_MARGIN) / baseHeight Then
+        Err.Raise vbObjectError + 4812, "CSectionPlotter", _
+            settings.InputErrorMessage("Plot.LegendScale", "Легенда с заданным масштабом не помещается в область схемы.", "Уменьшите масштаб легенды или увеличьте область отрисовки диаграммы.")
+    End If
+End Sub
 
-    If IsCommonLegendMode() Then ' Легенда использует те же диапазоны, что и цвет элементов. В режиме Separate бетон и арматура получают независимые шкалы, поэтому их экстремумы не смешиваются визуально.
-        DrawChartLegendScale data, leftPos, topPos, barW, barH, "Rebar", _
+' Рисует одну общую или две раздельные легенды как единый масштабируемый блок.
+' Правый и верхний края закреплены; уменьшение освобождает место слева и снизу.
+Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)
+    mLegendLeft = mChartObject.Width - LEGEND_RIGHT_MARGIN - LEGEND_BASE_WIDTH * mLegendScale
+    mLegendTop = PLOT_FRAME_TOP
+    If IsCommonLegendMode() Then
+        DrawChartLegendScale data, 0#, "Rebar", _
             mHasCompression, mCompressionValueAtMaxAbs, mHasTension, mTensionValueAtMaxAbs
     Else
-        DrawChartLegendScale data, leftPos, topPos, barW, barH, "Rebar", _
+        DrawChartLegendScale data, 0#, "Rebar", _
             mRebarHasCompression, mRebarCompressionValueAtMaxAbs, mRebarHasTension, mRebarTensionValueAtMaxAbs
-        DrawChartLegendScale data, leftPos, topPos + barH + 62, barW, barH, "Concrete", _
+        DrawChartLegendScale data, 158#, "Concrete", _
             mConcreteHasCompression, mConcreteCompressionValueAtMaxAbs, mConcreteHasTension, mConcreteTensionValueAtMaxAbs
     End If
 End Sub
 
-' Рисует вертикальную цветовую шкалу для одного материала.
-' Верх шкалы соответствует сжатию, середина - нулю/серому цвету, низ - растяжению.
-Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal leftPos As Double, _
-        ByVal topPos As Double, ByVal barW As Double, ByVal barH As Double, _
+' Рисует шкалу материала в базовых координатах общего блока легенды.
+' Геометрия, подписи и зазор между шкалами используют один коэффициент масштаба.
+Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal topOffset As Double, _
         ByVal materialType As String, ByVal hasCompression As Boolean, ByVal compressionValue As Double, _
         ByVal hasTension As Boolean, ByVal tensionValue As Double)
-    AddChartText leftPos - 6, topPos - 28, 132, 22, data.ResultCaption & ", " & data.ResultUnit, 0#, RGB(30, 30, 30), True
-
-    Dim i As Long
+    AddLegendText 0#, topOffset, 132#, 22#, data.ResultCaption & ", " & data.ResultUnit, RGB(30, 30, 30), True
+    Dim i As Long, t As Double
     For i = 0 To 11
-        Dim t As Double
         t = CDbl(i) / 11#
-        AddLegendRect leftPos, topPos + i * barH / 12#, barW, barH / 12# + 1, MaterialLegendColor(materialType, t)
+        AddLegendRect 6#, topOffset + 28# + i * 8#, 18#, 9#, MaterialLegendColor(materialType, t)
     Next i
-    AddChartText leftPos + 24, topPos - 12, 88, 14, LegendCompressionText(), 0#, RGB(40, 40, 40), True
-    AddChartText leftPos + 24, topPos + 4, 84, 16, LegendValueText(hasCompression, compressionValue, data.ResultPrecision), 0#, RGB(40, 40, 40), False
-    AddChartText leftPos + 24, topPos + barH / 2# - 8, 84, 16, "0", 0#, RGB(40, 40, 40), False
-    AddChartText leftPos + 24, topPos + barH - 10, 84, 16, LegendValueText(hasTension, tensionValue, data.ResultPrecision), 0#, RGB(40, 40, 40), False
-    AddChartText leftPos + 24, topPos + barH + 4, 88, 14, LegendTensionText(), 0#, RGB(40, 40, 40), True
+    AddLegendText 30#, topOffset + 16#, 88#, 14#, LegendCompressionText(), RGB(40, 40, 40), True
+    AddLegendText 30#, topOffset + 32#, 84#, 16#, LegendValueText(hasCompression, compressionValue, data.ResultPrecision), RGB(40, 40, 40), False
+    AddLegendText 30#, topOffset + 68#, 84#, 16#, "0", RGB(40, 40, 40), False
+    AddLegendText 30#, topOffset + 114#, 84#, 16#, LegendValueText(hasTension, tensionValue, data.ResultPrecision), RGB(40, 40, 40), False
+    AddLegendText 30#, topOffset + 128#, 88#, 14#, LegendTensionText(), RGB(40, 40, 40), True
+End Sub
+
+' Добавляет подпись легенды, масштабируя шрифт и внутренние поля вместе с внешней рамкой.
+' TextFrame2 сохраняет дробный размер шрифта при коэффициентах вроде 0.7.
+Private Sub AddLegendText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
+        ByVal heightValue As Double, ByVal textValue As String, ByVal colorValue As Long, ByVal isBold As Boolean)
+    Dim label As Object
+    Set label = AddChartText(mLegendLeft + leftPos * mLegendScale, mLegendTop + topPos * mLegendScale, _
+        widthValue * mLegendScale, heightValue * mLegendScale, textValue, 0#, colorValue, isBold, False, LEGEND_FONT_SIZE * mLegendScale)
+    label.Name = SHAPE_PREFIX & "LegendText" & CStr(mChart.Shapes.Count)
+    label.TextFrame2.TextRange.Font.Size = LEGEND_FONT_SIZE * mLegendScale
+    With label.TextFrame
+        .MarginLeft = .MarginLeft * mLegendScale
+        .MarginRight = .MarginRight * mLegendScale
+        .MarginTop = .MarginTop * mLegendScale
+        .MarginBottom = .MarginBottom * mLegendScale
+    End With
 End Sub
 
 ' Возвращает русскую подпись "Сжатие" без зависимости от кодировки VBE.
@@ -1631,8 +1667,10 @@ End Function
 Private Sub AddLegendRect(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal colorValue As Long)
     Dim marker As Object
-    Set marker = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
+    Set marker = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, mLegendLeft + leftPos * mLegendScale, _
+        mLegendTop + topPos * mLegendScale, widthValue * mLegendScale, heightValue * mLegendScale)
     marker.Name = SHAPE_PREFIX & "LegendGradient" & CStr(mChart.Shapes.Count)
+    marker.Line.Weight = 0.75 * mLegendScale
     marker.Fill.ForeColor.RGB = colorValue
     marker.Line.ForeColor.RGB = colorValue
 End Sub

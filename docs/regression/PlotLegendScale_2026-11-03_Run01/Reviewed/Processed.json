@@ -1,0 +1,78 @@
+{
+  "Status": "TARGETED_LEGEND_SCALE_PASS",
+  "FullAcceptanceClaim": false,
+  "FeatureBranch": "codex/plot-legend-scale",
+  "ParentCommit": "f6a1936071ad664f353682a4be354f6abff99276",
+  "CanonicalBook": {
+    "Status": "PASS",
+    "CanonicalSHA256": "E713B21F128425B693F62FC6103749D0ABAEC8535953DB2AB392CA38ED677C1D",
+    "UserLoadInputCells": 0,
+    "FreshBuildFromWorkbooksAdd": true,
+    "NativeSourceVerified187": true,
+    "UserDataNotCopied": true
+  },
+  "LocalUserPublication": {
+    "Status": "PASS",
+    "PublishedUTC": "2026-11-03T09:33:57.5122488Z",
+    "OriginalUserSHA256": "BF16FA323D6D5C040D40DCCDFD908EB29CC060237938B0E9E4AC0FFB0014460D",
+    "UpdatedUserSHA256": "B949BA37C40006A4F2CD147BA53EE7ACA3311D10D8D7446442193F0186B453AE",
+    "CanonicalCleanSHA256": "E713B21F128425B693F62FC6103749D0ABAEC8535953DB2AB392CA38ED677C1D",
+    "PublishedAllCodeSHA256": "8170CC3008FB56B9DD78984AB9F579F9B58BD1BD07AEBD57755FF036D65FDED2",
+    "ExclusiveLocksUsed": true,
+    "OriginalBackupVerified": true,
+    "UserDataResultsImagesPreserved": true,
+    "NoNDSRecalculation": true,
+    "TrackedReleaseBookMustBeClean": true
+  },
+  "NativeAssertions": {
+    "No": 2999,
+    "Yes": 2999,
+    "Failures": 0,
+    "SolverCalls": 0
+  },
+  "NativeScales": [
+    0.125,
+    0.25,
+    0.5,
+    0.7,
+    1,
+    1.25
+  ],
+  "LegendModes": [
+    "Separate",
+    "Common"
+  ],
+  "InvalidInputPreservesDrawing": true,
+  "NativeComponents": 187,
+  "OriginalMediaByteExact": 84,
+  "ResultsCellsPreserved": 11073,
+  "AllOwnTerminal": 15,
+  "OwnForcedClosure": {
+    "PID": 21292,
+    "Reason": "Remaining own failed private preparation after Quit; exact UTC identity and CIM verified"
+  },
+  "SourceFiles": [
+    {
+      "Path": "src/Excel/CSectionPlotter.cls",
+      "SHA256": "7A1C6ACDB5FBE3A286FE6A0C0D98851862CE154C4C18B812A2DD7E71349E609B"
+    },
+    {
+      "Path": "tests/modTestPlotConfig.bas",
+      "SHA256": "2A18C6230569E60376C4F35005A031D4885B22701027BCB3CFD701D3F19E50EE"
+    },
+    {
+      "Path": "tools/build_workbook/SettingsCatalog.ps1",
+      "SHA256": "111A144C51C3C922FCE47574EB01F42B37D3A7384C33B8450869E8611F5F863D"
+    },
+    {
+      "Path": "tools/build_workbook/HelpSettingsDescriptions.json",
+      "SHA256": "1952A256FBA1F062C34F62110DA118D3BD2D6C5654E0F8B0B95EA281ABEA2A14"
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookLayout.json",
+      "SHA256": "50499BFF53AC3667727A7C7516FB3B007B319DF64981326DF1BA452A66E8ABE1"
+    }
+  ],
+  "EvidenceArchiveSHA256": "5CB56DAB5910B21F7679F67676B50AF6A21C0B379B25D2242B3836F55AE66DA8",
+  "UserDataBooksExcludedFromGit": true
+}
