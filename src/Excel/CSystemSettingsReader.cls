@@ -430,7 +430,7 @@ Private Sub AppendPlotAnnotationValue(ByRef data As Variant, ByVal keyValue As S
     settingName = Trim$(CStr(data(rowIndex, 1)))
     If columnIndex = 2 Then
         Select Case settingName
-            Case "ExtensionLineWeight", "ExtensionLineColor", "ArrowType", "ArrowSize": Exit Sub
+            Case "ExtensionLineWeight", "ExtensionLineColor", "ArrowType", "ArrowSize", "ShowSymbol": Exit Sub
         End Select
     ElseIf settingName = "LineEnabled" Then
         Exit Sub

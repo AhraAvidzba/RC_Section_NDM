@@ -3,7 +3,7 @@ Option Explicit
 ' ==========================================================================
 ' События книги: Справка, справочная картинка и сохранение файла подробных НДС
 ' ==========================================================================
-' Обработчики управляют справкой, иллюстрацией по K2 и копированием снимка при Save As.
+' Обработчики управляют справкой, иллюстрацией по именованной ячейке и копированием снимка при Save As.
 Private mLastWorkbookFolder As String ' Последняя папка книги для последовательных Save As после переноса исходного файла.
 
 ' При открытии раскрывает раздел настроек Config и листа «Сечения», остальные сворачивает.
@@ -14,8 +14,7 @@ End Sub
 
 ' Только выбор справочной картинки: расчётные настройки и таблицы не читаются.
 Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Target As Range)
-    If Sh.Name <> "Расчет" Then Exit Sub
-    If Application.Intersect(Target, Sh.Range("K2")) Is Nothing Then Exit Sub
+    If Not modSectionIllustrations.IsSectionIllustrationSelectorChange(Target) Then Exit Sub
     On Error GoTo Failed
     modSectionIllustrations.SwitchSectionPicture
     Exit Sub

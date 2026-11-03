@@ -1,0 +1,119 @@
+{
+  "Status": "TARGETED_PLOT_LAYOUT_AND_MOVABLE_SELECTOR_PASS",
+  "FullAcceptanceClaim": false,
+  "CanonicalSHA256": "9700C6BF7D78A291205BBFB0AF4FA9742DFC0746AFD15AB6FB2EFC418D703E67",
+  "CanonicalUserLoadCells": 0,
+  "NativeComponents": 187,
+  "DirectedAssertions": {
+    "No": 7718,
+    "Yes": 7718,
+    "Failures": 0
+  },
+  "LargeXYSeries": {
+    "Elements": 5001,
+    "Cases": 6,
+    "Passed": 25,
+    "Failed": 0
+  },
+  "NamedSelector": {
+    "Alias": "rngSectionIllustrationSelector",
+    "InitialReference": "Расчет!K2",
+    "NativeTests": 26,
+    "Failures": 0,
+    "ActualTwoNDMBooks": true,
+    "MovesAcrossSheets": true
+  },
+  "UserPublication": {
+    "Status": "PASS",
+    "PublishedUTC": "2026-11-03T13:37:18.2364636Z",
+    "OriginalUserSHA256": "8EF6F2C8F5AABB0F58F9CEC86DFED86029BB44C394BEFD741134A849DFCA4C79",
+    "UpdatedUserSHA256": "33D0E56B63C62F20B1C3A88CF0BCE41148C420BC397661376325010B8CBD355B",
+    "CanonicalCleanSHA256": "9700C6BF7D78A291205BBFB0AF4FA9742DFC0746AFD15AB6FB2EFC418D703E67",
+    "PublishedAllCodeSHA256": "048917F67FA9448757B02C4D7C32156A09C71C919014F27672F3AF44CD8794AA",
+    "ExclusiveLocksUsed": true,
+    "OriginalBackupVerified": true,
+    "UserDataResultsImagesPreserved": true,
+    "NoNDSRecalculation": true,
+    "TrackedReleaseBookMustBeClean": true
+  },
+  "UserDataPreservation": {
+    "Status": "PASS",
+    "UserWorkbookSHA256": "33D0E56B63C62F20B1C3A88CF0BCE41148C420BC397661376325010B8CBD355B",
+    "AllOriginalValuesFormulasPreserved": {
+      "Config": 1609,
+      "Сечения": 788,
+      "Расчет": 154,
+      "Results": 10996
+    },
+    "ExistingListsPerCellPreserved": true,
+    "MediaByteExact": 84,
+    "OriginalObjectBoundsPreserved": true,
+    "ColumnWidthsPreserved": true,
+    "ExistingNamesOutsideChangedSettingsAndHelpPreserved": true,
+    "NewSystemFields": [
+      {
+        "Key": "Plot.NeutralLineWeight",
+        "Row": 139,
+        "Default": 0.7
+      },
+      {
+        "Key": "Plot.AxesLineWeight",
+        "Row": 141,
+        "Default": 0.56
+      }
+    ],
+    "NewDimensionSetting": "Config!J118",
+    "RootTouched": false
+  },
+  "AllOwnTerminal": 27,
+  "NoProcessForcedClosed": true,
+  "SourceFiles": [
+    {
+      "Path": "src/Excel/CPlotAnnotationLayout.cls",
+      "SHA256": "F5159596F20C286DC3CD8028D27F9F3099E661D1C826B3564722F292B873A63D"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotter.cls",
+      "SHA256": "D5C3B8C94EBF527BB7A5C6D02BA01B66E6B1ADFB3975BB2511E4D36F5647EBD0"
+    },
+    {
+      "Path": "src/Excel/CSystemSettingsReader.cls",
+      "SHA256": "64924E9418FB74E9BB140AFB88889A21753FB6F55DC9911C211B5742057573BF"
+    },
+    {
+      "Path": "src/Excel/modSectionIllustrations.bas",
+      "SHA256": "31C8318D34A63FDBACC884BC97D5890D2030555C2C7DB5809BC735E833E6BA97"
+    },
+    {
+      "Path": "tests/modTestPlotConfig.bas",
+      "SHA256": "4A7536B4EBFC476267300F11E95E8501DA9F3969C4220365BF6BE46FFE8037B6"
+    },
+    {
+      "Path": "tools/build_workbook/Build-Workbook.ps1",
+      "SHA256": "2E198D1CB13B9F51A8749CE006E4145D482C745777ADF9CD5D5A9B821F5EA060"
+    },
+    {
+      "Path": "tools/build_workbook/HelpSettingsDescriptions.json",
+      "SHA256": "B354A67F7FE18089FC93EAD4138EF743D7B8BCB992DB714D4736D25169DE99C8"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations.ps1",
+      "SHA256": "99068E970B40F46D9B8F6EA0BE6A55BC5A794A1B9EB63AA0962B7B50BCBAF5D7"
+    },
+    {
+      "Path": "tools/build_workbook/SettingsCatalog.ps1",
+      "SHA256": "287DAE80C74BB95FB06E659943724970DD890FD865A75C10A06069A8ECD796D3"
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookHelpEvents.vba",
+      "SHA256": "42ABE1ACC76B218C3CE70259B8D0F97900E5EFF35D1D93040948E1B03DDA779F"
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookLayout.json",
+      "SHA256": "B6535CAB74ED326995E76A284544419FFD308013817BFFBB6F8750B91465BF11"
+    }
+  ],
+  "EvidenceArchiveSHA256": "58C4D444D6668617712C0CFEB042951B0E0B7EC7751A9E7C22ABB90DB986F60D",
+  "UserDataBooksExcludedFromGit": true,
+  "OriginalUserBackupPrivate": true
+}

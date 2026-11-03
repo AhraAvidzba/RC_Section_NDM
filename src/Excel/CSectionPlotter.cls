@@ -62,18 +62,15 @@ Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 3 ' Шаг группиро�
 Private Const ELEMENT_SHAPE_RENDER_MAX_COUNT As Long = 5000 ' До этого числа элементов геометрию рисуем поэлементно Shape-ами.
 Private Const ELEMENT_SERIES_MAX_COUNT As Long = 255 ' Безопасный предел рядов XY-диаграммы; при большем числе оформлений используем отдельные фигуры.
 Private Const CONCRETE_SHAPE_FILL_RATIO As Double = 0.7 ' Визуальный размер бетонной ячейки: оставляет зазор между соседними элементами.
-Private Const REFERENCE_AXIS_WEIGHT As Double = 0.56 ' Толщина сплошных главных осей; немного тоньше нейтральной линии.
-Private Const REFERENCE_BAND_MIN_THICKNESS As Double = 0.4 ' Минимальная толщина Freeform-полосы, чтобы тонкие оси оставались видимыми.
 Private Const PLOT_TITLE_TOP As Double = 6# ' Верхний отступ собственного Shape-заголовка схемы внутри Chart.
 Private Const PLOT_TITLE_HEIGHT As Double = 22# ' Высота собственного Shape-заголовка схемы.
 Private Const LEGEND_BASE_WIDTH As Double = 132# ' Полная ширина легенды до масштабирования, включая заголовок.
 Private Const LEGEND_FONT_SIZE As Double = 8# ' Базовый размер всех надписей легенды, в пунктах.
 Private Const LEGEND_RIGHT_MARGIN As Double = 16# ' Постоянный отступ правого края легенды от края диаграммы.
-Private Const PLOT_FRAME_LEFT As Double = 28# ' Левый край рабочей области схемы внутри Chart.
+Private Const PLOT_FRAME_LEFT As Double = 14# ' Левый край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_TOP As Double = 36# ' Верхний край рабочей области схемы внутри Chart.
-Private Const PLOT_FRAME_WIDTH_MARGIN As Double = 180# ' Запас справа для легенд и подписей.
-Private Const PLOT_FRAME_HEIGHT_MARGIN As Double = 72# ' Запас снизу для предупреждений и подписи режима.
-Private Const AXIS_LABEL_MARGIN As Double = 6# ' Отступ подписей осей от внутренней рамки построения.
+Private Const LEGEND_PLOT_GAP As Double = 4# ' Зазор между полной рамкой легенды и областью сечения.
+Private Const AXIS_LABEL_MARGIN As Double = 3# ' Отступ подписей осей от внутренней рамки построения.
 Private Const AXIS_LABEL_X_WIDTH As Double = 48# ' Ширина горизонтальной подписи "Ось X".
 Private Const AXIS_LABEL_Y_HEIGHT As Double = 48# ' Высота вертикальной подписи "Ось Y".
 Private Const AXIS_LABEL_TEXT_HEIGHT As Double = 14# ' Толщина текстового блока подписи оси.
@@ -88,6 +85,7 @@ Private mPlotLeft As Double ' Зафиксированная левая гран
 Private mPlotTop As Double ' Зафиксированная верхняя граница PlotArea для всех Shape-объектов текущей схемы.
 Private mPlotWidth As Double ' Зафиксированная ширина PlotArea; не перечитывается во время отрисовки.
 Private mPlotHeight As Double ' Зафиксированная высота PlotArea; не перечитывается во время отрисовки.
+Private mPlotBottomReserve As Double ' Нижнее поле: подпись оси, предупреждение или пояснение геометрии.
 Private mPlotMetricsCaptured As Boolean ' True после снимка PlotArea для текущего прохода отрисовки.
 Private mCompressionMaxAbs As Double ' Максимальный модуль сжатия для общей легенды.
 Private mCompressionValueAtMaxAbs As Double ' Знаковое значение, подписываемое у края шкалы сжатия.
@@ -125,6 +123,8 @@ Private mAxisLabelsEnabled As Boolean ' Нужно ли выводить мал�
 Private mAxisLabelFontSize As Double ' Размер шрифта подписей глобальных осей X/Y в пунктах Excel.
 Private mContourEnabled As Boolean ' Контур нужен как расчетной, так и geometry-only схеме.
 Private mContourLineWeight As Double ' Общая толщина наружных границ и отверстий, в пунктах Excel.
+Private mAxesLineWeight As Double ' Толщина главных осей, пт; применяется одинаково к обоим направлениям.
+Private mNeutralLineWeight As Double ' Толщина нейтральной линии, пт.
 Private mNeutralLineEnabled As Boolean ' Нейтральная линия доступна только для сохраненного НДС.
 Private mLoadPointEnabled As Boolean ' Точка нагрузки для активного reference-слоя.
 Private mResultLabelsEnabled As Boolean ' Подписи готовых Stress/Strain, без повторного solve.
@@ -201,11 +201,22 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
         mLoadPointEnabled = settings.GetRequiredBoolean("Plot.LoadApplicationPointEnabled")
     End If
 
+    If PrincipalAxesModeDraws(mPrincipalAxesMode) Then mAxesLineWeight = ReferenceLineWeight(settings, "Plot.AxesLineWeight")
+    If mNeutralLineEnabled Then mNeutralLineWeight = ReferenceLineWeight(settings, "Plot.NeutralLineWeight")
+
     Set mChartObject = EnsureChart(workbook, containerNotice)
     Set mChart = mChartObject.Chart
 
     If mLegendEnabled Then ValidateLegendFrame settings
 
+    mPlotBottomReserve = 18#
+    If data.GeometryOnly Then
+        If Len(Trim$(data.GeometryOnlyNote)) > 0 Then mPlotBottomReserve = 84#
+    Else
+        Dim statusPolicy As CResultStatusPolicy
+        Set statusPolicy = New CResultStatusPolicy
+        If data.PhysicalDiagramWarningRequired Or statusPolicy.ToUserStatus(data.DirectStateStatus) = statusPolicy.NumFail Then mPlotBottomReserve = 36#
+    End If
     mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
     mElementGroupingEnabled = Not mElementShapeLayerEnabled
     PrepareChart data
@@ -1180,7 +1191,7 @@ Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
     If maxT <= minT Then Exit Sub
 
     DrawModelReferenceLine x0 + minT * dx, y0 + minT * dy, x0 + maxT * dx, y0 + maxT * dy, _
-        RGB(105, 105, 105), 0.7, "NeutralAxis"
+        RGB(105, 105, 105), mNeutralLineWeight, "NeutralAxis"
 End Sub
 
 ' Находит пересечения нейтральной линии с сохранённым контуром сечения.
@@ -1367,10 +1378,19 @@ Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader, ByVal axesMo
     ca = Cos(angle)
     sa = Sin(angle)
     DrawModelReferenceLine centroidX - lengthValue * ca, centroidY - lengthValue * sa, _
-        centroidX + lengthValue * ca, centroidY + lengthValue * sa, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal1"
+        centroidX + lengthValue * ca, centroidY + lengthValue * sa, RGB(0, 0, 0), mAxesLineWeight, "Principal1"
     DrawModelReferenceLine centroidX + lengthValue * sa, centroidY - lengthValue * ca, _
-        centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal2"
+        centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), mAxesLineWeight, "Principal2"
 End Sub
+
+' Читает толщину только включённой линии, до очистки текущей схемы.
+Private Function ReferenceLineWeight(ByVal settings As CSystemSettingsReader, ByVal key As String) As Double
+    Dim value As Double
+    value = settings.GetRequiredDouble(key)
+    If value <= 0# Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
+        settings.InputErrorMessage(key, "Толщина линии должна быть больше нуля.", "Введите положительное число в пунктах Excel.")
+    ReferenceLineWeight = value
+End Function
 
 ' Читает обязательный режим главных осей до очистки существующего Chart.
 ' Поддержанные текстовые обозначения приводятся к одному из трех вариантов.
@@ -1436,7 +1456,8 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
                     data.AnnotationNormalY(i), data.AnnotationText(i)
             ElseIf StrComp(data.AnnotationType(i), "MEASUREMENT_LABEL", vbTextCompare) = 0 Or _
                     StrComp(data.AnnotationType(i), "TEXT_ANNOTATION", vbTextCompare) = 0 Then
-                layout.AddPointLabel data.AnnotationStartX(i), data.AnnotationStartY(i), data.AnnotationText(i)
+                layout.AddPointLabel data.AnnotationStartX(i), data.AnnotationStartY(i), data.AnnotationText(i), _
+                    (StrComp(data.AnnotationType(i), "MEASUREMENT_LABEL", vbTextCompare) = 0)
             End If
         Next i
     End If
@@ -1552,7 +1573,7 @@ Private Sub ValidateLegendFrame(ByVal settings As CSystemSettingsReader)
     Dim baseHeight As Double
     baseHeight = 142#
     If Not IsCommonLegendMode() Then baseHeight = 300#
-    If mLegendScale > (mChartObject.Width - 2# * LEGEND_RIGHT_MARGIN) / LEGEND_BASE_WIDTH Or _
+    If mLegendScale > (mChartObject.Width - PLOT_FRAME_LEFT - 80# - LEGEND_PLOT_GAP - LEGEND_RIGHT_MARGIN) / LEGEND_BASE_WIDTH Or _
             mLegendScale > (mChartObject.Height - PLOT_FRAME_TOP - LEGEND_RIGHT_MARGIN) / baseHeight Then
         Err.Raise vbObjectError + 4812, "CSectionPlotter", _
             settings.InputErrorMessage("Plot.LegendScale", "Легенда с заданным масштабом не помещается в область схемы.", "Уменьшите масштаб легенды или увеличьте область отрисовки диаграммы.")
@@ -1580,7 +1601,10 @@ End Sub
 Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal topOffset As Double, _
         ByVal materialType As String, ByVal hasCompression As Boolean, ByVal compressionValue As Double, _
         ByVal hasTension As Boolean, ByVal tensionValue As Double)
-    AddLegendText 0#, topOffset, 132#, 22#, data.ResultCaption & ", " & data.ResultUnit, RGB(30, 30, 30), True
+    Dim titleText As String
+    titleText = data.ResultCaption
+    If Not IsCommonLegendMode() Then titleText = titleText & " (" & LegendMaterialCaption(materialType) & ")"
+    AddLegendText 0#, topOffset, 132#, 22#, titleText & ", " & data.ResultUnit, RGB(30, 30, 30), True
     Dim i As Long, t As Double
     For i = 0 To 11
         t = CDbl(i) / 11#
@@ -1592,6 +1616,15 @@ Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal top
     AddLegendText 30#, topOffset + 114#, 84#, 16#, LegendValueText(hasTension, tensionValue, data.ResultPrecision), RGB(40, 40, 40), False
     AddLegendText 30#, topOffset + 128#, 88#, 14#, LegendTensionText(), RGB(40, 40, 40), True
 End Sub
+
+' Возвращает материал отдельной шкалы; общая шкала не получает добавочного обозначения.
+Private Function LegendMaterialCaption(ByVal materialType As String) As String
+    If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        LegendMaterialCaption = "арматура"
+    Else
+        LegendMaterialCaption = "бетон"
+    End If
+End Function
 
 ' Добавляет подпись легенды, масштабируя шрифт и внутренние поля вместе с внешней рамкой.
 ' TextFrame2 сохраняет дробный размер шрифта при коэффициентах вроде 0.7.
@@ -1697,7 +1730,7 @@ Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal
     cx2 = ModelToChartX(x2)
     cy2 = ModelToChartY(y2)
 
-    If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS) / 2#) Then Exit Sub
+    If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, weight / 2#) Then Exit Sub
     DrawChartReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
 End Sub
 
@@ -1727,7 +1760,7 @@ Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, 
     If lengthValue <= 0.0000001 Then Exit Function
 
     Dim thickness As Double
-    thickness = MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS)
+    thickness = weight
     Dim nx As Double
     Dim ny As Double
     nx = -dy / lengthValue * thickness / 2#
@@ -2038,16 +2071,19 @@ Private Sub EnsurePlotAreaMetrics()
     If Not mPlotMetricsCaptured Then CapturePlotAreaMetrics
 End Sub
 
-' Возвращает ширину рабочей рамки Shape-схемы. Значение намеренно зависит
-' только от ChartObject, а не от живого Excel PlotArea.
+' Возвращает свободную ширину сечения после вычета фактической ширины легенды.
+' Рамка зависит от текущих настроек и ChartObject, а не от автоматической подгонки Excel.
 Private Function StablePlotFrameWidth() As Double
-    StablePlotFrameWidth = mChartObject.Width - PLOT_FRAME_WIDTH_MARGIN
+    Dim rightReserve As Double
+    rightReserve = LEGEND_RIGHT_MARGIN
+    If mLegendEnabled Then rightReserve = rightReserve + LEGEND_BASE_WIDTH * mLegendScale + LEGEND_PLOT_GAP
+    StablePlotFrameWidth = mChartObject.Width - PLOT_FRAME_LEFT - rightReserve
     If StablePlotFrameWidth <= 0# Then StablePlotFrameWidth = mChartObject.Width * 0.72
 End Function
 
 ' Возвращает высоту рабочей рамки Shape-схемы.
 Private Function StablePlotFrameHeight() As Double
-    StablePlotFrameHeight = mChartObject.Height - PLOT_FRAME_HEIGHT_MARGIN
+    StablePlotFrameHeight = mChartObject.Height - PLOT_FRAME_TOP - mPlotBottomReserve
     If StablePlotFrameHeight <= 0# Then StablePlotFrameHeight = mChartObject.Height * 0.72
 End Function
 

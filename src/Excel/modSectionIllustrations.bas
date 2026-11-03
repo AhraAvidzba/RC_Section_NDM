@@ -6,15 +6,15 @@ Option Explicit
 ' ==========================================================================
 Private Const SOURCE_SHEET As String = "Сечения"
 Private Const TARGET_SHEET As String = "Расчет"
-Private Const SELECTOR_CELL As String = "K2"
+Private Const SELECTOR_NAME As String = "rngSectionIllustrationSelector"
 Private Const TARGET_PICTURE As String = "CurrentSection"
 
 ' Копирует выбранный рисунок, пропорционально вписывая его в текущую рамку.
-' Источник заменяется вручную; список K2 содержит простое перечисление имён.
+' Источник заменяется вручную; список выбранной ячейки содержит простое перечисление имён.
 ' Расчётные таблицы и режим пересчёта не используются.
 ' Обновление экрана не переключается; исходный лист не активируется.
 Public Sub SwitchSectionPicture()
-    Dim sheet As Worksheet, original As Shape, frame As Shape, replacement As Shape
+    Dim sheet As Worksheet, selector As Range, original As Shape, frame As Shape, replacement As Shape
     Dim pictureName As String, fitRatio As Double, previousName As String
     Dim previousUpdating As Boolean, previousEvents As Boolean, previousSelection As Object, previousSheet As Object
     Dim number As Long, description As String, action As String, renamed As Boolean
@@ -25,9 +25,11 @@ Public Sub SwitchSectionPicture()
     Set previousSheet = Application.ActiveSheet
     If TypeOf Application.Selection Is Range Then Set previousSelection = Application.Selection
     On Error GoTo Failed
-    action = TARGET_SHEET & "!" & SELECTOR_CELL
+    action = SELECTOR_NAME
+    Set selector = SectionIllustrationSelector()
+    action = selector.Worksheet.Name & "!" & selector.Address(False, False) & " (" & SELECTOR_NAME & ")"
     Set sheet = ThisWorkbook.Worksheets(TARGET_SHEET)
-    pictureName = CStr(sheet.Range(SELECTOR_CELL).Value2)
+    pictureName = CStr(selector.Value2)
     action = SOURCE_SHEET & "!" & pictureName
     Set original = ThisWorkbook.Worksheets(SOURCE_SHEET).Shapes(pictureName)
     action = TARGET_SHEET & "!" & TARGET_PICTURE
@@ -42,7 +44,7 @@ Public Sub SwitchSectionPicture()
     For attempt = 1 To 3
         original.Copy ' Берём именованный рисунок напрямую, не переключаясь на исходный лист.
         DoEvents ' Excel должен обработать отложенное заполнение буфера перед Paste.
-        If Not Application.ActiveSheet Is sheet Then sheet.Activate ' При выборе K2 целевой лист уже активен.
+        If Not Application.ActiveSheet Is sheet Then sheet.Activate ' При выборе на целевом листе он уже активен.
         On Error Resume Next
         Err.Clear
         sheet.Paste
@@ -85,3 +87,28 @@ RestoreState:
     On Error GoTo 0
     If number <> 0 Then Err.Raise number, "SwitchSectionPicture", description
 End Sub
+
+' Возвращает единственную ячейку выбора в этой книге; её адрес может изменяться при вырезании и вставке.
+Public Function SectionIllustrationSelector() As Range
+    Dim cell As Range
+    On Error GoTo InvalidName
+    Set cell = ThisWorkbook.Names(SELECTOR_NAME).RefersToRange
+    If cell.CountLarge <> 1 Then GoTo InvalidName
+    If Not cell.Worksheet.Parent Is ThisWorkbook Then GoTo InvalidName
+    Set SectionIllustrationSelector = cell
+    Exit Function
+InvalidName:
+    Err.Raise vbObjectError + 2802, "SectionIllustrationSelector", _
+        "Именованный диапазон «" & SELECTOR_NAME & "» должен ссылаться на одну ячейку этой книги." & vbCrLf & vbCrLf & _
+        "Проверьте ссылку в диспетчере имён. Ячейку выбора можно перемещать вырезанием и вставкой."
+End Function
+
+' Отбирает только изменение текущей именованной ячейки; чужие листы и книги не затрагивает.
+Public Function IsSectionIllustrationSelectorChange(ByVal changed As Range) As Boolean
+    Dim selector As Range
+    On Error GoTo Unrelated
+    Set selector = SectionIllustrationSelector()
+    If Not changed.Worksheet Is selector.Worksheet Then Exit Function
+    IsSectionIllustrationSelectorChange = Not Application.Intersect(changed, selector) Is Nothing
+Unrelated:
+End Function

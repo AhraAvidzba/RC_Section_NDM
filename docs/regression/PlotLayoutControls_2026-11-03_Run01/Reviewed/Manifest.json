@@ -1,0 +1,281 @@
+{
+  "Archive": "ReviewedEvidence.zip",
+  "SHA256": "58C4D444D6668617712C0CFEB042951B0E0B7EC7751A9E7C22ABB90DB986F60D",
+  "Files": [
+    {
+      "Path": "AliasNative07/Native.json",
+      "Bytes": 370,
+      "SHA256": "0B977724DBA1FF5FF3BC932A5C3FE63A1B40519881599FEA0AA4A08EC23F36D5"
+    },
+    {
+      "Path": "AliasNative07/Own.json",
+      "Bytes": 182,
+      "SHA256": "2F061D1E5DF6E588D88C7A831138C7BA619BE2E02699677DC17B6CC58DC8FE82"
+    },
+    {
+      "Path": "AliasNative07/Primary.txt",
+      "Bytes": 1876,
+      "SHA256": "F2D16F34B1B621561916843C26A5DDB682B42EB7A343A5A91DC5860E5C652D9B"
+    },
+    {
+      "Path": "AliasNativeReview.json",
+      "Bytes": 544,
+      "SHA256": "336890ED334C1EA20E7BC69B8FA312D880E4D388BA92B9FE2D62BACFA47E8113"
+    },
+    {
+      "Path": "AliasPatchTemplate04.json",
+      "Bytes": 614,
+      "SHA256": "058D7CEDB088270CCDFE32CA1AB4D8E9D092A506BCCDD7D2BAC477D29F7FE905"
+    },
+    {
+      "Path": "AliasPatchUser04.json",
+      "Bytes": 608,
+      "SHA256": "DFD071E62FD16ACE7BEE3F8F61C7790A7D9AE7968907958B30998FFEC128938B"
+    },
+    {
+      "Path": "AllOwnClosures.json",
+      "Bytes": 19826,
+      "SHA256": "E3E6CCCD71C66595D4CCD8B99E153AF781E01AE5FAFBA71D90C8AD2622F6BDA6"
+    },
+    {
+      "Path": "CleanPatch03.json",
+      "Bytes": 481,
+      "SHA256": "429A00CC8BFDFAC22C9F01C4D1850946FF0830E22C60903B3D17403C473107AA"
+    },
+    {
+      "Path": "Directed05/General_No.txt",
+      "Bytes": 774061,
+      "SHA256": "30CF6A39F18D04FE3B643765ACA981A3AA4863FB255F49C9D0FC84EB11ED2D24"
+    },
+    {
+      "Path": "Directed05/General_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "60FE1FF1AA6A99B5A664B48EAD0BEBE7AF76DFFA9B22F0001C802ACDDF15E07D"
+    },
+    {
+      "Path": "Directed05/General_No.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "2927686F62F793628EE4C81170256F42A276D3085BD91E353B02A818672CCD33"
+    },
+    {
+      "Path": "Directed05/General_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "B9590F8847C93F8BDF123BB7B8DEE90B9B8EC44A40CD713123310B10FC320CCE"
+    },
+    {
+      "Path": "Directed05/General_No.txt.memory.json",
+      "Bytes": 318,
+      "SHA256": "67A53BEFD7C59BC2514A6CE8B0B4470D89AC242BA8A4AE01E5BDD09289D4EA5D"
+    },
+    {
+      "Path": "Directed05/General_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Directed05/General_No.txt.stdout.log",
+      "Bytes": 528,
+      "SHA256": "916E81CF24E1DA4D2DAA22A69A8811772911CED7FF1758B13DAECBDED4382CD4"
+    },
+    {
+      "Path": "Directed05/General_Yes.txt",
+      "Bytes": 774063,
+      "SHA256": "29F16E0B4FC8851E0A064A396254CE0D5501C8354B4163B21AD1D253D3406E37"
+    },
+    {
+      "Path": "Directed05/General_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "A039A4E8C60DC3A457B003605076D36ED76D0E1985A94CDFFD6D1429691B9FF0"
+    },
+    {
+      "Path": "Directed05/General_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "663BE340158B85B470FD41FDE768F721D79313C7878370A3582756E7054BE9CA"
+    },
+    {
+      "Path": "Directed05/General_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "6EE3003ACB26F77FEA6F62913EBEEBCB0ADBE85A67668862D9898F83B104AA79"
+    },
+    {
+      "Path": "Directed05/General_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "DBEFC98C93ABADD7B6574E830481F75114E7C8DB5ABE07FC510B98414F7F9266"
+    },
+    {
+      "Path": "Directed05/General_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Directed05/General_Yes.txt.stdout.log",
+      "Bytes": 530,
+      "SHA256": "17E6882C997C1B79FA16E5B5D29EEE36F52FA2AAB49461890CFEA1B0A6BE5BC3"
+    },
+    {
+      "Path": "DirectedPrimaryReview.json",
+      "Bytes": 5458,
+      "SHA256": "D65FD23E5E245ABB39DB68BA9875C036EB2026D04C45C19802CF72369C6984A0"
+    },
+    {
+      "Path": "History/AliasNative05/Primary.txt",
+      "Bytes": 1042,
+      "SHA256": "39EFD7E3D4E86A0187D44364DC874FC51BA368F97A16162D43A01948AFDA8EC4"
+    },
+    {
+      "Path": "History/AliasNative06/Primary.txt",
+      "Bytes": 1569,
+      "SHA256": "DCDA089E6AB7B0EAB41D7E9DE0258CD3F61024357B35334C8926C274F7BEFAB0"
+    },
+    {
+      "Path": "History/Directed02_General_No.txt",
+      "Bytes": 774033,
+      "SHA256": "4B2A3C23D15257458B29A755BB0B49D451CA4DE2F660A58B4C05E971223E32FB"
+    },
+    {
+      "Path": "History/Preview05.log",
+      "Bytes": 526,
+      "SHA256": "626774916B16842FD2A9F046468980DA186F1E71F5527CE50513C53729F4D7EC"
+    },
+    {
+      "Path": "History/Preview06.log",
+      "Bytes": 518,
+      "SHA256": "B8CF29F19EFB4F4C168EA12565F050BFB5157E4D387AC5E94B21FD1C1A063B37"
+    },
+    {
+      "Path": "History/UserCandidateUpdate01.log",
+      "Bytes": 531,
+      "SHA256": "9B5C8A358213DDD19BE31248B6AD1DED236D552C09E0BABDDAED76A8D7BA982D"
+    },
+    {
+      "Path": "History/UserCandidateUpdate02.log",
+      "Bytes": 463,
+      "SHA256": "81381D40DEAC2609ACEBD20329D74C2DB525D72A3515E39C308A487FCF4BF77E"
+    },
+    {
+      "Path": "MediaAndPrintAreaRestore03.json",
+      "Bytes": 1026,
+      "SHA256": "529907BF9263BB357E1251EC77E889D3F1445B924B036F9754D36F01BCAD4A76"
+    },
+    {
+      "Path": "MediaAndPrintAreaRestore04.json",
+      "Bytes": 207,
+      "SHA256": "AB32536DE675B0C62F83BF8F9E7C57EAA6F46268CAF925CA441DA34906B4C26A"
+    },
+    {
+      "Path": "NativeExportsEquality.json",
+      "Bytes": 6919,
+      "SHA256": "5BD5EAB52BB29341239BC34DFDCA154C25F68BFC0F147940B2C43FA8C22A25E1"
+    },
+    {
+      "Path": "NativeTemplate03/Native.json",
+      "Bytes": 1555,
+      "SHA256": "B2A42C093FD7D8E74DA13F5E0EF653BF1D3FCAD3573EF0C0E71535F08E377F30"
+    },
+    {
+      "Path": "NativeTemplate03/Own.json",
+      "Bytes": 164,
+      "SHA256": "5386074A107AF4F9FA74F1652ECDF134035B1A0A6210049E90CF8658116F1DA1"
+    },
+    {
+      "Path": "NativeUser03/Native.json",
+      "Bytes": 1551,
+      "SHA256": "C6C49878E675D613B59035921463C3613392FC91C45B2C38DF54AF7181B710DE"
+    },
+    {
+      "Path": "NativeUser03/Own.json",
+      "Bytes": 165,
+      "SHA256": "3E58F6CF08037A701DA453D39A1D3F9566F30433E646A5DFE252CD75BDCE97F1"
+    },
+    {
+      "Path": "Preview07/Common_0.5.pdf",
+      "Bytes": 92664,
+      "SHA256": "3BBD7236B7A792ED24A99C7A5A214167205417768B23093FEFBD4C9BF7F738F9"
+    },
+    {
+      "Path": "Preview07/Common_0.5.png",
+      "Bytes": 26964,
+      "SHA256": "7D11C97A2A49E41396933E00DD41EE3AFB33A770BBE65A04349048FB11D55762"
+    },
+    {
+      "Path": "Preview07/Common_1.pdf",
+      "Bytes": 93454,
+      "SHA256": "55ACD11B974B085A8740A58BD563375222F13B299CBD0AE7C8CFAEAF70E056EA"
+    },
+    {
+      "Path": "Preview07/Common_1.png",
+      "Bytes": 29540,
+      "SHA256": "1325579F6F022A7CCC899E1C10246E35A7ACFFBC98765D37EA3BB8EBF2823DE2"
+    },
+    {
+      "Path": "Preview07/Own.json",
+      "Bytes": 73,
+      "SHA256": "84CD59F1C65D513F73867958768907394DBA4081E57B013FD79E05943B12E7CD"
+    },
+    {
+      "Path": "Preview07/Preview.json",
+      "Bytes": 317,
+      "SHA256": "44838076F6E345D8250E79CE518FDDD5D0F6DC81B5875A20A66708ADF10680FB"
+    },
+    {
+      "Path": "Preview07/Separate_0.5.pdf",
+      "Bytes": 98607,
+      "SHA256": "C30BA128BE38B1C9DFF9568E2EB215BA01D8D91AAAC778E585C25E467F3301C8"
+    },
+    {
+      "Path": "Preview07/Separate_0.5.png",
+      "Bytes": 28584,
+      "SHA256": "013F9B97C2577592C0F51A50053CB7A6BB5230D47766AEB1E8A96F8CE6801E86"
+    },
+    {
+      "Path": "Preview07/Separate_1.pdf",
+      "Bytes": 99357,
+      "SHA256": "B81AE9354FEE5C496D53C1A9B3F49ED2DC6B795B116480D7A4E7BEB76500D554"
+    },
+    {
+      "Path": "Preview07/Separate_1.png",
+      "Bytes": 33889,
+      "SHA256": "67B6470DCCB7593EBAF5F9E068C7CCF1E0CC0D8DC0504ECFF386FC821455320D"
+    },
+    {
+      "Path": "Preview07/SeriesFrame.txt",
+      "Bytes": 1965,
+      "SHA256": "ED2BD490B814F2B152CBB004C5430B2D785A5DEE2F17F4D24454E72C4DECBA50"
+    },
+    {
+      "Path": "Publication.json",
+      "Bytes": 636,
+      "SHA256": "D3BF18AFC5CD8F6C4F16861013FA41D5BAF1EADBB6A27923E5C51D7E8BA55857"
+    },
+    {
+      "Path": "TemplateSourceEquality.json",
+      "Bytes": 121057,
+      "SHA256": "01B68E6EB547E0D91DC0D323029C61E3489A0B590A2405011C0029A6E8F760AD"
+    },
+    {
+      "Path": "UserPreservation04.json",
+      "Bytes": 755,
+      "SHA256": "506095A44A761B1BBF3E276BF591B17C648748B3A1C40B4DDF9FE3E88FBC8121"
+    },
+    {
+      "Path": "UserSavedPlotUpdate03.json",
+      "Bytes": 209,
+      "SHA256": "8507C7CCF236990B6F4BC293749CACE0953AA7675FDAEA9348882E8510D855CE"
+    },
+    {
+      "Path": "UserSourceEquality.json",
+      "Bytes": 121057,
+      "SHA256": "4182A27497E9077260B5A3D8572A1216B3A7EB616C691A8DB1576157ED812422"
+    },
+    {
+      "Path": "UserVBABodyAudit.json",
+      "Bytes": 94,
+      "SHA256": "62095A2AD030999BD0878E5BF7844F36E8D70F7AC19B1C14BCF99451A5DD6244"
+    },
+    {
+      "Path": "VisualReview.json",
+      "Bytes": 1293,
+      "SHA256": "DC44A5B22293C0A39A731465F519AEA18148F54F9EDD880FE1BCEDAF9DD42EF5"
+    }
+  ]
+}

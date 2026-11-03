@@ -583,6 +583,7 @@ try {
     $excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.UpdateSectionRecipeTypes")
 
     Add-SectionIllustrationPictures $workbook $script:WorkbookLayout
+    Initialize-SectionIllustrationSelectorName $workbook $script:WorkbookLayout
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
     Set-ResultsSnapshotTitleBand $workbook
     Set-SectionIllustrationSelector $workbook

@@ -5,7 +5,7 @@ function Read-SectionIllustrationCatalog {
     Get-Content -LiteralPath (Join-Path $PSScriptRoot 'SectionIllustrations/Illustrations.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 }
 
-# Объединяет выбираемые и общие PNG только для сборки; список K2 читает исключительно Names.
+# Объединяет выбираемые и общие PNG только для сборки; список выбора читает исключительно Names.
 function Read-SectionIllustrationAssets {
     $catalog=Read-SectionIllustrationCatalog
     foreach($name in $catalog.Names){[pscustomobject]@{Name=[string]$name;File=([string]$name+'.png')}}
@@ -47,11 +47,20 @@ function Add-SectionIllustrationPictures {
     $crop=$picture.PictureFormat.Crop;$crop.PictureWidth=$fit*$aspect;$crop.PictureHeight=$fit;$crop.PictureOffsetX=0;$crop.PictureOffsetY=0
 }
 
-# Сохраняет обычный список прямо в проверке данных K2; служебных ячеек и имён нет.
+# Создаёт имя ячейки по принятой раскладке перед восстановлением именованных диапазонов.
+function Initialize-SectionIllustrationSelectorName {
+    param([object]$Workbook, [object]$Layout)
+    $items=@($Layout.Names | Where-Object Name -ceq 'rngSectionIllustrationSelector')
+    if($items.Count -ne 1 -or $items[0].Rows -ne 1 -or $items[0].Columns -ne 1){throw 'В раскладке должна быть одна ячейка rngSectionIllustrationSelector.'}
+    $Workbook.Names.Add('rngSectionIllustrationSelector',[string]$items[0].RefersTo) | Out-Null
+}
+
+# Сохраняет простой список непосредственно в проверке данных именованной ячейки, без копии вариантов.
 function Set-SectionIllustrationSelector {
     param([object]$Workbook)
     $catalog=Read-SectionIllustrationCatalog
-    $cell=$Workbook.Worksheets.Item('Расчет').Range('K2')
+    $cell=$Workbook.Names.Item('rngSectionIllustrationSelector').RefersToRange
+    if($cell.CountLarge -ne 1 -or $cell.Worksheet.Parent -ne $Workbook){throw 'Ячейка выбора должна принадлежать собираемой книге.'}
     $cell.Validation.Delete()
     $choices=@($catalog.Names) -join [string]$Workbook.Application.International(5) # Внешний COM использует разделитель своей локали.
     $cell.Validation.Add(3,1,1,$choices)

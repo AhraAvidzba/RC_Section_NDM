@@ -149,14 +149,16 @@ function Get-SystemSettingsCatalog {
             @("Plot.ResultLabelsEnabled", "No", "-", "Показывать пространственно распределенные численные подписи величины Visualization.Quantity выбранного профиля для бетонных элементов."),
             @("Plot.ResultLabelSpacing", "100", "мм", "Минимальный пространственный шаг между численными подписями результата на схеме."),
             @("Plot.NeutralLineEnabled", "Yes", "-", "Показывать нейтральную линию выбранного сочетания по ε_0, κ_x, κ_y из Results."),
+            @("Plot.NeutralLineWeight", "0.7", "pt", "Толщина нейтральной линии на Excel-схеме. Используется только при включённой нейтральной линии."),
             @("Plot.PrincipalAxesMode", "Transformed", "-", "Какие главные центральные оси показывать на схеме: Transformed - приведенного сечения; Concrete - бетонного; None - не показывать."),
+            @("Plot.AxesLineWeight", "0.56", "pt", "Толщина обеих главных осей на Excel-схеме. Используется при Plot.PrincipalAxesMode = Transformed или Concrete."),
             @("Plot.LoadApplicationPointEnabled", "Yes", "-", "Показывать точку приложения нагрузки из последнего расчета."),
             @("Plot.AxisLabelsEnabled", "Yes", "-", "Показывать маленькие курсивные подписи глобальных осей X и Y внутри рабочей области схемы."),
             @("Plot.AxisLabelsFontSize", "7.5", "pt", "Размер шрифта подписей осей X и Y на схеме в пунктах Excel."),
             @("Plot.ContourEnabled", "Yes", "-", "Показывать параметрический контур сечения на схеме, если он сохранен в Results. Для импортированной сетки контур не восстанавливается."),
             @("Plot.LegendEnabled", "Yes", "-", "Показывать легенду физического состояния и выбранной величины профиля справа от схемы."),
             @("Plot.LegendMode", "Separate", "-", "Separate - отдельные легенды для арматуры и бетона; Common - одна общая легенда. В режиме Common используются цвета Plot.Color.RebarCompression и Plot.Color.RebarTension."),
-            @("Plot.LegendScale", "1", "-", "Общий масштаб легенды вместе с надписями и отступами: 1 — исходный размер, 0.5 — вдвое меньше. Привязка к правому верхнему краю области схемы."),
+            @("Plot.LegendScale", "1", "-", "Общий масштаб легенды вместе с надписями и отступами: 1 — исходный размер, 0.5 — вдвое меньше. Привязка к правому верхнему краю области схемы; освободившееся место используется для сечения."),
             @("Plot.Color.RebarCompression", "30,80,220", "RGB", "Цвет максимального сжатия арматуры. В режиме Plot.LegendMode=Common используется как цвет сжатия для всех элементов."),
             @("Plot.Color.RebarTension", "210,30,20", "RGB", "Цвет максимального растяжения арматуры. В режиме Plot.LegendMode=Common используется как цвет растяжения для всех элементов."),
             @("Plot.Color.ConcreteCompression", "125,35,210", "RGB", "Цвет максимального сжатия бетона при Plot.LegendMode=Separate."),
@@ -3059,7 +3061,8 @@ function Get-PlotAnnotationSettingsCatalog {
         @("ArrowSize", "-", "Medium", "-", "Размер стрелок размерной линии."),
         @("Color", "20,30,90", "20,30,90", "RGB", "Цвет текста и основной линии: три целых RGB-компонента 0–255. Значение 0,0,0 означает черный цвет."),
         @("ExtensionLineColor", "-", "140,140,140", "RGB", "Цвет выносных линий размеров: три целых RGB-компонента 0–255. Значение 0,0,0 означает черный цвет."),
-        @("ContourLineWeight", "2", "", "pt", "Общая толщина наружного контура и границ отверстий на Excel-схеме. Прямые, дуги и окружности используют одно значение > 0; по умолчанию 2 pt.")
+        @("ContourLineWeight", "2", "", "pt", "Общая толщина наружного контура и границ отверстий на Excel-схеме. Прямые, дуги и окружности используют одно значение > 0; по умолчанию 2 pt."),
+        @("ShowSymbol", "-", "Yes", "Yes/No", "Для размеров: Yes — H=800 мм, B=500 мм; No — только 800 мм, 500 мм. Значение, единица и знак приближения сохраняются; подписи арматуры не меняются.")
     )
 }
 
@@ -3791,6 +3794,7 @@ function Add-PlotAnnotationValidation {
         "Placement" = @("Outside", "Inside")
         "TextUnits" = @("mm", "pt")
         "LineEnabled" = @("Yes", "No")
+        "ShowSymbol" = @("Yes", "No")
         "ArrowType" = @("Triangle", "Stealth", "Diamond", "Oval", "Open")
         "ArrowSize" = @("Small", "Medium", "Wide")
     }
@@ -3806,7 +3810,7 @@ function Add-PlotAnnotationValidation {
             for ($c = 2; $c -le 3; $c++) {
                 $cell = $range.Cells.Item($r, $c)
                 $cell.Validation.Delete()
-                $applicable = -not (($c -eq 2 -and $paramName -in @('ExtensionLineWeight','ExtensionLineColor','ArrowType','ArrowSize')) -or ($c -eq 3 -and $paramName -eq 'LineEnabled'))
+                $applicable = -not (($c -eq 2 -and $paramName -in @('ExtensionLineWeight','ExtensionLineColor','ArrowType','ArrowSize','ShowSymbol')) -or ($c -eq 3 -and $paramName -eq 'LineEnabled'))
                 if ($applicable) {
                     $cell.Validation.Add(3, 1, 1, $listAddress)
                     $cell.Validation.IgnoreBlank = $false

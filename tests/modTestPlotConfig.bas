@@ -29,6 +29,7 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     TestIndexedFixtureIntegrity stats
     TestAudit03GeneralPlotContracts stats
     TestLegendScaleContracts stats
+    TestPlotLayoutControlsContracts stats
     TestAudit03AnnotationLayoutContracts stats
     TestAudit03PlotEnableContracts stats
     TestPlotContainerContracts stats
@@ -1560,7 +1561,7 @@ Private Function TestAudit03PlotSettingsTable(ByVal anchor As Object) As Object
     Dim settings As CSystemSettingsReader
     system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Value2
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    keys = Array("Plot.Dimensions.Enabled", "Plot.Dimensions.TextHeight", "Plot.Dimensions.TextUnits", _
+    keys = Array("Plot.Dimensions.Enabled", "Plot.Dimensions.ShowSymbol", "Plot.Dimensions.TextHeight", "Plot.Dimensions.TextUnits", _
         "Plot.Dimensions.Offset", "Plot.Dimensions.LineWeight", "Plot.Dimensions.ExtensionLineWeight", _
         "Plot.Dimensions.TextGap", "Plot.Dimensions.Placement", "Plot.Dimensions.Color", "Plot.Dimensions.ExtensionLineColor", _
         "Plot.Dimensions.ArrowType", "Plot.Dimensions.ArrowSize", "Plot.RebarLabels.Enabled", _
@@ -1708,7 +1709,7 @@ Private Sub TestAudit03AnnotationLayoutContracts(ByRef stats As TUiTestStats)
     TestAudit03SetPlotSetting table, "Plot.Dimensions.ExtensionLineColor", "1,2,3"
     TestAudit03SetPlotSetting table, "Plot.RebarLabels.LineEnabled", "Yes"
     baseline = table.Value2: Set settings = New CSystemSettingsReader: Set layout = New CPlotAnnotationLayout
-    keys = Array("Plot.Dimensions.Enabled", "Plot.Dimensions.TextHeight", "Plot.Dimensions.TextUnits", _
+    keys = Array("Plot.Dimensions.Enabled", "Plot.Dimensions.ShowSymbol", "Plot.Dimensions.TextHeight", "Plot.Dimensions.TextUnits", _
         "Plot.Dimensions.Offset", "Plot.Dimensions.LineWeight", "Plot.Dimensions.ExtensionLineWeight", _
         "Plot.Dimensions.TextGap", "Plot.Dimensions.Placement", "Plot.Dimensions.Color", "Plot.Dimensions.ExtensionLineColor", _
         "Plot.RebarLabels.Enabled", "Plot.RebarLabels.TextHeight", "Plot.RebarLabels.TextUnits", _
@@ -2539,10 +2540,13 @@ Private Sub TestLegendScaleContracts(ByRef stats As TUiTestStats)
                 TestAssertTrue stats, prefix & ".outsideExists." & CStr(key), actualOutside.Exists(key)
                 If actualOutside.Exists(key) Then
                     values = outside(key): observed = actualOutside(key)
-                    TestAssertClose stats, prefix & ".outsideX." & CStr(key), CDbl(observed(0)), CDbl(values(0)), 0.05
-                    TestAssertClose stats, prefix & ".outsideY." & CStr(key), CDbl(observed(1)), CDbl(values(1)), 0.05
-                    TestAssertClose stats, prefix & ".outsideWidth." & CStr(key), CDbl(observed(2)), CDbl(values(2)), 0.05
-                    TestAssertClose stats, prefix & ".outsideHeight." & CStr(key), CDbl(observed(3)), CDbl(values(3)), 0.05
+                    If InStr(1, CStr(key), "Title", vbTextCompare) > 0 Then
+                        TestAssertClose stats, prefix & ".titleX", CDbl(observed(0)), CDbl(values(0)), 0.05
+                        TestAssertClose stats, prefix & ".titleY", CDbl(observed(1)), CDbl(values(1)), 0.05
+                    ElseIf CDbl(values(2)) > 0.01 And CDbl(values(3)) > 0.01 Then
+                        TestAssertClose stats, prefix & ".modelAspect." & CStr(key), CDbl(observed(2)) / CDbl(observed(3)), _
+                            CDbl(values(2)) / CDbl(values(3)), 0.01
+                    End If
                 End If
             Next key
             TestAppendLine stats, "LEGEND_SCALE_CASE: mode=" & CStr(mode) & "; scale=" & CStr(factor) & "; shapes=" & CStr(current.Count)
@@ -2709,4 +2713,166 @@ Failed:
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
     Err.Raise code, "TestLegendScaleFixture", reason
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет полное оформление без расчёта НДС: легенды, размеры, толщины и свободную область.
+Public Function RunPlotLayoutControlsTests() As String
+    Dim stats As TUiTestStats
+    TestLegendScaleContracts stats
+    TestPlotLayoutControlsContracts stats
+    TestAppendLine stats, "TOTAL_PLOT_LAYOUT_CONTROLS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunPlotLayoutControlsTests = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Использует малый снимок, реальную толщину Freeform и границы фигуры круга.
+Private Sub TestPlotLayoutControlsContracts(ByRef stats As TUiTestStats)
+    Dim fixture As Object, table As Object, chart As Object, reader As CSectionPlotDataReader
+    Dim settings As CSystemSettingsReader, plotter As CSectionPlotter, layout As CPlotAnnotationLayout
+    Dim mode As Variant, item As Variant, factor As Variant, key As Variant, bad As Variant, value As Variant
+    Dim shape As Object, title As String, titles As String, count As Long, radiusWidth As Double, baselineWidth As Double
+    Dim code As Long, reason As String, signature As String, solveCount As Long, cell As Object
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = TestLegendScaleFixture(): Set table = fixture.Names.Item("rngSystemSettings").RefersToRange
+    TestAudit03SetPlotSetting table, "Plot.LegendEnabled", "Yes"
+    TestAudit03SetPlotSetting table, "Plot.LegendScale", 1#
+    TestAudit03SetPlotSetting table, "Plot.AxisLabelsEnabled", "Yes"
+    TestAudit03SetPlotSetting table, "Plot.AxisLabelsFontSize", 7.5
+    TestAudit03SetPlotSetting table, "Plot.PrincipalAxesMode", "Concrete"
+    TestAudit03SetPlotSetting table, "Plot.NeutralLineEnabled", "Yes"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook fixture
+    Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook fixture, settings
+    Set plotter = New CSectionPlotter: plotter.Draw fixture, reader, settings
+    Set chart = fixture.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    chart.Width = 700#: chart.Height = 1000#
+    For Each mode In Array("Separate", "Common")
+        TestAudit03SetPlotSetting table, "Plot.LegendMode", CStr(mode)
+        For Each factor In Array(1#, 0.5, 0.25)
+            TestAudit03SetPlotSetting table, "Plot.LegendScale", CDbl(factor)
+            settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+            titles = "": count = 0
+            For Each shape In chart.Chart.Shapes
+                If InStr(1, shape.Name, "LegendText", vbTextCompare) > 0 Then
+                    title = shape.TextFrame.Characters().Text
+                    If InStr(1, title, reader.ResultCaption, vbBinaryCompare) > 0 Then titles = titles & title & vbLf: count = count + 1
+                End If
+            Next shape
+            If CStr(mode) = "Separate" Then
+                TestAssertTrue stats, "layout.materials.separate", count = 2 And InStr(titles, "(арматура)") > 0 And InStr(titles, "(бетон)") > 0
+            Else
+                TestAssertTrue stats, "layout.materials.common", count = 1 And InStr(titles, "(") = 0 And InStr(titles, reader.ResultCaption & ", " & reader.ResultUnit) > 0
+            End If
+            Set shape = TestAudit03PlotShape(chart, "ContourCircle")
+            radiusWidth = shape.Width
+            If CDbl(factor) = 1# Then baselineWidth = radiusWidth
+            TestAssertClose stats, "layout.equalXY." & CStr(mode) & CStr(factor), shape.Width, shape.Height, 0.05
+            TestAssertClose stats, "layout.freedWidth." & CStr(mode) & CStr(factor), radiusWidth / baselineWidth, _
+                (700# - 14# - 16# - 4# - 132# * CDbl(factor)) / (700# - 14# - 16# - 4# - 132#), 0.001
+            Set shape = TestAudit03PlotShape(chart, "AxisLabelY")
+            TestAssertClose stats, "layout.axisY.halfOuterGap", shape.Left, 34# / 2#, 0.05
+            Set shape = TestAudit03PlotShape(chart, "AxisLabelX")
+            TestAssertClose stats, "layout.axisX.halfOuterGap", chart.Height - shape.Top - shape.Height, 42# / 2#, 0.05
+            TestAppendLine stats, "LAYOUT_FRAME_CASE: mode=" & CStr(mode) & "; scale=" & CStr(factor) & "; circleWidth=" & CStr(radiusWidth)
+        Next factor
+    Next mode
+    TestAudit03SetPlotSetting table, "Plot.LegendEnabled", "No"
+    TestAudit03SetPlotSetting table, "Plot.LegendScale", CVErr(2015)
+    settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+    Set shape = TestAudit03PlotShape(chart, "ContourCircle")
+    TestAssertClose stats, "layout.disabledLegend.reclaimsEntireWidth", shape.Width / baselineWidth, _
+        (700# - 14# - 16#) / (700# - 14# - 16# - 4# - 132#), 0.001
+    For Each value In Array(0.2, 0.56, 1.75)
+        TestAudit03SetPlotSetting table, "Plot.AxesLineWeight", CDbl(value)
+        TestAudit03SetPlotSetting table, "Plot.NeutralLineWeight", CDbl(value) * 2#
+        settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        For Each key In Array("Principal1", "Principal2", "NeutralAxis")
+            Set shape = TestAudit03PlotShape(chart, CStr(key))
+            If CStr(key) = "NeutralAxis" Then factor = CDbl(value) * 2# Else factor = CDbl(value)
+            TestAssertClose stats, "layout.realBandThickness." & CStr(key) & CStr(value), TestPlotBandThickness(shape), CDbl(factor), 0.001
+        Next key
+    Next value
+    For Each key In Array("Plot.AxesLineWeight", "Plot.NeutralLineWeight")
+        For Each bad In Array(0#, -1#, "abc", Empty, CVErr(2015))
+            signature = TestLegendDrawingSignature(chart)
+            Set cell = TestAudit03PlotSettingCell(table, CStr(key)): cell.Value2 = bad
+            settings.LoadFromWorkbook fixture
+            TestAudit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
+            TestAssertTrue stats, "layout.invalidWeight.reason." & CStr(key), code <> 0 And InStr(reason, CStr(key)) > 0 And InStr(reason, cell.Address(False, False)) > 0
+            TestAssertTrue stats, "layout.invalidWeight.preserved." & CStr(key), signature = TestLegendDrawingSignature(chart)
+            cell.Value2 = 0.7
+        Next bad
+    Next key
+    TestAudit03SetPlotSetting table, "Plot.PrincipalAxesMode", "None"
+    TestAudit03SetPlotSetting table, "Plot.NeutralLineEnabled", "No"
+    TestAudit03SetPlotSetting table, "Plot.AxesLineWeight", CVErr(2015)
+    TestAudit03SetPlotSetting table, "Plot.NeutralLineWeight", CVErr(2015)
+    settings.LoadFromWorkbook fixture
+    TestAudit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
+    TestAssertTrue stats, "layout.inactiveWeight.unread", code = 0
+    TestAudit03SetPlotSetting table, "Plot.Dimensions.Enabled", "Yes"
+    Set layout = New CPlotAnnotationLayout
+    For Each item In Array("H=800 мм", "B1=0.5 m", "R=40 мм", "D=1000 мм", "прибл. 800 мм")
+        For Each value In Array("Yes", "No")
+            TestAudit03SetPlotSetting table, "Plot.Dimensions.ShowSymbol", CStr(value)
+            settings.LoadFromWorkbook fixture: layout.ConfigureFromSettings settings
+            layout.Initialize -100#, 100#, -100#, 100#, 14#, 36#, 600#, 600#, "mm"
+            layout.AddDimension -50#, 0#, 50#, 0#, 0#, 1#, CStr(item)
+            title = CStr(item)
+            If CStr(value) = "No" And InStr(title, "=") > 0 Then title = Mid$(title, InStr(title, "=") + 1)
+            TestAssertTrue stats, "layout.dimension.symbol." & CStr(value) & CStr(item), layout.Text(4) = title
+            layout.AddPointLabel 0#, 0#, CStr(item), True
+            TestAssertTrue stats, "layout.measurement.symbol." & CStr(value) & CStr(item), layout.Text(5) = title
+            layout.AddPointLabel 0#, 0#, "Примечание: H=800 мм"
+            TestAssertTrue stats, "layout.freeText.unchanged", layout.Text(6) = "Примечание: H=800 мм"
+        Next value
+    Next item
+    Set cell = TestAudit03PlotSettingCell(table, "Plot.Dimensions.ShowSymbol")
+    For Each bad In Array("invalid", Empty, CVErr(2015))
+        cell.Value2 = bad: settings.LoadFromWorkbook fixture
+        On Error Resume Next
+        Err.Clear: layout.ConfigureFromSettings settings: code = Err.Number: reason = Err.Description
+        On Error GoTo Failed
+        TestAssertTrue stats, "layout.showSymbol.invalid", code <> 0 And InStr(reason, "ShowSymbol") > 0
+    Next bad
+    TestAudit03SetPlotSetting table, "Plot.Dimensions.Enabled", "No"
+    settings.LoadFromWorkbook fixture
+    TestAudit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
+    TestAssertTrue stats, "layout.inactiveSymbol.unread", code = 0
+    ' Неприменимая колонка арматуры не создаёт настройки и не читает CVErr.
+    Set cell = fixture.Names.Item("rngPlotAnnotationSettings").RefersToRange
+    cell.Cells(cell.Rows.Count, 2).Value2 = CVErr(2015)
+    settings.LoadFromWorkbook fixture
+    TestAssertTrue stats, "layout.inapplicableRebarSymbol.unread", Not settings.HasKey("Plot.RebarLabels.ShowSymbol")
+    settings.LoadFromWorkbook fixture: reader.LoadGeometryOnlyForMissingState fixture, settings, "НДС для просмотра не сохранено: показана только геометрия."
+    plotter.Draw fixture, reader, settings
+    count = 0
+    For Each shape In chart.Chart.Shapes
+        title = ""
+        On Error Resume Next
+        title = shape.TextFrame.Characters().Text
+        On Error GoTo Failed
+        If title = reader.GeometryOnlyNote And Len(title) > 0 Then
+            count = count + 1
+            TestAssertTrue stats, "layout.geometryFooter.inside", shape.Top >= 0# And shape.Top + shape.Height <= chart.Height + 0.05
+        End If
+    Next shape
+    TestAssertTrue stats, "layout.geometryFooter.present", count = 1
+    TestAssertTrue stats, "layout.noSolve", SectionEquilibriumSolveCount() = solveCount
+    GoTo Finish
+Failed:
+    TestAssertTrue stats, "layout.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finish:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Измеряет поперечную толщину построенной Freeform по двум вершинам с одного конца.
+Private Function TestPlotBandThickness(ByVal shape As Object) As Double
+    Dim a As Variant, b As Variant
+    a = shape.Nodes.Item(1).Points: b = shape.Nodes.Item(4).Points
+    TestPlotBandThickness = Sqr((CDbl(a(1, 1)) - CDbl(b(1, 1))) ^ 2 + (CDbl(a(1, 2)) - CDbl(b(1, 2))) ^ 2)
 End Function

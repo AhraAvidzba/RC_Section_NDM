@@ -115,10 +115,10 @@
     },
     {
       "Name": "rngPlotAnnotationSettings",
-      "RefersTo": "=Config!$H$103:$M$117",
+      "RefersTo": "=Config!$H$103:$M$118",
       "Sheet": "Config",
-      "Address": "$H$103:$M$117",
-      "Rows": 15,
+      "Address": "$H$103:$M$118",
+      "Rows": 16,
       "Columns": 6
     },
     {
@@ -196,10 +196,10 @@
     },
     {
       "Name": "rngSystemSettings",
-      "RefersTo": "=Config!$A$3:$E$150",
+      "RefersTo": "=Config!$A$3:$E$152",
       "Sheet": "Config",
-      "Address": "$A$3:$E$150",
-      "Rows": 148,
+      "Address": "$A$3:$E$152",
+      "Rows": 150,
       "Columns": 5
     },
     {
@@ -215,6 +215,14 @@
       "RefersTo": "=Results!$DL$156",
       "Sheet": "Results",
       "Address": "$DL$156",
+      "Rows": 1,
+      "Columns": 1
+    },
+    {
+      "Name": "rngSectionIllustrationSelector",
+      "RefersTo": "=Расчет!$K$2",
+      "Sheet": "Расчет",
+      "Address": "$K$2",
       "Rows": 1,
       "Columns": 1
     }

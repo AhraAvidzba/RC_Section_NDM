@@ -58,6 +58,7 @@ Private mRebarLineEnabled As Boolean ' Рисовать ли короткую л
 Private mDimensionColor As Long ' Цвет размерных линий и текста.
 Private mDimensionExtensionColor As Long ' Цвет выносных линий размеров.
 Private mRebarColor As Long ' Цвет подписей арматуры и их линий.
+Private mDimensionShowSymbol As Boolean ' Показывать имя размера перед числом; единица и знак приближения сохраняются.
 Private mDimensionsEnabled As Boolean ' Активна ли группа размеров; выключенные параметры не читаются.
 Private mRebarLabelsEnabled As Boolean ' Активна ли группа подписей арматуры.
 
@@ -83,7 +84,7 @@ Private mFontSize() As Double ' Размер шрифта конкретной �
 ' При ConfigureFromSettings эти значения не заменяют обязательный ввод.
 ' Чёрный цвет RGB = 0 является полноценным цветом, а не отсутствующим значением.
 Private Sub Class_Initialize()
-    mDimensionsEnabled = True: mRebarLabelsEnabled = True
+    mDimensionsEnabled = True: mRebarLabelsEnabled = True: mDimensionShowSymbol = True
     mDimensionTextHeightBase = 13#: mRebarTextHeightBase = 13#
     mDimensionTextUnits = "mm": mRebarTextUnits = "mm"
     mDimensionBaseGapBase = 100#: mRebarBaseGapBase = 30#
@@ -101,6 +102,7 @@ Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)
     mDimensionsEnabled = settings.GetRequiredBoolean("Plot.Dimensions.Enabled")
     mRebarLabelsEnabled = settings.GetRequiredBoolean("Plot.RebarLabels.Enabled")
     If mDimensionsEnabled Then
+        mDimensionShowSymbol = settings.GetRequiredBoolean("Plot.Dimensions.ShowSymbol")
         mDimensionTextHeightBase = AnnotationNumber(settings, "Plot.Dimensions.TextHeight", False)
         mDimensionTextUnits = settings.GetRequiredChoice("Plot.Dimensions.TextUnits", Array("mm", "pt"))
         mDimensionBaseGapBase = AnnotationNumber(settings, "Plot.Dimensions.Offset", True)
@@ -189,6 +191,7 @@ End Sub
 Public Sub AddDimension(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
         ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String)
     If Not mDimensionsEnabled Then Exit Sub
+    textValue = DimensionDisplayText(textValue)
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
     dirY = endY - startY
@@ -226,14 +229,24 @@ End Sub
 
 ' Текстовая модельная привязка использует общую типографику размеров.
 ' Она показывается вместе с размерами, без фиктивной размерной линии.
-Public Sub AddPointLabel(ByVal x As Double, ByVal y As Double, ByVal textValue As String)
+Public Sub AddPointLabel(ByVal x As Double, ByVal y As Double, ByVal textValue As String, Optional ByVal isMeasurement As Boolean = False)
     If Not mDimensionsEnabled Then Exit Sub
+    If isMeasurement Then textValue = DimensionDisplayText(textValue)
     Dim widthValue As Double, heightValue As Double
     widthValue = MaxDouble(90# * mVisualScale, Len(textValue) * mDimensionFontSize * 0.62)
     heightValue = 1.8 * mDimensionFontSize
     AddText ModelToChartX(x) - widthValue / 2#, ModelToChartY(y) - heightValue / 2#, _
         widthValue, heightValue, textValue, 0#, mDimensionColor, True, mDimensionFontSize
 End Sub
+
+' Убирает только обозначение перед «=» у числового размера, сохраняя готовое значение с единицей.
+' При отсутствии обозначения строка, включая знак приближения, остаётся целой.
+Private Function DimensionDisplayText(ByVal textValue As String) As String
+    Dim separator As Long
+    If Not mDimensionShowSymbol Then separator = InStr(1, textValue, "=", vbBinaryCompare)
+    If separator > 0 Then textValue = Trim$(Mid$(textValue, separator + 1))
+    DimensionDisplayText = textValue
+End Function
 
 ' ------------------------------
 ' Групповая подпись арматуры
