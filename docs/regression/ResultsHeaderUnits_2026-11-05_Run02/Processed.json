@@ -1,0 +1,27 @@
+{
+  "Status": "PASS_TARGETED_FONT_AND_UNIT_COVERAGE",
+  "NativeUserHeadersChecked": 651,
+  "NativeTemplateHeadersChecked": 47,
+  "UserFontRunsFixed": 8,
+  "StaticTemplateHeadersFixed": 37,
+  "AllAddedUnitTextFont": "Arial 9 baseline",
+  "FixedUnitHeadersChecked": 115,
+  "PerRowUnitColumnsChecked": 19,
+  "MissingUnits": [],
+  "DimensionlessUnitsAdded": false,
+  "NativeWriterChecks": 162,
+  "NativeWriterFailures": 0,
+  "NoNDSRecalculation": true,
+  "UserDataAndVBAUnchanged": true,
+  "UserBookSHA256": "0937B127C72C514566C174445A84377AC42D45C2FDD8F9DB3F8332487AD6B51C",
+  "CleanBookSHA256": "DF9679A79870268FF14B4942469BEA34C9326FC21C9EC579B4ED1F69F649F252",
+  "AllCodeSHA256": "AA27FCC73DBB064FF429BD2BB17293B9958ED1F31600D8C78AD4B208137AB9B6",
+  "BuilderFontRanges": [
+    "AN155:BD156",
+    "BR155:CI156"
+  ],
+  "VisualReview": "Two native PDF views actually inspected",
+  "NoUserBookOrPDFIncluded": true,
+  "ProofZipSHA256": "DD0B17FC656B78B51244A25F5FD165D63E4514636DDABBFA06BBA7BE8F4B767A",
+  "NoNewFullAcceptanceClaim": true
+}
