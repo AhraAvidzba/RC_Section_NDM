@@ -437,15 +437,15 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_PSI_S) = ChrW$(&H3C8) & "s"
     headers(HEADER_LABEL_ROW, COL_REBARS) = "rebars"
     headers(HEADER_LABEL_ROW, COL_NREBARS) = "nrebars"
-    headers(HEADER_LABEL_ROW, COL_SIGMA_S_CRC) = ChrW$(&H3C3) & "s,crc"
-    headers(HEADER_LABEL_ROW, COL_SIGMA_S) = ChrW$(&H3C3) & "s"
+    headers(HEADER_LABEL_ROW, COL_SIGMA_S_CRC) = ChrW$(&H3C3) & "s,crc, " & OutputStressUnit(units)
+    headers(HEADER_LABEL_ROW, COL_SIGMA_S) = ChrW$(&H3C3) & "s, " & OutputStressUnit(units)
     headers(HEADER_LABEL_ROW, COL_ES) = "Es, " & OutputStressUnit(units)
     headers(HEADER_LABEL_ROW, COL_ACRC) = "acrc, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_ACRC_ULT) = "acrc,ult, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_ACRC_RATIO) = "acrc,ult/acrc"
     headers(HEADER_LABEL_ROW, COL_ACRC_STATUS) = "статус"
-    headers(HEADER_LABEL_ROW, COL_SIGMA_B_MAX) = ChrW$(&H3C3) & "b,max"
-    headers(HEADER_LABEL_ROW, COL_RB_MC2) = "Rb,mc2"
+    headers(HEADER_LABEL_ROW, COL_SIGMA_B_MAX) = ChrW$(&H3C3) & "b,max, " & OutputStressUnit(units)
+    headers(HEADER_LABEL_ROW, COL_RB_MC2) = "Rb,mc2, " & OutputStressUnit(units)
     headers(HEADER_LABEL_ROW, COL_LONG_RATIO) = "Rb,mc2/" & ChrW$(&H3C3) & "b"
     headers(HEADER_LABEL_ROW, COL_LONG_STATUS) = "статус"
 End Sub

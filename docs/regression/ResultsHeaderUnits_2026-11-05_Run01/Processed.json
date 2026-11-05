@@ -1,0 +1,22 @@
+{
+  "Status": "PASS_TARGETED_RESULTS_HEADERS",
+  "NoFullAcceptanceClaim": true,
+  "MissingStressHeadersFixed": 8,
+  "TechnicalTitlesClarified": 4,
+  "DimensionlessHeadersUnchanged": true,
+  "NativeAssertionsPassed": 66,
+  "NativeAssertionsFailed": 0,
+  "NativeSourceComponents": 181,
+  "NativeGeneratedComponents": 6,
+  "UserDataPreserved": true,
+  "OnlyUserZipPartsChanged": [
+    "xl/vbaProject.bin",
+    "xl/worksheets/sheet5.xml"
+  ],
+  "UserBookSHA256": "19934EC049080193F8D8B888DC33D58632135508238D8339CD51A3EAC4712149",
+  "CleanBookSHA256": "A66C75F6BD531308843C26784BA8FABC8E612F636A34249978D87AC246AE5E4B",
+  "AllCodeSHA256": "AA27FCC73DBB064FF429BD2BB17293B9958ED1F31600D8C78AD4B208137AB9B6",
+  "VisualReview": "Six native PDF views actually inspected",
+  "ProofZipSHA256": "95CDB3B6A70ACC226F338AD89C677B2FE12F3668076B19871ED1DF6928F19568",
+  "NoUserWorkbookOrPDFInGitEvidence": true
+}

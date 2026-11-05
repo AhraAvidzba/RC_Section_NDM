@@ -574,7 +574,7 @@ Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSec
         Exit Sub
     End If
     target.Resize(contours.Count + 1, CONTOUR_COLUMNS).Value2 = data
-    FormatResultsBlock target, contours.Count + 1, CONTOUR_COLUMNS, "Достоверные контуры и отверстия сечения"
+    FormatResultsBlock target, contours.Count + 1, CONTOUR_COLUMNS, "Достоверные контуры и отверстия сечения (координаты и радиусы — в LengthUnit)"
 End Sub
 
 ' Сохраняет собственные границы отдельно от общих контуров сечения.
@@ -643,7 +643,7 @@ Private Sub WriteElementGeometry(ByVal workbook As Object, ByVal section As CSec
     ClearNamedRegion workbook, "rngNDMElementGeometry"
     Dim target As Object: Set target = workbook.Names.Item("rngNDMElementGeometry").RefersToRange
     target.Resize(total + 1, ELEMENT_GEOMETRY_COLUMNS).Value2 = data
-    FormatResultsBlock target, total + 1, ELEMENT_GEOMETRY_COLUMNS, "Фактические границы бетонных элементов"
+    FormatResultsBlock target, total + 1, ELEMENT_GEOMETRY_COLUMNS, "Фактические границы бетонных элементов (координаты и радиусы — в LengthUnit)"
 End Sub
 
 ' Возвращает единую шапку самостоятельной таблицы обязательной геометрии.
@@ -754,7 +754,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         Exit Sub
     End If
     target.Resize(rowCount, SECTION_PROPERTY_COLUMNS).Value2 = data
-    FormatResultsBlock target, rowCount, SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
+    FormatResultsBlock target, rowCount, SECTION_PROPERTY_COLUMNS, "Свойства всего сечения (единицы — в Unit)"
 End Sub
 
 ' Записывает логический признак одинаково в любой локали Excel:
@@ -1278,7 +1278,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
         Exit Sub
     End If
     target.Resize(UBound(data, 1), SECTION_PROPERTY_COLUMNS).Value2 = data
-    FormatResultsBlock target, UBound(data, 1), SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
+    FormatResultsBlock target, UBound(data, 1), SECTION_PROPERTY_COLUMNS, "Свойства всего сечения (единицы — в Unit)"
 End Sub
 
 ' ------------------------------
@@ -1375,7 +1375,7 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
         target.Resize(rowCount, ANNOTATION_COLUMNS).Columns.Item(CLng(textColumn)).NumberFormat = "@"
     Next textColumn
     target.Resize(rowCount, ANNOTATION_COLUMNS).Value2 = data
-    FormatResultsBlock target, rowCount, ANNOTATION_COLUMNS, "Аннотации схемы"
+    FormatResultsBlock target, rowCount, ANNOTATION_COLUMNS, "Аннотации схемы (координаты — CoordinateUnit; площадь — AreaUnit; значение — Unit)"
 End Sub
 
 ' Оставляет таблицу результатов элементов с одной шапкой.
@@ -1408,7 +1408,7 @@ Private Sub WriteEmptySectionAnnotations(ByVal workbook As Object, ByVal runID A
     PutAnnotationHeaders data
 
     target.Resize(1, ANNOTATION_COLUMNS).Value2 = data
-    FormatResultsBlock target, 1, ANNOTATION_COLUMNS, "Аннотации схемы"
+    FormatResultsBlock target, 1, ANNOTATION_COLUMNS, "Аннотации схемы (координаты — CoordinateUnit; площадь — AreaUnit; значение — Unit)"
 End Sub
 
 ' Оформляет диапазон как отдельную таблицу с заголовком над именованным началом.
@@ -2009,8 +2009,8 @@ Private Sub RestorePreservedFileGeometry(ByVal workbook As Object, ByVal runID A
     For Each key In Array("rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMElementGeometry")
         Select Case CStr(key)
             Case "rngNDMSectionGeometry": data = mPreservedGeometry: title = "Сформированная сетка и арматура"
-            Case "rngNDMSectionContours": data = mPreservedContours: title = "Сохранённые контуры сечения"
-            Case "rngNDMElementGeometry": data = mPreservedElementGeometry: title = "Фактические границы бетонных элементов"
+            Case "rngNDMSectionContours": data = mPreservedContours: title = "Сохранённые контуры сечения (координаты и радиусы — в LengthUnit)"
+            Case "rngNDMElementGeometry": data = mPreservedElementGeometry: title = "Фактические границы бетонных элементов (координаты и радиусы — в LengthUnit)"
         End Select
         For row = 2 To UBound(data, 1): data(row, 1) = CDbl(runID): Next row
         ClearNamedRegion workbook, CStr(key)
@@ -2160,13 +2160,13 @@ Private Sub RestoreBaseTables(ByVal workbook As Object, ByVal snapshot As Object
         Select Case CStr(key)
             Case "rngNDMElementResults": title = "Результаты элементов по сочетаниям"
             Case "rngNDMSectionGeometry": title = "Сформированная сетка и арматура"
-            Case "rngNDMSectionContours": title = "Сохранённые контуры сечения"
-            Case "rngNDMElementGeometry": title = "Фактические границы бетонных элементов"
-            Case "rngNDMSectionProperties": title = "Общие геометрические характеристики сечения"
+            Case "rngNDMSectionContours": title = "Сохранённые контуры сечения (координаты и радиусы — в LengthUnit)"
+            Case "rngNDMElementGeometry": title = "Фактические границы бетонных элементов (координаты и радиусы — в LengthUnit)"
+            Case "rngNDMSectionProperties": title = "Общие геометрические характеристики сечения (единицы — в Unit)"
             Case "rngNDMMaterialDiagrams": title = "Фактически использованные диаграммы материалов"
-            Case "rngNDMSectionAnnotations": title = "Аннотации схемы"
+            Case "rngNDMSectionAnnotations": title = "Аннотации схемы (координаты — CoordinateUnit; площадь — AreaUnit; значение — Unit)"
         End Select
-        If includeElements And CStr(key) = "rngNDMSectionProperties" Then title = "Характеристики сечения и сочетаний"
+        If includeElements And CStr(key) = "rngNDMSectionProperties" Then title = "Характеристики сечения и сочетаний (единицы — в Unit)"
         FormatResultsBlock target, UBound(data, 1), UBound(data, 2), title, data
 NextBaseTable:
     Next key

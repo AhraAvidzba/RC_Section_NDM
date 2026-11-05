@@ -355,10 +355,10 @@ Private Sub PutColumnLabels(ByRef headers() As Variant, ByVal units As CUnitSyst
     headers(HEADER_LABEL_ROW, COL_STATE_EBT) = ChrW$(&H3B5) & "bt"
     headers(HEADER_LABEL_ROW, COL_STATE_ESC) = ChrW$(&H3B5) & "sc"
     headers(HEADER_LABEL_ROW, COL_STATE_EST) = ChrW$(&H3B5) & "st"
-    headers(HEADER_LABEL_ROW, COL_STATE_SBC) = ChrW$(&H3C3) & "bc"
-    headers(HEADER_LABEL_ROW, COL_STATE_SBT) = ChrW$(&H3C3) & "bt"
-    headers(HEADER_LABEL_ROW, COL_STATE_SSC) = ChrW$(&H3C3) & "sc"
-    headers(HEADER_LABEL_ROW, COL_STATE_SST) = ChrW$(&H3C3) & "st"
+    headers(HEADER_LABEL_ROW, COL_STATE_SBC) = ChrW$(&H3C3) & "bc, " & OutputStressUnit(units)
+    headers(HEADER_LABEL_ROW, COL_STATE_SBT) = ChrW$(&H3C3) & "bt, " & OutputStressUnit(units)
+    headers(HEADER_LABEL_ROW, COL_STATE_SSC) = ChrW$(&H3C3) & "sc, " & OutputStressUnit(units)
+    headers(HEADER_LABEL_ROW, COL_STATE_SST) = ChrW$(&H3C3) & "st, " & OutputStressUnit(units)
     headers(HEADER_LABEL_ROW, COL_STATE_H) = "h, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_STATE_X) = "x, " & OutputLengthUnit(units)
     headers(HEADER_LABEL_ROW, COL_STATE_DIAGEXT) = "ExtUsed"
@@ -776,6 +776,11 @@ End Function
 ' Переводит напряжение из внутренних МПа в выбранную пользователем единицу.
 Private Function OutputStress(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputStress = value Else OutputStress = units.InternalStressToOutput(value)
+End Function
+
+' Возвращает ту же единицу напряжений, в которую переводятся значения строк НДС.
+Private Function OutputStressUnit(ByVal units As CUnitSystem) As String
+    If units Is Nothing Then OutputStressUnit = "MPa" Else OutputStressUnit = units.OutputStressUnit
 End Function
 
 ' Переводит кривизну плоскости деформаций из внутренних 1/мм

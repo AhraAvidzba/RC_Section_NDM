@@ -552,11 +552,11 @@ try {
         $results.Cells.Item(156, 70 + $i).Value2 = [string]$elementGeometryHeaders[$i]
     }
     $results.Range('AN155:BD155').Merge()
-    $results.Cells.Item(155, 40).Value2 = 'Достоверные контуры и отверстия сечения'
+    $results.Cells.Item(155, 40).Value2 = 'Достоверные контуры и отверстия сечения (координаты и радиусы — в LengthUnit)'
     $results.Range('AN155:BD156').Font.Bold = $true
     Set-Border $results.Range('AN156:BD156')
     $results.Range('BR155:CI155').Merge()
-    $results.Cells.Item(155, 70).Value2 = 'Фактические границы бетонных элементов'
+    $results.Cells.Item(155, 70).Value2 = 'Фактические границы бетонных элементов (координаты и радиусы — в LengthUnit)'
     $results.Range('BR155:CI156').Font.Bold = $true
     Set-Border $results.Range('BR156:CI156')
 
