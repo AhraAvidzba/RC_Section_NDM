@@ -1670,7 +1670,7 @@ Public Function TestExcelCurrentResultsRefresh() As String
     Dim properties As Variant: properties = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionProperties")
     TestSnapshotCheck "excel.readableLoadCaseProperties", Not TestSnapshotCommonOnly(properties)
     Dim names As Variant: names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
-    Dim widths As Variant: widths = Array(33, 49, 72, 84)
+    Dim widths As Variant: widths = Array(33, 49, 72, STABILITY_SNAPSHOT_COLUMNS)
     Dim before(0 To 3) As Variant, i As Long
     Dim plot As String: plot = TestSnapshotPlot()
     Dim exported As String: exported = Audit02ReadExportSnapshotForTests(ThisWorkbook)

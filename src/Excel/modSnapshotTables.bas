@@ -5,6 +5,9 @@ Option Explicit
 ' ==========================================================================
 ' Здесь нет файлового или Excel-ввода; проверки и объединения не выполняют расчёт.
 
+Public Const LEGACY_STABILITY_SNAPSHOT_COLUMNS As Long = 84 ' Сводка без инерций и модулей упругости.
+Public Const STABILITY_SNAPSHOT_COLUMNS As Long = 90 ' Сводка с шестью характеристиками сечения.
+
 ' Проверяет размеры готовой таблицы, не меняя её содержимого.
 Public Sub ValidateSnapshotTableShape(ByVal key As String, ByRef values As Variant)
     Dim columns As Long, rows As Long
@@ -23,14 +26,26 @@ Public Sub ValidateSnapshotTableShape(ByVal key As String, ByRef values As Varia
         Case "Strength.Data": columns = 49
         Case "Cracks.Headers": columns = 72: rows = 4
         Case "Cracks.Data": columns = 72
-        Case "Stability.Labels": columns = 84: rows = 1
-        Case "Stability.Data": columns = 84
+        Case "Stability.Labels", "Stability.Data"
+            columns = STABILITY_SNAPSHOT_COLUMNS
+            If UBound(values, 2) = LEGACY_STABILITY_SNAPSHOT_COLUMNS Then columns = LEGACY_STABILITY_SNAPSHOT_COLUMNS
+            If key = "Stability.Labels" Then rows = 1
         Case "Calculation.Profiles"
             If UBound(values, 2) < 3 Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Повреждены сохранённые профили расчёта."
             Exit Sub
     End Select
     If UBound(values, 2) <> columns Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Неверная структура таблицы снимка: " & key
     If rows > 0 Then If UBound(values, 1) <> rows Then Err.Raise 5, "CCalculationSnapshot", "Неверная шапка таблицы снимка: " & key
+End Sub
+
+' Проверяет, что подписи и значения устойчивости относятся к одному формату столбцов.
+Public Sub ValidateStabilitySnapshotColumns(ByVal key As String, ByRef values As Variant, ByRef labelColumns As Long)
+    If key = "Stability.Labels" Then
+        labelColumns = UBound(values, 2)
+    ElseIf key = "Stability.Data" Then
+        If UBound(values, 2) <> labelColumns Then Err.Raise 5, "modSnapshotTables", _
+            "В снимке не совпадает число столбцов подписей и данных таблицы устойчивости."
+    End If
 End Sub
 
 

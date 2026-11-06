@@ -152,7 +152,7 @@ function Get-ResultsStatusStyleHash([object]$Book) {
         @{name='rngBatchSummary'; offset=12; columns=@(4,6,7,8,9,10,11,12,13,14,15)},
         @{name='rngStrengthSummaryAnchor'; offset=0; columns=@(3,30,49)},
         @{name='rngCrackSummaryAnchor'; offset=0; columns=@(3,21,24,25,29,44,67,72)},
-        @{name='rngStabilitySummaryAnchor'; offset=0; columns=@(3,38,44,53,59,72,84)}
+        @{name='rngStabilitySummaryAnchor'; offset=0; columns=@(3,44,50,59,65,78,90)}
     )
     foreach ($block in $blocks) {
         $anchor = $names.Item($block.name).RefersToRange

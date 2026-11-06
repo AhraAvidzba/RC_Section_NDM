@@ -20,21 +20,23 @@ Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник готов�
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
 Private Const HEADER_ROWS As Long = 5 ' Число строк шапки над первой строкой данных.
-Private Const TOTAL_COLUMNS As Long = 84 ' Ширина таблицы с пустыми разделителями между блоками.
+Private Const TOTAL_COLUMNS As Long = STABILITY_SNAPSHOT_COLUMNS ' Ширина таблицы с пустыми разделителями между блоками.
 
 Private Const COL_SUMMARY_FIRST As Long = 1 ' Первый столбец сводки устойчивости.
 Private Const COL_SUMMARY_LAST As Long = 14 ' Последний столбец сводки устойчивости.
 Private Const COL_COMMON_FIRST As Long = 16 ' Первый столбец общих параметров устойчивости.
-Private Const COL_COMMON_LAST As Long = 27 ' Последний столбец общих параметров устойчивости.
-Private Const COL_SP35_FIRST As Long = 29 ' Первый столбец расчёта устойчивости СП 35.
-Private Const COL_SP35_LAST As Long = 59 ' Последний столбец расчёта устойчивости СП 35.
-Private Const COL_SP63_FIRST As Long = 61 ' Первый столбец расчёта устойчивости СП 63.
-Private Const COL_SP63_LAST As Long = 84 ' Последний столбец расчёта устойчивости СП 63.
+Private Const COL_COMMON_LAST As Long = 33 ' Последний столбец общих параметров устойчивости.
+Private Const COL_SP35_FIRST As Long = 35 ' Первый столбец расчёта устойчивости СП 35.
+Private Const COL_SP35_LAST As Long = 65 ' Последний столбец расчёта устойчивости СП 35.
+Private Const COL_SP63_FIRST As Long = 67 ' Первый столбец расчёта устойчивости СП 63.
+Private Const COL_SP63_LAST As Long = TOTAL_COLUMNS ' Последний столбец расчёта устойчивости СП 63.
 
-Private Const SP35_PLANE1_FIRST As Long = 30 ' Первый столбец первой плоскости расчёта СП 35.
-Private Const SP35_PLANE2_FIRST As Long = 45 ' Первый столбец второй плоскости расчёта СП 35.
-Private Const SP63_PLANE1_FIRST As Long = 61 ' Первый столбец первой плоскости расчёта СП 63.
-Private Const SP63_PLANE2_FIRST As Long = 73 ' Первый столбец второй плоскости расчёта СП 63.
+Private Const SP35_PLANE1_FIRST As Long = COL_SP35_FIRST + 1 ' Первый столбец первой плоскости расчёта СП 35.
+Private Const SP35_PLANE2_FIRST As Long = SP35_PLANE1_FIRST + 15 ' Первый столбец второй плоскости расчёта СП 35.
+Private Const SP63_PLANE1_FIRST As Long = COL_SP63_FIRST ' Первый столбец первой плоскости расчёта СП 63.
+Private Const SP63_PLANE2_FIRST As Long = SP63_PLANE1_FIRST + 12 ' Первый столбец второй плоскости расчёта СП 63.
+Private Const COL_INERTIA_FIRST As Long = 26 ' Начало четырёх моментов инерции бетона и арматуры.
+Private Const COL_MODULUS_FIRST As Long = 32 ' Начало двух общих модулей упругости.
 Private Const SP35_DELTA_OFFSET As Long = 3 ' Смещение delta от начала плоскости СП 35.
 Private Const SP35_PHI_L_OFFSET As Long = 4 ' Смещение phi_l для ветви ec > r.
 Private Const SP35_NCR_OFFSET As Long = 5 ' Смещение Ncr после обоих коэффициентов плоскости.
@@ -230,10 +232,10 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
     MergeCells target, 2, 16, 1, 6, "Нагрузки до применения " & ChrW$(&H3B7) & " в ц.т. приведенного сечения"
     MergeCells target, 3, 16, 1, 3, "постоянные + временные"
     MergeCells target, 3, 19, 1, 3, "постоянные"
-    MergeCells target, 2, 22, 2, 6, "характеристики сечения"
+    MergeCells target, 2, 22, 2, BlockWidth(22, COL_COMMON_LAST), "характеристики сечения"
 
     MergeCells target, 1, COL_SP35_FIRST, 1, BlockWidth(COL_SP35_FIRST, COL_SP35_LAST), "Расчет по СП 35"
-    MergeCells target, 2, 29, 3, 1, "общие для СП"
+    MergeCells target, 2, COL_SP35_FIRST, 3, 1, "общие для СП"
     WriteSP35PlaneHeaders target, SP35_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1)"
     WriteSP35PlaneHeaders target, SP35_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2)"
 
@@ -285,10 +287,16 @@ Private Sub PutHeaderNotes(ByVal target As Object)
     notes(1, 23) = "Размер сечения по нормали к плоскости 2, то есть вдоль главной оси 1"
     notes(1, 24) = "Радиус инерции для изгиба вокруг главной оси 1"
     notes(1, 25) = "Радиус инерции для изгиба вокруг главной оси 2"
-    notes(1, 26) = "Расчетная длина для плоскости 1: изгиб вокруг главной оси 1"
-    notes(1, 27) = "Расчетная длина для плоскости 2: изгиб вокруг главной оси 2"
+    notes(1, COL_INERTIA_FIRST) = "Момент инерции бетона относительно главной оси 1 приведённого сечения"
+    notes(1, COL_INERTIA_FIRST + 1) = "Момент инерции бетона относительно главной оси 2 приведённого сечения"
+    notes(1, COL_INERTIA_FIRST + 2) = "Момент инерции арматуры относительно главной оси 1 приведённого сечения"
+    notes(1, COL_INERTIA_FIRST + 3) = "Момент инерции арматуры относительно главной оси 2 приведённого сечения"
+    notes(1, 30) = "Расчетная длина для плоскости 1: изгиб вокруг главной оси 1"
+    notes(1, 31) = "Расчетная длина для плоскости 2: изгиб вокруг главной оси 2"
+    notes(1, COL_MODULUS_FIRST) = "Модуль упругости бетона, использованный при расчёте устойчивости"
+    notes(1, COL_MODULUS_FIRST + 1) = "Модуль упругости арматуры, использованный при расчёте устойчивости"
 
-    notes(1, 29) = "Коэффициент для ненапрягаемой арматуры"
+    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры"
     PutSP35PlaneNotes notes, SP35_PLANE1_FIRST
     PutSP35PlaneNotes notes, SP35_PLANE2_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE1_FIRST
@@ -334,7 +342,7 @@ End Sub
 
 ' Заполняет строку обозначений под многоуровневой шапкой.
 Private Function HeaderRowLabels(ByVal units As CUnitSystem, ByVal batch As CBatchSectionCalculator) As Variant
-    Dim labels(1 To 1, 1 To TOTAL_COLUMNS) As Variant
+    Dim labels As Variant: ReDim labels(1 To 1, 1 To TOTAL_COLUMNS)
     labels(1, 1) = "Combination ID"
     labels(1, 2) = "ResultComment"
     labels(1, 3) = "общий статус"
@@ -360,10 +368,13 @@ Private Function HeaderRowLabels(ByVal units As CUnitSystem, ByVal batch As CBat
     labels(1, 23) = "h2, " & OutputLengthUnit(units)
     labels(1, 24) = "i1, " & OutputLengthUnit(units)
     labels(1, 25) = "i2, " & OutputLengthUnit(units)
-    labels(1, 26) = "l01, " & OutputLengthUnit(units)
-    labels(1, 27) = "l02, " & OutputLengthUnit(units)
+    labels(1, 30) = "l01, " & OutputLengthUnit(units)
+    labels(1, 31) = "l02, " & OutputLengthUnit(units)
+    Dim stressUnit As String: stressUnit = "MPa"
+    If Not units Is Nothing Then stressUnit = units.OutputStressUnit
+    PutSectionInputLabels labels, OutputLengthUnit(units), stressUnit
 
-    labels(1, 29) = ChrW$(&H3C6) & "p"
+    labels(1, COL_SP35_FIRST) = ChrW$(&H3C6) & "p"
     PutSP35PlaneLabels labels, SP35_PLANE1_FIRST, units, SP35EtaReserveLabel(batch)
     PutSP35PlaneLabels labels, SP35_PLANE2_FIRST, units, SP35EtaReserveLabel(batch)
     PutSP63PlaneLabels labels, SP63_PLANE1_FIRST, units
@@ -371,6 +382,19 @@ Private Function HeaderRowLabels(ByVal units As CUnitSystem, ByVal batch As CBat
 
     HeaderRowLabels = labels
 End Function
+
+' Заполняет обозначения инерций и модулей в тех же единицах, что и числовые данные.
+Private Sub PutSectionInputLabels(ByRef labels As Variant, ByVal lengthUnit As String, ByVal stressUnit As String)
+    Dim inertiaSuffix As String, modulusSuffix As String
+    If Len(lengthUnit) > 0 Then inertiaSuffix = ", " & lengthUnit & ChrW$(&H2074)
+    If Len(stressUnit) > 0 Then modulusSuffix = ", " & stressUnit
+    labels(1, COL_INERTIA_FIRST) = "Ib1" & inertiaSuffix
+    labels(1, COL_INERTIA_FIRST + 1) = "Ib2" & inertiaSuffix
+    labels(1, COL_INERTIA_FIRST + 2) = "Is1" & inertiaSuffix
+    labels(1, COL_INERTIA_FIRST + 3) = "Is2" & inertiaSuffix
+    labels(1, COL_MODULUS_FIRST) = "Eb" & modulusSuffix
+    labels(1, COL_MODULUS_FIRST + 1) = "Es" & modulusSuffix
+End Sub
 
 ' Записывает изменившиеся обозначения и восстанавливает их индексы.
 Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSystem, _
@@ -399,7 +423,7 @@ End Function
 
 ' Заполняет подписи одной плоскости СП 35, сохраняя раздельные колонки для
 ' ветвей ec > r и ec <= r.
-Private Sub PutSP35PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As Long, _
+Private Sub PutSP35PlaneLabels(ByRef labels As Variant, ByVal firstColumn As Long, _
         ByVal units As CUnitSystem, ByVal etaReserveLabel As String)
     labels(1, firstColumn) = "ec,sl, " & OutputLengthUnit(units)
     labels(1, firstColumn + 1) = "ec, " & OutputLengthUnit(units)
@@ -419,7 +443,7 @@ Private Sub PutSP35PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As L
 End Sub
 
 ' Заполняет обозначения одной плоскости СП 63.
-Private Sub PutSP63PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As Long, ByVal units As CUnitSystem)
+Private Sub PutSP63PlaneLabels(ByRef labels As Variant, ByVal firstColumn As Long, ByVal units As CUnitSystem)
     labels(1, firstColumn) = "l0/i"
     labels(1, firstColumn + 1) = "ea, " & OutputLengthUnit(units)
     labels(1, firstColumn + 2) = "e0, " & OutputLengthUnit(units)
@@ -511,17 +535,39 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, 23) = OutputLength(batch.ResultAt(index).StabilityResult.Depth2, units)
     data(rowIndex, 24) = OutputLength(batch.ResultAt(index).StabilityResult.Radius1, units)
     data(rowIndex, 25) = OutputLength(batch.ResultAt(index).StabilityResult.Radius2, units)
-    data(rowIndex, 26) = OutputLength(batch.ResultAt(index).StabilityResult.EffectiveLength1, units)
-    data(rowIndex, 27) = OutputLength(batch.ResultAt(index).StabilityResult.EffectiveLength2, units)
+    data(rowIndex, 30) = OutputLength(batch.ResultAt(index).StabilityResult.EffectiveLength1, units)
+    data(rowIndex, 31) = OutputLength(batch.ResultAt(index).StabilityResult.EffectiveLength2, units)
+    PutSectionInputValues data, rowIndex, batch.ResultAt(index).StabilityResult, units
 
     If StrComp(batch.ResultAt(index).StabilityResult.Code, "SP35", vbTextCompare) = 0 Then
-        data(rowIndex, 29) = OptionalValue(MaxDouble(batch.ResultAt(index).StabilityResult.PhiP1, batch.ResultAt(index).StabilityResult.PhiP2))
+        data(rowIndex, COL_SP35_FIRST) = OptionalValue(MaxDouble(batch.ResultAt(index).StabilityResult.PhiP1, batch.ResultAt(index).StabilityResult.PhiP2))
         PutSP35PlaneValues data, rowIndex, SP35_PLANE1_FIRST, batch, index, 1, units
         PutSP35PlaneValues data, rowIndex, SP35_PLANE2_FIRST, batch, index, 2, units
     ElseIf StrComp(batch.ResultAt(index).StabilityResult.Code, "SP63", vbTextCompare) = 0 Then
         PutSP63PlaneValues data, rowIndex, SP63_PLANE1_FIRST, batch, index, 1, units
         PutSP63PlaneValues data, rowIndex, SP63_PLANE2_FIRST, batch, index, 2, units
     End If
+End Sub
+
+' Переводит фактические входы устойчивости из МПа и мм4. Нулевая инерция арматуры допустима.
+Private Sub PutSectionInputValues(ByRef data() As Variant, ByVal rowIndex As Long, _
+        ByVal result As CStabilityResult, ByVal units As CUnitSystem)
+    If result.ConcreteElasticModulus <= 0# Then Exit Sub ' Без рассчитанной устойчивости величины оставляются пустыми.
+    Dim values As Variant
+    values = Array(result.ConcreteInertia1, result.ConcreteInertia2, result.SteelInertia1, result.SteelInertia2)
+    Dim i As Long
+    For i = 0 To 3
+        If Not units Is Nothing Then values(i) = units.InternalFourthPowerLengthToOutput(CDbl(values(i)))
+        data(rowIndex, COL_INERTIA_FIRST + i) = values(i)
+    Next i
+    Dim eb As Double: eb = result.ConcreteElasticModulus
+    Dim es As Double: es = result.SteelElasticModulus
+    If Not units Is Nothing Then
+        eb = units.InternalStressToOutput(eb)
+        es = units.InternalStressToOutput(es)
+    End If
+    data(rowIndex, COL_MODULUS_FIRST) = eb
+    data(rowIndex, COL_MODULUS_FIRST + 1) = es
 End Sub
 
 ' Заполняет одну плоскость СП 35. В строке активна только ветвь ec > r или ec <= r.
@@ -601,6 +647,8 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     If dataRows < 1 Then dataRows = 1
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).WrapText = False
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
+    target.Offset(HEADER_ROWS, COL_INERTIA_FIRST - 1).Resize(dataRows, 4).NumberFormat = "0.000E+00"
+    target.Offset(HEADER_ROWS, COL_MODULUS_FIRST - 1).Resize(dataRows, 2).NumberFormat = "[>=1000000]0.000E+00;0.000"
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, 3).NumberFormat = "@"
     target.Offset(HEADER_ROWS, 1).Resize(dataRows, 1).HorizontalAlignment = -4131
 
@@ -690,6 +738,12 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
         ApplySubscriptToken labels, headers, column, "e0", 2, 1
         ApplySubscriptToken labels, headers, column, "l01", 2, 2
         ApplySubscriptToken labels, headers, column, "l02", 2, 2
+        ApplySubscriptToken labels, headers, column, "Ib1", 2, 2
+        ApplySubscriptToken labels, headers, column, "Ib2", 2, 2
+        ApplySubscriptToken labels, headers, column, "Is1", 2, 2
+        ApplySubscriptToken labels, headers, column, "Is2", 2, 2
+        ApplySubscriptToken labels, headers, column, "Eb", 2, 1
+        ApplySubscriptToken labels, headers, column, "Es", 2, 1
         ApplySubscriptToken labels, headers, column, "l0/i", 2, 1
         ApplySubscriptToken labels, headers, column, "Ncr", 2, 2
         ApplySubscriptToken labels, headers, column, "Nult", 2, 3
@@ -961,6 +1015,12 @@ Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Obj
     Dim data As Variant: data = snapshot.Table("Stability.Data")
     Dim target As Object: Set target = TargetRange(workbook, UBound(data, 1))
     Dim labels As Variant: labels = snapshot.Table("Stability.Labels")
+    If UBound(labels, 2) = LEGACY_STABILITY_SNAPSHOT_COLUMNS Then
+        labels = ExpandSavedStabilityColumns(labels)
+        data = ExpandSavedStabilityColumns(data)
+        Dim properties As Variant: properties = snapshot.Table("rngNDMSectionProperties")
+        PutSectionInputLabels labels, SavedOutputUnit(properties, "Output.LengthUnit"), SavedOutputUnit(properties, "Output.StressUnit")
+    End If
     OrderSavedSP35Plane labels, data, SP35_PLANE1_FIRST
     OrderSavedSP35Plane labels, data, SP35_PLANE2_FIRST
     If mMinimalFormatting Then mMinimalFormatting = CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@" And _
@@ -975,6 +1035,32 @@ Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Obj
     target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data
     FormatTable target, Nothing, data
 End Sub
+
+' Дополняет 84-колоночную матрицу пустыми полями, которых в снимке ещё не было.
+Private Function ExpandSavedStabilityColumns(ByRef values As Variant) As Variant
+    Dim expanded() As Variant, row As Long, column As Long, destination As Long
+    ReDim expanded(1 To UBound(values, 1), 1 To TOTAL_COLUMNS)
+    For column = 1 To LEGACY_STABILITY_SNAPSHOT_COLUMNS
+        destination = column
+        If column >= COL_INERTIA_FIRST Then destination = column + 4
+        If column > 27 Then destination = column + 6
+        For row = 1 To UBound(values, 1)
+            expanded(row, destination) = values(row, column)
+        Next row
+    Next column
+    ExpandSavedStabilityColumns = expanded
+End Function
+
+' Читает единицу именно сохранённого расчёта для пустых полей совместимости.
+Private Function SavedOutputUnit(ByRef properties As Variant, ByVal key As String) As String
+    Dim row As Long
+    For row = 2 To UBound(properties, 1)
+        If CStr(properties(row, 2)) = "ALL" And CStr(properties(row, 3)) = key Then
+            SavedOutputUnit = CStr(properties(row, 4))
+            Exit Function
+        End If
+    Next row
+End Function
 
 ' В снимках с порядком Ncr, delta, phi_l переносит Ncr вместе со значениями и единицей.
 Private Sub OrderSavedSP35Plane(ByRef labels As Variant, ByRef data As Variant, ByVal firstColumn As Long)

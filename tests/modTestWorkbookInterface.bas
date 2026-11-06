@@ -6162,7 +6162,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                         baselineDiagrams = TestResultTable("rngNDMMaterialDiagrams")
                         baselineStrength = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Resize(4, 49).Value2
                         baselineCrack = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 72).Value2
-                        baselineStability = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, 84).Value2
+                        baselineStability = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, STABILITY_SNAPSHOT_COLUMNS).Value2
                     Else
                         actual = TestResultTable("rngNDMElementResults")
                         TestAudit03CompareUnitSnapshot stats, prefix & ".elements", baselineElements, actual, "Elements", 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#
@@ -6177,7 +6177,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                         TestAudit03ComparePlainSnapshot stats, prefix & ".strength", baselineStrength, actual, 1
                         actual = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 72).Value2
                         TestAudit03ComparePlainSnapshot stats, prefix & ".crack", baselineCrack, actual, 1, True
-                        actual = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, 84).Value2
+                        actual = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, STABILITY_SNAPSHOT_COLUMNS).Value2
                         TestAudit03ComparePlainSnapshot stats, prefix & ".stability", baselineStability, actual, 1, False, True, principalSign
                     End If
                     caseCount = caseCount + 1

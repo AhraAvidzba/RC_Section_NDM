@@ -139,6 +139,10 @@ Private mKs1 As Double ' Коэффициент ks СП 63 первой плос
 Private mKs2 As Double ' Коэффициент ks СП 63 второй плоскости.
 Private mStiffnessD1 As Double ' Условная жесткость D первой плоскости, Н*мм2.
 Private mStiffnessD2 As Double ' Условная жесткость D второй плоскости, Н*мм2.
+Private mConcreteElasticModulus As Double ' Модуль упругости бетона для обеих плоскостей, МПа.
+Private mSteelElasticModulus As Double ' Модуль упругости арматуры для обеих плоскостей, МПа.
+Private mConcreteInertia1 As Double, mConcreteInertia2 As Double ' Инерции бетона относительно расчётных осей, мм4.
+Private mSteelInertia1 As Double, mSteelInertia2 As Double ' Инерции арматуры относительно расчётных осей, мм4.
 Private mPlaneBranch1 As String ' Фактическая ветвь расчета первой плоскости.
 Private mPlaneBranch2 As String ' Фактическая ветвь расчета второй плоскости.
 Private mPlaneApplicable1 As Boolean ' True, если первая плоскость участвовала в проверке.
@@ -337,15 +341,15 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
         momentFilter, plane1, plane2
 
     If mCode = CODE_SP63 Then
-        CalculateSP63 section, materialProvider, valueSet, nCompression, sustainedLoad.SignedCompression, _
+        CalculateSP63 section, ebForGeometry, esForGeometry, nCompression, sustainedLoad.SignedCompression, _
             systemType, phiLMode, sp63Ks, sp63DeltaEMin, sp63DeltaEMax, plane1, plane2
     Else
         CalculateSP35 section, materialProvider, valueSet, concreteProps.Area, props.RebarAreaTotal(section), _
-            nCompression, sustainedLoad.SignedCompression, systemType, phiLMode, _
+            nCompression, sustainedLoad.SignedCompression, ebForGeometry, esForGeometry, systemType, phiLMode, _
             sp35PhiP, sp35NOverNcrLimit, sp35Table721, plane1, plane2
     End If
 
-    StorePlaneResults plane1, plane2
+    StorePlaneResults plane1, plane2, ebForGeometry, esForGeometry
     TransformDesignMoments props, plane1.DesignMoment, plane2.DesignMoment
     Exit Sub
 
@@ -396,6 +400,9 @@ Private Sub Clear()
     mKb1 = 0#: mKb2 = 0#
     mKs1 = 0#: mKs2 = 0#
     mStiffnessD1 = 0#: mStiffnessD2 = 0#
+    mConcreteElasticModulus = 0#: mSteelElasticModulus = 0#
+    mConcreteInertia1 = 0#: mConcreteInertia2 = 0#
+    mSteelInertia1 = 0#: mSteelInertia2 = 0#
     mPlaneBranch1 = vbNullString: mPlaneBranch2 = vbNullString
     mPlaneApplicable1 = False: mPlaneApplicable2 = False
     mPlanePassed1 = False: mPlanePassed2 = False
@@ -587,16 +594,11 @@ End Function
 ' Расчет по СП 63: eta = 1/(1-N/Ncr), Ncr = pi^2*D/l0^2,
 ' D = kb*Eb*I + ks*Es*Is. Ветвь работает для произвольного дискретного
 ' сечения, потому что I, Is и h уже получены из CSectionModel.
-Private Sub CalculateSP63(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
-        ByVal valueSet As EMaterialValueSet, ByVal nCompression As Double, _
+Private Sub CalculateSP63(ByVal section As CSectionModel, ByVal eb As Double, ByVal es As Double, _
+        ByVal nCompression As Double, _
         ByVal sustainedCompression As Double, ByVal systemType As String, _
         ByVal phiLMode As String, ByVal ksValue As Double, ByVal deltaEMin As Double, _
         ByVal deltaEMax As Double, ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult)
-    Dim eb As Double
-    Dim es As Double
-    eb = materialProvider.ConcreteElasticModulusFromValueSet(valueSet)
-    es = materialProvider.SteelElasticModulusFromValueSet(valueSet)
-    If eb <= 0# Or es <= 0# Then RaiseInput "Для расчета устойчивости СП 63 нужны положительные Eb и Es."
     CalculateSP63Plane section, nCompression, sustainedCompression, eb, es, ksValue, systemType, phiLMode, deltaEMin, deltaEMax, plane1, "1"
     CalculateSP63Plane section, nCompression, sustainedCompression, eb, es, ksValue, systemType, phiLMode, deltaEMin, deltaEMax, plane2, "2"
     mBranch = CODE_SP63
@@ -648,18 +650,14 @@ End Sub
 Private Sub CalculateSP35(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal valueSet As EMaterialValueSet, ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
         ByVal nCompression As Double, ByVal sustainedCompression As Double, _
-        ByVal systemType As String, ByVal phiLMode As String, ByVal phiP As Double, _
+        ByVal eb As Double, ByVal es As Double, ByVal systemType As String, ByVal phiLMode As String, ByVal phiP As Double, _
         ByVal nOverNcrLimit As Double, ByVal table721 As Variant, _
         ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult)
-    Dim eb As Double
-    Dim es As Double
     Dim rb As Double
     Dim rsc As Double
-    eb = materialProvider.ConcreteElasticModulusFromValueSet(valueSet)
-    es = materialProvider.SteelElasticModulusFromValueSet(valueSet)
     rb = materialProvider.ConcreteCompressionResistanceFromValueSet(valueSet)
     rsc = materialProvider.SteelCompressionResistanceFromValueSet(valueSet)
-    If eb <= 0# Or es <= 0# Or rb <= 0# Or rsc <= 0# Then RaiseInput "Для расчета устойчивости СП 35 нужны положительные Eb, Es, Rb и Rsc."
+    If rb <= 0# Or rsc <= 0# Then RaiseInput "Для расчета устойчивости СП 35 нужны положительные Eb, Es, Rb и Rsc."
     CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane1, "1"
     CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane2, "2"
     mBranch = CombinedSP35Branch(plane1, plane2)
@@ -892,7 +890,7 @@ End Function
 ' -------------------------- Общие методы ----------------------------------
 
 ' Собирает итог по двум главным плоскостям и выбирает минимальный запас.
-Private Sub StorePlaneResults(ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult)
+Private Sub StorePlaneResults(ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult, ByVal eb As Double, ByVal es As Double)
     mApplicable = (plane1.Applicable Or plane2.Applicable)
     If Not mApplicable Then
         mCheckPassed = True
@@ -945,6 +943,12 @@ Private Sub StorePlaneResults(ByRef plane1 As TPlaneResult, ByRef plane2 As TPla
     mKs2 = plane2.Ks
     mStiffnessD1 = plane1.StiffnessD
     mStiffnessD2 = plane2.StiffnessD
+    mConcreteElasticModulus = eb
+    mSteelElasticModulus = es
+    mConcreteInertia1 = plane1.InertiaConcrete
+    mConcreteInertia2 = plane2.InertiaConcrete
+    mSteelInertia1 = plane1.InertiaSteel
+    mSteelInertia2 = plane2.InertiaSteel
     mPlaneBranch1 = plane1.BranchName
     mPlaneBranch2 = plane2.BranchName
     mPlaneApplicable1 = plane1.Applicable
@@ -1635,6 +1639,36 @@ End Property
 ' Радиус инерции i2 приведенного сечения.
 Public Property Get Radius2() As Double
     Radius2 = mRadius2
+End Property
+
+' Модуль упругости бетона для расчёта устойчивости, МПа.
+Public Property Get ConcreteElasticModulus() As Double
+    ConcreteElasticModulus = mConcreteElasticModulus
+End Property
+
+' Модуль упругости арматуры для расчёта устойчивости, МПа.
+Public Property Get SteelElasticModulus() As Double
+    SteelElasticModulus = mSteelElasticModulus
+End Property
+
+' Момент инерции бетона относительно главной оси 1 приведённого сечения, мм4.
+Public Property Get ConcreteInertia1() As Double
+    ConcreteInertia1 = mConcreteInertia1
+End Property
+
+' Момент инерции бетона относительно главной оси 2 приведённого сечения, мм4.
+Public Property Get ConcreteInertia2() As Double
+    ConcreteInertia2 = mConcreteInertia2
+End Property
+
+' Момент инерции арматуры относительно главной оси 1 приведённого сечения, мм4.
+Public Property Get SteelInertia1() As Double
+    SteelInertia1 = mSteelInertia1
+End Property
+
+' Момент инерции арматуры относительно главной оси 2 приведённого сечения, мм4.
+Public Property Get SteelInertia2() As Double
+    SteelInertia2 = mSteelInertia2
 End Property
 
 ' Ядровое расстояние r первой плоскости со стороны эксцентриситета.

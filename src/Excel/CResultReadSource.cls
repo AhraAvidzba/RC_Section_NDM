@@ -74,10 +74,11 @@ Public Sub ValidateForDisplay()
         Set mPrepared = mIndexed.LoadAll: Set mIndexed = Nothing
         mCommonValidated = True: Exit Sub
     End If
-    Dim key As Variant, values As Variant
+    Dim key As Variant, values As Variant, stabilityLabelColumns As Long
     For Each key In Array("rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", _
             "Summary", "Strength.Headers", "Strength.Data", "Cracks.Headers", "Cracks.Data", "Stability.Labels", "Stability.Data", "LoadCase.Properties", "LoadCase.Annotations", "Calculation.Profiles")
         values = Table(CStr(key))
+        ValidateStabilitySnapshotColumns CStr(key), values, stabilityLabelColumns
     Next key
     values = TableHeader("rngNDMElementResults"): ValidateSnapshotTableShape "rngNDMElementResults", values
     Dim geometry As Variant, boundaries As Variant

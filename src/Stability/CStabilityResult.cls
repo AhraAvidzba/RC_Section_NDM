@@ -75,6 +75,10 @@ Private mKs1 As Double ' Коэффициент ks СП 63 первой плос
 Private mKs2 As Double ' Коэффициент ks СП 63 второй плоскости.
 Private mStiffnessD1 As Double ' Условная жесткость D первой плоскости, Н*мм2.
 Private mStiffnessD2 As Double ' Условная жесткость D второй плоскости, Н*мм2.
+Private mConcreteElasticModulus As Double ' Модуль упругости бетона для обеих плоскостей, МПа.
+Private mSteelElasticModulus As Double ' Модуль упругости арматуры для обеих плоскостей, МПа.
+Private mConcreteInertia1 As Double, mConcreteInertia2 As Double ' Инерции бетона относительно расчётных осей, мм4.
+Private mSteelInertia1 As Double, mSteelInertia2 As Double ' Инерции арматуры относительно расчётных осей, мм4.
 Private mPlaneBranch1 As String ' Фактическая ветвь расчета первой плоскости.
 Private mPlaneBranch2 As String ' Фактическая ветвь расчета второй плоскости.
 Private mPlaneApplicable1 As Boolean ' True, если первая плоскость участвовала в проверке.
@@ -149,6 +153,12 @@ Public Sub Clear()
     mKs2 = 0#
     mStiffnessD1 = 0#
     mStiffnessD2 = 0#
+    mConcreteElasticModulus = 0#
+    mSteelElasticModulus = 0#
+    mConcreteInertia1 = 0#
+    mConcreteInertia2 = 0#
+    mSteelInertia1 = 0#
+    mSteelInertia2 = 0#
     mPlaneBranch1 = vbNullString
     mPlaneBranch2 = vbNullString
     mPlaneApplicable1 = False
@@ -246,6 +256,12 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     mKs2 = stability.Ks2
     mStiffnessD1 = stability.StiffnessD1
     mStiffnessD2 = stability.StiffnessD2
+    mConcreteElasticModulus = stability.ConcreteElasticModulus
+    mSteelElasticModulus = stability.SteelElasticModulus
+    mConcreteInertia1 = stability.ConcreteInertia1
+    mConcreteInertia2 = stability.ConcreteInertia2
+    mSteelInertia1 = stability.SteelInertia1
+    mSteelInertia2 = stability.SteelInertia2
     mPlaneBranch1 = stability.PlaneBranch1
     mPlaneBranch2 = stability.PlaneBranch2
     mPlaneApplicable1 = stability.PlaneApplicable1
@@ -648,6 +664,36 @@ End Property
 ' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get StiffnessD2() As Double
     StiffnessD2 = mStiffnessD2
+End Property
+
+' Модуль упругости бетона для расчёта устойчивости, МПа.
+Public Property Get ConcreteElasticModulus() As Double
+    ConcreteElasticModulus = mConcreteElasticModulus
+End Property
+
+' Модуль упругости арматуры для расчёта устойчивости, МПа.
+Public Property Get SteelElasticModulus() As Double
+    SteelElasticModulus = mSteelElasticModulus
+End Property
+
+' Момент инерции бетона относительно главной оси 1 приведённого сечения, мм4.
+Public Property Get ConcreteInertia1() As Double
+    ConcreteInertia1 = mConcreteInertia1
+End Property
+
+' Момент инерции бетона относительно главной оси 2 приведённого сечения, мм4.
+Public Property Get ConcreteInertia2() As Double
+    ConcreteInertia2 = mConcreteInertia2
+End Property
+
+' Момент инерции арматуры относительно главной оси 1 приведённого сечения, мм4.
+Public Property Get SteelInertia1() As Double
+    SteelInertia1 = mSteelInertia1
+End Property
+
+' Момент инерции арматуры относительно главной оси 2 приведённого сечения, мм4.
+Public Property Get SteelInertia2() As Double
+    SteelInertia2 = mSteelInertia2
 End Property
 
 ' Сохранённый параметр устойчивости в плоскости 1: принятая расчётная ветвь. Значение определяет

@@ -66,7 +66,7 @@ Public Sub TestPrepare(ByVal elementCount As Long, ByVal stateCount As Long)
     Set mTestSample = New CCalculationSnapshot: mTestSample.RunID = 45000.125: mTestSample.ElapsedSeconds = 1.25
     Dim keys As Variant, columns As Variant, rows As Long, key As String, index As Long, row As Long, column As Long, element As Long
     keys = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "Summary", "Strength.Headers", "Strength.Data", "Cracks.Headers", "Cracks.Data", "Stability.Labels", "Stability.Data", "LoadCase.Properties", "LoadCase.Annotations", "Calculation.Profiles")
-    columns = Array(9, 16, 17, 6, 11, 24, 26, 49, 49, 72, 72, 84, 84, 6, 24, 3)
+    columns = Array(9, 16, 17, 6, 11, 24, 26, 49, 49, 72, 72, STABILITY_SNAPSHOT_COLUMNS, STABILITY_SNAPSHOT_COLUMNS, 6, 24, 3)
     Dim data() As Variant, names As Variant
     For index = 0 To UBound(keys)
         key = CStr(keys(index)): rows = 1

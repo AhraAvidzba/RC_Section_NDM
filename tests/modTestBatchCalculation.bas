@@ -4129,22 +4129,22 @@ Private Sub TestBatchSummaryWritesOnlySelectedStabilityCode(ByRef stats As TBatc
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     TestAssertTrue stats, "batch.writer.stability.anchor", stabilityAnchor.Row = 122 And stabilityAnchor.Column = 1
-    TestAssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 29).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 30).Value2)) = 0 And _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 45).Value2)) = 0
+    TestAssertTrue stats, "batch.writer.stability.sp35.empty", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 35).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 36).Value2)) = 0 And _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 51).Value2)) = 0
     TestAssertTrue stats, "batch.writer.stability.sp35.naStatus", _
-        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 38).Value2) = "N/A" And _
         CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 44).Value2) = "N/A" And _
-        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 53).Value2) = "N/A" And _
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 50).Value2) = "N/A" And _
         CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 59).Value2) = "N/A" And _
-        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 38) And _
-        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44)
-    TestAssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 61).Value2)) > 0 Or _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 72).Value2)) > 0
+        CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 65).Value2) = "N/A" And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 50)
+    TestAssertTrue stats, "batch.writer.stability.sp63.filled", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 67).Value2)) > 0 Or _
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row, 78).Value2)) > 0
     TestAssertTrue stats, "batch.writer.stability.sp63.statusColor", _
-        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 72) And _
-        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 84) And _
-        TestCellHasNoFill(resultsSheet, stabilityAnchor.Row, 61)
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 78) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 90) And _
+        TestCellHasNoFill(resultsSheet, stabilityAnchor.Row, 67)
 
 Restore:
     TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -4462,12 +4462,12 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Set stabilityAnchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     TestAssertTrue stats, "batch.writer.stability.statusColor", _
         TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 3) And _
-        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 38) And _
         TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 44) And _
-        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 53) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 50) And _
         TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 59) And _
-        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 72) And _
-        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 84) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 65) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 78) And _
+        TestStatusCellHasExpectedFill(resultsSheet, stabilityAnchor.Row, 90) And _
         TestCellHasNoFill(resultsSheet, stabilityAnchor.Row, 1)
     TestAssertTrue stats, "batch.writer.stability.header.summary", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 1).Value2) = _
         "Итог по расчету (с учетом " & ChrW$(&H3B7) & ")"
@@ -4476,16 +4476,16 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         "главных центральных осей", vbTextCompare) > 0
     TestAssertTrue stats, "batch.writer.stability.header.noExtraTier", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 4).Value2)) = 0 And _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 6).Value2)) = 0
-    TestAssertTrue stats, "batch.writer.stability.header.sp35", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 29).Value2) = "Расчет по СП 35"
-    TestAssertTrue stats, "batch.writer.stability.header.sp63", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 61).Value2) = "Расчет по СП 63"
+    TestAssertTrue stats, "batch.writer.stability.header.sp35", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 35).Value2) = "Расчет по СП 35"
+    TestAssertTrue stats, "batch.writer.stability.header.sp63", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 5, 67).Value2) = "Расчет по СП 63"
     TestAssertTrue stats, "batch.writer.stability.header.notes", Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Value2)) > 0 And _
-        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 61).Value2)) > 0
+        Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 67).Value2)) > 0
     TestAssertTrue stats, "batch.writer.stability.header.notesPlain", Not resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Font.Bold And _
         resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).HorizontalAlignment = -4131
     TestAssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Interior.Color) = RGB(217, 217, 217)
-    TestAssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 33).Value2) = "при ec > r"
-    TestAssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 61).MergeArea.Rows.Count = 2
-    TestAssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 37).Value2) = "0.7*Ncr/N"
+    TestAssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 39).Value2) = "при ec > r"
+    TestAssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 67).MergeArea.Rows.Count = 2
+    TestAssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 43).Value2) = "0.7*Ncr/N"
     TestAssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), widthsBefore(0), 0#
     TestAssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), widthsBefore(1), 0#
     TestAssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), widthsBefore(2), 0#
@@ -4621,22 +4621,22 @@ Private Sub TestAssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTes
     If checkStability And stabilityRow > 0 Then
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _
             resultsSheet.Cells.Item(summaryRow, 21).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 37).Value2
+            resultsSheet.Cells.Item(stabilityRow, 43).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1table", _
             resultsSheet.Cells.Item(summaryRow, 22).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 43).Value2
+            resultsSheet.Cells.Item(stabilityRow, 49).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2eta", _
             resultsSheet.Cells.Item(summaryRow, 23).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 52).Value2
+            resultsSheet.Cells.Item(stabilityRow, 58).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2table", _
             resultsSheet.Cells.Item(summaryRow, 24).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 58).Value2
+            resultsSheet.Cells.Item(stabilityRow, 64).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p1", _
             resultsSheet.Cells.Item(summaryRow, 25).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 71).Value2
+            resultsSheet.Cells.Item(stabilityRow, 77).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p2", _
             resultsSheet.Cells.Item(summaryRow, 26).Value2, _
-            resultsSheet.Cells.Item(stabilityRow, 83).Value2
+            resultsSheet.Cells.Item(stabilityRow, 89).Value2
     End If
 End Sub
 
@@ -8146,7 +8146,7 @@ Private Sub TestAudit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal 
             Case "rngBatchSummary": firstRow = firstRow + 12: columns = Array(4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             Case "rngStrengthSummaryAnchor": columns = Array(3, 30, 49)
             Case "rngCrackSummaryAnchor": columns = Array(3, 21, 24, 25, 29, 44, 67, 72)
-            Case "rngStabilitySummaryAnchor": columns = Array(3, 38, 44, 53, 59, 72, 84)
+            Case "rngStabilitySummaryAnchor": columns = Array(3, 44, 50, 59, 65, 78, 90)
         End Select
         For rowIndex = 1 To rows
             If Not clearedRows Or rowIndex > 1 Then

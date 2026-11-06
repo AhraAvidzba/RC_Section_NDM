@@ -274,7 +274,7 @@ Public Sub Validate()
         mValidated = True
         Exit Sub
     End If
-    Dim key As Variant, values As Variant, i As Long
+    Dim key As Variant, values As Variant, i As Long, stabilityLabelColumns As Long
     For Each key In Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", _
             "Summary", "Strength.Headers", "Strength.Data", "Cracks.Headers", "Cracks.Data", "Stability.Labels", "Stability.Data", "LoadCase.Properties", "LoadCase.Annotations", "Calculation.Profiles")
         If CStr(key) = "rngNDMElementResults" Then
@@ -282,6 +282,7 @@ Public Sub Validate()
             ValidateTableShape CStr(key), mElements
         Else
             values = Table(CStr(key)): ValidateTableShape CStr(key), values
+            ValidateStabilitySnapshotColumns CStr(key), values, stabilityLabelColumns
         End If
     Next key
     If HasTable("rngNDMElementGeometry") Then
