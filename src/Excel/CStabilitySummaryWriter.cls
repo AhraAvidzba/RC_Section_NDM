@@ -35,6 +35,9 @@ Private Const SP35_PLANE1_FIRST As Long = 30 ' Первый столбец пе�
 Private Const SP35_PLANE2_FIRST As Long = 45 ' Первый столбец второй плоскости расчёта СП 35.
 Private Const SP63_PLANE1_FIRST As Long = 61 ' Первый столбец первой плоскости расчёта СП 63.
 Private Const SP63_PLANE2_FIRST As Long = 73 ' Первый столбец второй плоскости расчёта СП 63.
+Private Const SP35_DELTA_OFFSET As Long = 3 ' Смещение delta от начала плоскости СП 35.
+Private Const SP35_PHI_L_OFFSET As Long = 4 ' Смещение phi_l для ветви ec > r.
+Private Const SP35_NCR_OFFSET As Long = 5 ' Смещение Ncr после обоих коэффициентов плоскости.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных таблицах Results.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
@@ -299,9 +302,9 @@ Private Sub PutSP35PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Lon
     notes(1, firstColumn) = "Случайный эксцентриситет для рассматриваемой плоскости"
     notes(1, firstColumn + 1) = "Расчетный эксцентриситет продольной силы"
     notes(1, firstColumn + 2) = "Ядровое расстояние для выбора ветви СП 35"
-    notes(1, firstColumn + 3) = "Критическая продольная сила для ветви ec > r"
-    notes(1, firstColumn + 4) = "Коэффициент формы эпюры для ветви ec > r"
-    notes(1, firstColumn + 5) = "Коэффициент длительного действия нагрузки"
+    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Коэффициент формы эпюры для ветви ec > r"
+    notes(1, firstColumn + SP35_PHI_L_OFFSET) = "Коэффициент длительного действия нагрузки"
+    notes(1, firstColumn + SP35_NCR_OFFSET) = "Критическая продольная сила для ветви ec > r"
     notes(1, firstColumn + 6) = "Коэффициент увеличения момента"
     notes(1, firstColumn + 7) = "Отношение действующей сжимающей силы к критической"
     notes(1, firstColumn + 8) = "Статус проверки ветви ec > r"
@@ -401,9 +404,9 @@ Private Sub PutSP35PlaneLabels(ByRef labels() As Variant, ByVal firstColumn As L
     labels(1, firstColumn) = "ec,sl, " & OutputLengthUnit(units)
     labels(1, firstColumn + 1) = "ec, " & OutputLengthUnit(units)
     labels(1, firstColumn + 2) = "r, " & OutputLengthUnit(units)
-    labels(1, firstColumn + 3) = "Ncr, " & OutputForceUnit(units)
-    labels(1, firstColumn + 4) = ChrW$(&H3B4)
-    labels(1, firstColumn + 5) = ChrW$(&H3C6) & "l (пост)"
+    labels(1, firstColumn + SP35_DELTA_OFFSET) = ChrW$(&H3B4)
+    labels(1, firstColumn + SP35_PHI_L_OFFSET) = ChrW$(&H3C6) & "l (пост)"
+    labels(1, firstColumn + SP35_NCR_OFFSET) = "Ncr, " & OutputForceUnit(units)
     labels(1, firstColumn + 6) = ChrW$(&H3B7)
     labels(1, firstColumn + 7) = etaReserveLabel
     labels(1, firstColumn + 8) = "статус"
@@ -531,11 +534,11 @@ Private Sub PutSP35PlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, 
     data(rowIndex, firstColumn) = OutputLength(PlaneAccidentalEccentricity(batch, index, planeIndex), units)
     data(rowIndex, firstColumn + 1) = OutputLength(PlaneEccentricity(batch, index, planeIndex), units)
     data(rowIndex, firstColumn + 2) = OutputLength(PlaneCoreDistance(batch, index, planeIndex), units)
-    data(rowIndex, firstColumn + 3) = OptionalCompressionForce(PlaneNcr(batch, index, planeIndex), units)
+    data(rowIndex, firstColumn + SP35_NCR_OFFSET) = OptionalCompressionForce(PlaneNcr(batch, index, planeIndex), units)
 
     If StrComp(branchName, "SP35-eta", vbTextCompare) = 0 Then
-        data(rowIndex, firstColumn + 4) = OptionalValue(PlaneDelta(batch, index, planeIndex))
-        data(rowIndex, firstColumn + 5) = OptionalValue(PlanePhiL(batch, index, planeIndex))
+        data(rowIndex, firstColumn + SP35_DELTA_OFFSET) = OptionalValue(PlaneDelta(batch, index, planeIndex))
+        data(rowIndex, firstColumn + SP35_PHI_L_OFFSET) = OptionalValue(PlanePhiL(batch, index, planeIndex))
         data(rowIndex, firstColumn + 6) = OptionalValue(PlaneEta(batch, index, planeIndex))
         data(rowIndex, firstColumn + 7) = OptionalValue(PlaneReserve(batch, index, planeIndex))
         data(rowIndex, firstColumn + 8) = PlaneStatus(batch, index, planeIndex)
@@ -958,6 +961,8 @@ Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Obj
     Dim data As Variant: data = snapshot.Table("Stability.Data")
     Dim target As Object: Set target = TargetRange(workbook, UBound(data, 1))
     Dim labels As Variant: labels = snapshot.Table("Stability.Labels")
+    OrderSavedSP35Plane labels, data, SP35_PLANE1_FIRST
+    OrderSavedSP35Plane labels, data, SP35_PLANE2_FIRST
     If mMinimalFormatting Then mMinimalFormatting = CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@" And _
         CStr(target.Cells(2, 1).Value2) = "Combination ID" And ResultHeaderMatches(target.Offset(4, 0), labels, firstColumn:=4)
     PrepareTarget target
@@ -969,4 +974,24 @@ Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Obj
     WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
     target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data
     FormatTable target, Nothing, data
+End Sub
+
+' В снимках с порядком Ncr, delta, phi_l переносит Ncr вместе со значениями и единицей.
+Private Sub OrderSavedSP35Plane(ByRef labels As Variant, ByRef data As Variant, ByVal firstColumn As Long)
+    Dim deltaColumn As Long: deltaColumn = firstColumn + SP35_DELTA_OFFSET
+    If Left$(CStr(labels(1, deltaColumn)), 5) <> "Ncr, " Then Exit Sub
+    Dim phiLColumn As Long: phiLColumn = firstColumn + SP35_PHI_L_OFFSET
+    Dim ncrColumn As Long: ncrColumn = firstColumn + SP35_NCR_OFFSET
+    Dim ncr As Variant
+    ncr = labels(1, deltaColumn)
+    labels(1, deltaColumn) = labels(1, phiLColumn)
+    labels(1, phiLColumn) = labels(1, ncrColumn)
+    labels(1, ncrColumn) = ncr
+    Dim rowIndex As Long
+    For rowIndex = 1 To UBound(data, 1)
+        ncr = data(rowIndex, deltaColumn)
+        data(rowIndex, deltaColumn) = data(rowIndex, phiLColumn)
+        data(rowIndex, phiLColumn) = data(rowIndex, ncrColumn)
+        data(rowIndex, ncrColumn) = ncr
+    Next rowIndex
 End Sub
