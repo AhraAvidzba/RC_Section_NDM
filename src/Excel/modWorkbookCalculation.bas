@@ -27,7 +27,7 @@ Public Sub RunSectionCalculation()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage WorkbookErrorMessage("Расчет не выполнен", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Расчет не выполнен", Err.Number, Err.Source, Err.Description, ThisWorkbook), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Очищает Results по кнопке, сохраняя Config и таблицу нагрузок.
@@ -44,7 +44,7 @@ Public Sub ClearSectionResults()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage WorkbookErrorMessage("Не удалось очистить результаты", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Не удалось очистить результаты", Err.Number, Err.Source, Err.Description, ThisWorkbook), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Обновляет схему по сохранённым Results и показывает причину ошибки.
@@ -64,7 +64,7 @@ Public Sub UpdateSectionPlot()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage WorkbookErrorMessage("Схема не обновлена", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Схема не обновлена", Err.Number, Err.Source, Err.Description, ThisWorkbook), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Формирует сечение по настройке Geometry.Source и сохраняет его для расчёта.
@@ -83,7 +83,7 @@ Public Sub FormSection()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage WorkbookErrorMessage("Сечение не сформировано", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Сечение не сформировано", Err.Number, Err.Source, Err.Description, ThisWorkbook), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Читает выбранное НДС из Results и перерисовывает схему указанной книги.

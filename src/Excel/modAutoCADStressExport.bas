@@ -91,7 +91,7 @@ Public Sub ExportSectionStressToAutoCAD()
     End If
     Exit Sub
 Failed:
-    ShowWorkbookMessage WorkbookErrorMessage("Экспорт в AutoCAD не выполнен", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Экспорт в AutoCAD не выполнен", Err.Number, Err.Source, Err.Description, ThisWorkbook), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Называет фактический DWG без пути и место вывода. Оба рабочих экспортёра
@@ -141,7 +141,7 @@ Public Sub ClearAutoCADDrawing()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage WorkbookErrorMessage("Очистка чертежа AutoCAD не выполнена", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Очистка чертежа AutoCAD не выполнена", Err.Number, Err.Source, Err.Description, ThisWorkbook), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Проверяет только таблицу слоёв активного чертежа, не перебирая его объекты.
