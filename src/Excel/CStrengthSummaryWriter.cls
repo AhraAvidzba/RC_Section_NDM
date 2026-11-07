@@ -36,9 +36,9 @@ Private Const COL_CAPACITY_LAST As Long = 49 ' Столбец таблицы: п
 Private Const COL_ID As Long = 1 ' Столбец таблицы: номер сочетания.
 Private Const COL_RESULT_COMMENT As Long = 2 ' Столбец таблицы: пояснение результата сочетания.
 Private Const COL_STATUS As Long = 3 ' Столбец таблицы: общий статус сочетания.
-Private Const COL_REF_N As Long = 4 ' Рабочая продольная сила в центре приведённого сечения.
-Private Const COL_REF_MX As Long = 5 ' Рабочий момент Mx относительно центральной оси X.
-Private Const COL_REF_MY As Long = 6 ' Рабочий момент My относительно центральной оси Y.
+Private Const COL_REF_N As Long = 4 ' Продольная сила для расчёта в центре приведённого сечения.
+Private Const COL_REF_MX As Long = 5 ' Момент для расчёта относительно центральной оси X.
+Private Const COL_REF_MY As Long = 6 ' Момент для расчёта относительно центральной оси Y.
 Private Const COL_LOAD_N As Long = 7 ' Столбец таблицы: расчётная продольная сила.
 Private Const COL_LOAD_MX As Long = 8 ' Столбец таблицы: расчётный момент Mx.
 Private Const COL_LOAD_MY As Long = 9 ' Столбец таблицы: расчётный момент My.
@@ -289,12 +289,12 @@ End Sub
 ' Заполняет строку обычных пояснений над нижним ярусом обозначений.
 Private Sub PutHeaderNotes(ByRef headers() As Variant)
     headers(HEADER_NOTES_ROW, COL_RESULT_COMMENT) = "пояснение расчетного статуса блока прочности"
-    headers(HEADER_NOTES_ROW, COL_REF_N) = "нагрузки, переданные в расчет прочности, в центре приведенного сечения"
-    headers(HEADER_NOTES_ROW, COL_REF_MX) = "Mx там же, вокруг оси X принятой системы"
-    headers(HEADER_NOTES_ROW, COL_REF_MY) = "My там же, вокруг оси Y принятой системы"
-    headers(HEADER_NOTES_ROW, COL_LOAD_N) = "рабочая продольная сила в пользовательской точке приложения"
-    headers(HEADER_NOTES_ROW, COL_LOAD_MX) = "рабочий Mx в точке приложения с учётом продольного изгиба при его включении"
-    headers(HEADER_NOTES_ROW, COL_LOAD_MY) = "рабочий My в точке приложения с учётом продольного изгиба при его включении"
+    headers(HEADER_NOTES_ROW, COL_REF_N) = "продольная сила N, переданная в расчёт прочности, в центре приведённого сечения"
+    headers(HEADER_NOTES_ROW, COL_REF_MX) = "момент Mx, переданный в расчёт прочности, относительно оси X через центр приведённого сечения"
+    headers(HEADER_NOTES_ROW, COL_REF_MY) = "момент My, переданный в расчёт прочности, относительно оси Y через центр приведённого сечения"
+    headers(HEADER_NOTES_ROW, COL_LOAD_N) = "продольная сила N, переданная в расчёт прочности, в пользовательской точке приложения нагрузки"
+    headers(HEADER_NOTES_ROW, COL_LOAD_MX) = "момент Mx, переданный в расчёт прочности, в пользовательской точке приложения нагрузки. Продольный изгиб учтён, если он включён для сочетания."
+    headers(HEADER_NOTES_ROW, COL_LOAD_MY) = "момент My, переданный в расчёт прочности, в пользовательской точке приложения нагрузки. Продольный изгиб учтён, если он включён для сочетания."
     headers(HEADER_NOTES_ROW, COL_LIM_EBC) = "предельная деформация бетона при сжатии"
     headers(HEADER_NOTES_ROW, COL_LIM_EBT) = "предельная деформация бетона при растяжении; пусто, если растянутый бетон не работает"
     headers(HEADER_NOTES_ROW, COL_LIM_ESC) = "предельная деформация арматуры при сжатии"
